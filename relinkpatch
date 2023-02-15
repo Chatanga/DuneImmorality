@@ -1,0 +1,2 @@
+#! /bin/bash
+ln -nfs "/home/sadalsuud/.local/share/Tabletop Simulator/Saves/TS_Save_$1.json" TS_Save_Patch.json

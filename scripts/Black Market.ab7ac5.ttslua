@@ -1,0 +1,65 @@
+
+i18n = require("i18n")
+require("locales")
+
+constants = require("Constants") 
+
+helperModule = require("HelperModule")
+
+pos_discard = constants.pos_discard
+
+GetDeckOrCard = helperModule.GetDeckOrCard
+
+pos_black_market = constants.pos_black_market
+
+zone_black_market = constants.zone_black_market
+deck_imperium = constants.zone_deck_imperium
+
+function onLoad()
+    self.interactable = false
+    activateButtons()
+end
+
+function activateButtons()
+    self.createButton({click_function = "Buy1Market", function_owner = self, label = i18n("acquireButton"), position = {-0.75, 0.1, 1}, scale = {0.23, 0.5, 0.3}, width = 1500, height = 400, font_size = 400, color = {0.25, 0.25, 0.25, 1}, font_color = {1, 1, 1, 1}})
+    self.createButton({click_function = "Buy2Market", function_owner = self, label = i18n("acquireButton"), position = {0.65, 0.1, 1}, scale = {0.23, 0.5, 0.3}, width = 1500, height = 400, font_size = 400, color = {0.25, 0.25, 0.25, 1}, font_color = {1, 1, 1, 1}})
+    self.createButton({click_function = "Buy3Market", function_owner = self, label = i18n("acquireButton"), position = {2.05, 0.1, 1}, scale = {0.23, 0.5, 0.3}, width = 1500, height = 400, font_size = 400, color = {0.25, 0.25, 0.25, 1}, font_color = {1, 1, 1, 1}})
+end
+
+function Buy1Market(_, color)
+    card = GetDeckOrCard(zone_black_market[1])
+    pos = pos_black_market[1]
+    BuyMarket(_, color)
+end
+
+function Buy2Market(_, color)
+    card = GetDeckOrCard(zone_black_market[2])
+    pos = pos_black_market[2]
+    BuyMarket(_, color)
+
+end
+
+function Buy3Market(_, color)
+    card = GetDeckOrCard(zone_black_market[3])
+    pos = pos_black_market[3]
+    BuyMarket(_, color)
+
+end
+
+function BuyMarket(_, color)
+    if color ~= "Red" and color ~= "Blue" and color ~= "Green" and color ~= "Yellow" then
+        broadcastToColor(i18n("noTouch"), color, "Pink")
+    else
+        if card ~= nil then
+            card.setPosition(pos_discard[color])
+            card.setRotation({0,180,0})
+        end
+        self.clearButtons()
+        Wait.time(activateButtons,1)
+        GetDeckOrCard(deck_imperium).takeObject({
+            position          = pos,
+            rotation          = {0,180,0},
+            smooth            = true,
+        })
+    end
+end

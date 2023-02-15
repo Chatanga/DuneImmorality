@@ -1,0 +1,62 @@
+-- compteur de Yellow
+previous_score = -1
+
+constants = require("Constants")
+
+setupObj = constants.setupObj
+
+function onload()
+    self.interactable = false
+
+    vp_zone = getObjectFromGUID("b25c3c")
+    marker = getObjectFromGUID("20bbd1")
+
+    marker_pos = {
+        {10.35, 2.5, -10.08}, --0
+        {10.33, 2.5, -8.93}, --1
+        {10.33, 2.5, -7.77}, --2
+        {10.35, 2.5, -6.57}, --3
+        {10.35, 2.5, -5.43}, --4
+        {10.35, 2.5, -4.24}, --5
+        {10.34, 2.5, -3.08}, --6
+        {10.35, 2.5, -1.86}, --7
+        {10.35, 2.5, -0.69}, --8
+        {10.37, 2.5, 0.47}, --9
+        {10.37, 2.5, 1.65}, --10
+        {10.41, 2.5, 2.81}, --11
+        {10.41, 2.5, 4.01}, --12
+        {10.40, 2.5, 5.05} -- au dessus c'est le soleil
+    }
+
+    score = 1 
+end
+
+function CountPoints()
+    local zoneObjects = vp_zone.getObjects()
+    score = 0
+    for i, object in ipairs(zoneObjects) do
+        if object.getDescription() == "VP" then score = score + 1 end
+    end
+    local vpIndex = score + 1
+    if vpIndex > 14 then vpIndex = 14 end
+
+    marker.setPositionSmooth(marker_pos[vpIndex])
+    if score ~= previous_score then setupObj.call("updateScores") end
+    previous_score = score
+end
+
+function onObjectEnterScriptingZone(zone, enter_object)
+    if zone.guid == vp_zone.guid then
+        local name = enter_object.getDescription()
+        if name == "VP" then CountPoints() end
+    end
+end
+
+function onObjectLeaveScriptingZone(zone, enter_object)
+    if zone.guid == vp_zone.guid then
+        local name = enter_object.getDescription()
+        if name == "VP" then CountPoints() end
+    end
+end
+
+function getScore() return score end

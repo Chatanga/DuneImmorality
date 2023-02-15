@@ -1,0 +1,143 @@
+--Counting Bowl    by MrStump
+
+validCountItemList = {
+    ["Blue"] = 1,
+}
+
+function onLoad()
+    i18n = require("i18n")
+    require("locales")
+
+    self.interactable = false
+
+    zone_leader = getObjectFromGUID("681774")
+    troopb_x = 0
+    troopb_z = 0
+    timerID = self.getGUID()..math.random(9999999999999)
+    
+    self.createButton({
+        label="", click_function="none", function_owner=self,
+        position={0,1.4,-1.8}, rotation={0,180,0}, height=00, width=0,
+        font_color={1,1,1}, font_size=250
+    })
+    
+    Timer.create({
+        identifier=timerID,
+        function_name="countItems", function_owner=self,
+        repetitions=0, delay=0.75
+    })
+
+    self.createButton({
+        click_function = "AddTroop", 
+        function_owner = self, 
+        label = i18n("addTroopBigButton"), 
+        position = {-2.8, 0.2, -0.5}, 
+        rotation = {0, 180, 0}, 
+        scale = {0.5, 0.5, 0.5}, 
+        width = 2400, 
+        height = 1500, 
+        font_size = 400, 
+        color = {0.118, 0.53, 1, 1}, 
+        font_color = {0.7804, 0.7804, 0.7804, 1}
+    })
+
+    self.createButton({
+        click_function = "AddTroop", 
+        function_owner = self, 
+        label = i18n("addTroopSmallButton"), 
+        position = {-35.7, 0.2, -12.7}, 
+        rotation = {0, 180, 0}, 
+        scale = {0.5, 0.5, 0.5}, 
+        width = 1700, 
+        height = 450, 
+        font_size = 400, 
+        color = {0.118, 0.53, 1, 1}, 
+        font_color = {0.7804, 0.7804, 0.7804, 1}
+    })
+end
+
+
+function AddTroop(object, pColor)
+    local LeaderName = zone_leader.getObjects()[1].getName()
+
+    if #getObjectFromGUID("4a3e76").call("getPlayersBasedOnHotseat")  >= 3 and pColor ~= "Blue" then
+        broadcastToColor(i18n("noTouch"), pColor, {1,0,0})
+    else
+        broadcastToAll(i18n("addTroop"):format(LeaderName), pColor)
+        AddTroop2()
+    end
+end
+
+
+function AddTroop2()
+    local table_troop = getObjectFromGUID("2a520c").getObjects()
+    local count = 0
+    for _, obj in ipairs(table_troop) do
+        if obj.getName() == "Blue" then
+            if count < 1 then
+                obj.setPositionSmooth({0.86+troopb_x, 2, -6.83+troopb_z}, false, false)
+                obj.setRotation({0,0,0})
+                count = 1
+                troopb_x = troopb_x + 0.45
+                if troopb_x == 1.8 then
+                    troopb_x = 0
+                    troopb_z = troopb_z + 0.45
+                    if troopb_z == 1.35 then
+                        troopb_z = 0
+                    end
+                end
+            end
+        end
+    end
+end
+
+
+--Activated once per second, counts items in bowls
+function countItems()
+    local totalValue = 0
+    local itemsInBowl = findItemsInSphere()
+    --Go through all items found by the cast
+    for _, entry in ipairs(itemsInBowl) do
+        --Ignore the bowl
+        if entry.hit_object ~= self then
+            local tableEntry = validCountItemList[entry.hit_object.getName()]
+            --Ignore if not in validCountItemList
+            if tableEntry ~= nil then
+                local descValue = tonumber(entry.hit_object.getDescription())
+                local stackMult = math.abs(entry.hit_object.getQuantity())
+                --Use value in description if available
+                if descValue ~= nil then
+                    totalValue = totalValue + descValue * stackMult
+                else
+                    --Otherwise use the value in validCountItemList
+                    totalValue = totalValue + tableEntry * stackMult
+                end
+            end
+        end
+    end
+    --Updates the number display
+    if totalValue == 1 then 
+      totalValue = (totalValue .. i18n("troop"))
+    elseif totalValue > 1 then
+      totalValue = (totalValue .. i18n("troops"))
+    end
+    self.editButton({index=0, label=totalValue})
+end
+
+--Gets the items in the bowl for countItems to count
+function findItemsInSphere()
+    --Find scaling factor
+    local scale = self.getScale()
+    --Set position for the sphere
+    local pos = self.getPosition()
+    pos.y=pos.y+(1.25*scale.y)
+    --Ray trace to get all objects
+    return Physics.cast({
+        origin=pos, direction={0,1,0}, type=2, max_distance=0,
+        size={3.4*scale.x,3.4*scale.y,3.4*scale.z}, --debug=true
+    })
+end
+
+function onDestroy()
+    Timer.destroy(timerID)
+end

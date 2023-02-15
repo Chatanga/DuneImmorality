@@ -1,0 +1,1238 @@
+local boardCommonModule = {}
+
+i18n = require("i18n")
+require("locales")
+-- i18n.setLocale(Global.getVar("locale"))
+
+constants = require("Constants")
+
+helperModule = require("HelperModule")
+
+isDeckContainsEnough = helperModule.isDeckContainsEnough
+
+drawDeckZone = constants.drawDeckZone
+
+pos_discard = constants.pos_discard
+
+DrawOne = helperModule.DrawOne
+
+flag_basin_zone = getObjectFromGUID("3fe117")
+flag_arrakeen_zone = getObjectFromGUID("f1f53d")
+flag_carthag_zone = getObjectFromGUID("9fc2e1")
+
+Zone_mentat = getObjectFromGUID("565d09")
+
+Zone_foldspace = getObjectFromGUID("6b62e0")
+bonus_spice1 = getObjectFromGUID('3cdb2d')
+bonus_spice2 = getObjectFromGUID('394db2')
+bonus_spice3 = getObjectFromGUID('116807')
+
+Stillsuits_zone = getObjectFromGUID("556f43")
+HardyWarriors_zone = getObjectFromGUID("a2fd8e")
+Secrets_zone = getObjectFromGUID("1f7c08")
+SelectiveBreeding_zone = getObjectFromGUID("7dc6e5")
+Foldspace_zone = getObjectFromGUID("9a9eb5")
+Heighliner_zone = getObjectFromGUID("8b0515")
+Wealth_zone = getObjectFromGUID("b2c461")
+Conspire_zone = getObjectFromGUID("cd9386")
+SietchTabr_zone = getObjectFromGUID("5bc970")
+boardCommonModule.ResearchStation_zone = getObjectFromGUID("af11aa")
+Carthag_zone = getObjectFromGUID("b1c938")
+Arrakeen_zone = getObjectFromGUID("17b646")
+TheGreatFlat_zone = getObjectFromGUID("69f925")
+HaggaBasin_zone = getObjectFromGUID("622708")
+ImperialBasin_zone = getObjectFromGUID("2c77c1")
+HighCouncil_zone = getObjectFromGUID("8a6315")
+Mentat_zone = getObjectFromGUID("30cff9")
+foldspace = getObjectFromGUID("38ffc0")
+intrigue_zone = getObjectFromGUID("a377d8")
+
+pion_reput = {
+    ["emperor"] = {
+        ["Red"] = getObjectFromGUID('acfcef'),
+        ["Blue"] = getObjectFromGUID('426a23'),
+        ["Green"] = getObjectFromGUID('d7c9ba'),
+        ["Yellow"] = getObjectFromGUID('489871')
+    },
+    ["spacingGuild"] = {
+        ["Red"] = getObjectFromGUID('be464e'),
+        ["Blue"] = getObjectFromGUID('4069d8'),
+        ["Green"] = getObjectFromGUID('89da7d'),
+        ["Yellow"] = getObjectFromGUID('9d0075')
+    },
+    ["beneGesserit"] = {
+        ["Red"] = getObjectFromGUID('713eae'),
+        ["Blue"] = getObjectFromGUID('2a88a6'),
+        ["Green"] = getObjectFromGUID('2dc980'),
+        ["Yellow"] = getObjectFromGUID('a3729e')
+    },
+    ["fremen"] = {
+        ["Red"] = getObjectFromGUID('088f51'),
+        ["Blue"] = getObjectFromGUID('0e6e41'),
+        ["Green"] = getObjectFromGUID('d390dc'),
+        ["Yellow"] = getObjectFromGUID('77d7c8')
+    }
+}
+
+vp_zone = {
+    ["Red"] = getObjectFromGUID('5b9a53'),
+    ["Blue"] = getObjectFromGUID('376f34'),
+    ["Green"] = getObjectFromGUID('0e374f'),
+    ["Yellow"] = getObjectFromGUID('b25c3c')
+}
+
+alliance_token = {
+    ["emperor"] = getObjectFromGUID('13e990'),
+    ["spacingGuild"] = getObjectFromGUID('ad1aae'),
+    ["beneGesserit"] = getObjectFromGUID('33452e'),
+    ["fremen"] = getObjectFromGUID('4c2bcc')
+}
+alliance_pos = {
+    ["emperor"] = {-9.51, 2, 9.86},
+    ["spacingGuild"] = {-9.53, 2, 4.25},
+    ["beneGesserit"] = {-9.55, 2, -1.21},
+    ["fremen"] = {-9.54, 2, -6.67}
+}
+
+posz_min_alliance = {
+    ["emperor"] = 8.92,
+    ["spacingGuild"] = 3.43,
+    ["beneGesserit"] = -2.03,
+    ["fremen"] = -7.5
+}
+
+vp_pos = constants.pos_vp
+
+function boardCommonModule.CheckAgentAndPlayer(color, zone)
+
+    local authorized = false
+    if color ~= "Red" and color ~= "Blue" and color ~= "Green" and color ~=
+        "Yellow" then
+        broadcastToColor(i18n("noTouch"), color, {1, 0.011765, 0})
+    else
+        local obj = zone.getObjects()
+        for _, item in ipairs(obj) do
+            if item.getName() == "" .. color .. " Agent" or item.getName() == "" ..
+                color .. " Swordmaster" or item.getName() == "Mentat" then
+                authorized = true
+            end
+        end
+        if not authorized then
+            broadcastToColor(i18n("noAgent"), color, "Purple")
+        end
+    end
+    return authorized
+end
+
+function HarvestSpice(color, base, bonusRef)
+    local t = 0
+    local nbSpice = base + bonusRef.call("collectVal")
+    bonusRef.call("reset_val")
+    for i = 1, nbSpice, 1 do
+        Wait.time(function() ressources[color][1].call("incrementVal") end, t)
+        t = t + (1.5 / nbSpice)
+    end
+    return nbSpice
+end
+
+function boardCommonModule.ImperialBasin(color)
+
+    if boardCommonModule.CheckAgentAndPlayer(color, ImperialBasin_zone) then
+        local leader = ressources[color][6].getObjects()[1]
+        local leaderName = leader.getName()
+        if leader.hasTag("Ariana") then
+            local nbSpice = HarvestSpice(color, 0, bonus_spice1)
+
+            local numberToDraw = 1
+
+            local enoughCards = isDeckContainsEnough(color, numberToDraw)
+
+            if not enoughCards then
+                broadcastToAll(
+                    i18n("imperialBasin"):format(leaderName, nbSpice) .. ".",
+                    color)
+
+                broadcastToAll(i18n("isDecidingToDraw"):format(leaderName),
+                               "Pink")
+
+                local card = i18n("cards")
+                if numberToDraw == 1 then
+                    card = i18n("card")
+                end
+                    Player[color].showConfirmDialog(
+                        i18n("warningBeforeDraw"):format(numberToDraw, card),
+                    function(player_color)
+                        DrawOne(_, color)
+                        broadcastToAll(i18n("imperialBasinDraw"):format(
+                                           leaderName), color)
+                    end)
+            else
+
+                DrawOne(_, color)
+                broadcastToAll(
+                    i18n("imperialBasin"):format(leaderName, nbSpice) ..
+                        i18n("et") .. i18n("drawOneCard"), color)
+            end
+        else
+            local nbSpice = HarvestSpice(color, 1, bonus_spice1)
+            broadcastToAll(i18n("imperialBasin"):format(leaderName, nbSpice) ..
+                               ".", color)
+        end
+        Wait.time(flag_basin, 0.5)
+    end
+end
+
+function boardCommonModule.HaggaBasin(color)
+
+    if boardCommonModule.CheckAgentAndPlayer(color, HaggaBasin_zone) then
+        local leader = ressources[color][6].getObjects()[1]
+        local leaderName = leader.getName()
+        local waterObj = ressources[color][3]
+        if waterObj.call("collectVal") < 1 then
+            broadcastToColor(i18n("noWater"), color, color)
+        else
+            waterObj.call("decrementVal")
+            if leader.hasTag("Ariana") then
+                local nbSpice = HarvestSpice(color, 1, bonus_spice2)
+
+                local numberToDraw = 1
+
+                local enoughCards = isDeckContainsEnough(color, numberToDraw)
+
+                if not enoughCards then
+                    broadcastToAll(
+                        i18n("haggaBasin"):format(leaderName, nbSpice) .. ".",
+                        color)
+
+                    broadcastToAll(i18n("isDecidingToDraw"):format(leaderName),
+                                   "Pink")
+                    local card = i18n("cards")
+                    if numberToDraw == 1 then
+                        card = i18n("card")
+                    end
+                    Player[color].showConfirmDialog(
+                        i18n("warningBeforeDraw"):format(numberToDraw, card),
+                        function(player_color)
+                            DrawOne(_, color)
+                            broadcastToAll(
+                                i18n("haggaBasinDraw"):format(leaderName), color)
+                        end)
+                else
+
+                    DrawOne(_, color)
+                    broadcastToAll(
+                        i18n("haggaBasin"):format(leaderName, nbSpice) ..
+                            i18n("et") .. i18n("drawOneCard"), color)
+                end
+
+            else
+                local nbSpice = HarvestSpice(color, 2, bonus_spice2)
+                broadcastToAll(
+                    i18n("haggaBasin"):format(leaderName, nbSpice) .. ".", color)
+            end
+        end
+    end
+end
+
+function boardCommonModule.TheGreatFlat(color)
+
+    if boardCommonModule.CheckAgentAndPlayer(color, TheGreatFlat_zone) then
+        local leader = ressources[color][6].getObjects()[1]
+        local leaderName = leader.getName()
+        local waterObj = ressources[color][3]
+        if waterObj.call("collectVal") < 2 then
+            broadcastToColor(i18n("noWater"), color, color)
+        else
+            waterObj.call("decrementVal")
+            waterObj.call("decrementVal")
+            if leader.hasTag("Ariana") then
+                local nbSpice = HarvestSpice(color, 2, bonus_spice3)
+
+                local numberToDraw = 1
+
+                local enoughCards = isDeckContainsEnough(color, numberToDraw)
+
+                if not enoughCards then
+                    broadcastToAll(
+                        i18n("greatFlat"):format(leaderName, nbSpice) .. ".",
+                        color)
+
+                    broadcastToAll(i18n("isDecidingToDraw"):format(leaderName),
+                                   "Pink")
+                    local card = i18n("cards")
+                    if numberToDraw == 1 then
+                        card = i18n("card")
+                    end
+                    Player[color].showConfirmDialog(
+                        i18n("warningBeforeDraw"):format(numberToDraw, card),
+                        function(player_color)
+                            DrawOne(_, color)
+                            broadcastToAll(
+                                i18n("greatFlatDraw"):format(leaderName), color)
+                        end)
+                else
+                    DrawOne(_, color)
+                    broadcastToAll(
+                        i18n("greatFlat"):format(leaderName, nbSpice) ..
+                            i18n("et") .. i18n("drawOneCard"), color)
+                end
+
+            else
+                local nbSpice = HarvestSpice(color, 3, bonus_spice3)
+                broadcastToAll(i18n("greatFlat"):format(leaderName, nbSpice) ..
+                                   ".", color)
+            end
+        end
+    end
+end
+
+function boardCommonModule.Stillsuits(color)
+
+    if boardCommonModule.CheckAgentAndPlayer(color, Stillsuits_zone) then
+        local leaderName = ressources[color][6].getObjects()[1].getName()
+        ressources[color][3].call("incrementVal")
+        broadcastToAll(i18n("stillSuits"):format(leaderName), color)
+        if leaderName == "Shaddam IV" then
+            boardCommonModule.FremenDown(color)
+        else
+            boardCommonModule.FremenUp(color)
+        end
+    end
+end
+
+function boardCommonModule.HardyWarriors(color)
+
+    if boardCommonModule.CheckAgentAndPlayer(color, HardyWarriors_zone) then
+
+        local waterObj = ressources[color][3]
+        if waterObj.call("collectVal") < 1 then
+            broadcastToColor(i18n("noWater"), color, color)
+        else
+            local leaderName = ressources[color][6].getObjects()[1].getName()
+            waterObj.call("decrementVal")
+            ressources[color][4].call("AddTroop2")
+            Wait.time(function()
+                ressources[color][4].call("AddTroop2")
+            end, 0.25)
+            broadcastToAll(i18n("hardyWarriors"):format(leaderName), color)
+            if leaderName == "Shaddam IV" then
+                boardCommonModule.FremenDown(color)
+            else
+                boardCommonModule.FremenUp(color)
+            end
+        end
+    end
+end
+
+function boardCommonModule.Secrets(color)
+
+    if boardCommonModule.CheckAgentAndPlayer(color, Secrets_zone) then
+        local leaderName = ressources[color][6].getObjects()[1].getName()
+        Wait.time(function() boardCommonModule.drawIntrigue(color) end, 0.2)
+        broadcastToAll(i18n("secrets"):format(leaderName), color)
+        if leaderName == "Shaddam IV" then
+            boardCommonModule.BeneDown(color)
+        else
+            boardCommonModule.BeneUp(color)
+        end
+    end
+
+end
+
+function boardCommonModule.SelectiveBreeding(color)
+
+    if boardCommonModule.CheckAgentAndPlayer(color, SelectiveBreeding_zone) then
+        local leaderName = ressources[color][6].getObjects()[1].getName()
+        local t0 = 0
+        local spiceObj = ressources[color][1]
+
+        if spiceObj.call("collectVal") < 2 then
+            broadcastToColor(i18n("noSpice"), color, color)
+        else
+            for i = 1, 2, 1 do
+                t0 = t0 + 0.35
+                Wait.time(function()
+                    spiceObj.call("decrementVal")
+                end, t0)
+            end
+            broadcastToAll(i18n("selectiveBreeding"):format(leaderName), color)
+            if leaderName == "Shaddam IV" then
+                boardCommonModule.BeneDown(color)
+            else
+                boardCommonModule.BeneUp(color)
+            end
+        end
+    end
+end
+
+function boardCommonModule.Foldspace(color)
+
+    if boardCommonModule.CheckAgentAndPlayer(color, Foldspace_zone) then
+        local deck_foldspace = Zone_foldspace.getObjects()
+        local leaderName = ressources[color][6].getObjects()[1].getName()
+
+        if deck_foldspace[1].type == "Deck" then
+            deck_foldspace[1].takeObject({
+                position = pos_discard[color],
+                rotation = {0, 180, 0},
+                smooth = false
+            })
+        elseif deck_foldspace[1].type == "Card" then
+            deck_foldspace[1].setPosition(pos_discard[color])
+        end
+        broadcastToAll(i18n("foldspace"):format(leaderName), color)
+        if leaderName == "Shaddam IV" then
+            boardCommonModule.GuildDown(color)
+        else
+            boardCommonModule.GuildUp(color)
+        end
+    end
+end
+
+function boardCommonModule.Heighliner(color)
+
+    if boardCommonModule.CheckAgentAndPlayer(color, Heighliner_zone) then
+        local spiceObj = ressources[color][1]
+
+        if spiceObj.call("collectVal") < 6 then
+            broadcastToColor(i18n("noSpice"), color, color)
+        else
+            local t0 = 0
+            local t1 = 0
+            local t2 = 0
+            local leaderName = ressources[color][6].getObjects()[1].getName()
+
+            for i = 1, 6, 1 do
+                t0 = t0 + 0.2
+                Wait.time(function()
+                    spiceObj.call("decrementVal")
+                end, t0)
+            end
+            for i = 1, 2, 1 do
+                t1 = t1 + 0.4
+                Wait.time(function()
+                    ressources[color][3].call("incrementVal")
+                end, t1)
+            end
+            for i = 1, 5, 1 do
+                Wait.time(function()
+                    ressources[color][4].call("AddTroop2")
+                end, t2)
+                t2 = t2 + 0.25
+            end
+            broadcastToAll(i18n("heighliner"):format(leaderName), color)
+            if leaderName == "Shaddam IV" then
+                boardCommonModule.GuildDown(color)
+            else
+                boardCommonModule.GuildUp(color)
+            end
+        end
+    end
+end
+
+function boardCommonModule.Wealth(color)
+
+    if boardCommonModule.CheckAgentAndPlayer(color, Wealth_zone) then
+        local leader = ressources[color][6].getObjects()[1]
+        local leaderName = leader.getName()
+        local solari = 2
+        local t1 = 0
+
+        if leader.hasTag("Yuna") then solari = 3 end
+
+        for i = 1, solari, 1 do
+            Wait.time(function()
+                ressources[color][2].call("incrementVal")
+            end, t1)
+            t1 = t1 + 0.3
+        end
+        broadcastToAll(i18n("wealth"):format(leaderName, solari), color)
+
+        if leaderName == "Shaddam IV" then
+            boardCommonModule.EmperorDown(color)
+        else
+            boardCommonModule.EmperorUp(color)
+        end
+    end
+end
+
+function boardCommonModule.Conspire(color)
+
+    if boardCommonModule.CheckAgentAndPlayer(color, Conspire_zone) then
+
+        local spiceObj = ressources[color][1]
+
+        if spiceObj.call("collectVal") < 4 then
+            broadcastToColor(i18n("noSpice"), color, color)
+        else
+            local leader = ressources[color][6].getObjects()[1]
+            local leaderName = leader.getName()
+            local solari = 5
+            local t0 = 0
+            local t1 = 0
+            local t2 = 0
+
+            local leader = ressources[color][6].getObjects()[1]
+            if leader.hasTag("Yuna") then solari = 6 end
+
+            for i = 1, 4, 1 do
+                Wait.time(function()
+                    spiceObj.call("decrementVal")
+                end, t0)
+                t0 = t0 + 0.3
+            end
+            for i = 1, solari, 1 do
+                Wait.time(function()
+                    ressources[color][2].call("incrementVal")
+                end, t1)
+                t1 = t1 + 0.25
+            end
+            for i = 1, 2, 1 do
+                t2 = t2 + 0.25
+                Wait.time(function()
+                    ressources[color][4].call("AddTroop2")
+                end, t2)
+            end
+            Wait.time(function()
+                boardCommonModule.drawIntrigue(color)
+            end, 0.2)
+            broadcastToAll(i18n("conspire"):format(leaderName, solari), color)
+
+            if leaderName == "Shaddam IV" then
+                boardCommonModule.EmperorDown(color)
+            else
+                boardCommonModule.EmperorUp(color)
+            end
+        end
+    end
+end
+
+function boardCommonModule.ReputationUp(color, faction, pos_z)
+    local pos = pion_reput[faction][color].getPosition()
+    local leaderName = ressources[color][6].getObjects()[1].getName()
+    if pos.z < pos_z then
+        pion_reput[faction][color].setPositionSmooth({
+            pos.x, pos.y, pos.z + 0.77
+        }, false, false)
+        giveAlliance(faction, color)
+        broadcastToAll(i18n("reputUp"):format(leaderName, i18n(faction)), color)
+    else
+        broadcastToColor(i18n("reputMax"), color, "Pink")
+    end
+end
+
+function boardCommonModule.ReputationDown(color, faction, pos_z)
+    local pos = pion_reput[faction][color].getPosition()
+    local leaderName = ressources[color][6].getObjects()[1].getName()
+    if pos.z > pos_z then
+        pion_reput[faction][color].setPositionSmooth({
+            pos.x, pos.y, pos.z - 0.77
+        }, false, false)
+        giveAlliance(faction, color)
+        broadcastToAll(i18n("reputDown"):format(leaderName, i18n(faction)),
+                       color)
+    else
+        broadcastToColor(i18n("reputMin"), color, "Orange")
+    end
+end
+
+function giveAlliance(faction, color)
+    local players = {"Red", "Green", "Blue", "Yellow"}
+    local leaderName = ressources[color][6].getObjects()[1].getName()
+
+    local posz_liste = {}
+
+    for i, player in pairs(players) do
+        if player ~= color then
+            posz_liste[player] = pion_reput[faction][player].getPosition().z
+        end
+    end
+
+    local vp_player = vp_zone[color].getObjects()
+    local test_alliance = 0
+    for _, value in ipairs(vp_player) do
+        if value == alliance_token[faction] then test_alliance = 1 end
+    end
+    Wait.time(function()
+        local posz = pion_reput[faction][color].getPosition().z
+        local posz_requis = posz_min_alliance[faction]
+
+        if test_alliance == 1 then
+            local biggestDelta = 0;
+            local playerTakingAlliance = ""
+            local tiedForVP = false
+
+            for k, posz_compared in pairs(posz_liste) do
+
+                if posz < (posz_compared - 0.5) then
+                    local delta = posz_compared - posz
+
+                    if (delta - biggestDelta) < 0.5 and (delta - biggestDelta) >
+                        -0.5 then tiedForVP = true end
+
+                    if delta > biggestDelta then
+                        biggestDelta = delta
+                        playerTakingAlliance = k
+                    end
+                end
+
+            end
+
+            if tiedForVP or biggestDelta > 0 or posz < posz_requis then
+                broadcastToAll(i18n("loseAlliance"):format(leaderName,
+                                                           i18n(faction)), color)
+            end
+
+            if tiedForVP then
+                broadcastToAll(i18n("tiedAlliance"):format(i18n(faction)),
+                               "Pink")
+
+            elseif biggestDelta > 0 then
+                local vpIndex = CountPoints(playerTakingAlliance)
+                local leaderTakingAllianceName =
+                    ressources[playerTakingAlliance][6].getObjects()[1]
+                        .getName()
+
+                alliance_token[faction].setPositionSmooth(
+                    vp_pos[playerTakingAlliance][vpIndex], false, false)
+
+                broadcastToAll(i18n("recoverAlliance"):format(
+                                   leaderTakingAllianceName, i18n(faction)),
+                               playerTakingAlliance)
+
+            elseif posz < posz_requis then
+                alliance_token[faction].setPositionSmooth(alliance_pos[faction],
+                                                          false, false)
+            end
+
+        end
+
+        if test_alliance == 0 and posz > posz_requis then
+            local isReputStrongest = true
+            for k, posz_compared in pairs(posz_liste) do
+
+                if posz < (posz_compared + 0.5) then
+                    isReputStrongest = false
+                end
+            end
+
+            if isReputStrongest then
+                local vpIndex = CountPoints(color)
+                alliance_token[faction].setPositionSmooth(
+                    vp_pos[color][vpIndex], false, false)
+
+                broadcastToAll(i18n("recoverAlliance"):format(leaderName,
+                                                              i18n(faction)),
+                               color)
+
+            end
+        end
+
+    end, 1)
+end
+
+function CountPoints(color)
+    local zoneObjects = vp_zone[color].getObjects()
+    local vpIndex = 1
+    for i, object in ipairs(zoneObjects) do
+        if object.getDescription() == "VP" then vpIndex = vpIndex + 1 end
+    end
+    if vpIndex > 13 then vpIndex = 13 end
+
+    return vpIndex
+
+end
+
+function boardCommonModule.FremenUp(color)
+    boardCommonModule.ReputationUp(color, "fremen", -6.18)
+end
+
+function boardCommonModule.FremenDown(color)
+    boardCommonModule.ReputationDown(color, "fremen", -10.2)
+end
+
+function boardCommonModule.BeneUp(color)
+    boardCommonModule.ReputationUp(color, "beneGesserit", -0.86)
+end
+
+function boardCommonModule.BeneDown(color)
+    boardCommonModule.ReputationDown(color, "beneGesserit", -4.76)
+end
+
+function boardCommonModule.GuildUp(color)
+    boardCommonModule.ReputationUp(color, "spacingGuild", 4.57)
+end
+
+function boardCommonModule.GuildDown(color)
+    boardCommonModule.ReputationDown(color, "spacingGuild", 0.72)
+end
+
+function boardCommonModule.EmperorUp(color)
+    boardCommonModule.ReputationUp(color, "emperor", 10.10)
+end
+
+function boardCommonModule.EmperorDown(color)
+    boardCommonModule.ReputationDown(color, "emperor", 6.18)
+end
+
+function boardCommonModule.SietchTabr(color)
+    if boardCommonModule.CheckAgentAndPlayer(color, SietchTabr_zone) then
+        if pion_reput["fremen"][color].getPosition().z < -9.25 then
+            broadcastToColor(i18n("notReputation"), color, "Red")
+            return 1
+        end
+
+        ressources[color][3].call("incrementVal")
+        ressources[color][4].call("AddTroop2")
+
+        local leaderName = ressources[color][6].getObjects()[1].getName()
+
+        broadcastToAll(i18n("sietchTabr"):format(leaderName), color)
+    end
+end
+
+function boardCommonModule.ResearchStation(color)
+    if boardCommonModule.CheckAgentAndPlayer(color,
+                                             boardCommonModule.ResearchStation_zone) then
+
+        local waterObj = ressources[color][3]
+        local leaderName = ressources[color][6].getObjects()[1].getName()
+
+        if waterObj.call("collectVal") < 2 then
+            broadcastToColor(i18n("noWater"), color, color)
+        else
+            for i = 1, 2, 1 do waterObj.call("decrementVal") end
+
+            local numberToDraw = 3
+
+            local enoughCards = isDeckContainsEnough(color, numberToDraw)
+
+            if not enoughCards then
+
+                broadcastToAll(
+                    i18n("researchStationPayOnly"):format(leaderName) .. ".",
+                    color)
+
+                broadcastToAll(i18n("isDecidingToDraw"):format(leaderName),
+                               "Pink")
+
+                local card = i18n("cards")
+                if numberToDraw == 1 then
+                    card = i18n("card")
+                end
+                Player[color].showConfirmDialog(
+                        i18n("warningBeforeDraw"):format(numberToDraw, card),
+                    function(player_color)
+
+                        broadcastToAll(i18n("researchStationDraw"):format(
+                                           leaderName, 3) .. ".", color)
+
+                        for i = 0, numberToDraw - 1, 1 do
+                            Wait.time(function()
+                                DrawOne(_, color)
+                            end, i)
+                        end
+
+                    end)
+            else
+
+                broadcastToAll(i18n("researchStation"):format(leaderName, 3) ..
+                                   ".", color)
+
+                for i = 0, numberToDraw - 1, 1 do
+                    Wait.time(function() DrawOne(_, color) end, i)
+                end
+
+            end
+        end
+    end
+end
+
+function boardCommonModule.Carthag(color)
+    if boardCommonModule.CheckAgentAndPlayer(color, Carthag_zone) then
+        local leaderName = ressources[color][6].getObjects()[1].getName()
+
+        Wait.time(function() boardCommonModule.drawIntrigue(color) end, 0.2)
+        ressources[color][4].call("AddTroop2")
+        broadcastToAll(i18n("carthag"):format(leaderName), color)
+        Wait.time(function() flag_carthag(color) end, 0.5)
+    end
+end
+
+function boardCommonModule.Arrakeen(color)
+
+    if boardCommonModule.CheckAgentAndPlayer(color, Arrakeen_zone) then
+        local leaderName = ressources[color][6].getObjects()[1].getName()
+
+        local numberToDraw = 1
+
+        local enoughCards = isDeckContainsEnough(color, numberToDraw)
+
+        if not enoughCards then
+            broadcastToAll(i18n("arrakeenTroopOnly"):format(leaderName), color)
+
+            broadcastToAll(i18n("isDecidingToDraw"):format(leaderName), "Pink")
+            local card = i18n("cards")
+            if numberToDraw == 1 then
+                card = i18n("card")
+            end
+            Player[color].showConfirmDialog(
+                i18n("warningBeforeDraw"):format(numberToDraw, card),
+                function(player_color)
+                    DrawOne(_, color)
+                    broadcastToAll(i18n("arrakeenDraw"):format(leaderName),
+                                   color)
+                end)
+        else
+            DrawOne(_, color)
+            broadcastToAll(i18n("arrakeen"):format(leaderName), color)
+        end
+
+        ressources[color][4].call("AddTroop2")
+        Wait.time(function() flag_arrakeen(color) end, 0.5)
+    end
+end
+
+function boardCommonModule.Swordmaster(color, zone)
+
+    local t = 0
+
+    if boardCommonModule.CheckAgentAndPlayer(color, zone) then
+
+        local solariObj = ressources[color][2]
+        local leader = ressources[color][6].getObjects()[1]
+        local leaderName = leader.getName()
+        local price = 8
+
+        if leader.hasTag("Leto") then price = 7 end
+
+        if solariObj.call("collectVal") < price then
+            broadcastToColor(i18n("noSolari"), color, color)
+        else
+            for i = 1, price, 1 do
+                Wait.time(function()
+                    solariObj.call("decrementVal")
+                end, t)
+                t = t + 0.15
+            end
+            ressources[color][7].setPositionSmooth(ressources[color][8], false,
+                                                   false)
+            if leader.hasTag("Ilban") then
+
+                local numberToDraw = 1
+
+                local enoughCards = isDeckContainsEnough(color, numberToDraw)
+
+                if not enoughCards then
+                    broadcastToAll(
+                        i18n("swordMaster"):format(leaderName, price) .. ".",
+                        color)
+
+                    broadcastToAll(i18n("isDecidingToDraw"):format(leaderName),
+                                   "Pink")
+                    local card = i18n("cards")
+                    if numberToDraw == 1 then
+                        card = i18n("card")
+                    end
+                    Player[color].showConfirmDialog(
+                        i18n("warningBeforeDraw"):format(numberToDraw, card),
+                        function(player_color)
+                            DrawOne(_, color)
+                            broadcastToAll(i18n("ilbanDraw"):format(leaderName),
+                                           color)
+                        end)
+                else
+                    DrawOne(_, color)
+                    broadcastToAll(
+                        i18n("swordMaster"):format(leaderName, price) ..
+                            i18n("et") .. i18n("drawOneCard"), color)
+                end
+
+            else
+                broadcastToAll(i18n("swordMaster"):format(leaderName, price) ..
+                                   ".", color)
+            end
+        end
+    end
+end
+
+function boardCommonModule.Mentat(color)
+
+    if boardCommonModule.CheckAgentAndPlayer(color, Mentat_zone) then
+
+        local solariObj = ressources[color][2]
+        local leader = ressources[color][6].getObjects()[1]
+        local leaderName = leader.getName()
+        local price = 2
+        local t = 0
+        local talk = " "
+
+        if leader.hasTag("Leto") then price = 1 end
+
+        if solariObj.call("collectVal") < price then
+            broadcastToColor(i18n("noSolari"), color, color)
+        else
+            for i = 1, price, 1 do
+                Wait.time(function()
+                    solariObj.call("decrementVal")
+                end, t)
+                t = t + 0.3
+            end
+            local mentats = getMentat()
+            if mentats ~= nil then
+                talk = i18n("mentatToken")
+                mentats.setPositionSmooth(ressources[color][8], false, false)
+            end
+
+            local numberToDraw = 1
+
+            if leader.hasTag("Ilban") then numberToDraw = 2 end
+
+            local enoughCards = isDeckContainsEnough(color, numberToDraw)
+
+            if not enoughCards then
+                broadcastToAll(
+                    leaderName .. i18n("mentatPayment"):format(price) .. talk ..
+                        ".", color)
+
+                broadcastToAll(i18n("isDecidingToDraw"):format(leaderName),
+                               "Pink")
+
+                    local card = i18n("cards")
+                    if numberToDraw == 1 then
+                        card = i18n("card")
+                    end
+                    Player[color].showConfirmDialog(
+                        i18n("warningBeforeDraw"):format(numberToDraw, card),
+                    function(player_color)
+                        if leader.hasTag("Ilban") then
+
+                            broadcastToAll(
+                                leaderName .. i18n("mentatIlbanDraw"), color)
+                            Wait.time(function()
+                                DrawOne(_, color)
+                            end, 1)
+                        else
+                            broadcastToAll(leaderName .. i18n("drawOneCard"),
+                                           color)
+                        end
+                        DrawOne(_, color)
+                    end)
+            else
+                if leader.hasTag("Ilban") then
+                    broadcastToAll(leaderName ..
+                                       i18n("mentatPayment"):format(price) ..
+                                       talk .. i18n("et") ..
+                                       i18n("mentatIlbanDraw"), color)
+                    Wait.time(function() DrawOne(_, color) end, 1)
+                else
+                    broadcastToAll(leaderName ..
+                                       i18n("mentatPayment"):format(price) ..
+                                       talk .. i18n("et") .. i18n("drawOneCard"),
+                                   color)
+                end
+                DrawOne(_, color)
+            end
+        end
+    end
+end
+
+function getMentat()
+    local returnValue = nil
+    for _, obj in ipairs(Zone_mentat.getObjects()) do
+        if obj.getName() == "Mentat" then returnValue = obj end
+    end
+    return returnValue
+end
+
+function boardCommonModule.HighCouncil(color)
+
+    if boardCommonModule.CheckAgentAndPlayer(color, HighCouncil_zone) then
+
+        local solariObj = ressources[color][2]
+        local leader = ressources[color][6].getObjects()[1]
+        local leaderName = leader.getName()
+        local price = 5
+        local t = 0
+
+        if leader.hasTag("Leto") then price = 4 end
+
+        if solariObj.call("collectVal") < price then
+            broadcastToColor(i18n("noSolari"), color, color)
+        else
+            for i = 1, price, 1 do
+                Wait.time(function()
+                    solariObj.call("decrementVal")
+                end, t)
+                t = t + 0.2
+            end
+            -- place the council token and get back a 2 persuasion token near the player board
+            local index = 10
+            if getObjectFromGUID("a139cd") == nil then index = 12 end
+
+            ressources[color][9].setPositionSmooth(ressources[color][index],
+                                                   false, false)
+            ressources[color][9].interactable = false
+            getObjectFromGUID("074f6d").takeObject({
+                position = ressources[color][11],
+                rotation = {0, 180, 0}
+            })
+
+            if leader.hasTag("Ilban") then
+
+                local numberToDraw = 1
+
+                local enoughCards = isDeckContainsEnough(color, numberToDraw)
+
+                if not enoughCards then
+                    broadcastToAll(
+                        i18n("highCouncil"):format(leaderName, price) .. ".",
+                        color)
+
+                    broadcastToAll(i18n("isDecidingToDraw"):format(leaderName),
+                                   "Pink")
+                    local card = i18n("cards")
+                    if numberToDraw == 1 then
+                        card = i18n("card")
+                    end
+                    Player[color].showConfirmDialog(
+                        i18n("warningBeforeDraw"):format(numberToDraw, card),
+                        function(player_color)
+                            DrawOne(_, color)
+                            broadcastToAll(i18n("ilbanDraw"):format(leaderName),
+                                           color)
+                        end)
+                else
+                    DrawOne(_, color)
+                    broadcastToAll(
+                        i18n("highCouncil"):format(leaderName, price) ..
+                            i18n("et") .. i18n("drawOneCard"), color)
+                end
+            else
+                broadcastToAll(i18n("highCouncil"):format(leaderName, price) ..
+                                   ".", color)
+            end
+        end
+    end
+
+end
+
+function boardCommonModule.drawIntrigue(color)
+    if ressources[color][6].getObjects()[1].getName() == "Count Fenring" then
+        x = 2
+        Wait.time(function()
+            broadcastToAll(ressources[color][6].getObjects()[1].getName() ..
+                               i18n("fenring"), "Purple")
+        end, 0.5)
+    else
+        x = 1
+    end
+    local t = 0
+    for i = 1, x, 1 do
+        Wait.time(function()
+            local handZone = Player[color].getHandTransform()
+            my_card = intrigue_zone.getObjects()[1].takeObject({
+                position = {
+                    handZone.position.x - 7.5, handZone.position.y,
+                    handZone.position.z
+                },
+                flip = false,
+                smooth = false
+            })
+            Wait.time(function() my_card.flip() end, 0.2)
+        end, t)
+        t = t + 0.25
+    end
+end
+
+function flag_basin()
+    local dread = 0
+    local table = flag_basin_zone.getObjects()
+    for _, obj in ipairs(table) do
+        if obj.getName() == "Red Dreadnought" or obj.getName() ==
+            "Red dreadnought" then
+            dread = 1
+        elseif obj.getName() == "Blue Dreadnought" or obj.getName() ==
+            "Blue dreadnought" then
+            dread = 2
+        elseif obj.getName() == "Green Dreadnought" or obj.getName() ==
+            "Green dreadnought" then
+            dread = 3
+        elseif obj.getName() == "Yellow Dreadnought" or obj.getName() ==
+            "Yellow dreadnought" then
+            dread = 4
+        end
+    end
+    if dread == 0 then
+        for _, obj in ipairs(table) do
+            if obj.getName() == "Red Flag" then
+                dread = 1
+            elseif obj.getName() == "Blue Flag" then
+                dread = 2
+            elseif obj.getName() == "Green Flag" then
+                dread = 3
+            elseif obj.getName() == "Yellow Flag" then
+                dread = 4
+            end
+        end
+    end
+    if dread == 1 then
+        ressources["Red"][1].call("incrementVal")
+        broadcastToAll(ressources["Red"][6].getObjects()[1].getName() ..
+                           i18n("flagBasin"), {0.956, 0.392, 0.113})
+    elseif dread == 2 then
+        ressources["Blue"][1].call("incrementVal")
+        broadcastToAll(ressources["Blue"][6].getObjects()[1].getName() ..
+                           i18n("flagBasin"), {0.956, 0.392, 0.113})
+    elseif dread == 3 then
+        ressources["Green"][1].call("incrementVal")
+        broadcastToAll(ressources["Green"][6].getObjects()[1].getName() ..
+                           i18n("flagBasin"), {0.956, 0.392, 0.113})
+    elseif dread == 4 then
+        ressources["Yellow"][1].call("incrementVal")
+        broadcastToAll(ressources["Yellow"][6].getObjects()[1].getName() ..
+                           i18n("flagBasin"), {0.956, 0.392, 0.113})
+    end
+end
+
+function flag_arrakeen(color)
+    local dread = 0
+    local table = flag_arrakeen_zone.getObjects()
+    if ressources[color][6].getObjects()[1].getName() == "Princess Yuna" then
+        for _, obj in ipairs(table) do
+            if obj.getName() == color .. " Dreadnought" or obj.getName() ==
+                color .. " dreadnought" then dread = 5 end
+        end
+        if dread == 0 then
+            for _, obj in ipairs(table) do
+                if obj.getName() == color .. " Flag" then
+                    dread = 5
+                end
+            end
+        end
+    end
+    if dread == 0 then
+        for _, obj in ipairs(table) do
+            if obj.getName() == "Red Dreadnought" or obj.getName() ==
+                "Red dreadnought" then
+                dread = 1
+            elseif obj.getName() == "Blue Dreadnought" or obj.getName() ==
+                "Blue dreadnought" then
+                dread = 2
+            elseif obj.getName() == "Green Dreadnought" or obj.getName() ==
+                "Green dreadnought" then
+                dread = 3
+            elseif obj.getName() == "Yellow Dreadnought" or obj.getName() ==
+                "Yellow dreadnought" then
+                dread = 4
+            end
+        end
+        if dread == 0 then
+            for _, obj in ipairs(table) do
+                if obj.getName() == "Red Flag" then
+                    dread = 1
+                elseif obj.getName() == "Blue Flag" then
+                    dread = 2
+                elseif obj.getName() == "Green Flag" then
+                    dread = 3
+                elseif obj.getName() == "Yellow Flag" then
+                    dread = 4
+                end
+            end
+        end
+    end
+    if dread == 1 then
+        ressources["Red"][2].call("incrementVal")
+        broadcastToAll(ressources["Red"][6].getObjects()[1].getName() ..
+                           i18n("flagArrakeen"):format(1), {0.8, 0.8, 0.8})
+    elseif dread == 2 then
+        ressources["Blue"][2].call("incrementVal")
+        broadcastToAll(ressources["Blue"][6].getObjects()[1].getName() ..
+                           i18n("flagArrakeen"):format(1), {0.8, 0.8, 0.8})
+    elseif dread == 3 then
+        ressources["Green"][2].call("incrementVal")
+        broadcastToAll(ressources["Green"][6].getObjects()[1].getName() ..
+                           i18n("flagArrakeen"):format(1), {0.8, 0.8, 0.8})
+    elseif dread == 4 then
+        ressources["Yellow"][2].call("incrementVal")
+        broadcastToAll(ressources["Yellow"][6].getObjects()[1].getName() ..
+                           i18n("flagArrakeen"):format(1), {0.8, 0.8, 0.8})
+    elseif dread == 5 then
+        ressources[color][2].call("incrementVal")
+        Wait.time(function() ressources[color][2].call("incrementVal") end, 0.3)
+        broadcastToAll(ressources[color][6].getObjects()[1].getName() ..
+                           i18n("flagArrakeen"):format(2), {0.8, 0.8, 0.8})
+    end
+end
+
+function flag_carthag(color)
+    local dread = 0
+    local table = flag_carthag_zone.getObjects()
+    if ressources[color][6].getObjects()[1].getName() == "Princess Yuna" then
+        for _, obj in ipairs(table) do
+            if obj.getName() == color .. " Dreadnought" or obj.getName() ==
+                color .. " dreadnought" then dread = 5 end
+        end
+        if dread == 0 then
+            for _, obj in ipairs(table) do
+                if obj.getName() == color .. " Flag" then
+                    dread = 5
+                end
+            end
+        end
+    end
+    if dread == 0 then
+        for _, obj in ipairs(table) do
+            if obj.getName() == "Red Dreadnought" or obj.getName() ==
+                "Red dreadnought" then
+                dread = 1
+            elseif obj.getName() == "Blue Dreadnought" or obj.getName() ==
+                "Blue dreadnought" then
+                dread = 2
+            elseif obj.getName() == "Green Dreadnought" or obj.getName() ==
+                "Green dreadnought" then
+                dread = 3
+            elseif obj.getName() == "Yellow Dreadnought" or obj.getName() ==
+                "Yellow dreadnought" then
+                dread = 4
+            end
+        end
+        if dread == 0 then
+            for _, obj in ipairs(table) do
+                if obj.getName() == "Red Flag" then
+                    dread = 1
+                elseif obj.getName() == "Blue Flag" then
+                    dread = 2
+                elseif obj.getName() == "Green Flag" then
+                    dread = 3
+                elseif obj.getName() == "Yellow Flag" then
+                    dread = 4
+                end
+            end
+        end
+    end
+    if dread == 1 then
+        ressources["Red"][2].call("incrementVal")
+        broadcastToAll(ressources["Red"][6].getObjects()[1].getName() ..
+                           i18n("flagCarthag"):format(1), {0.8, 0.8, 0.8})
+    elseif dread == 2 then
+        ressources["Blue"][2].call("incrementVal")
+        broadcastToAll(ressources["Blue"][6].getObjects()[1].getName() ..
+                           i18n("flagCarthag"):format(1), {0.8, 0.8, 0.8})
+    elseif dread == 3 then
+        ressources["Green"][2].call("incrementVal")
+        broadcastToAll(ressources["Green"][6].getObjects()[1].getName() ..
+                           i18n("flagCarthag"):format(1), {0.8, 0.8, 0.8})
+    elseif dread == 4 then
+        ressources["Yellow"][2].call("incrementVal")
+        broadcastToAll(ressources["Yellow"][6].getObjects()[1].getName() ..
+                           i18n("flagCarthag"):format(1), {0.8, 0.8, 0.8})
+    elseif dread == 5 then
+        ressources[color][2].call("incrementVal")
+        Wait.time(function() ressources[color][2].call("incrementVal") end, 0.3)
+        broadcastToAll(ressources[color][6].getObjects()[1].getName() ..
+                           i18n("flagCarthag"):format(2), {0.8, 0.8, 0.8})
+    end
+end
+
+return boardCommonModule

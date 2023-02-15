@@ -1,0 +1,113 @@
+i18n = require("i18n")
+require("locales")
+
+constants = require("Constants")
+
+helperModule = require("HelperModule")
+
+pos_discard = constants.pos_discard
+
+scriptZone_middleTrack_research = getObjectFromGUID("60a0fd")
+
+GetDeckOrCard = helperModule.GetDeckOrCard
+
+ressources = constants.ressources
+
+pos_supply_bowls = constants.pos_supply_bowls
+
+local buyModule = {}
+
+zone_deck_imperium = constants.zone_deck_imperium
+zone_deck_tleilaxu = constants.zone_deck_tleilaxu
+
+function buyModule.Buy(zone, pColor, pos, activateButton, buyTleilaxu)
+    buyTleilaxu = buyTleilaxu or false
+    local card = zone.getObjects()
+    local zone_deck = zone_deck_imperium
+    if card[1] then
+        self.clearButtons()
+        Wait.time(function() activateButton() end, 2)
+
+        if pColor ~= "Red" and pColor ~= "Blue" and pColor ~= "Green" and pColor ~=
+            "Yellow" then
+            broadcastToColor(i18n("noTouch"), pColor, {1, 0.011765, 0})
+        else
+            local enoughSpecimen = false
+            if buyTleilaxu then
+                local countSpecimen = 0
+                local price = JSON.decode(card[1].getGMNotes()).specimenCost
+                for _, troop in ipairs(getObjectFromGUID("f5de09").getObjects()) do -- comptage Spécimen
+                    if troop.hasTag("Troop") and troop.hasTag(pColor) then
+                        countSpecimen = countSpecimen + 1
+                    end
+                end
+                if price > countSpecimen then
+                    broadcastToColor(i18n("notEnoughSpecimen"), pColor, "Red")
+                else
+                    enoughSpecimen = true
+
+                    local leaderName = ressources[pColor][6].getObjects()[1].getName()
+                    Wait.time(function()
+                        params = {osef = "", color = pColor, silent = true}
+                        getObjectFromGUID("d5c2db").Call("RemoveSpecimenCall",
+                                                         params)
+                    end, 0.3, price)
+                    local specimen = i18n("specimens")
+                    if price == 1 then
+                        specimen = i18n("specimen")
+                    end
+                    broadcastToAll(i18n("acquiredTleilaxu"):format(leaderName, price, specimen), pColor)
+                end
+            end
+
+            if not buyTleilaxu or enoughSpecimen then
+
+                card[1].setPosition(pos_discard[pColor])
+
+                local objs = scriptZone_middleTrack_research.getObjects()
+                local middleSearch = false
+                for _, item in ipairs(objs) do
+                    if item.hasTag(pColor) then
+                        middleSearch = true
+                    end
+                end
+                local techs = constants.zone_player[pColor].getObjects()
+                local spaceportCheck = false
+                for _, tech in ipairs(techs) do
+                    if tech.hasTag("Spaceport") then
+                        spaceportCheck = true
+                    end
+                end
+                if buyTleilaxu == true and middleSearch == true or
+                    spaceportCheck == true then
+                    Player[pColor].showConfirmDialog(i18n("dialogCardAbove"),
+                                                     function(player_color)
+                        local deckorcard = GetDeckOrCard(
+                                               constants.discardZone[pColor])
+                        if deckorcard.type == 'Card' then
+                            deckorcard.setPositionSmooth(
+                                constants.drawSpot[pColor], false, false)
+                            deckorcard.setRotationSmooth({0, 180, 180}, false,
+                                                         false)
+                        else
+                            local nb_cards = #deckorcard.getObjects()
+                            deckorcard.takeObject({
+                                position = constants.drawSpot[pColor],
+                                rotation = {0, 180, 180},
+                                index = nb_cards - 1
+                            })
+                        end
+                    end)
+                end
+                local params = {position = pos, rotation = {0, 180, 0}}
+                if buyTleilaxu == true then
+                    zone_deck = zone_deck_tleilaxu
+                end
+                GetDeckOrCard(zone_deck).takeObject(params)
+            end
+        end
+    end
+end
+
+return buyModule
+

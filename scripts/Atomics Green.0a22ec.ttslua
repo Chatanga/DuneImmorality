@@ -1,0 +1,5 @@
+atomicsModule = require("AtomicsModule")
+
+function onLoad() atomicsModule.homeButton(self)
+end
+

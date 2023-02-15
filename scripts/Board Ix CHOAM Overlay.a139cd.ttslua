@@ -1,0 +1,430 @@
+i18n = require("i18n")
+require("locales")
+
+constants = require("Constants")
+
+boardCommonModule = require("BoardCommonModule")
+
+Swordmaster_zone = getObjectFromGUID("6932df")
+Smuggling_zone = getObjectFromGUID("6cc2f8")
+Shipping_zone = getObjectFromGUID("3e7409")
+
+ressources = constants.ressources
+
+zone_player = constants.zone_player
+cargo = constants.cargo
+cargo_pos_init = {
+    ["Yellow"] = {9, 1.67, 6.85},
+    ["Green"] = {8.45, 1.67, 6.85},
+    ["Blue"] = {7.35, 1.67, 6.85},
+    ["Red"] = {7.9, 1.67, 6.85}
+}
+pion_reput_guild = {
+    ["Red"] = getObjectFromGUID('be464e'),
+    ["Blue"] = getObjectFromGUID('4069d8'),
+    ["Green"] = getObjectFromGUID('89da7d'),
+    ["Yellow"] = getObjectFromGUID('9d0075')
+}
+minimum_reput_guild_z = 1.8
+
+function onload()
+    i18n.setLocale(Global.getVar("locale"))
+
+    self.interactable = false
+    activateButtons()
+end
+
+function activateButtons()
+
+    self.createButton({
+        click_function = "CommercialMoney",
+        function_owner = self,
+        label = "get",
+        position = {2.5, 0.1, 0.15},
+        scale = {0.238, 0.238, 0.238},
+        width = 400,
+        height = 350,
+        font_size = 200,
+        color = {0.25, 0.25, 0.25, 1},
+        font_color = {0.7843, 0.7843, 0.7843, 1}
+    })
+    self.createButton({
+        click_function = "CommercialSpice",
+        function_owner = self,
+        label = "get",
+        position = {2.855, 0.1, 0.15},
+        scale = {0.238, 0.238, 0.238},
+        width = 400,
+        height = 350,
+        font_size = 200,
+        color = {0.25, 0.25, 0.25, 1},
+        font_color = {0.7843, 0.7843, 0.7843, 1}
+    })
+    self.createButton({
+        click_function = "CommercialTroop",
+        function_owner = self,
+        label = "get",
+        position = {2.68, 0.1, -0.27},
+        scale = {0.238, 0.238, 0.238},
+        width = 400,
+        height = 350,
+        font_size = 200,
+        color = {0.25, 0.25, 0.25, 1},
+        font_color = {0.7843, 0.7843, 0.7843, 1}
+    })
+
+    self.createButton({
+        click_function = "HighCouncil",
+        function_owner = self,
+        label = "pay & get",
+        position = {-2, 0.1, -0.1},
+        scale = {0.238, 0.238, 0.238},
+        width = 900,
+        height = 350,
+        font_size = 200,
+        color = {0.25, 0.25, 0.25, 1},
+        font_color = {0.7843, 0.7843, 0.7843, 1}
+    })
+    self.createButton({
+        click_function = "Mentat",
+        function_owner = self,
+        label = "pay & get",
+        position = {-2, 0.1, 0.72},
+        scale = {0.238, 0.238, 0.238},
+        width = 900,
+        height = 350,
+        font_size = 200,
+        color = {0.25, 0.25, 0.25, 1},
+        font_color = {0.7843, 0.7843, 0.7843, 1}
+    })
+    self.createButton({
+        click_function = "Swordmaster",
+        function_owner = self,
+        label = "pay & get",
+        position = {-0.38, 0.1, 0.72},
+        scale = {0.238, 0.238, 0.238},
+        width = 900,
+        height = 350,
+        font_size = 200,
+        color = {0.25, 0.25, 0.25, 1},
+        font_color = {0.7843, 0.7843, 0.7843, 1}
+    })
+    self.createButton({
+        click_function = "SmugglingUp",
+        function_owner = self,
+        label = "get + ↑",
+        position = {1.08, 0.1, 0.72},
+        scale = {0.238, 0.238, 0.238},
+        width = 700,
+        height = 350,
+        font_size = 200,
+        color = {0.25, 0.25, 0.25, 1},
+        font_color = {0.7843, 0.7843, 0.7843, 1}
+    })
+    self.createButton({
+        click_function = "SmugglingDown",
+        function_owner = self,
+        label = "get + ↓↓",
+        position = {1.08, 0.1, 0.91},
+        scale = {0.238, 0.238, 0.238},
+        width = 700,
+        height = 350,
+        font_size = 200,
+        color = {0.25, 0.25, 0.25, 1},
+        font_color = {0.7843, 0.7843, 0.7843, 1}
+    })
+    self.createButton({
+        click_function = "ShippingUpUp",
+        function_owner = self,
+        label = "↑ + ↑",
+        position = {1.28, 0.1, -0.48},
+        scale = {0.238, 0.238, 0.238},
+        width = 500,
+        height = 350,
+        font_size = 200,
+        color = {0.25, 0.25, 0.25, 1},
+        font_color = {0.7843, 0.7843, 0.7843, 1}
+    })
+    self.createButton({
+        click_function = "ShippingUpDown",
+        function_owner = self,
+        label = "↑ + ↓↓",
+        position = {1.28, 0.1, -0.29},
+        scale = {0.238, 0.238, 0.238},
+        width = 500,
+        height = 350,
+        font_size = 200,
+        color = {0.25, 0.25, 0.25, 1},
+        font_color = {0.7843, 0.7843, 0.7843, 1}
+    })
+    self.createButton({
+        click_function = "ShippingDownUp",
+        function_owner = self,
+        label = "↓↓ + ↑",
+        position = {1.28, 0.1, -0.1},
+        scale = {0.238, 0.238, 0.238},
+        width = 500,
+        height = 350,
+        font_size = 200,
+        color = {0.25, 0.25, 0.25, 1},
+        font_color = {0.7843, 0.7843, 0.7843, 1}
+    })
+    self.createButton({
+        click_function = "CommercialUp",
+        function_owner = self,
+        label = "↑",
+        position = {2.51, 0.1, 0.63},
+        scale = {0.5, 0.238, 0.5},
+        width = 250,
+        height = 250,
+        font_size = 200,
+        color = {0.25, 0.25, 0.25, 1},
+        font_color = {0.7843, 0.7843, 0.7843, 1}
+    })
+    self.createButton({
+        click_function = "CommercialDown",
+        function_owner = self,
+        label = "↓↓",
+        position = {2.75, 0.1, 0.63},
+        scale = {0.5, 0.238, 0.5},
+        width = 250,
+        height = 250,
+        font_size = 200,
+        color = {0.25, 0.25, 0.25, 1},
+        font_color = {0.7843, 0.7843, 0.7843, 1}
+    })
+end
+
+function Swordmaster(_, color)
+    self.clearButtons()
+    Wait.time(activateButtons, 1)
+    boardCommonModule.Swordmaster(color, Swordmaster_zone)
+end
+
+function Mentat(_, color)
+    self.clearButtons()
+    Wait.time(activateButtons, 1)
+    boardCommonModule.Mentat(color)
+end
+
+function HighCouncil(_, color)
+    self.clearButtons()
+    Wait.time(activateButtons, 1)
+    boardCommonModule.HighCouncil(color)
+end
+
+function gainSolariFromSmuggling(color)
+    local leader = ressources[color][6].getObjects()[1]
+    local solariIncome = 1
+    local solari = "Solari"
+
+    if leader.hasTag("Yuna") then
+        solariIncome = 2
+        solari = "Solaris"
+    end
+
+    Wait.time(function() ressources[color][2].call("incrementVal") end, 0.25,
+              solariIncome)
+
+    return solariIncome .. " " .. solari
+end
+
+function cargoUp(color)
+    local cargoMoved = false
+
+    if cargo[color].getPosition().z > 9.6 then
+        broadcastToColor(i18n("nope"), color, "Purple")
+    else
+        cargo[color].setPositionSmooth(cargo[color].getPosition() +
+                                           Vector({0, 0, 1.1}), false, true)
+        cargoMoved = true
+    end
+
+    return cargoMoved
+end
+
+function cargoReset(color)
+    local cargoMoved = false
+
+    if cargo[color].getPosition().z < 7.5 then
+        broadcastToColor(i18n("nope"), color, "Purple")
+    else
+        cargo[color].setPositionSmooth(cargo_pos_init[color], false, true)
+        cargoMoved = true
+    end
+
+    return cargoMoved
+end
+
+function SmugglingUp(_, color)
+    self.clearButtons()
+    Wait.time(activateButtons, 1)
+    if boardCommonModule.CheckAgentAndPlayer(color, Smuggling_zone) then
+        if cargoUp(color) then
+
+            local leaderName = ressources[color][6].getObjects()[1].getName()
+            local solariString = gainSolariFromSmuggling(color)
+
+            broadcastToAll(i18n("smugglingUp"):format(leaderName, solariString),
+                           color)
+        end
+    end
+end
+
+function SmugglingDown(_, color)
+    self.clearButtons()
+    Wait.time(activateButtons, 1)
+    if boardCommonModule.CheckAgentAndPlayer(color, Smuggling_zone) then
+
+        if cargoReset(color) then
+            local leaderName = ressources[color][6].getObjects()[1].getName()
+            local solariString = gainSolariFromSmuggling(color)
+
+            broadcastToAll(
+                i18n("smugglingDown"):format(leaderName, solariString), color)
+        end
+    end
+end
+
+function CommercialUp(_, color)
+    self.clearButtons()
+    Wait.time(activateButtons, 1)
+
+    if cargoUp(color) then
+        local leaderName = ressources[color][6].getObjects()[1].getName()
+        broadcastToAll(leaderName .. i18n("commercialUp"), color)
+    end
+end
+
+function CommercialDown(_, color)
+    self.clearButtons()
+    Wait.time(activateButtons, 1)
+    if cargoReset(color) then
+        local leaderName = ressources[color][6].getObjects()[1].getName()
+        broadcastToAll(leaderName .. i18n("commercialDown"), color)
+    end
+end
+
+function ShippingUpUp(_, color)
+    self.clearButtons()
+    Wait.time(activateButtons, 1)
+    if boardCommonModule.CheckAgentAndPlayer(color, Shipping_zone) then
+        if pion_reput_guild[color].getPosition().z < minimum_reput_guild_z then
+            broadcastToColor(i18n("notReputation"), color, "Red")
+        elseif cargo[color].getPosition().z > 8.5 then
+            broadcastToColor(i18n("nope"), color, "Purple")
+        else
+            cargo[color].setPositionSmooth(
+                cargo[color].getPosition() + Vector({0, 0, 1.1}), false, true)
+            Wait.time(function()
+                cargo[color].setPositionSmooth(
+                    cargo[color].getPosition() + Vector({0, 0, 1.1}), false,
+                    true)
+            end, 0.5)
+            local leaderName = ressources[color][6].getObjects()[1].getName()
+            broadcastToAll(leaderName .. i18n("commercialUpUp"), color)
+        end
+    end
+end
+
+function ShippingUpDown(_, color)
+    self.clearButtons()
+    Wait.time(activateButtons, 1)
+    if boardCommonModule.CheckAgentAndPlayer(color, Shipping_zone) then
+        if pion_reput_guild[color].getPosition().z < minimum_reput_guild_z then
+            broadcastToColor(i18n("notReputation"), color, "Red")
+        elseif cargoUp(color) then
+            local leaderName = ressources[color][6].getObjects()[1].getName()
+            Wait.time(function()
+                cargo[color].setPositionSmooth(cargo_pos_init[color], false,
+                                               true)
+            end, 0.5)
+            broadcastToAll(leaderName .. i18n("commercialUpDown"), color)
+        end
+    end
+end
+
+function ShippingDownUp(_, color)
+    self.clearButtons()
+    Wait.time(activateButtons, 1)
+    if boardCommonModule.CheckAgentAndPlayer(color, Shipping_zone) then
+        if pion_reput_guild[color].getPosition().z < minimum_reput_guild_z then
+            broadcastToColor(i18n("notReputation"), color, "Red")
+        elseif cargoReset(color) then
+            local leaderName = ressources[color][6].getObjects()[1].getName()
+            Wait.time(function()
+                cargo[color].setPositionSmooth(
+                    cargo[color].getPosition() + Vector({0, 0, 1.1}), false,
+                    true)
+            end, 0.5)
+            broadcastToAll(leaderName .. i18n("commercialDownUp"), color)
+        end
+    end
+end
+
+function CommercialMoney(_, color)
+    self.clearButtons()
+    Wait.time(activateButtons, 1)
+
+    local leader = ressources[color][6].getObjects()[1]
+    local leaderName = leader.getName()
+    local solariIncome = 5
+
+    local t = 0
+    local combat = Global.call("getFight")
+
+    if leader.hasTag("Yuna") and combat == 0 then solariIncome = 6 end
+    for i = 1, solariIncome - 1, 1 do
+        t = t + 0.25
+        Wait.time(function() ressources[color][2].call("incrementVal") end, t)
+    end
+    ressources["Red"][2].call("incrementVal")
+    ressources["Blue"][2].call("incrementVal")
+    ressources["Green"][2].call("incrementVal")
+    ressources["Yellow"][2].call("incrementVal")
+    broadcastToAll(i18n("shippingSolari"):format(leaderName, solariIncome),
+                   color)
+    broadcastToAll(i18n("dividends"), white)
+
+end
+
+function CommercialSpice(_, color)
+    self.clearButtons()
+    Wait.time(activateButtons, 1)
+
+    local leaderName = ressources[color][6].getObjects()[1].getName()
+    local t = 0
+    for i = 1, 2, 1 do
+        t = t + 0.25
+        Wait.time(function() ressources[color][1].call("incrementVal") end, t)
+
+    end
+    broadcastToAll(i18n("shippingSpice"):format(leaderName), color)
+end
+
+function CommercialTroop(_, color)
+    self.clearButtons()
+    Wait.time(activateButtons, 1)
+
+    local leaderName = ressources[color][6].getObjects()[1].getName()
+    local troopsToGain = 2
+
+    local t = 0
+    local troopTransportAvailable = false
+    local techs = zone_player[color].getObjects()
+    for _, obj in ipairs(techs) do
+        if obj.hasTag("Troop Transports") then
+            troopTransportAvailable = true
+        end
+    end
+    if troopTransportAvailable then
+        troopsToGain = 3
+        broadcastToAll(i18n("troopTransport"):format(leaderName), color)
+    else
+        broadcastToAll(i18n("shippingTroops"):format(leaderName), color)
+    end
+    for i = 1, troopsToGain, 1 do
+        t = t + 0.25
+        Wait.time(function() ressources[color][4].call("AddTroop2") end, t)
+    end
+end

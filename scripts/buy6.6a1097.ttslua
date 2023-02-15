@@ -1,0 +1,169 @@
+i18n = require("i18n")
+require("locales")
+
+constants = require("Constants")
+
+helperModule = require("HelperModule")
+
+GetDeckOrCard = helperModule.GetDeckOrCard
+
+pos_discard = constants.pos_discard
+
+function onLoad()
+
+    self.interactable = false
+
+    pos_vp = constants.pos_vp 
+    
+    counter_VP = {
+        ["Red"] = getObjectFromGUID("e0ed4b"),
+        ["Blue"] = getObjectFromGUID("121bb6"),
+        ["Green"] = getObjectFromGUID("caaba4"),
+        ["Yellow"] = getObjectFromGUID("99a860")
+    }
+    
+    Zone_foldspace = getObjectFromGUID("6b62e0")
+    Zone_arrakis = getObjectFromGUID("cbcd9a")
+    Zone_tsmf = getObjectFromGUID("c087d2")
+    deck_imperium = constants.zone_deck_imperium
+    
+    TSMF_point = getObjectFromGUID("43c7b5")
+  
+    activateButtons()
+
+end
+
+function activateButtons()
+    self.createButton({
+        click_function = "acquireFoldspace",
+        function_owner = self,
+        label = i18n("acquireButton"),
+        position = {0, 2, 0},
+        scale = {0.3, 0.3, 0.4},
+        width = 1600,
+        height = 400,
+        font_size = 400,
+        color = {0.25, 0.25, 0.25, 1},
+        font_color = {1, 1, 1, 1},
+        z
+    })
+
+    self.createButton({
+        click_function = "acquireArrakis",
+        function_owner = self,
+        label = i18n("acquireButton"),
+        position = {1.85, 2.1, 0},
+        scale = {0.3, 0.3, 0.4},
+        width = 1600,
+        height = 400,
+        font_size = 400,
+        color = {0.25, 0.25, 0.25, 1},
+        font_color = {1, 1, 1, 1}
+    })
+
+    self.createButton({
+        click_function = "acquireTSMF",
+        function_owner = self,
+        label = i18n("acquireButton"),
+        position = {3.70, 2.3, 0},
+        scale = {0.3, 0.3, 0.4},
+        width = 1600,
+        height = 400,
+        font_size = 400,
+        color = {0.25, 0.25, 0.25, 1},
+        font_color = {1, 1, 1, 1}
+    })
+
+end
+
+function acquireFoldspace(object, pColor)
+    local deck_foldspace = Zone_foldspace.getObjects()
+
+    if deck_foldspace[1] == nil then
+        broadcastToColor(
+            i18n("noFoldspaceLeft"), pColor,
+            {1, 0.011765, 0})
+    else
+        moveCardFromDeck(pColor, deck_foldspace)
+    end
+end
+
+function acquireArrakis(object, pColor)
+    local deck_liaison = Zone_arrakis.getObjects()
+
+    if deck_liaison[1] == nil then
+        broadcastToColor(i18n("noLiaisonLeft"), pColor,
+                         {1, 0.011765, 0})
+    else
+        moveCardFromDeck(pColor, deck_liaison)
+    end
+end
+
+function acquireTSMF(object, pColor)
+    local deck_TSMF = Zone_tsmf.getObjects()
+
+    if deck_TSMF[1] == nil then
+        broadcastToColor(i18n("noTSMFLeft"), pColor, {1, 0.011765, 0})
+    else
+        moveCardFromDeck(pColor, deck_TSMF, true)
+    end
+end
+
+function moveCardFromDeck(pColor, deck, scoreToMove)
+
+    scoreToMove = scoreToMove or false
+
+    self.clearButtons()
+    Wait.time(function() activateButtons() end, 1)
+
+    if pColor ~= "Red" and pColor ~= "Blue" and pColor ~= "Green" and pColor ~=
+        "Yellow" then
+        broadcastToColor(i18n("noTouch"), pColor, {1, 0.011765, 0})
+    else
+
+        if scoreToMove == true then
+            local vpIndex = counter_VP[pColor].call("getScore") + 1
+            if vpIndex > 13 then vpIndex = 13 end
+            TSMF_point.takeObject({
+                position = pos_vp[pColor][vpIndex],
+                rotation = {0, 180, 0},
+                smooth = true
+            })
+        end
+
+        if deck[1].type == "Deck" then
+            deck[1].takeObject({
+                position = pos_discard[pColor],
+                rotation = {0, 180, 0},
+                smooth = false
+            })
+        elseif deck[1].type == "Card" then
+            deck[1].setPosition(pos_discard[pColor])
+        end
+        local techs = constants.zone_player[pColor].getObjects()
+        local spaceportCheck = false
+        for _, tech in ipairs(techs) do
+            if tech.hasTag("Spaceport") then spaceportCheck = true end
+        end
+
+        if spaceportCheck == true then
+            Player[pColor].showConfirmDialog(
+                i18n("dialogCardAbove"),
+                function(player_color)
+                    local deckorcard = GetDeckOrCard(constants.discardZone[pColor])
+                    if deckorcard.type=='Card' then
+                        deckorcard.setPositionSmooth(constants.drawSpot[pColor], false, false)
+                        deckorcard.setRotationSmooth({0,180,180}, false, false)
+                    else
+                        local nb_cards = #deckorcard.getObjects()
+                        deckorcard.takeObject({
+                            position          = constants.drawSpot[pColor],
+                            rotation          = {0,180,180},
+                            index             = nb_cards-1
+                        })
+                    end
+                end)
+        end
+
+    end
+end

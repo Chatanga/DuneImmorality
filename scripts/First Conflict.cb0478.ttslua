@@ -1,0 +1,47 @@
+function onLoad()
+    self.interactable = false
+    
+    conflict_discard = {-1.15, 3, -5.74}
+    conflict_zone = getObjectFromGUID("07e239")
+    i18n = require("i18n")
+    require("locales")
+    constants = require("Constants")
+
+end
+
+function ConflictButton()
+    self.createButton({
+        click_function = "RevealConflict", 
+        function_owner = self, 
+        label = i18n("revealFirstConflictButton"), 
+        position = {0, 0.6, 0}, 
+        scale = {0.3, 0.3, 0.4}, 
+        width = 1800, 
+        height = 1300, 
+        font_size = 400, 
+        color = {0.5, 0, 0., 0.75}, 
+        font_color = {0.8, 0.8, 0.8, 1}, 
+        tooltip = i18n("revealFirstConflictTooltip")
+    })
+end
+
+function RevealConflict()
+    local players = getObjectFromGUID("4a3e76").call("getPlayersBasedOnHotseat") 
+    for _, color in pairs(players) do
+        local leaderZone = constants.ressources[color][6]
+        if leaderZone.getObjects()[1] == nil then
+            broadcastToAll(i18n("chooseLeaderFirst"), 'Orange')
+            return 1
+        end
+    end
+    local objects = conflict_zone.getObjects()
+    if objects ~= nil then
+        for _, obj in ipairs(objects) do
+            if obj.type == 'Deck' then
+                obj.takeObject({ position = conflict_discard, top = true, flip = true })
+            end
+        end
+        getObjectFromGUID("fb41e2").setPositionSmooth({-4.06, 2, -8.65}, false, false)
+        self.destruct()
+    end
+end

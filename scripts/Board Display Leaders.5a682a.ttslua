@@ -1,0 +1,88 @@
+function onload()
+    i18n = require("i18n")
+    require("locales")
+
+    self.interactable = false
+    sound_active = false
+    activateButtons()
+
+end
+
+function activateButtons()
+
+    self.createButton({
+        click_function = "selectMusic",
+        function_owner = self,
+        label = i18n("selectSound"),
+        position = {-6.4, 0.6, 7},
+        scale = {2, 1, 4},
+        width = 900,
+        height = 250,
+        font_color = {1, 1, 1},
+        font_size = 85,
+        color = "Black"
+    })
+    local label = ""
+    local color = ""
+    if sound_active then
+        label = i18n("soundOn")
+        color = "Green"
+    else
+        label = i18n("soundOff")
+        color = "Red"
+    end
+    self.createButton({
+        click_function = "activeSound", 
+        function_owner = self, 
+        label = label, 
+        position = {-3.4, 0.6, 7}, 
+        scale = {2, 1, 4}, 
+        width = 500, 
+        height = 250, 
+        font_size = 85, 
+        color = color, 
+        font_color = {1, 1, 1, 1}
+    })
+end
+
+function activeSound()
+    if sound_active then
+        sound_active = false
+        self.clearButtons()
+        activateButtons()
+    else
+        sound_active = true
+        self.clearButtons()
+        activateButtons()
+    end
+end
+
+function selectMusic(_, color)
+
+    if not sound_active then
+        return 1
+    else
+        self.clearButtons()
+        Wait.time(activateButtons, 1)
+
+        local musics = MusicPlayer.getPlaylist()
+
+        local options = {}
+
+        for i, music in ipairs(musics) do options[i] = music.title end
+
+        Player[color].showOptionsDialog("Choose Mp3 for Combat Warning", options, 1,
+        function(text, index, player_color)
+            local currentMusic = musics[index]
+
+            Global.setTable("battleSound", currentMusic)
+
+            MusicPlayer.setCurrentAudioclip(currentMusic)
+
+            MusicPlayer.play()
+
+            broadcastToAll("Playing " .. currentMusic.title, undefined)
+            
+        end)
+    end
+end

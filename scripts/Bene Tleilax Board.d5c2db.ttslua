@@ -1,0 +1,728 @@
+i18n = require("i18n")
+require("locales")
+
+constants = require("Constants")
+
+ressources = constants.ressources
+
+reserve_troop_zone = constants.reserve_troop_zone
+
+vp_pos = constants.pos_vp
+
+boardCommonModule = require("BoardCommonModule")
+
+pos_destination_specimen = {
+    ["Red"] = {0.15, 2, 19.90},
+    ["Blue"] = {0.15, 2, 19},
+    ["Green"] = {1.50, 2, 19.90},
+    ["Yellow"] = {1.5, 2, 19}
+}
+
+tleilaxuTokens = constants.tleilaxuTokens
+researchTokens = constants.researchTokens
+
+pos_TleilaxuTrack = {
+    {2.09, 4, 25.43}, {3.4, 4, 25.43}, {4.59, 4, 25.43}, {5.89, 4, 25.43},
+    {8.19, 4, 25}, {9.10, 4, 25.43}, {10.11, 4, 25.43}
+}
+
+pos_supply_bowls = constants.pos_supply_bowls
+
+specimen_zone = getObjectFromGUID("f5de09")
+
+beetleAdvancing = false
+researchAdvancing = false
+
+local researchConducted = {
+    ["Red"] = {{0.17, 1.79, 20.82}},
+    ["Blue"] = {{0.19, 1.79, 21.52}},
+    ["Green"] = {{0.19, 1.79, 22.92}},
+    ["Yellow"] = {{0.19, 1.79, 22.22}}
+}
+
+function onLoad(saved_data)
+
+    self.interactable = false
+
+    if saved_data ~= "" then
+        local loaded_data = JSON.decode(saved_data)
+        researchConducted = loaded_data[1]
+    end
+
+    AddSpecimenParams = {
+        index = 0,
+        click_function = "AddSpecimen",
+        function_owner = self,
+        label = i18n("addSpecimen"),
+        position = {-0.47, 0.1, 0.6},
+        scale = {0.1, 0.1, 0.1},
+        width = 1550,
+        height = 350,
+        font_size = 300,
+        color = {0.25, 0.25, 0.25, 1},
+        font_color = {0.7843, 0.7843, 0.7843, 1}
+    }
+
+    self.createButton(AddSpecimenParams)
+
+    RemoveSpecimenParams = {
+        index = 1,
+        click_function = "RemoveSpecimen",
+        function_owner = self,
+        label = i18n("spentSpecimen"),
+        position = {-0.47, 0.1, 0.80},
+        scale = {0.1, 0.1, 0.1},
+        width = 1550,
+        height = 350,
+        font_size = 300,
+        color = {0.25, 0.25, 0.25, 1},
+        font_color = {0.7843, 0.7843, 0.7843, 1}
+    }
+
+    self.createButton(RemoveSpecimenParams)
+
+    advanceTleilaxuParams = {
+        index = 2,
+        click_function = "advanceTleilaxu",
+        function_owner = self,
+        label = "→",
+        position = {-0.8, 0.1, -0.475},
+        scale = {0.15, 0.1, 0.2},
+        width = 550,
+        height = 250,
+        font_size = 450,
+        color = {0.25, 0.25, 0.25, 1},
+        font_color = {0.7843, 0.7843, 0.7843, 1},
+        tooltip = i18n("tleilaxuButtonTooltip")
+    }
+
+    self.createButton(advanceTleilaxuParams)
+
+    backTleilaxuParams = {
+        index = 3,
+        click_function = "backTleilaxu",
+        function_owner = self,
+        label = "←",
+        position = {-1.38, 0.1, -0.475},
+        scale = {0.05, 0.1, 0.08},
+        width = 550,
+        height = 250,
+        font_size = 450,
+        color = {0.25, 0.25, 0.25, 1},
+        font_color = "Red",
+        tooltip = i18n("tleilaxuBackTooltip")
+    }
+
+    self.createButton(backTleilaxuParams)
+
+    advanceUpResearchParams = {
+        index = 4,
+        click_function = "advanceUpResearch",
+        function_owner = self,
+        label = "→",
+        position = {-0.95, 0.1, -0.21},
+        rotation = {0, -30, 0},
+        scale = {0.15, 0.2, 0.2},
+        width = 550,
+        height = 250,
+        font_size = 450,
+        color = {0.25, 0.25, 0.25, 1},
+        font_color = {0.7843, 0.7843, 0.7843, 1},
+        tooltip = i18n("researchUpButtonTooltip")
+    }
+
+    self.createButton(advanceUpResearchParams)
+
+    advanceDownResearchParams = {
+        index = 5,
+        click_function = "advanceDownResearch",
+        function_owner = self,
+        label = "→",
+        position = {-0.95, 0.1, 0.29},
+        rotation = {0, 30, 0},
+        scale = {0.15, 0.2, 0.2},
+        width = 550,
+        height = 250,
+        font_size = 450,
+        color = {0.25, 0.25, 0.25, 1},
+        font_color = {0.7843, 0.7843, 0.7843, 1},
+        tooltip = i18n("researchDownButtonTooltip")
+    }
+
+    self.createButton(advanceDownResearchParams)
+
+    backResearchParams = {
+        index = 6,
+        click_function = "backResearch",
+        function_owner = self,
+        label = "←",
+        position = {-1.38, 0.1, 0.025},
+        scale = {0.0500000007450581, 0.100000001490116, 0.0799999982118607},
+        width = 550,
+        height = 250,
+        font_size = 450,
+        color = {0.25, 0.25, 0.25, 1},
+        font_color = {0.856, 0.1, 0.094, 1},
+        tooltip = "←",
+        tooltip = i18n("researchBackToolTip")
+    }
+
+    self.createButton(backResearchParams)
+
+end
+
+function updateSave()
+    local data_to_save = {researchConducted}
+    saved_data = JSON.encode(data_to_save)
+    self.script_state = saved_data
+end
+
+function advanceUpResearch(obj, color)
+
+    hideBrieflyResearchTrackButtons(obj)
+
+    advanceResearchToken(color, "up")
+
+end
+
+function advanceDownResearch(obj, color)
+
+    hideBrieflyResearchTrackButtons(obj)
+
+    advanceResearchToken(color, "down")
+
+end
+
+function backResearch(obj, color)
+
+    hideBrieflyResearchTrackButtons(obj)
+
+    Player[color].showConfirmDialog(i18n("rollbackWarning"),
+                                    function(color) rollBackResearch(color) end)
+end
+
+function hideBrieflyResearchTrackButtons(obj)
+    obj.editButton({index = advanceUpResearchParams.index, scale = {0, 0, 0}})
+    obj.editButton({index = advanceDownResearchParams.index, scale = {0, 0, 0}})
+    obj.editButton({index = backResearchParams.index, scale = {0, 0, 0}})
+
+    Wait.time(function()
+        obj.editButton(advanceUpResearchParams)
+        obj.editButton(advanceDownResearchParams)
+        obj.editButton(backResearchParams)
+    end, 1)
+end
+
+function advanceTleilaxu(obj, color)
+
+    obj.editButton({index = advanceTleilaxuParams.index, scale = {0, 0, 0}})
+    Wait.time(function() obj.editButton(advanceTleilaxuParams) end, 1)
+
+    -- Player[color].showConfirmDialog(
+    --     i18n("tleilaxuWarning"), function(color)
+    moveBeneTleilaxToken(color)
+    -- end)
+end
+
+function backTleilaxu(obj, color)
+
+    obj.editButton({index = backTleilaxuParams.index, scale = {0, 0, 0}})
+    Wait.time(function() obj.editButton(backTleilaxuParams) end, 1)
+
+    Player[color].showConfirmDialog(i18n("rollbackWarning"), function(color)
+        backBeneTleilaxToken(color)
+    end)
+
+end
+
+function advanceResearchToken(color, verticalDirection)
+
+    local token = researchTokens[color]
+    local posToken = token.getPosition()
+
+    local vector_z = nil
+    local vector_x = nil
+
+    local leaderName = ressources[color][6].getObjects()[1].getName()
+
+    if verticalDirection == "up" then
+        if posToken.z + 0.1 > 23.61 then
+            broadcastToColor(i18n("researchTopMost"), color, color)
+        else
+            vector_z = 0.7
+        end
+
+    elseif verticalDirection == "down" then
+
+        if posToken.z - 0.1 < 20.11 then
+            broadcastToColor(i18n("researchBottomMost"), color, color)
+        else
+            vector_z = -0.7
+        end
+    end
+
+    if posToken.x + 0.1 < 1.36 then
+        token.setPositionSmooth({1.36, posToken.y + 1.5, 22.21}, false, false)
+
+        researchAdvancing = true
+        broadcastToAll(i18n("researchIncreased"):format(leaderName), color)
+        Wait.condition(function()
+            table.insert(researchConducted[color], token.getPosition())
+            updateSave()
+        end, function() return not token.isSmoothMoving() end)
+
+    elseif posToken.x + 0.1 > 9.83 then
+        broadcastToColor(i18n("researchEnd"), color, color)
+
+    elseif vector_z ~= nil then
+        token.setPositionSmooth({
+            posToken.x + 1.21, posToken.y + 1.5, posToken.z + vector_z
+        }, false, false)
+
+        researchAdvancing = true
+        broadcastToAll(i18n("researchIncreased"):format(leaderName), color)
+        Wait.condition(function()
+            table.insert(researchConducted[color], token.getPosition())
+            updateSave()
+        end, function() return not token.isSmoothMoving() end)
+
+    end
+
+end
+
+function rollBackResearch(color)
+
+    local leaderName = ressources[color][6].getObjects()[1].getName()
+    local playerResearchDone = researchConducted[color]
+
+    if #playerResearchDone == 1 then
+        broadcastToColor(i18n("researchStartingPos"), color, color)
+    else
+        local token = researchTokens[color]
+
+        token.setPositionSmooth(playerResearchDone[#playerResearchDone - 1],
+                                false, false)
+        researchAdvancing = false
+        table.remove(playerResearchDone, #playerResearchDone)
+        updateSave()
+        broadcastToAll(i18n("researchDecreased"):format(leaderName), "Pink")
+    end
+
+end
+
+function moveBeneTleilaxToken(color, silent)
+    local silent = silent or false
+    local token = tleilaxuTokens[color]
+    local posToken = token.getPosition()
+    local tokenMoved = false
+
+    local leaderName = ressources[color][6].getObjects()[1].getName()
+
+    for _, posTleilaxu in ipairs(pos_TleilaxuTrack) do
+
+        if not tokenMoved and posToken.x + 0.1 < posTleilaxu[1] then
+            beetleAdvancing = true
+            token.setPositionSmooth(posTleilaxu, false, false)
+            tokenMoved = true
+            if not silent then
+                broadcastToAll(i18n("tleilaxuIncreased"):format(leaderName),
+                               color)
+            end
+        end
+    end
+
+    if not tokenMoved then
+        broadcastToColor(i18n("tleilaxuMax"), color, color)
+    end
+end
+
+function backBeneTleilaxToken(color)
+    local tokenStarterPos = {
+        ["Red"] = {0.38, 1.79, 24.65},
+        ["Blue"] = {0.36, 1.79, 25.36},
+        ["Yellow"] = {1.09, 1.79, 25.34},
+        ["Green"] = {1.08, 1.79, 24.66}
+    }
+    local token = tleilaxuTokens[color]
+    local tokenMoved = false
+
+    for index, posTleilaxu in ipairs(pos_TleilaxuTrack) do
+        if index == 1 and token.getPosition().x + 0.1 < posTleilaxu[1] then
+            tokenMoved = true
+        end
+
+        if not tokenMoved and index == 1 then
+            tokenMoved = isBeetleRollBacked(token, 1.10, posTleilaxu[1],
+                                            tokenStarterPos[color], color)
+        end
+
+        if not tokenMoved then
+            tokenMoved = isBeetleRollBacked(token, posTleilaxu[1],
+                                            pos_TleilaxuTrack[index + 1][1],
+                                            posTleilaxu, color)
+        end
+    end
+end
+
+function isBeetleRollBacked(token, lowerThreshold, upperThreshold,
+                            destinationPos, color)
+    local leaderName = ressources[color][6].getObjects()[1].getName()
+    local tokenMoved = false
+
+    if token.getPosition().x - 0.1 > lowerThreshold and token.getPosition().x -
+        0.1 < upperThreshold then
+        beetleAdvancing = false
+        token.setPositionSmooth(destinationPos, false, false)
+        tokenMoved = true
+        broadcastToAll(i18n("tleilaxuDecreased"):format(leaderName), "Pink")
+    end
+
+    return tokenMoved
+end
+
+function moveTleilaxuCall(params)
+    moveBeneTleilaxToken(params.color, params.silent)
+    return true
+end
+
+function AddSpecimen(_, color, silent)
+    local silent = silent or false
+
+    local leaderName = ressources[color][6].getObjects()[1].getName()
+    reserve_zone = reserve_troop_zone[color]
+    local troops = reserve_zone.getObjects()
+
+    local specimens = specimen_zone.getObjects()
+
+    local specimenCount = 0
+
+    for _, specimen in ipairs(specimens) do
+        if specimen.hasTag(color) and specimen.hasTag("Troop") then
+            specimenCount = specimenCount + 1
+        end
+    end
+
+    if specimenCount < 6 then
+
+        local offset_X = specimenCount * 0.45
+        local offset_Z = 0
+
+        if specimenCount >= 3 then
+
+            offset_X = (specimenCount - 3) * 0.45
+            offset_Z = offset_Z - 0.45
+
+        end
+
+        for _, troop in ipairs(troops) do
+            if troop.hasTag(color) and troop.hasTag("Troop") then
+                troop.setPosition({
+                    pos_destination_specimen[color][1] + offset_X,
+                    pos_destination_specimen[color][2],
+                    pos_destination_specimen[color][3] + offset_Z
+                })
+                troop.setRotation({0, 0, 0})
+                if not silent then
+                    broadcastToAll(i18n("specimenAdded"):format(leaderName),
+                                   color)
+                end
+                break
+            end
+        end
+    else
+        broadcastToColor(i18n("specimenLimitWarning"), color, "Purple")
+        broadcastToColor(i18n("addSpecimenManually"), color, "Purple")
+    end
+
+end
+
+function RemoveSpecimen(_, color, silent)
+    local silent = silent or false
+
+    local leaderName = ressources[color][6].getObjects()[1].getName()
+
+    local specimens = specimen_zone.getObjects()
+
+    for i = 1, #specimens do -- reverse iterate the table cause evey object in a script zone is memorized from first entered and we want to remove the last troop entered
+        local specimen = specimens[#specimens + 1 - i]
+        if specimen.hasTag(color) and specimen.hasTag("Troop") then
+            specimen.setPosition(pos_supply_bowls[color])
+            if not silent then
+                broadcastToAll(i18n("specimenRemoved"):format(leaderName), color)
+            end
+            break
+        end
+
+    end
+end
+
+function RemoveSpecimenCall(params)
+    RemoveSpecimen(params.osef, params.color, params.silent)
+    return true
+end
+
+function onObjectEnterScriptingZone(zone, enter_object)
+
+    if researchAdvancing and
+        (zone.guid == "ab9e8d" or zone.guid == "d2b9be" or zone.guid == "79f487" or
+            zone.guid == "d4fb57" or zone.guid == "1696ae" or zone.guid ==
+            "95bb64" or zone.guid == "78a5cf") then
+        for color, researchToken in pairs(researchTokens) do
+
+            if enter_object.hasTag(color) and
+                enter_object.hasTag("ResearchToken") then
+
+                AddSpecimen("", color, true)
+
+                local leaderName = ressources[color][6].getObjects()[1]
+                                       .getName()
+
+                if zone.guid == "1696ae" then
+                    moveBeneTleilaxToken(color, true)
+                    broadcastToAll(i18n("researchSpecimenBeetle"):format(
+                                       leaderName), color)
+                elseif zone.guid == "95bb64" or zone.guid == "78a5cf" then
+                    broadcastToAll(i18n("researchSpecimenTrash"):format(
+                                       leaderName), color)
+
+                else
+                    broadcastToAll(i18n("researchSpecimen"):format(leaderName),
+                                   color)
+                end
+            end
+        end
+    end
+
+    if researchAdvancing and
+        (zone.guid == "90e82d" or zone.guid == "1f11e0" or zone.guid == "e91e6b" or
+            zone.guid == "f8c1b0" or zone.guid == "6c0d3e") then
+        for color, researchToken in pairs(researchTokens) do
+
+            if enter_object.hasTag(color) and
+                enter_object.hasTag("ResearchToken") then
+
+                moveBeneTleilaxToken(color, true)
+                local leaderName = ressources[color][6].getObjects()[1]
+                                       .getName()
+                broadcastToAll(i18n("researchBeetle"):format(leaderName), color)
+            end
+        end
+    end
+
+    if researchAdvancing and (zone.guid == "52bcf4") then
+        for color, researchToken in pairs(researchTokens) do
+
+            if enter_object.hasTag(color) and
+                enter_object.hasTag("ResearchToken") then
+
+                local leader = ressources[color][6].getObjects()[1]
+                local leaderName = leader.getName()
+                local solariIncome = 1
+                local solari = "Solari"
+
+                if leader.hasTag("Yuna") then
+                    solariIncome = 2
+                    solari = "Solaris"
+                end
+
+                Wait.time(function()
+                    ressources[color][2].call("incrementVal")
+                end, 0.25, solariIncome)
+
+                local solariString = solariIncome .. " " .. solari
+
+                broadcastToAll(i18n("researchIncome"):format(leaderName,
+                                                             solariString),
+                               color)
+            end
+        end
+    end
+
+    if researchAdvancing and zone.guid == "b60372" then
+        for color, researchToken in pairs(researchTokens) do
+
+            if enter_object.hasTag(color) and
+                enter_object.hasTag("ResearchToken") then
+
+                local leaderName = ressources[color][6].getObjects()[1]
+                                       .getName()
+                broadcastToAll(i18n("researchFaction"):format(leaderName), color)
+            end
+        end
+    end
+
+    if researchAdvancing and (zone.guid == "f9ddaa" or zone.guid == "2a7803") then
+        for color, researchToken in pairs(researchTokens) do
+
+            if enter_object.hasTag(color) and
+                enter_object.hasTag("ResearchToken") then
+
+                local income = 1
+                local spice = "Spice"
+
+                if zone.guid == "2a7803" then
+                    income = 2
+                    spice = "Spices"
+                end
+
+                Wait.time(function()
+                    ressources[color][1].call("incrementVal")
+                end, 0.25, income)
+
+                local spiceString = income .. " " .. spice
+
+                local leaderName = ressources[color][6].getObjects()[1]
+                                       .getName()
+                broadcastToAll(i18n("researchIncome"):format(leaderName,
+                                                             spiceString), color)
+            end
+        end
+    end
+
+    if researchAdvancing and zone.guid == "8a3807" then
+        for color, researchToken in pairs(researchTokens) do
+
+            if enter_object.hasTag(color) and
+                enter_object.hasTag("ResearchToken") then
+
+                local leaderName = ressources[color][6].getObjects()[1]
+                                       .getName()
+                broadcastToAll(i18n("researchTrashIntrigue"):format(leaderName),
+                               color)
+            end
+        end
+    end
+
+    if researchAdvancing and
+        (zone.guid == "659227" or zone.guid == "778685" or zone.guid == "6518bf") then
+        for color, researchToken in pairs(researchTokens) do
+
+            if enter_object.hasTag(color) and
+                enter_object.hasTag("ResearchToken") then
+
+                if zone.guid == "6518bf" then
+                    Wait.condition(function()
+                        advanceResearchToken(color, "up")
+                    end, function()
+                        return not enter_object.isSmoothMoving()
+                    end)
+                else
+                    Wait.condition(function()
+                        advanceResearchToken(color, "down")
+                    end, function()
+                        return not enter_object.isSmoothMoving()
+                    end)
+
+                end
+
+                local leaderName = ressources[color][6].getObjects()[1]
+                                       .getName()
+                broadcastToAll(i18n("researchAgain"):format(leaderName), color)
+            end
+        end
+    end
+
+    if researchAdvancing and zone.guid == "459e80" then
+        for color, researchToken in pairs(researchTokens) do
+
+            if enter_object.hasTag(color) and
+                enter_object.hasTag("ResearchToken") then
+
+                Player[color].showConfirmDialog(i18n("confirmSolarisToBeetles"),
+                                                function(color)
+                    local solariObj = ressources[color][2]
+                    local price = 7
+
+                    if solariObj.call("collectVal") < price then
+                        broadcastToColor(i18n("noSolari"), color, color)
+                    else
+                        Wait.time(function()
+                            solariObj.call("decrementVal")
+                        end, 0.15, price)
+
+                        local leaderName =
+                            ressources[color][6].getObjects()[1].getName()
+
+                        moveBeneTleilaxToken(color, true)
+                        Wait.condition(function()
+                            moveBeneTleilaxToken(color, true)
+                        end, function()
+                            return not tleilaxuTokens[color].isSmoothMoving()
+                        end)
+
+                        broadcastToAll(i18n("researchSolarisToBeetles"):format(
+                                           leaderName), color)
+
+                    end
+                end)
+            end
+        end
+    end
+
+    if beetleAdvancing and (zone.guid == "1054b7" or zone.guid == "5d6083") then
+
+        for color, tleilaxuToken in pairs(tleilaxuTokens) do
+
+            if enter_object.hasTag(color) and
+                enter_object.hasTag("TleilaxuToken") then
+
+                Wait.time(function()
+                    boardCommonModule.drawIntrigue(color)
+                end, 0.75)
+                local leaderName = ressources[color][6].getObjects()[1]
+                                       .getName()
+                broadcastToAll(i18n("tleilaxuIntrigue"):format(leaderName),
+                               color)
+            end
+        end
+    end
+
+    if beetleAdvancing and (zone.guid == "5e4d40" or zone.guid == "a1a4e8") then
+
+        for color, tleilaxuToken in pairs(tleilaxuTokens) do
+
+            if enter_object.hasTag(color) and
+                enter_object.hasTag("TleilaxuToken") then
+
+                local leaderName = ressources[color][6].getObjects()[1]
+                                       .getName()
+                giveTleilaxuVP(color)
+                broadcastToAll(i18n("tleilaxuVP"):format(leaderName), color)
+
+                local bonusSpiceCounter = getObjectFromGUID('46cd6b')
+                local nbSpice = bonusSpiceCounter.call("collectVal")
+
+                if nbSpice == 2 and zone.guid == "5e4d40" then
+                    local t = 0
+                    getObjectFromGUID('46cd6b').call("reset_val")
+
+                    for i = 1, nbSpice, 1 do
+                        Wait.time(function()
+                            ressources[color][1].call("incrementVal")
+                        end, t)
+                        t = t + (1.5 / nbSpice)
+                    end
+
+                    broadcastToAll(i18n("tleilaxuSpice"):format(leaderName),
+                                   color)
+                end
+            end
+        end
+    end
+end
+
+function giveTleilaxuVP(color)
+
+    local zoneObjects = vp_zone[color].getObjects()
+    local vpIndex = 1
+    for i, object in ipairs(zoneObjects) do
+        if object.getDescription() == "VP" then vpIndex = vpIndex + 1 end
+    end
+    if vpIndex > 13 then vpIndex = 13 end
+
+    getObjectFromGUID('082e07').takeObject({
+        position = vp_pos[color][vpIndex],
+        rotation = {0, 180, 0}
+    })
+
+end

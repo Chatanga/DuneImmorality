@@ -1,0 +1,573 @@
+i18n = require("i18n")
+require("locales")
+
+constants = require("Constants")
+
+helperModule = require("HelperModule")
+
+drawDeckZone = constants.drawDeckZone
+
+ressources = constants.ressources
+
+GetDeckOrCard = helperModule.GetDeckOrCard
+
+DrawOne = helperModule.DrawOne
+
+pos_black_market = constants.pos_black_market
+
+pos_trash = constants.pos_trash_upper
+
+zone_black_market = constants.zone_black_market
+zone_deck = constants.zone_deck_imperium
+pos_intrigue_discard = {2.77, 3.00, 16.29}
+
+pos_discard = constants.pos_discard
+
+pos_agent = {
+    ["Red"] = {
+        {-20.52, 2.75, 23.89}, {-17.57, 2.75, 23.89}, {-19.00, 2.75, 23.89}
+    },
+    ["Blue"] = {
+        {-20.69, 2.75, 1.96}, {-17.61, 2.75, 1.96}, {-19.02, 2.75, 1.96}
+    },
+    ["Green"] = {
+        {20.51, 2.75, 23.89}, {17.36, 2.75, 23.89}, {19.10, 2.75, 23.89}
+    },
+    ["Yellow"] = {{20.44, 2.75, 1.96}, {17.27, 2.75, 1.96}, {19.10, 2.75, 1.96}}
+}
+
+buttonPass = {
+    ["Red"] = getObjectFromGUID("0e9fa2"),
+    ["Blue"] = getObjectFromGUID("643f32"),
+    ["Green"] = getObjectFromGUID("9c69b9"),
+    ["Yellow"] = getObjectFromGUID("65876d")
+}
+
+bonus_spice1 = getObjectFromGUID('3cdb2d')
+bonus_spice2 = getObjectFromGUID('394db2')
+bonus_spice3 = getObjectFromGUID('116807')
+blue_spice = getObjectFromGUID('9cc286')
+red_spice = getObjectFromGUID('3074d4')
+green_spice = getObjectFromGUID('22478f')
+yellow_spice = getObjectFromGUID('78fb8a')
+marker_round = getObjectFromGUID('fb41e2')
+
+pos_supply_bowls = constants.pos_supply_bowls
+
+conflictZone = "6d632e"
+conflict_discard = {-1.15, 3, -5.74}
+zone_vp_encours = getObjectFromGUID("740624")
+trash = getObjectFromGUID("ef8614")
+makerZones = {"69f925", "622708", "2c77c1"}
+
+marker = constants.first_player_marker
+position_marker = constants.first_player_positions
+
+zone_player = constants.zone_player
+
+marker_yellow_zone = getObjectFromGUID("e9a44c")
+marker_green_zone = getObjectFromGUID("59523d")
+marker_blue_zone = getObjectFromGUID("1fc559")
+marker_red_zone = getObjectFromGUID("346e0d")
+
+-------- Initialize Parameter ---------
+
+button_offset_y = 0 -- Set number. Value greater than or equal to 0. Defaults to 0.10.
+button_width = 800 -- Set number. Defaults to 450.
+button_height = 10 -- Set number. Defaults to 300.
+button_color = {0.25, 0.25, 0.25} -- Set number {Red,Green,Blue}. Value bitween 0.00 to 1.00. Defaults to {1.00,1.00,1.00] ("White").
+text_color = {1.00, 1.00, 1.00} -- Set number {Red,Green,Blue}. Value bitween 0.00 to 1.00. Defaults to {0.25,0.25,0.25] ("Black").
+text_size = 80 -- Set number. Defaults to 100.
+
+function activateButton()
+    self.createButton({
+        click_function = "Makers",
+        function_owner = self,
+        color = button_color,
+        font_color = text_color,
+        rotation = {0, 0, 0},
+        label = "MAKERS\nRECALL",
+        position = {-4, 0.4, 4.54},
+        scale = {1.3, 1, 1.3},
+        width = 600,
+        height = 310,
+        font_size = 120
+    })
+end
+
+function onLoad()
+    self.interactable = false
+
+    round_start = 1
+    black_market = 0
+    activateButton()
+end
+
+function getRoundStart() return round_start end
+
+function Makers()
+    round_start = 1
+    for index in pairs(buttonPass) do buttonPass[index].clearButtons() end
+    self.clearButtons()
+    marker_round.setPositionSmooth({-4.07, 1.8, -9.96}, false, false)
+    for i = 1, 3 do
+        local agentCheck = 0
+        spaceCheck = getObjectFromGUID(makerZones[i]).getObjects()
+
+        for _, item in ipairs(spaceCheck) do
+            if item.getDescription() == "Agent" then agentCheck = 1 end
+        end
+
+        if i == 1 and agentCheck == 0 then
+            Wait.time(function()
+                broadcastToAll(i18n('spiceGreatFlat'), {0.956, 0.392, 0.113})
+                bonus_spice3.call("incrementVal")
+            end, 0.5)
+        elseif i == 2 and agentCheck == 0 then
+            Wait.time(function()
+                broadcastToAll(i18n('spiceHaggaBasin'), {0.956, 0.392, 0.113})
+                bonus_spice2.call("incrementVal")
+            end, 1)
+        elseif i == 3 and agentCheck == 0 then
+            Wait.time(function()
+                broadcastToAll(i18n('spiceImperialBasin'), {0.956, 0.392, 0.113})
+                bonus_spice1.call("incrementVal")
+            end, 1.5)
+        end
+    end
+    Wait.time(Recall, 2)
+end
+
+function Recall() startLuaCoroutine(self, "ConflictZone") end
+
+function ConflictZone()
+    marker_round.setPositionSmooth({-4.05, 1.8, -10.62}, false, false)
+    conflictArea = getObjectFromGUID(conflictZone).getObjects()
+
+    for _, item in ipairs(conflictArea) do
+        local itemName = item.getName()
+        if itemName == "Red" then
+            item.setPositionSmooth({
+                pos_supply_bowls[itemName][1] + (math.random() / 2),
+                pos_supply_bowls[itemName][2],
+                pos_supply_bowls[itemName][3] + (math.random() / 2)
+            }, false, true)
+        elseif itemName == "Blue" then
+            item.setPositionSmooth({
+                pos_supply_bowls[itemName][1] + (math.random() / 2),
+                pos_supply_bowls[itemName][2],
+                pos_supply_bowls[itemName][3] + (math.random() / 2)
+            }, false, true)
+        elseif itemName == "Yellow" then
+            item.setPositionSmooth({
+                pos_supply_bowls[itemName][1] + (math.random() / 2),
+                pos_supply_bowls[itemName][2],
+                pos_supply_bowls[itemName][3] + (math.random() / 2)
+            }, false, true)
+        elseif itemName == "Green" then
+            item.setPositionSmooth({
+                pos_supply_bowls[itemName][1] + (math.random() / 2),
+                pos_supply_bowls[itemName][2],
+                pos_supply_bowls[itemName][3] + (math.random() / 2)
+            }, false, true)
+        elseif itemName == "Yellow dreadnought" then
+            item.setPositionSmooth({9.32, 1.57, -6.81}, false, true)
+            item.setRotation({0, 0, 0})
+        elseif itemName == "Yellow Dreadnought" then
+            item.setPositionSmooth({9.32, 1.57, -5.95}, false, true)
+            item.setRotation({0, 0, 0})
+        elseif itemName == "Green dreadnought" then
+            item.setPositionSmooth({9.32, 1.58, -4.09}, false, true)
+            item.setRotation({0, 0, 0})
+        elseif itemName == "Green Dreadnought" then
+            item.setPositionSmooth({9.32, 1.58, -3.17}, false, true)
+            item.setRotation({0, 0, 0})
+        elseif itemName == "Blue dreadnought" then
+            item.setPositionSmooth({0.35, 1.58, -6.81}, false, true)
+            item.setRotation({0, 0, 0})
+        elseif itemName == "Blue Dreadnought" then
+            item.setPositionSmooth({0.35, 1.58, -5.95}, false, true)
+            item.setRotation({0, 0, 0})
+        elseif itemName == "Red dreadnought" then
+            item.setPositionSmooth({0.35, 1.58, -4.09}, false, true)
+            item.setRotation({0, 0, 0})
+        elseif itemName == "Red Dreadnought" then
+            item.setPositionSmooth({0.35, 1.58, -3.17}, false, true)
+            item.setRotation({0, 0, 0})
+        end
+
+        local Time = os.clock() + 0.1
+        while os.clock() < Time do coroutine.yield() end
+
+    end
+
+    mentat = getObjectFromGUID("c2a908")
+    mentat.setColorTint({1, 1, 1, 1})
+    mentat.setPositionSmooth({-1.17, 2.75, 7.63}, false, true)
+    mentat.setRotationSmooth({0, 180, 0})
+
+    -- General Agent Reset
+
+    -- Red
+
+    if getObjectFromGUID("afa978") then
+        getObjectFromGUID("afa978").setPositionSmooth(pos_agent["Red"][1],
+                                                      false, true)
+        getObjectFromGUID("afa978").setRotationSmooth({0, 180, 0})
+        local Time = os.clock() + 0.1
+        while os.clock() < Time do coroutine.yield() end
+
+    end
+    if getObjectFromGUID("7751c8") then
+        getObjectFromGUID("7751c8").setPositionSmooth(pos_agent["Red"][2],
+                                                      false, true)
+        getObjectFromGUID("7751c8").setRotationSmooth({0, 180, 0})
+        local Time = os.clock() + 0.1
+        while os.clock() < Time do coroutine.yield() end
+
+    end
+
+    -- Blue
+
+    if getObjectFromGUID("106d8b") then
+        getObjectFromGUID("106d8b").setPositionSmooth(pos_agent["Blue"][1],
+                                                      false, true)
+        getObjectFromGUID("106d8b").setRotationSmooth({0, 180, 0})
+        local Time = os.clock() + 0.1
+        while os.clock() < Time do coroutine.yield() end
+
+    end
+    if getObjectFromGUID("64d013") then
+        getObjectFromGUID("64d013").setPositionSmooth(pos_agent["Blue"][2],
+                                                      false, true)
+        getObjectFromGUID("64d013").setRotationSmooth({0, 180, 0})
+        local Time = os.clock() + 0.1
+        while os.clock() < Time do coroutine.yield() end
+
+    end
+
+    -- Yellow
+
+    if getObjectFromGUID("5068c8") then
+        getObjectFromGUID("5068c8").setPositionSmooth(pos_agent["Yellow"][1],
+                                                      false, true)
+        getObjectFromGUID("5068c8").setRotationSmooth({0, 180, 0})
+        local Time = os.clock() + 0.1
+        while os.clock() < Time do coroutine.yield() end
+
+    end
+    if getObjectFromGUID("67b476") then
+        getObjectFromGUID("67b476").setPositionSmooth(pos_agent["Yellow"][2],
+                                                      false, true)
+        getObjectFromGUID("67b476").setRotationSmooth({0, 180, 0})
+        local Time = os.clock() + 0.1
+        while os.clock() < Time do coroutine.yield() end
+
+    end
+
+    -- Green
+
+    if getObjectFromGUID("bceb0e") then
+        getObjectFromGUID("bceb0e").setPositionSmooth(pos_agent["Green"][1],
+                                                      false, true)
+        getObjectFromGUID("bceb0e").setRotationSmooth({0, 180, 0})
+        local Time = os.clock() + 0.1
+        while os.clock() < Time do coroutine.yield() end
+
+    end
+    if getObjectFromGUID("66ae45") then
+        getObjectFromGUID("66ae45").setPositionSmooth(pos_agent["Green"][2],
+                                                      false, true)
+        getObjectFromGUID("66ae45").setRotationSmooth({0, 180, 0})
+        local Time = os.clock() + 0.1
+        while os.clock() < Time do coroutine.yield() end
+
+    end
+
+    local items2 = getObjectFromGUID("83ea90").getObjects()
+    for _, item2 in ipairs(items2) do
+        if item2.getName() == "Yellow Swordmaster" then
+            item2.setPositionSmooth(pos_agent["Yellow"][3], false, true)
+            item2.setRotation({0, 180, 0})
+            local Time = os.clock() + 0.1
+            while os.clock() < Time do coroutine.yield() end
+
+        elseif item2.getName() == "Green Swordmaster" then
+            item2.setPositionSmooth(pos_agent["Green"][3], false, true)
+            item2.setRotation({0, 180, 0})
+            local Time = os.clock() + 0.1
+            while os.clock() < Time do coroutine.yield() end
+
+        elseif item2.getName() == "Blue Swordmaster" then
+            item2.setPositionSmooth(pos_agent["Blue"][3], false, true)
+            item2.setRotation({0, 180, 0})
+            local Time = os.clock() + 0.1
+            while os.clock() < Time do coroutine.yield() end
+
+        elseif item2.getName() == "Red Swordmaster" then
+            item2.setPositionSmooth(pos_agent["Red"][3], false, true)
+            item2.setRotation({0, 180, 0})
+            local Time = os.clock() + 0.1
+            while os.clock() < Time do coroutine.yield() end
+
+        end
+    end
+
+    local items = getObjectFromGUID("c68e45").getObjects()
+    for _, item in ipairs(items) do
+        if item.getName() == "Yellow Swordmaster" then
+            item.setPositionSmooth(pos_agent["Yellow"][3], false, true)
+            item.setRotation({0, 180, 0})
+            local Time = os.clock() + 0.1
+            while os.clock() < Time do coroutine.yield() end
+
+        elseif item.getName() == "Green Swordmaster" then
+            item.setPositionSmooth(pos_agent["Green"][3], false, true)
+            item.setRotation({0, 180, 0})
+            local Time = os.clock() + 0.1
+            while os.clock() < Time do coroutine.yield() end
+
+        elseif item.getName() == "Blue Swordmaster" then
+            item.setPositionSmooth(pos_agent["Blue"][3], false, true)
+            item.setRotation({0, 180, 0})
+            local Time = os.clock() + 0.1
+            while os.clock() < Time do coroutine.yield() end
+
+        elseif item.getName() == "Red Swordmaster" then
+            item.setPositionSmooth(pos_agent["Red"][3], false, true)
+            item.setRotation({0, 180, 0})
+            local Time = os.clock() + 0.1
+            while os.clock() < Time do coroutine.yield() end
+
+        elseif item.getName() == "Red Combat Marker" then
+            item.setPositionSmooth({1.28, 1.58, -8.15}, false, true)
+            item.setRotation({0, 180, 0})
+            local Time = os.clock() + 0.1
+            while os.clock() < Time do coroutine.yield() end
+
+        elseif item.getName() == "Blue Combat Marker" then
+            item.setPositionSmooth({3.48, 1.57, -8.16}, false, true)
+            item.setRotation({0, 180, 0})
+            local Time = os.clock() + 0.1
+            while os.clock() < Time do coroutine.yield() end
+
+        elseif item.getName() == "Green Combat Marker" then
+            item.setPositionSmooth({2.35, 1.58, -8.16}, false, true)
+            item.setRotation({0, 180, 0})
+            local Time = os.clock() + 0.1
+            while os.clock() < Time do coroutine.yield() end
+
+        elseif item.getName() == "Yellow Combat Marker" then
+            item.setPositionSmooth({4.55, 1.57, -8.15}, false, true)
+            item.setRotation({0, 180, 0})
+            local Time = os.clock() + 0.1
+            while os.clock() < Time do coroutine.yield() end
+
+        end
+    end
+    local vp_to_trash = zone_vp_encours.getObjects()
+    if vp_to_trash ~= nil then
+        for _, obj in ipairs(vp_to_trash) do
+            if obj.getDescription() == "VP" then trash.putObject(obj) end
+
+        end
+    end
+
+    local stack = getObjectFromGUID('07e239')
+
+    local discard = getObjectFromGUID('43f00f')
+
+    local object = stack.getObjects()[1]
+
+    if object ~= nil then
+
+        if object.type == 'Deck' then
+            object.takeObject({
+                position = conflict_discard,
+                top = true,
+                flip = true
+            })
+        elseif object.type == 'Card' then
+            object.setPosition(conflict_discard)
+            object.setRotation({0, 180, 0})
+        end
+
+    end
+
+    zonaCartas = {
+        ["Yellow"] = getObjectFromGUID("ae1ef8"),
+        ["Green"] = getObjectFromGUID("890115"),
+        ["Red"] = getObjectFromGUID("cd9716"),
+        ["Blue"] = getObjectFromGUID("f20a74")
+    }
+
+    for col, zone in pairs(zonaCartas) do
+        local tablaCartas = zone.getObjects()
+        for _, card in ipairs(tablaCartas) do
+            if card.type == 'Card' or card.type == 'Deck' then
+                if card.hasTag('Intrigue') then
+                    card.setPosition(pos_intrigue_discard)
+                else
+                    card.setPosition(pos_discard[col])
+                end
+            end
+        end
+    end
+
+    local Time = os.clock() + 1 -- wait after collecting reveal zones into discards for letting time for cards to stack in the discard pile before drawing for holtzman effects
+    while os.clock() < Time do coroutine.yield() end
+
+    broadcastToAll(i18n('nextRound'), "Purple")
+    BlackMarket()
+    Global.call("resetRound")
+
+    local players = getObjectFromGUID("4a3e76").call("getPlayersBasedOnHotseat") 
+
+    local marker_yellow = marker_yellow_zone.getObjects()
+    local marker_green = marker_green_zone.getObjects()
+    local marker_blue = marker_blue_zone.getObjects()
+    local marker_red = marker_red_zone.getObjects()
+
+    if #players > 1 and
+        (marker_yellow[1] == marker or marker_yellow[2] == marker) then
+        for _, value in ipairs(players) do
+            if value == "Green" then colfp = "Green" end
+        end
+        for _, value in ipairs(players) do
+            if value == "Red" then colfp = "Red" end
+        end
+        for _, value in ipairs(players) do
+            if value == "Blue" then colfp = "Blue" end
+        end
+    elseif #players > 1 and
+        (marker_blue[1] == marker or marker_blue[2] == marker) then
+        for _, value in ipairs(players) do
+            if value == "Yellow" then colfp = "Yellow" end
+        end
+        for _, value in ipairs(players) do
+            if value == "Green" then colfp = "Green" end
+        end
+        for _, value in ipairs(players) do
+            if value == "Red" then colfp = "Red" end
+        end
+    elseif #players > 1 and (marker_red[1] == marker or marker_red[2] == marker) then
+        for _, value in ipairs(players) do
+            if value == "Blue" then colfp = "Blue" end
+        end
+        for _, value in ipairs(players) do
+            if value == "Yellow" then colfp = "Yellow" end
+        end
+        for _, value in ipairs(players) do
+            if value == "Green" then colfp = "Green" end
+        end
+    elseif #players > 1 and
+        (marker_green[1] == marker or marker_green[2] == marker) then
+        for _, value in ipairs(players) do
+            if value == "Red" then colfp = "Red" end
+        end
+        for _, value in ipairs(players) do
+            if value == "Blue" then colfp = "Blue" end
+        end
+        for _, value in ipairs(players) do
+            if value == "Yellow" then colfp = "Yellow" end
+        end
+    end
+    if #players > 1 then
+        Global.call("TableTurnPlayers")
+        firstPlayer(colfp)
+    end
+    marker_round.setPositionSmooth({-4.08, 1.8, -8.01}, false, false)
+
+    local t1 = 0.1
+    for color, _ in pairs(zone_player) do
+        local playerObjects = zone_player[color].getObjects()
+        for _, obj in ipairs(playerObjects) do
+            if obj.hasTag("Holtzman") then
+                DrawOne(_, color)
+                broadcastToAll(
+                    ressources[color][6].getObjects()[1].getName() ..
+                        i18n("holtzmanEngine"), color)
+            elseif obj.hasTag("Shuttle Fleet") then
+                for i = 1, 2, 1 do
+                    Wait.time(function()
+                        ressources[color][2].call("incrementVal")
+                    end, t1)
+                    t1 = t1 + 0.3
+                end
+                broadcastToAll(
+                    ressources[color][6].getObjects()[1].getName() ..
+                        i18n("shuttleFleet"), color)
+            elseif obj.getDescription() == "Tech" then
+                obj.setRotationSmooth({0, 180, 0}, false, false)
+            end
+        end
+    end
+    for color, _ in pairs(zone_player) do
+        local playerObjects = zone_player[color].getObjects()
+        for _, obj in ipairs(playerObjects) do
+            if obj.getGMNotes() == "ok" and
+                ressources[color][6].getObjects()[1].getName() == "Norma Cenva" then
+                DrawOne(_, color)
+                broadcastToAll(
+                    ressources[color][6].getObjects()[1].getName() ..
+                        i18n("holtzmanEffect"), color)
+                break
+            end
+        end
+    end
+
+    Wait.time(function() broadcastToAll(i18n("drawFive"), {0.5, 0.5, 0.5}) end,
+              2)
+    Wait.time(function()
+        marker_round.setPositionSmooth({-4.06, 1.8, -8.65}, false, false)
+        broadcastToAll(i18n("playersTurn"), "Pink")
+        activateButton()
+        round_start = 0
+    end, 4)
+
+    return 1
+end
+
+function firstPlayer(colfp)
+    broadcastToAll(i18n('firstPlayer') ..
+                       ressources[colfp][6].getObjects()[1].getName(), colfp)
+    marker.setPositionSmooth(position_marker[colfp], false, false)
+
+    if getObjectFromGUID("4a3e76").getVar("hotseat_mode") then
+        Player.getPlayers()[1].changeColor(colfp)
+    else
+        Turns.turn_color = colfp
+        Turns.enable = true
+    end
+end
+
+function BlackMarket()
+    for _, value in pairs(getObjectFromGUID(zone_black_market[1]).getObjects()) do
+        if value.getName() == "Black Market" then black_market = 1 end
+    end
+    local t = 0
+    local t1 = 0.75
+    if black_market == 1 then
+        for i = 1, 3, 1 do
+            Wait.time(function()
+                card = GetDeckOrCard(zone_black_market[i])
+                if card ~= nil then
+                    card.setPositionSmooth(pos_trash, false, false)
+                end
+            end, t)
+            t = t + 0.25
+        end
+        for i = 1, 3, 1 do
+            Wait.time(function()
+                deck = GetDeckOrCard(zone_deck)
+                deck.takeObject({
+                    position = pos_black_market[i],
+                    rotation = {0, 180, 0},
+                    smooth = true
+                })
+            end, t1)
+            t1 = t1 + 0.25
+        end
+
+    end
+end

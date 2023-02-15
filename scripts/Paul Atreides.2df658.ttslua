@@ -1,0 +1,150 @@
+constants = require("Constants")
+
+leaderPos = constants.leaderPos
+
+drawDeckZone = constants.drawDeckZone
+
+ressources = constants.ressources
+
+helperModule = require("HelperModule")
+
+GetDeckOrCard = helperModule.GetDeckOrCard
+
+i18n = require("i18n")
+require("locales")
+
+function onload(saved_data)
+
+    if saved_data ~= "" then
+        local loaded_data = JSON.decode(saved_data)
+        claimed = loaded_data[1]
+        claimingColor = loaded_data[2]
+    end
+
+    if claimed ~= "claimed" then claimLabel() end
+    prescienceButton()
+end
+
+function updateSave()
+    local data_to_save = {claimed, claimingColor}
+    saved_data = JSON.encode(data_to_save)
+    self.script_state = saved_data
+end
+
+function claimLabel()
+
+    self.createButton({
+        click_function = "claimLeader",
+        function_owner = self,
+        label = i18n("claimLeaderButton"),
+        position = {0.3, 0.2, 0.4},
+        rotation = {0, 0, 0},
+        scale = {0.75, 1, 0.75},
+        width = 600,
+        height = 150,
+        tooltip = "",
+        font_color = {1, 1, 1},
+        font_size = 85,
+        color = "Black"
+    })
+end
+
+function prescienceButton()
+    self.createButton({
+        click_function = "prescience",
+        function_owner = self,
+        label = i18n("prescienceButton"),
+        position = {-0.8, 0.200000002980232, 0.400000005960464},
+        scale = {0.75, 1, 0.75},
+        width = 500,
+        height = 150,
+        font_size = 85,
+        color = {0.25, 0.25, 0.25, 1},
+        font_color = {1, 1, 1, 1},
+        tooltip = i18n("prescienceTooltip")
+    })
+end
+
+function prescience(_, color)
+
+    if color == claimingColor then
+
+        local leaderName = ressources[color][6].getObjects()[1].getName()
+        local starterDeck = GetDeckOrCard(drawDeckZone[color])
+
+        if starterDeck == nil then
+            broadcastToColor(i18n("prescienceVoid"), color, "Purple")
+        elseif starterDeck.type == "Card" then
+            broadcastToAll(i18n("prescienceUsed"):format(leaderName), color)
+            broadcastToColor(i18n("prescienceManual"), color, "Purple")
+        else
+
+            starterDeck.Container.search(color, 1)
+
+            broadcastToAll(i18n("prescienceUsed"):format(leaderName), color)
+        end
+    else
+        broadcastToColor(i18n("noTouch"), color, color)
+    end
+end
+
+function claimLeaderCall(params)
+    claimLeader(getObjectFromGUID(params.GO), params.color)
+end
+
+function claimLeader(GO, color)
+    if getObjectFromGUID("4a3e76").getVar("banPhase") == 1 then
+        leaderSelectedGUIDAndPlayerColorToPass = {
+            leaderSelectedGUID = GO.guid,
+            playerColor = color
+        }
+        getObjectFromGUID("4a3e76").call("updateLeaderBan",
+                                         leaderSelectedGUIDAndPlayerColorToPass)
+    elseif getObjectFromGUID("4a3e76").getVar("hiddenPicks") == 1 then
+        if color == "Red" or color == "Blue" or color == "Green" or color ==
+            "Yellow" then
+            local playerColors = {
+                "Red", "Blue", "Yellow", "Green", "Grey", "White"
+            }
+            for i, playerColor in ipairs(playerColors) do
+                if color == playerColor then
+                    table.remove(playerColors, i)
+                end
+            end
+            GO.setInvisibleTo(playerColors)
+            GO.setPositionSmooth(leaderPos[color])
+            GO.setRotationSmooth({0, 180, 0})
+            GO.clearButtons()
+            prescienceButton()
+            Wait.time(function() GO.lock() end, 2)
+            leaderSelectedGUIDAndPlayerColorToPass = {
+                leaderSelectedGUID = GO.guid,
+                playerColor = color
+            }
+            getObjectFromGUID("4a3e76").call("updateLeaderChoices",
+                                             leaderSelectedGUIDAndPlayerColorToPass)
+        end
+    else
+        if color == "Red" or color == "Blue" or color == "Green" or color ==
+            "Yellow" then
+            if not self.getLock() then
+                GO.setPositionSmooth(leaderPos[color])
+                GO.setRotationSmooth({0, 180, 0})
+                local buttons = GO.getButtons()
+                GO.clearButtons()
+                prescienceButton()
+
+                Wait.time(function() GO.lock() end, 2)
+            end
+            claimed = "claimed"
+            claimingColor = color
+            updateSave()
+            broadcastToAll(i18n("willBe"):format(i18n(color:lower()),
+                                                 GO.getName()), color)
+
+        else
+            broadcastToColor(i18n("cantClaimLeader"), color, color)
+        end
+        GO.setInvisibleTo({})
+    end
+end

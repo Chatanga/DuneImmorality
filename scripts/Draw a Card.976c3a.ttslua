@@ -1,0 +1,67 @@
+-------- Initialize Parameter ---------
+
+button_offset_y = 0.1  -- Set number. Value greater than or equal to 0. Defaults to 0.10.
+button_width    = 400   -- Set number. Defaults to 450.
+button_height   = 10  -- Set number. Defaults to 300.
+button_color    = {0.25, 0.25, 0.25}  -- Set number {Red,Green,Blue}. Value bitween 0.00 to 1.00. Defaults to {1.00,1.00,1.00] ("White").
+text_color      = {1.00, 1.00, 1.00}  -- Set number {Red,Green,Blue}. Value bitween 0.00 to 1.00. Defaults to {0.25,0.25,0.25] ("Black").
+text_size       = 80   -- Set number. Defaults to 100.
+intrigue_zone = "a377d8"
+
+----- End of Initialize Parameter -----
+
+i18n = require("i18n")
+require("locales")
+
+helperModule = require("HelperModule")
+
+constants = require("Constants")
+
+GetDeckOrCard = helperModule.GetDeckOrCard
+
+function onLoad()
+    activateButton()
+end
+
+function activateButton()
+    self.createButton({
+        click_function='drawCard',
+        function_owner=self,
+        label=i18n("drawIntrigueButton"),
+        position={0, 120, -0.5},
+        rotation={0, 180, 0},
+        width=button_width,
+        height=button_height,
+        color=button_color,
+        font_color=text_color,
+        font_size=text_size
+    })
+end
+
+
+function drawCard(_,color)
+    local targetDeck = GetDeckOrCard(intrigue_zone)
+    if targetDeck == nil then
+        broadcastToAll('Where is the Intrigue Deck ???', "Pink")
+    else
+        self.clearButtons()
+        Wait.time(function() activateButton() end, 1)
+        local handZone = Player[color].getHandTransform()
+        local deckRot = targetDeck.getRotation()
+        if targetDeck.type == "Deck" then
+            my_card = targetDeck.takeObject({
+                position = {handZone.position.x-7.5, handZone.position.y, handZone.position.z},
+                flip = false,
+                smooth = false})
+            Wait.time(function() 
+                my_card.flip()
+            end,0.2)
+                
+        else
+            targetDeck.setPosition({handZone.position.x-7.5, handZone.position.y, handZone.position.z}, false, true)
+            targetDeck.setRotation({deckRot.x, deckRot.y, deckRot.z+180})
+        end
+        local leaderName = constants.ressources[color][6].getObjects()[1].getName()
+        broadcastToAll(leaderName ..i18n("drawIntrigue"), color)
+    end
+end

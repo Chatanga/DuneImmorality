@@ -1,0 +1,128 @@
+
+i18n = require("i18n")
+require("locales")
+
+constants = require("Constants")
+
+helperModule = require("HelperModule")
+
+boardCommonModule = require("BoardCommonModule")
+
+isDeckContainsEnough = helperModule.isDeckContainsEnough
+
+DrawOne = helperModule.DrawOne
+
+Dreadnought_zone = getObjectFromGUID("83ea90")
+
+ressources = constants.ressources
+
+zone_player = constants.zone_player
+
+dreadnought_pos = {
+    ["Red"] = {0.31, 2, -3.55},
+    ["Blue"] = {0.34, 2, -6.37},
+    ["Green"] = {9.3, 2, -3.67},
+    ["Yellow"] = {9.3, 2, -6.33}
+}
+
+function onload()
+    self.interactable = false
+    activateButtons()
+end
+
+function activateButtons()
+
+ self.createButton({
+    click_function = "Dreadnought",
+    function_owner = self,
+    label = "pay & get",
+    position = {-0.2, 0.1 , 0.1},
+    scale = {0.18, 0.18, 0.18},
+    width = 900,
+    height = 350,
+    font_size = 200,
+    color = {0.25, 0.25, 0.25, 1},
+    font_color = {0.7843, 0.7843, 0.7843, 1}
+})
+end
+
+function Dreadnought(_, color)
+    self.clearButtons()
+    Wait.time(activateButtons, 1)
+
+    agentCheck = 0
+    local t = 0
+
+    if boardCommonModule.CheckAgentAndPlayer(color, Dreadnought_zone) then
+
+        local leader = ressources[color][6].getObjects()[1]
+        local leaderName = leader.getName()
+        local solariObj = ressources[color][2]
+
+        local price = 3
+
+        
+        if leader.hasTag("Leto") then price = 2 end
+
+        if solariObj.call("collectVal") < price then
+
+            broadcastToColor(i18n("noSolari"), color, color)
+        else
+
+            for i = 1, price, 1 do
+                Wait.time(function()
+                    solariObj.call("decrementVal")
+                end, t)
+                t = t + 0.25
+            end
+
+            buyDreadnought(_, color)
+
+            if leader.hasTag("Ilban") then
+
+                local numberToDraw = 1
+
+                local enoughCards = isDeckContainsEnough(color, numberToDraw)
+
+                if not enoughCards then
+                    broadcastToAll(i18n("dreadBuy"):format(leaderName, price),
+                                   color)
+
+                    broadcastToAll(i18n("isDecidingToDraw"):format(leaderName),
+                                   "Pink")
+                    local card = i18n("cards")
+                    if numberToDraw == 1 then
+                        card = i18n("card")
+                    end
+                    Player[color].showConfirmDialog(
+                        i18n("warningBeforeDraw"):format(numberToDraw, card),
+                        function(player_color)
+                            DrawOne(_, color)
+                            broadcastToAll(i18n("ilbanDraw"):format(leaderName),
+                                           color)
+                        end)
+                else
+                    DrawOne(_, color)
+                    broadcastToAll(i18n("dreadBuy"):format(leaderName, price),
+                                   color)
+                    broadcastToAll(i18n("ilbanDraw"):format(leaderName), color)
+
+                end
+            else
+                broadcastToAll(i18n("dreadBuy"):format(leaderName, price), color)
+            end
+
+        end
+    end
+end
+
+function buyDreadnought(_, color)
+    local Objects = zone_player[color].getObjects()
+    for _, value in ipairs(Objects) do
+        if value.getName() == color .. " Dreadnought" or value.getName() ==
+            color .. " dreadnought" then
+            value.setPositionSmooth(dreadnought_pos[color], false, false)
+            break
+        end
+    end
+end

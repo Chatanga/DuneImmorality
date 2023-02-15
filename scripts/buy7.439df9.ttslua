@@ -1,0 +1,36 @@
+i18n = require("i18n")
+require("locales")
+
+buyModule = require("BuyModule")
+
+constants = require("Constants")
+
+function onLoad()
+    self.interactable = false
+    
+    tleilaxuColumn = constants.tleilaxuRow[1]
+    Zone = getObjectFromGUID(tleilaxuColumn.zoneGuid)
+    pos = tleilaxuColumn.pos
+    activateButton()
+ 
+end
+
+function activateButton()
+    self.createButton({
+        label=i18n("acquireButton"), 
+        click_function="Buy",
+        function_owner=self,
+        position={0,2,1.4},
+        scale = {0.3, 0.3, 0.4},
+        color={0.25, 0.25, 0.25, 1},
+        font_color={1, 1, 1, 1},
+        height=400,
+        width=1600,
+        font_size=400,
+        rotation={0,0,0}
+    })
+end
+
+function Buy(object,pColor)
+    buyModule.Buy(Zone, pColor, pos, activateButton, true)
+end

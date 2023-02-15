@@ -1,0 +1,76 @@
+local helperModule = {}
+
+constants = require("Constants")
+
+drawDeckZone = constants.drawDeckZone
+
+discardZone = constants.discardZone
+
+drawSpot = constants.drawSpot
+
+function helperModule.DrawOne(_, color)
+    local starterDeck = helperModule.GetDeckOrCard(drawDeckZone[color])
+    local discardFound = false
+
+    if starterDeck ~= nil then
+        starterDeck.deal(1, color)
+    else
+        discardFound = helperModule.ResetDiscard(_, color)
+        if discardFound then
+            Wait.time(function()
+                local drawDeck = helperModule.GetDeckOrCard(drawDeckZone[color])
+                drawDeck.deal(1, color)
+            end, 1.5)
+        else
+            broadcastToColor("Missing one card to draw because your discard is empty", color, color)        
+        end
+    end
+    return discardFound
+end
+
+function helperModule.ResetDiscard(_, color)
+    discardArea = helperModule.GetDeckOrCard(discardZone[color])
+    local discardFound = true
+    if discardArea ~= nil then
+        discardArea.setRotationSmooth({0, 180, 180}, false, false)
+        discardArea.shuffle()
+        discardArea.setPositionSmooth(drawSpot[color], false, true)
+        Wait.time(function()
+            helperModule.GetDeckOrCard(drawDeckZone[color]).shuffle()
+        end, 0.5)
+    else
+        discardFound = false
+    end
+
+    return discardFound
+
+end
+
+function helperModule.GetDeckOrCard(zoneGUID)
+    for _, obj in ipairs(getObjectFromGUID(zoneGUID).getObjects()) do
+        if obj.type == "Card" or obj.type == "Deck" then return obj end
+    end
+    return nil
+end
+
+function helperModule.isDeckContainsEnough(color, numberToDraw)
+
+    local starterDeck = helperModule.GetDeckOrCard(drawDeckZone[color])
+
+    local enoughCards = true
+
+    if starterDeck == nil then
+        enoughCards = false
+    else
+        local countCheck = starterDeck.getQuantity()
+        local typeCheck = starterDeck.type
+
+        if typeCheck == "Card" then countCheck = 1 end
+
+        if countCheck < numberToDraw then enoughCards = false end
+    end
+
+    return enoughCards
+end
+
+return helperModule
