@@ -15,7 +15,7 @@ zone_deck_imperium = constants.zone_deck_imperium
 
 pos_trash = constants.pos_trash_upper
 
-board_display_leaders = getObjectFromGUID("5a682a")
+board_display_leaders = getObjectFromGUID("823bd3")
 
 local atomicsModule = {}
 

@@ -41,13 +41,15 @@ hagal_without_rise_of_ix = getObjectFromGUID("72d430")
 pos_black_market = constants.pos_black_market
 
 pos_starter_decks = {
-    {-24.62, 1.80, 20.48}, {13.68, 1.74, 20.52}, {-24.41, 1.79, -1.54},
-    {13.44, 1.74, -1.51}
+    helperModule.getLandingPosition(constants.drawDeck["Red"]), --FF--{-24.62, 1.80, 20.48}
+    helperModule.getLandingPosition(constants.drawDeck["Blue"]), --FF--{13.68, 1.74, 20.52}
+    helperModule.getLandingPosition(constants.drawDeck["Green"]), --FF--{-24.41, 1.79, -1.54}
+    helperModule.getLandingPosition(constants.drawDeck["Yellow"]) --FF--{13.44, 1.74, -1.51}
 }
 
 dune_cards_decks_zone = {
-    getObjectFromGUID("e23476"), getObjectFromGUID("355dc0"),
-    getObjectFromGUID("d3521b"), getObjectFromGUID("7b2ba8")
+  getObjectFromGUID("e23476"), getObjectFromGUID("355dc0"),
+  getObjectFromGUID("d3521b"), getObjectFromGUID("7b2ba8")
 }
 zone_intrigue = 'a377d8'
 zone_imperium = constants.zone_deck_imperium
@@ -56,8 +58,8 @@ epic_cards = constants.epic_cards
 -- conflictZone2 = "7c9ceb"
 -- conflictZone3 = "f9ea6b"
 trashBin = '8d39ef'
-conflictDeckLocation = {-3.38, 3, -5.74}
-conflict1start = {-1.15, 1.76, -5.74}
+conflictDeckLocation = helperModule.getLandingPosition("f9ea6b") --FF--{-3.38, 3, -5.74}
+-- conflictDeckLocation = helperModule.addVector3D(helperModule.getLandingPosition(conflictThree), {0, 5, 0}) --FF--{-3.38, 3, -5.74}
 councellor_bonus_bag = getObjectFromGUID("074f6d")
 FP1 = getObjectFromGUID('66444c')
 FP2 = getObjectFromGUID('4e8873')
@@ -80,8 +82,8 @@ bene_tleilax_zone = getObjectFromGUID('042b49')
 atomics = {'d5ff47', '0a22ec', '700023', '7e10a9'}
 experimentation_decks = {'ef9531', '45ce21', '2d935f', '8ed0cd'}
 research_station_immortality = getObjectFromGUID('54413c')
-intrigue_pos = {0.25, 1.79, 16.29}
-imperium_pos = {-10.00, 2.03, 12.87}
+intrigue_pos = helperModule.getLandingPosition(constants.intrigue_base) --FF--{0.25, 1.79, 16.29}
+imperium_pos = helperModule.getLandingPosition(constants.imperium_deck) --FF--{-10.00, 2.03, 12.87}
 hagal1P_base = "54a2cb"
 hagal1P = getObjectFromGUID("6020d0")
 hagal2P_base = "1dd8a5"
@@ -925,7 +927,7 @@ function Setup()
 end
 
 function Commune()
-
+    --FF-- Mon dieu... Des synchro absolues ? Supercalifragilisticfuckedup comme dirait Mary Poppins.
     destructMissingPlayers()
     GetDeckOrCard(zone_intrigue).shuffle()
     GetDeckOrCard(zone_imperium).shuffle()
@@ -981,7 +983,7 @@ function pick_a_player()
     else
 
         local randomNumber = math.random(count)
-        for i = 1, 10 do -- Animation débile avec 2 boucles XD 
+        for i = 1, 10 do -- Animation débile avec 2 boucles XD
             for index, player in ipairs(playerList) do
                 getObjectFromGUID("d84873").editButton({color = player.color})
                 wait(3)
@@ -1425,36 +1427,43 @@ function movetechdecks()
         techs = tech_tiles_fr
     end
     techs.randomize()
+
+    --FF--
+    local centerPos = helperModule.getLandingPosition(constants.ixPlanetBoard)
+    local techSlotPos = {
+      helperModule.addVector3D(centerPos, {1.69, 3.02, 2.35}),
+      helperModule.addVector3D(centerPos, {1.69, 3.02, 0.30}),
+      helperModule.addVector3D(centerPos, {1.69, 3.02, -1.75})
+    }
+
     local t = 0
     for i = 1, 5, 1 do
         Wait.time(function()
-            techs.takeObject({
-                position = {9.26, 3, 16.83},
-                rotation = {0, 180, 180}
-            })
-            techs.takeObject({
-                position = {9.26, 3, 14.74},
-                rotation = {0, 180, 180}
-            })
-            techs.takeObject({
-                position = {9.26, 3, 12.66},
-                rotation = {0, 180, 180}
-            })
+          for j = 1, 3 do
+              techs.takeObject({
+                  position = techSlotPos[j],
+                  rotation = {0, 180, 180}
+              })
+          end
         end, t)
         t = t + 0.25
     end
     Wait.time(function()
-        techs.takeObject({position = {9.26, 3, 16.83}, rotation = {0, 180, 0}})
-        techs.takeObject({position = {9.26, 3, 14.74}, rotation = {0, 180, 0}})
-        techs.takeObject({position = {9.26, 3, 12.66}, rotation = {0, 180, 0}})
+        for j = 1, 3 do
+            techs.takeObject({
+                position = techSlotPos[j],
+                rotation = {0, 180, 0}
+            })
+        end
         destroyObject(tech_tiles_en)
         destroyObject(tech_tiles_fr)
-    end, 1.5)
+    end, t)
 end
 
 function ImperiumDeal()
     local deck_imperium = GetDeckOrCard(zone_imperium)
     deck_imperium.shuffle()
+    --[[
     Wait.time(function()
         local params1 = {}
         params1.position = {-7.35, 2, 12.87}
@@ -1485,6 +1494,18 @@ function ImperiumDeal()
         params5.rotation = {0.00, 180.00, 0.00}
         deck_imperium.takeObject(params5)
     end, 1.75)
+    ]]--
+    --FF--
+    for i = 1, 5 do
+      Wait.time(function()
+          deck_imperium.takeObject({
+              -- position = {i * 2.52 - 9.87, 2, 12.87},
+              position = constants.imperiumRow[i].pos,
+              rotation = {0, 180, 0}
+          })
+      end, i * 0.35)
+    end
+
     if black_market == 1 then
         getObjectFromGUID("ab7ac5").setPosition({-6.23, 1.50, 24.45})
         getObjectFromGUID("ab7ac5").setRotation({0, 180, 0})

@@ -3,6 +3,7 @@ local constants = {}
 constants.setupObj = getObjectFromGUID("4a3e76")
 
 
+constants.imperium_deck = "99d41d" --FF--
 constants.imperium_deck_ix = "58c4c3"
 constants.imperium_deck_immortality = "88b666"
 constants.tleilaxu_deck = "dcad54"
@@ -35,7 +36,6 @@ constants.leaders = {
     vladimir = {GUID = "98cae8"},
     ilban = {GUID = "78551e"},
     helena = {GUID = "5a8a9a"}
-
 }
 
 constants.ressources = { -- 1 : épices, 2 : solaris, 3 : eau, 4 : troupes, 5 : cartes, 6 : zone leader, 7 : swordmaster, 8 : zone swordmaster, 9 : conseiller, 10 : zone conseiller, 11 : zone bonus conseiller, 12 : zone conseiller vanilla
@@ -50,6 +50,13 @@ constants.pos_discard = {
     ["Blue"] = {-13.65, 3, -1.50},
     ["Green"] = {24.48, 3, 20.51},
     ["Yellow"] = {24.25, 3, -1.50}
+}
+
+constants.drawDeck = {
+    ["Red"] = "b8e747",
+    ["Blue"] = "a76b37",
+    ["Green"] = "0c5e03",
+    ["Yellow"] = "014c6a"
 }
 
 constants.drawDeckZone = {
@@ -96,17 +103,25 @@ constants.first_player_positions =  {
 constants.zone_deck_imperium = '8bd982'
 constants.zone_deck_tleilaxu = '14b2ca'
 
+--FF-- Ajouter aussi des zones pour les emplacements de tech.
+constants.ixPlanetBoard = 'd75455'
+
+function _getLandingPosition(anchorGUID)
+   local pos = getObjectFromGUID(anchorGUID).getPosition()
+   return {pos[1], pos[2] + 0.3, pos[3]}
+end
+
 constants.imperiumRow = {
-    {zoneGuid = '3de1d0', pos = {-7.25, 2, 12.87}},
-    {zoneGuid = '356e2c', pos = {-4.75, 2, 12.87}},
-    {zoneGuid = '7edbb3', pos = {-2.25, 2, 12.87}},
-    {zoneGuid = '641974', pos = {0.25, 2, 12.87}},
-    {zoneGuid = 'c6dbed', pos = {2.75, 2, 12.87}}
+    {zoneGuid = '3de1d0', pos = _getLandingPosition("38ffc0")}, --FF-- {-7.25, 2, 12.87}
+    {zoneGuid = '356e2c', pos = _getLandingPosition("21b287")}, --FF-- {-4.75, 2, 12.87}
+    {zoneGuid = '7edbb3', pos = _getLandingPosition("0a5f50")}, --FF-- {-2.25, 2, 12.87}
+    {zoneGuid = '641974', pos = _getLandingPosition("ded672")}, --FF-- {0.25, 2, 12.87}
+    {zoneGuid = 'c6dbed', pos = _getLandingPosition("ad2a82")} --FF-- {2.75, 2, 12.87}
 }
 
 constants.tleilaxuRow = {
-    {zoneGuid = 'e5ba35', pos = {-7.59, 2, 20.04}},
-    {zoneGuid = '1e5a32', pos = {-5.04, 2, 20.04}}
+    {zoneGuid = 'e5ba35', pos = _getLandingPosition("439df9")}, --FF-- {-7.59, 2, 20.04}
+    {zoneGuid = '1e5a32', pos = _getLandingPosition("363f98")} --FF-- {-5.04, 2, 20.04}
 }
 
 constants.buy7_guid = '439df9'

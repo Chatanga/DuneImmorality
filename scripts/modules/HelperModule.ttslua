@@ -22,7 +22,7 @@ function helperModule.DrawOne(_, color)
                 drawDeck.deal(1, color)
             end, 1.5)
         else
-            broadcastToColor("Missing one card to draw because your discard is empty", color, color)        
+            broadcastToColor("Missing one card to draw because your discard is empty", color, color)
         end
     end
     return discardFound
@@ -47,9 +47,11 @@ function helperModule.ResetDiscard(_, color)
 end
 
 function helperModule.GetDeckOrCard(zoneGUID)
-    for _, obj in ipairs(getObjectFromGUID(zoneGUID).getObjects()) do
+    local objects = getObjectFromGUID(zoneGUID).getObjects()
+    for _, obj in ipairs(objects) do
         if obj.type == "Card" or obj.type == "Deck" then return obj end
     end
+    log("No deck or card found among " .. #objects .. " object(s) of zone " .. zoneGUID)
     return nil
 end
 
@@ -71,6 +73,24 @@ function helperModule.isDeckContainsEnough(color, numberToDraw)
     end
 
     return enoughCards
+end
+
+--FF-- Légèrement au dessus pour éviter de déplacer un objet un dessous (et
+-- ajouter la destination à la source plutôt que l’inverse).
+function helperModule.getLandingPosition(anchorGUID)
+   local pos = getObjectFromGUID(anchorGUID).getPosition()
+   return {pos[1], pos[2] + 0.1, pos[3]}
+end
+
+--FF--
+function helperModule.addVector3D(left, right)
+   return {left[1] + right[1], left[2] + right[2], left[3] + right[3]}
+end
+
+--FF-- Les nouvelles ancres ont toutes une échelle unitaire, ce qui n’était pas
+-- le cas des anciennes.
+function helperModule.correctAnchorPosition(pos, originalScale)
+   return {pos[1] * originalScale[1], pos[2] * originalScale[2], pos[3] * originalScale[3]}
 end
 
 return helperModule

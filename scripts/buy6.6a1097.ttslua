@@ -13,32 +13,34 @@ function onLoad()
 
     self.interactable = false
 
-    pos_vp = constants.pos_vp 
-    
+    pos_vp = constants.pos_vp
+
     counter_VP = {
         ["Red"] = getObjectFromGUID("e0ed4b"),
         ["Blue"] = getObjectFromGUID("121bb6"),
         ["Green"] = getObjectFromGUID("caaba4"),
         ["Yellow"] = getObjectFromGUID("99a860")
     }
-    
+
     Zone_foldspace = getObjectFromGUID("6b62e0")
     Zone_arrakis = getObjectFromGUID("cbcd9a")
     Zone_tsmf = getObjectFromGUID("c087d2")
     deck_imperium = constants.zone_deck_imperium
-    
+
     TSMF_point = getObjectFromGUID("43c7b5")
-  
+
     activateButtons()
 
 end
 
 function activateButtons()
+    --FF-- Pourquoi réduire l’échelle tout en agrandissant les tailles ?
+
     self.createButton({
         click_function = "acquireFoldspace",
         function_owner = self,
         label = i18n("acquireButton"),
-        position = {0, 2, 0},
+        position = helperModule.correctAnchorPosition({0, 2, 0}, {1.37866032, 0.165157527, 1.34989369}),
         scale = {0.3, 0.3, 0.4},
         width = 1600,
         height = 400,
@@ -52,7 +54,7 @@ function activateButtons()
         click_function = "acquireArrakis",
         function_owner = self,
         label = i18n("acquireButton"),
-        position = {1.85, 2.1, 0},
+        position = helperModule.correctAnchorPosition({1.85, 2.1, 0}, {1.37866032, 0.165157527, 1.34989369}),
         scale = {0.3, 0.3, 0.4},
         width = 1600,
         height = 400,
@@ -65,7 +67,7 @@ function activateButtons()
         click_function = "acquireTSMF",
         function_owner = self,
         label = i18n("acquireButton"),
-        position = {3.70, 2.3, 0},
+        position = helperModule.correctAnchorPosition({3.70, 2.3, 0}, {1.37866032, 0.165157527, 1.34989369}),
         scale = {0.3, 0.3, 0.4},
         width = 1600,
         height = 400,

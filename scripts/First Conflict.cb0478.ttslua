@@ -1,7 +1,9 @@
+helperModule = require("HelperModule")
+
 function onLoad()
     self.interactable = false
-    
-    conflict_discard = {-1.15, 3, -5.74}
+
+    conflict_discard = helperModule.correctAnchorPosition({-1.15, 3, -5.74}, {1.37866032, 0.165157527, 1.34989369})
     conflict_zone = getObjectFromGUID("07e239")
     i18n = require("i18n")
     require("locales")
@@ -11,22 +13,22 @@ end
 
 function ConflictButton()
     self.createButton({
-        click_function = "RevealConflict", 
-        function_owner = self, 
-        label = i18n("revealFirstConflictButton"), 
-        position = {0, 0.6, 0}, 
-        scale = {0.3, 0.3, 0.4}, 
-        width = 1800, 
-        height = 1300, 
-        font_size = 400, 
-        color = {0.5, 0, 0., 0.75}, 
-        font_color = {0.8, 0.8, 0.8, 1}, 
+        click_function = "RevealConflict",
+        function_owner = self,
+        label = i18n("revealFirstConflictButton"),
+        position = helperModule.correctAnchorPosition({0, 0.6, 0}, {1.37866032, 0.165157527, 1.34989369}),
+        scale = {0.3, 0.3, 0.4},
+        width = 1800,
+        height = 1300,
+        font_size = 400,
+        color = {0.5, 0, 0., 0.75},
+        font_color = {0.8, 0.8, 0.8, 1},
         tooltip = i18n("revealFirstConflictTooltip")
     })
 end
 
 function RevealConflict()
-    local players = getObjectFromGUID("4a3e76").call("getPlayersBasedOnHotseat") 
+    local players = getObjectFromGUID("4a3e76").call("getPlayersBasedOnHotseat")
     for _, color in pairs(players) do
         local leaderZone = constants.ressources[color][6]
         if leaderZone.getObjects()[1] == nil then
@@ -41,7 +43,7 @@ function RevealConflict()
                 obj.takeObject({ position = conflict_discard, top = true, flip = true })
             end
         end
-        getObjectFromGUID("fb41e2").setPositionSmooth({-4.06, 2, -8.65}, false, false)
+        getObjectFromGUID("fb41e2").setPositionSmooth(helperModule.correctAnchorPosition({-4.06, 2, -8.65}, {1.37866032, 0.165157527, 1.34989369}), false, false)
         self.destruct()
     end
 end

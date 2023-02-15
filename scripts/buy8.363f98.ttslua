@@ -3,22 +3,24 @@ require("locales")
 
 buyModule = require("BuyModule")
 
+helperModule = require("HelperModule")
+
 function onLoad()
     self.interactable = false
-    
+
     tleilaxuColumn = constants.tleilaxuRow[2]
     Zone = getObjectFromGUID(tleilaxuColumn.zoneGuid)
     pos = tleilaxuColumn.pos
     activateButton()
- 
+
 end
 
 function activateButton()
     self.createButton({
-        label=i18n("acquireButton"), 
+        label=i18n("acquireButton"),
         click_function="Buy",
         function_owner=self,
-        position={0,2,1.4},
+        position = helperModule.correctAnchorPosition({0, 2, 1.4}, {1.37866032, 0.165157527, 1.34989369}),
         scale = {0.3, 0.3, 0.4},
         color={0.25, 0.25, 0.25, 1},
         font_color={1, 1, 1, 1},

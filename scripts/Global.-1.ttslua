@@ -10,7 +10,10 @@ function onLoad()
     localeAssets = require("localeAssets")
     localeAssets.load()
 
-    -- getObjectFromGUID("0552a2").setState(1)    
+    -- Réinitialise les triggers des plateaux de joueurs.
+    onPlayerTurn(nil, nil)
+
+    -- getObjectFromGUID("0552a2").setState(1)
 
     constants = require("Constants")
 
@@ -40,10 +43,10 @@ function onLoad()
         ["Yellow"] = {13.2, 1.8, -12.79}
     }
     board_player = {
-        ["Red"] = getObjectFromGUID("daf2a3"),
-        ["Blue"] = getObjectFromGUID("6957f2"),
-        ["Green"] = getObjectFromGUID("0c408d"),
-        ["Yellow"] = getObjectFromGUID("6037b3")
+        ["Red"] = getObjectFromGUID("75561d"),
+        ["Blue"] = getObjectFromGUID("d72200"),
+        ["Green"] = getObjectFromGUID("e6396b"),
+        ["Yellow"] = getObjectFromGUID("036b6a")
     }
 
     flag_basin_zone = getObjectFromGUID("3fe117") -- token below board at basin control position
@@ -177,29 +180,31 @@ function onLoad()
 
     players_color = {"Red", "Blue", "Green", "Yellow"}
 
-    board_display_leaders = getObjectFromGUID("5a682a")
+    board_display_leaders = getObjectFromGUID("823bd3")
 
     for _, color in ipairs(players_color) do
-        activateButtons(color) 
+        activateButtons(color)
     end
 
     --rendre impossible à delock les plateaux
 
-    getObjectFromGUID("8b1f92").interactable = false
-    getObjectFromGUID("96b94b").interactable = false
-    getObjectFromGUID("d69aec").interactable = false
-    getObjectFromGUID("b24cc5").interactable = false
+    --FF--getObjectFromGUID("8b1f92").interactable = false
+    --FF--getObjectFromGUID("96b94b").interactable = false
+    --FF--getObjectFromGUID("d69aec").interactable = false
+    --FF--getObjectFromGUID("b24cc5").interactable = false
     getObjectFromGUID("90f762").interactable = false
     bag_friendship["Emperor"].interactable = false
     bag_friendship["Spacing Guild"].interactable = false
     bag_friendship["Bene Gesserit"].interactable = false
     bag_friendship["Fremen"].interactable = false
-    getObjectFromGUID("7ded4f").interactable = false
+    --FF--getObjectFromGUID("7ded4f").interactable = false
     for _, color in pairs(players_color) do
         ressources[color][9].interactable = false -- conseillers
         buttonPass[color].interactable = false
         board_player[color].interactable = false
     end
+
+    getObjectFromGUID("2da390").interactable = true
 
 
     for _, obj in ipairs(getObjects()) do
@@ -213,16 +218,15 @@ function doNothing() end
 
 function revealEarly(color)
     if color == 'Blue' or color == "Red" then
-        pos1 = {-2.1, 0.02, 1.235}
-        pos2 = {-2.3, 0.02, 1.35}
-        pos3 = {-1.9, 0.02, 1.35}
+        pos1 = helperModule.addVector3D(buttonPass[color].getPosition(), {-2.1, 1.02, 1.235}) --FF-- {-2.1, 0.02, 1.235}
+        pos2 = helperModule.addVector3D(buttonPass[color].getPosition(), {-2.3, 1.02, 1.35}) --FF-- {-2.3, 0.02, 1.35}
+        pos3 = helperModule.addVector3D(buttonPass[color].getPosition(), {-1.9, 1.02, 1.35}) --FF-- {-1.9, 0.02, 1.35}
     else
-        pos1 = {2.1, 0.02, 1.235}
-        pos3 = {2.3, 0.02, 1.35}
-        pos2 = {1.9, 0.02, 1.35}
-
+        pos1 = helperModule.addVector3D(buttonPass[color].getPosition(), {2.1, 1.02, 1.235}) --FF-- {2.1, 0.02, 1.235}
+        pos3 = helperModule.addVector3D(buttonPass[color].getPosition(), {2.3, 1.02, 1.35}) --FF-- {2.3, 0.02, 1.35}
+        pos2 = helperModule.addVector3D(buttonPass[color].getPosition(), {1.9, 1.02, 1.35}) --FF-- {1.9, 0.02, 1.35}
     end
-    board_player[color].createButton({
+    buttonPass[color].createButton({
         ['click_function'] = 'doNothing',
         ['label'] = i18n("revealEarlyConfirm"),
         ['function_owner'] = Global,
@@ -235,7 +239,7 @@ function revealEarly(color)
         ['font_color'] = color,
         ['color'] = {0, 0, 0, 1}
     })
-    board_player[color].createButton({
+    buttonPass[color].createButton({
         ['click_function'] = 'RevealOK',
         ['label'] = i18n('yes'),
         ['function_owner'] = Global,
@@ -248,7 +252,7 @@ function revealEarly(color)
         ['font_color'] = {1, 1, 1},
         ['color'] = "Green"
     })
-    board_player[color].createButton({
+    buttonPass[color].createButton({
         ['click_function'] = 'cancelChoice',
         ['label'] = i18n('no'),
         ['function_owner'] = Global,
@@ -265,7 +269,7 @@ end
 
 function cancelChoice(board, color)
     if board.hasTag(color) then
-        board_player[color].clearButtons()
+        buttonPass[color].clearButtons()
         activateButtons(color)
     else
         broadcastToColor(i18n('noTouch'), color, "Purple")
@@ -274,10 +278,10 @@ end
 
 function activateButtons(color) -- creates button in player zone with position relative to leader board: reveal, reset discard, draw 1, draw 5
     if color == "Red" or color == "Blue" then
-        position_reveal_button = {-2.1, 0.02, 1.1}
+        position_reveal_button = {-2.1, 0.52, 1.1}
         tech_button_pos = {-3.5, 0.2, -0.8}
     else
-        position_reveal_button = {2.1, 0.02, 1.1}
+        position_reveal_button = {2.1, 0.52, 1.1}
         tech_button_pos = {3.5, 0.2, -0.8}
     end
     if color == 'Yellow' then
@@ -285,8 +289,8 @@ function activateButtons(color) -- creates button in player zone with position r
     else
         font_color = {0.9, 0.9, 0.9, 1}
     end
-  
-    board_player[color].createButton({
+
+    buttonPass[color].createButton({
         click_function = "Reveal",
         function_owner = Global,
         label = i18n("revealButton"),
@@ -298,7 +302,7 @@ function activateButtons(color) -- creates button in player zone with position r
         color = color,
         font_color = font_color
     })
-    board_player[color].createButton({
+    buttonPass[color].createButton({
         click_function = "ResetDiscardColor",
         function_owner = Global,
         label = i18n("resetDiscardButton"),
@@ -310,7 +314,7 @@ function activateButtons(color) -- creates button in player zone with position r
         color = color,
         font_color = font_color
     })
-    board_player[color].createButton({
+    buttonPass[color].createButton({
         click_function = "DrawFive",
         function_owner = Global,
         label = i18n("drawFiveButton"),
@@ -322,7 +326,7 @@ function activateButtons(color) -- creates button in player zone with position r
         color = color,
         font_color = font_color
     })
-    board_player[color].createButton({
+    buttonPass[color].createButton({
         click_function = "DrawOneColor",
         function_owner = Global,
         label = i18n("drawOneButton"),
@@ -335,11 +339,11 @@ function activateButtons(color) -- creates button in player zone with position r
         font_color = font_color
     })
 
-    board_player[color].createButton({
+    buttonPass[color].createButton({
         click_function = "doNothing",
         function_owner = Global,
         label = i18n("agentTurn"),
-        position = {0, 0.02, 1.1},
+        position = {0, 0.52, 1.1},
         scale = {0.15, 0.3, 0.15},
         width = 0,
         height = 0,
@@ -347,7 +351,7 @@ function activateButtons(color) -- creates button in player zone with position r
         color = {0,0,0,1},
         font_color = color
     })
-    board_player[color].createButton({
+    buttonPass[color].createButton({
         click_function = "doNothing",
         function_owner = Global,
         label = i18n("putTechHere"),
@@ -401,7 +405,7 @@ function Reveal(board, color)
 end
 
 function RevealOK(_, color)
-    board_player[color].clearButtons()
+    buttonPass[color].clearButtons()
     Wait.time(function() activateButtons(color) end, 2)
     local player_hand_table = Player[color].getHandObjects()
     local count = 0
@@ -544,7 +548,7 @@ end
 
 function ResetDiscardColor(board, color)
     if board.hasTag(color) then
-        board_player[color].clearButtons()
+        buttonPass[color].clearButtons()
         Wait.time(function() activateButtons(color) end, 1)
         ResetDiscard(_, color)
     else
@@ -555,7 +559,7 @@ end
 function DrawFive(board, color)
     if board.hasTag(color) then
 
-        board_player[color].clearButtons()
+        buttonPass[color].clearButtons()
         Wait.time(function() activateButtons(color) end, 1)
 
         local starterDeck = GetDeckOrCard(drawDeckZone[color])
@@ -599,7 +603,7 @@ end
 
 function DrawOneColor(board, color)
     if board.hasTag(color) then
-        board_player[color].clearButtons()
+        buttonPass[color].clearButtons()
         Wait.time(function() activateButtons(color) end, 0.3)
         DrawOne(_, color)
     else
@@ -1158,4 +1162,20 @@ function give2influence(faction, color)
         rotation = {0, 180, 0}
     })
 
+end
+
+function onPlayerTurn(player, previous_player)
+  local player_boards = {
+    {color = "Green", guid = "e6396b"},
+    {color = "Yellow", guid = "036b6a"},
+    {color = "Blue", guid = "d72200"},
+    {color = "Red", guid = "75561d"}
+  }
+  for i, board in ipairs(player_boards) do
+    local effect_index = 0
+    if player and board.color == player.color then
+      effect_index = i
+    end
+    getObjectFromGUID(board.guid).AssetBundle.playTriggerEffect(effect_index)
+  end
 end

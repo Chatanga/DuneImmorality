@@ -28,7 +28,7 @@ function activateButton()
         click_function='drawCard',
         function_owner=self,
         label=i18n("drawIntrigueButton"),
-        position={0, 120, -0.5},
+        position = helperModule.correctAnchorPosition({0, 120, -0.5}, {1.62645662, 0.006505827, 2.27703953}),
         rotation={0, 180, 0},
         width=button_width,
         height=button_height,
@@ -53,10 +53,10 @@ function drawCard(_,color)
                 position = {handZone.position.x-7.5, handZone.position.y, handZone.position.z},
                 flip = false,
                 smooth = false})
-            Wait.time(function() 
+            Wait.time(function()
                 my_card.flip()
             end,0.2)
-                
+
         else
             targetDeck.setPosition({handZone.position.x-7.5, handZone.position.y, handZone.position.z}, false, true)
             targetDeck.setRotation({deckRot.x, deckRot.y, deckRot.z+180})
