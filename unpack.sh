@@ -1,2 +1,3 @@
 #! /bin/bash
-python3 unpack.py mod.json > /tmp/TabletopSimulator/mod.json
+mkdir -p tmp/
+python3 unpack.py mod.json > tmp/mod.unscripted.json

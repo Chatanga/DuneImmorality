@@ -16,10 +16,12 @@ def extract_script_and_UI(name, id, element):
     if element['LuaScript']:
         with open(file_name + '.ttslua', 'w') as script_file:
             script_file.write(element['LuaScript'])
+        element['LuaScript'] = "..."
 
     if element['XmlUI']:
         with open(file_name + '.xml', 'w') as script_file:
             script_file.write(element['XmlUI'])
+        element['XmlUI'] = "..."
 
 def unpack_save(save_file_name):
     save = None
@@ -27,15 +29,14 @@ def unpack_save(save_file_name):
         save = json.load(save_file)
 
     extract_script_and_UI('Global', -1, save)
-    save.pop('LuaScript')
-    save.pop('XmlUI')
 
     object_states = save['ObjectStates']
 
     for object_state in object_states:
-        extract_script_and_UI(object_state['Nickname'], object_state['GUID'], object_state)
-        object_state.pop('LuaScript')
-        object_state.pop('XmlUI')
+        name = object_state['Nickname']
+        if not name:
+            name = object_state['Name']
+        extract_script_and_UI(name, object_state['GUID'], object_state)
 
     print(json.dumps(save, indent = 2))
 

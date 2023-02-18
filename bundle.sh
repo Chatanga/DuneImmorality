@@ -1,7 +1,7 @@
 #! /bin/bash
 
 mkdir -p "/tmp/TabletopSimulator/Tabletop Simulator Lua/"
-rm "/tmp/TabletopSimulator/Tabletop Simulator Lua/*"
+rm "/tmp/TabletopSimulator/Tabletop Simulator Lua"/*.ttslua
 
 for f in scripts/*.ttslua
 do

@@ -152,7 +152,7 @@
   },
   "players": {
     "Green": {
-      "board": "0c408d",
+      "#board": "0c408d",
       "character_zone": "cf1486",
       "draw_deck": "b8e747",
       "draw_deck_zone": "6d8a2e",
@@ -171,10 +171,10 @@
       "solari_counter": "e597dc",
       "water_counter": "fa9522",
       "pass_turn_anchor": "9c69b9",
-      "agent_turn_text": "1241fe",
+      "#agent_turn_text": "1241fe",
       "reveal_zone": "890115",
-      "tech_board": "96b94b",
-      "tech_board_text": "e7c444",
+      "#tech_board": "96b94b",
+      "#tech_board_text": "e7c444",
       "tech_board_zone": "546163",
       "trash": "4060b5",
       "hand_trigger": "482f72",
