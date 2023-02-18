@@ -22,7 +22,12 @@
     },
     "Baron Harkonnen Tokens Bag": "f89231",
     "Baron Harkonnen Instruction Card": "c65d17",
-    "Tessia Vernius Snooper Tokens": ["b10897", "bed196", "a58ce8", "857f74"],
+    "Tessia Vernius Snooper Tokens": [
+      "b10897",
+      "bed196",
+      "a58ce8",
+      "857f74"
+    ],
     "hagal_core_deck": "a710bc",
     "hagal_imperium_churn_deck": "adbaeb",
     "hagal_mentat_5_solari_token": "ba730f",
@@ -62,14 +67,34 @@
   "hidden_accessories": {
     "board": "6e10cb",
     "hidden_zone": "e88cd0",
-    "dune_the_desert_planet_deck_zones": ["e23476", "355dc0", "d3521b", "7b2ba8"],
-    "dune_the_desert_planet_deck": ["8c99a3", "af840c", "44069d", "85fb54"],
-    "control_the_spice_card": ["497c84", "30b760", "fbaf9f", "7ae7f5"],
+    "dune_the_desert_planet_deck_zones": [
+      "e23476",
+      "355dc0",
+      "d3521b",
+      "7b2ba8"
+    ],
+    "dune_the_desert_planet_deck": [
+      "8c99a3",
+      "af840c",
+      "44069d",
+      "85fb54"
+    ],
+    "control_the_spice_card": [
+      "497c84",
+      "30b760",
+      "fbaf9f",
+      "7ae7f5"
+    ],
     "ix_intrigue_deck_zone_contribution": "afa5e5",
     "ix_imperium_deck_zone_contribution": "58c4c3",
     "immortality_intrigue_deck_zone_contribution": "a5dbab",
     "immortality_imperium_deck_zone_contribution": "88b666",
-    "immortality_experimentation_decks": ["ef9531", "45ce21", "2d935f", "8ed0cd"],
+    "immortality_experimentation_decks": [
+      "ef9531",
+      "45ce21",
+      "2d935f",
+      "8ed0cd"
+    ],
     "trash": "433052",
     "hagal": {
       "hagal_text": "328efa",
@@ -108,7 +133,10 @@
     "Red": {
       "swordmaster": "ed3490"
     },
-    "Voice Tokens": ["cc0eda", "516df5"],
+    "Voice Tokens": [
+      "cc0eda",
+      "516df5"
+    ],
     "ix_Tech Tiles Bag": "cb766f",
     "ix_Tech FR Tiles Bag": "6116af",
     "Research Station Patch": "54413c",
@@ -160,13 +188,29 @@
       "first_player_zone": "59523d",
       "banner_bag": "ad6b92",
       "councilor": "a0028d",
-      "agents": ["66ae45", "bceb0e"],
-      "dreadnoughts": ["a15087", "734250"],
+      "agents": [
+        "66ae45",
+        "bceb0e"
+      ],
+      "dreadnoughts": [
+        "a15087",
+        "734250"
+      ],
       "pv_board": "caaba4",
       "pv_board_zone": "0e374f",
       "troup_zone": "bdfade",
       "troup_bowl": "126c3c",
-      "troups": ["f433eb", "b614cc", "60c92d", "167fd4", "08be0c", "a67287", "2852e1", "fc9c62", "b48887"],
+      "troups": [
+        "f433eb",
+        "b614cc",
+        "60c92d",
+        "167fd4",
+        "08be0c",
+        "a67287",
+        "2852e1",
+        "fc9c62",
+        "b48887"
+      ],
       "spice_counter": "22478f",
       "solari_counter": "e597dc",
       "water_counter": "fa9522",
@@ -190,13 +234,29 @@
       "first_player_zone": "e9a44c",
       "banner_bag": "b92a4c",
       "councilor": "1be491",
-      "agents": ["5068c8", "67b476"],
-      "dreadnoughts": ["5469fb", "71a414"],
+      "agents": [
+        "5068c8",
+        "67b476"
+      ],
+      "dreadnoughts": [
+        "5469fb",
+        "71a414"
+      ],
       "pv_board": "99a860",
       "pv_board_zone": "b25c3c",
       "troup_zone": "ffbd81",
       "troup_bowl": "6af67a",
-      "troups": ["ef6da2", "4d0dbf", "7c5b7b", "fbf8d2", "d01e0b", "79cbf1", "96d089", "b5d32e", "9b55e4"],
+      "troups": [
+        "ef6da2",
+        "4d0dbf",
+        "7c5b7b",
+        "fbf8d2",
+        "d01e0b",
+        "79cbf1",
+        "96d089",
+        "b5d32e",
+        "9b55e4"
+      ],
       "spice_counter": "78fb8a",
       "solari_counter": "c5c4ef",
       "water_counter": "f217d0",
@@ -220,13 +280,29 @@
       "first_player_zone": "1fc559",
       "banner_bag": "8627e0",
       "councilor": "f5b14a",
-      "agents": ["64d013", "106d8b"],
-      "dreadnoughts": ["82789e", "60f208"],
+      "agents": [
+        "64d013",
+        "106d8b"
+      ],
+      "dreadnoughts": [
+        "82789e",
+        "60f208"
+      ],
       "pv_board": "121bb6",
       "pv_board_zone": "376f34",
       "troup_zone": "2a520c",
       "troup_bowl": "b71dd9",
-      "troups": ["bc6e74", "5fba3c", "f2c21f", "2a5276", "f60d9c", "949f2d", "0e57c9", "694553", "f65e5d"],
+      "troups": [
+        "bc6e74",
+        "5fba3c",
+        "f2c21f",
+        "2a5276",
+        "f60d9c",
+        "949f2d",
+        "0e57c9",
+        "694553",
+        "f65e5d"
+      ],
       "spice_counter": "9cc286",
       "solari_counter": "fa5236",
       "water_counter": "0afaeb",
@@ -250,13 +326,29 @@
       "first_player_zone": "346e0d",
       "banner_bag": "61453d",
       "councilor": "f19a48",
-      "agents": ["7751c8", "afa978"],
-      "dreadnoughts": ["1a3c82", "a8f306"],
+      "agents": [
+        "7751c8",
+        "afa978"
+      ],
+      "dreadnoughts": [
+        "1a3c82",
+        "a8f306"
+      ],
       "pv_board": "e0ed4b",
       "pv_board_zone": "5b9a53",
       "troup_zone": "ab8fdf",
       "troup_bowl": "8ea4af",
-      "troups": ["fd5673", "81763a", "6c2b85", "8b2acc", "8bb1e6", "26904f", "d1787e", "af7cd0", "1bbf1c"],
+      "troups": [
+        "fd5673",
+        "81763a",
+        "6c2b85",
+        "8b2acc",
+        "8bb1e6",
+        "26904f",
+        "d1787e",
+        "af7cd0",
+        "1bbf1c"
+      ],
       "spice_counter": "3074d4",
       "solari_counter": "576ccd",
       "water_counter": "692c4d",
@@ -402,28 +494,44 @@
     "players": {
       "Green": {
         "score_token": "76039f",
-        "pre_deployed_troups": ["2b1cf8", "8e22cc", "866a9c"],
+        "pre_deployed_troups": [
+          "2b1cf8",
+          "8e22cc",
+          "866a9c"
+        ],
         "ix_cargo": "34281d"
       },
       "Yellow": {
         "score_token": "20bbd1",
-        "pre_deployed_troups": ["fd7fc7", "ef9008", "734b6e"],
+        "pre_deployed_troups": [
+          "fd7fc7",
+          "ef9008",
+          "734b6e"
+        ],
         "ix_cargo": "8fa76f"
       },
       "Blue": {
         "score_token": "1b1e76",
-        "pre_deployed_troups": ["c64616", "46c1c6", "49afee"],
+        "pre_deployed_troups": [
+          "c64616",
+          "46c1c6",
+          "49afee"
+        ],
         "ix_cargo": "68e424"
       },
       "Red": {
         "score_token": "4feaca",
-        "pre_deployed_troups": ["1fb4ed", "0fa955", "465c38"],
+        "pre_deployed_troups": [
+          "1fb4ed",
+          "0fa955",
+          "465c38"
+        ],
         "ix_cargo": "e9096d"
       }
     },
     "combat": {
       "level3_conflicts": "f9ea6b",
-      "level2_conflicts":"7c9ceb",
+      "level2_conflicts": "7c9ceb",
       "level1_conflicts": "616984",
       "level3_conflicts_zone": "07e239",
       "combat_detection_zone": "722609",
@@ -454,6 +562,28 @@
     "vp_bonus_zone": "a1a4e8",
     "Bene Tleilax Board": "d5c2db",
     "Tleilaxu bonus spice": "46cd6b",
+    "cells": [
+      "ab9e8d",
+      "d2b9be",
+      "90e82d",
+      "659227",
+      "95bb64",
+      "1696ae",
+      "1f11e0",
+      "79f487",
+      "6518bf",
+      "778685",
+      "d4fb57",
+      "52bcf4",
+      "f9ddaa",
+      "e91e6b",
+      "b60372",
+      "f8c1b0",
+      "8a3807",
+      "78a5cf",
+      "2a7803",
+      "6c0d3e",
+      "459e80"],
     "players": {
       "Green": {
         "BT track": "63d39f",

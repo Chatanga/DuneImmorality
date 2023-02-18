@@ -4,7 +4,7 @@ function onload()
     button_parameters.click_function = 'blank'
     button_parameters.function_owner = self
     button_parameters.label = 'First Player'
-    button_parameters.position = {0, 4, 0}
+    button_parameters.position = {0, 0.5, 0}
     button_parameters.rotation = {0, 180, 0}
     button_parameters.width = 1600
     button_parameters.height = 500
@@ -17,7 +17,7 @@ function onload()
     })
     self.interactable = false
 
-    
+
 end
 
 function blank() end

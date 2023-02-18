@@ -97,7 +97,6 @@ def find_name(structure, guid):
 
 player_object_positions = {
     'offseted': {
-        'first_player_zone': (-15.5, 3.5),
         'pass_turn_anchor': (-3.5, -3),
         'character_zone': (-9.5, 0),
         'draw_deck': (-15.5, 0),
@@ -107,14 +106,26 @@ player_object_positions = {
 
         'spice_counter': (-12, -3.5),
         'solari_counter': (-9.5, -3.5),
-        'water_counter': (-7, -3.5),
+        'water_counter': (-7, -3.5)
+    },
+    'unchanged': {
+        'pv_board': (0, 0),
+        'pv_board_zone': (0, 0),
+        'VP 4 Players': (-0.46, -2.34)
+    },
+    'symmetrical': {
+        'reveal_zone': (0, -11),
+        'tech_board_zone': (10, 0),
+        'trash': (16, -0.25),
+        'hand_trigger': (0, -15),
 
+        'first_player_zone': (-15.5, 3.5),
         'banner_bag': (-13.5, 4),
         'councilor': (-13.5, 3),
         'agents/0': (-12, 3.5),
         'agents/1': (-10.5, 3.5),
-        'dreadnoughts/0': (-6, 4),
-        'dreadnoughts/1': (-7, 4),
+        'dreadnoughts/0': (-5.5, 4),
+        'dreadnoughts/1': (-6.5, 4),
 
         'troup_zone': (-3.5, 3.3),
         'troup_bowl': (-3.5, 3.3),
@@ -127,21 +138,11 @@ player_object_positions = {
         'troups/6': (-3.0, 4.0),
         'troups/7': (-3.5, 4.0),
         'troups/8': (-4.0, 4.0)
-    },
-    'unchanged': {
-        'pv_board': (0, 0),
-        'pv_board_zone': (0, 0),
-        'VP 4 Players': (-0.46, -2.34)
-    },
-    'symmetrical': {
-        'reveal_zone': (0, -11),
-        'tech_board_zone': (10, 0),
-        'trash': (16, -0.25),
-        'hand_trigger': (0, -15)
     }
 }
 
 player_object_scales = {
+    'character_zone': (4, 3),
     'reveal_zone': (36, 3),
     'tech_board_zone': (10, 9),
     'hand_trigger': (36, 3)
@@ -207,8 +208,10 @@ def layout_player_board(structure, object_by_guid, color):
     for key, (sx, sz) in player_object_scales.items():
         object = object_by_guid[getGUID(key)]
         object['Transform']['scaleX'] = sx
-        # object['Transform']['scaleY'] *= 1.5
         object['Transform']['scaleZ'] = sz
+
+    object = object_by_guid[getGUID("character_zone")]
+    object['Transform']['scaleY'] = 1
 
     board['AttachedSnapPoints'] = []
 
@@ -254,6 +257,24 @@ def layout_player_board(structure, object_by_guid, color):
     for i in range(0, 12):
         add_snap_point('tech_board_zone', symmetrical_x, (i // 4) * 3 - 4, (i % 4) * 2 - 3)
 
+def clean_up_bottom(structure, object_by_guid):
+    root = structure['bottom_accessories']
+    manuals = [
+        "Base Rules",
+        "Base Reference Sheet",
+        "Rise of Ix Rulebook",
+        "Immortality Rules",
+        "blitz_rules"
+    ]
+    for manual in manuals:
+        object = object_by_guid[root[manual]]
+        translate(object, (0, 0, 110))
+
+    translate(object_by_guid[root["resolving_ties_in_conflict"]], (2, 0, -1))
+    translate(object_by_guid[root["turn_summary_sheet"]], (-5, 0, 2.5))
+    translate(object_by_guid[root["Randomise Players Positions"]], (0.5, 0, -1))
+    translate(object_by_guid[root["credits_note"]], (-0.7, 0, -2))
+
 def patch_save(input_path, output_path):
     with open('structure.json', 'r') as structure_file:
         structure = json.load(structure_file)
@@ -295,6 +316,8 @@ def patch_save(input_path, output_path):
     save["VectorLines"] = []
     save["SnapPoints"] = []
 
+    save["SkyURL"] = "file:////home/sadalsuud/Téléchargements/Textures/HDRI-II/HDRI-II.jpg"
+
     if noLuaScript:
         save['LuaScript'] = ''
         save['LuaScriptState'] = ''
@@ -330,12 +353,18 @@ def patch_save(input_path, output_path):
         '7ded4f',
         #'6e10cb',
         # Instructions pour le Baron
-        'c65d17'
+        'c65d17',
+        # Texte de la maison Hagal
+        '328efa',
+        # Poubelle du bas
+        "ef8614"
     ]
 
     additional_objects = []
     additional_character_table = None
     anchor_object = None
+
+    global_translation = (0, 1.6, 0)
 
     for object in patch['ObjectStates']:
         if object['Nickname'] == "Anchor":
@@ -348,6 +377,7 @@ def patch_save(input_path, output_path):
             object['Transform']['posY'] -= 1
             if object['GUID'] != '200785':
                 object['Transform']['posY'] -= 0.75
+            translate(object, global_translation)
             additional_objects.append(object)
         elif object['Name'] == "HandTrigger":
             pass
@@ -401,12 +431,13 @@ def patch_save(input_path, output_path):
             object = new_anchor
 
         rectify_rotation(object)
+        translate(object, global_translation)
 
         if guid in structure_guids['black_market']:
             if guid == structure['black_market']['board']:
-                set_position(object, (-6, -0.5, 21))
+                set_position(object, (-6, -1, 21))
             else:
-                translate(object, (0, -1, -3))
+                translate(object, (0, -3, -3))
 
         elif guid in structure_guids['official_characters'] or guid in structure_guids['fanbase_characters']:
             translate(object, (1, -3, 2))
@@ -427,32 +458,36 @@ def patch_save(input_path, output_path):
             translate(object, (0, -2.5, -4))
 
         elif guid in structure_guids['Green']:
-            if not is_among(guid, structure['players']['Green'], ['hand_trigger']):
+            green = structure['players']['Green']
+            if not is_among(guid, green, ['hand_trigger']):
                 translate(object, (2, -2.1, -2.8))
-            if is_among(guid, structure['players']['Green'], ['pv_board', 'pv_board_zone', 'VP 4 Players']):
+            if is_among(guid, green, ['pv_board', 'pv_board_zone', 'VP 4 Players']):
                 translate(object, (0, 0, -2))
-            elif is_among(guid, structure['players']['Green'], ['trash']):
+            elif is_among(guid, green, ['trash']):
                 translate(object, (10, 0.2, 6))
         elif guid in structure_guids['Yellow']:
-            if not is_among(guid, structure['players']['Yellow'], ['hand_trigger']):
+            yellow = structure['players']['Yellow']
+            if not is_among(guid, yellow, ['hand_trigger']):
                 translate(object, (2, -2.1, -4))
-            if is_among(guid, structure['players']['Yellow'], ['pv_board', 'pv_board_zone', 'VP 4 Players']):
+            if is_among(guid, yellow, ['pv_board', 'pv_board_zone', 'VP 4 Players']):
                 translate(object, (0, 0, -2))
-            elif is_among(guid, structure['players']['Yellow'], ['trash']):
+            elif is_among(guid, yellow, ['trash']):
                 translate(object, (10, 0.2, 6))
         elif guid in structure_guids['Blue']:
-            if not is_among(guid, structure['players']['Blue'], ['hand_trigger']):
+            blue = structure['players']['Blue']
+            if not is_among(guid, blue, ['hand_trigger']):
                 translate(object, (-2, -2.1, -4))
-            if is_among(guid, structure['players']['Blue'], ['pv_board', 'pv_board_zone', 'VP 4 Players']):
+            if is_among(guid, blue, ['pv_board', 'pv_board_zone', 'VP 4 Players']):
                 translate(object, (0, 0, -2))
-            elif is_among(guid, structure['players']['Blue'], ['trash']):
+            elif is_among(guid, blue, ['trash']):
                 translate(object, (-10, 0.2, 6))
         elif guid in structure_guids['Red']:
-            if not is_among(guid, structure['players']['Red'], ['hand_trigger']):
+            red = structure['players']['Red']
+            if not is_among(guid, red, ['hand_trigger']):
                 translate(object, (-2, -2.1, -2.8))
-            if is_among(guid, structure['players']['Red'], ['pv_board', 'pv_board_zone', 'VP 4 Players']):
+            if is_among(guid, red, ['pv_board', 'pv_board_zone', 'VP 4 Players']):
                 translate(object, (0, 0, -2))
-            elif is_among(guid, structure['players']['Red'], ['trash']):
+            elif is_among(guid, red, ['trash']):
                 translate(object, (-10, 0.2, 6))
 
         new_objects.append(object)
@@ -464,6 +499,8 @@ def patch_save(input_path, output_path):
 
     for color in colors:
         layout_player_board(structure, object_by_guid, color)
+
+    clean_up_bottom(structure, object_by_guid)
 
     save['ObjectStates'] = new_objects
 

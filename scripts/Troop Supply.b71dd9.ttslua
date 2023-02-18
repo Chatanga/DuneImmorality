@@ -4,6 +4,8 @@ validCountItemList = {
     ["Blue"] = 1,
 }
 
+refPosition = nil
+
 function onLoad()
     i18n = require("i18n")
     require("locales")
@@ -11,16 +13,18 @@ function onLoad()
     self.interactable = false
 
     zone_leader = getObjectFromGUID("681774")
+    refPosition = getObjectFromGUID("46c1c6").getPosition()
+
     troopb_x = 0
     troopb_z = 0
     timerID = self.getGUID()..math.random(9999999999999)
-    
+
     self.createButton({
         label="", click_function="none", function_owner=self,
         position={0,1.4,-1.8}, rotation={0,180,0}, height=00, width=0,
         font_color={1,1,1}, font_size=250
     })
-    
+
     Timer.create({
         identifier=timerID,
         function_name="countItems", function_owner=self,
@@ -28,36 +32,46 @@ function onLoad()
     })
 
     self.createButton({
-        click_function = "AddTroop", 
-        function_owner = self, 
-        label = i18n("addTroopBigButton"), 
-        position = {-2.8, 0.2, -0.5}, 
-        rotation = {0, 180, 0}, 
-        scale = {0.5, 0.5, 0.5}, 
-        width = 2400, 
-        height = 1500, 
-        font_size = 400, 
-        color = {0.118, 0.53, 1, 1}, 
+        click_function = "AddTroop",
+        function_owner = self,
+        label = i18n("addTroopBigButton"),
+        position = {-2.8, 0.2, -0.5},
+        rotation = {0, 180, 0},
+        scale = {0.5, 0.5, 0.5},
+        width = 2400,
+        height = 1500,
+        font_size = 400,
+        color = {0.118, 0.53, 1, 1},
         font_color = {0.7804, 0.7804, 0.7804, 1}
     })
 
     self.createButton({
-        click_function = "AddTroop", 
-        function_owner = self, 
-        label = i18n("addTroopSmallButton"), 
-        position = {-35.7, 0.2, -12.7}, 
-        rotation = {0, 180, 0}, 
-        scale = {0.5, 0.5, 0.5}, 
-        width = 1700, 
-        height = 450, 
-        font_size = 400, 
-        color = {0.118, 0.53, 1, 1}, 
+        click_function = "AddTroop",
+        function_owner = self,
+        label = i18n("addTroopSmallButton"),
+        position = newRelativePosition(0, 0.1, -2.4),
+        rotation = {0, 180, 0},
+        scale = {0.5, 0.5, 0.5},
+        width = 1700,
+        height = 450,
+        font_size = 400,
+        color = {0.118, 0.53, 1, 1},
         font_color = {0.7804, 0.7804, 0.7804, 1}
     })
 end
 
+function newRelativePosition(dx, dy, dz)
+    local origin = self.getPosition()
+    local scale = self.getScale()
+    return {
+        -dx - (refPosition.x - origin.x) / scale.x,
+        dy,
+        (refPosition.z - origin.z) / scale.z + dz
+    }
+end
 
 function AddTroop(object, pColor)
+    log(zone_leader.getObjects()[1])
     local LeaderName = zone_leader.getObjects()[1].getName()
 
     if #getObjectFromGUID("4a3e76").call("getPlayersBasedOnHotseat")  >= 3 and pColor ~= "Blue" then
@@ -75,7 +89,7 @@ function AddTroop2()
     for _, obj in ipairs(table_troop) do
         if obj.getName() == "Blue" then
             if count < 1 then
-                obj.setPositionSmooth({0.86+troopb_x, 2, -6.83+troopb_z}, false, false)
+                obj.setPositionSmooth({refPosition.x + troopb_x, 2, refPosition.z + troopb_z - 0.4}, false, false)
                 obj.setRotation({0,0,0})
                 count = 1
                 troopb_x = troopb_x + 0.45
@@ -116,12 +130,14 @@ function countItems()
         end
     end
     --Updates the number display
-    if totalValue == 1 then 
+    if totalValue == 1 then
       totalValue = (totalValue .. i18n("troop"))
     elseif totalValue > 1 then
       totalValue = (totalValue .. i18n("troops"))
     end
-    self.editButton({index=0, label=totalValue})
+    if self.getButtons() ~= nil then
+        self.editButton({index=0, label=totalValue})
+    end
 end
 
 --Gets the items in the bowl for countItems to count

@@ -206,10 +206,20 @@ function onLoad()
 
     getObjectFromGUID("2da390").interactable = true
 
-
     for _, obj in ipairs(getObjects()) do
         if (obj.getDescription() == "Techs FR" and locale == 'en') or (obj.getDescription() == "Techs EN" and locale == 'fr') then
             obj.setInvisibleTo({"Red", "Blue", "Green", "Yellow", "White", "Grey", "Brown", "Pink", "Purple", "Orange"})
+        end
+    end
+
+    for _, player_color in ipairs(players_color) do
+        local player = Player[player_color]
+        for i = 1, player.getHandCount() do
+            local handT = player.getHandTransform()
+            local pos = handT.position
+            pos.y = pos.y - 1
+            handT.position = pos
+            player.setHandTransform(handT, i)
         end
     end
 end
@@ -278,7 +288,6 @@ end
 
 -- creates button in player zone with position relative to leader board: reveal, reset discard, draw 1, draw 5
 function activateButtons(color)
-    log(board_player[color].getPosition())
 
     function new_board_position(x, y, z)
         return {x, y + 0.7, -z}
@@ -314,30 +323,6 @@ function activateButtons(color)
         font_color = {0.9, 0.9, 0.9, 1}
     end
 
-    --[[
-    board_player[color].createButton({
-        click_function = "doNothing",
-        function_owner = Global,
-        label = i18n("agentTurn"),
-        position = new_board_position(0, 0.15, 1),
-        width = 0,
-        height = 0,
-        font_size = 300,
-        color = {0,0,0,1},
-        font_color = color
-    })
-    board_player[color].createButton({
-        click_function = "Reveal",
-        function_owner = Global,
-        label = i18n("revealButton"),
-        position = new_board_position(0, 0.15, -3),
-        width = 1800,
-        height = 350,
-        font_size = 300,
-        color = color,
-        font_color = font_color
-    })
-    ]]--
     board_player[color].createButton({
         click_function = "doNothing",
         function_owner = Global,

@@ -93,10 +93,10 @@ constants.pos_trash_lower = {-1.92, 2, -19.65}
 constants.first_player_marker = getObjectFromGUID("1f5576")
 
 constants.first_player_positions =  {
-    ["Red"] = {-13.73, 1.71, 23.79},
-    ["Blue"] = {-13.79, 1.70, 1.92},
-    ["Green"] = {13.71, 1.67, 24.20},
-    ["Yellow"] = {13.49, 1.66, 1.92}
+    ["Red"] = getObjectFromGUID('346e0d').getPosition(),
+    ["Blue"] = getObjectFromGUID('1fc559').getPosition(),
+    ["Green"] = getObjectFromGUID('59523d').getPosition(),
+    ["Yellow"] = getObjectFromGUID('e9a44c').getPosition()
   }
 
 constants.zone_deck_imperium = '8bd982'

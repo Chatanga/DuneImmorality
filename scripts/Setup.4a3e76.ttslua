@@ -102,24 +102,30 @@ cargo = constants.cargo
 table_players = {
     ["Green"] = {
         "76039f", "a1a9a7", "866a9c", "8e22cc", "2b1cf8", "34281d", "d390dc",
-        "2dc980", "89da7d", "d7c9ba", "a67287", "fc9c62", "126c3c", "caaba4",
-        "63d39f", "658b17"
+        "2dc980", "89da7d", "d7c9ba", "a67287", "fc9c62", "caaba4", "63d39f",
+        "658b17"
     },
     ["Blue"] = {
         "1b1e76", "f22e20", "c64616", "49afee", "46c1c6", "68e424", "0e6e41",
-        "2a88a6", "4069d8", "426a23", "f60d9c", "694553", "b71dd9", "121bb6",
-        "96607f", "292658"
+        "2a88a6", "4069d8", "426a23", "f60d9c", "694553", "121bb6", "96607f",
+        "292658"
     },
     ["Yellow"] = {
         "20bbd1", "c2dd31", "ef9008", "734b6e", "fd7fc7", "8fa76f", "77d7c8",
-        "a3729e", "9d0075", "489871", "b5d32e", "7c5b7b", "6af67a", "99a860",
-        "d20bcf", "8988cf"
+        "a3729e", "9d0075", "489871", "b5d32e", "7c5b7b", "99a860", "d20bcf",
+        "8988cf"
     },
     ["Red"] = {
         "4feaca", "2d1d17", "1fb4ed", "465c38", "0fa955", "e9096d", "088f51",
-        "713eae", "be464e", "acfcef", "1bbf1c", "26904f", "8ea4af", "e0ed4b",
-        "2bfc39", "39e0f3"
+        "713eae", "be464e", "acfcef", "1bbf1c", "26904f", "e0ed4b", "2bfc39",
+        "39e0f3"
     }
+}
+bowl_players = {
+    ["Green"] = "126c3c",
+    ["Blue"] =  "b71dd9",
+    ["Yellow"] = "6af67a",
+    ["Red"] = "8ea4af"
 }
 hand_players = {
     ["Green"] = getObjectFromGUID("482f72"),
@@ -867,7 +873,7 @@ function Setup()
             deck.setPositionSmooth(pos_starter_decks[i], false, false)
         end
 
-        research_station_immortality.setPosition({-0.09, 1.58, 2.10})
+        research_station_immortality.setPosition({-0.07, 0.59, -1.89})
         research_station_immortality.setLock(true)
         -- Need to keep immo station interactable else the GET button of the normal station under will mess with the GET button of the new station
         -- research_station_immortality.interactable = false
@@ -927,7 +933,6 @@ function Setup()
 end
 
 function Commune()
-    --FF-- Mon dieu... Des synchro absolues ? Supercalifragilisticfuckedup comme dirait Mary Poppins.
     destructMissingPlayers()
     GetDeckOrCard(zone_intrigue).shuffle()
     GetDeckOrCard(zone_imperium).shuffle()
@@ -1557,29 +1562,39 @@ function destructMissingPlayers()
         redscore.setPositionSmooth({10.35, 4, -10.08})
     end
     for color, _ in pairs(hand_players) do
-        if hasValue(seated_players, color) == false then
+        if not hasValue(seated_players, color) then
             hand_players[color].destruct()
         end
     end
     Wait.time(function()
-        for color, _ in pairs(table_players) do
-            if hasValue(seated_players, color) == false then
-                local objects = table_players[color]
-                for i, obj in ipairs(objects) do
+        for color, table_player in pairs(table_players) do
+            if not hasValue(seated_players, color) then
+                for _, obj in ipairs(table_player) do
                     local obj1 = getObjectFromGUID(obj)
                     if obj1 ~= nil then
                         obj1.setPosition({0, 200, -50})
                         obj1.setLock(true)
                     end
                 end
-                break
+            end
+        end
+        for color, bowl_player in pairs(bowl_players) do
+            if not hasValue(seated_players, color) then
+                local bowl = getObjectFromGUID(bowl_player)
+                if bowl ~= nil then
+                    bowl.clearButtons()
+                end
             end
         end
     end, 2)
 end
 
 function hasValue(tab, val)
-    for index, value in ipairs(tab) do if value == val then return index end end
+    for index, value in ipairs(tab) do
+        if value == val then
+            return true
+        end
+    end
     return false
 end
 
