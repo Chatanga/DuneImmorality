@@ -13,12 +13,11 @@ constants.intrigue_ix = "afa5e5"
 constants.intrigue_base = "77d25d"
 constants.epic_cards = {'7ae7f5', 'fbaf9f', '497c84', '30b760'}
 
-
 constants.leaderPos = {
-    ["Yellow"] = {18.89, 2, -1.60},
-    ["Green"] = {19.10, 2, 20.58},
-    ["Blue"] = {-18.98, 2, -1.60},
-    ["Red"] = {-19.23, 2, 20.35}
+    ["Yellow"] = getObjectFromGUID("a677e0").getPosition(),
+    ["Green"] = getObjectFromGUID("cf1486").getPosition(),
+    ["Blue"] = getObjectFromGUID("681774").getPosition(),
+    ["Red"] = getObjectFromGUID("66cdbb").getPosition()
 }
 
 constants.leaders = {

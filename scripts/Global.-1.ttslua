@@ -269,104 +269,147 @@ end
 
 function cancelChoice(board, color)
     if board.hasTag(color) then
-        buttonPass[color].clearButtons()
+        board_player[color].clearButtons()
         activateButtons(color)
     else
         broadcastToColor(i18n('noTouch'), color, "Purple")
     end
 end
 
-function activateButtons(color) -- creates button in player zone with position relative to leader board: reveal, reset discard, draw 1, draw 5
-    if color == "Red" or color == "Blue" then
-        position_reveal_button = {-2.1, 0.52, 1.1}
-        tech_button_pos = {-3.5, 0.2, -0.8}
-    else
-        position_reveal_button = {2.1, 0.52, 1.1}
-        tech_button_pos = {3.5, 0.2, -0.8}
+-- creates button in player zone with position relative to leader board: reveal, reset discard, draw 1, draw 5
+function activateButtons(color)
+    log(board_player[color].getPosition())
+
+    function new_board_position(x, y, z)
+        return {x, y + 0.7, -z}
     end
+
+    function new_symmetric_board_position(x, y, z)
+        if color == "Red" or color == "Blue" then
+            return new_board_position(-x, y, z)
+        else
+            return new_board_position(x, y, z)
+        end
+    end
+
+    function new_symmetric_board_rotation(x, y, z)
+        if color == "Red" or color == "Blue" then
+            return new_board_position(x, -y, z)
+        else
+            return new_board_position(x, y, z)
+        end
+    end
+
+    function new_offseted_board_position(x, y, z)
+        if color == "Red" or color == "Blue" then
+            return new_board_position(18.47 + x, y, z)
+        else
+            return new_board_position(x, y, z)
+        end
+    end
+
     if color == 'Yellow' then
         font_color = {0.1, 0.1, 0.1, 1}
     else
         font_color = {0.9, 0.9, 0.9, 1}
     end
 
-    buttonPass[color].createButton({
-        click_function = "Reveal",
-        function_owner = Global,
-        label = i18n("revealButton"),
-        position = position_reveal_button,
-        scale = {0.15, 0.3, 0.15},
-        width = 2200,
-        height = 400,
-        font_size = 400,
-        color = color,
-        font_color = font_color
-    })
-    buttonPass[color].createButton({
-        click_function = "ResetDiscardColor",
-        function_owner = Global,
-        label = i18n("resetDiscardButton"),
-        position = {1.08, 0.2, 0.43},
-        scale = {0.055, 0.3, 0.055},
-        width = 3700,
-        height = 700,
-        font_size = 400,
-        color = color,
-        font_color = font_color
-    })
-    buttonPass[color].createButton({
-        click_function = "DrawFive",
-        function_owner = Global,
-        label = i18n("drawFiveButton"),
-        position = {-1.1, 0.2, 0.43},
-        scale = {0.055, 0.3, 0.055},
-        width = 3700,
-        height = 700,
-        font_size = 400,
-        color = color,
-        font_color = font_color
-    })
-    buttonPass[color].createButton({
-        click_function = "DrawOneColor",
-        function_owner = Global,
-        label = i18n("drawOneButton"),
-        position = {-1.1, 0.2, 0.6},
-        scale = {0.06, 0.3, 0.06},
-        width = 2900,
-        height = 1100,
-        font_size = 400,
-        color = color,
-        font_color = font_color
-    })
-
-    buttonPass[color].createButton({
+    --[[
+    board_player[color].createButton({
         click_function = "doNothing",
         function_owner = Global,
         label = i18n("agentTurn"),
-        position = {0, 0.52, 1.1},
-        scale = {0.15, 0.3, 0.15},
+        position = new_board_position(0, 0.15, 1),
         width = 0,
         height = 0,
-        font_size = 400,
+        font_size = 300,
         color = {0,0,0,1},
         font_color = color
     })
-    buttonPass[color].createButton({
+    board_player[color].createButton({
+        click_function = "Reveal",
+        function_owner = Global,
+        label = i18n("revealButton"),
+        position = new_board_position(0, 0.15, -3),
+        width = 1800,
+        height = 350,
+        font_size = 300,
+        color = color,
+        font_color = font_color
+    })
+    ]]--
+    board_player[color].createButton({
+        click_function = "doNothing",
+        function_owner = Global,
+        label = i18n("agentTurn"),
+        position = new_symmetric_board_position(-17.8, 0, -1),
+        rotation = new_symmetric_board_rotation(0, -90, 0),
+        width = 0,
+        height = 0,
+        font_size = 280,
+        color = {0,0,0,1},
+        font_color = color
+    })
+    board_player[color].createButton({
+        click_function = "Reveal",
+        function_owner = Global,
+        label = i18n("revealButton"),
+        position = new_symmetric_board_position(-17.8, 0, -5),
+        rotation = new_symmetric_board_rotation(0, -90, 0),
+        width = 1600,
+        height = 300,
+        font_size = 280,
+        color = color,
+        font_color = font_color
+    })
+    board_player[color].createButton({
+        click_function = "ResetDiscardColor",
+        function_owner = Global,
+        label = i18n("resetDiscardButton"),
+        position = new_offseted_board_position(-3.5, 0, 3.5),
+        width = 1200,
+        height = 200,
+        font_size = 150,
+        color = color,
+        font_color = font_color
+    })
+    board_player[color].createButton({
+        click_function = "DrawFive",
+        function_owner = Global,
+        label = i18n("drawFiveButton"),
+        position = new_offseted_board_position(-15.5, 0, 3.5),
+        width = 1200,
+        height = 200,
+        font_size = 150,
+        color = color,
+        font_color = font_color
+    })
+    board_player[color].createButton({
+        click_function = "DrawOneColor",
+        function_owner = Global,
+        label = i18n("drawOneButton"),
+        position = new_offseted_board_position(-15.5, 0, 3),
+        width = 800,
+        height = 200,
+        font_size = 125,
+        color = color,
+        font_color = font_color
+    })
+    board_player[color].createButton({
         click_function = "doNothing",
         function_owner = Global,
         label = i18n("putTechHere"),
-        position = tech_button_pos,
-        scale = {0.5, 0.5, 0.5},
+        position = new_symmetric_board_position(9, 0, 10.5),
         width = 0,
         height = 0,
-        font_size = 190,
+        font_size = 180,
         color = {0,0,0,1},
         font_color = color
     })
 end
 
 function activatePass(color)
-    buttonPass[color].createButton({
+    board_player[color].createButton({
         click_function = "Pass",
         function_owner = self,
         label = i18n("passButton"),
@@ -405,7 +448,7 @@ function Reveal(board, color)
 end
 
 function RevealOK(_, color)
-    buttonPass[color].clearButtons()
+    board_player[color].clearButtons()
     Wait.time(function() activateButtons(color) end, 2)
     local player_hand_table = Player[color].getHandObjects()
     local count = 0

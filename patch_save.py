@@ -167,14 +167,14 @@ def layout_player_board(structure, object_by_guid, color):
     elif color == 'Blue':
         board = object_by_guid['d72200']
         xOrigin = -30.5
-        zOrigin = 11.5
+        zOrigin = -11.5
         unchanged_x = lambda x : xOrigin + x
         offseted_x = lambda x : xOrigin + 18.47 + x
         symmetrical_x = lambda x : xOrigin - x
     elif color == 'Red':
         board = object_by_guid['75561d']
         xOrigin = -30.5
-        zOrigin = -11.5
+        zOrigin = 11.5
         unchanged_x = lambda x : xOrigin + x
         offseted_x = lambda x : xOrigin + 18.47 + x
         symmetrical_x = lambda x : xOrigin - x

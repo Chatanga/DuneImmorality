@@ -1,11 +1,23 @@
 #! /bin/bash
 
 mkdir -p "/tmp/TabletopSimulator/Tabletop Simulator Lua/"
-rm "/tmp/TabletopSimulator/Tabletop Simulator Lua"/*.ttslua
 
-for f in scripts/*.ttslua
-do
-	filename=$(basename "$f")
-	echo "Bundle $f..."
-	luabundler bundle "$f" -p "scripts/modules/?.ttslua" -o "/tmp/TabletopSimulator/Tabletop Simulator Lua/$filename"
-done
+function bundle {
+	path="$1"
+	filename=$(basename "$path")
+	echo "Bundle $path..."
+	luabundler bundle "$path" -p "scripts/modules/?.ttslua" -o "/tmp/TabletopSimulator/Tabletop Simulator Lua/$filename"
+}
+
+if [ $# -gt 0 ]; then
+	while [ $# -gt 0 ]; do
+		bundle "$1"
+		shift
+	done
+else
+	rm "/tmp/TabletopSimulator/Tabletop Simulator Lua"/*.ttslua
+	for f in scripts/*.ttslua
+	do
+		bundle "$f"
+	done
+fi
