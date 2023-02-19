@@ -1,5 +1,25 @@
 local constants = {}
 
+function constants.getPositionFromGUID(GUID)
+    local object = getObjectFromGUID(GUID)
+    if object ~= nil then
+        local position = object.getPosition()
+        -- Une copie, au cas où.
+        return {x = position.x, y = position.y, z = position.z}
+    else
+        log("[getPositionFromGUID] GUID inconnu : " .. GUID)
+        return {x = 0, y = 10, z = 0}
+    end
+end
+
+-- Une position « légèrement » en dessus de manière à laisser faire la gravité
+-- et d’éviter d’envoyer, par exemple, une carte invisible juste en dessous d’un
+-- paquet qui sera donc ajouté à la carte et deviendra à son tour invisible…
+function constants.getLandingPositionFromGUID(anchorGUID)
+    local position = constants.getPositionFromGUID(anchorGUID)
+    return {position.x, position.y + 0.3, position.z}
+end
+
 constants.setupObj = getObjectFromGUID("4a3e76")
 
 constants.imperium_deck = "99d41d"
@@ -11,28 +31,6 @@ constants.intrigue_immortality = "a5dbab"
 constants.intrigue_ix = "afa5e5"
 constants.intrigue_base = "77d25d"
 constants.epic_cards = {'7ae7f5', 'fbaf9f', '497c84', '30b760'}
-
-function constants.getPositionFromGUID(GUID)
-    local object = getObjectFromGUID(GUID)
-    if object ~= nil then
-        local position = object.getPosition()
-        -- Une copie, au cas où.
-        return {x = position.x, y = position.y, z = position.z}
-    else
-        -- log("[getPositionFromGUID] GUID inconnu : " .. GUID)
-        return {x = 0, y = 10, z = 0}
-    end
-end
-
---[[
-    Une position « légèrement » en dessus de manière à laisser faire la gravité
-    et d’éviter d’envoyer, par exemple, une carte invisible juste en dessous d’un
-    paquet qui sera donc ajouté à la carte et deviendra à son tour invisible…
-]]--
-function constants.getLandingPositionFromGUID(anchorGUID)
-    local position = constants.getPositionFromGUID(anchorGUID)
-    return {position.x, position.y + 0.3, position.z}
-end
 
 constants.leaderPos = {
     ["Yellow"] = constants.getPositionFromGUID("a677e0"),
@@ -155,35 +153,45 @@ constants.pos_supply_bowls = {
     ["Yellow"] = {24.45, 4.57, 1.98}
 }
 
+constants.player_scoreboards = {
+    ["Red"] = getObjectFromGUID("e0ed4b"),
+    ["Blue"] = getObjectFromGUID("121bb6"),
+    ["Green"] = getObjectFromGUID("caaba4"),
+    ["Yellow"] = getObjectFromGUID("99a860")
+}
+
+constants.player_scoreboard_zones = {
+    ["Red"] = getObjectFromGUID('5b9a53'),
+    ["Blue"] = getObjectFromGUID('376f34'),
+    ["Green"] = getObjectFromGUID('0e374f'),
+    ["Yellow"] = getObjectFromGUID('b25c3c')
+}
+
 constants.pos_vp = {
-    ["Red"] = {
-        {-28.54, 2.5, 20.23}, {-28.57, 2.5, 21.26}, {-28.56, 2.5, 22.26},
-        {-28.56, 2.5, 23.26}, {-28.56, 2.5, 24.28}, {-28.57, 2.5, 25.25},
-        {-27.64, 2.5, 20.23}, {-27.62, 2.5, 21.26}, {-27.61, 2.5, 22.26},
-        {-27.64, 2.5, 23.26}, {-27.61, 2.5, 24.28}, {-27.61, 2.5, 25.25},
-        {-27.61, 4, 25.25}
-    },
-    ["Blue"] = {
-        {-28.52, 2.5, -1.92}, {-28.54, 2.5, -0.89}, {-28.54, 2.5, 0.11},
-        {-28.56, 2.5, 1.12}, {-28.54, 2.5, 2.14}, {-28.54, 2.5, 3.11},
-        {-27.62, 2.5, -1.92}, {-27.6, 2.5, -0.89}, {-27.59, 2.5, 0.11},
-        {-27.61, 2.5, 1.12}, {-27.59, 2.5, 2.14}, {-27.59, 2.5, 3.11},
-        {-27.59, 4, 3.11}
-    },
-    ["Green"] = {
-        {27.67, 2.5, 20.14}, {27.65, 2.5, 21.17}, {27.65, 2.5, 22.17},
-        {27.65, 2.5, 23.18}, {27.65, 2.5, 24.19}, {27.65, 2.5, 25.16},
-        {28.57, 2.5, 20.14}, {28.59, 2.5, 21.17}, {28.6, 2.5, 22.17},
-        {28.58, 2.5, 23.18}, {28.6, 2.5, 24.19}, {28.6, 2.5, 25.16},
-        {28.6, 4, 25.16}
-    },
-    ["Yellow"] = {
-        {27.62, 2.5, -2.10}, {27.6, 2.5, -1.08}, {27.61, 2.5, -0.07},
-        {27.6, 2.5, 0.93}, {27.61, 2.5, 1.95}, {27.6, 2.5, 2.92},
-        {28.53, 2.5, -2.10}, {28.55, 2.5, -1.08}, {28.55, 2.5, -0.07},
-        {28.53, 2.5, 0.93}, {28.56, 2.5, 1.95}, {28.56, 2.5, 2.92},
-        {28.56, 4, 2.92}
-    }
+    ["Red"] = {},
+    ["Blue"] = {},
+    ["Green"] = {},
+    ["Yellow"] = {}
+}
+
+function constants.generateScoreboardPositions(color)
+    local origin = constants.player_scoreboards[color].getPosition()
+    local positions = {}
+    for i = 0, 12 do
+        positions[#positions + 1] = {
+            x = origin.x + math.floor(i / 6) * 0.995 - 0.45,
+            y = 2.5,
+            z = origin.z + (i % 6) * 1 - 2.35
+        }
+    end
+    return positions
+end
+
+constants.pos_vp = {
+    ["Red"] = constants.generateScoreboardPositions("Red"),
+    ["Blue"] = constants.generateScoreboardPositions("Blue"),
+    ["Green"] = constants.generateScoreboardPositions("Green"),
+    ["Yellow"] = constants.generateScoreboardPositions("Yellow")
 }
 
 constants.tleilaxuTokens = {

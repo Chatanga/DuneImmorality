@@ -89,7 +89,6 @@ function onLoad()
 
     fight = 0 -- initialization ??
     marker_round = getObjectFromGUID("fb41e2") -- round marker
-    vp_pos = constants.pos_vp
 
     bag_friendship = { -- bag for 2 influence vp with factions
         ["Emperor"] = getObjectFromGUID('6a4186'),
@@ -105,12 +104,7 @@ function onLoad()
         ["Fremen"] = getObjectFromGUID('4c2bcc')
     }
 
-    vp_zone = { -- scripting zone in vp track
-        ["Red"] = getObjectFromGUID('5b9a53'),
-        ["Blue"] = getObjectFromGUID('376f34'),
-        ["Green"] = getObjectFromGUID('0e374f'),
-        ["Yellow"] = getObjectFromGUID('b25c3c')
-    }
+    vp_zone = constants.player_scoreboard_zones
 
     flag_bag = { -- infinite bag for flags
         ["Red"] = getObjectFromGUID('61453d'),
@@ -1174,19 +1168,7 @@ function loseFriendship(faction, color)
 end
 
 function give2influence(faction, color)
-
-    local zoneObjects = vp_zone[color].getObjects()
-    local vpIndex = 1
-    for i, object in ipairs(zoneObjects) do
-        if object.getDescription() == "VP" then vpIndex = vpIndex + 1 end
-    end
-    if vpIndex > 13 then vpIndex = 13 end
-
-    bag_friendship[faction].takeObject({
-        position = vp_pos[color][vpIndex],
-        rotation = {0, 180, 0}
-    })
-
+    bag_friendship[faction].takeObject(helperModule.getVPMarkerMoveParameterToPlayerBoard(color))
 end
 
 -- Illumine le plateau du joueur dont c’est le tour (et éteint les autres).

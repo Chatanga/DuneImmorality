@@ -11,23 +11,17 @@ function onload()
     vp_zone = getObjectFromGUID("5b9a53")
     marker = getObjectFromGUID("4feaca")
 
-    marker_pos = {
-        {10.35, 3.1, -10.08}, --0
-        {10.33, 3.1, -8.93}, --1
-        {10.33, 3.1, -7.77}, --2
-        {10.35, 3.1, -6.57}, --3
-        {10.35, 3.1, -5.43}, --4
-        {10.35, 3.1, -4.24}, --5
-        {10.34, 3.1, -3.08}, --6
-        {10.35, 3.1, -1.86}, --7
-        {10.35, 3.1, -0.69}, --8
-        {10.37, 3.1, 0.47}, --9
-        {10.37, 3.1, 1.65}, --10
-        {10.41, 3.1, 2.81}, --11
-        {10.41, 3.1, 4.01}, --12
-        {10.40, 3.1, 5.05} -- au dessus c'est le soleil
-    }
-    score = 1 
+    local origin = marker.getPosition()
+    marker_pos = {}
+    for i = -1, 13 do
+        marker_pos[#marker_pos + 1] = {
+            origin.x,
+            2.7,
+            origin.z + i * 1.165
+        }
+    end
+
+    score = 1
 end
 
 function CountPoints()

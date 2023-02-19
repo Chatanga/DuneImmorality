@@ -1,7 +1,6 @@
 Activation de "Physic Full" côté joueur pour que la dépose de cartes soit OK.
 
 Marqueurs de force mal placés
-Marqueurs de PV mal placés.
 Troupes mal placées en garnison.
 Sièges au conseil mal placés.
 Bonus d’influence mal placés.

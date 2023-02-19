@@ -74,22 +74,31 @@ function helperModule.isDeckContainsEnough(color, numberToDraw)
     return enoughCards
 end
 
---FF-- Légèrement au dessus pour éviter de déplacer un objet un dessous (et
--- ajouter la destination à la source plutôt que l’inverse).
-function helperModule.getLandingPosition(anchorGUID)
-   local pos = getObjectFromGUID(anchorGUID).getPosition()
-   return {pos[1], pos[2] + 0.1, pos[3]}
-end
-
---FF--
 function helperModule.addVector3D(left, right)
-   return {left[1] + right[1], left[2] + right[2], left[3] + right[3]}
+    return {
+        x = left[1] + right[1],
+        y = left[2] + right[2],
+        z = left[3] + right[3]
+    }
 end
 
---FF-- Les nouvelles ancres ont toutes une échelle unitaire, ce qui n’était pas
+-- Les nouvelles ancres ont toutes une échelle unitaire, ce qui n’était pas
 -- le cas des anciennes.
 function helperModule.correctAnchorPosition(pos, originalScale)
-   return {pos[1] * originalScale[1], pos[2] * originalScale[2], pos[3] * originalScale[3]}
+    return {
+        x = pos[1] * originalScale[1],
+        y = pos[2] * originalScale[2],
+        z = pos[3] * originalScale[3]
+    }
+end
+
+function helperModule.getVPMarkerMoveParameterToPlayerBoard(color)
+    local vpIndex = constants.player_scoreboards[color].call("getScore") + 1
+    return {
+        position = constants.pos_vp[color][vpIndex],
+        rotation = {0, 180, 0},
+        smooth = true
+    }
 end
 
 return helperModule

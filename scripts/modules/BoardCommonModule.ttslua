@@ -87,18 +87,12 @@ alliance_token = {
     ["beneGesserit"] = getObjectFromGUID('33452e'),
     ["fremen"] = getObjectFromGUID('4c2bcc')
 }
-alliance_pos = {
-    ["emperor"] = {-9.51, 2, 9.86},
-    ["spacingGuild"] = {-9.53, 2, 4.25},
-    ["beneGesserit"] = {-9.55, 2, -1.21},
-    ["fremen"] = {-9.54, 2, -6.67}
-}
 
-posz_min_alliance = {
-    ["emperor"] = 8.92,
-    ["spacingGuild"] = 3.43,
-    ["beneGesserit"] = -2.03,
-    ["fremen"] = -7.5
+alliance_pos = {
+    ["emperor"] = constants.getPositionFromGUID('13e990'),
+    ["spacingGuild"] = constants.getPositionFromGUID('ad1aae'),
+    ["beneGesserit"] = constants.getPositionFromGUID('33452e'),
+    ["fremen"] = constants.getPositionFromGUID('4c2bcc')
 }
 
 vp_pos = constants.pos_vp
@@ -507,12 +501,39 @@ function boardCommonModule.Conspire(color)
     end
 end
 
-function boardCommonModule.ReputationUp(color, faction, pos_z)
+boardCommonModule.cachedReputationLevels = nil
+
+function boardCommonModule.getReputationLevels(faction, color)
+    if not boardCommonModule.cachedReputationLevels then
+        boardCommonModule.cachedReputationLevels = {}
+        for _, faction in ipairs({"emperor", "spacingGuild", "beneGesserit", "fremen"}) do
+            local factionLevels = {}
+            for _, color in ipairs({"Red", "Blue", "Green", "Yellow"}) do
+                local startingCell = pion_reput[faction][color].getPosition()
+                local allianceToken = alliance_token[faction].getPosition()
+                local step = (allianceToken.z - startingCell.z) / 5 -- The token is centered on the 5th level (but you only need to reach the 4th to get it).
+                local zero = startingCell.z - step / 2
+                factionLevels[color] = {
+                    step = step,
+                    none = zero + step * 0,
+                    friendship = zero + step * 2,
+                    alliance = zero + step * 4,
+                    max = zero + step * 6,
+                }
+            end
+            boardCommonModule.cachedReputationLevels[faction] = factionLevels
+        end
+    end
+    return boardCommonModule.cachedReputationLevels[faction][color]
+end
+
+function boardCommonModule.ReputationUp(color, faction)
+    local reputationLevels = boardCommonModule.getReputationLevels(faction, color)
     local pos = pion_reput[faction][color].getPosition()
     local leaderName = ressources[color][6].getObjects()[1].getName()
-    if pos.z < pos_z then
+    if pos.z < reputationLevels.max then
         pion_reput[faction][color].setPositionSmooth({
-            pos.x, pos.y, pos.z + 0.77
+            pos.x, pos.y, pos.z + reputationLevels.step
         }, false, false)
         giveAlliance(faction, color)
         broadcastToAll(i18n("reputUp"):format(leaderName, i18n(faction)), color)
@@ -521,12 +542,13 @@ function boardCommonModule.ReputationUp(color, faction, pos_z)
     end
 end
 
-function boardCommonModule.ReputationDown(color, faction, pos_z)
+function boardCommonModule.ReputationDown(color, faction)
+    local reputationLevels = boardCommonModule.getReputationLevels(faction, color)
     local pos = pion_reput[faction][color].getPosition()
     local leaderName = ressources[color][6].getObjects()[1].getName()
-    if pos.z > pos_z then
+    if pos.z > reputationLevels.none then
         pion_reput[faction][color].setPositionSmooth({
-            pos.x, pos.y, pos.z - 0.77
+            pos.x, pos.y, pos.z - reputationLevels.step
         }, false, false)
         giveAlliance(faction, color)
         broadcastToAll(i18n("reputDown"):format(leaderName, i18n(faction)),
@@ -555,7 +577,7 @@ function giveAlliance(faction, color)
     end
     Wait.time(function()
         local posz = pion_reput[faction][color].getPosition().z
-        local posz_requis = posz_min_alliance[faction]
+        local posz_requis = boardCommonModule.getReputationLevels(faction, color).alliance
 
         if test_alliance == 1 then
             local biggestDelta = 0;
@@ -607,6 +629,7 @@ function giveAlliance(faction, color)
 
         end
 
+        log(posz .. " >? " .. posz_requis)
         if test_alliance == 0 and posz > posz_requis then
             local isReputStrongest = true
             for k, posz_compared in pairs(posz_liste) do
@@ -644,40 +667,41 @@ function CountPoints(color)
 end
 
 function boardCommonModule.FremenUp(color)
-    boardCommonModule.ReputationUp(color, "fremen", -6.18)
+    boardCommonModule.ReputationUp(color, "fremen")
 end
 
 function boardCommonModule.FremenDown(color)
-    boardCommonModule.ReputationDown(color, "fremen", -10.2)
+    boardCommonModule.ReputationDown(color, "fremen")
 end
 
 function boardCommonModule.BeneUp(color)
-    boardCommonModule.ReputationUp(color, "beneGesserit", -0.86)
+    boardCommonModule.ReputationUp(color, "beneGesserit")
 end
 
 function boardCommonModule.BeneDown(color)
-    boardCommonModule.ReputationDown(color, "beneGesserit", -4.76)
+    boardCommonModule.ReputationDown(color, "beneGesserit")
 end
 
 function boardCommonModule.GuildUp(color)
-    boardCommonModule.ReputationUp(color, "spacingGuild", 4.57)
+    boardCommonModule.ReputationUp(color, "spacingGuild")
 end
 
 function boardCommonModule.GuildDown(color)
-    boardCommonModule.ReputationDown(color, "spacingGuild", 0.72)
+    boardCommonModule.ReputationDown(color, "spacingGuild")
 end
 
 function boardCommonModule.EmperorUp(color)
-    boardCommonModule.ReputationUp(color, "emperor", 10.10)
+    boardCommonModule.ReputationUp(color, "emperor")
 end
 
 function boardCommonModule.EmperorDown(color)
-    boardCommonModule.ReputationDown(color, "emperor", 6.18)
+    boardCommonModule.ReputationDown(color, "emperor")
 end
 
 function boardCommonModule.SietchTabr(color)
     if boardCommonModule.CheckAgentAndPlayer(color, SietchTabr_zone) then
-        if pion_reput["fremen"][color].getPosition().z < -9.25 then
+        local reputationLevels = boardCommonModule.getReputationLevels("fremen", color)
+        if pion_reput["fremen"][color].getPosition().z < reputationLevels.friendship then
             broadcastToColor(i18n("notReputation"), color, "Red")
             return 1
         end

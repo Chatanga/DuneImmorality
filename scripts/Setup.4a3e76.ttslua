@@ -41,10 +41,10 @@ hagal_without_rise_of_ix = getObjectFromGUID("72d430")
 pos_black_market = constants.pos_black_market
 
 pos_starter_decks = {
-    helperModule.getLandingPosition(constants.drawDeck["Red"]), --FF--{-24.62, 1.80, 20.48}
-    helperModule.getLandingPosition(constants.drawDeck["Blue"]), --FF--{13.68, 1.74, 20.52}
-    helperModule.getLandingPosition(constants.drawDeck["Green"]), --FF--{-24.41, 1.79, -1.54}
-    helperModule.getLandingPosition(constants.drawDeck["Yellow"]) --FF--{13.44, 1.74, -1.51}
+    constants.getLandingPositionFromGUID(constants.drawDeck["Red"]),
+    constants.getLandingPositionFromGUID(constants.drawDeck["Blue"]),
+    constants.getLandingPositionFromGUID(constants.drawDeck["Green"]),
+    constants.getLandingPositionFromGUID(constants.drawDeck["Yellow"])
 }
 
 dune_cards_decks_zone = {
@@ -58,7 +58,7 @@ epic_cards = constants.epic_cards
 -- conflictZone2 = "7c9ceb"
 -- conflictZone3 = "f9ea6b"
 trashBin = '8d39ef'
-conflictDeckLocation = helperModule.getLandingPosition("f9ea6b")
+conflictDeckLocation = constants.getLandingPositionFromGUID("f9ea6b")
 councellor_bonus_bag = getObjectFromGUID("074f6d")
 FP1 = getObjectFromGUID('66444c')
 FP2 = getObjectFromGUID('4e8873')
@@ -81,8 +81,8 @@ bene_tleilax_zone = getObjectFromGUID('042b49')
 atomics = {'d5ff47', '0a22ec', '700023', '7e10a9'}
 experimentation_decks = {'ef9531', '45ce21', '2d935f', '8ed0cd'}
 research_station_immortality = getObjectFromGUID('54413c')
-intrigue_pos = helperModule.getLandingPosition(constants.intrigue_base)
-imperium_pos = helperModule.getLandingPosition(constants.imperium_deck)
+intrigue_pos = constants.getLandingPositionFromGUID(constants.intrigue_base)
+imperium_pos = constants.getLandingPositionFromGUID(constants.imperium_deck)
 hagal1P_base = "54a2cb"
 hagal1P = getObjectFromGUID("6020d0")
 hagal2P_base = "1dd8a5"
@@ -988,7 +988,7 @@ function pick_a_player()
     else
 
         local randomNumber = math.random(count)
-        for i = 1, 10 do -- Animation débile avec 2 boucles XD 
+        for i = 1, 10 do -- Animation débile avec 2 boucles XD
             for index, player in ipairs(playerList) do
                 getObjectFromGUID("d84873").editButton({color = player.color})
                 wait(3)
@@ -1433,7 +1433,7 @@ function movetechdecks()
     end
     techs.randomize()
 
-    local centerPos = helperModule.getLandingPosition(constants.ixPlanetBoard)
+    local centerPos = constants.getLandingPositionFromGUID(constants.ixPlanetBoard)
     local techSlotPos = {
       helperModule.addVector3D(centerPos, {1.69, 3.02, 2.35}),
       helperModule.addVector3D(centerPos, {1.69, 3.02, 0.30}),

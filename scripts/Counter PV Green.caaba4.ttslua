@@ -8,27 +8,20 @@ setupObj = constants.setupObj
 function onload()
     self.interactable = false
 
-    vp_zone = getObjectFromGUID("0e374f")
+    vp_zone = constants.player_scoreboard_zones['Green']
     marker = getObjectFromGUID("76039f")
 
-    marker_pos = {
-        {10.35, 2.7, -10.08}, --0
-        {10.33, 2.7, -8.93}, --1
-        {10.33, 2.7, -7.77}, --2
-        {10.35, 2.7, -6.57}, --3
-        {10.35, 2.7, -5.43}, --4
-        {10.35, 2.7, -4.24}, --5
-        {10.34, 2.7, -3.08}, --6
-        {10.35, 2.7, -1.86}, --7
-        {10.35, 2.7, -0.69}, --8
-        {10.37, 2.7, 0.47}, --9
-        {10.37, 2.7, 1.65}, --10
-        {10.41, 2.7, 2.81}, --11
-        {10.41, 2.7, 4.01}, --12
-        {10.40, 2.7, 5.05} -- au dessus c'est le soleil
-    }    
+    local origin = marker.getPosition()
+    marker_pos = {}
+    for i = -1, 13 do
+        marker_pos[#marker_pos + 1] = {
+            origin.x,
+            2.7,
+            origin.z + i * 1.165
+        }
+    end
 
-    score = 1 
+    score = 1
 end
 
 function CountPoints()

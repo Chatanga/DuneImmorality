@@ -7,6 +7,9 @@ function bundle {
 	filename=$(basename "$path")
 	echo "Bundle $path..."
 	luabundler bundle "$path" -p "scripts/modules/?.ttslua" -o "/tmp/TabletopSimulator/Tabletop Simulator Lua/$filename"
+	if [ $? -ne 0 ]; then
+		exit 1
+	fi
 }
 
 if [ $# -gt 0 ]; then

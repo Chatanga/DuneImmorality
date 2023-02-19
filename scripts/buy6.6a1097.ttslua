@@ -13,8 +13,6 @@ function onLoad()
 
     self.interactable = false
 
-    pos_vp = constants.pos_vp
-
     counter_VP = {
         ["Red"] = getObjectFromGUID("e0ed4b"),
         ["Blue"] = getObjectFromGUID("121bb6"),
@@ -122,13 +120,7 @@ function moveCardFromDeck(pColor, deck, scoreToMove)
     else
 
         if scoreToMove == true then
-            local vpIndex = counter_VP[pColor].call("getScore") + 1
-            if vpIndex > 13 then vpIndex = 13 end
-            TSMF_point.takeObject({
-                position = pos_vp[pColor][vpIndex],
-                rotation = {0, 180, 0},
-                smooth = true
-            })
+            TSMF_point.takeObject(helperModule.getVPMarkerMoveParameterToPlayerBoard(pColor))
         end
 
         if deck.type == "Deck" then
