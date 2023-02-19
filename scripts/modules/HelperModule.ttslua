@@ -47,11 +47,10 @@ function helperModule.ResetDiscard(_, color)
 end
 
 function helperModule.GetDeckOrCard(zoneGUID)
-    local objects = getObjectFromGUID(zoneGUID).getObjects()
-    for _, obj in ipairs(objects) do
+    for _, obj in ipairs(getObjectFromGUID(zoneGUID).getObjects()) do
         if obj.type == "Card" or obj.type == "Deck" then return obj end
     end
-    log("No deck or card found among " .. #objects .. " object(s) of zone " .. zoneGUID)
+    log(zoneGUID .. " contains no card nor deck!")
     return nil
 end
 

@@ -142,10 +142,11 @@ player_object_positions = {
 }
 
 player_object_scales = {
-    'character_zone': (4, 3),
-    'reveal_zone': (36, 3),
-    'tech_board_zone': (10, 9),
-    'hand_trigger': (36, 3)
+    'character_zone': (-1, 1, -1),
+    'discard_deck_zone': (3, -1, 7),
+    'reveal_zone': (36, -1, 3),
+    'tech_board_zone': (10, -1, 9),
+    'hand_trigger': (36, 5, 4)
 }
 
 def layout_player_board(structure, object_by_guid, color):
@@ -205,13 +206,14 @@ def layout_player_board(structure, object_by_guid, color):
         object['Transform']['posX'] = symmetrical_x(x)
         object['Transform']['posZ'] = zOrigin + z + 6
 
-    for key, (sx, sz) in player_object_scales.items():
+    for key, (sx, sy, sz) in player_object_scales.items():
         object = object_by_guid[getGUID(key)]
-        object['Transform']['scaleX'] = sx
-        object['Transform']['scaleZ'] = sz
-
-    object = object_by_guid[getGUID("character_zone")]
-    object['Transform']['scaleY'] = 1
+        if sx > 0:
+            object['Transform']['scaleX'] = sx
+        if sy > 0:
+            object['Transform']['scaleY'] = sy
+        if sz > 0:
+            object['Transform']['scaleZ'] = sz
 
     board['AttachedSnapPoints'] = []
 

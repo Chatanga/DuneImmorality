@@ -34,8 +34,6 @@ function onLoad()
 end
 
 function activateButtons()
-    --FF-- Pourquoi réduire l’échelle tout en agrandissant les tailles ?
-
     self.createButton({
         click_function = "acquireFoldspace",
         function_owner = self,
@@ -79,9 +77,9 @@ function activateButtons()
 end
 
 function acquireFoldspace(object, pColor)
-    local deck_foldspace = Zone_foldspace.getObjects()
+    local deck_foldspace = helperModule.GetDeckOrCard(Zone_foldspace.getGUID())
 
-    if deck_foldspace[1] == nil then
+    if deck_foldspace == nil then
         broadcastToColor(
             i18n("noFoldspaceLeft"), pColor,
             {1, 0.011765, 0})
@@ -91,9 +89,9 @@ function acquireFoldspace(object, pColor)
 end
 
 function acquireArrakis(object, pColor)
-    local deck_liaison = Zone_arrakis.getObjects()
+    local deck_liaison = helperModule.GetDeckOrCard(Zone_arrakis.getGUID())
 
-    if deck_liaison[1] == nil then
+    if deck_liaison == nil then
         broadcastToColor(i18n("noLiaisonLeft"), pColor,
                          {1, 0.011765, 0})
     else
@@ -102,9 +100,9 @@ function acquireArrakis(object, pColor)
 end
 
 function acquireTSMF(object, pColor)
-    local deck_TSMF = Zone_tsmf.getObjects()
+    local deck_TSMF = helperModule.GetDeckOrCard(Zone_tsmf.getGUID())
 
-    if deck_TSMF[1] == nil then
+    if deck_TSMF== nil then
         broadcastToColor(i18n("noTSMFLeft"), pColor, {1, 0.011765, 0})
     else
         moveCardFromDeck(pColor, deck_TSMF, true)
@@ -133,14 +131,14 @@ function moveCardFromDeck(pColor, deck, scoreToMove)
             })
         end
 
-        if deck[1].type == "Deck" then
-            deck[1].takeObject({
+        if deck.type == "Deck" then
+            deck.takeObject({
                 position = pos_discard[pColor],
                 rotation = {0, 180, 0},
                 smooth = false
             })
-        elseif deck[1].type == "Card" then
-            deck[1].setPosition(pos_discard[pColor])
+        elseif deck.type == "Card" then
+            deck.setPosition(pos_discard[pColor])
         end
         local techs = constants.zone_player[pColor].getObjects()
         local spaceportCheck = false

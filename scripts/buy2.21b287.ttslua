@@ -9,7 +9,7 @@ helperModule = require("HelperModule")
 
 function onLoad()
     self.interactable = false
-
+    
     imperiumColumn = constants.imperiumRow[2]
     Zone = getObjectFromGUID(imperiumColumn.zoneGuid)
     pos = imperiumColumn.pos

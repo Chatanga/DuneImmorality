@@ -15,7 +15,8 @@ if [ $# -gt 0 ]; then
 		shift
 	done
 else
-	rm "/tmp/TabletopSimulator/Tabletop Simulator Lua"/*.ttslua
+	find '/tmp/TabletopSimulator/Tabletop Simulator Lua' -maxdepth 1 -name "*.ttslua" -exec rm {} \;
+	find '/tmp/TabletopSimulator/Tabletop Simulator Lua' -maxdepth 1 -name "*.lua" -exec rm {} \;
 	for f in scripts/*.ttslua
 	do
 		bundle "$f"

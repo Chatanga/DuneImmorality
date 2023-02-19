@@ -188,23 +188,18 @@ function onLoad()
 
     --rendre impossible à delock les plateaux
 
-    --FF--getObjectFromGUID("8b1f92").interactable = false
-    --FF--getObjectFromGUID("96b94b").interactable = false
-    --FF--getObjectFromGUID("d69aec").interactable = false
-    --FF--getObjectFromGUID("b24cc5").interactable = false
     getObjectFromGUID("90f762").interactable = false
     bag_friendship["Emperor"].interactable = false
     bag_friendship["Spacing Guild"].interactable = false
     bag_friendship["Bene Gesserit"].interactable = false
     bag_friendship["Fremen"].interactable = false
-    --FF--getObjectFromGUID("7ded4f").interactable = false
     for _, color in pairs(players_color) do
         ressources[color][9].interactable = false -- conseillers
         buttonPass[color].interactable = false
         board_player[color].interactable = false
     end
 
-    getObjectFromGUID("2da390").interactable = true
+    --getObjectFromGUID("2da390").interactable = true
 
     for _, obj in ipairs(getObjects()) do
         if (obj.getDescription() == "Techs FR" and locale == 'en') or (obj.getDescription() == "Techs EN" and locale == 'fr') then
@@ -212,6 +207,7 @@ function onLoad()
         end
     end
 
+    -- Rectifie la position des mains de chaque joueur (les nouveaux plateaux sont plus fins).
     for _, player_color in ipairs(players_color) do
         local player = Player[player_color]
         for i = 1, player.getHandCount() do
@@ -228,15 +224,16 @@ function doNothing() end
 
 function revealEarly(color)
     if color == 'Blue' or color == "Red" then
-        pos1 = helperModule.addVector3D(buttonPass[color].getPosition(), {-2.1, 1.02, 1.235}) --FF-- {-2.1, 0.02, 1.235}
-        pos2 = helperModule.addVector3D(buttonPass[color].getPosition(), {-2.3, 1.02, 1.35}) --FF-- {-2.3, 0.02, 1.35}
-        pos3 = helperModule.addVector3D(buttonPass[color].getPosition(), {-1.9, 1.02, 1.35}) --FF-- {-1.9, 0.02, 1.35}
+        pos1 = {-2.1, 0.02, 1.235}
+        pos2 = {-2.3, 0.02, 1.35}
+        pos3 = {-1.9, 0.02, 1.35}
     else
-        pos1 = helperModule.addVector3D(buttonPass[color].getPosition(), {2.1, 1.02, 1.235}) --FF-- {2.1, 0.02, 1.235}
-        pos3 = helperModule.addVector3D(buttonPass[color].getPosition(), {2.3, 1.02, 1.35}) --FF-- {2.3, 0.02, 1.35}
-        pos2 = helperModule.addVector3D(buttonPass[color].getPosition(), {1.9, 1.02, 1.35}) --FF-- {1.9, 0.02, 1.35}
+        pos1 = {2.1, 0.02, 1.235}
+        pos3 = {2.3, 0.02, 1.35}
+        pos2 = {1.9, 0.02, 1.35}
+
     end
-    buttonPass[color].createButton({
+    board_player[color].createButton({
         ['click_function'] = 'doNothing',
         ['label'] = i18n("revealEarlyConfirm"),
         ['function_owner'] = Global,
@@ -249,7 +246,7 @@ function revealEarly(color)
         ['font_color'] = color,
         ['color'] = {0, 0, 0, 1}
     })
-    buttonPass[color].createButton({
+    board_player[color].createButton({
         ['click_function'] = 'RevealOK',
         ['label'] = i18n('yes'),
         ['function_owner'] = Global,
@@ -262,7 +259,7 @@ function revealEarly(color)
         ['font_color'] = {1, 1, 1},
         ['color'] = "Green"
     })
-    buttonPass[color].createButton({
+    board_player[color].createButton({
         ['click_function'] = 'cancelChoice',
         ['label'] = i18n('no'),
         ['function_owner'] = Global,
@@ -286,8 +283,7 @@ function cancelChoice(board, color)
     end
 end
 
--- creates button in player zone with position relative to leader board: reveal, reset discard, draw 1, draw 5
-function activateButtons(color)
+function activateButtons(color) -- creates button in player zone with position relative to leader board: reveal, reset discard, draw 1, draw 5
 
     function new_board_position(x, y, z)
         return {x, y + 0.7, -z}
@@ -324,25 +320,13 @@ function activateButtons(color)
     end
 
     board_player[color].createButton({
-        click_function = "doNothing",
-        function_owner = Global,
-        label = i18n("agentTurn"),
-        position = new_symmetric_board_position(-17.8, 0, -1),
-        rotation = new_symmetric_board_rotation(0, -90, 0),
-        width = 0,
-        height = 0,
-        font_size = 280,
-        color = {0,0,0,1},
-        font_color = color
-    })
-    board_player[color].createButton({
         click_function = "Reveal",
         function_owner = Global,
         label = i18n("revealButton"),
         position = new_symmetric_board_position(-17.8, 0, -5),
         rotation = new_symmetric_board_rotation(0, -90, 0),
         width = 1600,
-        height = 300,
+        height = 320,
         font_size = 280,
         color = color,
         font_color = font_color
@@ -379,6 +363,19 @@ function activateButtons(color)
         font_size = 125,
         color = color,
         font_color = font_color
+    })
+
+    board_player[color].createButton({
+        click_function = "doNothing",
+        function_owner = Global,
+        label = i18n("agentTurn"),
+        position = new_symmetric_board_position(-17.8, 0, -1),
+        rotation = new_symmetric_board_rotation(0, -90, 0),
+        width = 0,
+        height = 0,
+        font_size = 280,
+        color = {0,0,0,1},
+        font_color = color
     })
     board_player[color].createButton({
         click_function = "doNothing",
@@ -576,7 +573,7 @@ end
 
 function ResetDiscardColor(board, color)
     if board.hasTag(color) then
-        buttonPass[color].clearButtons()
+        board_player[color].clearButtons()
         Wait.time(function() activateButtons(color) end, 1)
         ResetDiscard(_, color)
     else
@@ -587,7 +584,7 @@ end
 function DrawFive(board, color)
     if board.hasTag(color) then
 
-        buttonPass[color].clearButtons()
+        board_player[color].clearButtons()
         Wait.time(function() activateButtons(color) end, 1)
 
         local starterDeck = GetDeckOrCard(drawDeckZone[color])
@@ -631,7 +628,7 @@ end
 
 function DrawOneColor(board, color)
     if board.hasTag(color) then
-        buttonPass[color].clearButtons()
+        board_player[color].clearButtons()
         Wait.time(function() activateButtons(color) end, 0.3)
         DrawOne(_, color)
     else
@@ -1192,6 +1189,7 @@ function give2influence(faction, color)
 
 end
 
+-- Illumine le plateau du joueur dont c’est le tour (et éteint les autres).
 function onPlayerTurn(player, previous_player)
   local player_boards = {
     {color = "Green", guid = "e6396b"},

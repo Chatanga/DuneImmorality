@@ -48,8 +48,8 @@ pos_starter_decks = {
 }
 
 dune_cards_decks_zone = {
-  getObjectFromGUID("e23476"), getObjectFromGUID("355dc0"),
-  getObjectFromGUID("d3521b"), getObjectFromGUID("7b2ba8")
+    getObjectFromGUID("e23476"), getObjectFromGUID("355dc0"),
+    getObjectFromGUID("d3521b"), getObjectFromGUID("7b2ba8")
 }
 zone_intrigue = 'a377d8'
 zone_imperium = constants.zone_deck_imperium
@@ -58,8 +58,7 @@ epic_cards = constants.epic_cards
 -- conflictZone2 = "7c9ceb"
 -- conflictZone3 = "f9ea6b"
 trashBin = '8d39ef'
-conflictDeckLocation = helperModule.getLandingPosition("f9ea6b") --FF--{-3.38, 3, -5.74}
--- conflictDeckLocation = helperModule.addVector3D(helperModule.getLandingPosition(conflictThree), {0, 5, 0}) --FF--{-3.38, 3, -5.74}
+conflictDeckLocation = helperModule.getLandingPosition("f9ea6b")
 councellor_bonus_bag = getObjectFromGUID("074f6d")
 FP1 = getObjectFromGUID('66444c')
 FP2 = getObjectFromGUID('4e8873')
@@ -82,8 +81,8 @@ bene_tleilax_zone = getObjectFromGUID('042b49')
 atomics = {'d5ff47', '0a22ec', '700023', '7e10a9'}
 experimentation_decks = {'ef9531', '45ce21', '2d935f', '8ed0cd'}
 research_station_immortality = getObjectFromGUID('54413c')
-intrigue_pos = helperModule.getLandingPosition(constants.intrigue_base) --FF--{0.25, 1.79, 16.29}
-imperium_pos = helperModule.getLandingPosition(constants.imperium_deck) --FF--{-10.00, 2.03, 12.87}
+intrigue_pos = helperModule.getLandingPosition(constants.intrigue_base)
+imperium_pos = helperModule.getLandingPosition(constants.imperium_deck)
 hagal1P_base = "54a2cb"
 hagal1P = getObjectFromGUID("6020d0")
 hagal2P_base = "1dd8a5"
@@ -933,6 +932,7 @@ function Setup()
 end
 
 function Commune()
+
     destructMissingPlayers()
     GetDeckOrCard(zone_intrigue).shuffle()
     GetDeckOrCard(zone_imperium).shuffle()
@@ -988,7 +988,7 @@ function pick_a_player()
     else
 
         local randomNumber = math.random(count)
-        for i = 1, 10 do -- Animation débile avec 2 boucles XD
+        for i = 1, 10 do -- Animation débile avec 2 boucles XD 
             for index, player in ipairs(playerList) do
                 getObjectFromGUID("d84873").editButton({color = player.color})
                 wait(3)
@@ -1433,7 +1433,6 @@ function movetechdecks()
     end
     techs.randomize()
 
-    --FF--
     local centerPos = helperModule.getLandingPosition(constants.ixPlanetBoard)
     local techSlotPos = {
       helperModule.addVector3D(centerPos, {1.69, 3.02, 2.35}),
@@ -1468,43 +1467,9 @@ end
 function ImperiumDeal()
     local deck_imperium = GetDeckOrCard(zone_imperium)
     deck_imperium.shuffle()
-    --[[
-    Wait.time(function()
-        local params1 = {}
-        params1.position = {-7.35, 2, 12.87}
-        params1.rotation = {0.00, 180.00, 0.00}
-        deck_imperium.takeObject(params1)
-    end, 0.35)
-    Wait.time(function()
-        local params2 = {}
-        params2.position = {-4.83, 2, 12.87}
-        params2.rotation = {0.00, 180.00, 0.00}
-        deck_imperium.takeObject(params2)
-    end, 0.7)
-    Wait.time(function()
-        local params3 = {}
-        params3.position = {-2.30, 2, 12.87}
-        params3.rotation = {0.00, 180.00, 0.00}
-        deck_imperium.takeObject(params3)
-    end, 1.05)
-    Wait.time(function()
-        local params4 = {}
-        params4.position = {0.29, 2, 12.87}
-        params4.rotation = {0.00, 180.00, 0.00}
-        deck_imperium.takeObject(params4)
-    end, 1.4)
-    Wait.time(function()
-        local params5 = {}
-        params5.position = {2.74, 2, 12.87}
-        params5.rotation = {0.00, 180.00, 0.00}
-        deck_imperium.takeObject(params5)
-    end, 1.75)
-    ]]--
-    --FF--
     for i = 1, 5 do
       Wait.time(function()
           deck_imperium.takeObject({
-              -- position = {i * 2.52 - 9.87, 2, 12.87},
               position = constants.imperiumRow[i].pos,
               rotation = {0, 180, 0}
           })

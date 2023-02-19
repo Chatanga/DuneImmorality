@@ -2,8 +2,7 @@ local constants = {}
 
 constants.setupObj = getObjectFromGUID("4a3e76")
 
-
-constants.imperium_deck = "99d41d" --FF--
+constants.imperium_deck = "99d41d"
 constants.imperium_deck_ix = "58c4c3"
 constants.imperium_deck_immortality = "88b666"
 constants.tleilaxu_deck = "dcad54"
@@ -13,11 +12,33 @@ constants.intrigue_ix = "afa5e5"
 constants.intrigue_base = "77d25d"
 constants.epic_cards = {'7ae7f5', 'fbaf9f', '497c84', '30b760'}
 
+function constants.getPositionFromGUID(GUID)
+    local object = getObjectFromGUID(GUID)
+    if object ~= nil then
+        local position = object.getPosition()
+        -- Une copie, au cas où.
+        return {x = position.x, y = position.y, z = position.z}
+    else
+        -- log("[getPositionFromGUID] GUID inconnu : " .. GUID)
+        return {x = 0, y = 10, z = 0}
+    end
+end
+
+--[[
+    Une position « légèrement » en dessus de manière à laisser faire la gravité
+    et d’éviter d’envoyer, par exemple, une carte invisible juste en dessous d’un
+    paquet qui sera donc ajouté à la carte et deviendra à son tour invisible…
+]]--
+function constants.getLandingPositionFromGUID(anchorGUID)
+    local position = constants.getPositionFromGUID(anchorGUID)
+    return {position.x, position.y + 0.3, position.z}
+end
+
 constants.leaderPos = {
-    ["Yellow"] = getObjectFromGUID("a677e0").getPosition(),
-    ["Green"] = getObjectFromGUID("cf1486").getPosition(),
-    ["Blue"] = getObjectFromGUID("681774").getPosition(),
-    ["Red"] = getObjectFromGUID("66cdbb").getPosition()
+    ["Yellow"] = constants.getPositionFromGUID("a677e0"),
+    ["Green"] = constants.getPositionFromGUID("cf1486"),
+    ["Blue"] = constants.getPositionFromGUID("681774"),
+    ["Red"] = constants.getPositionFromGUID("66cdbb")
 }
 
 constants.leaders = {
@@ -45,10 +66,10 @@ constants.ressources = { -- 1 : épices, 2 : solaris, 3 : eau, 4 : troupes, 5 : 
 }
 
 constants.pos_discard = {
-    ["Red"] = {-13.77, 3, 20.45},
-    ["Blue"] = {-13.65, 3, -1.50},
-    ["Green"] = {24.48, 3, 20.51},
-    ["Yellow"] = {24.25, 3, -1.50}
+    ["Red"] = constants.getLandingPositionFromGUID("e07493"),
+    ["Blue"] = constants.getLandingPositionFromGUID("26bf8b"),
+    ["Green"] = constants.getLandingPositionFromGUID("2298aa"),
+    ["Yellow"] = constants.getLandingPositionFromGUID("6bb3b6")
 }
 
 constants.drawDeck = {
@@ -86,41 +107,33 @@ constants.zone_player = {
 
 constants.pos_black_market = {{-7.61, 2, 24.5}, {-5.05, 2, 24.5}, {-2.49, 2, 24.5}}
 
-constants.pos_trash_upper = {-4.27, 5, 34.54}
-
-constants.pos_trash_lower = {-1.92, 2, -19.65}
+constants.pos_trash_upper = constants.getLandingPositionFromGUID("cf6ca1")
 
 constants.first_player_marker = getObjectFromGUID("1f5576")
 
 constants.first_player_positions =  {
-    ["Red"] = getObjectFromGUID('346e0d').getPosition(),
-    ["Blue"] = getObjectFromGUID('1fc559').getPosition(),
-    ["Green"] = getObjectFromGUID('59523d').getPosition(),
-    ["Yellow"] = getObjectFromGUID('e9a44c').getPosition()
-  }
+    ["Red"] = constants.getPositionFromGUID('346e0d'),
+    ["Blue"] = constants.getPositionFromGUID('1fc559'),
+    ["Green"] = constants.getPositionFromGUID('59523d'),
+    ["Yellow"] = constants.getPositionFromGUID('e9a44c')
+}
 
 constants.zone_deck_imperium = '8bd982'
 constants.zone_deck_tleilaxu = '14b2ca'
 
---FF-- Ajouter aussi des zones pour les emplacements de tech.
 constants.ixPlanetBoard = 'd75455'
 
-function _getLandingPosition(anchorGUID)
-   local pos = getObjectFromGUID(anchorGUID).getPosition()
-   return {pos[1], pos[2] + 0.3, pos[3]}
-end
-
 constants.imperiumRow = {
-    {zoneGuid = '3de1d0', pos = _getLandingPosition("38ffc0")}, --FF-- {-7.25, 2, 12.87}
-    {zoneGuid = '356e2c', pos = _getLandingPosition("21b287")}, --FF-- {-4.75, 2, 12.87}
-    {zoneGuid = '7edbb3', pos = _getLandingPosition("0a5f50")}, --FF-- {-2.25, 2, 12.87}
-    {zoneGuid = '641974', pos = _getLandingPosition("ded672")}, --FF-- {0.25, 2, 12.87}
-    {zoneGuid = 'c6dbed', pos = _getLandingPosition("ad2a82")} --FF-- {2.75, 2, 12.87}
+    {zoneGuid = '3de1d0', pos = constants.getLandingPositionFromGUID("38ffc0")},
+    {zoneGuid = '356e2c', pos = constants.getLandingPositionFromGUID("21b287")},
+    {zoneGuid = '7edbb3', pos = constants.getLandingPositionFromGUID("0a5f50")},
+    {zoneGuid = '641974', pos = constants.getLandingPositionFromGUID("ded672")},
+    {zoneGuid = 'c6dbed', pos = constants.getLandingPositionFromGUID("ad2a82")}
 }
 
 constants.tleilaxuRow = {
-    {zoneGuid = 'e5ba35', pos = _getLandingPosition("439df9")}, --FF-- {-7.59, 2, 20.04}
-    {zoneGuid = '1e5a32', pos = _getLandingPosition("363f98")} --FF-- {-5.04, 2, 20.04}
+    {zoneGuid = 'e5ba35', pos = constants.getLandingPositionFromGUID("439df9")},
+    {zoneGuid = '1e5a32', pos = constants.getLandingPositionFromGUID("363f98")}
 }
 
 constants.buy7_guid = '439df9'
@@ -129,7 +142,7 @@ constants.buy8_guid = '363f98'
 constants.zone_black_market = {"323acb","e96c10","93de6d"}
 
 constants.reserve_troop_zone = {
-    ["Red"] = getObjectFromGUID('ab8fdf'), -- inside reserve bowl: seems bit small
+    ["Red"] = getObjectFromGUID('ab8fdf'), -- inside reserve bowl: seems a bit small
     ["Blue"] = getObjectFromGUID('2a520c'),
     ["Green"] = getObjectFromGUID('bdfade'),
     ["Yellow"] = getObjectFromGUID('ffbd81')

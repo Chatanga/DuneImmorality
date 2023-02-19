@@ -22,7 +22,6 @@ zone_deck_tleilaxu = constants.zone_deck_tleilaxu
 
 function buyModule.Buy(zone, pColor, pos, activateButton, buyTleilaxu)
     buyTleilaxu = buyTleilaxu or false
-    --FF--local card = zone.getObjects()
     local card = helperModule.GetDeckOrCard(zone.guid)
     local zone_deck = zone_deck_imperium
     if card then
