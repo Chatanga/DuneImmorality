@@ -34,8 +34,8 @@ function claimLabel()
        color          = "Black"
        })
   end
-       
-  
+
+
   function claimLeader(GO, color)
     local t=0
     if color == "Red" or color == "Blue" or color == "Green" or color == "Yellow" then

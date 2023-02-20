@@ -425,6 +425,6 @@ function CommercialTroop(_, color)
     end
     for i = 1, troopsToGain, 1 do
         t = t + 0.25
-        Wait.time(function() ressources[color][4].call("AddTroop2") end, t)
+        Wait.time(function() ressources[color][4].call("AddOneTroop") end, t)
     end
 end

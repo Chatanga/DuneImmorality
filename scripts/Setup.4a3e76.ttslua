@@ -1397,31 +1397,11 @@ function replaceEpic()
 end
 
 function movetroops()
-
-    redtroop1 = getObjectFromGUID("1bbf1c")
-    redtroop2 = getObjectFromGUID("26904f")
-    greentroop1 = getObjectFromGUID("a67287")
-    greentroop2 = getObjectFromGUID("fc9c62")
-    yellowtroop1 = getObjectFromGUID("b5d32e")
-    yellowtroop2 = getObjectFromGUID("7c5b7b")
-    bluetroop1 = getObjectFromGUID("f60d9c")
-    bluetroop2 = getObjectFromGUID("694553")
-    redtroop1.setPositionSmooth({1.28, 1.75, -3.42}, false, false)
-    redtroop1.setRotation({0, 0, 0})
-    redtroop2.setPositionSmooth({1.73, 1.75, -3.42}, false, false)
-    redtroop2.setRotation({0, 0, 0})
-    greentroop1.setPositionSmooth({7.91, 1.74, -3.42}, false, false)
-    greentroop1.setRotation({0, 0, 0})
-    greentroop2.setPositionSmooth({8.36, 1.74, -3.42}, false, false)
-    greentroop2.setRotation({0, 0, 0})
-    bluetroop1.setPositionSmooth({1.28, 1.75, -6.15}, false, false)
-    bluetroop1.setRotation({0, 0, 0})
-    bluetroop2.setPositionSmooth({1.73, 1.75, -6.15}, false, false)
-    bluetroop2.setRotation({0, 0, 0})
-    yellowtroop1.setPositionSmooth({7.91, 1.74, -6.15}, false, false)
-    yellowtroop1.setRotation({0, 0, 0})
-    yellowtroop2.setPositionSmooth({8.36, 1.74, -6.15}, false, false)
-    yellowtroop2.setRotation({0, 0, 0})
+    for _, color in ipairs({"Red", "Blue", "Green", "Yellow"}) do
+        local player_resources = constants.named_resources[color]
+        local troop_supply = player_resources.troop_supply
+        troop_supply.call("AddTwoTroops")
+    end
 end
 
 function movetechdecks()
@@ -1435,9 +1415,9 @@ function movetechdecks()
 
     local centerPos = constants.getLandingPositionFromGUID(constants.ixPlanetBoard)
     local techSlotPos = {
-      helperModule.addVector3D(centerPos, {1.69, 3.02, 2.35}),
-      helperModule.addVector3D(centerPos, {1.69, 3.02, 0.30}),
-      helperModule.addVector3D(centerPos, {1.69, 3.02, -1.75})
+        Vector(1.69, 3.02, 2.35):add(centerPos),
+        Vector(1.69, 3.02, 0.30):add(centerPos),
+        Vector(1.69, 3.02, -1.75):add(centerPos)
     }
 
     local t = 0

@@ -3,12 +3,10 @@ local constants = {}
 function constants.getPositionFromGUID(GUID)
     local object = getObjectFromGUID(GUID)
     if object ~= nil then
-        local position = object.getPosition()
-        -- Une copie, au cas où.
-        return {x = position.x, y = position.y, z = position.z}
+        return object.getPosition():copy()
     else
         log("[getPositionFromGUID] GUID inconnu : " .. GUID)
-        return {x = 0, y = 10, z = 0}
+        return Vector(0, 10, 0)
     end
 end
 
@@ -17,7 +15,7 @@ end
 -- paquet qui sera donc ajouté à la carte et deviendra à son tour invisible…
 function constants.getLandingPositionFromGUID(anchorGUID)
     local position = constants.getPositionFromGUID(anchorGUID)
-    return {position.x, position.y + 0.3, position.z}
+    return Vector(position.x, position.y + 0.3, position.z)
 end
 
 constants.setupObj = getObjectFromGUID("4a3e76")
@@ -57,10 +55,70 @@ constants.leaders = {
 }
 
 constants.ressources = { -- 1 : épices, 2 : solaris, 3 : eau, 4 : troupes, 5 : cartes, 6 : zone leader, 7 : swordmaster, 8 : zone swordmaster, 9 : conseiller, 10 : zone conseiller, 11 : zone bonus conseiller, 12 : zone conseiller vanilla
-    ["Red"] = {getObjectFromGUID("3074d4"),getObjectFromGUID("576ccd"),getObjectFromGUID("692c4d"),getObjectFromGUID("8ea4af"),getObjectFromGUID("3a9e65"),getObjectFromGUID("66cdbb"),getObjectFromGUID("ed3490"),{-18.85, 1.71, 22.89},getObjectFromGUID("f19a48"),{-0.83, 3, 9.52},{-28.10, 2, 6.11},{-1.04, 3, 9.59}},
-    ["Blue"] = {getObjectFromGUID("9cc286"),getObjectFromGUID("fa5236"),getObjectFromGUID("0afaeb"),getObjectFromGUID("b71dd9"),getObjectFromGUID("a0bb82"),getObjectFromGUID("681774"),getObjectFromGUID("a78ad7"),{-18.94, 1.71, 1.15},getObjectFromGUID("f5b14a"),{-1.57, 3, 9.52},{-28.25, 2, -15.73},{-1.76, 3, 9.59}},
-    ["Green"] = {getObjectFromGUID("22478f"),getObjectFromGUID("e597dc"),getObjectFromGUID("fa9522"),getObjectFromGUID("126c3c"),getObjectFromGUID("c7fb9b"),getObjectFromGUID("cf1486"),getObjectFromGUID("fb1629"),{19.06, 1.66, 22.89},getObjectFromGUID("a0028d"),{0.82, 3, 9.52},{28.22, 2, 6.12},{0.63, 3, 9.59}},
-    ["Yellow"] = {getObjectFromGUID("78fb8a"),getObjectFromGUID("c5c4ef"),getObjectFromGUID("f217d0"),getObjectFromGUID("6af67a"),getObjectFromGUID("17a08e"),getObjectFromGUID("a677e0"),getObjectFromGUID("635c49"),{18.85, 1.65, 1.15},getObjectFromGUID("1be491"),{1.55, 3, 9.52},{28.23, 2, -15.97},{1.35, 3, 9.59}}
+["Red"] = {getObjectFromGUID("3074d4"),getObjectFromGUID("576ccd"),getObjectFromGUID("692c4d"),getObjectFromGUID("8ea4af"),getObjectFromGUID("3a9e65"),getObjectFromGUID("66cdbb"),getObjectFromGUID("ed3490"),{-18.85, 1.71, 22.89},getObjectFromGUID("f19a48"),{-0.83, 3, 9.52},{-28.10, 2, 6.11},{-1.04, 3, 9.59}},
+["Blue"] = {getObjectFromGUID("9cc286"),getObjectFromGUID("fa5236"),getObjectFromGUID("0afaeb"),getObjectFromGUID("b71dd9"),getObjectFromGUID("a0bb82"),getObjectFromGUID("681774"),getObjectFromGUID("a78ad7"),{-18.94, 1.71, 1.15},getObjectFromGUID("f5b14a"),{-1.57, 3, 9.52},{-28.25, 2, -15.73},{-1.76, 3, 9.59}},
+["Green"] = {getObjectFromGUID("22478f"),getObjectFromGUID("e597dc"),getObjectFromGUID("fa9522"),getObjectFromGUID("126c3c"),getObjectFromGUID("c7fb9b"),getObjectFromGUID("cf1486"),getObjectFromGUID("fb1629"),{19.06, 1.66, 22.89},getObjectFromGUID("a0028d"),{0.82, 3, 9.52},{28.22, 2, 6.12},{0.63, 3, 9.59}},
+["Yellow"] = {getObjectFromGUID("78fb8a"),getObjectFromGUID("c5c4ef"),getObjectFromGUID("f217d0"),getObjectFromGUID("6af67a"),getObjectFromGUID("17a08e"),getObjectFromGUID("a677e0"),getObjectFromGUID("635c49"),{18.85, 1.65, 1.15},getObjectFromGUID("1be491"),{1.55, 3, 9.52},{28.23, 2, -15.97},{1.35, 3, 9.59}}
+}
+
+-- TODO Generalize
+constants.named_resources = {
+    ["Red"] = {
+        spice = getObjectFromGUID("3074d4"),
+        solari = getObjectFromGUID("576ccd"),
+        water = getObjectFromGUID("692c4d"),
+        troop_supply = getObjectFromGUID("8ea4af"),
+        cards = getObjectFromGUID("3a9e65"),
+        leader_zone = getObjectFromGUID("66cdbb"),
+        swordmaster = getObjectFromGUID("ed3490"),
+        swordmaster_zone = {-18.85, 1.71, 22.89},
+        council_token = getObjectFromGUID("f19a48"),
+        council_zone = Vector(-1.52, 1, 0) + constants.getPositionFromGUID('074f6d'),
+        council_bonus_zone = Vector(-7, 0, -11) + constants.getPositionFromGUID('9555b8'),
+        vanilla_council_zone = {-1.04, 3, 9.59}
+    },
+    ["Blue"] = {
+        spice = getObjectFromGUID("9cc286"),
+        solari = getObjectFromGUID("fa5236"),
+        water = getObjectFromGUID("0afaeb"),
+        troop_supply = getObjectFromGUID("b71dd9"),
+        cards = getObjectFromGUID("a0bb82"),
+        leader_zone = getObjectFromGUID("681774"),
+        swordmaster = getObjectFromGUID("a78ad7"),
+        swordmaster_zone = {-18.94, 1.71, 1.15},
+        council_token = getObjectFromGUID("f5b14a"),
+        council_zone = Vector(-0.76, 1, 0) + constants.getPositionFromGUID('074f6d'),
+        council_bonus_zone = Vector(-7, 0, -11) + constants.getPositionFromGUID('2d3346'),
+        vanilla_council_zone = {-1.76, 3, 9.59}
+    },
+    ["Green"] = {
+        spice = getObjectFromGUID("22478f"),
+        solari = getObjectFromGUID("e597dc"),
+        water = getObjectFromGUID("fa9522"),
+        troop_supply = getObjectFromGUID("126c3c"),
+        cards = getObjectFromGUID("c7fb9b"),
+        leader_zone = getObjectFromGUID("cf1486"),
+        swordmaster = getObjectFromGUID("fb1629"),
+        swordmaster_zone = {19.06, 1.66, 22.89},
+        council_token = getObjectFromGUID("a0028d"),
+        council_zone = Vector(0.76, 1, 0) + constants.getPositionFromGUID('074f6d'),
+        council_bonus_zone = Vector(7, 0, -11) + constants.getPositionFromGUID('546163'),
+        vanilla_council_zone = {0.63, 3, 9.59}
+    },
+    ["Yellow"] = {
+        spice = getObjectFromGUID("78fb8a"),
+        solari = getObjectFromGUID("c5c4ef"),
+        water = getObjectFromGUID("f217d0"),
+        troop_supply = getObjectFromGUID("6af67a"),
+        cards = getObjectFromGUID("17a08e"),
+        leader_zone = getObjectFromGUID("a677e0"),
+        swordmaster = getObjectFromGUID("635c49"),
+        swordmaster_zone = {18.85, 1.65, 1.15},
+        council_token = getObjectFromGUID("1be491"),
+        council_zone = Vector(1.52, 1, 0) + constants.getPositionFromGUID('074f6d'),
+        council_bonus_zone = Vector(7, 0, -11) + constants.getPositionFromGUID('3d705e'),
+        vanilla_council_zone = {1.35, 3, 9.59}
+    }
 }
 
 constants.pos_discard = {
@@ -90,12 +148,14 @@ constants.drawSpot = {
     ["Green"] = {13.68, 2.2, 20.52},
     ["Yellow"] = {13.54, 2.2, -1.50},
 }
+
 constants.discardZone = {
     ["Red"] = "e07493", --scripting zone for discard for red
     ["Blue"] = "26bf8b",
     ["Green"] = "2298aa",
     ["Yellow"] = "6bb3b6",
 }
+
 constants.zone_player = {
     ["Red"] = getObjectFromGUID('9555b8'), -- big scripting zone englobing all player space
     ["Blue"] = getObjectFromGUID('2d3346'),

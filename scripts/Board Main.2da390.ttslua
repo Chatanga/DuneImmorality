@@ -298,6 +298,8 @@ function activateButtons()
         font_color = {0.7843, 0.7843, 0.7843, 1},
         tooltip = i18n("toolTipIncreaseRep")
     })
+
+    -- TODO Wouldn't two nested 'for' loops be nicer?
 end
 
 function ImperialBasin(_, color)
@@ -472,7 +474,7 @@ function BonusSpatial(_, color)
     local leader = ressources[color][6].getObjects()[1]
     local leaderName = leader.getName()
 
-    
+
     if leader.hasTag("Yuna") and combat == 0 then solariAmount = 4 end
 
     for i = 1, solariAmount, 1 do
@@ -487,8 +489,8 @@ function BonusEmperor(_, color)
 
     local leaderName = ressources[color][6].getObjects()[1].getName()
 
-    ressources[color][4].call("AddTroop2")
-    Wait.time(function() ressources[color][4].call("AddTroop2") end, 0.25)
+    ressources[color][4].call("AddOneTroop")
+    Wait.time(function() ressources[color][4].call("AddOneTroop") end, 0.25)
     broadcastToAll(i18n("emperorBonus"):format(leaderName), color)
 
 end

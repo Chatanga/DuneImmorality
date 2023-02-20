@@ -32,15 +32,15 @@ function activateButtons()
         color = "Red"
     end
     self.createButton({
-        click_function = "activeSound", 
-        function_owner = self, 
-        label = label, 
-        position = {-3.4, 0.6, 7}, 
-        scale = {2, 1, 4}, 
-        width = 500, 
-        height = 250, 
-        font_size = 85, 
-        color = color, 
+        click_function = "activeSound",
+        function_owner = self,
+        label = label,
+        position = {-3.4, 1.6, 7},
+        scale = {2, 1, 4},
+        width = 500,
+        height = 250,
+        font_size = 85,
+        color = color,
         font_color = {1, 1, 1, 1}
     })
 end
@@ -82,7 +82,7 @@ function selectMusic(_, color)
             MusicPlayer.play()
 
             broadcastToAll("Playing " .. currentMusic.title, undefined)
-            
+
         end)
     end
 end

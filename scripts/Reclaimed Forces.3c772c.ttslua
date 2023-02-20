@@ -51,7 +51,7 @@ function tleilaxuTroop(_, color)
             spendSpecimen(color, 3)
 
             Wait.time(function()
-                ressources[color][4].call("AddTroop2")
+                ressources[color][4].call("AddOneTroop")
             end, 0.6, 2)
             broadcastToAll(leaderName .. i18n("reclaimedForcesTroops"), color)
         end)

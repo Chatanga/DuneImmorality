@@ -131,14 +131,16 @@ function onLoad()
     zone_player = constants.zone_player
 
     -- 20 spaces were you put power marker
-    marker_combat_pos = {
-        {0.82, 3, -9.14}, {1.73, 3, -9.14}, {2.65, 3, -9.14}, {3.55, 3, -9.14},
-        {4.46, 3, -9.14}, {5.33, 3, -9.14}, {6.23, 3, -9.14}, {7.15, 3, -9.14},
-        {8.07, 3, -9.14}, {8.95, 3, -9.14}, {0.82, 3, -10.13},
-        {1.74, 3, -10.13}, {2.65, 3, -10.13}, {3.55, 3, -10.13},
-        {4.46, 3, -10.13}, {5.33, 3, -10.13}, {6.23, 3, -10.13},
-        {7.15, 3, -10.13}, {8.07, 3, -10.13}, {8.95, 3, -10.13}
-    }
+    marker_combat_pos = {}
+    local origin = constants.getPositionFromGUID("1d4424")
+    for i = 0, 20 do
+        marker_combat_pos[#marker_combat_pos + 1] = {
+            x = origin.x - 0.47 + (i % 10) * 0.90,
+            y = 3,
+            z = origin.z - 0.85 - math.floor(i / 10) * 1.03
+        }
+    end
+
     marker_combat_pos_ini = {
         ["Blue"] = {1.28, 1.58, -8.15},
         ["Green"] = {3.48, 1.58, -8.15},

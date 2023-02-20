@@ -49,8 +49,8 @@ function claimLabel()
       updateSave()
       broadcastToAll(i18n("willBe"):format(i18n(color:lower())
 ,GO.getName()), color)
-      ressources[color][4].call("AddTroop2")
-      Wait.time(function() ressources[color][4].call("AddTroop2") end, 0.25)
+      ressources[color][4].call("AddOneTroop")
+      Wait.time(function() ressources[color][4].call("AddOneTroop") end, 0.25)
     else
       broadcastToColor(i18n("cantClaimLeader"), color, color)
     end

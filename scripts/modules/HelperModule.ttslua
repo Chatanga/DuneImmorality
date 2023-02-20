@@ -74,22 +74,13 @@ function helperModule.isDeckContainsEnough(color, numberToDraw)
     return enoughCards
 end
 
-function helperModule.addVector3D(left, right)
-    return {
-        x = left[1] + right[1],
-        y = left[2] + right[2],
-        z = left[3] + right[3]
-    }
-end
-
 -- Les nouvelles ancres ont toutes une échelle unitaire, ce qui n’était pas
 -- le cas des anciennes.
 function helperModule.correctAnchorPosition(pos, originalScale)
-    return {
-        x = pos[1] * originalScale[1],
-        y = pos[2] * originalScale[2],
-        z = pos[3] * originalScale[3]
-    }
+    return Vector(
+        pos[1] * originalScale[1],
+        pos[2] * originalScale[2],
+        pos[3] * originalScale[3])
 end
 
 function helperModule.getVPMarkerMoveParameterToPlayerBoard(color)
