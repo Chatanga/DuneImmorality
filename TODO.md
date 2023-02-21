@@ -2,7 +2,6 @@ Activation de "Physic Full" côté joueur pour que la dépose de cartes soit OK.
 
 Mentat et 3éme agent mal placés à l’acquisition.
 Tirage de la défausse vers une mauvaise destination.
-Cartes conflits mal placées.
 Révélation mal placée.
 Action de rappel du faiseur à l’ouest.
 Envoi et retour spécimens mal placés.

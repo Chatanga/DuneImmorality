@@ -73,9 +73,9 @@ constants.named_resources = {
         swordmaster = getObjectFromGUID("ed3490"),
         swordmaster_zone = {-18.85, 1.71, 22.89},
         council_token = getObjectFromGUID("f19a48"),
-        council_zone = Vector(-1.52, 1, 0) + constants.getPositionFromGUID('074f6d'),
+        council_zone = Vector(-1.54, 1, -0.7) + constants.getPositionFromGUID('074f6d'),
         council_bonus_zone = Vector(-7, 0, -11) + constants.getPositionFromGUID('9555b8'),
-        vanilla_council_zone = {-1.04, 3, 9.59}
+        vanilla_council_zone = Vector(-1.73, 1, 0.64) + constants.getPositionFromGUID('074f6d')
     },
     ["Blue"] = {
         spice = getObjectFromGUID("9cc286"),
@@ -87,9 +87,9 @@ constants.named_resources = {
         swordmaster = getObjectFromGUID("a78ad7"),
         swordmaster_zone = {-18.94, 1.71, 1.15},
         council_token = getObjectFromGUID("f5b14a"),
-        council_zone = Vector(-0.76, 1, 0) + constants.getPositionFromGUID('074f6d'),
+        council_zone = Vector(-0.81, 1, -0.7) + constants.getPositionFromGUID('074f6d'),
         council_bonus_zone = Vector(-7, 0, -11) + constants.getPositionFromGUID('2d3346'),
-        vanilla_council_zone = {-1.76, 3, 9.59}
+        vanilla_council_zone = Vector(-1.00, 1, 0.64) + constants.getPositionFromGUID('074f6d')
     },
     ["Green"] = {
         spice = getObjectFromGUID("22478f"),
@@ -101,9 +101,9 @@ constants.named_resources = {
         swordmaster = getObjectFromGUID("fb1629"),
         swordmaster_zone = {19.06, 1.66, 22.89},
         council_token = getObjectFromGUID("a0028d"),
-        council_zone = Vector(0.76, 1, 0) + constants.getPositionFromGUID('074f6d'),
+        council_zone = Vector(0.83, 1, -0.7) + constants.getPositionFromGUID('074f6d'),
         council_bonus_zone = Vector(7, 0, -11) + constants.getPositionFromGUID('546163'),
-        vanilla_council_zone = {0.63, 3, 9.59}
+        vanilla_council_zone = Vector(0.66, 1, 0.64) + constants.getPositionFromGUID('074f6d')
     },
     ["Yellow"] = {
         spice = getObjectFromGUID("78fb8a"),
@@ -115,9 +115,9 @@ constants.named_resources = {
         swordmaster = getObjectFromGUID("635c49"),
         swordmaster_zone = {18.85, 1.65, 1.15},
         council_token = getObjectFromGUID("1be491"),
-        council_zone = Vector(1.52, 1, 0) + constants.getPositionFromGUID('074f6d'),
+        council_zone = Vector(1.60, 1, -0.7) + constants.getPositionFromGUID('074f6d'),
         council_bonus_zone = Vector(7, 0, -11) + constants.getPositionFromGUID('3d705e'),
-        vanilla_council_zone = {1.35, 3, 9.59}
+        vanilla_council_zone = Vector(1.37, 1, 0.64) + constants.getPositionFromGUID('074f6d')
     }
 }
 

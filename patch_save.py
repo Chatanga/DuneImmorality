@@ -394,7 +394,19 @@ def patch_save(input_path, output_path):
     object_by_guid = {}
 
     for object in objects:
+        if 'States' in object:
+            for _, state in object['States'].items():
+                if noLuaScript:
+                    state['Locked'] = True
+                    state['LuaScript'] = ''
+                    state['LuaScriptState'] = ''
+                    state['XmlUI'] = ''
+                if True:
+                    state['AttachedSnapPoints'] = []
+                rectify_rotation(state)
+
         guid = object['GUID']
+
         if guid in guids_to_be_removed:
             if guid == 'bd69bd':
                 pass
@@ -407,6 +419,15 @@ def patch_save(input_path, output_path):
                 assert object['LuaScript'] == ''
                 assert object['LuaScriptState'] == ''
                 assert object['XmlUI'] == ''
+                if guid == 'ef8614':
+                    other_kind_of_trash = object_by_guid['cf6ca1']
+                    if not 'ContainedObjects' in other_kind_of_trash:
+                        other_kind_of_trash['ContainedObjects'] = []
+                    for contained_object in object['ContainedObjects']:
+                        print("Transvasement de", guid, contained_object['Nickname'])
+                        other_kind_of_trash['ContainedObjects'].append(contained_object)
+                else:
+                    assert not 'ContainedObjects' in object
             continue
 
         if noLuaScript:
@@ -425,11 +446,9 @@ def patch_save(input_path, output_path):
                 new_anchor['Transform'][coordinate] = object['Transform'][coordinate]
             for coordinate in ['rotX', 'rotY', 'rotZ']:
                 new_anchor['Transform'][coordinate] = object['Transform'][coordinate]
-            #new_anchor['Nickname'] = find_name(structure, guid)
             new_anchor['Nickname'] = object['Nickname']
             for property in ['LuaScript', 'LuaScriptState', 'XmlUI']:
                 new_anchor[property] = object[property]
-            #new_anchor['Transform']['posY'] = 1.5
             object = new_anchor
 
         rectify_rotation(object)

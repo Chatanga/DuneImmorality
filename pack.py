@@ -34,6 +34,12 @@ def pack_save(save_file_name):
         if not name:
             name = object_state['Name']
         inject_script_and_UI(name, object_state['GUID'], object_state)
+        if 'States' in object_state:
+            for _, state in object_state['States'].items():
+                name = state['Nickname']
+                if not name:
+                    name = state['Name']
+                inject_script_and_UI(name, state['GUID'], state)
 
     print(json.dumps(save, indent = 2))
 

@@ -91,7 +91,7 @@ conflictOne = getObjectFromGUID("616984")
 conflictTwo = getObjectFromGUID("7c9ceb")
 conflictThree = getObjectFromGUID("f9ea6b")
 epicgamebutton = getObjectFromGUID("f8480b")
-pos_trash = constants.pos_trash_lower
+pos_trash = constants.pos_trash_upper
 
 tleilaxuTokens = constants.tleilaxuTokens
 researchTokens = constants.researchTokens
@@ -1294,6 +1294,7 @@ function RemoveIxContent()
 end
 
 function setupConflits(a, b, c)
+    log("--- setupConflits ---")
     conflictThree.shuffle()
     conflictTwo.shuffle()
     conflictOne.shuffle()
