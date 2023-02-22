@@ -246,7 +246,7 @@ def layout_player_board(structure, object_by_guid, color):
     add_snap_point('discard_deck_zone', unchanged_x)
     add_snap_point('agents/0', unchanged_x)
     add_snap_point('agents/1', unchanged_x)
-    add_snap_point(None, unchanged_x, offseted_x(-9.5), zOrigin + 9.5),
+    add_snap_point(None, unchanged_x, offseted_x(-9), zOrigin + 9.5),
     add_snap_point('dreadnoughts/0', unchanged_x, rotated = True)
     add_snap_point('dreadnoughts/1', unchanged_x, rotated = True)
 

@@ -34,7 +34,7 @@ function helperModule.ResetDiscard(_, color)
     if discardArea ~= nil then
         discardArea.setRotationSmooth({0, 180, 180}, false, false)
         discardArea.shuffle()
-        discardArea.setPositionSmooth(drawSpot[color], false, true)
+        discardArea.setPositionSmooth(constants.getLandingPositionFromGUID(drawDeckZone[color]), false, true)
         Wait.time(function()
             helperModule.GetDeckOrCard(drawDeckZone[color]).shuffle()
         end, 0.5)

@@ -36,17 +36,25 @@ function onLoad()
         ["Yellow"] = getObjectFromGUID("65876d")
     }
 
-    pos_reveal = {
-        ["Red"] = {-13.2, 1.8, 9.40}, -- location of first reveal snap point
-        ["Blue"] = {-13.2, 1.8, -12.79},
-        ["Green"] = {13.2, 1.8, 9.40},
-        ["Yellow"] = {13.2, 1.8, -12.79}
-    }
     board_player = {
         ["Red"] = getObjectFromGUID("75561d"),
         ["Blue"] = getObjectFromGUID("d72200"),
         ["Green"] = getObjectFromGUID("e6396b"),
         ["Yellow"] = getObjectFromGUID("036b6a")
+    }
+
+    pos_reveal = {
+        ["Red"] = Vector(16, 0.69, -5) + board_player["Red"].getPosition(),
+        ["Blue"] = Vector(16, 0.69, -5) + board_player["Blue"].getPosition(),
+        ["Green"] = Vector(-16, 0.69, -5) + board_player["Green"].getPosition(),
+        ["Yellow"] = Vector(-16, 0.69, -5) + board_player["Yellow"].getPosition()
+    }
+
+    pass_turn_anchor = {
+        ["Red"] = getObjectFromGUID("0e9fa2"),
+        ["Blue"] = getObjectFromGUID("643f32"),
+        ["Green"] = getObjectFromGUID("e6396b"),
+        ["Yellow"] = getObjectFromGUID("65876d")
     }
 
     flag_basin_zone = getObjectFromGUID("3fe117") -- token below board at basin control position
@@ -387,15 +395,35 @@ function activateButtons(color) -- creates button in player zone with position r
 end
 
 function activatePass(color)
+
+    function new_board_position(x, y, z)
+        return {x, y + 0.7, -z}
+    end
+
+    function new_symmetric_board_position(x, y, z)
+        if color == "Red" or color == "Blue" then
+            return new_board_position(-x, y, z)
+        else
+            return new_board_position(x, y, z)
+        end
+    end
+
+    --[[
+    local board = board_player[color].getPosition()
+    local anchor = pass_turn_anchor[color].getPosition()
+    local position = new_symmetric_board_position(anchor.x - board.x, 0, anchor.z - board.z)
+    ]]--
+    local position = new_symmetric_board_position(-16, 0, -9)
+    log(position)
+
     board_player[color].createButton({
         click_function = "Pass",
         function_owner = self,
         label = i18n("passButton"),
-        position = {0, 1, 0},
-        scale = {0.5, 0.5, 0.5},
-        width = 2750,
-        height = 2000,
-        font_size = 800,
+        position = position,
+        width = 1375,
+        height = 1000,
+        font_size = 400,
         color = "Purple",
         font_color = {0.9, 0.9, 0.9, 1}
     })
@@ -484,6 +512,8 @@ function testAgent(color)
 end
 
 function Pass(_, color)
+    log(color)
+    log(buttonPass[color].getDescription())
     if color ~= buttonPass[color].getDescription() then
         broadcastToColor(i18n("noTouch"), color, "Red")
     elseif reveal["Blue"] == 1 and reveal["Red"] == 1 and reveal["Green"] == 1 and

@@ -33,7 +33,9 @@ pos_agent = {
     ["Green"] = {
         {20.51, 2.75, 23.89}, {17.36, 2.75, 23.89}, {19.10, 2.75, 23.89}
     },
-    ["Yellow"] = {{20.44, 2.75, 1.96}, {17.27, 2.75, 1.96}, {19.10, 2.75, 1.96}}
+    ["Yellow"] = {
+        {20.44, 2.75, 1.96}, {17.27, 2.75, 1.96}, {19.10, 2.75, 1.96}
+    }
 }
 
 buttonPass = {
@@ -87,8 +89,8 @@ function activateButton()
         font_color = text_color,
         rotation = {0, 0, 0},
         label = "MAKERS\nRECALL",
-        position = {-4, 0.4, 4.54},
-        scale = {1.3, 1, 1.3},
+        position = {-7.1, 0.2, 8},
+        scale = {2, 1, 2},
         width = 600,
         height = 310,
         font_size = 120
@@ -109,7 +111,7 @@ function Makers()
     round_start = 1
     for index in pairs(buttonPass) do buttonPass[index].clearButtons() end
     self.clearButtons()
-    marker_round.setPositionSmooth({-4.07, 1.8, -9.96}, false, false)
+    marker_round.setPositionSmooth(constants.marker_positions.makers, false, false)
     for i = 1, 3 do
         local agentCheck = 0
         spaceCheck = getObjectFromGUID(makerZones[i]).getObjects()
@@ -141,7 +143,7 @@ end
 function Recall() startLuaCoroutine(self, "ConflictZone") end
 
 function ConflictZone()
-    marker_round.setPositionSmooth({-4.05, 1.8, -10.62}, false, false)
+    marker_round.setPositionSmooth(constants.marker_positions.combat, false, false)
     conflictArea = getObjectFromGUID(conflictZone).getObjects()
 
     for _, item in ipairs(conflictArea) do
@@ -421,7 +423,7 @@ function ConflictZone()
     BlackMarket()
     Global.call("resetRound")
 
-    local players = getObjectFromGUID("4a3e76").call("getPlayersBasedOnHotseat") 
+    local players = getObjectFromGUID("4a3e76").call("getPlayersBasedOnHotseat")
 
     local marker_yellow = marker_yellow_zone.getObjects()
     local marker_green = marker_green_zone.getObjects()
@@ -476,7 +478,7 @@ function ConflictZone()
         Global.call("TableTurnPlayers")
         firstPlayer(colfp)
     end
-    marker_round.setPositionSmooth({-4.08, 1.8, -8.01}, false, false)
+    marker_round.setPositionSmooth(constants.marker_positions.round_start, false, false)
 
     local t1 = 0.1
     for color, _ in pairs(zone_player) do
@@ -519,7 +521,7 @@ function ConflictZone()
     Wait.time(function() broadcastToAll(i18n("drawFive"), {0.5, 0.5, 0.5}) end,
               2)
     Wait.time(function()
-        marker_round.setPositionSmooth({-4.06, 1.8, -8.65}, false, false)
+        marker_round.setPositionSmooth(constants.marker_positions.player_turns, false, false)
         broadcastToAll(i18n("playersTurn"), "Pink")
         activateButton()
         round_start = 0

@@ -71,7 +71,7 @@ constants.named_resources = {
         cards = getObjectFromGUID("3a9e65"),
         leader_zone = getObjectFromGUID("66cdbb"),
         swordmaster = getObjectFromGUID("ed3490"),
-        swordmaster_zone = {-18.85, 1.71, 22.89},
+        swordmaster_zone = constants.getPositionFromGUID("7751c8") + 2 * ((constants.getPositionFromGUID("afa978") - constants.getPositionFromGUID("7751c8"))),
         council_token = getObjectFromGUID("f19a48"),
         council_zone = Vector(-1.54, 1, -0.7) + constants.getPositionFromGUID('074f6d'),
         council_bonus_zone = Vector(-7, 0, -11) + constants.getPositionFromGUID('9555b8'),
@@ -85,7 +85,7 @@ constants.named_resources = {
         cards = getObjectFromGUID("a0bb82"),
         leader_zone = getObjectFromGUID("681774"),
         swordmaster = getObjectFromGUID("a78ad7"),
-        swordmaster_zone = {-18.94, 1.71, 1.15},
+        swordmaster_zone = constants.getPositionFromGUID("64d013") + 2 * ((constants.getPositionFromGUID("106d8b") - constants.getPositionFromGUID("64d013"))),
         council_token = getObjectFromGUID("f5b14a"),
         council_zone = Vector(-0.81, 1, -0.7) + constants.getPositionFromGUID('074f6d'),
         council_bonus_zone = Vector(-7, 0, -11) + constants.getPositionFromGUID('2d3346'),
@@ -99,7 +99,7 @@ constants.named_resources = {
         cards = getObjectFromGUID("c7fb9b"),
         leader_zone = getObjectFromGUID("cf1486"),
         swordmaster = getObjectFromGUID("fb1629"),
-        swordmaster_zone = {19.06, 1.66, 22.89},
+        swordmaster_zone = constants.getPositionFromGUID("66ae45") + 2 * ((constants.getPositionFromGUID("bceb0e") - constants.getPositionFromGUID("66ae45"))),
         council_token = getObjectFromGUID("a0028d"),
         council_zone = Vector(0.83, 1, -0.7) + constants.getPositionFromGUID('074f6d'),
         council_bonus_zone = Vector(7, 0, -11) + constants.getPositionFromGUID('546163'),
@@ -113,7 +113,7 @@ constants.named_resources = {
         cards = getObjectFromGUID("17a08e"),
         leader_zone = getObjectFromGUID("a677e0"),
         swordmaster = getObjectFromGUID("635c49"),
-        swordmaster_zone = {18.85, 1.65, 1.15},
+        swordmaster_zone = constants.getPositionFromGUID("5068c8") + 2 * ((constants.getPositionFromGUID("67b476") - constants.getPositionFromGUID("5068c8"))),
         council_token = getObjectFromGUID("1be491"),
         council_zone = Vector(1.60, 1, -0.7) + constants.getPositionFromGUID('074f6d'),
         council_bonus_zone = Vector(7, 0, -11) + constants.getPositionFromGUID('3d705e'),
@@ -273,6 +273,14 @@ constants.cargo = {
     ["Green"] = getObjectFromGUID("34281d"),
     ["Blue"] = getObjectFromGUID("68e424"),
     ["Red"] = getObjectFromGUID("e9096d")
+}
+
+constants.marker_positions = {
+    round_start = constants.getPositionFromGUID("fb41e2"),
+    player_turns = Vector(0, 0, -0.64) + constants.getPositionFromGUID("fb41e2"),
+    combat = Vector(0, 0, -0.64 * 2) + constants.getPositionFromGUID("fb41e2"),
+    makers = Vector(0, 0, -0.64 * 3) + constants.getPositionFromGUID("fb41e2"),
+    recall = Vector(0, 0, -0.64 * 4) + constants.getPositionFromGUID("fb41e2")
 }
 
 return constants
