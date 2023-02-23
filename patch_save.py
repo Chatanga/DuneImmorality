@@ -114,7 +114,7 @@ player_object_positions = {
         'VP 4 Players': (-0.46, -2.34)
     },
     'symmetrical': {
-        'reveal_zone': (0, -11),
+        'agent_and_reveal_zone': (0, -11),
         'tech_board_zone': (10, 0),
         'trash': (16, -0.25),
         'hand_trigger': (0, -15),
@@ -144,7 +144,7 @@ player_object_positions = {
 player_object_scales = {
     'character_zone': (-1, 1, -1),
     'discard_deck_zone': (3, -1, 7),
-    'reveal_zone': (36, -1, 3),
+    'agent_and_reveal_zone': (36, -1, 12),
     'tech_board_zone': (10, -1, 9),
     'hand_trigger': (36, 5, 4)
 }
@@ -254,7 +254,7 @@ def layout_player_board(structure, object_by_guid, color):
         add_snap_point('pv_board', unchanged_x, (i // 6) * 0.995 - 0.45, (i % 6) * 1 - 2.35)
 
     for i in range(0, 24):
-        add_snap_point('reveal_zone', symmetrical_x, (i % 12) * 2.5 - 16, (i // 12) * 4)
+        add_snap_point('agent_and_reveal_zone', symmetrical_x, (i % 12) * 2.5 - 16, (i // 12) * 4)
 
     for i in range(0, 12):
         add_snap_point('tech_board_zone', symmetrical_x, (i // 4) * 3 - 4, (i % 4) * 2 - 3)
@@ -424,7 +424,6 @@ def patch_save(input_path, output_path):
                     if not 'ContainedObjects' in other_kind_of_trash:
                         other_kind_of_trash['ContainedObjects'] = []
                     for contained_object in object['ContainedObjects']:
-                        print("Transvasement de", guid, contained_object['Nickname'])
                         other_kind_of_trash['ContainedObjects'].append(contained_object)
                 else:
                     assert not 'ContainedObjects' in object
@@ -477,6 +476,10 @@ def patch_save(input_path, output_path):
             translate(object, (0, -2.5, -4))
         elif guid in structure_guids['base']:
             translate(object, (0, -2.5, -4))
+            for color in colors:
+                if guid == structure["base"]["players"][color]["ix_cargo"]:
+                    object['Locked'] = True
+                    object['Transform']['RotY'] = 270
 
         elif guid in structure_guids['Green']:
             green = structure['players']['Green']

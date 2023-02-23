@@ -44,14 +44,14 @@ end
 
 function tleilaxuTroop(_, color)
 
-    local leaderName = ressources[color][6].getObjects()[1].getName()
+    local leaderName = constants.named_resources[color].leader_zone.getObjects()[1].getName()
     if isEnoughSpecimen(_, color) then
         Player[color].showConfirmDialog(i18n("reclaimedForcesTroopsWarning"),
         function(color)
             spendSpecimen(color, 3)
 
             Wait.time(function()
-                ressources[color][4].call("AddOneTroop")
+                constants.named_resources[color].troop.call("AddOneTroop")
             end, 0.6, 2)
             broadcastToAll(leaderName .. i18n("reclaimedForcesTroops"), color)
         end)
@@ -60,7 +60,7 @@ end
 
 function tleilaxuScarab(_, color)
 
-    local leaderName = ressources[color][6].getObjects()[1].getName()
+    local leaderName = constants.named_resources[color].leader_zone.getObjects()[1].getName()
     if isEnoughSpecimen(_, color) then
         Player[color].showConfirmDialog(i18n("reclaimedForcesScarabWarning"),
         function(color)

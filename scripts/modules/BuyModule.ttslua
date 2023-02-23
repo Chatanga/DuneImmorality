@@ -46,7 +46,7 @@ function buyModule.Buy(zone, pColor, pos, activateButton, buyTleilaxu)
                 else
                     enoughSpecimen = true
 
-                    local leaderName = ressources[pColor][6].getObjects()[1].getName()
+                    local leaderName = constants.named_resources[pColor].leader_zone.getObjects()[1].getName()
                     Wait.time(function()
                         params = {osef = "", color = pColor, silent = true}
                         getObjectFromGUID("d5c2db").Call("RemoveSpecimenCall",

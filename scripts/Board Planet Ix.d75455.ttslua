@@ -55,9 +55,9 @@ function Dreadnought(_, color)
 
     if boardCommonModule.CheckAgentAndPlayer(color, Dreadnought_zone) then
 
-        local leader = ressources[color][6].getObjects()[1]
+        local leader = constants.named_resources[color].leader_zone.getObjects()[1]
         local leaderName = leader.getName()
-        local solariObj = ressources[color][2]
+        local solariObj = constants.named_resources[color].solari
 
         local price = 3
 

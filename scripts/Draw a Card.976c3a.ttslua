@@ -53,15 +53,20 @@ function drawCard(_,color)
                 position = {handZone.position.x-7.5, handZone.position.y, handZone.position.z},
                 flip = false,
                 smooth = false})
-            Wait.time(function() 
+            Wait.time(function()
                 my_card.flip()
             end,0.2)
-                
+
         else
             targetDeck.setPosition({handZone.position.x-7.5, handZone.position.y, handZone.position.z}, false, true)
             targetDeck.setRotation({deckRot.x, deckRot.y, deckRot.z+180})
         end
-        local leaderName = constants.ressources[color][6].getObjects()[1].getName()
-        broadcastToAll(leaderName ..i18n("drawIntrigue"), color)
+        local leaderZoneObjects = constants.named_resources[color].leader_zone.getObjects()
+        if #leaderZoneObjects > 0 then
+            local leaderName = leaderZoneObjects[1].getName()
+            broadcastToAll(leaderName ..i18n("drawIntrigue"), color)
+        else
+            log(color .. " player has no leader!")
+        end
     end
 end

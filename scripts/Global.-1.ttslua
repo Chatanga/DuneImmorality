@@ -176,10 +176,12 @@ function onLoad()
     }
     reserve_troop_zone = constants.reserve_troop_zone
 
-    zone_vp_combat = getObjectFromGUID("988577") -- ???
+    local zone_vp_combat = constants.getPositionFromGUID("740624")
     pos_vp_encours = {
-        {-0.45, 2, -3.57}, {-0.45, 2, -2.57}, {-0.45, 3, -3.57},
-        {-0.45, 3, -2.57}
+        zone_vp_combat + Vector(0, 0.5, -0.5),
+        zone_vp_combat + Vector(0, 0.5, 0.5),
+        zone_vp_combat + Vector(0, 1.5, -0.5),
+        zone_vp_combat + Vector(0, 1.5, 0.5)
     }
 
     players_color = {"Red", "Blue", "Green", "Yellow"}
@@ -198,7 +200,7 @@ function onLoad()
     bag_friendship["Bene Gesserit"].interactable = false
     bag_friendship["Fremen"].interactable = false
     for _, color in pairs(players_color) do
-        ressources[color][9].interactable = false -- conseillers
+        constants.named_resources[color].council_token.interactable = false -- conseillers
         buttonPass[color].interactable = false
         board_player[color].interactable = false
     end
@@ -290,7 +292,7 @@ end
 function activateButtons(color) -- creates button in player zone with position relative to leader board: reveal, reset discard, draw 1, draw 5
 
     function new_board_position(x, y, z)
-        return {x, y + 0.7, -z}
+        return Vector(x, y + 0.7, -z)
     end
 
     function new_symmetric_board_position(x, y, z)
@@ -414,7 +416,6 @@ function activatePass(color)
     local position = new_symmetric_board_position(anchor.x - board.x, 0, anchor.z - board.z)
     ]]--
     local position = new_symmetric_board_position(-16, 0, -9)
-    log(position)
 
     board_player[color].createButton({
         click_function = "Pass",
@@ -715,7 +716,7 @@ function CountForce(name)
             force = force + 2
         elseif object.getName() == name .. " Dreadnought" or object.getName() ==
             name .. " dreadnought" then
-            if ressources[name][6].getObjects()[1].hasTag("Rhombur") then
+            if constants.named_resources[name].leader_zone.getObjects()[1].hasTag("Rhombur") then
                 force = force + 4
             else
                 force = force + 3
@@ -795,7 +796,7 @@ function addTroopDefense()
         for _, troop in ipairs(troops) do
             if troop.getName() == joueur then
                 troop.setPositionSmooth({4.79, 2, -5.19}, false, false)
-                local leaderName = ressources[joueur][6].getObjects()[1]
+                local leaderName = constants.named_resources[joueur].leader_zone.getObjects()[1]
                                        .getName()
                 broadcastToAll(i18n("defenseTroop"):format(leaderName), joueur)
                 break
@@ -902,10 +903,11 @@ function onObjectEnterScriptingZone(zone, enter_object)
         if round_start == 1 then
             nom = enter_object.getName()
             local j = 0
-            for _, obj in pairs(getObjectFromGUID('d9a457').getObjects()) do
+            local combat_pv_bag = getObjectFromGUID('d9a457')
+            for _, obj in pairs(combat_pv_bag.getObjects()) do
                 if obj.name == nom then -- we use name instead of getName() here because objects are still in a bag and cannot use methods on them
                     j = j + 1
-                    getObjectFromGUID('d9a457').takeObject({
+                    combat_pv_bag.takeObject({
                         position = pos_vp_encours[j],
                         rotation = {0, 180, 0},
                         smooth = true,

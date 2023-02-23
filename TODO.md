@@ -1,6 +1,5 @@
 Activation de "Physic Full" côté joueur pour que la dépose de cartes soit OK.
 
-Action de rappel du faiseur à l’ouest.
 Envoi et retour spécimens mal placés.
 Déplacements sur la piste Tleilaxy et recherche mal positionnés.
 

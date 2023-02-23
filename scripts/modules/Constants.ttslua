@@ -54,12 +54,8 @@ constants.leaders = {
     helena = {GUID = "5a8a9a"}
 }
 
-constants.ressources = { -- 1 : épices, 2 : solaris, 3 : eau, 4 : troupes, 5 : cartes, 6 : zone leader, 7 : swordmaster, 8 : zone swordmaster, 9 : conseiller, 10 : zone conseiller, 11 : zone bonus conseiller, 12 : zone conseiller vanilla
-["Red"] = {getObjectFromGUID("3074d4"),getObjectFromGUID("576ccd"),getObjectFromGUID("692c4d"),getObjectFromGUID("8ea4af"),getObjectFromGUID("3a9e65"),getObjectFromGUID("66cdbb"),getObjectFromGUID("ed3490"),{-18.85, 1.71, 22.89},getObjectFromGUID("f19a48"),{-0.83, 3, 9.52},{-28.10, 2, 6.11},{-1.04, 3, 9.59}},
-["Blue"] = {getObjectFromGUID("9cc286"),getObjectFromGUID("fa5236"),getObjectFromGUID("0afaeb"),getObjectFromGUID("b71dd9"),getObjectFromGUID("a0bb82"),getObjectFromGUID("681774"),getObjectFromGUID("a78ad7"),{-18.94, 1.71, 1.15},getObjectFromGUID("f5b14a"),{-1.57, 3, 9.52},{-28.25, 2, -15.73},{-1.76, 3, 9.59}},
-["Green"] = {getObjectFromGUID("22478f"),getObjectFromGUID("e597dc"),getObjectFromGUID("fa9522"),getObjectFromGUID("126c3c"),getObjectFromGUID("c7fb9b"),getObjectFromGUID("cf1486"),getObjectFromGUID("fb1629"),{19.06, 1.66, 22.89},getObjectFromGUID("a0028d"),{0.82, 3, 9.52},{28.22, 2, 6.12},{0.63, 3, 9.59}},
-["Yellow"] = {getObjectFromGUID("78fb8a"),getObjectFromGUID("c5c4ef"),getObjectFromGUID("f217d0"),getObjectFromGUID("6af67a"),getObjectFromGUID("17a08e"),getObjectFromGUID("a677e0"),getObjectFromGUID("635c49"),{18.85, 1.65, 1.15},getObjectFromGUID("1be491"),{1.55, 3, 9.52},{28.23, 2, -15.97},{1.35, 3, 9.59}}
-}
+-- deprecated
+constants.ressources = {}
 
 -- TODO Generalize
 constants.named_resources = {
@@ -70,8 +66,16 @@ constants.named_resources = {
         troop_supply = getObjectFromGUID("8ea4af"),
         cards = getObjectFromGUID("3a9e65"),
         leader_zone = getObjectFromGUID("66cdbb"),
+        dreadnought_positions = {
+            constants.getPositionFromGUID("1a3c82"),
+            constants.getPositionFromGUID("a8f306")
+        },
+        agent_positions = {
+            constants.getPositionFromGUID("7751c8"),
+            constants.getPositionFromGUID("afa978"),
+            constants.getPositionFromGUID("7751c8") + 2 * ((constants.getPositionFromGUID("afa978") - constants.getPositionFromGUID("7751c8"))),
+        },
         swordmaster = getObjectFromGUID("ed3490"),
-        swordmaster_zone = constants.getPositionFromGUID("7751c8") + 2 * ((constants.getPositionFromGUID("afa978") - constants.getPositionFromGUID("7751c8"))),
         council_token = getObjectFromGUID("f19a48"),
         council_zone = Vector(-1.54, 1, -0.7) + constants.getPositionFromGUID('074f6d'),
         council_bonus_zone = Vector(-7, 0, -11) + constants.getPositionFromGUID('9555b8'),
@@ -84,8 +88,16 @@ constants.named_resources = {
         troop_supply = getObjectFromGUID("b71dd9"),
         cards = getObjectFromGUID("a0bb82"),
         leader_zone = getObjectFromGUID("681774"),
+        dreadnought_positions = {
+            constants.getPositionFromGUID("82789e"),
+            constants.getPositionFromGUID("60f208")
+        },
+        agent_positions = {
+            constants.getPositionFromGUID("64d013"),
+            constants.getPositionFromGUID("106d8b"),
+            constants.getPositionFromGUID("64d013") + 2 * ((constants.getPositionFromGUID("106d8b") - constants.getPositionFromGUID("64d013"))),
+        },
         swordmaster = getObjectFromGUID("a78ad7"),
-        swordmaster_zone = constants.getPositionFromGUID("64d013") + 2 * ((constants.getPositionFromGUID("106d8b") - constants.getPositionFromGUID("64d013"))),
         council_token = getObjectFromGUID("f5b14a"),
         council_zone = Vector(-0.81, 1, -0.7) + constants.getPositionFromGUID('074f6d'),
         council_bonus_zone = Vector(-7, 0, -11) + constants.getPositionFromGUID('2d3346'),
@@ -98,8 +110,16 @@ constants.named_resources = {
         troop_supply = getObjectFromGUID("126c3c"),
         cards = getObjectFromGUID("c7fb9b"),
         leader_zone = getObjectFromGUID("cf1486"),
+        dreadnought_positions = {
+            constants.getPositionFromGUID("a15087"),
+            constants.getPositionFromGUID("734250")
+        },
+        agent_positions = {
+            constants.getPositionFromGUID("66ae45"),
+            constants.getPositionFromGUID("bceb0e"),
+            constants.getPositionFromGUID("66ae45") + 2 * ((constants.getPositionFromGUID("bceb0e") - constants.getPositionFromGUID("66ae45"))),
+        },
         swordmaster = getObjectFromGUID("fb1629"),
-        swordmaster_zone = constants.getPositionFromGUID("66ae45") + 2 * ((constants.getPositionFromGUID("bceb0e") - constants.getPositionFromGUID("66ae45"))),
         council_token = getObjectFromGUID("a0028d"),
         council_zone = Vector(0.83, 1, -0.7) + constants.getPositionFromGUID('074f6d'),
         council_bonus_zone = Vector(7, 0, -11) + constants.getPositionFromGUID('546163'),
@@ -112,8 +132,16 @@ constants.named_resources = {
         troop_supply = getObjectFromGUID("6af67a"),
         cards = getObjectFromGUID("17a08e"),
         leader_zone = getObjectFromGUID("a677e0"),
+        dreadnought_positions = {
+            constants.getPositionFromGUID("5469fb"),
+            constants.getPositionFromGUID("71a414")
+        },
+        agent_positions = {
+            constants.getPositionFromGUID("5068c8"),
+            constants.getPositionFromGUID("67b476"),
+            constants.getPositionFromGUID("5068c8") + 2 * ((constants.getPositionFromGUID("67b476") - constants.getPositionFromGUID("5068c8"))),
+        },
         swordmaster = getObjectFromGUID("635c49"),
-        swordmaster_zone = constants.getPositionFromGUID("5068c8") + 2 * ((constants.getPositionFromGUID("67b476") - constants.getPositionFromGUID("5068c8"))),
         council_token = getObjectFromGUID("1be491"),
         council_zone = Vector(1.60, 1, -0.7) + constants.getPositionFromGUID('074f6d'),
         council_bonus_zone = Vector(7, 0, -11) + constants.getPositionFromGUID('3d705e'),
@@ -170,10 +198,10 @@ constants.pos_trash_upper = constants.getLandingPositionFromGUID("cf6ca1")
 constants.first_player_marker = getObjectFromGUID("1f5576")
 
 constants.first_player_positions =  {
-    ["Red"] = constants.getPositionFromGUID('346e0d'),
-    ["Blue"] = constants.getPositionFromGUID('1fc559'),
-    ["Green"] = constants.getPositionFromGUID('59523d'),
-    ["Yellow"] = constants.getPositionFromGUID('e9a44c')
+    ["Red"] = constants.getPositionFromGUID('346e0d') + Vector(0, -0.4, 0),
+    ["Blue"] = constants.getPositionFromGUID('1fc559') + Vector(0, -0.4, 0),
+    ["Green"] = constants.getPositionFromGUID('59523d') + Vector(0, -0.4, 0),
+    ["Yellow"] = constants.getPositionFromGUID('e9a44c') + Vector(0, -0.4, 0)
 }
 
 constants.zone_deck_imperium = '8bd982'
@@ -207,10 +235,10 @@ constants.reserve_troop_zone = {
 }
 
 constants.pos_supply_bowls = {
-    ["Red"] = {-24.63, 4.73, 23.89},
-    ["Blue"] = {-24.26, 4.67, 1.96},
-    ["Green"] = {24.77, 4.69, 23.89},
-    ["Yellow"] = {24.45, 4.57, 1.98}
+    ["Red"] = constants.getLandingPositionFromGUID("ab8fdf"),
+    ["Blue"] = constants.getLandingPositionFromGUID("2a520c"),
+    ["Green"] = constants.getLandingPositionFromGUID("bdfade"),
+    ["Yellow"] = constants.getLandingPositionFromGUID("ffbd81")
 }
 
 constants.player_scoreboards = {

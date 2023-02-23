@@ -69,7 +69,7 @@ function prescience(_, color)
 
     if color == claimingColor then
 
-        local leaderName = ressources[color][6].getObjects()[1].getName()
+        local leaderName = constants.named_resources[color].leader_zone.getObjects()[1].getName()
         local starterDeck = GetDeckOrCard(drawDeckZone[color])
 
         if starterDeck == nil then

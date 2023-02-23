@@ -58,11 +58,19 @@ function troopSupplyModule.onLoad(color, zoneLeaderGUID, mainPreDeployedTroupGUI
         text_color = {0.7804, 0.7804, 0.7804, 1}
     end
 
+    function new_symmetric_board_position(x, y, z)
+        if color == "Red" or color == "Blue" then
+            return Vector(-x, y, -z)
+        else
+            return Vector(x, y, -z)
+        end
+    end
+
     self.createButton({
         click_function = "troopSupplyModule__AddTroop",
         function_owner = self,
         label = i18n("addTroopBigButton"),
-        position = {-2.8, 0.2, -0.5},
+        position = new_symmetric_board_position(3.4, 0.1, 0.8),
         rotation = {0, 180, 0},
         scale = {0.5, 0.5, 0.5},
         width = 2400,

@@ -629,7 +629,6 @@ function giveAlliance(faction, color)
 
         end
 
-        log(posz .. " >? " .. posz_requis)
         if test_alliance == 0 and posz > posz_requis then
             local isReputStrongest = true
             for k, posz_compared in pairs(posz_liste) do
@@ -839,8 +838,8 @@ function boardCommonModule.Swordmaster(color, zone)
                 end, t)
                 t = t + 0.15
             end
-            constants.named_resources[color].swordmaster.setPositionSmooth(constants.named_resources[color].swordmaster_zone, false,
-                                                   false)
+            local p = constants.named_resources[color].agent_positions[3]
+            constants.named_resources[color].swordmaster.setPositionSmooth(p, false, false)
             if leader.hasTag("Ilban") then
 
                 local numberToDraw = 1
@@ -905,7 +904,8 @@ function boardCommonModule.Mentat(color)
             local mentats = getMentat()
             if mentats ~= nil then
                 talk = i18n("mentatToken")
-                mentats.setPositionSmooth(constants.named_resources[color].swordmaster_zone, false, false)
+                local p = constants.named_resources[color].agent_positions[3]
+                mentats.setPositionSmooth(p, false, false)
             end
 
             local numberToDraw = 1

@@ -40,8 +40,8 @@ function ResearchStation(_, color)
             if item.hasTag(color) then maxSearch = true end
         end
 
-        local leaderName = ressources[color][6].getObjects()[1].getName()
-        local waterObj = ressources[color][3]
+        local leaderName = constants.named_resources[color].leader_zone.getObjects()[1].getName()
+        local waterObj = constants.named_resources[color].water
 
         if waterObj.call("collectVal") < 2 then
             broadcastToColor(i18n("noWater"), color, color)

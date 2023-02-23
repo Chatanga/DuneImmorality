@@ -175,31 +175,31 @@ function SecureContract(_, color)
 
     if boardCommonModule.CheckAgentAndPlayer(color, SecureContract_zone) then
 
-        local leaderName = ressources[color][6].getObjects()[1].getName()
+        local leaderName = constants.named_resources[color].leader_zone.getObjects()[1].getName()
 
-        ressources[color][2].call("incrementVal")
-        ressources[color][2].call("incrementVal")
-        ressources[color][2].call("incrementVal")
+        constants.named_resources[color].solari.call("incrementVal")
+        constants.named_resources[color].solari.call("incrementVal")
+        constants.named_resources[color].solari.call("incrementVal")
         broadcastToAll(i18n("secureContract"):format(leaderName), color)
     end
 end
 
 function sellMelange(color, spiceAmount, solariAmount)
 
-    local val = ressources[color][1].call("collectVal")
+    local val = constants.named_resources[color].spice.call("collectVal")
 
     if boardCommonModule.CheckAgentAndPlayer(color, SellMelange_zone) then
 
-        local leaderName = ressources[color][6].getObjects()[1].getName()
+        local leaderName = constants.named_resources[color].leader_zone.getObjects()[1].getName()
 
         if val < spiceAmount then
             broadcastToColor(i18n("noSpice"), color, color)
         else
             for i = 1, spiceAmount, 1 do
-                ressources[color][1].call("decrementVal")
+                constants.named_resources[color].spice.call("decrementVal")
             end
             for i = 1, solariAmount, 1 do
-                ressources[color][2].call("incrementVal")
+                constants.named_resources[color].solari.call("incrementVal")
             end
             broadcastToAll(i18n("sellMelange"):format(leaderName, spiceAmount,
                                                       solariAmount), color)
@@ -242,9 +242,9 @@ function RallyTroops(_, color)
 
     if boardCommonModule.CheckAgentAndPlayer(color, RallyTroops_zone) then
 
-        local leader = ressources[color][6].getObjects()[1]
+        local leader = constants.named_resources[color].leader_zone.getObjects()[1]
         local leaderName = leader.getName()
-        local solariObj = ressources[color][2]
+        local solariObj = constants.named_resources[color].solari
         local t = 0
         local t1 = 0
 
@@ -264,7 +264,7 @@ function RallyTroops(_, color)
             for i = 1, 4, 1 do
                 t1 = t1 + 0.25
                 Wait.time(function()
-                    ressources[color][4].call("AddTroop2")
+                    constants.named_resources[color].troop.call("AddTroop2")
                 end, t1)
             end
 
@@ -308,8 +308,8 @@ function HallOfOratory(_, color)
     Wait.time(activateButtons, 1)
 
     if boardCommonModule.CheckAgentAndPlayer(color, HallOfOratory_zone) then
-        local leaderName = ressources[color][6].getObjects()[1].getName()
-        ressources[color][4].call("AddTroop2")
+        local leaderName = constants.named_resources[color].leader_zone.getObjects()[1].getName()
+        constants.named_resources[color].troop.call("AddTroop2")
         broadcastToAll(i18n("oratory"):format(leaderName), color)
     end
 end

@@ -14,11 +14,18 @@ GetDeckOrCard = helperModule.GetDeckOrCard
 marker = constants.first_player_marker
 position_marker = constants.first_player_positions
 
+board_player = {
+    ["Red"] = getObjectFromGUID("75561d"),
+    ["Blue"] = getObjectFromGUID("d72200"),
+    ["Green"] = getObjectFromGUID("e6396b"),
+    ["Yellow"] = getObjectFromGUID("036b6a")
+}
+
 hotseat = {
-    ["Blue"] = {obj = getObjectFromGUID("9eeccd"), pos = {-28.6, 1.73, -4.90}},
-    ["Red"] = {obj = getObjectFromGUID("895594"), pos = {-28.6, 1.73, 17.32}},
-    ["Green"] = {obj = getObjectFromGUID("96aa58"), pos = {28.6, 1.73, 17.32}},
-    ["Yellow"] = {obj = getObjectFromGUID("3d1b90"), pos = {28.6, 1.73, -4.90}}
+    ["Blue"] = {obj = getObjectFromGUID("9eeccd"), pos = board_player["Blue"].getPosition() + Vector(-16.5, 0.7, 9)},
+    ["Red"] = {obj = getObjectFromGUID("895594"), pos = board_player["Red"].getPosition() + Vector(-16.5, 0.7, 9)},
+    ["Green"] = {obj = getObjectFromGUID("96aa58"), pos = board_player["Green"].getPosition() + Vector(16.5, 0.7, 9)},
+    ["Yellow"] = {obj = getObjectFromGUID("3d1b90"), pos = board_player["Yellow"].getPosition() + Vector(16.5, 0.7, 9)}
 }
 
 manigance = '2b2575'

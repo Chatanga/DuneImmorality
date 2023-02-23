@@ -116,7 +116,7 @@ function nukeImperiumRow(obj, color)
 
         obj.destruct()
 
-        local leaderName = ressources[color][6].getObjects()[1].getName()
+        local leaderName = constants.named_resources[color].leader_zone.getObjects()[1].getName()
         broadcastToAll(leaderName .. i18n("atomicsUsed"), color)
     end, t)
 end
