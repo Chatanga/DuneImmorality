@@ -216,8 +216,9 @@ def layout_player_board(structure, object_by_guid, color):
             object['Transform']['scaleZ'] = sz
 
     board['AttachedSnapPoints'] = []
+    board['Decals'] = []
 
-    def add_snap_point(key, transform_x, xOffset = 0, zOffset = 0, rotated = False):
+    def add_snap_point(key, transform_x, xOffset = 0, zOffset = 0, rotated = False, withTechDecal = False):
         xPos = transform_x(-xOffset)
         zPos = zOrigin - zOffset
         if key:
@@ -240,6 +241,26 @@ def layout_player_board(structure, object_by_guid, color):
             }
         }
         board['AttachedSnapPoints'].append(snap_point)
+        if withTechDecal:
+            decal = {
+                "Transform": {
+                    "posX": -xPos + board['Transform']['posX'],
+                    "posY": 0.7 + board['Transform']['posY'],
+                    "posZ": -zPos + board['Transform']['posZ'],
+                    "rotX": 90,
+                    "rotY": 360,
+                    "rotZ": 0,
+                    "scaleX": 1,
+                    "scaleY": 1,
+                    "scaleZ": 1
+                },
+                "CustomDecal": {
+                    "Name": "Tech Tile Slot",
+                    "ImageURL": "file:////home/sadalsuud/Temp/tech_tile_decal.png",
+                    "Size": 1
+                }
+            }
+            object_by_guid[-1]['Decals'].append(decal)
 
     add_snap_point('character_zone', unchanged_x)
     add_snap_point('draw_deck', unchanged_x)
@@ -257,7 +278,40 @@ def layout_player_board(structure, object_by_guid, color):
         add_snap_point('agent_and_reveal_zone', symmetrical_x, (i % 12) * 2.5 - 16, (i // 12) * 4)
 
     for i in range(0, 12):
-        add_snap_point('tech_board_zone', symmetrical_x, (i // 4) * 3 - 4, (i % 4) * 2 - 3)
+        add_snap_point('tech_board_zone', symmetrical_x, (i // 4) * 3 - 4, (i % 4) * 2 - 3, withTechDecal = True)
+
+def add_space_snap_points(structure, object_by_guid):
+
+    board = object_by_guid[structure["base"]["board"]]
+
+    def add_snap_point(guid, xOffset = 0, zOffset = 0):
+        object = object_by_guid[guid]
+        xPos = xOffset - (object['Transform']['posX'] - board['Transform']['posX']) / board['Transform']['scaleX']
+        zPos = zOffset - (object['Transform']['posZ'] - board['Transform']['posZ']) / board['Transform']['scaleZ']
+        yRot = 0.0
+        snap_point = {
+            "Position": {
+                "x": xPos,
+                "y": 0.5,
+                "z": zPos
+            },
+            "Rotation": {
+                "x": 0.0,
+                "y": yRot,
+                "z": 0.0
+            }
+        }
+        board['AttachedSnapPoints'].append(snap_point)
+
+    for _, guid in structure["base"]["spaces"].items():
+        add_snap_point(guid, -0.05, -0.05)
+        add_snap_point(guid, 0.05, 0.05)
+
+    for _, guid in structure["ix"]["spaces"].items():
+        add_snap_point(guid, -0.05, -0.20)
+        add_snap_point(guid, 0.05, -0.10)
+        add_snap_point(guid, -0.05, 0.10)
+        add_snap_point(guid, 0.05, 0.20)
 
 def clean_up_bottom(structure, object_by_guid):
     root = structure['bottom_accessories']
@@ -317,6 +371,14 @@ def patch_save(input_path, output_path):
 
     save["VectorLines"] = []
     save["SnapPoints"] = []
+    save["DecalPallet"] = [
+        {
+            "Name": "Tech Tile Slot",
+            "ImageURL": "file:////home/sadalsuud/Temp/tech_tile_decal.png",
+            "Size": 1.0
+        }
+    ]
+    save['Decals'] = []
 
     save["SkyURL"] = "file:////home/sadalsuud/Téléchargements/Textures/HDRI-II/HDRI-II.jpg"
 
@@ -392,6 +454,8 @@ def patch_save(input_path, output_path):
     objects = save['ObjectStates']
     new_objects = []
     object_by_guid = {}
+
+    object_by_guid[-1] = save
 
     for object in objects:
         if 'States' in object:
@@ -523,6 +587,8 @@ def patch_save(input_path, output_path):
 
     for color in colors:
         layout_player_board(structure, object_by_guid, color)
+
+    add_space_snap_points(structure, object_by_guid)
 
     clean_up_bottom(structure, object_by_guid)
 
