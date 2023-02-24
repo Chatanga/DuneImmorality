@@ -54,10 +54,6 @@ constants.leaders = {
     helena = {GUID = "5a8a9a"}
 }
 
--- deprecated
-constants.ressources = {}
-
--- TODO Generalize
 constants.named_resources = {
     ["Red"] = {
         spice = getObjectFromGUID("3074d4"),

@@ -1,10 +1,9 @@
 Activation de "Physic Full" côté joueur pour que la dépose de cartes soit OK.
 
-Envoi et retour spécimens mal placés.
-Déplacements sur la piste Tleilaxy et recherche mal positionnés.
-
 Replacer les points d’aimantation :
     - espaces de la carte
+
+Éventuellement :
     - piste des scores principale
     - niveau de forces
     - ligne impériale
@@ -12,8 +11,9 @@ Replacer les points d’aimantation :
     - cartes intrigues
     - fiches de leader
     - marqueur de premier joueur
-
-Éventuellement :
     - piste commercial
     - ligne Tleilaxu
     - sièges au conseil
+
+Et :
+    - décalcos ?
