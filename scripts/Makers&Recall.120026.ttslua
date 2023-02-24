@@ -362,13 +362,10 @@ function ConflictZone()
     end
 
     for _, obj in ipairs(zone_vp_encours.getObjects()) do
-        log(obj)
         if obj then
             if obj.getDescription() == "VP" then
                 trash.putObject(obj)
             end
-        else
-            log("WTF?!")
         end
     end
 
@@ -533,9 +530,6 @@ function ConflictZone()
 end
 
 function firstPlayer(colfp)
-    log(colpf)
-    log(constants.named_resources[colfp].leader_zone)
-    log(constants.named_resources[colfp].leader_zone.getObjects())
     local leaderZoneObjects = constants.named_resources[colfp].leader_zone.getObjects()
     if #leaderZoneObjects > 0 then
         local leader = constants.named_resources[colfp].leader_zone.getObjects()[1]

@@ -513,8 +513,6 @@ function testAgent(color)
 end
 
 function Pass(_, color)
-    log(color)
-    log(buttonPass[color].getDescription())
     if color ~= buttonPass[color].getDescription() then
         broadcastToColor(i18n("noTouch"), color, "Red")
     elseif reveal["Blue"] == 1 and reveal["Red"] == 1 and reveal["Green"] == 1 and

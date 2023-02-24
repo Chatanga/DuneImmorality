@@ -146,7 +146,8 @@ player_object_scales = {
     'discard_deck_zone': (3, -1, 7),
     'agent_and_reveal_zone': (36, -1, 12),
     'tech_board_zone': (10, -1, 9),
-    'hand_trigger': (36, 5, 4)
+    'hand_trigger': (36, 5, 4),
+    'first_player_zone': (2, 1, 2)
 }
 
 def layout_player_board(structure, object_by_guid, color):
@@ -312,6 +313,35 @@ def add_space_snap_points(structure, object_by_guid):
         add_snap_point(guid, 0.05, -0.10)
         add_snap_point(guid, -0.05, 0.10)
         add_snap_point(guid, 0.05, 0.20)
+
+def add_combat_force_snap_points(structure, object_by_guid):
+
+    board_guid = structure["base"]["board"]
+    board = object_by_guid[board_guid]
+    origin = object_by_guid[structure['base']['combat']['combat_tokens_zone']]
+
+    def add_snap_point(xOffset = 0, zOffset = 0):
+        xPos = -(xOffset + origin['Transform']['posX']) / board['Transform']['scaleX'] - board['Transform']['posX']
+        zPos = (zOffset + origin['Transform']['posZ']) / board['Transform']['scaleZ'] - board['Transform']['posZ']
+        yRot = 0.0
+        snap_point = {
+            "Position": {
+                "x": xPos,
+                "y": 0.5,
+                "z": zPos
+            },
+            "Rotation": {
+                "x": 0.0,
+                "y": yRot,
+                "z": 0.0
+            }
+        }
+        board['AttachedSnapPoints'].append(snap_point)
+
+    for i in range(0, 20):
+        add_snap_point(
+            -0.47 + (i % 10) * 0.90,
+            -1.63 - (i // 10) * 1.01)
 
 def clean_up_bottom(structure, object_by_guid):
     root = structure['bottom_accessories']
@@ -510,7 +540,7 @@ def patch_save(input_path, output_path):
             for coordinate in ['rotX', 'rotY', 'rotZ']:
                 new_anchor['Transform'][coordinate] = object['Transform'][coordinate]
             new_anchor['Nickname'] = object['Nickname']
-            for property in ['LuaScript', 'LuaScriptState', 'XmlUI']:
+            for property in ['Description', 'LuaScript', 'LuaScriptState', 'XmlUI']:
                 new_anchor[property] = object[property]
             object = new_anchor
 
@@ -589,7 +619,7 @@ def patch_save(input_path, output_path):
         layout_player_board(structure, object_by_guid, color)
 
     add_space_snap_points(structure, object_by_guid)
-
+    add_combat_force_snap_points(structure, object_by_guid)
     clean_up_bottom(structure, object_by_guid)
 
     save['ObjectStates'] = new_objects
