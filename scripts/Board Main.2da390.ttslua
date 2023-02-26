@@ -5,7 +5,7 @@ constants = require("Constants")
 
 boardCommonModule = require("BoardCommonModule")
 
-ressources = constants.ressources
+named_resources = constants.named_resources
 
 function onload()
     self.interactable = false
@@ -454,15 +454,15 @@ function Arrakeen(_, color)
 end
 
 function BonusFremen(_, color)
-    constants.named_resources[color].water.call("incrementVal")
-    local leaderName = constants.named_resources[color].leader_zone.getObjects()[1].getName()
+    named_resources[color].water.call("incrementVal")
+    local leaderName = named_resources[color].leader_zone.getObjects()[1].getName()
     broadcastToAll(i18n("fremenBonus"):format(leaderName), color)
 
 end
 
 function BonusBene(_, color)
     Wait.time(function() boardCommonModule.drawIntrigue(color) end, 0.75)
-    local leaderName = constants.named_resources[color].leader_zone.getObjects()[1].getName()
+    local leaderName = named_resources[color].leader_zone.getObjects()[1].getName()
     broadcastToAll(i18n("beneBonus"):format(leaderName), color)
 
 end
@@ -471,7 +471,7 @@ function BonusSpatial(_, color)
     local t0 = 0
     local combat = Global.call("getFight")
     local solariAmount = 3
-    local leader = constants.named_resources[color].leader_zone.getObjects()[1]
+    local leader = named_resources[color].leader_zone.getObjects()[1]
     local leaderName = leader.getName()
 
 
@@ -479,7 +479,7 @@ function BonusSpatial(_, color)
 
     for i = 1, solariAmount, 1 do
         t0 = t0 + 0.2
-        Wait.time(function() constants.named_resources[color].solari.call("incrementVal") end, t0)
+        Wait.time(function() named_resources[color].solari.call("incrementVal") end, t0)
     end
     broadcastToAll(i18n("spaceBonus"):format(leaderName, solariAmount), color)
 
@@ -487,10 +487,9 @@ end
 
 function BonusEmperor(_, color)
 
-    local leaderName = constants.named_resources[color].leader_zone.getObjects()[1].getName()
+    local leaderName = named_resources[color].leader_zone.getObjects()[1].getName()
 
-    constants.named_resources[color].troop.call("AddOneTroop")
-    Wait.time(function() constants.named_resources[color].troop.call("AddOneTroop") end, 0.25)
+    named_resources[color].troop_supply.call("AddTwoTroop")
     broadcastToAll(i18n("emperorBonus"):format(leaderName), color)
 
 end

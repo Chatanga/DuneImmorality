@@ -67,6 +67,7 @@ epic_cards = constants.epic_cards
 trashBin = '8d39ef'
 conflictDeckLocation = constants.getLandingPositionFromGUID("f9ea6b")
 councellor_bonus_bag = getObjectFromGUID("074f6d")
+-- "Four Players" VP
 FP1 = getObjectFromGUID('66444c')
 FP2 = getObjectFromGUID('4e8873')
 FP3 = getObjectFromGUID('a6c2e0')
@@ -98,7 +99,7 @@ conflictOne = getObjectFromGUID("616984")
 conflictTwo = getObjectFromGUID("7c9ceb")
 conflictThree = getObjectFromGUID("f9ea6b")
 epicgamebutton = getObjectFromGUID("f8480b")
-pos_trash = constants.pos_trash_upper
+pos_trash = constants.pos_trash_lower
 
 tleilaxuTokens = constants.tleilaxuTokens
 researchTokens = constants.researchTokens
@@ -926,6 +927,7 @@ function Setup()
             end)
         else
             broadcastToAll(i18n("notHiddenPicks"), "White")
+            hiddenPicks = 0
         end
     else
         if tournament == 1 then worm.firstStep() end
@@ -1146,13 +1148,18 @@ function replaceLeaders() -- called after ban phase and after player pick a lead
             smooth = true
         })
     end
-
 end
 
 function updateLeaderChoices(varPassed) -- called from the ClaimLeader in all standards Leaders: keep in memory leader picked
     removeAnElementInArray(varPassed.leaderSelectedGUID, leadersGUID) -- update available leader pool
     for _, leaderGUID in ipairs(leadersGUID) do -- put in randomizer+replace on the table between every leader picks: players still see cursor when other players pick
-        leaderRandomizer.putObject(getObjectFromGUID(leaderGUID))
+        local leader = getObjectFromGUID(leaderGUID)
+        if leader then
+            leaderRandomizer.putObject(leader)
+        else
+            log("Not reinjectiong nil leader " .. leaderGUID)
+            log(leadersGUID)
+        end
     end
     leaderChoices[varPassed.playerColor] = varPassed.leaderSelectedGUID -- update leader choices
     replaceLeaders()
@@ -1465,7 +1472,7 @@ function ImperiumDeal()
     end
 
     if black_market == 1 then
-        getObjectFromGUID("ab7ac5").setPosition({-6.23, 1.50, 24.45})
+        getObjectFromGUID("ab7ac5").setPosition(Vector(-6.23, 1.50, 24.45) + constants.black_market_offset)
         getObjectFromGUID("ab7ac5").setRotation({0, 180, 0})
         Wait.time(function()
             local params5 = {}
@@ -1488,6 +1495,17 @@ function ImperiumDeal()
     end
 end
 
+function chainDestruct(objects)
+    local destroyLater = function()
+        destroyObject(objects[1])
+        table.remove(objects, 1)
+        chainDestruct(objects)
+    end
+    if #objects > 0 then
+        Wait.time(destroyLater, 0.5)
+    end
+end
+
 function destructMissingPlayers()
     local seated_players = getPlayersBasedOnHotseat()
 
@@ -1505,15 +1523,10 @@ function destructMissingPlayers()
     end
 
     if numPlayers < 4 then
-        destroyObject(FP1)
-        destroyObject(FP2)
-        destroyObject(FP3)
-        destroyObject(FP4)
-        yellowscore.setPositionSmooth({10.35, 2, -10.08})
-        greenscore.setPositionSmooth({10.35, 3, -10.08})
-        bluescore.setPositionSmooth({10.35, 5, -10.08})
-        redscore.setPositionSmooth({10.35, 4, -10.08})
+        -- Destroy one by one to give time to the physic engine to stack the tokens nicely.
+        chainDestruct({FP1, FP2, FP3, FP4})
     end
+
     for color, _ in pairs(hand_players) do
         if not hasValue(seated_players, color) then
             hand_players[color].destruct()
@@ -1524,7 +1537,7 @@ function destructMissingPlayers()
             if not hasValue(seated_players, color) then
                 for _, obj in ipairs(table_player) do
                     local obj1 = getObjectFromGUID(obj)
-                    if obj1 ~= nil then
+                    if obj1 then
                         obj1.setPosition({0, 200, -50})
                         obj1.setLock(true)
                     end
@@ -1534,7 +1547,7 @@ function destructMissingPlayers()
         for color, bowl_player in pairs(bowl_players) do
             if not hasValue(seated_players, color) then
                 local bowl = getObjectFromGUID(bowl_player)
-                if bowl ~= nil then
+                if bowl then
                     bowl.clearButtons()
                 end
             end

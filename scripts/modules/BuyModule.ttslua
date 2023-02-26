@@ -11,7 +11,7 @@ scriptZone_middleTrack_research = getObjectFromGUID("60a0fd")
 
 GetDeckOrCard = helperModule.GetDeckOrCard
 
-ressources = constants.ressources
+named_resources = constants.named_resources
 
 pos_supply_bowls = constants.pos_supply_bowls
 
@@ -46,7 +46,7 @@ function buyModule.Buy(zone, pColor, pos, activateButton, buyTleilaxu)
                 else
                     enoughSpecimen = true
 
-                    local leaderName = constants.named_resources[pColor].leader_zone.getObjects()[1].getName()
+                    local leaderName = named_resources[pColor].leader_zone.getObjects()[1].getName()
                     Wait.time(function()
                         params = {osef = "", color = pColor, silent = true}
                         getObjectFromGUID("d5c2db").Call("RemoveSpecimenCall",

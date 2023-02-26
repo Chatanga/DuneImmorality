@@ -1,6 +1,10 @@
 i18n = require("i18n")
 require("locales")
 
+--[[
+    Dieu sait pourquoi, les instructions "require" font dérailler TTS pour ce script d’état.
+]]--
+
 constants = require("Constants")
 
 helperModule = require("HelperModule")
@@ -18,12 +22,12 @@ RallyTroops_zone = getObjectFromGUID("6932df")
 Swordmaster_zone = getObjectFromGUID("6cc2f8")
 HallOfOratory_zone = getObjectFromGUID("3e7409")
 
-ressources = constants.ressources
+named_resources = constants.named_resources
 
-function onload()    
+function onload()
     i18n.setLocale(Global.getVar("locale"))
 
-    self.interactable = false    
+    self.interactable = false
     activateButtons()
 end
 
@@ -175,31 +179,31 @@ function SecureContract(_, color)
 
     if boardCommonModule.CheckAgentAndPlayer(color, SecureContract_zone) then
 
-        local leaderName = constants.named_resources[color].leader_zone.getObjects()[1].getName()
+        local leaderName = named_resources[color].leader_zone.getObjects()[1].getName()
 
-        constants.named_resources[color].solari.call("incrementVal")
-        constants.named_resources[color].solari.call("incrementVal")
-        constants.named_resources[color].solari.call("incrementVal")
+        named_resources[color].solari.call("incrementVal")
+        named_resources[color].solari.call("incrementVal")
+        named_resources[color].solari.call("incrementVal")
         broadcastToAll(i18n("secureContract"):format(leaderName), color)
     end
 end
 
 function sellMelange(color, spiceAmount, solariAmount)
 
-    local val = constants.named_resources[color].spice.call("collectVal")
+    local val = named_resources[color].spice.call("collectVal")
 
     if boardCommonModule.CheckAgentAndPlayer(color, SellMelange_zone) then
 
-        local leaderName = constants.named_resources[color].leader_zone.getObjects()[1].getName()
+        local leaderName = named_resources[color].leader_zone.getObjects()[1].getName()
 
         if val < spiceAmount then
             broadcastToColor(i18n("noSpice"), color, color)
         else
             for i = 1, spiceAmount, 1 do
-                constants.named_resources[color].spice.call("decrementVal")
+                named_resources[color].spice.call("decrementVal")
             end
             for i = 1, solariAmount, 1 do
-                constants.named_resources[color].solari.call("incrementVal")
+                named_resources[color].solari.call("incrementVal")
             end
             broadcastToAll(i18n("sellMelange"):format(leaderName, spiceAmount,
                                                       solariAmount), color)
@@ -242,9 +246,9 @@ function RallyTroops(_, color)
 
     if boardCommonModule.CheckAgentAndPlayer(color, RallyTroops_zone) then
 
-        local leader = constants.named_resources[color].leader_zone.getObjects()[1]
+        local leader = named_resources[color].leader_zone.getObjects()[1]
         local leaderName = leader.getName()
-        local solariObj = constants.named_resources[color].solari
+        local solariObj = named_resources[color].solari
         local t = 0
         local t1 = 0
 
@@ -264,12 +268,12 @@ function RallyTroops(_, color)
             for i = 1, 4, 1 do
                 t1 = t1 + 0.25
                 Wait.time(function()
-                    constants.named_resources[color].troop.call("AddTroop2")
+                    named_resources[color].troop_supply.call("AddTroop2")
                 end, t1)
             end
 
             if leader.hasTag("Ilban") then
-    
+
                 local numberToDraw = 1
 
                 local enoughCards = isDeckContainsEnough(color, numberToDraw)
@@ -308,8 +312,8 @@ function HallOfOratory(_, color)
     Wait.time(activateButtons, 1)
 
     if boardCommonModule.CheckAgentAndPlayer(color, HallOfOratory_zone) then
-        local leaderName = constants.named_resources[color].leader_zone.getObjects()[1].getName()
-        constants.named_resources[color].troop.call("AddTroop2")
+        local leaderName = named_resources[color].leader_zone.getObjects()[1].getName()
+        named_resources[color].troop_supply.call("AddTroop2")
         broadcastToAll(i18n("oratory"):format(leaderName), color)
     end
 end

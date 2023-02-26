@@ -5,7 +5,7 @@ helperModule = require("HelperModule")
 
 constants = require("Constants")
 
-ressources = constants.ressources
+named_resources = constants.named_resources
 
 GetDeckOrCard = helperModule.GetDeckOrCard
 
@@ -13,7 +13,7 @@ ImperiumRow = constants.imperiumRow
 
 zone_deck_imperium = constants.zone_deck_imperium
 
-pos_trash = constants.pos_trash_upper
+pos_trash = constants.pos_trash_lower
 
 board_display_leaders = getObjectFromGUID("823bd3")
 
@@ -116,7 +116,7 @@ function nukeImperiumRow(obj, color)
 
         obj.destruct()
 
-        local leaderName = constants.named_resources[color].leader_zone.getObjects()[1].getName()
+        local leaderName = named_resources[color].leader_zone.getObjects()[1].getName()
         broadcastToAll(leaderName .. i18n("atomicsUsed"), color)
     end, t)
 end

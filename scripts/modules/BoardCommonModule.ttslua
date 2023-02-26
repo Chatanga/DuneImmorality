@@ -304,10 +304,7 @@ function boardCommonModule.HardyWarriors(color)
         else
             local leaderName = constants.named_resources[color].leader_zone.getObjects()[1].getName()
             waterObj.call("decrementVal")
-            constants.named_resources[color].troop_supply.call("AddOneTroop")
-            Wait.time(function()
-                constants.named_resources[color].troop_supply.call("AddOneTroop")
-            end, 0.25)
+            constants.named_resources[color].troop_supply.call("AddOneTwoTroops")
             broadcastToAll(i18n("hardyWarriors"):format(leaderName), color)
             if leaderName == "Shaddam IV" then
                 boardCommonModule.FremenDown(color)
@@ -904,8 +901,7 @@ function boardCommonModule.Mentat(color)
             local mentats = getMentat()
             if mentats ~= nil then
                 talk = i18n("mentatToken")
-                local p = constants.named_resources[color].agent_positions[3]
-                mentats.setPositionSmooth(p, false, false)
+                mentats.setPositionSmooth(constants.named_resources[color].agent_positions[3], false, false)
             end
 
             local numberToDraw = 1
@@ -993,7 +989,7 @@ function boardCommonModule.HighCouncil(color)
             -- place the council token and get back a 2 persuasion token near the player board
             local destination = constants.named_resources[color].council_zone
             local ix_CHOAM_overlay = getObjectFromGUID("a139cd")
-            if ix_CHOAM_overlay == nil then
+            if not ix_CHOAM_overlay then
                 destination = constants.named_resources[color].vanilla_council_zone
             end
 
@@ -1067,11 +1063,7 @@ function boardCommonModule.drawIntrigue(color)
                 flip = false,
                 smooth = false
             })
-            if my_card then
-                Wait.time(function() my_card.flip() end, 0.2)
-            else
-                log("No intrigue card taken!")
-            end
+            Wait.time(function() my_card.flip() end, 0.2)
         end, t)
         t = t + 0.25
     end

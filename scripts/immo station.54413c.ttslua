@@ -7,7 +7,7 @@ helperModule = require("HelperModule")
 
 boardCommonModule = require("BoardCommonModule")
 
-ressources = constants.ressources
+named_resources = constants.named_resources
 
 DrawOne = helperModule.DrawOne
 
@@ -40,8 +40,8 @@ function ResearchStation(_, color)
             if item.hasTag(color) then maxSearch = true end
         end
 
-        local leaderName = constants.named_resources[color].leader_zone.getObjects()[1].getName()
-        local waterObj = constants.named_resources[color].water
+        local leaderName = named_resources[color].leader_zone.getObjects()[1].getName()
+        local waterObj = named_resources[color].water
 
         if waterObj.call("collectVal") < 2 then
             broadcastToColor(i18n("noWater"), color, color)

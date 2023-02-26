@@ -2,11 +2,11 @@ local constants = {}
 
 function constants.getPositionFromGUID(GUID)
     local object = getObjectFromGUID(GUID)
-    if object ~= nil then
+    if object then
         return object.getPosition():copy()
     else
         log("[getPositionFromGUID] GUID inconnu : " .. GUID)
-        return Vector(0, 10, 0)
+        return nil
     end
 end
 
@@ -14,8 +14,7 @@ end
 -- et d’éviter d’envoyer, par exemple, une carte invisible juste en dessous d’un
 -- paquet qui sera donc ajouté à la carte et deviendra à son tour invisible…
 function constants.getLandingPositionFromGUID(anchorGUID)
-    local position = constants.getPositionFromGUID(anchorGUID)
-    return Vector(position.x, position.y + 0.3, position.z)
+    return constants.getPositionFromGUID(anchorGUID) + Vector(0, 0.3, 0)
 end
 
 constants.setupObj = getObjectFromGUID("4a3e76")
@@ -73,9 +72,9 @@ constants.named_resources = {
         },
         swordmaster = getObjectFromGUID("ed3490"),
         council_token = getObjectFromGUID("f19a48"),
-        council_zone = Vector(-1.54, 1, -0.7) + constants.getPositionFromGUID('074f6d'),
-        council_bonus_zone = Vector(-7, 0, -11) + constants.getPositionFromGUID('9555b8'),
-        vanilla_council_zone = Vector(-1.73, 1, 0.64) + constants.getPositionFromGUID('074f6d')
+        council_zone = constants.getPositionFromGUID('074f6d') + Vector(-1.54, 1, 0),
+        council_bonus_zone = constants.getPositionFromGUID('9555b8') + Vector(-7, 0, -11),
+        vanilla_council_zone = constants.getPositionFromGUID('074f6d') + Vector(-1.73, 1, 0)
     },
     ["Blue"] = {
         spice = getObjectFromGUID("9cc286"),
@@ -95,9 +94,9 @@ constants.named_resources = {
         },
         swordmaster = getObjectFromGUID("a78ad7"),
         council_token = getObjectFromGUID("f5b14a"),
-        council_zone = Vector(-0.81, 1, -0.7) + constants.getPositionFromGUID('074f6d'),
-        council_bonus_zone = Vector(-7, 0, -11) + constants.getPositionFromGUID('2d3346'),
-        vanilla_council_zone = Vector(-1.00, 1, 0.64) + constants.getPositionFromGUID('074f6d')
+        council_zone =  constants.getPositionFromGUID('074f6d') + Vector(-0.81, 1, 0),
+        council_bonus_zone = constants.getPositionFromGUID('2d3346') + Vector(-7, 0, -11),
+        vanilla_council_zone = constants.getPositionFromGUID('074f6d') + Vector(-1.00, 1, 0)
     },
     ["Green"] = {
         spice = getObjectFromGUID("22478f"),
@@ -117,9 +116,9 @@ constants.named_resources = {
         },
         swordmaster = getObjectFromGUID("fb1629"),
         council_token = getObjectFromGUID("a0028d"),
-        council_zone = Vector(0.83, 1, -0.7) + constants.getPositionFromGUID('074f6d'),
-        council_bonus_zone = Vector(7, 0, -11) + constants.getPositionFromGUID('546163'),
-        vanilla_council_zone = Vector(0.66, 1, 0.64) + constants.getPositionFromGUID('074f6d')
+        council_zone = constants.getPositionFromGUID('074f6d') + Vector(0.83, 1, 0),
+        council_bonus_zone = constants.getPositionFromGUID('546163') + Vector(7, 0, -11),
+        vanilla_council_zone = constants.getPositionFromGUID('074f6d') + Vector(0.66, 1, 0)
     },
     ["Yellow"] = {
         spice = getObjectFromGUID("78fb8a"),
@@ -139,9 +138,9 @@ constants.named_resources = {
         },
         swordmaster = getObjectFromGUID("635c49"),
         council_token = getObjectFromGUID("1be491"),
-        council_zone = Vector(1.60, 1, -0.7) + constants.getPositionFromGUID('074f6d'),
-        council_bonus_zone = Vector(7, 0, -11) + constants.getPositionFromGUID('3d705e'),
-        vanilla_council_zone = Vector(1.37, 1, 0.64) + constants.getPositionFromGUID('074f6d')
+        council_zone = constants.getPositionFromGUID('074f6d') + Vector(1.60, 1, 0),
+        council_bonus_zone = constants.getPositionFromGUID('3d705e') + Vector(7, 0, -11),
+        vanilla_council_zone = constants.getPositionFromGUID('074f6d') + Vector(1.37, 1, 0)
     }
 }
 
@@ -187,9 +186,17 @@ constants.zone_player = {
     ["Yellow"] = getObjectFromGUID('3d705e')
 }
 
-constants.pos_black_market = {{-7.61, 2, 24.5}, {-5.05, 2, 24.5}, {-2.49, 2, 24.5}}
+constants.black_market_offset = Vector(0, -1, -4)
+
+constants.pos_black_market = {
+    Vector(-7.61, 2, 24.5) + constants.black_market_offset,
+    Vector(-5.05, 2, 24.5) + constants.black_market_offset,
+    Vector(-2.49, 2, 24.5) + constants.black_market_offset
+}
 
 constants.pos_trash_upper = constants.getLandingPositionFromGUID("cf6ca1")
+
+constants.pos_trash_lower = constants.getLandingPositionFromGUID("ef8614")
 
 constants.first_player_marker = getObjectFromGUID("1f5576")
 
@@ -301,10 +308,10 @@ constants.cargo = {
 
 constants.marker_positions = {
     round_start = constants.getPositionFromGUID("fb41e2"),
-    player_turns = Vector(0, 0, -0.64) + constants.getPositionFromGUID("fb41e2"),
-    combat = Vector(0, 0, -0.64 * 2) + constants.getPositionFromGUID("fb41e2"),
-    makers = Vector(0, 0, -0.64 * 3) + constants.getPositionFromGUID("fb41e2"),
-    recall = Vector(0, 0, -0.64 * 4) + constants.getPositionFromGUID("fb41e2")
+    player_turns = constants.getPositionFromGUID("fb41e2") + Vector(0, 0, -0.64),
+    combat = constants.getPositionFromGUID("fb41e2") + Vector(0, 0, -0.64 * 2),
+    makers = constants.getPositionFromGUID("fb41e2") + Vector(0, 0, -0.64 * 3),
+    recall = constants.getPositionFromGUID("fb41e2") + Vector(0, 0, -0.64 * 4)
 }
 
 return constants

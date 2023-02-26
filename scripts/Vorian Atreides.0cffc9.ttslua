@@ -2,7 +2,7 @@ constants = require("Constants")
 
 leaderPos = constants.leaderPos
 
-ressources = constants.ressources
+named_resources = constants.named_resources
 
 i18n = require("i18n")
 require("locales")
@@ -36,8 +36,8 @@ function claimLabel()
        color          = "Black"
        })
   end
-       
-  
+
+
   function claimLeader(GO, color)
     local t=0
     if color == "Red" or color == "Blue" or color == "Green" or color == "Yellow" then
@@ -49,8 +49,7 @@ function claimLabel()
       updateSave()
       broadcastToAll(i18n("willBe"):format(i18n(color:lower())
 ,GO.getName()), color)
-      constants.named_resources[color].troop.call("AddOneTroop")
-      Wait.time(function() constants.named_resources[color].troop.call("AddOneTroop") end, 0.25)
+      named_resources[color].troop_supply.call("AddTwoTroops")
     else
       broadcastToColor(i18n("cantClaimLeader"), color, color)
     end

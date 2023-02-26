@@ -142,8 +142,9 @@ player_object_positions = {
 }
 
 player_object_scales = {
+    'draw_deck_zone': (-1, 2, -1),
     'character_zone': (-1, 1, -1),
-    'discard_deck_zone': (3, -1, 7),
+    'discard_deck_zone': (3, 2, 7),
     'agent_and_reveal_zone': (36, -1, 12),
     'tech_board_zone': (10, -1, 9),
     'hand_trigger': (36, 5, 4),
@@ -219,7 +220,7 @@ def layout_player_board(structure, object_by_guid, color):
     board['AttachedSnapPoints'] = []
     board['Decals'] = []
 
-    def add_snap_point(key, transform_x, xOffset = 0, zOffset = 0, rotated = False, withTechDecal = False):
+    def add_snap_point(key, transform_x, xOffset = 0, zOffset = 0, rotated = False, with_tech_decal = False, with_tag = None):
         xPos = transform_x(-xOffset)
         zPos = zOrigin - zOffset
         if key:
@@ -241,8 +242,10 @@ def layout_player_board(structure, object_by_guid, color):
                 "z": 0.0
             }
         }
+        if with_tag:
+            snap_point["Tags"] = [with_tag]
         board['AttachedSnapPoints'].append(snap_point)
-        if withTechDecal:
+        if with_tech_decal:
             decal = {
                 "Transform": {
                     "posX": -xPos + board['Transform']['posX'],
@@ -257,17 +260,17 @@ def layout_player_board(structure, object_by_guid, color):
                 },
                 "CustomDecal": {
                     "Name": "Tech Tile Slot",
-                    "ImageURL": "file:////home/sadalsuud/Temp/tech_tile_decal.png",
+                    "ImageURL": "http://cloud-3.steamusercontent.com/ugc/2023842395829117604/2E51A29AA73773FACBB52E1296FFDC71BA29D823/",
                     "Size": 1
                 }
             }
             object_by_guid[-1]['Decals'].append(decal)
 
-    add_snap_point('character_zone', unchanged_x)
-    add_snap_point('draw_deck', unchanged_x)
-    add_snap_point('discard_deck_zone', unchanged_x)
-    add_snap_point('agents/0', unchanged_x)
-    add_snap_point('agents/1', unchanged_x)
+    add_snap_point('character_zone', unchanged_x, with_tag = "Leader")
+    add_snap_point('draw_deck', unchanged_x, with_tag = "Imperium")
+    add_snap_point('discard_deck_zone', unchanged_x, with_tag = "Imperium")
+    add_snap_point('agents/0', unchanged_x, with_tag = "Agent")
+    add_snap_point('agents/1', unchanged_x, with_tag = "Agent")
     add_snap_point(None, unchanged_x, offseted_x(-9), zOrigin + 9.5),
     add_snap_point('dreadnoughts/0', unchanged_x, rotated = True)
     add_snap_point('dreadnoughts/1', unchanged_x, rotated = True)
@@ -279,13 +282,13 @@ def layout_player_board(structure, object_by_guid, color):
         add_snap_point('agent_and_reveal_zone', symmetrical_x, (i % 12) * 2.5 - 16, (i // 12) * 4)
 
     for i in range(0, 12):
-        add_snap_point('tech_board_zone', symmetrical_x, (i // 4) * 3 - 4, (i % 4) * 2 - 3, withTechDecal = True)
+        add_snap_point('tech_board_zone', symmetrical_x, (i // 4) * 3 - 4, (i % 4) * 2 - 3, with_tech_decal = True)
 
 def add_space_snap_points(structure, object_by_guid):
 
     board = object_by_guid[structure["base"]["board"]]
 
-    def add_snap_point(guid, xOffset = 0, zOffset = 0):
+    def add_snap_point(guid, xOffset = 0, zOffset = 0, with_tag = None):
         object = object_by_guid[guid]
         xPos = xOffset - (object['Transform']['posX'] - board['Transform']['posX']) / board['Transform']['scaleX']
         zPos = zOffset - (object['Transform']['posZ'] - board['Transform']['posZ']) / board['Transform']['scaleZ']
@@ -302,23 +305,28 @@ def add_space_snap_points(structure, object_by_guid):
                 "z": 0.0
             }
         }
+        if with_tag:
+            snap_point["Tags"] = [with_tag]
         board['AttachedSnapPoints'].append(snap_point)
 
     for _, guid in structure["base"]["spaces"].items():
-        add_snap_point(guid, -0.05, -0.05)
-        add_snap_point(guid, 0.05, 0.05)
+        add_snap_point(guid, -0.05, -0.05, "Agent")
+        add_snap_point(guid, 0.05, 0.05, "Agent")
 
     for _, guid in structure["ix"]["spaces"].items():
-        add_snap_point(guid, -0.05, -0.20)
-        add_snap_point(guid, 0.05, -0.10)
-        add_snap_point(guid, -0.05, 0.10)
-        add_snap_point(guid, 0.05, 0.20)
+        add_snap_point(guid, -0.05, -0.20, "Agent")
+        add_snap_point(guid, 0.05, -0.10, "Agent")
+        add_snap_point(guid, -0.05, 0.10, "Agent")
+        add_snap_point(guid, 0.05, 0.20, "Agent")
 
 def add_combat_force_snap_points(structure, object_by_guid):
 
     board_guid = structure["base"]["board"]
     board = object_by_guid[board_guid]
     origin = object_by_guid[structure['base']['combat']['combat_tokens_zone']]
+
+    if not 'AttachedSnapPoints' in board:
+        board['AttachedSnapPoints'] = []
 
     def add_snap_point(xOffset = 0, zOffset = 0):
         xPos = -(xOffset + origin['Transform']['posX']) / board['Transform']['scaleX'] - board['Transform']['posX']
@@ -334,7 +342,10 @@ def add_combat_force_snap_points(structure, object_by_guid):
                 "x": 0.0,
                 "y": yRot,
                 "z": 0.0
-            }
+            },
+            "Tags": [
+                "CombatTokens"
+            ]
         }
         board['AttachedSnapPoints'].append(snap_point)
 
@@ -342,6 +353,13 @@ def add_combat_force_snap_points(structure, object_by_guid):
         add_snap_point(
             -0.47 + (i % 10) * 0.90,
             -1.63 - (i // 10) * 1.01)
+
+def filterSnapPoints(object):
+    accepted_tags = ['Agent', 'Mentat']
+    if 'AttachedSnapPoints' in object:
+        object['AttachedSnapPoints'] = list(filter(
+            lambda snapPoint: 'Tags' in snapPoint and all(tag in accepted_tags for tag in snapPoint['Tags']),
+            object['AttachedSnapPoints']))
 
 def clean_up_bottom(structure, object_by_guid):
     root = structure['bottom_accessories']
@@ -404,13 +422,13 @@ def patch_save(input_path, output_path):
     save["DecalPallet"] = [
         {
             "Name": "Tech Tile Slot",
-            "ImageURL": "file:////home/sadalsuud/Temp/tech_tile_decal.png",
+            "ImageURL": "http://cloud-3.steamusercontent.com/ugc/2023842395829117604/2E51A29AA73773FACBB52E1296FFDC71BA29D823/",
             "Size": 1.0
         }
     ]
     save['Decals'] = []
 
-    save["SkyURL"] = "file:////home/sadalsuud/Téléchargements/Textures/HDRI-II/HDRI-II.jpg"
+    save["SkyURL"] = "http://cloud-3.steamusercontent.com/ugc/2023842395829093107/112311E29FB3F46CE91BC1998D2B005DAA1AAE2E/"
 
     if noLuaScript:
         save['LuaScript'] = ''
@@ -447,11 +465,9 @@ def patch_save(input_path, output_path):
         '7ded4f',
         #'6e10cb',
         # Instructions pour le Baron
-        'c65d17',
+        '2b2575',
         # Texte de la maison Hagal
         '328efa',
-        # Poubelle du bas
-        "ef8614"
     ]
 
     additional_objects = []
@@ -495,8 +511,7 @@ def patch_save(input_path, output_path):
                     state['LuaScript'] = ''
                     state['LuaScriptState'] = ''
                     state['XmlUI'] = ''
-                if True:
-                    state['AttachedSnapPoints'] = []
+                filterSnapPoints(state)
                 rectify_rotation(state)
 
         guid = object['GUID']
@@ -528,8 +543,7 @@ def patch_save(input_path, output_path):
             object['LuaScript'] = ''
             object['LuaScriptState'] = ''
             object['XmlUI'] = ''
-        if True:
-            object['AttachedSnapPoints'] = []
+        filterSnapPoints(object)
 
         if guid in anchor_guids:
             new_anchor = copy.deepcopy(anchor_object)
@@ -564,6 +578,11 @@ def patch_save(input_path, output_path):
             translate(object, (-2, -2.5, -4))
         elif guid in structure_guids['bottom_accessories']:
             translate(object, (0, -2.5, -4))
+            if guid == structure['bottom_accessories']['trash']:
+                y = object['Transform']['posY']
+                z= object['Transform']['posZ']
+                set_position(object, (0, y, z - 1))
+
         elif guid in structure_guids['immortality_row'] or guid in structure_guids['imperium_row'] or guid in structure_guids['intrigue']:
             translate(object, (0, -2.5, -4))
         elif guid in structure_guids['ix'] or guid in structure_guids['immortality']:
@@ -618,7 +637,7 @@ def patch_save(input_path, output_path):
     for color in colors:
         layout_player_board(structure, object_by_guid, color)
 
-    add_space_snap_points(structure, object_by_guid)
+    #add_space_snap_points(structure, object_by_guid)
     add_combat_force_snap_points(structure, object_by_guid)
     clean_up_bottom(structure, object_by_guid)
 

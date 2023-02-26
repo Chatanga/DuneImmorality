@@ -27,7 +27,7 @@ function onLoad()
 
     GetDeckOrCard = helperModule.GetDeckOrCard
 
-    ressources = constants.ressources
+    named_resources = constants.named_resources
 
     buttonPass = {
         ["Red"] = getObjectFromGUID("0e9fa2"),
@@ -44,10 +44,10 @@ function onLoad()
     }
 
     pos_reveal = {
-        ["Red"] = Vector(16, 0.69, -5) + board_player["Red"].getPosition(),
-        ["Blue"] = Vector(16, 0.69, -5) + board_player["Blue"].getPosition(),
-        ["Green"] = Vector(-16, 0.69, -5) + board_player["Green"].getPosition(),
-        ["Yellow"] = Vector(-16, 0.69, -5) + board_player["Yellow"].getPosition()
+        ["Red"] = board_player["Red"].getPosition() + Vector(16, 0.69, -5),
+        ["Blue"] = board_player["Blue"].getPosition() + Vector(16, 0.69, -5),
+        ["Green"] =  board_player["Green"].getPosition() + Vector(-16, 0.69, -5),
+        ["Yellow"] = board_player["Yellow"].getPosition() + Vector(-16, 0.69, -5)
     }
 
     pass_turn_anchor = {
@@ -122,12 +122,6 @@ function onLoad()
     }
 
     zone_conseil = getObjectFromGUID("e51f6e") -- scripting zone high consil
-    -- pion_reput = {
-    --     ["Emperor Faction"] = {["Red"] = getObjectFromGUID('aae631'), ["Blue"] = getObjectFromGUID('aae631'), ["Green"] = getObjectFromGUID('aae631'), ["Yellow"] = getObjectFromGUID('aae631')},
-    --     ["Spacing Guild Faction"] = {["Red"] = getObjectFromGUID('aae631'), ["Blue"] = getObjectFromGUID('aae631'), ["Green"] = getObjectFromGUID('aae631'), ["Yellow"] = getObjectFromGUID('aae631')},
-    --     ["Bene Gesserit Faction"] = {["Red"] = getObjectFromGUID('aae631'), ["Blue"] = getObjectFromGUID('aae631'), ["Green"] = getObjectFromGUID('aae631'), ["Yellow"] = getObjectFromGUID('aae631')},
-    --     ["Fremen Faction"] = {["Red"] = getObjectFromGUID('aae631'), ["Blue"] = getObjectFromGUID('aae631'), ["Green"] = getObjectFromGUID('aae631'), ["Yellow"] = getObjectFromGUID('aae631')}
-    -- }
 
     zone_reput = {
         ["Emperor"] = getObjectFromGUID('aae631'), -- zone medium size were alliance goes
@@ -141,7 +135,7 @@ function onLoad()
     -- 20 spaces were you put power marker
     marker_combat_pos = {}
     local origin = constants.getPositionFromGUID("1d4424")
-    for i = 0, 20 do
+    for i = 0, 19 do
         marker_combat_pos[#marker_combat_pos + 1] = {
             x = origin.x - 0.47 + (i % 10) * 0.90,
             y = 3,
@@ -200,7 +194,7 @@ function onLoad()
     bag_friendship["Bene Gesserit"].interactable = false
     bag_friendship["Fremen"].interactable = false
     for _, color in pairs(players_color) do
-        constants.named_resources[color].council_token.interactable = false -- conseillers
+        named_resources[color].council_token.interactable = false -- conseillers
         buttonPass[color].interactable = false
         board_player[color].interactable = false
     end
@@ -217,11 +211,11 @@ function onLoad()
     for _, player_color in ipairs(players_color) do
         local player = Player[player_color]
         for i = 1, player.getHandCount() do
-            local handT = player.getHandTransform()
-            local pos = handT.position
-            pos.y = pos.y - 1
-            handT.position = pos
-            player.setHandTransform(handT, i)
+            local t = player.getHandTransform()
+            local p = t.position
+            p.y = p.y - 1
+            t.position = p
+            player.setHandTransform(t, i)
         end
     end
 end
@@ -410,11 +404,6 @@ function activatePass(color)
         end
     end
 
-    --[[
-    local board = board_player[color].getPosition()
-    local anchor = pass_turn_anchor[color].getPosition()
-    local position = new_symmetric_board_position(anchor.x - board.x, 0, anchor.z - board.z)
-    ]]--
     local position = new_symmetric_board_position(-16, 0, -9)
 
     board_player[color].createButton({
@@ -629,21 +618,33 @@ function DrawFive(board, color)
                 ResetDiscard(_, color)
                 Wait.time(function()
                     local drawDeck = GetDeckOrCard(drawDeckZone[color])
-                    drawDeck.deal(drawCount, color)
+                    if drawDeck then
+                        drawDeck.deal(drawCount, color)
+                    else
+                        log("No more card to deal!")
+                    end
                 end, 1.5)
             elseif typeCheck == "Card" then
                 starterDeck.deal(1, color)
                 ResetDiscard(_, color)
                 Wait.time(function()
                     local drawDeck = GetDeckOrCard(drawDeckZone[color])
-                    drawDeck.deal(4, color)
+                    if drawDeck then
+                        drawDeck.deal(4, color)
+                    else
+                        log("No more card to deal!")
+                    end
                 end, 1.5)
             end
         else
             ResetDiscard(_, color)
             Wait.time(function()
                 local drawDeck = GetDeckOrCard(drawDeckZone[color])
-                drawDeck.deal(5, color)
+                if drawDeck then
+                    drawDeck.deal(5, color)
+                else
+                    log("No more card to deal!")
+                end
             end, 1.5)
         end
     else
@@ -664,7 +665,7 @@ end
 
 function letsFight()
     Turns.enable = false
-    marker_round.setPositionSmooth({-4.12, 1.8, -9.33}, false, false)
+    marker_round.setPositionSmooth(constants.marker_positions.combat, false, false)
     broadcastToAll(i18n("fightWarning"), {0.5, 0.5, 0.5})
 
     if battleSound ~= nil and board_display_leaders.getVar("sound_active") then
@@ -714,7 +715,7 @@ function CountForce(name)
             force = force + 2
         elseif object.getName() == name .. " Dreadnought" or object.getName() ==
             name .. " dreadnought" then
-            if constants.named_resources[name].leader_zone.getObjects()[1].hasTag("Rhombur") then
+            if named_resources[name].leader_zone.getObjects()[1].hasTag("Rhombur") then
                 force = force + 4
             else
                 force = force + 3
@@ -794,7 +795,7 @@ function addTroopDefense()
         for _, troop in ipairs(troops) do
             if troop.getName() == joueur then
                 troop.setPositionSmooth({4.79, 2, -5.19}, false, false)
-                local leaderName = constants.named_resources[joueur].leader_zone.getObjects()[1]
+                local leaderName = named_resources[joueur].leader_zone.getObjects()[1]
                                        .getName()
                 broadcastToAll(i18n("defenseTroop"):format(leaderName), joueur)
                 break

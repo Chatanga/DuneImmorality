@@ -14,7 +14,7 @@ DrawOne = helperModule.DrawOne
 
 Dreadnought_zone = getObjectFromGUID("83ea90")
 
-ressources = constants.ressources
+named_resources = constants.named_resources
 
 zone_player = constants.zone_player
 
@@ -55,9 +55,9 @@ function Dreadnought(_, color)
 
     if boardCommonModule.CheckAgentAndPlayer(color, Dreadnought_zone) then
 
-        local leader = constants.named_resources[color].leader_zone.getObjects()[1]
+        local leader = named_resources[color].leader_zone.getObjects()[1]
         local leaderName = leader.getName()
-        local solariObj = constants.named_resources[color].solari
+        local solariObj = named_resources[color].solari
 
         local price = 3
 

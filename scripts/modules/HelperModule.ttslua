@@ -74,8 +74,8 @@ function helperModule.isDeckContainsEnough(color, numberToDraw)
     return enoughCards
 end
 
--- Les nouvelles ancres ont toutes une échelle unitaire, ce qui n’était pas
--- le cas des anciennes.
+-- Les nouvelles ancres ont toutes une échelle unitaire, ce qui n’était pas le
+-- cas des anciennes.
 function helperModule.correctAnchorPosition(pos, originalScale)
     return Vector(
         pos[1] * originalScale[1],
@@ -83,6 +83,8 @@ function helperModule.correctAnchorPosition(pos, originalScale)
         pos[3] * originalScale[3])
 end
 
+-- Retourne les paramètres de déplacement approprié pour ajouter un marquer de
+-- PV chez un joueur.
 function helperModule.getVPMarkerMoveParameterToPlayerBoard(color)
     local vpIndex = constants.player_scoreboards[color].call("getScore") + 1
     return {

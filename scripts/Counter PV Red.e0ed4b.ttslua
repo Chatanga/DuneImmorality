@@ -34,6 +34,7 @@ function CountPoints()
     if vpIndex > 14 then vpIndex = 14 end
 
     marker.setPositionSmooth(marker_pos[vpIndex])
+    marker.setRotationSmooth({0,0,0}, false, false)
     if score ~= previous_score then setupObj.call("updateScores") end
     previous_score = score
 end

@@ -21,7 +21,7 @@
       "Prince Rhombur": "691ca6"
     },
     "Baron Harkonnen Tokens Bag": "f89231",
-    "Baron Harkonnen Instruction Card": "c65d17",
+    "Baron Harkonnen Instruction Card": "2b2575",
     "Tessia Vernius Snooper Tokens": [
       "b10897",
       "bed196",
@@ -426,7 +426,9 @@
       "siech_tabr_zone": "5bc970",
       "imperial_bassin_zone": "2c77c1",
       "hagga_bassin_zone": "622708",
-      "the_great_flat_zone": "69f925"
+      "the_great_flat_zone": "69f925",
+      "secure_contract_zone": "db4022",
+      "sell_melange_zone": "7539a3"
     },
     "other_spaces": {
       "arrakeen_banner_zone": "f1f53d",
@@ -434,9 +436,7 @@
       "imperial_bassin_banner_zone": "3fe117",
       "Spice Bonus - Imperial Bassin": "3cdb2d",
       "Spice Bonus - Hagga Bassin": "394db2",
-      "Spice Bonus - The Great Flat": "116807",
-      "ix_track_level1_zone": "db4022",
-      "ix_track_level3_zone": "7539a3"
+      "Spice Bonus - The Great Flat": "116807"
     },
     "First Player Picker anchor": "d84873",
     "First Player Marker": "1f5576",
