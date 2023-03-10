@@ -13,13 +13,6 @@ troop_pos = {
   {4.82, 1.75, -5.99},
   {5.27, 1.75, -5.99}
 }
-troop_supply = {
-  ["Yellow"] = getObjectFromGUID("ffbd81"),
-  ["Green"] = getObjectFromGUID("bdfade"),
-  ["Blue"] = getObjectFromGUID("2a520c"),
-  ["Red"] = getObjectFromGUID("ab8fdf")
-
-}
 
 i18n = require("i18n")
 require("locales")
@@ -53,8 +46,8 @@ function claimLabel()
        color          = "Black"
        })
   end
-       
-  
+
+
   function claimLeader(GO, color)
     if color == "Red" or color == "Blue" or color == "Green" or color == "Yellow" then
       GO.setPositionSmooth(leaderPos[color])
@@ -67,16 +60,7 @@ function claimLabel()
 ,GO.getName()), color)
       local t=0
       local i=0
-      for _, obj in ipairs(troop_supply[color].getObjects()) do
-        if obj.getName()==color then
-          t=t+0.25
-          Wait.time(function()
-            i=i+1
-            obj.setPositionSmooth(troop_pos[i], false, false)
-            obj.setRotation({0,0,0})
-          end,t)
-        end
-      end
+      helperModule.landTroopsFromOrbit(color, 12) -- Troops in excess won't be deployed.
     else
       broadcastToColor(i18n("cantClaimLeader"), color, color)
     end

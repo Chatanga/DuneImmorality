@@ -4,6 +4,42 @@ import sys
 
 colors = ['Green', 'Yellow', 'Blue', 'Red']
 
+anchor_decal = (1, {
+    "Name": "First Player Token Slot",
+    "ImageURL": "file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/misc/anchor_decal.png",
+    "Size": 0.5
+})
+
+first_player_decal = (1, {
+    "Name": "Deck Slot",
+    "ImageURL": "file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/misc/first_player_decal.png",
+    "Size": 2
+})
+
+draw_decal = (0.6933962, {
+    "Name": "Deck Slot",
+    "ImageURL": "file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/misc/deck_decal.png",
+    "Size": 3.5
+})
+
+discard_decal =  (0.6933962, {
+    "Name": "Discard Slot",
+    "ImageURL": "file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/misc/discard_decal.png",
+    "Size": 3.5
+})
+
+leader_decal = (1.462555, {
+    "Name": "Leader Slot",
+    "ImageURL": "file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/misc/leader_decal.png",
+    "Size": 3.5
+})
+
+tech_decal = (1.45631063, {
+    "Name": "Tech Tile Slot",
+    "ImageURL": "file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/misc/tech_tile_decal.png",
+    "Size": 1.8
+})
+
 def collect_structure_guid(structure):
     guids = set()
     to_be_visited = [structure]
@@ -98,37 +134,38 @@ def find_name(structure, guid):
 player_object_positions = {
     'offseted': {
         'pass_turn_anchor': (-3.5, -3),
-        'character_zone': (-9.5, 0),
-        'draw_deck': (-15.5, 0),
-        'draw_deck_zone': (-15.5, 0),
-        'discard_deck_zone': (-3.5, 0),
-        'ix_atomics': (-15.5, -4),
+        'character_zone': (-8.5, 0),
+        'draw_deck': (-13.5, -1),
+        'draw_deck_zone': (-13.5, -1),
+        'discard_deck_zone': (-3.5, -1),
 
-        'spice_counter': (-12, -3.5),
-        'solari_counter': (-9.5, -3.5),
-        'water_counter': (-7, -3.5)
+        'spice_counter': (-10.5, -3),
+        'water_counter': (-8.5, -3.5),
+        'solari_counter': (-6.5, -3)
     },
     'unchanged': {
-        'pv_board': (0, 0),
-        'pv_board_zone': (0, 0),
-        'VP 4 Players': (-0.46, -2.34)
+        #'pv_board': (200+0, 0),
+        'pv_board_zone': (200+0, 0)
     },
     'symmetrical': {
+        'VP 4 Players': (-14.5, 4.35),
+
         'agent_and_reveal_zone': (0, -11),
         'tech_board_zone': (10, 0),
-        'trash': (16, -0.25),
+        'trash': (12, -1),
         'hand_trigger': (0, -15),
 
-        'first_player_zone': (-15.5, 3.5),
-        'banner_bag': (-13.5, 4),
-        'councilor': (-13.5, 3),
-        'agents/0': (-12, 3.5),
-        'agents/1': (-10.5, 3.5),
-        'dreadnoughts/0': (-5.5, 4),
-        'dreadnoughts/1': (-6.5, 4),
+        'first_player_zone': (-13.5, 2.2),
+        'banner_bag': (0, 0),
+        'councilor': (0, 2.5),
+        'agents/0': (-10.5, 2.8),
+        'agents/1': (-9.2, 2.8),
+        'dreadnoughts/0': (-1.2, 1.2),
+        'dreadnoughts/1': (1.2, 1.2),
+        'ix_atomics': (0, -3.8),
 
-        'troup_zone': (-3.5, 3.3),
-        'troup_bowl': (-3.5, 3.3),
+        #'troup_zone': (-3.5, 3.3),
+        #'troup_bowl': (200-3.5, 3.3),
         'troups/0': (-3.0, 3.0),
         'troups/1': (-3.5, 3.0),
         'troups/2': (-4.0, 3.0),
@@ -153,35 +190,36 @@ player_object_scales = {
 
 def layout_player_board(structure, object_by_guid, color):
 
-    root = structure['players'][color]
     if color == 'Green':
-        board = object_by_guid['e6396b']
-        xOrigin = 30.5
+        board = object_by_guid['0bbae1']
+        xOrigin = 27.5
         zOrigin = 11.5
         unchanged_x = lambda x : xOrigin + x
         offseted_x = lambda x : xOrigin + x
         symmetrical_x = lambda x : xOrigin + x
     elif color == 'Yellow':
-        board = object_by_guid['036b6a']
-        xOrigin = 30.5
+        board = object_by_guid['fdd5f9']
+        xOrigin = 27.5
         zOrigin = -11.5
         unchanged_x = lambda x : xOrigin + x
         offseted_x = lambda x : xOrigin + x
         symmetrical_x = lambda x : xOrigin + x
     elif color == 'Blue':
-        board = object_by_guid['d72200']
-        xOrigin = -30.5
+        board = object_by_guid['77ca63']
+        xOrigin = -27.5
         zOrigin = -11.5
         unchanged_x = lambda x : xOrigin + x
-        offseted_x = lambda x : xOrigin + 18.47 + x
+        offseted_x = lambda x : xOrigin + 17 + x
         symmetrical_x = lambda x : xOrigin - x
     elif color == 'Red':
-        board = object_by_guid['75561d']
-        xOrigin = -30.5
+        board = object_by_guid['adcd28']
+        xOrigin = -27.5
         zOrigin = 11.5
         unchanged_x = lambda x : xOrigin + x
-        offseted_x = lambda x : xOrigin + 18.47 + x
+        offseted_x = lambda x : xOrigin + 17 + x
         symmetrical_x = lambda x : xOrigin - x
+
+    root = structure['players'][color]
 
     def getGUID(key):
         try:
@@ -220,7 +258,7 @@ def layout_player_board(structure, object_by_guid, color):
     board['AttachedSnapPoints'] = []
     board['Decals'] = []
 
-    def add_snap_point(key, transform_x, xOffset = 0, zOffset = 0, rotated = False, with_tech_decal = False, with_tag = None):
+    def add_snap_point(key, transform_x, xOffset = 0, zOffset = 0, rotated = False, with_decal = False, with_tag = None):
         xPos = transform_x(-xOffset)
         zPos = zOrigin - zOffset
         if key:
@@ -245,44 +283,56 @@ def layout_player_board(structure, object_by_guid, color):
         if with_tag:
             snap_point["Tags"] = [with_tag]
         board['AttachedSnapPoints'].append(snap_point)
-        if with_tech_decal:
+        if with_decal:
+            size = with_decal[1]['Size']
             decal = {
                 "Transform": {
                     "posX": -xPos + board['Transform']['posX'],
-                    "posY": 0.7 + board['Transform']['posY'],
+                    "posY": 0.68 + board['Transform']['posY'],
                     "posZ": -zPos + board['Transform']['posZ'],
                     "rotX": 90,
                     "rotY": 360,
                     "rotZ": 0,
-                    "scaleX": 1,
-                    "scaleY": 1,
-                    "scaleZ": 1
+                    "scaleX": size * with_decal[0],
+                    "scaleY": size,
+                    "scaleZ": size
                 },
-                "CustomDecal": {
-                    "Name": "Tech Tile Slot",
-                    "ImageURL": "http://cloud-3.steamusercontent.com/ugc/2023842395829117604/2E51A29AA73773FACBB52E1296FFDC71BA29D823/",
-                    "Size": 1
-                }
+                "CustomDecal": with_decal[1]
             }
             object_by_guid[-1]['Decals'].append(decal)
 
-    add_snap_point('character_zone', unchanged_x, with_tag = "Leader")
-    add_snap_point('draw_deck', unchanged_x, with_tag = "Imperium")
-    add_snap_point('discard_deck_zone', unchanged_x, with_tag = "Imperium")
-    add_snap_point('agents/0', unchanged_x, with_tag = "Agent")
-    add_snap_point('agents/1', unchanged_x, with_tag = "Agent")
-    add_snap_point(None, unchanged_x, offseted_x(-9), zOrigin + 9.5),
-    add_snap_point('dreadnoughts/0', unchanged_x, rotated = True)
-    add_snap_point('dreadnoughts/1', unchanged_x, rotated = True)
+    def extrapolate(src_key, dst_key, factor):
+        src_transform = object_by_guid[getGUID(src_key)]['Transform']
+        dst_transform = object_by_guid[getGUID(dst_key)]['Transform']
+        srcX =  src_transform['posX']
+        srcZ =  src_transform['posZ']
+        dstX =  dst_transform['posX']
+        dstZ =  dst_transform['posZ']
+        posX = srcX + (dstX - srcX) * factor
+        posZ = srcZ + (dstZ - srcZ) * factor
+        return (posX, posZ)
 
-    for i in range(0, 12):
-        add_snap_point('pv_board', unchanged_x, (i // 6) * 0.995 - 0.45, (i % 6) * 1 - 2.35)
+    add_snap_point('first_player_zone', unchanged_x, with_decal = first_player_decal)
+    add_snap_point('character_zone', unchanged_x, with_tag = "Leader", with_decal = leader_decal)
+    add_snap_point('draw_deck', unchanged_x, with_tag = "Imperium", with_decal = draw_decal)
+    add_snap_point('discard_deck_zone', unchanged_x, with_tag = "Imperium", with_decal = discard_decal)
+    add_snap_point('agents/0', unchanged_x, with_tag = "Agent", with_decal = anchor_decal)
+    add_snap_point('agents/1', unchanged_x, with_tag = "Agent", with_decal = anchor_decal)
+    (x, z) = extrapolate('agents/0', 'agents/1', 2)
+    add_snap_point(None, unchanged_x, x, z, with_decal = anchor_decal)
+    (x, z) = extrapolate('agents/0', 'agents/1', 3)
+    add_snap_point(None, unchanged_x, x, z, with_decal = anchor_decal)
+    add_snap_point('dreadnoughts/0', unchanged_x, rotated = True, with_decal = anchor_decal)
+    add_snap_point('dreadnoughts/1', unchanged_x, rotated = True, with_decal = anchor_decal)
+
+    #for i in range(0, 12):
+    #    add_snap_point('pv_board', unchanged_x, (i // 6) * 0.995 - 0.45, (i % 6) * 1 - 2.35)
 
     for i in range(0, 24):
-        add_snap_point('agent_and_reveal_zone', symmetrical_x, (i % 12) * 2.5 - 16, (i // 12) * 4)
+        add_snap_point('agent_and_reveal_zone', symmetrical_x, (i % 12) * 2.5 - 15.5, (i // 12) * 4)
 
-    for i in range(0, 12):
-        add_snap_point('tech_board_zone', symmetrical_x, (i // 4) * 3 - 4, (i % 4) * 2 - 3, with_tech_decal = True)
+    for i in range(0, 6):
+        add_snap_point('tech_board_zone', symmetrical_x, (i // 3) * 3 - 5.5, (i % 3) * 2 - 2.5, with_decal = tech_decal)
 
 def add_space_snap_points(structure, object_by_guid):
 
@@ -379,6 +429,19 @@ def clean_up_bottom(structure, object_by_guid):
     translate(object_by_guid[root["Randomise Players Positions"]], (0.5, 0, -1))
     translate(object_by_guid[root["credits_note"]], (-0.7, 0, -2))
 
+def replace(object, blank_clone):
+    clone = copy.deepcopy(blank_clone)
+    clone['GUID'] = object['GUID']
+    clone['Locked'] = True
+    for coordinate in ['posX', 'posY', 'posZ']:
+        clone['Transform'][coordinate] = object['Transform'][coordinate]
+    for coordinate in ['rotX', 'rotY', 'rotZ']:
+        clone['Transform'][coordinate] = object['Transform'][coordinate]
+    clone['Nickname'] = object['Nickname']
+    for property in ['Description', 'LuaScript', 'LuaScriptState', 'XmlUI']:
+        clone[property] = object[property]
+    return clone
+
 def patch_save(input_path, output_path):
     with open('structure.json', 'r') as structure_file:
         structure = json.load(structure_file)
@@ -420,11 +483,11 @@ def patch_save(input_path, output_path):
     save["VectorLines"] = []
     save["SnapPoints"] = []
     save["DecalPallet"] = [
-        {
-            "Name": "Tech Tile Slot",
-            "ImageURL": "http://cloud-3.steamusercontent.com/ugc/2023842395829117604/2E51A29AA73773FACBB52E1296FFDC71BA29D823/",
-            "Size": 1.0
-        }
+        anchor_decal[1],
+        draw_decal[1],
+        discard_decal[1],
+        leader_decal[1],
+        tech_decal[1]
     ]
     save['Decals'] = []
 
@@ -468,22 +531,43 @@ def patch_save(input_path, output_path):
         '2b2575',
         # Texte de la maison Hagal
         '328efa',
+        # Bols de troupes
+        '6af67a',
+        '8ea4af',
+        '126c3c',
+        'b71dd9',
+        # Zones de troupes
+        'bdfade',
+        'ffbd81',
+        '2a520c',
+        'ab8fdf',
+        # Plateaux de PV
+        "caaba4",
+        "99a860",
+        "121bb6",
+        "e0ed4b"
     ]
 
     additional_objects = []
     additional_character_table = None
     anchor_object = None
+    trash_object = None
 
     global_translation = (0, 1.6, 0)
 
     for object in patch['ObjectStates']:
-        if object['Nickname'] == "Anchor":
+        if object['Nickname'] == "anchor":
             anchor_object = object
+        if object['Nickname'] == "Trash":
+            trash_object = object
         elif object['Name'] == 'Custom_Assetbundle':
-            if object['GUID'] == '823bd3':
+            if object['GUID'] == '662ced':
                 assert not additional_character_table
                 additional_character_table = object
-            object['LuaScript'] = 'self.interactable = false\r\n'
+            if object['Nickname'].startswith('PlayerBoard'):
+                object['LuaScript'] = '...'
+            else:
+                object['LuaScript'] = 'self.interactable = false\r\n'
             object['Transform']['posY'] -= 1
             if object['GUID'] != '200785':
                 object['Transform']['posY'] -= 0.75
@@ -495,7 +579,9 @@ def patch_save(input_path, output_path):
             #print('skipping', object['Name'])
             pass
 
+    assert additional_character_table
     assert anchor_object
+    assert trash_object
 
     objects = save['ObjectStates']
     new_objects = []
@@ -525,9 +611,9 @@ def patch_save(input_path, output_path):
                 additional_character_table['LuaScriptState'] = object['LuaScriptState']
                 additional_character_table['XmlUI'] = object['XmlUI']
             else:
-                assert object['LuaScript'] == ''
-                assert object['LuaScriptState'] == ''
-                assert object['XmlUI'] == ''
+                #assert object['LuaScript'] == ''
+                #assert object['LuaScriptState'] == ''
+                #assert object['XmlUI'] == ''
                 if guid == 'ef8614':
                     other_kind_of_trash = object_by_guid['cf6ca1']
                     if not 'ContainedObjects' in other_kind_of_trash:
@@ -546,17 +632,7 @@ def patch_save(input_path, output_path):
         filterSnapPoints(object)
 
         if guid in anchor_guids:
-            new_anchor = copy.deepcopy(anchor_object)
-            new_anchor['GUID'] = guid
-            new_anchor['Locked'] = True
-            for coordinate in ['posX', 'posY', 'posZ']:
-                new_anchor['Transform'][coordinate] = object['Transform'][coordinate]
-            for coordinate in ['rotX', 'rotY', 'rotZ']:
-                new_anchor['Transform'][coordinate] = object['Transform'][coordinate]
-            new_anchor['Nickname'] = object['Nickname']
-            for property in ['Description', 'LuaScript', 'LuaScriptState', 'XmlUI']:
-                new_anchor[property] = object[property]
-            object = new_anchor
+            object = replace(object, anchor_object)
 
         rectify_rotation(object)
         translate(object, global_translation)
@@ -598,34 +674,46 @@ def patch_save(input_path, output_path):
             green = structure['players']['Green']
             if not is_among(guid, green, ['hand_trigger']):
                 translate(object, (2, -2.1, -2.8))
-            if is_among(guid, green, ['pv_board', 'pv_board_zone', 'VP 4 Players']):
+            if is_among(guid, green, ['spice_counter', 'water_counter', 'solari_counter']):
+                translate(object, (0, -0.1, 0))
+            elif is_among(guid, green, ['pv_board', 'pv_board_zone', 'VP 4 Players']):
                 translate(object, (0, 0, -2))
             elif is_among(guid, green, ['trash']):
-                translate(object, (10, 0.2, 6))
+                translate(object, (10, 0.15, 6))
+                object = replace(object, trash_object)
         elif guid in structure_guids['Yellow']:
             yellow = structure['players']['Yellow']
             if not is_among(guid, yellow, ['hand_trigger']):
                 translate(object, (2, -2.1, -4))
-            if is_among(guid, yellow, ['pv_board', 'pv_board_zone', 'VP 4 Players']):
+            if is_among(guid, yellow, ['spice_counter', 'water_counter', 'solari_counter']):
+                translate(object, (0, -0.1, 0))
+            elif is_among(guid, yellow, ['pv_board', 'pv_board_zone', 'VP 4 Players']):
                 translate(object, (0, 0, -2))
             elif is_among(guid, yellow, ['trash']):
-                translate(object, (10, 0.2, 6))
+                translate(object, (10, 0.15, 6))
+                object = replace(object, trash_object)
         elif guid in structure_guids['Blue']:
             blue = structure['players']['Blue']
             if not is_among(guid, blue, ['hand_trigger']):
                 translate(object, (-2, -2.1, -4))
-            if is_among(guid, blue, ['pv_board', 'pv_board_zone', 'VP 4 Players']):
+            if is_among(guid, blue, ['spice_counter', 'water_counter', 'solari_counter']):
+                translate(object, (0, -0.1, 0))
+            elif is_among(guid, blue, ['pv_board', 'pv_board_zone', 'VP 4 Players']):
                 translate(object, (0, 0, -2))
             elif is_among(guid, blue, ['trash']):
-                translate(object, (-10, 0.2, 6))
+                translate(object, (-10, 0.15, 6))
+                object = replace(object, trash_object)
         elif guid in structure_guids['Red']:
             red = structure['players']['Red']
             if not is_among(guid, red, ['hand_trigger']):
                 translate(object, (-2, -2.1, -2.8))
-            if is_among(guid, red, ['pv_board', 'pv_board_zone', 'VP 4 Players']):
+            if is_among(guid, red, ['spice_counter', 'water_counter', 'solari_counter']):
+                translate(object, (0, -0.1, 0))
+            elif is_among(guid, red, ['pv_board', 'pv_board_zone', 'VP 4 Players']):
                 translate(object, (0, 0, -2))
             elif is_among(guid, red, ['trash']):
-                translate(object, (-10, 0.2, 6))
+                translate(object, (-10, 0.15, 6))
+                object = replace(object, trash_object)
 
         new_objects.append(object)
         object_by_guid[guid] = object

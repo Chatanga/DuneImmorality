@@ -1,9 +1,0 @@
-troopSupplyModule = require("TroopSupplyModule")
-
-function onLoad()
-    troopSupplyModule.onLoad("Blue", "681774", "46c1c6", "2a520c")
-end
-
-function onDestroy()
-    troopSupplyModule.destroy()
-end

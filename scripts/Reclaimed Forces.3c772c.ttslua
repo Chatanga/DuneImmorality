@@ -50,9 +50,7 @@ function tleilaxuTroop(_, color)
         function(color)
             spendSpecimen(color, 3)
 
-            Wait.time(function()
-                named_resources[color].troop_supply.call("AddOneTroop")
-            end, 0.6, 2)
+            helperModule.landTroopsFromOrbit(color, 1)
             broadcastToAll(leaderName .. i18n("reclaimedForcesTroops"), color)
         end)
     end

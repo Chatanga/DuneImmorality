@@ -14,12 +14,7 @@ GetDeckOrCard = helperModule.GetDeckOrCard
 marker = constants.first_player_marker
 position_marker = constants.first_player_positions
 
-board_player = {
-    ["Red"] = getObjectFromGUID("75561d"),
-    ["Blue"] = getObjectFromGUID("d72200"),
-    ["Green"] = getObjectFromGUID("e6396b"),
-    ["Yellow"] = getObjectFromGUID("036b6a")
-}
+board_player = constants.board_player
 
 hotseat = {
     ["Blue"] = {obj = getObjectFromGUID("9eeccd"), pos = board_player["Blue"].getPosition() + Vector(-16.5, 0.7, 9)},
@@ -128,12 +123,14 @@ table_players = {
         "39e0f3"
     }
 }
+--[[
 bowl_players = {
     ["Green"] = "126c3c",
     ["Blue"] =  "b71dd9",
     ["Yellow"] = "6af67a",
     ["Red"] = "8ea4af"
 }
+]]--
 hand_players = {
     ["Green"] = getObjectFromGUID("482f72"),
     ["Blue"] = getObjectFromGUID("e50f77"),
@@ -1413,9 +1410,7 @@ end
 
 function movetroops()
     for _, color in ipairs({"Red", "Blue", "Green", "Yellow"}) do
-        local player_resources = constants.named_resources[color]
-        local troop_supply = player_resources.troop_supply
-        troop_supply.call("AddTwoTroops")
+        helperModule.landTroopsFromOrbit(color, 2)
     end
 end
 
@@ -1544,6 +1539,7 @@ function destructMissingPlayers()
                 end
             end
         end
+        --[[
         for color, bowl_player in pairs(bowl_players) do
             if not hasValue(seated_players, color) then
                 local bowl = getObjectFromGUID(bowl_player)
@@ -1552,6 +1548,7 @@ function destructMissingPlayers()
                 end
             end
         end
+        ]]--
     end, 2)
 end
 

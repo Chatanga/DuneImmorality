@@ -2,6 +2,8 @@ local helperModule = {}
 
 constants = require("Constants")
 
+parkModule = require("ParkModule")
+
 drawDeckZone = constants.drawDeckZone
 
 discardZone = constants.discardZone
@@ -92,6 +94,107 @@ function helperModule.getVPMarkerMoveParameterToPlayerBoard(color)
         rotation = {0, 180, 0},
         smooth = true
     }
+end
+
+function helperModule.getPlayerTextColors(playerColor)
+
+    local background = {0, 0, 0, 1}
+    local foreground = {1, 1, 1, 1}
+
+    if playerColor == 'Green' then
+        background = {0.192, 0.701, 0.168, 1}
+        foreground = {0.7804, 0.7804, 0.7804, 1}
+    elseif playerColor == 'Yellow' then
+        background = {0.9058, 0.898, 0.1725, 1}
+        foreground = {0, 0, 0, 1}
+    elseif playerColor == 'Blue' then
+        background = {0.118, 0.53, 1, 1}
+        foreground = {0.7804, 0.7804, 0.7804, 1}
+    elseif playerColor == 'Red' then
+        background =  {0.856, 0.1, 0.094, 1}
+        foreground = {0.7804, 0.7804, 0.7804, 1}
+    end
+
+    return {
+        bg = background,
+        fg = foreground
+    }
+end
+
+--[[
+    Indirect call to createButton adjusting the provided parameters to
+    counteract the position, scale and rotation of the parent object.
+    TTS does offer a positionToLocal method, but which only accounts for
+    the position and (partly to the) scale, not the rotation. The
+    convention for the world coordinates is a bit twisted here since the
+    X coordinate is inverted.
+]]--
+function helperModule.createAbsoluteButton(object, parameters)
+    local scale = object.getScale()
+    local invScale = Vector(1 / scale.x, 1 / scale.y, 1 / scale.z)
+
+    -- Only to counteract the absolute roundness of the background.
+    local rescale = 4
+
+    local p = parameters['position']
+    if p then
+        -- Inverting the X coordinate comes from our global 180° rotation around Y.
+        p = Vector(-p.x, p.y, p.z)
+
+        p = p - object.getPosition()
+
+        p:scale(invScale)
+
+        -- Proper order?
+        local r = object.getRotation()
+        p:rotateOver('x', -r.x)
+        p:rotateOver('y', -r.y)
+        p:rotateOver('z', -r.z)
+
+        parameters['position'] = p
+    end
+
+    local s = parameters['scale']
+    if not s then
+        s= Vector(1, 1, 1)
+    end
+    s = s * invScale * (1 / rescale)
+    parameters['scale'] = s
+
+    local w = parameters['width']
+    if not w then
+        w = 1
+    end
+    w = w * rescale
+    parameters['width'] = w
+
+    local h = parameters['height']
+    if not h then
+        h = 1
+    end
+    h = h * rescale
+    parameters['height'] = h
+
+    local font_size = parameters['font_size']
+    if not font_size then
+        font_size = 1
+    end
+    font_size = font_size * rescale
+    parameters['font_size'] = font_size
+
+    object.createButton(parameters)
+end
+
+-- Not a good helperModule candidate. Move it away.
+function helperModule.landTroopsFromOrbit(playerColor, count)
+    local mainBoard = getObjectFromGUID('2da390')
+    mainBoard.call("landTroopsFromOrbit", {playerColor, count})
+end
+
+function helperModule.grantScoreToken(playerColor, token)
+    local playerBoard = constants.named_resources[playerColor]
+    local scorePark = playerBoard.call("getScorePark")
+    parkModule.put(token, scorePark)
 end
 
 return helperModule

@@ -5,6 +5,8 @@ constants = require("Constants")
 
 boardCommonModule = require("BoardCommonModule")
 
+parkModule = require("ParkModule")
+
 named_resources = constants.named_resources
 
 function onload()
@@ -300,6 +302,68 @@ function activateButtons()
     })
 
     -- TODO Wouldn't two nested 'for' loops be nicer?
+
+    garrisonParks = {}
+    createGarrisonPark("Green", Vector(8.15, 0.85, -7.65))
+    createGarrisonPark("Yellow", Vector(8.15, 0.85, -10.35))
+    createGarrisonPark("Blue", Vector(1.55, 0.85, -10.35))
+    createGarrisonPark("Red", Vector(1.55, 0.85, -7.65))
+end
+
+function createGarrisonPark(playerColor, origin)
+    local slots = {}
+    for j = 3, 1, -1 do
+        for i = 1, 4 do
+            local x = (i - 2.5) * 0.45
+            local z = (j - 2) * 0.45
+            local slot = Vector(x, 0, z) + origin
+            slots[#slots + 1] = slot
+        end
+    end
+
+    local zone = parkModule.findBoundingZone(0, Vector(0.35, 0.35, 0.35), slots)
+
+    local garrison = parkModule.createPark(slots, Vector(0, 0, 0), zone, playerColor, false)
+
+    local textColors =  helperModule.getPlayerTextColors(playerColor)
+
+    helperModule.createAbsoluteButton(self, {
+        click_function = "landOne" .. playerColor .. "TroopFromOrbit",
+        function_owner = self,
+        label = i18n("addTroopSmallButton"),
+        position = origin + Vector(0, 0.01, -1),
+        width = 650,
+        height = 180,
+        font_size = 150,
+        color = textColors.bg,
+        font_color = textColors.fg
+    })
+
+    garrisonParks[playerColor] = garrison
+end
+
+function landOneGreenTroopFromOrbit()
+    landTroopsFromOrbit({1, "Green"})
+end
+
+function landOneYellowTroopFromOrbit()
+    landTroopsFromOrbit({1, "Yellow"})
+end
+
+function landOneBlueTroopFromOrbit()
+    landTroopsFromOrbit({1, "Blue"})
+end
+
+function landOneRedTroopFromOrbit()
+    landTroopsFromOrbit({1, "Red"})
+end
+
+function landTroopsFromOrbit(parameters)
+    local count = parameters[1]
+    local playerColor = parameters[2]
+    local orbit = constants.board_player[playerColor].call("getOrbitPark")
+    local garrison = garrisonParks[playerColor]
+    parkModule.transfert(count, orbit, garrison)
 end
 
 function ImperialBasin(_, color)
@@ -489,7 +553,7 @@ function BonusEmperor(_, color)
 
     local leaderName = named_resources[color].leader_zone.getObjects()[1].getName()
 
-    named_resources[color].troop_supply.call("AddTwoTroop")
+    helperModule.landTroopsFromOrbit(color, 2)
     broadcastToAll(i18n("emperorBonus"):format(leaderName), color)
 
 end

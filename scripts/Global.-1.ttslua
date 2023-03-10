@@ -30,31 +30,19 @@ function onLoad()
     named_resources = constants.named_resources
 
     buttonPass = {
-        ["Red"] = getObjectFromGUID("0e9fa2"),
-        ["Blue"] = getObjectFromGUID("643f32"),
-        ["Green"] = getObjectFromGUID("9c69b9"),
-        ["Yellow"] = getObjectFromGUID("65876d")
+        ["Red"] = getObjectFromGUID("895594"),
+        ["Blue"] = getObjectFromGUID("9eeccd"),
+        ["Green"] = getObjectFromGUID("96aa58"),
+        ["Yellow"] = getObjectFromGUID("3d1b90")
     }
 
-    board_player = {
-        ["Red"] = getObjectFromGUID("75561d"),
-        ["Blue"] = getObjectFromGUID("d72200"),
-        ["Green"] = getObjectFromGUID("e6396b"),
-        ["Yellow"] = getObjectFromGUID("036b6a")
-    }
+    board_player = constants.board_player
 
     pos_reveal = {
         ["Red"] = board_player["Red"].getPosition() + Vector(16, 0.69, -5),
         ["Blue"] = board_player["Blue"].getPosition() + Vector(16, 0.69, -5),
         ["Green"] =  board_player["Green"].getPosition() + Vector(-16, 0.69, -5),
         ["Yellow"] = board_player["Yellow"].getPosition() + Vector(-16, 0.69, -5)
-    }
-
-    pass_turn_anchor = {
-        ["Red"] = getObjectFromGUID("0e9fa2"),
-        ["Blue"] = getObjectFromGUID("643f32"),
-        ["Green"] = getObjectFromGUID("e6396b"),
-        ["Yellow"] = getObjectFromGUID("65876d")
     }
 
     flag_basin_zone = getObjectFromGUID("3fe117") -- token below board at basin control position
@@ -112,8 +100,6 @@ function onLoad()
         ["Fremen"] = getObjectFromGUID('4c2bcc')
     }
 
-    vp_zone = constants.player_scoreboard_zones
-
     flag_bag = { -- infinite bag for flags
         ["Red"] = getObjectFromGUID('61453d'),
         ["Blue"] = getObjectFromGUID('8627e0'),
@@ -168,7 +154,6 @@ function onLoad()
         ["Desert Power"] = {"11076b"},
         ["Skirmish"] = {"63791b"}
     }
-    reserve_troop_zone = constants.reserve_troop_zone
 
     local zone_vp_combat = constants.getPositionFromGUID("740624")
     pos_vp_encours = {
@@ -307,7 +292,7 @@ function activateButtons(color) -- creates button in player zone with position r
 
     function new_offseted_board_position(x, y, z)
         if color == "Red" or color == "Blue" then
-            return new_board_position(18.47 + x, y, z)
+            return new_board_position(17 + x, y, z)
         else
             return new_board_position(x, y, z)
         end
@@ -323,7 +308,7 @@ function activateButtons(color) -- creates button in player zone with position r
         click_function = "Reveal",
         function_owner = Global,
         label = i18n("revealButton"),
-        position = new_symmetric_board_position(-17.8, 0, -5),
+        position = new_symmetric_board_position(-14.8, 0, -5),
         rotation = new_symmetric_board_rotation(0, -90, 0),
         width = 1600,
         height = 320,
@@ -335,9 +320,9 @@ function activateButtons(color) -- creates button in player zone with position r
         click_function = "ResetDiscardColor",
         function_owner = Global,
         label = i18n("resetDiscardButton"),
-        position = new_offseted_board_position(-3.5, 0, 3.5),
+        position = new_offseted_board_position(-3.5, 0, 2.6),
         width = 1200,
-        height = 200,
+        height = 250,
         font_size = 150,
         color = color,
         font_color = font_color
@@ -346,9 +331,9 @@ function activateButtons(color) -- creates button in player zone with position r
         click_function = "DrawFive",
         function_owner = Global,
         label = i18n("drawFiveButton"),
-        position = new_offseted_board_position(-15.5, 0, 3.5),
-        width = 1200,
-        height = 200,
+        position = new_offseted_board_position(-13.5, 0, 2.6),
+        width = 1400,
+        height = 250,
         font_size = 150,
         color = color,
         font_color = font_color
@@ -357,10 +342,10 @@ function activateButtons(color) -- creates button in player zone with position r
         click_function = "DrawOneColor",
         function_owner = Global,
         label = i18n("drawOneButton"),
-        position = new_offseted_board_position(-15.5, 0, 3),
-        width = 800,
-        height = 200,
-        font_size = 125,
+        position = new_offseted_board_position(-13.5, 0, 1.8),
+        width = 1100,
+        height = 250,
+        font_size = 150,
         color = color,
         font_color = font_color
     })
@@ -369,7 +354,7 @@ function activateButtons(color) -- creates button in player zone with position r
         click_function = "doNothing",
         function_owner = Global,
         label = i18n("agentTurn"),
-        position = new_symmetric_board_position(-17.8, 0, -1),
+        position = new_symmetric_board_position(-14.8, 0, -1),
         rotation = new_symmetric_board_rotation(0, -90, 0),
         width = 0,
         height = 0,
@@ -377,6 +362,7 @@ function activateButtons(color) -- creates button in player zone with position r
         color = {0,0,0,1},
         font_color = color
     })
+    --[[
     board_player[color].createButton({
         click_function = "doNothing",
         function_owner = Global,
@@ -388,6 +374,7 @@ function activateButtons(color) -- creates button in player zone with position r
         color = {0,0,0,1},
         font_color = color
     })
+    ]]--
 end
 
 function activatePass(color)
@@ -790,8 +777,8 @@ function addTroopDefense()
         end
     end
     if joueur ~= nil then
-        reserve_zone = reserve_troop_zone[joueur]
-        local troops = reserve_zone.getObjects()
+        local troops = nil
+        assert(false, "TODO")
         for _, troop in ipairs(troops) do
             if troop.getName() == joueur then
                 troop.setPositionSmooth({4.79, 2, -5.19}, false, false)
@@ -918,7 +905,7 @@ function onObjectEnterScriptingZone(zone, enter_object)
         end
     end
 
-    if zone.guid == vp_zone["Yellow"].guid then
+    if zone.guid == constants.named_resources["Yellow"].vp_zone.guid then
         local name = enter_object.guid
         if name == "2d469b" or name == "ff1ce6" then
             local objets = flag_basin_zone.getObjects()
@@ -961,7 +948,7 @@ function onObjectEnterScriptingZone(zone, enter_object)
         end
 
     end
-    if zone.guid == vp_zone["Red"].guid then
+    if zone.guid == constants.named_resources["Red"].vp_zone.guid then
         local name = enter_object.guid
         if name == "2d469b" or name == "ff1ce6" then
             local objets = flag_basin_zone.getObjects()
@@ -1004,7 +991,7 @@ function onObjectEnterScriptingZone(zone, enter_object)
         end
 
     end
-    if zone.guid == vp_zone["Blue"].guid then
+    if zone.guid == constants.named_resources["Blue"].vp_zone.guid then
         local name = enter_object.guid
         if name == "2d469b" or name == "ff1ce6" then
             local objets = flag_basin_zone.getObjects()
@@ -1048,7 +1035,7 @@ function onObjectEnterScriptingZone(zone, enter_object)
 
     end
 
-    if zone.guid == vp_zone["Green"].guid then
+    if zone.guid == constants.named_resources["Green"].vp_zone.guid then
         local name = enter_object.guid
         if name == "2d469b" or name == "ff1ce6" then
             local objets = flag_basin_zone.getObjects()
@@ -1175,7 +1162,7 @@ end
 
 function Friendship(faction, color)
     local test = 0
-    local vp = vp_zone[color].getObjects()
+    local vp = constants.named_resources[color].vp_zone.getObjects()
     for _, value in ipairs(vp) do
         if value.getName() == faction .. " Friendship" then test = 1 end
     end
@@ -1184,11 +1171,11 @@ end
 
 function loseFriendship(faction, color)
     local test = 0
-    local vp = vp_zone[color].getObjects()
+    local vp = constants.named_resources[color].vp_zone.getObjects()
     for _, value in ipairs(vp) do
         if value.getName() == faction .. " Friendship" then test = 1 end
         if test == 1 then
-            local zoneObjects = vp_zone[color].getObjects()
+            local zoneObjects = constants.named_resources[color].vp_zone.getObjects()
             for i, object in ipairs(zoneObjects) do
                 if object.getName() == faction .. " Friendship" then
                     object.setPositionSmooth({-4.27, 4, 34.54}, false, false)
@@ -1206,17 +1193,13 @@ end
 
 -- Illumine le plateau du joueur dont c’est le tour (et éteint les autres).
 function onPlayerTurn(player, previous_player)
-  local player_boards = {
-    {color = "Green", guid = "e6396b"},
-    {color = "Yellow", guid = "036b6a"},
-    {color = "Blue", guid = "d72200"},
-    {color = "Red", guid = "75561d"}
-  }
-  for i, board in ipairs(player_boards) do
-    local effect_index = 0
-    if player and board.color == player.color then
+  local indexed_colors = {"Green", "Yellow", "Blue", "Red"}
+  for i, color in ipairs(indexed_colors) do
+    local effect_index = 0 -- black index (no color actually)
+    if player and player.color == color then
       effect_index = i
     end
-    getObjectFromGUID(board.guid).AssetBundle.playTriggerEffect(effect_index)
+    local board = constants.board_player[color]
+    board.AssetBundle.playTriggerEffect(effect_index)
   end
 end

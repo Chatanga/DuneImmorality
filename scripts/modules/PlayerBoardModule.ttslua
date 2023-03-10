@@ -1,0 +1,121 @@
+playerBoardModule = {}
+
+constants = require("Constants")
+
+helperModule = require("HelperModule")
+
+parkModule = require("ParkModule")
+
+playerBoardModule.playerColor = nil
+
+playerBoardModule.orbitPark = nil
+
+playerBoardModule.score = 0
+
+playerBoardModule.global_score_positions = {}
+
+playerBoardModule.scorePark = nil
+
+function playerBoardModule.onLoad(playerColor, centerPosition)
+    playerBoardModule.playerColor = playerColor
+    playerBoardModule.orbitPark = playerBoardModule.createOrbitPark(centerPosition)
+    playerBoardModule.initPlayerScore()
+end
+
+function playerBoardModule.createOrbitPark(centerPosition)
+    local allSlots = {}
+    local slots = {}
+    for i = 1, 4 do
+        for j = 1, 4 do
+            local x = (i - 2.5) * 0.5
+            local z = (j - 2.5) * 0.5
+            local slot = Vector(x, 0, z):rotateOver('y', -45) + centerPosition
+            allSlots[#allSlots + 1] = slot
+            if i < 3 or j < 3 then
+                slots[#slots + 1] = slot
+            end
+        end
+    end
+
+    local zone = parkModule.findBoundingZone(45, Vector(0.35, 0.35, 0.35), allSlots)
+
+    for i, troop in ipairs(constants.named_resources[playerBoardModule.playerColor].troops) do
+        troop.setPosition(slots[i])
+        troop.setRotation(Vector(0, 45, 0))
+    end
+
+    return parkModule.createPark(slots, Vector(0, -45, 0), zone, playerBoardModule.playerColor, true)
+end
+
+function playerBoardModule.initPlayerScore()
+    playerBoardModule.generateGlobalScoreboardPositions()
+    playerBoardModule.scorePark = playerBoardModule.createPlayerScoreboardPark()
+    playerBoardModule.updatePlayerScore()
+end
+
+function playerBoardModule.generateGlobalScoreboardPositions()
+    local origin = constants.named_resources[playerBoardModule.playerColor].score_marker.getPosition()
+    playerBoardModule.global_score_positions = {}
+    for i = 1, 14 do
+        playerBoardModule.global_score_positions[i] = {
+            origin.x,
+            2.7,
+            origin.z + (i - 2) * 1.165
+        }
+    end
+end
+
+function playerBoardModule.createPlayerScoreboardPark()
+    local origin = constants.named_resources[playerBoardModule.playerColor].vp_4_players_token.getPosition()
+    local slots = {}
+    for i = 0, 17 do
+        slots[i + 1] = Vector(
+            origin.x + i * 0.995 - 0.45,
+            origin.y,
+            origin.z)
+    end
+
+    local zone = parkModule.findBoundingZone(45, Vector(0.35, 0.35, 0.35), slots)
+
+    return parkModule.createPark(slots, Vector(0, -45, 0), zone, playerBoardModule.playerColor, false)
+end
+
+function playerBoardModule.updatePlayerScore()
+    local zoneObjects = constants.named_resources[playerBoardModule.playerColor].vp_zone.getObjects()
+    local newScore = 0
+    for _, object in ipairs(zoneObjects) do
+        if object.getDescription() == "VP" then
+            newScore = newScore + 1
+        end
+    end
+
+    local vpIndex = math.min(14, newScore + 1)
+    local score_marker = constants.named_resources[playerBoardModule.playerColor].score_marker
+    score_marker.setPositionSmooth(playerBoardModule.global_score_positions[vpIndex])
+    score_marker.setRotationSmooth({0, 0, 0}, false, false)
+
+    if newScore ~= playerBoardModule.score then
+        playerBoardModule.score = newScore
+        constants.setupObj.call("updateScores")
+    end
+end
+
+function playerBoardModule.onObjectEnterScriptingZone(zone, enter_object)
+    if zone.guid == constants.named_resources[playerBoardModule.playerColor].vp_zone.guid then
+        local description = enter_object.getDescription()
+        if description == "VP" then
+            playerBoardModule.updatePlayerScore()
+        end
+    end
+end
+
+function playerBoardModule.onObjectLeaveScriptingZone(zone, enter_object)
+    if zone.guid == constants.named_resources[playerBoardModule.playerColor].vp_zone.guid then
+        local description = enter_object.getDescription()
+        if description == "VP" then
+            playerBoardModule.updatePlayerScore()
+        end
+    end
+end
+
+return playerBoardModule

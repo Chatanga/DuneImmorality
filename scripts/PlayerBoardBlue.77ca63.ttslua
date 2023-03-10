@@ -1,0 +1,25 @@
+playerBoardModule = require("PlayerBoardModule")
+
+function onLoad()
+    playerBoardModule.onLoad('Blue', Vector(-27.5, 1, -6.4))
+end
+
+function getOrbitPark()
+    return playerBoardModule.orbitPark
+end
+
+function getScorePark()
+    return playerBoardModule.scorePark
+end
+
+function getScore()
+    return playerBoardModule.score
+end
+
+function onObjectEnterScriptingZone(zone, enter_object)
+    playerBoardModule.onObjectEnterScriptingZone(zone, enter_object)
+end
+
+function onObjectLeaveScriptingZone(zone, enter_object)
+    playerBoardModule.onObjectLeaveScriptingZone(zone, enter_object)
+end

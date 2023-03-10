@@ -428,8 +428,5 @@ function CommercialTroop(_, color)
     else
         broadcastToAll(i18n("shippingTroops"):format(leaderName), color)
     end
-    for i = 1, troopsToGain, 1 do
-        t = t + 0.25
-        Wait.time(function() named_resources[color].troop_supply.call("AddOneTroop") end, t)
-    end
+    helperModule.landTroopsFromOrbit(color, troopsToGain)
 end

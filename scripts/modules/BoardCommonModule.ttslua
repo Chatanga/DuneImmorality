@@ -74,12 +74,14 @@ pion_reput = {
     }
 }
 
+--[[
 vp_zone = {
     ["Red"] = getObjectFromGUID('5b9a53'),
     ["Blue"] = getObjectFromGUID('376f34'),
     ["Green"] = getObjectFromGUID('0e374f'),
     ["Yellow"] = getObjectFromGUID('b25c3c')
 }
+]]--
 
 alliance_token = {
     ["emperor"] = getObjectFromGUID('13e990'),
@@ -94,8 +96,6 @@ alliance_pos = {
     ["beneGesserit"] = constants.getPositionFromGUID('33452e'),
     ["fremen"] = constants.getPositionFromGUID('4c2bcc')
 }
-
-vp_pos = constants.pos_vp
 
 function boardCommonModule.CheckAgentAndPlayer(color, zone)
 
@@ -304,7 +304,7 @@ function boardCommonModule.HardyWarriors(color)
         else
             local leaderName = constants.named_resources[color].leader_zone.getObjects()[1].getName()
             waterObj.call("decrementVal")
-            constants.named_resources[color].troop_supply.call("AddOneTwoTroops")
+            helperModule.landTroopsFromOrbit(color, 2)
             broadcastToAll(i18n("hardyWarriors"):format(leaderName), color)
             if leaderName == "Shaddam IV" then
                 boardCommonModule.FremenDown(color)
@@ -405,12 +405,7 @@ function boardCommonModule.Heighliner(color)
                     constants.named_resources[color].water.call("incrementVal")
                 end, t1)
             end
-            for i = 1, 5, 1 do
-                Wait.time(function()
-                    constants.named_resources[color].troop_supply.call("AddOneTroop")
-                end, t2)
-                t2 = t2 + 0.25
-            end
+            helperModule.landTroopsFromOrbit(color, 5)
             broadcastToAll(i18n("heighliner"):format(leaderName), color)
             if leaderName == "Shaddam IV" then
                 boardCommonModule.GuildDown(color)
@@ -478,12 +473,7 @@ function boardCommonModule.Conspire(color)
                 end, t1)
                 t1 = t1 + 0.25
             end
-            for i = 1, 2, 1 do
-                t2 = t2 + 0.25
-                Wait.time(function()
-                    constants.named_resources[color].troop_supply.call("AddOneTroop")
-                end, t2)
-            end
+            helperModule.landTroopsFromOrbit(color, 2)
             Wait.time(function()
                 boardCommonModule.drawIntrigue(color)
             end, 0.2)
@@ -567,7 +557,7 @@ function giveAlliance(faction, color)
         end
     end
 
-    local vp_player = vp_zone[color].getObjects()
+    local vp_player = constants.named_resources[color].vp_zone.getObjects()
     local test_alliance = 0
     for _, value in ipairs(vp_player) do
         if value == alliance_token[faction] then test_alliance = 1 end
@@ -651,7 +641,7 @@ function giveAlliance(faction, color)
 end
 
 function CountPoints(color)
-    local zoneObjects = vp_zone[color].getObjects()
+    local zoneObjects = constants.named_resources[color].vp_zone.getObjects()
     local vpIndex = 1
     for i, object in ipairs(zoneObjects) do
         if object.getDescription() == "VP" then vpIndex = vpIndex + 1 end
@@ -703,7 +693,7 @@ function boardCommonModule.SietchTabr(color)
         end
 
         constants.named_resources[color].water.call("incrementVal")
-        constants.named_resources[color].troop_supply.call("AddOneTroop")
+        helperModule.landTroopsFromOrbit(color, 1)
 
         local leaderName = constants.named_resources[color].leader_zone.getObjects()[1].getName()
 
@@ -773,7 +763,7 @@ function boardCommonModule.Carthag(color)
         local leaderName = constants.named_resources[color].leader_zone.getObjects()[1].getName()
 
         Wait.time(function() boardCommonModule.drawIntrigue(color) end, 0.2)
-        constants.named_resources[color].troop_supply.call("AddOneTroop")
+        helperModule.landTroopsFromOrbit(color, 1)
         broadcastToAll(i18n("carthag"):format(leaderName), color)
         Wait.time(function() flag_carthag(color) end, 0.5)
     end
@@ -808,7 +798,7 @@ function boardCommonModule.Arrakeen(color)
             broadcastToAll(i18n("arrakeen"):format(leaderName), color)
         end
 
-        constants.named_resources[color].troop_supply.call("AddOneTroop")
+        helperModule.landTroopsFromOrbit(color, 1)
         Wait.time(function() flag_arrakeen(color) end, 0.5)
     end
 end

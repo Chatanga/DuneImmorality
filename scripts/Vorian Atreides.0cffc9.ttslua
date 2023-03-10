@@ -49,7 +49,7 @@ function claimLabel()
       updateSave()
       broadcastToAll(i18n("willBe"):format(i18n(color:lower())
 ,GO.getName()), color)
-      named_resources[color].troop_supply.call("AddTwoTroops")
+      helperModule.landTroopsFromOrbit(color, 2)
     else
       broadcastToColor(i18n("cantClaimLeader"), color, color)
     end

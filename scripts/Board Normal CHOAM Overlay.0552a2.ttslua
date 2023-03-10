@@ -265,12 +265,8 @@ function RallyTroops(_, color)
                 end, t)
                 t = t + 0.3
             end
-            for i = 1, 4, 1 do
-                t1 = t1 + 0.25
-                Wait.time(function()
-                    named_resources[color].troop_supply.call("AddTroop2")
-                end, t1)
-            end
+
+            helperModule.landTroopsFromOrbit(color, 4)
 
             if leader.hasTag("Ilban") then
 
@@ -313,7 +309,7 @@ function HallOfOratory(_, color)
 
     if boardCommonModule.CheckAgentAndPlayer(color, HallOfOratory_zone) then
         local leaderName = named_resources[color].leader_zone.getObjects()[1].getName()
-        named_resources[color].troop_supply.call("AddTroop2")
+        helperModule.landTroopsFromOrbit(color, 2)
         broadcastToAll(i18n("oratory"):format(leaderName), color)
     end
 end

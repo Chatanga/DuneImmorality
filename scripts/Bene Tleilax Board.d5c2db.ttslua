@@ -5,8 +5,6 @@ constants = require("Constants")
 
 named_resources = constants.named_resources
 
-reserve_troop_zone = constants.reserve_troop_zone
-
 boardCommonModule = require("BoardCommonModule")
 
 specimen_zone = getObjectFromGUID("f5de09")
@@ -394,8 +392,8 @@ function AddSpecimen(_, color, silent)
     local silent = silent or false
 
     local leaderName = named_resources[color].leader_zone.getObjects()[1].getName()
-    reserve_zone = reserve_troop_zone[color]
-    local troops = reserve_zone.getObjects()
+    local troops = nil
+    assert(false, "TODO")
 
     local specimens = specimen_zone.getObjects()
 
