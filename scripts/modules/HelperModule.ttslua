@@ -4,14 +4,8 @@ constants = require("Constants")
 
 parkModule = require("ParkModule")
 
-drawDeckZone = constants.drawDeckZone
-
-discardZone = constants.discardZone
-
-drawSpot = constants.drawSpot
-
 function helperModule.DrawOne(_, color)
-    local starterDeck = helperModule.GetDeckOrCard(drawDeckZone[color])
+    local starterDeck = helperModule.GetDeckOrCard(constants.players[color].drawDeckZone)
     local discardFound = false
 
     if starterDeck ~= nil then
@@ -20,7 +14,7 @@ function helperModule.DrawOne(_, color)
         discardFound = helperModule.ResetDiscard(_, color)
         if discardFound then
             Wait.time(function()
-                local drawDeck = helperModule.GetDeckOrCard(drawDeckZone[color])
+                local drawDeck = helperModule.GetDeckOrCard(constants.players[color].drawDeckZone)
                 drawDeck.deal(1, color)
             end, 1.5)
         else
@@ -31,14 +25,14 @@ function helperModule.DrawOne(_, color)
 end
 
 function helperModule.ResetDiscard(_, color)
-    discardArea = helperModule.GetDeckOrCard(discardZone[color])
+    discardArea = helperModule.GetDeckOrCard(constants.players[color].discardZone)
     local discardFound = true
     if discardArea ~= nil then
         discardArea.setRotationSmooth({0, 180, 180}, false, false)
         discardArea.shuffle()
-        discardArea.setPositionSmooth(constants.getLandingPositionFromGUID(drawDeckZone[color]), false, true)
+        discardArea.setPositionSmooth(constants.getLandingPosition(constants.players[color].drawDeckZone), false, true)
         Wait.time(function()
-            helperModule.GetDeckOrCard(drawDeckZone[color]).shuffle()
+            helperModule.GetDeckOrCard(constants.players[color].drawDeckZone).shuffle()
         end, 0.5)
     else
         discardFound = false
@@ -48,17 +42,26 @@ function helperModule.ResetDiscard(_, color)
 
 end
 
-function helperModule.GetDeckOrCard(zoneGUID)
-    for _, obj in ipairs(getObjectFromGUID(zoneGUID).getObjects()) do
+function helperModule.GetDeckOrCard(zone)
+    assert(zone)
+    assert(type(zone) ~= 'string', tostring(zone) .. ' is a GUID, not a zone')
+    for _, obj in ipairs(zone.getObjects()) do
         if obj.type == "Card" or obj.type == "Deck" then return obj end
     end
-    log(zoneGUID .. " contains no card nor deck!")
+    log(zone.getGUID() .. " contains no card nor deck!")
     return nil
+end
+
+function helperModule.GetDeckOrCardFromGUID(zoneGUID)
+    assert(type(zoneGUID) == 'string', tostring(zoneGUID) .. ' is not a GUID')
+    local object = getObjectFromGUID(zoneGUID)
+    assert(object, "Failed to resolve GUID: " .. tostring(zoneGUID))
+    return helperModule.GetDeckOrCard(object)
 end
 
 function helperModule.isDeckContainsEnough(color, numberToDraw)
 
-    local starterDeck = helperModule.GetDeckOrCard(drawDeckZone[color])
+    local starterDeck = helperModule.GetDeckOrCard(constants.players[color].drawDeckZone)
 
     local enoughCards = true
 
@@ -83,17 +86,6 @@ function helperModule.correctAnchorPosition(pos, originalScale)
         pos[1] * originalScale[1],
         pos[2] * originalScale[2],
         pos[3] * originalScale[3])
-end
-
--- Retourne les paramètres de déplacement approprié pour ajouter un marquer de
--- PV chez un joueur.
-function helperModule.getVPMarkerMoveParameterToPlayerBoard(color)
-    local vpIndex = constants.player_scoreboards[color].call("getScore") + 1
-    return {
-        position = constants.pos_vp[color][vpIndex],
-        rotation = {0, 180, 0},
-        smooth = true
-    }
 end
 
 function helperModule.getPlayerTextColors(playerColor)
@@ -185,16 +177,74 @@ function helperModule.createAbsoluteButton(object, parameters)
     object.createButton(parameters)
 end
 
--- Not a good helperModule candidate. Move it away.
+function helperModule.getLeader(playerColor)
+    local leaderZone = constants.players[playerColor].leader_zone
+    for _, object in ipairs(leaderZone.getObjects()) do
+        if object.hasTag("Leader") then
+            return object
+        end
+    end
+    return nil
+end
+
+function helperModule.getLeaderName(playerColor)
+    local leader = helperModule.getLeader(playerColor)
+    if leader then
+        return leader.getName()
+    else
+        log(playerColor .. " player has no leader")
+        return "?"
+    end
+end
+
 function helperModule.landTroopsFromOrbit(playerColor, count)
     local mainBoard = getObjectFromGUID('2da390')
     mainBoard.call("landTroopsFromOrbit", {playerColor, count})
 end
 
-function helperModule.grantScoreToken(playerColor, token)
-    local playerBoard = constants.named_resources[playerColor]
+function helperModule.sendTroopsBackToOrbit(playerColor, troops)
+    local mainBoard = getObjectFromGUID('2da390')
+    mainBoard.call("sendTroopsBackToOrbit", {playerColor, troops})
+end
+
+function helperModule.getTroopsFromOrbit(playerColor)
+    local mainBoard = getObjectFromGUID('2da390')
+    mainBoard.call("getTroopsFromOrbit", playerColor)
+end
+
+function helperModule.getScoreTokens(playerColor)
+    local playerBoard = constants.players[playerColor].board
     local scorePark = playerBoard.call("getScorePark")
-    parkModule.put(token, scorePark)
+    return parkModule.getObjects(scorePark)
+end
+
+function helperModule.grantScoreToken(playerColor, token)
+    assert(token)
+    local playerBoard = constants.players[playerColor].board
+    local scorePark = playerBoard.call("getScorePark")
+    parkModule.putObject(token, scorePark)
+end
+
+function helperModule.grantScoreTokenFromBag(playerColor, tokenBag)
+    assert(tokenBag)
+    tokenBag.takeObject({callback_function = function (token)
+        helperModule.grantScoreToken(playerColor, token)
+    end})
+end
+
+function helperModule.getPlayerScore(playerColor)
+    local playerBoard = constants.players[playerColor].board
+    return playerBoard.call("getScore")
+end
+
+function helperModule.setSharedTable(tableName, table)
+    local mainBoard = getObjectFromGUID('2da390')
+    mainBoard.setTable(tableName, table)
+end
+
+function helperModule.getSharedTable(tableName)
+    local mainBoard = getObjectFromGUID('2da390')
+    return mainBoard.getTable(tableName)
 end
 
 return helperModule

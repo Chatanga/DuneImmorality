@@ -2,13 +2,12 @@ constants = require("Constants")
 
 leaderPos = constants.leaderPos
 
-drawDeckZone = constants.drawDeckZone
-
-named_resources = constants.named_resources
+players = constants.players
 
 helperModule = require("HelperModule")
 
 GetDeckOrCard = helperModule.GetDeckOrCard
+GetDeckOrCardFromGUID = helperModule.GetDeckOrCardFromGUID
 
 i18n = require("i18n")
 require("locales")
@@ -69,8 +68,8 @@ function prescience(_, color)
 
     if color == claimingColor then
 
-        local leaderName = named_resources[color].leader_zone.getObjects()[1].getName()
-        local starterDeck = GetDeckOrCard(drawDeckZone[color])
+        local leaderName = helperModule.getLeaderName(color)
+        local starterDeck = GetDeckOrCard(constants.players[color].drawDeckZone)
 
         if starterDeck == nil then
             broadcastToColor(i18n("prescienceVoid"), color, "Purple")

@@ -10,10 +10,6 @@ helperModule = require("HelperModule")
 
 isDeckContainsEnough = helperModule.isDeckContainsEnough
 
-drawDeckZone = constants.drawDeckZone
-
-pos_discard = constants.pos_discard
-
 DrawOne = helperModule.DrawOne
 
 flag_basin_zone = getObjectFromGUID("3fe117")
@@ -74,15 +70,6 @@ pion_reput = {
     }
 }
 
---[[
-vp_zone = {
-    ["Red"] = getObjectFromGUID('5b9a53'),
-    ["Blue"] = getObjectFromGUID('376f34'),
-    ["Green"] = getObjectFromGUID('0e374f'),
-    ["Yellow"] = getObjectFromGUID('b25c3c')
-}
-]]--
-
 alliance_token = {
     ["emperor"] = getObjectFromGUID('13e990'),
     ["spacingGuild"] = getObjectFromGUID('ad1aae'),
@@ -123,7 +110,7 @@ function HarvestSpice(color, base, bonusRef)
     local nbSpice = base + bonusRef.call("collectVal")
     bonusRef.call("reset_val")
     for i = 1, nbSpice, 1 do
-        Wait.time(function() constants.named_resources[color].spice.call("incrementVal") end, t)
+        Wait.time(function() constants.players[color].spice.call("incrementVal") end, t)
         t = t + (1.5 / nbSpice)
     end
     return nbSpice
@@ -132,7 +119,7 @@ end
 function boardCommonModule.ImperialBasin(color)
 
     if boardCommonModule.CheckAgentAndPlayer(color, ImperialBasin_zone) then
-        local leader = constants.named_resources[color].leader_zone.getObjects()[1]
+        local leader = helperModule.getLeader(color)
         local leaderName = leader.getName()
         if leader.hasTag("Ariana") then
             local nbSpice = HarvestSpice(color, 0, bonus_spice1)
@@ -179,9 +166,9 @@ end
 function boardCommonModule.HaggaBasin(color)
 
     if boardCommonModule.CheckAgentAndPlayer(color, HaggaBasin_zone) then
-        local leader = constants.named_resources[color].leader_zone.getObjects()[1]
+        local leader = helperModule.getLeader(color)
         local leaderName = leader.getName()
-        local waterObj = constants.named_resources[color].water
+        local waterObj = constants.players[color].water
         if waterObj.call("collectVal") < 1 then
             broadcastToColor(i18n("noWater"), color, color)
         else
@@ -231,9 +218,9 @@ end
 function boardCommonModule.TheGreatFlat(color)
 
     if boardCommonModule.CheckAgentAndPlayer(color, TheGreatFlat_zone) then
-        local leader = constants.named_resources[color].leader_zone.getObjects()[1]
+        local leader = helperModule.getLeader(color)
         local leaderName = leader.getName()
-        local waterObj = constants.named_resources[color].water
+        local waterObj = constants.players[color].water
         if waterObj.call("collectVal") < 2 then
             broadcastToColor(i18n("noWater"), color, color)
         else
@@ -283,8 +270,8 @@ end
 function boardCommonModule.Stillsuits(color)
 
     if boardCommonModule.CheckAgentAndPlayer(color, Stillsuits_zone) then
-        local leaderName = constants.named_resources[color].leader_zone.getObjects()[1].getName()
-        constants.named_resources[color].water.call("incrementVal")
+        local leaderName = helperModule.getLeaderName(color)
+        constants.players[color].water.call("incrementVal")
         broadcastToAll(i18n("stillSuits"):format(leaderName), color)
         if leaderName == "Shaddam IV" then
             boardCommonModule.FremenDown(color)
@@ -298,11 +285,11 @@ function boardCommonModule.HardyWarriors(color)
 
     if boardCommonModule.CheckAgentAndPlayer(color, HardyWarriors_zone) then
 
-        local waterObj = constants.named_resources[color].water
+        local waterObj = constants.players[color].water
         if waterObj.call("collectVal") < 1 then
             broadcastToColor(i18n("noWater"), color, color)
         else
-            local leaderName = constants.named_resources[color].leader_zone.getObjects()[1].getName()
+            local leaderName = helperModule.getLeaderName(color)
             waterObj.call("decrementVal")
             helperModule.landTroopsFromOrbit(color, 2)
             broadcastToAll(i18n("hardyWarriors"):format(leaderName), color)
@@ -318,7 +305,7 @@ end
 function boardCommonModule.Secrets(color)
 
     if boardCommonModule.CheckAgentAndPlayer(color, Secrets_zone) then
-        local leaderName = constants.named_resources[color].leader_zone.getObjects()[1].getName()
+        local leaderName = helperModule.getLeaderName(color)
         Wait.time(function() boardCommonModule.drawIntrigue(color) end, 0.2)
         broadcastToAll(i18n("secrets"):format(leaderName), color)
         if leaderName == "Shaddam IV" then
@@ -333,9 +320,9 @@ end
 function boardCommonModule.SelectiveBreeding(color)
 
     if boardCommonModule.CheckAgentAndPlayer(color, SelectiveBreeding_zone) then
-        local leaderName = constants.named_resources[color].leader_zone.getObjects()[1].getName()
+        local leaderName = helperModule.getLeaderName(color)
         local t0 = 0
-        local spiceObj = constants.named_resources[color].spice
+        local spiceObj = constants.players[color].spice
 
         if spiceObj.call("collectVal") < 2 then
             broadcastToColor(i18n("noSpice"), color, color)
@@ -359,17 +346,17 @@ end
 function boardCommonModule.Foldspace(color)
 
     if boardCommonModule.CheckAgentAndPlayer(color, Foldspace_zone) then
-        local deck_foldspace = helperModule.GetDeckOrCard(Zone_foldspace.getGUID())
-        local leaderName = constants.named_resources[color].leader_zone.getObjects()[1].getName()
+        local deck_foldspace = helperModule.GetDeckOrCard(Zone_foldspace)
+        local leaderName = helperModule.getLeaderName(color)
 
         if deck_foldspace.type == "Deck" then
             deck_foldspace.takeObject({
-                position = pos_discard[color],
+                position = constants.players[color].pos_discard,
                 rotation = {0, 180, 0},
                 smooth = false
             })
         elseif deck_foldspace.type == "Card" then
-            deck_foldspace.setPosition(pos_discard[color])
+            deck_foldspace.setPosition(constants.players[color].pos_discard)
         end
         broadcastToAll(i18n("foldspace"):format(leaderName), color)
         if leaderName == "Shaddam IV" then
@@ -383,7 +370,7 @@ end
 function boardCommonModule.Heighliner(color)
 
     if boardCommonModule.CheckAgentAndPlayer(color, Heighliner_zone) then
-        local spiceObj = constants.named_resources[color].spice
+        local spiceObj = constants.players[color].spice
 
         if spiceObj.call("collectVal") < 6 then
             broadcastToColor(i18n("noSpice"), color, color)
@@ -391,7 +378,7 @@ function boardCommonModule.Heighliner(color)
             local t0 = 0
             local t1 = 0
             local t2 = 0
-            local leaderName = constants.named_resources[color].leader_zone.getObjects()[1].getName()
+            local leaderName = helperModule.getLeaderName(color)
 
             for i = 1, 6, 1 do
                 t0 = t0 + 0.2
@@ -402,7 +389,7 @@ function boardCommonModule.Heighliner(color)
             for i = 1, 2, 1 do
                 t1 = t1 + 0.4
                 Wait.time(function()
-                    constants.named_resources[color].water.call("incrementVal")
+                    constants.players[color].water.call("incrementVal")
                 end, t1)
             end
             helperModule.landTroopsFromOrbit(color, 5)
@@ -419,7 +406,7 @@ end
 function boardCommonModule.Wealth(color)
 
     if boardCommonModule.CheckAgentAndPlayer(color, Wealth_zone) then
-        local leader = constants.named_resources[color].leader_zone.getObjects()[1]
+        local leader = helperModule.getLeader(color)
         local leaderName = leader.getName()
         local solari = 2
         local t1 = 0
@@ -428,7 +415,7 @@ function boardCommonModule.Wealth(color)
 
         for i = 1, solari, 1 do
             Wait.time(function()
-                constants.named_resources[color].solari.call("incrementVal")
+                constants.players[color].solari.call("incrementVal")
             end, t1)
             t1 = t1 + 0.3
         end
@@ -446,19 +433,19 @@ function boardCommonModule.Conspire(color)
 
     if boardCommonModule.CheckAgentAndPlayer(color, Conspire_zone) then
 
-        local spiceObj = constants.named_resources[color].spice
+        local spiceObj = constants.players[color].spice
 
         if spiceObj.call("collectVal") < 4 then
             broadcastToColor(i18n("noSpice"), color, color)
         else
-            local leader = constants.named_resources[color].leader_zone.getObjects()[1]
+            local leader = helperModule.getLeader(color)
             local leaderName = leader.getName()
             local solari = 5
             local t0 = 0
             local t1 = 0
             local t2 = 0
 
-            local leader = constants.named_resources[color].leader_zone.getObjects()[1]
+            local leader = helperModule.getLeader(color)
             if leader.hasTag("Yuna") then solari = 6 end
 
             for i = 1, 4, 1 do
@@ -469,7 +456,7 @@ function boardCommonModule.Conspire(color)
             end
             for i = 1, solari, 1 do
                 Wait.time(function()
-                    constants.named_resources[color].solari.call("incrementVal")
+                    constants.players[color].solari.call("incrementVal")
                 end, t1)
                 t1 = t1 + 0.25
             end
@@ -517,7 +504,7 @@ end
 function boardCommonModule.ReputationUp(color, faction)
     local reputationLevels = boardCommonModule.getReputationLevels(faction, color)
     local pos = pion_reput[faction][color].getPosition()
-    local leaderName = constants.named_resources[color].leader_zone.getObjects()[1].getName()
+    local leaderName = helperModule.getLeaderName(color)
     if pos.z < reputationLevels.max then
         pion_reput[faction][color].setPositionSmooth({
             pos.x, pos.y, pos.z + reputationLevels.step
@@ -532,7 +519,7 @@ end
 function boardCommonModule.ReputationDown(color, faction)
     local reputationLevels = boardCommonModule.getReputationLevels(faction, color)
     local pos = pion_reput[faction][color].getPosition()
-    local leaderName = constants.named_resources[color].leader_zone.getObjects()[1].getName()
+    local leaderName = helperModule.getLeaderName(color)
     if pos.z > reputationLevels.none then
         pion_reput[faction][color].setPositionSmooth({
             pos.x, pos.y, pos.z - reputationLevels.step
@@ -547,7 +534,7 @@ end
 
 function giveAlliance(faction, color)
     local players = {"Red", "Green", "Blue", "Yellow"}
-    local leaderName = constants.named_resources[color].leader_zone.getObjects()[1].getName()
+    local leaderName = helperModule.getLeaderName(color)
 
     local posz_liste = {}
 
@@ -557,16 +544,18 @@ function giveAlliance(faction, color)
         end
     end
 
-    local vp_player = constants.named_resources[color].vp_zone.getObjects()
-    local test_alliance = 0
+    local vp_player =  helperModule.getScoreTokens(color)
+    local hasAlliance = false
     for _, value in ipairs(vp_player) do
-        if value == alliance_token[faction] then test_alliance = 1 end
+        if value == alliance_token[faction] then
+            hasAlliance = true
+        end
     end
     Wait.time(function()
         local posz = pion_reput[faction][color].getPosition().z
         local posz_requis = boardCommonModule.getReputationLevels(faction, color).alliance
 
-        if test_alliance == 1 then
+        if hasAlliance then
             local biggestDelta = 0;
             local playerTakingAlliance = ""
             local tiedForVP = false
@@ -597,26 +586,17 @@ function giveAlliance(faction, color)
                                "Pink")
 
             elseif biggestDelta > 0 then
-                local vpIndex = CountPoints(playerTakingAlliance)
-                local leaderTakingAllianceName =
-                    constants.named_resources[playerTakingAlliance].leader_zone.getObjects()[1]
-                        .getName()
+                local leaderTakingAllianceName = helperModule.getLeaderName(playerTakingAlliance)
 
-                alliance_token[faction].setPositionSmooth(
-                    vp_pos[playerTakingAlliance][vpIndex], false, false)
-
-                broadcastToAll(i18n("recoverAlliance"):format(
-                                   leaderTakingAllianceName, i18n(faction)),
-                               playerTakingAlliance)
-
+                helperModule.grantScoreToken(playerTakingAlliance, alliance_token[faction])
+                broadcastToAll(i18n("recoverAlliance"):format(leaderTakingAllianceName, i18n(faction)), playerTakingAlliance)
             elseif posz < posz_requis then
-                alliance_token[faction].setPositionSmooth(alliance_pos[faction],
-                                                          false, false)
+                alliance_token[faction].setPositionSmooth(alliance_pos[faction], false, false)
             end
 
         end
 
-        if test_alliance == 0 and posz > posz_requis then
+        if not hasAlliance and posz > posz_requis then
             local isReputStrongest = true
             for k, posz_compared in pairs(posz_liste) do
 
@@ -626,30 +606,12 @@ function giveAlliance(faction, color)
             end
 
             if isReputStrongest then
-                local vpIndex = CountPoints(color)
-                alliance_token[faction].setPositionSmooth(
-                    vp_pos[color][vpIndex], false, false)
-
-                broadcastToAll(i18n("recoverAlliance"):format(leaderName,
-                                                              i18n(faction)),
-                               color)
-
+                helperModule.grantScoreToken(playerTakingAlliance, alliance_token[faction])
+                broadcastToAll(i18n("recoverAlliance"):format(leaderName, i18n(faction)), color)
             end
         end
 
     end, 1)
-end
-
-function CountPoints(color)
-    local zoneObjects = constants.named_resources[color].vp_zone.getObjects()
-    local vpIndex = 1
-    for i, object in ipairs(zoneObjects) do
-        if object.getDescription() == "VP" then vpIndex = vpIndex + 1 end
-    end
-    if vpIndex > 13 then vpIndex = 13 end
-
-    return vpIndex
-
 end
 
 function boardCommonModule.FremenUp(color)
@@ -692,10 +654,10 @@ function boardCommonModule.SietchTabr(color)
             return 1
         end
 
-        constants.named_resources[color].water.call("incrementVal")
+        constants.players[color].water.call("incrementVal")
         helperModule.landTroopsFromOrbit(color, 1)
 
-        local leaderName = constants.named_resources[color].leader_zone.getObjects()[1].getName()
+        local leaderName = helperModule.getLeaderName(color)
 
         broadcastToAll(i18n("sietchTabr"):format(leaderName), color)
     end
@@ -705,8 +667,8 @@ function boardCommonModule.ResearchStation(color)
     if boardCommonModule.CheckAgentAndPlayer(color,
                                              boardCommonModule.ResearchStation_zone) then
 
-        local waterObj = constants.named_resources[color].water
-        local leaderName = constants.named_resources[color].leader_zone.getObjects()[1].getName()
+        local waterObj = constants.players[color].water
+        local leaderName = helperModule.getLeaderName(color)
 
         if waterObj.call("collectVal") < 2 then
             broadcastToColor(i18n("noWater"), color, color)
@@ -760,7 +722,7 @@ end
 
 function boardCommonModule.Carthag(color)
     if boardCommonModule.CheckAgentAndPlayer(color, Carthag_zone) then
-        local leaderName = constants.named_resources[color].leader_zone.getObjects()[1].getName()
+        local leaderName = helperModule.getLeaderName(color)
 
         Wait.time(function() boardCommonModule.drawIntrigue(color) end, 0.2)
         helperModule.landTroopsFromOrbit(color, 1)
@@ -772,7 +734,7 @@ end
 function boardCommonModule.Arrakeen(color)
 
     if boardCommonModule.CheckAgentAndPlayer(color, Arrakeen_zone) then
-        local leaderName = constants.named_resources[color].leader_zone.getObjects()[1].getName()
+        local leaderName = helperModule.getLeaderName(color)
 
         local numberToDraw = 1
 
@@ -809,8 +771,8 @@ function boardCommonModule.Swordmaster(color, zone)
 
     if boardCommonModule.CheckAgentAndPlayer(color, zone) then
 
-        local solariObj = constants.named_resources[color].solari
-        local leader = constants.named_resources[color].leader_zone.getObjects()[1]
+        local solariObj = constants.players[color].solari
+        local leader = helperModule.getLeader(color)
         local leaderName = leader.getName()
         local price = 8
 
@@ -825,8 +787,8 @@ function boardCommonModule.Swordmaster(color, zone)
                 end, t)
                 t = t + 0.15
             end
-            local p = constants.named_resources[color].agent_positions[3]
-            constants.named_resources[color].swordmaster.setPositionSmooth(p, false, false)
+            local p = constants.players[color].agent_positions[3]
+            constants.players[color].swordmaster.setPositionSmooth(p, false, false)
             if leader.hasTag("Ilban") then
 
                 local numberToDraw = 1
@@ -870,8 +832,8 @@ function boardCommonModule.Mentat(color)
 
     if boardCommonModule.CheckAgentAndPlayer(color, Mentat_zone) then
 
-        local solariObj = constants.named_resources[color].solari
-        local leader = constants.named_resources[color].leader_zone.getObjects()[1]
+        local solariObj = constants.players[color].solari
+        local leader = helperModule.getLeader(color)
         local leaderName = leader.getName()
         local price = 2
         local t = 0
@@ -891,7 +853,7 @@ function boardCommonModule.Mentat(color)
             local mentats = getMentat()
             if mentats ~= nil then
                 talk = i18n("mentatToken")
-                mentats.setPositionSmooth(constants.named_resources[color].agent_positions[3], false, false)
+                mentats.setPositionSmooth(constants.players[color].agent_positions[3], false, false)
             end
 
             local numberToDraw = 1
@@ -959,8 +921,8 @@ function boardCommonModule.HighCouncil(color)
 
     if boardCommonModule.CheckAgentAndPlayer(color, HighCouncil_zone) then
 
-        local solariObj = constants.named_resources[color].solari
-        local leader = constants.named_resources[color].leader_zone.getObjects()[1]
+        local solariObj = constants.players[color].solari
+        local leader = helperModule.getLeader(color)
         local leaderName = leader.getName()
         local price = 5
         local t = 0
@@ -977,18 +939,18 @@ function boardCommonModule.HighCouncil(color)
                 t = t + 0.2
             end
             -- place the council token and get back a 2 persuasion token near the player board
-            local destination = constants.named_resources[color].council_zone
+            local destination = constants.players[color].council_zone
             local ix_CHOAM_overlay = getObjectFromGUID("a139cd")
             if not ix_CHOAM_overlay then
-                destination = constants.named_resources[color].vanilla_council_zone
+                destination = constants.players[color].vanilla_council_zone
             end
 
-            constants.named_resources[color].council_token.setPositionSmooth(destination, false, false)
-            constants.named_resources[color].council_token.interactable = false
+            constants.players[color].council_token.setPositionSmooth(destination, false, false)
+            constants.players[color].council_token.interactable = false
 
             local council_influence_bonus_bag = getObjectFromGUID("074f6d")
             council_influence_bonus_bag.takeObject({
-                position = constants.named_resources[color].council_bonus_zone,
+                position = constants.players[color].council_bonus_zone,
                 rotation = {0, 180, 0}
             })
 
@@ -1033,10 +995,10 @@ end
 
 function boardCommonModule.drawIntrigue(color)
     local x = 1
-    if constants.named_resources[color].leader_zone.getObjects()[1].getName() == "Count Fenring" then
+    if helperModule.getLeaderName(color) == "Count Fenring" then
         x = 2
         Wait.time(function()
-            broadcastToAll(constants.named_resources[color].leader_zone.getObjects()[1].getName() ..
+            broadcastToAll(helperModule.getLeaderName(color) ..
                                i18n("fenring"), "Purple")
         end, 0.5)
     end
@@ -1044,7 +1006,7 @@ function boardCommonModule.drawIntrigue(color)
     for i = 1, x, 1 do
         Wait.time(function()
             local handZone = Player[color].getHandTransform()
-            local intrigueDeck = helperModule.GetDeckOrCard(intrigue_zone.getGUID())
+            local intrigueDeck = helperModule.GetDeckOrCard(intrigue_zone)
             local my_card = intrigueDeck.takeObject({
                 position = {
                     handZone.position.x - 7.5, handZone.position.y,
@@ -1091,28 +1053,24 @@ function flag_basin()
         end
     end
     if dread == 1 then
-        constants.named_resources["Red"].spice.call("incrementVal")
-        broadcastToAll(constants.named_resources["Red"].leader_zone.getObjects()[1].getName() ..
-                           i18n("flagBasin"), {0.956, 0.392, 0.113})
+        constants.players["Red"].spice.call("incrementVal")
+        broadcastToAll(helperModule.getLeaderName("Red") .. i18n("flagBasin"), {0.956, 0.392, 0.113})
     elseif dread == 2 then
-        constants.named_resources["Blue"].spice.call("incrementVal")
-        broadcastToAll(constants.named_resources["Blue"].leader_zone.getObjects()[1].getName() ..
-                           i18n("flagBasin"), {0.956, 0.392, 0.113})
+        constants.players["Blue"].spice.call("incrementVal")
+        broadcastToAll(helperModule.getLeaderName("Blue") .. i18n("flagBasin"), {0.956, 0.392, 0.113})
     elseif dread == 3 then
-        constants.named_resources["Green"].spice.call("incrementVal")
-        broadcastToAll(constants.named_resources["Green"].leader_zone.getObjects()[1].getName() ..
-                           i18n("flagBasin"), {0.956, 0.392, 0.113})
+        constants.players["Green"].spice.call("incrementVal")
+        broadcastToAll(helperModule.getLeaderName("Green") ..i18n("flagBasin"), {0.956, 0.392, 0.113})
     elseif dread == 4 then
-        constants.named_resources["Yellow"].spice.call("incrementVal")
-        broadcastToAll(constants.named_resources["Yellow"].leader_zone.getObjects()[1].getName() ..
-                           i18n("flagBasin"), {0.956, 0.392, 0.113})
+        constants.players["Yellow"].spice.call("incrementVal")
+        broadcastToAll(helperModule.getLeaderName("Yellow") ..i18n("flagBasin"), {0.956, 0.392, 0.113})
     end
 end
 
 function flag_arrakeen(color)
     local dread = 0
     local table = flag_arrakeen_zone.getObjects()
-    if constants.named_resources[color].leader_zone.getObjects()[1].getName() == "Princess Yuna" then
+    if helperModule.getLeaderName(color) == "Princess Yuna" then
         for _, obj in ipairs(table) do
             if obj.getName() == color .. " Dreadnought" or obj.getName() ==
                 color .. " dreadnought" then dread = 5 end
@@ -1156,25 +1114,25 @@ function flag_arrakeen(color)
         end
     end
     if dread == 1 then
-        constants.named_resources["Red"].solari.call("incrementVal")
-        broadcastToAll(constants.named_resources["Red"][6].getObjects()[1].getName() ..
+        constants.players["Red"].solari.call("incrementVal")
+        broadcastToAll(constants.players["Red"][6].getObjects()[1].getName() ..
                            i18n("flagArrakeen"):format(1), {0.8, 0.8, 0.8})
     elseif dread == 2 then
-        constants.named_resources["Blue"].solari.call("incrementVal")
-        broadcastToAll(constants.named_resources["Blue"][6].getObjects()[1].getName() ..
+        constants.players["Blue"].solari.call("incrementVal")
+        broadcastToAll(constants.players["Blue"][6].getObjects()[1].getName() ..
                            i18n("flagArrakeen"):format(1), {0.8, 0.8, 0.8})
     elseif dread == 3 then
-        constants.named_resources["Green"].solari.call("incrementVal")
-        broadcastToAll(constants.named_resources["Green"][6].getObjects()[1].getName() ..
+        constants.players["Green"].solari.call("incrementVal")
+        broadcastToAll(constants.players["Green"][6].getObjects()[1].getName() ..
                            i18n("flagArrakeen"):format(1), {0.8, 0.8, 0.8})
     elseif dread == 4 then
-        constants.named_resources["Yellow"].solari.call("incrementVal")
-        broadcastToAll(constants.named_resources["Yellow"][6].getObjects()[1].getName() ..
+        constants.players["Yellow"].solari.call("incrementVal")
+        broadcastToAll(constants.players["Yellow"][6].getObjects()[1].getName() ..
                            i18n("flagArrakeen"):format(1), {0.8, 0.8, 0.8})
     elseif dread == 5 then
-        constants.named_resources[color].solari.call("incrementVal")
-        Wait.time(function() constants.named_resources[color].solari.call("incrementVal") end, 0.3)
-        broadcastToAll(constants.named_resources[color].leader_zone.getObjects()[1].getName() ..
+        constants.players[color].solari.call("incrementVal")
+        Wait.time(function() constants.players[color].solari.call("incrementVal") end, 0.3)
+        broadcastToAll(helperModule.getLeaderName(color) ..
                            i18n("flagArrakeen"):format(2), {0.8, 0.8, 0.8})
     end
 end
@@ -1182,7 +1140,7 @@ end
 function flag_carthag(color)
     local dread = 0
     local table = flag_carthag_zone.getObjects()
-    if constants.named_resources[color].leader_zone.getObjects()[1].getName() == "Princess Yuna" then
+    if helperModule.getLeaderName(color) == "Princess Yuna" then
         for _, obj in ipairs(table) do
             if obj.getName() == color .. " Dreadnought" or obj.getName() ==
                 color .. " dreadnought" then dread = 5 end
@@ -1226,25 +1184,21 @@ function flag_carthag(color)
         end
     end
     if dread == 1 then
-        constants.named_resources["Red"].solari.call("incrementVal")
-        broadcastToAll(constants.named_resources["Red"].leader_zone.getObjects()[1].getName() ..
-                           i18n("flagCarthag"):format(1), {0.8, 0.8, 0.8})
+        constants.players["Red"].solari.call("incrementVal")
+        broadcastToAl(helperModule.getLeaderName("Red") .. i18n("flagCarthag"):format(1), {0.8, 0.8, 0.8})
     elseif dread == 2 then
-        constants.named_resources["Blue"].solari.call("incrementVal")
-        broadcastToAll(constants.named_resources["Blue"].leader_zone.getObjects()[1].getName() ..
-                           i18n("flagCarthag"):format(1), {0.8, 0.8, 0.8})
+        constants.players["Blue"].solari.call("incrementVal")
+        broadcastToAl(helperModule.getLeaderName("Blue") ..i18n("flagCarthag"):format(1), {0.8, 0.8, 0.8})
     elseif dread == 3 then
-        constants.named_resources["Green"].solari.call("incrementVal")
-        broadcastToAll(constants.named_resources["Green"].leader_zone.getObjects()[1].getName() ..
-                           i18n("flagCarthag"):format(1), {0.8, 0.8, 0.8})
+        constants.players["Green"].solari.call("incrementVal")
+        broadcastToAll(helperModule.getLeaderName("Green") ..i18n("flagCarthag"):format(1), {0.8, 0.8, 0.8})
     elseif dread == 4 then
-        constants.named_resources["Yellow"].solari.call("incrementVal")
-        broadcastToAll(constants.named_resources["Yellow"].leader_zone.getObjects()[1].getName() ..
-                           i18n("flagCarthag"):format(1), {0.8, 0.8, 0.8})
+        constants.players["Yellow"].solari.call("incrementVal")
+        broadcastToAll(helperModule.getLeaderName("Yellow") ..i18n("flagCarthag"):format(1), {0.8, 0.8, 0.8})
     elseif dread == 5 then
-        constants.named_resources[color].solari.call("incrementVal")
-        Wait.time(function() constants.named_resources[color].solari.call("incrementVal") end, 0.3)
-        broadcastToAll(constants.named_resources[color].leader_zone.getObjects()[1].getName() ..
+        constants.players[color].solari.call("incrementVal")
+        Wait.time(function() constants.players[color].solari.call("incrementVal") end, 0.3)
+        broadcastToAll(helperModule.getLeaderName(color) ..
                            i18n("flagCarthag"):format(2), {0.8, 0.8, 0.8})
     end
 end

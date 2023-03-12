@@ -9,10 +9,10 @@ Swordmaster_zone = getObjectFromGUID("6932df")
 Smuggling_zone = getObjectFromGUID("6cc2f8")
 Shipping_zone = getObjectFromGUID("3e7409")
 
-named_resources = constants.named_resources
+players = constants.players
 
-zone_player = constants.zone_player
-cargo = constants.cargo
+techZone = constants.techZone
+
 cargo_pos_init = {
     ["Yellow"] = constants.getPositionFromGUID("8fa76f"),
     ["Green"] = constants.getPositionFromGUID("34281d"),
@@ -214,7 +214,7 @@ function HighCouncil(_, color)
 end
 
 function gainSolariFromSmuggling(color)
-    local leader = named_resources[color].leader_zone.getObjects()[1]
+    local leader = helperModule.getLeader(color)
     local solariIncome = 1
     local solari = "Solari"
 
@@ -223,7 +223,7 @@ function gainSolariFromSmuggling(color)
         solari = "Solaris"
     end
 
-    Wait.time(function() named_resources[color].solari.call("incrementVal") end, 0.25,
+    Wait.time(function() players[color].solari.call("incrementVal") end, 0.25,
               solariIncome)
 
     return solariIncome .. " " .. solari
@@ -233,10 +233,10 @@ function cargoUp(color)
     local cargoMoved = false
 
     local zMax = cargo_pos_init[color].z + 1.1 * 2.5
-    if cargo[color].getPosition().z > zMax then
+    if constants.players[color].cargo.getPosition().z > zMax then
         broadcastToColor(i18n("nope"), color, "Purple")
     else
-        cargo[color].setPositionSmooth(cargo[color].getPosition() +
+        constants.players[color].cargo.setPositionSmooth(constants.players[color].cargo.getPosition() +
                                            Vector({0, 0, 1.1}), false, true)
         cargoMoved = true
     end
@@ -248,10 +248,10 @@ function cargoReset(color)
     local cargoMoved = false
 
     local zMin = cargo_pos_init[color].z + 1.1 * 0.5
-    if cargo[color].getPosition().z < zMin then
+    if constants.players[color].cargo.getPosition().z < zMin then
         broadcastToColor(i18n("nope"), color, "Purple")
     else
-        cargo[color].setPositionSmooth(cargo_pos_init[color], false, true)
+        constants.players[color].cargo.setPositionSmooth(cargo_pos_init[color], false, true)
         cargoMoved = true
     end
 
@@ -264,7 +264,7 @@ function SmugglingUp(_, color)
     if boardCommonModule.CheckAgentAndPlayer(color, Smuggling_zone) then
         if cargoUp(color) then
 
-            local leaderName = named_resources[color].leader_zone.getObjects()[1].getName()
+            local leaderName = helperModule.getLeaderName(color)
             local solariString = gainSolariFromSmuggling(color)
 
             broadcastToAll(i18n("smugglingUp"):format(leaderName, solariString),
@@ -279,7 +279,7 @@ function SmugglingDown(_, color)
     if boardCommonModule.CheckAgentAndPlayer(color, Smuggling_zone) then
 
         if cargoReset(color) then
-            local leaderName = named_resources[color].leader_zone.getObjects()[1].getName()
+            local leaderName = helperModule.getLeaderName(color)
             local solariString = gainSolariFromSmuggling(color)
 
             broadcastToAll(
@@ -293,7 +293,7 @@ function CommercialUp(_, color)
     Wait.time(activateButtons, 1)
 
     if cargoUp(color) then
-        local leaderName = named_resources[color].leader_zone.getObjects()[1].getName()
+        local leaderName = helperModule.getLeaderName(color)
         broadcastToAll(leaderName .. i18n("commercialUp"), color)
     end
 end
@@ -302,7 +302,7 @@ function CommercialDown(_, color)
     self.clearButtons()
     Wait.time(activateButtons, 1)
     if cargoReset(color) then
-        local leaderName = named_resources[color].leader_zone.getObjects()[1].getName()
+        local leaderName = helperModule.getLeaderName(color)
         broadcastToAll(leaderName .. i18n("commercialDown"), color)
     end
 end
@@ -314,17 +314,17 @@ function ShippingUpUp(_, color)
         local reputationLevels = boardCommonModule.getReputationLevels("spacingGuild", color)
         if pion_reput_guild[color].getPosition().z < reputationLevels.friendship then
             broadcastToColor(i18n("notReputation"), color, "Red")
-        elseif cargo[color].getPosition().z > 8.5 then
+        elseif constants.players[color].cargo.getPosition().z > 8.5 then
             broadcastToColor(i18n("nope"), color, "Purple")
         else
-            cargo[color].setPositionSmooth(
-                cargo[color].getPosition() + Vector({0, 0, 1.1}), false, true)
+            constants.players[color].cargo.setPositionSmooth(
+                constants.players[color].cargo.getPosition() + Vector({0, 0, 1.1}), false, true)
             Wait.time(function()
-                cargo[color].setPositionSmooth(
-                    cargo[color].getPosition() + Vector({0, 0, 1.1}), false,
+                constants.players[color].cargo.setPositionSmooth(
+                    constants.players[color].cargo.getPosition() + Vector({0, 0, 1.1}), false,
                     true)
             end, 0.5)
-            local leaderName = named_resources[color].leader_zone.getObjects()[1].getName()
+            local leaderName = helperModule.getLeaderName(color)
             broadcastToAll(leaderName .. i18n("commercialUpUp"), color)
         end
     end
@@ -338,9 +338,9 @@ function ShippingUpDown(_, color)
         if pion_reput_guild[color].getPosition().z < reputationLevels.friendship then
             broadcastToColor(i18n("notReputation"), color, "Red")
         elseif cargoUp(color) then
-            local leaderName = named_resources[color].leader_zone.getObjects()[1].getName()
+            local leaderName = helperModule.getLeaderName(color)
             Wait.time(function()
-                cargo[color].setPositionSmooth(cargo_pos_init[color], false,
+                constants.players[color].cargo.setPositionSmooth(cargo_pos_init[color], false,
                                                true)
             end, 0.5)
             broadcastToAll(leaderName .. i18n("commercialUpDown"), color)
@@ -356,10 +356,10 @@ function ShippingDownUp(_, color)
         if pion_reput_guild[color].getPosition().z < reputationLevels.friendship then
             broadcastToColor(i18n("notReputation"), color, "Red")
         elseif cargoReset(color) then
-            local leaderName = named_resources[color].leader_zone.getObjects()[1].getName()
+            local leaderName = helperModule.getLeaderName(color)
             Wait.time(function()
-                cargo[color].setPositionSmooth(
-                    cargo[color].getPosition() + Vector({0, 0, 1.1}), false,
+                constants.players[color].cargo.setPositionSmooth(
+                    constants.players[color].cargo.getPosition() + Vector({0, 0, 1.1}), false,
                     true)
             end, 0.5)
             broadcastToAll(leaderName .. i18n("commercialDownUp"), color)
@@ -371,7 +371,7 @@ function CommercialMoney(_, color)
     self.clearButtons()
     Wait.time(activateButtons, 1)
 
-    local leader = named_resources[color].leader_zone.getObjects()[1]
+    local leader = helperModule.getLeader(color)
     local leaderName = leader.getName()
     local solariIncome = 5
 
@@ -381,12 +381,12 @@ function CommercialMoney(_, color)
     if leader.hasTag("Yuna") and combat == 0 then solariIncome = 6 end
     for i = 1, solariIncome - 1, 1 do
         t = t + 0.25
-        Wait.time(function() named_resources[color].solari.call("incrementVal") end, t)
+        Wait.time(function() players[color].solari.call("incrementVal") end, t)
     end
-    named_resources["Red"].solari.call("incrementVal")
-    named_resources["Blue"].solari.call("incrementVal")
-    named_resources["Green"].solari.call("incrementVal")
-    named_resources["Yellow"].solari.call("incrementVal")
+    players["Red"].solari.call("incrementVal")
+    players["Blue"].solari.call("incrementVal")
+    players["Green"].solari.call("incrementVal")
+    players["Yellow"].solari.call("incrementVal")
     broadcastToAll(i18n("shippingSolari"):format(leaderName, solariIncome),
                    color)
     broadcastToAll(i18n("dividends"), white)
@@ -397,11 +397,11 @@ function CommercialSpice(_, color)
     self.clearButtons()
     Wait.time(activateButtons, 1)
 
-    local leaderName = named_resources[color].leader_zone.getObjects()[1].getName()
+    local leaderName = helperModule.getLeaderName(color)
     local t = 0
     for i = 1, 2, 1 do
         t = t + 0.25
-        Wait.time(function() named_resources[color].spice.call("incrementVal") end, t)
+        Wait.time(function() players[color].spice.call("incrementVal") end, t)
 
     end
     broadcastToAll(i18n("shippingSpice"):format(leaderName), color)
@@ -411,12 +411,12 @@ function CommercialTroop(_, color)
     self.clearButtons()
     Wait.time(activateButtons, 1)
 
-    local leaderName = named_resources[color].leader_zone.getObjects()[1].getName()
+    local leaderName = helperModule.getLeaderName(color)
     local troopsToGain = 2
 
     local t = 0
     local troopTransportAvailable = false
-    local techs = zone_player[color].getObjects()
+    local techs = constants.players[color].techZone.getObjects()
     for _, obj in ipairs(techs) do
         if obj.hasTag("Troop Transports") then
             troopTransportAvailable = true

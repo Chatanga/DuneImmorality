@@ -117,7 +117,7 @@ local scorePanel = [[
         returnToOriginalPositionWhenReleased="false" outline="#404040">
         <TableLayout>
         <Row>
-        <Cell columnSpan="7"><Panel class="orange"><Text>NOTE: VP tokens above 12 must be placed on the corresponding player's VP tray to be taken into account. 
+        <Cell columnSpan="7"><Panel class="orange"><Text>NOTE: VP tokens above 12 must be placed on the corresponding player's VP tray to be taken into account.
         This tool tries to resolve ties by looking at Chaumurky, spice, solari, and water, but it's not perfect.
         Double check the ranking, adjust as needed and TAKE A SCREENSHOT before submitting.</Text></Panel></Cell>
         </Row>
@@ -375,7 +375,7 @@ function sendForm(submitter)
         ["entry.850152509"] = UI.getAttribute("leader_blue", "text"), -- p4_leader
 
         ["entry.879491944"] = "0", -- immortality
-        ["entry.550642770"] = "1" -- tournament2022        
+        ["entry.550642770"] = "1" -- tournament2022
     }
 
     -- post to google forms
@@ -399,7 +399,7 @@ end
 function refreshResults()
     if gameWasSubmitted then disableSubmitButton() end
 
-    techZone = constants.zone_player
+    techZone = constants.techZone
 
     if worm.vptray == nil then worm.init() end
 
@@ -572,7 +572,7 @@ function firstScoreBoardRender()
                           thisColor .. [[">
                            <Image image="]] .. pic .. [["/>
                            </Panel>
-                           </Cell> 
+                           </Cell>
                            <Cell>
                            <Panel color="white">
                            <Text id="]] .. thisColor ..
@@ -591,10 +591,10 @@ function firstScoreBoardRender()
     else
 
         broadcastToColor('Not all seated players selected a leader. Try again after they did.', 'Black', 'Black')
-    
+
     end
 
-    
+
 
 end
 

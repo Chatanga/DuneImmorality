@@ -5,11 +5,7 @@ constants = require("Constants")
 
 helperModule = require("HelperModule")
 
-pos_discard = constants.pos_discard
-
-named_resources = constants.named_resources
-
-pos_supply_bowls = constants.pos_supply_bowls
+players = constants.players
 
 bene_tleilax_board = getObjectFromGUID("d5c2db")
 
@@ -44,7 +40,7 @@ end
 
 function tleilaxuTroop(_, color)
 
-    local leaderName = named_resources[color].leader_zone.getObjects()[1].getName()
+    local leaderName = helperModule.getLeaderName(color)
     if isEnoughSpecimen(_, color) then
         Player[color].showConfirmDialog(i18n("reclaimedForcesTroopsWarning"),
         function(color)
@@ -58,7 +54,7 @@ end
 
 function tleilaxuScarab(_, color)
 
-    local leaderName = named_resources[color].leader_zone.getObjects()[1].getName()
+    local leaderName = helperModule.getLeaderName(color)
     if isEnoughSpecimen(_, color) then
         Player[color].showConfirmDialog(i18n("reclaimedForcesScarabWarning"),
         function(color)

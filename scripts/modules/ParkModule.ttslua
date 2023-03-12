@@ -1,24 +1,30 @@
 local parkModule = {}
 
+helperModule = require("HelperModule")
+
 --[[
     A park is basically an open field bag with a fixed size and a visual
     arrangement of its content. A park content is determined at each operation
     (usually implying a tidy up on the way), so beware of the asynchronous
     moves from park to park.
 
+    name: a unique name for the park.
     slots: the slot positions.
     rotation: the optional rotation to apply to parked objects.
     zone: a zone to test if an object is in the park.
     tag: an optional restriction on the park content.
     locked: should the park content be locked?
 ]]--
-function parkModule.createPark(slots, rotation, zone, tag, locked)
+function parkModule.createPark(name, slots, rotation, zone, tag, locked)
     assert(#slots > 0, "No slot provided for new park.")
     assert(zone, "No park zone provided.")
+
+    helperModule.setSharedTable(name, {})
 
     -- Check all slots in the zone.
 
     return {
+        name = name,
         slots = slots,
         rotation = rotation,
         zone = zone,
@@ -28,7 +34,9 @@ function parkModule.createPark(slots, rotation, zone, tag, locked)
 end
 
 --[[
-    Transfert objects from a park to another. Beware that moves are asynchronous.
+    Transfert objects from a park to another. Beware that moves are asynchronous
+    and that chaining multiple calls to this function could be problematic. A
+    single call, whatever the amount transfered, is ok.
 
     n: the number of objects to be transfered.
     fromParkName: the source park.
@@ -40,24 +48,16 @@ function parkModule.transfert(n, fromPark, toPark)
     assert(toPark, "No destination park.")
     assert(fromPark ~= toPark, "Source and destination parks are the same.")
 
-    --[[
-        Park objects usually come from other object (one of them at least). As
-        such, it shall not be assigned (it is treated as a pure right value).
-        Copies must be made when needed (even for temporarily storing it).
-    ]]--
-
-    parkModule.instantTidyUp(toPark)
-
-    local objects = parkModule.getObjects(fromPark)
-    local emptySlots = parkModule.findEmptySlots(toPark)
-
-    local count = math.min(n, math.min(n, #objects), #emptySlots)
-
-    for i = 1, count do
-        parkModule.moveObjectToPark(objects[i], emptySlots[i], toPark)
+    local objects = {}
+    for i, object in ipairs(parkModule.getObjects(fromPark)) do
+        if i <= n then
+            objects[#objects + 1] = object
+        else
+            break
+        end
     end
 
-    return count
+    return parkModule.putObjects(objects, toPark)
 end
 
 --[[
@@ -65,22 +65,68 @@ end
     object: the object to put in the park.
     toParkName: the name of the destination park.
 ]]--
-function parkModule.put(object, toPark)
+function parkModule.putObject(object, toPark)
     assert(object, "No object provided.")
-    assert(toPark, "No destination park.")
-
-    parkModule.instantTidyUp(toPark)
-
-    local emptySlots = parkModule.findEmptySlots(toPark)
-    if #emptySlots >= 0 then
-        parkModule.moveObjectToPark(object, emptySlots[0], toPark)
-        return true
-    else
-        return false
-    end
+    return parkModule.putObjects({object}, toPark) > 0
 end
 
-function parkModule.instantTidyUp(park)
+--[[
+]]--
+function parkModule.putObjects(objects, toPark)
+    assert(objects, "No objects provided.")
+    assert(toPark, "No destination park.")
+
+    --[[
+        Park objects usually come from other object (one of them at least). As
+        such, it shall not be assigned (it is treated as a pure right value).
+        Copies must be made when needed (even for temporarily storing it).
+    ]]--
+
+    local now = Time.time
+
+    local objectsInTransit = helperModule.getSharedTable(toPark.name)
+
+    local newObjectsInTransit = {}
+    for object, transit in pairs(objectsInTransit) do
+        if now - transit < 3.0 then
+            newObjectsInTransit[object] = transit
+        end
+    end
+
+    parkModule.instantTidyUp(toPark, newObjectsInTransit)
+
+    local emptySlots = parkModule.findEmptySlots(toPark)
+
+    -- Count *after* newObjectsInTransit (and it's a sparse table).
+    local skipCount = 0
+    for _, _ in pairs(newObjectsInTransit) do
+        skipCount = skipCount + 1
+    end
+    local count = math.max(0, math.min(#emptySlots - skipCount, #objects))
+
+    for i = 1, count do
+        parkModule.moveObjectToPark(objects[i], emptySlots[i + skipCount], toPark)
+        newObjectsInTransit[objects[i]] = now
+    end
+
+    helperModule.setSharedTable(toPark.name, newObjectsInTransit)
+
+    return count
+end
+
+--[[
+]]--
+function parkModule.getObjects(park)
+    local objects = {}
+    for _, object in ipairs(park.zone.getObjects()) do
+        if not park.tag or (object.hasTag(park.tag) and object.getDescription() == park.tag) then
+            objects[#objects + 1] = object
+        end
+    end
+    return objects
+end
+
+function parkModule.instantTidyUp(park, newObjectsInTransit)
 
     local freeSlots = {}
     local freeSlotCount = 0
@@ -94,6 +140,7 @@ function parkModule.instantTidyUp(park)
     for _, object in ipairs(parkModule.getObjects(park)) do
         freeObjects[object] = true
         freeObjectCount = freeObjectCount + 1
+        newObjectsInTransit[object] = nil
     end
 
     while freeSlotCount > 0 and freeObjectCount > 0 do
@@ -140,21 +187,16 @@ function parkModule.instantTidyUp(park)
 end
 
 function parkModule.moveObjectToPark(object, slot, park)
-    object.setPositionSmooth(slot + Vector(0, 1, 0), false, false)
+    object.locked = park.locked
+    local offset = Vector(0, 0, 0)
+    if not object.locked then
+        -- Nice drop are only for unlocked objects.
+        offset = Vector(0, 1, 0)
+    end
+    object.setPositionSmooth(slot + offset, false, false)
     if park.rotation then
         object.setRotation(park.rotation:copy())
     end
-    object.locked = park.locked
-end
-
-function parkModule.getObjects(park)
-    local objects = {}
-    for _, object in ipairs(park.zone.getObjects()) do
-        if not park.tag or (object.hasTag(park.tag) and object.getDescription() == park.tag) then
-            objects[#objects + 1] = object
-        end
-    end
-    return objects
 end
 
 function parkModule.findEmptySlots(park)

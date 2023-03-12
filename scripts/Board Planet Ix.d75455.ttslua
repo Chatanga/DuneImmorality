@@ -14,9 +14,7 @@ DrawOne = helperModule.DrawOne
 
 Dreadnought_zone = getObjectFromGUID("83ea90")
 
-named_resources = constants.named_resources
-
-zone_player = constants.zone_player
+players = constants.players
 
 dreadnought_pos = {
     ["Red"] = {0.31, 2, -3.55},
@@ -55,13 +53,13 @@ function Dreadnought(_, color)
 
     if boardCommonModule.CheckAgentAndPlayer(color, Dreadnought_zone) then
 
-        local leader = named_resources[color].leader_zone.getObjects()[1]
+        local leader = helperModule.getLeader(color)
         local leaderName = leader.getName()
-        local solariObj = named_resources[color].solari
+        local solariObj = players[color].solari
 
         local price = 3
 
-        
+
         if leader.hasTag("Leto") then price = 2 end
 
         if solariObj.call("collectVal") < price then
@@ -117,7 +115,7 @@ function Dreadnought(_, color)
 end
 
 function buyDreadnought(_, color)
-    local Objects = zone_player[color].getObjects()
+    local Objects = constants.players[color].zone_player.getObjects()
     for _, value in ipairs(Objects) do
         if value.getName() == color .. " Dreadnought" or value.getName() ==
             color .. " dreadnought" then

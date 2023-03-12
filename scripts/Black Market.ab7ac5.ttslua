@@ -2,13 +2,12 @@
 i18n = require("i18n")
 require("locales")
 
-constants = require("Constants") 
+constants = require("Constants")
 
 helperModule = require("HelperModule")
 
-pos_discard = constants.pos_discard
-
 GetDeckOrCard = helperModule.GetDeckOrCard
+GetDeckOrCardFromGUID = helperModule.GetDeckOrCardFromGUID
 
 pos_black_market = constants.pos_black_market
 
@@ -27,20 +26,20 @@ function activateButtons()
 end
 
 function Buy1Market(_, color)
-    card = GetDeckOrCard(zone_black_market[1])
+    card = GetDeckOrCardFromGUID(zone_black_market[1])
     pos = pos_black_market[1]
     BuyMarket(_, color)
 end
 
 function Buy2Market(_, color)
-    card = GetDeckOrCard(zone_black_market[2])
+    card = GetDeckOrCardFromGUID(zone_black_market[2])
     pos = pos_black_market[2]
     BuyMarket(_, color)
 
 end
 
 function Buy3Market(_, color)
-    card = GetDeckOrCard(zone_black_market[3])
+    card = GetDeckOrCardFromGUID(zone_black_market[3])
     pos = pos_black_market[3]
     BuyMarket(_, color)
 
@@ -51,12 +50,12 @@ function BuyMarket(_, color)
         broadcastToColor(i18n("noTouch"), color, "Pink")
     else
         if card ~= nil then
-            card.setPosition(pos_discard[color])
+            card.setPosition(constants.players[color].pos_discard)
             card.setRotation({0,180,0})
         end
         self.clearButtons()
         Wait.time(activateButtons,1)
-        GetDeckOrCard(deck_imperium).takeObject({
+        GetDeckOrCardFromGUID(deck_imperium).takeObject({
             position          = pos,
             rotation          = {0,180,0},
             smooth            = true,

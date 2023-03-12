@@ -3,53 +3,79 @@ require("locales")
 
 constants = require("Constants")
 
-named_resources = constants.named_resources
+players = constants.players
 
 boardCommonModule = require("BoardCommonModule")
 
+parkModule = require("ParkModule")
+
 specimen_zone = getObjectFromGUID("f5de09")
 
-pos_destination_specimen = {
-    ["Red"] = constants.getPositionFromGUID("f5de09") + Vector(-1.3, 2, 0.75),
-    ["Blue"] = constants.getPositionFromGUID("f5de09") + Vector(-1.3, 2, -0.25),
-    ["Green"] = constants.getPositionFromGUID("f5de09") + Vector(0.3, 2, 0.75),
-    ["Yellow"] = constants.getPositionFromGUID("f5de09") + Vector(0.3, 2, -0.25)
-}
-
-tleilaxuTokens = constants.tleilaxuTokens
-researchTokens = constants.researchTokens
-
-function getAveragePosition(objects)
+function getAveragePosition(field)
     local p = Vector(0, 0, 0)
     local count = 0
-    for _, token2 in pairs(objects) do
-        p = p + token2.getPosition()
+    for _, player in pairs(constants.players) do
+        local token = player[field]
+        p = p + token.getPosition()
         count = count + 1
     end
     return p * (1 / count)
 end
 
 pos_TleilaxuTrack = {
-    getAveragePosition(tleilaxuTokens) + Vector(1.3, 2, 0),
-    getAveragePosition(tleilaxuTokens) + Vector(2.6, 2, 0),
-    getAveragePosition(tleilaxuTokens) + Vector(3.9, 2, 0),
-    getAveragePosition(tleilaxuTokens) + Vector(5.2, 2, 0),
-    getAveragePosition(tleilaxuTokens) + Vector(7.4, 2, 0),
-    getAveragePosition(tleilaxuTokens) + Vector(8.4, 2, 0),
-    getAveragePosition(tleilaxuTokens) + Vector(9.2, 2, 0)
+    getAveragePosition("tleilaxuTokens") + Vector(1.3, 2, 0),
+    getAveragePosition("tleilaxuTokens") + Vector(2.6, 2, 0),
+    getAveragePosition("tleilaxuTokens") + Vector(3.9, 2, 0),
+    getAveragePosition("tleilaxuTokens") + Vector(5.2, 2, 0),
+    getAveragePosition("tleilaxuTokens") + Vector(7.4, 2, 0),
+    getAveragePosition("tleilaxuTokens") + Vector(8.4, 2, 0),
+    getAveragePosition("tleilaxuTokens") + Vector(9.2, 2, 0)
 }
-
-pos_supply_bowls = constants.pos_supply_bowls
 
 beetleAdvancing = false
 researchAdvancing = false
 
 -- Chemin de recherche (en positions dans le monde).
 local researchConducted = {
-    ["Red"] = {researchTokens["Red"].getPosition() + Vector(0, 2, 0)},
-    ["Blue"] = {researchTokens["Blue"].getPosition() + Vector(0, 2, 0)},
-    ["Green"] = {researchTokens["Green"].getPosition() + Vector(0, 2, 0)},
-    ["Yellow"] = {researchTokens["Yellow"].getPosition() + Vector(0, 2, 0)}
+    ["Red"] = {constants.players["Red"].researchTokens.getPosition() + Vector(0, 2, 0)},
+    ["Blue"] = {constants.players["Blue"].researchTokens.getPosition() + Vector(0, 2, 0)},
+    ["Green"] = {constants.players["Green"].researchTokens.getPosition() + Vector(0, 2, 0)},
+    ["Yellow"] = {constants.players["Yellow"].researchTokens.getPosition() + Vector(0, 2, 0)}
+}
+
+function createAxlotlTanksPark(playerColor)
+    local offsets = {
+        ["Red"] = Vector(-0.8, 0, 0.5),
+        ["Blue"] = Vector(-0.8, 0, -0.5),
+        ["Green"] = Vector(0.8, 0, 0.5),
+        ["Yellow"] = Vector(0.8, 0, -0.5)
+    }
+
+    local origin = constants.getPositionFromGUID("f5de09") + offsets[playerColor]
+    origin:setAt('y', 0.86) -- ground level
+    local slots = {}
+    for k = 1, 2 do
+        for j = 1, 2 do
+            for i = 1, 3 do
+                local x = (i - 2) * 0.4
+                local y = (k - 1) * 0.4
+                local z = (1.5 - j) * 0.4
+                local slot = Vector(x, y, z) + origin
+                slots[#slots + 1] = slot
+            end
+        end
+    end
+
+    local zone = parkModule.findBoundingZone(0, Vector(0.35, 0.35, 0.35), slots)
+
+    return parkModule.createPark("axlotlTanks." .. playerColor, slots, Vector(0, 0, 0), zone, playerColor, true)
+end
+
+local axlotlTanksParks = {
+    ["Green"] = createAxlotlTanksPark("Green"),
+    ["Yellow"] = createAxlotlTanksPark("Yellow"),
+    ["Blue"] = createAxlotlTanksPark("Blue"),
+    ["Red"] = createAxlotlTanksPark("Red")
 }
 
 function onLoad(saved_data)
@@ -254,7 +280,7 @@ researchCoords = {
     ['Yellow'] = nil
 }
 
-researchTokenOrigin = getAveragePosition(constants.researchTokens)
+researchTokenOrigin = getAveragePosition("researchTokens")
 
 function advanceResearchToken(color, verticalDirection)
     local coords = researchCoords[color]
@@ -275,10 +301,10 @@ function advanceResearchToken(color, verticalDirection)
     elseif coords.x > 7 then
         broadcastToColor(i18n("researchEnd"), color, color)
     else
-        local leaderName = named_resources[color].leader_zone.getObjects()[1].getName()
+        local leaderName = helperModule.getLeaderName(color)
         broadcastToAll(i18n("researchIncreased"):format(leaderName), color)
 
-        local token = researchTokens[color]
+        local token = constants.players[color].researchTokens
 
         researchCoords[color] = coords
         local p = researchTokenOrigin + Vector(coords.x * 1.2 + 1.2, 2, coords.z * 0.7)
@@ -294,13 +320,13 @@ end
 
 function rollBackResearch(color)
 
-    local leaderName = named_resources[color].leader_zone.getObjects()[1].getName()
+    local leaderName = helperModule.getLeaderName(color)
     local playerResearchDone = researchConducted[color]
 
     if #playerResearchDone == 1 then
         broadcastToColor(i18n("researchStartingPos"), color, color)
     else
-        local token = researchTokens[color]
+        local token = constants.players[color].researchTokens
 
         token.setPositionSmooth(playerResearchDone[#playerResearchDone - 1],
                                 false, false)
@@ -314,11 +340,11 @@ end
 
 function moveBeneTleilaxToken(color, silent)
     local silent = silent or false
-    local token = tleilaxuTokens[color]
+    local token = constants.players[color].tleilaxuTokens
     local posToken = token.getPosition()
     local tokenMoved = false
 
-    local leaderName = named_resources[color].leader_zone.getObjects()[1].getName()
+    local leaderName = helperModule.getLeaderName(color)
 
     for _, posTleilaxu in ipairs(pos_TleilaxuTrack) do
 
@@ -339,14 +365,14 @@ function moveBeneTleilaxToken(color, silent)
 end
 
 tokenStarterPos = {
-    ["Red"] = constants.tleilaxuTokens["Red"].getPosition() + Vector(0, 2, 0),
-    ["Blue"] = constants.tleilaxuTokens["Blue"].getPosition() + Vector(0, 2, 0),
-    ["Yellow"] = constants.tleilaxuTokens["Yellow"].getPosition() + Vector(0, 2, 0),
-    ["Green"] = constants.tleilaxuTokens["Green"].getPosition() + Vector(0, 2, 0),
+    ["Red"] = constants.players["Red"].tleilaxuTokens.getPosition() + Vector(0, 2, 0),
+    ["Blue"] = constants.players["Blue"].tleilaxuTokens.getPosition() + Vector(0, 2, 0),
+    ["Yellow"] = constants.players["Yellow"].tleilaxuTokens.getPosition() + Vector(0, 2, 0),
+    ["Green"] = constants.players["Green"].tleilaxuTokens.getPosition() + Vector(0, 2, 0),
 }
 
 function backBeneTleilaxToken(color)
-    local token = tleilaxuTokens[color]
+    local token = constants.players[color].tleilaxuTokens
     local tokenMoved = false
 
     for index, posTleilaxu in ipairs(pos_TleilaxuTrack) do
@@ -369,7 +395,7 @@ end
 
 function isBeetleRollBacked(token, lowerThreshold, upperThreshold,
                             destinationPos, color)
-    local leaderName = named_resources[color].leader_zone.getObjects()[1].getName()
+    local leaderName = helperModule.getLeaderName(color)
     local tokenMoved = false
 
     if token.getPosition().x - 0.1 > lowerThreshold and token.getPosition().x -
@@ -389,73 +415,34 @@ function moveTleilaxuCall(params)
 end
 
 function AddSpecimen(_, color, silent)
-    local silent = silent or false
+    assert(constants.players[color], "Action from an unknown player: " .. tostring(color))
 
-    local leaderName = named_resources[color].leader_zone.getObjects()[1].getName()
-    local troops = nil
-    assert(false, "TODO")
+    local orbit = constants.players[color].board.call("getOrbitPark")
+    local axlotlTanks = axlotlTanksParks[color]
 
-    local specimens = specimen_zone.getObjects()
+    local count = parkModule.transfert(1, orbit, axlotlTanks)
 
-    local specimenCount = 0
-
-    for _, specimen in ipairs(specimens) do
-        if specimen.hasTag(color) and specimen.hasTag("Troop") then
-            specimenCount = specimenCount + 1
-        end
-    end
-
-    if specimenCount < 6 then
-
-        local offset_X = specimenCount * 0.45
-        local offset_Z = 0
-
-        if specimenCount >= 3 then
-
-            offset_X = (specimenCount - 3) * 0.45
-            offset_Z = offset_Z - 0.45
-
-        end
-
-        for _, troop in ipairs(troops) do
-            if troop.hasTag(color) and troop.hasTag("Troop") then
-                troop.setPosition({
-                    pos_destination_specimen[color][1] + offset_X,
-                    pos_destination_specimen[color][2],
-                    pos_destination_specimen[color][3] + offset_Z
-                })
-                troop.setRotation({0, 0, 0})
-                if not silent then
-                    broadcastToAll(i18n("specimenAdded"):format(leaderName),
-                                   color)
-                end
-                break
-            end
+    if count > 0 then
+        if not silent then
+            local leaderName = helperModule.getLeaderName(color)
+            broadcastToAll(i18n("specimenAdded"):format(leaderName), color)
         end
     else
         broadcastToColor(i18n("specimenLimitWarning"), color, "Purple")
-        broadcastToColor(i18n("addSpecimenManually"), color, "Purple")
     end
-
 end
 
 function RemoveSpecimen(_, color, silent)
-    local silent = silent or false
+    assert(constants.players[color], "Action from an unknown player: " .. tostring(color))
 
-    local leaderName = named_resources[color].leader_zone.getObjects()[1].getName()
+    local orbit = constants.players[color].board.call("getOrbitPark")
+    local axlotlTanks = axlotlTanksParks[color]
 
-    local specimens = specimen_zone.getObjects()
+    parkModule.transfert(1, axlotlTanks, orbit)
 
-    for i = 1, #specimens do -- reverse iterate the table cause evey object in a script zone is memorized from first entered and we want to remove the last troop entered
-        local specimen = specimens[#specimens + 1 - i]
-        if specimen.hasTag(color) and specimen.hasTag("Troop") then
-            specimen.setPosition(pos_supply_bowls[color])
-            if not silent then
-                broadcastToAll(i18n("specimenRemoved"):format(leaderName), color)
-            end
-            break
-        end
-
+    if not silent then
+        local leaderName = helperModule.getLeaderName(color)
+        broadcastToAll(i18n("specimenRemoved"):format(leaderName), color)
     end
 end
 
@@ -470,14 +457,14 @@ function onObjectEnterScriptingZone(zone, enter_object)
         (zone.guid == "ab9e8d" or zone.guid == "d2b9be" or zone.guid == "79f487" or
             zone.guid == "d4fb57" or zone.guid == "1696ae" or zone.guid ==
             "95bb64" or zone.guid == "78a5cf") then
-        for color, researchToken in pairs(researchTokens) do
+        for color, _ in pairs(constants.players) do
 
             if enter_object.hasTag(color) and
                 enter_object.hasTag("ResearchToken") then
 
                 AddSpecimen("", color, true)
 
-                local leaderName = named_resources[color].leader_zone.getObjects()[1]
+                local leaderName = helperModule.getLeader(color)
                                        .getName()
 
                 if zone.guid == "1696ae" then
@@ -499,13 +486,13 @@ function onObjectEnterScriptingZone(zone, enter_object)
     if researchAdvancing and
         (zone.guid == "90e82d" or zone.guid == "1f11e0" or zone.guid == "e91e6b" or
             zone.guid == "f8c1b0" or zone.guid == "6c0d3e") then
-        for color, researchToken in pairs(researchTokens) do
+        for color, _ in pairs(constants.players) do
 
             if enter_object.hasTag(color) and
                 enter_object.hasTag("ResearchToken") then
 
                 moveBeneTleilaxToken(color, true)
-                local leaderName = named_resources[color].leader_zone.getObjects()[1]
+                local leaderName = helperModule.getLeader(color)
                                        .getName()
                 broadcastToAll(i18n("researchBeetle"):format(leaderName), color)
             end
@@ -513,12 +500,12 @@ function onObjectEnterScriptingZone(zone, enter_object)
     end
 
     if researchAdvancing and (zone.guid == "52bcf4") then
-        for color, researchToken in pairs(researchTokens) do
+        for color, _ in pairs(constants.players) do
 
             if enter_object.hasTag(color) and
                 enter_object.hasTag("ResearchToken") then
 
-                local leader = named_resources[color].leader_zone.getObjects()[1]
+                local leader = helperModule.getLeader(color)
                 local leaderName = leader.getName()
                 local solariIncome = 1
                 local solari = "Solari"
@@ -529,7 +516,7 @@ function onObjectEnterScriptingZone(zone, enter_object)
                 end
 
                 Wait.time(function()
-                    named_resources[color].solari.call("incrementVal")
+                    players[color].solari.call("incrementVal")
                 end, 0.25, solariIncome)
 
                 local solariString = solariIncome .. " " .. solari
@@ -542,12 +529,12 @@ function onObjectEnterScriptingZone(zone, enter_object)
     end
 
     if researchAdvancing and zone.guid == "b60372" then
-        for color, researchToken in pairs(researchTokens) do
+        for color, _ in pairs(constants.players) do
 
             if enter_object.hasTag(color) and
                 enter_object.hasTag("ResearchToken") then
 
-                local leaderName = named_resources[color].leader_zone.getObjects()[1]
+                local leaderName = helperModule.getLeader(color)
                                        .getName()
                 broadcastToAll(i18n("researchFaction"):format(leaderName), color)
             end
@@ -555,7 +542,7 @@ function onObjectEnterScriptingZone(zone, enter_object)
     end
 
     if researchAdvancing and (zone.guid == "f9ddaa" or zone.guid == "2a7803") then
-        for color, researchToken in pairs(researchTokens) do
+        for color, _ in pairs(constants.players) do
 
             if enter_object.hasTag(color) and
                 enter_object.hasTag("ResearchToken") then
@@ -569,12 +556,12 @@ function onObjectEnterScriptingZone(zone, enter_object)
                 end
 
                 Wait.time(function()
-                    named_resources[color].spice.call("incrementVal")
+                    players[color].spice.call("incrementVal")
                 end, 0.25, income)
 
                 local spiceString = income .. " " .. spice
 
-                local leaderName = named_resources[color].leader_zone.getObjects()[1]
+                local leaderName = helperModule.getLeader(color)
                                        .getName()
                 broadcastToAll(i18n("researchIncome"):format(leaderName,
                                                              spiceString), color)
@@ -583,12 +570,12 @@ function onObjectEnterScriptingZone(zone, enter_object)
     end
 
     if researchAdvancing and zone.guid == "8a3807" then
-        for color, researchToken in pairs(researchTokens) do
+        for color, _ in pairs(constants.players) do
 
             if enter_object.hasTag(color) and
                 enter_object.hasTag("ResearchToken") then
 
-                local leaderName = named_resources[color].leader_zone.getObjects()[1]
+                local leaderName = helperModule.getLeader(color)
                                        .getName()
                 broadcastToAll(i18n("researchTrashIntrigue"):format(leaderName),
                                color)
@@ -598,7 +585,7 @@ function onObjectEnterScriptingZone(zone, enter_object)
 
     if researchAdvancing and
         (zone.guid == "659227" or zone.guid == "778685" or zone.guid == "6518bf") then
-        for color, researchToken in pairs(researchTokens) do
+        for color, _ in pairs(constants.players) do
 
             if enter_object.hasTag(color) and
                 enter_object.hasTag("ResearchToken") then
@@ -618,7 +605,7 @@ function onObjectEnterScriptingZone(zone, enter_object)
 
                 end
 
-                local leaderName = named_resources[color].leader_zone.getObjects()[1]
+                local leaderName = helperModule.getLeader(color)
                                        .getName()
                 broadcastToAll(i18n("researchAgain"):format(leaderName), color)
             end
@@ -626,14 +613,14 @@ function onObjectEnterScriptingZone(zone, enter_object)
     end
 
     if researchAdvancing and zone.guid == "459e80" then
-        for color, researchToken in pairs(researchTokens) do
+        for color, _ in pairs(constants.players) do
 
             if enter_object.hasTag(color) and
                 enter_object.hasTag("ResearchToken") then
 
                 Player[color].showConfirmDialog(i18n("confirmSolarisToBeetles"),
                                                 function(color)
-                    local solariObj = named_resources[color].solari
+                    local solariObj = players[color].solari
                     local price = 7
 
                     if solariObj.call("collectVal") < price then
@@ -644,13 +631,13 @@ function onObjectEnterScriptingZone(zone, enter_object)
                         end, 0.15, price)
 
                         local leaderName =
-                            named_resources[color].leader_zone.getObjects()[1].getName()
+                            helperModule.getLeaderName(color)
 
                         moveBeneTleilaxToken(color, true)
                         Wait.condition(function()
                             moveBeneTleilaxToken(color, true)
                         end, function()
-                            return not tleilaxuTokens[color].isSmoothMoving()
+                            return not constants.players[color].tleilaxuTokens.isSmoothMoving()
                         end)
 
                         broadcastToAll(i18n("researchSolarisToBeetles"):format(
@@ -664,7 +651,7 @@ function onObjectEnterScriptingZone(zone, enter_object)
 
     if beetleAdvancing and (zone.guid == "1054b7" or zone.guid == "5d6083") then
 
-        for color, tleilaxuToken in pairs(tleilaxuTokens) do
+        for color, _ in pairs(constants.players) do
 
             if enter_object.hasTag(color) and
                 enter_object.hasTag("TleilaxuToken") then
@@ -672,7 +659,7 @@ function onObjectEnterScriptingZone(zone, enter_object)
                 Wait.time(function()
                     boardCommonModule.drawIntrigue(color)
                 end, 0.75)
-                local leaderName = named_resources[color].leader_zone.getObjects()[1]
+                local leaderName = helperModule.getLeader(color)
                                        .getName()
                 broadcastToAll(i18n("tleilaxuIntrigue"):format(leaderName),
                                color)
@@ -682,12 +669,12 @@ function onObjectEnterScriptingZone(zone, enter_object)
 
     if beetleAdvancing and (zone.guid == "5e4d40" or zone.guid == "a1a4e8") then
 
-        for color, tleilaxuToken in pairs(tleilaxuTokens) do
+        for color, _ in pairs(constants.players) do
 
             if enter_object.hasTag(color) and
                 enter_object.hasTag("TleilaxuToken") then
 
-                local leaderName = named_resources[color].leader_zone.getObjects()[1]
+                local leaderName = helperModule.getLeader(color)
                                        .getName()
                 giveTleilaxuVP(color)
                 broadcastToAll(i18n("tleilaxuVP"):format(leaderName), color)
@@ -701,7 +688,7 @@ function onObjectEnterScriptingZone(zone, enter_object)
 
                     for i = 1, nbSpice, 1 do
                         Wait.time(function()
-                            named_resources[color].spice.call("incrementVal")
+                            players[color].spice.call("incrementVal")
                         end, t)
                         t = t + (1.5 / nbSpice)
                     end
@@ -715,5 +702,5 @@ function onObjectEnterScriptingZone(zone, enter_object)
 end
 
 function giveTleilaxuVP(color)
-    getObjectFromGUID('082e07').takeObject(helperModule.getVPMarkerMoveParameterToPlayerBoard(color))
+    helperModule.grantScoreTokenFromBag(color, getObjectFromGUID('082e07'))
 end

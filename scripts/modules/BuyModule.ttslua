@@ -5,15 +5,12 @@ constants = require("Constants")
 
 helperModule = require("HelperModule")
 
-pos_discard = constants.pos_discard
-
 scriptZone_middleTrack_research = getObjectFromGUID("60a0fd")
 
 GetDeckOrCard = helperModule.GetDeckOrCard
+GetDeckOrCardFromGUID = helperModule.GetDeckOrCardFromGUID
 
-named_resources = constants.named_resources
-
-pos_supply_bowls = constants.pos_supply_bowls
+players = constants.players
 
 local buyModule = {}
 
@@ -22,7 +19,7 @@ zone_deck_tleilaxu = constants.zone_deck_tleilaxu
 
 function buyModule.Buy(zone, pColor, pos, activateButton, buyTleilaxu)
     buyTleilaxu = buyTleilaxu or false
-    local card = helperModule.GetDeckOrCard(zone.guid)
+    local card = helperModule.GetDeckOrCard(zone)
     local zone_deck = zone_deck_imperium
     if card then
         self.clearButtons()
@@ -46,7 +43,7 @@ function buyModule.Buy(zone, pColor, pos, activateButton, buyTleilaxu)
                 else
                     enoughSpecimen = true
 
-                    local leaderName = named_resources[pColor].leader_zone.getObjects()[1].getName()
+                    local leaderName = helperModule.getLeaderName(pColor)
                     Wait.time(function()
                         params = {osef = "", color = pColor, silent = true}
                         getObjectFromGUID("d5c2db").Call("RemoveSpecimenCall",
@@ -62,7 +59,7 @@ function buyModule.Buy(zone, pColor, pos, activateButton, buyTleilaxu)
 
             if not buyTleilaxu or enoughSpecimen then
 
-                card.setPosition(pos_discard[pColor])
+                card.setPosition(constants.players[pColor].pos_discard)
 
                 local objs = scriptZone_middleTrack_research.getObjects()
                 local middleSearch = false
@@ -71,7 +68,7 @@ function buyModule.Buy(zone, pColor, pos, activateButton, buyTleilaxu)
                         middleSearch = true
                     end
                 end
-                local techs = constants.zone_player[pColor].getObjects()
+                local techs = constants.players[pColor].techZone.getObjects()
                 local spaceportCheck = false
                 for _, tech in ipairs(techs) do
                     if tech.hasTag("Spaceport") then
@@ -83,16 +80,16 @@ function buyModule.Buy(zone, pColor, pos, activateButton, buyTleilaxu)
                     Player[pColor].showConfirmDialog(i18n("dialogCardAbove"),
                                                      function(player_color)
                         local deckorcard = GetDeckOrCard(
-                                               constants.discardZone[pColor])
+                                               constants.players[pColor].discardZone)
                         if deckorcard.type == 'Card' then
                             deckorcard.setPositionSmooth(
-                                constants.drawSpot[pColor], false, false)
+                                constants.players[pColor].drawSpot, false, false)
                             deckorcard.setRotationSmooth({0, 180, 180}, false,
                                                          false)
                         else
                             local nb_cards = #deckorcard.getObjects()
                             deckorcard.takeObject({
-                                position = constants.drawSpot[pColor],
+                                position = constants.players[pColor].drawSpot,
                                 rotation = {0, 180, 180},
                                 index = nb_cards - 1
                             })
@@ -103,7 +100,7 @@ function buyModule.Buy(zone, pColor, pos, activateButton, buyTleilaxu)
                 if buyTleilaxu == true then
                     zone_deck = zone_deck_tleilaxu
                 end
-                GetDeckOrCard(zone_deck).takeObject(params)
+                GetDeckOrCardFromGUID(zone_deck).takeObject(params)
             end
         end
     end

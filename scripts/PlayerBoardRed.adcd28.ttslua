@@ -23,3 +23,7 @@ end
 function onObjectLeaveScriptingZone(zone, enter_object)
     playerBoardModule.onObjectLeaveScriptingZone(zone, enter_object)
 end
+
+function shutdown()
+    playerBoardModule.shutdown()
+end

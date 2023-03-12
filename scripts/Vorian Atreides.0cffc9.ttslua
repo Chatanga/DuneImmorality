@@ -2,7 +2,7 @@ constants = require("Constants")
 
 leaderPos = constants.leaderPos
 
-named_resources = constants.named_resources
+players = constants.players
 
 i18n = require("i18n")
 require("locales")

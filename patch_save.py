@@ -145,13 +145,13 @@ player_object_positions = {
     },
     'unchanged': {
         #'pv_board': (200+0, 0),
-        'pv_board_zone': (200+0, 0)
+        #'pv_board_zone': (200+0, 0)
     },
     'symmetrical': {
         'VP 4 Players': (-14.5, 4.35),
 
         'agent_and_reveal_zone': (0, -11),
-        'tech_board_zone': (10, 0),
+        'tech_board_zone': (6, -0.5),
         'trash': (12, -1),
         'hand_trigger': (0, -15),
 
@@ -180,11 +180,11 @@ player_object_positions = {
 
 player_object_scales = {
     'draw_deck_zone': (-1, 2, -1),
-    'character_zone': (-1, 1, -1),
+    'character_zone': (6, 2, 4.5),
     'discard_deck_zone': (3, 2, 7),
-    'agent_and_reveal_zone': (36, -1, 12),
-    'tech_board_zone': (10, -1, 9),
-    'hand_trigger': (36, 5, 4),
+    'agent_and_reveal_zone': (31, -1, 12),
+    'tech_board_zone': (6, 2, 6),
+    'hand_trigger': (31, 5, 4),
     'first_player_zone': (2, 1, 2)
 }
 
@@ -325,14 +325,14 @@ def layout_player_board(structure, object_by_guid, color):
     add_snap_point('dreadnoughts/0', unchanged_x, rotated = True, with_decal = anchor_decal)
     add_snap_point('dreadnoughts/1', unchanged_x, rotated = True, with_decal = anchor_decal)
 
-    #for i in range(0, 12):
-    #    add_snap_point('pv_board', unchanged_x, (i // 6) * 0.995 - 0.45, (i % 6) * 1 - 2.35)
+    for i in range(0, 18):
+        add_snap_point('VP 4 Players', symmetrical_x, i, 0)
 
     for i in range(0, 24):
-        add_snap_point('agent_and_reveal_zone', symmetrical_x, (i % 12) * 2.5 - 15.5, (i // 12) * 4)
+        add_snap_point('agent_and_reveal_zone', symmetrical_x, (i % 12) * 2.5 - 12.5, (i // 12) * 4)
 
     for i in range(0, 6):
-        add_snap_point('tech_board_zone', symmetrical_x, (i // 3) * 3 - 5.5, (i % 3) * 2 - 2.5, with_decal = tech_decal)
+        add_snap_point('tech_board_zone', symmetrical_x, (i // 3) * 3 - 1.5, (i % 3) * 2 - 2, with_decal = tech_decal)
 
 def add_space_snap_points(structure, object_by_guid):
 
@@ -545,7 +545,12 @@ def patch_save(input_path, output_path):
         "caaba4",
         "99a860",
         "121bb6",
-        "e0ed4b"
+        "e0ed4b",
+        # Zones des plateaux de PV
+        "0e374f",
+        "b25c3c",
+        "376f34",
+        "5b9a53"
     ]
 
     additional_objects = []
@@ -572,6 +577,8 @@ def patch_save(input_path, output_path):
             if object['GUID'] != '200785':
                 object['Transform']['posY'] -= 0.75
             translate(object, global_translation)
+            additional_objects.append(object)
+        elif object['Name'] == 'ScriptingTrigger':
             additional_objects.append(object)
         elif object['Name'] == "HandTrigger":
             pass

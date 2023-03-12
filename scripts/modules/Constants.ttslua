@@ -5,7 +5,7 @@ function constants.getPositionFromGUID(GUID)
     if object then
         return object.getPosition():copy()
     else
-        log("[getPositionFromGUID] GUID inconnu : " .. GUID)
+        log("[getPositionFromGUID] GUID inconnu : " .. tostring(GUID))
         return nil
     end
 end
@@ -17,23 +17,35 @@ function constants.getLandingPositionFromGUID(anchorGUID)
     return constants.getPositionFromGUID(anchorGUID) + Vector(0, 0.3, 0)
 end
 
+function constants.getLandingPosition(anchor)
+    return anchor.getPosition() + Vector(0, 0.3, 0)
+end
+
 function constants.resolveGUIDs(data)
+    --log("Resolving GUIDS for script " .. tostring(self.getGUID()))
+    local result = constants._resolveGUIDs(data)
+    return result
+end
+
+function constants._resolveGUIDs(data)
     local newData = data
-    local t = type(data)
-    if t == "string" and string.match(data, "[a-z0-9][a-z0-9][a-z0-9][a-z0-9][a-z0-9][a-z0-9]") then
-        newData = getObjectFromGUID(data)
-        if not newData then
-            log("[resolveGUIDs] GUID inconnu : " .. data)
+    if newData then
+        local t = type(data)
+        if t == "string" and string.match(data, "[a-z0-9][a-z0-9][a-z0-9][a-z0-9][a-z0-9][a-z0-9]") then
+            newData = getObjectFromGUID(data)
+            if not newData then
+                log("[resolveGUIDs] GUID inconnu : " .. data)
+            end
+        elseif t == "table" then
+            newData = {}
+            for k, v in pairs(data) do
+                newData[k] = constants._resolveGUIDs(v)
+            end
+        elseif t == "number" then
+            -- NOP
+        else
+            log("Unknown type: " .. t)
         end
-    elseif t == "table" then
-        newData = {}
-        for k, v in pairs(data) do
-            newData[k] = constants.resolveGUIDs(v)
-        end
-    elseif t == "number" then
-        -- NOP
-    else
-        log("Unknown type: " .. t)
     end
     return newData
 end
@@ -74,18 +86,20 @@ constants.leaders = {
     helena = {GUID = "5a8a9a"}
 }
 
-constants.named_resources = constants.resolveGUIDs({
-    ["Red"] = {
+constants.players = constants.resolveGUIDs({
+    Red = {
         board = "adcd28",
         spice = "3074d4",
         solari = "576ccd",
         water = "692c4d",
         --cards = "3a9e65",
         leader_zone = "66cdbb",
+        dreadnoughts = {"1a3c82", "a8f306"},
         dreadnought_positions = {
             constants.getPositionFromGUID("1a3c82"),
             constants.getPositionFromGUID("a8f306")
         },
+        agents = {"7751c8", "afa978"},
         agent_positions = {
             constants.getPositionFromGUID("7751c8"),
             constants.getPositionFromGUID("afa978"),
@@ -97,8 +111,8 @@ constants.named_resources = constants.resolveGUIDs({
         council_bonus_zone = constants.getPositionFromGUID('9555b8') + Vector(-7, 0, -11),
         vanilla_council_zone = constants.getPositionFromGUID('074f6d') + Vector(-1.73, 1, 0),
         vp_4_players_token = "a6c2e0",
-        vp_zone = "5b9a53",
         score_marker = "4feaca",
+        flag_bag = '61453d',
         troops = {
             "fd5673",
             "81763a",
@@ -112,19 +126,34 @@ constants.named_resources = constants.resolveGUIDs({
             "1fb4ed",
             "0fa955",
             "465c38"
-        }
+        },
+        marker_combat = '2d1d17',
+        pos_discard = constants.getLandingPositionFromGUID("e07493"),
+        drawDeck = "b8e747",
+        drawDeckZone = "4f08fc",
+        drawSpot = Vector(-24.65, 2.2, 20.36),
+        discardZone = "e07493",
+        trash = "ea3fe1",
+        techZone = '9555b8',
+        pass_turn_anchors = "0e9fa2",
+        tleilaxuTokens = "2bfc39",
+        researchTokens = "39e0f3",
+        cargo = "e9096d",
+        zone_player = "2b7781"
     },
-    ["Blue"] = {
+    Blue = {
         board = "77ca63",
         spice = "9cc286",
         solari = "fa5236",
         water = "0afaeb",
         --cards = "a0bb82",
         leader_zone = "681774",
+        dreadnoughts = {"82789e", "60f208"},
         dreadnought_positions = {
             constants.getPositionFromGUID("82789e"),
             constants.getPositionFromGUID("60f208")
         },
+        agents = {"64d013", "106d8b"},
         agent_positions = {
             constants.getPositionFromGUID("64d013"),
             constants.getPositionFromGUID("106d8b"),
@@ -136,8 +165,8 @@ constants.named_resources = constants.resolveGUIDs({
         council_bonus_zone = constants.getPositionFromGUID('2d3346') + Vector(-7, 0, -11),
         vanilla_council_zone = constants.getPositionFromGUID('074f6d') + Vector(-1.00, 1, 0),
         vp_4_players_token = "311255",
-        vp_zone = "376f34",
         score_marker = "1b1e76",
+        flag_bag = '8627e0',
         troops = {
             "bc6e74",
             "5fba3c",
@@ -151,19 +180,34 @@ constants.named_resources = constants.resolveGUIDs({
             "c64616",
             "46c1c6",
             "49afee"
-        }
+        },
+        marker_combat = 'f22e20',
+        pos_discard = constants.getLandingPositionFromGUID("26bf8b"),
+        drawDeck = "a76b37",
+        drawDeckZone = "907f66",
+        drawSpot = Vector(-24.38, 2.2, -1.50),
+        discardZone = "26bf8b",
+        trash = "52a539",
+        techZone = '2d3346',
+        pass_turn_anchors = "643f32",
+        tleilaxuTokens = "96607f",
+        researchTokens = "292658",
+        cargo = "68e424",
+        zone_player = "621cc4"
     },
-    ["Green"] = {
+    Green = {
         board = "0bbae1",
         spice = "22478f",
         solari = "e597dc",
         water = "fa9522",
         --cards = "c7fb9b",
         leader_zone = "cf1486",
+        dreadnoughts = {"a15087", "734250"},
         dreadnought_positions = {
             constants.getPositionFromGUID("a15087"),
             constants.getPositionFromGUID("734250")
         },
+        agents = {"66ae45", "bceb0e"},
         agent_positions = {
             constants.getPositionFromGUID("66ae45"),
             constants.getPositionFromGUID("bceb0e"),
@@ -175,8 +219,8 @@ constants.named_resources = constants.resolveGUIDs({
         council_bonus_zone = constants.getPositionFromGUID('546163') + Vector(7, 0, -11),
         vanilla_council_zone = constants.getPositionFromGUID('074f6d') + Vector(0.66, 1, 0),
         vp_4_players_token = "66444c",
-        vp_zone = "0e374f",
         score_marker = "76039f",
+        flag_bag = 'ad6b92',
         troops = {
             "f433eb",
             "b614cc",
@@ -190,19 +234,34 @@ constants.named_resources = constants.resolveGUIDs({
             "2b1cf8",
             "8e22cc",
             "866a9c"
-        }
+        },
+        marker_combat = 'a1a9a7',
+        pos_discard = constants.getLandingPositionFromGUID("2298aa"),
+        drawDeck = "0c5e03",
+        drawDeckZone = "6d8a2e",
+        drawSpot = Vector(13.68, 2.2, 20.52),
+        discardZone = "2298aa",
+        trash = "4060b5",
+        techZone = '546163',
+        pass_turn_anchors = "65876d",
+        tleilaxuTokens = "63d39f",
+        researchTokens = "658b17",
+        cargo = "34281d",
+        zone_player = "111023"
     },
-    ["Yellow"] = {
+    Yellow = {
         board = "fdd5f9",
         spice = "78fb8a",
         solari = "c5c4ef",
         water = "f217d0",
         --cards = "17a08e",
         leader_zone = "a677e0",
+        dreadnoughts = {"5469fb", "71a414"},
         dreadnought_positions = {
             constants.getPositionFromGUID("5469fb"),
             constants.getPositionFromGUID("71a414")
         },
+        agents = {"5068c8", "67b476"},
         agent_positions = {
             constants.getPositionFromGUID("5068c8"),
             constants.getPositionFromGUID("67b476"),
@@ -214,8 +273,8 @@ constants.named_resources = constants.resolveGUIDs({
         council_bonus_zone = constants.getPositionFromGUID('3d705e') + Vector(7, 0, -11),
         vanilla_council_zone = constants.getPositionFromGUID('074f6d') + Vector(1.37, 1, 0),
         vp_4_players_token = "4e8873",
-        vp_zone = "b25c3c",
         score_marker = "20bbd1",
+        flag_bag = 'b92a4c',
         troops = {
             "ef6da2",
             "4d0dbf",
@@ -229,124 +288,22 @@ constants.named_resources = constants.resolveGUIDs({
             "fd7fc7",
             "ef9008",
             "734b6e"
-        }
+        },
+        marker_combat = 'c2dd31',
+        pos_discard = constants.getLandingPositionFromGUID("6bb3b6"),
+        drawDeck = "014c6a",
+        drawDeckZone = "e6cfee",
+        drawSpot = Vector(13.54, 2.2, -1.50),
+        discardZone = "6bb3b6",
+        trash = "7d1e07",
+        techZone = '3d705e',
+        pass_turn_anchors = "65876d",
+        tleilaxuTokens = "d20bcf",
+        researchTokens = "8988cf",
+        cargo = "8fa76f",
+        zone_player = "20859b"
     }
 })
-
-constants.pos_discard = {
-    ["Red"] = constants.getLandingPositionFromGUID("e07493"),
-    ["Blue"] = constants.getLandingPositionFromGUID("26bf8b"),
-    ["Green"] = constants.getLandingPositionFromGUID("2298aa"),
-    ["Yellow"] = constants.getLandingPositionFromGUID("6bb3b6")
-}
-
-constants.drawDeck = {
-    ["Red"] = "b8e747",
-    ["Blue"] = "a76b37",
-    ["Green"] = "0c5e03",
-    ["Yellow"] = "014c6a"
-}
-
-constants.drawDeckZone = {
-    ["Red"] = "4f08fc",
-    ["Blue"] = "907f66",
-    ["Green"] = "6d8a2e",
-    ["Yellow"] = "e6cfee"
-}
-
-constants.drawSpot = {
-    ["Red"] = {-24.65, 2.2, 20.36}, --location of draw snap
-    ["Blue"] = {-24.38, 2.2, -1.50},
-    ["Green"] = {13.68, 2.2, 20.52},
-    ["Yellow"] = {13.54, 2.2, -1.50},
-}
-
-constants.discardZone = {
-    ["Red"] = "e07493", --scripting zone for discard for red
-    ["Blue"] = "26bf8b",
-    ["Green"] = "2298aa",
-    ["Yellow"] = "6bb3b6",
-}
-
-constants.board_player = {
-    ["Red"] = getObjectFromGUID("adcd28"),
-    ["Blue"] = getObjectFromGUID("77ca63"),
-    ["Green"] = getObjectFromGUID("0bbae1"),
-    ["Yellow"] = getObjectFromGUID("fdd5f9")
-}
-
-constants.zone_player = {
-    ["Red"] = getObjectFromGUID('9555b8'), -- big scripting zone englobing all player space
-    ["Blue"] = getObjectFromGUID('2d3346'),
-    ["Green"] = getObjectFromGUID('546163'),
-    ["Yellow"] = getObjectFromGUID('3d705e')
-}
-
-constants.pass_turn_anchors = {
-    ["Red"] = getObjectFromGUID("0e9fa2"),
-    ["Blue"] = getObjectFromGUID("643f32"),
-    ["Green"] = getObjectFromGUID("65876d"),
-    ["Yellow"] = getObjectFromGUID("65876d")
-}
-
-constants.tleilaxuTokens = {
-    ["Red"] = getObjectFromGUID("2bfc39"),
-    ["Blue"] = getObjectFromGUID("96607f"),
-    ["Green"] = getObjectFromGUID("63d39f"),
-    ["Yellow"] = getObjectFromGUID("d20bcf")
-}
-
-constants.researchTokens = {
-    ["Red"] = getObjectFromGUID("39e0f3"),
-    ["Blue"] = getObjectFromGUID("292658"),
-    ["Green"] = getObjectFromGUID("658b17"),
-    ["Yellow"] = getObjectFromGUID("8988cf")
-}
-
-constants.cargo = {
-    ["Yellow"] = getObjectFromGUID("8fa76f"),
-    ["Green"] = getObjectFromGUID("34281d"),
-    ["Blue"] = getObjectFromGUID("68e424"),
-    ["Red"] = getObjectFromGUID("e9096d")
-}
-
---[[
-constants.reserve_troop_zone = {
-    ["Red"] = getObjectFromGUID('ab8fdf'), -- inside reserve bowl: seems a bit small
-    ["Blue"] = getObjectFromGUID('2a520c'),
-    ["Green"] = getObjectFromGUID('bdfade'),
-    ["Yellow"] = getObjectFromGUID('ffbd81')
-}
-
-constants.pos_supply_bowls = {
-    ["Red"] = constants.getLandingPositionFromGUID("ab8fdf"),
-    ["Blue"] = constants.getLandingPositionFromGUID("2a520c"),
-    ["Green"] = constants.getLandingPositionFromGUID("bdfade"),
-    ["Yellow"] = constants.getLandingPositionFromGUID("ffbd81")
-}
-
-constants.player_scoreboards = {
-    ["Red"] = getObjectFromGUID("e0ed4b"),
-    ["Blue"] = getObjectFromGUID("121bb6"),
-    ["Green"] = getObjectFromGUID("caaba4"),
-    ["Yellow"] = getObjectFromGUID("99a860")
-}
-
--- vp_zone
-constants.player_scoreboard_zones = {
-    ["Red"] = getObjectFromGUID('5b9a53'),
-    ["Blue"] = getObjectFromGUID('376f34'),
-    ["Green"] = getObjectFromGUID('0e374f'),
-    ["Yellow"] = getObjectFromGUID('b25c3c')
-}
-
-constants.pos_vp = {
-    ["Red"] = {},
-    ["Blue"] = {},
-    ["Green"] = {},
-    ["Yellow"] = {}
-}
-]]--
 
 constants.black_market_offset = Vector(0, -1, -4)
 

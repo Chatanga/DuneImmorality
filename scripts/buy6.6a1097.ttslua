@@ -6,8 +6,7 @@ constants = require("Constants")
 helperModule = require("HelperModule")
 
 GetDeckOrCard = helperModule.GetDeckOrCard
-
-pos_discard = constants.pos_discard
+GetDeckOrCardFromGUID = helperModule.GetDeckOrCardFromGUID
 
 function onLoad()
 
@@ -75,7 +74,7 @@ function activateButtons()
 end
 
 function acquireFoldspace(object, pColor)
-    local deck_foldspace = helperModule.GetDeckOrCard(Zone_foldspace.getGUID())
+    local deck_foldspace = helperModule.GetDeckOrCard(Zone_foldspace)
 
     if deck_foldspace == nil then
         broadcastToColor(
@@ -87,7 +86,7 @@ function acquireFoldspace(object, pColor)
 end
 
 function acquireArrakis(object, pColor)
-    local deck_liaison = helperModule.GetDeckOrCard(Zone_arrakis.getGUID())
+    local deck_liaison = helperModule.GetDeckOrCard(Zone_arrakis)
 
     if deck_liaison == nil then
         broadcastToColor(i18n("noLiaisonLeft"), pColor,
@@ -98,7 +97,7 @@ function acquireArrakis(object, pColor)
 end
 
 function acquireTSMF(object, pColor)
-    local deck_TSMF = helperModule.GetDeckOrCard(Zone_tsmf.getGUID())
+    local deck_TSMF = helperModule.GetDeckOrCard(Zone_tsmf)
 
     if deck_TSMF== nil then
         broadcastToColor(i18n("noTSMFLeft"), pColor, {1, 0.011765, 0})
@@ -120,19 +119,19 @@ function moveCardFromDeck(pColor, deck, scoreToMove)
     else
 
         if scoreToMove == true then
-            TSMF_point.takeObject(helperModule.getVPMarkerMoveParameterToPlayerBoard(pColor))
+            helperModule.grantScoreTokenFromBag(pColor, TSMF_point)
         end
 
         if deck.type == "Deck" then
             deck.takeObject({
-                position = pos_discard[pColor],
+                position = constants.players[pColor].pos_discard,
                 rotation = {0, 180, 0},
                 smooth = false
             })
         elseif deck.type == "Card" then
-            deck.setPosition(pos_discard[pColor])
+            deck.setPosition(constants.players[pColor].pos_discard)
         end
-        local techs = constants.zone_player[pColor].getObjects()
+        local techs = constants.players[pColor].techZone.getObjects()
         local spaceportCheck = false
         for _, tech in ipairs(techs) do
             if tech.hasTag("Spaceport") then spaceportCheck = true end
@@ -142,14 +141,14 @@ function moveCardFromDeck(pColor, deck, scoreToMove)
             Player[pColor].showConfirmDialog(
                 i18n("dialogCardAbove"),
                 function(player_color)
-                    local deckorcard = GetDeckOrCard(constants.discardZone[pColor])
+                    local deckorcard = GetDeckOrCard(constants.players[pColor].discardZone)
                     if deckorcard.type=='Card' then
-                        deckorcard.setPositionSmooth(constants.drawSpot[pColor], false, false)
+                        deckorcard.setPositionSmooth(constants.players[pColor].drawSpot, false, false)
                         deckorcard.setRotationSmooth({0,180,180}, false, false)
                     else
                         local nb_cards = #deckorcard.getObjects()
                         deckorcard.takeObject({
-                            position          = constants.drawSpot[pColor],
+                            position          = constants.players[pColor].drawSpot,
                             rotation          = {0,180,180},
                             index             = nb_cards-1
                         })

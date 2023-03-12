@@ -16,6 +16,8 @@ playerBoardModule.global_score_positions = {}
 
 playerBoardModule.scorePark = nil
 
+playerBoardModule.alive = true
+
 function playerBoardModule.onLoad(playerColor, centerPosition)
     playerBoardModule.playerColor = playerColor
     playerBoardModule.orbitPark = playerBoardModule.createOrbitPark(centerPosition)
@@ -39,12 +41,12 @@ function playerBoardModule.createOrbitPark(centerPosition)
 
     local zone = parkModule.findBoundingZone(45, Vector(0.35, 0.35, 0.35), allSlots)
 
-    for i, troop in ipairs(constants.named_resources[playerBoardModule.playerColor].troops) do
+    for i, troop in ipairs(constants.players[playerBoardModule.playerColor].troops) do
         troop.setPosition(slots[i])
         troop.setRotation(Vector(0, 45, 0))
     end
 
-    return parkModule.createPark(slots, Vector(0, -45, 0), zone, playerBoardModule.playerColor, true)
+    return parkModule.createPark("orbit." .. playerBoardModule.playerColor, slots, Vector(0, -45, 0), zone, playerBoardModule.playerColor, true)
 end
 
 function playerBoardModule.initPlayerScore()
@@ -54,34 +56,51 @@ function playerBoardModule.initPlayerScore()
 end
 
 function playerBoardModule.generateGlobalScoreboardPositions()
-    local origin = constants.named_resources[playerBoardModule.playerColor].score_marker.getPosition()
+    local origin = constants.players[playerBoardModule.playerColor].score_marker.getPosition()
+
+    -- Avoid collision between markers by giving a different height to each.
+    local h = 1
+    for color, player in pairs(constants.players) do
+        if color == playerBoardModule.playerColor then
+            break
+        else
+            h = h + 0.5
+        end
+    end
+
     playerBoardModule.global_score_positions = {}
     for i = 1, 14 do
         playerBoardModule.global_score_positions[i] = {
             origin.x,
-            2.7,
+            2.7 + h,
             origin.z + (i - 2) * 1.165
         }
     end
 end
 
 function playerBoardModule.createPlayerScoreboardPark()
-    local origin = constants.named_resources[playerBoardModule.playerColor].vp_4_players_token.getPosition()
+    local origin = constants.players[playerBoardModule.playerColor].vp_4_players_token.getPosition()
+
+    local direction = 1
+    if playerBoardModule.playerColor == "Red" or  playerBoardModule.playerColor == "Blue" then
+        direction = -1
+    end
+
     local slots = {}
     for i = 0, 17 do
         slots[i + 1] = Vector(
-            origin.x + i * 0.995 - 0.45,
+            origin.x + i * 1 * direction,
             origin.y,
             origin.z)
     end
 
-    local zone = parkModule.findBoundingZone(45, Vector(0.35, 0.35, 0.35), slots)
+    playerBoardModule.scoreboardZone = parkModule.findBoundingZone(0, Vector(0.5, 0.5, 0.5), slots)
 
-    return parkModule.createPark(slots, Vector(0, -45, 0), zone, playerBoardModule.playerColor, false)
+    return parkModule.createPark("scoreboard." .. playerBoardModule.playerColor, slots, Vector(0, 0, 0), playerBoardModule.scoreboardZone, playerBoardModule.playerColor, false)
 end
 
 function playerBoardModule.updatePlayerScore()
-    local zoneObjects = constants.named_resources[playerBoardModule.playerColor].vp_zone.getObjects()
+    local zoneObjects = playerBoardModule.scoreboardZone.getObjects()
     local newScore = 0
     for _, object in ipairs(zoneObjects) do
         if object.getDescription() == "VP" then
@@ -90,7 +109,7 @@ function playerBoardModule.updatePlayerScore()
     end
 
     local vpIndex = math.min(14, newScore + 1)
-    local score_marker = constants.named_resources[playerBoardModule.playerColor].score_marker
+    local score_marker = constants.players[playerBoardModule.playerColor].score_marker
     score_marker.setPositionSmooth(playerBoardModule.global_score_positions[vpIndex])
     score_marker.setRotationSmooth({0, 0, 0}, false, false)
 
@@ -101,20 +120,59 @@ function playerBoardModule.updatePlayerScore()
 end
 
 function playerBoardModule.onObjectEnterScriptingZone(zone, enter_object)
-    if zone.guid == constants.named_resources[playerBoardModule.playerColor].vp_zone.guid then
-        local description = enter_object.getDescription()
-        if description == "VP" then
-            playerBoardModule.updatePlayerScore()
+    if playerBoardModule.alive then
+        if zone.guid == playerBoardModule.scoreboardZone.guid then
+            local description = enter_object.getDescription()
+            if description == "VP" then
+                playerBoardModule.updatePlayerScore()
+            end
         end
     end
 end
 
 function playerBoardModule.onObjectLeaveScriptingZone(zone, enter_object)
-    if zone.guid == constants.named_resources[playerBoardModule.playerColor].vp_zone.guid then
-        local description = enter_object.getDescription()
-        if description == "VP" then
-            playerBoardModule.updatePlayerScore()
+    if playerBoardModule.alive then
+        if zone.guid == playerBoardModule.scoreboardZone.guid then
+            local description = enter_object.getDescription()
+            if description == "VP" then
+                playerBoardModule.updatePlayerScore()
+            end
         end
+    end
+end
+
+function playerBoardModule.shutdown()
+    playerBoardModule.alive = false
+
+    local player = constants.players[playerBoardModule.playerColor]
+
+    local toBeRemoved = {
+        player.swordmaster,
+        player.council_token,
+        -- player.vp_4_players_token,
+        player.score_marker,
+        player.tleilaxuTokens,
+        player.researchTokens,
+        player.cargo,
+        player.flag_bag,
+        player.marker_combat
+    }
+    playerBoardModule.addAll(toBeRemoved, player.dreadnoughts)
+    playerBoardModule.addAll(toBeRemoved, player.agents)
+    playerBoardModule.addAll(toBeRemoved, player.troops)
+
+    for _, object in ipairs(toBeRemoved) do
+        --log("Destroying " .. object.getGUID())
+        object.interactable = true
+        object.destruct()
+    end
+end
+
+function playerBoardModule.addAll(objects, otherObjects)
+    assert(objects)
+    assert(otherObjects)
+    for _, object in ipairs(otherObjects) do
+        objects[#objects + 1] = object
     end
 end
 

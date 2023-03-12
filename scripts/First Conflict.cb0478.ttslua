@@ -32,8 +32,7 @@ end
 function RevealConflict()
     local players = getObjectFromGUID("4a3e76").call("getPlayersBasedOnHotseat")
     for _, color in pairs(players) do
-        local leaderZone = constants.named_resources[color].leader_zone
-        if leaderZone.getObjects()[1] == nil then
+        if not helperModule.getLeader(color) then
             broadcastToAll(i18n("chooseLeaderFirst"), 'Orange')
             return 1
         end
@@ -42,7 +41,7 @@ function RevealConflict()
     if objects ~= nil then
         for _, obj in ipairs(objects) do
             if obj.type == 'Deck' then
-                obj.takeObject({ position = constants.getLandingPositionFromGUID(self.getGUID()), top = true, flip = true })
+                obj.takeObject({ position = constants.getLandingPosition(self), top = true, flip = true })
             end
         end
 

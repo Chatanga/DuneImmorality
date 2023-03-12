@@ -1,5 +1,7 @@
 constants = require("Constants")
 
+helperModule = require("HelperModule")
+
 leaderPos = constants.leaderPos
 
 pion_reput = {
@@ -8,14 +10,12 @@ pion_reput = {
   ["Bene Gesserit"] = {["Red"] = getObjectFromGUID('713eae'), ["Blue"] = getObjectFromGUID('2a88a6'), ["Green"] = getObjectFromGUID('2dc980'), ["Yellow"] = getObjectFromGUID('a3729e')},
   ["Fremen"] = {["Red"] = getObjectFromGUID('088f51'), ["Blue"] = getObjectFromGUID('0e6e41'), ["Green"] = getObjectFromGUID('d390dc'), ["Yellow"] = getObjectFromGUID('77d7c8')}
 }
-alliance_token = {
+alliance_tokens = {
   ["Emperor"] = getObjectFromGUID('13e990'),
   ["Spacing Guild"] = getObjectFromGUID('ad1aae'),
   ["Bene Gesserit"] = getObjectFromGUID('33452e'),
   ["Fremen"] = getObjectFromGUID('4c2bcc'),
 }
-vp_pos = constants.pos_vp 
-
 
 i18n = require("i18n")
 require("locales")
@@ -49,7 +49,7 @@ function claimLabel()
        color          = "Black"
        })
 end
-      
+
 
 function claimLeader(GO, color)
   if color == "Red" or color == "Blue" or color == "Green" or color == "Yellow" then
@@ -63,20 +63,15 @@ function claimLeader(GO, color)
 ,GO.getName()), color)
     local t=2
     for key, value in pairs(pion_reput) do
-      Wait.time(function() 
+      Wait.time(function()
         local pos = value[color].getPosition()
         value[color].setPositionSmooth({pos.x, pos.y, pos.z+3.08}, false, false)
       end,t)
       t=t+1
     end
     Wait.time(function()
-      local x=0
-      if #getObjectFromGUID("4a3e76").call("getPlayersBasedOnHotseat") == 4 then
-        x=1
-      end
-      for key, value in pairs(alliance_token) do
-        value.setPositionSmooth(vp_pos[color][5+x], false, false)
-        x=x+1
+      for _, alliance_token in pairs(alliance_tokens) do
+        helperModule.grantScoreToken(color, alliance_token)
       end
     end,5.3)
   else

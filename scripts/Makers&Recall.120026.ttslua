@@ -5,11 +5,10 @@ constants = require("Constants")
 
 helperModule = require("HelperModule")
 
-drawDeckZone = constants.drawDeckZone
-
-named_resources = constants.named_resources
+players = constants.players
 
 GetDeckOrCard = helperModule.GetDeckOrCard
+GetDeckOrCardFromGUID = helperModule.GetDeckOrCardFromGUID
 
 DrawOne = helperModule.DrawOne
 
@@ -20,8 +19,6 @@ pos_trash = constants.pos_trash_lower
 zone_black_market = constants.zone_black_market
 zone_deck = constants.zone_deck_imperium
 pos_intrigue_discard = constants.getLandingPositionFromGUID("976c3a")
-
-pos_discard = constants.pos_discard
 
 buttonPass = {
     ["Red"] = getObjectFromGUID("0e9fa2"),
@@ -39,8 +36,6 @@ green_spice = getObjectFromGUID('22478f')
 yellow_spice = getObjectFromGUID('78fb8a')
 marker_round = getObjectFromGUID('fb41e2')
 
-pos_supply_bowls = constants.pos_supply_bowls
-
 conflictZone = "6d632e"
 conflict_discard = constants.getLandingPositionFromGUID("cb0478")
 zone_vp_encours = getObjectFromGUID("740624")
@@ -49,8 +44,6 @@ makerZones = {"69f925", "622708", "2c77c1"}
 
 marker = constants.first_player_marker
 position_marker = constants.first_player_positions
-
-zone_player = constants.zone_player
 
 marker_yellow_zone = getObjectFromGUID("e9a44c")
 marker_green_zone = getObjectFromGUID("59523d")
@@ -140,31 +133,8 @@ function ConflictZone()
 
     for _, item in ipairs(conflictArea) do
         local itemName = item.getName()
-        if itemName == "Red" then
-            item.setPositionSmooth({
-                pos_supply_bowls[itemName][1] + (math.random() / 2),
-                pos_supply_bowls[itemName][2],
-                pos_supply_bowls[itemName][3] + (math.random() / 2)
-            }, false, true)
-        elseif itemName == "Blue" then
-            item.setPositionSmooth({
-                pos_supply_bowls[itemName][1] + (math.random() / 2),
-                pos_supply_bowls[itemName][2],
-                pos_supply_bowls[itemName][3] + (math.random() / 2)
-            }, false, true)
-        elseif itemName == "Yellow" then
-            item.setPositionSmooth({
-                pos_supply_bowls[itemName][1] + (math.random() / 2),
-                pos_supply_bowls[itemName][2],
-                pos_supply_bowls[itemName][3] + (math.random() / 2)
-            }, false, true)
-        elseif itemName == "Green" then
-            item.setPositionSmooth({
-                pos_supply_bowls[itemName][1] + (math.random() / 2),
-                pos_supply_bowls[itemName][2],
-                pos_supply_bowls[itemName][3] + (math.random() / 2)
-            }, false, true)
-        -- Sérieux ? dreadnought et Dreadnought ?
+        if constants.players[itemName] then
+            helperModule.sendTroopsBackToOrbit(itemName, {item})
         elseif itemName == "Yellow dreadnought" then
             item.setPositionSmooth({9.32, 1.57, -11.0}, false, true)
             item.setRotation({0, 0, 0})
@@ -196,6 +166,7 @@ function ConflictZone()
 
     end
 
+
     mentat = getObjectFromGUID("c2a908")
     mentat.setColorTint({1, 1, 1, 1})
     mentat.setPositionSmooth(constants.getPositionFromGUID("565d09"), false, true)
@@ -206,7 +177,7 @@ function ConflictZone()
     -- Red
 
     if getObjectFromGUID("afa978") then
-        getObjectFromGUID("afa978").setPositionSmooth(named_resources["Red"].agent_positions[1],
+        getObjectFromGUID("afa978").setPositionSmooth(players["Red"].agent_positions[1],
                                                       false, true)
         getObjectFromGUID("afa978").setRotationSmooth({0, 180, 0})
         local Time = os.clock() + 0.1
@@ -214,7 +185,7 @@ function ConflictZone()
 
     end
     if getObjectFromGUID("7751c8") then
-        getObjectFromGUID("7751c8").setPositionSmooth(named_resources["Red"].agent_positions[2],
+        getObjectFromGUID("7751c8").setPositionSmooth(players["Red"].agent_positions[2],
                                                       false, true)
         getObjectFromGUID("7751c8").setRotationSmooth({0, 180, 0})
         local Time = os.clock() + 0.1
@@ -225,7 +196,7 @@ function ConflictZone()
     -- Blue
 
     if getObjectFromGUID("106d8b") then
-        getObjectFromGUID("106d8b").setPositionSmooth(named_resources["Blue"].agent_positions[1],
+        getObjectFromGUID("106d8b").setPositionSmooth(players["Blue"].agent_positions[1],
                                                       false, true)
         getObjectFromGUID("106d8b").setRotationSmooth({0, 180, 0})
         local Time = os.clock() + 0.1
@@ -233,7 +204,7 @@ function ConflictZone()
 
     end
     if getObjectFromGUID("64d013") then
-        getObjectFromGUID("64d013").setPositionSmooth(named_resources["Blue"].agent_positions[2],
+        getObjectFromGUID("64d013").setPositionSmooth(players["Blue"].agent_positions[2],
                                                       false, true)
         getObjectFromGUID("64d013").setRotationSmooth({0, 180, 0})
         local Time = os.clock() + 0.1
@@ -244,7 +215,7 @@ function ConflictZone()
     -- Yellow
 
     if getObjectFromGUID("5068c8") then
-        getObjectFromGUID("5068c8").setPositionSmooth(named_resources["Yellow"].agent_positions[1],
+        getObjectFromGUID("5068c8").setPositionSmooth(players["Yellow"].agent_positions[1],
                                                       false, true)
         getObjectFromGUID("5068c8").setRotationSmooth({0, 180, 0})
         local Time = os.clock() + 0.1
@@ -252,7 +223,7 @@ function ConflictZone()
 
     end
     if getObjectFromGUID("67b476") then
-        getObjectFromGUID("67b476").setPositionSmooth(named_resources["Yellow"].agent_positions[2],
+        getObjectFromGUID("67b476").setPositionSmooth(players["Yellow"].agent_positions[2],
                                                       false, true)
         getObjectFromGUID("67b476").setRotationSmooth({0, 180, 0})
         local Time = os.clock() + 0.1
@@ -263,7 +234,7 @@ function ConflictZone()
     -- Green
 
     if getObjectFromGUID("bceb0e") then
-        getObjectFromGUID("bceb0e").setPositionSmooth(named_resources["Green"].agent_positions[1],
+        getObjectFromGUID("bceb0e").setPositionSmooth(players["Green"].agent_positions[1],
                                                       false, true)
         getObjectFromGUID("bceb0e").setRotationSmooth({0, 180, 0})
         local Time = os.clock() + 0.1
@@ -271,7 +242,7 @@ function ConflictZone()
 
     end
     if getObjectFromGUID("66ae45") then
-        getObjectFromGUID("66ae45").setPositionSmooth(named_resources["Green"].agent_positions[2],
+        getObjectFromGUID("66ae45").setPositionSmooth(players["Green"].agent_positions[2],
                                                       false, true)
         getObjectFromGUID("66ae45").setRotationSmooth({0, 180, 0})
         local Time = os.clock() + 0.1
@@ -282,25 +253,25 @@ function ConflictZone()
     local items2 = getObjectFromGUID("83ea90").getObjects()
     for _, item2 in ipairs(items2) do
         if item2.getName() == "Yellow Swordmaster" then
-            item2.setPositionSmooth(named_resources["Yellow"].agent_positions[3], false, true)
+            item2.setPositionSmooth(players["Yellow"].agent_positions[3], false, true)
             item2.setRotation({0, 180, 0})
             local Time = os.clock() + 0.1
             while os.clock() < Time do coroutine.yield() end
 
         elseif item2.getName() == "Green Swordmaster" then
-            item2.setPositionSmooth(named_resources["Green"].agent_positions[3], false, true)
+            item2.setPositionSmooth(players["Green"].agent_positions[3], false, true)
             item2.setRotation({0, 180, 0})
             local Time = os.clock() + 0.1
             while os.clock() < Time do coroutine.yield() end
 
         elseif item2.getName() == "Blue Swordmaster" then
-            item2.setPositionSmooth(named_resources["Blue"].agent_positions[3], false, true)
+            item2.setPositionSmooth(players["Blue"].agent_positions[3], false, true)
             item2.setRotation({0, 180, 0})
             local Time = os.clock() + 0.1
             while os.clock() < Time do coroutine.yield() end
 
         elseif item2.getName() == "Red Swordmaster" then
-            item2.setPositionSmooth(named_resources["Red"].agent_positions[3], false, true)
+            item2.setPositionSmooth(players["Red"].agent_positions[3], false, true)
             item2.setRotation({0, 180, 0})
             local Time = os.clock() + 0.1
             while os.clock() < Time do coroutine.yield() end
@@ -311,25 +282,25 @@ function ConflictZone()
     local items = getObjectFromGUID("c68e45").getObjects()
     for _, item in ipairs(items) do
         if item.getName() == "Yellow Swordmaster" then
-            item.setPositionSmooth(named_resources["Yellow"].agent_positions[3], false, true)
+            item.setPositionSmooth(players["Yellow"].agent_positions[3], false, true)
             item.setRotation({0, 180, 0})
             local Time = os.clock() + 0.1
             while os.clock() < Time do coroutine.yield() end
 
         elseif item.getName() == "Green Swordmaster" then
-            item.setPositionSmooth(named_resources["Green"].agent_positions[3], false, true)
+            item.setPositionSmooth(players["Green"].agent_positions[3], false, true)
             item.setRotation({0, 180, 0})
             local Time = os.clock() + 0.1
             while os.clock() < Time do coroutine.yield() end
 
         elseif item.getName() == "Blue Swordmaster" then
-            item.setPositionSmooth(named_resources["Blue"].agent_positions[3], false, true)
+            item.setPositionSmooth(players["Blue"].agent_positions[3], false, true)
             item.setRotation({0, 180, 0})
             local Time = os.clock() + 0.1
             while os.clock() < Time do coroutine.yield() end
 
         elseif item.getName() == "Red Swordmaster" then
-            item.setPositionSmooth(named_resources["Red"].agent_positions[3], false, true)
+            item.setPositionSmooth(players["Red"].agent_positions[3], false, true)
             item.setRotation({0, 180, 0})
             local Time = os.clock() + 0.1
             while os.clock() < Time do coroutine.yield() end
@@ -404,7 +375,7 @@ function ConflictZone()
                 if card.hasTag('Intrigue') then
                     card.setPosition(pos_intrigue_discard)
                 else
-                    card.setPosition(pos_discard[col])
+                    card.setPosition(constants.players[col].pos_discard)
                 end
             end
         end
@@ -480,37 +451,37 @@ function ConflictZone()
     marker_round.setPositionSmooth(constants.marker_positions.round_start, false, false)
 
     local t1 = 0.1
-    for color, _ in pairs(zone_player) do
-        local playerObjects = zone_player[color].getObjects()
+    for color, _ in pairs(constants.players) do
+        local playerObjects = constants.players[color].techZone.getObjects()
         for _, obj in ipairs(playerObjects) do
             if obj.hasTag("Holtzman") then
                 DrawOne(_, color)
                 broadcastToAll(
-                    named_resources[color].leader_zone.getObjects()[1].getName() ..
+                    helperModule.getLeaderName(color) ..
                         i18n("holtzmanEngine"), color)
             elseif obj.hasTag("Shuttle Fleet") then
                 for i = 1, 2, 1 do
                     Wait.time(function()
-                        named_resources[color].solari.call("incrementVal")
+                        players[color].solari.call("incrementVal")
                     end, t1)
                     t1 = t1 + 0.3
                 end
                 broadcastToAll(
-                    named_resources[color].leader_zone.getObjects()[1].getName() ..
+                    helperModule.getLeaderName(color) ..
                         i18n("shuttleFleet"), color)
             elseif obj.getDescription() == "Tech" then
                 obj.setRotationSmooth({0, 180, 0}, false, false)
             end
         end
     end
-    for color, _ in pairs(zone_player) do
-        local playerObjects = zone_player[color].getObjects()
+    for color, _ in pairs(constants.players) do
+        local playerObjects = constants.players[color].techZone.getObjects()
         for _, obj in ipairs(playerObjects) do
             if obj.getGMNotes() == "ok" and
-                named_resources[color].leader_zone.getObjects()[1].getName() == "Norma Cenva" then
+                helperModule.getLeaderName(color) == "Norma Cenva" then
                 DrawOne(_, color)
                 broadcastToAll(
-                    named_resources[color].leader_zone.getObjects()[1].getName() ..
+                    helperModule.getLeaderName(color) ..
                         i18n("holtzmanEffect"), color)
                 break
             end
@@ -530,15 +501,7 @@ function ConflictZone()
 end
 
 function firstPlayer(colfp)
-    local leaderZoneObjects = named_resources[colfp].leader_zone.getObjects()
-    if #leaderZoneObjects > 0 then
-        local leader = named_resources[colfp].leader_zone.getObjects()[1]
-        broadcastToAll(i18n('firstPlayer') .. leader.getName(), colfp)
-        marker.setPositionSmooth(position_marker[colfp], false, false)
-    else
-        log(colfp .. " player has no leader!")
-    end
-
+    broadcastToAll(i18n('firstPlayer') .. helperModule.getLeaderName(colfp), colfp)
     if getObjectFromGUID("4a3e76").getVar("hotseat_mode") then
         Player.getPlayers()[1].changeColor(colfp)
     else
@@ -556,7 +519,7 @@ function BlackMarket()
     if black_market == 1 then
         for i = 1, 3, 1 do
             Wait.time(function()
-                card = GetDeckOrCard(zone_black_market[i])
+                card = GetDeckOrCardFromGUID(zone_black_market[i])
                 if card ~= nil then
                     card.setPositionSmooth(pos_trash, false, false)
                 end
@@ -565,7 +528,7 @@ function BlackMarket()
         end
         for i = 1, 3, 1 do
             Wait.time(function()
-                deck = GetDeckOrCard(zone_deck)
+                deck = GetDeckOrCardFromGUID(zone_deck)
                 deck.takeObject({
                     position = pos_black_market[i],
                     rotation = {0, 180, 0},

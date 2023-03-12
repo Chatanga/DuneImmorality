@@ -18,6 +18,7 @@ helperModule = require("HelperModule")
 constants = require("Constants")
 
 GetDeckOrCard = helperModule.GetDeckOrCard
+GetDeckOrCardFromGUID = helperModule.GetDeckOrCardFromGUID
 
 function onLoad()
     activateButton()
@@ -40,7 +41,7 @@ end
 
 
 function drawCard(_,color)
-    local targetDeck = GetDeckOrCard(intrigue_zone)
+    local targetDeck = GetDeckOrCardFromGUID(intrigue_zone)
     if targetDeck == nil then
         broadcastToAll('Where is the Intrigue Deck ???', "Pink")
     else
@@ -61,12 +62,6 @@ function drawCard(_,color)
             targetDeck.setPosition({handZone.position.x-7.5, handZone.position.y, handZone.position.z}, false, true)
             targetDeck.setRotation({deckRot.x, deckRot.y, deckRot.z+180})
         end
-        local leaderZoneObjects = constants.named_resources[color].leader_zone.getObjects()
-        if #leaderZoneObjects > 0 then
-            local leaderName = leaderZoneObjects[1].getName()
-            broadcastToAll(leaderName ..i18n("drawIntrigue"), color)
-        else
-            log(color .. " player has no leader!")
-        end
+        broadcastToAll(helperModule.getLeaderName(color) ..i18n("drawIntrigue"), color)
     end
 end

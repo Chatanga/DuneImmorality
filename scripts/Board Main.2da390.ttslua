@@ -7,7 +7,7 @@ boardCommonModule = require("BoardCommonModule")
 
 parkModule = require("ParkModule")
 
-named_resources = constants.named_resources
+players = constants.players
 
 function onload()
     self.interactable = false
@@ -301,8 +301,6 @@ function activateButtons()
         tooltip = i18n("toolTipIncreaseRep")
     })
 
-    -- TODO Wouldn't two nested 'for' loops be nicer?
-
     garrisonParks = {}
     createGarrisonPark("Green", Vector(8.15, 0.85, -7.65))
     createGarrisonPark("Yellow", Vector(8.15, 0.85, -10.35))
@@ -323,7 +321,7 @@ function createGarrisonPark(playerColor, origin)
 
     local zone = parkModule.findBoundingZone(0, Vector(0.35, 0.35, 0.35), slots)
 
-    local garrison = parkModule.createPark(slots, Vector(0, 0, 0), zone, playerColor, false)
+    local garrison = parkModule.createPark("garrison." .. playerColor, slots, Vector(0, 0, 0), zone, playerColor, false)
 
     local textColors =  helperModule.getPlayerTextColors(playerColor)
 
@@ -343,27 +341,39 @@ function createGarrisonPark(playerColor, origin)
 end
 
 function landOneGreenTroopFromOrbit()
-    landTroopsFromOrbit({1, "Green"})
+    landTroopsFromOrbit({"Green", 1})
 end
 
 function landOneYellowTroopFromOrbit()
-    landTroopsFromOrbit({1, "Yellow"})
+    landTroopsFromOrbit({"Yellow", 1})
 end
 
 function landOneBlueTroopFromOrbit()
-    landTroopsFromOrbit({1, "Blue"})
+    landTroopsFromOrbit({"Blue", 1})
 end
 
 function landOneRedTroopFromOrbit()
-    landTroopsFromOrbit({1, "Red"})
+    landTroopsFromOrbit({"Red", 1})
 end
 
 function landTroopsFromOrbit(parameters)
-    local count = parameters[1]
-    local playerColor = parameters[2]
-    local orbit = constants.board_player[playerColor].call("getOrbitPark")
+    local playerColor = parameters[1]
+    local count = parameters[2]
+    local orbit = constants.players[playerColor].board.call("getOrbitPark")
     local garrison = garrisonParks[playerColor]
     parkModule.transfert(count, orbit, garrison)
+end
+
+function sendTroopsBackToOrbit(parameters)
+    local playerColor = parameters[1]
+    local troops = parameters[2]
+    local orbit = constants.players[playerColor].board.call("getOrbitPark")
+    parkModule.putObjects(troops, orbit)
+end
+
+function getTroopsFromOrbit(playerColor)
+    local orbit = constants.players[playerColor].board.call("getOrbitPark")
+    return parkModule.getObjects(orbit)
 end
 
 function ImperialBasin(_, color)
@@ -518,15 +528,15 @@ function Arrakeen(_, color)
 end
 
 function BonusFremen(_, color)
-    named_resources[color].water.call("incrementVal")
-    local leaderName = named_resources[color].leader_zone.getObjects()[1].getName()
+    players[color].water.call("incrementVal")
+    local leaderName = helperModule.getLeaderName(color)
     broadcastToAll(i18n("fremenBonus"):format(leaderName), color)
 
 end
 
 function BonusBene(_, color)
     Wait.time(function() boardCommonModule.drawIntrigue(color) end, 0.75)
-    local leaderName = named_resources[color].leader_zone.getObjects()[1].getName()
+    local leaderName = helperModule.getLeaderName(color)
     broadcastToAll(i18n("beneBonus"):format(leaderName), color)
 
 end
@@ -535,7 +545,7 @@ function BonusSpatial(_, color)
     local t0 = 0
     local combat = Global.call("getFight")
     local solariAmount = 3
-    local leader = named_resources[color].leader_zone.getObjects()[1]
+    local leader = helperModule.getLeader(color)
     local leaderName = leader.getName()
 
 
@@ -543,7 +553,7 @@ function BonusSpatial(_, color)
 
     for i = 1, solariAmount, 1 do
         t0 = t0 + 0.2
-        Wait.time(function() named_resources[color].solari.call("incrementVal") end, t0)
+        Wait.time(function() players[color].solari.call("incrementVal") end, t0)
     end
     broadcastToAll(i18n("spaceBonus"):format(leaderName, solariAmount), color)
 
@@ -551,7 +561,7 @@ end
 
 function BonusEmperor(_, color)
 
-    local leaderName = named_resources[color].leader_zone.getObjects()[1].getName()
+    local leaderName = helperModule.getLeaderName(color)
 
     helperModule.landTroopsFromOrbit(color, 2)
     broadcastToAll(i18n("emperorBonus"):format(leaderName), color)

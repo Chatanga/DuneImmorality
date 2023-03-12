@@ -7,20 +7,17 @@ worm = require("Worm")
 
 helperModule = require("HelperModule")
 
-pos_discard = constants.pos_discard
-
 GetDeckOrCard = helperModule.GetDeckOrCard
+GetDeckOrCardFromGUID = helperModule.GetDeckOrCardFromGUID
 
 marker = constants.first_player_marker
 position_marker = constants.first_player_positions
 
-board_player = constants.board_player
-
 hotseat = {
-    ["Blue"] = {obj = getObjectFromGUID("9eeccd"), pos = board_player["Blue"].getPosition() + Vector(-16.5, 0.7, 9)},
-    ["Red"] = {obj = getObjectFromGUID("895594"), pos = board_player["Red"].getPosition() + Vector(-16.5, 0.7, 9)},
-    ["Green"] = {obj = getObjectFromGUID("96aa58"), pos = board_player["Green"].getPosition() + Vector(16.5, 0.7, 9)},
-    ["Yellow"] = {obj = getObjectFromGUID("3d1b90"), pos = board_player["Yellow"].getPosition() + Vector(16.5, 0.7, 9)}
+    ["Blue"] = {obj = getObjectFromGUID("9eeccd"), pos = constants.players["Blue"].board.getPosition() + Vector(-16.5, 0.7, 9)},
+    ["Red"] = {obj = getObjectFromGUID("895594"), pos = constants.players["Red"].board.getPosition() + Vector(-16.5, 0.7, 9)},
+    ["Green"] = {obj = getObjectFromGUID("96aa58"), pos = constants.players["Green"].board.getPosition() + Vector(16.5, 0.7, 9)},
+    ["Yellow"] = {obj = getObjectFromGUID("3d1b90"), pos = constants.players["Yellow"].board.getPosition() + Vector(16.5, 0.7, 9)}
 }
 
 manigance = '2b2575'
@@ -43,10 +40,10 @@ hagal_without_rise_of_ix = getObjectFromGUID("72d430")
 pos_black_market = constants.pos_black_market
 
 pos_starter_decks = {
-    constants.getLandingPositionFromGUID(constants.drawDeck["Red"]),
-    constants.getLandingPositionFromGUID(constants.drawDeck["Blue"]),
-    constants.getLandingPositionFromGUID(constants.drawDeck["Green"]),
-    constants.getLandingPositionFromGUID(constants.drawDeck["Yellow"])
+    constants.getLandingPosition(constants.players["Red"].drawDeck),
+    constants.getLandingPosition(constants.players["Blue"].drawDeck),
+    constants.getLandingPosition(constants.players["Green"].drawDeck),
+    constants.getLandingPosition(constants.players["Yellow"].drawDeck)
 }
 
 dune_cards_decks_zone = {
@@ -96,41 +93,6 @@ conflictThree = getObjectFromGUID("f9ea6b")
 epicgamebutton = getObjectFromGUID("f8480b")
 pos_trash = constants.pos_trash_lower
 
-tleilaxuTokens = constants.tleilaxuTokens
-researchTokens = constants.researchTokens
-
-cargo = constants.cargo
-
-table_players = {
-    ["Green"] = {
-        "76039f", "a1a9a7", "866a9c", "8e22cc", "2b1cf8", "34281d", "d390dc",
-        "2dc980", "89da7d", "d7c9ba", "a67287", "fc9c62", "caaba4", "63d39f",
-        "658b17"
-    },
-    ["Blue"] = {
-        "1b1e76", "f22e20", "c64616", "49afee", "46c1c6", "68e424", "0e6e41",
-        "2a88a6", "4069d8", "426a23", "f60d9c", "694553", "121bb6", "96607f",
-        "292658"
-    },
-    ["Yellow"] = {
-        "20bbd1", "c2dd31", "ef9008", "734b6e", "fd7fc7", "8fa76f", "77d7c8",
-        "a3729e", "9d0075", "489871", "b5d32e", "7c5b7b", "99a860", "d20bcf",
-        "8988cf"
-    },
-    ["Red"] = {
-        "4feaca", "2d1d17", "1fb4ed", "465c38", "0fa955", "e9096d", "088f51",
-        "713eae", "be464e", "acfcef", "1bbf1c", "26904f", "e0ed4b", "2bfc39",
-        "39e0f3"
-    }
-}
---[[
-bowl_players = {
-    ["Green"] = "126c3c",
-    ["Blue"] =  "b71dd9",
-    ["Yellow"] = "6af67a",
-    ["Red"] = "8ea4af"
-}
-]]--
 hand_players = {
     ["Green"] = getObjectFromGUID("482f72"),
     ["Blue"] = getObjectFromGUID("e50f77"),
@@ -228,10 +190,10 @@ function onLoad(saved_data)
             end
 
             if immortality == 1 then
-                tleilaxuTokens[color].interactable = false
-                researchTokens[color].interactable = false
+                constants.players[color].tleilaxuTokens.interactable = false
+                constants.players[color].researchTokens.interactable = false
             end
-            if rise_of_ix == 1 then cargo[color].interactable = false end
+            if rise_of_ix == 1 then constants.players[color].cargo.interactable = false end
         end
     end
 
@@ -764,6 +726,7 @@ function Presetup(_, color)
         updateSave()
         Setup()
     end
+    assert(numPlayers ~= nil)
 end
 
 function Setup()
@@ -774,6 +737,10 @@ function Setup()
         return 1
     end
     self.clearButtons()
+
+    for color, _ in pairs(constants.players) do
+        helperModule.landTroopsFromOrbit(color, 3)
+    end
 
     if immortality == 0 and epic_mode == 0 then
         for i, zone in ipairs(dune_cards_decks_zone) do
@@ -827,7 +794,7 @@ function Setup()
     if immortality == 0 then
         getObjectFromGUID(imperium_deck_immortality).destruct()
         getObjectFromGUID(intrigue_immortality).destruct()
-        GetDeckOrCard(constants.zone_deck_tleilaxu).destruct()
+        GetDeckOrCardFromGUID(constants.zone_deck_tleilaxu).destruct()
         getObjectFromGUID(reclaimed_forces).destruct()
 
         for _, obj in ipairs(bene_tleilax_zone.getObjects()) do
@@ -848,7 +815,7 @@ function Setup()
     if immortality == 1 then
         getObjectFromGUID(intrigue_immortality).setPosition(intrigue_pos)
         getObjectFromGUID(imperium_deck_immortality).setPosition(imperium_pos)
-        local deck = GetDeckOrCard(constants.zone_deck_tleilaxu)
+        local deck = GetDeckOrCardFromGUID(constants.zone_deck_tleilaxu)
         deck.shuffle()
         Wait.time(function()
             local params1 = {}
@@ -940,12 +907,12 @@ end
 function Commune()
 
     destructMissingPlayers()
-    GetDeckOrCard(zone_intrigue).shuffle()
-    GetDeckOrCard(zone_imperium).shuffle()
-    GetDeckOrCard('6d8a2e').shuffle()
-    GetDeckOrCard('e6cfee').shuffle()
-    GetDeckOrCard('907f66').shuffle()
-    GetDeckOrCard('4f08fc').shuffle()
+    GetDeckOrCardFromGUID(zone_intrigue).shuffle()
+    GetDeckOrCardFromGUID(zone_imperium).shuffle()
+    GetDeckOrCardFromGUID('6d8a2e').shuffle()
+    GetDeckOrCardFromGUID('e6cfee').shuffle()
+    GetDeckOrCardFromGUID('907f66').shuffle()
+    GetDeckOrCardFromGUID('4f08fc').shuffle()
     Wait.time(ImperiumDeal, 0.5)
     Wait.time(function() getObjectFromGUID("cb0478").call("ConflictButton") end,
               3)
@@ -1065,6 +1032,12 @@ function setPlayerHiddenLeaderPickOrder(colorPassed)
     end
 end
 
+--[[
+    Not a big fan of this approach. Putting / removing a thing from a bag means
+    its script will be reloaded and onLoad / onDestroy will be called. As such,
+    only passive objects should be put in bags, not leaders with dedicated
+    scripts.
+]]--
 function moveAllLeadersToRandomizer()
     local t = 0 -- similar to the function setting up tech on the board
     for _, leaderGUID in ipairs(leadersGUID) do
@@ -1154,12 +1127,13 @@ function updateLeaderChoices(varPassed) -- called from the ClaimLeader in all st
         if leader then
             leaderRandomizer.putObject(leader)
         else
-            log("Not reinjectiong nil leader " .. leaderGUID)
+            log("Not reinjecting nil leader " .. leaderGUID)
             log(leadersGUID)
         end
     end
     leaderChoices[varPassed.playerColor] = varPassed.leaderSelectedGUID -- update leader choices
     replaceLeaders()
+    assert(numPlayers ~= nil)
     if numPlayers == getLengthTable(leaderChoices) then -- when all player picked: claim chosen Leader if it was a normal game (without hiddenPicks)+make them now visible
         hiddenPicks = 0
         for color, leaderChoiceGUID in pairs(leaderChoices) do
@@ -1219,8 +1193,8 @@ end
 function BlitzSetup()
     setupConflits(4, 3, 0)
     Wait.time(function()
-        GetDeckOrCard(zone_intrigue).shuffle()
-        GetDeckOrCard(zone_imperium).shuffle()
+        GetDeckOrCardFromGUID(zone_intrigue).shuffle()
+        GetDeckOrCardFromGUID(zone_imperium).shuffle()
 
         getObjectFromGUID("e597dc").call("incrementVal")
         getObjectFromGUID("e597dc").call("incrementVal")
@@ -1235,12 +1209,12 @@ function BlitzSetup()
 
         for _, col in pairs(players) do
 
-            GetDeckOrCard(zone_intrigue).deal(1, col)
+            GetDeckOrCardFromGUID(zone_intrigue).deal(1, col)
 
             t = 0.1
             for i = 1, 7, 1 do
                 Wait.time(function()
-                    GetDeckOrCard(zone_imperium).deal(1, col)
+                    GetDeckOrCardFromGUID(zone_imperium).deal(1, col)
                 end, t)
                 t = t + 0.1
             end
@@ -1309,7 +1283,7 @@ function setupConflits(a, b, c)
     conflictThree.shuffle()
     conflictTwo.shuffle()
     conflictOne.shuffle()
-    nb_conflit_iii = GetDeckOrCard("07e239").getQuantity()
+    nb_conflit_iii = GetDeckOrCardFromGUID("07e239").getQuantity()
     if a < nb_conflit_iii then
         for i = 1, a do
             conflictThree.takeObject({
@@ -1393,9 +1367,9 @@ function replaceEpic()
         end
     else
         local i = 1
-        for k, pos in pairs(pos_discard) do
+        for _, player in pairs(constants.players) do
             local card = getObjectFromGUID(epic_cards[i])
-            card.setPosition(pos)
+            card.setPosition(player.pos_discard)
             card.setInvisibleTo({})
             i = i + 1
         end
@@ -1403,13 +1377,13 @@ function replaceEpic()
 
     Wait.time(movetroops, 2)
     Wait.time(function()
-        GetDeckOrCard(zone_intrigue).shuffle()
-        GetDeckOrCard(zone_intrigue).deal(1)
+        GetDeckOrCardFromGUID(zone_intrigue).shuffle()
+        GetDeckOrCardFromGUID(zone_intrigue).deal(1)
     end, 5)
 end
 
 function movetroops()
-    for _, color in ipairs({"Red", "Blue", "Green", "Yellow"}) do
+    for color, _ in pairs(constants.players) do
         helperModule.landTroopsFromOrbit(color, 2)
     end
 end
@@ -1455,7 +1429,7 @@ function movetechdecks()
 end
 
 function ImperiumDeal()
-    local deck_imperium = GetDeckOrCard(zone_imperium)
+    local deck_imperium = GetDeckOrCardFromGUID(zone_imperium)
     deck_imperium.shuffle()
     for i = 1, 5 do
       Wait.time(function()
@@ -1490,17 +1464,6 @@ function ImperiumDeal()
     end
 end
 
-function chainDestruct(objects)
-    local destroyLater = function()
-        destroyObject(objects[1])
-        table.remove(objects, 1)
-        chainDestruct(objects)
-    end
-    if #objects > 0 then
-        Wait.time(destroyLater, 0.5)
-    end
-end
-
 function destructMissingPlayers()
     local seated_players = getPlayersBasedOnHotseat()
 
@@ -1511,10 +1474,10 @@ function destructMissingPlayers()
         end
 
         if immortality == 1 then
-            tleilaxuTokens[color].interactable = false
-            researchTokens[color].interactable = false
+            constants.players[color].tleilaxuTokens.interactable = false
+            constants.players[color].researchTokens.interactable = false
         end
-        if rise_of_ix == 1 then cargo[color].interactable = false end
+        if rise_of_ix == 1 then constants.players[color].cargo.interactable = false end
     end
 
     if numPlayers < 4 then
@@ -1527,33 +1490,30 @@ function destructMissingPlayers()
             hand_players[color].destruct()
         end
     end
-    Wait.time(function()
-        for color, table_player in pairs(table_players) do
-            if not hasValue(seated_players, color) then
-                for _, obj in ipairs(table_player) do
-                    local obj1 = getObjectFromGUID(obj)
-                    if obj1 then
-                        obj1.setPosition({0, 200, -50})
-                        obj1.setLock(true)
-                    end
-                end
-            end
+
+    for color, player in pairs(constants.players) do
+        if not hasValue(seated_players, color) then
+            player.board.call("shutdown")
         end
-        --[[
-        for color, bowl_player in pairs(bowl_players) do
-            if not hasValue(seated_players, color) then
-                local bowl = getObjectFromGUID(bowl_player)
-                if bowl then
-                    bowl.clearButtons()
-                end
-            end
-        end
-        ]]--
-    end, 2)
+    end
+end
+
+function chainDestruct(objects)
+    assert(objects)
+    local destroyLater = function()
+        local object = objects[1]
+        assert(object)
+        object.destruct()
+        table.remove(objects, 1)
+        chainDestruct(objects)
+    end
+    if #objects > 0 then
+        Wait.time(destroyLater, 0.5)
+    end
 end
 
 function hasValue(tab, val)
-    for index, value in ipairs(tab) do
+    for _, value in ipairs(tab) do
         if value == val then
             return true
         end
