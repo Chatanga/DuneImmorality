@@ -48,7 +48,7 @@ function helperModule.GetDeckOrCard(zone)
     for _, obj in ipairs(zone.getObjects()) do
         if obj.type == "Card" or obj.type == "Deck" then return obj end
     end
-    log(zone.getGUID() .. " contains no card nor deck!")
+    --log(zone.getGUID() .. " contains no card nor deck!")
     return nil
 end
 
@@ -178,7 +178,7 @@ function helperModule.createAbsoluteButton(object, parameters)
 end
 
 function helperModule.getLeader(playerColor)
-    local leaderZone = constants.players[playerColor].leader_zone
+    local leaderZone = helperModule.getPlayer(playerColor).leader_zone
     for _, object in ipairs(leaderZone.getObjects()) do
         if object.hasTag("Leader") then
             return object
@@ -213,28 +213,36 @@ function helperModule.getTroopsFromOrbit(playerColor)
 end
 
 function helperModule.getScoreTokens(playerColor)
-    local playerBoard = constants.players[playerColor].board
+    local playerBoard = helperModule.getPlayer(playerColor).board
     local scorePark = playerBoard.call("getScorePark")
     return parkModule.getObjects(scorePark)
 end
 
 function helperModule.grantScoreToken(playerColor, token)
-    assert(token)
-    local playerBoard = constants.players[playerColor].board
+    local playerBoard = helperModule.getPlayer(playerColor).board
     local scorePark = playerBoard.call("getScorePark")
     parkModule.putObject(token, scorePark)
 end
 
 function helperModule.grantScoreTokenFromBag(playerColor, tokenBag)
-    assert(tokenBag)
-    tokenBag.takeObject({callback_function = function (token)
-        helperModule.grantScoreToken(playerColor, token)
-    end})
+    local playerBoard = helperModule.getPlayer(playerColor).board
+    local scorePark = playerBoard.call("getScorePark")
+    parkModule.putObjectFromBag(tokenBag, scorePark)
 end
 
 function helperModule.getPlayerScore(playerColor)
-    local playerBoard = constants.players[playerColor].board
+    local playerBoard = helperModule.getPlayer(playerColor).board
     return playerBoard.call("getScore")
+end
+
+function helperModule.getPlayer(playerColor)
+    local player = constants.players[playerColor]
+    assert(player, "Unknow player color: " .. tostring(playerColor))
+    return player
+end
+
+function helperModule.hasPlayer(playerColor)
+    return constants.players[playerColor] ~= nil
 end
 
 function helperModule.setSharedTable(tableName, table)

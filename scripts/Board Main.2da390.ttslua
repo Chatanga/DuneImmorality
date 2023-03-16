@@ -321,7 +321,14 @@ function createGarrisonPark(playerColor, origin)
 
     local zone = parkModule.findBoundingZone(0, Vector(0.35, 0.35, 0.35), slots)
 
-    local garrison = parkModule.createPark("garrison." .. playerColor, slots, Vector(0, 0, 0), zone, playerColor, false)
+    local garrison = parkModule.createPark(
+        "garrison." .. playerColor,
+        slots,
+        Vector(0, 0, 0),
+        zone,
+        playerColor,
+        playerColor,
+        false)
 
     local textColors =  helperModule.getPlayerTextColors(playerColor)
 
@@ -546,10 +553,12 @@ function BonusSpatial(_, color)
     local combat = Global.call("getFight")
     local solariAmount = 3
     local leader = helperModule.getLeader(color)
+    assert(leader)
     local leaderName = leader.getName()
 
-
-    if leader.hasTag("Yuna") and combat == 0 then solariAmount = 4 end
+    if leader.hasTag("Yuna") and combat == 0 then
+        solariAmount = 4
+    end
 
     for i = 1, solariAmount, 1 do
         t0 = t0 + 0.2

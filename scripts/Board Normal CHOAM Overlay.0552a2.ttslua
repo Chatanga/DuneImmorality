@@ -247,6 +247,7 @@ function RallyTroops(_, color)
     if boardCommonModule.CheckAgentAndPlayer(color, RallyTroops_zone) then
 
         local leader = helperModule.getLeader(color)
+        assert(leader)
         local leaderName = leader.getName()
         local solariObj = players[color].solari
         local t = 0

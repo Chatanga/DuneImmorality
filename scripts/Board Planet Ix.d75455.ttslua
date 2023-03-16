@@ -54,6 +54,7 @@ function Dreadnought(_, color)
     if boardCommonModule.CheckAgentAndPlayer(color, Dreadnought_zone) then
 
         local leader = helperModule.getLeader(color)
+        assert(leader)
         local leaderName = leader.getName()
         local solariObj = players[color].solari
 

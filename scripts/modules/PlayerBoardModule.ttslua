@@ -46,7 +46,14 @@ function playerBoardModule.createOrbitPark(centerPosition)
         troop.setRotation(Vector(0, 45, 0))
     end
 
-    return parkModule.createPark("orbit." .. playerBoardModule.playerColor, slots, Vector(0, -45, 0), zone, playerBoardModule.playerColor, true)
+    return parkModule.createPark(
+        "orbit." .. playerBoardModule.playerColor,
+        slots,
+        Vector(0, -45, 0),
+        zone,
+        playerBoardModule.playerColor,
+        playerBoardModule.playerColor,
+        true)
 end
 
 function playerBoardModule.initPlayerScore()
@@ -94,9 +101,16 @@ function playerBoardModule.createPlayerScoreboardPark()
             origin.z)
     end
 
-    playerBoardModule.scoreboardZone = parkModule.findBoundingZone(0, Vector(0.5, 0.5, 0.5), slots)
+    playerBoardModule.scoreboardZone = parkModule.findBoundingZone(0, Vector(0.6, 0.2, 0.6), slots)
 
-    return parkModule.createPark("scoreboard." .. playerBoardModule.playerColor, slots, Vector(0, 0, 0), playerBoardModule.scoreboardZone, playerBoardModule.playerColor, false)
+    return parkModule.createPark(
+        "scoreboard." .. playerBoardModule.playerColor,
+        slots,
+        Vector(0, 180, 0),
+        playerBoardModule.scoreboardZone,
+        nil,
+        "VP",
+        false)
 end
 
 function playerBoardModule.updatePlayerScore()

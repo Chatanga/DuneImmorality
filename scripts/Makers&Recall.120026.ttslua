@@ -45,16 +45,18 @@ makerZones = {"69f925", "622708", "2c77c1"}
 marker = constants.first_player_marker
 position_marker = constants.first_player_positions
 
-marker_yellow_zone = getObjectFromGUID("e9a44c")
-marker_green_zone = getObjectFromGUID("59523d")
-marker_blue_zone = getObjectFromGUID("1fc559")
-marker_red_zone = getObjectFromGUID("346e0d")
+firstPlayerMarkerZone = {
+    Yellow = getObjectFromGUID("e9a44c"),
+    Green = getObjectFromGUID("59523d"),
+    Blue = getObjectFromGUID("1fc559"),
+    Red = getObjectFromGUID("346e0d")
+}
 
 combat_marker_offside_positions = {
-    ["Red"] = constants.getPositionFromGUID("2d1d17") + Vector(0, 0, 0),
-    ["Blue"] = constants.getPositionFromGUID("f22e20") + Vector(2, 0, 0),
-    ["Green"] = constants.getPositionFromGUID("a1a9a7") + Vector(1, 0, 0),
-    ["Yellow"] = constants.getPositionFromGUID("c2dd31") + Vector(3, 0, 0)
+    Red = constants.getPositionFromGUID("2d1d17") + Vector(0, 0, 0),
+    Blue = constants.getPositionFromGUID("f22e20") + Vector(1, 0, 0),
+    Yellow = constants.getPositionFromGUID("c2dd31") + Vector(2, 0, 0),
+    Green = constants.getPositionFromGUID("a1a9a7") + Vector(3, 0, 0)
 }
 
 -------- Initialize Parameter ---------
@@ -342,8 +344,6 @@ function ConflictZone()
 
     local stack = getObjectFromGUID('07e239')
 
-    local discard = getObjectFromGUID('43f00f')
-
     local object = stack.getObjects()[1]
 
     if object ~= nil then
@@ -390,64 +390,13 @@ function ConflictZone()
 
     local players = getObjectFromGUID("4a3e76").call("getPlayersBasedOnHotseat")
 
-    local marker_yellow = marker_yellow_zone.getObjects()
-    local marker_green = marker_green_zone.getObjects()
-    local marker_blue = marker_blue_zone.getObjects()
-    local marker_red = marker_red_zone.getObjects()
-
-    if #players > 1 and
-        (marker_yellow[1] == marker or marker_yellow[2] == marker) then
-        for _, value in ipairs(players) do
-            if value == "Green" then colfp = "Green" end
-        end
-        for _, value in ipairs(players) do
-            if value == "Red" then colfp = "Red" end
-        end
-        for _, value in ipairs(players) do
-            if value == "Blue" then colfp = "Blue" end
-        end
-    elseif #players > 1 and
-        (marker_blue[1] == marker or marker_blue[2] == marker) then
-        for _, value in ipairs(players) do
-            if value == "Yellow" then colfp = "Yellow" end
-        end
-        for _, value in ipairs(players) do
-            if value == "Green" then colfp = "Green" end
-        end
-        for _, value in ipairs(players) do
-            if value == "Red" then colfp = "Red" end
-        end
-    elseif #players > 1 and (marker_red[1] == marker or marker_red[2] == marker) then
-        for _, value in ipairs(players) do
-            if value == "Blue" then colfp = "Blue" end
-        end
-        for _, value in ipairs(players) do
-            if value == "Yellow" then colfp = "Yellow" end
-        end
-        for _, value in ipairs(players) do
-            if value == "Green" then colfp = "Green" end
-        end
-    elseif #players > 1 and
-        (marker_green[1] == marker or marker_green[2] == marker) then
-        for _, value in ipairs(players) do
-            if value == "Red" then colfp = "Red" end
-        end
-        for _, value in ipairs(players) do
-            if value == "Blue" then colfp = "Blue" end
-        end
-        for _, value in ipairs(players) do
-            if value == "Yellow" then colfp = "Yellow" end
-        end
-    end
+    local firstPlayerColor = findNextPlayer(players)
 
     if #players > 1 then
         Global.call("TableTurnPlayers")
-        if colfp then
-            firstPlayer(colfp)
-        else
-            log("No first player color!")
-        end
+        setFirstPlayer(firstPlayerColor)
     end
+
     marker_round.setPositionSmooth(constants.marker_positions.round_start, false, false)
 
     local t1 = 0.1
@@ -460,7 +409,7 @@ function ConflictZone()
                     helperModule.getLeaderName(color) ..
                         i18n("holtzmanEngine"), color)
             elseif obj.hasTag("Shuttle Fleet") then
-                for i = 1, 2, 1 do
+                for _ = 1, 2 do
                     Wait.time(function()
                         players[color].solari.call("incrementVal")
                     end, t1)
@@ -488,8 +437,7 @@ function ConflictZone()
         end
     end
 
-    Wait.time(function() broadcastToAll(i18n("drawFive"), {0.5, 0.5, 0.5}) end,
-              2)
+    Wait.time(function() broadcastToAll(i18n("drawFive"), {0.5, 0.5, 0.5}) end, 2)
     Wait.time(function()
         marker_round.setPositionSmooth(constants.marker_positions.player_turns, false, false)
         broadcastToAll(i18n("playersTurn"), "Pink")
@@ -500,14 +448,40 @@ function ConflictZone()
     return 1
 end
 
-function firstPlayer(colfp)
-    broadcastToAll(i18n('firstPlayer') .. helperModule.getLeaderName(colfp), colfp)
+function identifyFirstPlayer()
+    for color, _ in pairs(constants.players) do
+        for _, object in ipairs(firstPlayerMarkerZone[color].getObjects()) do
+            if object == marker then
+                return color
+            end
+        end
+    end
+    return nil
+end
+
+function findNextPlayer(players)
+    local nextPlayer = identifyFirstPlayer()
+    local playerPresences = {}
+    for _, color in ipairs(players) do
+        playerPresences[color] = true
+    end
+    repeat
+        nextPlayer = constants.turnOrder[nextPlayer]
+    until playerPresences[nextPlayer]
+    return nextPlayer
+end
+
+function setFirstPlayer(firstPlayerColor)
+    broadcastToAll(i18n('firstPlayer') .. helperModule.getLeaderName(firstPlayerColor), firstPlayerColor)
     if getObjectFromGUID("4a3e76").getVar("hotseat_mode") then
-        Player.getPlayers()[1].changeColor(colfp)
+        Player.getPlayers()[1].changeColor(firstPlayerColor)
     else
-        Turns.turn_color = colfp
+        Turns.turn_color = firstPlayerColor
         Turns.enable = true
     end
+
+    -- TODO Why it wasn't here in the first place?
+    marker.setPositionSmooth(constants.first_player_positions[firstPlayerColor], false, false)
 end
 
 function BlackMarket()

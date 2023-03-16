@@ -68,7 +68,14 @@ function createAxlotlTanksPark(playerColor)
 
     local zone = parkModule.findBoundingZone(0, Vector(0.35, 0.35, 0.35), slots)
 
-    return parkModule.createPark("axlotlTanks." .. playerColor, slots, Vector(0, 0, 0), zone, playerColor, true)
+    return parkModule.createPark(
+        "axlotlTanks." .. playerColor,
+        slots,
+        Vector(0, 0, 0),
+        zone,
+        playerColor,
+        playerColor,
+        true)
 end
 
 local axlotlTanksParks = {
@@ -506,6 +513,7 @@ function onObjectEnterScriptingZone(zone, enter_object)
                 enter_object.hasTag("ResearchToken") then
 
                 local leader = helperModule.getLeader(color)
+                assert(leader)
                 local leaderName = leader.getName()
                 local solariIncome = 1
                 local solari = "Solari"

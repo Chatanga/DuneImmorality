@@ -358,4 +358,11 @@ constants.marker_positions = {
     recall = constants.getPositionFromGUID("fb41e2") + Vector(0, 0, -0.64 * 4)
 }
 
+constants.turnOrder = {
+    Green = 'Yellow',
+    Yellow = 'Blue',
+    Blue = 'Red',
+    Red = 'Green',
+}
+
 return constants

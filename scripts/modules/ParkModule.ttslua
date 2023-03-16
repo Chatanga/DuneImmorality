@@ -13,9 +13,10 @@ helperModule = require("HelperModule")
     rotation: the optional rotation to apply to parked objects.
     zone: a zone to test if an object is in the park.
     tag: an optional restriction on the park content.
+    description: an optional restriction on the park content.
     locked: should the park content be locked?
 ]]--
-function parkModule.createPark(name, slots, rotation, zone, tag, locked)
+function parkModule.createPark(name, slots, rotation, zone, tag, description, locked)
     assert(#slots > 0, "No slot provided for new park.")
     assert(zone, "No park zone provided.")
 
@@ -29,6 +30,7 @@ function parkModule.createPark(name, slots, rotation, zone, tag, locked)
         rotation = rotation,
         zone = zone,
         tag = tag,
+        description = description,
         locked = locked
     }
 end
@@ -48,16 +50,16 @@ function parkModule.transfert(n, fromPark, toPark)
     assert(toPark, "No destination park.")
     assert(fromPark ~= toPark, "Source and destination parks are the same.")
 
-    local objects = {}
+    local holders = {}
     for i, object in ipairs(parkModule.getObjects(fromPark)) do
         if i <= n then
-            objects[#objects + 1] = object
+            holders[i] = {object = object}
         else
             break
         end
     end
 
-    return parkModule.putObjects(objects, toPark)
+    return parkModule.putHolders(holders, toPark)
 end
 
 --[[
@@ -74,6 +76,22 @@ end
 ]]--
 function parkModule.putObjects(objects, toPark)
     assert(objects, "No objects provided.")
+    local holders = {}
+    for _, object in ipairs(objects) do
+        holders[#holders + 1] = {object = object}
+    end
+    return parkModule.putHolders(holders, toPark)
+end
+
+--[[
+]]--
+function parkModule.putObjectFromBag(objectBag, toPark)
+    assert(objectBag, "No object bag provided.")
+    return parkModule.putHolders({{bag = objectBag}}, toPark) > 0
+end
+
+function parkModule.putHolders(holders, toPark)
+    assert(holders, "No holders provided.")
     assert(toPark, "No destination park.")
 
     --[[
@@ -102,11 +120,18 @@ function parkModule.putObjects(objects, toPark)
     for _, _ in pairs(newObjectsInTransit) do
         skipCount = skipCount + 1
     end
-    local count = math.max(0, math.min(#emptySlots - skipCount, #objects))
+    local count = math.max(0, math.min(#emptySlots - skipCount, #holders))
 
     for i = 1, count do
-        parkModule.moveObjectToPark(objects[i], emptySlots[i + skipCount], toPark)
-        newObjectsInTransit[objects[i]] = now
+        local holder = holders[i]
+        if holder.object then
+            parkModule.moveObjectToPark(holder.object, emptySlots[i + skipCount], toPark)
+            newObjectsInTransit[holder.object] = now
+        elseif holder.bag then
+            parkModule.takeObjectToPark(holder.bag, emptySlots[i + skipCount], toPark)
+            -- Can't really register anything for a transit and doing is async
+            -- would be both too late and no safe.
+        end
     end
 
     helperModule.setSharedTable(toPark.name, newObjectsInTransit)
@@ -119,7 +144,10 @@ end
 function parkModule.getObjects(park)
     local objects = {}
     for _, object in ipairs(park.zone.getObjects()) do
-        if not park.tag or (object.hasTag(park.tag) and object.getDescription() == park.tag) then
+        local isOneOfThem =
+            (not park.tag or object.hasTag(park.tag)) and
+            (not park.description or park.description == object.getDescription())
+        if isOneOfThem then
             objects[#objects + 1] = object
         end
     end
@@ -197,6 +225,23 @@ function parkModule.moveObjectToPark(object, slot, park)
     if park.rotation then
         object.setRotation(park.rotation:copy())
     end
+end
+
+function parkModule.takeObjectToPark(bag, slot, park)
+    local takeParameters = {}
+    local offset = Vector(0, 0, 0)
+    if not park.locked then
+        -- Nice drop are only for unlocked objects.
+        offset = Vector(0, 1, 0)
+    end
+    takeParameters.position = slot + offset
+    if park.rotation then
+        takeParameters.rotation = park.rotation:copy()
+    end
+    takeParameters.callback_function = function ()
+        takeParameters.locked = park.locked
+    end
+    bag.takeObject(takeParameters)
 end
 
 function parkModule.findEmptySlots(park)

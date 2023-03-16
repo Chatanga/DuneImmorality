@@ -6,37 +6,43 @@ colors = ['Green', 'Yellow', 'Blue', 'Red']
 
 anchor_decal = (1, {
     "Name": "First Player Token Slot",
-    "ImageURL": "file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/misc/anchor_decal.png",
+    #"ImageURL": "file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/misc/anchor_decal.png",
+    "ImageURL": "http://cloud-3.steamusercontent.com/ugc/2042984592862621000/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
     "Size": 0.5
 })
 
 first_player_decal = (1, {
     "Name": "Deck Slot",
-    "ImageURL": "file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/misc/first_player_decal.png",
+    #"ImageURL": "file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/misc/first_player_decal.png",
+    "ImageURL": "http://cloud-3.steamusercontent.com/ugc/2042984592862631937/B2176FBF3640DC02A6840C8E0FB162057724DE41/",
     "Size": 2
 })
 
 draw_decal = (0.6933962, {
     "Name": "Deck Slot",
-    "ImageURL": "file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/misc/deck_decal.png",
+    #"ImageURL": "file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/misc/deck_decal.png",
+    "ImageURL": "http://cloud-3.steamusercontent.com/ugc/2042984592862630696/9973F87497827C194B979D7410D0DD47E46305FA/",
     "Size": 3.5
 })
 
 discard_decal =  (0.6933962, {
     "Name": "Discard Slot",
-    "ImageURL": "file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/misc/discard_decal.png",
+    #"ImageURL": "file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/misc/discard_decal.png",
+    "ImageURL": "http://cloud-3.steamusercontent.com/ugc/2042984592862631187/76205DFA6ECBC5F9C6B38BE95F42E6B5468B5999/",
     "Size": 3.5
 })
 
 leader_decal = (1.462555, {
     "Name": "Leader Slot",
-    "ImageURL": "file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/misc/leader_decal.png",
+    #"ImageURL": "file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/misc/leader_decal.png",
+    "ImageURL": "http://cloud-3.steamusercontent.com/ugc/2042984592862632410/7882B2E68FF7767C67EE5C63C9D7CF17B405A5C3/",
     "Size": 3.5
 })
 
 tech_decal = (1.45631063, {
     "Name": "Tech Tile Slot",
-    "ImageURL": "file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/misc/tech_tile_decal.png",
+    #"ImageURL": "file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/misc/tech_tile_decal.png",
+    "ImageURL": "http://cloud-3.steamusercontent.com/ugc/2042984592862632706/6A948CDC20774D0D4E5EA0EFF3E0D2C23F30FCC1/",
     "Size": 1.8
 })
 
@@ -329,7 +335,7 @@ def layout_player_board(structure, object_by_guid, color):
         add_snap_point('VP 4 Players', symmetrical_x, i, 0)
 
     for i in range(0, 24):
-        add_snap_point('agent_and_reveal_zone', symmetrical_x, (i % 12) * 2.5 - 12.5, (i // 12) * 4)
+        add_snap_point('agent_and_reveal_zone', symmetrical_x, (i % 12) * 2.5 - 13, (i // 12) * 4)
 
     for i in range(0, 6):
         add_snap_point('tech_board_zone', symmetrical_x, (i // 3) * 3 - 1.5, (i % 3) * 2 - 2, with_decal = tech_decal)
@@ -411,6 +417,28 @@ def filterSnapPoints(object):
             lambda snapPoint: 'Tags' in snapPoint and all(tag in accepted_tags for tag in snapPoint['Tags']),
             object['AttachedSnapPoints']))
 
+def layout_fan_made_characters(structure, object_by_guid):
+    bx = 0
+    by = 0
+    bz = 0
+    count = 0
+    for _, v in structure['fanbase_characters']['characters'].items():
+        object = object_by_guid[v]
+        bx += object['Transform']['posX']
+        by += object['Transform']['posY']
+        bz += object['Transform']['posZ']
+        count += 1
+    bx /= count
+    by /= count
+    bz /= count
+
+    for _, v in structure['fanbase_characters']['characters'].items():
+        object = object_by_guid[v]
+        x = (object['Transform']['posX'] - bx) * 1.1 + bx
+        y = (object['Transform']['posY'] - by) * 1.1 + by
+        z = (object['Transform']['posZ'] - bz) * 1.1 + bz
+        set_position(object, (x, y, z))
+
 def clean_up_bottom(structure, object_by_guid):
     root = structure['bottom_accessories']
     manuals = [
@@ -438,8 +466,9 @@ def replace(object, blank_clone):
     for coordinate in ['rotX', 'rotY', 'rotZ']:
         clone['Transform'][coordinate] = object['Transform'][coordinate]
     clone['Nickname'] = object['Nickname']
-    for property in ['Description', 'LuaScript', 'LuaScriptState', 'XmlUI']:
-        clone[property] = object[property]
+    for property in ['Description', 'LuaScript', 'LuaScriptState', 'XmlUI', 'ContainedObjects']:
+        if property in object:
+            clone[property] = object[property]
     return clone
 
 def patch_save(input_path, output_path):
@@ -663,7 +692,7 @@ def patch_save(input_path, output_path):
             translate(object, (0, -2.5, -4))
             if guid == structure['bottom_accessories']['trash']:
                 y = object['Transform']['posY']
-                z= object['Transform']['posZ']
+                z = object['Transform']['posZ']
                 set_position(object, (0, y, z - 1))
 
         elif guid in structure_guids['immortality_row'] or guid in structure_guids['imperium_row'] or guid in structure_guids['intrigue']:
@@ -731,6 +760,8 @@ def patch_save(input_path, output_path):
 
     for color in colors:
         layout_player_board(structure, object_by_guid, color)
+
+    layout_fan_made_characters(structure, object_by_guid)
 
     #add_space_snap_points(structure, object_by_guid)
     add_combat_force_snap_points(structure, object_by_guid)

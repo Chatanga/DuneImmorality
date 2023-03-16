@@ -28,11 +28,11 @@ function onLoad()
 
     players = constants.players
 
-    buttonPass = {
-        ["Red"] = getObjectFromGUID("895594"),
-        ["Blue"] = getObjectFromGUID("9eeccd"),
-        ["Green"] = getObjectFromGUID("96aa58"),
-        ["Yellow"] = getObjectFromGUID("3d1b90")
+    buttonPassAnchors = {
+        ["Red"] = getObjectFromGUID("0e9fa2"),
+        ["Blue"] = getObjectFromGUID("643f32"),
+        ["Green"] = getObjectFromGUID("9c69b9"),
+        ["Yellow"] = getObjectFromGUID("65876d")
     }
 
     pos_reveal = {
@@ -51,7 +51,7 @@ function onLoad()
             zone = getObjectFromGUID("f1f53d"),
             position = constants.getLandingPositionFromGUID("f1f53d"),
         },
-        carthag_zone = {
+        carthag = {
             zone = getObjectFromGUID("9fc2e1"),
             position = constants.getLandingPositionFromGUID("9fc2e1"),
         }
@@ -145,18 +145,6 @@ function onLoad()
         ["Green"] = getObjectFromGUID('a1a9a7'),
         ["Yellow"] = getObjectFromGUID('c2dd31')
     }
-    VP_name = { -- conflit vp names + GUIDs
-        ["Economic Supremacy"] = {"c38946", "6047f9", "4f428d", "ba1a77"},
-        ["Battle for Carthag"] = {"e364df", "e123ce"},
-        ["Battle for Arrakeen"] = {"e25f79", "8b658c"},
-        ["Battle for Imperial Basin"] = {"ff1ce6", "905a58"},
-        ["Siege of Carthag"] = {"f131f2"},
-        ["Siege of Arrakeen"] = {"29a66c"},
-        ["Secure Imperial Basin"] = {"2d469b"},
-        ["Terrible Purpose"] = {"d61804"},
-        ["Desert Power"] = {"11076b"},
-        ["Skirmish"] = {"63791b"}
-    }
 
     local zone_vp_combat = constants.getPositionFromGUID("740624")
     pos_vp_encours = {
@@ -181,7 +169,7 @@ function onLoad()
     bag_friendship["Fremen"].interactable = false
     for color, _ in pairs(constants.players) do
         players[color].council_token.interactable = false -- conseillers
-        buttonPass[color].interactable = false
+        buttonPassAnchors[color].interactable = false
         constants.players[color].board.interactable = false
     end
 
@@ -362,7 +350,7 @@ end
 function activatePass(color)
 
     function new_board_position(x, y, z)
-        return {x, y + 0.7, -z}
+        return Vector(x, y + 0.7, -z)
     end
 
     function new_symmetric_board_position(x, y, z)
@@ -373,9 +361,11 @@ function activatePass(color)
         end
     end
 
-    local position = new_symmetric_board_position(-3.5, 0, 8.2)
+    local reparentingOffset = constants.players[color].board.getPosition() - buttonPassAnchors[color].getPosition()
+    reparentingOffset:setAt('z', -reparentingOffset.z) -- 180° orientation...
+    local position = new_symmetric_board_position(-3.5, 0, 8.2) + reparentingOffset
 
-    constants.players[color].board.createButton({
+    buttonPassAnchors[color].createButton({
         click_function = "Pass",
         function_owner = self,
         label = i18n("passButton"),
@@ -466,28 +456,24 @@ function stillHavePlayableAgents(color)
 end
 
 function Pass(_, color)
+    --[[
     -- TODO Il n’est pas un peu bullshit ce test ?
-    if color ~= buttonPass[color].getDescription() then
+    if color ~= buttonPassAnchors[color].getDescription() then
         broadcastToColor(i18n("noTouch"), color, "Red")
-    elseif reveal["Blue"] == 1 and reveal["Red"] == 1 and reveal["Green"] == 1 and
-        reveal["Yellow"] == 1 then
+    elsif
+    ]]--
+    if reveal["Blue"] == 1 and reveal["Red"] == 1 and reveal["Green"] == 1 and reveal["Yellow"] == 1 then
         letsFight()
-        buttonPass[color].clearButtons()
+        buttonPassAnchors[color].clearButtons()
     else
         if not getObjectFromGUID("4a3e76").getVar("hotseat_mode") then
             TableTurnPlayers()
         end
-        buttonPass[color].clearButtons()
+        buttonPassAnchors[color].clearButtons()
 
-        local nextColors = {
-            ['Green'] = 'Yellow',
-            ['Yellow'] = 'Blue',
-            ['Blue'] = 'Red',
-            ['Red'] = 'Green',
-        }
         local nextColor = color
         repeat
-            nextColor = nextColors[nextColor]
+            nextColor = constants.turnOrder[nextColor]
         until reveal[nextColor] == 0 or nextColor == color
         Turns.turn_color = nextColor
 
@@ -682,23 +668,9 @@ function CountForce(name)
     end
 end
 
-function defenseTroop()
-    flag = nil
-    if nom == "Secure Imperial Basin" or nom == "Battle for Imperial Basin" then
-        flag = controlable_spaces.imperial_basin.zone
-    elseif nom == "Siege of Arrakeen" or nom == "Battle for Arrakeen" then
-        flag = controlable_spaces.arrakeen.zone
-    elseif nom == "Siege of Carthag" or nom == "Battle for Carthag" then
-        flag = controlable_spaces.carthag.zone
-    end
-    if flag ~= nil then addTroopDefense() end
-end
-
-function addTroopDefense()
-    local reserve_zone = nil
+function addTroopDefense(victoryRegion)
     local joueur = nil
-    local table = flag.getObjects()
-    for _, obj in ipairs(table) do
+    for _, obj in ipairs(victoryRegion.zone.getObjects()) do
         if obj.getName() == "Red Dreadnought" or obj.getName() ==
             "Red dreadnought" then
             joueur = "Red"
@@ -714,7 +686,7 @@ function addTroopDefense()
         end
     end
     if joueur == nil then
-        for _, obj in ipairs(table) do
+        for _, obj in ipairs(victoryRegion.zone.getObjects()) do
             if obj.getName() == "Red Flag" then
                 joueur = "Red"
             elseif obj.getName() == "Blue Flag" then
@@ -729,6 +701,7 @@ function addTroopDefense()
     if joueur ~= nil then
         local troops = helperModule.getTroopsFromOrbit(joueur)
         for _, troop in ipairs(troops) do
+            -- TODO Hardcoded position.
             troop.setPositionSmooth({4.79, 2, -5.19}, false, false)
             local leaderName = helperModule.getLeaderName(joueur)
             broadcastToAll(i18n("defenseTroop"):format(leaderName), joueur)
@@ -763,6 +736,7 @@ function onObjectEnterScriptingZone(zone, enter_object)
     end
 
     if zone.guid == zone_conflict_encours.guid then
+        log("TODO Redundant relocation?")
         if enter_object.guid == '2b2575' then
             enter_object.setPosition({4.80, 2, -2.73})
             GetDeckOrCard('07e239').takeObject({
@@ -787,14 +761,17 @@ function onObjectEnterScriptingZone(zone, enter_object)
                     })
                 end
             end
-            defenseTroop()
+            local victoryRegion = getVictoryRegion(enter_object)
+            if victoryRegion then
+                addTroopDefense(victoryRegion)
+            end
         end
     end
 
     for color, player in pairs(constants.players) do
         local scorePark = player.board.call("getScorePark")
         if zone == scorePark.zone then
-            local victoryRegion = getVictoryRegion(enter_object.guid)
+            local victoryRegion = getVictoryRegion(enter_object)
             if victoryRegion then
                 local objects = victoryRegion.zone.getObjects()
                 for _, object in ipairs(objects) do
@@ -845,8 +822,7 @@ function loseFriendship(faction, color)
     local vpTokens = helperModule.getScoreTokens(color)
     for _, vpToken in ipairs(vpTokens) do
         if vpToken.getName() == faction .. " Friendship" then
-            log("TODO Does the hardcoded position make sense?")
-            vpToken.setPositionSmooth({-4.27, 4, 34.54}, false, false)
+            vpToken.destruct()
         end
     end
 end
@@ -856,7 +832,17 @@ function give2influence(faction, color)
 end
 
 -- Find if the GUID matches a VP for a region and return it if it is the case.
-function getVictoryRegion(GUID)
+function getVictoryRegion(vpToken)
+    local name = vpToken.getName()
+    if name == "Secure Imperial Basin" or name == "Battle for Imperial Basin" then
+        return controlable_spaces.imperial_basin
+    elseif name == "Siege of Arrakeen" or name == "Battle for Arrakeen" then
+        return controlable_spaces.arrakeen
+    elseif name == "Siege of Carthag" or name == "Battle for Carthag" then
+        return controlable_spaces.carthag
+    end
+
+    local GUID = vpToken
     if GUID == "2d469b" or GUID == "ff1ce6" then
         return controlable_spaces.imperial_basin
     elseif GUID == "29a66c" or GUID == "e25f79" then

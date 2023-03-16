@@ -43,32 +43,32 @@ Mentat_zone = getObjectFromGUID("30cff9")
 foldspace = getObjectFromGUID("38ffc0")
 intrigue_zone = getObjectFromGUID("a377d8")
 
-pion_reput = {
-    ["emperor"] = {
-        ["Red"] = getObjectFromGUID('acfcef'),
-        ["Blue"] = getObjectFromGUID('426a23'),
-        ["Green"] = getObjectFromGUID('d7c9ba'),
-        ["Yellow"] = getObjectFromGUID('489871')
+pion_reput = constants.resolveGUIDs({
+    emperor = {
+        Red = 'acfcef',
+        Blue = '426a23',
+        Green = 'd7c9ba',
+        Yellow = '489871'
     },
-    ["spacingGuild"] = {
-        ["Red"] = getObjectFromGUID('be464e'),
-        ["Blue"] = getObjectFromGUID('4069d8'),
-        ["Green"] = getObjectFromGUID('89da7d'),
-        ["Yellow"] = getObjectFromGUID('9d0075')
+    spacingGuild = {
+        Red = 'be464e',
+        Blue = '4069d8',
+        Green = '89da7d',
+        Yellow = '9d0075'
     },
-    ["beneGesserit"] = {
-        ["Red"] = getObjectFromGUID('713eae'),
-        ["Blue"] = getObjectFromGUID('2a88a6'),
-        ["Green"] = getObjectFromGUID('2dc980'),
-        ["Yellow"] = getObjectFromGUID('a3729e')
+    beneGesserit = {
+        Red = '713eae',
+        Blue = '2a88a6',
+        Green = '2dc980',
+        Yellow = 'a3729e'
     },
-    ["fremen"] = {
-        ["Red"] = getObjectFromGUID('088f51'),
-        ["Blue"] = getObjectFromGUID('0e6e41'),
-        ["Green"] = getObjectFromGUID('d390dc'),
-        ["Yellow"] = getObjectFromGUID('77d7c8')
+    fremen = {
+        Red = '088f51',
+        Blue = '0e6e41',
+        Green = 'd390dc',
+        Yellow = '77d7c8'
     }
-}
+})
 
 alliance_token = {
     ["emperor"] = getObjectFromGUID('13e990'),
@@ -120,6 +120,7 @@ function boardCommonModule.ImperialBasin(color)
 
     if boardCommonModule.CheckAgentAndPlayer(color, ImperialBasin_zone) then
         local leader = helperModule.getLeader(color)
+        assert(leader)
         local leaderName = leader.getName()
         if leader.hasTag("Ariana") then
             local nbSpice = HarvestSpice(color, 0, bonus_spice1)
@@ -167,6 +168,7 @@ function boardCommonModule.HaggaBasin(color)
 
     if boardCommonModule.CheckAgentAndPlayer(color, HaggaBasin_zone) then
         local leader = helperModule.getLeader(color)
+        assert(leader)
         local leaderName = leader.getName()
         local waterObj = constants.players[color].water
         if waterObj.call("collectVal") < 1 then
@@ -219,6 +221,7 @@ function boardCommonModule.TheGreatFlat(color)
 
     if boardCommonModule.CheckAgentAndPlayer(color, TheGreatFlat_zone) then
         local leader = helperModule.getLeader(color)
+        assert(leader)
         local leaderName = leader.getName()
         local waterObj = constants.players[color].water
         if waterObj.call("collectVal") < 2 then
@@ -407,6 +410,7 @@ function boardCommonModule.Wealth(color)
 
     if boardCommonModule.CheckAgentAndPlayer(color, Wealth_zone) then
         local leader = helperModule.getLeader(color)
+        assert(leader)
         local leaderName = leader.getName()
         local solari = 2
         local t1 = 0
@@ -439,6 +443,7 @@ function boardCommonModule.Conspire(color)
             broadcastToColor(i18n("noSpice"), color, color)
         else
             local leader = helperModule.getLeader(color)
+            assert(leader)
             local leaderName = leader.getName()
             local solari = 5
             local t0 = 0
@@ -475,30 +480,32 @@ function boardCommonModule.Conspire(color)
     end
 end
 
-boardCommonModule.cachedReputationLevels = nil
+function boardCommonModule.initReputationLevels()
+    local reputationLevels = {}
+    for faction, reputations in pairs(pion_reput) do
+        local factionLevels = {}
+        for color, reputation in pairs(reputations) do
+            local startingCell = reputation.getPosition()
+            local allianceToken = alliance_token[faction].getPosition()
+            local step = (allianceToken.z - startingCell.z) / 5 -- The token is centered on the 5th level (but you only need to reach the 4th to get it).
+            local zero = startingCell.z - step / 2
+            factionLevels[color] = {
+                step = step,
+                none = zero + step * 0,
+                friendship = zero + step * 2,
+                alliance = zero + step * 4,
+                max = zero + step * 6,
+            }
+        end
+        reputationLevels[faction] = factionLevels
+    end
+    return reputationLevels
+end
+
+boardCommonModule.reputationLevels = boardCommonModule.initReputationLevels()
 
 function boardCommonModule.getReputationLevels(faction, color)
-    if not boardCommonModule.cachedReputationLevels then
-        boardCommonModule.cachedReputationLevels = {}
-        for _, faction in ipairs({"emperor", "spacingGuild", "beneGesserit", "fremen"}) do
-            local factionLevels = {}
-            for _, color in ipairs({"Red", "Blue", "Green", "Yellow"}) do
-                local startingCell = pion_reput[faction][color].getPosition()
-                local allianceToken = alliance_token[faction].getPosition()
-                local step = (allianceToken.z - startingCell.z) / 5 -- The token is centered on the 5th level (but you only need to reach the 4th to get it).
-                local zero = startingCell.z - step / 2
-                factionLevels[color] = {
-                    step = step,
-                    none = zero + step * 0,
-                    friendship = zero + step * 2,
-                    alliance = zero + step * 4,
-                    max = zero + step * 6,
-                }
-            end
-            boardCommonModule.cachedReputationLevels[faction] = factionLevels
-        end
-    end
-    return boardCommonModule.cachedReputationLevels[faction][color]
+    return boardCommonModule.reputationLevels[faction][color]
 end
 
 function boardCommonModule.ReputationUp(color, faction)
@@ -587,7 +594,6 @@ function giveAlliance(faction, color)
 
             elseif biggestDelta > 0 then
                 local leaderTakingAllianceName = helperModule.getLeaderName(playerTakingAlliance)
-
                 helperModule.grantScoreToken(playerTakingAlliance, alliance_token[faction])
                 broadcastToAll(i18n("recoverAlliance"):format(leaderTakingAllianceName, i18n(faction)), playerTakingAlliance)
             elseif posz < posz_requis then
@@ -606,7 +612,7 @@ function giveAlliance(faction, color)
             end
 
             if isReputStrongest then
-                helperModule.grantScoreToken(playerTakingAlliance, alliance_token[faction])
+                helperModule.grantScoreToken(color, alliance_token[faction])
                 broadcastToAll(i18n("recoverAlliance"):format(leaderName, i18n(faction)), color)
             end
         end
@@ -649,7 +655,7 @@ end
 function boardCommonModule.SietchTabr(color)
     if boardCommonModule.CheckAgentAndPlayer(color, SietchTabr_zone) then
         local reputationLevels = boardCommonModule.getReputationLevels("fremen", color)
-        if pion_reput["fremen"][color].getPosition().z < reputationLevels.friendship then
+        if pion_reput.fremen[color].getPosition().z < reputationLevels.friendship then
             broadcastToColor(i18n("notReputation"), color, "Red")
             return 1
         end
@@ -773,6 +779,7 @@ function boardCommonModule.Swordmaster(color, zone)
 
         local solariObj = constants.players[color].solari
         local leader = helperModule.getLeader(color)
+        assert(leader)
         local leaderName = leader.getName()
         local price = 8
 
@@ -834,6 +841,7 @@ function boardCommonModule.Mentat(color)
 
         local solariObj = constants.players[color].solari
         local leader = helperModule.getLeader(color)
+        assert(leader)
         local leaderName = leader.getName()
         local price = 2
         local t = 0
@@ -923,6 +931,7 @@ function boardCommonModule.HighCouncil(color)
 
         local solariObj = constants.players[color].solari
         local leader = helperModule.getLeader(color)
+        assert(leader)
         local leaderName = leader.getName()
         local price = 5
         local t = 0
@@ -1115,19 +1124,19 @@ function flag_arrakeen(color)
     end
     if dread == 1 then
         constants.players["Red"].solari.call("incrementVal")
-        broadcastToAll(constants.players["Red"][6].getObjects()[1].getName() ..
+        broadcastToAll(helperModule.getLeaderName("Red") ..
                            i18n("flagArrakeen"):format(1), {0.8, 0.8, 0.8})
     elseif dread == 2 then
         constants.players["Blue"].solari.call("incrementVal")
-        broadcastToAll(constants.players["Blue"][6].getObjects()[1].getName() ..
+        broadcastToAll(helperModule.getLeaderName("Blue") ..
                            i18n("flagArrakeen"):format(1), {0.8, 0.8, 0.8})
     elseif dread == 3 then
         constants.players["Green"].solari.call("incrementVal")
-        broadcastToAll(constants.players["Green"][6].getObjects()[1].getName() ..
+        broadcastToAll(helperModule.getLeaderName("Green") ..
                            i18n("flagArrakeen"):format(1), {0.8, 0.8, 0.8})
     elseif dread == 4 then
         constants.players["Yellow"].solari.call("incrementVal")
-        broadcastToAll(constants.players["Yellow"][6].getObjects()[1].getName() ..
+        broadcastToAll(helperModule.getLeaderName("Yellow") ..
                            i18n("flagArrakeen"):format(1), {0.8, 0.8, 0.8})
     elseif dread == 5 then
         constants.players[color].solari.call("incrementVal")

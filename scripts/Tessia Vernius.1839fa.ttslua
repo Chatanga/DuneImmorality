@@ -1,13 +1,31 @@
-snooper1 = getObjectFromGUID("a58ce8")
-snooper2 = getObjectFromGUID("857f74")
-snooper3 = getObjectFromGUID("bed196")
-snooper4 = getObjectFromGUID("b10897")
-snooper1pos = {-7.91, 2, 7.87}
-snooper2pos = {-7.91, 2, 2.40}
-snooper3pos = {-7.91, 2, -3.04}
-snooper4pos = {-7.91, 2, -8.49}
-
 constants = require("Constants")
+
+function getAveragePosition(guids)
+    local p = Vector(0, 0, 0)
+    local count = 0
+    for _, guid in ipairs(guids) do
+        local object = getObjectFromGUID(guid)
+        p = p + object.getPosition()
+        count = count + 1
+    end
+    return p * (1 / count)
+end
+
+Stillsuits_zone = "556f43"
+HardyWarriors_zone = "a2fd8e"
+Secrets_zone = "1f7c08"
+SelectiveBreeding_zone = "7dc6e5"
+Foldspace_zone = "9a9eb5"
+Heighliner_zone = "8b0515"
+Wealth_zone = "b2c461"
+Conspire_zone = "cd9386"
+
+snoopers = {
+    { guid = "a58ce8", position = getAveragePosition({Conspire_zone, Wealth_zone})},
+    { guid = "857f74", position = getAveragePosition({Heighliner_zone, Foldspace_zone})},
+    { guid = "bed196", position = getAveragePosition({SelectiveBreeding_zone, Secrets_zone})},
+    { guid = "b10897", position = getAveragePosition({HardyWarriors_zone, Stillsuits_zone})}
+}
 
 leaderPos = constants.leaderPos
 
@@ -86,10 +104,11 @@ function claimLabel()
           updateSave()
           broadcastToAll(i18n("willBe"):format(i18n(color:lower())
 ,GO.getName()), color)
-          snooper1.setPositionSmooth(snooper1pos,false,false)
-          snooper2.setPositionSmooth(snooper2pos,false,false)
-          snooper3.setPositionSmooth(snooper3pos,false,false)
-          snooper4.setPositionSmooth(snooper4pos,false,false)
+            for _, snooper in ipairs(snoopers) do
+                local object = getObjectFromGUID(snooper.guid)
+                object.setPositionSmooth(snooper.position, false, false)
+                object.setRotationSmooth(Vector(0, 90, 0))
+            end
         else
           broadcastToColor(i18n("cantClaimLeader"), color, color)
         end

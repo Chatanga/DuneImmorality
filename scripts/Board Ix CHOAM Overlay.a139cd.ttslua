@@ -19,13 +19,14 @@ cargo_pos_init = {
     ["Blue"] = constants.getPositionFromGUID("68e424"),
     ["Red"] = constants.getPositionFromGUID("e9096d")
 }
+--[[
 pion_reput_guild = {
     ["Red"] = getObjectFromGUID('be464e'),
     ["Blue"] = getObjectFromGUID('4069d8'),
     ["Green"] = getObjectFromGUID('89da7d'),
     ["Yellow"] = getObjectFromGUID('9d0075')
 }
-minimum_reput_guild_z = 1.8
+]]--
 
 function onload()
     i18n.setLocale(Global.getVar("locale"))
@@ -312,7 +313,7 @@ function ShippingUpUp(_, color)
     Wait.time(activateButtons, 1)
     if boardCommonModule.CheckAgentAndPlayer(color, Shipping_zone) then
         local reputationLevels = boardCommonModule.getReputationLevels("spacingGuild", color)
-        if pion_reput_guild[color].getPosition().z < reputationLevels.friendship then
+        if pion_reput.spacingGuild[color].getPosition().z < reputationLevels.friendship then
             broadcastToColor(i18n("notReputation"), color, "Red")
         elseif constants.players[color].cargo.getPosition().z > 8.5 then
             broadcastToColor(i18n("nope"), color, "Purple")
@@ -335,7 +336,7 @@ function ShippingUpDown(_, color)
     Wait.time(activateButtons, 1)
     if boardCommonModule.CheckAgentAndPlayer(color, Shipping_zone) then
         local reputationLevels = boardCommonModule.getReputationLevels("spacingGuild", color)
-        if pion_reput_guild[color].getPosition().z < reputationLevels.friendship then
+        if pion_reput.spacingGuild[color].getPosition().z < reputationLevels.friendship then
             broadcastToColor(i18n("notReputation"), color, "Red")
         elseif cargoUp(color) then
             local leaderName = helperModule.getLeaderName(color)
@@ -353,7 +354,7 @@ function ShippingDownUp(_, color)
     Wait.time(activateButtons, 1)
     if boardCommonModule.CheckAgentAndPlayer(color, Shipping_zone) then
         local reputationLevels = boardCommonModule.getReputationLevels("spacingGuild", color)
-        if pion_reput_guild[color].getPosition().z < reputationLevels.friendship then
+        if pion_reput.spacingGuild[color].getPosition().z < reputationLevels.friendship then
             broadcastToColor(i18n("notReputation"), color, "Red")
         elseif cargoReset(color) then
             local leaderName = helperModule.getLeaderName(color)
@@ -372,6 +373,7 @@ function CommercialMoney(_, color)
     Wait.time(activateButtons, 1)
 
     local leader = helperModule.getLeader(color)
+    assert(leader)
     local leaderName = leader.getName()
     local solariIncome = 5
 

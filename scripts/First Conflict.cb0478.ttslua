@@ -31,6 +31,7 @@ end
 
 function RevealConflict()
     local players = getObjectFromGUID("4a3e76").call("getPlayersBasedOnHotseat")
+    assert(players)
     for _, color in pairs(players) do
         if not helperModule.getLeader(color) then
             broadcastToAll(i18n("chooseLeaderFirst"), 'Orange')

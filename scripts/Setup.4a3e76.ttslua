@@ -14,10 +14,10 @@ marker = constants.first_player_marker
 position_marker = constants.first_player_positions
 
 hotseat = {
-    ["Blue"] = {obj = getObjectFromGUID("9eeccd"), pos = constants.players["Blue"].board.getPosition() + Vector(-16.5, 0.7, 9)},
-    ["Red"] = {obj = getObjectFromGUID("895594"), pos = constants.players["Red"].board.getPosition() + Vector(-16.5, 0.7, 9)},
-    ["Green"] = {obj = getObjectFromGUID("96aa58"), pos = constants.players["Green"].board.getPosition() + Vector(16.5, 0.7, 9)},
-    ["Yellow"] = {obj = getObjectFromGUID("3d1b90"), pos = constants.players["Yellow"].board.getPosition() + Vector(16.5, 0.7, 9)}
+    ["Blue"] = {obj = getObjectFromGUID("9eeccd"), pos = constants.players["Blue"].board.getPosition() + Vector(-13.5, 0.7, -1)},
+    ["Red"] = {obj = getObjectFromGUID("895594"), pos = constants.players["Red"].board.getPosition() + Vector(-13.5, 0.7, -1)},
+    ["Green"] = {obj = getObjectFromGUID("96aa58"), pos = constants.players["Green"].board.getPosition() + Vector(13.5, 0.7, -1)},
+    ["Yellow"] = {obj = getObjectFromGUID("3d1b90"), pos = constants.players["Yellow"].board.getPosition() + Vector(13.5, 0.7, -1)}
 }
 
 manigance = '2b2575'
@@ -726,12 +726,12 @@ function Presetup(_, color)
         updateSave()
         Setup()
     end
-    assert(numPlayers ~= nil)
 end
 
 function Setup()
     Global.call("resetRound")
 
+    assert(numPlayers ~= nil)
     if numPlayers < 3 and blitz == 1 then
         broadcastToAll(i18n("notBlitz"), "White")
         return 1
@@ -907,6 +907,7 @@ end
 function Commune()
 
     destructMissingPlayers()
+    assert(zone_intrigue)
     GetDeckOrCardFromGUID(zone_intrigue).shuffle()
     GetDeckOrCardFromGUID(zone_imperium).shuffle()
     GetDeckOrCardFromGUID('6d8a2e').shuffle()
@@ -1527,6 +1528,7 @@ function getPlayersBasedOnHotseat()
     local players = nil
 
     if hotseat_mode then
+        -- TODO Of course not!
         players = {'Red', 'Blue', 'Green', 'Yellow'}
     else
         players = getSeatedPlayers()
