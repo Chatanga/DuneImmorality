@@ -20,7 +20,6 @@ zone_deck_tleilaxu = constants.zone_deck_tleilaxu
 function buyModule.Buy(zone, pColor, pos, activateButton, buyTleilaxu)
     buyTleilaxu = buyTleilaxu or false
     local card = helperModule.GetDeckOrCard(zone)
-    local zone_deck = zone_deck_imperium
     if card then
         self.clearButtons()
         Wait.time(function() activateButton() end, 2)
@@ -68,36 +67,33 @@ function buyModule.Buy(zone, pColor, pos, activateButton, buyTleilaxu)
                         middleSearch = true
                     end
                 end
-                local techs = constants.players[pColor].techZone.getObjects()
-                local spaceportCheck = false
-                for _, tech in ipairs(techs) do
-                    if tech.hasTag("Spaceport") then
-                        spaceportCheck = true
-                    end
+
+                local spaceportCheck = helperModule.hasTech(pColor, "Spaceport")
+
+                if buyTleilaxu and middleSearch or spaceportCheck then
+                    Player[pColor].showConfirmDialog(
+                        i18n("dialogCardAbove"),
+                        function(player_color)
+                            local player = constants.players[pColor]
+                            local deckorcard = GetDeckOrCard(player.discardZone)
+                            local topOfPlayerDeck = player.drawDeckZone.getPosition()
+                            if deckorcard.type == 'Card' then
+                                deckorcard.setPositionSmooth(topOfPlayerDeck, false, false)
+                                deckorcard.setRotationSmooth({0, 180, 180}, false, false)
+                            else
+                                local nb_cards = #deckorcard.getObjects()
+                                deckorcard.takeObject({
+                                    position = topOfPlayerDeck,
+                                    rotation = {0, 180, 180},
+                                    index = nb_cards - 1
+                                })
+                            end
+                        end)
                 end
-                if buyTleilaxu == true and middleSearch == true or
-                    spaceportCheck == true then
-                    Player[pColor].showConfirmDialog(i18n("dialogCardAbove"),
-                                                     function(player_color)
-                        local deckorcard = GetDeckOrCard(
-                                               constants.players[pColor].discardZone)
-                        if deckorcard.type == 'Card' then
-                            deckorcard.setPositionSmooth(
-                                constants.players[pColor].drawSpot, false, false)
-                            deckorcard.setRotationSmooth({0, 180, 180}, false,
-                                                         false)
-                        else
-                            local nb_cards = #deckorcard.getObjects()
-                            deckorcard.takeObject({
-                                position = constants.players[pColor].drawSpot,
-                                rotation = {0, 180, 180},
-                                index = nb_cards - 1
-                            })
-                        end
-                    end)
-                end
+
                 local params = {position = pos, rotation = {0, 180, 0}}
-                if buyTleilaxu == true then
+                local zone_deck = zone_deck_imperium
+                if buyTleilaxu then
                     zone_deck = zone_deck_tleilaxu
                 end
                 GetDeckOrCardFromGUID(zone_deck).takeObject(params)

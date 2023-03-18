@@ -144,11 +144,13 @@ end
 function parkModule.getObjects(park)
     local objects = {}
     for _, object in ipairs(park.zone.getObjects()) do
-        local isOneOfThem =
-            (not park.tag or object.hasTag(park.tag)) and
-            (not park.description or park.description == object.getDescription())
-        if isOneOfThem then
-            objects[#objects + 1] = object
+        if object.resting then
+            local isOneOfThem =
+                (not park.tag or object.hasTag(park.tag)) and
+                (not park.description or park.description == object.getDescription())
+            if isOneOfThem then
+                objects[#objects + 1] = object
+            end
         end
     end
     return objects

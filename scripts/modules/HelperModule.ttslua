@@ -209,7 +209,7 @@ end
 
 function helperModule.getTroopsFromOrbit(playerColor)
     local mainBoard = getObjectFromGUID('2da390')
-    mainBoard.call("getTroopsFromOrbit", playerColor)
+    return mainBoard.call("getTroopsFromOrbit", playerColor)
 end
 
 function helperModule.getScoreTokens(playerColor)
@@ -243,6 +243,21 @@ end
 
 function helperModule.hasPlayer(playerColor)
     return constants.players[playerColor] ~= nil
+end
+
+function helperModule.hasTech(playerColor, techName)
+    local techs = constants.players[playerColor].techZone.getObjects()
+    for _, tech in ipairs(techs) do
+        if tech.hasTag(techName) then
+            return true
+        end
+    end
+    return false
+end
+
+function helperModule.getDreadnoughtRestingPosition(dreadnoughName)
+    local makerAndRecall = getObjectFromGUID('120026')
+    return makerAndRecall.call("getDreadnoughtRestingPosition", dreadnoughName)
 end
 
 function helperModule.setSharedTable(tableName, table)

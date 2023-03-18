@@ -31,7 +31,7 @@ function playerBoardModule.createOrbitPark(centerPosition)
         for j = 1, 4 do
             local x = (i - 2.5) * 0.5
             local z = (j - 2.5) * 0.5
-            local slot = Vector(x, 0, z):rotateOver('y', -45) + centerPosition
+            local slot = Vector(x, 0.29, z):rotateOver('y', -45) + centerPosition
             allSlots[#allSlots + 1] = slot
             if i < 3 or j < 3 then
                 slots[#slots + 1] = slot
@@ -42,6 +42,7 @@ function playerBoardModule.createOrbitPark(centerPosition)
     local zone = parkModule.findBoundingZone(45, Vector(0.35, 0.35, 0.35), allSlots)
 
     for i, troop in ipairs(constants.players[playerBoardModule.playerColor].troops) do
+        troop.locked = true
         troop.setPosition(slots[i])
         troop.setRotation(Vector(0, 45, 0))
     end

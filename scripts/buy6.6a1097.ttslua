@@ -131,24 +131,23 @@ function moveCardFromDeck(pColor, deck, scoreToMove)
         elseif deck.type == "Card" then
             deck.setPosition(constants.players[pColor].pos_discard)
         end
-        local techs = constants.players[pColor].techZone.getObjects()
-        local spaceportCheck = false
-        for _, tech in ipairs(techs) do
-            if tech.hasTag("Spaceport") then spaceportCheck = true end
-        end
 
-        if spaceportCheck == true then
+        local spaceportCheck = helperModule.hasTech(pColor, "Spaceport")
+
+        if spaceportCheck then
             Player[pColor].showConfirmDialog(
                 i18n("dialogCardAbove"),
                 function(player_color)
-                    local deckorcard = GetDeckOrCard(constants.players[pColor].discardZone)
+                    local player = constants.players[pColor]
+                    local deckorcard = GetDeckOrCard(player.discardZone)
+                    local topOfPlayerDeck = player.drawDeckZone.getPosition()
                     if deckorcard.type=='Card' then
-                        deckorcard.setPositionSmooth(constants.players[pColor].drawSpot, false, false)
+                        deckorcard.setPositionSmooth(topOfPlayerDeck, false, false)
                         deckorcard.setRotationSmooth({0,180,180}, false, false)
                     else
                         local nb_cards = #deckorcard.getObjects()
                         deckorcard.takeObject({
-                            position          = constants.players[pColor].drawSpot,
+                            position          = topOfPlayerDeck,
                             rotation          = {0,180,180},
                             index             = nb_cards-1
                         })

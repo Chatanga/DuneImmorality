@@ -129,6 +129,38 @@ end
 
 function Recall() startLuaCoroutine(self, "ConflictZone") end
 
+-- TODO Make these positions relative to some anchor.
+dreadnoughtRestingPositions =
+{
+    Yellow = {
+        Vector(9.32, 1.57, -11.0),
+        Vector(9.32, 1.57, -9.5)
+    },
+    Green = {
+        Vector(9.32, 1.58, -7.0),
+        Vector(9.32, 1.58, -8.5)
+    },
+    Blue = {
+        Vector(0.35, 1.58, -11.0),
+        Vector(0.35, 1.58, -9.5)
+        },
+    Red = {
+        Vector(0.35, 1.58, -7.09),
+        Vector(0.35, 1.58, -8.5)
+    }
+}
+
+function getDreadnoughtRestingPosition(dreadnoughName)
+    for color, _ in pairs(constants.players) do
+        if dreadnoughName == color .. " dreadnought" then
+            return dreadnoughtRestingPositions[color][1]
+        elseif dreadnoughName == color .. " Dreadnought" then
+            return dreadnoughtRestingPositions[color][2]
+        end
+    end
+    return nil
+end
+
 function ConflictZone()
     marker_round.setPositionSmooth(constants.marker_positions.combat, false, false)
     conflictArea = getObjectFromGUID(conflictZone).getObjects()
@@ -137,37 +169,19 @@ function ConflictZone()
         local itemName = item.getName()
         if constants.players[itemName] then
             helperModule.sendTroopsBackToOrbit(itemName, {item})
-        elseif itemName == "Yellow dreadnought" then
-            item.setPositionSmooth({9.32, 1.57, -11.0}, false, true)
-            item.setRotation({0, 0, 0})
-        elseif itemName == "Yellow Dreadnought" then
-            item.setPositionSmooth({9.32, 1.57, -9.5}, false, true)
-            item.setRotation({0, 0, 0})
-        elseif itemName == "Green dreadnought" then
-            item.setPositionSmooth({9.32, 1.58, -7.0}, false, true)
-            item.setRotation({0, 0, 0})
-        elseif itemName == "Green Dreadnought" then
-            item.setPositionSmooth({9.32, 1.58, -8.5}, false, true)
-            item.setRotation({0, 0, 0})
-        elseif itemName == "Blue dreadnought" then
-            item.setPositionSmooth({0.35, 1.58, -11.0}, false, true)
-            item.setRotation({0, 0, 0})
-        elseif itemName == "Blue Dreadnought" then
-            item.setPositionSmooth({0.35, 1.58, -9.5}, false, true)
-            item.setRotation({0, 0, 0})
-        elseif itemName == "Red dreadnought" then
-            item.setPositionSmooth({0.35, 1.58, -7.09}, false, true)
-            item.setRotation({0, 0, 0})
-        elseif itemName == "Red Dreadnought" then
-            item.setPositionSmooth({0.35, 1.58, -8.5}, false, true)
-            item.setRotation({0, 0, 0})
+        else
+            local p = getDreadnoughtRestingPosition(itemName)
+            if p then
+                item.setPositionSmooth(p, false, true)
+                item.setRotation({0, 0, 0})
+                break
+            end
         end
 
         local Time = os.clock() + 0.1
         while os.clock() < Time do coroutine.yield() end
 
     end
-
 
     mentat = getObjectFromGUID("c2a908")
     mentat.setColorTint({1, 1, 1, 1})

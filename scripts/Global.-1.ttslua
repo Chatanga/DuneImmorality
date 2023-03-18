@@ -701,8 +701,8 @@ function addTroopDefense(victoryRegion)
     if joueur ~= nil then
         local troops = helperModule.getTroopsFromOrbit(joueur)
         for _, troop in ipairs(troops) do
-            -- TODO Hardcoded position.
-            troop.setPositionSmooth({4.79, 2, -5.19}, false, false)
+            troop.setPositionSmooth(constants.getLandingPositionFromGUID('6d632e'), false, false)
+            troop.setRotation(Vector(0, 0, 0))
             local leaderName = helperModule.getLeaderName(joueur)
             broadcastToAll(i18n("defenseTroop"):format(leaderName), joueur)
             break
@@ -736,7 +736,7 @@ function onObjectEnterScriptingZone(zone, enter_object)
     end
 
     if zone.guid == zone_conflict_encours.guid then
-        log("TODO Redundant relocation?")
+        -- TODO Redundant relocation?
         if enter_object.guid == '2b2575' then
             enter_object.setPosition({4.80, 2, -2.73})
             GetDeckOrCard('07e239').takeObject({

@@ -22,33 +22,62 @@ function getAveragePosition(field)
     return p * (1 / count)
 end
 
-pos_TleilaxuTrack = {
-    getAveragePosition("tleilaxuTokens") + Vector(1.3, 2, 0),
-    getAveragePosition("tleilaxuTokens") + Vector(2.6, 2, 0),
-    getAveragePosition("tleilaxuTokens") + Vector(3.9, 2, 0),
-    getAveragePosition("tleilaxuTokens") + Vector(5.2, 2, 0),
-    getAveragePosition("tleilaxuTokens") + Vector(7.4, 2, 0),
-    getAveragePosition("tleilaxuTokens") + Vector(8.4, 2, 0),
-    getAveragePosition("tleilaxuTokens") + Vector(9.2, 2, 0)
-}
+function generateTleilaxuTrackPositions()
+    local positions = {}
+    local origin = getAveragePosition("tleilaxuTokens")
+    for i = 1, 7 do
+        positions[#positions + 1] = origin + Vector(1.3 * i, 2, 0)
+    end
+    return positions
+end
+
+pos_TleilaxuTrack = generateTleilaxuTrackPositions()
 
 beetleAdvancing = false
 researchAdvancing = false
 
--- Chemin de recherche (en positions dans le monde).
-local researchConducted = {
-    ["Red"] = {constants.players["Red"].researchTokens.getPosition() + Vector(0, 2, 0)},
-    ["Blue"] = {constants.players["Blue"].researchTokens.getPosition() + Vector(0, 2, 0)},
-    ["Green"] = {constants.players["Green"].researchTokens.getPosition() + Vector(0, 2, 0)},
-    ["Yellow"] = {constants.players["Yellow"].researchTokens.getPosition() + Vector(0, 2, 0)}
+--[[
+    Research path for each player in a discrete 2D space (we use the usual X-Z
+    coordinates from the Vector class for simpliciy). It abstracts us from the
+    board layout.
+]]
+researchConducted = {
+    Red = {},
+    Blue = {},
+    Green = {},
+    Yellow = {}
 }
+
+tokenStarterPos = {
+    Red = constants.players.Red.tleilaxuTokens.getPosition() + Vector(0, 2, 0),
+    Blue = constants.players.Blue.tleilaxuTokens.getPosition() + Vector(0, 2, 0),
+    Yellow = constants.players.Yellow.tleilaxuTokens.getPosition() + Vector(0, 2, 0),
+    Green = constants.players.Green.tleilaxuTokens.getPosition() + Vector(0, 2, 0),
+}
+
+researchTokenOrigin = getAveragePosition("researchTokens")
+
+researchTokenStartingPositions = {
+    Red = constants.players.Red.researchTokens.getPosition(),
+    Blue = constants.players.Blue.researchTokens.getPosition(),
+    Yellow = constants.players.Yellow.researchTokens.getPosition(),
+    Green = constants.players.Green.researchTokens.getPosition()
+}
+
+function researchSpaceToWorldPosition(positionInResearchSpace)
+    local offset = Vector(
+        positionInResearchSpace.x * 1.2 + 1.2,
+        2,
+        positionInResearchSpace.z * 0.7)
+    return researchTokenOrigin + offset
+end
 
 function createAxlotlTanksPark(playerColor)
     local offsets = {
-        ["Red"] = Vector(-0.8, 0, 0.5),
-        ["Blue"] = Vector(-0.8, 0, -0.5),
-        ["Green"] = Vector(0.8, 0, 0.5),
-        ["Yellow"] = Vector(0.8, 0, -0.5)
+        Red = Vector(-0.8, 0, 0.5),
+        Blue = Vector(-0.8, 0, -0.5),
+        Green = Vector(0.8, 0, 0.5),
+        Yellow = Vector(0.8, 0, -0.5)
     }
 
     local origin = constants.getPositionFromGUID("f5de09") + offsets[playerColor]
@@ -78,11 +107,11 @@ function createAxlotlTanksPark(playerColor)
         true)
 end
 
-local axlotlTanksParks = {
-    ["Green"] = createAxlotlTanksPark("Green"),
-    ["Yellow"] = createAxlotlTanksPark("Yellow"),
-    ["Blue"] = createAxlotlTanksPark("Blue"),
-    ["Red"] = createAxlotlTanksPark("Red")
+axlotlTanksParks = {
+    Green = createAxlotlTanksPark("Green"),
+    Yellow = createAxlotlTanksPark("Yellow"),
+    Blue = createAxlotlTanksPark("Blue"),
+    Red = createAxlotlTanksPark("Red")
 }
 
 function onLoad(saved_data)
@@ -208,7 +237,6 @@ function onLoad(saved_data)
         font_size = 450,
         color = {0.25, 0.25, 0.25, 1},
         font_color = {0.856, 0.1, 0.094, 1},
-        tooltip = "←",
         tooltip = i18n("researchBackToolTip")
     }
 
@@ -280,17 +308,10 @@ function backTleilaxu(obj, color)
 
 end
 
-researchCoords = {
-    ['Red'] = nil,
-    ['Blue'] = nil,
-    ['Green'] = nil,
-    ['Yellow'] = nil
-}
-
-researchTokenOrigin = getAveragePosition("researchTokens")
-
 function advanceResearchToken(color, verticalDirection)
-    local coords = researchCoords[color]
+    local playerResearchDone = researchConducted[color]
+    local coords = playerResearchDone[#playerResearchDone]
+
     if coords then
         if verticalDirection == "up" then
             coords = coords + Vector(1, 0, 1)
@@ -311,36 +332,38 @@ function advanceResearchToken(color, verticalDirection)
         local leaderName = helperModule.getLeaderName(color)
         broadcastToAll(i18n("researchIncreased"):format(leaderName), color)
 
+        table.insert(playerResearchDone, coords)
+        updateSave()
+
         local token = constants.players[color].researchTokens
+        token.setPositionSmooth(researchSpaceToWorldPosition(coords), false, false)
 
-        researchCoords[color] = coords
-        local p = researchTokenOrigin + Vector(coords.x * 1.2 + 1.2, 2, coords.z * 0.7)
-        token.setPositionSmooth(p, false, false)
         researchAdvancing = true
-
-        Wait.condition(function()
-            table.insert(researchConducted[color], token.getPosition())
-            updateSave()
-        end, function() return not token.isSmoothMoving() end)
     end
 end
 
 function rollBackResearch(color)
-
-    local leaderName = helperModule.getLeaderName(color)
     local playerResearchDone = researchConducted[color]
 
-    if #playerResearchDone == 1 then
+    if #playerResearchDone == 0 then
         broadcastToColor(i18n("researchStartingPos"), color, color)
     else
-        local token = constants.players[color].researchTokens
+        local leaderName = helperModule.getLeaderName(color)
+        broadcastToAll(i18n("researchDecreased"):format(leaderName), "Pink")
 
-        token.setPositionSmooth(playerResearchDone[#playerResearchDone - 1],
-                                false, false)
-        researchAdvancing = false
         table.remove(playerResearchDone, #playerResearchDone)
         updateSave()
-        broadcastToAll(i18n("researchDecreased"):format(leaderName), "Pink")
+
+        local p
+        if #playerResearchDone > 0 then
+            p = researchSpaceToWorldPosition(playerResearchDone[#playerResearchDone])
+        else
+            p = researchTokenStartingPositions[color]
+        end
+
+        local token = constants.players[color].researchTokens
+        token.setPositionSmooth(p, false, false)
+        researchAdvancing = false
     end
 
 end
@@ -370,13 +393,6 @@ function moveBeneTleilaxToken(color, silent)
         broadcastToColor(i18n("tleilaxuMax"), color, color)
     end
 end
-
-tokenStarterPos = {
-    ["Red"] = constants.players["Red"].tleilaxuTokens.getPosition() + Vector(0, 2, 0),
-    ["Blue"] = constants.players["Blue"].tleilaxuTokens.getPosition() + Vector(0, 2, 0),
-    ["Yellow"] = constants.players["Yellow"].tleilaxuTokens.getPosition() + Vector(0, 2, 0),
-    ["Green"] = constants.players["Green"].tleilaxuTokens.getPosition() + Vector(0, 2, 0),
-}
 
 function backBeneTleilaxToken(color)
     local token = constants.players[color].tleilaxuTokens

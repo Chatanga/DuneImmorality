@@ -960,7 +960,12 @@ function boardCommonModule.HighCouncil(color)
             local council_influence_bonus_bag = getObjectFromGUID("074f6d")
             council_influence_bonus_bag.takeObject({
                 position = constants.players[color].council_bonus_zone,
-                rotation = {0, 180, 0}
+                rotation = Vector(0, 180, 0),
+                callback_function = function (object)
+                    object.locked = true
+                    object.setScale(Vector(0.4, 1, 0.4))
+                    object.setPosition(object.getPosition() + Vector(0, -0.2, 0))
+                end
             })
 
             if leader.hasTag("Ilban") then

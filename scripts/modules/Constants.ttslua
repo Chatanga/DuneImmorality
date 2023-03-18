@@ -21,15 +21,13 @@ function constants.getLandingPosition(anchor)
     return anchor.getPosition() + Vector(0, 0.3, 0)
 end
 
-function constants.resolveGUIDs(data)
-    --log("Resolving GUIDS for script " .. tostring(self.getGUID()))
-    local result = constants._resolveGUIDs(data)
-    return result
+function constants.isSomeKindOfObject(data)
+    return getmetatable(data) ~= nil
 end
 
-function constants._resolveGUIDs(data)
+function constants.resolveGUIDs(data)
     local newData = data
-    if newData then
+    if data then
         local t = type(data)
         if t == "string" and string.match(data, "[a-z0-9][a-z0-9][a-z0-9][a-z0-9][a-z0-9][a-z0-9]") then
             newData = getObjectFromGUID(data)
@@ -37,9 +35,14 @@ function constants._resolveGUIDs(data)
                 log("[resolveGUIDs] GUID inconnu : " .. data)
             end
         elseif t == "table" then
-            newData = {}
-            for k, v in pairs(data) do
-                newData[k] = constants._resolveGUIDs(v)
+            if not constants.isSomeKindOfObject(data) then
+                newData = {}
+                for i, v in ipairs(data) do
+                    newData[i] = constants.resolveGUIDs(v)
+                end
+                for k, v in pairs(data) do
+                    newData[k] = constants.resolveGUIDs(v)
+                end
             end
         elseif t == "number" then
             -- NOP
@@ -131,7 +134,6 @@ constants.players = constants.resolveGUIDs({
         pos_discard = constants.getLandingPositionFromGUID("e07493"),
         drawDeck = "b8e747",
         drawDeckZone = "4f08fc",
-        drawSpot = Vector(-24.65, 2.2, 20.36),
         discardZone = "e07493",
         trash = "ea3fe1",
         techZone = '9555b8',
@@ -161,7 +163,7 @@ constants.players = constants.resolveGUIDs({
         },
         swordmaster = "a78ad7",
         council_token = "f5b14a",
-        council_zone =  constants.getPositionFromGUID('074f6d') + Vector(-0.81, 1, 0),
+        council_zone = constants.getPositionFromGUID('074f6d') + Vector(-0.81, 1, 0),
         council_bonus_zone = constants.getPositionFromGUID('2d3346') + Vector(-7, 0, -11),
         vanilla_council_zone = constants.getPositionFromGUID('074f6d') + Vector(-1.00, 1, 0),
         vp_4_players_token = "311255",
@@ -185,7 +187,6 @@ constants.players = constants.resolveGUIDs({
         pos_discard = constants.getLandingPositionFromGUID("26bf8b"),
         drawDeck = "a76b37",
         drawDeckZone = "907f66",
-        drawSpot = Vector(-24.38, 2.2, -1.50),
         discardZone = "26bf8b",
         trash = "52a539",
         techZone = '2d3346',
@@ -239,7 +240,6 @@ constants.players = constants.resolveGUIDs({
         pos_discard = constants.getLandingPositionFromGUID("2298aa"),
         drawDeck = "0c5e03",
         drawDeckZone = "6d8a2e",
-        drawSpot = Vector(13.68, 2.2, 20.52),
         discardZone = "2298aa",
         trash = "4060b5",
         techZone = '546163',
@@ -270,7 +270,7 @@ constants.players = constants.resolveGUIDs({
         swordmaster = "635c49",
         council_token = "1be491",
         council_zone = constants.getPositionFromGUID('074f6d') + Vector(1.60, 1, 0),
-        council_bonus_zone = constants.getPositionFromGUID('3d705e') + Vector(7, 0, -11),
+        council_bonus_zone = constants.getPositionFromGUID('1be491') + Vector(0, 0, 0), -- constants.getPositionFromGUID('3d705e') + Vector(7, 0, -11),
         vanilla_council_zone = constants.getPositionFromGUID('074f6d') + Vector(1.37, 1, 0),
         vp_4_players_token = "4e8873",
         score_marker = "20bbd1",
@@ -293,7 +293,6 @@ constants.players = constants.resolveGUIDs({
         pos_discard = constants.getLandingPositionFromGUID("6bb3b6"),
         drawDeck = "014c6a",
         drawDeckZone = "e6cfee",
-        drawSpot = Vector(13.54, 2.2, -1.50),
         discardZone = "6bb3b6",
         trash = "7d1e07",
         techZone = '3d705e',

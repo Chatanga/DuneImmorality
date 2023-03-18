@@ -16,13 +16,6 @@ Dreadnought_zone = getObjectFromGUID("83ea90")
 
 players = constants.players
 
-dreadnought_pos = {
-    ["Red"] = {0.31, 2, -3.55},
-    ["Blue"] = {0.34, 2, -6.37},
-    ["Green"] = {9.3, 2, -3.67},
-    ["Yellow"] = {9.3, 2, -6.33}
-}
-
 function onload()
     self.interactable = false
     activateButtons()
@@ -116,11 +109,11 @@ function Dreadnought(_, color)
 end
 
 function buyDreadnought(_, color)
-    local Objects = constants.players[color].zone_player.getObjects()
-    for _, value in ipairs(Objects) do
-        if value.getName() == color .. " Dreadnought" or value.getName() ==
-            color .. " dreadnought" then
-            value.setPositionSmooth(dreadnought_pos[color], false, false)
+    local objects = constants.players[color].zone_player.getObjects()
+    for _, object in ipairs(objects) do
+        local p = helperModule.getDreadnoughtRestingPosition(object.getName())
+        if p then
+            object.setPositionSmooth(p, false, false)
             break
         end
     end

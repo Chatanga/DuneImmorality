@@ -14,19 +14,11 @@ players = constants.players
 techZone = constants.techZone
 
 cargo_pos_init = {
-    ["Yellow"] = constants.getPositionFromGUID("8fa76f"),
-    ["Green"] = constants.getPositionFromGUID("34281d"),
-    ["Blue"] = constants.getPositionFromGUID("68e424"),
-    ["Red"] = constants.getPositionFromGUID("e9096d")
+    Yellow = constants.getPositionFromGUID("8fa76f"),
+    Green = constants.getPositionFromGUID("34281d"),
+    Blue = constants.getPositionFromGUID("68e424"),
+    Red = constants.getPositionFromGUID("e9096d")
 }
---[[
-pion_reput_guild = {
-    ["Red"] = getObjectFromGUID('be464e'),
-    ["Blue"] = getObjectFromGUID('4069d8'),
-    ["Green"] = getObjectFromGUID('89da7d'),
-    ["Yellow"] = getObjectFromGUID('9d0075')
-}
-]]--
 
 function onload()
     i18n.setLocale(Global.getVar("locale"))
@@ -230,15 +222,25 @@ function gainSolariFromSmuggling(color)
     return solariIncome .. " " .. solari
 end
 
+function getCargoStep(color)
+    local p = constants.players[color].cargo.getPosition()
+    return math.floor((p.z - cargo_pos_init[color].z) / 1.1 + 0.5)
+end
+
+function setCargoPositionSmooth(color, step)
+    local p = cargo_pos_init[color]:copy()
+    p:setAt('z', p.z + 1.1 * step)
+    constants.players[color].cargo.setPositionSmooth(p, false, true)
+end
+
 function cargoUp(color)
     local cargoMoved = false
 
-    local zMax = cargo_pos_init[color].z + 1.1 * 2.5
-    if constants.players[color].cargo.getPosition().z > zMax then
+    local step = getCargoStep(color)
+    if step >= 3 then
         broadcastToColor(i18n("nope"), color, "Purple")
     else
-        constants.players[color].cargo.setPositionSmooth(constants.players[color].cargo.getPosition() +
-                                           Vector({0, 0, 1.1}), false, true)
+        setCargoPositionSmooth(color, step + 1)
         cargoMoved = true
     end
 
@@ -248,11 +250,11 @@ end
 function cargoReset(color)
     local cargoMoved = false
 
-    local zMin = cargo_pos_init[color].z + 1.1 * 0.5
-    if constants.players[color].cargo.getPosition().z < zMin then
+    local step = getCargoStep(color)
+    if step == 0 then
         broadcastToColor(i18n("nope"), color, "Purple")
     else
-        constants.players[color].cargo.setPositionSmooth(cargo_pos_init[color], false, true)
+        setCargoPositionSmooth(color, 0)
         cargoMoved = true
     end
 
@@ -278,7 +280,6 @@ function SmugglingDown(_, color)
     self.clearButtons()
     Wait.time(activateButtons, 1)
     if boardCommonModule.CheckAgentAndPlayer(color, Smuggling_zone) then
-
         if cargoReset(color) then
             local leaderName = helperModule.getLeaderName(color)
             local solariString = gainSolariFromSmuggling(color)
@@ -292,7 +293,6 @@ end
 function CommercialUp(_, color)
     self.clearButtons()
     Wait.time(activateButtons, 1)
-
     if cargoUp(color) then
         local leaderName = helperModule.getLeaderName(color)
         broadcastToAll(leaderName .. i18n("commercialUp"), color)
@@ -313,17 +313,15 @@ function ShippingUpUp(_, color)
     Wait.time(activateButtons, 1)
     if boardCommonModule.CheckAgentAndPlayer(color, Shipping_zone) then
         local reputationLevels = boardCommonModule.getReputationLevels("spacingGuild", color)
+        local step = getCargoStep(color)
         if pion_reput.spacingGuild[color].getPosition().z < reputationLevels.friendship then
             broadcastToColor(i18n("notReputation"), color, "Red")
-        elseif constants.players[color].cargo.getPosition().z > 8.5 then
+        elseif step >= 2 then
             broadcastToColor(i18n("nope"), color, "Purple")
         else
-            constants.players[color].cargo.setPositionSmooth(
-                constants.players[color].cargo.getPosition() + Vector({0, 0, 1.1}), false, true)
+            cargoUp(color)
             Wait.time(function()
-                constants.players[color].cargo.setPositionSmooth(
-                    constants.players[color].cargo.getPosition() + Vector({0, 0, 1.1}), false,
-                    true)
+                cargoUp(color)
             end, 0.5)
             local leaderName = helperModule.getLeaderName(color)
             broadcastToAll(leaderName .. i18n("commercialUpUp"), color)
@@ -339,11 +337,10 @@ function ShippingUpDown(_, color)
         if pion_reput.spacingGuild[color].getPosition().z < reputationLevels.friendship then
             broadcastToColor(i18n("notReputation"), color, "Red")
         elseif cargoUp(color) then
-            local leaderName = helperModule.getLeaderName(color)
             Wait.time(function()
-                constants.players[color].cargo.setPositionSmooth(cargo_pos_init[color], false,
-                                               true)
+                cargoReset(color)
             end, 0.5)
+            local leaderName = helperModule.getLeaderName(color)
             broadcastToAll(leaderName .. i18n("commercialUpDown"), color)
         end
     end
@@ -357,12 +354,10 @@ function ShippingDownUp(_, color)
         if pion_reput.spacingGuild[color].getPosition().z < reputationLevels.friendship then
             broadcastToColor(i18n("notReputation"), color, "Red")
         elseif cargoReset(color) then
-            local leaderName = helperModule.getLeaderName(color)
             Wait.time(function()
-                constants.players[color].cargo.setPositionSmooth(
-                    constants.players[color].cargo.getPosition() + Vector({0, 0, 1.1}), false,
-                    true)
+                cargoUp(color)
             end, 0.5)
+            local leaderName = helperModule.getLeaderName(color)
             broadcastToAll(leaderName .. i18n("commercialDownUp"), color)
         end
     end

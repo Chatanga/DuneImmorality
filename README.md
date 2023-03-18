@@ -50,18 +50,7 @@
 - le support de la maison Hagal.
 
 # A faire :
-- augmenter la limite linéaire de la révélation.
-- Le double-saut sur la piste commerciale permet de dépasser le plafond.
 - 1er tour : round start.
-- Manigances à détruire ?
-- Les boutons "passer son tour" persistent trop longtemps ?
-- Achat sur pioche : mauvaise position.
-- Persistance problématique sur la piste du BT.
-- Achat cuirassé à l’ouest.
-- Placement bonus conseil.
-- Prise en compte tardive transport de troupes.
-- Dualité boutons pour passer.
-- Déploiement sur occupation.
 
 # A faire plus tard :
 - Remplacer la tétrachié de ["literal"] en (.)literal.
@@ -74,3 +63,6 @@
 - intégrer les derniers changements (faire un diff en T).
 - corriger la taille bizarre du jeton de PV 4 joueurs bleu.
 - enfouissement des troupes.
+- Mode solo.
+- Recall for Endgame -> detected end of game: reveal intrigue and grant VP tokens automatically.
+- Unifier le code des 4 * 3 compteurs de ressources.
