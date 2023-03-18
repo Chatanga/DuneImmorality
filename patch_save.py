@@ -46,6 +46,20 @@ tech_decal = (1.45631063, {
     "Size": 1.8
 })
 
+left_scoreboard_decal = (20, {
+    "Name": "Left Scoreboard",
+    #"ImageURL": "file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/misc/left_scoreboard_decal.png",
+    "ImageURL": "http://cloud-3.steamusercontent.com/ugc/2042984690511948114/BD4C6DB374A73A3A1586E84DD94DD2459EB51782/",
+    "Size": 1.1
+})
+
+right_scoreboard_decal = (20, {
+    "Name": "Right Scoreboard",
+    #"ImageURL": "file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/misc/right_scoreboard_decal.png",
+    "ImageURL": "http://cloud-3.steamusercontent.com/ugc/2042984690511949009/00AEA6A9B03D893B1BF82EFF392448FD52B8C70E/",
+    "Size": 1.1
+})
+
 def collect_structure_guid(structure):
     guids = set()
     to_be_visited = [structure]
@@ -297,7 +311,7 @@ def layout_player_board(structure, object_by_guid, color):
                     "posY": 0.68 + board['Transform']['posY'],
                     "posZ": -zPos + board['Transform']['posZ'],
                     "rotX": 90,
-                    "rotY": 360,
+                    "rotY": 0,
                     "rotZ": 0,
                     "scaleX": size * with_decal[0],
                     "scaleY": size,
@@ -332,13 +346,35 @@ def layout_player_board(structure, object_by_guid, color):
     add_snap_point('dreadnoughts/1', unchanged_x, rotated = True, with_decal = anchor_decal)
 
     for i in range(0, 18):
-        add_snap_point('VP 4 Players', symmetrical_x, i, 0)
+        add_snap_point('VP 4 Players', symmetrical_x, i * 1.092, 0)
 
     for i in range(0, 24):
         add_snap_point('agent_and_reveal_zone', symmetrical_x, (i % 12) * 2.5 - 13, (i // 12) * 4)
 
     for i in range(0, 6):
         add_snap_point('tech_board_zone', symmetrical_x, (i // 3) * 3 - 1.5, (i % 3) * 2 - 2, with_decal = tech_decal)
+
+    if True:
+        if color == 'Green' or color == 'Yellow':
+            decal = right_scoreboard_decal
+        else:
+            decal = left_scoreboard_decal
+        size = decal[1]['Size']
+        decal = {
+            "Transform": {
+                "posX": symmetrical_x(-4.5),
+                "posY": 1.15,
+                "posZ": zOrigin + 10.35,
+                "rotX": 90,
+                "rotY": 0,
+                "rotZ": 0,
+                "scaleX": size * decal[0],
+                "scaleY": size,
+                "scaleZ": size
+            },
+            "CustomDecal": decal[1]
+        }
+        object_by_guid[-1]['Decals'].append(decal)
 
 def add_space_snap_points(structure, object_by_guid):
 
@@ -409,6 +445,47 @@ def add_combat_force_snap_points(structure, object_by_guid):
         add_snap_point(
             -0.47 + (i % 10) * 0.90,
             -1.63 - (i // 10) * 1.01)
+
+def add_card_snap_points(structure, object_by_guid):
+    back_card_guid = structure["intrigue"]["intrigue_discard_back_card"]
+    back_card = object_by_guid[back_card_guid]
+
+    if not 'AttachedSnapPoints' in back_card:
+        back_card['AttachedSnapPoints'] = []
+
+    back_card['AttachedSnapPoints'].append({
+        "Position": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+        },
+        "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+        }
+    })
+
+def add_tech_tile_snap_points(structure, object_by_guid):
+    board_guid = structure["ix"]["Board Planet Ix"]
+    board = object_by_guid[board_guid]
+
+    if not 'AttachedSnapPoints' in board:
+        board['AttachedSnapPoints'] = []
+
+    for i in range(0, 3):
+        board['AttachedSnapPoints'].append({
+            "Position": {
+                "x": -0.5,
+                "y": 0,
+                "z": 0.5 - i * 0.6
+            },
+            "Rotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        })
 
 def filterSnapPoints(object):
     accepted_tags = ['Agent', 'Mentat']
@@ -516,7 +593,9 @@ def patch_save(input_path, output_path):
         draw_decal[1],
         discard_decal[1],
         leader_decal[1],
-        tech_decal[1]
+        tech_decal[1],
+        left_scoreboard_decal[1],
+        right_scoreboard_decal[1]
     ]
     save['Decals'] = []
 
@@ -765,6 +844,8 @@ def patch_save(input_path, output_path):
 
     #add_space_snap_points(structure, object_by_guid)
     add_combat_force_snap_points(structure, object_by_guid)
+    add_card_snap_points(structure, object_by_guid)
+    add_tech_tile_snap_points(structure, object_by_guid)
     clean_up_bottom(structure, object_by_guid)
 
     save['ObjectStates'] = new_objects

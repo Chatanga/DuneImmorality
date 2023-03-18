@@ -398,8 +398,8 @@
   "intrigue": {
     "intrigue_deck": "77d25d",
     "intrigue_deck_zone": "a377d8",
-    "intrigue_discard_back_card": "90f762",
-    "intrigue_discard_anchor": "976c3a"
+    "intrigue_deck_anchor": "976c3a",
+    "intrigue_discard_back_card": "90f762"
   },
   "base": {
     "board": "2da390",

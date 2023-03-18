@@ -97,7 +97,7 @@ function playerBoardModule.createPlayerScoreboardPark()
     local slots = {}
     for i = 0, 17 do
         slots[i + 1] = Vector(
-            origin.x + i * 1 * direction,
+            origin.x + i * 1.092 * direction,
             origin.y,
             origin.z)
     end

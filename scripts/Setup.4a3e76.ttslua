@@ -1494,7 +1494,13 @@ function destructMissingPlayers()
 
     for color, player in pairs(constants.players) do
         if not hasValue(seated_players, color) then
-            player.board.call("shutdown")
+            if rise_of_ix == 1 and immortality == 1 then
+                log("rise_of_ix: " .. tostring(rise_of_ix))
+                log("immortality: " .. tostring(immortality))
+                player.board.call("shutdown")
+            else
+                log("Not destroying " .. color .. " player resources to avoid raising exceptions...")
+            end
         end
     end
 end

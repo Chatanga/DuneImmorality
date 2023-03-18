@@ -50,19 +50,16 @@
 - le support de la maison Hagal.
 
 # A faire :
-- 1er tour : round start.
+- ajouter les point d'aimantation manquants et vérifier leurs tags.
+- intégrer les derniers changements (faire un diff en T).
 
 # A faire plus tard :
+- Pas de passage de "round start" à "player turns" au 1er tour.
 - Remplacer la tétrachié de ["literal"] en (.)literal.
-- ajouter les point d'aimantation manquants et vérifier leurs tags.
 - gérer plus finement les hauteurs des boutons.
 - ajouter des colliders.
-- élargir et décorer la barrette de jetons de PV ?
 - améliorer la qualité des décalcos (et pointillés pour la zone du marqueur premier joueur).
 - mettre à jour les crédits (y compris pour les textures).
-- intégrer les derniers changements (faire un diff en T).
-- corriger la taille bizarre du jeton de PV 4 joueurs bleu.
-- enfouissement des troupes.
 - Mode solo.
-- Recall for Endgame -> detected end of game: reveal intrigue and grant VP tokens automatically.
+- Enhanced Recall for Endgame -> detected end of game: reveal intrigue and grant VP tokens automatically.
 - Unifier le code des 4 * 3 compteurs de ressources.
