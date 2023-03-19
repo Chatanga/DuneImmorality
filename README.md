@@ -1,6 +1,7 @@
 # Important :
 - Activation de "Physic Full" côté joueur pour que la dépose de cartes soit OK.
 - Ne pas référencer des objets dynamique au chargement (du script et de l’objet).
+- Ne pas référencer d’autres objets que soi avant l’appel à "onLoad".
 
 # Conception :
 - prise en compte du rechargement potentiel des chefs.

@@ -1,5 +1,5 @@
 atomicsModule = require("AtomicsModule")
 
-function onLoad() atomicsModule.homeButton(self)
-end
-
+_ = require("Core").registerLoadablePart(function(_)
+    atomicsModule.homeButton(self)
+end)

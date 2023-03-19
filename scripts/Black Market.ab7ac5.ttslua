@@ -14,10 +14,10 @@ pos_black_market = constants.pos_black_market
 zone_black_market = constants.zone_black_market
 deck_imperium = constants.zone_deck_imperium
 
-function onLoad()
+_ = require("Core").registerLoadablePart(function(saved_data)
     self.interactable = false
     activateButtons()
-end
+end)
 
 function activateButtons()
     -- TODO Fix them.
@@ -27,7 +27,7 @@ function activateButtons()
         Vector(2.05, 0.1, 1)
     }
 
-    for i, position in ipairs(positionts) do
+    for i, position in ipairs(positions) do
         self.createButton({
             click_function = "Buy" .. i .. "Market",
             function_owner = self,

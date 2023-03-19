@@ -7,15 +7,12 @@ helperModule = require("HelperModule")
 
 boardCommonModule = require("BoardCommonModule")
 
-players = constants.players
-
 DrawOne = helperModule.DrawOne
 
-ResearchStation_zone = boardCommonModule.ResearchStation_zone
+_ = require("Core").registerLoadablePart(function(saved_data)
 
-scriptZone_endTrack_research = getObjectFromGUID("da08cd")
+    scriptZone_endTrack_research = getObjectFromGUID("da08cd")
 
-function onload()
     self.createButton({
         click_function = "ResearchStation",
         function_owner = self,
@@ -28,7 +25,7 @@ function onload()
         color = {0.25, 0.25, 0.25, 1},
         font_color = {0.7843, 0.7843, 0.7843, 1}
     })
-end
+end)
 
 function ResearchStation(_, color)
 
@@ -58,7 +55,7 @@ function ResearchStation(_, color)
                 advanceResearch = ""
             end
 
-            local enoughCards = isDeckContainsEnough(color, numberToDraw)
+            local enoughCards = helperModule.isDeckContainsEnough(color, numberToDraw)
 
             if not enoughCards then
 

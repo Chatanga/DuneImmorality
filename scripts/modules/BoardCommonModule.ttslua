@@ -1,5 +1,7 @@
 local boardCommonModule = {}
 
+core = require("Core")
+
 i18n = require("i18n")
 require("locales")
 -- i18n.setLocale(Global.getVar("locale"))
@@ -8,42 +10,10 @@ constants = require("Constants")
 
 helperModule = require("HelperModule")
 
-isDeckContainsEnough = helperModule.isDeckContainsEnough
-
 DrawOne = helperModule.DrawOne
 
-flag_basin_zone = getObjectFromGUID("3fe117")
-flag_arrakeen_zone = getObjectFromGUID("f1f53d")
-flag_carthag_zone = getObjectFromGUID("9fc2e1")
-
-Zone_mentat = getObjectFromGUID("565d09")
-
-Zone_foldspace = getObjectFromGUID("6b62e0")
-bonus_spice1 = getObjectFromGUID('3cdb2d')
-bonus_spice2 = getObjectFromGUID('394db2')
-bonus_spice3 = getObjectFromGUID('116807')
-
-Stillsuits_zone = getObjectFromGUID("556f43")
-HardyWarriors_zone = getObjectFromGUID("a2fd8e")
-Secrets_zone = getObjectFromGUID("1f7c08")
-SelectiveBreeding_zone = getObjectFromGUID("7dc6e5")
-Foldspace_zone = getObjectFromGUID("9a9eb5")
-Heighliner_zone = getObjectFromGUID("8b0515")
-Wealth_zone = getObjectFromGUID("b2c461")
-Conspire_zone = getObjectFromGUID("cd9386")
-SietchTabr_zone = getObjectFromGUID("5bc970")
-boardCommonModule.ResearchStation_zone = getObjectFromGUID("af11aa")
-Carthag_zone = getObjectFromGUID("b1c938")
-Arrakeen_zone = getObjectFromGUID("17b646")
-TheGreatFlat_zone = getObjectFromGUID("69f925")
-HaggaBasin_zone = getObjectFromGUID("622708")
-ImperialBasin_zone = getObjectFromGUID("2c77c1")
-HighCouncil_zone = getObjectFromGUID("8a6315")
-Mentat_zone = getObjectFromGUID("30cff9")
-foldspace = getObjectFromGUID("38ffc0")
-intrigue_zone = getObjectFromGUID("a377d8")
-
-pion_reput = constants.resolveGUIDs({
+-- Beware that this variable is processed on loading to resolve its GUIDs.
+pion_reput = {
     emperor = {
         Red = 'acfcef',
         Blue = '426a23',
@@ -68,48 +38,84 @@ pion_reput = constants.resolveGUIDs({
         Green = 'd390dc',
         Yellow = '77d7c8'
     }
-})
+}
 
-initital_position_pion_reput = constants.resolveGUIDs({
+initial_position_pion_reput = {
     emperor = {
-        Red = constants.getHardcodedPositionFromGUID('acfcef', 0, 0, 0),
-        Blue = constants.getHardcodedPositionFromGUID('426a23', 0, 0, 0),
-        Green = constants.getHardcodedPositionFromGUID('d7c9ba', 0, 0, 0),
-        Yellow = constants.getHardcodedPositionFromGUID('489871', 0, 0, 0)
+        Red = core.getHardcodedPositionFromGUID('acfcef', -9.718932, 0.76778672, 1.850019),
+        Blue = core.getHardcodedPositionFromGUID('426a23', -10.1873131, 0.76843987, 1.85005856),
+        Green = core.getHardcodedPositionFromGUID('d7c9ba', -9.273371, 0.76966546, 1.850011),
+        Yellow = core.getHardcodedPositionFromGUID('489871', -8.834659, 0.76905427, 1.850054)
     },
     spacingGuild = {
-        Red = constants.getHardcodedPositionFromGUID('be464e', 0, 0, 0),
-        Blue = constants.getHardcodedPositionFromGUID('4069d8', 0, 0, 0),
-        Green = constants.getHardcodedPositionFromGUID('89da7d', 0, 0, 0),
-        Yellow = constants.getHardcodedPositionFromGUID('9d0075', 0, 0, 0)
+        Red = core.getHardcodedPositionFromGUID('be464e', -9.737917, 0.76619658, -3.6400073),
+        Blue = core.getHardcodedPositionFromGUID('4069d8', -10.1552429, 0.76677809, -3.640007824),
+        Green = core.getHardcodedPositionFromGUID('89da7d', -9.288127, 0.76806948, -3.640010327),
+        Yellow = core.getHardcodedPositionFromGUID('9d0075', -8.846331, 0.76745353, -3.63998425)
     },
     beneGesserit = {
-        Red = constants.getHardcodedPositionFromGUID('713eae', 0, 0, 0),
-        Blue = constants.getHardcodedPositionFromGUID('2a88a6', 0, 0, 0),
-        Green = constants.getHardcodedPositionFromGUID('2dc980', 0, 0, 0),
-        Yellow = constants.getHardcodedPositionFromGUID('a3729e', 0, 0, 0)
+        Red = core.getHardcodedPositionFromGUID('713eae', -9.766583, 0.76462874, -9.100027),
+        Blue = core.getHardcodedPositionFromGUID('2a88a6', -10.2121153, 0.76524982, -9.1000843),
+        Green = core.getHardcodedPositionFromGUID('2dc980', -9.319731, 0.76650558, -9.10001659),
+        Yellow = core.getHardcodedPositionFromGUID('a3729e', -8.888711, 0.76590512, -9.10008144)
     },
     fremen = {
-        Red = constants.getHardcodedPositionFromGUID('088f51', 0, 0, 0),
-        Blue = constants.getHardcodedPositionFromGUID('0e6e41', 0, 0, 0),
-        Green = constants.getHardcodedPositionFromGUID('d390dc', 0, 0, 0),
-        Yellow = constants.getHardcodedPositionFromGUID('77d7c8', 0, 0, 0)
+        Red = core.getHardcodedPositionFromGUID('088f51', -9.762483, 0.76301227, -14.5700312),
+        Blue = core.getHardcodedPositionFromGUID('0e6e41', -10.2238894, 0.76365564, -14.5700541),
+        Green = core.getHardcodedPositionFromGUID('d390dc', -9.328378, 0.76490722, -14.570013),
+        Yellow = core.getHardcodedPositionFromGUID('77d7c8', -8.88775, 0.764293, -14.5700016)
     }
-})
-
-alliance_token = {
-    ["emperor"] = getObjectFromGUID('13e990'),
-    ["spacingGuild"] = getObjectFromGUID('ad1aae'),
-    ["beneGesserit"] = getObjectFromGUID('33452e'),
-    ["fremen"] = getObjectFromGUID('4c2bcc')
 }
 
 initial_alliance_pos = {
-    ["emperor"] = constants.getHardcodedPositionFromGUID('13e990', 0, 0, 0),
-    ["spacingGuild"] = constants.getHardcodedPositionFromGUID('ad1aae', 0, 0, 0),
-    ["beneGesserit"] = constants.getHardcodedPositionFromGUID('33452e', 0, 0, 0),
-    ["fremen"] = constants.getHardcodedPositionFromGUID('4c2bcc', 0, 0, 0)
+    emperor = core.getHardcodedPositionFromGUID('13e990', -9.511963, 0.79617927, 5.860889),
+    spacingGuild = core.getHardcodedPositionFromGUID('ad1aae', -9.507135, 0.79452, 0.249081),
+    beneGesserit = core.getHardcodedPositionFromGUID('33452e', -9.551374, 0.79297314, -5.2134546),
+    fremen = core.getHardcodedPositionFromGUID('4c2bcc', -9.543688, 0.79135559, -10.670769)
 }
+
+_ = core.registerLoadablePart(function(_)
+
+    flag_basin_zone = getObjectFromGUID("3fe117")
+    flag_arrakeen_zone = getObjectFromGUID("f1f53d")
+    flag_carthag_zone = getObjectFromGUID("9fc2e1")
+
+    Zone_mentat = getObjectFromGUID("565d09")
+
+    Zone_foldspace = getObjectFromGUID("6b62e0")
+    bonus_spice1 = getObjectFromGUID('3cdb2d')
+    bonus_spice2 = getObjectFromGUID('394db2')
+    bonus_spice3 = getObjectFromGUID('116807')
+
+    Stillsuits_zone = getObjectFromGUID("556f43")
+    HardyWarriors_zone = getObjectFromGUID("a2fd8e")
+    Secrets_zone = getObjectFromGUID("1f7c08")
+    SelectiveBreeding_zone = getObjectFromGUID("7dc6e5")
+    Foldspace_zone = getObjectFromGUID("9a9eb5")
+    Heighliner_zone = getObjectFromGUID("8b0515")
+    Wealth_zone = getObjectFromGUID("b2c461")
+    Conspire_zone = getObjectFromGUID("cd9386")
+    SietchTabr_zone = getObjectFromGUID("5bc970")
+    ResearchStation_zone = getObjectFromGUID("af11aa")
+    Carthag_zone = getObjectFromGUID("b1c938")
+    Arrakeen_zone = getObjectFromGUID("17b646")
+    TheGreatFlat_zone = getObjectFromGUID("69f925")
+    HaggaBasin_zone = getObjectFromGUID("622708")
+    ImperialBasin_zone = getObjectFromGUID("2c77c1")
+    HighCouncil_zone = getObjectFromGUID("8a6315")
+    Mentat_zone = getObjectFromGUID("30cff9")
+    foldspace = getObjectFromGUID("38ffc0")
+    intrigue_zone = getObjectFromGUID("a377d8")
+
+    pion_reput = core.resolveGUIDs(pion_reput)
+
+    alliance_token = {
+        emperor = getObjectFromGUID('13e990'),
+        spacingGuild = getObjectFromGUID('ad1aae'),
+        beneGesserit = getObjectFromGUID('33452e'),
+        fremen = getObjectFromGUID('4c2bcc')
+    }
+end)
 
 function boardCommonModule.CheckAgentAndPlayer(color, zone)
 
@@ -154,7 +160,7 @@ function boardCommonModule.ImperialBasin(color)
 
             local numberToDraw = 1
 
-            local enoughCards = isDeckContainsEnough(color, numberToDraw)
+            local enoughCards = helperModule.isDeckContainsEnough(color, numberToDraw)
 
             if not enoughCards then
                 broadcastToAll(
@@ -207,7 +213,7 @@ function boardCommonModule.HaggaBasin(color)
 
                 local numberToDraw = 1
 
-                local enoughCards = isDeckContainsEnough(color, numberToDraw)
+                local enoughCards = helperModule.isDeckContainsEnough(color, numberToDraw)
 
                 if not enoughCards then
                     broadcastToAll(
@@ -261,7 +267,7 @@ function boardCommonModule.TheGreatFlat(color)
 
                 local numberToDraw = 1
 
-                local enoughCards = isDeckContainsEnough(color, numberToDraw)
+                local enoughCards = helperModule.isDeckContainsEnough(color, numberToDraw)
 
                 if not enoughCards then
                     broadcastToAll(
@@ -509,7 +515,7 @@ end
 
 function boardCommonModule.initReputationLevels()
     local reputationLevels = {}
-    for faction, positions in pairs(initital_position_pion_reput) do
+    for faction, positions in pairs(initial_position_pion_reput) do
         local factionLevels = {}
         for color, position in pairs(positions) do
             local startingCell = position
@@ -528,6 +534,8 @@ function boardCommonModule.initReputationLevels()
     end
     return reputationLevels
 end
+
+boardCommonModule.reputationLevels = boardCommonModule.initReputationLevels()
 
 function boardCommonModule.getReputationLevels(faction, color)
     return boardCommonModule.reputationLevels[faction][color]
@@ -565,14 +573,13 @@ function boardCommonModule.ReputationDown(color, faction)
 end
 
 function giveAlliance(faction, color)
-    local players = {"Red", "Green", "Blue", "Yellow"}
     local leaderName = helperModule.getLeaderName(color)
 
     local posz_liste = {}
 
-    for i, player in pairs(players) do
-        if player ~= color then
-            posz_liste[player] = pion_reput[faction][player].getPosition().z
+    for playerColor, position in pairs(initial_position_pion_reput[faction]) do
+        if playerColor ~= color then
+            posz_liste[playerColor] = position.z
         end
     end
 
@@ -695,8 +702,7 @@ function boardCommonModule.SietchTabr(color)
 end
 
 function boardCommonModule.ResearchStation(color)
-    if boardCommonModule.CheckAgentAndPlayer(color,
-                                             boardCommonModule.ResearchStation_zone) then
+    if boardCommonModule.CheckAgentAndPlayer(color, ResearchStation_zone) then
 
         local waterObj = constants.players[color].water
         local leaderName = helperModule.getLeaderName(color)
@@ -708,7 +714,7 @@ function boardCommonModule.ResearchStation(color)
 
             local numberToDraw = 3
 
-            local enoughCards = isDeckContainsEnough(color, numberToDraw)
+            local enoughCards = helperModule.isDeckContainsEnough(color, numberToDraw)
 
             if not enoughCards then
 
@@ -769,7 +775,7 @@ function boardCommonModule.Arrakeen(color)
 
         local numberToDraw = 1
 
-        local enoughCards = isDeckContainsEnough(color, numberToDraw)
+        local enoughCards = helperModule.isDeckContainsEnough(color, numberToDraw)
 
         if not enoughCards then
             broadcastToAll(i18n("arrakeenTroopOnly"):format(leaderName), color)
@@ -825,7 +831,7 @@ function boardCommonModule.Swordmaster(color, zone)
 
                 local numberToDraw = 1
 
-                local enoughCards = isDeckContainsEnough(color, numberToDraw)
+                local enoughCards = helperModule.isDeckContainsEnough(color, numberToDraw)
 
                 if not enoughCards then
                     broadcastToAll(
@@ -893,7 +899,7 @@ function boardCommonModule.Mentat(color)
 
             if leader.hasTag("Ilban") then numberToDraw = 2 end
 
-            local enoughCards = isDeckContainsEnough(color, numberToDraw)
+            local enoughCards = helperModule.isDeckContainsEnough(color, numberToDraw)
 
             if not enoughCards then
                 broadcastToAll(
@@ -997,7 +1003,7 @@ function boardCommonModule.HighCouncil(color)
 
                 local numberToDraw = 1
 
-                local enoughCards = isDeckContainsEnough(color, numberToDraw)
+                local enoughCards = helperModule.isDeckContainsEnough(color, numberToDraw)
 
                 if not enoughCards then
                     broadcastToAll(

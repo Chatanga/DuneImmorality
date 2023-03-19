@@ -9,27 +9,23 @@ constants = require("Constants")
 
 helperModule = require("HelperModule")
 
-isDeckContainsEnough = helperModule.isDeckContainsEnough
-
 boardCommonModule = require("BoardCommonModule")
 
 DrawOne = helperModule.DrawOne
 
-SecureContract_zone = getObjectFromGUID("db4022")
-SellMelange_zone = getObjectFromGUID("7539a3")
-
-RallyTroops_zone = getObjectFromGUID("6932df")
-Swordmaster_zone = getObjectFromGUID("6cc2f8")
-HallOfOratory_zone = getObjectFromGUID("3e7409")
-
-players = constants.players
-
-function onload()
+_ = require("Core").registerLoadablePart(function(saved_data)
     i18n.setLocale(Global.getVar("locale"))
+
+    SecureContract_zone = getObjectFromGUID("db4022")
+    SellMelange_zone = getObjectFromGUID("7539a3")
+
+    RallyTroops_zone = getObjectFromGUID("6932df")
+    Swordmaster_zone = getObjectFromGUID("6cc2f8")
+    HallOfOratory_zone = getObjectFromGUID("3e7409")
 
     self.interactable = false
     activateButtons()
-end
+end)
 
 function activateButtons()
 
@@ -273,7 +269,7 @@ function RallyTroops(_, color)
 
                 local numberToDraw = 1
 
-                local enoughCards = isDeckContainsEnough(color, numberToDraw)
+                local enoughCards = helperModule.isDeckContainsEnough(color, numberToDraw)
 
                 if not enoughCards then
                     broadcastToAll(

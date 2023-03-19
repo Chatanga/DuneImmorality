@@ -7,12 +7,10 @@ boardCommonModule = require("BoardCommonModule")
 
 parkModule = require("ParkModule")
 
-players = constants.players
-
-function onload()
+_ = require("Core").registerLoadablePart(function(saved_data)
     self.interactable = false
     activateButtons()
-end
+end)
 
 function activateButtons()
 

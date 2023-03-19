@@ -1,11 +1,11 @@
+core = require("Core")
+
 i18n = require("i18n")
 require("locales")
 
 helperModule = require("HelperModule")
 
 constants = require("Constants")
-
-players = constants.players
 
 GetDeckOrCard = helperModule.GetDeckOrCard
 GetDeckOrCardFromGUID = helperModule.GetDeckOrCardFromGUID
@@ -16,9 +16,11 @@ zone_deck_imperium = constants.zone_deck_imperium
 
 pos_trash = constants.pos_trash_lower
 
-board_display_leaders = getObjectFromGUID("662ced")
-
 local atomicsModule = {}
+
+_ = core.registerLoadablePart(function(_)
+    board_display_leaders = getObjectFromGUID("662ced")
+end)
 
 function atomicsModule:homeButton()
 

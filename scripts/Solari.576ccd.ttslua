@@ -1,7 +1,7 @@
 MIN_VALUE = 0
 MAX_VALUE = 99
 
-function onload(saved_data)
+_ = require("Core").registerLoadablePart(function(saved_data)
     i18n = require("i18n")
     require("locales")
 
@@ -9,7 +9,7 @@ function onload(saved_data)
 
     light_mode = false
     tooltip_show = true
-    
+
     val = 0
     oldVal = 0
 
@@ -22,7 +22,7 @@ function onload(saved_data)
     end
 
     createAll()
-end
+end)
 
 function updateSave()
     local data_to_save = {light_mode, val, tooltip_show, oldVal}
@@ -172,7 +172,7 @@ end
 
 function add_subtract(_obj, _color, alt_click)
 
-    local numberOfPlayers = #getObjectFromGUID("4a3e76").call("getPlayersBasedOnHotseat") 
+    local numberOfPlayers = #getObjectFromGUID("4a3e76").call("getPlayersBasedOnHotseat")
     local playerActingStr = ""
     local msgColor = _color
 

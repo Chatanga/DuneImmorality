@@ -5,7 +5,7 @@ adminOnlyButton = true
 selectColour = {0.3, 1, 0.3}
 textColour = {0.5, 0.5, 0.5}
 
-function onLoad()
+_ = require("Core").registerLoadablePart(function(saved_data)
     local buttonParams = {}
     buttonParams.function_owner = self
     buttonParams.click_function = "shufflePlayers"
@@ -15,7 +15,7 @@ function onLoad()
     buttonParams.font_size = 300
     buttonParams.position = {0, 0, 0}
     self:createButton(buttonParams)
-end
+end)
 
 function shuffleTable(tab)
     --print("Shuffle Table called.")
@@ -35,23 +35,23 @@ function shufflePlayers(object, colour)
     if #getSeatedPlayers() < 2 then printToAll("Shuffle Players: [808080]".. Player[colour].steam_name ..", there must be more than one player for shuffling to work.", textColour) return end
     if Player["Black"].seated == true then printToAll("Please remove Player Black for shuffling to work.", textColour) return end
     shufflePlayersDebounce = true
-    
+
     local deselectColour = self:getColorTint()
-    
+
     self:setColorTint(selectColour)
-    
+
     printToAll("Shuffle Players: ".. Player[colour].steam_name .. " initiated shuffling.", textColour)
-    
+
     local ranColours = {}
-    
+
     --INSERT THE COLOURS
-    
+
     for _, v in pairs(getSeatedPlayers()) do
         table.insert(ranColours, v)
     end
-    
+
     shuffleTable(ranColours)
-    
+
     seatedPlayers = {}
     for i, v in pairs(getSeatedPlayers()) do
         seatedPlayers[v] = {}
@@ -66,13 +66,13 @@ function shufflePlayers(object, colour)
             seatedPlayers[v].moved = false
         end
     end
-    
+
     --START SHUFFLING PLAYERS.
-    
+
     function shuffleDelay()
-        
+
         for timeout = 1, 50 do
-            
+
             --GO THROUGH SEATED PLAYERS. IF THEY HAVEN'T MOVED, CHECK IF THEY CAN BE MOVED.
             for i, v in pairs(seatedPlayers) do
                 --print("Test")
@@ -93,7 +93,7 @@ function shufflePlayers(object, colour)
                     end
                 end
             end
-            
+
             local checkIfSame = true
             for _, v in pairs(seatedPlayers) do
                 if v.prevMoved ~= v.moved then
@@ -101,7 +101,7 @@ function shufflePlayers(object, colour)
                     break
                 end
             end
-            
+
             if checkIfSame == true then
                 --print("Is same.")
                 local allNonMovedPlayers = {}
@@ -110,7 +110,7 @@ function shufflePlayers(object, colour)
                         table.insert(allNonMovedPlayers, v)
                     end
                 end
-                
+
                 if #allNonMovedPlayers ~= 0 then
                     local lastPlayer = allNonMovedPlayers[#allNonMovedPlayers]
                     Player[lastPlayer.myColour]:changeColor("Black")
@@ -119,9 +119,9 @@ function shufflePlayers(object, colour)
                         coroutine.yield()
                     end
                 end
-                
+
             end
-            
+
             local count1, count2 = 0, 0
             for _, v in pairs(seatedPlayers) do
                 count1 = count1 + 1
@@ -129,24 +129,24 @@ function shufflePlayers(object, colour)
                     count2 = count2 + 1
                 end
             end
-            
+
             if count1 == count2 then break end
-            
+
             for _, v in pairs(seatedPlayers) do
                 v.prevMoved = v.moved
             end
-            
+
             coroutine.yield()
         end
-        
+
         shufflePlayersDebounce = false
-        
+
         self:setColorTint(deselectColour)
-        
+
         return 1
     end
-    
+
     startLuaCoroutine(self, "shuffleDelay")
     self.setPosition({-7.88, -1, -14.59})
-        
+
 end

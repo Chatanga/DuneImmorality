@@ -7,14 +7,14 @@ constants = require("Constants")
 
 helperModule = require("HelperModule")
 
-function onLoad()
+_ = require("Core").registerLoadablePart(function(saved_data)
     self.interactable = false
 
     tleilaxuColumn = constants.tleilaxuRow[2]
     Zone = getObjectFromGUID(tleilaxuColumn.zoneGuid)
     pos = tleilaxuColumn.pos
     activateButton()
-end
+end)
 
 function activateButton()
     self.createButton({

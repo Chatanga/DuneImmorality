@@ -1,3 +1,5 @@
+core = require("Core")
+
 i18n = require("i18n")
 require("locales")
 
@@ -5,27 +7,25 @@ constants = require("Constants")
 
 boardCommonModule = require("BoardCommonModule")
 
-Swordmaster_zone = getObjectFromGUID("6932df")
-Smuggling_zone = getObjectFromGUID("6cc2f8")
-Shipping_zone = getObjectFromGUID("3e7409")
-
-players = constants.players
-
 techZone = constants.techZone
 
 cargo_pos_init = {
-    Yellow = constants.getHardcodedPositionFromGUID("8fa76f", 0, 0, 0),
-    Green = constants.getHardcodedPositionFromGUID("34281d", 0, 0, 0),
-    Blue = constants.getHardcodedPositionFromGUID("68e424", 0, 0, 0),
-    Red = constants.getHardcodedPositionFromGUID("e9096d", 0, 0, 0)
+    Yellow = core.getHardcodedPositionFromGUID('8fa76f', 8.999581, 0.76994512, 2.850366),
+    Green = core.getHardcodedPositionFromGUID('34281d', 8.449573, 0.770712, 2.85037041),
+    Blue = core.getHardcodedPositionFromGUID('68e424', 7.34954929, 0.77224658, 2.8544035),
+    Red = core.getHardcodedPositionFromGUID('e9096d', 7.89962053, 0.77147946, 2.853223)
 }
 
-function onload()
+_ = core.registerLoadablePart(function(saved_data)
     i18n.setLocale(Global.getVar("locale"))
+
+    Swordmaster_zone = getObjectFromGUID("6932df")
+    Smuggling_zone = getObjectFromGUID("6cc2f8")
+    Shipping_zone = getObjectFromGUID("3e7409")
 
     self.interactable = false
     activateButtons()
-end
+end)
 
 function activateButtons()
 

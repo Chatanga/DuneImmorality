@@ -5,12 +5,11 @@ leaderPos = constants.leaderPos
 i18n = require("i18n")
 require("locales")
 
-function onload(saved_data)
-    if saved_data ~= '["claimed"]' then
-        claimLabel()
-    end
-
-end
+_ = require("Core").registerLoadablePart(function(saved_data)
+  if saved_data ~= '["claimed"]' then
+      claimLabel()
+  end
+end)
 
 function updateSave()
     local data_to_save = {claimed}
@@ -34,8 +33,8 @@ function claimLabel()
        color          = "Black"
        })
   end
-       
-  
+
+
   function claimLeader(GO, color)
     if color == "Red" or color == "Blue" or color == "Green" or color == "Yellow" then
       GO.setPositionSmooth(leaderPos[color])
@@ -46,7 +45,7 @@ function claimLabel()
       updateSave()
       broadcastToAll(i18n("willBe"):format(i18n(color:lower())
 ,GO.getName()), color)
-      
+
       for _, obj in pairs(getAllObjects()) do
         if color=="Blue" then
           caca={0.12156862745,0.5294117647,1,0.33}

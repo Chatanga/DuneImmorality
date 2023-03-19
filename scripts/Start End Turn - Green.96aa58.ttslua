@@ -4,14 +4,14 @@ offseat = "White"-- An unseated color; Teal and Brown are usually safe
 confirmForce = false
 
 --Runs on load, creates button and makes sure the lockout is off
-function onload()
+_ = require("Core").registerLoadablePart(function(saved_data)
     self.createButton({
         label="Color Changer", click_function = "changeColor",
         function_owner = self,  position={0,0.25,0}, height=1400, width=1400
     })
     lockout = false
     self.setColorTint(thisColor)
-end
+end)
 
 
 --Function run when button is pressed

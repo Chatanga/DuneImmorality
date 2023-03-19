@@ -2,7 +2,7 @@ constants = require("Constants")
 
 helperModule = require("HelperModule")
 
-function onLoad()
+_ = require("Core").registerLoadablePart(function(saved_data)
     self.interactable = false
 
     conflict_discard = helperModule.correctAnchorPosition({-1.15, 3, -5.74}, {1.37866032, 0.165157527, 1.34989369})
@@ -10,8 +10,7 @@ function onLoad()
     i18n = require("i18n")
     require("locales")
     constants = require("Constants")
-
-end
+end)
 
 function ConflictButton()
     self.createButton({

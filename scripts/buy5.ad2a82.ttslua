@@ -7,14 +7,14 @@ constants = require("Constants")
 
 helperModule = require("HelperModule")
 
-function onLoad()
+_ = require("Core").registerLoadablePart(function(saved_data)
     self.interactable = false
 
     imperiumColumn = constants.imperiumRow[5]
     Zone = getObjectFromGUID(imperiumColumn.zoneGuid)
     pos = imperiumColumn.pos
     activateButton()
-end
+end)
 
 function activateButton()
     self.createButton({

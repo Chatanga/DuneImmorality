@@ -1,3 +1,5 @@
+core = require("Core")
+
 i18n = require("i18n")
 require("locales")
 
@@ -18,45 +20,33 @@ pos_trash = constants.pos_trash_lower
 
 zone_black_market = constants.zone_black_market
 zone_deck = constants.zone_deck_imperium
-pos_intrigue_discard = constants.getLandingPositionFromGUID("976c3a")
-
-buttonPass = {
-    ["Red"] = getObjectFromGUID("0e9fa2"),
-    ["Blue"] = getObjectFromGUID("643f32"),
-    ["Green"] = getObjectFromGUID("9c69b9"),
-    ["Yellow"] = getObjectFromGUID("65876d")
-}
-
-bonus_spice1 = getObjectFromGUID('3cdb2d')
-bonus_spice2 = getObjectFromGUID('394db2')
-bonus_spice3 = getObjectFromGUID('116807')
-blue_spice = getObjectFromGUID('9cc286')
-red_spice = getObjectFromGUID('3074d4')
-green_spice = getObjectFromGUID('22478f')
-yellow_spice = getObjectFromGUID('78fb8a')
-marker_round = getObjectFromGUID('fb41e2')
-
-conflictZone = "6d632e"
-conflict_discard = constants.getLandingPositionFromGUID("cb0478")
-zone_vp_encours = getObjectFromGUID("740624")
-trash = getObjectFromGUID("ef8614")
-makerZones = {"69f925", "622708", "2c77c1"}
-
-marker = constants.first_player_marker
-position_marker = constants.first_player_positions
-
-firstPlayerMarkerZone = {
-    Yellow = getObjectFromGUID("e9a44c"),
-    Green = getObjectFromGUID("59523d"),
-    Blue = getObjectFromGUID("1fc559"),
-    Red = getObjectFromGUID("346e0d")
-}
 
 combat_marker_offside_positions = {
-    Red = constants.getHardcodedPositionFromGUID("2d1d17", 0, 0, 0) + Vector(0, 0, 0),
-    Blue = constants.getHardcodedPositionFromGUID("f22e20", 0, 0, 0) + Vector(1, 0, 0),
-    Yellow = constants.getHardcodedPositionFromGUID("c2dd31", 0, 0, 0) + Vector(2, 0, 0),
-    Green = constants.getHardcodedPositionFromGUID("a1a9a7", 0, 0, 0) + Vector(3, 0, 0)
+    Red = core.getHardcodedPositionFromGUID('2d1d17', 1.229127, 1.26825342, -12.099426) + Vector(0, 0, 0),
+    Blue = core.getHardcodedPositionFromGUID('f22e20', 1.2095474, 1.5675827, -12.09596348) + Vector(1, 0, 0),
+    Yellow = core.getHardcodedPositionFromGUID('c2dd31', 1.27509332, 0.67563519, -12.117932) + Vector(2, 0, 0),
+    Green = core.getHardcodedPositionFromGUID('a1a9a7', 1.23535669, 0.96849165, -12.103872) + Vector(3, 0, 0)
+}
+
+-- TODO Make these positions relative to some anchor.
+dreadnoughtRestingPositions =
+{
+    Yellow = {
+        Vector(9.32, 1.57, -11.0),
+        Vector(9.32, 1.57, -9.5)
+    },
+    Green = {
+        Vector(9.32, 1.58, -7.0),
+        Vector(9.32, 1.58, -8.5)
+    },
+    Blue = {
+        Vector(0.35, 1.58, -11.0),
+        Vector(0.35, 1.58, -9.5)
+        },
+    Red = {
+        Vector(0.35, 1.58, -7.09),
+        Vector(0.35, 1.58, -8.5)
+    }
 }
 
 -------- Initialize Parameter ---------
@@ -84,13 +74,47 @@ function activateButton()
     })
 end
 
-function onLoad()
+_ = core.registerLoadablePart(function(saved_data)
     self.interactable = false
+    pos_intrigue_discard = constants.getLandingPositionFromGUID("976c3a")
+
+    buttonPass = {
+        ["Red"] = getObjectFromGUID("0e9fa2"),
+        ["Blue"] = getObjectFromGUID("643f32"),
+        ["Green"] = getObjectFromGUID("9c69b9"),
+        ["Yellow"] = getObjectFromGUID("65876d")
+    }
+
+    bonus_spice1 = getObjectFromGUID('3cdb2d')
+    bonus_spice2 = getObjectFromGUID('394db2')
+    bonus_spice3 = getObjectFromGUID('116807')
+    blue_spice = getObjectFromGUID('9cc286')
+    red_spice = getObjectFromGUID('3074d4')
+    green_spice = getObjectFromGUID('22478f')
+    yellow_spice = getObjectFromGUID('78fb8a')
+    marker_round = getObjectFromGUID('fb41e2')
+
+    conflictZone = "6d632e"
+    -- TODO Safe?
+    conflict_discard = constants.getLandingPositionFromGUID("cb0478")
+    zone_vp_encours = getObjectFromGUID("740624")
+    trash = getObjectFromGUID("ef8614")
+    makerZones = {"69f925", "622708", "2c77c1"}
+
+    marker = constants.first_player_marker
+    position_marker = constants.first_player_positions
+
+    firstPlayerMarkerZone = {
+        Yellow = getObjectFromGUID("e9a44c"),
+        Green = getObjectFromGUID("59523d"),
+        Blue = getObjectFromGUID("1fc559"),
+        Red = getObjectFromGUID("346e0d")
+    }
 
     round_start = 1
     black_market = 0
     activateButton()
-end
+end)
 
 function getRoundStart() return round_start end
 
@@ -129,27 +153,6 @@ end
 
 function Recall() startLuaCoroutine(self, "ConflictZone") end
 
--- TODO Make these positions relative to some anchor.
-dreadnoughtRestingPositions =
-{
-    Yellow = {
-        Vector(9.32, 1.57, -11.0),
-        Vector(9.32, 1.57, -9.5)
-    },
-    Green = {
-        Vector(9.32, 1.58, -7.0),
-        Vector(9.32, 1.58, -8.5)
-    },
-    Blue = {
-        Vector(0.35, 1.58, -11.0),
-        Vector(0.35, 1.58, -9.5)
-        },
-    Red = {
-        Vector(0.35, 1.58, -7.09),
-        Vector(0.35, 1.58, -8.5)
-    }
-}
-
 function getDreadnoughtRestingPosition(dreadnoughName)
     for color, _ in pairs(constants.players) do
         if dreadnoughName == color .. " dreadnought" then
@@ -185,7 +188,7 @@ function ConflictZone()
 
     mentat = getObjectFromGUID("c2a908")
     mentat.setColorTint({1, 1, 1, 1})
-    mentat.setPositionSmooth(constants.getPositionFromGUID("565d09"), false, true)
+    mentat.setPositionSmooth(getObjectFromGUID("565d09").getPosition(), false, true)
     mentat.setRotationSmooth({0, 180, 0})
 
     -- General Agent Reset

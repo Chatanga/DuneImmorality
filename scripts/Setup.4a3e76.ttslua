@@ -10,46 +10,14 @@ helperModule = require("HelperModule")
 GetDeckOrCard = helperModule.GetDeckOrCard
 GetDeckOrCardFromGUID = helperModule.GetDeckOrCardFromGUID
 
-marker = constants.first_player_marker
 position_marker = constants.first_player_positions
 
-hotseat = {
-    ["Blue"] = {obj = getObjectFromGUID("9eeccd"), pos = constants.players["Blue"].board.getPosition() + Vector(-13.5, 0.7, -1)},
-    ["Red"] = {obj = getObjectFromGUID("895594"), pos = constants.players["Red"].board.getPosition() + Vector(-13.5, 0.7, -1)},
-    ["Green"] = {obj = getObjectFromGUID("96aa58"), pos = constants.players["Green"].board.getPosition() + Vector(13.5, 0.7, -1)},
-    ["Yellow"] = {obj = getObjectFromGUID("3d1b90"), pos = constants.players["Yellow"].board.getPosition() + Vector(13.5, 0.7, -1)}
-}
-
 manigance = '2b2575'
-trash = {
-    ["Green"] = getObjectFromGUID("4060b5"),
-    ["Blue"] = getObjectFromGUID("52a539"),
-    ["Yellow"] = getObjectFromGUID("7d1e07"),
-    ["Red"] = getObjectFromGUID("ea3fe1"),
-    ["Everyone"] = getObjectFromGUID("ef8614")
-}
-hagal_rise_of_ix_2P = getObjectFromGUID("1f3751")
-hagal_2P = getObjectFromGUID("43a37f")
-hagal_rise_of_ix_1P = getObjectFromGUID("cb48b7")
-hagal_1P = getObjectFromGUID("2d887f")
-hagal_everytime_except_immortality_1P = getObjectFromGUID("d1ff61")
-hagal_immortality_1P = getObjectFromGUID("9f6ea8")
-hagal_rise_of_ix = getObjectFromGUID("dd0da1")
-hagal_without_rise_of_ix = getObjectFromGUID("72d430")
 
 pos_black_market = constants.pos_black_market
 
-pos_starter_decks = {
-    constants.getLandingPosition(constants.players.Red.drawDeck),
-    constants.getLandingPosition(constants.players.Blue.drawDeck),
-    constants.getLandingPosition(constants.players.Green.drawDeck),
-    constants.getLandingPosition(constants.players.Yellow.drawDeck)
-}
+conflictDeckLocation = core.getHardcodedPositionFromGUID('f9ea6b', -3.37652636, 0.72803173, -9.74293137) + constants.someHeight
 
-dune_cards_decks_zone = {
-    getObjectFromGUID("e23476"), getObjectFromGUID("355dc0"),
-    getObjectFromGUID("d3521b"), getObjectFromGUID("7b2ba8")
-}
 zone_intrigue = 'a377d8'
 zone_imperium = constants.zone_deck_imperium
 epic_cards = constants.epic_cards
@@ -57,76 +25,7 @@ epic_cards = constants.epic_cards
 -- conflictZone2 = "7c9ceb"
 -- conflictZone3 = "f9ea6b"
 trashBin = '8d39ef'
-conflictDeckLocation = constants.getLandingPositionFromGUID("f9ea6b")
-councellor_bonus_bag = getObjectFromGUID("074f6d")
--- "Four Players" VP
-FP1 = getObjectFromGUID('66444c')
-FP2 = getObjectFromGUID('4e8873')
-FP3 = getObjectFromGUID('a6c2e0')
-FP4 = getObjectFromGUID('311255')
-yellowscore = getObjectFromGUID('20bbd1')
-greenscore = getObjectFromGUID('76039f')
-bluescore = getObjectFromGUID('1b1e76')
-redscore = getObjectFromGUID('4feaca')
-tech_tiles_en = getObjectFromGUID("cb766f")
-tech_tiles_fr = getObjectFromGUID("6116af")
-intrigue_ix = constants.intrigue_ix
-intrigue_immortality = constants.intrigue_immortality
--- imperium_deck = getObjectFromGUID('71ec7e')
-imperium_deck_ix = constants.imperium_deck_ix
-imperium_deck_immortality = constants.imperium_deck_immortality
--- tleilaxu_deck = constants.tleilaxu_deck
-reclaimed_forces = constants.reclaimed_forces
-bene_tleilax_zone = getObjectFromGUID('042b49')
-atomics = {'d5ff47', '0a22ec', '700023', '7e10a9'}
-experimentation_decks = {'ef9531', '45ce21', '2d935f', '8ed0cd'}
-research_station_immortality = getObjectFromGUID('54413c')
-intrigue_pos = constants.getLandingPositionFromGUID(constants.intrigue_base)
-imperium_pos = constants.getLandingPositionFromGUID(constants.imperium_deck)
-hagal1P_base = "54a2cb"
-hagal1P = getObjectFromGUID("6020d0")
-hagal2P_base = "1dd8a5"
-hagal2P = getObjectFromGUID("8f8cc1")
-conflictOne = getObjectFromGUID("616984")
-conflictTwo = getObjectFromGUID("7c9ceb")
-conflictThree = getObjectFromGUID("f9ea6b")
-epicgamebutton = getObjectFromGUID("f8480b")
-pos_trash = constants.pos_trash_lower
 
-hand_players = {
-    ["Green"] = getObjectFromGUID("482f72"),
-    ["Blue"] = getObjectFromGUID("e50f77"),
-    ["Yellow"] = getObjectFromGUID("050f39"),
-    ["Red"] = getObjectFromGUID("8a9816")
-}
-pion_reput = {
-    ["Emperor"] = {
-        ["Red"] = getObjectFromGUID('acfcef'),
-        ["Blue"] = getObjectFromGUID('426a23'),
-        ["Green"] = getObjectFromGUID('d7c9ba'),
-        ["Yellow"] = getObjectFromGUID('489871')
-    },
-    ["Guild"] = {
-        ["Red"] = getObjectFromGUID('be464e'),
-        ["Blue"] = getObjectFromGUID('4069d8'),
-        ["Green"] = getObjectFromGUID('89da7d'),
-        ["Yellow"] = getObjectFromGUID('9d0075')
-    },
-    ["Bene"] = {
-        ["Red"] = getObjectFromGUID('713eae'),
-        ["Blue"] = getObjectFromGUID('2a88a6'),
-        ["Green"] = getObjectFromGUID('2dc980'),
-        ["Yellow"] = getObjectFromGUID('a3729e')
-    },
-    ["Fremen"] = {
-        ["Red"] = getObjectFromGUID('088f51'),
-        ["Blue"] = getObjectFromGUID('0e6e41'),
-        ["Green"] = getObjectFromGUID('d390dc'),
-        ["Yellow"] = getObjectFromGUID('77d7c8')
-    }
-}
-
-leaderRandomizer = getObjectFromGUID("cf6ca1")
 baseGameManualPosition = {-7.677, 0, -14.917}
 -- parameter to set
 waitTimeUntilBanDelete = 5 -- How many seconds banned leaders are shown to black, and other player must wait
@@ -150,7 +49,114 @@ button_color = {0.25, 0.25, 0.25} -- Set number {Red,Green,Blue}. Value bitween 
 text_color = {1.00, 1.00, 1.00} -- Set number {Red,Green,Blue}. Value bitween 0.00 to 1.00. Defaults to {0.25,0.25,0.25] ("Black").
 text_size = 200 -- Set number. Defaults to 100.
 
-function onLoad(saved_data)
+_ = require("Core").registerLoadablePart(function(saved_data)
+
+    marker = constants.first_player_marker
+
+    pos_starter_decks = {
+        constants.getLandingPosition(constants.players.Red.drawDeck),
+        constants.getLandingPosition(constants.players.Blue.drawDeck),
+        constants.getLandingPosition(constants.players.Green.drawDeck),
+        constants.getLandingPosition(constants.players.Yellow.drawDeck)
+    }
+
+    hotseat = {
+        ["Blue"] = {obj = getObjectFromGUID("9eeccd"), pos = constants.players["Blue"].board.getPosition() + Vector(-13.5, 0.7, -1)},
+        ["Red"] = {obj = getObjectFromGUID("895594"), pos = constants.players["Red"].board.getPosition() + Vector(-13.5, 0.7, -1)},
+        ["Green"] = {obj = getObjectFromGUID("96aa58"), pos = constants.players["Green"].board.getPosition() + Vector(13.5, 0.7, -1)},
+        ["Yellow"] = {obj = getObjectFromGUID("3d1b90"), pos = constants.players["Yellow"].board.getPosition() + Vector(13.5, 0.7, -1)}
+    }
+
+    trash = {
+        ["Green"] = getObjectFromGUID("4060b5"),
+        ["Blue"] = getObjectFromGUID("52a539"),
+        ["Yellow"] = getObjectFromGUID("7d1e07"),
+        ["Red"] = getObjectFromGUID("ea3fe1"),
+        ["Everyone"] = getObjectFromGUID("ef8614")
+    }
+    hagal_rise_of_ix_2P = getObjectFromGUID("1f3751")
+    hagal_2P = getObjectFromGUID("43a37f")
+    hagal_rise_of_ix_1P = getObjectFromGUID("cb48b7")
+    hagal_1P = getObjectFromGUID("2d887f")
+    hagal_everytime_except_immortality_1P = getObjectFromGUID("d1ff61")
+    hagal_immortality_1P = getObjectFromGUID("9f6ea8")
+    hagal_rise_of_ix = getObjectFromGUID("dd0da1")
+    hagal_without_rise_of_ix = getObjectFromGUID("72d430")
+
+    dune_cards_decks_zone = {
+        getObjectFromGUID("e23476"), getObjectFromGUID("355dc0"),
+        getObjectFromGUID("d3521b"), getObjectFromGUID("7b2ba8")
+    }
+
+    councellor_bonus_bag = getObjectFromGUID("074f6d")
+    -- "Four Players" VP
+    FP1 = getObjectFromGUID('66444c')
+    FP2 = getObjectFromGUID('4e8873')
+    FP3 = getObjectFromGUID('a6c2e0')
+    FP4 = getObjectFromGUID('311255')
+    yellowscore = getObjectFromGUID('20bbd1')
+    greenscore = getObjectFromGUID('76039f')
+    bluescore = getObjectFromGUID('1b1e76')
+    redscore = getObjectFromGUID('4feaca')
+    tech_tiles_en = getObjectFromGUID("cb766f")
+    tech_tiles_fr = getObjectFromGUID("6116af")
+    intrigue_ix = constants.intrigue_ix
+    intrigue_immortality = constants.intrigue_immortality
+    -- imperium_deck = getObjectFromGUID('71ec7e')
+    imperium_deck_ix = constants.imperium_deck_ix
+    imperium_deck_immortality = constants.imperium_deck_immortality
+    -- tleilaxu_deck = constants.tleilaxu_deck
+    reclaimed_forces = constants.reclaimed_forces
+    bene_tleilax_zone = getObjectFromGUID('042b49')
+    atomics = {'d5ff47', '0a22ec', '700023', '7e10a9'}
+    experimentation_decks = {'ef9531', '45ce21', '2d935f', '8ed0cd'}
+    research_station_immortality = getObjectFromGUID('54413c')
+    intrigue_pos = constants.getLandingPositionFromGUID(constants.intrigue_base)
+    imperium_pos = constants.getLandingPositionFromGUID(constants.imperium_deck)
+    hagal1P_base = "54a2cb"
+    hagal1P = getObjectFromGUID("6020d0")
+    hagal2P_base = "1dd8a5"
+    hagal2P = getObjectFromGUID("8f8cc1")
+    conflictOne = getObjectFromGUID("616984")
+    conflictTwo = getObjectFromGUID("7c9ceb")
+    conflictThree = getObjectFromGUID("f9ea6b")
+    epicgamebutton = getObjectFromGUID("f8480b")
+    pos_trash = constants.pos_trash_lower
+
+    hand_players = core.resolveGUIDs({
+        Green = "482f72",
+        Blue = "e50f77",
+        Yellow = "050f39",
+        Red = "8a9816"
+    })
+    pion_reput = core.resolveGUIDs({
+        Emperor = {
+            Red = 'acfcef',
+            Blue = '426a23',
+            Green = 'd7c9ba',
+            Yellow = '489871'
+        },
+        Guild = {
+            Red = 'be464e',
+            Blue = '4069d8',
+            Green = '89da7d',
+            Yellow = '9d0075'
+        },
+        Bene = {
+            Red = '713eae',
+            Blue = '2a88a6',
+            Green = '2dc980',
+            Yellow = 'a3729e'
+        },
+        Fremen = {
+            Red = '088f51',
+            Blue = '0e6e41',
+            Green = 'd390dc',
+            Yellow = '77d7c8'
+        }
+    })
+
+    leaderRandomizer = getObjectFromGUID("cf6ca1")
 
     self.interactable = false
     yellowscore.interactable = false
@@ -168,15 +174,16 @@ function onLoad(saved_data)
 
     setupDone = false
 
+    -- Any reason to use integers instead of booleans?
     if saved_data ~= "" then
         local loaded_data = JSON.decode(saved_data)
-        setupDone = loaded_data[1]
-        tournament = loaded_data[2]
-        score_board = loaded_data[3]
-        numPlayers = loaded_data[4]
-        hotseat_mode = loaded_data[5]
-        rise_of_ix = loaded_data[6]
-        immortality = loaded_data[7]
+        setupDone = loaded_data.setupDone
+        tournament = loaded_data.tournament
+        score_board = loaded_data.score_board
+        numPlayers = loaded_data.numPlayers
+        hotseat_mode = loaded_data.hotseat_mode
+        rise_of_ix = loaded_data.rise_of_ix
+        immortality = loaded_data.immortality
     end
 
     if setupDone then
@@ -256,11 +263,17 @@ function onLoad(saved_data)
         activateTournament()
         activateScoreBoard()
     end
-end
+end)
 
 function updateSave()
     local data_to_save = {
-        setupDone, tournament, score_board, numPlayers, hotseat_mode, rise_of_ix, immortality
+        setupDone = setupDone,
+        tournament = tournament,
+        score_board = score_board,
+        numPlayers = numPlayers,
+        hotseat_mode = hotseat_mode,
+        rise_of_ix = rise_of_ix,
+        immortality = immortality
     }
     saved_data = JSON.encode(data_to_save)
     self.script_state = saved_data
@@ -1400,9 +1413,9 @@ function movetechdecks()
 
     local centerPos = constants.getLandingPositionFromGUID(constants.ixPlanetBoard)
     local techSlotPos = {
-        Vector(1.69, 3.02, 2.35):add(centerPos),
-        Vector(1.69, 3.02, 0.30):add(centerPos),
-        Vector(1.69, 3.02, -1.75):add(centerPos)
+        centerPos + Vector(1.69, 3.02, 2.35),
+        centerPos + Vector(1.69, 3.02, 0.30),
+        centerPos + Vector(1.69, 3.02, -1.75)
     }
 
     local t = 0
@@ -1494,13 +1507,7 @@ function destructMissingPlayers()
 
     for color, player in pairs(constants.players) do
         if not hasValue(seated_players, color) then
-            if rise_of_ix == 1 and immortality == 1 then
-                log("rise_of_ix: " .. tostring(rise_of_ix))
-                log("immortality: " .. tostring(immortality))
-                player.board.call("shutdown")
-            else
-                log("Not destroying " .. color .. " player resources to avoid raising exceptions...")
-            end
+            player.board.call("shutdown")
         end
     end
 end

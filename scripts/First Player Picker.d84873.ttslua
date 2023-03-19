@@ -1,4 +1,5 @@
-function onload()
+
+_ = require("Core").registerLoadablePart(function(saved_data)
 
     button_parameters = {}
     button_parameters.click_function = 'blank'
@@ -17,7 +18,6 @@ function onload()
     })
     self.interactable = false
 
-
-end
+end)
 
 function blank() end

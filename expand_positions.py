@@ -40,7 +40,7 @@ def expand_in_scripts(positions, script_dir):
                 content = f.read()
                 (expansion_count, new_content) = process(positions, filename, content)
                 if expansion_count > 0:
-                    with open(file_path + ".patched.ttslua", 'w') as f:
+                    with open(file_path, 'w') as f:
                         f.write(new_content)
                     print(str(expansion_count) + " expansions in " + filename)
 
@@ -58,7 +58,7 @@ def process(positions, filename, content):
             prefix_length = len(function_name + "(")
             new_from_index = start_index + prefix_length + 1
             skip = False
-            declaration_prefix = 'function constants.'
+            declaration_prefix = 'function core.'
             if start_index >= len(declaration_prefix) and content[start_index - len(declaration_prefix) : start_index] == declaration_prefix:
                 skip = True
             else:

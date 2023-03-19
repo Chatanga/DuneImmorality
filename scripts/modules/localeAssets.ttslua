@@ -42,11 +42,12 @@ function loadDeck(GUID, face, back, width, height, number)
     }
 
     local deck = getObjectFromGUID(GUID)
-
-    deck.setCustomObject(params)
-
-    deck.reload()
-
+    if deck then
+        deck.setCustomObject(params)
+        deck.reload()
+    else
+        log("[loadDeck] Unknown GUID: " .. tostring(GUID))
+    end
 end
 
 function loadCard(GUID, face, back)
@@ -54,11 +55,12 @@ function loadCard(GUID, face, back)
     local params = {face = face, back = back}
 
     local cardObj = getObjectFromGUID(GUID)
-
-    cardObj.setCustomObject(params)
-
-    cardObj.reload()
-
+    if cardObj then
+        cardObj.setCustomObject(params)
+        cardObj.reload()
+    else
+        log("[loadDeck] Unknown GUID: " .. tostring(GUID))
+    end
 end
 
 function localeAssets.load()

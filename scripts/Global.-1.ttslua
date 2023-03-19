@@ -1,23 +1,23 @@
+i18n = require("i18n")
+require("locales") -- if using a separate file for the locales, require it too
+
+localeAssets = require("localeAssets")
+
+constants = require("Constants")
+
+helperModule = require("HelperModule")
+
 locale = 'en'
 
 battleSound = nil
 
-function onLoad()
-
-    i18n = require("i18n")
-    require("locales") -- if using a separate file for the locales, require it too
-
-    localeAssets = require("localeAssets")
+_ = require("Core").registerLoadablePart(function(saved_data)
     localeAssets.load()
 
     -- Réinitialise les triggers des plateaux de joueurs.
     onPlayerTurn(nil, nil)
 
     -- getObjectFromGUID("0552a2").setState(1)
-
-    constants = require("Constants")
-
-    helperModule = require("HelperModule")
 
     DrawOne = helperModule.DrawOne
 
@@ -114,7 +114,7 @@ function onLoad()
 
     zone_conseil = getObjectFromGUID("e51f6e") -- scripting zone high consil
 
-    zone_reput = {
+    zone_reputs = {
         ["Emperor"] = getObjectFromGUID('aae631'), -- zone medium size were alliance goes
         ["Spacing Guild"] = getObjectFromGUID('768e1e'),
         ["Bene Gesserit"] = getObjectFromGUID('bd1e3b'),
@@ -123,7 +123,7 @@ function onLoad()
 
     -- 20 spaces were you put power marker
     marker_combat_pos = {}
-    local origin = constants.getPositionFromGUID("1d4424")
+    local origin = getObjectFromGUID("1d4424").getPosition()
     for i = 0, 19 do
         marker_combat_pos[#marker_combat_pos + 1] = {
             x = origin.x - 0.47 + (i % 10) * 0.90,
@@ -146,7 +146,7 @@ function onLoad()
         ["Yellow"] = getObjectFromGUID('c2dd31')
     }
 
-    local zone_vp_combat = constants.getPositionFromGUID("740624")
+    local zone_vp_combat = getObjectFromGUID("740624").getPosition()
     pos_vp_encours = {
         zone_vp_combat + Vector(0, 0.5, -0.5),
         zone_vp_combat + Vector(0, 0.5, 0.5),
@@ -192,7 +192,7 @@ function onLoad()
             player.setHandTransform(t, i)
         end
     end
-end
+end)
 
 function doNothing() end
 
@@ -723,9 +723,8 @@ function onObjectEnterScriptingZone(zone, enter_object)
             "Yellow" then CountForce(name) end
     end
 
-    local factions = {"Emperor", "Spacing Guild", "Bene Gesserit", "Fremen"}
-    for _, faction in ipairs(factions) do
-        if zone.guid == zone_reput[faction].guid then
+    for faction, zone_reput in pairs(zone_reputs) do
+        if zone.guid == zone_reput.guid then
             local name = enter_object.getName()
             for playerColor, _ in pairs(constants.players) do
                 if name == faction .. " Faction " .. playerColor then
@@ -791,9 +790,8 @@ function onObjectEnterScriptingZone(zone, enter_object)
 end
 
 function onObjectLeaveScriptingZone(zone, enter_object)
-    local factions = {"Emperor", "Spacing Guild", "Bene Gesserit", "Fremen"}
-    for _, faction in ipairs(factions) do
-        if zone.guid == zone_reput[faction].guid then
+    for faction, zone_reput in pairs(zone_reputs) do
+        if zone.guid == zone_reput.guid then
             local name = enter_object.getName()
             for playerColor, _ in pairs(constants.players) do
                 if name == faction .. " Faction " .. playerColor then

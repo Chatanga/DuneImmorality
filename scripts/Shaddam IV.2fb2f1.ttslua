@@ -20,12 +20,11 @@ alliance_tokens = {
 i18n = require("i18n")
 require("locales")
 
-function onload(saved_data)
-    if saved_data ~= '["claimed"]' then
-        claimLabel()
-    end
-
-end
+_ = require("Core").registerLoadablePart(function(saved_data)
+  if saved_data ~= '["claimed"]' then
+      claimLabel()
+  end
+end)
 
 function updateSave()
     local data_to_save = {claimed}

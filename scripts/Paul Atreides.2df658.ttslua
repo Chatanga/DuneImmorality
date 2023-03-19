@@ -2,8 +2,6 @@ constants = require("Constants")
 
 leaderPos = constants.leaderPos
 
-players = constants.players
-
 helperModule = require("HelperModule")
 
 GetDeckOrCard = helperModule.GetDeckOrCard
@@ -12,8 +10,7 @@ GetDeckOrCardFromGUID = helperModule.GetDeckOrCardFromGUID
 i18n = require("i18n")
 require("locales")
 
-function onload(saved_data)
-
+_ = require("Core").registerLoadablePart(function(saved_data)
     if saved_data ~= "" then
         local loaded_data = JSON.decode(saved_data)
         claimed = loaded_data[1]
@@ -22,7 +19,7 @@ function onload(saved_data)
 
     if claimed ~= "claimed" then claimLabel() end
     prescienceButton()
-end
+end)
 
 function updateSave()
     local data_to_save = {claimed, claimingColor}

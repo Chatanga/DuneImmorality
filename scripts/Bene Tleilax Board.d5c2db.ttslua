@@ -3,36 +3,9 @@ require("locales")
 
 constants = require("Constants")
 
-players = constants.players
-
 boardCommonModule = require("BoardCommonModule")
 
 parkModule = require("ParkModule")
-
-specimen_zone = getObjectFromGUID("f5de09")
-
-function getAveragePosition(field)
-    local p = Vector(0, 0, 0)
-    local count = 0
-    for _, player in pairs(constants.players) do
-        local token = player[field]
-        p = p + token.getPosition()
-        count = count + 1
-    end
-    return p * (1 / count)
-end
-
-function generateTleilaxuTrackPositions()
-    local positions = {}
-    local origin = getAveragePosition("tleilaxuTokens")
-    for i = 1, 7 do
-        positions[#positions + 1] = origin + Vector(1.3 * i, 2, 0)
-    end
-    return positions
-end
-
--- TODO Ancrage dynamique problématique.
-pos_TleilaxuTrack = generateTleilaxuTrackPositions()
 
 beetleAdvancing = false
 researchAdvancing = false
@@ -47,24 +20,6 @@ researchConducted = {
     Blue = {},
     Green = {},
     Yellow = {}
-}
-
--- TODO Ancrage dynamique problématique.
-tokenStarterPos = {
-    Red = constants.players.Red.tleilaxuTokens.getPosition() + Vector(0, 2, 0),
-    Blue = constants.players.Blue.tleilaxuTokens.getPosition() + Vector(0, 2, 0),
-    Yellow = constants.players.Yellow.tleilaxuTokens.getPosition() + Vector(0, 2, 0),
-    Green = constants.players.Green.tleilaxuTokens.getPosition() + Vector(0, 2, 0),
-}
-
-researchTokenOrigin = getAveragePosition("researchTokens")
-
--- TODO Ancrage dynamique problématique.
-researchTokenStartingPositions = {
-    Red = constants.players.Red.researchTokens.getPosition(),
-    Blue = constants.players.Blue.researchTokens.getPosition(),
-    Yellow = constants.players.Yellow.researchTokens.getPosition(),
-    Green = constants.players.Green.researchTokens.getPosition()
 }
 
 function researchSpaceToWorldPosition(positionInResearchSpace)
@@ -83,7 +38,7 @@ function createAxlotlTanksPark(playerColor)
         Yellow = Vector(0.8, 0, -0.5)
     }
 
-    local origin = constants.getPositionFromGUID("f5de09") + offsets[playerColor]
+    local origin = getObjectFromGUID("f5de09").getPosition() + offsets[playerColor]
     origin:setAt('y', 0.86) -- ground level
     local slots = {}
     for k = 1, 2 do
@@ -110,16 +65,58 @@ function createAxlotlTanksPark(playerColor)
         true)
 end
 
-axlotlTanksParks = {
-    Green = createAxlotlTanksPark("Green"),
-    Yellow = createAxlotlTanksPark("Yellow"),
-    Blue = createAxlotlTanksPark("Blue"),
-    Red = createAxlotlTanksPark("Red")
-}
+function getAveragePosition(field)
+    local p = Vector(0, 0, 0)
+    local count = 0
+    for _, player in pairs(constants.players) do
+        local token = player[field]
+        p = p + token.getPosition()
+        count = count + 1
+    end
+    return p * (1 / count)
+end
 
-function onLoad(saved_data)
+function generateTleilaxuTrackPositions()
+    local positions = {}
+    local origin = getAveragePosition("tleilaxuTokens")
+    for i = 1, 7 do
+        positions[#positions + 1] = origin + Vector(1.3 * i, 2, 0)
+    end
+    return positions
+end
 
+_ = require("Core").registerLoadablePart(function(saved_data)
     self.interactable = false
+
+    -- TODO Ancrage dynamique problématique.
+    pos_TleilaxuTrack = generateTleilaxuTrackPositions()
+
+    -- TODO Ancrage dynamique problématique.
+    tokenStarterPos = {
+        Red = constants.players.Red.tleilaxuTokens.getPosition() + Vector(0, 2, 0),
+        Blue = constants.players.Blue.tleilaxuTokens.getPosition() + Vector(0, 2, 0),
+        Yellow = constants.players.Yellow.tleilaxuTokens.getPosition() + Vector(0, 2, 0),
+        Green = constants.players.Green.tleilaxuTokens.getPosition() + Vector(0, 2, 0),
+    }
+
+    researchTokenOrigin = getAveragePosition("researchTokens")
+
+    -- TODO Ancrage dynamique problématique.
+    researchTokenStartingPositions = {
+        Red = constants.players.Red.researchTokens.getPosition(),
+        Blue = constants.players.Blue.researchTokens.getPosition(),
+        Yellow = constants.players.Yellow.researchTokens.getPosition(),
+        Green = constants.players.Green.researchTokens.getPosition()
+    }
+
+    specimen_zone = getObjectFromGUID("f5de09")
+
+    axlotlTanksParks = {
+        Green = createAxlotlTanksPark("Green"),
+        Yellow = createAxlotlTanksPark("Yellow"),
+        Blue = createAxlotlTanksPark("Blue"),
+        Red = createAxlotlTanksPark("Red")
+    }
 
     if saved_data ~= "" then
         local loaded_data = JSON.decode(saved_data)
@@ -245,7 +242,7 @@ function onLoad(saved_data)
 
     self.createButton(backResearchParams)
 
-end
+end)
 
 function updateSave()
     local data_to_save = {researchConducted}

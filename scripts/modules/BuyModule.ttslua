@@ -1,3 +1,5 @@
+core = require("Core")
+
 i18n = require("i18n")
 require("locales")
 
@@ -5,17 +7,17 @@ constants = require("Constants")
 
 helperModule = require("HelperModule")
 
-scriptZone_middleTrack_research = getObjectFromGUID("60a0fd")
-
 GetDeckOrCard = helperModule.GetDeckOrCard
 GetDeckOrCardFromGUID = helperModule.GetDeckOrCardFromGUID
-
-players = constants.players
 
 local buyModule = {}
 
 zone_deck_imperium = constants.zone_deck_imperium
 zone_deck_tleilaxu = constants.zone_deck_tleilaxu
+
+_ = core.registerLoadablePart(function(_)
+    scriptZone_middleTrack_research = getObjectFromGUID("60a0fd")
+end)
 
 function buyModule.Buy(zone, pColor, pos, activateButton, buyTleilaxu)
     buyTleilaxu = buyTleilaxu or false

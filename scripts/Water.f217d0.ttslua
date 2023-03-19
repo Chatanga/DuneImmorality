@@ -1,7 +1,7 @@
 MIN_VALUE = 0
 MAX_VALUE = 99
 
-function onload(saved_data)
+_ = require("Core").registerLoadablePart(function(saved_data)
     i18n = require("i18n")
     require("locales")
 
@@ -21,7 +21,7 @@ function onload(saved_data)
     end
 
     createAll()
-end
+end)
 
 function updateSave()
     local data_to_save = {light_mode, val, tooltip_show, oldVal}
@@ -118,14 +118,14 @@ function createAll()
     self.createInput({
         value = "#",
         label = "...",
-        input_function = "keepSample", 
-        function_owner = self, 
+        input_function = "keepSample",
+        function_owner = self,
         alignment = 3,
         position={0,-0.05,-0.8},
         rotation={180,180,0},
-        width = 600, 
-        height = 800, 
-        font_size = 1200, 
+        width = 600,
+        height = 800,
+        font_size = 1200,
         scale={x=1, y=1, z=1},
         font_color=f_color,
         color = {0,0,0,0}
@@ -165,14 +165,14 @@ function swap_tooltip(_obj, _color, alt_click)
     setTooltips()
 end
 
-function editName(_obj, _string, value) 
+function editName(_obj, _string, value)
     self.setName(value)
     setTooltips()
 end
 
 function add_subtract(_obj, _color, alt_click)
 
-    local numberOfPlayers = #getObjectFromGUID("4a3e76").call("getPlayersBasedOnHotseat") 
+    local numberOfPlayers = #getObjectFromGUID("4a3e76").call("getPlayersBasedOnHotseat")
     local playerActingStr = ""
     local msgColor = _color
 
@@ -183,7 +183,7 @@ function add_subtract(_obj, _color, alt_click)
 
 
     if _color ~= "Yellow" and numberOfPlayers > 2 then
-        broadcastToColor(i18n("noTouch"), _color, _color)   
+        broadcastToColor(i18n("noTouch"), _color, _color)
     else
 
         mod = alt_click and -1 or 1
@@ -260,7 +260,7 @@ end
 function null()
 end
 
-function keepSample(_obj, _string, value) 
+function keepSample(_obj, _string, value)
     reloadAll()
 end
 

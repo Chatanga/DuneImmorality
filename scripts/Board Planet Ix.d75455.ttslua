@@ -8,18 +8,15 @@ helperModule = require("HelperModule")
 
 boardCommonModule = require("BoardCommonModule")
 
-isDeckContainsEnough = helperModule.isDeckContainsEnough
-
 DrawOne = helperModule.DrawOne
-
-Dreadnought_zone = getObjectFromGUID("83ea90")
 
 players = constants.players
 
-function onload()
+_ = require("Core").registerLoadablePart(function(saved_data)
     self.interactable = false
+    Dreadnought_zone = getObjectFromGUID("83ea90")
     activateButtons()
-end
+end)
 
 function activateButtons()
 
@@ -74,7 +71,7 @@ function Dreadnought(_, color)
 
                 local numberToDraw = 1
 
-                local enoughCards = isDeckContainsEnough(color, numberToDraw)
+                local enoughCards = helperModule.isDeckContainsEnough(color, numberToDraw)
 
                 if not enoughCards then
                     broadcastToAll(i18n("dreadBuy"):format(leaderName, price),

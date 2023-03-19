@@ -2,17 +2,16 @@ constants = require("Constants")
 
 leaderPos = constants.leaderPos
 
-intrigue = constants.intrigue_base 
+intrigue = constants.intrigue_base
 
 i18n = require("i18n")
 require("locales")
 
-function onload(saved_data)
+_ = require("Core").registerLoadablePart(function(saved_data)
     if saved_data ~= '["claimed"]' then
         claimLabel()
     end
-
-end
+end)
 
 function updateSave()
     local data_to_save = {claimed}

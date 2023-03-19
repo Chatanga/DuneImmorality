@@ -18,8 +18,20 @@ playerBoardModule.scorePark = nil
 
 playerBoardModule.alive = true
 
-function playerBoardModule.onLoad(playerColor, centerPosition)
+function playerBoardModule.init(playerColor, centerPosition)
     playerBoardModule.playerColor = playerColor
+
+    --[[
+        Not having a swordmaster anymore is a sure sign that this board has been
+        reconstructed after a rollback at a time where it has already been
+        shutdown. Since reconstructed objects don't have a saved state, that's
+        the only way we have to detect this situation.
+    ]]--
+    if not constants.players[playerBoardModule.playerColor].swordmaster then
+        playerBoardModule.alive = false
+        return
+    end
+
     playerBoardModule.orbitPark = playerBoardModule.createOrbitPark(centerPosition)
     playerBoardModule.initPlayerScore()
 end
@@ -130,12 +142,13 @@ function playerBoardModule.updatePlayerScore()
 
     if newScore ~= playerBoardModule.score then
         playerBoardModule.score = newScore
-        constants.setupObj.call("updateScores")
+        local setup = getObjectFromGUID("4a3e76")
+        setup.call("updateScores")
     end
 end
 
 function playerBoardModule.onObjectEnterScriptingZone(zone, enter_object)
-    if playerBoardModule.alive then
+    if playerBoardModule.alive and false then
         if zone.guid == playerBoardModule.scoreboardZone.guid then
             local description = enter_object.getDescription()
             if description == "VP" then
@@ -146,7 +159,7 @@ function playerBoardModule.onObjectEnterScriptingZone(zone, enter_object)
 end
 
 function playerBoardModule.onObjectLeaveScriptingZone(zone, enter_object)
-    if playerBoardModule.alive then
+    if playerBoardModule.alive and false then
         if zone.guid == playerBoardModule.scoreboardZone.guid then
             local description = enter_object.getDescription()
             if description == "VP" then
@@ -177,9 +190,11 @@ function playerBoardModule.shutdown()
     playerBoardModule.addAll(toBeRemoved, player.troops)
 
     for _, object in ipairs(toBeRemoved) do
-        --log("Destroying " .. object.getGUID())
-        object.interactable = true
-        object.destruct()
+        if toBeRemoved then
+            --log("Destroying " .. object.getGUID())
+            object.interactable = true
+            object.destruct()
+        end
     end
 end
 
