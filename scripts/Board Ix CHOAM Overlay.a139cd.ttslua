@@ -14,10 +14,10 @@ players = constants.players
 techZone = constants.techZone
 
 cargo_pos_init = {
-    Yellow = constants.getPositionFromGUID("8fa76f"),
-    Green = constants.getPositionFromGUID("34281d"),
-    Blue = constants.getPositionFromGUID("68e424"),
-    Red = constants.getPositionFromGUID("e9096d")
+    Yellow = constants.getHardcodedPositionFromGUID("8fa76f", 0, 0, 0),
+    Green = constants.getHardcodedPositionFromGUID("34281d", 0, 0, 0),
+    Blue = constants.getHardcodedPositionFromGUID("68e424", 0, 0, 0),
+    Red = constants.getHardcodedPositionFromGUID("e9096d", 0, 0, 0)
 }
 
 function onload()
@@ -380,10 +380,9 @@ function CommercialMoney(_, color)
         t = t + 0.25
         Wait.time(function() players[color].solari.call("incrementVal") end, t)
     end
-    players["Red"].solari.call("incrementVal")
-    players["Blue"].solari.call("incrementVal")
-    players["Green"].solari.call("incrementVal")
-    players["Yellow"].solari.call("incrementVal")
+    for _, player in pairs(players) do
+        player.solari.call("incrementVal")
+    end
     broadcastToAll(i18n("shippingSolari"):format(leaderName, solariIncome),
                    color)
     broadcastToAll(i18n("dividends"), white)

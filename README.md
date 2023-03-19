@@ -1,5 +1,6 @@
 # Important :
-- activation de "Physic Full" côté joueur pour que la dépose de cartes soit OK.
+- Activation de "Physic Full" côté joueur pour que la dépose de cartes soit OK.
+- Ne pas référencer des objets dynamique au chargement (du script et de l’objet).
 
 # Conception :
 - prise en compte du rechargement potentiel des chefs.
@@ -63,3 +64,4 @@
 - Mode solo.
 - Enhanced Recall for Endgame -> detected end of game: reveal intrigue and grant VP tokens automatically.
 - Unifier le code des 4 * 3 compteurs de ressources.
+- Marker -> token pour éviter la confusion avec Maker.

@@ -40,10 +40,10 @@ hagal_without_rise_of_ix = getObjectFromGUID("72d430")
 pos_black_market = constants.pos_black_market
 
 pos_starter_decks = {
-    constants.getLandingPosition(constants.players["Red"].drawDeck),
-    constants.getLandingPosition(constants.players["Blue"].drawDeck),
-    constants.getLandingPosition(constants.players["Green"].drawDeck),
-    constants.getLandingPosition(constants.players["Yellow"].drawDeck)
+    constants.getLandingPosition(constants.players.Red.drawDeck),
+    constants.getLandingPosition(constants.players.Blue.drawDeck),
+    constants.getLandingPosition(constants.players.Green.drawDeck),
+    constants.getLandingPosition(constants.players.Yellow.drawDeck)
 }
 
 dune_cards_decks_zone = {

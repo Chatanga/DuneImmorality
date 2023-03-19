@@ -53,10 +53,10 @@ firstPlayerMarkerZone = {
 }
 
 combat_marker_offside_positions = {
-    Red = constants.getPositionFromGUID("2d1d17") + Vector(0, 0, 0),
-    Blue = constants.getPositionFromGUID("f22e20") + Vector(1, 0, 0),
-    Yellow = constants.getPositionFromGUID("c2dd31") + Vector(2, 0, 0),
-    Green = constants.getPositionFromGUID("a1a9a7") + Vector(3, 0, 0)
+    Red = constants.getHardcodedPositionFromGUID("2d1d17", 0, 0, 0) + Vector(0, 0, 0),
+    Blue = constants.getHardcodedPositionFromGUID("f22e20", 0, 0, 0) + Vector(1, 0, 0),
+    Yellow = constants.getHardcodedPositionFromGUID("c2dd31", 0, 0, 0) + Vector(2, 0, 0),
+    Green = constants.getHardcodedPositionFromGUID("a1a9a7", 0, 0, 0) + Vector(3, 0, 0)
 }
 
 -------- Initialize Parameter ---------

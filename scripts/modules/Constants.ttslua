@@ -1,5 +1,26 @@
 local constants = {}
 
+--[[
+    A rather useless function in itself. However, calls to this function are
+    intended to be patched by a small utility which will replace the provided
+    coordinates by those existing in the TTS save file.
+
+    Why not doing this replacement live you're wondering? Because scripts are
+    reloaded on multiple occasions: when loading a mod (which is nothing more
+    than a blank save), when restoring a game at any point, but also when
+    spawning an object or simply moving an instance out of a bag.
+
+    In other words, no assumptions can be made on the world state, at least
+    regarding any object which can move around. Things like taking the "initial"
+    position of an object is doomed to fail, and one shall rely on hardcoded
+    positions or using some kind of anchor objects. This function and its small
+    update utility is simply a way to get around this problem when developing by
+    recovering a truly stable information.
+]]--
+function constants.getHardcodedPositionFromGUID(GUID, x, y, z)
+    return Vector(x, y, z)
+end
+
 function constants.getPositionFromGUID(GUID)
     local object = getObjectFromGUID(GUID)
     if object then
@@ -14,7 +35,7 @@ end
 -- et d’éviter d’envoyer, par exemple, une carte invisible juste en dessous d’un
 -- paquet qui sera donc ajouté à la carte et deviendra à son tour invisible…
 function constants.getLandingPositionFromGUID(anchorGUID)
-    return constants.getPositionFromGUID(anchorGUID) + Vector(0, 0.3, 0)
+    return constants.getLandingPosition(constants.getPositionFromGUID(anchorGUID))
 end
 
 function constants.getLandingPosition(anchor)
@@ -66,10 +87,10 @@ constants.intrigue_base = "77d25d"
 constants.epic_cards = {'7ae7f5', 'fbaf9f', '497c84', '30b760'}
 
 constants.leaderPos = {
-    ["Yellow"] = constants.getPositionFromGUID("a677e0"),
-    ["Green"] = constants.getPositionFromGUID("cf1486"),
-    ["Blue"] = constants.getPositionFromGUID("681774"),
-    ["Red"] = constants.getPositionFromGUID("66cdbb")
+    Yellow = constants.getPositionFromGUID("a677e0"),
+    Green = constants.getPositionFromGUID("cf1486"),
+    Blue = constants.getPositionFromGUID("681774"),
+    Red = constants.getPositionFromGUID("66cdbb")
 }
 
 constants.leaders = {
@@ -95,18 +116,19 @@ constants.players = constants.resolveGUIDs({
         spice = "3074d4",
         solari = "576ccd",
         water = "692c4d",
-        --cards = "3a9e65",
         leader_zone = "66cdbb",
         dreadnoughts = {"1a3c82", "a8f306"},
         dreadnought_positions = {
-            constants.getPositionFromGUID("1a3c82"),
-            constants.getPositionFromGUID("a8f306")
+            constants.getHardcodedPositionFromGUID("1a3c82", 0, 0, 0),
+            constants.getHardcodedPositionFromGUID("a8f306", 0, 0, 0)
         },
         agents = {"7751c8", "afa978"},
         agent_positions = {
-            constants.getPositionFromGUID("7751c8"),
-            constants.getPositionFromGUID("afa978"),
-            constants.getPositionFromGUID("7751c8") + 2 * ((constants.getPositionFromGUID("afa978") - constants.getPositionFromGUID("7751c8"))),
+            constants.getHardcodedPositionFromGUID("7751c8", 0, 0, 0),
+            constants.getHardcodedPositionFromGUID("afa978", 0, 0, 0),
+            constants.getHardcodedPositionFromGUID("7751c8", 0, 0, 0) + 2 * (
+                constants.getHardcodedPositionFromGUID("afa978", 0, 0, 0) -
+                constants.getHardcodedPositionFromGUID("7751c8", 0, 0, 0)),
         },
         swordmaster = "ed3490",
         council_token = "f19a48",
@@ -114,6 +136,7 @@ constants.players = constants.resolveGUIDs({
         council_bonus_zone = constants.getPositionFromGUID('f19a48'),
         vanilla_council_zone = constants.getPositionFromGUID('074f6d') + Vector(-1.73, 1, 0),
         vp_4_players_token = "a6c2e0",
+        vp_4_players_token_initial_position = constants.getHardcodedPositionFromGUID("a6c2e0", 0, 0, 0),
         score_marker = "4feaca",
         flag_bag = '61453d',
         troops = {
@@ -139,7 +162,9 @@ constants.players = constants.resolveGUIDs({
         techZone = '9555b8',
         pass_turn_anchors = "0e9fa2",
         tleilaxuTokens = "2bfc39",
+        tleilaxuTokens_inital_position = constants.getHardcodedPositionFromGUID("2bfc39", 0, 0, 0),
         researchTokens = "39e0f3",
+        researchTokens_inital_position = constants.getHardcodedPositionFromGUID("39e0f3", 0, 0, 0),
         cargo = "e9096d",
         zone_player = "2b7781"
     },
@@ -148,18 +173,19 @@ constants.players = constants.resolveGUIDs({
         spice = "9cc286",
         solari = "fa5236",
         water = "0afaeb",
-        --cards = "a0bb82",
         leader_zone = "681774",
         dreadnoughts = {"82789e", "60f208"},
         dreadnought_positions = {
-            constants.getPositionFromGUID("82789e"),
-            constants.getPositionFromGUID("60f208")
+            constants.getHardcodedPositionFromGUID("82789e", 0, 0, 0),
+            constants.getHardcodedPositionFromGUID("60f208", 0, 0, 0)
         },
         agents = {"64d013", "106d8b"},
         agent_positions = {
-            constants.getPositionFromGUID("64d013"),
-            constants.getPositionFromGUID("106d8b"),
-            constants.getPositionFromGUID("64d013") + 2 * ((constants.getPositionFromGUID("106d8b") - constants.getPositionFromGUID("64d013"))),
+            constants.getHardcodedPositionFromGUID("64d013", 0, 0, 0),
+            constants.getHardcodedPositionFromGUID("106d8b", 0, 0, 0),
+            constants.getHardcodedPositionFromGUID("64d013", 0, 0, 0) + 2 * (
+                constants.getHardcodedPositionFromGUID("106d8b", 0, 0, 0) -
+                constants.getHardcodedPositionFromGUID("64d013", 0, 0, 0)),
         },
         swordmaster = "a78ad7",
         council_token = "f5b14a",
@@ -167,6 +193,7 @@ constants.players = constants.resolveGUIDs({
         council_bonus_zone = constants.getPositionFromGUID('f5b14a'),
         vanilla_council_zone = constants.getPositionFromGUID('074f6d') + Vector(-1.00, 1, 0),
         vp_4_players_token = "311255",
+        vp_4_players_token_initial_position = constants.getHardcodedPositionFromGUID("311255", 0, 0, 0),
         score_marker = "1b1e76",
         flag_bag = '8627e0',
         troops = {
@@ -192,7 +219,9 @@ constants.players = constants.resolveGUIDs({
         techZone = '2d3346',
         pass_turn_anchors = "643f32",
         tleilaxuTokens = "96607f",
+        tleilaxuTokens_inital_position = constants.getHardcodedPositionFromGUID("96607f", 0, 0, 0),
         researchTokens = "292658",
+        researchTokens_inital_position = constants.getHardcodedPositionFromGUID("292658", 0, 0, 0),
         cargo = "68e424",
         zone_player = "621cc4"
     },
@@ -201,18 +230,19 @@ constants.players = constants.resolveGUIDs({
         spice = "22478f",
         solari = "e597dc",
         water = "fa9522",
-        --cards = "c7fb9b",
         leader_zone = "cf1486",
         dreadnoughts = {"a15087", "734250"},
         dreadnought_positions = {
-            constants.getPositionFromGUID("a15087"),
-            constants.getPositionFromGUID("734250")
+            constants.getHardcodedPositionFromGUID("a15087", 0, 0, 0),
+            constants.getHardcodedPositionFromGUID("734250", 0, 0, 0)
         },
         agents = {"66ae45", "bceb0e"},
         agent_positions = {
-            constants.getPositionFromGUID("66ae45"),
-            constants.getPositionFromGUID("bceb0e"),
-            constants.getPositionFromGUID("66ae45") + 2 * ((constants.getPositionFromGUID("bceb0e") - constants.getPositionFromGUID("66ae45"))),
+            constants.getHardcodedPositionFromGUID("66ae45", 0, 0, 0),
+            constants.getHardcodedPositionFromGUID("bceb0e", 0, 0, 0),
+            constants.getHardcodedPositionFromGUID("66ae45", 0, 0, 0) + 2 * (
+                constants.getHardcodedPositionFromGUID("bceb0e", 0, 0, 0) -
+                constants.getHardcodedPositionFromGUID("66ae45", 0, 0, 0)),
         },
         swordmaster = "fb1629",
         council_token = "a0028d",
@@ -220,6 +250,7 @@ constants.players = constants.resolveGUIDs({
         council_bonus_zone = constants.getPositionFromGUID('a0028d'),
         vanilla_council_zone = constants.getPositionFromGUID('074f6d') + Vector(0.66, 1, 0),
         vp_4_players_token = "66444c",
+        vp_4_players_token_initial_position = constants.getHardcodedPositionFromGUID("66444c", 0, 0, 0),
         score_marker = "76039f",
         flag_bag = 'ad6b92',
         troops = {
@@ -245,7 +276,9 @@ constants.players = constants.resolveGUIDs({
         techZone = '546163',
         pass_turn_anchors = "65876d",
         tleilaxuTokens = "63d39f",
+        tleilaxuTokens_inital_position = constants.getHardcodedPositionFromGUID("63d39f", 0, 0, 0),
         researchTokens = "658b17",
+        researchTokens_inital_position = constants.getHardcodedPositionFromGUID("658b17", 0, 0, 0),
         cargo = "34281d",
         zone_player = "111023"
     },
@@ -254,18 +287,19 @@ constants.players = constants.resolveGUIDs({
         spice = "78fb8a",
         solari = "c5c4ef",
         water = "f217d0",
-        --cards = "17a08e",
         leader_zone = "a677e0",
         dreadnoughts = {"5469fb", "71a414"},
         dreadnought_positions = {
-            constants.getPositionFromGUID("5469fb"),
-            constants.getPositionFromGUID("71a414")
+            constants.getHardcodedPositionFromGUID("5469fb", 0, 0, 0),
+            constants.getHardcodedPositionFromGUID("71a414", 0, 0, 0)
         },
         agents = {"5068c8", "67b476"},
         agent_positions = {
-            constants.getPositionFromGUID("5068c8"),
-            constants.getPositionFromGUID("67b476"),
-            constants.getPositionFromGUID("5068c8") + 2 * ((constants.getPositionFromGUID("67b476") - constants.getPositionFromGUID("5068c8"))),
+            constants.getHardcodedPositionFromGUID("5068c8", 0, 0, 0),
+            constants.getHardcodedPositionFromGUID("67b476", 0, 0, 0),
+            constants.getHardcodedPositionFromGUID("5068c8", 0, 0, 0) + 2 * (
+                constants.getHardcodedPositionFromGUID("67b476", 0, 0, 0) -
+                constants.getHardcodedPositionFromGUID("5068c8", 0, 0, 0)),
         },
         swordmaster = "635c49",
         council_token = "1be491",
@@ -273,6 +307,7 @@ constants.players = constants.resolveGUIDs({
         council_bonus_zone = constants.getPositionFromGUID('1be491'),
         vanilla_council_zone = constants.getPositionFromGUID('074f6d') + Vector(1.37, 1, 0),
         vp_4_players_token = "4e8873",
+        vp_4_players_token_initial_position = constants.getHardcodedPositionFromGUID("4e8873", 0, 0, 0),
         score_marker = "20bbd1",
         flag_bag = 'b92a4c',
         troops = {
@@ -298,7 +333,9 @@ constants.players = constants.resolveGUIDs({
         techZone = '3d705e',
         pass_turn_anchors = "65876d",
         tleilaxuTokens = "d20bcf",
+        tleilaxuTokens_inital_position = constants.getHardcodedPositionFromGUID("d20bcf", 0, 0, 0),
         researchTokens = "8988cf",
+        researchTokens_inital_position = constants.getHardcodedPositionFromGUID("8988cf", 0, 0, 0),
         cargo = "8fa76f",
         zone_player = "20859b"
     }
@@ -312,17 +349,15 @@ constants.pos_black_market = {
     Vector(-2.49, 2, 24.5) + constants.black_market_offset
 }
 
-constants.pos_trash_upper = constants.getLandingPositionFromGUID("cf6ca1")
-
 constants.pos_trash_lower = constants.getLandingPositionFromGUID("ef8614")
 
 constants.first_player_marker = getObjectFromGUID("1f5576")
 
 constants.first_player_positions =  {
-    ["Red"] = constants.getPositionFromGUID('346e0d') + Vector(0, -0.4, 0),
-    ["Blue"] = constants.getPositionFromGUID('1fc559') + Vector(0, -0.4, 0),
-    ["Green"] = constants.getPositionFromGUID('59523d') + Vector(0, -0.4, 0),
-    ["Yellow"] = constants.getPositionFromGUID('e9a44c') + Vector(0, -0.4, 0)
+    Red = constants.getPositionFromGUID('346e0d') + Vector(0, -0.4, 0),
+    Blue = constants.getPositionFromGUID('1fc559') + Vector(0, -0.4, 0),
+    Green = constants.getPositionFromGUID('59523d') + Vector(0, -0.4, 0),
+    Yellow = constants.getPositionFromGUID('e9a44c') + Vector(0, -0.4, 0)
 }
 
 constants.zone_deck_imperium = '8bd982'
@@ -349,8 +384,11 @@ constants.buy8_guid = '363f98'
 
 constants.zone_black_market = {"323acb","e96c10","93de6d"}
 
+-- TODO Use the anchor instead of the token itself.
+-- "Makers & Recall anchor": "120026",
+-- "Makers & Recall": "fb41e2",
 constants.marker_positions = {
-    round_start = constants.getPositionFromGUID("fb41e2"),
+    round_start = constants.getHardcodedPositionFromGUID("fb41e2", 0, 0, 0),
     player_turns = constants.getPositionFromGUID("fb41e2") + Vector(0, 0, -0.64),
     combat = constants.getPositionFromGUID("fb41e2") + Vector(0, 0, -0.64 * 2),
     makers = constants.getPositionFromGUID("fb41e2") + Vector(0, 0, -0.64 * 3),

@@ -70,6 +70,33 @@ pion_reput = constants.resolveGUIDs({
     }
 })
 
+initital_position_pion_reput = constants.resolveGUIDs({
+    emperor = {
+        Red = constants.getHardcodedPositionFromGUID('acfcef', 0, 0, 0),
+        Blue = constants.getHardcodedPositionFromGUID('426a23', 0, 0, 0),
+        Green = constants.getHardcodedPositionFromGUID('d7c9ba', 0, 0, 0),
+        Yellow = constants.getHardcodedPositionFromGUID('489871', 0, 0, 0)
+    },
+    spacingGuild = {
+        Red = constants.getHardcodedPositionFromGUID('be464e', 0, 0, 0),
+        Blue = constants.getHardcodedPositionFromGUID('4069d8', 0, 0, 0),
+        Green = constants.getHardcodedPositionFromGUID('89da7d', 0, 0, 0),
+        Yellow = constants.getHardcodedPositionFromGUID('9d0075', 0, 0, 0)
+    },
+    beneGesserit = {
+        Red = constants.getHardcodedPositionFromGUID('713eae', 0, 0, 0),
+        Blue = constants.getHardcodedPositionFromGUID('2a88a6', 0, 0, 0),
+        Green = constants.getHardcodedPositionFromGUID('2dc980', 0, 0, 0),
+        Yellow = constants.getHardcodedPositionFromGUID('a3729e', 0, 0, 0)
+    },
+    fremen = {
+        Red = constants.getHardcodedPositionFromGUID('088f51', 0, 0, 0),
+        Blue = constants.getHardcodedPositionFromGUID('0e6e41', 0, 0, 0),
+        Green = constants.getHardcodedPositionFromGUID('d390dc', 0, 0, 0),
+        Yellow = constants.getHardcodedPositionFromGUID('77d7c8', 0, 0, 0)
+    }
+})
+
 alliance_token = {
     ["emperor"] = getObjectFromGUID('13e990'),
     ["spacingGuild"] = getObjectFromGUID('ad1aae'),
@@ -77,11 +104,11 @@ alliance_token = {
     ["fremen"] = getObjectFromGUID('4c2bcc')
 }
 
-alliance_pos = {
-    ["emperor"] = constants.getPositionFromGUID('13e990'),
-    ["spacingGuild"] = constants.getPositionFromGUID('ad1aae'),
-    ["beneGesserit"] = constants.getPositionFromGUID('33452e'),
-    ["fremen"] = constants.getPositionFromGUID('4c2bcc')
+initial_alliance_pos = {
+    ["emperor"] = constants.getHardcodedPositionFromGUID('13e990', 0, 0, 0),
+    ["spacingGuild"] = constants.getHardcodedPositionFromGUID('ad1aae', 0, 0, 0),
+    ["beneGesserit"] = constants.getHardcodedPositionFromGUID('33452e', 0, 0, 0),
+    ["fremen"] = constants.getHardcodedPositionFromGUID('4c2bcc', 0, 0, 0)
 }
 
 function boardCommonModule.CheckAgentAndPlayer(color, zone)
@@ -482,11 +509,11 @@ end
 
 function boardCommonModule.initReputationLevels()
     local reputationLevels = {}
-    for faction, reputations in pairs(pion_reput) do
+    for faction, positions in pairs(initital_position_pion_reput) do
         local factionLevels = {}
-        for color, reputation in pairs(reputations) do
-            local startingCell = reputation.getPosition()
-            local allianceToken = alliance_token[faction].getPosition()
+        for color, position in pairs(positions) do
+            local startingCell = position
+            local allianceToken = initial_alliance_pos[faction]
             local step = (allianceToken.z - startingCell.z) / 5 -- The token is centered on the 5th level (but you only need to reach the 4th to get it).
             local zero = startingCell.z - step / 2
             factionLevels[color] = {
@@ -501,8 +528,6 @@ function boardCommonModule.initReputationLevels()
     end
     return reputationLevels
 end
-
-boardCommonModule.reputationLevels = boardCommonModule.initReputationLevels()
 
 function boardCommonModule.getReputationLevels(faction, color)
     return boardCommonModule.reputationLevels[faction][color]
@@ -597,7 +622,7 @@ function giveAlliance(faction, color)
                 helperModule.grantScoreToken(playerTakingAlliance, alliance_token[faction])
                 broadcastToAll(i18n("recoverAlliance"):format(leaderTakingAllianceName, i18n(faction)), playerTakingAlliance)
             elseif posz < posz_requis then
-                alliance_token[faction].setPositionSmooth(alliance_pos[faction], false, false)
+                alliance_token[faction].setPositionSmooth(initial_alliance_pos[faction], false, false)
             end
 
         end

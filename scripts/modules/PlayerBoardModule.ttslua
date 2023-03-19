@@ -68,7 +68,7 @@ function playerBoardModule.generateGlobalScoreboardPositions()
 
     -- Avoid collision between markers by giving a different height to each.
     local h = 1
-    for color, player in pairs(constants.players) do
+    for color, _ in pairs(constants.players) do
         if color == playerBoardModule.playerColor then
             break
         else
@@ -87,7 +87,7 @@ function playerBoardModule.generateGlobalScoreboardPositions()
 end
 
 function playerBoardModule.createPlayerScoreboardPark()
-    local origin = constants.players[playerBoardModule.playerColor].vp_4_players_token.getPosition()
+    local origin = constants.players[playerBoardModule.playerColor].vp_4_players_token_initial_position
 
     local direction = 1
     if playerBoardModule.playerColor == "Red" or  playerBoardModule.playerColor == "Blue" then

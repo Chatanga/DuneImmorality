@@ -7,13 +7,13 @@ require("locales")
 
 constants = require("Constants")
 
---helperModule = require("HelperModule")
+helperModule = require("HelperModule")
 
---isDeckContainsEnough = helperModule.isDeckContainsEnough
+isDeckContainsEnough = helperModule.isDeckContainsEnough
 
---boardCommonModule = require("BoardCommonModule")
+boardCommonModule = require("BoardCommonModule")
 
---DrawOne = helperModule.DrawOne
+DrawOne = helperModule.DrawOne
 
 SecureContract_zone = getObjectFromGUID("db4022")
 SellMelange_zone = getObjectFromGUID("7539a3")
@@ -22,16 +22,13 @@ RallyTroops_zone = getObjectFromGUID("6932df")
 Swordmaster_zone = getObjectFromGUID("6cc2f8")
 HallOfOratory_zone = getObjectFromGUID("3e7409")
 
---players = constants.players
+players = constants.players
 
 function onload()
-    log("A")
-    --[[
     i18n.setLocale(Global.getVar("locale"))
 
     self.interactable = false
     activateButtons()
-    ]]--
 end
 
 function activateButtons()
