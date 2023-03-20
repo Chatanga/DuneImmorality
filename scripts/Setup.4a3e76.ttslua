@@ -94,10 +94,6 @@ _ = require("Core").registerLoadablePart(function(saved_data)
     FP2 = getObjectFromGUID('4e8873')
     FP3 = getObjectFromGUID('a6c2e0')
     FP4 = getObjectFromGUID('311255')
-    yellowscore = getObjectFromGUID('20bbd1')
-    greenscore = getObjectFromGUID('76039f')
-    bluescore = getObjectFromGUID('1b1e76')
-    redscore = getObjectFromGUID('4feaca')
     tech_tiles_en = getObjectFromGUID("cb766f")
     tech_tiles_fr = getObjectFromGUID("6116af")
     intrigue_ix = constants.intrigue_ix
@@ -123,13 +119,13 @@ _ = require("Core").registerLoadablePart(function(saved_data)
     epicgamebutton = getObjectFromGUID("f8480b")
     pos_trash = constants.pos_trash_lower
 
-    hand_players = core.resolveGUIDs({
+    hand_players = core.resolveGUIDs(false, {
         Green = "482f72",
         Blue = "e50f77",
         Yellow = "050f39",
         Red = "8a9816"
     })
-    pion_reput = core.resolveGUIDs({
+    pion_reput = core.resolveGUIDs(false, {
         Emperor = {
             Red = 'acfcef',
             Blue = '426a23',
@@ -159,11 +155,11 @@ _ = require("Core").registerLoadablePart(function(saved_data)
     leaderRandomizer = getObjectFromGUID("cf6ca1")
 
     self.interactable = false
-    yellowscore.interactable = false
-    greenscore.interactable = false
-    bluescore.interactable = false
-    redscore.interactable = false
     councellor_bonus_bag.interactable = false
+
+    for _, player in pairs(constants.alivePlayers) do
+        player.score_marker.interactable = false
+    end
 
     for _, obj in pairs(getObjectFromGUID("e88cd0").getObjects()) do
         obj.setInvisibleTo({
@@ -191,16 +187,24 @@ _ = require("Core").registerLoadablePart(function(saved_data)
         local seated_players = getPlayersBasedOnHotseat()
 
         for _, color in pairs(seated_players) do
-            for _, faction in pairs(pion_reput) do
-                faction[color].setLock(true)
-                faction[color].interactable = false
+            for _, pions in pairs(pion_reput) do
+                local pion = pions[color]
+                if pion then
+                    pion.setLock(true)
+                    pion.interactable = false
+                end
             end
 
-            if immortality == 1 then
-                constants.players[color].tleilaxuTokens.interactable = false
-                constants.players[color].researchTokens.interactable = false
+            local player = constants.alivePlayers[color]
+            if player then
+                if immortality == 1 then
+                    player.tleilaxuTokens.interactable = false
+                    player.researchTokens.interactable = false
+                end
+                if rise_of_ix == 1 then
+                    player.cargo.interactable = false
+                end
             end
-            if rise_of_ix == 1 then constants.players[color].cargo.interactable = false end
         end
     end
 
@@ -928,8 +932,10 @@ function Commune()
     GetDeckOrCardFromGUID('907f66').shuffle()
     GetDeckOrCardFromGUID('4f08fc').shuffle()
     Wait.time(ImperiumDeal, 0.5)
-    Wait.time(function() getObjectFromGUID("cb0478").call("ConflictButton") end,
-              3)
+    Wait.time(function()
+        local firstConflictAnchor = getObjectFromGUID("cb0478")
+        firstConflictAnchor.call("ConflictButton")
+    end, 3)
     Wait.time(startPickPlayer, 2)
     Wait.time(function()
         setupDone = true
@@ -1508,6 +1514,9 @@ function destructMissingPlayers()
     for color, player in pairs(constants.players) do
         if not hasValue(seated_players, color) then
             player.board.call("shutdown")
+            for _, pions in pairs(pion_reput) do
+                pions[color].destruct()
+            end
         end
     end
 end

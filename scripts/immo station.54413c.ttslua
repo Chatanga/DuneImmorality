@@ -38,7 +38,7 @@ function ResearchStation(_, color)
         end
 
         local leaderName = helperModule.getLeaderName(color)
-        local waterObj = players[color].water
+        local waterObj = constants.players[color].water
 
         if waterObj.call("collectVal") < 2 then
             broadcastToColor(i18n("noWater"), color, color)

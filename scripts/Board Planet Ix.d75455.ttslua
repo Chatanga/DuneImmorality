@@ -46,7 +46,7 @@ function Dreadnought(_, color)
         local leader = helperModule.getLeader(color)
         assert(leader)
         local leaderName = leader.getName()
-        local solariObj = players[color].solari
+        local solariObj = constants.players[color].solari
 
         local price = 3
 

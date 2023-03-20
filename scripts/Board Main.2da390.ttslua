@@ -533,7 +533,7 @@ function Arrakeen(_, color)
 end
 
 function BonusFremen(_, color)
-    players[color].water.call("incrementVal")
+    constants.players[color].water.call("incrementVal")
     local leaderName = helperModule.getLeaderName(color)
     broadcastToAll(i18n("fremenBonus"):format(leaderName), color)
 
@@ -560,7 +560,7 @@ function BonusSpatial(_, color)
 
     for i = 1, solariAmount, 1 do
         t0 = t0 + 0.2
-        Wait.time(function() players[color].solari.call("incrementVal") end, t0)
+        Wait.time(function() constants.alivePlayers[color].solari.call("incrementVal") end, t0)
     end
     broadcastToAll(i18n("spaceBonus"):format(leaderName, solariAmount), color)
 

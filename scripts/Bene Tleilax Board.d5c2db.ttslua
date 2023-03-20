@@ -53,24 +53,25 @@ function createAxlotlTanksPark(playerColor)
         end
     end
 
-    local zone = parkModule.findBoundingZone(0, Vector(0.35, 0.35, 0.35), slots)
+    if not axlotlTanksZones[playerColor] then
+        axlotlTanksZones[playerColor] = parkModule.findBoundingZone(0, Vector(0.35, 0.35, 0.35), slots)
+    end
 
     return parkModule.createPark(
         "axlotlTanks." .. playerColor,
         slots,
         Vector(0, 0, 0),
-        zone,
+        axlotlTanksZones[playerColor],
         playerColor,
         playerColor,
         true)
 end
 
-function getAveragePosition(field)
+function getAveragePosition(positionField)
     local p = Vector(0, 0, 0)
     local count = 0
     for _, player in pairs(constants.players) do
-        local token = player[field]
-        p = p + token.getPosition()
+        p = p + player[positionField]
         count = count + 1
     end
     return p * (1 / count)
@@ -78,7 +79,7 @@ end
 
 function generateTleilaxuTrackPositions()
     local positions = {}
-    local origin = getAveragePosition("tleilaxuTokens")
+    local origin = getAveragePosition("tleilaxuTokens_inital_position")
     for i = 1, 7 do
         positions[#positions + 1] = origin + Vector(1.3 * i, 2, 0)
     end
@@ -88,28 +89,21 @@ end
 _ = require("Core").registerLoadablePart(function(saved_data)
     self.interactable = false
 
-    -- TODO Ancrage dynamique problématique.
     pos_TleilaxuTrack = generateTleilaxuTrackPositions()
 
-    -- TODO Ancrage dynamique problématique.
-    tokenStarterPos = {
-        Red = constants.players.Red.tleilaxuTokens.getPosition() + Vector(0, 2, 0),
-        Blue = constants.players.Blue.tleilaxuTokens.getPosition() + Vector(0, 2, 0),
-        Yellow = constants.players.Yellow.tleilaxuTokens.getPosition() + Vector(0, 2, 0),
-        Green = constants.players.Green.tleilaxuTokens.getPosition() + Vector(0, 2, 0),
-    }
-
-    researchTokenOrigin = getAveragePosition("researchTokens")
-
-    -- TODO Ancrage dynamique problématique.
-    researchTokenStartingPositions = {
-        Red = constants.players.Red.researchTokens.getPosition(),
-        Blue = constants.players.Blue.researchTokens.getPosition(),
-        Yellow = constants.players.Yellow.researchTokens.getPosition(),
-        Green = constants.players.Green.researchTokens.getPosition()
-    }
+    researchTokenOrigin = getAveragePosition("researchTokens_inital_position")
 
     specimen_zone = getObjectFromGUID("f5de09")
+
+    axlotlTanksZones = {}
+
+    if saved_data ~= "" then
+        local loaded_data = JSON.decode(saved_data)
+        researchConducted = loaded_data.researchConducted
+        for color, GUID in pairs(loaded_data.axlotlTanksZoneGUIDs) do
+            axlotlTanksZones[color] = getObjectFromGUID(GUID)
+        end
+    end
 
     axlotlTanksParks = {
         Green = createAxlotlTanksPark("Green"),
@@ -118,10 +112,7 @@ _ = require("Core").registerLoadablePart(function(saved_data)
         Red = createAxlotlTanksPark("Red")
     }
 
-    if saved_data ~= "" then
-        local loaded_data = JSON.decode(saved_data)
-        researchConducted = loaded_data[1]
-    end
+    updateSave()
 
     AddSpecimenParams = {
         index = 0,
@@ -245,7 +236,15 @@ _ = require("Core").registerLoadablePart(function(saved_data)
 end)
 
 function updateSave()
-    local data_to_save = {researchConducted}
+    local data_to_save = {
+        researchConducted = researchConducted,
+        axlotlTanksZoneGUIDs = {
+            Red = axlotlTanksZones.Red.getGUID(),
+            Green = axlotlTanksZones.Green.getGUID(),
+            Blue = axlotlTanksZones.Blue.getGUID(),
+            Yellow = axlotlTanksZones.Yellow.getGUID(),
+        }
+    }
     saved_data = JSON.encode(data_to_save)
     self.script_state = saved_data
 end
@@ -358,7 +357,7 @@ function rollBackResearch(color)
         if #playerResearchDone > 0 then
             p = researchSpaceToWorldPosition(playerResearchDone[#playerResearchDone])
         else
-            p = researchTokenStartingPositions[color]
+            p = constants.players[color].researchTokens_inital_position
         end
 
         local token = constants.players[color].researchTokens
@@ -404,8 +403,9 @@ function backBeneTleilaxToken(color)
         end
 
         if not tokenMoved and index == 1 then
+            local tokenStarterPos = constants.players[color].tleilaxuTokens_inital_position
             tokenMoved = isBeetleRollBacked(token, 1.10, posTleilaxu.x,
-                                            tokenStarterPos[color], color)
+                                            tokenStarterPos + constants.someHeight, color)
         end
 
         if not tokenMoved then
@@ -523,7 +523,7 @@ function onObjectEnterScriptingZone(zone, enter_object)
     end
 
     if researchAdvancing and (zone.guid == "52bcf4") then
-        for color, _ in pairs(constants.players) do
+        for color, player in pairs(constants.players) do
 
             if enter_object.hasTag(color) and
                 enter_object.hasTag("ResearchToken") then
@@ -540,7 +540,7 @@ function onObjectEnterScriptingZone(zone, enter_object)
                 end
 
                 Wait.time(function()
-                    players[color].solari.call("incrementVal")
+                    player.solari.call("incrementVal")
                 end, 0.25, solariIncome)
 
                 local solariString = solariIncome .. " " .. solari
@@ -566,7 +566,7 @@ function onObjectEnterScriptingZone(zone, enter_object)
     end
 
     if researchAdvancing and (zone.guid == "f9ddaa" or zone.guid == "2a7803") then
-        for color, _ in pairs(constants.players) do
+        for color, player in pairs(constants.players) do
 
             if enter_object.hasTag(color) and
                 enter_object.hasTag("ResearchToken") then
@@ -580,7 +580,7 @@ function onObjectEnterScriptingZone(zone, enter_object)
                 end
 
                 Wait.time(function()
-                    players[color].spice.call("incrementVal")
+                    player.spice.call("incrementVal")
                 end, 0.25, income)
 
                 local spiceString = income .. " " .. spice
@@ -637,14 +637,14 @@ function onObjectEnterScriptingZone(zone, enter_object)
     end
 
     if researchAdvancing and zone.guid == "459e80" then
-        for color, _ in pairs(constants.players) do
+        for color, player in pairs(constants.players) do
 
             if enter_object.hasTag(color) and
                 enter_object.hasTag("ResearchToken") then
 
                 Player[color].showConfirmDialog(i18n("confirmSolarisToBeetles"),
                                                 function(color)
-                    local solariObj = players[color].solari
+                    local solariObj = player.solari
                     local price = 7
 
                     if solariObj.call("collectVal") < price then
@@ -693,7 +693,7 @@ function onObjectEnterScriptingZone(zone, enter_object)
 
     if beetleAdvancing and (zone.guid == "5e4d40" or zone.guid == "a1a4e8") then
 
-        for color, _ in pairs(constants.players) do
+        for color, player in pairs(constants.players) do
 
             if enter_object.hasTag(color) and
                 enter_object.hasTag("TleilaxuToken") then
@@ -712,7 +712,7 @@ function onObjectEnterScriptingZone(zone, enter_object)
 
                     for i = 1, nbSpice, 1 do
                         Wait.time(function()
-                            players[color].spice.call("incrementVal")
+                            player.spice.call("incrementVal")
                         end, t)
                         t = t + (1.5 / nbSpice)
                     end

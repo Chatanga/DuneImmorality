@@ -1,0 +1,101 @@
+local core = {}
+
+core.onLoadCallbacks = {}
+
+--[[
+    Other modules (and final scripts) should use registerLoadablePart *after*
+    any require calls to be initialized at the right time (if needed) and not
+    define "onLoad" themselves.
+
+    A typical usage is:
+
+        core = require("core")
+        a = require("A")
+        b = require("B")
+        c = require("C")
+
+        _ = core.registerLoadablePart(function(script_state)
+            ...
+        end)
+
+]]--
+function core.registerLoadablePart(onLoadCallback)
+    assert(not core.loaded)
+    assert(onLoadCallback)
+    for _, existingOnLoadCallback in ipairs(core.onLoadCallbacks) do
+        if existingOnLoadCallback == onLoadCallback then
+            return
+        end
+    end
+    core.onLoadCallbacks[#core.onLoadCallbacks + 1] = onLoadCallback
+    return onLoadCallback
+end
+
+--[[
+    See core.registerLoadablePart.
+]]--
+function onLoad(script_state)
+    assert(not core.loaded, "Looks like you're calling require from a function.")
+    core.loaded = true
+    for _, onLoadCallback in ipairs(core.onLoadCallbacks) do
+        onLoadCallback(script_state)
+    end
+end
+
+--[[
+    A rather useless function in itself. However, calls to this function are
+    intended to be patched by a small utility which will replace the provided
+    coordinates by those existing in the TTS save file.
+
+    Why not doing this replacement at runtime you're wondering? Because scripts
+    are reloaded on multiple occasions: when loading a mod (which is nothing
+    more than a blank save), when restoring a game at any point, but also when
+    spawning an object or simply moving an instance out of a bag.
+
+    In other words, no assumptions can be made on the world state, at least
+    regarding any object which can move around. This is especially true for
+    inline code running before 'onLoad' which can well be executed before all
+    legitimate objects have been created or recreated.
+
+    As such, things like taking the "initial" position of an object is doomed to
+    fail, and one shall rely on hardcoded positions or using some kind of anchor
+    objects. This function and its small update utility is simply a way to get
+    around this problem when developing by recovering a truly stable information.
+]]--
+function core.getHardcodedPositionFromGUID(GUID, x, y, z)
+    return Vector(x, y, z)
+end
+
+function core.isSomeKindOfObject(data)
+    return getmetatable(data) ~= nil
+end
+
+function core.resolveGUIDs(reportUnresolvedGUIDs, data)
+    local newData = data
+    if data then
+        local t = type(data)
+        if t == "string" and string.match(data, "[a-z0-9][a-z0-9][a-z0-9][a-z0-9][a-z0-9][a-z0-9]") then
+            newData = getObjectFromGUID(data)
+            if not newData and reportUnresolvedGUIDs then
+                log("[resolveGUIDs] Unknow GUID: " .. data)
+            end
+        elseif t == "table" then
+            if not core.isSomeKindOfObject(data) then
+                newData = {}
+                for i, v in ipairs(data) do
+                    newData[i] = core.resolveGUIDs(reportUnresolvedGUIDs, v)
+                end
+                for k, v in pairs(data) do
+                    newData[k] = core.resolveGUIDs(reportUnresolvedGUIDs, v)
+                end
+            end
+        elseif t == "number" then
+            -- NOP
+        else
+            log("[resolveGUIDs] Unknown type: " .. t)
+        end
+    end
+    return newData
+end
+
+return core

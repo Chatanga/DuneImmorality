@@ -42,7 +42,7 @@ def expand_in_scripts(positions, script_dir):
                 if expansion_count > 0:
                     with open(file_path, 'w') as f:
                         f.write(new_content)
-                    print(str(expansion_count) + " expansions in " + filename)
+                    print(str(expansion_count) + " expansion(s) in " + filename)
 
 def process(positions, filename, content):
     function_name = "getHardcodedPositionFromGUID"

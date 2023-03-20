@@ -26,8 +26,6 @@ _ = require("Core").registerLoadablePart(function(saved_data)
     GetDeckOrCard = helperModule.GetDeckOrCard
     GetDeckOrCardFromGUID = helperModule.GetDeckOrCardFromGUID
 
-    players = constants.players
-
     buttonPassAnchors = {
         ["Red"] = getObjectFromGUID("0e9fa2"),
         ["Blue"] = getObjectFromGUID("643f32"),
@@ -167,13 +165,14 @@ _ = require("Core").registerLoadablePart(function(saved_data)
     bag_friendship["Spacing Guild"].interactable = false
     bag_friendship["Bene Gesserit"].interactable = false
     bag_friendship["Fremen"].interactable = false
-    for color, _ in pairs(constants.players) do
-        players[color].council_token.interactable = false -- conseillers
-        buttonPassAnchors[color].interactable = false
-        constants.players[color].board.interactable = false
-    end
 
-    --getObjectFromGUID("2da390").interactable = true
+    for color, player in pairs(constants.players) do
+        buttonPassAnchors[color].interactable = false
+        player.board.interactable = false
+    end
+    for _, player in pairs(constants.alivePlayers) do
+        player.council_token.interactable = false
+    end
 
     for _, obj in ipairs(getObjects()) do
         if (obj.getDescription() == "Techs FR" and locale == 'en') or (obj.getDescription() == "Techs EN" and locale == 'fr') then
@@ -181,7 +180,6 @@ _ = require("Core").registerLoadablePart(function(saved_data)
         end
     end
 
-    -- Rectifie la position des mains de chaque joueur (les nouveaux plateaux sont plus fins).
     for player_color, _ in pairs(constants.players) do
         local player = Player[player_color]
         for i = 1, player.getHandCount() do
@@ -767,7 +765,7 @@ function onObjectEnterScriptingZone(zone, enter_object)
         end
     end
 
-    for color, player in pairs(constants.players) do
+    for color, player in pairs(constants.alivePlayers) do
         local scorePark = player.board.call("getScorePark")
         if zone == scorePark.zone then
             local victoryRegion = getVictoryRegion(enter_object)

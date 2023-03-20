@@ -1,5 +1,6 @@
 import json
 import sys
+from datetime import datetime
 
 tts_tmp_dir = '/tmp/TabletopSimulator/Tabletop Simulator Lua'
 
@@ -40,6 +41,9 @@ def pack_save(save_file_name):
                 if not name:
                     name = state['Name']
                 inject_script_and_UI(name, state['GUID'], state)
+
+    date = datetime.now().strftime("%m/%d/%Y %I:%M:%S %p")
+    save['Date'] = date
 
     print(json.dumps(save, indent = 2))
 

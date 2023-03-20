@@ -107,7 +107,7 @@ _ = core.registerLoadablePart(function(_)
     foldspace = getObjectFromGUID("38ffc0")
     intrigue_zone = getObjectFromGUID("a377d8")
 
-    pion_reput = core.resolveGUIDs(pion_reput)
+    pion_reput = core.resolveGUIDs(false, pion_reput)
 
     alliance_token = {
         emperor = getObjectFromGUID('13e990'),

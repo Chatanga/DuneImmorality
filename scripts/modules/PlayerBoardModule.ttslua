@@ -8,32 +8,52 @@ parkModule = require("ParkModule")
 
 playerBoardModule.playerColor = nil
 
+playerBoardModule.orbitZone = nil
+
 playerBoardModule.orbitPark = nil
 
 playerBoardModule.score = 0
 
 playerBoardModule.global_score_positions = {}
 
+playerBoardModule.scoreboardZone = nil
+
 playerBoardModule.scorePark = nil
 
 playerBoardModule.alive = true
 
-function playerBoardModule.init(playerColor, centerPosition)
+function playerBoardModule.init(playerColor, centerPosition, savedData)
     playerBoardModule.playerColor = playerColor
 
-    --[[
-        Not having a swordmaster anymore is a sure sign that this board has been
-        reconstructed after a rollback at a time where it has already been
-        shutdown. Since reconstructed objects don't have a saved state, that's
-        the only way we have to detect this situation.
-    ]]--
-    if not constants.players[playerBoardModule.playerColor].swordmaster then
-        playerBoardModule.alive = false
+    if savedData ~= '' then
+        local state = JSON.decode(savedData)
+        if state.version == 1 then
+            playerBoardModule.orbitZone = getObjectFromGUID(state.orbitZoneGUID)
+            playerBoardModule.scoreboardZone = getObjectFromGUID(state.scoreboardZoneGUID)
+            playerBoardModule.alive = state.alive
+        else
+            log('[playerBoardModule.init] Unsupported save version: ' .. tostring(state.version))
+        end
+    end
+
+    if not playerBoardModule.alive then
         return
     end
 
     playerBoardModule.orbitPark = playerBoardModule.createOrbitPark(centerPosition)
     playerBoardModule.initPlayerScore()
+
+    playerBoardModule.saveState()
+end
+
+function playerBoardModule.saveState()
+    local state = {
+        version = 1,
+        orbitZoneGUID = playerBoardModule.orbitZone.getGUID(),
+        scoreboardZoneGUID = playerBoardModule.scoreboardZone.getGUID(),
+        alive = playerBoardModule.alive
+    }
+    self.script_state = JSON.encode(state)
 end
 
 function playerBoardModule.createOrbitPark(centerPosition)
@@ -51,7 +71,9 @@ function playerBoardModule.createOrbitPark(centerPosition)
         end
     end
 
-    local zone = parkModule.findBoundingZone(45, Vector(0.35, 0.35, 0.35), allSlots)
+    if not playerBoardModule.orbitZone then
+        playerBoardModule.orbitZone = parkModule.findBoundingZone(45, Vector(0.35, 0.35, 0.35), allSlots)
+    end
 
     for i, troop in ipairs(constants.players[playerBoardModule.playerColor].troops) do
         troop.locked = true
@@ -63,7 +85,7 @@ function playerBoardModule.createOrbitPark(centerPosition)
         "orbit." .. playerBoardModule.playerColor,
         slots,
         Vector(0, -45, 0),
-        zone,
+        playerBoardModule.orbitZone,
         playerBoardModule.playerColor,
         playerBoardModule.playerColor,
         true)
@@ -114,7 +136,9 @@ function playerBoardModule.createPlayerScoreboardPark()
             origin.z)
     end
 
-    playerBoardModule.scoreboardZone = parkModule.findBoundingZone(0, Vector(0.6, 0.2, 0.6), slots)
+    if not playerBoardModule.scoreboardZone then
+        playerBoardModule.scoreboardZone = parkModule.findBoundingZone(0, Vector(0.6, 0.2, 0.6), slots)
+    end
 
     return parkModule.createPark(
         "scoreboard." .. playerBoardModule.playerColor,
@@ -148,7 +172,7 @@ function playerBoardModule.updatePlayerScore()
 end
 
 function playerBoardModule.onObjectEnterScriptingZone(zone, enter_object)
-    if playerBoardModule.alive and false then
+    if playerBoardModule.alive then
         if zone.guid == playerBoardModule.scoreboardZone.guid then
             local description = enter_object.getDescription()
             if description == "VP" then
@@ -159,7 +183,7 @@ function playerBoardModule.onObjectEnterScriptingZone(zone, enter_object)
 end
 
 function playerBoardModule.onObjectLeaveScriptingZone(zone, enter_object)
-    if playerBoardModule.alive and false then
+    if playerBoardModule.alive then
         if zone.guid == playerBoardModule.scoreboardZone.guid then
             local description = enter_object.getDescription()
             if description == "VP" then
@@ -171,6 +195,7 @@ end
 
 function playerBoardModule.shutdown()
     playerBoardModule.alive = false
+    playerBoardModule.saveState()
 
     local player = constants.players[playerBoardModule.playerColor]
 
@@ -191,7 +216,6 @@ function playerBoardModule.shutdown()
 
     for _, object in ipairs(toBeRemoved) do
         if toBeRemoved then
-            --log("Destroying " .. object.getGUID())
             object.interactable = true
             object.destruct()
         end

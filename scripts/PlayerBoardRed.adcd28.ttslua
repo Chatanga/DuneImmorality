@@ -1,7 +1,7 @@
 playerBoardModule = require("PlayerBoardModule")
 
 _ = require("Core").registerLoadablePart(function(saved_data)
-    playerBoardModule.init('Red', Vector(-27.5, 1, 16.6))
+    playerBoardModule.init('Red', Vector(-27.5, 1, 16.6), saved_data)
 end)
 
 function getOrbitPark()

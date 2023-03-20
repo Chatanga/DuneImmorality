@@ -56,8 +56,8 @@ constants.leaders = {
     helena = {GUID = "5a8a9a"}
 }
 
--- Beware that this variable is processed on loading to resolve its GUIDs.
-constants.unresolved_players = {
+-- You are probably more interrested by constants.players and constants.alivePlayers
+constants.unresolvedPlayers = {
     Red = {
         board = "adcd28",
         spice = "3074d4",
@@ -342,8 +342,24 @@ constants.turnOrder = {
 _ = core.registerLoadablePart(function(_)
     constants.first_player_marker = getObjectFromGUID("1f5576")
 
-    constants.players = core.resolveGUIDs(constants.unresolved_players)
-    constants.unresolved_players = nil
+    constants.players = {}
+    -- Do not confuse alive players with active players. Without restoring a save,
+    -- all players stay alive.
+    constants.alivePlayers = {}
+    for color, unresolvedPlayer in pairs(constants.unresolvedPlayers) do
+        -- Too many objects could be legitimately missing in the middle of a
+        -- game, event for alive players, so we simply disable the unresolved
+        -- GUID reporting.
+        local player = core.resolveGUIDs(false, unresolvedPlayer)
+        constants.players[color] = player
+        -- Not having a swordmaster anymore is a sure sign that a player has
+        -- been shutdown.
+        local alive = getObjectFromGUID(unresolvedPlayer.swordmaster) ~= nil
+        if alive then
+            constants.alivePlayers[color] = player
+        end
+    end
+    constants.unresolvedPlayers = nil
 
     -- Extrapolate two other positions (for the swordmaster and the mentat)
     -- from the positions of the two existing agents.

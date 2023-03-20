@@ -177,16 +177,17 @@ function SecureContract(_, color)
 
         local leaderName = helperModule.getLeaderName(color)
 
-        players[color].solari.call("incrementVal")
-        players[color].solari.call("incrementVal")
-        players[color].solari.call("incrementVal")
+        local player = constants.players[color]
+        player.solari.call("incrementVal")
+        player.solari.call("incrementVal")
+        player.solari.call("incrementVal")
         broadcastToAll(i18n("secureContract"):format(leaderName), color)
     end
 end
 
 function sellMelange(color, spiceAmount, solariAmount)
 
-    local val = players[color].spice.call("collectVal")
+    local val = constants.players[color].spice.call("collectVal")
 
     if boardCommonModule.CheckAgentAndPlayer(color, SellMelange_zone) then
 
@@ -196,10 +197,10 @@ function sellMelange(color, spiceAmount, solariAmount)
             broadcastToColor(i18n("noSpice"), color, color)
         else
             for i = 1, spiceAmount, 1 do
-                players[color].spice.call("decrementVal")
+                constants.players[color].spice.call("decrementVal")
             end
             for i = 1, solariAmount, 1 do
-                players[color].solari.call("incrementVal")
+                constants.players[color].solari.call("incrementVal")
             end
             broadcastToAll(i18n("sellMelange"):format(leaderName, spiceAmount,
                                                       solariAmount), color)
@@ -245,7 +246,7 @@ function RallyTroops(_, color)
         local leader = helperModule.getLeader(color)
         assert(leader)
         local leaderName = leader.getName()
-        local solariObj = players[color].solari
+        local solariObj = constants.players[color].solari
         local t = 0
         local t1 = 0
 
