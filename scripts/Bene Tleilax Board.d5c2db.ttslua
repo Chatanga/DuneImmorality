@@ -708,7 +708,7 @@ function onObjectEnterScriptingZone(zone, enter_object)
 
                 if nbSpice == 2 and zone.guid == "5e4d40" then
                     local t = 0
-                    getObjectFromGUID('46cd6b').call("reset_val")
+                    getObjectFromGUID('46cd6b').call("resetVal")
 
                     for i = 1, nbSpice, 1 do
                         Wait.time(function()

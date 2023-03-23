@@ -1,0 +1,144 @@
+resource = {}
+
+MIN_VALUE = 0
+MAX_VALUE = 99
+
+function resource.init(ownerColor, resourceName, value, savedData)
+    i18n = require("i18n")
+    require("locales")
+
+    resource.ownerColor = ownerColor
+    resource.resourceName = resourceName
+    resource.value = value
+    resource.laggingValue = value
+
+    self.interactable = false
+
+    if savedData ~= "" then
+        local state = JSON.decode(savedData)
+        resource.value = state.value
+        resource.laggingValue = state.laggingValue
+    end
+
+    self.createButton({
+        label = tostring(resource.value),
+        click_function = "changeValue",
+        tooltip = resource.getTooltip(),
+        function_owner = self,
+        position = Vector(0, 0.05, 0.2),
+        height = 600,
+        width = 1000,
+        alignment = 3,
+        scale = Vector(1.5, 1.5, 1.5),
+        font_size = 800,
+        font_color = {0.1, 0.1, 0.1, 100}, -- Hein ?
+        color = {0, 0, 0, 0}
+    })
+
+    resource.updateButton()
+end
+
+function resource.updateSave()
+    local state = {
+        value = resource.value,
+        laggingValue = resource.laggingValue
+    }
+    self.script_state = JSON.encode(state)
+end
+
+function resource.getTooltip()
+    return "     " .. resource.value .. "\n" .. i18n("water")
+end
+
+function resource.updateButton()
+    self.editButton({
+        index = 0,
+        label = tostring(resource.value),
+        tooltip = resource.getTooltip()
+    })
+end
+
+function resource.checkPermission(color, numberOfPlayers)
+    if color ~= resource.ownerColor and numberOfPlayers > 2 then
+        broadcastToColor(i18n("noTouch"), color, color)
+        return false
+    end
+    return true
+end
+
+function changeValue(_, color, altClick)
+    local numberOfPlayers = #getObjectFromGUID("4a3e76").call("getPlayersBasedOnHotseat")
+
+    local playerActingStr = ""
+    local msgColor = color
+    if color ~= resource.ownerColor and numberOfPlayers < 3 then
+        playerActingStr = i18n("playerActing"):format(i18n(color:lower()))
+        msgColor = "Pink"
+    end
+
+    if not resource.checkPermission(color, numberOfPlayers) then
+        return
+    end
+
+    local change = altClick and -1 or 1
+    local newValue = math.min(math.max(resource.value + change, MIN_VALUE), MAX_VALUE)
+    if resource.value ~= newValue then
+        resource.value = newValue
+        resource.updateButton()
+        resource.updateSave()
+
+        if resource.laggingUpdate then
+            Wait.stop(resource.laggingUpdate)
+        end
+
+        -- Thread NS is empty.
+        local _resource = resource
+
+        resource.laggingUpdate = Wait.time(function()
+            local delta = _resource.value - _resource.laggingValue
+            local resource = i18n(_resource.resourceName .. "s")
+            if math.abs(delta) == 1  then
+                resource = i18n(_resource.resourceName)
+            end
+
+            local colorText = i18n(_resource.ownerColor:lower())
+            if delta < 0 then
+                local text = i18n("spentManually"):format(colorText, math.abs(delta), resource)
+                broadcastToAll(text .. playerActingStr, msgColor)
+            elseif delta > 0 then
+                local text = i18n("receiveManually"):format(colorText, math.abs(delta), resource)
+                broadcastToAll(text .. playerActingStr, msgColor)
+            end
+
+            _resource.laggingValue = _resource.value
+            _resource.updateSave()
+        end, 1)
+    end
+end
+
+function incrementVal()
+    resource.value = resource.value + 1
+    resource.laggingValue = resource.value
+    resource.updateButton()
+    resource.updateSave()
+end
+
+function decrementVal()
+    resource.value = resource.value - 1
+    resource.oldlaggingValue = resource.value
+    resource.updateButton()
+    resource.updateSave()
+end
+
+function resetVal()
+    resource.value = 0
+    resource.oldlaggingValue = 0
+    resource.updateButton()
+    resource.updateSave()
+end
+
+function collectVal()
+    return resource.value
+end
+
+return resource

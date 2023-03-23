@@ -83,7 +83,7 @@ function claimLabel()
           updateSave()
           broadcastToAll(i18n("willBe"):format(i18n(color:lower())
 ,GO.getName()), color)
-          water[color][1].call("reset_val")
+          water[color][1].call("resetVal")
 
         else
           broadcastToColor(i18n("cantClaimLeader"), color, color)

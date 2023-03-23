@@ -20,6 +20,8 @@ playerBoardModule.scoreboardZone = nil
 
 playerBoardModule.scorePark = nil
 
+playerBoardModule.techPark = nil
+
 playerBoardModule.alive = true
 
 function playerBoardModule.init(playerColor, centerPosition, savedData)
@@ -41,6 +43,8 @@ function playerBoardModule.init(playerColor, centerPosition, savedData)
     end
 
     playerBoardModule.orbitPark = playerBoardModule.createOrbitPark(centerPosition)
+    playerBoardModule.techPark = playerBoardModule.createTechPark(centerPosition)
+
     playerBoardModule.initPlayerScore()
 
     playerBoardModule.saveState()
@@ -89,6 +93,27 @@ function playerBoardModule.createOrbitPark(centerPosition)
         playerBoardModule.playerColor,
         playerBoardModule.playerColor,
         true)
+end
+
+function playerBoardModule.createTechPark(centerPosition)
+    local slots = {}
+    for i = 1, 2 do
+        for j = 3, 1, -1 do
+            local x = (i - 1.5) * 3 + 6
+            local z = (j - 2) * 2 + 0.4
+            local slot = Vector(x, 0.29, z) + centerPosition
+            slots[#slots + 1] = slot
+        end
+    end
+
+    return parkModule.createPark(
+        "tech." .. playerBoardModule.playerColor,
+        slots,
+        Vector(0, 180, 0),
+        constants.players[playerBoardModule.playerColor].techZone,
+        nil,
+        "Tech",
+        false)
 end
 
 function playerBoardModule.initPlayerScore()

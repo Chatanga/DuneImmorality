@@ -52,7 +52,6 @@
 - le support de la maison Hagal.
 
 # A faire :
-- ajouter les point d'aimantation manquants et vérifier leurs tags.
 - intégrer les derniers changements (faire un diff en T).
 
 # A faire plus tard :
@@ -64,5 +63,4 @@
 - mettre à jour les crédits (y compris pour les textures).
 - Mode solo.
 - Enhanced Recall for Endgame -> detected end of game: reveal intrigue and grant VP tokens automatically.
-- Unifier le code des 4 * 3 compteurs de ressources.
 - Marker -> token pour éviter la confusion avec Maker.

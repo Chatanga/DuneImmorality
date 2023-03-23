@@ -8,6 +8,10 @@ function getOrbitPark()
     return playerBoardModule.orbitPark
 end
 
+function getTechPark()
+    return playerBoardModule.techPark
+end
+
 function getScorePark()
     return playerBoardModule.scorePark
 end

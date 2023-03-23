@@ -1,4 +1,3 @@
-
 i18n = require("i18n")
 require("locales")
 
@@ -12,26 +11,202 @@ DrawOne = helperModule.DrawOne
 
 players = constants.players
 
-_ = require("Core").registerLoadablePart(function(saved_data)
+local allTechTiles = {
+    english = {
+        windtraps = '3eb7b6',
+        detonation_devices = '065d51',
+        memocorders = '3938e5',
+        flagship = 'c81426',
+        spaceport = 'cf4203',
+        artillery = 'fd26f9',
+        holoprojectors = '613e52',
+        restricted_ordnance = 'cc9e13',
+        shuttle_fleet = '408909',
+        spy_satellites = '70339e',
+        disposal_facility = '57bb62',
+        chaumurky = '3c6492',
+        sonic_snoopers = '84ab7f',
+        training_drones = 'c42af8',
+        troop_transports = 'e13a99',
+        holtzman_engine = 'aa3745',
+        minimic_film = '630428',
+        invasion_ships = 'd92994'
+    },
+    french = {
+        windtraps = 'a9c164',
+        detonation_devices = 'e81010',
+        memocorders = 'b69554',
+        flagship = '9896fc',
+        spaceport = '3d0abb',
+        artillery = 'd587c2',
+        holoprojectors = '601011',
+        restricted_ordnance = 'af2140',
+        shuttle_fleet = '42454c',
+        spy_satellites = '32b07b',
+        disposal_facility = '560202',
+        chaumurky = '10a87f',
+        sonic_snoopers = '5e7a52',
+        training_drones = '5bab3e',
+        troop_transports = 'bf8ad7',
+        holtzman_engine = '058ca0',
+        minimic_film = '7bc7f5',
+        invasion_ships = '4eee41'
+    }
+}
+
+local techSlotZones = {}
+
+_ = require("Core").registerLoadablePart(function(savedData)
+    i18n.setLocale(Global.getVar("locale"))
+
     self.interactable = false
+
+    if savedData ~= '' then
+        local state = JSON.decode(savedData)
+        if state.version == 1 then
+            for i, zoneGUID in ipairs(state.techSlotZoneGUIDs) do
+                techSlotZones[i] = getObjectFromGUID(zoneGUID)
+            end
+        else
+            log('Unsupported save version: ' .. tostring(state.version))
+        end
+    end
+
     Dreadnought_zone = getObjectFromGUID("83ea90")
     activateButtons()
 end)
 
+function saveState()
+    local state = {
+        version = 1,
+        techSlotZoneGUIDs = {}
+    }
+    for i, zone in ipairs(techSlotZones) do
+        state.techSlotZoneGUIDs[i] = zone.getGUID()
+    end
+    self.script_state = JSON.encode(state)
+end
+
 function activateButtons()
 
- self.createButton({
-    click_function = "Dreadnought",
-    function_owner = self,
-    label = "pay & get",
-    position = {-0.2, 0.1 , 0.1},
-    scale = {0.18, 0.18, 0.18},
-    width = 900,
-    height = 350,
-    font_size = 200,
-    color = {0.25, 0.25, 0.25, 1},
-    font_color = {0.7843, 0.7843, 0.7843, 1}
-})
+    self.createButton({
+        click_function = "Dreadnought",
+        function_owner = self,
+        label = "pay & get",
+        position = {-0.2, 0.1 , 0.1},
+        scale = {0.18, 0.18, 0.18},
+        width = 900,
+        height = 350,
+        font_size = 200,
+        color = {0.25, 0.25, 0.25, 1},
+        font_color = {0.7843, 0.7843, 0.7843, 1}
+    })
+
+    for i, zone in ipairs(techSlotZones) do
+        helperModule.createAbsoluteButtonWithRoundness(self, 0.2, false, {
+            label = i18n("acquireButton"),
+            click_function = "acquireTech" .. tostring(i),
+            function_owner = self,
+            position = zone.getPosition() + Vector(0, -0.1, -0.65),
+            color = {0.25, 0.25, 0.25, 1},
+            font_color = {1, 1, 1, 1},
+            height = 400 * 0.3,
+            width = 1600 * 0.3,
+            font_size = 400 * 0.3
+        })
+    end
+
+end
+
+function createTechZones()
+
+    local origin = constants.getLandingPositionFromGUID(constants.ixPlanetBoard)
+    local techSlotPositions = {
+        Vector(1.69, 3.02, 2.35) + origin,
+        Vector(1.69, 3.02, 0.30) + origin,
+        Vector(1.69, 3.02, -1.75) + origin
+    }
+
+    techSlotZones = {}
+    for _, position in ipairs(techSlotPositions) do
+        spawnObject({
+            type= 'ScriptingTrigger',
+            position = position + Vector(0, -2.5, 0),
+            rotation = Vector(0, 0, 0),
+            scale = Vector(3, 2, 2),
+            callback_function = function (zone)
+                techSlotZones[#techSlotZones + 1] = zone
+                if #techSlotZones == 3 then
+                    self.clearButtons()
+                    activateButtons()
+                end
+            end
+        })
+    end
+
+    saveState()
+end
+
+function acquireTech1(object, pColor)
+    acquireTech(1, object, pColor)
+end
+
+function acquireTech2(object, pColor)
+    acquireTech(2, object, pColor)
+end
+
+function acquireTech3(object, pColor)
+    acquireTech(3, object, pColor)
+end
+
+function acquireTech(index, _, pColor)
+    if pColor ~= "Red" and pColor ~= "Blue" and pColor ~= "Green" and pColor ~= "Yellow" then
+        broadcastToColor(i18n("noTouch"), pColor, {1, 0.011765, 0})
+        return
+    end
+
+    -- Easier to separate the two of them because the top tile share the same Y coordinate as the one below.
+    local otherTiles = {}
+    local topTile = nil
+    for _, object in ipairs(techSlotZones[index].getObjects()) do
+        if object.getDescription() == "Tech" then
+            if not object.is_face_down then
+                topTile = object
+            else
+                otherTiles[#otherTiles + 1] = object
+            end
+        end
+    end
+    table.sort(otherTiles, function (t1, t2) return t1.getPosition().y > t2.getPosition().y end)
+
+    if topTile then
+
+        self.clearButtons()
+        Wait.time(function() activateButtons() end, 1)
+
+        local leaderName = helperModule.getLeaderName(pColor)
+        local techName = i18n(getTechName(topTile))
+        broadcastToAll(i18n("acquireTech"):format(leaderName, techName), pColor)
+
+        helperModule.grantTechTile(pColor, topTile)
+        if #otherTiles > 0 then
+            otherTiles[1].flip()
+        end
+    else
+        log("No tiles!")
+    end
+
+end
+
+function getTechName(techTile)
+    for _, techTiles in pairs(allTechTiles) do
+        for name, GUID in pairs(techTiles) do
+            if techTile.getGUID() == GUID then
+                return name
+            end
+        end
+    end
+    return "?"
 end
 
 function Dreadnought(_, color)

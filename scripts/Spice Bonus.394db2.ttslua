@@ -98,7 +98,7 @@ function createAll()
     self.createButton({
         label="[ Reset ]",
         tooltip="[ Reset ]",
-        click_function="reset_val",
+        click_function="resetVal",
         function_owner=self,
         position={0,-0.05,1.4},
         rotation={180,180,0},
@@ -189,7 +189,7 @@ function updateVal()
         })
 end
 
-function reset_val()
+function resetVal()
     val = 0
     updateVal()
     updateSave()

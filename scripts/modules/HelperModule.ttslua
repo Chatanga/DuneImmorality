@@ -1,5 +1,7 @@
 local helperModule = {}
 
+core = require("Core")
+
 constants = require("Constants")
 
 parkModule = require("ParkModule")
@@ -113,6 +115,14 @@ function helperModule.getPlayerTextColors(playerColor)
     }
 end
 
+function helperModule.toVector(data)
+    if not data or core.isSomeKindOfObject(data) then
+        return data
+    else
+        return Vector(data[1], data[2], data[3])
+    end
+end
+
 --[[
     Indirect call to createButton adjusting the provided parameters to
     counteract the position, scale and rotation of the parent object.
@@ -122,18 +132,33 @@ end
     X coordinate is inverted.
 ]]--
 function helperModule.createAbsoluteButton(object, parameters)
+    helperModule.createAbsoluteButtonWithRoundness(object, 0.25, true, parameters)
+end
+
+function helperModule.createAbsoluteButtonWithRoundness(object, roundness, quirk, parameters)
     local scale = object.getScale()
     local invScale = Vector(1 / scale.x, 1 / scale.y, 1 / scale.z)
 
     -- Only to counteract the absolute roundness of the background.
-    local rescale = 4
+    local rescale = 1 / roundness
 
-    local p = parameters['position']
+    local p = helperModule.toVector(parameters['position'])
     if p then
         -- Inverting the X coordinate comes from our global 180° rotation around Y.
-        p = Vector(-p.x, p.y, p.z)
+        -- TODO Get rid of this quirk.
+        if quirk then
+            p = Vector(-p.x, p.y, p.z)
+        else
+            p = Vector(p.x, p.y, p.z)
+        end
 
         p = p - object.getPosition()
+
+        if quirk then
+            p = Vector(p.x, p.y, p.z)
+        else
+            p = Vector(-p.x, p.y, p.z)
+        end
 
         p:scale(invScale)
 
@@ -146,9 +171,9 @@ function helperModule.createAbsoluteButton(object, parameters)
         parameters['position'] = p
     end
 
-    local s = parameters['scale']
+    local s = helperModule.toVector(parameters['scale'])
     if not s then
-        s= Vector(1, 1, 1)
+        s = Vector(1, 1, 1)
     end
     s = s * invScale * (1 / rescale)
     parameters['scale'] = s
@@ -210,6 +235,12 @@ end
 function helperModule.getTroopsFromOrbit(playerColor)
     local mainBoard = getObjectFromGUID('2da390')
     return mainBoard.call("getTroopsFromOrbit", playerColor)
+end
+
+function helperModule.grantTechTile(playerColor, techTile)
+    local playerBoard = helperModule.getPlayer(playerColor).board
+    local techPark = playerBoard.call("getTechPark")
+    parkModule.putObject(techTile, techPark)
 end
 
 function helperModule.getScoreTokens(playerColor)

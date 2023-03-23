@@ -1446,6 +1446,11 @@ function movetechdecks()
         destroyObject(tech_tiles_en)
         destroyObject(tech_tiles_fr)
     end, t)
+
+    Wait.time(function()
+        local ixPlanetBoard = getObjectFromGUID("d75455")
+        ixPlanetBoard.call("createTechZones")
+    end, 1)
 end
 
 function ImperiumDeal()

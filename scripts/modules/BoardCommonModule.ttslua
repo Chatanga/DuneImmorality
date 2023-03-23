@@ -4,7 +4,6 @@ core = require("Core")
 
 i18n = require("i18n")
 require("locales")
--- i18n.setLocale(Global.getVar("locale"))
 
 constants = require("Constants")
 
@@ -75,6 +74,7 @@ initial_alliance_pos = {
 }
 
 _ = core.registerLoadablePart(function(_)
+    i18n.setLocale(Global.getVar("locale"))
 
     flag_basin_zone = getObjectFromGUID("3fe117")
     flag_arrakeen_zone = getObjectFromGUID("f1f53d")
@@ -141,7 +141,7 @@ end
 function HarvestSpice(color, base, bonusRef)
     local t = 0
     local nbSpice = base + bonusRef.call("collectVal")
-    bonusRef.call("reset_val")
+    bonusRef.call("resetVal")
     for i = 1, nbSpice, 1 do
         Wait.time(function() constants.players[color].spice.call("incrementVal") end, t)
         t = t + (1.5 / nbSpice)

@@ -1,6 +1,6 @@
 local i18n = {locales = {}}
 
-local currentLocale = 'fr' -- the default language ( en / fr )
+local currentLocale = 'en' -- the default language ( en / fr ) (not really)
 
 function i18n.getLocale()
     return currentLocale

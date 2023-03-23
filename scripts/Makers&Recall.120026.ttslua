@@ -404,7 +404,7 @@ function ConflictZone()
 
     local activePlayers = getObjectFromGUID("4a3e76").call("getPlayersBasedOnHotseat")
     local firstPlayerColor = findNextPlayer(activePlayers)
-    assert((#activePlayers > 1) == (firstPlayerColor ~= nil))
+    -- Not true: assert((#activePlayers > 1) == (firstPlayerColor ~= nil))
     if firstPlayerColor then
         Global.call("TableTurnPlayers")
         setFirstPlayer(firstPlayerColor)
