@@ -96,11 +96,16 @@ function playerBoardModule.createOrbitPark(centerPosition)
 end
 
 function playerBoardModule.createTechPark(centerPosition)
+
+    local color = playerBoardModule.playerColor
     local slots = {}
     for i = 1, 2 do
         for j = 3, 1, -1 do
             local x = (i - 1.5) * 3 + 6
-            local z = (j - 2) * 2 + 0.4
+            if color == "Red" or color == "Blue" then
+                x = -x
+            end
+                local z = (j - 2) * 2 + 0.4
             local slot = Vector(x, 0.29, z) + centerPosition
             slots[#slots + 1] = slot
         end
@@ -218,7 +223,7 @@ function playerBoardModule.onObjectLeaveScriptingZone(zone, enter_object)
     end
 end
 
-function playerBoardModule.shutdown()
+function playerBoardModule.shutdown(riseOfIxEnabled, immortalityEnabled)
     playerBoardModule.alive = false
     playerBoardModule.saveState()
 
@@ -229,13 +234,20 @@ function playerBoardModule.shutdown()
         player.council_token,
         -- player.vp_4_players_token,
         player.score_marker,
-        player.tleilaxuTokens,
-        player.researchTokens,
-        player.cargo,
         player.flag_bag,
         player.marker_combat
     }
-    playerBoardModule.addAll(toBeRemoved, player.dreadnoughts)
+
+    if riseOfIxEnabled then
+        playerBoardModule.addAll(toBeRemoved, player.dreadnoughts)
+        toBeRemoved[#toBeRemoved + 1] = player.cargo
+    end
+
+    if immortalityEnabled then
+        toBeRemoved[#toBeRemoved + 1] = player.tleilaxuTokens
+        toBeRemoved[#toBeRemoved + 1] = player.researchTokens
+    end
+
     playerBoardModule.addAll(toBeRemoved, player.agents)
     playerBoardModule.addAll(toBeRemoved, player.troops)
 

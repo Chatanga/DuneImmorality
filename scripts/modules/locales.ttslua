@@ -222,7 +222,12 @@ i18n.locales.en = {
     troop_transports = "Troop Transports",
     holtzman_engine = "Holtzman Engine",
     minimic_film = "Mimic Film",
-    invasion_ships = "Invasion Ships"
+    invasion_ships = "Invasion Ships",
+    addNegotiator = "+1",
+    removeNegotiator = "-1",
+    negotiatorAdded = "%s has sent a negotiator to Ix",
+    negotiatorLimitWarning = "No negotiator available!",
+    negotiatorRemoved = "%s has recalled a negotiator from Ix"
 }
 
 i18n.locales.fr = {
@@ -448,5 +453,10 @@ i18n.locales.fr = {
     troop_transports = "transports de troupes",
     holtzman_engine = "moteur Holtzman",
     minimic_film = "film minimic",
-    invasion_ships = "vaisseaux d’invasion"
+    invasion_ships = "vaisseaux d’invasion",
+    addNegotiator = "+1",
+    removeNegotiator = "-1",
+    negotiatorAdded = "%s a envoyé un négociateur auprès de Ix",
+    negotiatorLimitWarning = "Aucun négociateur de disponible !",
+    negotiatorRemoved = "%s a rappelé un négociateur de Ix"
 }

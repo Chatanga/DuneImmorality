@@ -307,7 +307,7 @@ function HallOfOratory(_, color)
 
     if boardCommonModule.CheckAgentAndPlayer(color, HallOfOratory_zone) then
         local leaderName = helperModule.getLeaderName(color)
-        helperModule.landTroopsFromOrbit(color, 2)
+        helperModule.landTroopsFromOrbit(color, 1)
         broadcastToAll(i18n("oratory"):format(leaderName), color)
     end
 end

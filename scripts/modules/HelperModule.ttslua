@@ -26,6 +26,40 @@ function helperModule.DrawOne(_, color)
     return discardFound
 end
 
+function helperModule.DrawCards(numberToDraw, color, message)
+    assert(numberToDraw > 0)
+
+    local enoughCards = helperModule.isDeckContainsEnough(color, numberToDraw)
+    if not enoughCards then
+
+        local leaderName = helperModule.getLeaderName(color)
+        broadcastToAll(i18n("isDecidingToDraw"):format(leaderName), "Pink")
+
+        local card = i18n("cards")
+        if numberToDraw == 1 then
+            card = i18n("card")
+        end
+
+        Player[color].showConfirmDialog(
+            i18n("warningBeforeDraw"):format(numberToDraw, card),
+
+            function(_)
+                if message then
+                    broadcastToAll(message, color)
+                end
+                for i = 0, numberToDraw - 1, 1 do
+                    Wait.time(function()
+                        DrawOne(_, color)
+                    end, i)
+                end
+            end)
+    else
+        for i = 1, numberToDraw do
+            Wait.time(function() DrawOne(_, color) end, i)
+        end
+    end
+end
+
 function helperModule.ResetDiscard(_, color)
     discardArea = helperModule.GetDeckOrCard(constants.players[color].discardZone)
     local discardFound = true

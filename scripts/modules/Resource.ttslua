@@ -16,13 +16,19 @@ function resource.init(ownerColor, resourceName, value, savedData)
 
     if savedData ~= "" then
         local state = JSON.decode(savedData)
-        resource.value = state.value
-        resource.laggingValue = state.laggingValue
+        if state.version == 1 then
+            resource.value = state.value
+            resource.laggingValue = state.laggingValue
+        else
+            log('[resource.init] Unsupported save version: ' .. tostring(state.version))
+        end
     end
+
+    local font_color = (ownerColor ~= nil) and {0.1, 0.1, 0.1, 100} or {0.9, 0.9, 0.9, 95}
 
     self.createButton({
         label = tostring(resource.value),
-        click_function = "changeValue",
+        click_function = (ownerColor ~= nil) and "changeValue" or "setValue",
         tooltip = resource.getTooltip(),
         function_owner = self,
         position = Vector(0, 0.05, 0.2),
@@ -31,7 +37,7 @@ function resource.init(ownerColor, resourceName, value, savedData)
         alignment = 3,
         scale = Vector(1.5, 1.5, 1.5),
         font_size = 800,
-        font_color = {0.1, 0.1, 0.1, 100}, -- Hein ?
+        font_color = font_color,
         color = {0, 0, 0, 0}
     })
 
@@ -40,6 +46,7 @@ end
 
 function resource.updateSave()
     local state = {
+        version = 1,
         value = resource.value,
         laggingValue = resource.laggingValue
     }
@@ -47,7 +54,7 @@ function resource.updateSave()
 end
 
 function resource.getTooltip()
-    return "     " .. resource.value .. "\n" .. i18n("water")
+    return "     " .. resource.value .. "\n" .. i18n(resource.resourceName)
 end
 
 function resource.updateButton()
@@ -64,6 +71,17 @@ function resource.checkPermission(color, numberOfPlayers)
         return false
     end
     return true
+end
+
+function setValue(_, color, altClick)
+    local change = altClick and -1 or 1
+    local newValue = math.min(math.max(resource.value + change, MIN_VALUE), MAX_VALUE)
+    if resource.value ~= newValue then
+        resource.value = newValue
+        resource.laggingValue = resource.value
+        resource.updateButton()
+        resource.updateSave()
+    end
 end
 
 function changeValue(_, color, altClick)
@@ -101,7 +119,7 @@ function changeValue(_, color, altClick)
                 resource = i18n(_resource.resourceName)
             end
 
-            local colorText = i18n(_resource.ownerColor:lower())
+            local colorText = resource.ownerColor and i18n(_resource.ownerColor:lower()) or "White"
             if delta < 0 then
                 local text = i18n("spentManually"):format(colorText, math.abs(delta), resource)
                 broadcastToAll(text .. playerActingStr, msgColor)
@@ -125,14 +143,14 @@ end
 
 function decrementVal()
     resource.value = resource.value - 1
-    resource.oldlaggingValue = resource.value
+    resource.laggingValue = resource.value
     resource.updateButton()
     resource.updateSave()
 end
 
 function resetVal()
     resource.value = 0
-    resource.oldlaggingValue = 0
+    resource.laggingValue = 0
     resource.updateButton()
     resource.updateSave()
 end

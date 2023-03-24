@@ -11,6 +11,27 @@ DrawOne = helperModule.DrawOne
 
 players = constants.players
 
+local techCosts = {
+    windtraps = 2,
+    detonation_devices = 3,
+    memocorders = 2,
+    flagship = 8,
+    spaceport = 5,
+    artillery = 1,
+    holoprojectors = 2,
+    restricted_ordnance = 4,
+    shuttle_fleet = 6,
+    spy_satellites = 4,
+    disposal_facility = 3,
+    chaumurky = 4,
+    sonic_snoopers = 2,
+    training_drones = 3,
+    troop_transports = 2,
+    holtzman_engine = 6,
+    minimic_film = 2,
+    invasion_ships = 5
+}
+
 local allTechTiles = {
     english = {
         windtraps = '3eb7b6',
@@ -56,6 +77,10 @@ local allTechTiles = {
 
 local techSlotZones = {}
 
+local negociationZones = {}
+
+local negociationParks = {}
+
 _ = require("Core").registerLoadablePart(function(savedData)
     i18n.setLocale(Global.getVar("locale"))
 
@@ -67,10 +92,20 @@ _ = require("Core").registerLoadablePart(function(savedData)
             for i, zoneGUID in ipairs(state.techSlotZoneGUIDs) do
                 techSlotZones[i] = getObjectFromGUID(zoneGUID)
             end
+            for color, GUID in pairs(loaded_data.negociationZoneGUIDs) do
+                negociationZones[color] = getObjectFromGUID(GUID)
+            end
         else
             log('Unsupported save version: ' .. tostring(state.version))
         end
     end
+
+    negociationParks = {
+        Green = createNegociationPark("Green"),
+        Yellow = createNegociationPark("Yellow"),
+        Blue = createNegociationPark("Blue"),
+        Red = createNegociationPark("Red")
+    }
 
     Dreadnought_zone = getObjectFromGUID("83ea90")
     activateButtons()
@@ -79,28 +114,19 @@ end)
 function saveState()
     local state = {
         version = 1,
-        techSlotZoneGUIDs = {}
+        techSlotZoneGUIDs = {},
+        negociationZoneGUIDs = {}
     }
     for i, zone in ipairs(techSlotZones) do
         state.techSlotZoneGUIDs[i] = zone.getGUID()
+    end
+    for i, zone in ipairs(negociationZones) do
+        state.negociationZoneGUIDs[i] = zone.getGUID()
     end
     self.script_state = JSON.encode(state)
 end
 
 function activateButtons()
-
-    self.createButton({
-        click_function = "Dreadnought",
-        function_owner = self,
-        label = "pay & get",
-        position = {-0.2, 0.1 , 0.1},
-        scale = {0.18, 0.18, 0.18},
-        width = 900,
-        height = 350,
-        font_size = 200,
-        color = {0.25, 0.25, 0.25, 1},
-        font_color = {0.7843, 0.7843, 0.7843, 1}
-    })
 
     for i, zone in ipairs(techSlotZones) do
         helperModule.createAbsoluteButtonWithRoundness(self, 0.2, false, {
@@ -115,6 +141,45 @@ function activateButtons()
             font_size = 400 * 0.3
         })
     end
+
+    self.createButton({
+        label = i18n("addNegotiator"),
+        click_function = "addNegotiator",
+        function_owner = self,
+        position = Vector(-0.25, 0.1 , 0.8),
+        scale = Vector(0.18, 0.18, 0.18),
+        width = 350,
+        height = 350,
+        font_size = 200,
+        color = {0.25, 0.25, 0.25, 1},
+        font_color = {0.7843, 0.7843, 0.7843, 1}
+    })
+
+    self.createButton({
+        click_function = "removeNegotiator",
+        function_owner = self,
+        label = i18n("removeNegotiator"),
+        position = Vector(-0.05, 0.1 , 0.8),
+        scale = Vector(0.18, 0.18, 0.18),
+        width = 350,
+        height = 350,
+        font_size = 200,
+        color = {0.25, 0.25, 0.25, 1},
+        font_color = {0.7843, 0.7843, 0.7843, 1}
+    })
+
+    self.createButton({
+        click_function = "Dreadnought",
+        function_owner = self,
+        label = "pay & get",
+        position = {-0.2, 0.1 , 0.1},
+        scale = {0.18, 0.18, 0.18},
+        width = 900,
+        height = 350,
+        font_size = 200,
+        color = {0.25, 0.25, 0.25, 1},
+        font_color = {0.7843, 0.7843, 0.7843, 1}
+    })
 
 end
 
@@ -180,22 +245,93 @@ function acquireTech(index, _, pColor)
     table.sort(otherTiles, function (t1, t2) return t1.getPosition().y > t2.getPosition().y end)
 
     if topTile then
+        local techName = getTechName(topTile)
+        local techCost = techCosts[techName]
 
-        self.clearButtons()
-        Wait.time(function() activateButtons() end, 1)
+        -- TODO Using paySpiceCost is way too naive
+        if true or paySpiceCost(pColor, techCost) then
+            self.clearButtons()
+            Wait.time(function() activateButtons() end, 1)
 
-        local leaderName = helperModule.getLeaderName(pColor)
-        local techName = i18n(getTechName(topTile))
-        broadcastToAll(i18n("acquireTech"):format(leaderName, techName), pColor)
+            local leaderName = helperModule.getLeaderName(pColor)
+            broadcastToAll(i18n("acquireTech"):format(leaderName, i18n(techName)), pColor)
 
-        helperModule.grantTechTile(pColor, topTile)
-        if #otherTiles > 0 then
-            otherTiles[1].flip()
+            helperModule.grantTechTile(pColor, topTile)
+            if #otherTiles > 0 then
+                otherTiles[1].flip()
+            end
+
+            applyBuyEffect(pColor, techName)
         end
     else
         log("No tiles!")
     end
 
+end
+
+function paySpiceCost(color, cost)
+    return transfertResources(color, "spice", -cost, "noSpice")
+end
+
+function transfertResources(color, type, amount, errorMessage)
+    local spice = constants.players[color][type]
+
+    if spice.call("collectVal") < -amount then
+        if errorMessage then
+            broadcastToColor(i18n(errorMessage), color, color)
+        end
+        return false
+    end
+
+    local t = 0
+    for _ = 1, math.abs(amount) do
+        Wait.time(function()
+            if amount > 0 then
+                spice.call("incrementVal")
+            else
+                spice.call("decrementVal")
+            end
+        end, t)
+        t = t + 0.2
+    end
+
+    return true
+end
+
+function applyBuyEffect(color, techName)
+    log(color)
+    log(techName)
+    if techName == "windtraps" then
+        transfertResources(color, "water", 1, nil)
+    elseif techName == "detonation_devices" then
+    elseif techName == "memocorders" then
+        -- 1 influence
+    elseif techName == "flagship" then
+        local vpToken = getObjectFromGUID("366237")
+        helperModule.grantScoreToken(color, vpToken)
+    elseif techName == "spaceport" then
+        helperModule.DrawCards(2, color, nil)
+    elseif techName == "artillery" then
+    elseif techName == "holoprojectors" then
+    elseif techName == "restricted_ordnance" then
+    elseif techName == "shuttle_fleet" then
+        -- 2 influences différentes
+    elseif techName == "spy_satellites" then
+    elseif techName == "disposal_facility" then
+        -- 1 trash
+    elseif techName == "chaumurky" then
+        local intrigueDeck = getObjectFromGUID(constants.intrigue_base)
+        intrigueDeck.deal(2, color)
+    elseif techName == "sonic_snoopers" then
+        local intrigueDeck = getObjectFromGUID(constants.intrigue_base)
+        intrigueDeck.deal(1, color)
+    elseif techName == "training_drones" then
+    elseif techName == "troop_transports" then
+    elseif techName == "holtzman_engine" then
+    elseif techName == "minimic_film" then
+    elseif techName == "invasion_ships" then
+        helperModule.landTroopsFromOrbit(color, 4)
+    end
 end
 
 function getTechName(techTile)
@@ -208,6 +344,78 @@ function getTechName(techTile)
     end
     return "?"
 end
+
+function createNegociationPark(playerColor)
+    local offsets = {
+        Red = Vector(-0.45, 0, 0.45),
+        Blue = Vector(-0.45, 0, -0.45),
+        Green = Vector(0.45, 0, 0.45),
+        Yellow = Vector(0.45, 0, -0.45)
+    }
+
+    local baseOffset = Vector(-0.75, 0, -1.5)
+
+    local origin = constants.getLandingPositionFromGUID(constants.ixPlanetBoard) + baseOffset + offsets[playerColor]
+    origin:setAt('y', 0.86) -- ground level
+    local slots = {}
+    for k = 1, 2 do
+        for j = 1, 2 do
+            for i = 1, 2 do
+                local x = (i - 1) * 0.4
+                local y = (k - 1) * 0.4
+                local z = (1 - j) * 0.4
+                local slot = Vector(x, y, z) + origin
+                slots[#slots + 1] = slot
+            end
+        end
+    end
+
+    if not negociationZones[playerColor] then
+        negociationZones[playerColor] = parkModule.findBoundingZone(0, Vector(0.25, 0.25, 0.25), slots)
+    end
+
+    return parkModule.createPark(
+        "negociation." .. playerColor,
+        slots,
+        Vector(0, 0, 0),
+        negociationZones[playerColor],
+        playerColor,
+        playerColor,
+        false)
+end
+
+function addNegotiator(_, color, silent)
+    assert(constants.players[color], "Action from an unknown player: " .. tostring(color))
+
+    local orbit = constants.players[color].board.call("getOrbitPark")
+    local negociation = negociationParks[color]
+
+    local count = parkModule.transfert(1, orbit, negociation)
+
+    if count > 0 then
+        if not silent then
+            local leaderName = helperModule.getLeaderName(color)
+            broadcastToAll(i18n("negotiatorAdded"):format(leaderName), color)
+        end
+    else
+        broadcastToColor(i18n("negotiatorLimitWarning"), color, "Purple")
+    end
+end
+
+function removeNegotiator(_, color, silent)
+    assert(constants.players[color], "Action from an unknown player: " .. tostring(color))
+
+    local orbit = constants.players[color].board.call("getOrbitPark")
+    local negociation = negociationParks[color]
+
+    parkModule.transfert(1, negociation, orbit)
+
+    if not silent then
+        local leaderName = helperModule.getLeaderName(color)
+        broadcastToAll(i18n("negotiatorRemoved"):format(leaderName), color)
+    end
+end
+
 
 function Dreadnought(_, color)
     self.clearButtons()

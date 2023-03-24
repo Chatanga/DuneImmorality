@@ -1518,7 +1518,7 @@ function destructMissingPlayers()
 
     for color, player in pairs(constants.players) do
         if not hasValue(seated_players, color) then
-            player.board.call("shutdown")
+            player.board.call("shutdown", {rise_of_ix, immortality})
             for _, pions in pairs(pion_reput) do
                 pions[color].destruct()
             end
