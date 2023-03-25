@@ -811,15 +811,6 @@ function onObjectLeaveScriptingZone(zone, enter_object)
             end
         end
     end
-
-    if enter_object.getName() == 'Mentat' then
-        for _, player in pairs(constants.alivePlayers) do
-            if zone == player.zone_player then
-                enter_object.setColorTint("White")
-                break
-            end
-        end
-    end
 end
 
 function Friendship(faction, color)
@@ -873,13 +864,13 @@ end
 
 -- Illumine le plateau du joueur dont c’est le tour (et éteint les autres).
 function onPlayerTurn(player, previous_player)
-  local indexed_colors = {"Green", "Yellow", "Blue", "Red"}
-  for i, color in ipairs(indexed_colors) do
-    local effect_index = 0 -- black index (no color actually)
-    if player and player.color == color then
-      effect_index = i
+    local indexed_colors = {"Green", "Yellow", "Blue", "Red"}
+    for i, color in ipairs(indexed_colors) do
+        local effect_index = 0 -- black index (no color actually)
+        if player and player.color == color then
+            effect_index = i
+        end
+        local board = constants.players[color].board
+        board.AssetBundle.playTriggerEffect(effect_index)
     end
-    local board = constants.players[color].board
-    board.AssetBundle.playTriggerEffect(effect_index)
-  end
 end

@@ -75,11 +75,13 @@ local allTechTiles = {
     }
 }
 
+local techDiscounts = {}
+
 local techSlotZones = {}
 
-local negociationZones = {}
+local negotiationZones = {}
 
-local negociationParks = {}
+local negotiationParks = {}
 
 _ = require("Core").registerLoadablePart(function(savedData)
     i18n.setLocale(Global.getVar("locale"))
@@ -92,19 +94,19 @@ _ = require("Core").registerLoadablePart(function(savedData)
             for i, zoneGUID in ipairs(state.techSlotZoneGUIDs) do
                 techSlotZones[i] = getObjectFromGUID(zoneGUID)
             end
-            for color, GUID in pairs(loaded_data.negociationZoneGUIDs) do
-                negociationZones[color] = getObjectFromGUID(GUID)
+            for color, GUID in pairs(loaded_data.negotiationZoneGUIDs) do
+                negotiationZones[color] = getObjectFromGUID(GUID)
             end
         else
             log('Unsupported save version: ' .. tostring(state.version))
         end
     end
 
-    negociationParks = {
-        Green = createNegociationPark("Green"),
-        Yellow = createNegociationPark("Yellow"),
-        Blue = createNegociationPark("Blue"),
-        Red = createNegociationPark("Red")
+    negotiationParks = {
+        Green = createNegotiationPark("Green"),
+        Yellow = createNegotiationPark("Yellow"),
+        Blue = createNegotiationPark("Blue"),
+        Red = createNegotiationPark("Red")
     }
 
     Dreadnought_zone = getObjectFromGUID("83ea90")
@@ -115,13 +117,13 @@ function saveState()
     local state = {
         version = 1,
         techSlotZoneGUIDs = {},
-        negociationZoneGUIDs = {}
+        negotiationZoneGUIDs = {}
     }
     for i, zone in ipairs(techSlotZones) do
         state.techSlotZoneGUIDs[i] = zone.getGUID()
     end
-    for i, zone in ipairs(negociationZones) do
-        state.negociationZoneGUIDs[i] = zone.getGUID()
+    for i, zone in ipairs(negotiationZones) do
+        state.negotiationZoneGUIDs[i] = zone.getGUID()
     end
     self.script_state = JSON.encode(state)
 end
@@ -162,6 +164,19 @@ function activateButtons()
         position = Vector(-0.05, 0.1 , 0.8),
         scale = Vector(0.18, 0.18, 0.18),
         width = 350,
+        height = 350,
+        font_size = 200,
+        color = {0.25, 0.25, 0.25, 1},
+        font_color = {0.7843, 0.7843, 0.7843, 1}
+    })
+
+    self.createButton({
+        click_function = "TechNegotiation",
+        function_owner = self,
+        label = "get",
+        position = {-0.2, 0.1, -0.4},
+        scale = {0.18, 0.18, 0.18},
+        width = 400,
         height = 350,
         font_size = 200,
         color = {0.25, 0.25, 0.25, 1},
@@ -212,21 +227,21 @@ function createTechZones()
     saveState()
 end
 
-function acquireTech1(object, pColor)
-    acquireTech(1, object, pColor)
+function acquireTech1(object, playerColor)
+    acquireTech(1, object, playerColor)
 end
 
-function acquireTech2(object, pColor)
-    acquireTech(2, object, pColor)
+function acquireTech2(object, playerColor)
+    acquireTech(2, object, playerColor)
 end
 
-function acquireTech3(object, pColor)
-    acquireTech(3, object, pColor)
+function acquireTech3(object, playerColor)
+    acquireTech(3, object, playerColor)
 end
 
-function acquireTech(index, _, pColor)
-    if pColor ~= "Red" and pColor ~= "Blue" and pColor ~= "Green" and pColor ~= "Yellow" then
-        broadcastToColor(i18n("noTouch"), pColor, {1, 0.011765, 0})
+function acquireTech(index, _, playerColor)
+    if playerColor ~= "Red" and playerColor ~= "Blue" and playerColor ~= "Green" and playerColor ~= "Yellow" then
+        broadcastToColor(i18n("noTouch"), playerColor, {1, 0.011765, 0})
         return
     end
 
@@ -248,20 +263,36 @@ function acquireTech(index, _, pColor)
         local techName = getTechName(topTile)
         local techCost = techCosts[techName]
 
-        -- TODO Using paySpiceCost is way too naive
-        if true or paySpiceCost(pColor, techCost) then
+        local discount = techDiscounts[playerColor]
+        local discountAmount = 0
+        if discount then
+            discountAmount = discount.amount
+        end
+        local negotiatorCount = #parkModule.getObjects(negotiationParks[playerColor])
+
+        local adjustedTechCost = math.max(0, techCost - discountAmount - negotiatorCount)
+        local recalledNegociatorCount = techCost - adjustedTechCost - discountAmount
+
+        if paySpiceCost(playerColor, adjustedTechCost) then
+
+            local orbit = constants.players[playerColor].board.call("getOrbitPark")
+            local negotiation = negotiationParks[playerColor]
+            parkModule.transfert(recalledNegociatorCount, negotiation, orbit)
+
             self.clearButtons()
             Wait.time(function() activateButtons() end, 1)
 
-            local leaderName = helperModule.getLeaderName(pColor)
-            broadcastToAll(i18n("acquireTech"):format(leaderName, i18n(techName)), pColor)
+            local leaderName = helperModule.getLeaderName(playerColor)
+            broadcastToAll(i18n("acquireTech"):format(leaderName, i18n(techName)), playerColor)
 
-            helperModule.grantTechTile(pColor, topTile)
+            techDiscounts[playerColor] = nil
+
+            helperModule.grantTechTile(playerColor, topTile)
             if #otherTiles > 0 then
                 otherTiles[1].flip()
             end
 
-            applyBuyEffect(pColor, techName)
+            applyBuyEffect(playerColor, techName)
         end
     else
         log("No tiles!")
@@ -343,7 +374,26 @@ function getTechName(techTile)
     return "?"
 end
 
-function createNegociationPark(playerColor)
+function callRegisterTechDiscount(parameters)
+    registerTechDiscount(parameters.color, parameters.source, parameters.amount)
+end
+
+function registerTechDiscount(color, source, amount)
+    techDiscounts[color] = {
+        source = source,
+        amount = amount
+    }
+end
+
+-- TODO Pas fiable ? (+ amériorer messages)
+function onPlayerTurn(playerColor, previousPlayerColor)
+    log("onPlayerTurn: " .. tostring(previousPlayerColor) .. " -> " .. tostring(playerColor))
+    if previousPlayerColor then
+        techDiscounts[previousPlayerColor] = nil
+    end
+end
+
+function createNegotiationPark(playerColor)
     local offsets = {
         Red = Vector(-0.45, 0, 0.45),
         Blue = Vector(-0.45, 0, -0.45),
@@ -368,15 +418,15 @@ function createNegociationPark(playerColor)
         end
     end
 
-    if not negociationZones[playerColor] then
-        negociationZones[playerColor] = parkModule.findBoundingZone(0, Vector(0.25, 0.25, 0.25), slots)
+    if not negotiationZones[playerColor] then
+        negotiationZones[playerColor] = parkModule.findBoundingZone(0, Vector(0.25, 0.25, 0.25), slots)
     end
 
     return parkModule.createPark(
-        "negociation." .. playerColor,
+        "negotiation." .. playerColor,
         slots,
         Vector(0, 0, 0),
-        negociationZones[playerColor],
+        negotiationZones[playerColor],
         playerColor,
         playerColor,
         false)
@@ -386,9 +436,9 @@ function addNegotiator(_, color, silent)
     assert(constants.players[color], "Action from an unknown player: " .. tostring(color))
 
     local orbit = constants.players[color].board.call("getOrbitPark")
-    local negociation = negociationParks[color]
+    local negotiation = negotiationParks[color]
 
-    local count = parkModule.transfert(1, orbit, negociation)
+    local count = parkModule.transfert(1, orbit, negotiation)
 
     if count > 0 then
         if not silent then
@@ -404,9 +454,9 @@ function removeNegotiator(_, color, silent)
     assert(constants.players[color], "Action from an unknown player: " .. tostring(color))
 
     local orbit = constants.players[color].board.call("getOrbitPark")
-    local negociation = negociationParks[color]
+    local negotiation = negotiationParks[color]
 
-    parkModule.transfert(1, negociation, orbit)
+    parkModule.transfert(1, negotiation, orbit)
 
     if not silent then
         local leaderName = helperModule.getLeaderName(color)
@@ -414,6 +464,27 @@ function removeNegotiator(_, color, silent)
     end
 end
 
+function TechNegotiation(_, color)
+    self.clearButtons()
+    Wait.time(activateButtons, 1)
+
+    if boardCommonModule.CheckAgentAndPlayer(color, Dreadnought_zone) then
+        local leaderName = helperModule.getLeaderName(color)
+
+        local orbit = constants.players[color].board.call("getOrbitPark")
+        local negotiation = negotiationParks[color]
+
+        local count = parkModule.transfert(1, orbit, negotiation)
+
+        if count > 0 then
+            if not silent then
+                broadcastToAll(i18n("negotiatorAdded"):format(leaderName), color)
+            end
+        else
+            registerTechDiscount(color, "tech_negotiation", 1)
+        end
+    end
+end
 
 function Dreadnought(_, color)
     self.clearButtons()
@@ -445,6 +516,8 @@ function Dreadnought(_, color)
                 end, t)
                 t = t + 0.25
             end
+
+            registerTechDiscount(color, "dreadnought", 0)
 
             buyDreadnought(_, color)
 

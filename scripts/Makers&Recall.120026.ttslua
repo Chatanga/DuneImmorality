@@ -182,7 +182,7 @@ function ConflictZone()
     end
 
     mentat = getObjectFromGUID("c2a908")
-    mentat.setColorTint({1, 1, 1, 1})
+    mentat.setColorTint("White")
     mentat.setPositionSmooth(getObjectFromGUID("565d09").getPosition(), false, true)
     mentat.setRotationSmooth({0, 180, 0})
 

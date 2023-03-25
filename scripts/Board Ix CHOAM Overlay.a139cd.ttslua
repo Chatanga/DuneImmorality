@@ -256,6 +256,15 @@ function cargoReset(color)
     else
         setCargoPositionSmooth(color, 0)
         cargoMoved = true
+
+        if step >= 3 then
+            local planetIx = getObjectFromGUID('d75455')
+            planetIx.call("callRegisterTechDiscount", {
+                color = color,
+                source = "cargo",
+                amount = 2
+            })
+        end
     end
 
     return cargoMoved

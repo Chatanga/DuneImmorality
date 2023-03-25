@@ -42,6 +42,9 @@
 
 # A faire :
 - Retirer le suffixe module des modules.
+- Investiguer problème AssetBundle.
+- Investiguer problème texture.
+- Terminer achat technologies.
 
 # A faire plus tard :
 - Pas de passage de "round start" à "player turns" au 1er tour.

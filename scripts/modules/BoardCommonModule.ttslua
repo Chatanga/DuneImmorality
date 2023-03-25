@@ -73,6 +73,34 @@ initial_alliance_pos = {
     fremen = core.getHardcodedPositionFromGUID('4c2bcc', -9.543688, 0.79135559, -10.670769)
 }
 
+--[[
+-- TODO Généraliser (uniquement avec Ix pour l’instant).
+agent_spaces = {
+    Stillsuits = "556f43",
+    HardyWarriors = "a2fd8e",
+    Secrets = "1f7c08",
+    SelectiveBreeding = "7dc6e5",
+    Foldspace = "9a9eb5",
+    Heighliner = "8b0515",
+    Wealth = "b2c461",
+    Conspire = "cd9386",
+    SietchTabr = "5bc970",
+    ResearchStation = "af11aa",
+    Carthag = "b1c938",
+    Arrakeen = "17b646",
+    TheGreatFlat = "69f925",
+    HaggaBasin = "622708",
+    ImperialBasin = "2c77c1",
+    HighCouncil = "8a6315",
+    Mentat = "30cff9",
+    Swordmaster = "",
+    InterstellarShipping = "",
+    Smuggling = "",
+    TechNegotiation = "",
+    Dreadnought = ""
+}
+]]--
+
 _ = core.registerLoadablePart(function(_)
     i18n.setLocale(Global.getVar("locale"))
 
