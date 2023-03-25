@@ -1,18 +1,7 @@
 # Important :
-- Activation de "Physic Full" côté joueur pour que la dépose de cartes soit OK.
-- Ne pas référencer des objets dynamique au chargement (du script et de l’objet).
-- Ne pas référencer d’autres objets que soi avant l’appel à "onLoad".
+- Activation de "Physic Full" côté joueur pour que la dépose de cartes soit correcte.
 
-# Conception :
-- prise en compte du rechargement potentiel des chefs.
-- sauvegarde des données.
-- nombre de joueurs actifs et mode de jeu (multi / hot seat).
-- application dynamique de la langue.
-- distinguer le helper bas niveau et haut niveau.
-- introduire un ResourceModule (épice, eau et solari) ?
-- quel notion d'état du jeu, entretenu ou déduit ?
-
-# Tests à faire (et cartographier / tracer vers le code et les objets du monde = dépendances) :
+# Tests à faire (et cartographier / tracer vers le code et les objets du monde :
 - suppression / paralysie des joueurs surnuméraires.
 - protection des boutons.
 - achat de cartes Imperium ou d'intrigue.
@@ -52,7 +41,7 @@
 - le support de la maison Hagal.
 
 # A faire :
-- intégrer les derniers changements (faire un diff en T).
+- Retirer le suffixe module des modules.
 
 # A faire plus tard :
 - Pas de passage de "round start" à "player turns" au 1er tour.
@@ -64,3 +53,5 @@
 - Mode solo.
 - Enhanced Recall for Endgame -> detected end of game: reveal intrigue and grant VP tokens automatically.
 - Marker -> token pour éviter la confusion avec Maker.
+- nombre de joueurs actifs et mode de jeu (multi / hot seat).
+- application dynamique de la langue.

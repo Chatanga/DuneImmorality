@@ -80,8 +80,9 @@ end
 function generateTleilaxuTrackPositions()
     local positions = {}
     local origin = getAveragePosition("tleilaxuTokens_inital_position")
-    for i = 1, 7 do
-        positions[#positions + 1] = origin + Vector(1.3 * i, 2, 0)
+    local xCoords = {1.3, 2.6, 3.9, 5.2, 7.4, 8.4, 9.2}
+    for i, x in ipairs(xCoords) do
+        positions[i] = origin + Vector(x, 2, 0)
     end
     return positions
 end

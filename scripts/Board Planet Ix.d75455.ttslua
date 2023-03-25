@@ -299,8 +299,6 @@ function transfertResources(color, type, amount, errorMessage)
 end
 
 function applyBuyEffect(color, techName)
-    log(color)
-    log(techName)
     if techName == "windtraps" then
         transfertResources(color, "water", 1, nil)
     elseif techName == "detonation_devices" then

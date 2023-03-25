@@ -174,13 +174,11 @@ function ConflictZone()
             if p then
                 item.setPositionSmooth(p, false, true)
                 item.setRotation({0, 0, 0})
-                break
             end
         end
 
         local Time = os.clock() + 0.1
         while os.clock() < Time do coroutine.yield() end
-
     end
 
     mentat = getObjectFromGUID("c2a908")

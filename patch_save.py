@@ -446,25 +446,83 @@ def add_combat_force_snap_points(structure, object_by_guid):
             -0.47 + (i % 10) * 0.90,
             -1.63 - (i // 10) * 1.01)
 
-def add_card_snap_points(structure, object_by_guid):
-    back_card_guid = structure["intrigue"]["intrigue_discard_back_card"]
-    back_card = object_by_guid[back_card_guid]
+def add_card_snap_points(structure, object_by_guid, save):
+    imperium_row = structure["imperium_row"]
 
-    if not 'AttachedSnapPoints' in back_card:
-        back_card['AttachedSnapPoints'] = []
+    imperium_slots = {
+#        "Foldspace Deck",
+#        "foldspace_deck_zone",
+        "Arrakis Liaison Deck",
+        "The Spice Must Flow Deck",
+        "the_spice_must_flow_deck_anchor",
+        "Deck",
+        "buy1_anchor",
+        "buy2_anchor",
+        "buy3_anchor",
+        "buy4_anchor",
+        "buy5_anchor",
+    }
 
-    back_card['AttachedSnapPoints'].append({
-        "Position": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "Rotation": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-        }
-    })
+    for slot in imperium_slots:
+        object = object_by_guid[imperium_row[slot]]
+        save["SnapPoints"].append({
+            "Position": {
+                "x": object['Transform']['posX'],
+                "y": object['Transform']['posY'],
+                "z": object['Transform']['posZ']
+            },
+            "Rotation": {
+                "x": 0.0,
+                "y": 180.0,
+                "z": 0.0
+            },
+            "Tags": ["Imperium"]
+        })
+
+    immortality_row = structure["immortality_row"]
+
+    immortality_slots = {
+        "deck",
+        "pay1_anchor",
+        "pay2_anchor"
+    }
+
+    for slot in immortality_slots:
+        object = object_by_guid[immortality_row[slot]]
+        save["SnapPoints"].append({
+            "Position": {
+                "x": object['Transform']['posX'],
+                "y": object['Transform']['posY'],
+                "z": object['Transform']['posZ']
+            },
+            "Rotation": {
+                "x": 0.0,
+                "y": 180.0,
+                "z": 0.0
+            },
+            "Tags": ["Imperium"]
+        })
+
+def add_flag_snap_points(structure, object_by_guid):
+    board_guid = structure["base"]["board"]
+    board = object_by_guid[board_guid]
+
+    if not 'AttachedSnapPoints' in board:
+        board['AttachedSnapPoints'] = []
+
+    for (x, y) in [(-0.4, -0.48), (-1.05, -0.61), (-1, -0.04)]:
+        board['AttachedSnapPoints'].append({
+            "Position": {
+                "x": x,
+                "y": 0.2,
+                "z": y
+            },
+            "Rotation": {
+                "x": 0.0,
+                "y": 180.0,
+                "z": 0.0
+            }
+        })
 
 def add_tech_tile_snap_points(structure, object_by_guid):
     board_guid = structure["ix"]["Board Planet Ix"]
@@ -844,8 +902,9 @@ def patch_save(input_path, output_path):
 
     #add_space_snap_points(structure, object_by_guid)
     add_combat_force_snap_points(structure, object_by_guid)
-    add_card_snap_points(structure, object_by_guid)
+    add_card_snap_points(structure, object_by_guid, save)
     add_tech_tile_snap_points(structure, object_by_guid)
+    add_flag_snap_points(structure, object_by_guid)
     clean_up_bottom(structure, object_by_guid)
 
     save['ObjectStates'] = new_objects

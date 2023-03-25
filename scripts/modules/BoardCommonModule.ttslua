@@ -515,9 +515,9 @@ end
 
 function boardCommonModule.initReputationLevels()
     local reputationLevels = {}
-    for faction, positions in pairs(initial_position_pion_reput) do
+    for faction, initialPositions in pairs(initial_position_pion_reput) do
         local factionLevels = {}
-        for color, position in pairs(positions) do
+        for color, position in pairs(initialPositions) do
             local startingCell = position
             local allianceToken = initial_alliance_pos[faction]
             local step = (allianceToken.z - startingCell.z) / 5 -- The token is centered on the 5th level (but you only need to reach the 4th to get it).
@@ -577,19 +577,20 @@ function giveAlliance(faction, color)
 
     local posz_liste = {}
 
-    for playerColor, position in pairs(initial_position_pion_reput[faction]) do
+    for playerColor, pion in pairs(pion_reput[faction]) do
         if playerColor ~= color then
-            posz_liste[playerColor] = position.z
+            posz_liste[playerColor] = pion.getPosition().z
         end
     end
 
-    local vp_player =  helperModule.getScoreTokens(color)
+    local playerVictoryTokens =  helperModule.getScoreTokens(color)
     local hasAlliance = false
-    for _, value in ipairs(vp_player) do
-        if value == alliance_token[faction] then
+    for _, victoryToken in ipairs(playerVictoryTokens) do
+        if victoryToken == alliance_token[faction] then
             hasAlliance = true
         end
     end
+
     Wait.time(function()
         local posz = pion_reput[faction][color].getPosition().z
         local posz_requis = boardCommonModule.getReputationLevels(faction, color).alliance
@@ -599,7 +600,7 @@ function giveAlliance(faction, color)
             local playerTakingAlliance = ""
             local tiedForVP = false
 
-            for k, posz_compared in pairs(posz_liste) do
+            for otherColor, posz_compared in pairs(posz_liste) do
 
                 if posz < (posz_compared - 0.5) then
                     local delta = posz_compared - posz
@@ -609,7 +610,7 @@ function giveAlliance(faction, color)
 
                     if delta > biggestDelta then
                         biggestDelta = delta
-                        playerTakingAlliance = k
+                        playerTakingAlliance = otherColor
                     end
                 end
 
@@ -892,7 +893,7 @@ function boardCommonModule.Mentat(color)
             local mentats = getMentat()
             if mentats ~= nil then
                 talk = i18n("mentatToken")
-                mentats.setPositionSmooth(constants.players[color].agent_positions[3], false, false)
+                mentats.setPositionSmooth(constants.players[color].agent_positions[4], false, false)
             end
 
             local numberToDraw = 1

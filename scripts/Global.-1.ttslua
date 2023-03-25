@@ -666,9 +666,9 @@ function CountForce(name)
     end
 end
 
-function addTroopDefense(victoryRegion)
+function addTroopDefense(controlableSpace)
     local joueur = nil
-    for _, obj in ipairs(victoryRegion.zone.getObjects()) do
+    for _, obj in ipairs(controlableSpace.zone.getObjects()) do
         if obj.getName() == "Red Dreadnought" or obj.getName() ==
             "Red dreadnought" then
             joueur = "Red"
@@ -684,7 +684,7 @@ function addTroopDefense(victoryRegion)
         end
     end
     if joueur == nil then
-        for _, obj in ipairs(victoryRegion.zone.getObjects()) do
+        for _, obj in ipairs(controlableSpace.zone.getObjects()) do
             if obj.getName() == "Red Flag" then
                 joueur = "Red"
             elseif obj.getName() == "Blue Flag" then
@@ -699,6 +699,7 @@ function addTroopDefense(victoryRegion)
     if joueur ~= nil then
         local troops = helperModule.getTroopsFromOrbit(joueur)
         for _, troop in ipairs(troops) do
+            troop.locked = false
             troop.setPositionSmooth(constants.getLandingPositionFromGUID('6d632e'), false, false)
             troop.setRotation(Vector(0, 0, 0))
             local leaderName = helperModule.getLeaderName(joueur)
@@ -758,9 +759,9 @@ function onObjectEnterScriptingZone(zone, enter_object)
                     })
                 end
             end
-            local victoryRegion = getVictoryRegion(enter_object)
-            if victoryRegion then
-                addTroopDefense(victoryRegion)
+            local controlableSpace = getControlableSpace(enter_object)
+            if controlableSpace then
+                addTroopDefense(controlableSpace)
             end
         end
     end
@@ -768,19 +769,30 @@ function onObjectEnterScriptingZone(zone, enter_object)
     for color, player in pairs(constants.alivePlayers) do
         local scorePark = player.board.call("getScorePark")
         if zone == scorePark.zone then
-            local victoryRegion = getVictoryRegion(enter_object)
-            if victoryRegion then
-                local objects = victoryRegion.zone.getObjects()
+            local controlableSpace = getControlableSpace(enter_object)
+            if controlableSpace then
+                local objects = controlableSpace.zone.getObjects()
                 for _, object in ipairs(objects) do
                     if string.find(object.getName(), " Flag") then
                         object.destruct()
                     end
                 end
+                local p = controlableSpace.position
                 flag_bag[color].takeObject({
-                    position = victoryRegion.position,
+                    -- Position is adjusted so as to insert the token below any dreadnought.
+                    position = Vector(p.x, 0.78, p.z),
                     rotation = {0, 180, 0},
                     smooth = false
                 })
+            end
+        end
+    end
+
+    if enter_object.getName() == 'Mentat' then
+        for color, player in pairs(constants.alivePlayers) do
+            if zone == player.zone_player then
+                enter_object.setColorTint(color)
+                break
             end
         end
     end
@@ -796,6 +808,15 @@ function onObjectLeaveScriptingZone(zone, enter_object)
                     loseFriendship(faction, playerColor)
                     Wait.time(function() loseFriendship(faction, playerColor) end, 0.7)
                 end
+            end
+        end
+    end
+
+    if enter_object.getName() == 'Mentat' then
+        for _, player in pairs(constants.alivePlayers) do
+            if zone == player.zone_player then
+                enter_object.setColorTint("White")
+                break
             end
         end
     end
@@ -828,7 +849,7 @@ function give2influence(faction, color)
 end
 
 -- Find if the GUID matches a VP for a region and return it if it is the case.
-function getVictoryRegion(vpToken)
+function getControlableSpace(vpToken)
     local name = vpToken.getName()
     if name == "Secure Imperial Basin" or name == "Battle for Imperial Basin" then
         return controlable_spaces.imperial_basin
