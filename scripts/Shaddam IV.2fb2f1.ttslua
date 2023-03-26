@@ -1,79 +1,20 @@
-constants = require("Constants")
+leader = require("Leader")
 
-helperModule = require("HelperModule")
+boardCommon = require("BoardCommonModule")
 
-leaderPos = constants.leaderPos
-
-pion_reput = {
-  ["Emperor"] = {["Red"] = getObjectFromGUID('acfcef'), ["Blue"] = getObjectFromGUID('426a23'), ["Green"] = getObjectFromGUID('d7c9ba'), ["Yellow"] = getObjectFromGUID('489871')},
-  ["Spacing Guild"] = {["Red"] = getObjectFromGUID('be464e'), ["Blue"] = getObjectFromGUID('4069d8'), ["Green"] = getObjectFromGUID('89da7d'), ["Yellow"] = getObjectFromGUID('9d0075')},
-  ["Bene Gesserit"] = {["Red"] = getObjectFromGUID('713eae'), ["Blue"] = getObjectFromGUID('2a88a6'), ["Green"] = getObjectFromGUID('2dc980'), ["Yellow"] = getObjectFromGUID('a3729e')},
-  ["Fremen"] = {["Red"] = getObjectFromGUID('088f51'), ["Blue"] = getObjectFromGUID('0e6e41'), ["Green"] = getObjectFromGUID('d390dc'), ["Yellow"] = getObjectFromGUID('77d7c8')}
-}
-alliance_tokens = {
-  ["Emperor"] = getObjectFromGUID('13e990'),
-  ["Spacing Guild"] = getObjectFromGUID('ad1aae'),
-  ["Bene Gesserit"] = getObjectFromGUID('33452e'),
-  ["Fremen"] = getObjectFromGUID('4c2bcc'),
-}
-
-i18n = require("i18n")
-require("locales")
-
-_ = require("Core").registerLoadablePart(function(saved_data)
-  if saved_data ~= '["claimed"]' then
-      claimLabel()
-  end
+_ = require("Core").registerLoadablePart(function(savedData)
+    leader.init(onClaim, savedData)
 end)
 
-function updateSave()
-    local data_to_save = {claimed}
-    saved_data = JSON.encode(data_to_save)
-    self.script_state = saved_data
-end
-
-function claimLabel()
-    self.createButton({
-       click_function = "claimLeader",
-       function_owner = self,
-       label          = i18n("claimLeaderButton"),
-       position       = {0.3,0.2,0.4},
-       rotation       = {0, 0, 0},
-       scale          = {0.75, 1, 0.75},
-       width          = 600,
-       height         = 150,
-       tooltip        = "",
-       font_color     = {1, 1, 1},
-       font_size      = 85,
-       color          = "Black"
-       })
-end
-
-
-function claimLeader(GO, color)
-  if color == "Red" or color == "Blue" or color == "Green" or color == "Yellow" then
-    GO.setPositionSmooth(leaderPos[color])
-    GO.setRotationSmooth({0,180,0})
-    GO.clearButtons()
-    Wait.time(function() GO.lock() end, 3)
-    claimed = "claimed"
-    updateSave()
-    broadcastToAll(i18n("willBe"):format(i18n(color:lower())
-,GO.getName()), color)
-    local t=2
-    for key, value in pairs(pion_reput) do
-      Wait.time(function()
-        local pos = value[color].getPosition()
-        value[color].setPositionSmooth({pos.x, pos.y, pos.z+3.08}, false, false)
-      end,t)
-      t=t+1
+function onClaim(color)
+    local t = 0
+    for faction, _ in pairs(pion_reput) do
+        for _ = 1, 4 do
+            Wait.time(
+                function()
+                    boardCommon.ReputationUp(color, faction)
+                end, t)
+            t = t + 1
+        end
     end
-    Wait.time(function()
-      for _, alliance_token in pairs(alliance_tokens) do
-        helperModule.grantScoreToken(color, alliance_token)
-      end
-    end,5.3)
-  else
-    broadcastToColor(i18n("cantClaimLeader"), color, color)
-  end
 end

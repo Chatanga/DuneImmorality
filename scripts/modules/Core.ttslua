@@ -98,4 +98,8 @@ function core.resolveGUIDs(reportUnresolvedGUIDs, data)
     return newData
 end
 
+function core.stillExist(object)
+    return object and getObjectFromGUID(object.getGUID())
+end
+
 return core

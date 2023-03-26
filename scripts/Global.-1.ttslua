@@ -1,8 +1,6 @@
 i18n = require("i18n")
 require("locales") -- if using a separate file for the locales, require it too
 
-localeAssets = require("localeAssets")
-
 constants = require("Constants")
 
 helperModule = require("HelperModule")
@@ -12,7 +10,7 @@ locale = 'fr'
 battleSound = nil
 
 _ = require("Core").registerLoadablePart(function(saved_data)
-    localeAssets.load()
+    require("localeAssets").load()
 
     -- Réinitialise les triggers des plateaux de joueurs.
     onPlayerTurn(nil, nil)

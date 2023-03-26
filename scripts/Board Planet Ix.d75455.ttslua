@@ -283,7 +283,7 @@ function acquireTech(index, _, playerColor)
             Wait.time(function() activateButtons() end, 1)
 
             local leaderName = helperModule.getLeaderName(playerColor)
-            broadcastToAll(i18n("acquireTech"):format(leaderName, i18n(techName)), playerColor)
+            broadcastToAll(i18n("acquireTech"):format(leaderName, i18n(techName), adjustedTechCost), playerColor)
 
             techDiscounts[playerColor] = nil
 
@@ -385,9 +385,7 @@ function registerTechDiscount(color, source, amount)
     }
 end
 
--- TODO Pas fiable ? (+ amériorer messages)
 function onPlayerTurn(playerColor, previousPlayerColor)
-    log("onPlayerTurn: " .. tostring(previousPlayerColor) .. " -> " .. tostring(playerColor))
     if previousPlayerColor then
         techDiscounts[previousPlayerColor] = nil
     end

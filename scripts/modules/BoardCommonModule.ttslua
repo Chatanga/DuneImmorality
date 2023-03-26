@@ -606,7 +606,7 @@ function giveAlliance(faction, color)
     local posz_liste = {}
 
     for playerColor, pion in pairs(pion_reput[faction]) do
-        if playerColor ~= color then
+        if core.stillExist(pion) and playerColor ~= color then
             posz_liste[playerColor] = pion.getPosition().z
         end
     end

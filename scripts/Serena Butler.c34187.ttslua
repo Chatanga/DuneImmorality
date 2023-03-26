@@ -1,66 +1,11 @@
-constants = require("Constants")
+leader = require("Leader")
 
-leaderPos = constants.leaderPos
+helperModule = require("HelperModule")
 
-troop_pos = {
-  {4.37, 1.75, -5.09},
-  {4.82, 1.75, -5.09},
-  {5.27, 1.75, -5.09},
-  {4.37, 1.75, -5.54},
-  {4.82, 1.75, -5.54},
-  {5.27, 1.75, -5.54},
-  {4.37, 1.75, -5.99},
-  {4.82, 1.75, -5.99},
-  {5.27, 1.75, -5.99}
-}
-
-i18n = require("i18n")
-require("locales")
-
-_ = require("Core").registerLoadablePart(function(saved_data)
-  if saved_data ~= '["claimed"]' then
-      claimLabel()
-  end
+_ = require("Core").registerLoadablePart(function(savedData)
+    leader.init(onClaim, savedData)
 end)
 
-function updateSave()
-    local data_to_save = {claimed}
-    saved_data = JSON.encode(data_to_save)
-    self.script_state = saved_data
+function onClaim(color)
+  helperModule.landTroopsFromOrbit(color, 12) -- Troops in excess won't be deployed.
 end
-
-function claimLabel()
-    self.createButton({
-       click_function = "claimLeader",
-       function_owner = self,
-       label          = i18n("claimLeaderButton"),
-       position       = {0.3,0.2,0.4},
-       rotation       = {0, 0, 0},
-       scale          = {0.75, 1, 0.75},
-       width          = 600,
-       height         = 150,
-       tooltip        = "",
-       font_color     = {1, 1, 1},
-       font_size      = 85,
-       color          = "Black"
-       })
-  end
-
-
-  function claimLeader(GO, color)
-    if color == "Red" or color == "Blue" or color == "Green" or color == "Yellow" then
-      GO.setPositionSmooth(leaderPos[color])
-      GO.setRotationSmooth({0,180,0})
-      GO.clearButtons()
-      Wait.time(function() GO.lock() end, 3)
-      claimed = "claimed"
-      updateSave()
-      broadcastToAll(i18n("willBe"):format(i18n(color:lower())
-,GO.getName()), color)
-      local t=0
-      local i=0
-      helperModule.landTroopsFromOrbit(color, 12) -- Troops in excess won't be deployed.
-    else
-      broadcastToColor(i18n("cantClaimLeader"), color, color)
-    end
-  end
