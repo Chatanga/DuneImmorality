@@ -6,19 +6,18 @@ end)
 
 function onClaim(color)
     for _, obj in pairs(getAllObjects()) do
+        local stealthColor = {1, 1, 1, 0.33}
         if color=="Blue" then
-            caca = {0.12156862745, 0.5294117647, 1, 0.33}
+            stealthColor = {0.12156862745, 0.5294117647, 1, 0.33}
         elseif color=="Red" then
-            caca = {1,0, 0, 0.33}
+            stealthColor = {1, 0, 0, 0.33}
         elseif color=="Green" then
-            caca = {0, 1, 0, 0.33}
+            stealthColor = {0, 1, 0, 0.33}
         elseif color=="Yellow" then
-            caca = {1, 1, 0, 0.33}
-        else
-            caca = "White"
+            stealthColor = {1, 1, 0, 0.33}
         end
         if obj.getName() == color.." Agent" or obj.getName() == color.." Swordmaster" then
-            obj.setColorTint(caca)
+            obj.setColorTint(stealthColor)
         end
     end
 end

@@ -33,7 +33,7 @@ function buyModule.Buy(zone, pColor, pos, activateButton, buyTleilaxu)
             local enoughSpecimen = false
             if buyTleilaxu then
                 local countSpecimen = 0
-                local price = JSON.decode(card.getGMNotes()).specimenCost
+                local price = getObjectFromGUID("4a3e76").call("getTleilaxuCardPrice", card)
                 for _, troop in ipairs(getObjectFromGUID("f5de09").getObjects()) do -- comptage Spécimen
                     if troop.hasTag("Troop") and troop.hasTag(pColor) then
                         countSpecimen = countSpecimen + 1

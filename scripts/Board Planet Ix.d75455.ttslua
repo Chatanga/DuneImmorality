@@ -94,7 +94,7 @@ _ = require("Core").registerLoadablePart(function(savedData)
             for i, zoneGUID in ipairs(state.techSlotZoneGUIDs) do
                 techSlotZones[i] = getObjectFromGUID(zoneGUID)
             end
-            for color, GUID in pairs(loaded_data.negotiationZoneGUIDs) do
+            for color, GUID in pairs(state.negotiationZoneGUIDs) do
                 negotiationZones[color] = getObjectFromGUID(GUID)
             end
         else
@@ -283,7 +283,15 @@ function acquireTech(index, _, playerColor)
             Wait.time(function() activateButtons() end, 1)
 
             local leaderName = helperModule.getLeaderName(playerColor)
-            broadcastToAll(i18n("acquireTech"):format(leaderName, i18n(techName), adjustedTechCost), playerColor)
+            local spiceCost
+            if adjustedTechCost == 0 then
+                spiceCost = i18n("freeAsInBeer")
+            elseif adjustedTechCost == 1 then
+                spiceCost = tostring(adjustedTechCost) .. " " .. i18n("spice")
+            else
+                spiceCost = tostring(adjustedTechCost) .. " " .. i18n("spices")
+            end
+            broadcastToAll(i18n("acquireTech"):format(leaderName, i18n(techName), spiceCost), playerColor)
 
             techDiscounts[playerColor] = nil
 
@@ -330,16 +338,21 @@ function transfertResources(color, type, amount, errorMessage)
 end
 
 function applyBuyEffect(color, techName)
+    local message = nil
+
     if techName == "windtraps" then
         transfertResources(color, "water", 1, nil)
+        message = "acquireWindrapsTechBenefits"
     elseif techName == "detonation_devices" then
     elseif techName == "memocorders" then
         -- 1 influence
     elseif techName == "flagship" then
         local vpToken = getObjectFromGUID("366237")
         helperModule.grantScoreToken(color, vpToken)
+        message = "acquireFlagshipTechBenefits"
     elseif techName == "spaceport" then
         helperModule.DrawCards(2, color, nil)
+        message = "acquireSpaceportTechBenefits"
     elseif techName == "artillery" then
     elseif techName == "holoprojectors" then
     elseif techName == "restricted_ordnance" then
@@ -351,15 +364,23 @@ function applyBuyEffect(color, techName)
     elseif techName == "chaumurky" then
         local intrigueDeck = getObjectFromGUID(constants.intrigue_base)
         intrigueDeck.deal(2, color)
+        message = "acquireChamurkyTechBenefits"
     elseif techName == "sonic_snoopers" then
         local intrigueDeck = getObjectFromGUID(constants.intrigue_base)
         intrigueDeck.deal(1, color)
+        message = "acquireSonicSnoopersBenefits"
     elseif techName == "training_drones" then
     elseif techName == "troop_transports" then
     elseif techName == "holtzman_engine" then
     elseif techName == "minimic_film" then
     elseif techName == "invasion_ships" then
         helperModule.landTroopsFromOrbit(color, 4)
+        message = "acquireInvasionShipsBenefits"
+    end
+
+    if message then
+        local leaderName = helperModule.getLeaderName(color)
+        broadcastToAll(i18n(message):format(leaderName), color)
     end
 end
 

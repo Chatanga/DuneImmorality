@@ -35,10 +35,12 @@ end
     See core.registerLoadablePart.
 ]]--
 function onLoad(script_state)
-    assert(not core.loaded, "Looks like you're calling require from a function.")
-    core.loaded = true
-    for _, onLoadCallback in ipairs(core.onLoadCallbacks) do
-        onLoadCallback(script_state)
+    --assert(not core.loaded, "Looks like you're calling require from a function.")
+    if not core.loaded then
+        core.loaded = true
+        for _, onLoadCallback in ipairs(core.onLoadCallbacks) do
+            onLoadCallback(script_state)
+        end
     end
 end
 

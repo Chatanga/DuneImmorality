@@ -1259,10 +1259,10 @@ function flag_carthag(color)
     end
     if dread == 1 then
         constants.players["Red"].solari.call("incrementVal")
-        broadcastToAl(helperModule.getLeaderName("Red") .. i18n("flagCarthag"):format(1), {0.8, 0.8, 0.8})
+        broadcastToAll(helperModule.getLeaderName("Red") .. i18n("flagCarthag"):format(1), {0.8, 0.8, 0.8})
     elseif dread == 2 then
         constants.players["Blue"].solari.call("incrementVal")
-        broadcastToAl(helperModule.getLeaderName("Blue") ..i18n("flagCarthag"):format(1), {0.8, 0.8, 0.8})
+        broadcastToAll(helperModule.getLeaderName("Blue") .. i18n("flagCarthag"):format(1), {0.8, 0.8, 0.8})
     elseif dread == 3 then
         constants.players["Green"].solari.call("incrementVal")
         broadcastToAll(helperModule.getLeaderName("Green") ..i18n("flagCarthag"):format(1), {0.8, 0.8, 0.8})

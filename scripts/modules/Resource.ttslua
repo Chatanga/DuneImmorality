@@ -1,5 +1,7 @@
 resource = {}
 
+helperModule = require("HelperModule")
+
 MIN_VALUE = 0
 MAX_VALUE = 99
 
@@ -24,11 +26,11 @@ function resource.init(ownerColor, resourceName, value, savedData)
         end
     end
 
-    local font_color = (ownerColor ~= nil) and {0.1, 0.1, 0.1, 100} or {0.9, 0.9, 0.9, 95}
+    local font_color = (resource.ownerColor ~= nil) and {0.1, 0.1, 0.1, 100} or {0.9, 0.9, 0.9, 95}
 
     self.createButton({
         label = tostring(resource.value),
-        click_function = (ownerColor ~= nil) and "changeValue" or "setValue",
+        click_function = (resource.ownerColor ~= nil) and "changeValue" or "setValue",
         tooltip = resource.getTooltip(),
         function_owner = self,
         position = Vector(0, 0.05, 0.2),
@@ -109,23 +111,26 @@ function changeValue(_, color, altClick)
             Wait.stop(resource.laggingUpdate)
         end
 
-        -- Thread NS is empty.
+        -- Thread has no acces to resource.
+        local _color = color
         local _resource = resource
 
         resource.laggingUpdate = Wait.time(function()
             local delta = _resource.value - _resource.laggingValue
-            local resource = i18n(_resource.resourceName .. "s")
+            local resourceName = i18n(_resource.resourceName .. "s")
             if math.abs(delta) == 1  then
-                resource = i18n(_resource.resourceName)
+                resourceName = i18n(_resource.resourceName)
             end
 
-            local colorText = resource.ownerColor and i18n(_resource.ownerColor:lower()) or "White"
-            if delta < 0 then
-                local text = i18n("spentManually"):format(colorText, math.abs(delta), resource)
-                broadcastToAll(text .. playerActingStr, msgColor)
-            elseif delta > 0 then
-                local text = i18n("receiveManually"):format(colorText, math.abs(delta), resource)
-                broadcastToAll(text .. playerActingStr, msgColor)
+            if _resource.ownerColor then
+                local leaderName = helperModule.getLeaderName(_color)
+                if delta < 0 then
+                    local text = i18n("spentManually"):format(leaderName, math.abs(delta), resourceName)
+                    broadcastToAll(text .. playerActingStr, msgColor)
+                elseif delta > 0 then
+                    local text = i18n("receiveManually"):format(leaderName, math.abs(delta), resourceName)
+                    broadcastToAll(text .. playerActingStr, msgColor)
+                end
             end
 
             _resource.laggingValue = _resource.value

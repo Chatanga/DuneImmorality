@@ -1,5 +1,7 @@
 local localeAssets = {}
 
+local core = require("Core")
+
 local constants = require("Constants")
 
 local i18n = require("i18n")
@@ -20,20 +22,14 @@ local imperiumCardBack =
 local intrigueCardBack =
     "http://cloud-3.steamusercontent.com/ugc/1892102433196339102/D63B92C616541C84A7984026D757DB03E79532DD/"
 
-local cardsTleilaxAttributes = {
-    {specimenCost = 3}, {specimenCost = 2}, {specimenCost = 1},
-    {specimenCost = 1}, {specimenCost = 2}, {specimenCost = 1},
-    {specimenCost = 2}, {specimenCost = 3}, {specimenCost = 2},
-    {specimenCost = 1}, {specimenCost = 3}, {specimenCost = 3},
-    {specimenCost = 2}, {specimenCost = 3}, {specimenCost = 2},
-    {specimenCost = 2}, {specimenCost = 4}, {specimenCost = 3},
-    {specimenCost = 4}
-}
+function loadDeck(GUID, face, back)
 
-function loadDeck(GUID, face, back, width, height, number)
+    local width = face.packing[1]
+    local height = face.packing[2]
+    local number = face.packing[3]
 
     local params = {
-        face = face,
+        face = face.url,
         back = back,
         width = width,
         height = height,
@@ -52,7 +48,7 @@ end
 
 function loadCard(GUID, face, back)
 
-    local params = {face = face, back = back}
+    local params = {face = face.url, back = back}
 
     local cardObj = getObjectFromGUID(GUID)
     if cardObj then
@@ -63,144 +59,241 @@ function loadCard(GUID, face, back)
     end
 end
 
+function createImperiumCustomDeck(faceUrl, width, height)
+    return {
+        FaceURL = faceUrl,
+        BackURL = imperiumCardBack,
+        NumWidth = width,
+        NumHeight = height,
+        BackIsHidden = true,
+        UniqueBack = false,
+        Type = 0
+    }
+end
+
+function createIntrigueCustomDeck(faceUrl, width, height)
+    return {
+        FaceURL = faceUrl,
+        BackURL = intrigueCardBack,
+        NumWidth = width,
+        NumHeight = height,
+        BackIsHidden = true,
+        UniqueBack = false,
+        Type = 0
+    }
+end
+
+function mutateCard(guid, customDeckId, customDeck, index)
+    local card = getObjectFromGUID(guid)
+    assert(card, "No card with GUID " .. tostring(guid))
+
+    local cardId = tostring(customDeckId * 100 + index)
+
+    local data = {
+        GUID = guid,
+        Name = "Card",
+        Transform = {
+            posX = 0,
+            posY = 0,
+            posZ = 0,
+            rotX = 0,
+            rotY = 0,
+            rotZ = 0,
+            scaleX = 1,
+            scaleY = 1,
+            scaleZ = 1
+        },
+        Nickname = card.getName(),
+        Description = card.getDescription(),
+        GMNotes = card.getGMNotes(),
+        AltLookAngle = {
+            x = 0.0,
+            y = 0.0,
+            z = 0.0
+        },
+        ColorDiffuse = {
+            r = 0.713235259,
+            g = 0.713235259,
+            b = 0.713235259
+        },
+        Tags = card.getTags(),
+        LayoutGroupSortIndex = 0,
+        Value = 0,
+        Locked = card.getLock(),
+        Grid = true,
+        Snap = true,
+        IgnoreFoW = false,
+        MeasureMovement = false,
+        DragSelectable = true,
+        Autoraise = true,
+        Sticky = true,
+        Tooltip = true,
+        GridProjection = false,
+        HideWhenFaceDown = true,
+        Hands = true,
+        CardID = cardId,
+        SidewaysCard = false,
+        CustomDeck = {
+            [tostring(customDeckId)] = customDeck
+        }
+    }
+
+    local spawnParameters = {
+        data = data,
+        position = card.getPosition(),
+        rotation = card.getRotation(),
+        scale = card.getScale()
+    }
+
+    card.destruct()
+
+    spawnObjectData(spawnParameters)
+end
+
 function localeAssets.load()
     local currentLocale = i18n.getLocale()
+    log("localeAssets.load() -> currentLocale = " .. tostring(currentLocale))
 
-    if currentLocale ~= "en" then
-        -- retourner les règles coté français
-        if currentLocale == 'fr' then
-            getObjectFromGUID("e43180").setRotation({0,180,180})
-            getObjectFromGUID("44e3ba").setRotation({0,180,180})
-            -- changer les pdf par les pdf français
-            if getObjectFromGUID("9ac7d6")~=nil then
-                local position_regles = getObjectFromGUID("9ac7d6").getPosition()
-                local position_faq = getObjectFromGUID("a4a8a7").getPosition()
-                local position_regles_ix = getObjectFromGUID("373d17").getPosition()
-                getObjectFromGUID("9ac7d6").destruct()
-                getObjectFromGUID("a4a8a7").destruct()
-                getObjectFromGUID("373d17").destruct()
-                local sac_vf = getObjectFromGUID("433052")
-                local regles_ix = sac_vf.takeObject({
-                    position          = position_regles_ix,
-                    rotation          = {0,180,0},
-                    smooth            = false
+    if currentLocale == 'fr' then
+
+        -- retourner les aides le jeu coté français
+        getObjectFromGUID("e43180").setRotation({0,180,180})
+        getObjectFromGUID("44e3ba").setRotation({0,180,180})
+
+        local manuals = core.resolveGUIDs(true, {
+            rules = "9ac7d6",
+            faq = "a4a8a7",
+            ix = "373d17"
+        })
+
+        local sac_vf = getObjectFromGUID("433052")
+
+        -- changer les pdf par les pdf français
+        for _, manual in pairs(manuals) do
+            if core.stillExist(manual) then
+                local position = manual.getPosition()
+                manual.destruct()
+
+                local newManual = sac_vf.takeObject({
+                    position = position,
+                    rotation = {0,180,0},
+                    smooth = false
                 })
-                local faq = sac_vf.takeObject({
-                    position          = position_faq,
-                    rotation          = {0,180,0},
-                    smooth            = false
-                })
-                local regles = sac_vf.takeObject({
-                    position          = position_regles,
-                    rotation          = {0,180,0},
-                    smooth            = false
-                })
-                regles.setLock(true)
-                faq.setLock(true)
-                regles_ix.setLock(true)
-            end
-        end
-
-        -- Leaders tiles
-        for k, leader in pairs(constants.leaders) do
-            local params = {image = localeAssets[currentLocale][k]}
-
-            local leaderObj = getObjectFromGUID(leader.GUID)
-
-            leaderObj.setCustomObject(params)
-            -- leaderObj.setName('Princesse Yuna')
-
-            leaderObj.reload()
-        end
-
-        for _, GUID in ipairs(starter_decks) do
-            loadDeck(GUID, localeAssets[currentLocale]["cardsStarterImperium"],
-                     imperiumCardBack, 4, 2, 8)
-        end
-
-        for _, GUID in ipairs(dune_decks) do
-            loadDeck(GUID, localeAssets[currentLocale]["cardsDunePlanet"],
-                     imperiumCardBack, 2, 2, 2)
-        end
-
-        loadDeck("014161", localeAssets[currentLocale]["cardsFoldspace"],
-                 imperiumCardBack, 3, 2, 6)
-
-        loadDeck("7d34c9", localeAssets[currentLocale]["cardsLiaison"],
-                 imperiumCardBack, 4, 2, 8)
-
-        loadDeck("8de6d5", localeAssets[currentLocale]["cardsTSMF"],
-                 imperiumCardBack, 5, 2, 10)
-
-        loadDeck("99d41d", localeAssets[currentLocale]["cardsBaseImperium"],
-                 imperiumCardBack, 10, 7, 69)
-
-        loadDeck(constants.imperium_deck_ix,
-                 localeAssets[currentLocale]["cardsIxImperium"],
-                 imperiumCardBack, 6, 6, 36)
-
-        loadDeck(constants.imperium_deck_immortality,
-                 localeAssets[currentLocale]["cardsImmortalityImperium"],
-                 imperiumCardBack, 6, 5, 30)
-
-        loadCard(constants.reclaimed_forces,
-                 localeAssets[currentLocale]["cardReclaimedForces"],
-                 imperiumCardBack)
-
-        loadDeck(constants.intrigue_base,
-                 localeAssets[currentLocale]["cardsBaseIntrigue"],
-                 intrigueCardBack, 8, 5, 40)
-
-        loadDeck(constants.intrigue_ix,
-                 localeAssets[currentLocale]["cardsIxIntrigue"],
-                 intrigueCardBack, 5, 4, 17)
-
-        loadDeck(constants.intrigue_immortality,
-                 localeAssets[currentLocale]["cardsImmortalityIntrigue"],
-                 intrigueCardBack, 6, 3, 15)
-
-        for _, guidEpic in ipairs(epic_cards) do
-            loadCard(guidEpic,
-                     localeAssets[currentLocale]["cardControlTheSpice"],
-                     imperiumCardBack)
-        end
-
-        for _, GUID in ipairs(experimentation_decks) do
-            loadDeck(GUID, localeAssets[currentLocale]["cardsExperimentation"],
-                     imperiumCardBack, 2, 2, 2)
-        end
-
-        Wait.time(function()
-            for _, obj in pairs(getObjectFromGUID("e88cd0").getObjects()) do
-                obj.setInvisibleTo({
-                    "Red", "Blue", "Green", "Yellow", "White", "Grey", "Brown",
-                    "Pink", "Purple", "Orange"
-                })
-            end
-        end, 0.5)
-
-        if getObjectFromGUID(constants.tleilaxu_deck) ~= nil then -- ça va changer le GUID du deck tleilaxu, besoin de le faire qu'une fois.
-            loadDeck(constants.tleilaxu_deck,
-                     localeAssets[currentLocale]["cardsTleilaxu"],
-                     imperiumCardBack, 4, 5, 19)
-
-            local tleilaxu_deck = getObjectFromGUID(constants.tleilaxu_deck)
-            for i = 1, 19 do
-                Wait.time(function()
-                    card = tleilaxu_deck.takeObject({
-                        position = tleilaxu_deck.getPosition() +
-                            Vector({0, (0.2 * i), 0}),
-                        rotation = {0, 180, 180},
-                        smooth = false
-                    })
-                    card.setGMNotes(JSON.encode(cardsTleilaxAttributes[i]))
-                end, 0.001 * i)
+                newManual.setLock(true)
             end
         end
     end
+
+    local resources = localeAssets[currentLocale]
+
+    if not resources then
+        log("No asset for locale " .. currentLocale)
+        return
+    end
+
+    -- Leaders tiles
+    for leaderName, leader in pairs(constants.leaders) do
+        local leaderTile = getObjectFromGUID(leader.GUID)
+        local params = {image = resources[leaderName]}
+        leaderTile.setCustomObject(params)
+        leaderTile.reload()
+    end
+
+    for _, GUID in ipairs(starter_decks) do
+        loadDeck(GUID, resources.cardsStarterImperium, imperiumCardBack)
+    end
+
+    for _, GUID in ipairs(dune_decks) do
+        loadDeck(GUID, resources.cardsDunePlanet, imperiumCardBack)
+    end
+
+    loadDeck(constants.cardsFoldspace, resources.cardsFoldspace, imperiumCardBack)
+    loadDeck(constants.cardsLiaison, resources.cardsLiaison, imperiumCardBack)
+    loadDeck(constants.cardsTSMF, resources.cardsTSMF, imperiumCardBack)
+    loadDeck(constants.cardsBaseImperium, resources.cardsBaseImperium, imperiumCardBack)
+    loadDeck(constants.imperium_deck_ix, resources.cardsIxImperium, imperiumCardBack)
+    loadDeck(constants.imperium_deck_immortality, resources.cardsImmortalityImperium, imperiumCardBack)
+    loadCard(constants.reclaimed_forces, resources.cardReclaimedForces, imperiumCardBack)
+    loadDeck(constants.intrigue_base, resources.cardsBaseIntrigue, intrigueCardBack)
+    loadDeck(constants.intrigue_ix, resources.cardsIxIntrigue, intrigueCardBack)
+    loadDeck(constants.intrigue_immortality, resources.cardsImmortalityIntrigue, intrigueCardBack)
+
+    for _, guidEpic in ipairs(epic_cards) do
+        if currentLocale == 'fr' then
+            loadCard(guidEpic, resources.cardControlTheSpice, imperiumCardBack)
+        else
+            mutateCard(guidEpic, 666, imperiumCustomDeck, 32)
+        end
+    end
+
+    for _, GUID in ipairs(experimentation_decks) do
+        loadDeck(GUID, resources.cardsExperimentation, imperiumCardBack)
+    end
+
+    Wait.time(function()
+        local hiddenZone = getObjectFromGUID("e88cd0")
+        for _, obj in pairs(hiddenZone.getObjects()) do
+            obj.setInvisibleTo({
+                "Red", "Blue", "Green", "Yellow", "White", "Grey", "Brown",
+                "Pink", "Purple", "Orange"
+            })
+        end
+    end, 0.5)
+
+    loadDeck(constants.tleilaxu_deck, resources.cardsTleilaxu, imperiumCardBack)
+
 end
 
+localeAssets.en = {
+    -- Leaders
+    yuna = "http://cloud-3.steamusercontent.com/ugc/1892102433196277499/FA54B129B168169E3D58BA61536FCC0BB5AB7D34/",
+    hundro = "http://cloud-3.steamusercontent.com/ugc/1892102433196275601/6A89778D9C4BB8AC07FE503D48A4483D13DF6E5B/",
+    memnon = "http://cloud-3.steamusercontent.com/ugc/1892102433196237593/8431F61C545067A4EADC017E6295CB249A2BD813/",
+    ariana = "http://cloud-3.steamusercontent.com/ugc/1892102433196206152/2A9043877494A7174A32770C39147FAE941A39A2/",
+    ilesa = "http://cloud-3.steamusercontent.com/ugc/1892102433196278257/94B1575474BEEF1F1E0FE0860051932398F47CA5/",
+    armand = "http://cloud-3.steamusercontent.com/ugc/1892102433196276383/310C6B6E85920F9FC1A94896A335D34C3CFA6C15/",
+    paul = "http://cloud-3.steamusercontent.com/ugc/1892102433196251690/F597DBF1EB750EA14EA03F231D0EBCF07212A5AC/",
+    leto = "http://cloud-3.steamusercontent.com/ugc/1892102433196254910/8CBD932BE474529D6C14A3AA8C01BD8503EBEBC6/",
+    tessia = "http://cloud-3.steamusercontent.com/ugc/1892102433196279035/29817122A32B50C285EE07E0DAC32FDE9A237CEC/",
+    rhombur = "http://cloud-3.steamusercontent.com/ugc/1892102433196279801/0C06A30D74BD774D9B4F968C00AEC8C0817D4C77/",
+    rabban = "http://cloud-3.steamusercontent.com/ugc/1892102433196250329/DCF40F0D8C34B14180DC33B369DCC8AA4FD3FB55/",
+    vladimir = "http://cloud-3.steamusercontent.com/ugc/1892102433196216494/B5899377296C2BFAC0CF48E18AA3773AA8E998DE/",
+    ilban = "http://cloud-3.steamusercontent.com/ugc/1892102433196246857/15624E52D08F594943A4A6332CBD68B2A1645441/",
+    helena = "http://cloud-3.steamusercontent.com/ugc/1892102433196235077/63750F22F1DFBA9D9544587C0B2B8D65E157EC00/",
+    -- Cards
+    cardsStarterImperium = {url = "http://cloud-3.steamusercontent.com/ugc/2029469358243413427/BF3BA9C253ED953533B90D94DD56D0BAD4021B3C/", packing = {4, 2, 8}},
+    cardsDunePlanet = {url = "http://cloud-3.steamusercontent.com/ugc/2029469358243413427/BF3BA9C253ED953533B90D94DD56D0BAD4021B3C/", packing = {4, 2, 2}},
+    cardsFoldspace = {url = "http://cloud-3.steamusercontent.com/ugc/2029469358243390859/6F98BCE051343A3D07D58D6BC62A8FCA2C9AAE1A/", packing = {0, 0, 0}},
+    cardsLiaison = {url = "http://cloud-3.steamusercontent.com/ugc/2029469358243390859/6F98BCE051343A3D07D58D6BC62A8FCA2C9AAE1A/", packing = {0, 0, 0}},
+    cardsTSMF = {url = "http://cloud-3.steamusercontent.com/ugc/2029469358243390859/6F98BCE051343A3D07D58D6BC62A8FCA2C9AAE1A/", packing = {0, 0, 0}},
+    cardsBaseImperium = {url = "http://cloud-3.steamusercontent.com/ugc/2029469358243390859/6F98BCE051343A3D07D58D6BC62A8FCA2C9AAE1A/", packing = {0, 0, 0}},
+    cardsIxImperium = {url = "http://cloud-3.steamusercontent.com/ugc/2029469358243344265/9DFCC56F20D09D60CF2B9D9050CB9640176F71B6/", packing = {0, 0, 0}},
+    cardsImmortalityImperium = {url = "http://cloud-3.steamusercontent.com/ugc/2029469358268077252/E758512421B5CB27BBA228EF5F1880A7F3DC564D/", packing = {0, 0, 0}},
+    cardsTleilaxu = {url = "http://cloud-3.steamusercontent.com/ugc/2029469358268075509/D9BD273651404E7DE7F0E22B36F2D426D82B07A8/", packing = {0, 0, 0}},
+    cardReclaimedForces = {url = "http://cloud-3.steamusercontent.com/ugc/2029469358268075509/D9BD273651404E7DE7F0E22B36F2D426D82B07A8/", packing = nil},
+    cardsImmortalityIntrigue = {url = "http://cloud-3.steamusercontent.com/ugc/1892101972249341287/9FED90CD510F26618717CEB63FDA744CE916C6BA/", packing = {0, 0, 0}},
+    cardsIxIntrigue = {url = "http://cloud-3.steamusercontent.com/ugc/1892102433196442624/CE27F1B6D4D455A2D00D6E13FABEB72E6B9F05F1/", packing = {0, 0, 0}},
+    cardsBaseIntrigue = {url = "http://cloud-3.steamusercontent.com/ugc/1892102433196338695/A63AE0E1069DA1279FDA3A5DE6A0E073F45FC8EF/", packing = {0, 0, 0}},
+    cardControlTheSpice = {url = "http://cloud-3.steamusercontent.com/ugc/2029469358243344265/9DFCC56F20D09D60CF2B9D9050CB9640176F71B6/", packing = nil},
+    cardsExperimentation = {url = "http://cloud-3.steamusercontent.com/ugc/2029469358268077252/E758512421B5CB27BBA228EF5F1880A7F3DC564D/", packing = {0, 0, 0}},
+
+    -- starter with dune planet
+    starterCustomDeck = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2029469358243413427/BF3BA9C253ED953533B90D94DD56D0BAD4021B3C/", 4, 2),
+    -- base with foldspace, liasion, the spice must flow
+    imperiumCustomDeck = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2029469358243390859/6F98BCE051343A3D07D58D6BC62A8FCA2C9AAE1A/", 8, 6),
+    intrigueCustomDeck = createIntrigueCustomDeck("http://cloud-3.steamusercontent.com/ugc/1892102433196338695/A63AE0E1069DA1279FDA3A5DE6A0E073F45FC8EF/", 7, 5),
+    -- ix with control the spice
+    ixImperiumCustomDeck = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2029469358243344265/9DFCC56F20D09D60CF2B9D9050CB9640176F71B6/", 7, 5),
+    ixIntrigueCustomDeck = createIntrigueCustomDeck("http://cloud-3.steamusercontent.com/ugc/1892102433196442624/CE27F1B6D4D455A2D00D6E13FABEB72E6B9F05F1/", 5, 4),
+    -- tleilax with experimentation
+    teilaxImperiumCustomDeck = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2029469358268077252/E758512421B5CB27BBA228EF5F1880A7F3DC564D/", 6, 5),
+    -- tleilax with reclaimed forces
+    teilaxResearchCustomDeck = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2029469358268075509/D9BD273651404E7DE7F0E22B36F2D426D82B07A8/", 4, 5),
+    teilaxIntrigueCustomDeck = createIntrigueCustomDeck("http://cloud-3.steamusercontent.com/ugc/1892101972249341287/9FED90CD510F26618717CEB63FDA744CE916C6BA/", 6, 2)
+}
+
 localeAssets.fr = {
+    -- Leaders
     yuna = "http://cloud-3.steamusercontent.com/ugc/2029467636440254532/CDAED205706CD8E32700B8A56C9BD387C5D72696/",
     hundro = "http://cloud-3.steamusercontent.com/ugc/2029467636440287844/A64F2D77C6F482F31B12EC97C2DEEBBDF45AF3F9/",
     memnon = "http://cloud-3.steamusercontent.com/ugc/2029468089262094752/36DB26EE194B780C9C879C74FC634C15433CE06A/",
@@ -215,21 +308,47 @@ localeAssets.fr = {
     vladimir = "http://cloud-3.steamusercontent.com/ugc/2029467636440341651/6F682C5E5C1ADE0B9B1B8FAC80B9525A6748C351/",
     ilban = "http://cloud-3.steamusercontent.com/ugc/2029467636440255083/F0F052CCAB7005F4D30879BF639AFACEDFF70A80/",
     helena = "http://cloud-3.steamusercontent.com/ugc/5095292505135062968/A069B3ECF1B4E9C42D2453E28EA13257F397B3F3/",
-    cardsStarterImperium = "http://cloud-3.steamusercontent.com/ugc/2029469358268121216/D25AA65312D89EB7CEED36D451618E731A674BED/",
-    cardsDunePlanet = "http://cloud-3.steamusercontent.com/ugc/2029469358268102690/98F5861E28F3167495D3F2890879072BF3A84E60/",
-    cardsFoldspace = "http://cloud-3.steamusercontent.com/ugc/2029469358268101016/AE481C2ED19B085E2669F22420FD282982FD11A9/",
-    cardsLiaison = "http://cloud-3.steamusercontent.com/ugc/2029469358268100070/D7411DB495E6EB13D6B64F5E46CCF69FF322039F/",
-    cardsTSMF = "http://cloud-3.steamusercontent.com/ugc/2029469358268101681/B6E08F8328DB699C60A8F058E88AA6443BA2F716/",
-    cardsBaseImperium = "http://cloud-3.steamusercontent.com/ugc/2029469358268104070/CC2D301CA075930201B3883D82F4C6E1A0837273/",
-    cardsIxImperium = "http://cloud-3.steamusercontent.com/ugc/2029469358268106254/C54BCAB79869547E728509123AC47EDB32E79BF5/",
-    cardsImmortalityImperium = "http://cloud-3.steamusercontent.com/ugc/2029469358268107658/416555ED5FD18C7045AD716EF2A0428611A7530C/",
-    cardsTleilaxu = "http://cloud-3.steamusercontent.com/ugc/2029469358268108609/1EAE76FAC8926E36E7D95F84E62E36EEBFAE57E8/",
-    cardReclaimedForces = "http://cloud-3.steamusercontent.com/ugc/2029469358268109382/7E98B2CF99D80E27213815E475B27212574BBC76/",
-    cardsImmortalityIntrigue = "http://cloud-3.steamusercontent.com/ugc/2029468177564515609/E8525C84FFDB7EE16577D130FA17B58629BE38E9/",
-    cardsIxIntrigue = "http://cloud-3.steamusercontent.com/ugc/2029469358271904511/3D33B3E59811CEDC64A53F104D31190E76676C64/",
-    cardsBaseIntrigue = "http://cloud-3.steamusercontent.com/ugc/2029469995670901713/13659DD01D152A8B8055B894B247CB1D254D3752/",
-    cardControlTheSpice = "http://cloud-3.steamusercontent.com/ugc/2029469358243272739/DD5ED3E5FD12F0A1C4F42750E766E83564248E07/",
-    cardsExperimentation = "http://cloud-3.steamusercontent.com/ugc/2029469995671349298/D4F3F5C0DFAFE7C5C7BFEEFA902F4E6A60C72EF2/"
+    -- Cards
+    cardsStarterImperium = {url = "http://cloud-3.steamusercontent.com/ugc/2029469358268121216/D25AA65312D89EB7CEED36D451618E731A674BED/", packing = {4, 2, 8}},
+    cardsDunePlanet = {url = "http://cloud-3.steamusercontent.com/ugc/2029469358268102690/98F5861E28F3167495D3F2890879072BF3A84E60/", packing = {2, 2, 2}},
+    cardsFoldspace = {url = "http://cloud-3.steamusercontent.com/ugc/2029469358268101016/AE481C2ED19B085E2669F22420FD282982FD11A9/", packing = {3, 2, 6}},
+    cardsLiaison = {url = "http://cloud-3.steamusercontent.com/ugc/2029469358268100070/D7411DB495E6EB13D6B64F5E46CCF69FF322039F/", packing = {4, 2, 8}},
+    cardsTSMF = {url = "http://cloud-3.steamusercontent.com/ugc/2029469358268101681/B6E08F8328DB699C60A8F058E88AA6443BA2F716/", packing = {5, 2, 10}},
+    cardsBaseImperium = {url = "http://cloud-3.steamusercontent.com/ugc/2029469358268104070/CC2D301CA075930201B3883D82F4C6E1A0837273/", packing = {10, 7, 69}},
+    cardsIxImperium = {url = "http://cloud-3.steamusercontent.com/ugc/2029469358268106254/C54BCAB79869547E728509123AC47EDB32E79BF5/", packing = {6, 6, 36}},
+    cardsImmortalityImperium = {url = "http://cloud-3.steamusercontent.com/ugc/2029469358268107658/416555ED5FD18C7045AD716EF2A0428611A7530C/", packing = {6, 5, 30}}, -- !
+    cardsTleilaxu = {url = "http://cloud-3.steamusercontent.com/ugc/2029469358268108609/1EAE76FAC8926E36E7D95F84E62E36EEBFAE57E8/", packing = {4, 5, 19}}, -- !
+    cardReclaimedForces = {url = "http://cloud-3.steamusercontent.com/ugc/2029469358268109382/7E98B2CF99D80E27213815E475B27212574BBC76/", packing = nil}, -- !?
+    cardsImmortalityIntrigue = {url = "http://cloud-3.steamusercontent.com/ugc/2029468177564515609/E8525C84FFDB7EE16577D130FA17B58629BE38E9/", packing = {6, 3, 15}}, -- !
+    cardsIxIntrigue = {url = "http://cloud-3.steamusercontent.com/ugc/2029469358271904511/3D33B3E59811CEDC64A53F104D31190E76676C64/", packing = {5, 4, 17}},
+    cardsBaseIntrigue = {url = "http://cloud-3.steamusercontent.com/ugc/2029469995670901713/13659DD01D152A8B8055B894B247CB1D254D3752/", packing = {8, 5, 40}},
+    cardControlTheSpice = {url = "http://cloud-3.steamusercontent.com/ugc/2029469358243272739/DD5ED3E5FD12F0A1C4F42750E766E83564248E07/", packing = nil},
+    cardsExperimentation = {url = "http://cloud-3.steamusercontent.com/ugc/2029469995671349298/D4F3F5C0DFAFE7C5C7BFEEFA902F4E6A60C72EF2/", packing = {2, 2, 2}},
+
+    -- Tous les decks sont multi-instanciés.
+
+    -- starter without dune planet
+    starterCustomDeck = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2029469358268121216/D25AA65312D89EB7CEED36D451618E731A674BED/", 4, 2),
+    -- dune planet
+    starterDunePlanetCustomDeck = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2029469358268102690/98F5861E28F3167495D3F2890879072BF3A84E60/", 2, 2),
+    -- base without foldspace, nor liasion, nor the spice must flow
+    imperiumCustomDeck = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2029469358268104070/CC2D301CA075930201B3883D82F4C6E1A0837273/", 11, 7),
+    imperiumFoldedSpaceCustomDeck = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2029469358268101016/AE481C2ED19B085E2669F22420FD282982FD11A9/", 3, 2),
+    imperiumArrakisLiasionCustomDeck = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2029469358268100070/D7411DB495E6EB13D6B64F5E46CCF69FF322039F/", 3, 2),
+    imperiumTheSpiceMustFlowCustomDeck = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2029469358268101681/B6E08F8328DB699C60A8F058E88AA6443BA2F716/", 5, 2),
+    intrigueCustomDeck = createIntrigueCustomDeck("http://cloud-3.steamusercontent.com/ugc/2029469995670901713/13659DD01D152A8B8055B894B247CB1D254D3752/", 8, 5),
+    -- ix without control the spice
+    ixImperiumCustomDeck = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2029469358268106254/C54BCAB79869547E728509123AC47EDB32E79BF5/", 6, 6),
+    ixImperiumControlTheSpiceCustomDeck = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2029469358243272739/DD5ED3E5FD12F0A1C4F42750E766E83564248E07/", 1, 1),
+    ixIntrigueCustomDeck = createIntrigueCustomDeck("http://cloud-3.steamusercontent.com/ugc/2029469358271904511/3D33B3E59811CEDC64A53F104D31190E76676C64/", 5, 4),
+    -- tleilax without experimentation
+    teilaxImperiumCustomDeck = createImperiumCustomDeck("", 6, 5),
+    teilaxImperiumExperimentationCustomDeck = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2029469995671349298/D4F3F5C0DFAFE7C5C7BFEEFA902F4E6A60C72EF2/", 2, 2),
+    -- tleilax without reclaimed forces
+    teilaxResearchCustomDeck = createImperiumCustomDeck("", 4, 5),
+    -- reclaimed forces
+    teilaxResearchReclaimedForcesCustomDeck = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2029469358268109382/7E98B2CF99D80E27213815E475B27212574BBC76/", 1, 1),
+    teilaxIntrigueCustomDeck = createIntrigueCustomDeck("", 6, 2)
 }
 
 return localeAssets

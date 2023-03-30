@@ -256,6 +256,7 @@ _ = require("Core").registerLoadablePart(function(saved_data)
             leaderPositions[i] = getObjectFromGUID(leaderGuid).getPosition()
         end
 
+        activateSelectLanguageButtons()
         activateButtons()
         activateEpicMode()
         activateRiseOfIx()
@@ -345,6 +346,62 @@ end
 function updateValue()
     valueButtonParameters.label = tostring(numberOfBan)
     self.editButton(valueButtonParameters)
+end
+
+function fromIntRGB(r, g, b)
+    return Color(r / 255, g / 255, b / 255)
+end
+
+local localeAssets = require("localeAssets")
+
+local languages = {
+    {locale='en', name = 'English'},
+    {locale='fr', name = 'Français'}
+}
+
+function activateSelectLanguageButtons()
+    for i, language in pairs(languages) do
+        local prefix = "[   ] "
+        if i18n.getLocale() == language.locale then
+            prefix = "[✓] "
+        end
+        self.createButton({
+            label = prefix .. language.name,
+            click_function = "setLanguage" .. tostring(i),
+            function_owner = self,
+            position = {-12.75, 0.5, 5.5 + i},
+            color = fromIntRGB(128, 77, 0),
+            font_color = fromIntRGB(204, 153, 0),
+            height = button_height * 1.2,
+            width = button_width * 0.75,
+            font_size = text_size * 1,
+        })
+    end
+end
+
+function setLanguage1()
+    setLanguage(languages[1])
+end
+
+function setLanguage2()
+    setLanguage(languages[2])
+end
+
+function setLanguage(language)
+    log("setLanguage: " .. language.name)
+
+    if true then
+        i18n.setLocale(language.locale)
+        -- Force reload to prevent any future "Object reference not set to an instance of an object".
+        i18n.setLocale(language.locale)
+        localeAssets.load()
+        onLoad(self.script_state)
+    else
+        self.clearButtons()
+        i18n.setLocale(language.locale)
+        localeAssets.load()
+        activateAllButtons()
+    end
 end
 
 -----------------End Number of ban buttons section------------------------
@@ -617,6 +674,7 @@ end
 -----------------End section------------------------
 
 function activateAllButtons()
+    activateSelectLanguageButtons()
     activateButtons()
     activateEpicMode()
     activateRiseOfIx()
@@ -830,6 +888,8 @@ function Setup()
     end
 
     if immortality == 1 then
+        memorizeOrderedTleilaxuDeck()
+
         getObjectFromGUID(intrigue_immortality).setPosition(intrigue_pos)
         getObjectFromGUID(imperium_deck_immortality).setPosition(imperium_pos)
         local deck = GetDeckOrCardFromGUID(constants.zone_deck_tleilaxu)
@@ -856,16 +916,15 @@ function Setup()
         end
 
         for i, ref in ipairs(experimentation_decks) do
-            local deck = getObjectFromGUID(ref)
-            deck.flip()
-            deck.setPositionSmooth(pos_starter_decks[i], false, false)
+            local otherDeck = getObjectFromGUID(ref)
+            otherDeck.flip()
+            otherDeck.setPositionSmooth(pos_starter_decks[i], false, false)
         end
 
         research_station_immortality.setPosition({-0.07, 0.59, -1.89})
         research_station_immortality.setLock(true)
         -- Need to keep immo station interactable else the GET button of the normal station under will mess with the GET button of the new station
         -- research_station_immortality.interactable = false
-
     end
 
     if blitz == 0 and epic_mode == 0 then setupConflits(4, 5, 1) end
@@ -1348,6 +1407,47 @@ function setupConflits(a, b, c)
         end
         destroyObject(conflictOne)
     end, 2)
+end
+
+local tleilaxuCards = {
+    { guid = nil, cost = 3, name = "beguiling_pheromones" },
+    { guid = nil, cost = 2, name = "dogchair" },
+    { guid = nil, cost = 1, name = "contaminator" },
+    { guid = nil, cost = 1, name = "corrino_genes" },
+    { guid = nil, cost = 2, name = "face_dancer" },
+    { guid = nil, cost = 1, name = "face_dancer_initiate" },
+    { guid = nil, cost = 2, name = "from_the_tanks" },
+    { guid = nil, cost = 3, name = "ghola" },
+    { guid = nil, cost = 2, name = "guild_impersonator" },
+    { guid = nil, cost = 1, name = "industrial_espionage" },
+    { guid = nil, cost = 3, name = "piter_genius_advisor" },
+    { guid = nil, cost = 3, name = "scientific_breakthrough" },
+    { guid = nil, cost = 2, name = "slig_farmer" },
+    { guid = nil, cost = 3, name = "stitched_horror" },
+    { guid = nil, cost = 2, name = "subject_x_137" },
+    { guid = nil, cost = 2, name = "tleilaxu_infiltrator" },
+    { guid = nil, cost = 4, name = "twisted_mentat" },
+    { guid = nil, cost = 3, name = "unnatural_reflexes" },
+    { guid = nil, cost = 4, name = "usurper" }
+}
+
+function memorizeOrderedTleilaxuDeck()
+    local tleilaxu_deck = getObjectFromGUID(constants.tleilaxu_deck)
+    for i, card in ipairs(tleilaxu_deck.getObjects()) do
+        tleilaxuCards[i].guid = card.guid
+    end
+end
+
+function getTleilaxuCardPrice(card)
+    local guid = card.getGUID()
+    for name, info in pairs(tleilaxuCards) do
+        if info.guid == guid then
+            log(name .. " -> " .. tostring(info.cost))
+            return info.cost
+        end
+    end
+    log("No memorized Tleilaxu card for GUID " .. guid)
+    return 0
 end
 
 function setupEpic()

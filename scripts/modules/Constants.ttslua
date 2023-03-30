@@ -22,6 +22,10 @@ function constants.getLandingPosition(anchor)
     return anchor.getPosition() + constants.someHeight
 end
 
+constants.cardsFoldspace = "014161"
+constants.cardsLiaison = "7d34c9"
+constants.cardsTSMF = "8de6d5"
+constants.cardsBaseImperium = "99d41d"
 constants.imperium_deck = "99d41d"
 constants.imperium_deck_ix = "58c4c3"
 constants.imperium_deck_immortality = "88b666"

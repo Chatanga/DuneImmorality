@@ -41,12 +41,7 @@
 - le support de la maison Hagal.
 
 # A faire :
-- Retirer le suffixe module des modules.
-- Investiguer problème AssetBundle.
-- Investiguer problème texture.
-- Terminer achat technologies.
-
-# A faire plus tard :
+- Retirer le suffixe module des modules ?
 - Pas de passage de "round start" à "player turns" au 1er tour.
 - Remplacer la tétrachié de ["literal"] en (.)literal.
 - gérer plus finement les hauteurs des boutons.
@@ -57,4 +52,8 @@
 - Enhanced Recall for Endgame -> detected end of game: reveal intrigue and grant VP tokens automatically.
 - Marker -> token pour éviter la confusion avec Maker.
 - nombre de joueurs actifs et mode de jeu (multi / hot seat).
-- application dynamique de la langue.
+
+# Liens :
+- Mods -> $HOME/.local/share/Tabletop Simulator/Mods/
+- Saves -> $HOME/.local/share/Tabletop Simulator/Saves/
+- Tabletop Simulator Lua -> /tmp/TabletopSimulator/Tabletop Simulator Lua/
