@@ -5,7 +5,7 @@ adminOnlyButton = true
 selectColour = {0.3, 1, 0.3}
 textColour = {0.5, 0.5, 0.5}
 
-_ = require("Core").registerLoadablePart(function(saved_data)
+_ = require("Core").registerLoadablePart(function()
     local buttonParams = {}
     buttonParams.function_owner = self
     buttonParams.click_function = "shufflePlayers"

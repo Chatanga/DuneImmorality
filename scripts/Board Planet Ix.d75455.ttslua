@@ -84,8 +84,6 @@ local negotiationZones = {}
 local negotiationParks = {}
 
 _ = require("Core").registerLoadablePart(function(savedData)
-    i18n.setLocale(Global.getVar("locale"))
-
     self.interactable = false
 
     if savedData ~= '' then
@@ -112,6 +110,11 @@ _ = require("Core").registerLoadablePart(function(savedData)
     Dreadnought_zone = getObjectFromGUID("83ea90")
     activateButtons()
 end)
+
+function onLocaleChange()
+    self.clearButtons()
+    activateButtons()
+end
 
 function saveState()
     local state = {

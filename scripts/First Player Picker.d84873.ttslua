@@ -1,5 +1,5 @@
 
-_ = require("Core").registerLoadablePart(function(saved_data)
+_ = require("Core").registerLoadablePart(function()
 
     button_parameters = {}
     button_parameters.click_function = 'blank'

@@ -1,3 +1,5 @@
+core = require("Core")
+
 i18n = require("i18n")
 require("locales")
 
@@ -6,6 +8,13 @@ constants = require("Constants")
 worm = require("Worm")
 
 helperModule = require("HelperModule")
+
+localeAssets = require("localeAssets")
+
+languages = {
+    {locale='en', name = 'English'},
+    {locale='fr', name = 'Français'}
+}
 
 GetDeckOrCard = helperModule.GetDeckOrCard
 GetDeckOrCardFromGUID = helperModule.GetDeckOrCardFromGUID
@@ -49,7 +58,8 @@ button_color = {0.25, 0.25, 0.25} -- Set number {Red,Green,Blue}. Value bitween 
 text_color = {1.00, 1.00, 1.00} -- Set number {Red,Green,Blue}. Value bitween 0.00 to 1.00. Defaults to {0.25,0.25,0.25] ("Black").
 text_size = 200 -- Set number. Defaults to 100.
 
-_ = require("Core").registerLoadablePart(function(saved_data)
+_ = core.registerLoadablePart(function(saved_data)
+    localeAssets.load()
 
     marker = constants.first_player_marker
 
@@ -270,6 +280,11 @@ _ = require("Core").registerLoadablePart(function(saved_data)
     end
 end)
 
+function onLocaleChange()
+    self.clearButtons()
+    activateAllButtons()
+end
+
 function updateSave()
     local data_to_save = {
         setupDone = setupDone,
@@ -352,13 +367,6 @@ function fromIntRGB(r, g, b)
     return Color(r / 255, g / 255, b / 255)
 end
 
-local localeAssets = require("localeAssets")
-
-local languages = {
-    {locale='en', name = 'English'},
-    {locale='fr', name = 'Français'}
-}
-
 function activateSelectLanguageButtons()
     for i, language in pairs(languages) do
         local prefix = "[   ] "
@@ -388,20 +396,10 @@ function setLanguage2()
 end
 
 function setLanguage(language)
-    log("setLanguage: " .. language.name)
-
-    if true then
-        i18n.setLocale(language.locale)
-        -- Force reload to prevent any future "Object reference not set to an instance of an object".
-        i18n.setLocale(language.locale)
-        localeAssets.load()
-        onLoad(self.script_state)
-    else
-        self.clearButtons()
-        i18n.setLocale(language.locale)
-        localeAssets.load()
-        activateAllButtons()
-    end
+    --log("setLanguage: " .. language.name)
+    i18n.setLocale(language.locale)
+    localeAssets.load()
+    core.callOnAllLoadedObjects("onLocaleChange")
 end
 
 -----------------End Number of ban buttons section------------------------
@@ -1510,9 +1508,9 @@ end
 
 function movetechdecks()
     local techs = nil
-    if Global.getVar("locale") == 'en' then
+    if i18n.getLocale() == 'en' then
         techs = tech_tiles_en
-    elseif Global.getVar("locale") == 'fr' then
+    elseif i18n.getLocale() == 'fr' then
         techs = tech_tiles_fr
     end
     techs.randomize()

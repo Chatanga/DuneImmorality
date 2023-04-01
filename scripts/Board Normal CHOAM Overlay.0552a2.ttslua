@@ -13,9 +13,7 @@ boardCommonModule = require("BoardCommonModule")
 
 DrawOne = helperModule.DrawOne
 
-_ = require("Core").registerLoadablePart(function(saved_data)
-    i18n.setLocale(Global.getVar("locale"))
-
+_ = require("Core").registerLoadablePart(function()
     SecureContract_zone = getObjectFromGUID("db4022")
     SellMelange_zone = getObjectFromGUID("7539a3")
 
@@ -26,6 +24,11 @@ _ = require("Core").registerLoadablePart(function(saved_data)
     self.interactable = false
     activateButtons()
 end)
+
+function onLocaleChange()
+    self.clearButtons()
+    activateButtons()
+end
 
 function activateButtons()
 

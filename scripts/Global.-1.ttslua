@@ -9,9 +9,7 @@ locale = 'fr'
 
 battleSound = nil
 
-_ = require("Core").registerLoadablePart(function(saved_data)
-    require("localeAssets").load()
-
+_ = require("Core").registerLoadablePart(function()
     -- Réinitialise les triggers des plateaux de joueurs.
     onPlayerTurn(nil, nil)
 
@@ -189,6 +187,13 @@ _ = require("Core").registerLoadablePart(function(saved_data)
         end
     end
 end)
+
+function onLocaleChange()
+    for color, player in pairs(constants.players) do
+        player.board.clearButtons()
+        activateButtons(color)
+    end
+end
 
 function doNothing() end
 

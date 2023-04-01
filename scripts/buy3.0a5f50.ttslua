@@ -7,7 +7,7 @@ constants = require("Constants")
 
 helperModule = require("HelperModule")
 
-_ = require("Core").registerLoadablePart(function(saved_data)
+_ = require("Core").registerLoadablePart(function()
     self.interactable = false
 
     imperiumColumn = constants.imperiumRow[3]
@@ -15,6 +15,11 @@ _ = require("Core").registerLoadablePart(function(saved_data)
     pos = imperiumColumn.pos
     activateButton()
 end)
+
+function onLocaleChange()
+    self.clearButtons()
+    activateButton()
+end
 
 function activateButton()
     self.createButton({

@@ -9,7 +9,7 @@ boardCommonModule = require("BoardCommonModule")
 
 DrawOne = helperModule.DrawOne
 
-_ = require("Core").registerLoadablePart(function(saved_data)
+_ = require("Core").registerLoadablePart(function()
 
     scriptZone_endTrack_research = getObjectFromGUID("da08cd")
 

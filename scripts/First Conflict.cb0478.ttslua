@@ -1,15 +1,15 @@
+i18n = require("i18n")
+require("locales")
+
 constants = require("Constants")
 
 helperModule = require("HelperModule")
 
-_ = require("Core").registerLoadablePart(function(saved_data)
+_ = require("Core").registerLoadablePart(function()
     self.interactable = false
 
     conflict_discard = helperModule.correctAnchorPosition({-1.15, 3, -5.74}, {1.37866032, 0.165157527, 1.34989369})
     conflict_zone = getObjectFromGUID("07e239")
-    i18n = require("i18n")
-    require("locales")
-    constants = require("Constants")
 end)
 
 function ConflictButton()

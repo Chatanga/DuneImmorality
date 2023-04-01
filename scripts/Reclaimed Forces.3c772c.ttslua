@@ -7,7 +7,7 @@ helperModule = require("HelperModule")
 
 players = constants.players
 
-_ = require("Core").registerLoadablePart(function(saved_data)
+_ = require("Core").registerLoadablePart(function()
     bene_tleilax_board = getObjectFromGUID("d5c2db")
 
     local data1 = {

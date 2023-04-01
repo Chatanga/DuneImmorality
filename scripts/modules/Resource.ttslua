@@ -1,14 +1,14 @@
 resource = {}
 
+i18n = require("i18n")
+require("locales")
+
 helperModule = require("HelperModule")
 
 MIN_VALUE = 0
 MAX_VALUE = 99
 
 function resource.init(ownerColor, resourceName, value, savedData)
-    i18n = require("i18n")
-    require("locales")
-
     resource.ownerColor = ownerColor
     resource.resourceName = resourceName
     resource.value = value

@@ -56,22 +56,6 @@ button_color = {0.25, 0.25, 0.25} -- Set number {Red,Green,Blue}. Value bitween 
 text_color = {1.00, 1.00, 1.00} -- Set number {Red,Green,Blue}. Value bitween 0.00 to 1.00. Defaults to {0.25,0.25,0.25] ("Black").
 text_size = 80 -- Set number. Defaults to 100.
 
-function activateButton()
-    self.createButton({
-        click_function = "Makers",
-        function_owner = self,
-        color = button_color,
-        font_color = text_color,
-        rotation = {0, 0, 0},
-        label = "MAKERS\nRECALL",
-        position = {-7.1, 0.2, 8},
-        scale = {2, 1, 2},
-        width = 600,
-        height = 310,
-        font_size = 120
-    })
-end
-
 _ = core.registerLoadablePart(function(saved_data)
     self.interactable = false
     pos_intrigue_discard = constants.getLandingPositionFromGUID("976c3a")
@@ -112,6 +96,27 @@ _ = core.registerLoadablePart(function(saved_data)
     black_market = 0
     activateButton()
 end)
+
+function onLocaleChange()
+    self.clearButtons()
+    activateButton()
+end
+
+function activateButton()
+    self.createButton({
+        click_function = "Makers",
+        function_owner = self,
+        color = button_color,
+        font_color = text_color,
+        rotation = {0, 0, 0},
+        label = "MAKERS\nRECALL",
+        position = {-7.1, 0.2, 8},
+        scale = {2, 1, 2},
+        width = 600,
+        height = 310,
+        font_size = 120
+    })
+end
 
 function getRoundStart() return round_start end
 

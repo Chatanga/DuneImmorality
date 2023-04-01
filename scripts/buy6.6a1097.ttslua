@@ -8,8 +8,7 @@ helperModule = require("HelperModule")
 GetDeckOrCard = helperModule.GetDeckOrCard
 GetDeckOrCardFromGUID = helperModule.GetDeckOrCardFromGUID
 
-_ = require("Core").registerLoadablePart(function(saved_data)
-
+_ = require("Core").registerLoadablePart(function()
     self.interactable = false
 
     counter_VP = {
@@ -27,8 +26,12 @@ _ = require("Core").registerLoadablePart(function(saved_data)
     TSMF_point = getObjectFromGUID("43c7b5")
 
     activateButtons()
-
 end)
+
+function onLocaleChange()
+    self.clearButtons()
+    activateButtons()
+end
 
 function activateButtons()
     self.createButton({
@@ -41,8 +44,7 @@ function activateButtons()
         height = 400,
         font_size = 400,
         color = {0.25, 0.25, 0.25, 1},
-        font_color = {1, 1, 1, 1},
-        z
+        font_color = {1, 1, 1, 1}
     })
 
     self.createButton({

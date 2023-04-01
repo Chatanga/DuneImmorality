@@ -1,11 +1,15 @@
-function onload()
-    i18n = require("i18n")
-    require("locales")
+i18n = require("i18n")
+require("locales")
 
+_ = require("Core").registerLoadablePart(function()
     self.interactable = false
     sound_active = false
     activateButtons()
+end)
 
+function onLocaleChange()
+    self.clearButtons()
+    activateButtons()
 end
 
 function activateButtons()

@@ -7,10 +7,15 @@ boardCommonModule = require("BoardCommonModule")
 
 parkModule = require("ParkModule")
 
-_ = require("Core").registerLoadablePart(function(saved_data)
+_ = require("Core").registerLoadablePart(function()
     self.interactable = false
     activateButtons()
 end)
+
+function onLocaleChange()
+    self.clearButtons()
+    activateButtons()
+end
 
 function activateButtons()
 

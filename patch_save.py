@@ -661,8 +661,8 @@ def patch_save(input_path, output_path):
 
     if noLuaScript:
         save['LuaScript'] = ''
-        save['LuaScriptState'] = ''
-        save['XmlUI'] = ''
+    save['LuaScriptState'] = ''
+    save['XmlUI'] = ''
 
     guids_to_be_removed = [
         # Table
@@ -768,8 +768,8 @@ def patch_save(input_path, output_path):
                 if noLuaScript:
                     state['Locked'] = True
                     state['LuaScript'] = ''
-                    state['LuaScriptState'] = ''
-                    state['XmlUI'] = ''
+                state['LuaScriptState'] = ''
+                state['XmlUI'] = ''
                 filterSnapPoints(state)
                 rectify_rotation(state)
 
@@ -781,8 +781,8 @@ def patch_save(input_path, output_path):
             elif guid == '5a682a':
                 # On préserve néanmoins ses scripts Lua.
                 additional_character_table['LuaScript'] = object['LuaScript']
-                additional_character_table['LuaScriptState'] = object['LuaScriptState']
-                additional_character_table['XmlUI'] = object['XmlUI']
+                #additional_character_table['LuaScriptState'] = object['LuaScriptState']
+                #additional_character_table['XmlUI'] = object['XmlUI']
             else:
                 #assert object['LuaScript'] == ''
                 #assert object['LuaScriptState'] == ''
@@ -800,8 +800,8 @@ def patch_save(input_path, output_path):
         if noLuaScript:
             object['Locked'] = True
             object['LuaScript'] = ''
-            object['LuaScriptState'] = ''
-            object['XmlUI'] = ''
+        object['LuaScriptState'] = ''
+        object['XmlUI'] = ''
         filterSnapPoints(object)
 
         if guid in anchor_guids:

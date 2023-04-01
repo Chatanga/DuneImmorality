@@ -7,7 +7,7 @@ constants = require("Constants")
 
 helperModule = require("HelperModule")
 
-_ = require("Core").registerLoadablePart(function(saved_data)
+_ = require("Core").registerLoadablePart(function()
     self.interactable = false
 
     tleilaxuColumn = constants.tleilaxuRow[2]
@@ -15,6 +15,11 @@ _ = require("Core").registerLoadablePart(function(saved_data)
     pos = tleilaxuColumn.pos
     activateButton()
 end)
+
+function onLocaleChange()
+    self.clearButtons()
+    activateButton()
+end
 
 function activateButton()
     self.createButton({

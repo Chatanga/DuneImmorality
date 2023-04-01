@@ -1,9 +1,14 @@
 leader = require("Leader")
 
+helperModule = require("HelperModule")
+
 _ = require("Core").registerLoadablePart(function(savedData)
-    leader.init(nil, savedData)
-    createPrescienceButton()
+    leader.init(onClaim, savedData)
 end)
+
+function onClaim(color)
+    createPrescienceButton()
+end
 
 function createPrescienceButton()
     self.createButton({
@@ -24,7 +29,7 @@ end
 function prescience(_, color)
     if color == claimed then
         local leaderName = helperModule.getLeaderName(color)
-        local cardOrDeck = GetDeckOrCard(constants.players[color].drawDeckZone)
+        local cardOrDeck = helperModule.GetDeckOrCard(constants.players[color].drawDeckZone)
 
         if cardOrDeck == nil then
             broadcastToColor(i18n("prescienceVoid"), color, "Purple")

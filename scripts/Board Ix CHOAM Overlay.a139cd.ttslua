@@ -17,8 +17,6 @@ cargo_pos_init = {
 }
 
 _ = core.registerLoadablePart(function(saved_data)
-    i18n.setLocale(Global.getVar("locale"))
-
     Swordmaster_zone = getObjectFromGUID("6932df")
     Smuggling_zone = getObjectFromGUID("6cc2f8")
     Shipping_zone = getObjectFromGUID("3e7409")
@@ -26,6 +24,11 @@ _ = core.registerLoadablePart(function(saved_data)
     self.interactable = false
     activateButtons()
 end)
+
+function onLocaleChange()
+    self.clearButtons()
+    activateButtons()
+end
 
 function activateButtons()
 

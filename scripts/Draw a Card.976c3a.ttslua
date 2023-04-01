@@ -20,7 +20,12 @@ constants = require("Constants")
 GetDeckOrCard = helperModule.GetDeckOrCard
 GetDeckOrCardFromGUID = helperModule.GetDeckOrCardFromGUID
 
-function onLoad()
+_ = require("Core").registerLoadablePart(function()
+    activateButton()
+end)
+
+function onLocaleChange()
+    self.clearButtons()
     activateButton()
 end
 
@@ -39,7 +44,6 @@ function activateButton()
     })
 end
 
-
 function drawCard(_,color)
     local targetDeck = GetDeckOrCardFromGUID(intrigue_zone)
     if targetDeck == nil then
@@ -57,7 +61,6 @@ function drawCard(_,color)
             Wait.time(function()
                 my_card.flip()
             end,0.2)
-
         else
             targetDeck.setPosition({handZone.position.x-7.5, handZone.position.y, handZone.position.z}, false, true)
             targetDeck.setRotation({deckRot.x, deckRot.y, deckRot.z+180})

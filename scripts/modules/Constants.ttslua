@@ -22,6 +22,7 @@ function constants.getLandingPosition(anchor)
     return anchor.getPosition() + constants.someHeight
 end
 
+-- Don't store object references for these objects which can be reloaded / mutated on locale change.
 constants.cardsFoldspace = "014161"
 constants.cardsLiaison = "7d34c9"
 constants.cardsTSMF = "8de6d5"
@@ -35,6 +36,9 @@ constants.intrigue_immortality = "a5dbab"
 constants.intrigue_ix = "afa5e5"
 constants.intrigue_base = "77d25d"
 constants.epic_cards = {'7ae7f5', 'fbaf9f', '497c84', '30b760'}
+constants.starter_decks = {"014c6a", "b8e747", "0c5e03", "a76b37"}
+constants.dune_decks = {"8c99a3", "af840c", "44069d", "85fb54"}
+constants.experimentation_decks = {"ef9531", "45ce21", "2d935f", "8ed0cd"}
 
 constants.leaderPos = {
     Yellow = core.getHardcodedPositionFromGUID('a677e0', 19.0, 1.17902148, -5.5),
@@ -43,6 +47,7 @@ constants.leaderPos = {
     Red = core.getHardcodedPositionFromGUID('66cdbb', -19.0, 1.25, 17.5)
 }
 
+-- Don't store object references for these objects which can be reloaded / mutated on locale change.
 constants.leaders = {
     yuna = {GUID = "0b6322"},
     hundro = {GUID = "6e3714"},
@@ -60,7 +65,12 @@ constants.leaders = {
     helena = {GUID = "5a8a9a"}
 }
 
--- You are probably more interrested by constants.players and constants.alivePlayers
+--[[
+    Temporary structure (set to nil after loading). On loading, two mirrors of
+    this structure are created with the GUIDs resolved:
+    - constants.players
+    - constants.alivePlayers
+]]--
 constants.unresolvedPlayers = {
     Red = {
         board = "adcd28",
@@ -350,6 +360,7 @@ _ = core.registerLoadablePart(function(_)
     -- Do not confuse alive players with active players. Without restoring a save,
     -- all players stay alive.
     constants.alivePlayers = {}
+
     for color, unresolvedPlayer in pairs(constants.unresolvedPlayers) do
         -- Too many objects could be legitimately missing in the middle of a
         -- game, event for alive players, so we simply disable the unresolved

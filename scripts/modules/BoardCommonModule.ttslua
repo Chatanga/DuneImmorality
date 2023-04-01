@@ -102,8 +102,6 @@ agent_spaces = {
 ]]--
 
 _ = core.registerLoadablePart(function(_)
-    i18n.setLocale(Global.getVar("locale"))
-
     flag_basin_zone = getObjectFromGUID("3fe117")
     flag_arrakeen_zone = getObjectFromGUID("f1f53d")
     flag_carthag_zone = getObjectFromGUID("9fc2e1")
