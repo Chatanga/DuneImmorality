@@ -88,15 +88,11 @@ _ = require("Core").registerLoadablePart(function(savedData)
 
     if savedData ~= '' then
         local state = JSON.decode(savedData)
-        if state.version == 1 then
-            for i, zoneGUID in ipairs(state.techSlotZoneGUIDs) do
-                techSlotZones[i] = getObjectFromGUID(zoneGUID)
-            end
-            for color, GUID in pairs(state.negotiationZoneGUIDs) do
-                negotiationZones[color] = getObjectFromGUID(GUID)
-            end
-        else
-            log('Unsupported save version: ' .. tostring(state.version))
+        for i, zoneGUID in ipairs(state.techSlotZoneGUIDs) do
+            techSlotZones[i] = getObjectFromGUID(zoneGUID)
+        end
+        for color, GUID in pairs(state.negotiationZoneGUIDs) do
+            negotiationZones[color] = getObjectFromGUID(GUID)
         end
     end
 
@@ -118,7 +114,6 @@ end
 
 function saveState()
     local state = {
-        version = 1,
         techSlotZoneGUIDs = {},
         negotiationZoneGUIDs = {}
     }

@@ -18,12 +18,8 @@ function resource.init(ownerColor, resourceName, value, savedData)
 
     if savedData ~= "" then
         local state = JSON.decode(savedData)
-        if state.version == 1 then
-            resource.value = state.value
-            resource.laggingValue = state.laggingValue
-        else
-            log('[resource.init] Unsupported save version: ' .. tostring(state.version))
-        end
+        resource.value = state.value
+        resource.laggingValue = state.laggingValue
     end
 
     local font_color = (resource.ownerColor ~= nil) and {0.1, 0.1, 0.1, 100} or {0.9, 0.9, 0.9, 95}
@@ -48,7 +44,6 @@ end
 
 function resource.updateSave()
     local state = {
-        version = 1,
         value = resource.value,
         laggingValue = resource.laggingValue
     }

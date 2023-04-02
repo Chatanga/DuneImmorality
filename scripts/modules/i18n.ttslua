@@ -1,7 +1,8 @@
-local i18n = {locales = {}}
+local i18n = {
+    locales = {}
+}
 
 _ = require("Core").registerLoadablePart(function()
-    i18n.setLocale(Global.getVar("locale"))
 end)
 
 function i18n.getLocale()
@@ -9,7 +10,7 @@ function i18n.getLocale()
 end
 
 function i18n.setLocale(newLocale)
-    assert(i18n.locales[newLocale], ("The locale %q was unknown"):format(newLocale))
+    assert(i18n.locales[newLocale], ("The locale '%q' is unknown"):format(newLocale))
     Global.setVar("locale", newLocale)
 end
 

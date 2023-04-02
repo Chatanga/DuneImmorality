@@ -12,11 +12,8 @@ GetDeckOrCardFromGUID = helperModule.GetDeckOrCardFromGUID
 
 DrawOne = helperModule.DrawOne
 
-pos_black_market = constants.pos_black_market
-
 pos_trash = constants.pos_trash_lower
 
-zone_black_market = constants.zone_black_market
 zone_deck = constants.zone_deck_imperium
 
 combat_marker_offside_positions = {
@@ -93,7 +90,6 @@ _ = core.registerLoadablePart(function(saved_data)
     }
 
     round_start = 1
-    black_market = 0
     activateButton()
 end)
 
@@ -121,6 +117,11 @@ end
 function getRoundStart() return round_start end
 
 function Makers()
+    if not identifyFirstPlayer() then
+        broadcastToAll(i18n("noFirstPlayer"))
+        return
+    end
+
     round_start = 1
     for index in pairs(buttonPass) do buttonPass[index].clearButtons() end
     self.clearButtons()
@@ -168,7 +169,7 @@ end
 
 function ConflictZone()
     marker_round.setPositionSmooth(constants.marker_positions.combat, false, false)
-    conflictArea = getObjectFromGUID(conflictZone).getObjects()
+    local conflictArea = getObjectFromGUID(conflictZone).getObjects()
 
     for _, item in ipairs(conflictArea) do
         local itemName = item.getName()
@@ -186,7 +187,7 @@ function ConflictZone()
         while os.clock() < Time do coroutine.yield() end
     end
 
-    mentat = getObjectFromGUID("c2a908")
+    local mentat = getObjectFromGUID("c2a908")
     mentat.setColorTint("White")
     mentat.setPositionSmooth(getObjectFromGUID("565d09").getPosition(), false, true)
     mentat.setRotationSmooth({0, 180, 0})
@@ -364,7 +365,6 @@ function ConflictZone()
     local object = stack.getObjects()[1]
 
     if object ~= nil then
-
         if object.type == 'Deck' then
             object.takeObject({
                 position = conflict_discard,
@@ -375,10 +375,9 @@ function ConflictZone()
             object.setPosition(conflict_discard)
             object.setRotation({0, 180, 0})
         end
-
     end
 
-    zonaCartas = {
+    local zonaCartas = {
         ["Yellow"] = getObjectFromGUID("ae1ef8"),
         ["Green"] = getObjectFromGUID("890115"),
         ["Red"] = getObjectFromGUID("cd9716"),
@@ -439,6 +438,7 @@ function ConflictZone()
             end
         end
     end
+
     for color, _ in pairs(constants.players) do
         local playerObjects = constants.players[color].techZone.getObjects()
         for _, obj in ipairs(playerObjects) do
@@ -482,6 +482,7 @@ function findNextPlayer(activePlayers)
         playerPresences[color] = true
     end
     repeat
+        assert(nextPlayer)
         nextPlayer = constants.turnOrder[nextPlayer]
     until playerPresences[nextPlayer]
     return nextPlayer
@@ -501,32 +502,39 @@ function setFirstPlayer(firstPlayerColor)
 end
 
 function BlackMarket()
+    local zone_black_market = constants.zone_black_market
+
+    local black_market = 0
     for _, value in pairs(getObjectFromGUID(zone_black_market[1]).getObjects()) do
-        if value.getName() == "Black Market" then black_market = 1 end
+        if value.getName() == "Black Market" then
+            black_market = 1
+            break
+        end
     end
-    local t = 0
-    local t1 = 0.75
+
     if black_market == 1 then
-        for i = 1, 3, 1 do
+        local t = 0
+
+        for _, zone in ipairs(constants.zone_black_market) do
             Wait.time(function()
-                card = GetDeckOrCardFromGUID(zone_black_market[i])
+                local card = GetDeckOrCardFromGUID(zone)
                 if card ~= nil then
                     card.setPositionSmooth(pos_trash, false, false)
                 end
             end, t)
             t = t + 0.25
         end
-        for i = 1, 3, 1 do
+
+        for _, pos in ipairs(constants.pos_black_market) do
             Wait.time(function()
-                deck = GetDeckOrCardFromGUID(zone_deck)
+                local deck = GetDeckOrCardFromGUID(zone_deck)
                 deck.takeObject({
-                    position = pos_black_market[i],
+                    position = pos,
                     rotation = {0, 180, 0},
                     smooth = true
                 })
-            end, t1)
-            t1 = t1 + 0.25
+            end, t)
+            t = t + 0.25
         end
-
     end
 end

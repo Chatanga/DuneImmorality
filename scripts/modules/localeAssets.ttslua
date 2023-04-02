@@ -5,6 +5,7 @@ local core = require("Core")
 local constants = require("Constants")
 
 local i18n = require("i18n")
+require("locales")
 
 local imperiumCardBack =
     "http://cloud-3.steamusercontent.com/ugc/1892102433196500461/C3DC7A02CF378129569B414967C9BE25097C6E77/"
@@ -50,6 +51,16 @@ function generateCardData(guid, card, customDeck, customDeckId, cardId)
     assert(customDeck, "customDeck")
     assert(customDeckId, "customDeckId")
     assert(cardId, "cardId")
+
+    local tags = {}
+    if card then
+        tags = card.getTags()
+    elseif customDeck.BackURL == imperiumCardBack then
+        tags = {"Imperium"}
+    elseif customDeck.BackURL == intrigueCardBack then
+        tags = {"Intrigue"}
+    end
+
     return {
         GUID = guid,
         Name = "Card",
@@ -77,7 +88,7 @@ function generateCardData(guid, card, customDeck, customDeckId, cardId)
             g = 0.713235259,
             b = 0.713235259
         },
-        Tags = card and card.getTags() or {},
+        Tags = tags,
         LayoutGroupSortIndex = 0,
         Value = 0,
         Locked = false,
@@ -229,7 +240,7 @@ function localeAssets.load()
         getObjectFromGUID("e43180").setRotation({0,180,180})
         getObjectFromGUID("44e3ba").setRotation({0,180,180})
 
-        local manuals = core.resolveGUIDs(true, {
+        local manuals = core.resolveGUIDs(false, {
             rules = "9ac7d6",
             faq = "a4a8a7",
             ix = "373d17"
@@ -420,7 +431,7 @@ customDecks.fr = {
     -- dune planet
     starterDunePlanet = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2029469358268102690/98F5861E28F3167495D3F2890879072BF3A84E60/", 2, 2),
     -- base without foldspace, nor liasion, nor the spice must flow, but with Jessica of Arrakis and Duncan Loyal Blade
-    imperium = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2029469358268104070/CC2D301CA075930201B3883D82F4C6E1A0837273/", 11, 7),
+    imperium = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2029469358268104070/CC2D301CA075930201B3883D82F4C6E1A0837273/", 10, 7),
     imperiumFoldedSpace = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2029469358268101016/AE481C2ED19B085E2669F22420FD282982FD11A9/", 3, 2),
     imperiumArrakisLiasion = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2029469358268100070/D7411DB495E6EB13D6B64F5E46CCF69FF322039F/", 4, 2),
     imperiumTheSpiceMustFlow = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2029469358268101681/B6E08F8328DB699C60A8F058E88AA6443BA2F716/", 5, 2),

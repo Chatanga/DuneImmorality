@@ -1,15 +1,21 @@
 i18n = require("i18n")
-require("locales") -- if using a separate file for the locales, require it too
+require("locales")
 
 constants = require("Constants")
 
 helperModule = require("HelperModule")
 
-locale = 'fr'
+locale = "en"
 
 battleSound = nil
 
-_ = require("Core").registerLoadablePart(function()
+_ = require("Core").registerLoadablePart(function(savedData)
+
+    if savedData ~= '' then
+        local state = JSON.decode(savedData)
+        locale = state.locale
+    end
+
     -- Réinitialise les triggers des plateaux de joueurs.
     onPlayerTurn(nil, nil)
 
@@ -187,6 +193,13 @@ _ = require("Core").registerLoadablePart(function()
         end
     end
 end)
+
+function onSave()
+    local state = {
+        locale = locale
+    }
+    return JSON.encode(state)
+end
 
 function onLocaleChange()
     for color, player in pairs(constants.players) do
@@ -404,6 +417,7 @@ function RevealOK(_, color)
     constants.players[color].board.clearButtons()
     Wait.time(function() activateButtons(color) end, 2)
     local player_hand_table = Player[color].getHandObjects()
+    log("Player[" .. color .. "].getHandObjects() = " .. tostring(Player[color].getHandObjects()))
     local count = 0
     local c = 0
     local d = 0

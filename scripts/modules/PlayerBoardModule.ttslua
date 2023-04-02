@@ -29,13 +29,9 @@ function playerBoardModule.init(playerColor, centerPosition, savedData)
 
     if savedData ~= '' then
         local state = JSON.decode(savedData)
-        if state.version == 1 then
-            playerBoardModule.orbitZone = getObjectFromGUID(state.orbitZoneGUID)
-            playerBoardModule.scoreboardZone = getObjectFromGUID(state.scoreboardZoneGUID)
-            playerBoardModule.alive = state.alive
-        else
-            log('[playerBoardModule.init] Unsupported save version: ' .. tostring(state.version))
-        end
+        playerBoardModule.orbitZone = getObjectFromGUID(state.orbitZoneGUID)
+        playerBoardModule.scoreboardZone = getObjectFromGUID(state.scoreboardZoneGUID)
+        playerBoardModule.alive = state.alive
     end
 
     if not playerBoardModule.alive then
@@ -52,7 +48,6 @@ end
 
 function playerBoardModule.saveState()
     local state = {
-        version = 1,
         orbitZoneGUID = playerBoardModule.orbitZone.getGUID(),
         scoreboardZoneGUID = playerBoardModule.scoreboardZone.getGUID(),
         alive = playerBoardModule.alive
@@ -77,12 +72,12 @@ function playerBoardModule.createOrbitPark(centerPosition)
 
     if not playerBoardModule.orbitZone then
         playerBoardModule.orbitZone = parkModule.findBoundingZone(45, Vector(0.35, 0.35, 0.35), allSlots)
-    end
 
-    for i, troop in ipairs(constants.players[playerBoardModule.playerColor].troops) do
-        troop.locked = true
-        troop.setPosition(slots[i])
-        troop.setRotation(Vector(0, 45, 0))
+        for i, troop in ipairs(constants.players[playerBoardModule.playerColor].troops) do
+            troop.locked = true
+            troop.setPosition(slots[i])
+            troop.setRotation(Vector(0, 45, 0))
+        end
     end
 
     return parkModule.createPark(

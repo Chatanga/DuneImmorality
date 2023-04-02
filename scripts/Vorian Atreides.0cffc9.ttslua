@@ -7,5 +7,5 @@ _ = require("Core").registerLoadablePart(function(savedData)
 end)
 
 function onClaim(color)
-  helperModule.landTroopsFromOrbit(color, 2)
+    helperModule.landTroopsFromOrbit(color, 2)
 end

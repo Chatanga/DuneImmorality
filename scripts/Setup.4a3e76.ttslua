@@ -23,8 +23,6 @@ position_marker = constants.first_player_positions
 
 manigance = '2b2575'
 
-pos_black_market = constants.pos_black_market
-
 conflictDeckLocation = core.getHardcodedPositionFromGUID('f9ea6b', -3.37652636, 0.72803173, -9.74293137) + constants.someHeight
 
 zone_intrigue = 'a377d8'
@@ -59,7 +57,6 @@ text_color = {1.00, 1.00, 1.00} -- Set number {Red,Green,Blue}. Value bitween 0.
 text_size = 200 -- Set number. Defaults to 100.
 
 _ = core.registerLoadablePart(function(saved_data)
-    localeAssets.load()
 
     marker = constants.first_player_marker
 
@@ -278,6 +275,8 @@ _ = core.registerLoadablePart(function(saved_data)
         activateTournament()
         activateScoreBoard()
     end
+
+    selectLanguage()
 end)
 
 function onLocaleChange()
@@ -365,6 +364,31 @@ end
 
 function fromIntRGB(r, g, b)
     return Color(r / 255, g / 255, b / 255)
+end
+
+function selectLanguage()
+    if true then
+        return
+    end
+
+    for _, player in ipairs(Player.getPlayers()) do
+        if player.host then
+            local choices = {}
+            for i, language in ipairs(languages) do
+                choices[#choices + 1] = language.name
+            end
+
+            player.showOptionsDialog(
+                "Select a language",
+                choices,
+                choices[1],
+                function(_, index, player_color)
+                    setLanguage(languages[index])
+                end)
+
+            break
+        end
+    end
 end
 
 function activateSelectLanguageButtons()
@@ -1440,7 +1464,7 @@ function getTleilaxuCardPrice(card)
     local guid = card.getGUID()
     for name, info in pairs(tleilaxuCards) do
         if info.guid == guid then
-            log(name .. " -> " .. tostring(info.cost))
+            --log(name .. " -> " .. tostring(info.cost))
             return info.cost
         end
     end
@@ -1554,36 +1578,30 @@ end
 function ImperiumDeal()
     local deck_imperium = GetDeckOrCardFromGUID(zone_imperium)
     deck_imperium.shuffle()
+
     for i = 1, 5 do
       Wait.time(function()
           deck_imperium.takeObject({
               position = constants.imperiumRow[i].pos,
-              rotation = {0, 180, 0}
+              rotation = Vector(0, 180, 0)
           })
       end, i * 0.35)
     end
 
     if black_market == 1 then
-        getObjectFromGUID("ab7ac5").setPosition(Vector(-6.23, 1.50, 24.45) + constants.black_market_offset)
-        getObjectFromGUID("ab7ac5").setRotation({0, 180, 0})
-        Wait.time(function()
-            local params5 = {}
-            params5.position = pos_black_market[1]
-            params5.rotation = {0.00, 180.00, 0.00}
-            deck_imperium.takeObject(params5)
-        end, 2.1)
-        Wait.time(function()
-            local params5 = {}
-            params5.position = pos_black_market[2]
-            params5.rotation = {0.00, 180.00, 0.00}
-            deck_imperium.takeObject(params5)
-        end, 2.45)
-        Wait.time(function()
-            local params5 = {}
-            params5.position = pos_black_market[3]
-            params5.rotation = {0.00, 180.00, 0.00}
-            deck_imperium.takeObject(params5)
-        end, 2.8)
+        local blackMarketBoard = getObjectFromGUID("ab7ac5")
+        assert(blackMarketBoard, "No black market!")
+        blackMarketBoard.setPosition(Vector(-6.2, 0.52, 20.5))
+        blackMarketBoard.setRotation(Vector(0, 180, 0))
+
+        for i, pos in ipairs(constants.pos_black_market) do
+            Wait.time(function()
+                deck_imperium.takeObject({
+                    position = pos,
+                    rotation = Vector(0, 180, 0)
+                })
+            end, (5 + i) * 0.35)
+        end
     end
 end
 

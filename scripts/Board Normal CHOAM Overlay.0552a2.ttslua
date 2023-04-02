@@ -1,10 +1,6 @@
 i18n = require("i18n")
 require("locales")
 
---[[
-    Dieu sait pourquoi, les instructions "require" font dérailler TTS pour ce script d’état.
-]]--
-
 constants = require("Constants")
 
 helperModule = require("HelperModule")

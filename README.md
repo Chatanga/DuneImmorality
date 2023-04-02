@@ -1,5 +1,6 @@
 # Important :
 - Activation de "Physic Full" côté joueur pour que la dépose de cartes soit correcte.
+- 2956104551.
 
 # Tests à faire (et cartographier / tracer vers le code et les objets du monde :
 - suppression / paralysie des joueurs surnuméraires.

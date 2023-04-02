@@ -1,5 +1,3 @@
-local i18n = require("i18n") -- remove this line if on the same file as before
-
 i18n.locales.en = {
     ["?"] = "?",
     et = " and",
@@ -163,6 +161,7 @@ i18n.locales.en = {
     revealFirstConflictTooltip = "Reveal after everyone has chosen a Leader",
     chooseLeaderFirst = "Choose Leaders Before Revealing !",
     noPlayers = "There is no seated players.",
+    noFirstPlayer = "First player marker has not be assigned.",
     useDices = "Use another way to determine the First Player.\n(There is some dices on the board)",
     firstPlayerBeginning = 'The First Player will be ',
     hiddenPicksTooltip = "Pick secretly a Leader (NO FAN MADE)",
@@ -401,6 +400,7 @@ i18n.locales.fr = {
     revealFirstConflictTooltip = "Révéler après que les joueurs ont choisi leur Dirigeant",
     chooseLeaderFirst = "Choisissez les Dirigeants avant de révéler !",
     noPlayers = "Il n'y a aucun joueur à la table.",
+    noFirstPlayer = "Le marqueur de Premier Joueur n’a pas été assigné.",
     useDices = "Utilisez une autre méthode pour déterminer le premier joueur.\n(Il y a des dés sur le plateau)",
     firstPlayerBeginning = "Le Premier Joueur sera ",
     hiddenPicksTooltip = "Choisir secrètement un Dirigeant parmi un Draft (NON FAN MADE)",
