@@ -401,7 +401,10 @@ function ConflictZone()
     while os.clock() < Time do coroutine.yield() end
 
     broadcastToAll(i18n('nextRound'), "Purple")
-    BlackMarket()
+
+    local blackMarketBoard = getObjectFromGUID("ab7ac5")
+    blackMarketBoard.call("updateBlackMarket")
+
     Global.call("resetRound")
 
     local activePlayers = getObjectFromGUID("4a3e76").call("getPlayersBasedOnHotseat")
@@ -499,42 +502,4 @@ function setFirstPlayer(firstPlayerColor)
 
     -- TODO Why it wasn't here in the first place?
     marker.setPositionSmooth(constants.first_player_positions[firstPlayerColor], false, false)
-end
-
-function BlackMarket()
-    local zone_black_market = constants.zone_black_market
-
-    local black_market = 0
-    for _, value in pairs(getObjectFromGUID(zone_black_market[1]).getObjects()) do
-        if value.getName() == "Black Market" then
-            black_market = 1
-            break
-        end
-    end
-
-    if black_market == 1 then
-        local t = 0
-
-        for _, zone in ipairs(constants.zone_black_market) do
-            Wait.time(function()
-                local card = GetDeckOrCardFromGUID(zone)
-                if card ~= nil then
-                    card.setPositionSmooth(pos_trash, false, false)
-                end
-            end, t)
-            t = t + 0.25
-        end
-
-        for _, pos in ipairs(constants.pos_black_market) do
-            Wait.time(function()
-                local deck = GetDeckOrCardFromGUID(zone_deck)
-                deck.takeObject({
-                    position = pos,
-                    rotation = {0, 180, 0},
-                    smooth = true
-                })
-            end, t)
-            t = t + 0.25
-        end
-    end
 end

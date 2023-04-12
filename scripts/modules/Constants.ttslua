@@ -65,6 +65,15 @@ constants.leaders = {
     helena = {GUID = "5a8a9a"}
 }
 
+-- Don't store object references for these objects which can be reloaded / mutated on locale change.
+constants.books = {
+    base = "6ec3b0",
+    faq = "86033d",
+    riseOfIx = "57bf60",
+    immortality = "537207",
+    blitz = nil
+}
+
 --[[
     Temporary structure (set to nil after loading). On loading, two mirrors of
     this structure are created with the GUIDs resolved:
@@ -290,14 +299,6 @@ constants.unresolvedPlayers = {
     }
 }
 
-constants.black_market_origin = Vector(0, -1, -4)
-
-constants.pos_black_market = {
-    constants.black_market_origin + Vector(-7.61, 2, 24.5),
-    constants.black_market_origin + Vector(-5.05, 2, 24.5),
-    constants.black_market_origin + Vector(-2.49, 2, 24.5)
-}
-
 constants.pos_trash_lower = core.getHardcodedPositionFromGUID('ef8614', 0.0, 0.61195991, -24.6463146) + constants.someHeight
 
 constants.first_player_marker = nil
@@ -330,8 +331,6 @@ constants.tleilaxuRow = {
 
 constants.buy7_guid = '439df9'
 constants.buy8_guid = '363f98'
-
-constants.zone_black_market = {"323acb", "e96c10", "93de6d"}
 
 constants.maker_initial_position = core.getHardcodedPositionFromGUID('fb41e2', -4.08300161, 0.72531459, -12.01027)
 

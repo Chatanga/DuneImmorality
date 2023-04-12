@@ -38,14 +38,14 @@ function changeColor(o, clicked_color, alt_click)
       end
 
       if currentColor==offseat then
-        Player[currentColor].changeColor(thisColor)
+        changePlayer(currentColor, thisColor)
         broadcastToAll("Now Playing: "..desc, thisColor)
       elseif currentColor==thisColor then
-        Player[currentColor].changeColor(offseat)
+        changePlayer(currentColor, offseat)
         broadcastToAll(desc.." ended their turn", thisColor)
       else
         if confirmForce then
-          Player[currentColor].changeColor(thisColor)
+          changePlayer(currentColor, thisColor)
           broadcastToAll("Now Playing: "..desc.."     (Switched from "..currentColor.." Seat)", thisColor)
           confirmForce = false
         else
@@ -56,6 +56,10 @@ function changeColor(o, clicked_color, alt_click)
     end
 end
 
+function changePlayer(currentColor, newColor)
+  Player[currentColor].changeColor(newColor)
+  Global.call("onPlayerTurn", Player[newColor])
+end
 
 -- Original button timer functions
 

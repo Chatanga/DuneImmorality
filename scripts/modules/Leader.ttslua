@@ -19,6 +19,13 @@ function leader.init(callback, savedData)
     end
 end
 
+function onLocaleChange()
+    if #self.getButtons() > 0 then
+        self.clearButtons()
+        leader.createClaimButton()
+    end
+end
+
 function leader.updateSave(color)
     claimed = color
     local state = {
@@ -92,7 +99,7 @@ local setup = getObjectFromGUID("4a3e76")
             end
             leader.updateSave(color)
             if onClaimCallback then
-                onClaimCallback(color)
+                Wait.time(function() onClaimCallback(color) end, 2)
             end
             broadcastToAll(i18n("willBe"):format(i18n(color:lower()), object.getName()), color)
         else

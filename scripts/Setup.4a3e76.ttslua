@@ -773,7 +773,7 @@ function BlackMarket()
     end
     activateAllButtons()
 end
------------------New section------------------------
+
 function HiddenPicks()
     self.clearButtons()
     -- activateButtons()
@@ -784,7 +784,7 @@ function HiddenPicks()
     end
     activateAllButtons()
 end
------------------End section------------------------
+
 numPlayers = nil
 hotseat_mode = false
 
@@ -1539,7 +1539,9 @@ function movetechdecks()
     end
     techs.randomize()
 
+    log(8)
     local centerPos = constants.getLandingPositionFromGUID(constants.ixPlanetBoard)
+    log(9)
     local techSlotPos = {
         centerPos + Vector(1.69, 3.02, 2.35),
         centerPos + Vector(1.69, 3.02, 0.30),
@@ -1590,18 +1592,7 @@ function ImperiumDeal()
 
     if black_market == 1 then
         local blackMarketBoard = getObjectFromGUID("ab7ac5")
-        assert(blackMarketBoard, "No black market!")
-        blackMarketBoard.setPosition(Vector(-6.2, 0.52, 20.5))
-        blackMarketBoard.setRotation(Vector(0, 180, 0))
-
-        for i, pos in ipairs(constants.pos_black_market) do
-            Wait.time(function()
-                deck_imperium.takeObject({
-                    position = pos,
-                    rotation = Vector(0, 180, 0)
-                })
-            end, (5 + i) * 0.35)
-        end
+        blackMarketBoard.call("initBlackMarket")
     end
 end
 

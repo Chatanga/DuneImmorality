@@ -7,11 +7,9 @@ local constants = require("Constants")
 local i18n = require("i18n")
 require("locales")
 
-local imperiumCardBack =
-    "http://cloud-3.steamusercontent.com/ugc/1892102433196500461/C3DC7A02CF378129569B414967C9BE25097C6E77/"
+local imperiumCardBack = "http://cloud-3.steamusercontent.com/ugc/1892102433196500461/C3DC7A02CF378129569B414967C9BE25097C6E77/"
 
-local intrigueCardBack =
-    "http://cloud-3.steamusercontent.com/ugc/1892102433196339102/D63B92C616541C84A7984026D757DB03E79532DD/"
+local intrigueCardBack = "http://cloud-3.steamusercontent.com/ugc/1892102433196339102/D63B92C616541C84A7984026D757DB03E79532DD/"
 
 local customDecks = {}
 
@@ -61,7 +59,7 @@ function generateCardData(guid, card, customDeck, customDeckId, cardId)
         tags = {"Intrigue"}
     end
 
-    return {
+    local data = {
         GUID = guid,
         Name = "Card",
         Transform = {
@@ -75,9 +73,9 @@ function generateCardData(guid, card, customDeck, customDeckId, cardId)
             scaleY = 1,
             scaleZ = 1
         },
-        Nickname = card and card.getName() or "",
-        Description = card and card.getDescription() or "",
-        GMNotes = card and card.getGMNotes() or "",
+        Nickname = "",
+        Description = "",
+        GMNotes = "",
         AltLookAngle = {
             x = 0.0,
             y = 0.0,
@@ -109,6 +107,28 @@ function generateCardData(guid, card, customDeck, customDeckId, cardId)
             [tostring(customDeckId)] = customDeck
         }
     }
+
+    if card then
+        data.Nickname = card.getName()
+        data.Description = card.getDescription()
+        data.GMNotes = card.getGMNotes()
+    end
+
+    return data
+end
+
+function reloadCard(guid, definition)
+    local card = getObjectFromGUID(guid)
+    assert(card, "No card with GUID " .. tostring(guid))
+    assert(definition.NumWidth == 1 and definition.NumHeight == 1, "Cannot reload a single card from a whole deck!")
+
+    local parameters = {
+        face = definition.FaceURL,
+        back = definition.BackURL
+    }
+
+    card.setCustomObject(parameters)
+    card.reload()
 end
 
 function mutateCard(guid, definition)
@@ -230,38 +250,84 @@ function mutateDeck(guid, contributions)
     spawnObjectData(spawnParameters)
 end
 
+function mututateBook(guid, url)
+    local book = getObjectFromGUID(guid)
+    assert(book, "No book with GUID " .. tostring(guid))
+
+    local data = {
+        GUID = book.getGUID(),
+        Name = "Custom_PDF",
+        Transform = {
+            posX = 13.0,
+            posY = 0.6125308,
+            posZ = -29.0,
+            rotX = 3.646483e-06,
+            rotY = 179.999985,
+            rotZ = -5.09549864e-06,
+            scaleX = 1.09796119,
+            scaleY = 1.0,
+            scaleZ = 1.09796119
+        },
+        Nickname = "",
+        Description = "",
+        GMNotes = "",
+        AltLookAngle = {
+            x = 0.0,
+            y = 0.0,
+            z = 0.0
+        },
+        ColorDiffuse = {
+            r = 1.0,
+            g = 1.0,
+            b = 1.0
+        },
+        LayoutGroupSortIndex = 0,
+        Value = 0,
+        Locked = true,
+        Grid = true,
+        Snap = true,
+        IgnoreFoW = false,
+        MeasureMovement = false,
+        DragSelectable = true,
+        Autoraise = true,
+        Sticky = true,
+        Tooltip = true,
+        GridProjection = false,
+        HideWhenFaceDown = false,
+        Hands = false,
+        CustomPDF = {
+            PDFUrl = url,
+            PDFPassword = "",
+            PDFPage = 0,
+            PDFPageOffset = 0
+        },
+        LuaScript = "",
+        LuaScriptState = "",
+        XmlUI = ""
+    }
+
+    local spawnParameters = {
+        data = data,
+        position = book.getPosition(),
+        rotation = book.getRotation(),
+        scale = book.getScale()
+    }
+
+    book.destruct()
+
+    spawnObjectData(spawnParameters)
+end
+
 function localeAssets.load()
     local currentLocale = i18n.getLocale()
     --log("localeAssets.load() -> currentLocale = " .. tostring(currentLocale))
 
+    -- TODO Replace with multiple localized assets.
+    local turnSummarySheet = getObjectFromGUID("e43180")
     if currentLocale == 'fr' then
-
-        -- retourner les aides le jeu coté français
-        getObjectFromGUID("e43180").setRotation({0,180,180})
-        getObjectFromGUID("44e3ba").setRotation({0,180,180})
-
-        local manuals = core.resolveGUIDs(false, {
-            rules = "9ac7d6",
-            faq = "a4a8a7",
-            ix = "373d17"
-        })
-
-        local sac_vf = getObjectFromGUID("433052")
-
-        -- changer les pdf par les pdf français
-        for _, manual in pairs(manuals) do
-            if core.stillExist(manual) then
-                local position = manual.getPosition()
-                manual.destruct()
-
-                local newManual = sac_vf.takeObject({
-                    position = position,
-                    rotation = {0,180,0},
-                    smooth = false
-                })
-                newManual.setLock(true)
-            end
-        end
+        turnSummarySheet.setRotation({0, 180, 180})
+    else
+        turnSummarySheet.setRotation({0, 180, 0})
     end
 
     local resources = localeAssets[currentLocale]
@@ -271,12 +337,23 @@ function localeAssets.load()
         return
     end
 
+    -- Books
+    for bookName, bookGUID in pairs(constants.books) do
+        if bookGUID then
+            mututateBook(bookGUID, resources.books[bookName])
+        end
+    end
+
     -- Leaders tiles
     for leaderName, leader in pairs(constants.leaders) do
         local leaderTile = getObjectFromGUID(leader.GUID)
-        local params = {image = resources.leaders[leaderName]}
-        leaderTile.setCustomObject(params)
-        core.safeReload(leaderTile)
+        if leaderTile then
+            local params = {image = resources.leaders[leaderName]}
+            leaderTile.setCustomObject(params)
+            core.safeReload(leaderTile)
+        else
+            log("No leader tile with GUID " .. tostring(leader.GUID))
+        end
     end
 
     -- Cards
@@ -296,6 +373,7 @@ function localeAssets.load()
     mutateDeck(constants.cardsBaseImperium, resources.cards.cardsBaseImperium)
     mutateDeck(constants.imperium_deck_ix, resources.cards.cardsIxImperium)
     mutateDeck(constants.imperium_deck_immortality, resources.cards.cardsImmortalityImperium)
+
     mutateCard(constants.reclaimed_forces, resources.cards.cardReclaimedForces)
 
     for _, guidEpic in ipairs(constants.epic_cards) do
@@ -350,7 +428,7 @@ customDecks.en = {
     ixImperium = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2029469358243344265/9DFCC56F20D09D60CF2B9D9050CB9640176F71B6/", 7, 5),
     ixIntrigue = createIntrigueCustomDeck("http://cloud-3.steamusercontent.com/ugc/1892102433196442624/CE27F1B6D4D455A2D00D6E13FABEB72E6B9F05F1/", 5, 4),
     -- tleilax with experimentation
-    teilaxImperium = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2029469358268077252/E758512421B5CB27BBA228EF5F1880A7F3DC564D/", 6, 5),
+    teilaxImperium = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2042987130216749349/E758512421B5CB27BBA228EF5F1880A7F3DC564D/", 6, 5),
     -- tleilax with reclaimed forces
     teilaxResearch = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2029469358268075509/D9BD273651404E7DE7F0E22B36F2D426D82B07A8/", 4, 5),
     teilaxIntrigue = createIntrigueCustomDeck("http://cloud-3.steamusercontent.com/ugc/1892101972249341287/9FED90CD510F26618717CEB63FDA744CE916C6BA/", 6, 2)
@@ -372,6 +450,13 @@ localeAssets.en = {
         vladimir = "http://cloud-3.steamusercontent.com/ugc/1892102433196216494/B5899377296C2BFAC0CF48E18AA3773AA8E998DE/",
         ilban = "http://cloud-3.steamusercontent.com/ugc/1892102433196246857/15624E52D08F594943A4A6332CBD68B2A1645441/",
         helena = "http://cloud-3.steamusercontent.com/ugc/1892102433196235077/63750F22F1DFBA9D9544587C0B2B8D65E157EC00/",
+    },
+    books = {
+        base = "http://cloud-3.steamusercontent.com/ugc/1655602494438494872/6DC9056BCDF73234C2283CDABA688AEAD7F8D965/",
+        faq = "http://cloud-3.steamusercontent.com/ugc/1845926744726567955/82E284E6922C85D679F00144442C16CBDF2BE58C/",
+        riseOfIx = "http://cloud-3.steamusercontent.com/ugc/1841406112598529538/F55C0BC54AD4F658FFF7A511D5740BF93A0CB19E/",
+        immortality = "http://cloud-3.steamusercontent.com/ugc/2002442923354283735/DE61CF514A5C813C2E46CAA7C7FF76DDB3069641/",
+        blitz = nil
     },
     cards = {
         cardsStarterImperium = {{deck = customDecks.en.starter, luaIndexes = {2, 2, 3, 4, 4, 5, 6, 7}}},
@@ -442,7 +527,7 @@ customDecks.fr = {
     ixIntrigue = createIntrigueCustomDeck("http://cloud-3.steamusercontent.com/ugc/2029469358271904511/3D33B3E59811CEDC64A53F104D31190E76676C64/", 5, 4),
     -- tleilax without experimentation
     teilaxImperium = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2042986039668159872/416555ED5FD18C7045AD716EF2A0428611A7530C/", 6, 5),
-    teilaxImperiumExperimentation = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2029469995671349298/D4F3F5C0DFAFE7C5C7BFEEFA902F4E6A60C72EF2/", 2, 2),
+    teilaxImperiumExperimentation = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2042987130216749736/D4F3F5C0DFAFE7C5C7BFEEFA902F4E6A60C72EF2/", 2, 2),
     -- tleilax without reclaimed forces
     teilaxResearch = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2042986039668160919/1EAE76FAC8926E36E7D95F84E62E36EEBFAE57E8/", 4, 5),
     -- reclaimed forces
@@ -466,6 +551,13 @@ localeAssets.fr = {
         vladimir = "http://cloud-3.steamusercontent.com/ugc/2029467636440341651/6F682C5E5C1ADE0B9B1B8FAC80B9525A6748C351/",
         ilban = "http://cloud-3.steamusercontent.com/ugc/2029467636440255083/F0F052CCAB7005F4D30879BF639AFACEDFF70A80/",
         helena = "http://cloud-3.steamusercontent.com/ugc/5095292505135062968/A069B3ECF1B4E9C42D2453E28EA13257F397B3F3/",
+    },
+    books = {
+        base = "http://cloud-3.steamusercontent.com/ugc/1824518181295638806/3CE976153C0C7A7C5816837734D1C89D1DD17A09/",
+        faq = "http://cloud-3.steamusercontent.com/ugc/1822281124425591600/F81AB6FC61160924B9A9E4D829A02384CF09F5C1/",
+        riseOfIx = "http://cloud-3.steamusercontent.com/ugc/1822280989496634217/C7ACC9E96C2C162A13761F3C7C285AB9CF6D1C96/",
+        immortality = "http://cloud-3.steamusercontent.com/ugc/2063250888843830350/8542ECE0CBCE22F7B43D305B72718C7D689C1128/",
+        blitz = nil
     },
     cards = {
         cardsStarterImperium = {{deck = customDecks.fr.starter, luaIndexes = range(1, 8)}},

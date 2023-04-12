@@ -182,14 +182,17 @@ _ = require("Core").registerLoadablePart(function(savedData)
         end
     end
 
-    for player_color, _ in pairs(constants.players) do
-        local player = Player[player_color]
-        for i = 1, player.getHandCount() do
-            local t = player.getHandTransform()
-            local p = t.position
-            p.y = p.y - 1
-            t.position = p
-            player.setHandTransform(t, i)
+    if false then
+        for player_color, _ in pairs(constants.players) do
+            local player = Player[player_color]
+            for i = 1, player.getHandCount() do
+                local t = player.getHandTransform()
+                local p = t.position
+                -- TODO Stop doing this!
+                p.y = p.y - 1
+                t.position = p
+                player.setHandTransform(t, i)
+            end
         end
     end
 end)
@@ -808,7 +811,7 @@ function onObjectEnterScriptingZone(zone, enter_object)
     if enter_object.getName() == 'Mentat' then
         for color, player in pairs(constants.alivePlayers) do
             if zone == player.zone_player then
-                enter_object.setColorTint(color)
+                enter_object.setColorTint(player.swordmaster.getColorTint())
                 break
             end
         end

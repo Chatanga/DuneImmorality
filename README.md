@@ -1,6 +1,5 @@
 # Important :
 - Activation de "Physic Full" côté joueur pour que la dépose de cartes soit correcte.
-- 2956104551.
 
 # Tests à faire (et cartographier / tracer vers le code et les objets du monde :
 - suppression / paralysie des joueurs surnuméraires.
@@ -42,6 +41,7 @@
 - le support de la maison Hagal.
 
 # A faire :
+- Nommer les tables primaires et secondaires.
 - Retirer le suffixe module des modules ?
 - Pas de passage de "round start" à "player turns" au 1er tour.
 - Remplacer la tétrachié de ["literal"] en (.)literal.
@@ -58,3 +58,4 @@
 - Mods -> $HOME/.local/share/Tabletop Simulator/Mods/
 - Saves -> $HOME/.local/share/Tabletop Simulator/Saves/
 - Tabletop Simulator Lua -> /tmp/TabletopSimulator/Tabletop Simulator Lua/
+- Mod : 2956104551.
