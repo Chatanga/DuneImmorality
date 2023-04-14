@@ -23,7 +23,7 @@ position_marker = constants.first_player_positions
 
 manigance = '2b2575'
 
-conflictDeckLocation = core.getHardcodedPositionFromGUID('f9ea6b', -3.37652636, 0.72803173, -9.74293137) + constants.someHeight
+conflictDeckLocation = core.getHardcodedPositionFromGUID('f9ea6b', -3.37652636, 0.725000858, -9.742931) + constants.someHeight
 
 zone_intrigue = 'a377d8'
 zone_imperium = constants.zone_deck_imperium
@@ -45,9 +45,6 @@ leadersBanned = false
 
 minimum_value_ban = 1 -- for number of ban buttons: value when Rise of Ix is by default on
 maximum_value_ban = 10
------------------End section------------------------
-
--------- Initialize Parameter ---------
 
 button_offset_y = 0 -- Set number. Value greater than or equal to 0. Defaults to 0.10.
 button_width = 2000 -- Set number. Defaults to 450.
@@ -55,6 +52,8 @@ button_height = 300 -- Set number. Defaults to 300.
 button_color = {0.25, 0.25, 0.25} -- Set number {Red,Green,Blue}. Value bitween 0.00 to 1.00. Defaults to {1.00,1.00,1.00] ("White").
 text_color = {1.00, 1.00, 1.00} -- Set number {Red,Green,Blue}. Value bitween 0.00 to 1.00. Defaults to {0.25,0.25,0.25] ("Black").
 text_size = 200 -- Set number. Defaults to 100.
+
+tleilaxuCardCostByGUID = {}
 
 _ = core.registerLoadablePart(function(saved_data)
 
@@ -187,6 +186,7 @@ _ = core.registerLoadablePart(function(saved_data)
         hotseat_mode = loaded_data.hotseat_mode
         rise_of_ix = loaded_data.rise_of_ix
         immortality = loaded_data.immortality
+        tleilaxuCardCostByGUID = loaded_data.tleilaxuCardCostByGUID
     end
 
     if setupDone then
@@ -292,7 +292,8 @@ function updateSave()
         numPlayers = numPlayers,
         hotseat_mode = hotseat_mode,
         rise_of_ix = rise_of_ix,
-        immortality = immortality
+        immortality = immortality,
+        tleilaxuCardCostByGUID = tleilaxuCardCostByGUID
     }
     saved_data = JSON.encode(data_to_save)
     self.script_state = saved_data
@@ -1431,45 +1432,48 @@ function setupConflits(a, b, c)
     end, 2)
 end
 
-local tleilaxuCards = {
-    { guid = nil, cost = 3, name = "beguiling_pheromones" },
-    { guid = nil, cost = 2, name = "dogchair" },
-    { guid = nil, cost = 1, name = "contaminator" },
-    { guid = nil, cost = 1, name = "corrino_genes" },
-    { guid = nil, cost = 2, name = "face_dancer" },
-    { guid = nil, cost = 1, name = "face_dancer_initiate" },
-    { guid = nil, cost = 2, name = "from_the_tanks" },
-    { guid = nil, cost = 3, name = "ghola" },
-    { guid = nil, cost = 2, name = "guild_impersonator" },
-    { guid = nil, cost = 1, name = "industrial_espionage" },
-    { guid = nil, cost = 3, name = "piter_genius_advisor" },
-    { guid = nil, cost = 3, name = "scientific_breakthrough" },
-    { guid = nil, cost = 2, name = "slig_farmer" },
-    { guid = nil, cost = 3, name = "stitched_horror" },
-    { guid = nil, cost = 2, name = "subject_x_137" },
-    { guid = nil, cost = 2, name = "tleilaxu_infiltrator" },
-    { guid = nil, cost = 4, name = "twisted_mentat" },
-    { guid = nil, cost = 3, name = "unnatural_reflexes" },
-    { guid = nil, cost = 4, name = "usurper" }
-}
-
 function memorizeOrderedTleilaxuDeck()
-    local tleilaxu_deck = getObjectFromGUID(constants.tleilaxu_deck)
-    for i, card in ipairs(tleilaxu_deck.getObjects()) do
-        tleilaxuCards[i].guid = card.guid
+    local tleilaxuCardCostByName = {
+        beguiling_pheromones = 3,
+        dogchair = 2,
+        contaminator = 1,
+        corrino_genes = 1,
+        face_dancer = 2,
+        face_dancer_initiate = 1,
+        from_the_tanks = 2,
+        ghola = 3,
+        guild_impersonator = 2,
+        industrial_espionage = 1,
+        scientific_breakthrough = 3,
+        slig_farmer = 2,
+        stitched_horror = 3,
+        subject_x_137 = 2,
+        tleilaxu_infiltrator = 2,
+        twisted_mentat = 4,
+        unnatural_reflexes = 3,
+        usurper = 4,
+        piter_genius_advisor = 3
+    }
+
+    local currentLocale = i18n.getLocale()
+    local resources = localeAssets[currentLocale]
+
+    local deck = getObjectFromGUID(constants.tleilaxu_deck)
+    for i, card in ipairs(deck.getObjects()) do
+        local name = resources.tleilaxuOrderedCards[i]
+        local cost = tleilaxuCardCostByName[name]
+        tleilaxuCardCostByGUID[card.guid] = cost
     end
 end
 
 function getTleilaxuCardPrice(card)
     local guid = card.getGUID()
-    for name, info in pairs(tleilaxuCards) do
-        if info.guid == guid then
-            --log(name .. " -> " .. tostring(info.cost))
-            return info.cost
-        end
+    local cost = tleilaxuCardCostByGUID[guid]
+    if not cost then
+        cost = 0
+        log("No memorized Tleilaxu card for GUID " .. guid)
     end
-    log("No memorized Tleilaxu card for GUID " .. guid)
-    return 0
+    return cost
 end
 
 function setupEpic()

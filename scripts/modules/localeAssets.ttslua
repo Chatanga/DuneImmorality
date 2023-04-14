@@ -506,6 +506,27 @@ localeAssets.en = {
         }}},
         cardControlTheSpice = {deck = customDecks.en.ixImperium, luaIndex = 33},
         cardsExperimentation = {{deck = customDecks.en.teilaxImperium, luaIndexes = {7, 7}}}
+    },
+    tleilaxuOrderedCards = {
+        "beguiling_pheromones",
+        "dogchair",
+        "contaminator",
+        "corrino_genes",
+        "face_dancer",
+        "face_dancer_initiate",
+        "from_the_tanks",
+        "ghola",
+        "guild_impersonator",
+        "industrial_espionage",
+        "scientific_breakthrough",
+        "slig_farmer",
+        "stitched_horror",
+        "subject_x_137",
+        "tleilaxu_infiltrator",
+        "twisted_mentat",
+        "unnatural_reflexes",
+        "usurper",
+        "piter_genius_advisor"
     }
 }
 
@@ -579,6 +600,27 @@ localeAssets.fr = {
         cardsBaseIntrigue = {{deck = customDecks.fr.intrigue, luaIndexes = range(1, 40)}},
         cardControlTheSpice = {deck = customDecks.fr.ixImperiumControlTheSpice, luaIndex = 1},
         cardsExperimentation = {{deck = customDecks.fr.teilaxImperiumExperimentation, luaIndexes = range(1, 2)}},
+    },
+    tleilaxuOrderedCards = {
+        "beguiling_pheromones",
+        "dogchair",
+        "contaminator",
+        "corrino_genes",
+        "face_dancer",
+        "face_dancer_initiate",
+        "from_the_tanks",
+        "ghola",
+        "guild_impersonator",
+        "industrial_espionage",
+        "piter_genius_advisor",
+        "scientific_breakthrough",
+        "slig_farmer",
+        "stitched_horror",
+        "subject_x_137",
+        "tleilaxu_infiltrator",
+        "twisted_mentat",
+        "unnatural_reflexes",
+        "usurper"
     }
 }
 

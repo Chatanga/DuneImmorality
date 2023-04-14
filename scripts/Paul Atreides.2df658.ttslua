@@ -27,7 +27,7 @@ function createPrescienceButton()
 end
 
 function prescience(_, color)
-    if color == claimed then
+    if color == leader.claimed then
         local leaderName = helperModule.getLeaderName(color)
         local cardOrDeck = helperModule.GetDeckOrCard(constants.players[color].drawDeckZone)
 

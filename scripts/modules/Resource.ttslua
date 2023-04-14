@@ -42,6 +42,10 @@ function resource.init(ownerColor, resourceName, value, savedData)
     resource.updateButton()
 end
 
+function onLocaleChange()
+    resource.updateButton()
+end
+
 function resource.updateSave()
     local state = {
         value = resource.value,

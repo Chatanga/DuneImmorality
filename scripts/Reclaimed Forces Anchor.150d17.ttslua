@@ -66,7 +66,7 @@ function tleilaxuScarab(_, color)
             spendSpecimen(color, 3)
 
             Wait.time(function()
-                params = {color = color, silent = true}
+                local params = {color = color, silent = true}
                 bene_tleilax_board.call("moveTleilaxuCall", params)
                 broadcastToAll(leaderName .. i18n("reclaimedForcesScarab"),
                                color)
@@ -78,7 +78,7 @@ end
 
 function spendSpecimen(color, price)
     Wait.time(function()
-        params = {osef = "", color = color, silent = true}
+        local params = {osef = "", color = color, silent = true}
         bene_tleilax_board.Call("RemoveSpecimenCall", params)
     end, 0.3, price)
 end

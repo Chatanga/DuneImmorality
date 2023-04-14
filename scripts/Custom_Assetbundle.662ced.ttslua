@@ -1,9 +1,13 @@
 i18n = require("i18n")
 require("locales")
 
+local soundEnabled = false
+
+local currentMusic = nil
+
 _ = require("Core").registerLoadablePart(function()
     self.interactable = false
-    sound_active = false
+    soundEnabled = false
     activateButtons()
 end)
 
@@ -28,7 +32,7 @@ function activateButtons()
     })
     local label = ""
     local color = ""
-    if sound_active then
+    if soundEnabled then
         label = i18n("soundOn")
         color = "Green"
     else
@@ -36,7 +40,7 @@ function activateButtons()
         color = "Red"
     end
     self.createButton({
-        click_function = "activeSound",
+        click_function = "toggleSound",
         function_owner = self,
         label = label,
         position = {-15, 1.8, 32},
@@ -49,44 +53,38 @@ function activateButtons()
     })
 end
 
-function activeSound()
-    if sound_active then
-        sound_active = false
-        self.clearButtons()
-        activateButtons()
-    else
-        sound_active = true
-        self.clearButtons()
-        activateButtons()
-    end
+function toggleSound()
+    soundEnabled = not soundEnabled
+    self.clearButtons()
+    activateButtons()
 end
 
 function selectMusic(_, color)
-
-    if not sound_active then
+    if not soundEnabled then
         return 1
     else
         self.clearButtons()
         Wait.time(activateButtons, 1)
 
         local musics = MusicPlayer.getPlaylist()
-
         local options = {}
+        for i, music in ipairs(musics) do
+            options[i] = music.title
+        end
 
-        for i, music in ipairs(musics) do options[i] = music.title end
+        Player[color].showOptionsDialog("Choose MP3 for Combat Warning", options, 1,
+            function(text, index, player_color)
+                currentMusic = musics[index]
+                MusicPlayer.setCurrentAudioclip(currentMusic)
+                MusicPlayer.play()
+                broadcastToAll("Playing " .. currentMusic.title, undefined)
+            end)
+    end
+end
 
-        Player[color].showOptionsDialog("Choose Mp3 for Combat Warning", options, 1,
-        function(text, index, player_color)
-            local currentMusic = musics[index]
-
-            Global.setTable("battleSound", currentMusic)
-
-            MusicPlayer.setCurrentAudioclip(currentMusic)
-
-            MusicPlayer.play()
-
-            broadcastToAll("Playing " .. currentMusic.title, undefined)
-
-        end)
+function onFightStart()
+    if currentMusic and soundEnabled then
+        MusicPlayer.setCurrentAudioclip(currentMusic)
+        MusicPlayer.play()
     end
 end

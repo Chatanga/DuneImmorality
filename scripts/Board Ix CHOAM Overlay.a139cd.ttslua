@@ -10,10 +10,10 @@ boardCommonModule = require("BoardCommonModule")
 techZone = constants.techZone
 
 cargo_pos_init = {
-    Yellow = core.getHardcodedPositionFromGUID('8fa76f', 8.999581, 0.76994512, 2.850366),
+    Yellow = core.getHardcodedPositionFromGUID('8fa76f', 8.999581, 0.769945145, 2.850366),
     Green = core.getHardcodedPositionFromGUID('34281d', 8.449573, 0.770712, 2.85037041),
-    Blue = core.getHardcodedPositionFromGUID('68e424', 7.34954929, 0.77224658, 2.8544035),
-    Red = core.getHardcodedPositionFromGUID('e9096d', 7.89962053, 0.77147946, 2.853223)
+    Blue = core.getHardcodedPositionFromGUID('68e424', 7.34954929, 0.7722466, 2.8544035),
+    Red = core.getHardcodedPositionFromGUID('e9096d', 7.89962053, 0.7714795, 2.853223)
 }
 
 _ = core.registerLoadablePart(function(saved_data)

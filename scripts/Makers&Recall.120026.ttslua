@@ -17,10 +17,10 @@ pos_trash = constants.pos_trash_lower
 zone_deck = constants.zone_deck_imperium
 
 combat_marker_offside_positions = {
-    Red = core.getHardcodedPositionFromGUID('2d1d17', 1.229127, 1.26825342, -12.099426) + Vector(0, 0, 0),
-    Blue = core.getHardcodedPositionFromGUID('f22e20', 1.2095474, 1.5675827, -12.09596348) + Vector(1, 0, 0),
-    Yellow = core.getHardcodedPositionFromGUID('c2dd31', 1.27509332, 0.67563519, -12.117932) + Vector(2, 0, 0),
-    Green = core.getHardcodedPositionFromGUID('a1a9a7', 1.23535669, 0.96849165, -12.103872) + Vector(3, 0, 0)
+    Red = core.getHardcodedPositionFromGUID('2d1d17', 1.2243706, 1.2723105, -12.0981064) + Vector(0, 0, 0),
+    Blue = core.getHardcodedPositionFromGUID('f22e20', 1.20224655, 1.571644, -12.0946474) + Vector(1, 0, 0),
+    Yellow = core.getHardcodedPositionFromGUID('c2dd31', 1.27505279, 0.6797913, -12.1178083) + Vector(2, 0, 0),
+    Green = core.getHardcodedPositionFromGUID('a1a9a7', 1.23247385, 0.9726195, -12.1030054) + Vector(3, 0, 0)
 }
 
 -- TODO Make these positions relative to some anchor.
@@ -74,7 +74,7 @@ _ = core.registerLoadablePart(function(saved_data)
     marker_round = getObjectFromGUID('fb41e2')
 
     conflictZone = "6d632e"
-    conflict_discard = core.getHardcodedPositionFromGUID('cb0478', -1.15463293, 0.63, -9.79815674) + constants.someHeight
+    conflict_discard = core.getHardcodedPositionFromGUID('cb0478', -1.15463293, 0.63, -9.798157) + constants.someHeight
     zone_vp_encours = getObjectFromGUID("740624")
     trash = getObjectFromGUID("ef8614")
     makerZones = {"69f925", "622708", "2c77c1"}

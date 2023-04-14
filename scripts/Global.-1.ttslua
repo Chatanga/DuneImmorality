@@ -7,8 +7,6 @@ helperModule = require("HelperModule")
 
 locale = "en"
 
-battleSound = nil
-
 _ = require("Core").registerLoadablePart(function(savedData)
 
     if savedData ~= '' then
@@ -153,8 +151,6 @@ _ = require("Core").registerLoadablePart(function(savedData)
         zone_vp_combat + Vector(0, 1.5, -0.5),
         zone_vp_combat + Vector(0, 1.5, 0.5)
     }
-
-    board_display_leaders = getObjectFromGUID("662ced")
 
     for color, _ in pairs(constants.players) do
         activateButtons(color)
@@ -608,13 +604,10 @@ function letsFight()
     Turns.enable = false
     marker_round.setPositionSmooth(constants.marker_positions.combat, false, false)
     broadcastToAll(i18n("fightWarning"), {0.5, 0.5, 0.5})
-
-    if battleSound ~= nil and board_display_leaders.getVar("sound_active") then
-        MusicPlayer.setCurrentAudioclip(battleSound)
-
-        MusicPlayer.play()
-    end
     fight = 1
+
+    local secondaryBoard = getObjectFromGUID("662ced")
+    secondaryBoard.call("onFightStart")
 end
 
 function getFight() return fight end

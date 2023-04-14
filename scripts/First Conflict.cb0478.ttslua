@@ -7,9 +7,7 @@ helperModule = require("HelperModule")
 
 _ = require("Core").registerLoadablePart(function()
     self.interactable = false
-
-    conflict_discard = helperModule.correctAnchorPosition({-1.15, 3, -5.74}, {1.37866032, 0.165157527, 1.34989369})
-    conflict_zone = getObjectFromGUID("07e239")
+    -- conflict_discard = helperModule.correctAnchorPosition({-1.15, 3, -5.74}, {1.37866032, 0.165157527, 1.34989369})
 end)
 
 function ConflictButton()
@@ -36,6 +34,7 @@ function RevealConflict()
             return 1
         end
     end
+    local conflict_zone = getObjectFromGUID("07e239")
     local objects = conflict_zone.getObjects()
     if objects ~= nil then
         for _, obj in ipairs(objects) do
@@ -45,7 +44,7 @@ function RevealConflict()
         end
 
         -- Utile ?
-        makersAndRecallToken = getObjectFromGUID("fb41e2")
+        local makersAndRecallToken = getObjectFromGUID("fb41e2")
         makersAndRecallToken.setPositionSmooth(constants.marker_positions.round_start, false, false)
 
         self.destruct()

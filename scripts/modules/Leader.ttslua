@@ -5,31 +5,31 @@ constants = require("Constants")
 i18n = require("i18n")
 require("locales")
 
-claimed = nil
+leader.claimed = nil
 
-onClaimCallback = nil
+leader.onClaimCallback = nil
 
-function leader.init(callback, savedData)
-    onClaimCallback = callback
+function leader.init(onClaimCallback, savedData)
+    leader.onClaimCallback = onClaimCallback
     if savedData ~= '' then
-        state = JSON.decode(savedData)
-        claimed = state.claimed
+        local state = JSON.decode(savedData)
+        leader.claimed = state.claimed
     else
         leader.createClaimButton()
     end
 end
 
 function onLocaleChange()
-    if #self.getButtons() > 0 then
+    if leader.claimed == nil then
         self.clearButtons()
         leader.createClaimButton()
     end
 end
 
 function leader.updateSave(color)
-    claimed = color
+    leader.claimed = color
     local state = {
-        claimed = claimed
+        claimed = leader.claimed
     }
     self.script_state = JSON.encode(state)
 end
@@ -56,7 +56,7 @@ function claimLeaderCall(params)
 end
 
 function claimLeader(object, color)
-local setup = getObjectFromGUID("4a3e76")
+    local setup = getObjectFromGUID("4a3e76")
     local authorizedColors = {
         Red = true,
         Blue = true,
@@ -98,8 +98,8 @@ local setup = getObjectFromGUID("4a3e76")
                 Wait.time(function() object.lock() end, 2)
             end
             leader.updateSave(color)
-            if onClaimCallback then
-                Wait.time(function() onClaimCallback(color) end, 2)
+            if leader.onClaimCallback then
+                Wait.time(function() leader.onClaimCallback(color) end, 2)
             end
             broadcastToAll(i18n("willBe"):format(i18n(color:lower()), object.getName()), color)
         else

@@ -54,7 +54,7 @@ function drawCard(_,color)
         local handZone = Player[color].getHandTransform()
         local deckRot = targetDeck.getRotation()
         if targetDeck.type == "Deck" then
-            my_card = targetDeck.takeObject({
+            local my_card = targetDeck.takeObject({
                 position = {handZone.position.x-7.5, handZone.position.y, handZone.position.z},
                 flip = false,
                 smooth = false})
