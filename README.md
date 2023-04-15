@@ -40,7 +40,8 @@
 - la mobilité complète des blocs de jeu (à réaliser par un second patch Python).
 - le support de la maison Hagal.
 
-# A faire :
+# À faire :
+- Distinguer les Bases des Modules.
 - Corriger hidden pick à 3 joueurs.
 - Corriger fin de paquet cartes recherche du Bene Tleilax.
 - Retirer le suffixe module des modules ?
@@ -67,7 +68,9 @@
 - Uniformiser nommage et usage "local" (déclarer que des "local" (au chunk donc) ?).
 - Expliciter la gestion des tours.
 - Retirer vieilles ressources.
+- Éclater "Buy Special Imperium Cards.6a1097" pour uniformiser et simplifier.
 
+# À garder à l’esprit
 - Limiter autant que possible les appels de fonction au chargement, car peu pratique à débugger.
 - Au chargement, ne pas dépendre d'autres objets (sont-ils même résolvables ?), ni d'autres scripts.
 - Dans la fonction onLoad, dépendre éventuellement des autres objets, mais pas de l'état interne de leurs scripts (call).
@@ -79,8 +82,3 @@
 - Saves -> $HOME/.local/share/Tabletop Simulator/Saves/
 - Tabletop Simulator Lua -> /tmp/TabletopSimulator/Tabletop Simulator Lua/
 - Mod : 2956104551.
-
-
-
-http://cloud-3.steamusercontent.com/ugc/2042985641582150737/6DE3AA409E94D2CE99D4E34B6B8A2FC913DE8C56/
-http://cloud-3.steamusercontent.com/ugc/2042987291567703596/214F7AE0C188D5DFEBBAF9CE67CCB56777663B4A/

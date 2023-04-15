@@ -13,7 +13,7 @@ _ = require("Core").registerLoadablePart(function()
 end)
 
 function onLocaleChange()
-    local data1 = {
+    self.createButton({
         click_function = "tleilaxuTroop",
         function_owner = self,
         label = "pay & get →",
@@ -24,10 +24,9 @@ function onLocaleChange()
         font_size = 400,
         color = {0.3571, 0.3571, 0.3571, 1},
         font_color = {1, 1, 1, 1}
-    }
-    self.createButton(data1)
+    })
 
-    local data2 = {
+    self.createButton({
         click_function = "tleilaxuScarab",
         function_owner = self,
         label = "pay & get →",
@@ -38,8 +37,7 @@ function onLocaleChange()
         font_size = 400,
         color = {0.3571, 0.3571, 0.3571, 1},
         font_color = {1, 1, 1, 1}
-    }
-    self.createButton(data2)
+    })
 end
 
 function tleilaxuTroop(_, color)
@@ -68,8 +66,7 @@ function tleilaxuScarab(_, color)
             Wait.time(function()
                 local params = {color = color, silent = true}
                 bene_tleilax_board.call("moveTleilaxuCall", params)
-                broadcastToAll(leaderName .. i18n("reclaimedForcesScarab"),
-                               color)
+                broadcastToAll(leaderName .. i18n("reclaimedForcesScarab"), color)
             end, 1)
         end)
     end
@@ -87,7 +84,8 @@ function isEnoughSpecimen(_, color)
     local testSpecimen = false
     local countSpecimen = 0
     local price = 3
-    for _, troop in ipairs(getObjectFromGUID("f5de09").getObjects()) do -- comptage Spécimen
+    -- comptage Spécimen
+    for _, troop in ipairs(getObjectFromGUID("f5de09").getObjects()) do
         if troop.hasTag("Troop") and troop.hasTag(color) then
             countSpecimen = countSpecimen + 1
         end
