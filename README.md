@@ -43,11 +43,8 @@
 # A faire :
 - Corriger hidden pick à 3 joueurs.
 - Corriger fin de paquet cartes recherche du Bene Tleilax.
-
-- Nommer les tables primaires et secondaires.
 - Retirer le suffixe module des modules ?
 - Pas de passage de "round start" à "player turns" au 1er tour.
-- Remplacer la tétrachié de ["literal"] en (.)literal.
 - gérer plus finement les hauteurs des boutons.
 - ajouter des colliders.
 - améliorer la qualité des décalcos (et pointillés pour la zone du marqueur premier joueur).
@@ -57,28 +54,19 @@
 - Marker -> token pour éviter la confusion avec Maker.
 - Nombre de joueurs actifs et mode de jeu (multi / hot seat).
 - Mettre à jour / à niveau les textures.
-
-- Intégrer notes week-end.
-- Traduction des tuiles (façon leaders).
-- Ajout de l'allemand, italien et espagnol.
 - Mettre à jour boutons acquisition tech avec coût réel.
 - Déploiement de spécimens : le faire directement.
 - Abstraire la création de boutons façon Ark Nova (et ajouter une icône "activate" pour le pay & get).
-- Remplacer le code de création des zones de parks par une récupération du GUID (déjà le cas en fait...).
 - Mettre à jour les URL des cartes françaises.
-- Organiser les règles.
 - Gérer les tuiles technologiques comme des cartes (et ne plus les dupliquer -> problématique d'identification) ?
 - Explorer la notion de tour, multi(, solo) et hotseat.
 - Automatiser la maison Hagal.
-- Nécessité du mélange en 2 temps de la défausse ?
-- Remplacer l'UI de Setup par une vraie UI en XML ?
-- Mettre sous GitHub Les 9 Titans sans les ressources.
-- Sauvegarder les ressources de Dune en multi-langues.
-
+- Traduire les cartes de la maison Hagal.
 - Grande conception avant refactoring.
 - Identifier les actions de haut niveau, introduire un module services pour les regrouper en déléguant au mieux.
 - Uniformiser nommage et usage "local" (déclarer que des "local" (au chunk donc) ?).
 - Expliciter la gestion des tours.
+- Retirer vieilles ressources.
 
 - Limiter autant que possible les appels de fonction au chargement, car peu pratique à débugger.
 - Au chargement, ne pas dépendre d'autres objets (sont-ils même résolvables ?), ni d'autres scripts.
