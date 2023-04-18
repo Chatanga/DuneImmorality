@@ -88,11 +88,84 @@ function helperModule.GetDeckOrCard(zone)
     return nil
 end
 
+function helperModule.GetDeck(zone)
+    assert(zone)
+    assert(type(zone) ~= 'string', tostring(zone) .. ' is a GUID, not a zone')
+    for _, obj in ipairs(zone.getObjects()) do
+        if obj.type == "Deck" then return obj end
+    end
+    return nil
+end
+
+function helperModule.GetCard(zone)
+    assert(zone)
+    assert(type(zone) ~= 'string', tostring(zone) .. ' is a GUID, not a zone')
+    for _, obj in ipairs(zone.getObjects()) do
+        if obj.type == "Card" then return obj end
+    end
+    return nil
+end
+
 function helperModule.GetDeckOrCardFromGUID(zoneGUID)
     assert(type(zoneGUID) == 'string', tostring(zoneGUID) .. ' is not a GUID')
-    local object = getObjectFromGUID(zoneGUID)
-    assert(object, "Failed to resolve GUID: " .. tostring(zoneGUID))
-    return helperModule.GetDeckOrCard(object)
+    local zone = getObjectFromGUID(zoneGUID)
+    assert(zone, "Failed to resolve GUID: " .. tostring(zoneGUID))
+    return helperModule.GetDeckOrCard(zone)
+end
+
+function helperModule.GetDeckFromGUID(zoneGUID)
+    assert(type(zoneGUID) == 'string', tostring(zoneGUID) .. ' is not a GUID')
+    local zone = getObjectFromGUID(zoneGUID)
+    assert(zone, "Failed to resolve GUID: " .. tostring(zoneGUID))
+    return helperModule.GetDeck(zone)
+end
+
+function helperModule.GetCardFromGUID(zoneGUID)
+    assert(type(zoneGUID) == 'string', tostring(zoneGUID) .. ' is not a GUID')
+    local zone = getObjectFromGUID(zoneGUID)
+    assert(zone, "Failed to resolve GUID: " .. tostring(zoneGUID))
+    return helperModule.GetCard(zone)
+end
+
+function helperModule.drawCard(zone, position, rotation, smooth)
+    local deckOrCard = helperModule.GetDeckOrCard(zone)
+    if deckOrCard then
+        if deckOrCard.type == "Deck" then
+            local parameters = {
+                position = position
+            }
+            if rotation then
+                parameters.rotation = rotation
+            end
+            if smooth then
+                parameters.smooth = smooth
+            end
+            deckOrCard.takeObject(parameters)
+            return true
+        elseif deckOrCard.type == "Card" then
+            if smooth then
+                deckOrCard.setPositionSmooth(position)
+            else
+                deckOrCard.setPosition(position)
+            end
+            if rotation then
+                if smooth then
+                    deckOrCard.setRotationSmooth(rotation)
+                else
+                    deckOrCard.setRotation(rotation)
+                end
+            end
+            return true
+        end
+    end
+    return false
+end
+
+function helperModule.drawCardFromGUID(zoneGUID, position, rotation, smooth)
+    assert(type(zoneGUID) == 'string', tostring(zoneGUID) .. ' is not a GUID')
+    local zone = getObjectFromGUID(zoneGUID)
+    assert(zone, "Failed to resolve GUID: " .. tostring(zoneGUID))
+    return helperModule.drawCard(zone, position, rotation, smooth)
 end
 
 function helperModule.isDeckContainsEnough(color, numberToDraw)
@@ -169,6 +242,26 @@ function helperModule.createAbsoluteButton(object, parameters)
     helperModule.createAbsoluteButtonWithRoundness(object, 0.25, true, parameters)
 end
 
+function helperModule.createAbsoluteAcquireButton(zone, altitude, action)
+    local position = zone.getPosition()
+    local scale = zone.getScale()
+    position.y = position.y - scale.y / 2 + altitude
+    position.z = position.z - scale.z / 2 - 0.5
+
+    local parameters = {
+        click_function = action,
+        function_owner = self,
+        label = i18n("acquireButton"),
+        position = position,
+        width = 600,
+        height = 200,
+        font_size = 150,
+        color = {0.25, 0.25, 0.25, 1},
+        font_color = {1, 1, 1, 1}
+    }
+    helperModule.createAbsoluteButtonWithRoundness(self, 0.5, false, parameters)
+end
+
 function helperModule.createAbsoluteButtonWithRoundness(object, roundness, quirk, parameters)
     local scale = object.getScale()
     local invScale = Vector(1 / scale.x, 1 / scale.y, 1 / scale.z)
@@ -234,6 +327,20 @@ function helperModule.createAbsoluteButtonWithRoundness(object, roundness, quirk
     parameters['font_size'] = font_size
 
     object.createButton(parameters)
+end
+
+-- Typical preamble for a player action.
+function helperModule.startPlayerAction(playerColor)
+    if playerColor ~= "Red" and playerColor ~= "Blue" and playerColor ~= "Green" and playerColor ~= "Yellow" then
+        broadcastToColor(i18n("noTouch"), playerColor, "Pink")
+        return false
+    end
+
+    -- Inhibit all buttons.
+    self.clearButtons()
+    Wait.time(activateButtons, 1)
+
+    return true
 end
 
 function helperModule.getLeader(playerColor)

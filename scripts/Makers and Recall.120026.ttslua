@@ -403,7 +403,9 @@ function ConflictZone()
     broadcastToAll(i18n('nextRound'), "Purple")
 
     local blackMarketBoard = getObjectFromGUID("ab7ac5")
-    blackMarketBoard.call("updateBlackMarket")
+    if blackMarketBoard then
+        blackMarketBoard.call("updateBlackMarket")
+    end
 
     Global.call("resetRound")
 

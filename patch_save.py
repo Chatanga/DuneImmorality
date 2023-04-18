@@ -183,6 +183,27 @@ def rectify_name(object):
         else:
             print("Missing script file for GUID", guid)
 
+def rectify_geometry(object, position, rotation, scale):
+    transform = object['Transform']
+
+    if position:
+        px, py, pz = position
+        transform['posX'] = px
+        transform['posY'] = py
+        transform['posZ'] = pz
+
+    if rotation:
+        rx, ry, rz = rotation
+        transform['rotX'] = rx
+        transform['rotY'] = ry
+        transform['rotZ'] = rz
+
+    if scale:
+        sx, sy, sz = scale
+        transform['scaleX'] = sx
+        transform['scaleY'] = sy
+        transform['scaleZ'] = sz
+
 def patch_save(input_path, output_path):
 
     save = None
@@ -206,6 +227,11 @@ def patch_save(input_path, output_path):
         #rectify_name(object)
 
         new_objects.append(object)
+
+    rectify_geometry(object_by_guid['323acb'], (-7.5, 1, 20.5), (0, 0, 0), (2, 1, 3))
+    rectify_geometry(object_by_guid['e96c10'], (-5, 1, 20.5), (0, 0, 0), (2, 1, 3))
+    rectify_geometry(object_by_guid['93de6d'], (-2.5, 1, 20.5), (0, 0, 0), (2, 1, 3))
+    rectify_geometry(object_by_guid['ab7ac5'],  (-6.2, 0.52, 20.5), (0, 180, 0), None)
 
     save['ObjectStates'] = new_objects
 

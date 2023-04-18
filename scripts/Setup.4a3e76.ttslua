@@ -1381,7 +1381,6 @@ function RemoveIxContent()
 end
 
 function setupConflits(a, b, c)
-    log("--- setupConflits ---")
     conflictThree.shuffle()
     conflictTwo.shuffle()
     conflictOne.shuffle()
@@ -1543,9 +1542,7 @@ function movetechdecks()
     end
     techs.randomize()
 
-    log(8)
     local centerPos = constants.getLandingPositionFromGUID(constants.ixPlanetBoard)
-    log(9)
     local techSlotPos = {
         centerPos + Vector(1.69, 3.02, 2.35),
         centerPos + Vector(1.69, 3.02, 0.30),
@@ -1594,9 +1591,11 @@ function ImperiumDeal()
       end, i * 0.35)
     end
 
+    local blackMarketBoard = getObjectFromGUID("ab7ac5")
     if black_market == 1 then
-        local blackMarketBoard = getObjectFromGUID("ab7ac5")
         blackMarketBoard.call("initBlackMarket")
+    else
+        blackMarketBoard.destruct()
     end
 end
 
