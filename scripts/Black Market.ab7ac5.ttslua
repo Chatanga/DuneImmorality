@@ -5,27 +5,29 @@ constants = require("Constants")
 
 helper = require("HelperModule")
 
-slots = {
-    { guid = "323acb", position = nil },
-    { guid = "e96c10", position = nil },
-    { guid = "93de6d", position = nil }
+slotZoneGUIDs = {
+    "323acb",
+    "e96c10",
+    "93de6d"
 }
 
 _ = require("Core").registerLoadablePart(function()
     self.interactable = false
-
-    for _, slot in ipairs(slots) do
-        local zone = getObjectFromGUID(slot.guid)
-        slot.position = zone.getPosition()
-    end
-
     activateButtons()
+
+    local snapPoints = {}
+    for i, slotZoneGUID in ipairs(slotZoneGUIDs) do
+        local slotZone = getObjectFromGUID(slotZoneGUID)
+        local snapPoint = helper.createAbsoluteSnapPointFromZone(slotZone, true, {"Imperium"})
+        snapPoints[i] = snapPoint
+    end
+    self.setSnapPoints(snapPoints)
 end)
 
 function onDestroy()
-    for _, slot in ipairs(slots) do
-        local zone = getObjectFromGUID(slot.guid)
-        zone.destroy()
+    for _, slotZoneGUID in ipairs(slotZoneGUIDs) do
+        local slotZone = getObjectFromGUID(slotZoneGUID)
+        slotZone.destroy()
     end
 end
 
@@ -35,9 +37,9 @@ function onLocaleChange()
 end
 
 function activateButtons()
-    for i, slot in ipairs(slots) do
-        local zone = getObjectFromGUID(slot.guid)
-        helper.createAbsoluteAcquireButton(zone, 0.2, "buyOnBlackMarket" .. tostring(i))
+    for i, slotZoneGUID in ipairs(slotZoneGUIDs) do
+        local slotZone = getObjectFromGUID(slotZoneGUID)
+        helper.createAbsoluteAcquireButton(slotZone, -1.2, 0.2, "buyOnBlackMarket" .. tostring(i))
     end
 end
 
@@ -55,9 +57,9 @@ end
 
 function buyOnBlackMarket(slotIndex, color)
     if (helper.startPlayerAction(color)) then
-        local slot = slots[slotIndex]
-        takeSlot(slot, color)
-        replenishSlot(slot)
+        local slotZoneGUID = slotZoneGUIDs[slotIndex]
+        takeSlot(slotZoneGUID, color)
+        replenishSlot(slotZoneGUID)
     end
 end
 
@@ -66,8 +68,8 @@ function initBlackMarket()
     local t = 0
 
     -- Populate the row with new cards.
-    for _, slot in ipairs(slots) do
-        Wait.time(function() replenishSlot(slot) end, t)
+    for _, slotZoneGUID in ipairs(slotZoneGUIDs) do
+        Wait.time(function() replenishSlot(slotZoneGUID) end, t)
         t = t + 0.25
     end
 end
@@ -77,29 +79,30 @@ function updateBlackMarket()
     local t = 0
 
     -- Trash the remaining cards.
-    for _, slot in ipairs(slots) do
-        Wait.time(function() trashSlot(slot) end, t)
+    for _, slotZoneGUID in ipairs(slotZoneGUIDs) do
+        Wait.time(function() trashSlot(slotZoneGUID) end, t)
         t = t + 0.25
     end
 
     -- Populate the row with new cards.
-    for _, slot in ipairs(slots) do
-        Wait.time(function() replenishSlot(slot) end, t)
+    for _, slotZoneGUID in ipairs(slotZoneGUIDs) do
+        Wait.time(function() replenishSlot(slotZoneGUID) end, t)
         t = t + 0.25
     end
 end
 
--- Give the card to the current player.
-function takeSlot(slot, color)
-    helper.drawCardFromGUID(slot.guid, constants.players[color].pos_discard, Vector(0, 180, 0), true)
+-- Give the card to the specified player.
+function takeSlot(slotZoneGUID, color)
+    helper.drawCardFromGUID(slotZoneGUID, constants.players[color].discardPosition, Vector(0, 180, 0), true)
 end
 
--- Populate the slot with a new card.
-function replenishSlot(slot)
-    helper.drawCardFromGUID(constants.zone_deck_imperium, slot.position, Vector(0, 180, 0), true)
+-- Populate the slotZoneGUID with a new card.
+function replenishSlot(slotZoneGUID)
+    local slotZone = getObjectFromGUID(slotZoneGUID)
+    helper.drawCardFromGUID(constants.imperiumDeckZone, slotZone.getPosition(), Vector(0, 180, 0), true)
 end
 
--- Trash the slot card.
-function trashSlot(slot)
-    helper.drawCardFromGUID(slot.guid, constants.pos_trash_lower, Vector(0, 180, 0), true)
+-- Trash the slotZoneGUID card.
+function trashSlot(slotZoneGUID)
+    helper.drawCardFromGUID(slotZoneGUID, constants.lowerTrashPosition, Vector(0, 180, 0), true)
 end

@@ -2,7 +2,7 @@ playerBoardModule = {}
 
 constants = require("Constants")
 
-helperModule = require("HelperModule")
+helper = require("HelperModule")
 
 parkModule = require("ParkModule")
 

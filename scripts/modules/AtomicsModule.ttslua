@@ -3,18 +3,18 @@ core = require("Core")
 i18n = require("i18n")
 require("locales")
 
-helperModule = require("HelperModule")
+helper = require("HelperModule")
 
 constants = require("Constants")
 
-GetDeckOrCard = helperModule.GetDeckOrCard
-GetDeckOrCardFromGUID = helperModule.GetDeckOrCardFromGUID
+GetDeckOrCard = helper.GetDeckOrCard
+GetDeckOrCardFromGUID = helper.GetDeckOrCardFromGUID
 
-ImperiumRow = constants.imperiumRow
+ImperiumRow = constants.imperiumRowSlots
 
-zone_deck_imperium = constants.zone_deck_imperium
+imperiumDeckZone = constants.imperiumDeckZone
 
-pos_trash = constants.pos_trash_lower
+pos_trash = constants.lowerTrashPosition
 
 local atomicsModule = {}
 
@@ -113,13 +113,13 @@ function nukeImperiumRow(obj, color)
 
             local params = {position = ImperiumRow[i].pos, rotation = {0, 180, 0}}
 
-            GetDeckOrCardFromGUID(zone_deck_imperium).takeObject(params)
+            GetDeckOrCardFromGUID(imperiumDeckZone).takeObject(params)
 
         end
 
         obj.destruct()
 
-        local leaderName = helperModule.getLeaderName(color)
+        local leaderName = helper.getLeaderName(color)
         broadcastToAll(leaderName .. i18n("atomicsUsed"), color)
     end, t)
 end

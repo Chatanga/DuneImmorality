@@ -22,6 +22,7 @@ _ = core.registerLoadablePart(function(saved_data)
     Shipping_zone = getObjectFromGUID("3e7409")
 
     self.interactable = false
+    self.locked = true
     activateButtons()
 end)
 
@@ -210,7 +211,7 @@ function HighCouncil(_, color)
 end
 
 function gainSolariFromSmuggling(color)
-    local leader = helperModule.getLeader(color)
+    local leader = helper.getLeader(color)
     local solariIncome = 1
     local solari = "Solari"
 
@@ -279,7 +280,7 @@ function SmugglingUp(_, color)
     if boardCommonModule.CheckAgentAndPlayer(color, Smuggling_zone) then
         if cargoUp(color) then
 
-            local leaderName = helperModule.getLeaderName(color)
+            local leaderName = helper.getLeaderName(color)
             local solariString = gainSolariFromSmuggling(color)
 
             broadcastToAll(i18n("smugglingUp"):format(leaderName, solariString),
@@ -293,7 +294,7 @@ function SmugglingDown(_, color)
     Wait.time(activateButtons, 1)
     if boardCommonModule.CheckAgentAndPlayer(color, Smuggling_zone) then
         if cargoReset(color) then
-            local leaderName = helperModule.getLeaderName(color)
+            local leaderName = helper.getLeaderName(color)
             local solariString = gainSolariFromSmuggling(color)
 
             broadcastToAll(
@@ -306,7 +307,7 @@ function CommercialUp(_, color)
     self.clearButtons()
     Wait.time(activateButtons, 1)
     if cargoUp(color) then
-        local leaderName = helperModule.getLeaderName(color)
+        local leaderName = helper.getLeaderName(color)
         broadcastToAll(leaderName .. i18n("commercialUp"), color)
     end
 end
@@ -315,7 +316,7 @@ function CommercialDown(_, color)
     self.clearButtons()
     Wait.time(activateButtons, 1)
     if cargoReset(color) then
-        local leaderName = helperModule.getLeaderName(color)
+        local leaderName = helper.getLeaderName(color)
         broadcastToAll(leaderName .. i18n("commercialDown"), color)
     end
 end
@@ -335,7 +336,7 @@ function ShippingUpUp(_, color)
             Wait.time(function()
                 cargoUp(color)
             end, 0.5)
-            local leaderName = helperModule.getLeaderName(color)
+            local leaderName = helper.getLeaderName(color)
             broadcastToAll(leaderName .. i18n("commercialUpUp"), color)
         end
     end
@@ -352,7 +353,7 @@ function ShippingUpDown(_, color)
             Wait.time(function()
                 cargoReset(color)
             end, 0.5)
-            local leaderName = helperModule.getLeaderName(color)
+            local leaderName = helper.getLeaderName(color)
             broadcastToAll(leaderName .. i18n("commercialUpDown"), color)
         end
     end
@@ -369,7 +370,7 @@ function ShippingDownUp(_, color)
             Wait.time(function()
                 cargoUp(color)
             end, 0.5)
-            local leaderName = helperModule.getLeaderName(color)
+            local leaderName = helper.getLeaderName(color)
             broadcastToAll(leaderName .. i18n("commercialDownUp"), color)
         end
     end
@@ -379,7 +380,7 @@ function CommercialMoney(_, color)
     self.clearButtons()
     Wait.time(activateButtons, 1)
 
-    local leader = helperModule.getLeader(color)
+    local leader = helper.getLeader(color)
     assert(leader)
     local leaderName = leader.getName()
     local solariIncome = 5
@@ -405,7 +406,7 @@ function CommercialSpice(_, color)
     self.clearButtons()
     Wait.time(activateButtons, 1)
 
-    local leaderName = helperModule.getLeaderName(color)
+    local leaderName = helper.getLeaderName(color)
     local t = 0
     for i = 1, 2, 1 do
         t = t + 0.25
@@ -419,7 +420,7 @@ function CommercialTroop(_, color)
     self.clearButtons()
     Wait.time(activateButtons, 1)
 
-    local leaderName = helperModule.getLeaderName(color)
+    local leaderName = helper.getLeaderName(color)
     local troopsToGain = 2
 
     local t = 0
@@ -436,5 +437,5 @@ function CommercialTroop(_, color)
     else
         broadcastToAll(i18n("shippingTroops"):format(leaderName), color)
     end
-    helperModule.landTroopsFromOrbit(color, troopsToGain)
+    helper.landTroopsFromOrbit(color, troopsToGain)
 end

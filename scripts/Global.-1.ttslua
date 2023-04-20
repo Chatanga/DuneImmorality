@@ -3,7 +3,7 @@ require("locales")
 
 constants = require("Constants")
 
-helperModule = require("HelperModule")
+helper = require("HelperModule")
 
 locale = "en"
 
@@ -19,12 +19,12 @@ _ = require("Core").registerLoadablePart(function(savedData)
 
     -- getObjectFromGUID("0552a2").setState(1)
 
-    DrawOne = helperModule.DrawOne
+    DrawOne = helper.DrawOne
 
-    ResetDiscard = helperModule.ResetDiscard
+    ResetDiscard = helper.ResetDiscard
 
-    GetDeckOrCard = helperModule.GetDeckOrCard
-    GetDeckOrCardFromGUID = helperModule.GetDeckOrCardFromGUID
+    GetDeckOrCard = helper.GetDeckOrCard
+    GetDeckOrCardFromGUID = helper.GetDeckOrCardFromGUID
 
     buttonPassAnchors = {
         ["Red"] = getObjectFromGUID("0e9fa2"),
@@ -648,7 +648,7 @@ function CountForce(name)
         if object.getName() == name then
             force = force + 2
         elseif object.getName() == name .. " Dreadnought" or object.getName() == name .. " dreadnought" then
-                local leader = helperModule.getLeader(name)
+                local leader = helper.getLeader(name)
             if leader and leader.hasTag("Rhombur") then
                 force = force + 4
             else
@@ -710,12 +710,12 @@ function addTroopDefense(controlableSpace)
         end
     end
     if joueur ~= nil then
-        local troops = helperModule.getTroopsFromOrbit(joueur)
+        local troops = helper.getTroopsFromOrbit(joueur)
         for _, troop in ipairs(troops) do
             troop.locked = false
             troop.setPositionSmooth(constants.getLandingPositionFromGUID('6d632e'), false, false)
             troop.setRotation(Vector(0, 0, 0))
-            local leaderName = helperModule.getLeaderName(joueur)
+            local leaderName = helper.getLeaderName(joueur)
             broadcastToAll(i18n("defenseTroop"):format(leaderName), joueur)
             break
         end
@@ -828,7 +828,7 @@ end
 
 function Friendship(faction, color)
     local hasFriendship = false
-    local vpTokens = helperModule.getScoreTokens(color)
+    local vpTokens = helper.getScoreTokens(color)
     for _, vpToken in ipairs(vpTokens) do
         if vpToken.getName() == faction .. " Friendship" then
             hasFriendship = true
@@ -840,7 +840,7 @@ function Friendship(faction, color)
 end
 
 function loseFriendship(faction, color)
-    local vpTokens = helperModule.getScoreTokens(color)
+    local vpTokens = helper.getScoreTokens(color)
     for _, vpToken in ipairs(vpTokens) do
         if vpToken.getName() == faction .. " Friendship" then
             vpToken.destruct()
@@ -849,7 +849,7 @@ function loseFriendship(faction, color)
 end
 
 function give2influence(faction, color)
-    helperModule.grantScoreTokenFromBag(color, bag_friendship[faction])
+    helper.grantScoreTokenFromBag(color, bag_friendship[faction])
 end
 
 -- Find if the GUID matches a VP for a region and return it if it is the case.

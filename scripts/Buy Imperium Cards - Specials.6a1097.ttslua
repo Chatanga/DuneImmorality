@@ -1,0 +1,67 @@
+i18n = require("i18n")
+require("locales")
+
+constants = require("Constants")
+
+helper = require("HelperModule")
+
+buyModule = require("BuyModule")
+
+foldspaceZone = getObjectFromGUID("6b62e0")
+arrakisLiaisonZone = getObjectFromGUID("cbcd9a")
+theSpiceMustFlowZone = getObjectFromGUID("c087d2")
+
+_ = require("Core").registerLoadablePart(function()
+    self.interactable = false
+    activateButtons()
+end)
+
+function onLocaleChange()
+    self.clearButtons()
+    activateButtons()
+end
+
+function activateButtons()
+    helper.createAbsoluteAcquireButton(foldspaceZone, 0, 0.3, "acquireFoldspace")
+    helper.createAbsoluteAcquireButton(arrakisLiaisonZone, 0, 0.3, "acquireArrakisLiaison")
+    helper.createAbsoluteAcquireButton(theSpiceMustFlowZone, 0, 0.3, "acquireTheSpiceMustFlow")
+end
+
+function acquireFoldspace(_, color)
+    moveCardFromDeck(color, foldspaceZone, "noFoldspaceLeft")
+end
+
+function acquireArrakisLiaison(_, color)
+    moveCardFromDeck(color, arrakisLiaisonZone, "noLiaisonLeft")
+end
+
+function acquireTheSpiceMustFlow(_, color)
+    if moveCardFromDeck(color, theSpiceMustFlowZone, "noTSMFLeft") then
+        local theSpiceMustFlowZoneVictoryTokenBag = getObjectFromGUID("43c7b5")
+        helper.grantScoreTokenFromBag(color, theSpiceMustFlowZoneVictoryTokenBag)
+    end
+end
+
+function moveCardFromDeck(color, zone, noMoreCardMessage)
+    self.clearButtons()
+    Wait.time(function() activateButtons() end, 1)
+
+    if helper.startPlayerAction(color) then
+        local player = constants.players[color]
+        local cardAcquired = helper.drawCard(zone, player.discardPosition, Vector(0, 180, 0), false)
+        if cardAcquired then
+            if helper.hasTech(color, "Spaceport") then
+                Player[color].showConfirmDialog(
+                    i18n("dialogCardAbove"),
+                    function(_)
+                        helper.drawCard(player.discardZone, player.drawDeckZone.getPosition(), Vector(0, 180, 180), false)
+                    end)
+            end
+            return true
+        else
+            broadcastToColor(i18n(noMoreCardMessage), color, {1, 0.011765, 0})
+        end
+    end
+
+    return false
+end

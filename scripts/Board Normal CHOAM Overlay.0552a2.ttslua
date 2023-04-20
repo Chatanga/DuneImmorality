@@ -3,11 +3,11 @@ require("locales")
 
 constants = require("Constants")
 
-helperModule = require("HelperModule")
+helper = require("HelperModule")
 
 boardCommonModule = require("BoardCommonModule")
 
-DrawOne = helperModule.DrawOne
+DrawOne = helper.DrawOne
 
 _ = require("Core").registerLoadablePart(function()
     SecureContract_zone = getObjectFromGUID("db4022")
@@ -174,7 +174,7 @@ function SecureContract(_, color)
 
     if boardCommonModule.CheckAgentAndPlayer(color, SecureContract_zone) then
 
-        local leaderName = helperModule.getLeaderName(color)
+        local leaderName = helper.getLeaderName(color)
 
         local player = constants.players[color]
         player.solari.call("incrementVal")
@@ -190,7 +190,7 @@ function sellMelange(color, spiceAmount, solariAmount)
 
     if boardCommonModule.CheckAgentAndPlayer(color, SellMelange_zone) then
 
-        local leaderName = helperModule.getLeaderName(color)
+        local leaderName = helper.getLeaderName(color)
 
         if val < spiceAmount then
             broadcastToColor(i18n("noSpice"), color, color)
@@ -242,7 +242,7 @@ function RallyTroops(_, color)
 
     if boardCommonModule.CheckAgentAndPlayer(color, RallyTroops_zone) then
 
-        local leader = helperModule.getLeader(color)
+        local leader = helper.getLeader(color)
         assert(leader)
         local leaderName = leader.getName()
         local solariObj = constants.players[color].solari
@@ -263,13 +263,13 @@ function RallyTroops(_, color)
                 t = t + 0.3
             end
 
-            helperModule.landTroopsFromOrbit(color, 4)
+            helper.landTroopsFromOrbit(color, 4)
 
             if leader.hasTag("Ilban") then
 
                 local numberToDraw = 1
 
-                local enoughCards = helperModule.isDeckContainsEnough(color, numberToDraw)
+                local enoughCards = helper.isDeckContainsEnough(color, numberToDraw)
 
                 if not enoughCards then
                     broadcastToAll(
@@ -305,8 +305,8 @@ function HallOfOratory(_, color)
     Wait.time(activateButtons, 1)
 
     if boardCommonModule.CheckAgentAndPlayer(color, HallOfOratory_zone) then
-        local leaderName = helperModule.getLeaderName(color)
-        helperModule.landTroopsFromOrbit(color, 1)
+        local leaderName = helper.getLeaderName(color)
+        helper.landTroopsFromOrbit(color, 1)
         broadcastToAll(i18n("oratory"):format(leaderName), color)
     end
 end

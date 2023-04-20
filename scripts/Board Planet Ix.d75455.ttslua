@@ -3,11 +3,11 @@ require("locales")
 
 constants = require("Constants")
 
-helperModule = require("HelperModule")
+helper = require("HelperModule")
 
 boardCommonModule = require("BoardCommonModule")
 
-DrawOne = helperModule.DrawOne
+DrawOne = helper.DrawOne
 
 players = constants.players
 
@@ -102,6 +102,7 @@ _ = require("Core").registerLoadablePart(function(savedData)
         Blue = createNegotiationPark("Blue"),
         Red = createNegotiationPark("Red")
     }
+    saveState()
 
     Dreadnought_zone = getObjectFromGUID("83ea90")
     activateButtons()
@@ -129,17 +130,7 @@ end
 function activateButtons()
 
     for i, zone in ipairs(techSlotZones) do
-        helperModule.createAbsoluteButtonWithRoundness(self, 0.2, false, {
-            label = i18n("acquireButton"),
-            click_function = "acquireTech" .. tostring(i),
-            function_owner = self,
-            position = zone.getPosition() + Vector(0, -0.1, -0.65),
-            color = {0.25, 0.25, 0.25, 1},
-            font_color = {1, 1, 1, 1},
-            height = 400 * 0.3,
-            width = 1600 * 0.3,
-            font_size = 400 * 0.3
-        })
+        helper.createAbsoluteAcquireButton(zone, -1, 1, "acquireTech" .. tostring(i))
     end
 
     self.createButton({
@@ -280,7 +271,7 @@ function acquireTech(index, _, playerColor)
             self.clearButtons()
             Wait.time(function() activateButtons() end, 1)
 
-            local leaderName = helperModule.getLeaderName(playerColor)
+            local leaderName = helper.getLeaderName(playerColor)
             local spiceCost
             if adjustedTechCost == 0 then
                 spiceCost = i18n("freeAsInBeer")
@@ -293,7 +284,7 @@ function acquireTech(index, _, playerColor)
 
             techDiscounts[playerColor] = nil
 
-            helperModule.grantTechTile(playerColor, topTile)
+            helper.grantTechTile(playerColor, topTile)
             if #otherTiles > 0 then
                 otherTiles[1].flip()
             end
@@ -346,10 +337,10 @@ function applyBuyEffect(color, techName)
         -- 1 influence
     elseif techName == "flagship" then
         local vpToken = getObjectFromGUID("366237")
-        helperModule.grantScoreToken(color, vpToken)
+        helper.grantScoreToken(color, vpToken)
         message = "acquireFlagshipTechBenefits"
     elseif techName == "spaceport" then
-        helperModule.DrawCards(2, color, nil)
+        helper.DrawCards(2, color, nil)
         message = "acquireSpaceportTechBenefits"
     elseif techName == "artillery" then
     elseif techName == "holoprojectors" then
@@ -372,12 +363,12 @@ function applyBuyEffect(color, techName)
     elseif techName == "holtzman_engine" then
     elseif techName == "minimic_film" then
     elseif techName == "invasion_ships" then
-        helperModule.landTroopsFromOrbit(color, 4)
+        helper.landTroopsFromOrbit(color, 4)
         message = "acquireInvasionShipsBenefits"
     end
 
     if message then
-        local leaderName = helperModule.getLeaderName(color)
+        local leaderName = helper.getLeaderName(color)
         broadcastToAll(i18n(message):format(leaderName), color)
     end
 end
@@ -459,7 +450,7 @@ function addNegotiator(_, color, silent)
 
     if count > 0 then
         if not silent then
-            local leaderName = helperModule.getLeaderName(color)
+            local leaderName = helper.getLeaderName(color)
             broadcastToAll(i18n("negotiatorAdded"):format(leaderName), color)
         end
     else
@@ -476,7 +467,7 @@ function removeNegotiator(_, color, silent)
     parkModule.transfert(1, negotiation, orbit)
 
     if not silent then
-        local leaderName = helperModule.getLeaderName(color)
+        local leaderName = helper.getLeaderName(color)
         broadcastToAll(i18n("negotiatorRemoved"):format(leaderName), color)
     end
 end
@@ -486,7 +477,7 @@ function TechNegotiation(_, color)
     Wait.time(activateButtons, 1)
 
     if boardCommonModule.CheckAgentAndPlayer(color, Dreadnought_zone) then
-        local leaderName = helperModule.getLeaderName(color)
+        local leaderName = helper.getLeaderName(color)
 
         local orbit = constants.players[color].board.call("getOrbitPark")
         local negotiation = negotiationParks[color]
@@ -512,7 +503,7 @@ function Dreadnought(_, color)
 
     if boardCommonModule.CheckAgentAndPlayer(color, Dreadnought_zone) then
 
-        local leader = helperModule.getLeader(color)
+        local leader = helper.getLeader(color)
         assert(leader)
         local leaderName = leader.getName()
         local solariObj = constants.players[color].solari
@@ -542,7 +533,7 @@ function Dreadnought(_, color)
 
                 local numberToDraw = 1
 
-                local enoughCards = helperModule.isDeckContainsEnough(color, numberToDraw)
+                local enoughCards = helper.isDeckContainsEnough(color, numberToDraw)
 
                 if not enoughCards then
                     broadcastToAll(i18n("dreadBuy"):format(leaderName, price),
@@ -579,7 +570,7 @@ end
 function buyDreadnought(_, color)
     local objects = constants.players[color].zone_player.getObjects()
     for _, object in ipairs(objects) do
-        local p = helperModule.getDreadnoughtRestingPosition(object.getName())
+        local p = helper.getDreadnoughtRestingPosition(object.getName())
         if p then
             object.setPositionSmooth(p, false, false)
             break

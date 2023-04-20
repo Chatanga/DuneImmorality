@@ -7,7 +7,7 @@ constants = require("Constants")
 
 worm = require("Worm")
 
-helperModule = require("HelperModule")
+helper = require("HelperModule")
 
 localeAssets = require("localeAssets")
 
@@ -16,8 +16,8 @@ languages = {
     {locale='fr', name = 'Français'}
 }
 
-GetDeckOrCard = helperModule.GetDeckOrCard
-GetDeckOrCardFromGUID = helperModule.GetDeckOrCardFromGUID
+GetDeckOrCard = helper.GetDeckOrCard
+GetDeckOrCardFromGUID = helper.GetDeckOrCardFromGUID
 
 position_marker = constants.first_player_positions
 
@@ -26,7 +26,7 @@ manigance = '2b2575'
 conflictDeckLocation = core.getHardcodedPositionFromGUID('f9ea6b', -3.37652636, 0.725000858, -9.742931) + constants.someHeight
 
 zone_intrigue = 'a377d8'
-zone_imperium = constants.zone_deck_imperium
+zone_imperium = constants.imperiumDeckZone
 epic_cards = constants.epic_cards
 -- conflictZone1 = "616984"
 -- conflictZone2 = "7c9ceb"
@@ -123,7 +123,7 @@ _ = core.registerLoadablePart(function(saved_data)
     conflictTwo = getObjectFromGUID("7c9ceb")
     conflictThree = getObjectFromGUID("f9ea6b")
     epicgamebutton = getObjectFromGUID("f8480b")
-    pos_trash = constants.pos_trash_lower
+    pos_trash = constants.lowerTrashPosition
 
     hand_players = core.resolveGUIDs(false, {
         Green = "482f72",
@@ -837,7 +837,7 @@ function Setup()
     self.clearButtons()
 
     for color, _ in pairs(constants.players) do
-        helperModule.landTroopsFromOrbit(color, 3)
+        helper.landTroopsFromOrbit(color, 3)
     end
 
     if immortality == 0 and epic_mode == 0 then
@@ -892,7 +892,7 @@ function Setup()
     if immortality == 0 then
         getObjectFromGUID(imperium_deck_immortality).destruct()
         getObjectFromGUID(intrigue_immortality).destruct()
-        GetDeckOrCardFromGUID(constants.zone_deck_tleilaxu).destruct()
+        GetDeckOrCardFromGUID(constants.tleilaxuDeckZone).destruct()
         getObjectFromGUID(reclaimed_forces).destruct()
 
         for _, obj in ipairs(bene_tleilax_zone.getObjects()) do
@@ -915,7 +915,7 @@ function Setup()
 
         getObjectFromGUID(intrigue_immortality).setPosition(intrigue_pos)
         getObjectFromGUID(imperium_deck_immortality).setPosition(imperium_pos)
-        local deck = GetDeckOrCardFromGUID(constants.zone_deck_tleilaxu)
+        local deck = GetDeckOrCardFromGUID(constants.tleilaxuDeckZone)
         deck.shuffle()
         Wait.time(function()
             local params1 = {}
@@ -1514,7 +1514,7 @@ function replaceEpic()
         local i = 1
         for _, player in pairs(constants.players) do
             local card = getObjectFromGUID(epic_cards[i])
-            card.setPosition(player.pos_discard)
+            card.setPosition(player.discardPosition)
             card.setInvisibleTo({})
             i = i + 1
         end
@@ -1529,7 +1529,7 @@ end
 
 function movetroops()
     for color, _ in pairs(constants.players) do
-        helperModule.landTroopsFromOrbit(color, 2)
+        helper.landTroopsFromOrbit(color, 2)
     end
 end
 
@@ -1585,7 +1585,7 @@ function ImperiumDeal()
     for i = 1, 5 do
       Wait.time(function()
           deck_imperium.takeObject({
-              position = constants.imperiumRow[i].pos,
+              position = constants.imperiumRowSlots[i].pos,
               rotation = Vector(0, 180, 0)
           })
       end, i * 0.35)

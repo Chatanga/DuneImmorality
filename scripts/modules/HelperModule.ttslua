@@ -1,4 +1,4 @@
-local helperModule = {}
+local helper = {}
 
 core = require("Core")
 
@@ -6,17 +6,17 @@ constants = require("Constants")
 
 parkModule = require("ParkModule")
 
-function helperModule.DrawOne(_, color)
-    local starterDeck = helperModule.GetDeckOrCard(constants.players[color].drawDeckZone)
+function helper.DrawOne(_, color)
+    local starterDeck = helper.GetDeckOrCard(constants.players[color].drawDeckZone)
     local discardFound = false
 
     if starterDeck ~= nil then
         starterDeck.deal(1, color)
     else
-        discardFound = helperModule.ResetDiscard(_, color)
+        discardFound = helper.ResetDiscard(_, color)
         if discardFound then
             Wait.time(function()
-                local drawDeck = helperModule.GetDeckOrCard(constants.players[color].drawDeckZone)
+                local drawDeck = helper.GetDeckOrCard(constants.players[color].drawDeckZone)
                 drawDeck.deal(1, color)
             end, 1.5)
         else
@@ -26,13 +26,13 @@ function helperModule.DrawOne(_, color)
     return discardFound
 end
 
-function helperModule.DrawCards(numberToDraw, color, message)
+function helper.DrawCards(numberToDraw, color, message)
     assert(numberToDraw > 0)
 
-    local enoughCards = helperModule.isDeckContainsEnough(color, numberToDraw)
+    local enoughCards = helper.isDeckContainsEnough(color, numberToDraw)
     if not enoughCards then
 
-        local leaderName = helperModule.getLeaderName(color)
+        local leaderName = helper.getLeaderName(color)
         broadcastToAll(i18n("isDecidingToDraw"):format(leaderName), "Pink")
 
         local card = i18n("cards")
@@ -60,15 +60,15 @@ function helperModule.DrawCards(numberToDraw, color, message)
     end
 end
 
-function helperModule.ResetDiscard(_, color)
-    discardArea = helperModule.GetDeckOrCard(constants.players[color].discardZone)
+function helper.ResetDiscard(_, color)
+    discardArea = helper.GetDeckOrCard(constants.players[color].discardZone)
     local discardFound = true
     if discardArea ~= nil then
         discardArea.setRotationSmooth({0, 180, 180}, false, false)
         discardArea.shuffle()
         discardArea.setPositionSmooth(constants.getLandingPosition(constants.players[color].drawDeckZone), false, true)
         Wait.time(function()
-            helperModule.GetDeckOrCard(constants.players[color].drawDeckZone).shuffle()
+            helper.GetDeckOrCard(constants.players[color].drawDeckZone).shuffle()
         end, 0.5)
     else
         discardFound = false
@@ -78,7 +78,7 @@ function helperModule.ResetDiscard(_, color)
 
 end
 
-function helperModule.GetDeckOrCard(zone)
+function helper.GetDeckOrCard(zone)
     assert(zone)
     assert(type(zone) ~= 'string', tostring(zone) .. ' is a GUID, not a zone')
     for _, obj in ipairs(zone.getObjects()) do
@@ -88,7 +88,7 @@ function helperModule.GetDeckOrCard(zone)
     return nil
 end
 
-function helperModule.GetDeck(zone)
+function helper.GetDeck(zone)
     assert(zone)
     assert(type(zone) ~= 'string', tostring(zone) .. ' is a GUID, not a zone')
     for _, obj in ipairs(zone.getObjects()) do
@@ -97,7 +97,7 @@ function helperModule.GetDeck(zone)
     return nil
 end
 
-function helperModule.GetCard(zone)
+function helper.GetCard(zone)
     assert(zone)
     assert(type(zone) ~= 'string', tostring(zone) .. ' is a GUID, not a zone')
     for _, obj in ipairs(zone.getObjects()) do
@@ -106,29 +106,29 @@ function helperModule.GetCard(zone)
     return nil
 end
 
-function helperModule.GetDeckOrCardFromGUID(zoneGUID)
+function helper.GetDeckOrCardFromGUID(zoneGUID)
     assert(type(zoneGUID) == 'string', tostring(zoneGUID) .. ' is not a GUID')
     local zone = getObjectFromGUID(zoneGUID)
     assert(zone, "Failed to resolve GUID: " .. tostring(zoneGUID))
-    return helperModule.GetDeckOrCard(zone)
+    return helper.GetDeckOrCard(zone)
 end
 
-function helperModule.GetDeckFromGUID(zoneGUID)
+function helper.GetDeckFromGUID(zoneGUID)
     assert(type(zoneGUID) == 'string', tostring(zoneGUID) .. ' is not a GUID')
     local zone = getObjectFromGUID(zoneGUID)
     assert(zone, "Failed to resolve GUID: " .. tostring(zoneGUID))
-    return helperModule.GetDeck(zone)
+    return helper.GetDeck(zone)
 end
 
-function helperModule.GetCardFromGUID(zoneGUID)
+function helper.GetCardFromGUID(zoneGUID)
     assert(type(zoneGUID) == 'string', tostring(zoneGUID) .. ' is not a GUID')
     local zone = getObjectFromGUID(zoneGUID)
     assert(zone, "Failed to resolve GUID: " .. tostring(zoneGUID))
-    return helperModule.GetCard(zone)
+    return helper.GetCard(zone)
 end
 
-function helperModule.drawCard(zone, position, rotation, smooth)
-    local deckOrCard = helperModule.GetDeckOrCard(zone)
+function helper.drawCard(zone, position, rotation, smooth)
+    local deckOrCard = helper.GetDeckOrCard(zone)
     if deckOrCard then
         if deckOrCard.type == "Deck" then
             local parameters = {
@@ -137,9 +137,7 @@ function helperModule.drawCard(zone, position, rotation, smooth)
             if rotation then
                 parameters.rotation = rotation
             end
-            if smooth then
-                parameters.smooth = smooth
-            end
+            parameters.smooth = smooth or false
             deckOrCard.takeObject(parameters)
             return true
         elseif deckOrCard.type == "Card" then
@@ -161,16 +159,16 @@ function helperModule.drawCard(zone, position, rotation, smooth)
     return false
 end
 
-function helperModule.drawCardFromGUID(zoneGUID, position, rotation, smooth)
+function helper.drawCardFromGUID(zoneGUID, position, rotation, smooth)
     assert(type(zoneGUID) == 'string', tostring(zoneGUID) .. ' is not a GUID')
     local zone = getObjectFromGUID(zoneGUID)
     assert(zone, "Failed to resolve GUID: " .. tostring(zoneGUID))
-    return helperModule.drawCard(zone, position, rotation, smooth)
+    return helper.drawCard(zone, position, rotation, smooth)
 end
 
-function helperModule.isDeckContainsEnough(color, numberToDraw)
+function helper.isDeckContainsEnough(color, numberToDraw)
 
-    local starterDeck = helperModule.GetDeckOrCard(constants.players[color].drawDeckZone)
+    local starterDeck = helper.GetDeckOrCard(constants.players[color].drawDeckZone)
 
     local enoughCards = true
 
@@ -190,14 +188,14 @@ end
 
 -- Les nouvelles ancres ont toutes une échelle unitaire, ce qui n’était pas le
 -- cas des anciennes.
-function helperModule.correctAnchorPosition(pos, originalScale)
+function helper.correctAnchorPosition(pos, originalScale)
     return Vector(
         pos[1] * originalScale[1],
         pos[2] * originalScale[2],
         pos[3] * originalScale[3])
 end
 
-function helperModule.getPlayerTextColors(playerColor)
+function helper.getPlayerTextColors(playerColor)
 
     local background = {0, 0, 0, 1}
     local foreground = {1, 1, 1, 1}
@@ -222,12 +220,23 @@ function helperModule.getPlayerTextColors(playerColor)
     }
 end
 
-function helperModule.toVector(data)
+function helper.toVector(data)
     if not data or core.isSomeKindOfObject(data) then
         return data
     else
         return Vector(data[1], data[2], data[3])
     end
+end
+
+function helper.createAbsoluteSnapPointFromZone(zone, rotationSnap, tags)
+    local position = zone.getPosition()
+    position:setAt("y", self.getPosition().y)
+    local snapPoint = {
+        position = self.positionToLocal(position),
+        rotation_snap = rotationSnap,
+        tags = tags
+    }
+    return snapPoint
 end
 
 --[[
@@ -238,15 +247,15 @@ end
     convention for the world coordinates is a bit twisted here since the
     X coordinate is inverted.
 ]]--
-function helperModule.createAbsoluteButton(object, parameters)
-    helperModule.createAbsoluteButtonWithRoundness(object, 0.25, true, parameters)
+function helper.createAbsoluteButton(object, parameters)
+    helper.createAbsoluteButtonWithRoundness(object, 0.25, true, parameters)
 end
 
-function helperModule.createAbsoluteAcquireButton(zone, altitude, action)
+function helper.createAbsoluteAcquireButton(zone, zFactor, altitude, action, postParameters)
     local position = zone.getPosition()
     local scale = zone.getScale()
     position.y = position.y - scale.y / 2 + altitude
-    position.z = position.z - scale.z / 2 - 0.5
+    position.z = position.z + scale.z / 2 * zFactor
 
     local parameters = {
         click_function = action,
@@ -259,17 +268,24 @@ function helperModule.createAbsoluteAcquireButton(zone, altitude, action)
         color = {0.25, 0.25, 0.25, 1},
         font_color = {1, 1, 1, 1}
     }
-    helperModule.createAbsoluteButtonWithRoundness(self, 0.5, false, parameters)
+
+    if postParameters then
+        for key, value in pairs(postParameters) do
+            parameters[key] = value
+        end
+    end
+
+    helper.createAbsoluteButtonWithRoundness(self, 0.75, false, parameters)
 end
 
-function helperModule.createAbsoluteButtonWithRoundness(object, roundness, quirk, parameters)
+function helper.createAbsoluteButtonWithRoundness(object, roundness, quirk, parameters)
     local scale = object.getScale()
     local invScale = Vector(1 / scale.x, 1 / scale.y, 1 / scale.z)
 
     -- Only to counteract the absolute roundness of the background.
     local rescale = 1 / roundness
 
-    local p = helperModule.toVector(parameters['position'])
+    local p = helper.toVector(parameters['position'])
     if p then
         -- Inverting the X coordinate comes from our global 180° rotation around Y.
         -- TODO Get rid of this quirk.
@@ -298,7 +314,7 @@ function helperModule.createAbsoluteButtonWithRoundness(object, roundness, quirk
         parameters['position'] = p
     end
 
-    local s = helperModule.toVector(parameters['scale'])
+    local s = helper.toVector(parameters['scale'])
     if not s then
         s = Vector(1, 1, 1)
     end
@@ -329,8 +345,11 @@ function helperModule.createAbsoluteButtonWithRoundness(object, roundness, quirk
     object.createButton(parameters)
 end
 
--- Typical preamble for a player action.
-function helperModule.startPlayerAction(playerColor)
+-- Typical preamble for any player action.
+-- The calling object must provide the typical "activateButtons" function.
+function helper.startPlayerAction(playerColor)
+    assert(activateButtons, "An activateButtons function must be provided by the caller.")
+
     if playerColor ~= "Red" and playerColor ~= "Blue" and playerColor ~= "Green" and playerColor ~= "Yellow" then
         broadcastToColor(i18n("noTouch"), playerColor, "Pink")
         return false
@@ -343,8 +362,8 @@ function helperModule.startPlayerAction(playerColor)
     return true
 end
 
-function helperModule.getLeader(playerColor)
-    local leaderZone = helperModule.getPlayer(playerColor).leader_zone
+function helper.getLeader(playerColor)
+    local leaderZone = helper.getPlayer(playerColor).leader_zone
     for _, object in ipairs(leaderZone.getObjects()) do
         if object.hasTag("Leader") then
             return object
@@ -353,8 +372,8 @@ function helperModule.getLeader(playerColor)
     return nil
 end
 
-function helperModule.getLeaderName(playerColor)
-    local leader = helperModule.getLeader(playerColor)
+function helper.getLeaderName(playerColor)
+    local leader = helper.getLeader(playerColor)
     if leader then
         return leader.getName()
     else
@@ -363,61 +382,61 @@ function helperModule.getLeaderName(playerColor)
     end
 end
 
-function helperModule.landTroopsFromOrbit(playerColor, count)
+function helper.landTroopsFromOrbit(playerColor, count)
     local mainBoard = getObjectFromGUID('2da390')
     mainBoard.call("landTroopsFromOrbit", {playerColor, count})
 end
 
-function helperModule.sendTroopsBackToOrbit(playerColor, troops)
+function helper.sendTroopsBackToOrbit(playerColor, troops)
     local mainBoard = getObjectFromGUID('2da390')
     mainBoard.call("sendTroopsBackToOrbit", {playerColor, troops})
 end
 
-function helperModule.getTroopsFromOrbit(playerColor)
+function helper.getTroopsFromOrbit(playerColor)
     local mainBoard = getObjectFromGUID('2da390')
     return mainBoard.call("getTroopsFromOrbit", playerColor)
 end
 
-function helperModule.grantTechTile(playerColor, techTile)
-    local playerBoard = helperModule.getPlayer(playerColor).board
+function helper.grantTechTile(playerColor, techTile)
+    local playerBoard = helper.getPlayer(playerColor).board
     local techPark = playerBoard.call("getTechPark")
     parkModule.putObject(techTile, techPark)
 end
 
-function helperModule.getScoreTokens(playerColor)
-    local playerBoard = helperModule.getPlayer(playerColor).board
+function helper.getScoreTokens(playerColor)
+    local playerBoard = helper.getPlayer(playerColor).board
     local scorePark = playerBoard.call("getScorePark")
     return parkModule.getObjects(scorePark)
 end
 
-function helperModule.grantScoreToken(playerColor, token)
-    local playerBoard = helperModule.getPlayer(playerColor).board
+function helper.grantScoreToken(playerColor, token)
+    local playerBoard = helper.getPlayer(playerColor).board
     local scorePark = playerBoard.call("getScorePark")
     parkModule.putObject(token, scorePark)
 end
 
-function helperModule.grantScoreTokenFromBag(playerColor, tokenBag)
-    local playerBoard = helperModule.getPlayer(playerColor).board
+function helper.grantScoreTokenFromBag(playerColor, tokenBag)
+    local playerBoard = helper.getPlayer(playerColor).board
     local scorePark = playerBoard.call("getScorePark")
     parkModule.putObjectFromBag(tokenBag, scorePark)
 end
 
-function helperModule.getPlayerScore(playerColor)
-    local playerBoard = helperModule.getPlayer(playerColor).board
+function helper.getPlayerScore(playerColor)
+    local playerBoard = helper.getPlayer(playerColor).board
     return playerBoard.call("getScore")
 end
 
-function helperModule.getPlayer(playerColor)
+function helper.getPlayer(playerColor)
     local player = constants.players[playerColor]
     assert(player, "Unknow player color: " .. tostring(playerColor))
     return player
 end
 
-function helperModule.hasPlayer(playerColor)
+function helper.hasPlayer(playerColor)
     return constants.players[playerColor] ~= nil
 end
 
-function helperModule.hasTech(playerColor, techName)
+function helper.hasTech(playerColor, techName)
     local techs = constants.players[playerColor].techZone.getObjects()
     for _, tech in ipairs(techs) do
         if tech.hasTag(techName) then
@@ -427,19 +446,43 @@ function helperModule.hasTech(playerColor, techName)
     return false
 end
 
-function helperModule.getDreadnoughtRestingPosition(dreadnoughName)
+-- TODO Rework
+function helper.getSpecimenCount(color)
+    local zone = getObjectFromGUID("f5de09")
+    local specimenCount = 0
+    for _, troop in ipairs(zone.getObjects()) do
+        if troop.hasTag("Troop") and troop.hasTag(color) then
+            specimenCount = specimenCount + 1
+        end
+    end
+    return specimenCount
+end
+
+-- TODO Rework
+function helper.hasReachedResearchLevelOne(color)
+    local scriptZone_middleTrack_research = getObjectFromGUID("60a0fd")
+    local objs = scriptZone_middleTrack_research.getObjects()
+    for _, item in ipairs(objs) do
+        if item.hasTag(color) then
+            return true
+        end
+    end
+    return false
+end
+
+function helper.getDreadnoughtRestingPosition(dreadnoughName)
     local makerAndRecall = getObjectFromGUID('120026')
     return makerAndRecall.call("getDreadnoughtRestingPosition", dreadnoughName)
 end
 
-function helperModule.setSharedTable(tableName, table)
+function helper.setSharedTable(tableName, table)
     local mainBoard = getObjectFromGUID('2da390')
     mainBoard.setTable(tableName, table)
 end
 
-function helperModule.getSharedTable(tableName)
+function helper.getSharedTable(tableName)
     local mainBoard = getObjectFromGUID('2da390')
     return mainBoard.getTable(tableName)
 end
 
-return helperModule
+return helper

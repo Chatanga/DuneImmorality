@@ -123,12 +123,12 @@ def rectify_name(object):
         '9ea771': 'Randomise Player Positions',
 
         '976c3a': 'Buy Intrigue Card',
-        '38ffc0': 'Buy First Imperium Row Card',
-        '21b287': 'Buy Second Imperium Row Card',
-        '0a5f50': 'Buy Third Imperium Row Card',
-        'ded672': 'Buy Fourth Imperium Row Card',
-        'ad2a82': 'Buy Fifth Imperium Row Card',
-        '6a1097': 'Buy Special Imperium Cards',
+        '38ffc0': 'Buy Imperium Card - 1',
+        '21b287': 'Buy Imperium Card - 2',
+        '0a5f50': 'Buy Imperium Card - 3',
+        'ded672': 'Buy Imperium Card - 4',
+        'ad2a82': 'Buy Imperium Card - 5',
+        '6a1097': 'Buy Imperium Cards - Specials',
 
         '3cdb2d': 'Spice Bonus - Imperial Basin',
         '394db2': 'Spice Bonus - Hagga Basin',
@@ -153,13 +153,13 @@ def rectify_name(object):
         '7e10a9': 'Atomics - Yellow',
         '0a22ec': 'Atomics - Green',
         'd5ff47': 'Atomics - Red',
-        'adcd28': 'Player Board- Red',
-        '77ca63': 'Player Board- Blue',
-        'fdd5f9': 'Player Board- Yellow',
+        'adcd28': 'Player Board - Red',
+        '77ca63': 'Player Board - Blue',
+        'fdd5f9': 'Player Board - Yellow',
         '0bbae1': 'Player Board - Green',
 
-        '439df9': 'Buy First Immortality Row Card',
-        '363f98': 'Buy Second Immortality Row Card',
+        '439df9': 'Buy Immortality Card - 1',
+        '363f98': 'Buy Immortality Card - 2',
         '46cd6b': 'Tleilaxu Bonus Spice'
     }
 
@@ -204,6 +204,34 @@ def rectify_geometry(object, position, rotation, scale):
         transform['scaleY'] = sy
         transform['scaleZ'] = sz
 
+def erase_snap_points(save, center, radius):
+    cx, cy, cz = center
+    filtered_snap_points = []
+    for snap_point in save["SnapPoints"]:
+        p = snap_point["Position"]
+        square_distance = (p["x"] - cx)**2 + (p["y"] - cy)**2 + (p["z"] - cz)**2
+        if square_distance > radius**2:
+            filtered_snap_points.append(snap_point)
+    save["SnapPoints"] = filtered_snap_points
+
+def erase_zones(objects, center, radius):
+    cx, cy, cz = center
+    filtered_objects = []
+    for object in objects:
+        keep = True
+        if "Name" in object:
+            name = object["Name"]
+            if name == "ScriptingTrigger":
+                transform = object["Transform"]
+                px = transform['posX']
+                py = transform['posY']
+                pz = transform['posZ']
+                square_distance = (px - cx)**2 + (py - cy)**2 + (pz - cz)**2
+                keep = square_distance > radius**2
+        if keep:
+            filtered_objects.append(object)
+    return filtered_objects
+
 def patch_save(input_path, output_path):
 
     save = None
@@ -224,14 +252,45 @@ def patch_save(input_path, output_path):
         object_by_guid[guid] = object
 
         rectify_rotation(object)
-        #rectify_name(object)
+        rectify_name(object)
 
         new_objects.append(object)
 
+    # Black market: zones.
     rectify_geometry(object_by_guid['323acb'], (-7.5, 1, 20.5), (0, 0, 0), (2, 1, 3))
     rectify_geometry(object_by_guid['e96c10'], (-5, 1, 20.5), (0, 0, 0), (2, 1, 3))
     rectify_geometry(object_by_guid['93de6d'], (-2.5, 1, 20.5), (0, 0, 0), (2, 1, 3))
-    rectify_geometry(object_by_guid['ab7ac5'],  (-6.2, 0.52, 20.5), (0, 180, 0), None)
+    # Black market: board.
+    rectify_geometry(object_by_guid['ab7ac5'], (-6.2, 0.52, 20.5), (0, 180, 0), None)
+
+    # Imperium row: zones.
+    rectify_geometry(object_by_guid['3de1d0'], (2.5 - 2.5 * 4, 1, 9), (0, 180, 0), (2, 1, 3))
+    rectify_geometry(object_by_guid['356e2c'], (2.5 - 2.5 * 3, 1, 9), (0, 180, 0), (2, 1, 3))
+    rectify_geometry(object_by_guid['7edbb3'], (2.5 - 2.5 * 2, 1, 9), (0, 180, 0), (2, 1, 3))
+    rectify_geometry(object_by_guid['641974'], (2.5 - 2.5 * 1, 1, 9), (0, 180, 0), (2, 1, 3))
+    rectify_geometry(object_by_guid['c6dbed'], (2.5 - 2.5 * 0, 1, 9), (0, 180, 0), (2, 1, 3))
+
+    rectify_geometry(object_by_guid['6b62e0'], (2.5 - 2.5 * 4, 1, 12.5), (0, 180, 0), (2, 1, 3))
+    rectify_geometry(object_by_guid['cbcd9a'], (2.5 - 2.5 * 3, 1, 12.5), (0, 180, 0), (2, 1, 3))
+    rectify_geometry(object_by_guid['c087d2'], (2.5 - 2.5 * 2, 1, 12.5), (0, 180, 0), (2, 1, 3))
+
+    # Imperium row: anchors.
+    rectify_geometry(object_by_guid['38ffc0'], (2.5 - 2.5 * 4, 0.5, 9), None, None)
+    rectify_geometry(object_by_guid['21b287'], (2.5 - 2.5 * 3, 0.5, 9), None, None)
+    rectify_geometry(object_by_guid['0a5f50'], (2.5 - 2.5 * 2, 0.5, 9), None, None)
+    rectify_geometry(object_by_guid['ded672'], (2.5 - 2.5 * 1, 0.5, 9), None, None)
+    rectify_geometry(object_by_guid['ad2a82'], (2.5 - 2.5 * 0, 0.5, 9), None, None)
+
+    rectify_geometry(object_by_guid['e5ba35'], (2.5 - 2.5 * 4, 1, 16), (0, 180, 0), (2, 1, 3))
+    rectify_geometry(object_by_guid['1e5a32'], (2.5 - 2.5 * 3, 1, 16), (0, 180, 0), (2, 1, 3))
+
+    # Ix CHOAM board overlay.
+    translate(object_by_guid['a139cd'], (0, -0.09, 0))
+
+    #erase_snap_points(save, (-2.5, 0, 0), 9)
+    save["SnapPoints"] = []
+
+    new_objects = erase_zones(new_objects, (7, 1, 8.5), 2)
 
     save['ObjectStates'] = new_objects
 

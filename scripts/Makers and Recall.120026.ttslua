@@ -5,22 +5,22 @@ require("locales")
 
 constants = require("Constants")
 
-helperModule = require("HelperModule")
+helper = require("HelperModule")
 
-GetDeckOrCard = helperModule.GetDeckOrCard
-GetDeckOrCardFromGUID = helperModule.GetDeckOrCardFromGUID
+GetDeckOrCard = helper.GetDeckOrCard
+GetDeckOrCardFromGUID = helper.GetDeckOrCardFromGUID
 
-DrawOne = helperModule.DrawOne
+DrawOne = helper.DrawOne
 
-pos_trash = constants.pos_trash_lower
+pos_trash = constants.lowerTrashPosition
 
-zone_deck = constants.zone_deck_imperium
+zone_deck = constants.imperiumDeckZone
 
 combat_marker_offside_positions = {
-    Red = core.getHardcodedPositionFromGUID('2d1d17', 1.2240926, 1.27231038, -12.0979958) + Vector(0, 0, 0),
-    Blue = core.getHardcodedPositionFromGUID('f22e20', 1.20187283, 1.57164335, -12.094532) + Vector(1, 0, 0),
-    Yellow = core.getHardcodedPositionFromGUID('c2dd31', 1.27505, 0.679791868, -12.117794) + Vector(2, 0, 0),
-    Green = core.getHardcodedPositionFromGUID('a1a9a7', 1.23221791, 0.972619534, -12.1029119) + Vector(3, 0, 0)
+    Red = core.getHardcodedPositionFromGUID('2d1d17', 1.21999431, 1.27230573, -12.0970058) + Vector(0, 0, 0),
+    Blue = core.getHardcodedPositionFromGUID('f22e20', 1.194473, 1.57161641, -12.0935984) + Vector(1, 0, 0),
+    Yellow = core.getHardcodedPositionFromGUID('c2dd31', 1.27534652, 0.6798021, -12.1175385) + Vector(2, 0, 0),
+    Green = core.getHardcodedPositionFromGUID('a1a9a7', 1.23153877, 0.9726308, -12.1025581) + Vector(3, 0, 0)
 }
 
 -- TODO Make these positions relative to some anchor.
@@ -174,7 +174,7 @@ function ConflictZone()
     for _, item in ipairs(conflictArea) do
         local itemName = item.getName()
         if constants.players[itemName] then
-            helperModule.sendTroopsBackToOrbit(itemName, {item})
+            helper.sendTroopsBackToOrbit(itemName, {item})
         else
             local p = getDreadnoughtRestingPosition(itemName)
             if p then
@@ -391,7 +391,7 @@ function ConflictZone()
                 if card.hasTag('Intrigue') then
                     card.setPosition(pos_intrigue_discard)
                 else
-                    card.setPosition(constants.players[col].pos_discard)
+                    card.setPosition(constants.players[col].discardPosition)
                 end
             end
         end
@@ -426,7 +426,7 @@ function ConflictZone()
             if obj.hasTag("Holtzman") then
                 DrawOne(_, color)
                 broadcastToAll(
-                    helperModule.getLeaderName(color) ..
+                    helper.getLeaderName(color) ..
                         i18n("holtzmanEngine"), color)
             elseif obj.hasTag("Shuttle Fleet") then
                 for _ = 1, 2 do
@@ -436,7 +436,7 @@ function ConflictZone()
                     t1 = t1 + 0.3
                 end
                 broadcastToAll(
-                    helperModule.getLeaderName(color) ..
+                    helper.getLeaderName(color) ..
                         i18n("shuttleFleet"), color)
             elseif obj.getDescription() == "Tech" then
                 obj.setRotationSmooth({0, 180, 0}, false, false)
@@ -448,10 +448,10 @@ function ConflictZone()
         local playerObjects = constants.players[color].techZone.getObjects()
         for _, obj in ipairs(playerObjects) do
             if obj.getGMNotes() == "ok" and
-                helperModule.getLeaderName(color) == "Norma Cenva" then
+                helper.getLeaderName(color) == "Norma Cenva" then
                 DrawOne(_, color)
                 broadcastToAll(
-                    helperModule.getLeaderName(color) ..
+                    helper.getLeaderName(color) ..
                         i18n("holtzmanEffect"), color)
                 break
             end
@@ -494,7 +494,7 @@ function findNextPlayer(activePlayers)
 end
 
 function setFirstPlayer(firstPlayerColor)
-    broadcastToAll(i18n('firstPlayer') .. helperModule.getLeaderName(firstPlayerColor), firstPlayerColor)
+    broadcastToAll(i18n('firstPlayer') .. helper.getLeaderName(firstPlayerColor), firstPlayerColor)
     if getObjectFromGUID("4a3e76").getVar("hotseat_mode") then
         Player.getPlayers()[1].changeColor(firstPlayerColor)
     else

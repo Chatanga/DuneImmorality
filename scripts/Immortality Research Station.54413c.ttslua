@@ -3,11 +3,11 @@ require("locales")
 
 constants = require("Constants")
 
-helperModule = require("HelperModule")
+helper = require("HelperModule")
 
 boardCommonModule = require("BoardCommonModule")
 
-DrawOne = helperModule.DrawOne
+DrawOne = helper.DrawOne
 
 _ = require("Core").registerLoadablePart(function()
 
@@ -37,7 +37,7 @@ function ResearchStation(_, color)
             if item.hasTag(color) then maxSearch = true end
         end
 
-        local leaderName = helperModule.getLeaderName(color)
+        local leaderName = helper.getLeaderName(color)
         local waterObj = constants.players[color].water
 
         if waterObj.call("collectVal") < 2 then
@@ -55,7 +55,7 @@ function ResearchStation(_, color)
                 advanceResearch = ""
             end
 
-            local enoughCards = helperModule.isDeckContainsEnough(color, numberToDraw)
+            local enoughCards = helper.isDeckContainsEnough(color, numberToDraw)
 
             if not enoughCards then
 

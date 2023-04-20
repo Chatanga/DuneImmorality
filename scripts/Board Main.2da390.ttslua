@@ -333,9 +333,9 @@ function createGarrisonPark(playerColor, origin)
         playerColor,
         false)
 
-    local textColors =  helperModule.getPlayerTextColors(playerColor)
+    local textColors =  helper.getPlayerTextColors(playerColor)
 
-    helperModule.createAbsoluteButton(self, {
+    helper.createAbsoluteButton(self, {
         click_function = "landOne" .. playerColor .. "TroopFromOrbit",
         function_owner = self,
         label = i18n("addTroopSmallButton"),
@@ -539,14 +539,14 @@ end
 
 function BonusFremen(_, color)
     constants.players[color].water.call("incrementVal")
-    local leaderName = helperModule.getLeaderName(color)
+    local leaderName = helper.getLeaderName(color)
     broadcastToAll(i18n("fremenBonus"):format(leaderName), color)
 
 end
 
 function BonusBene(_, color)
     Wait.time(function() boardCommonModule.drawIntrigue(color) end, 0.75)
-    local leaderName = helperModule.getLeaderName(color)
+    local leaderName = helper.getLeaderName(color)
     broadcastToAll(i18n("beneBonus"):format(leaderName), color)
 
 end
@@ -555,7 +555,7 @@ function BonusSpatial(_, color)
     local t0 = 0
     local combat = Global.call("getFight")
     local solariAmount = 3
-    local leader = helperModule.getLeader(color)
+    local leader = helper.getLeader(color)
     assert(leader)
     local leaderName = leader.getName()
 
@@ -573,9 +573,9 @@ end
 
 function BonusEmperor(_, color)
 
-    local leaderName = helperModule.getLeaderName(color)
+    local leaderName = helper.getLeaderName(color)
 
-    helperModule.landTroopsFromOrbit(color, 2)
+    helper.landTroopsFromOrbit(color, 2)
     broadcastToAll(i18n("emperorBonus"):format(leaderName), color)
 
 end

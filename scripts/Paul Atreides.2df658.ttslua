@@ -1,6 +1,6 @@
 leader = require("Leader")
 
-helperModule = require("HelperModule")
+helper = require("HelperModule")
 
 _ = require("Core").registerLoadablePart(function(savedData)
     leader.init(onClaim, savedData)
@@ -28,8 +28,8 @@ end
 
 function prescience(_, color)
     if color == leader.claimed then
-        local leaderName = helperModule.getLeaderName(color)
-        local cardOrDeck = helperModule.GetDeckOrCard(constants.players[color].drawDeckZone)
+        local leaderName = helper.getLeaderName(color)
+        local cardOrDeck = helper.GetDeckOrCard(constants.players[color].drawDeckZone)
 
         if cardOrDeck == nil then
             broadcastToColor(i18n("prescienceVoid"), color, "Purple")

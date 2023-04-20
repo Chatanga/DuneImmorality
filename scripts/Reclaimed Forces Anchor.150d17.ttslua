@@ -3,7 +3,7 @@ require("locales")
 
 constants = require("Constants")
 
-helperModule = require("HelperModule")
+helper = require("HelperModule")
 
 players = constants.players
 
@@ -42,13 +42,13 @@ end
 
 function tleilaxuTroop(_, color)
 
-    local leaderName = helperModule.getLeaderName(color)
+    local leaderName = helper.getLeaderName(color)
     if isEnoughSpecimen(_, color) then
         Player[color].showConfirmDialog(i18n("reclaimedForcesTroopsWarning"),
         function(color)
             spendSpecimen(color, 3)
             Wait.time(function()
-                helperModule.landTroopsFromOrbit(color, 2)
+                helper.landTroopsFromOrbit(color, 2)
             end, 2)
             broadcastToAll(leaderName .. i18n("reclaimedForcesTroops"), color)
         end)
@@ -57,7 +57,7 @@ end
 
 function tleilaxuScarab(_, color)
 
-    local leaderName = helperModule.getLeaderName(color)
+    local leaderName = helper.getLeaderName(color)
     if isEnoughSpecimen(_, color) then
         Player[color].showConfirmDialog(i18n("reclaimedForcesScarabWarning"),
         function(color)
@@ -75,8 +75,7 @@ end
 
 function spendSpecimen(color, price)
     Wait.time(function()
-        local params = {osef = "", color = color, silent = true}
-        bene_tleilax_board.Call("RemoveSpecimenCall", params)
+        bene_tleilax_board.Call("RemoveSpecimenCall", {color = color, silent = true})
     end, 0.3, price)
 end
 

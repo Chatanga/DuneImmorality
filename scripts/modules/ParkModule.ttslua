@@ -1,6 +1,6 @@
 local parkModule = {}
 
-helperModule = require("HelperModule")
+helper = require("HelperModule")
 
 --[[
     A park is basically an open field bag with a fixed size and a visual
@@ -20,7 +20,7 @@ function parkModule.createPark(name, slots, rotation, zone, tag, description, lo
     assert(#slots > 0, "No slot provided for new park.")
     assert(zone, "No park zone provided.")
 
-    helperModule.setSharedTable(name, {})
+    helper.setSharedTable(name, {})
 
     -- Check all slots in the zone.
 
@@ -102,7 +102,7 @@ function parkModule.putHolders(holders, toPark)
 
     local now = Time.time
 
-    local objectsInTransit = helperModule.getSharedTable(toPark.name)
+    local objectsInTransit = helper.getSharedTable(toPark.name)
 
     local newObjectsInTransit = {}
     for object, transit in pairs(objectsInTransit) do
@@ -134,7 +134,7 @@ function parkModule.putHolders(holders, toPark)
         end
     end
 
-    helperModule.setSharedTable(toPark.name, newObjectsInTransit)
+    helper.setSharedTable(toPark.name, newObjectsInTransit)
 
     return count
 end
