@@ -416,7 +416,7 @@ function RevealOK(_, color)
     constants.players[color].board.clearButtons()
     Wait.time(function() activateButtons(color) end, 2)
     local player_hand_table = Player[color].getHandObjects()
-    log("Player[" .. color .. "].getHandObjects() = " .. tostring(Player[color].getHandObjects()))
+    --log("Player[" .. color .. "].getHandObjects() = " .. tostring(Player[color].getHandObjects()))
     local count = 0
     local c = 0
     local d = 0

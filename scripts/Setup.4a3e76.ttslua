@@ -303,6 +303,7 @@ end
 function activateNumberOfBan()
     if hiddenPicks == 1 then
         valueButtonParameters = {
+            index = #self.getButtons(), -- (Indexes start at 0 here.)
             click_function = 'noFunction', -- click_function is mandatory: used dummy fonction since nil wouldn't work
             function_owner = self,
             label = '',
@@ -1239,7 +1240,7 @@ function updateLeaderChoices(varPassed) -- called from the ClaimLeader in all st
     if numPlayers == getLengthTable(leaderChoices) then -- when all player picked: claim chosen Leader if it was a normal game (without hiddenPicks)+make them now visible
         hiddenPicks = 0
         for color, leaderChoiceGUID in pairs(leaderChoices) do
-            varToPass = {GO = leaderChoiceGUID, color = color}
+            varToPass = {leaderChoiceGUID = leaderChoiceGUID, color = color}
             getObjectFromGUID(leaderChoiceGUID).call("claimLeaderCall",
                                                      varToPass)
         end
@@ -1381,7 +1382,7 @@ function RemoveIxContent()
 end
 
 function setupConflits(a, b, c)
-    log("--- setupConflits ---")
+    --log("--- setupConflits ---")
     conflictThree.shuffle()
     conflictTwo.shuffle()
     conflictOne.shuffle()
@@ -1543,9 +1544,7 @@ function movetechdecks()
     end
     techs.randomize()
 
-    log(8)
     local centerPos = constants.getLandingPositionFromGUID(constants.ixPlanetBoard)
-    log(9)
     local techSlotPos = {
         centerPos + Vector(1.69, 3.02, 2.35),
         centerPos + Vector(1.69, 3.02, 0.30),
