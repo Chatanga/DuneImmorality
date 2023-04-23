@@ -77,6 +77,13 @@ allianceTokens = {
     fremen = '4c2bcc'
 }
 
+allianceZones = {
+    emperor = '2c3c38',
+    spacingGuild = '8d2035',
+    beneGesserit = '53e26c',
+    fremen = 'ae150a'
+}
+
 reputationLevels = {}
 
 _ = core.registerLoadablePart(function(_)
@@ -112,11 +119,10 @@ function reputationModule.hasFriendship(color, faction)
     end
 end
 
-function reputationModule.hasAlliance(color, faction)
+function reputationModule.hasReachedAllianceLevel(color, faction)
     local reputationLevels = reputationModule.reputationLevels[faction][color]
-    if reputationTokens[faction][color].getPosition().z > reputationLevels.alliance then
-        return true
-    end
+    local z = reputationTokens[faction][color].getPosition().z
+    return z - reputationLevels.step < reputationLevels.alliance and z > reputationLevels.alliance
 end
 
 function reputationModule.getReputationLevels(faction, color)

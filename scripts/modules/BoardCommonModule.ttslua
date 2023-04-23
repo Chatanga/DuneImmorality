@@ -173,9 +173,9 @@ function boardCommonModule.Stillsuits(color)
         broadcastToAll(i18n("stillSuits"):format(leaderName), color)
 
         if leaderName == "Shaddam IV" then
-            boardCommonModule.FremenDown(color)
+            reputation.FremenDown(color)
         else
-            boardCommonModule.FremenUp(color)
+            reputation.FremenUp(color)
         end
     end
 end
@@ -188,9 +188,9 @@ function boardCommonModule.HardyWarriors(color)
             broadcastToAll(i18n("hardyWarriors"):format(leaderName), color)
 
             if leaderName == "Shaddam IV" then
-                boardCommonModule.FremenDown(color)
+                reputation.FremenDown(color)
             else
-                boardCommonModule.FremenUp(color)
+                reputation.FremenUp(color)
             end
         end
     end
@@ -203,9 +203,9 @@ function boardCommonModule.Secrets(color)
         broadcastToAll(i18n("secrets"):format(leaderName), color)
 
         if leaderName == "Shaddam IV" then
-            boardCommonModule.BeneDown(color)
+            reputation.BeneDown(color)
         else
-            boardCommonModule.BeneUp(color)
+            reputation.BeneUp(color)
         end
     end
 end
@@ -217,9 +217,9 @@ function boardCommonModule.SelectiveBreeding(color)
             broadcastToAll(i18n("selectiveBreeding"):format(leaderName), color)
 
             if leaderName == "Shaddam IV" then
-                boardCommonModule.BeneDown(color)
+                reputation.BeneDown(color)
             else
-                boardCommonModule.BeneUp(color)
+                reputation.BeneUp(color)
             end
         end
     end
@@ -232,9 +232,9 @@ function boardCommonModule.Foldspace(color)
         broadcastToAll(i18n("foldspace"):format(leaderName), color)
 
         if leaderName == "Shaddam IV" then
-            boardCommonModule.GuildDown(color)
+            reputation.GuildDown(color)
         else
-            boardCommonModule.GuildUp(color)
+            reputation.GuildUp(color)
         end
     end
 end
@@ -248,9 +248,9 @@ function boardCommonModule.Heighliner(color)
             broadcastToAll(i18n("heighliner"):format(leaderName), color)
 
             if leaderName == "Shaddam IV" then
-                boardCommonModule.GuildDown(color)
+                reputation.GuildDown(color)
             else
-                boardCommonModule.GuildUp(color)
+                reputation.GuildUp(color)
             end
         end
     end
@@ -267,9 +267,9 @@ function boardCommonModule.Wealth(color)
         broadcastToAll(i18n("wealth"):format(leaderName, solariAmount), color)
 
         if leaderName == "Shaddam IV" then
-            boardCommonModule.EmperorDown(color)
+            reputation.EmperorDown(color)
         else
-            boardCommonModule.EmperorUp(color)
+            reputation.EmperorUp(color)
         end
     end
 end
@@ -290,9 +290,9 @@ function boardCommonModule.Conspire(color)
             broadcastToAll(i18n("conspire"):format(leaderName, solariAmount), color)
 
             if leaderName == "Shaddam IV" then
-                boardCommonModule.EmperorDown(color)
+                reputation.EmperorDown(color)
             else
-                boardCommonModule.EmperorUp(color)
+                reputation.EmperorUp(color)
             end
         end
     end
