@@ -16,8 +16,8 @@ languages = {
     {locale='fr', name = 'Français'}
 }
 
-GetDeckOrCard = helper.GetDeckOrCard
-GetDeckOrCardFromGUID = helper.GetDeckOrCardFromGUID
+getDeckOrCard = helper.getDeckOrCard
+getDeckOrCardFromGUID = helper.getDeckOrCardFromGUID
 
 position_marker = constants.first_player_positions
 
@@ -270,8 +270,8 @@ _ = core.registerLoadablePart(function(saved_data)
         activateImmortality()
         activateBlitz()
         activateBlackMarket()
-        activateHiddenPicks() -- New
-        activateNumberOfBan() -- New
+        activateHiddenPicks()
+        activateNumberOfBan()
         activateTournament()
         activateScoreBoard()
     end
@@ -303,6 +303,7 @@ end
 function activateNumberOfBan()
     if hiddenPicks == 1 then
         valueButtonParameters = {
+            index = #self.getButtons(), -- Indexes start at 0...
             click_function = 'noFunction', -- click_function is mandatory: used dummy fonction since nil wouldn't work
             function_owner = self,
             label = '',
@@ -704,8 +705,8 @@ function activateAllButtons()
     activateImmortality()
     activateBlitz()
     activateBlackMarket()
-    activateHiddenPicks() -- New
-    activateNumberOfBan() -- New
+    activateHiddenPicks()
+    activateNumberOfBan()
     activateTournament()
     activateScoreBoard()
 end
@@ -892,7 +893,7 @@ function Setup()
     if immortality == 0 then
         getObjectFromGUID(imperium_deck_immortality).destruct()
         getObjectFromGUID(intrigue_immortality).destruct()
-        GetDeckOrCardFromGUID(constants.tleilaxuDeckZone).destruct()
+        getDeckOrCardFromGUID(constants.tleilaxuDeckZone).destruct()
         getObjectFromGUID(reclaimed_forces).destruct()
 
         for _, obj in ipairs(bene_tleilax_zone.getObjects()) do
@@ -915,7 +916,7 @@ function Setup()
 
         getObjectFromGUID(intrigue_immortality).setPosition(intrigue_pos)
         getObjectFromGUID(imperium_deck_immortality).setPosition(imperium_pos)
-        local deck = GetDeckOrCardFromGUID(constants.tleilaxuDeckZone)
+        local deck = getDeckOrCardFromGUID(constants.tleilaxuDeckZone)
         deck.shuffle()
         Wait.time(function()
             local params1 = {}
@@ -1007,12 +1008,12 @@ function Commune()
 
     destructMissingPlayers()
     assert(zone_intrigue)
-    GetDeckOrCardFromGUID(zone_intrigue).shuffle()
-    GetDeckOrCardFromGUID(zone_imperium).shuffle()
-    GetDeckOrCardFromGUID('6d8a2e').shuffle()
-    GetDeckOrCardFromGUID('e6cfee').shuffle()
-    GetDeckOrCardFromGUID('907f66').shuffle()
-    GetDeckOrCardFromGUID('4f08fc').shuffle()
+    getDeckOrCardFromGUID(zone_intrigue).shuffle()
+    getDeckOrCardFromGUID(zone_imperium).shuffle()
+    getDeckOrCardFromGUID('6d8a2e').shuffle()
+    getDeckOrCardFromGUID('e6cfee').shuffle()
+    getDeckOrCardFromGUID('907f66').shuffle()
+    getDeckOrCardFromGUID('4f08fc').shuffle()
     Wait.time(ImperiumDeal, 0.5)
     Wait.time(function()
         local firstConflictAnchor = getObjectFromGUID("cb0478")
@@ -1239,7 +1240,7 @@ function updateLeaderChoices(varPassed) -- called from the ClaimLeader in all st
     if numPlayers == getLengthTable(leaderChoices) then -- when all player picked: claim chosen Leader if it was a normal game (without hiddenPicks)+make them now visible
         hiddenPicks = 0
         for color, leaderChoiceGUID in pairs(leaderChoices) do
-            varToPass = {GO = leaderChoiceGUID, color = color}
+            varToPass = {leaderChoiceGUID = leaderChoiceGUID, color = color}
             getObjectFromGUID(leaderChoiceGUID).call("claimLeaderCall",
                                                      varToPass)
         end
@@ -1295,8 +1296,8 @@ end
 function BlitzSetup()
     setupConflits(4, 3, 0)
     Wait.time(function()
-        GetDeckOrCardFromGUID(zone_intrigue).shuffle()
-        GetDeckOrCardFromGUID(zone_imperium).shuffle()
+        getDeckOrCardFromGUID(zone_intrigue).shuffle()
+        getDeckOrCardFromGUID(zone_imperium).shuffle()
 
         getObjectFromGUID("e597dc").call("incrementVal")
         getObjectFromGUID("e597dc").call("incrementVal")
@@ -1311,12 +1312,12 @@ function BlitzSetup()
 
         for _, col in pairs(players) do
 
-            GetDeckOrCardFromGUID(zone_intrigue).deal(1, col)
+            getDeckOrCardFromGUID(zone_intrigue).deal(1, col)
 
             t = 0.1
             for i = 1, 7, 1 do
                 Wait.time(function()
-                    GetDeckOrCardFromGUID(zone_imperium).deal(1, col)
+                    getDeckOrCardFromGUID(zone_imperium).deal(1, col)
                 end, t)
                 t = t + 0.1
             end
@@ -1384,7 +1385,7 @@ function setupConflits(a, b, c)
     conflictThree.shuffle()
     conflictTwo.shuffle()
     conflictOne.shuffle()
-    nb_conflit_iii = GetDeckOrCardFromGUID("07e239").getQuantity()
+    nb_conflit_iii = getDeckOrCardFromGUID("07e239").getQuantity()
     if a < nb_conflit_iii then
         for i = 1, a do
             conflictThree.takeObject({
@@ -1522,8 +1523,8 @@ function replaceEpic()
 
     Wait.time(movetroops, 2)
     Wait.time(function()
-        GetDeckOrCardFromGUID(zone_intrigue).shuffle()
-        GetDeckOrCardFromGUID(zone_intrigue).deal(1)
+        getDeckOrCardFromGUID(zone_intrigue).shuffle()
+        getDeckOrCardFromGUID(zone_intrigue).deal(1)
     end, 5)
 end
 
@@ -1579,7 +1580,7 @@ function movetechdecks()
 end
 
 function ImperiumDeal()
-    local deck_imperium = GetDeckOrCardFromGUID(zone_imperium)
+    local deck_imperium = getDeckOrCardFromGUID(zone_imperium)
     deck_imperium.shuffle()
 
     for i = 1, 5 do

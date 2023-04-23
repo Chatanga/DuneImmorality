@@ -10,7 +10,7 @@ constants = require("Constants")
 helper = require("HelperModule")
 
 function buyModule.buy(zone, color, buyTleilaxu)
-    local card = helper.GetCard(zone)
+    local card = helper.getCard(zone)
     if card and helper.startPlayerAction(color) then
         if not buyTleilaxu or buyModule.paySpecimenPrice(color, card) then
             local player = constants.players[color]
@@ -23,7 +23,7 @@ function buyModule.buy(zone, color, buyTleilaxu)
                 Player[color].showConfirmDialog(
                     i18n("dialogCardAbove"),
                     function(_)
-                        helper.drawCard(player.discardZone, player.drawDeckZone.getPosition(), Vector(0, 180, 180), false)
+                        helper.moveCardFromZone(player.discardZone, player.drawDeckZone.getPosition(), Vector(0, 180, 180), false)
                     end)
             end
 
@@ -34,7 +34,7 @@ function buyModule.buy(zone, color, buyTleilaxu)
             else
                 deckZone = getObjectFromGUID(constants.imperiumDeckZone)
             end
-            helper.drawCard(deckZone, zone.getPosition(), Vector(0, 180, 0), false)
+            helper.moveCardFromZone(deckZone, zone.getPosition(), Vector(0, 180, 0), false)
         end
     end
 end

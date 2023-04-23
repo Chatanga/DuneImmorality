@@ -7,7 +7,7 @@ helper = require("HelperModule")
 
 boardCommonModule = require("BoardCommonModule")
 
-DrawOne = helper.DrawOne
+DrawOne = helper.drawOneCard
 
 players = constants.players
 
@@ -340,7 +340,7 @@ function applyBuyEffect(color, techName)
         helper.grantScoreToken(color, vpToken)
         message = "acquireFlagshipTechBenefits"
     elseif techName == "spaceport" then
-        helper.DrawCards(2, color, nil)
+        helper.drawCards(color, 2, nil)
         message = "acquireSpaceportTechBenefits"
     elseif techName == "artillery" then
     elseif techName == "holoprojectors" then
@@ -533,7 +533,7 @@ function Dreadnought(_, color)
 
                 local numberToDraw = 1
 
-                local enoughCards = helper.isDeckContainsEnough(color, numberToDraw)
+                local enoughCards = helper.doesDeckContainEnoughCards(color, numberToDraw)
 
                 if not enoughCards then
                     broadcastToAll(i18n("dreadBuy"):format(leaderName, price),

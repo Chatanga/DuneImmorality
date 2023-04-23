@@ -93,16 +93,16 @@ end
 
 -- Give the card to the specified player.
 function takeSlot(slotZoneGUID, color)
-    helper.drawCardFromGUID(slotZoneGUID, constants.players[color].discardPosition, Vector(0, 180, 0), true)
+    helper.moveCardFromZoneGUID(slotZoneGUID, constants.players[color].discardPosition, Vector(0, 180, 0), true)
 end
 
 -- Populate the slotZoneGUID with a new card.
 function replenishSlot(slotZoneGUID)
     local slotZone = getObjectFromGUID(slotZoneGUID)
-    helper.drawCardFromGUID(constants.imperiumDeckZone, slotZone.getPosition(), Vector(0, 180, 0), true)
+    helper.moveCardFromZoneGUID(constants.imperiumDeckZone, slotZone.getPosition(), Vector(0, 180, 0), true)
 end
 
 -- Trash the slotZoneGUID card.
 function trashSlot(slotZoneGUID)
-    helper.drawCardFromGUID(slotZoneGUID, constants.lowerTrashPosition, Vector(0, 180, 0), true)
+    helper.moveCardFromZoneGUID(slotZoneGUID, constants.lowerTrashPosition, Vector(0, 180, 0), true)
 end

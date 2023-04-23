@@ -183,7 +183,11 @@ def rectify_name(object):
         else:
             print("Missing script file for GUID", guid)
 
-def rectify_geometry(object, position, rotation, scale):
+def get_position(object):
+    transform = object['Transform']
+    return (transform['posX'], transform['posY'], transform['posZ'])
+
+def rectify_geometry(object, position = None, rotation = None, scale = None):
     transform = object['Transform']
 
     if position:
@@ -232,6 +236,45 @@ def erase_zones(objects, center, radius):
             filtered_objects.append(object)
     return filtered_objects
 
+def fix_card_rows(object_by_guid):
+    # Black market: zones.
+    rectify_geometry(object_by_guid['323acb'], (-7.5, 1, 20.5), (0, 0, 0), (2, 1, 3))
+    rectify_geometry(object_by_guid['e96c10'], (-5, 1, 20.5), (0, 0, 0), (2, 1, 3))
+    rectify_geometry(object_by_guid['93de6d'], (-2.5, 1, 20.5), (0, 0, 0), (2, 1, 3))
+
+    # Black market: board.
+    rectify_geometry(object_by_guid['ab7ac5'], (-6.2, 0.52, 20.5), (0, 180, 0))
+
+    # Imperium row: deck.
+    rectify_geometry(object_by_guid['99d41d'], (2.5 - 2.5 * 5, 1, 9))
+
+    # Imperium row: zones.
+    rectify_geometry(object_by_guid['3de1d0'], (2.5 - 2.5 * 4, 1, 9), (0, 180, 0), (2, 1, 3))
+    rectify_geometry(object_by_guid['356e2c'], (2.5 - 2.5 * 3, 1, 9), (0, 180, 0), (2, 1, 3))
+    rectify_geometry(object_by_guid['7edbb3'], (2.5 - 2.5 * 2, 1, 9), (0, 180, 0), (2, 1, 3))
+    rectify_geometry(object_by_guid['641974'], (2.5 - 2.5 * 1, 1, 9), (0, 180, 0), (2, 1, 3))
+    rectify_geometry(object_by_guid['c6dbed'], (2.5 - 2.5 * 0, 1, 9), (0, 180, 0), (2, 1, 3))
+
+    rectify_geometry(object_by_guid['6b62e0'], (2.5 - 2.5 * 4, 1, 12.35), (0, 180, 0), (2, 1, 3))
+    rectify_geometry(object_by_guid['cbcd9a'], (2.5 - 2.5 * 3, 1, 12.35), (0, 180, 0), (2, 1, 3))
+    rectify_geometry(object_by_guid['c087d2'], (2.5 - 2.5 * 2, 1, 12.35), (0, 180, 0), (2, 1, 3))
+
+    # Imperium row: anchors.
+    rectify_geometry(object_by_guid['38ffc0'], (2.5 - 2.5 * 4, 0.5, 9))
+    rectify_geometry(object_by_guid['21b287'], (2.5 - 2.5 * 3, 0.5, 9))
+    rectify_geometry(object_by_guid['0a5f50'], (2.5 - 2.5 * 2, 0.5, 9))
+    rectify_geometry(object_by_guid['ded672'], (2.5 - 2.5 * 1, 0.5, 9))
+    rectify_geometry(object_by_guid['ad2a82'], (2.5 - 2.5 * 0, 0.5, 9))
+
+    # Imperium row: special cards
+    rectify_geometry(object_by_guid['014161'], get_position(object_by_guid['6b62e0']))
+    rectify_geometry(object_by_guid['7d34c9'], get_position(object_by_guid['cbcd9a']))
+    rectify_geometry(object_by_guid['8de6d5'], get_position(object_by_guid['c087d2']))
+
+    # Tleilaxu row: zones
+    rectify_geometry(object_by_guid['e5ba35'], (2.5 - 2.5 * 4, 1, 16), (0, 180, 0), (2, 1, 3))
+    rectify_geometry(object_by_guid['1e5a32'], (2.5 - 2.5 * 3, 1, 16), (0, 180, 0), (2, 1, 3))
+
 def patch_save(input_path, output_path):
 
     save = None
@@ -256,33 +299,7 @@ def patch_save(input_path, output_path):
 
         new_objects.append(object)
 
-    # Black market: zones.
-    rectify_geometry(object_by_guid['323acb'], (-7.5, 1, 20.5), (0, 0, 0), (2, 1, 3))
-    rectify_geometry(object_by_guid['e96c10'], (-5, 1, 20.5), (0, 0, 0), (2, 1, 3))
-    rectify_geometry(object_by_guid['93de6d'], (-2.5, 1, 20.5), (0, 0, 0), (2, 1, 3))
-    # Black market: board.
-    rectify_geometry(object_by_guid['ab7ac5'], (-6.2, 0.52, 20.5), (0, 180, 0), None)
-
-    # Imperium row: zones.
-    rectify_geometry(object_by_guid['3de1d0'], (2.5 - 2.5 * 4, 1, 9), (0, 180, 0), (2, 1, 3))
-    rectify_geometry(object_by_guid['356e2c'], (2.5 - 2.5 * 3, 1, 9), (0, 180, 0), (2, 1, 3))
-    rectify_geometry(object_by_guid['7edbb3'], (2.5 - 2.5 * 2, 1, 9), (0, 180, 0), (2, 1, 3))
-    rectify_geometry(object_by_guid['641974'], (2.5 - 2.5 * 1, 1, 9), (0, 180, 0), (2, 1, 3))
-    rectify_geometry(object_by_guid['c6dbed'], (2.5 - 2.5 * 0, 1, 9), (0, 180, 0), (2, 1, 3))
-
-    rectify_geometry(object_by_guid['6b62e0'], (2.5 - 2.5 * 4, 1, 12.5), (0, 180, 0), (2, 1, 3))
-    rectify_geometry(object_by_guid['cbcd9a'], (2.5 - 2.5 * 3, 1, 12.5), (0, 180, 0), (2, 1, 3))
-    rectify_geometry(object_by_guid['c087d2'], (2.5 - 2.5 * 2, 1, 12.5), (0, 180, 0), (2, 1, 3))
-
-    # Imperium row: anchors.
-    rectify_geometry(object_by_guid['38ffc0'], (2.5 - 2.5 * 4, 0.5, 9), None, None)
-    rectify_geometry(object_by_guid['21b287'], (2.5 - 2.5 * 3, 0.5, 9), None, None)
-    rectify_geometry(object_by_guid['0a5f50'], (2.5 - 2.5 * 2, 0.5, 9), None, None)
-    rectify_geometry(object_by_guid['ded672'], (2.5 - 2.5 * 1, 0.5, 9), None, None)
-    rectify_geometry(object_by_guid['ad2a82'], (2.5 - 2.5 * 0, 0.5, 9), None, None)
-
-    rectify_geometry(object_by_guid['e5ba35'], (2.5 - 2.5 * 4, 1, 16), (0, 180, 0), (2, 1, 3))
-    rectify_geometry(object_by_guid['1e5a32'], (2.5 - 2.5 * 3, 1, 16), (0, 180, 0), (2, 1, 3))
+    fix_card_rows(object_by_guid)
 
     # Ix CHOAM board overlay.
     translate(object_by_guid['a139cd'], (0, -0.09, 0))
@@ -291,6 +308,11 @@ def patch_save(input_path, output_path):
     save["SnapPoints"] = []
 
     new_objects = erase_zones(new_objects, (7, 1, 8.5), 2)
+
+    # Black Market
+    object_by_guid["ab7ac5"]["CustomImage"]["ImageURL"] = "http://cloud-3.steamusercontent.com/ugc/2044113755429340246/4D84EECE9CC6087E2172253B53015A800F8A3273/"
+    # Bene Tleilax Board
+    object_by_guid["d5c2db"]["CustomImage"]["ImageURL"] = "http://cloud-3.steamusercontent.com/ugc/2044113755429339520/A5D3465456933CA0C042692C1E53D8144F1AEE0F/"
 
     save['ObjectStates'] = new_objects
 

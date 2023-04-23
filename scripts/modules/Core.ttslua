@@ -134,10 +134,14 @@ function core.resolveGUIDs(reportUnresolvedGUIDs, data)
     local newData = data
     if data then
         local t = type(data)
-        if t == "string" and string.match(data, "[a-z0-9][a-z0-9][a-z0-9][a-z0-9][a-z0-9][a-z0-9]") then
-            newData = getObjectFromGUID(data)
-            if not newData and reportUnresolvedGUIDs then
-                log("[resolveGUIDs] Unknow GUID: " .. data)
+        if t == "string" then
+            if string.match(data, "[a-z0-9][a-z0-9][a-z0-9][a-z0-9][a-z0-9][a-z0-9]") then
+                newData = getObjectFromGUID(data)
+                if not newData and reportUnresolvedGUIDs then
+                    log("[resolveGUIDs] Unknow GUID: '" .. data .. "'")
+                end
+            else
+                log("[resolveGUIDs] Not a GUID: " .. data)
             end
         elseif t == "table" then
             if not core.isSomeKindOfObject(data) then

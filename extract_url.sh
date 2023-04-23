@@ -9,7 +9,7 @@
 # http://cloud-3.steamusercontent.com/ugc/2029469358268109382/7E98B2CF99D80E27213815E475B27212574BBC76/
 
 mkdir -p resources
-python3 extract_url.py mod.json | sort -u | while read url; do
+python3 extract_url.py mod.base.json | sort -u | while read url; do
     name=$(sed s/[^A-Za-z0-9]//g <<< "$url")
     if [ ! -f "resources/$name" ]; then
         echo "Downloading $url"

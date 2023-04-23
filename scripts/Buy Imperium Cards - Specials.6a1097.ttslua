@@ -14,6 +14,12 @@ theSpiceMustFlowZone = getObjectFromGUID("c087d2")
 _ = require("Core").registerLoadablePart(function()
     self.interactable = false
     activateButtons()
+
+    self.setSnapPoints({
+        helper.createAbsoluteSnapPointFromZone(foldspaceZone, true, {"Imperium"}),
+        helper.createAbsoluteSnapPointFromZone(arrakisLiaisonZone, true, {"Imperium"}),
+        helper.createAbsoluteSnapPointFromZone(theSpiceMustFlowZone, true, {"Imperium"}),
+    })
 end)
 
 function onLocaleChange()
@@ -48,13 +54,13 @@ function moveCardFromDeck(color, zone, noMoreCardMessage)
 
     if helper.startPlayerAction(color) then
         local player = constants.players[color]
-        local cardAcquired = helper.drawCard(zone, player.discardPosition, Vector(0, 180, 0), false)
+        local cardAcquired = helper.moveCardFromZone(zone, player.discardPosition, Vector(0, 180, 0), false)
         if cardAcquired then
             if helper.hasTech(color, "Spaceport") then
                 Player[color].showConfirmDialog(
                     i18n("dialogCardAbove"),
                     function(_)
-                        helper.drawCard(player.discardZone, player.drawDeckZone.getPosition(), Vector(0, 180, 180), false)
+                        helper.moveCardFromZone(player.discardZone, player.drawDeckZone.getPosition(), Vector(0, 180, 180), false)
                     end)
             end
             return true

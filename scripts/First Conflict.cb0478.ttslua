@@ -9,12 +9,20 @@ _ = require("Core").registerLoadablePart(function()
     self.interactable = false
 end)
 
+-- TODO Remove
+function correctAnchorPosition(pos, originalScale)
+    return Vector(
+        pos[1] * originalScale[1],
+        pos[2] * originalScale[2],
+        pos[3] * originalScale[3])
+end
+
 function ConflictButton()
     self.createButton({
         click_function = "RevealConflict",
         function_owner = self,
         label = i18n("revealFirstConflictButton"),
-        position = helper.correctAnchorPosition({0, 0.6, 0}, {1.37866032, 0.165157527, 1.34989369}),
+        position = correctAnchorPosition({0, 0.6, 0}, {1.37866032, 0.165157527, 1.34989369}),
         scale = {0.3, 0.3, 0.4},
         width = 1800,
         height = 1300,

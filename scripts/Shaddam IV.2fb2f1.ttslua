@@ -1,6 +1,6 @@
 leader = require("Leader")
 
-boardCommon = require("BoardCommonModule")
+reputation = require("ReputationModule")
 
 _ = require("Core").registerLoadablePart(function(savedData)
     leader.init(onClaim, savedData)
@@ -12,7 +12,7 @@ function onClaim(color)
         for _ = 1, 4 do
             Wait.time(
                 function()
-                    boardCommon.ReputationUp(color, faction)
+                    reputation.increaseReputation(color, faction)
                 end, t)
             t = t + 1
         end

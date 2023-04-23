@@ -29,7 +29,7 @@ end
 function prescience(_, color)
     if color == leader.claimed then
         local leaderName = helper.getLeaderName(color)
-        local cardOrDeck = helper.GetDeckOrCard(constants.players[color].drawDeckZone)
+        local cardOrDeck = helper.getDeckOrCard(constants.players[color].drawDeckZone)
 
         if cardOrDeck == nil then
             broadcastToColor(i18n("prescienceVoid"), color, "Purple")

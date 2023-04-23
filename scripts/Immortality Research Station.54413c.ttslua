@@ -7,7 +7,7 @@ helper = require("HelperModule")
 
 boardCommonModule = require("BoardCommonModule")
 
-DrawOne = helper.DrawOne
+DrawOne = helper.drawOneCard
 
 _ = require("Core").registerLoadablePart(function()
 
@@ -55,7 +55,7 @@ function ResearchStation(_, color)
                 advanceResearch = ""
             end
 
-            local enoughCards = helper.isDeckContainsEnough(color, numberToDraw)
+            local enoughCards = helper.doesDeckContainEnoughCards(color, numberToDraw)
 
             if not enoughCards then
 

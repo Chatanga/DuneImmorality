@@ -52,7 +52,7 @@ function leader.createClaimButton()
 end
 
 function claimLeaderCall(params)
-    leader.claimLeader(getObjectFromGUID(params.object) , params.color)
+    claimLeader(getObjectFromGUID(params.leaderChoiceGUID) , params.color)
 end
 
 function claimLeader(object, color)

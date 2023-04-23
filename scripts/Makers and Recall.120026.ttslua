@@ -7,10 +7,10 @@ constants = require("Constants")
 
 helper = require("HelperModule")
 
-GetDeckOrCard = helper.GetDeckOrCard
-GetDeckOrCardFromGUID = helper.GetDeckOrCardFromGUID
+getDeckOrCard = helper.getDeckOrCard
+getDeckOrCardFromGUID = helper.getDeckOrCardFromGUID
 
-DrawOne = helper.DrawOne
+DrawOne = helper.drawOneCard
 
 pos_trash = constants.lowerTrashPosition
 

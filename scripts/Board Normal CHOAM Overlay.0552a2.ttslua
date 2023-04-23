@@ -7,7 +7,7 @@ helper = require("HelperModule")
 
 boardCommonModule = require("BoardCommonModule")
 
-DrawOne = helper.DrawOne
+DrawOne = helper.drawOneCard
 
 _ = require("Core").registerLoadablePart(function()
     SecureContract_zone = getObjectFromGUID("db4022")
@@ -269,7 +269,7 @@ function RallyTroops(_, color)
 
                 local numberToDraw = 1
 
-                local enoughCards = helper.isDeckContainsEnough(color, numberToDraw)
+                local enoughCards = helper.doesDeckContainEnoughCards(color, numberToDraw)
 
                 if not enoughCards then
                     broadcastToAll(

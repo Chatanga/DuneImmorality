@@ -6,79 +6,102 @@ constants = require("Constants")
 
 parkModule = require("ParkModule")
 
-function helper.DrawOne(_, color)
-    local starterDeck = helper.GetDeckOrCard(constants.players[color].drawDeckZone)
-    local discardFound = false
-
-    if starterDeck ~= nil then
-        starterDeck.deal(1, color)
-    else
-        discardFound = helper.ResetDiscard(_, color)
-        if discardFound then
-            Wait.time(function()
-                local drawDeck = helper.GetDeckOrCard(constants.players[color].drawDeckZone)
-                drawDeck.deal(1, color)
-            end, 1.5)
-        else
-            broadcastToColor("Missing one card to draw because your discard is empty", color, color)
-        end
+function helper.drawIntrigue(color)
+    local cardCount = 1
+    if helper.getLeaderName(color) == "Count Fenring" then
+        cardCount = 2
+        Wait.time(function()
+            broadcastToAll(helper.getLeaderName(color) .. i18n("fenring"), "Purple")
+        end, 0.5)
     end
-    return discardFound
+
+    Wait.time(function()
+        local handZone = Player[color].getHandTransform()
+        local intrigueDeck = helper.getDeckOrCard(intrigue_zone)
+        local position = handZone.position + Vector(-7.5, 0, 0)
+        helper.moveCardFromZone(handZone, position, false, false, true)
+    end, 0.25, cardCount)
 end
 
-function helper.DrawCards(numberToDraw, color, message)
-    assert(numberToDraw > 0)
+function helper.drawOneCard(_, color)
+    local drawDeck = helper.getDeckOrCard(constants.players[color].drawDeckZone)
+    if drawDeck then
+        drawDeck.deal(1, color)
+        return true
+    else
+        if helper.resetDiscard(_, color) then
+            Wait.time(function()
+                local replenishedDrawDeck = helper.getDeckOrCard(constants.players[color].drawDeckZone)
+                if replenishedDrawDeck then
+                    replenishedDrawDeck.deal(1, color)
+                end
+            end, 1.5)
+            return true
+        else
+            -- TODO Translate
+            broadcastToColor("Missing one card to draw because your discard is empty", color, color)
+            return false
+        end
+    end
+end
 
-    local enoughCards = helper.isDeckContainsEnough(color, numberToDraw)
+function helper.drawCards(color, drawCount, message)
+    assert(drawCount > 0)
+    local enoughCards = helper.doesDeckContainEnoughCards(color, drawCount)
     if not enoughCards then
 
         local leaderName = helper.getLeaderName(color)
         broadcastToAll(i18n("isDecidingToDraw"):format(leaderName), "Pink")
 
-        local card = i18n("cards")
-        if numberToDraw == 1 then
-            card = i18n("card")
-        end
-
+        local counter = i18n.translateCountable(drawCount, "card", "cards")
         Player[color].showConfirmDialog(
-            i18n("warningBeforeDraw"):format(numberToDraw, card),
-
+            i18n("warningBeforeDraw"):format(drawCount, counter),
             function(_)
                 if message then
                     broadcastToAll(message, color)
                 end
-                for i = 0, numberToDraw - 1, 1 do
-                    Wait.time(function()
-                        DrawOne(_, color)
-                    end, i)
-                end
+                Wait.time(function()
+                    helper.drawOneCard(_, color)
+                end, 1, drawCount)
             end)
+        return false
     else
-        for i = 1, numberToDraw do
-            Wait.time(function() DrawOne(_, color) end, i)
-        end
-    end
-end
-
-function helper.ResetDiscard(_, color)
-    discardArea = helper.GetDeckOrCard(constants.players[color].discardZone)
-    local discardFound = true
-    if discardArea ~= nil then
-        discardArea.setRotationSmooth({0, 180, 180}, false, false)
-        discardArea.shuffle()
-        discardArea.setPositionSmooth(constants.getLandingPosition(constants.players[color].drawDeckZone), false, true)
         Wait.time(function()
-            helper.GetDeckOrCard(constants.players[color].drawDeckZone).shuffle()
-        end, 0.5)
-    else
-        discardFound = false
+            helper.drawOneCard(_, color)
+        end, 1, drawCount)
+        return true
     end
-
-    return discardFound
-
 end
 
-function helper.GetDeckOrCard(zone)
+function helper.doesDeckContainEnoughCards(color, drawCound)
+    local deckOrCard = helper.getDeckOrCard(constants.players[color].drawDeckZone)
+    if not deckOrCard then
+        return drawCound <= 0
+    elseif deckOrCard.type == "Card" then
+        return drawCound <= 1
+    elseif deckOrCard.type == "Deck" then
+        return drawCound <= deckOrCard.getQuantity()
+    else
+        return false
+    end
+end
+
+function helper.resetDiscard(_, color)
+    local discardZone = helper.getDeckOrCard(constants.players[color].discardZone)
+    if discardZone then
+        discardZone.setRotationSmooth({0, 180, 180}, false, false)
+        discardZone.shuffle()
+        discardZone.setPositionSmooth(constants.getLandingPosition(constants.players[color].drawDeckZone), false, true)
+        Wait.time(function()
+            helper.getDeckOrCard(constants.players[color].drawDeckZone).shuffle()
+        end, 0.5)
+        return true
+    else
+        return false
+    end
+end
+
+function helper.getDeckOrCard(zone)
     assert(zone)
     assert(type(zone) ~= 'string', tostring(zone) .. ' is a GUID, not a zone')
     for _, obj in ipairs(zone.getObjects()) do
@@ -88,7 +111,7 @@ function helper.GetDeckOrCard(zone)
     return nil
 end
 
-function helper.GetDeck(zone)
+function helper.getDeck(zone)
     assert(zone)
     assert(type(zone) ~= 'string', tostring(zone) .. ' is a GUID, not a zone')
     for _, obj in ipairs(zone.getObjects()) do
@@ -97,7 +120,7 @@ function helper.GetDeck(zone)
     return nil
 end
 
-function helper.GetCard(zone)
+function helper.getCard(zone)
     assert(zone)
     assert(type(zone) ~= 'string', tostring(zone) .. ' is a GUID, not a zone')
     for _, obj in ipairs(zone.getObjects()) do
@@ -106,33 +129,38 @@ function helper.GetCard(zone)
     return nil
 end
 
-function helper.GetDeckOrCardFromGUID(zoneGUID)
+function helper.getDeckOrCardFromGUID(zoneGUID)
     assert(type(zoneGUID) == 'string', tostring(zoneGUID) .. ' is not a GUID')
     local zone = getObjectFromGUID(zoneGUID)
     assert(zone, "Failed to resolve GUID: " .. tostring(zoneGUID))
-    return helper.GetDeckOrCard(zone)
+    return helper.getDeckOrCard(zone)
 end
 
-function helper.GetDeckFromGUID(zoneGUID)
+function helper.getDeckFromGUID(zoneGUID)
     assert(type(zoneGUID) == 'string', tostring(zoneGUID) .. ' is not a GUID')
     local zone = getObjectFromGUID(zoneGUID)
     assert(zone, "Failed to resolve GUID: " .. tostring(zoneGUID))
-    return helper.GetDeck(zone)
+    return helper.getDeck(zone)
 end
 
-function helper.GetCardFromGUID(zoneGUID)
+function helper.getCardFromGUID(zoneGUID)
     assert(type(zoneGUID) == 'string', tostring(zoneGUID) .. ' is not a GUID')
     local zone = getObjectFromGUID(zoneGUID)
     assert(zone, "Failed to resolve GUID: " .. tostring(zoneGUID))
-    return helper.GetCard(zone)
+    return helper.getCard(zone)
 end
 
-function helper.drawCard(zone, position, rotation, smooth)
-    local deckOrCard = helper.GetDeckOrCard(zone)
+function helper.moveCardFromZone(zone, position, rotation, smooth, flipAtTheEnd)
+    local deckOrCard = helper.getDeckOrCard(zone)
     if deckOrCard then
         if deckOrCard.type == "Deck" then
             local parameters = {
-                position = position
+                position = position,
+                callback_function = function (card)
+                    if flipAtTheEnd then
+                        card.flip()
+                    end
+                end
             }
             if rotation then
                 parameters.rotation = rotation
@@ -153,46 +181,18 @@ function helper.drawCard(zone, position, rotation, smooth)
                     deckOrCard.setRotation(rotation)
                 end
             end
+            Wait.time(function() deckOrCard.flip() end, 0.2)
             return true
         end
     end
     return false
 end
 
-function helper.drawCardFromGUID(zoneGUID, position, rotation, smooth)
+function helper.moveCardFromZoneGUID(zoneGUID, position, rotation, smooth)
     assert(type(zoneGUID) == 'string', tostring(zoneGUID) .. ' is not a GUID')
     local zone = getObjectFromGUID(zoneGUID)
     assert(zone, "Failed to resolve GUID: " .. tostring(zoneGUID))
-    return helper.drawCard(zone, position, rotation, smooth)
-end
-
-function helper.isDeckContainsEnough(color, numberToDraw)
-
-    local starterDeck = helper.GetDeckOrCard(constants.players[color].drawDeckZone)
-
-    local enoughCards = true
-
-    if starterDeck == nil then
-        enoughCards = false
-    else
-        local countCheck = starterDeck.getQuantity()
-        local typeCheck = starterDeck.type
-
-        if typeCheck == "Card" then countCheck = 1 end
-
-        if countCheck < numberToDraw then enoughCards = false end
-    end
-
-    return enoughCards
-end
-
--- Les nouvelles ancres ont toutes une échelle unitaire, ce qui n’était pas le
--- cas des anciennes.
-function helper.correctAnchorPosition(pos, originalScale)
-    return Vector(
-        pos[1] * originalScale[1],
-        pos[2] * originalScale[2],
-        pos[3] * originalScale[3])
+    return helper.moveCardFromZone(zone, position, rotation, smooth)
 end
 
 function helper.getPlayerTextColors(playerColor)
@@ -380,6 +380,22 @@ function helper.getLeaderName(playerColor)
         log(playerColor .. " player has no leader")
         return "?"
     end
+end
+
+function helper.toCamelCase(...)
+    local chameauString = ""
+    for i, str in ipairs(arg) do
+        chameauString = chameauString .. str:gsub("^%l", string.upper)
+    end
+    return chameauString
+end
+
+function helper.ToCamelCase(...)
+    local dromadaireString = ""
+    for _, str in ipairs(arg) do
+        dromadaireString = dromadaireString .. str:gsub("^%l", string.upper)
+    end
+    return dromadaireString
 end
 
 function helper.landTroopsFromOrbit(playerColor, count)

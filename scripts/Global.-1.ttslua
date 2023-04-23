@@ -19,12 +19,12 @@ _ = require("Core").registerLoadablePart(function(savedData)
 
     -- getObjectFromGUID("0552a2").setState(1)
 
-    DrawOne = helper.DrawOne
+    DrawOne = helper.drawOneCard
 
-    ResetDiscard = helper.ResetDiscard
+    ResetDiscard = helper.resetDiscard
 
-    GetDeckOrCard = helper.GetDeckOrCard
-    GetDeckOrCardFromGUID = helper.GetDeckOrCardFromGUID
+    getDeckOrCard = helper.getDeckOrCard
+    getDeckOrCardFromGUID = helper.getDeckOrCardFromGUID
 
     buttonPassAnchors = {
         ["Red"] = getObjectFromGUID("0e9fa2"),
@@ -538,7 +538,7 @@ function DrawFive(board, color)
         constants.players[color].board.clearButtons()
         Wait.time(function() activateButtons(color) end, 1)
 
-        local starterDeck = GetDeckOrCard(constants.players[color].drawDeckZone)
+        local starterDeck = getDeckOrCard(constants.players[color].drawDeckZone)
         local countCheck = 0
         local typeCheck = ""
         local drawCount = 0
@@ -554,7 +554,7 @@ function DrawFive(board, color)
                 drawCount = 5 - countCheck
                 ResetDiscard(_, color)
                 Wait.time(function()
-                    local drawDeck = GetDeckOrCard(constants.players[color].drawDeckZone)
+                    local drawDeck = getDeckOrCard(constants.players[color].drawDeckZone)
                     if drawDeck then
                         drawDeck.deal(drawCount, color)
                     else
@@ -565,7 +565,7 @@ function DrawFive(board, color)
                 starterDeck.deal(1, color)
                 ResetDiscard(_, color)
                 Wait.time(function()
-                    local drawDeck = GetDeckOrCard(constants.players[color].drawDeckZone)
+                    local drawDeck = getDeckOrCard(constants.players[color].drawDeckZone)
                     if drawDeck then
                         drawDeck.deal(4, color)
                     else
@@ -576,7 +576,7 @@ function DrawFive(board, color)
         else
             ResetDiscard(_, color)
             Wait.time(function()
-                local drawDeck = GetDeckOrCard(constants.players[color].drawDeckZone)
+                local drawDeck = getDeckOrCard(constants.players[color].drawDeckZone)
                 if drawDeck then
                     drawDeck.deal(5, color)
                 else
@@ -750,7 +750,7 @@ function onObjectEnterScriptingZone(zone, enter_object)
         -- TODO Redundant relocation?
         if enter_object.guid == '2b2575' then
             enter_object.setPosition({4.80, 2, -2.73})
-            GetDeckOrCard('07e239').takeObject({
+            getDeckOrCard('07e239').takeObject({
                 position = {-1.16, 2, -5.74},
                 rotation = {0, 180, 0},
                 smooth = false
