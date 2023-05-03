@@ -215,7 +215,7 @@ function mutateDeck(guid, contributions)
 
     local cardCount = 0
     for _, contribution in ipairs(contributions) do
-        cardCount = #contribution.luaIndexes
+        cardCount = cardCount + #contribution.luaIndexes
     end
     assert(cardCount == #cards, "Mutated deck " .. guid .. " has now " .. cardCount .. " cards instead of " .. #cards .. ".")
 
@@ -465,21 +465,24 @@ localeAssets.en = {
         cardsLiaison = {{deck = customDecks.en.imperium, luaIndexes = {6, 6, 6, 6, 6, 6, 6, 6}}},
         cardsTSMF = {{deck = customDecks.en.imperium, luaIndexes = {7, 7, 7, 7, 7, 7, 7, 7, 7, 7}}},
         cardsBaseImperium = {{deck = customDecks.en.imperium, luaIndexes = {
-            1, 1, 2, 3, 3, 4, 4, 5, 6, 7, 8, 8, 9, 9, 10, 10,
+            1, 1, 2, 3, 3, 4, 4, 8, 8, 9, 9, 10, 10,
             11, 11, 12, 12, 13, 13, 13, 14, 14, 15, 15, 16, 16, 17, 17, 18, 18, 19, 20,
             21, 22, 23, 23, 23, 24, 25, 25, 26, 27, 28, 28, 29, 30, 30,
-            32, 32, 33, 35, 35, 36, 37, 38, 39, 40,
-            41, 42, 43, 44, 44, 45, 46, 46, 46
-        }}},
-        cardJessicaOfArrakis = {deck = customDecks.en.ixImperium, luaIndex = 31},
-        cardDuncanLoyalBlade = {deck = customDecks.en.ixImperium, luaIndex = 34},
+            32, 32, 33, 34, 35, 35, 36, 37, 38, 39, 40,
+            41, 42, 43, 44, 44, 45, 46, 46, 46}},
+            {deck = customDecks.en.ixImperium, luaIndexes = {31}},
+            -- {deck = customDecks.en.ixImperium, luaIndexes = {32, 32}}, No need to add it, the one (32) in the main texture is already the fixed version.
+            {deck = customDecks.en.ixImperium, luaIndexes = {34}}
+        },
+        -- cardJessicaOfArrakis = {deck = customDecks.en.ixImperium, luaIndex = 31},
+        -- cardDuncanLoyalBlade = {deck = customDecks.en.ixImperium, luaIndex = 34},
         cardsIxImperium = {{deck = customDecks.en.ixImperium, luaIndexes = {
-            2, 3, 4, 5, 6, 7, 8, 9, 10,
+            1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
             11, 12, 13, 14, 15, 16, 16, 17, 18, 18, 19, 20,
-            21, 22, 23, 23, 24, 24, 25, 26, 26, 27, 28, 29, 29, 30,
-            32
+            21, 22, 23, 23, 24, 24, 25, 26, 26, 27, 28, 29, 29, 30
         }}},
-        cardBoundlessAmbition = {deck = customDecks.en.ixImperium, luaIndex = 1},
+        -- cardBoundlessAmbition = {deck = customDecks.en.ixImperium, luaIndex = 1},
+        -- cardMissionariaProtectiva = {deck = customDecks.en.ixImperium, luaIndex = 32},
         cardsImmortalityImperium = {{deck = customDecks.en.teilaxImperium, luaIndexes = {
             1, 2, 3, 4, 5, 6, 6, 8, 9, 9, 10,
             11, 12, 13, 14, 15, 16, 17, 17, 18, 19, 20,
@@ -489,7 +492,7 @@ localeAssets.en = {
             1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
             12, 13, 14, 15, 16, 17, 18, 19, 20
         }}},
-        cardPeterGeniusAdvisor = {deck = customDecks.en.teilaxResearch, luaIndex = 20},
+        -- cardPeterGeniusAdvisor = {deck = customDecks.en.teilaxResearch, luaIndex = 20},
         cardReclaimedForces = {deck = customDecks.en.teilaxResearch, luaIndex = 11},
         cardsImmortalityIntrigue = {{deck = customDecks.en.teilaxIntrigue, luaIndexes = {
             1, 2, 3, 4, 5, 5, 6, 6, 7, 7, 8, 9, 10, 11, 11
@@ -536,7 +539,7 @@ customDecks.fr = {
     starter = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2029469358268121216/D25AA65312D89EB7CEED36D451618E731A674BED/", 4, 2),
     -- dune planet
     starterDunePlanet = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2029469358268102690/98F5861E28F3167495D3F2890879072BF3A84E60/", 2, 2),
-    -- base without foldspace, nor liasion, nor the spice must flow, but with Jessica of Arrakis and Duncan Loyal Blade
+    -- base without foldspace, nor liason, nor the spice must flow, but with Jessica of Arrakis and Duncan Loyal Blade
     imperium = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2029469358268104070/CC2D301CA075930201B3883D82F4C6E1A0837273/", 10, 7),
     imperiumFoldedSpace = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2029469358268101016/AE481C2ED19B085E2669F22420FD282982FD11A9/", 3, 2),
     imperiumArrakisLiasion = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2029469358268100070/D7411DB495E6EB13D6B64F5E46CCF69FF322039F/", 4, 2),
@@ -549,7 +552,7 @@ customDecks.fr = {
     -- tleilax without experimentation
     teilaxImperium = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2063250888850083256/142F50245296C2EE1F5ABAD8CE93982AC0592110/", 6, 5),
     teilaxImperiumExperimentation = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2063250888850160556/BF6DF4E8EF5B8C8F5BB6952166C559694A61BA04/", 2, 2),
-    -- tleilax without reclaimed forces
+    -- tleilax without reclaimed forces, but with Piter, Genius Advisor
     teilaxResearch = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2063250888847571463/639814906915DFA557375A3F7963C9DE53301D57/", 4, 5),
     -- reclaimed forces
     teilaxResearchReclaimedForces = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2063250888847577276/60812AEA733FF5558BA9190E47CBD474EBF38C94/", 1, 1),
