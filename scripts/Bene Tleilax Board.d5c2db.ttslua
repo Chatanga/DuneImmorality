@@ -26,7 +26,7 @@ function researchSpaceToWorldPosition(positionInResearchSpace)
     local offset = Vector(
         positionInResearchSpace.x * 1.2 + 1.2,
         2,
-        positionInResearchSpace.z * 0.7)
+        positionInResearchSpace.z * 0.7 + 0.3)
     return researchTokenOrigin + offset
 end
 
@@ -82,7 +82,7 @@ function generateTleilaxuTrackPositions()
     local origin = getAveragePosition("tleilaxuTokens_inital_position")
     local xCoords = {1.3, 2.6, 3.9, 5.2, 7.4, 8.4, 9.2}
     for i, x in ipairs(xCoords) do
-        positions[i] = origin + Vector(x, 2, 0)
+        positions[i] = origin + Vector(x, 2, 0.35)
     end
     return positions
 end
@@ -488,8 +488,7 @@ function onObjectEnterScriptingZone(zone, enter_object)
 
                 AddSpecimen("", color, true)
 
-                local leaderName = helperModule.getLeader(color)
-                                       .getName()
+                local leaderName = helperModule.getLeaderName(color)
 
                 if zone.guid == "1696ae" then
                     moveBeneTleilaxToken(color, true)
@@ -516,8 +515,7 @@ function onObjectEnterScriptingZone(zone, enter_object)
                 enter_object.hasTag("ResearchToken") then
 
                 moveBeneTleilaxToken(color, true)
-                local leaderName = helperModule.getLeader(color)
-                                       .getName()
+                local leaderName = helperModule.getLeaderName(color)
                 broadcastToAll(i18n("researchBeetle"):format(leaderName), color)
             end
         end
@@ -529,13 +527,11 @@ function onObjectEnterScriptingZone(zone, enter_object)
             if enter_object.hasTag(color) and
                 enter_object.hasTag("ResearchToken") then
 
-                local leader = helperModule.getLeader(color)
-                assert(leader)
-                local leaderName = leader.getName()
                 local solariIncome = 1
                 local solari = "Solari"
 
-                if leader.hasTag("Yuna") then
+                local leader = helperModule.getLeader(color)
+                if leader and leader.hasTag("Yuna") then
                     solariIncome = 2
                     solari = "Solaris"
                 end
@@ -546,6 +542,7 @@ function onObjectEnterScriptingZone(zone, enter_object)
 
                 local solariString = solariIncome .. " " .. solari
 
+                local leaderName = helperModule.getLeaderName(color)
                 broadcastToAll(i18n("researchIncome"):format(leaderName,
                                                              solariString),
                                color)
@@ -559,8 +556,7 @@ function onObjectEnterScriptingZone(zone, enter_object)
             if enter_object.hasTag(color) and
                 enter_object.hasTag("ResearchToken") then
 
-                local leaderName = helperModule.getLeader(color)
-                                       .getName()
+                local leaderName = helperModule.getLeaderName(color)
                 broadcastToAll(i18n("researchFaction"):format(leaderName), color)
             end
         end
@@ -586,8 +582,7 @@ function onObjectEnterScriptingZone(zone, enter_object)
 
                 local spiceString = income .. " " .. spice
 
-                local leaderName = helperModule.getLeader(color)
-                                       .getName()
+                local leaderName = helperModule.getLeaderName(color)
                 broadcastToAll(i18n("researchIncome"):format(leaderName,
                                                              spiceString), color)
             end
@@ -600,8 +595,7 @@ function onObjectEnterScriptingZone(zone, enter_object)
             if enter_object.hasTag(color) and
                 enter_object.hasTag("ResearchToken") then
 
-                local leaderName = helperModule.getLeader(color)
-                                       .getName()
+                local leaderName = helperModule.getLeaderName(color)
                 broadcastToAll(i18n("researchTrashIntrigue"):format(leaderName),
                                color)
             end
@@ -630,8 +624,7 @@ function onObjectEnterScriptingZone(zone, enter_object)
 
                 end
 
-                local leaderName = helperModule.getLeader(color)
-                                       .getName()
+                local leaderName = helperModule.getLeaderName(color)
                 broadcastToAll(i18n("researchAgain"):format(leaderName), color)
             end
         end
@@ -684,8 +677,7 @@ function onObjectEnterScriptingZone(zone, enter_object)
                 Wait.time(function()
                     boardCommonModule.drawIntrigue(color)
                 end, 0.75)
-                local leaderName = helperModule.getLeader(color)
-                                       .getName()
+                local leaderName = helperModule.getLeaderName(color)
                 broadcastToAll(i18n("tleilaxuIntrigue"):format(leaderName),
                                color)
             end
@@ -699,8 +691,7 @@ function onObjectEnterScriptingZone(zone, enter_object)
             if enter_object.hasTag(color) and
                 enter_object.hasTag("TleilaxuToken") then
 
-                local leaderName = helperModule.getLeader(color)
-                                       .getName()
+                local leaderName = helperModule.getLeaderName(color)
                 giveTleilaxuVP(color)
                 broadcastToAll(i18n("tleilaxuVP"):format(leaderName), color)
 
