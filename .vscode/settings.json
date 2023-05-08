@@ -1,0 +1,13 @@
+{
+    "Lua.diagnostics.globals": [
+        "broadcastToAll",
+        "Wait",
+        "Player",
+        "Vector",
+        "self",
+        "Global",
+        "log",
+        "broadcastToColor",
+        "getObjectFromGUID"
+    ]
+}

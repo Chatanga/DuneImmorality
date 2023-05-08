@@ -1,487 +1,68 @@
 i18n = require("i18n")
 require("locales")
 
-constants = require("Constants")
+local constants = require("Constants")
 
-helper = require("HelperModule")
+local locale = "en"
 
-locale = "en"
+local orderedPlayers = {"Blue", "Red", "Green", "Yellow"}
+
+local myState = nil
 
 _ = require("Core").registerLoadablePart(function(savedData)
 
-    if savedData ~= '' then
-        local state = JSON.decode(savedData)
-        locale = state.locale
+    -- TODO Repair
+    if true then
+        return
     end
+
+    if savedData ~= '' then
+        myState = JSON.decode(savedData)
+        locale = myState.locale
+    else
+        myState = {
+            locale = locale,
+            fight = false,
+            reveal = {
+                Red = false,
+                Blue = false,
+                Green = false,
+                Yellow = false
+            },
+        }
+    end
+
+    -- TODO Why not in Setup?
+    initHiddenPick()
 
     -- Réinitialise les triggers des plateaux de joueurs.
     onPlayerTurn(nil, nil)
-
-    -- getObjectFromGUID("0552a2").setState(1)
-
-    DrawOne = helper.drawOneCard
-
-    ResetDiscard = helper.resetDiscard
-
-    getDeckOrCard = helper.getDeckOrCard
-    getDeckOrCardFromGUID = helper.getDeckOrCardFromGUID
-
-    buttonPassAnchors = {
-        ["Red"] = getObjectFromGUID("0e9fa2"),
-        ["Blue"] = getObjectFromGUID("643f32"),
-        ["Green"] = getObjectFromGUID("9c69b9"),
-        ["Yellow"] = getObjectFromGUID("65876d")
-    }
-
-    pos_reveal = {
-        ["Red"] = constants.players["Red"].board.getPosition() + Vector(13, 0.69, -5),
-        ["Blue"] = constants.players["Blue"].board.getPosition() + Vector(13, 0.69, -5),
-        ["Green"] =  constants.players["Green"].board.getPosition() + Vector(-13, 0.69, -5),
-        ["Yellow"] = constants.players["Yellow"].board.getPosition() + Vector(-13, 0.69, -5)
-    }
-
-    controlable_spaces = {
-        imperial_basin = {
-            zone = getObjectFromGUID("3fe117"),
-            position = constants.getLandingPositionFromGUID("3fe117")
-        },
-        arrakeen = {
-            zone = getObjectFromGUID("f1f53d"),
-            position = constants.getLandingPositionFromGUID("f1f53d"),
-        },
-        carthag = {
-            zone = getObjectFromGUID("9fc2e1"),
-            position = constants.getLandingPositionFromGUID("9fc2e1"),
-        }
-    }
-
-    -------------HiddenPicks var section--------------7--       -- This table is used in onObjectEnter and onObjectLeave to make objects invisible during picking phase
-    hidingStateTable =
-        { -- Must be in global since you can't pass tables with getVar()
-            [1] = {"Red", "Blue", "Yellow", "Grey", "White"}, -- 1 = Green picking his leader: make leaders invisible to all other players
-            [2] = {"Blue", "Yellow", "Green", "Grey", "White"}, -- 2 = Red picking his leader: make leaders invisible to all other players
-            [3] = {"Red", "Yellow", "Green", "Grey", "White"},
-            [4] = {"Red", "Blue", "Green", "Grey", "White"},
-            [5] = {"Red", "Blue", "Yellow", "Green", "Grey", "White"}, -- 5 = make Leader invisible to all: this is during leader random ban, Important: Black cannot be set invisible and will see bans
-            [6] = {} -- 6 = make Leader visible to all: after picking process, for players to see unpicked leaders
-        }
-    hidingState = 0 -- used as index for hidingStateTable
-
-    function setHidingState(hidingStatePassed)
-        hidingState = hidingStatePassed[1]
-    end
-
-    hidingLeaderScriptingZone = getObjectFromGUID("550f6d") -- Big scripting zone to hide leader in blind pick
-
-    -----------------End section------------------------
-
-    nom = nil
-    zone_conflict_encours = getObjectFromGUID("43f00f") -- ???small zone top rigth of conflict card
-    zone_vp_encours = getObjectFromGUID("740624") -- ..for conflict vp placement
-
-    reveal = {
-        ["Red"] = 0, -- initialization of bool if they have reveal ?
-        ["Blue"] = 0,
-        ["Green"] = 0,
-        ["Yellow"] = 0
-    }
-
-    fight = 0 -- initialization ??
-    marker_round = getObjectFromGUID("fb41e2") -- round marker
-
-    bag_friendship = { -- bag for 2 influence vp with factions
-        ["Emperor"] = getObjectFromGUID('6a4186'),
-        ["Spacing Guild"] = getObjectFromGUID('400d45'),
-        ["Bene Gesserit"] = getObjectFromGUID('e763f6'),
-        ["Fremen"] = getObjectFromGUID('8bcfe7')
-    }
-
-    alliance_token = {
-        ["Emperor"] = getObjectFromGUID('13e990'),
-        ["Spacing Guild"] = getObjectFromGUID('ad1aae'),
-        ["Bene Gesserit"] = getObjectFromGUID('33452e'),
-        ["Fremen"] = getObjectFromGUID('4c2bcc')
-    }
-
-    flag_bag = { -- infinite bag for flags
-        ["Red"] = getObjectFromGUID('61453d'),
-        ["Blue"] = getObjectFromGUID('8627e0'),
-        ["Green"] = getObjectFromGUID('ad6b92'),
-        ["Yellow"] = getObjectFromGUID('b92a4c')
-    }
-
-    zone_conseil = getObjectFromGUID("e51f6e") -- scripting zone high consil
-
-    zone_reputs = {
-        ["Emperor"] = getObjectFromGUID('aae631'), -- zone medium size were alliance goes
-        ["Spacing Guild"] = getObjectFromGUID('768e1e'),
-        ["Bene Gesserit"] = getObjectFromGUID('bd1e3b'),
-        ["Fremen"] = getObjectFromGUID('4a1ce8')
-    }
-
-    -- 20 spaces were you put power marker
-    marker_combat_pos = {}
-    local origin = getObjectFromGUID("1d4424").getPosition()
-    for i = 0, 19 do
-        marker_combat_pos[#marker_combat_pos + 1] = {
-            x = origin.x - 0.47 + (i % 10) * 0.90,
-            y = 3,
-            z = origin.z - 0.85 - math.floor(i / 10) * 1.03
-        }
-    end
-
-    marker_combat_pos_ini = {
-        ["Blue"] = {1.28, 1.58, -8.15},
-        ["Green"] = {3.48, 1.58, -8.15},
-        ["Red"] = {2.35, 1.58, -8.15},
-        ["Yellow"] = {4.55, 1.58, -8.15}
-    }
-    zone_combat = getObjectFromGUID("6d632e") -- doesnt include garnisons
-    marker_combat = {
-        ["Red"] = getObjectFromGUID('2d1d17'),
-        ["Blue"] = getObjectFromGUID('f22e20'),
-        ["Green"] = getObjectFromGUID('a1a9a7'),
-        ["Yellow"] = getObjectFromGUID('c2dd31')
-    }
-
-    local zone_vp_combat = getObjectFromGUID("740624").getPosition()
-    pos_vp_encours = {
-        zone_vp_combat + Vector(0, 0.5, -0.5),
-        zone_vp_combat + Vector(0, 0.5, 0.5),
-        zone_vp_combat + Vector(0, 1.5, -0.5),
-        zone_vp_combat + Vector(0, 1.5, 0.5)
-    }
-
-    for color, _ in pairs(constants.players) do
-        activateButtons(color)
-    end
-
-    --rendre impossible à delock les plateaux
-
-    getObjectFromGUID("90f762").interactable = false
-    bag_friendship["Emperor"].interactable = false
-    bag_friendship["Spacing Guild"].interactable = false
-    bag_friendship["Bene Gesserit"].interactable = false
-    bag_friendship["Fremen"].interactable = false
-
-    for color, player in pairs(constants.players) do
-        buttonPassAnchors[color].interactable = false
-        player.board.interactable = false
-    end
-    for _, player in pairs(constants.alivePlayers) do
-        player.council_token.interactable = false
-    end
-
-    for _, obj in ipairs(getObjects()) do
-        if (obj.getDescription() == "Techs FR" and locale == 'en') or (obj.getDescription() == "Techs EN" and locale == 'fr') then
-            obj.setInvisibleTo({"Red", "Blue", "Green", "Yellow", "White", "Grey", "Brown", "Pink", "Purple", "Orange"})
-        end
-    end
-
-    if false then
-        for player_color, _ in pairs(constants.players) do
-            local player = Player[player_color]
-            for i = 1, player.getHandCount() do
-                local t = player.getHandTransform()
-                local p = t.position
-                -- TODO Stop doing this!
-                p.y = p.y - 1
-                t.position = p
-                player.setHandTransform(t, i)
-            end
-        end
-    end
 end)
 
 function onSave()
-    local state = {
-        locale = locale
-    }
-    return JSON.encode(state)
+    return JSON.encode(myState)
 end
 
-function onLocaleChange()
-    for color, player in pairs(constants.players) do
-        player.board.clearButtons()
-        activateButtons(color)
-    end
-end
+-- Update the turn order to only include active players which haven't revealed yet.
+function updateTurnOrder()
+    local newTableOrder = {}
 
-function doNothing() end
-
-function revealEarly(color)
-    local direction = -1
-    if color == 'Blue' or color == "Red" then
-        direction = 1
-    end
-
-    local board = constants.players[color].board
-
-    board.createButton({
-        click_function = 'doNothing',
-        label = i18n("revealEarlyConfirm"),
-        function_owner = Global,
-        position = Vector(8 * direction, 0.7, 4.5),
-        width = 0,
-        height = 0,
-        scale = {0.5, 0.5, 0.5},
-        font_size = 500,
-        font_color = color,
-        color = {0, 0, 0, 1}
-    })
-    board.createButton({
-        click_function = 'RevealOK',
-        label = i18n('yes'),
-        function_owner = Global,
-        position = Vector(8 * direction - 1, 0.7, 5.5),
-        width = 1000,
-        height = 600,
-        scale = {0.5, 0.5, 0.5},
-        font_size = 500,
-        font_color = {1, 1, 1},
-        color = "Green"
-    })
-    board.createButton({
-        click_function = 'cancelChoice',
-        label = i18n('no'),
-        function_owner = Global,
-        position = Vector(8 * direction + 1, 0.7, 5.5),
-        width = 1000,
-        height = 600,
-        scale = {0.5, 0.5, 0.5},
-        font_size = 500,
-        font_color = {1, 1, 1},
-        color = "Red"
-    })
-end
-
-function cancelChoice(board, color)
-    if board.hasTag(color) then
-        constants.players[color].board.clearButtons()
-        activateButtons(color)
-    else
-        broadcastToColor(i18n('noTouch'), color, "Purple")
-    end
-end
-
-function activateButtons(color) -- creates button in player zone with position relative to leader board: reveal, reset discard, draw 1, draw 5
-
-    function new_board_position(x, y, z)
-        return Vector(x, y + 0.7, -z)
-    end
-
-    function new_symmetric_board_position(x, y, z)
-        if color == "Red" or color == "Blue" then
-            return new_board_position(-x, y, z)
-        else
-            return new_board_position(x, y, z)
+    for _, color in ipairs(orderedPlayers) do
+        if not myState.reveal[color] then
+            newTableOrder[#newTableOrder] = color
         end
     end
 
-    function new_symmetric_board_rotation(x, y, z)
-        if color == "Red" or color == "Blue" then
-            return new_board_position(x, -y, z)
-        else
-            return new_board_position(x, y, z)
-        end
-    end
-
-    function new_offseted_board_position(x, y, z)
-        if color == "Red" or color == "Blue" then
-            return new_board_position(17 + x, y, z)
-        else
-            return new_board_position(x, y, z)
-        end
-    end
-
-    if color == 'Yellow' then
-        font_color = {0.1, 0.1, 0.1, 1}
-    else
-        font_color = {0.9, 0.9, 0.9, 1}
-    end
-
-    constants.players[color].board.createButton({
-        click_function = "Reveal",
-        function_owner = Global,
-        label = i18n("revealButton"),
-        position = new_symmetric_board_position(-14.8, 0, -5),
-        rotation = new_symmetric_board_rotation(0, -90, 0),
-        width = 1600,
-        height = 320,
-        font_size = 280,
-        color = color,
-        font_color = font_color
-    })
-    constants.players[color].board.createButton({
-        click_function = "ResetDiscardColor",
-        function_owner = Global,
-        label = i18n("resetDiscardButton"),
-        position = new_offseted_board_position(-3.5, 0, 2.6),
-        width = 1200,
-        height = 250,
-        font_size = 150,
-        color = color,
-        font_color = font_color
-    })
-    constants.players[color].board.createButton({
-        click_function = "DrawFive",
-        function_owner = Global,
-        label = i18n("drawFiveButton"),
-        position = new_offseted_board_position(-13.5, 0, 2.6),
-        width = 1400,
-        height = 250,
-        font_size = 150,
-        color = color,
-        font_color = font_color
-    })
-    constants.players[color].board.createButton({
-        click_function = "DrawOneColor",
-        function_owner = Global,
-        label = i18n("drawOneButton"),
-        position = new_offseted_board_position(-13.5, 0, 1.8),
-        width = 1100,
-        height = 250,
-        font_size = 150,
-        color = color,
-        font_color = font_color
-    })
-
-    constants.players[color].board.createButton({
-        click_function = "doNothing",
-        function_owner = Global,
-        label = i18n("agentTurn"),
-        position = new_symmetric_board_position(-14.8, 0, -1),
-        rotation = new_symmetric_board_rotation(0, -90, 0),
-        width = 0,
-        height = 0,
-        font_size = 280,
-        color = {0,0,0,1},
-        font_color = color
-    })
+    Turns.order = newTableOrder
 end
 
-function activatePass(color)
-
-    function new_board_position(x, y, z)
-        return Vector(x, y + 0.7, -z)
-    end
-
-    function new_symmetric_board_position(x, y, z)
-        if color == "Red" or color == "Blue" then
-            return new_board_position(-x, y, z)
-        else
-            return new_board_position(x, y, z)
-        end
-    end
-
-    local reparentingOffset = constants.players[color].board.getPosition() - buttonPassAnchors[color].getPosition()
-    reparentingOffset:setAt('z', -reparentingOffset.z) -- 180° orientation...
-    local position = new_symmetric_board_position(-3.5, 0, 8.2) + reparentingOffset
-
-    buttonPassAnchors[color].createButton({
-        click_function = "Pass",
-        function_owner = self,
-        label = i18n("passButton"),
-        position = position,
-        width = 1375,
-        height = 1000,
-        font_size = 400,
-        color = "Purple",
-        font_color = {0.9, 0.9, 0.9, 1}
-    })
-end
-
-function Reveal(board, color)
-    if board.hasTag(color) then
-        local players = getObjectFromGUID("4a3e76").call("getPlayersBasedOnHotseat")
-        local turnColor = nil
-        if getObjectFromGUID("4a3e76").getVar("hotseat_mode") then
-            turnColor = Player.getPlayers()[1].color
-        else
-            turnColor = Turns.turn_color
-        end
-        if turnColor ~= color and #players > 1 then
-            broadcastToColor(i18n("revealNotTurn"), color, "Pink")
-        elseif stillHavePlayableAgents(color) then
-            revealEarly(color)
-        else
-            RevealOK(_, color)
-        end
-    else
-        broadcastToColor(i18n('noTouch'), color, "Purple")
-    end
-end
-
-function RevealOK(_, color)
-    constants.players[color].board.clearButtons()
-    Wait.time(function() activateButtons(color) end, 2)
-    local player_hand_table = Player[color].getHandObjects()
-    --log("Player[" .. color .. "].getHandObjects() = " .. tostring(Player[color].getHandObjects()))
-    local count = 0
-    local c = 0
-    local d = 0
-    local t = 0
-    for _, obj in ipairs(player_hand_table) do
-        if obj.hasTag('Imperium') then
-            Wait.time(function()
-                if count < 10 then
-                    obj.setPosition({
-                        pos_reveal[color][1] + c, 1.8, pos_reveal[color][3] + d
-                    })
-                    if color == "Yellow" or color == "Green" then
-                        c = c + 2.5
-                        count = count + 1
-                        if count == 8 then
-                            c = 15
-                            d = 3.6
-                        end
-                    end
-                    if color == "Red" or color == "Blue" then
-                        c = c - 2.5
-                        count = count + 1
-                        if count == 8 then
-                            c = -15
-                            d = 3.6
-                        end
-                    end
-
-                end
-            end, t)
-            t = t + 0.25
-        end
-    end
-    Wait.time(function()
-        reveal[color] = 1
-        -- TableTurnPlayers()
-        Turns.enable = false
-        local players = getObjectFromGUID("4a3e76").call(
-                            "getPlayersBasedOnHotseat")
-        if #players > 1 then activatePass(color) end
-    end, 1)
-end
-
-function stillHavePlayableAgents(color)
-    for _, obj in ipairs(constants.players[color].zone_player.getObjects()) do
-        if obj.hasTag("Agent") then
-            return true
-        end
-    end
-    return false
-end
-
-function Pass(_, color)
-    --[[
-    -- TODO Il n’est pas un peu bullshit ce test ?
-    if color ~= buttonPassAnchors[color].getDescription() then
-        broadcastToColor(i18n("noTouch"), color, "Red")
-    elsif
-    ]]--
-    if reveal["Blue"] == 1 and reveal["Red"] == 1 and reveal["Green"] == 1 and reveal["Yellow"] == 1 then
+function passTurn(color)
+    if reveal["Blue"] and reveal["Red"] and reveal["Green"] and reveal["Yellow"] then
         letsFight()
         buttonPassAnchors[color].clearButtons()
     else
         if not getObjectFromGUID("4a3e76").getVar("hotseat_mode") then
-            TableTurnPlayers()
+            updateTurnOrder()
         end
         buttonPassAnchors[color].clearButtons()
 
@@ -498,392 +79,37 @@ function Pass(_, color)
     end
 end
 
-function TableTurnPlayers()
-    local v = 0
-    table_players = {}
-
-    if reveal['Blue'] == 0 then
-        v = v + 1
-        table_players[v] = 'Blue'
-    end
-    if reveal['Red'] == 0 then
-        v = v + 1
-        table_players[v] = 'Red'
-    end
-    if reveal['Green'] == 0 then
-        v = v + 1
-        table_players[v] = 'Green'
-    end
-    if reveal['Yellow'] == 0 then
-        v = v + 1
-        table_players[v] = 'Yellow'
-    end
-
-    Turns.order = table_players
-end
-
-function ResetDiscardColor(board, color)
-    if board.hasTag(color) then
-        constants.players[color].board.clearButtons()
-        Wait.time(function() activateButtons(color) end, 1)
-        ResetDiscard(_, color)
-    else
-        broadcastToColor(i18n('noTouch'), color, "Purple")
-    end
-end
-
-function DrawFive(board, color)
-    if board.hasTag(color) then
-
-        constants.players[color].board.clearButtons()
-        Wait.time(function() activateButtons(color) end, 1)
-
-        local starterDeck = getDeckOrCard(constants.players[color].drawDeckZone)
-        local countCheck = 0
-        local typeCheck = ""
-        local drawCount = 0
-
-        if starterDeck ~= nil then
-            countCheck = starterDeck.getQuantity()
-            typeCheck = starterDeck.type
-
-            if countCheck >= 5 and typeCheck == "Deck" then
-                starterDeck.deal(5, color)
-            elseif countCheck >= 2 and typeCheck == "Deck" then
-                starterDeck.deal(countCheck, color)
-                drawCount = 5 - countCheck
-                ResetDiscard(_, color)
-                Wait.time(function()
-                    local drawDeck = getDeckOrCard(constants.players[color].drawDeckZone)
-                    if drawDeck then
-                        drawDeck.deal(drawCount, color)
-                    else
-                        log("No more card to deal!")
-                    end
-                end, 1.5)
-            elseif typeCheck == "Card" then
-                starterDeck.deal(1, color)
-                ResetDiscard(_, color)
-                Wait.time(function()
-                    local drawDeck = getDeckOrCard(constants.players[color].drawDeckZone)
-                    if drawDeck then
-                        drawDeck.deal(4, color)
-                    else
-                        log("No more card to deal!")
-                    end
-                end, 1.5)
-            end
-        else
-            ResetDiscard(_, color)
-            Wait.time(function()
-                local drawDeck = getDeckOrCard(constants.players[color].drawDeckZone)
-                if drawDeck then
-                    drawDeck.deal(5, color)
-                else
-                    log("No more card to deal!")
-                end
-            end, 1.5)
-        end
-    else
-        broadcastToColor(i18n('noTouch'), color, "Purple")
-    end
-end
-
-function DrawOneColor(board, color)
-    if board.hasTag(color) then
-        constants.players[color].board.clearButtons()
-        Wait.time(function() activateButtons(color) end, 0.3)
-        DrawOne(_, color)
-    else
-        broadcastToColor(i18n('noTouch'), color, "Purple")
-    end
-
-end
-
 function letsFight()
     Turns.enable = false
     marker_round.setPositionSmooth(constants.marker_positions.combat, false, false)
     broadcastToAll(i18n("fightWarning"), {0.5, 0.5, 0.5})
-    fight = 1
+    myState.fight = true
 
     local secondaryBoard = getObjectFromGUID("662ced")
     secondaryBoard.call("onFightStart")
 end
 
-function getFight() return fight end
+function isFightTime()
+    return myState.fight
+end
 
+-- Reset the reveal myState of all active players (non active players are seen as having already revealed).
 function resetRound()
+    for _, color in ipairs(orderedPlayers) do
+        reveal[color] = true
+    end
 
     local players = nil
 
-    if getObjectFromGUID("4a3e76").getVar(
-        "hotseat_mode")  then
-        players = {'Red', 'Blue', 'Green', 'Yellow'}
+    if getObjectFromGUID("4a3e76").getVar("hotseat_mode")  then
+        players = orderedPlayers
     else
         players = getSeatedPlayers()
     end
 
-    reveal["Red"] = 1
-    reveal["Blue"] = 1
-    reveal["Green"] = 1
-    reveal["Yellow"] = 1
-    fight = 0
-
-    for _, value in ipairs(players) do
-        if value == "Red" then reveal["Red"] = 0 end
-        if value == "Blue" then reveal["Blue"] = 0 end
-        if value == "Green" then reveal["Green"] = 0 end
-        if value == "Yellow" then reveal["Yellow"] = 0 end
-    end
-end
-
-function CountForce(name)
-    local zoneObjects = zone_combat.getObjects()
-    local force = 0
-    local conseilObjects = zone_conseil.getObjects()
-    local techZone = constants.players[name].techZone.getObjects()
-    local test1 = 0
-    local test2 = 0
-    for i, object in ipairs(zoneObjects) do
-        if object.getName() == name then
-            force = force + 2
-        elseif object.getName() == name .. " Dreadnought" or object.getName() == name .. " dreadnought" then
-                local leader = helper.getLeader(name)
-            if leader and leader.hasTag("Rhombur") then
-                force = force + 4
-            else
-                force = force + 3
-            end
-        end
-    end
-    for _, obj in ipairs(conseilObjects) do
-        if obj.getName() == name .. " Councilor" then test1 = 1 end
-    end
-    for _, obj in ipairs(techZone) do
-        if obj.hasTag("Restricted Ordnance") then test2 = 1 end
-    end
-    if test1 == 1 and test2 == 1 then force = force + 4 end
-
-    if force == 0 then
-        marker_combat[name].setPositionSmooth(marker_combat_pos_ini[name],
-                                              false, false)
-
-    elseif force < 21 then
-        marker_combat[name].setPositionSmooth(marker_combat_pos[force], false,
-                                              false)
-        marker_combat[name].setRotationSmooth({0, 180, 0})
-    else
-        marker_combat[name].setPositionSmooth(marker_combat_pos[force - 20],
-                                              false, false)
-        marker_combat[name].setRotationSmooth({0, 180, 180})
-    end
-end
-
-function addTroopDefense(controlableSpace)
-    local joueur = nil
-    for _, obj in ipairs(controlableSpace.zone.getObjects()) do
-        if obj.getName() == "Red Dreadnought" or obj.getName() ==
-            "Red dreadnought" then
-            joueur = "Red"
-        elseif obj.getName() == "Blue Dreadnought" or obj.getName() ==
-            "Blue dreadnought" then
-            joueur = "Blue"
-        elseif obj.getName() == "Green Dreadnought" or obj.getName() ==
-            "Green dreadnought" then
-            joueur = "Green"
-        elseif obj.getName() == "Yellow Dreadnought" or obj.getName() ==
-            "Yellow dreadnought" then
-            joueur = "Yellow"
-        end
-    end
-    if joueur == nil then
-        for _, obj in ipairs(controlableSpace.zone.getObjects()) do
-            if obj.getName() == "Red Flag" then
-                joueur = "Red"
-            elseif obj.getName() == "Blue Flag" then
-                joueur = "Blue"
-            elseif obj.getName() == "Green Flag" then
-                joueur = "Green"
-            elseif obj.getName() == "Yellow Flag" then
-                joueur = "Yellow"
-            end
-        end
-    end
-    if joueur ~= nil then
-        local troops = helper.getTroopsFromOrbit(joueur)
-        for _, troop in ipairs(troops) do
-            troop.locked = false
-            troop.setPositionSmooth(constants.getLandingPositionFromGUID('6d632e'), false, false)
-            troop.setRotation(Vector(0, 0, 0))
-            local leaderName = helper.getLeaderName(joueur)
-            broadcastToAll(i18n("defenseTroop"):format(leaderName), joueur)
-            break
-        end
-    end
-end
-
-function onObjectEnterScriptingZone(zone, enter_object)
-
-    -----------------New section------------------------
-    if zone.guid == hidingLeaderScriptingZone.guid and hidingState ~= 0 then
-        enter_object.setInvisibleTo(hidingStateTable[hidingState])
-    end
-    -----------------End section------------------------
-    if zone.guid == zone_combat.guid then
-        local name = enter_object.getDescription()
-        if name == "Red" or name == "Blue" or name == "Green" or name ==
-            "Yellow" then CountForce(name) end
+    for _, color in ipairs(players) do
+        reveal[color] = false
     end
 
-    for faction, zone_reput in pairs(zone_reputs) do
-        if zone.guid == zone_reput.guid then
-            local name = enter_object.getName()
-            for playerColor, _ in pairs(constants.players) do
-                if name == faction .. " Faction " .. playerColor then
-                    Friendship(faction, playerColor)
-                end
-            end
-        end
-    end
-
-    if zone.guid == zone_conflict_encours.guid then
-        -- TODO Redundant relocation?
-        if enter_object.guid == '2b2575' then
-            enter_object.setPosition({4.80, 2, -2.73})
-            getDeckOrCard('07e239').takeObject({
-                position = {-1.16, 2, -5.74},
-                rotation = {0, 180, 0},
-                smooth = false
-            })
-        end
-        local round_start = getObjectFromGUID("120026").call("getRoundStart")
-        if round_start == 1 then
-            local nom = enter_object.getName()
-            local j = 0
-            local combat_pv_bag = getObjectFromGUID('d9a457')
-            for _, obj in pairs(combat_pv_bag.getObjects()) do
-                if obj.name == nom then -- we use name instead of getName() here because objects are still in a bag and cannot use methods on them
-                    j = j + 1
-                    combat_pv_bag.takeObject({
-                        position = pos_vp_encours[j],
-                        rotation = {0, 180, 0},
-                        smooth = true,
-                        guid = obj.guid
-                    })
-                end
-            end
-            local controlableSpace = getControlableSpace(enter_object)
-            if controlableSpace then
-                addTroopDefense(controlableSpace)
-            end
-        end
-    end
-
-    for color, player in pairs(constants.alivePlayers) do
-        local scorePark = player.board.call("getScorePark")
-        if zone == scorePark.zone then
-            local controlableSpace = getControlableSpace(enter_object)
-            if controlableSpace then
-                local objects = controlableSpace.zone.getObjects()
-                for _, object in ipairs(objects) do
-                    if string.find(object.getName(), " Flag") then
-                        object.destruct()
-                    end
-                end
-                local p = controlableSpace.position
-                flag_bag[color].takeObject({
-                    -- Position is adjusted so as to insert the token below any dreadnought.
-                    position = Vector(p.x, 0.78, p.z),
-                    rotation = {0, 180, 0},
-                    smooth = false
-                })
-            end
-        end
-    end
-
-    if enter_object.getName() == 'Mentat' then
-        for color, player in pairs(constants.alivePlayers) do
-            if zone == player.zone_player then
-                enter_object.setColorTint(player.swordmaster.getColorTint())
-                break
-            end
-        end
-    end
-
-end
-
-function onObjectLeaveScriptingZone(zone, enter_object)
-    for faction, zone_reput in pairs(zone_reputs) do
-        if zone.guid == zone_reput.guid then
-            local name = enter_object.getName()
-            for playerColor, _ in pairs(constants.players) do
-                if name == faction .. " Faction " .. playerColor then
-                    loseFriendship(faction, playerColor)
-                    Wait.time(function() loseFriendship(faction, playerColor) end, 0.7)
-                end
-            end
-        end
-    end
-end
-
-function Friendship(faction, color)
-    local hasFriendship = false
-    local vpTokens = helper.getScoreTokens(color)
-    for _, vpToken in ipairs(vpTokens) do
-        if vpToken.getName() == faction .. " Friendship" then
-            hasFriendship = true
-        end
-    end
-    if not hasFriendship then
-        give2influence(faction, color)
-    end
-end
-
-function loseFriendship(faction, color)
-    local vpTokens = helper.getScoreTokens(color)
-    for _, vpToken in ipairs(vpTokens) do
-        if vpToken.getName() == faction .. " Friendship" then
-            vpToken.destruct()
-        end
-    end
-end
-
-function give2influence(faction, color)
-    helper.grantScoreTokenFromBag(color, bag_friendship[faction])
-end
-
--- Find if the GUID matches a VP for a region and return it if it is the case.
-function getControlableSpace(vpToken)
-    local name = vpToken.getName()
-    if name == "Secure Imperial Basin" or name == "Battle for Imperial Basin" then
-        return controlable_spaces.imperial_basin
-    elseif name == "Siege of Arrakeen" or name == "Battle for Arrakeen" then
-        return controlable_spaces.arrakeen
-    elseif name == "Siege of Carthag" or name == "Battle for Carthag" then
-        return controlable_spaces.carthag
-    end
-
-    local GUID = vpToken
-    if GUID == "2d469b" or GUID == "ff1ce6" then
-        return controlable_spaces.imperial_basin
-    elseif GUID == "29a66c" or GUID == "e25f79" then
-        return controlable_spaces.arrakeen
-    elseif GUID == "f131f2" or GUID == "e123ce" then
-        return controlable_spaces.carthag
-    else
-        return nil
-    end
-end
-
--- Illumine le plateau du joueur dont c’est le tour (et éteint les autres).
-function onPlayerTurn(player, previous_player)
-    local indexed_colors = {"Green", "Yellow", "Blue", "Red"}
-    for i, color in ipairs(indexed_colors) do
-        local effect_index = 0 -- black index (no color actually)
-        if player and player.color == color then
-            effect_index = i
-        end
-        local board = constants.players[color].board
-        board.AssetBundle.playTriggerEffect(effect_index)
-    end
+    myState.fight = false
 end

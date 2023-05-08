@@ -16,9 +16,9 @@ _ = require("Core").registerLoadablePart(function()
     activateButtons()
 
     self.setSnapPoints({
-        helper.createAbsoluteSnapPointFromZone(foldspaceZone, true, {"Imperium"}),
-        helper.createAbsoluteSnapPointFromZone(arrakisLiaisonZone, true, {"Imperium"}),
-        helper.createAbsoluteSnapPointFromZone(theSpiceMustFlowZone, true, {"Imperium"}),
+        helper.createRelativeSnapPointFromZone(foldspaceZone, true, {"Imperium"}),
+        helper.createRelativeSnapPointFromZone(arrakisLiaisonZone, true, {"Imperium"}),
+        helper.createRelativeSnapPointFromZone(theSpiceMustFlowZone, true, {"Imperium"}),
     })
 end)
 

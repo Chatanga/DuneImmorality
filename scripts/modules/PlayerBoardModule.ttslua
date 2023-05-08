@@ -1,5 +1,8 @@
 playerBoardModule = {}
 
+i18n = require("i18n")
+require("locales")
+
 constants = require("Constants")
 
 helper = require("HelperModule")
@@ -14,7 +17,7 @@ playerBoardModule.orbitPark = nil
 
 playerBoardModule.score = 0
 
-playerBoardModule.global_score_positions = {}
+playerBoardModule.self_score_positions = {}
 
 playerBoardModule.scoreboardZone = nil
 
@@ -41,6 +44,8 @@ function playerBoardModule.init(playerColor, centerPosition, savedData)
     playerBoardModule.orbitPark = playerBoardModule.createOrbitPark(centerPosition)
     playerBoardModule.techPark = playerBoardModule.createTechPark(centerPosition)
 
+    playerBoardModule.createButtons()
+
     playerBoardModule.initPlayerScore()
 
     playerBoardModule.saveState()
@@ -53,6 +58,28 @@ function playerBoardModule.saveState()
         alive = playerBoardModule.alive
     }
     self.script_state = JSON.encode(state)
+end
+
+function getOrbitPark()
+    return playerBoardModule.orbitPark
+end
+
+function getTechPark()
+    return playerBoardModule.techPark
+end
+
+function getScorePark()
+    return playerBoardModule.scorePark
+end
+
+function getScore()
+    return playerBoardModule.score
+end
+
+function shutdown(parameters)
+    local riseOfIxEnabled = parameters[1] == 1
+    local immortalityEnabled = parameters[2] == 1
+    playerBoardModule.shutdown(riseOfIxEnabled, immortalityEnabled)
 end
 
 function playerBoardModule.createOrbitPark(centerPosition)
@@ -117,12 +144,12 @@ function playerBoardModule.createTechPark(centerPosition)
 end
 
 function playerBoardModule.initPlayerScore()
-    playerBoardModule.generateGlobalScoreboardPositions()
+    playerBoardModule.generateselfScoreboardPositions()
     playerBoardModule.scorePark = playerBoardModule.createPlayerScoreboardPark()
     playerBoardModule.updatePlayerScore()
 end
 
-function playerBoardModule.generateGlobalScoreboardPositions()
+function playerBoardModule.generateselfScoreboardPositions()
     local origin = constants.players[playerBoardModule.playerColor].score_marker.getPosition()
 
     -- Avoid collision between markers by giving a different height to each.
@@ -135,9 +162,9 @@ function playerBoardModule.generateGlobalScoreboardPositions()
         end
     end
 
-    playerBoardModule.global_score_positions = {}
+    playerBoardModule.self_score_positions = {}
     for i = 1, 14 do
-        playerBoardModule.global_score_positions[i] = {
+        playerBoardModule.self_score_positions[i] = {
             origin.x,
             2.7 + h,
             origin.z + (i - 2) * 1.165
@@ -186,7 +213,7 @@ function playerBoardModule.updatePlayerScore()
 
     local vpIndex = math.min(14, newScore + 1)
     local score_marker = constants.players[playerBoardModule.playerColor].score_marker
-    score_marker.setPositionSmooth(playerBoardModule.global_score_positions[vpIndex])
+    score_marker.setPositionSmooth(playerBoardModule.self_score_positions[vpIndex])
     score_marker.setRotationSmooth({0, 0, 0}, false, false)
 
     if newScore ~= playerBoardModule.score then
@@ -196,7 +223,7 @@ function playerBoardModule.updatePlayerScore()
     end
 end
 
-function playerBoardModule.onObjectEnterScriptingZone(zone, enter_object)
+function onObjectEnterScriptingZone(zone, enter_object)
     if playerBoardModule.alive then
         if zone.guid == playerBoardModule.scoreboardZone.guid then
             local description = enter_object.getDescription()
@@ -207,7 +234,7 @@ function playerBoardModule.onObjectEnterScriptingZone(zone, enter_object)
     end
 end
 
-function playerBoardModule.onObjectLeaveScriptingZone(zone, enter_object)
+function onObjectLeaveScriptingZone(zone, enter_object)
     if playerBoardModule.alive then
         if zone.guid == playerBoardModule.scoreboardZone.guid then
             local description = enter_object.getDescription()
@@ -259,6 +286,319 @@ function playerBoardModule.addAll(objects, otherObjects)
     assert(otherObjects)
     for _, object in ipairs(otherObjects) do
         objects[#objects + 1] = object
+    end
+end
+
+function onPlayerTurn(player, previous_player)
+    --[[
+    -- Illumine le plateau du joueur dont c’est le tour (et éteint les autres).
+    local indexed_colors = {"Green", "Yellow", "Blue", "Red"}
+    for i, color in ipairs(indexed_colors) do
+        local effect_index = 0 -- black index (no color actually)
+        if player and player.color == color then
+            effect_index = i
+        end
+        local board = constants.players[color].board
+        board.AssetBundle.playTriggerEffect(effect_index)
+    end
+    ]]--
+
+    local effect_index = 0 -- black index (no color actually)
+    if player and player.color == playerBoardModule.playerColor then
+        local indexed_colors = {
+            Green = 1,
+            Yellow = 2,
+            Blue = 3,
+            Red = 4
+        }
+        effect_index = indexed_colors[playerBoardModule.playerColor]
+    end
+    self.AssetBundle.playTriggerEffect(effect_index)
+end
+
+function playerBoardModule.createButtons()
+    local font_color = nil
+    if playerBoardModule.playerColor == 'Yellow' then
+        font_color = {0.1, 0.1, 0.1, 1}
+    else
+        font_color = {0.9, 0.9, 0.9, 1}
+    end
+
+    self.createButton({
+        click_function = "reveal",
+        function_owner = self,
+        label = i18n("revealButton"),
+        position = new_symmetric_board_position(-14.8, 0, -5),
+        rotation = new_symmetric_board_rotation(0, -90, 0),
+        width = 1600,
+        height = 320,
+        font_size = 280,
+        color = playerBoardModule.playerColor,
+        font_color = font_color
+    })
+    self.createButton({
+        click_function = "resetDiscard",
+        function_owner = self,
+        label = i18n("resetDiscardButton"),
+        position = new_offseted_board_position(-3.5, 0, 2.6),
+        width = 1200,
+        height = 250,
+        font_size = 150,
+        color = playerBoardModule.playerColor,
+        font_color = font_color
+    })
+    self.createButton({
+        click_function = "drawFive",
+        function_owner = self,
+        label = i18n("drawFiveButton"),
+        position = new_offseted_board_position(-13.5, 0, 2.6),
+        width = 1400,
+        height = 250,
+        font_size = 150,
+        color = playerBoardModule.playerColor,
+        font_color = font_color
+    })
+    self.createButton({
+        click_function = "drawOneCard",
+        function_owner = self,
+        label = i18n("drawOneCardButton"),
+        position = new_offseted_board_position(-13.5, 0, 1.8),
+        width = 1100,
+        height = 250,
+        font_size = 150,
+        color = playerBoardModule.playerColor,
+        font_color = font_color
+    })
+
+    self.createButton({
+        click_function = "doNothing",
+        function_owner = self,
+        label = i18n("agentTurn"),
+        position = new_symmetric_board_position(-14.8, 0, -1),
+        rotation = new_symmetric_board_rotation(0, -90, 0),
+        width = 0,
+        height = 0,
+        font_size = 280,
+        color = {0,0,0,1},
+        font_color = playerBoardModule.playerColor
+    })
+end
+
+function playerBoardModule.drawOneCardColor(color)
+    if color == playerBoardModule.playerColor then
+        constants.players[color].board.clearButtons()
+        Wait.time(function() activateButtons(color) end, 0.3)
+        helper.drawOneCard(_, color)
+    else
+        broadcastToColor(i18n('noTouch'), color, "Purple")
+    end
+end
+
+function playerBoardModule.createPassButton()
+    local player = constants.players[playerBoardModule.playerColor]
+
+    local reparentingOffset = player.board.getPosition() - player.pass_turn_anchors.getPosition()
+    reparentingOffset:setAt('z', -reparentingOffset.z) -- 180° orientation...
+    local position = new_symmetric_board_position(-3.5, 0, 8.2) + reparentingOffset
+
+    player.pass_turn_anchors.createButton({
+        click_function = "passTurn",
+        function_owner = self,
+        label = i18n("passButton"),
+        position = position,
+        width = 1375,
+        height = 1000,
+        font_size = 400,
+        color = "Purple",
+        font_color = {0.9, 0.9, 0.9, 1}
+    })
+end
+
+function resetDiscard(color)
+    if color == playerBoardModule.playerColor then
+        constants.players[color].board.clearButtons()
+        Wait.time(function() activateButtons(color) end, 1)
+        helper.resetDiscard(_, color)
+    else
+        broadcastToColor(i18n('noTouch'), color, "Purple")
+    end
+end
+
+function playerBoardModule.revealEarly(color)
+    local direction = -1
+    if color == 'Blue' or color == "Red" then
+        direction = 1
+    end
+
+    self.createButton({
+        click_function = 'doNothing',
+        label = i18n("revealEarlyConfirm"),
+        function_owner = self,
+        position = Vector(8 * direction, 0.7, 4.5),
+        width = 0,
+        height = 0,
+        scale = {0.5, 0.5, 0.5},
+        font_size = 500,
+        font_color = color,
+        color = {0, 0, 0, 1}
+    })
+    self.createButton({
+        click_function = 'validateReveal',
+        label = i18n('yes'),
+        function_owner = self,
+        position = Vector(8 * direction - 1, 0.7, 5.5),
+        width = 1000,
+        height = 600,
+        scale = {0.5, 0.5, 0.5},
+        font_size = 500,
+        font_color = {1, 1, 1},
+        color = "Green"
+    })
+    self.createButton({
+        click_function = 'cancelChoice',
+        label = i18n('no'),
+        function_owner = self,
+        position = Vector(8 * direction + 1, 0.7, 5.5),
+        width = 1000,
+        height = 600,
+        scale = {0.5, 0.5, 0.5},
+        font_size = 500,
+        font_color = {1, 1, 1},
+        color = "Red"
+    })
+end
+
+function cancelChoice(color)
+    if color == playerBoardModule.playerColor then
+        self.clearButtons()
+        activateButtons(color)
+    else
+        broadcastToColor(i18n('noTouch'), color, "Purple")
+    end
+end
+
+function reveal(color)
+    if color == playerBoardModule.playerColor then
+        local players = getObjectFromGUID("4a3e76").call("getPlayersBasedOnHotseat")
+        local turnColor = nil
+        if getObjectFromGUID("4a3e76").getVar("hotseat_mode") then
+            turnColor = Player.getPlayers()[1].color
+        else
+            turnColor = Turns.turn_color
+        end
+        if turnColor ~= color and #players > 1 then
+            broadcastToColor(i18n("revealNotTurn"), color, "Pink")
+        elseif playerBoardModule.stillHavePlayableAgents(color) then
+            playerBoardModule.revealEarly(color)
+        else
+            playerBoardModule.doReveal(_, color)
+        end
+    else
+        broadcastToColor(i18n('noTouch'), color, "Purple")
+    end
+end
+
+function playerBoardModule.doReveal(_, color)
+    self.clearButtons()
+    Wait.time(function() activateButtons(color) end, 2)
+
+    --log("Player[" .. color .. "].getHandObjects() = " .. tostring(Player[color].getHandObjects()))
+    local count = 0
+    local c = 0
+    local d = 0
+
+    local dir = nil
+    if color == "Yellow" or color == "Green" then
+        dir = 1
+    elseif color == "Red" or color == "Blue" then
+        dir = -1
+    else
+        assert(false)
+    end
+
+
+    local pos_reveal = {
+        Red = constants.players["Red"].board.getPosition() + Vector(13, 0.69, -5),
+        Blue = constants.players["Blue"].board.getPosition() + Vector(13, 0.69, -5),
+        Green = constants.players["Green"].board.getPosition() + Vector(-13, 0.69, -5),
+        Yellow = constants.players["Yellow"].board.getPosition() + Vector(-13, 0.69, -5)
+    }
+
+    local t = 0
+    for _, object in ipairs(Player[color].getHandObjects()) do
+        if object.hasTag('Imperium') then
+            Wait.time(function()
+                if count < 10 then
+                    object.setPosition({
+                        pos_reveal[color][1] + c,
+                        1.8,
+                        pos_reveal[color][3] + d
+                    })
+                    c = c + 2.5 * dir
+                    count = count + 1
+                end
+            end, t)
+            t = t + 0.25
+        end
+    end
+
+    Wait.time(function()
+        state.reveal[color] = true
+        -- TableTurnPlayers()
+        Turns.enable = false
+        local players = getObjectFromGUID("4a3e76").call("getPlayersBasedOnHotseat")
+        if #players > 1 then
+            activatePass(color)
+        end
+    end, 1)
+end
+
+-- TODO Include Holtzman effect here.
+function drawFive(color)
+    if color == playerBoardModule.playerColor then
+        self.clearButtons()
+        Wait.time(function() activateButtons(color) end, 1)
+
+        helper.drawCards(color, constants.players[color].drawDeckZone, 5)
+    else
+        broadcastToColor(i18n('noTouch'), color, "Purple")
+    end
+end
+
+function playerBoardModule.stillHavePlayableAgents(color)
+    for _, object in ipairs(constants.players[color].zone_player.getObjects()) do
+        if object.hasTag("Agent") then
+            return true
+        end
+    end
+    return false
+end
+
+function new_board_position(x, y, z)
+    return Vector(x, y + 0.7, -z)
+end
+
+function new_symmetric_board_position(x, y, z)
+    if playerBoardModule.playerColor == "Red" or playerBoardModule.playerColor == "Blue" then
+        return new_board_position(-x, y, z)
+    else
+        return new_board_position(x, y, z)
+    end
+end
+
+function new_symmetric_board_rotation(x, y, z)
+    if playerBoardModule.playerColor == "Red" or playerBoardModule.playerColor == "Blue" then
+        return new_board_position(x, -y, z)
+    else
+        return new_board_position(x, y, z)
+    end
+end
+
+function new_offseted_board_position(x, y, z)
+    if playerBoardModule.playerColor == "Red" or playerBoardModule.playerColor == "Blue" then
+        return new_board_position(17 + x, y, z)
+    else
+        return new_board_position(x, y, z)
     end
 end
 

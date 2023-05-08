@@ -5,10 +5,9 @@ constants = require("Constants")
 
 helper = require("HelperModule")
 
-players = constants.players
+boardCommonModule = require("BoardCommonModule")
 
 _ = require("Core").registerLoadablePart(function()
-    bene_tleilax_board = getObjectFromGUID("d5c2db")
     onLocaleChange()
 end)
 
@@ -41,59 +40,37 @@ function onLocaleChange()
 end
 
 function tleilaxuTroop(_, color)
-
-    local leaderName = helper.getLeaderName(color)
-    if isEnoughSpecimen(_, color) then
+    if helper.getSpecimenCount(color) >= specimenPrice then
         Player[color].showConfirmDialog(i18n("reclaimedForcesTroopsWarning"),
-        function(color)
-            spendSpecimen(color, 3)
-            Wait.time(function()
-                helper.landTroopsFromOrbit(color, 2)
-            end, 2)
+        function(_)
+            paySpecimenPrice(color, specimenPrice)
+            helper.landTroopsFromOrbit(color, 2)
+            local leaderName = helper.getLeaderName(color)
             broadcastToAll(leaderName .. i18n("reclaimedForcesTroops"), color)
         end)
     end
 end
 
 function tleilaxuScarab(_, color)
-
-    local leaderName = helper.getLeaderName(color)
-    if isEnoughSpecimen(_, color) then
+    local specimenPrice = 3
+    if helper.getSpecimenCount(color) >= specimenPrice then
         Player[color].showConfirmDialog(i18n("reclaimedForcesScarabWarning"),
-        function(color)
-            spendSpecimen(color, 3)
-
+        function(_)
+            paySpecimenPrice(color, specimenPrice)
             Wait.time(function()
                 local params = {color = color, silent = true}
-                bene_tleilax_board.call("moveTleilaxuCall", params)
+                local beneTleilaxBoard = getObjectFromGUID("d5c2db")
+                beneTleilaxBoard.call("moveTleilaxuCall", params)
+                local leaderName = helper.getLeaderName(color)
                 broadcastToAll(leaderName .. i18n("reclaimedForcesScarab"), color)
             end, 1)
         end)
     end
-
 end
 
-function spendSpecimen(color, price)
+function paySpecimenPrice(color, price)
     Wait.time(function()
-        bene_tleilax_board.Call("RemoveSpecimenCall", {color = color, silent = true})
+        local beneTleilaxBoard = getObjectFromGUID("d5c2db")
+        beneTleilaxBoard.Call("RemoveSpecimenCall", {color = color, silent = true})
     end, 0.3, price)
-end
-
-function isEnoughSpecimen(_, color)
-    local testSpecimen = false
-    local countSpecimen = 0
-    local price = 3
-    -- comptage Spécimen
-    for _, troop in ipairs(getObjectFromGUID("f5de09").getObjects()) do
-        if troop.hasTag("Troop") and troop.hasTag(color) then
-            countSpecimen = countSpecimen + 1
-        end
-    end
-    if price > countSpecimen then
-        broadcastToColor(i18n("notEnoughSpecimen"), color, "Red")
-    else
-        testSpecimen = true
-    end
-
-    return testSpecimen
 end

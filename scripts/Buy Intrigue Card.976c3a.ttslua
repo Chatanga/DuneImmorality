@@ -8,7 +8,7 @@ _ = require("Core").registerLoadablePart(function()
 
     local intrigueDiscardBackCard = getObjectFromGUID("90f762")
     self.setSnapPoints({
-        helper.createAbsoluteSnapPointFromZone(intrigueDiscardBackCard, false, {"Intrigue"}),
+        helper.createRelativeSnapPointFromZone(intrigueDiscardBackCard, false, {"Intrigue"}),
     })
 end)
 

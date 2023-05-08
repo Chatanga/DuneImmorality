@@ -30,11 +30,23 @@ function core.registerLoadablePart(onLoadCallback)
     return onLoadCallback
 end
 
+function core.getIdentity()
+    if self then
+        if self.guid == "-1" then
+            return "Global"
+        else
+            return self.getGUID() .. " - " .. self.getName()
+        end
+    else
+        return "?"
+    end
+end
+
 --[[
     See core.registerLoadablePart.
 ]]--
 function onLoad(script_state)
-    --log("Loading object " .. self.getGUID() .. " - " .. self.name)
+    log("Loading object " .. core.getIdentity())
     assert(not core.loaded, "Looks like you're calling 'onLoad' from a function.")
     core.loaded = true
     for _, onLoadCallback in ipairs(core.onLoadCallbacks) do
@@ -45,14 +57,14 @@ function onLoad(script_state)
 end
 
 function onDestroy()
-    --log("Destroying object " .. self.getGUID() .. " - " .. self.name)
+    log("Destroying object " .. core.getIdentity())
     core.setGlobalStatus(self, nil)
 end
 
 function core.safeReload(object)
     assert(object)
     if core.setGlobalStatus(object, false) ~= true then
-        --log("Reloading the not yet loaded object " .. object.getGUID() .. " - " .. object.name)
+        --log("Reloading the not yet loaded object " .. core.getIdentity())
     end
     local newObject = object.reload()
     return newObject

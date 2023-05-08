@@ -18,7 +18,7 @@ _ = require("Core").registerLoadablePart(function()
     local snapPoints = {}
     for i, slotZoneGUID in ipairs(slotZoneGUIDs) do
         local slotZone = getObjectFromGUID(slotZoneGUID)
-        local snapPoint = helper.createAbsoluteSnapPointFromZone(slotZone, true, {"Imperium"})
+        local snapPoint = helper.createRelativeSnapPointFromZone(slotZone, true, {"Imperium"})
         snapPoints[i] = snapPoint
     end
     self.setSnapPoints(snapPoints)

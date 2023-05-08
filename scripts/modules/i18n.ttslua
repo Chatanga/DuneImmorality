@@ -24,8 +24,15 @@ end
 
 local function translate(id)
     local currentLocale = i18n.getLocale()
+    -- TODO Temporary
+    if not currentLocale then
+        currentLocale = "en"
+    end
     local result = i18n.locales[currentLocale][id]
-    assert(result, ("The id %q was not found in the current locale (%q)"):format(id, currentLocale))
+    -- assert(result, ("The id %q was not found in the current locale (%q)"):format(id, currentLocale))
+    if not result then
+        result = "<" .. id .. ">"
+    end
     return result
 end
 

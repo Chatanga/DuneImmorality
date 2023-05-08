@@ -22,29 +22,28 @@ function constants.getLandingPosition(anchor)
     return anchor.getPosition() + constants.someHeight
 end
 
--- Don't store object references for these objects which can be reloaded / mutated on locale change.
-constants.cardsFoldspace = "014161"
-constants.cardsLiaison = "7d34c9"
-constants.cardsTSMF = "8de6d5"
-constants.cardsBaseImperium = "99d41d"
-constants.imperium_deck = "99d41d"
-constants.imperium_deck_ix = "58c4c3"
-constants.imperium_deck_immortality = "88b666"
-constants.tleilaxu_deck = "dcad54"
-constants.reclaimed_forces = "3c772c"
-constants.intrigue_immortality = "a5dbab"
-constants.intrigue_ix = "afa5e5"
-constants.intrigue_base = "77d25d"
-constants.epic_cards = {'7ae7f5', 'fbaf9f', '497c84', '30b760'}
-constants.starter_decks = {"014c6a", "b8e747", "0c5e03", "a76b37"}
-constants.dune_decks = {"8c99a3", "af840c", "44069d", "85fb54"}
-constants.experimentation_decks = {"ef9531", "45ce21", "2d935f", "8ed0cd"}
+--[[
+buttonPassAnchors -> pass_turn_anchors
+forceToken -> marker_combat
+intrigue_pos -> constants.intrigue_base
+imperium_pos -> constants.imperium_deck
+pos_starter_decks = -> constants.players.Red.drawDeck
+]]--
 
-constants.leaderPos = {
-    Yellow = core.getHardcodedPositionFromGUID('a677e0', 19.0, 1.17902148, -5.5),
-    Green = core.getHardcodedPositionFromGUID('cf1486', 19.0, 1.18726385, 17.5),
-    Blue = core.getHardcodedPositionFromGUID('681774', -19.0, 1.25506675, -5.5),
-    Red = core.getHardcodedPositionFromGUID('66cdbb', -19.0, 1.25, 17.5)
+constants.turnOrder = {
+    Green = 'Yellow',
+    Yellow = 'Blue',
+    Blue = 'Red',
+    Red = 'Green',
+}
+
+-- Don't store object references for these objects which can be reloaded / mutated on locale change.
+constants.books = {
+    base = "6ec3b0",
+    faq = "86033d",
+    riseOfIx = "57bf60",
+    immortality = "537207",
+    blitz = nil
 }
 
 -- Don't store object references for these objects which can be reloaded / mutated on locale change.
@@ -63,15 +62,6 @@ constants.leaders = {
     vladimir = {GUID = "98cae8"},
     ilban = {GUID = "78551e"},
     helena = {GUID = "5a8a9a"}
-}
-
--- Don't store object references for these objects which can be reloaded / mutated on locale change.
-constants.books = {
-    base = "6ec3b0",
-    faq = "86033d",
-    riseOfIx = "57bf60",
-    immortality = "537207",
-    blitz = nil
 }
 
 --[[
@@ -133,7 +123,9 @@ constants.unresolvedPlayers = {
         researchTokens = "39e0f3",
         researchTokens_inital_position = core.getHardcodedPositionFromGUID('39e0f3', 0.173057809, 0.8806028, 16.8245316),
         cargo = "e9096d",
-        zone_player = "2b7781"
+        zone_player = "2b7781",
+        leaderPos = core.getHardcodedPositionFromGUID('66cdbb', -19.0, 1.25, 17.5),
+        first_player_positions = core.getHardcodedPositionFromGUID('346e0d', -14.0, 1.5, 19.7) + Vector(0, -0.4, 0)
     },
     Blue = {
         board = "77ca63",
@@ -187,7 +179,9 @@ constants.unresolvedPlayers = {
         researchTokens = "292658",
         researchTokens_inital_position = core.getHardcodedPositionFromGUID('292658', 0.19322297, 0.8781026, 17.5218124),
         cargo = "68e424",
-        zone_player = "621cc4"
+        zone_player = "621cc4",
+        leaderPos = core.getHardcodedPositionFromGUID('681774', -19.0, 1.25506675, -5.5),
+        first_player_positions = core.getHardcodedPositionFromGUID('1fc559', -14.0, 1.501278, -3.3) + Vector(0, -0.4, 0)
     },
     Green = {
         board = "0bbae1",
@@ -241,7 +235,9 @@ constants.unresolvedPlayers = {
         researchTokens = "658b17",
         researchTokens_inital_position = core.getHardcodedPositionFromGUID('658b17', 0.184157625, 0.87810266, 18.91703),
         cargo = "34281d",
-        zone_player = "111023"
+        zone_player = "111023",
+        leaderPos = core.getHardcodedPositionFromGUID('cf1486', 19.0, 1.18726385, 17.5),
+        first_player_positions = core.getHardcodedPositionFromGUID('59523d', 14.0, 1.45146358, 19.7) + Vector(0, -0.4, 0)
     },
     Yellow = {
         board = "fdd5f9",
@@ -295,61 +291,72 @@ constants.unresolvedPlayers = {
         researchTokens = "8988cf",
         researchTokens_inital_position = core.getHardcodedPositionFromGUID('8988cf', 0.189716741, 0.8781027, 18.22235),
         cargo = "8fa76f",
-        zone_player = "20859b"
+        zone_player = "20859b",
+        leaderPos = core.getHardcodedPositionFromGUID('a677e0', 19.0, 1.17902148, -5.5),
+        first_player_positions = core.getHardcodedPositionFromGUID('e9a44c', 14.0, 1.44851, -3.3) + Vector(0, -0.4, 0)
     }
 }
 
-constants.lowerTrashPosition = core.getHardcodedPositionFromGUID('ef8614', 2.0719285, 0.646084964, -20.6404324) + constants.someHeight
-
-constants.first_player_marker = nil
-
-constants.first_player_positions =  {
-    Red = core.getHardcodedPositionFromGUID('346e0d', -14.0, 1.5, 19.7) + Vector(0, -0.4, 0),
-    Blue = core.getHardcodedPositionFromGUID('1fc559', -14.0, 1.501278, -3.3) + Vector(0, -0.4, 0),
-    Green = core.getHardcodedPositionFromGUID('59523d', 14.0, 1.45146358, 19.7) + Vector(0, -0.4, 0),
-    Yellow = core.getHardcodedPositionFromGUID('e9a44c', 14.0, 1.44851, -3.3) + Vector(0, -0.4, 0)
-}
-
-constants.imperiumDeckZone = '8bd982'
-
-constants.tleilaxuDeckZone = '14b2ca'
-
-constants.ixPlanetBoard = 'd75455'
-
-constants.imperiumRowSlots = {
-    {zoneGuid = '3de1d0', pos = core.getHardcodedPositionFromGUID('38ffc0', -7.5, 0.5, 9.0) + constants.someHeight},
-    {zoneGuid = '356e2c', pos = core.getHardcodedPositionFromGUID('21b287', -5.0, 0.5, 9.0) + constants.someHeight},
-    {zoneGuid = '7edbb3', pos = core.getHardcodedPositionFromGUID('0a5f50', -2.5, 0.5, 9.0) + constants.someHeight},
-    {zoneGuid = '641974', pos = core.getHardcodedPositionFromGUID('ded672', 0.0, 0.5, 9.0) + constants.someHeight},
-    {zoneGuid = 'c6dbed', pos = core.getHardcodedPositionFromGUID('ad2a82', 2.5, 0.5, 9.0) + constants.someHeight}
-}
-
-constants.tleilaxuRow = {
-    {zoneGuid = 'e5ba35', pos = core.getHardcodedPositionFromGUID('439df9', -7.58550072, 0.5361512, 16.0389957) + constants.someHeight},
-    {zoneGuid = '1e5a32', pos = core.getHardcodedPositionFromGUID('363f98', -5.04514647, 0.513785, 16.0400372) + constants.someHeight}
-}
-
-constants.buy7_guid = '439df9'
-constants.buy8_guid = '363f98'
-
-constants.maker_initial_position = core.getHardcodedPositionFromGUID('fb41e2', -4.08300161, 0.721966565, -12.01027)
-
--- TODO Use the anchor instead of the token itself.
--- "Makers & Recall anchor": "120026",
--- "Makers & Recall": "fb41e2",
-constants.marker_positions = {
-    round_start = constants.maker_initial_position,
-    player_turns = constants.maker_initial_position + Vector(0, 0, -0.64),
-    combat = constants.maker_initial_position + Vector(0, 0, -0.64 * 2),
-    makers = constants.maker_initial_position + Vector(0, 0, -0.64 * 3),
-    recall = constants.maker_initial_position + Vector(0, 0, -0.64 * 4)
-}
-
-constants.turnOrder = {
-    Green = 'Yellow',
-    Yellow = 'Blue',
-    Blue = 'Red',
-    Red = 'Green',
+-- Don't store object references for these objects which can be reloaded / mutated on locale change.
+-- System, not extension, first.
+constants.structure = {
+    main = {
+        board = "2da390",
+        councilZone = "e51f6e",
+        makerAndRecall = "120026",
+        first_player_marker = nil,
+        maker_initial_position = core.getHardcodedPositionFromGUID('fb41e2', -4.08300161, 0.721966565, -12.01027),
+        marker_positions = {}
+    },
+    ix = {
+        board = 'd75455'
+    },
+    immortality = {
+        board = "d5c2db",
+        tleilaxuDeckZone = '14b2ca',
+        specimenZone = "f5de09",
+        tleilaxu_deck = "dcad54",
+        reclaimed_forces = "3c772c",
+        tleilaxuRow = {
+            {zoneGuid = 'e5ba35', pos = core.getHardcodedPositionFromGUID('439df9', -7.58550072, 0.5361512, 16.0389957) + constants.someHeight},
+            {zoneGuid = '1e5a32', pos = core.getHardcodedPositionFromGUID('363f98', -5.04514647, 0.513785, 16.0400372) + constants.someHeight}
+        },
+    },
+    intrigue = {
+        deck = "77d25d",
+        deckZone = "a377d8",
+        deckAnchor = "976c3a",
+        discardBackCard = "90f762",
+        intrigue_immortality = "a5dbab",
+        intrigue_ix = "afa5e5",
+        intrigue_base = "77d25d"
+    },
+    imperium = {
+        imperiumDeckZone = '8bd982',
+        cardsFoldspace = "014161",
+        cardsLiaison = "7d34c9",
+        cardsTSMF = "8de6d5",
+        cardsBaseImperium = "99d41d",
+        imperium_deck = "99d41d",
+        imperium_deck_ix = "58c4c3",
+        imperium_deck_immortality = "88b666",
+        imperiumRowSlots = {
+            {zoneGuid = '3de1d0', pos = core.getHardcodedPositionFromGUID('38ffc0', -7.5, 0.5, 9.0) + constants.someHeight},
+            {zoneGuid = '356e2c', pos = core.getHardcodedPositionFromGUID('21b287', -5.0, 0.5, 9.0) + constants.someHeight},
+            {zoneGuid = '7edbb3', pos = core.getHardcodedPositionFromGUID('0a5f50', -2.5, 0.5, 9.0) + constants.someHeight},
+            {zoneGuid = '641974', pos = core.getHardcodedPositionFromGUID('ded672', 0.0, 0.5, 9.0) + constants.someHeight},
+            {zoneGuid = 'c6dbed', pos = core.getHardcodedPositionFromGUID('ad2a82', 2.5, 0.5, 9.0) + constants.someHeight}
+        },
+    },
+    starterCards = {
+        epic_cards = {'7ae7f5', 'fbaf9f', '497c84', '30b760'},
+        starter_decks = {"014c6a", "b8e747", "0c5e03", "a76b37"},
+        dune_decks = {"8c99a3", "af840c", "44069d", "85fb54"},
+        experimentation_decks = {"ef9531", "45ce21", "2d935f", "8ed0cd"},
+    },
+    accessories = {
+        lowerTrashPosition = core.getHardcodedPositionFromGUID('ef8614', 2.0719285, 0.646084964, -20.6404324) + constants.someHeight,
+    }
 }
 
 _ = core.registerLoadablePart(function(_)
@@ -384,6 +391,17 @@ _ = core.registerLoadablePart(function(_)
         player.agent_positions[3] = p2 + (p2 - p1)
         player.agent_positions[4] = p2 + (p2 - p1) * 2
     end
+
+    -- TODO Use the anchor instead of the token itself.
+    -- "Makers & Recall anchor": "120026",
+    -- "Makers & Recall": "fb41e2",
+    constants.marker_positions = {
+        round_start = constants.maker_initial_position,
+        player_turns = constants.maker_initial_position + Vector(0, 0, -0.64),
+        combat = constants.maker_initial_position + Vector(0, 0, -0.64 * 2),
+        makers = constants.maker_initial_position + Vector(0, 0, -0.64 * 3),
+        recall = constants.maker_initial_position + Vector(0, 0, -0.64 * 4)
+    }
 end)
 
 return constants

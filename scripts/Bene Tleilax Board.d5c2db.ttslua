@@ -8,12 +8,13 @@ boardCommonModule = require("BoardCommonModule")
 parkModule = require("ParkModule")
 
 beetleAdvancing = false
+
 researchAdvancing = false
 
 --[[
     Research path for each player in a discrete 2D space (we use the usual X-Z
-    coordinates from the Vector class for simpliciy). It abstracts us from the
-    board layout.
+    coordinates from the Vector class for simpliciy). It abstracts us away from
+    the board layout.
 ]]
 researchConducted = {
     Red = {},
@@ -21,6 +22,170 @@ researchConducted = {
     Green = {},
     Yellow = {}
 }
+
+_ = require("Core").registerLoadablePart(function(savedData)
+    self.interactable = false
+
+    pos_TleilaxuTrack = generateTleilaxuTrackPositions()
+
+    researchTokenOrigin = getAveragePosition("researchTokens_inital_position")
+
+    specimen_zone = getObjectFromGUID("f5de09")
+
+    axlotlTanksZones = {}
+
+    if savedData ~= "" then
+        local state = JSON.decode(savedData)
+        researchConducted = state.researchConducted
+        for color, GUID in pairs(state.axlotlTanksZoneGUIDs) do
+            axlotlTanksZones[color] = getObjectFromGUID(GUID)
+        end
+    end
+
+    axlotlTanksParks = {
+        Green = createAxlotlTanksPark("Green"),
+        Yellow = createAxlotlTanksPark("Yellow"),
+        Blue = createAxlotlTanksPark("Blue"),
+        Red = createAxlotlTanksPark("Red")
+    }
+
+    updateSave()
+
+    activateButtons()
+end)
+
+function updateSave()
+    local state = {
+        researchConducted = researchConducted,
+        axlotlTanksZoneGUIDs = {
+            Red = axlotlTanksZones.Red.getGUID(),
+            Green = axlotlTanksZones.Green.getGUID(),
+            Blue = axlotlTanksZones.Blue.getGUID(),
+            Yellow = axlotlTanksZones.Yellow.getGUID(),
+        }
+    }
+    self.script_state = JSON.encode(state)
+end
+
+function onLocaleChange()
+    self.clearButtons()
+    activateButtons()
+end
+
+function activateButtons()
+
+    AddSpecimenParams = {
+        index = 0,
+        click_function = "AddSpecimen",
+        function_owner = self,
+        label = i18n("addSpecimen"),
+        position = {-0.47, 0.1, 0.6},
+        scale = {0.1, 0.1, 0.1},
+        width = 1550,
+        height = 350,
+        font_size = 300,
+        color = {0.25, 0.25, 0.25, 1},
+        font_color = {0.7843, 0.7843, 0.7843, 1}
+    }
+    self.createButton(AddSpecimenParams)
+
+    RemoveSpecimenParams = {
+        index = 1,
+        click_function = "RemoveSpecimen",
+        function_owner = self,
+        label = i18n("spentSpecimen"),
+        position = {-0.47, 0.1, 0.80},
+        scale = {0.1, 0.1, 0.1},
+        width = 1550,
+        height = 350,
+        font_size = 300,
+        color = {0.25, 0.25, 0.25, 1},
+        font_color = {0.7843, 0.7843, 0.7843, 1}
+    }
+    self.createButton(RemoveSpecimenParams)
+
+    advanceTleilaxuParams = {
+        index = 2,
+        click_function = "advanceTleilaxu",
+        function_owner = self,
+        label = "→",
+        position = {-0.8, 0.1, -0.475},
+        scale = {0.15, 0.1, 0.2},
+        width = 550,
+        height = 250,
+        font_size = 450,
+        color = {0.25, 0.25, 0.25, 1},
+        font_color = {0.7843, 0.7843, 0.7843, 1},
+        tooltip = i18n("tleilaxuButtonTooltip")
+    }
+    self.createButton(advanceTleilaxuParams)
+
+    backTleilaxuParams = {
+        index = 3,
+        click_function = "backTleilaxu",
+        function_owner = self,
+        label = "←",
+        position = {-1.38, 0.1, -0.475},
+        scale = {0.05, 0.1, 0.08},
+        width = 550,
+        height = 250,
+        font_size = 450,
+        color = {0.25, 0.25, 0.25, 1},
+        font_color = "Red",
+        tooltip = i18n("tleilaxuBackTooltip")
+    }
+    self.createButton(backTleilaxuParams)
+
+    advanceUpResearchParams = {
+        index = 4,
+        click_function = "advanceUpResearch",
+        function_owner = self,
+        label = "→",
+        position = {-0.95, 0.1, -0.21},
+        rotation = {0, -30, 0},
+        scale = {0.15, 0.2, 0.2},
+        width = 550,
+        height = 250,
+        font_size = 450,
+        color = {0.25, 0.25, 0.25, 1},
+        font_color = {0.7843, 0.7843, 0.7843, 1},
+        tooltip = i18n("researchUpButtonTooltip")
+    }
+    self.createButton(advanceUpResearchParams)
+
+    advanceDownResearchParams = {
+        index = 5,
+        click_function = "advanceDownResearch",
+        function_owner = self,
+        label = "→",
+        position = {-0.95, 0.1, 0.29},
+        rotation = {0, 30, 0},
+        scale = {0.15, 0.2, 0.2},
+        width = 550,
+        height = 250,
+        font_size = 450,
+        color = {0.25, 0.25, 0.25, 1},
+        font_color = {0.7843, 0.7843, 0.7843, 1},
+        tooltip = i18n("researchDownButtonTooltip")
+    }
+    self.createButton(advanceDownResearchParams)
+
+    rollbackResearchParams = {
+        index = 6,
+        click_function = "backResearch",
+        function_owner = self,
+        label = "←",
+        position = {-1.38, 0.1, 0.025},
+        scale = {0.0500000007450581, 0.100000001490116, 0.0799999982118607},
+        width = 550,
+        height = 250,
+        font_size = 450,
+        color = {0.25, 0.25, 0.25, 1},
+        font_color = {0.856, 0.1, 0.094, 1},
+        tooltip = i18n("researchBackToolTip")
+    }
+    self.createButton(rollbackResearchParams)
+end
 
 function researchSpaceToWorldPosition(positionInResearchSpace)
     local offset = Vector(
@@ -87,225 +252,46 @@ function generateTleilaxuTrackPositions()
     return positions
 end
 
-_ = require("Core").registerLoadablePart(function(saved_data)
-    self.interactable = false
-
-    pos_TleilaxuTrack = generateTleilaxuTrackPositions()
-
-    researchTokenOrigin = getAveragePosition("researchTokens_inital_position")
-
-    specimen_zone = getObjectFromGUID("f5de09")
-
-    axlotlTanksZones = {}
-
-    if saved_data ~= "" then
-        local loaded_data = JSON.decode(saved_data)
-        researchConducted = loaded_data.researchConducted
-        for color, GUID in pairs(loaded_data.axlotlTanksZoneGUIDs) do
-            axlotlTanksZones[color] = getObjectFromGUID(GUID)
-        end
-    end
-
-    axlotlTanksParks = {
-        Green = createAxlotlTanksPark("Green"),
-        Yellow = createAxlotlTanksPark("Yellow"),
-        Blue = createAxlotlTanksPark("Blue"),
-        Red = createAxlotlTanksPark("Red")
-    }
-
-    updateSave()
-
-    AddSpecimenParams = {
-        index = 0,
-        click_function = "AddSpecimen",
-        function_owner = self,
-        label = i18n("addSpecimen"),
-        position = {-0.47, 0.1, 0.6},
-        scale = {0.1, 0.1, 0.1},
-        width = 1550,
-        height = 350,
-        font_size = 300,
-        color = {0.25, 0.25, 0.25, 1},
-        font_color = {0.7843, 0.7843, 0.7843, 1}
-    }
-
-    self.createButton(AddSpecimenParams)
-
-    RemoveSpecimenParams = {
-        index = 1,
-        click_function = "RemoveSpecimen",
-        function_owner = self,
-        label = i18n("spentSpecimen"),
-        position = {-0.47, 0.1, 0.80},
-        scale = {0.1, 0.1, 0.1},
-        width = 1550,
-        height = 350,
-        font_size = 300,
-        color = {0.25, 0.25, 0.25, 1},
-        font_color = {0.7843, 0.7843, 0.7843, 1}
-    }
-
-    self.createButton(RemoveSpecimenParams)
-
-    advanceTleilaxuParams = {
-        index = 2,
-        click_function = "advanceTleilaxu",
-        function_owner = self,
-        label = "→",
-        position = {-0.8, 0.1, -0.475},
-        scale = {0.15, 0.1, 0.2},
-        width = 550,
-        height = 250,
-        font_size = 450,
-        color = {0.25, 0.25, 0.25, 1},
-        font_color = {0.7843, 0.7843, 0.7843, 1},
-        tooltip = i18n("tleilaxuButtonTooltip")
-    }
-
-    self.createButton(advanceTleilaxuParams)
-
-    backTleilaxuParams = {
-        index = 3,
-        click_function = "backTleilaxu",
-        function_owner = self,
-        label = "←",
-        position = {-1.38, 0.1, -0.475},
-        scale = {0.05, 0.1, 0.08},
-        width = 550,
-        height = 250,
-        font_size = 450,
-        color = {0.25, 0.25, 0.25, 1},
-        font_color = "Red",
-        tooltip = i18n("tleilaxuBackTooltip")
-    }
-
-    self.createButton(backTleilaxuParams)
-
-    advanceUpResearchParams = {
-        index = 4,
-        click_function = "advanceUpResearch",
-        function_owner = self,
-        label = "→",
-        position = {-0.95, 0.1, -0.21},
-        rotation = {0, -30, 0},
-        scale = {0.15, 0.2, 0.2},
-        width = 550,
-        height = 250,
-        font_size = 450,
-        color = {0.25, 0.25, 0.25, 1},
-        font_color = {0.7843, 0.7843, 0.7843, 1},
-        tooltip = i18n("researchUpButtonTooltip")
-    }
-
-    self.createButton(advanceUpResearchParams)
-
-    advanceDownResearchParams = {
-        index = 5,
-        click_function = "advanceDownResearch",
-        function_owner = self,
-        label = "→",
-        position = {-0.95, 0.1, 0.29},
-        rotation = {0, 30, 0},
-        scale = {0.15, 0.2, 0.2},
-        width = 550,
-        height = 250,
-        font_size = 450,
-        color = {0.25, 0.25, 0.25, 1},
-        font_color = {0.7843, 0.7843, 0.7843, 1},
-        tooltip = i18n("researchDownButtonTooltip")
-    }
-
-    self.createButton(advanceDownResearchParams)
-
-    backResearchParams = {
-        index = 6,
-        click_function = "backResearch",
-        function_owner = self,
-        label = "←",
-        position = {-1.38, 0.1, 0.025},
-        scale = {0.0500000007450581, 0.100000001490116, 0.0799999982118607},
-        width = 550,
-        height = 250,
-        font_size = 450,
-        color = {0.25, 0.25, 0.25, 1},
-        font_color = {0.856, 0.1, 0.094, 1},
-        tooltip = i18n("researchBackToolTip")
-    }
-
-    self.createButton(backResearchParams)
-
-end)
-
-function updateSave()
-    local data_to_save = {
-        researchConducted = researchConducted,
-        axlotlTanksZoneGUIDs = {
-            Red = axlotlTanksZones.Red.getGUID(),
-            Green = axlotlTanksZones.Green.getGUID(),
-            Blue = axlotlTanksZones.Blue.getGUID(),
-            Yellow = axlotlTanksZones.Yellow.getGUID(),
-        }
-    }
-    saved_data = JSON.encode(data_to_save)
-    self.script_state = saved_data
-end
-
 function advanceUpResearch(obj, color)
-
     hideBrieflyResearchTrackButtons(obj)
-
     advanceResearchToken(color, "up")
-
 end
 
 function advanceDownResearch(obj, color)
-
     hideBrieflyResearchTrackButtons(obj)
-
     advanceResearchToken(color, "down")
-
 end
 
-function backResearch(obj, color)
-
+function rollbackResearch(obj, color)
     hideBrieflyResearchTrackButtons(obj)
-
-    Player[color].showConfirmDialog(i18n("rollbackWarning"),
-                                    function(color) rollBackResearch(color) end)
+    Player[color].showConfirmDialog(i18n("rollbackWarning"), function(color) rollrollbackResearch(color) end)
 end
 
 function hideBrieflyResearchTrackButtons(obj)
     obj.editButton({index = advanceUpResearchParams.index, scale = {0, 0, 0}})
     obj.editButton({index = advanceDownResearchParams.index, scale = {0, 0, 0}})
-    obj.editButton({index = backResearchParams.index, scale = {0, 0, 0}})
+    obj.editButton({index = rollbackResearchParams.index, scale = {0, 0, 0}})
 
     Wait.time(function()
         obj.editButton(advanceUpResearchParams)
         obj.editButton(advanceDownResearchParams)
-        obj.editButton(backResearchParams)
+        obj.editButton(rollbackResearchParams)
     end, 1)
 end
 
 function advanceTleilaxu(obj, color)
-
     obj.editButton({index = advanceTleilaxuParams.index, scale = {0, 0, 0}})
     Wait.time(function() obj.editButton(advanceTleilaxuParams) end, 1)
-
-    -- Player[color].showConfirmDialog(
-    --     i18n("tleilaxuWarning"), function(color)
     moveBeneTleilaxToken(color)
-    -- end)
 end
 
 function backTleilaxu(obj, color)
-
     obj.editButton({index = backTleilaxuParams.index, scale = {0, 0, 0}})
     Wait.time(function() obj.editButton(backTleilaxuParams) end, 1)
 
     Player[color].showConfirmDialog(i18n("rollbackWarning"), function(color)
         backBeneTleilaxToken(color)
     end)
-
 end
 
 function advanceResearchToken(color, verticalDirection)
@@ -342,7 +328,7 @@ function advanceResearchToken(color, verticalDirection)
     end
 end
 
-function rollBackResearch(color)
+function rollrollbackResearch(color)
     local playerResearchDone = researchConducted[color]
 
     if #playerResearchDone == 0 then
@@ -369,7 +355,6 @@ function rollBackResearch(color)
 end
 
 function moveBeneTleilaxToken(color, silent)
-    local silent = silent or false
     local token = constants.players[color].tleilaxuTokens
     local posToken = token.getPosition()
     local tokenMoved = false
@@ -475,257 +460,165 @@ function RemoveSpecimenCall(params)
     return true
 end
 
+--[[
+    TODO Wouldn't it be better to do it directly in the move/back functions?
+]]--
 function onObjectEnterScriptingZone(zone, enter_object)
-
-    if researchAdvancing and
-        (zone.guid == "ab9e8d" or zone.guid == "d2b9be" or zone.guid == "79f487" or
-            zone.guid == "d4fb57" or zone.guid == "1696ae" or zone.guid ==
-            "95bb64" or zone.guid == "78a5cf") then
-        for color, _ in pairs(constants.players) do
-
-            if enter_object.hasTag(color) and
-                enter_object.hasTag("ResearchToken") then
-
-                AddSpecimen("", color, true)
-
-                local leaderName = helper.getLeader(color)
-                                       .getName()
-
-                if zone.guid == "1696ae" then
-                    moveBeneTleilaxToken(color, true)
-                    broadcastToAll(i18n("researchSpecimenBeetle"):format(
-                                       leaderName), color)
-                elseif zone.guid == "95bb64" or zone.guid == "78a5cf" then
-                    broadcastToAll(i18n("researchSpecimenTrash"):format(
-                                       leaderName), color)
-
-                else
-                    broadcastToAll(i18n("researchSpecimen"):format(leaderName),
-                                   color)
-                end
-            end
-        end
-    end
-
-    if researchAdvancing and
-        (zone.guid == "90e82d" or zone.guid == "1f11e0" or zone.guid == "e91e6b" or
-            zone.guid == "f8c1b0" or zone.guid == "6c0d3e") then
-        for color, _ in pairs(constants.players) do
-
-            if enter_object.hasTag(color) and
-                enter_object.hasTag("ResearchToken") then
-
-                moveBeneTleilaxToken(color, true)
-                local leaderName = helper.getLeader(color)
-                                       .getName()
-                broadcastToAll(i18n("researchBeetle"):format(leaderName), color)
-            end
-        end
-    end
-
-    if researchAdvancing and (zone.guid == "52bcf4") then
-        for color, player in pairs(constants.players) do
-
-            if enter_object.hasTag(color) and
-                enter_object.hasTag("ResearchToken") then
-
-                local leader = helper.getLeader(color)
-                assert(leader)
-                local leaderName = leader.getName()
-                local solariIncome = 1
-                local solari = "Solari"
-
-                if leader.hasTag("Yuna") then
-                    solariIncome = 2
-                    solari = "Solaris"
-                end
-
-                Wait.time(function()
-                    player.solari.call("incrementVal")
-                end, 0.25, solariIncome)
-
-                local solariString = solariIncome .. " " .. solari
-
-                broadcastToAll(i18n("researchIncome"):format(leaderName,
-                                                             solariString),
-                               color)
-            end
-        end
-    end
-
-    if researchAdvancing and zone.guid == "b60372" then
-        for color, _ in pairs(constants.players) do
-
-            if enter_object.hasTag(color) and
-                enter_object.hasTag("ResearchToken") then
-
-                local leaderName = helper.getLeader(color)
-                                       .getName()
-                broadcastToAll(i18n("researchFaction"):format(leaderName), color)
-            end
-        end
-    end
-
-    if researchAdvancing and (zone.guid == "f9ddaa" or zone.guid == "2a7803") then
-        for color, player in pairs(constants.players) do
-
-            if enter_object.hasTag(color) and
-                enter_object.hasTag("ResearchToken") then
-
-                local income = 1
-                local spice = "Spice"
-
-                if zone.guid == "2a7803" then
-                    income = 2
-                    spice = "Spices"
-                end
-
-                Wait.time(function()
-                    player.spice.call("incrementVal")
-                end, 0.25, income)
-
-                local spiceString = income .. " " .. spice
-
-                local leaderName = helper.getLeader(color)
-                                       .getName()
-                broadcastToAll(i18n("researchIncome"):format(leaderName,
-                                                             spiceString), color)
-            end
-        end
-    end
-
-    if researchAdvancing and zone.guid == "8a3807" then
-        for color, _ in pairs(constants.players) do
-
-            if enter_object.hasTag(color) and
-                enter_object.hasTag("ResearchToken") then
-
-                local leaderName = helper.getLeader(color)
-                                       .getName()
-                broadcastToAll(i18n("researchTrashIntrigue"):format(leaderName),
-                               color)
-            end
-        end
-    end
-
-    if researchAdvancing and
-        (zone.guid == "659227" or zone.guid == "778685" or zone.guid == "6518bf") then
-        for color, _ in pairs(constants.players) do
-
-            if enter_object.hasTag(color) and
-                enter_object.hasTag("ResearchToken") then
-
-                if zone.guid == "6518bf" then
-                    Wait.condition(function()
-                        advanceResearchToken(color, "up")
-                    end, function()
-                        return not enter_object.isSmoothMoving()
-                    end)
-                else
-                    Wait.condition(function()
-                        advanceResearchToken(color, "down")
-                    end, function()
-                        return not enter_object.isSmoothMoving()
-                    end)
-
-                end
-
-                local leaderName = helper.getLeader(color)
-                                       .getName()
-                broadcastToAll(i18n("researchAgain"):format(leaderName), color)
-            end
-        end
-    end
-
-    if researchAdvancing and zone.guid == "459e80" then
-        for color, player in pairs(constants.players) do
-
-            if enter_object.hasTag(color) and
-                enter_object.hasTag("ResearchToken") then
-
-                Player[color].showConfirmDialog(i18n("confirmSolarisToBeetles"),
-                                                function(color)
-                    local solariObj = player.solari
-                    local price = 7
-
-                    if solariObj.call("collectVal") < price then
-                        broadcastToColor(i18n("noSolari"), color, color)
-                    else
-                        Wait.time(function()
-                            solariObj.call("decrementVal")
-                        end, 0.15, price)
-
-                        local leaderName =
-                            helper.getLeaderName(color)
-
-                        moveBeneTleilaxToken(color, true)
-                        Wait.condition(function()
-                            moveBeneTleilaxToken(color, true)
-                        end, function()
-                            return not constants.players[color].tleilaxuTokens.isSmoothMoving()
-                        end)
-
-                        broadcastToAll(i18n("researchSolarisToBeetles"):format(
-                                           leaderName), color)
-
-                    end
-                end)
-            end
-        end
-    end
-
-    if beetleAdvancing and (zone.guid == "1054b7" or zone.guid == "5d6083") then
-
-        for color, _ in pairs(constants.players) do
-
-            if enter_object.hasTag(color) and
-                enter_object.hasTag("TleilaxuToken") then
-
-                Wait.time(function()
-                    boardCommonModule.drawIntrigue(color)
-                end, 0.75)
-                local leaderName = helper.getLeader(color)
-                                       .getName()
-                broadcastToAll(i18n("tleilaxuIntrigue"):format(leaderName),
-                               color)
-            end
-        end
-    end
-
-    if beetleAdvancing and (zone.guid == "5e4d40" or zone.guid == "a1a4e8") then
-
-        for color, player in pairs(constants.players) do
-
-            if enter_object.hasTag(color) and
-                enter_object.hasTag("TleilaxuToken") then
-
-                local leaderName = helper.getLeader(color)
-                                       .getName()
-                giveTleilaxuVP(color)
-                broadcastToAll(i18n("tleilaxuVP"):format(leaderName), color)
-
-                local bonusSpiceCounter = getObjectFromGUID('46cd6b')
-                local nbSpice = bonusSpiceCounter.call("collectVal")
-
-                if nbSpice == 2 and zone.guid == "5e4d40" then
-                    local t = 0
-                    getObjectFromGUID('46cd6b').call("resetVal")
-
-                    for i = 1, nbSpice, 1 do
-                        Wait.time(function()
-                            player.spice.call("incrementVal")
-                        end, t)
-                        t = t + (1.5 / nbSpice)
-                    end
-
-                    broadcastToAll(i18n("tleilaxuSpice"):format(leaderName),
-                                   color)
-                end
-            end
+    local color = getResearchTokenOwner(enter_object)
+    if color then
+        if researchAdvancing then
+            advanceResearch(zone, color)
+        elseif beetleAdvancing then
+            advanceBeetle(zone, color)
         end
     end
 end
 
-function giveTleilaxuVP(color)
-    helper.grantScoreTokenFromBag(color, getObjectFromGUID('082e07'))
+function advanceResearch(zone, color)
+    local leaderName = helper.getLeader(color).getName()
+
+    local allCellBenefits = {
+        ["ab9e8d"] = { specimen = true },
+        ["d2b9be"] = { specimen = true },
+        ["79f487"] = { specimen = true },
+        ["d4fb57"] = { specimen = true },
+        ["1696ae"] = { beetle = true },
+        ["95bb64"] = { trashSpecimen = true },
+        ["78a5cf"] = { trashSpecimen = true },
+        ["90e82d"] = { beetle = true },
+        ["1f11e0"] = { beetle = true },
+        ["e91e6b"] = { beetle = true },
+        ["f8c1b0"] = { beetle = true },
+        ["6c0d3e"] = { beetle = true },
+        ["52bcf4"] = { beetle = true },
+        ["f9ddaa"] = { spice = 1 },
+        ["2a7803"] = { spice = 2 },
+        ["8a3807"] = { trashIntrigue = true },
+        ["659227"] = { research = "up" },
+        ["778685"] = { research = "down" },
+        ["6518bf"] = { research = "down" },
+        ["459e80"] = { solariToBeetle = 7 }
+    }
+
+    local cellBenefits = allCellBenefits[zone.guid]
+    assert(cellBenefits)
+
+    for _, resource in ipairs({"spice", "solari"}) do
+        if cellBenefits[resource] then
+            boardCommonModule.gainResource(color, resource, cellBenefits[resource])
+            local counter = i18n.translateCountable(cellBenefits[resource], resource, resource .. "s")
+            broadcastToAll(i18n("researchIncome"):format(leaderName, counter), color)
+        end
+    end
+
+    if cellBenefits.specimen then
+        AddSpecimen(nil, color, true)
+        broadcastToAll(i18n("researchSpecimen"):format(leaderName), color)
+    end
+
+    if cellBenefits.beetle then
+        moveBeneTleilaxToken(color, true)
+        broadcastToAll(i18n("researchBeetle"):format(leaderName), color)
+    end
+
+    if cellBenefits.trashIntrigue then
+        broadcastToAll(i18n("researchTrashIntrigue"):format(leaderName), color)
+    end
+
+    if cellBenefits.research then
+        Wait.condition(function()
+            advanceResearchToken(color, cellBenefits.research)
+        end, function()
+            return not enter_object.isSmoothMoving()
+        end)
+        broadcastToAll(i18n("researchAgain"):format(leaderName), color)
+    end
+
+    if cellBenefits.solariToBeetle then
+        Player[color].showConfirmDialog(i18n("confirmSolarisToBeetles"), function(_)
+            if boardCommonModule.payResource(color, "solari", cellBenefits.solariToBeetle) then
+                helper.repeatMovingAction(object, function() moveBeneTleilaxToken(color, true) end , 2)
+                broadcastToAll(i18n("researchSolarisToBeetles"):format( leaderName), color)
+            end
+        end)
+    end
+end
+
+function advanceBeetle(zone, color)
+    local leaderName = helper.getLeader(color).getName()
+
+    local allCellBenefits = {
+        ["1054b7"] = { intrigue = true },
+        ["5d6083"] = { intrigue = true },
+        ["5e4d40"] = { victoryToken = true, spiceBonus = true },
+        ["a1a4e8"] = { victoryToken = true }
+    }
+
+    local cellBenefits = allCellBenefits[zone.guid]
+    assert(cellBenefits)
+
+    if cellBenefits.intrigue then
+        boardCommonModule.drawIntrigue(color)
+        broadcastToAll(i18n("tleilaxuIntrigue"):format(leaderName), color)
+    end
+
+    if cellBenefits.victoryToken then
+        helper.grantScoreTokenFromBag(color, getObjectFromGUID('082e07'))
+        broadcastToAll(i18n("tleilaxuVP"):format(leaderName), color)
+    end
+
+    if cellBenefits.spiceBonus then
+        local spiceBonus = getObjectFromGUID('46cd6b')
+        local spiceCount = spiceBonus.call("collectVal")
+
+        if spiceCount > 0 then
+            spiceBonus.call("resetVal")
+            boardCommonModule.gainResource(color, "spice", spiceCount)
+            broadcastToAll(i18n("tleilaxuSpice"):format(leaderName), color)
+        end
+    end
+end
+
+function getResearchTokenOwner(object)
+    for color, _ in pairs(constants.players) do
+        if object.hasTag(color) and object.hasTag("ResearchToken") then
+            return color
+        end
+    end
+    return nil
+end
+
+function hasReachedOneHelices()
+    assert(false, "TODO")
+end
+
+function hasReachedOneHelix(color)
+    local scriptZone_middleTrack_research = getObjectFromGUID("60a0fd")
+    local objs = scriptZone_middleTrack_research.getObjects()
+    for _, item in ipairs(objs) do
+        if item.hasTag(color) then
+            return true
+        end
+    end
+    return false
+end
+
+function hasReachedTwoHelices(color)
+    local scriptZone_endTrack_research = getObjectFromGUID("da08cd")
+    local objs = scriptZone_endTrack_research.getObjects()
+    local maxSearch = false
+    for _, item in ipairs(objs) do
+        if item.hasTag(color) then maxSearch = true end
+    end
+    return maxSearch
+end
+
+function getSpecimenCount(color)
+    local specimenCount = 0
+    for _, object in ipairs(constants.structure.immortalityBoard.specimenZone.getObjects()) do
+        if object.hasTag("Troop") and object.hasTag(color) then
+            specimenCount = specimenCount + 1
+        end
+    end
+    return specimenCount
 end

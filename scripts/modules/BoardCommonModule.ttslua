@@ -14,42 +14,10 @@ reputation = require("ReputationModule")
 -- Beware that this variable is processed on loading to resolve its GUIDs.
 structure = {
     spaces = {
-        Stillsuits = '556f43',
-        HardyWarriors = 'a2fd8e',
-        Secrets = '1f7c08',
-        SelectiveBreeding = '7dc6e5',
-        Foldspace = '9a9eb5',
-        Heighliner = '8b0515',
-        Wealth = 'b2c461',
-        Conspire = 'cd9386',
-        SietchTabr = '5bc970',
-        ResearchStation = 'af11aa',
-        Carthag = 'b1c938',
-        Arrakeen = '17b646',
-        TheGreatFlat = '69f925',
-        HaggaBasin = '622708',
-        ImperialBasin = '2c77c1',
         HighCouncil = '8a6315',
         Mentat = '30cff9'
-        --[[
-        Swordmaster = '',
-        InterstellarShipping = '',
-        Smuggling = '',
-        TechNegotiation = '',
-        Dreadnought = ''
-        ]]--
     },
     mentatZone = '565d09',
-    flagZones = {
-        ImperialBasin = '3fe117',
-        Arrakeen = 'f1f53d',
-        Carthag = '9fc2e1'
-    },
-    spiceBonuses = {
-        ImperialBasin = '3cdb2d',
-        HaggaBasin = '394db2',
-        TheGreatFlat = '116807'
-    },
     foldspaceDeckZone = "6b62e0",
     intrigueDeckZone = "a377d8",
 }
@@ -57,6 +25,71 @@ structure = {
 _ = core.registerLoadablePart(function(_)
     structure = core.resolveGUIDs(false, structure)
 end)
+
+function boardCommonModule.createActivationButton(spaceName, label, position)
+    boardCommonModule.createPayButton(spaceName, label, position)
+end
+
+function boardCommonModule.createPayButton(spaceName, label, position)
+
+    local hardCodedWiths = {
+        ["get"] = 400,
+        ["pay"] = 400,
+        ["pay & get"] = 900,
+        ["Collect"] = 700,
+        ["pay & Collect"] = 1200,
+        ["get + ↑"] = 700,
+        ["get + ↓↓"] = 700,
+        ["↑ + ↑"] = 500,
+        ["↑ + ↓↓"] = 500,
+        ["↓↓ + ↑"] = 500,
+        ["↑"] = 250,
+        ["↓↓"] = 250,
+        ["+"] = 350,
+        ["-"] = 350,
+    }
+
+    local width = hardCodedWiths[label]
+    assert(width, "unknow label: " .. tostring(label))
+
+    self.createButton({
+        click_function = spaceName,
+        function_owner = self,
+        label = label,
+        position = position,
+        scale = {0.1, 0.1, 0.1},
+        width = width,
+        height = 350,
+        font_size = 200,
+        color = {0.25, 0.25, 0.25, 1},
+        font_color = {0.7843, 0.7843, 0.7843, 1}
+    })
+end
+
+function boardCommonModule.createUpDownButton(factionPrefix, label, position)
+    local parameters = {
+        function_owner = self,
+        scale = {0.15, 0.100000001490116, 0.100000001490116},
+        width = 300,
+        height = 450,
+        font_size = 350,
+        color = {0.25, 0.25, 0.25, 1},
+        font_color = {0.7843, 0.7843, 0.7843, 1},
+        tooltip = i18n("toolTipDecreaseRep")
+    }
+
+    parameters.click_function = factionPrefix .. "Down"
+    parameters.label = "↓"
+    parameters.tooltip = i18n("toolTipDecreaseRep")
+    parameters.position = helper.toVector(position) + Vector(0, 0, 0.05)
+    self.createButton(parameters)
+
+    parameters.click_function = factionPrefix .. "Up"
+    parameters.label = "↑"
+    parameters.tooltip = i18n("toolTipIncreaseRep")
+    parameters.position = helper.toVector(position) - Vector(0, 0, 0.05)
+    self.createButton(parameters)
+end
 
 function boardCommonModule.checkAgentAndPlayer(color, zone)
     if color ~= "Red" and color ~= "Blue" and color ~= "Green" and color ~= "Yellow" then
@@ -90,27 +123,6 @@ function boardCommonModule.checkReputation(color, faction)
     end
 end
 
-function boardCommonModule.payResource(color, resourceName, amount)
-    local playerResource = constants.players[color][resourceName]
-    if playerResource.call("collectVal") < amount then
-        broadcastToColor(i18n(helper.toCamelCase("no", resourceName)), color, color)
-        return false
-    else
-        Wait.time(function()
-                playerResource.call("decrementVal")
-            end, 0.35, amount)
-        return true
-    end
-end
-
-function boardCommonModule.gainResource(color, resourceName, amount)
-    local playerResource = constants.players[color][resourceName]
-    local t = 0
-    Wait.time(function()
-            playerResource.call("incrementVal")
-        end, 0.35, amount)
-end
-
 function boardCommonModule.drawCardsFromPlace(color, spaceName, drawCount)
     local leaderName = helper.getLeaderName(color)
     local counter = i18n.translateCountable(drawCount, "card", "cards")
@@ -118,235 +130,17 @@ function boardCommonModule.drawCardsFromPlace(color, spaceName, drawCount)
     return helper.drawCards(color, drawCount, message)
 end
 
-function boardCommonModule.ImperialBasin(color)
-    if boardCommonModule.anySpiceSpace(color, "imperialBasin", structure.space.ImperialBasin, 0, 1, structure.spiceBonuses.ImperialBasin) then
-        Wait.time(function() boardCommonModule.applyControlOfImperialBasin() end, 0.5)
-    end
+function boardCommonModule.forwardCall(spaceName, color)
+    self.clearButtons()
+    Wait.time(activateButtons, 1)
+    boardCommonModule[spaceName](color)
 end
 
-function boardCommonModule.HaggaBasin(color)
-    boardCommonModule.anySpiceSpace(color, "haggaBasin", structure.space.HaggaBasin, 1, 2, structure.spiceBonuses.HaggaBasin)
-end
-
-function boardCommonModule.TheGreatFlat(color)
-    boardCommonModule.anySpiceSpace(color, "greatFlat", structure.space.TheGreatFlat, 2, 3, structure.spiceBonuses.TheGreatFlat)
-end
-
-function boardCommonModule.anySpiceSpace(color, spaceName, spaceZone, waterCost, spiceBaseAmount, spiceBonus)
-    if boardCommonModule.checkAgentAndPlayer(color, spaceZone) then
-        local leaderName = helper.getLeaderName(color)
-        local water = constants.players[color].water
-        if water.call("collectVal") < waterCost then
-            broadcastToColor(i18n("noWater"), color, color)
-        else
-            for _ = 1, waterCost do
-                water.call("decrementVal")
-            end
-            if leaderName == "Countess Ariana" then
-                local nbSpice = boardCommonModule.harvestSpice(color, spiceBaseAmount - 1, spiceBonus)
-                if boardCommonModule.drawCardsFromPlace(color, spaceName, 1) then
-                    broadcastToAll(i18n(spaceName):format(leaderName, nbSpice) .. i18n("et") .. i18n("drawOneCard"), color)
-                else
-                    broadcastToAll(i18n(spaceName):format(leaderName, nbSpice) .. ".", color)
-                end
-            else
-                local spiceAmount = boardCommonModule.harvestSpice(color, spiceBaseAmount, spiceBonus)
-                broadcastToAll(i18n(spaceName):format(leaderName, spiceAmount) .. ".", color)
-            end
-            return true
-        end
-    end
-    return false
-end
-
-function boardCommonModule.harvestSpice(color, base, spiceBonus)
-    local spiceAmount = base + spiceBonus.call("collectVal")
-    spiceBonus.call("resetVal")
-    boardCommonModule.gainResource(color, "spice", spiceAmount)
-    return spiceAmount
-end
-
-function boardCommonModule.Stillsuits(color)
-    if boardCommonModule.checkAgentAndPlayer(color, structure.spaces.Stillsuits) then
-        local leaderName = helper.getLeaderName(color)
-        constants.players[color].water.call("incrementVal")
-        broadcastToAll(i18n("stillSuits"):format(leaderName), color)
-
-        if leaderName == "Shaddam IV" then
-            reputation.FremenDown(color)
-        else
-            reputation.FremenUp(color)
-        end
-    end
-end
-
-function boardCommonModule.HardyWarriors(color)
-    if boardCommonModule.checkAgentAndPlayer(color, structure.spaces.HardyWarriors) then
-        if boardCommonModule.payResource(color, "water", 1) then
-            helper.landTroopsFromOrbit(color, 2)
-            local leaderName = helper.getLeaderName(color)
-            broadcastToAll(i18n("hardyWarriors"):format(leaderName), color)
-
-            if leaderName == "Shaddam IV" then
-                reputation.FremenDown(color)
-            else
-                reputation.FremenUp(color)
-            end
-        end
-    end
-end
-
-function boardCommonModule.Secrets(color)
-    if boardCommonModule.checkAgentAndPlayer(color, structure.spaces.Secrets) then
-        Wait.time(function() helper.drawIntrigue(color) end, 0.2)
-        local leaderName = helper.getLeaderName(color)
-        broadcastToAll(i18n("secrets"):format(leaderName), color)
-
-        if leaderName == "Shaddam IV" then
-            reputation.BeneDown(color)
-        else
-            reputation.BeneUp(color)
-        end
-    end
-end
-
-function boardCommonModule.SelectiveBreeding(color)
-    if boardCommonModule.checkAgentAndPlayer(color, structure.spaces.SelectiveBreeding) then
-        if boardCommonModule.payResource(color, "spice", 2) then
-            local leaderName = helper.getLeaderName(color)
-            broadcastToAll(i18n("selectiveBreeding"):format(leaderName), color)
-
-            if leaderName == "Shaddam IV" then
-                reputation.BeneDown(color)
-            else
-                reputation.BeneUp(color)
-            end
-        end
-    end
-end
-
-function boardCommonModule.Foldspace(color)
-    if boardCommonModule.checkAgentAndPlayer(color, structure.spaces.Foldspace) then
-        helper.moveCardFromZone(structure.foldspaceDeckZone, constants.players[color].discardPosition, Vector(0, 180, 0), false)
-        local leaderName = helper.getLeaderName(color)
-        broadcastToAll(i18n("foldspace"):format(leaderName), color)
-
-        if leaderName == "Shaddam IV" then
-            reputation.GuildDown(color)
-        else
-            reputation.GuildUp(color)
-        end
-    end
-end
-
-function boardCommonModule.Heighliner(color)
-    if boardCommonModule.checkAgentAndPlayer(color, structure.spaces.Heighliner) then
-        if boardCommonModule.payResource(color, "spice", 6) then
-            boardCommonModule.gainResource(color, "water", 2)
-            helper.landTroopsFromOrbit(color, 5)
-            local leaderName = helper.getLeaderName(color)
-            broadcastToAll(i18n("heighliner"):format(leaderName), color)
-
-            if leaderName == "Shaddam IV" then
-                reputation.GuildDown(color)
-            else
-                reputation.GuildUp(color)
-            end
-        end
-    end
-end
-
-function boardCommonModule.Wealth(color)
-    if boardCommonModule.checkAgentAndPlayer(color, structure.spaces.Wealth) then
-        local solariAmount = 2
-        local leaderName = helper.getLeaderName(color)
-        if leaderName == "Princesss Yuna" then
-            solariAmount = 3
-        end
-        boardCommonModule.gainResource(color, "solari", solariAmount)
-        broadcastToAll(i18n("wealth"):format(leaderName, solariAmount), color)
-
-        if leaderName == "Shaddam IV" then
-            reputation.EmperorDown(color)
-        else
-            reputation.EmperorUp(color)
-        end
-    end
-end
-
-function boardCommonModule.Conspire(color)
-    if boardCommonModule.checkAgentAndPlayer(color, structure.spaces.Conspire) then
-        if boardCommonModule.payResource(color, "spice", 4) then
-            local leaderName = helper.getLeaderName(color)
-            local solariAmount = 5
-            if leaderName == "Princesss Yuna" then
-                solariAmount = 6
-            end
-            boardCommonModule.gainResource(color, "solari", solariAmount)
-            helper.landTroopsFromOrbit(color, 2)
-            Wait.time(function()
-                helper.drawIntrigue(color)
-            end, 0.2)
-            broadcastToAll(i18n("conspire"):format(leaderName, solariAmount), color)
-
-            if leaderName == "Shaddam IV" then
-                reputation.EmperorDown(color)
-            else
-                reputation.EmperorUp(color)
-            end
-        end
-    end
-end
-
-function boardCommonModule.SietchTabr(color)
-    if boardCommonModule.checkAgentAndPlayer(color, structure.spaces.SietchTabr) then
-        if (boardCommonModule.checkReputation(color, "fremen")) then
-            boardCommonModule.gainResource(color, "water", 1)
-            helper.landTroopsFromOrbit(color, 1)
-
-            local leaderName = helper.getLeaderName(color)
-            broadcastToAll(i18n("sietchTabr"):format(leaderName), color)
-        end
-    end
-end
-
-function boardCommonModule.ResearchStation(color)
-    if boardCommonModule.checkAgentAndPlayer(color, structure.spaces.ResearchStation) then
-        if boardCommonModule.payResource(color, "water", 2) then
-            local leaderName = helper.getLeaderName(color)
-            local drawCount = 3
-            if boardCommonModule.drawCardsFromPlace(color, "researchStation", drawCount) then
-                broadcastToAll(i18n("researchStationDraw"):format(leaderName, drawCount), color)
-            else
-                broadcastToAll(i18n("researchStationPayOnly"):format(leaderName), color)
-            end
-        end
-    end
-end
-
-function boardCommonModule.Carthag(color)
-    if boardCommonModule.checkAgentAndPlayer(color, structure.space.Carthag) then
-        Wait.time(function() helper.drawIntrigue(color) end, 0.2)
-        helper.landTroopsFromOrbit(color, 1)
-        local leaderName = helper.getLeaderName(color)
-        broadcastToAll(i18n("carthag"):format(leaderName), color)
-        Wait.time(function() boardCommonModule.applyControlOfCarthag(color) end, 0.5)
-    end
-end
-
-function boardCommonModule.Arrakeen(color)
-    if boardCommonModule.checkAgentAndPlayer(color, structure.space.Arrakeen) then
-        local leaderName = helper.getLeaderName(color)
-        local drawCount = 1
-        if boardCommonModule.drawCardsFromPlace(color, "arrakeen", drawCount) then
-            broadcastToAll(i18n("arrakeenDraw"):format(leaderName, drawCount), color)
-        else
-            broadcastToAll(i18n("arrakeenTroopOnly"):format(leaderName), color)
-        end
-        helper.landTroopsFromOrbit(color, 1)
-        Wait.time(function() boardCommonModule.applyControlOfArrakeen(color) end, 0.5)
-    end
-end
+--[[
+    Space activations for the swordmaster, the mentat and the high council are
+    put here to share the code between the Ix CHOAM overlay and the normal CHOAM
+    overlay.
+]]--
 
 function boardCommonModule.Swordmaster(color, zone)
     if boardCommonModule.checkAgentAndPlayer(color, zone) then
@@ -460,49 +254,6 @@ function boardCommonModule.gainCouncilSiege(color)
             object.setPosition(object.getPosition() + Vector(0, -0.2, 0))
         end
     })
-end
-
-function boardCommonModule.applyControlOfImperialBasin()
-    boardCommonModule.applyControlOfAnySpace(structure.spaces.ImperialBasin, "imperialBasin", "spice")
-end
-
-function boardCommonModule.applyControlOfArrakeen()
-    boardCommonModule.applyControlOfAnySpace(structure.spaces.Arrakeen, "arrakeen", "solari")
-end
-
-function boardCommonModule.applyControlOfCarthag()
-    boardCommonModule.applyControlOfAnySpace(structure.spaces.Arrakeen, "arrakeen", "solari")
-end
-
-function boardCommonModule.applyControlOfAnySpace(spaceZone, spaceName, resourceName)
-    local controllingPlayer = nil
-
-    -- Check player dreadnoughts first since they supersede flags.
-    for _, object in ipairs(spaceZone.getObjects()) do
-        for color, _ in constants.players do
-            if object.getName() == color .. " Dreadnought" or object.getName() == color .. " dreadnought" then
-                assert(not controllingPlayer, "Too many dreadnoughts around " .. spaceName)
-                controllingPlayer = color
-            end
-        end
-    end
-
-    -- Check player flags otherwise.
-    if not controllingPlayer then
-        for _, object in ipairs(spaceZone.getObjects()) do
-            for color, _ in constants.players do
-                if object.getName() == color .. " Flag" then
-                    assert(not controllingPlayer, "Too many flags around " .. spaceName)
-                    controllingPlayer = color
-                end
-            end
-        end
-    end
-
-    if controllingPlayer then
-        boardCommonModule.gainResource(constants.players[controllingPlayer], resourceName, 1)
-        broadcastToAll(helper.getLeaderName(controllingPlayer) .. i18n(spaceName), {0.956, 0.392, 0.113})
-    end
 end
 
 return boardCommonModule

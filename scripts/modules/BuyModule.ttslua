@@ -19,7 +19,7 @@ function buyModule.buy(zone, color, buyTleilaxu)
             card.setPosition(player.discardPosition)
 
             -- Move it on the top of the player deck if possible and wanted.
-            if buyTleilaxu and helper.hasReachedResearchLevelOne(color) or helper.hasTech(color, "Spaceport") then
+            if buyTleilaxu and helper.hasReachedOneHelix(color) or helper.hasTech(color, "Spaceport") then
                 Player[color].showConfirmDialog(
                     i18n("dialogCardAbove"),
                     function(_)

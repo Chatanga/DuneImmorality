@@ -11,6 +11,13 @@ DrawOne = helper.drawOneCard
 
 players = constants.players
 
+-- Beware that this variable is processed on loading to resolve its GUIDs.
+ixStructure = {
+    spaces = {
+        Dreadnought = '83ea90'
+    }
+}
+
 local techCosts = {
     windtraps = 2,
     detonation_devices = 3,
@@ -85,6 +92,7 @@ local negotiationParks = {}
 
 _ = require("Core").registerLoadablePart(function(savedData)
     self.interactable = false
+    ixStructure = core.resolveGUIDs(false, structure)
 
     if savedData ~= '' then
         local state = JSON.decode(savedData)
@@ -104,7 +112,6 @@ _ = require("Core").registerLoadablePart(function(savedData)
     }
     saveState()
 
-    Dreadnought_zone = getObjectFromGUID("83ea90")
     activateButtons()
 end)
 
@@ -128,63 +135,14 @@ function saveState()
 end
 
 function activateButtons()
-
     for i, zone in ipairs(techSlotZones) do
         helper.createAbsoluteAcquireButton(zone, -1, 1, "acquireTech" .. tostring(i))
     end
 
-    self.createButton({
-        label = i18n("addNegotiator"),
-        click_function = "addNegotiator",
-        function_owner = self,
-        position = Vector(-0.25, 0.1 , 0.8),
-        scale = Vector(0.18, 0.18, 0.18),
-        width = 350,
-        height = 350,
-        font_size = 200,
-        color = {0.25, 0.25, 0.25, 1},
-        font_color = {0.7843, 0.7843, 0.7843, 1}
-    })
-
-    self.createButton({
-        click_function = "removeNegotiator",
-        function_owner = self,
-        label = i18n("removeNegotiator"),
-        position = Vector(-0.05, 0.1 , 0.8),
-        scale = Vector(0.18, 0.18, 0.18),
-        width = 350,
-        height = 350,
-        font_size = 200,
-        color = {0.25, 0.25, 0.25, 1},
-        font_color = {0.7843, 0.7843, 0.7843, 1}
-    })
-
-    self.createButton({
-        click_function = "TechNegotiation",
-        function_owner = self,
-        label = "get",
-        position = {-0.2, 0.1, -0.4},
-        scale = {0.18, 0.18, 0.18},
-        width = 400,
-        height = 350,
-        font_size = 200,
-        color = {0.25, 0.25, 0.25, 1},
-        font_color = {0.7843, 0.7843, 0.7843, 1}
-    })
-
-    self.createButton({
-        click_function = "Dreadnought",
-        function_owner = self,
-        label = "pay & get",
-        position = {-0.2, 0.1 , 0.1},
-        scale = {0.18, 0.18, 0.18},
-        width = 900,
-        height = 350,
-        font_size = 200,
-        color = {0.25, 0.25, 0.25, 1},
-        font_color = {0.7843, 0.7843, 0.7843, 1}
-    })
-
+    boardCommonModule.createActivationButton("addNegotiator", "+", {-0.25, 0.1 , 0.8})
+    boardCommonModule.createActivationButton("removeNegotiator", "-", {-0.05, 0.1 , 0.8})
+    boardCommonModule.createActivationButton("TechNegotiation", "get", {-0.2, 0.1, -0.4})
+    boardCommonModule.createActivationButton("Dreadnought", "pay & get", {-0.2, 0.1 , 0.1})
 end
 
 function createTechZones()
@@ -229,108 +187,77 @@ function acquireTech3(object, playerColor)
 end
 
 function acquireTech(index, _, playerColor)
-    if playerColor ~= "Red" and playerColor ~= "Blue" and playerColor ~= "Green" and playerColor ~= "Yellow" then
-        broadcastToColor(i18n("noTouch"), playerColor, {1, 0.011765, 0})
-        return
-    end
-
-    -- Easier to separate the two of them because the top tile share the same Y coordinate as the one below.
-    local otherTiles = {}
-    local topTile = nil
-    for _, object in ipairs(techSlotZones[index].getObjects()) do
-        if object.getDescription() == "Tech" then
-            if not object.is_face_down then
-                topTile = object
-            else
-                otherTiles[#otherTiles + 1] = object
+    if helper.startPlayerAction(playerColor) then
+        -- Easier to separate the two of them because the top tile share the same Y coordinate as the one below.
+        local otherTiles = {}
+        local topTile = nil
+        for _, object in ipairs(techSlotZones[index].getObjects()) do
+            if object.getDescription() == "Tech" then
+                if not object.is_face_down then
+                    topTile = object
+                else
+                    otherTiles[#otherTiles + 1] = object
+                end
             end
         end
-    end
-    table.sort(otherTiles, function (t1, t2) return t1.getPosition().y > t2.getPosition().y end)
+        table.sort(otherTiles, function (t1, t2) return t1.getPosition().y > t2.getPosition().y end)
 
-    if topTile then
-        local techName = getTechName(topTile)
-        local techCost = techCosts[techName]
+        if topTile then
+            local techName = getTechName(topTile)
+            local techCost = techCosts[techName]
 
-        local discount = techDiscounts[playerColor]
-        local discountAmount = 0
-        if discount then
-            discountAmount = discount.amount
-        end
-        local negotiatorCount = #parkModule.getObjects(negotiationParks[playerColor])
-
-        local adjustedTechCost = math.max(0, techCost - discountAmount - negotiatorCount)
-        local recalledNegociatorCount = techCost - adjustedTechCost - discountAmount
-
-        if paySpiceCost(playerColor, adjustedTechCost) then
-
-            local orbit = constants.players[playerColor].board.call("getOrbitPark")
-            local negotiation = negotiationParks[playerColor]
-            parkModule.transfert(recalledNegociatorCount, negotiation, orbit)
-
-            self.clearButtons()
-            Wait.time(function() activateButtons() end, 1)
-
-            local leaderName = helper.getLeaderName(playerColor)
-            local spiceCost
-            if adjustedTechCost == 0 then
-                spiceCost = i18n("freeAsInBeer")
-            elseif adjustedTechCost == 1 then
-                spiceCost = tostring(adjustedTechCost) .. " " .. i18n("spice")
-            else
-                spiceCost = tostring(adjustedTechCost) .. " " .. i18n("spices")
+            local discount = techDiscounts[playerColor]
+            local discountAmount = 0
+            if discount then
+                discountAmount = discount.amount
             end
-            broadcastToAll(i18n("acquireTech"):format(leaderName, i18n(techName), spiceCost), playerColor)
+            local negotiatorCount = #parkModule.getObjects(negotiationParks[playerColor])
 
-            techDiscounts[playerColor] = nil
+            local adjustedTechCost = math.max(0, techCost - discountAmount - negotiatorCount)
+            local recalledNegociatorCount = techCost - adjustedTechCost - discountAmount
 
-            helper.grantTechTile(playerColor, topTile)
-            if #otherTiles > 0 then
-                otherTiles[1].flip()
+            if boardCommonModule.payResource(playerColor, "spice", adjustedTechCost) then
+
+                local orbit = constants.players[playerColor].board.call("getOrbitPark")
+                local negotiation = negotiationParks[playerColor]
+                parkModule.transfert(recalledNegociatorCount, negotiation, orbit)
+
+                --[[
+                self.clearButtons()
+                Wait.time(function() activateButtons() end, 1)
+                ]]--
+
+                local leaderName = helper.getLeaderName(playerColor)
+                local spiceCost
+                if adjustedTechCost == 0 then
+                    spiceCost = i18n("freeAsInBeer")
+                elseif adjustedTechCost == 1 then
+                    spiceCost = tostring(adjustedTechCost) .. " " .. i18n("spice")
+                else
+                    spiceCost = tostring(adjustedTechCost) .. " " .. i18n("spices")
+                end
+                broadcastToAll(i18n("acquireTech"):format(leaderName, i18n(techName), spiceCost), playerColor)
+
+                techDiscounts[playerColor] = nil
+
+                helper.grantTechTile(playerColor, topTile)
+                if #otherTiles > 0 then
+                    otherTiles[1].flip()
+                end
+
+                applyBuyEffect(playerColor, techName)
             end
-
-            applyBuyEffect(playerColor, techName)
+        else
+            log("No tiles!")
         end
-    else
-        log("No tiles!")
     end
-
-end
-
-function paySpiceCost(color, cost)
-    return transfertResources(color, "spice", -cost, "noSpice")
-end
-
-function transfertResources(color, type, amount, errorMessage)
-    local spice = constants.players[color][type]
-
-    if spice.call("collectVal") < -amount then
-        if errorMessage then
-            broadcastToColor(i18n(errorMessage), color, color)
-        end
-        return false
-    end
-
-    local t = 0
-    for _ = 1, math.abs(amount) do
-        Wait.time(function()
-            if amount > 0 then
-                spice.call("incrementVal")
-            else
-                spice.call("decrementVal")
-            end
-        end, t)
-        t = t + 0.2
-    end
-
-    return true
 end
 
 function applyBuyEffect(color, techName)
     local message = nil
 
     if techName == "windtraps" then
-        transfertResources(color, "water", 1, nil)
+        boardCommonModule.gainResource(color, "water", 1)
         message = "acquireWindrapsTechBenefits"
     elseif techName == "detonation_devices" then
     elseif techName == "memocorders" then
@@ -473,10 +400,7 @@ function removeNegotiator(_, color, silent)
 end
 
 function TechNegotiation(_, color)
-    self.clearButtons()
-    Wait.time(activateButtons, 1)
-
-    if boardCommonModule.CheckAgentAndPlayer(color, Dreadnought_zone) then
+    if boardCommonModule.startPlayerAction(color, ixStructure.spaces.Dreadnought) then
         local leaderName = helper.getLeaderName(color)
 
         local orbit = constants.players[color].board.call("getOrbitPark")
@@ -495,74 +419,28 @@ function TechNegotiation(_, color)
 end
 
 function Dreadnought(_, color)
-    self.clearButtons()
-    Wait.time(activateButtons, 1)
+    if boardCommonModule.startPlayerAction(color, ixStructure.spaces.Dreadnought) then
+        local leaderName = helper.getLeaderName(color)
 
-    agentCheck = 0
-    local t = 0
+        local solariPrice = 3
+        if leaderName == "Duke Leto" then
+            solariPrice = 2
+        end
 
-    if boardCommonModule.CheckAgentAndPlayer(color, Dreadnought_zone) then
-
-        local leader = helper.getLeader(color)
-        assert(leader)
-        local leaderName = leader.getName()
-        local solariObj = constants.players[color].solari
-
-        local price = 3
-
-
-        if leader.hasTag("Leto") then price = 2 end
-
-        if solariObj.call("collectVal") < price then
-
-            broadcastToColor(i18n("noSolari"), color, color)
-        else
-
-            for i = 1, price, 1 do
-                Wait.time(function()
-                    solariObj.call("decrementVal")
-                end, t)
-                t = t + 0.25
-            end
-
+        if boardCommonModule.payResource(color, "solari", solariPrice) then
             registerTechDiscount(color, "dreadnought", 0)
 
             buyDreadnought(_, color)
 
-            if leader.hasTag("Ilban") then
-
-                local numberToDraw = 1
-
-                local enoughCards = helper.doesDeckContainEnoughCards(color, numberToDraw)
-
-                if not enoughCards then
-                    broadcastToAll(i18n("dreadBuy"):format(leaderName, price),
-                                   color)
-
-                    broadcastToAll(i18n("isDecidingToDraw"):format(leaderName),
-                                   "Pink")
-                    local card = i18n("cards")
-                    if numberToDraw == 1 then
-                        card = i18n("card")
-                    end
-                    Player[color].showConfirmDialog(
-                        i18n("warningBeforeDraw"):format(numberToDraw, card),
-                        function(player_color)
-                            DrawOne(_, color)
-                            broadcastToAll(i18n("ilbanDraw"):format(leaderName),
-                                           color)
-                        end)
+            if leaderName == "Count Ilban" then
+                if boardCommonModule.drawCardsFromPlace(color, "arrakeen", 1) then
+                    broadcastToAll(i18n("dreadBuy"):format(leaderName, solariPrice) .. i18n("et") .. i18n("drawOneCard"), color)
                 else
-                    DrawOne(_, color)
-                    broadcastToAll(i18n("dreadBuy"):format(leaderName, price),
-                                   color)
-                    broadcastToAll(i18n("ilbanDraw"):format(leaderName), color)
-
+                    broadcastToAll(i18n("dreadBuy"):format(leaderName, solariPrice) .. ".", color)
                 end
             else
-                broadcastToAll(i18n("dreadBuy"):format(leaderName, price), color)
+                broadcastToAll(i18n("dreadBuy"):format(leaderName, solariPrice) .. ".", color)
             end
-
         end
     end
 end

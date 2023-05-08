@@ -7,16 +7,18 @@ helper = require("HelperModule")
 
 boardCommonModule = require("BoardCommonModule")
 
-DrawOne = helper.drawOneCard
+-- Beware that this variable is processed on loading to resolve its GUIDs.
+baseStructure = {
+    spaces = {
+        SecureContract = 'db4022',
+        SellMelange = '7539a3',
+        RallyTroops = '6932df',
+        Swordmaster = '6cc2f8',
+        HallOfOratory = '3e7409'
+    }
+}
 
 _ = require("Core").registerLoadablePart(function()
-    SecureContract_zone = getObjectFromGUID("db4022")
-    SellMelange_zone = getObjectFromGUID("7539a3")
-
-    RallyTroops_zone = getObjectFromGUID("6932df")
-    Swordmaster_zone = getObjectFromGUID("6cc2f8")
-    HallOfOratory_zone = getObjectFromGUID("3e7409")
-
     self.interactable = false
     activateButtons()
 end)
@@ -27,284 +29,102 @@ function onLocaleChange()
 end
 
 function activateButtons()
+    boardCommonModule.createActivationButton("SecureContract", "get", {2.2, 0.1, 0.58})
+    boardCommonModule.createActivationButton("SellMelange2", "↓", {2.165, 0.1, -0.66})
+    boardCommonModule.createActivationButton("SellMelange3", "↓", {2.344, 0.1, -0.66})
+    boardCommonModule.createActivationButton("SellMelange4", "↓", {2.515, 0.1, -0.66})
+    boardCommonModule.createActivationButton("SellMelange5", "↓", {2.69, 0.1, -0.66})
+    boardCommonModule.createActivationButton("HighCouncil", "pay & get", {-2, 0.1, -0.15})
+    boardCommonModule.createActivationButton("Mentat", "pay & get", {-2, 0.1, 0.65})
+    boardCommonModule.createActivationButton("RallyTroops", "pay & get", {-0.55, 0.1, 0.65})
+    boardCommonModule.createActivationButton("Swordmaster", "pay & get", {0.72, 0.1, 0.65})
+    boardCommonModule.createActivationButton("HallOfOratory", "get", {0.7, 0.1, -0.1})
+end
 
-    self.createButton({
-        click_function = "SecureContract",
-        function_owner = self,
-        label = "get",
-        position = {2.2, 0.1, 0.58},
-        scale = {0.238, 0.238, 0.238},
-        width = 400,
-        height = 350,
-        font_size = 200,
-        color = {0.25, 0.25, 0.25, 1},
-        font_color = {0.7843, 0.7843, 0.7843, 1}
-    })
-    self.createButton({
-        click_function = "SellMelange2",
-        function_owner = self,
-        label = "↓",
-        position = {2.165, 0.1, -0.66},
-        scale = {0.238, 0.238, 0.238},
-        width = 300,
-        height = 330,
-        font_size = 200,
-        color = {0.25, 0.25, 0.25, 1},
-        font_color = {0.7843, 0.7843, 0.7843, 1}
-    })
-    self.createButton({
-        click_function = "SellMelange3",
-        function_owner = self,
-        label = "↓",
-        position = {2.344, 0.1, -0.66},
-        scale = {0.238, 0.238, 0.238},
-        width = 300,
-        height = 330,
-        font_size = 200,
-        color = {0.25, 0.25, 0.25, 1},
-        font_color = {0.7843, 0.7843, 0.7843, 1}
-    })
-    self.createButton({
-        click_function = "SellMelange4",
-        function_owner = self,
-        label = "↓",
-        position = {2.515, 0.1, -0.66},
-        scale = {0.238, 0.238, 0.238},
-        width = 300,
-        height = 330,
-        font_size = 200,
-        color = {0.25, 0.25, 0.25, 1},
-        font_color = {0.7843, 0.7843, 0.7843, 1}
-    })
-    self.createButton({
-        click_function = "SellMelange5",
-        function_owner = self,
-        label = "↓",
-        position = {2.69, 0.1, -0.66},
-        scale = {0.238, 0.238, 0.238},
-        width = 300,
-        height = 330,
-        font_size = 200,
-        color = {0.25, 0.25, 0.25, 1},
-        font_color = {0.7843, 0.7843, 0.7843, 1}
-    })
-    self.createButton({
-        click_function = "HighCouncil",
-        function_owner = self,
-        label = "pay & get",
-        position = {-2, 0.1, -0.15},
-        scale = {0.238, 0.238, 0.238},
-        width = 900,
-        height = 350,
-        font_size = 200,
-        color = {0.25, 0.25, 0.25, 1},
-        font_color = {0.7843, 0.7843, 0.7843, 1}
-    })
-    self.createButton({
-        click_function = "Mentat",
-        function_owner = self,
-        label = "pay & get",
-        position = {-2, 0.1, 0.65},
-        scale = {0.238, 0.238, 0.238},
-        width = 900,
-        height = 350,
-        font_size = 200,
-        color = {0.25, 0.25, 0.25, 1},
-        font_color = {0.7843, 0.7843, 0.7843, 1}
-    })
-    self.createButton({
-        click_function = "RallyTroops",
-        function_owner = self,
-        label = "pay & get",
-        position = {-0.55, 0.1, 0.65},
-        scale = {0.238, 0.238, 0.238},
-        width = 900,
-        height = 350,
-        font_size = 200,
-        color = {0.25, 0.25, 0.25, 1},
-        font_color = {0.7843, 0.7843, 0.7843, 1}
-    })
-    self.createButton({
-        click_function = "Swordmaster",
-        function_owner = self,
-        label = "pay & get",
-        position = {0.72, 0.1, 0.65},
-        scale = {0.238, 0.238, 0.238},
-        width = 900,
-        height = 350,
-        font_size = 200,
-        color = {0.25, 0.25, 0.25, 1},
-        font_color = {0.7843, 0.7843, 0.7843, 1}
-    })
-    self.createButton({
-        click_function = "HallOfOratory",
-        function_owner = self,
-        label = "get",
-        position = {0.7, 0.1, -0.1},
-        scale = {0.238, 0.238, 0.238},
-        width = 400,
-        height = 350,
-        font_size = 200,
-        color = {0.25, 0.25, 0.25, 1},
-        font_color = {0.7843, 0.7843, 0.7843, 1}
-    })
+function forwardCall(spaceName, color, zone)
+    self.clearButtons()
+    Wait.time(activateButtons, 1)
+    if zone then
+        boardCommonModule[spaceName](color, zone)
+    else
+        boardCommonModule[spaceName](color)
+    end
 end
 
 function Swordmaster(_, color)
-    self.clearButtons()
-    Wait.time(activateButtons, 1)
-    boardCommonModule.Swordmaster(color, Swordmaster_zone)
+    forwardCall("Swordmaster", color, baseStructure.spaces.Swordmaster)
 end
 
 function Mentat(_, color)
-    self.clearButtons()
-    Wait.time(activateButtons, 1)
-    boardCommonModule.Mentat(color)
+    forwardCall("Swordmaster", color, structure.spaces.Mentat)
 end
 
 function HighCouncil(_, color)
-    self.clearButtons()
-    Wait.time(activateButtons, 1)
-    boardCommonModule.HighCouncil(color)
+    forwardCall("Swordmaster", color, structure.spaces.HighCouncil)
 end
 
 function SecureContract(_, color)
-    self.clearButtons()
-    Wait.time(activateButtons, 1)
-
-    if boardCommonModule.CheckAgentAndPlayer(color, SecureContract_zone) then
-
+    if helper.startPlayerAction(color, baseStructure.spaces.SecureContract) then
         local leaderName = helper.getLeaderName(color)
-
-        local player = constants.players[color]
-        player.solari.call("incrementVal")
-        player.solari.call("incrementVal")
-        player.solari.call("incrementVal")
+        boardCommonModule.gainResource(color, "solari", 3)
         broadcastToAll(i18n("secureContract"):format(leaderName), color)
     end
 end
 
 function sellMelange(color, spiceAmount, solariAmount)
-
-    local val = constants.players[color].spice.call("collectVal")
-
-    if boardCommonModule.CheckAgentAndPlayer(color, SellMelange_zone) then
-
+    if helper.startPlayerAction(color, baseStructure.spaces.SellMelange) then
         local leaderName = helper.getLeaderName(color)
-
-        if val < spiceAmount then
-            broadcastToColor(i18n("noSpice"), color, color)
-        else
-            for i = 1, spiceAmount, 1 do
-                constants.players[color].spice.call("decrementVal")
-            end
-            for i = 1, solariAmount, 1 do
-                constants.players[color].solari.call("incrementVal")
-            end
-            broadcastToAll(i18n("sellMelange"):format(leaderName, spiceAmount,
-                                                      solariAmount), color)
+        if boardCommonModule.payResource(color, "spice", spiceAmount) then
+            boardCommonModule.gainResource(color, "solari", solariAmount)
+            broadcastToAll(i18n("sellMelange"):format(leaderName, spiceAmount, solariAmount), color)
         end
     end
-
 end
 
 function SellMelange2(_, color)
-    self.clearButtons()
-    Wait.time(activateButtons, 1)
-
     sellMelange(color, 2, 6)
 end
 
-function SellMelange4(_, color)
-    self.clearButtons()
-    Wait.time(activateButtons, 1)
+function SellMelange3(_, color)
+    sellMelange(color, 3, 8)
+end
 
+function SellMelange4(_, color)
     sellMelange(color, 4, 10)
 end
 
 function SellMelange5(_, color)
-    self.clearButtons()
-    Wait.time(activateButtons, 1)
-
     sellMelange(color, 5, 12)
 end
 
-function SellMelange3(_, color)
-    self.clearButtons()
-    Wait.time(activateButtons, 1)
-
-    sellMelange(color, 3, 8)
-end
-
 function RallyTroops(_, color)
-    self.clearButtons()
-    Wait.time(activateButtons, 1)
+    if helper.startPlayerAction(color, baseStructure.spaces.RallyTroops) then
+        local leaderName = helper.getLeaderName(color)
 
-    if boardCommonModule.CheckAgentAndPlayer(color, RallyTroops_zone) then
+        local solariPrice = 4
+        if leaderName == "Duke Leto" then
+            solariPrice = 3
+        end
 
-        local leader = helper.getLeader(color)
-        assert(leader)
-        local leaderName = leader.getName()
-        local solariObj = constants.players[color].solari
-        local t = 0
-        local t1 = 0
-
-        local price = 4
-
-        if leader.hasTag("Leto") then price = 3 end
-
-        if solariObj.call("collectVal") < price then
-            broadcastToColor(i18n("noSolari"), color, color)
-        else
-            for i = 1, price, 1 do
-                Wait.time(function()
-                    solariObj.call("decrementVal")
-                end, t)
-                t = t + 0.3
-            end
-
+        if boardCommonModule.payResource(color, "solari", solariPrice) then
             helper.landTroopsFromOrbit(color, 4)
 
-            if leader.hasTag("Ilban") then
-
-                local numberToDraw = 1
-
-                local enoughCards = helper.doesDeckContainEnoughCards(color, numberToDraw)
-
-                if not enoughCards then
-                    broadcastToAll(
-                        i18n("rallyTroops"):format(leaderName, price) .. ".",
-                        color)
-
-                    broadcastToAll(i18n("isDecidingToDraw"):format(leaderName),
-                                   "Pink")
-
-                    Player[color].showConfirmDialog(
-                        i18n("warningBeforeDraw"):format(numberToDraw),
-                        function(player_color)
-                            DrawOne(_, color)
-                            broadcastToAll(i18n("ilbanDraw"):format(leaderName),
-                                           color)
-                        end)
+            if leaderName == "Count Ilban" then
+                local drawCount = 1
+                if boardCommonModule.drawCardsFromPlace(color, "arrakeen", drawCount) then
+                    broadcastToAll(i18n("rallyTroops"):format(leaderName, solariPrice) .. i18n("et") .. i18n("drawOneCard"), color)
                 else
-                    DrawOne(_, color)
-                    broadcastToAll(
-                        i18n("rallyTroops"):format(leaderName, price) ..
-                            i18n("et") .. i18n("drawOneCard"), color)
+                    broadcastToAll(i18n("rallyTroops"):format(leaderName, solariPrice) .. ".", color)
                 end
             else
-                broadcastToAll(i18n("rallyTroops"):format(leaderName, price) ..
-                                   ".", color)
+                broadcastToAll(i18n("rallyTroops"):format(leaderName, solariPrice) .. ".", color)
             end
         end
     end
 end
 
 function HallOfOratory(_, color)
-    self.clearButtons()
-    Wait.time(activateButtons, 1)
-
-    if boardCommonModule.CheckAgentAndPlayer(color, HallOfOratory_zone) then
+    if helper.startPlayerAction(color, baseStructure.spaces.HallOfOratory) then
         local leaderName = helper.getLeaderName(color)
         helper.landTroopsFromOrbit(color, 1)
         broadcastToAll(i18n("oratory"):format(leaderName), color)

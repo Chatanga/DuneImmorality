@@ -63,6 +63,13 @@ reputationTokens = {
     }
 }
 
+friendshipBags = {
+    emperor = "6a4186",
+    spacingGuild = "400d45",
+    beneGesserit = "e763f6",
+    fremen = "8bcfe7"
+}
+
 allianceTokenInitialPositions = {
     emperor = core.getHardcodedPositionFromGUID('13e990', -9.511963, 0.780000031, 5.860889),
     spacingGuild = core.getHardcodedPositionFromGUID('ad1aae', -9.507135, 0.780000031, 0.249081045),
@@ -88,6 +95,13 @@ reputationLevels = {}
 
 _ = core.registerLoadablePart(function(_)
     reputationModule.reputationLevels = reputationModule.initReputationLevels()
+
+    -- TODO Repair
+    --[[
+    for _, thing in pairs(factionThings) do
+        thing.bag_friendship.interactable = false
+    end
+    ]]--
 end)
 
 function reputationModule.initReputationLevels()
@@ -129,15 +143,27 @@ function reputationModule.getReputationLevels(faction, color)
     return reputationModule.reputationLevels[faction][color]
 end
 
+-- TODO Rework the rank / level!
+function reputationModule.getReputationRank(faction, color)
+    local reputationLevels = reputationModule.getReputationLevels(faction, color)
+    local pos = reputationTokens[faction][color].getPosition()
+    return math.floor((pos.z - reputationLevels.none) / reputationLevels.step)
+end
+
 function reputationModule.increaseReputation(color, faction)
     local reputationLevels = reputationModule.getReputationLevels(faction, color)
     local pos = reputationTokens[faction][color].getPosition()
     local leaderName = helper.getLeaderName(color)
     if pos.z < reputationLevels.max then
+        local wasUnderFrienship = pos.z < reputationLevels.friendship
         reputationTokens[faction][color].setPositionSmooth({
             pos.x, pos.y, pos.z + reputationLevels.step
         }, false, false)
-        reputationModule.giveAlliance(faction, color)
+        local isAboveFrienship = pos.z > reputationLevels.friendship
+        if wasUnderFrienship and isAboveFrienship then
+            reputationModule.gainFriendship(faction, color)
+        end
+        reputationModule.checkAllianceOwneship(faction, color)
         broadcastToAll(i18n("reputUp"):format(leaderName, i18n(faction)), color)
     else
         broadcastToColor(i18n("reputMax"), color, "Pink")
@@ -149,18 +175,34 @@ function reputationModule.decreaseReputation(color, faction)
     local pos = reputationTokens[faction][color].getPosition()
     local leaderName = helper.getLeaderName(color)
     if pos.z > reputationLevels.none then
+        local wasAboveFrienship = pos.z > reputationLevels.friendship
         reputationTokens[faction][color].setPositionSmooth({
             pos.x, pos.y, pos.z - reputationLevels.step
         }, false, false)
-        reputationModule.giveAlliance(faction, color)
-        broadcastToAll(i18n("reputDown"):format(leaderName, i18n(faction)),
-                       color)
+        local isUnderFrienship = pos.z > reputationLevels.friendship
+        if wasAboveFrienship and isUnderFrienship then
+            helper.loseFriendship(faction, color)
+        end
+        reputationModule.challengeAlliance(faction, color)
+        broadcastToAll(i18n("reputDown"):format(leaderName, i18n(faction)), color)
     else
         broadcastToColor(i18n("reputMin"), color, "Orange")
     end
 end
 
-function reputationModule.giveAlliance(faction, color)
+function reputationModule.gainFriendship(faction, color)
+    helper.grantScoreTokenFromBag(color, friendshipBags[faction])
+end
+
+function reputationModule.loseFriendship(faction, color)
+    for _, scoreToken in ipairs(helper.getScoreTokens(color)) do
+        if scoreToken.getName() == faction .. " Friendship" then
+            scoreToken.destruct()
+        end
+    end
+end
+
+function reputationModule.checkAllianceOwneship(faction, color)
     local leaderName = helper.getLeaderName(color)
 
     local posz_liste = {}
@@ -193,8 +235,9 @@ function reputationModule.giveAlliance(faction, color)
                 if posz < (posz_compared - 0.5) then
                     local delta = posz_compared - posz
 
-                    if (delta - biggestDelta) < 0.5 and (delta - biggestDelta) >
-                        -0.5 then tiedForVP = true end
+                    if (delta - biggestDelta) < 0.5 and (delta - biggestDelta) > -0.5 then
+                        tiedForVP = true
+                    end
 
                     if delta > biggestDelta then
                         biggestDelta = delta
@@ -205,13 +248,11 @@ function reputationModule.giveAlliance(faction, color)
             end
 
             if tiedForVP or biggestDelta > 0 or posz < posz_requis then
-                broadcastToAll(i18n("loseAlliance"):format(leaderName,
-                                                           i18n(faction)), color)
+                broadcastToAll(i18n("loseAlliance"):format(leaderName, i18n(faction)), color)
             end
 
             if tiedForVP then
-                broadcastToAll(i18n("tiedAlliance"):format(i18n(faction)),
-                               "Pink")
+                broadcastToAll(i18n("tiedAlliance"):format(i18n(faction)), "Pink")
 
             elseif biggestDelta > 0 then
                 local leaderTakingAllianceName = helper.getLeaderName(playerTakingAlliance)
@@ -225,8 +266,7 @@ function reputationModule.giveAlliance(faction, color)
 
         if not hasAlliance and posz > posz_requis then
             local isReputStrongest = true
-            for k, posz_compared in pairs(posz_liste) do
-
+            for _, posz_compared in pairs(posz_liste) do
                 if posz < (posz_compared + 0.5) then
                     isReputStrongest = false
                 end
@@ -243,6 +283,9 @@ end
 
 function reputationModule.FremenUp(color)
     reputationModule.increaseReputation(color, "fremen")
+    if reputationModule.getReputationRank("fremen", color) == 4 then
+        reputationModule.reputationModule.applyFremenBonus(color)
+    end
 end
 
 function reputationModule.FremenDown(color)
@@ -251,6 +294,9 @@ end
 
 function reputationModule.BeneUp(color)
     reputationModule.increaseReputation(color, "beneGesserit")
+    if reputationModule.getReputationRank("beneGesserit", color) == 4 then
+        reputationModule.reputationModule.applyBeneGesseritBonus(color)
+    end
 end
 
 function reputationModule.BeneDown(color)
@@ -259,6 +305,9 @@ end
 
 function reputationModule.GuildUp(color)
     reputationModule.increaseReputation(color, "spacingGuild")
+    if reputationModule.getReputationRank("spacingGuild", color) == 4 then
+        reputationModule.reputationModule.applySpacingGuildBonus(color)
+    end
 end
 
 function reputationModule.GuildDown(color)
@@ -267,10 +316,44 @@ end
 
 function reputationModule.EmperorUp(color)
     reputationModule.increaseReputation(color, "emperor")
+    if reputationModule.getReputationRank("emperor", color) == 4 then
+        reputationModule.reputationModule.applyEmperorBonus(color)
+    end
 end
 
 function reputationModule.EmperorDown(color)
     reputationModule.decreaseReputation(color, "emperor")
+end
+
+function reputationModule.applyFremenBonus(_, color)
+    boardCommonModule.gainResource(color, "water", 1)
+    local leaderName = helper.getLeaderName(color)
+    broadcastToAll(i18n("fremenBonus"):format(leaderName), color)
+end
+
+function reputationModule.applyBeneGesseritBonus(_, color)
+    Wait.time(function() boardCommonModule.drawIntrigue(color) end, 0.75)
+    local leaderName = helper.getLeaderName(color)
+    broadcastToAll(i18n("beneBonus"):format(leaderName), color)
+end
+
+function reputationModule.applySpacingGuildBonus(_, color)
+    local solariAmount = 3
+
+    local leaderName = helper.getLeaderName(color)
+    local isFightTime = Global.call("isFightTime")
+    if leaderName == "Princess Yuna" and not isFightTime then
+        solariAmount = 4
+    end
+
+    boardCommonModule.gainResource(color, "solari", solariAmount)
+    broadcastToAll(i18n("spaceBonus"):format(leaderName, solariAmount), color)
+end
+
+function reputationModule.applyEmperorBonus(_, color)
+    local leaderName = helper.getLeaderName(color)
+    helper.landTroopsFromOrbit(color, 2)
+    broadcastToAll(i18n("emperorBonus"):format(leaderName), color)
 end
 
 return reputationModule

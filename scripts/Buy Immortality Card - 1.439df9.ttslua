@@ -14,7 +14,7 @@ _ = require("Core").registerLoadablePart(function()
     activateButtons()
 
     local slotZone = getObjectFromGUID(slot.zoneGuid)
-    local snapPoint = helper.createAbsoluteSnapPointFromZone(slotZone, true, {"Imperium"})
+    local snapPoint = helper.createRelativeSnapPointFromZone(slotZone, true, {"Imperium"})
     self.setSnapPoints({snapPoint})
 end)
 

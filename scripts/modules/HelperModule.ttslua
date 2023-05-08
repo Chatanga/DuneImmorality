@@ -6,99 +6,220 @@ constants = require("Constants")
 
 parkModule = require("ParkModule")
 
+--[[
+
+drawIntrigue(color)
+tryDrawCards(color, count, message)
+drawCards(color, count)
+resetDiscard(color)
+getCardCount(deckZone)
+
+moveCardFromZone(zone, position, rotation, smooth, flipAtTheEnd)
+moveCardFromZoneGUID(zoneGUID, position, rotation, smooth)
+
+getDeckOrCard(zone)
+getDeck(zone)
+getCard(zone)
+getDeckOrCardFromGUID(zoneGUID)
+getDeckFromGUID(zoneGUID)
+getCardFromGUID(zoneGUID)
+
+createRelativeSnapPointFromZone(zone, rotationSnap, tags)
+createAbsoluteButton(object, parameters)
+createAbsoluteAcquireButton(zone, zFactor, altitude, action, postParameters)
+createAbsoluteButtonWithRoundness(object, roundness, quirk, parameters)
+
+getPlayerTextColors(color)
+getPlayer(color)
+hasPlayer(color)
+startPlayerAction(color)
+
+getLeader(color)
+getLeaderName(color)
+
+landTroopsFromOrbit(color, count)
+sendTroopsBackToOrbit(color, troops)
+getTroopsFromOrbit(color)
+grantTechTile(color, techTile)
+getScoreTokens(color)
+grantScoreToken(color, token)
+grantScoreTokenFromBag(color, tokenBag)
+getPlayerScore(color)
+hasTech(color, techName)
+hasACouncilSeat(color)
+payResource(color, resourceName, amount)
+gainResource(color, resourceName, amount)
+getSpecimenCount(color)
+hasReachedOneHelix(color)
+hasReachedTwoHelices(color)
+getDreadnoughtRestingPosition(dreadnoughName)
+
+setSharedTable(tableName, table)
+getSharedTable(tableName)
+toCamelCase(...)
+ToCamelCase(...)
+toVector(data)
+repeatMovingAction(object, action, count)
+sleep(duration)
+createContinuation()
+
+]]--
+
+function self.doNothing() end
+
 function helper.drawIntrigue(color)
     local cardCount = 1
-    if helper.getLeaderName(color) == "Count Fenring" then
+
+    local leaderName = helper.getLeaderName(color)
+    if leaderName == "Count Fenring" then
         cardCount = 2
         Wait.time(function()
-            broadcastToAll(helper.getLeaderName(color) .. i18n("fenring"), "Purple")
+            broadcastToAll(leaderName .. i18n("fenring"), "Purple")
         end, 0.5)
     end
 
     Wait.time(function()
-        local handZone = Player[color].getHandTransform()
-        local intrigueDeck = helper.getDeckOrCard(intrigue_zone)
-        local position = handZone.position + Vector(-7.5, 0, 0)
-        helper.moveCardFromZone(handZone, position, false, false, true)
+        -- Add an offset to put the card on the left side.
+        local position = Player[color].getHandTransform().position + Vector(-7.5, 0, 0)
+        helper.moveCardFromZone(constants.intrigue.deckZone, position, false, false, true)
+        -- Same as dealToColorWithOffset(Vector(-7.5, 0, 0), true, color)?
     end, 0.25, cardCount)
 end
 
-function helper.drawOneCard(_, color)
-    local drawDeck = helper.getDeckOrCard(constants.players[color].drawDeckZone)
-    if drawDeck then
-        drawDeck.deal(1, color)
-        return true
-    else
-        if helper.resetDiscard(_, color) then
-            Wait.time(function()
-                local replenishedDrawDeck = helper.getDeckOrCard(constants.players[color].drawDeckZone)
-                if replenishedDrawDeck then
-                    replenishedDrawDeck.deal(1, color)
-                end
-            end, 1.5)
-            return true
-        else
-            -- TODO Translate
-            broadcastToColor("Missing one card to draw because your discard is empty", color, color)
-            return false
-        end
-    end
-end
+function helper.tryDrawCards(color, count, message)
+    local player = constants.players[color]
+    local needDiscardReset = helper.getCardCount(player.drawDeckZone) < count
+    local notEnoughCards =  helper.getCardCount(player.drawDeckZone) + helper.getCardCount(player.discardZone) < count
 
-function helper.drawCards(color, drawCount, message)
-    assert(drawCount > 0)
-    local enoughCards = helper.doesDeckContainEnoughCards(color, drawCount)
-    if not enoughCards then
-
+    if needDiscardReset or notEnoughCards < count then
         local leaderName = helper.getLeaderName(color)
         broadcastToAll(i18n("isDecidingToDraw"):format(leaderName), "Pink")
-
-        local counter = i18n.translateCountable(drawCount, "card", "cards")
+        local counter = i18n.translateCountable(count, "card", "cards")
         Player[color].showConfirmDialog(
-            i18n("warningBeforeDraw"):format(drawCount, counter),
+            i18n("warningBeforeDraw"):format(count, counter),
             function(_)
                 if message then
                     broadcastToAll(message, color)
                 end
-                Wait.time(function()
-                    helper.drawOneCard(_, color)
-                end, 1, drawCount)
+                helper.drawCards(color, count)
             end)
-        return false
     else
-        Wait.time(function()
-            helper.drawOneCard(_, color)
-        end, 1, drawCount)
-        return true
+        helper.drawCards(color, count)
     end
 end
 
-function helper.doesDeckContainEnoughCards(color, drawCound)
+function helper.drawCards(color, count)
+    local remainingCardToDrawCount = count
+
     local deckOrCard = helper.getDeckOrCard(constants.players[color].drawDeckZone)
-    if not deckOrCard then
-        return drawCound <= 0
-    elseif deckOrCard.type == "Card" then
-        return drawCound <= 1
-    elseif deckOrCard.type == "Deck" then
-        return drawCound <= deckOrCard.getQuantity()
-    else
-        return false
+    if deckOrCard then
+        local drawableCardCount = deckOrCard.getQuantity()
+
+        local dealCardCount = math.max(remainingCardToDrawCount, drawableCardCount)
+        deckOrCard.deal(dealCardCount, color)
+
+        remainingCardToDrawCount = remainingCardToDrawCount - dealCardCount
+
+        if remainingCardToDrawCount > 0 then
+            local reset = helper.resetDiscard(color)
+            if reset then
+                reset.doAfter(function(_)
+                    helper.drawCards(color, remainingCardToDrawCount)
+                end)
+            end
+        end
     end
 end
 
-function helper.resetDiscard(_, color)
-    local discardZone = helper.getDeckOrCard(constants.players[color].discardZone)
-    if discardZone then
-        discardZone.setRotationSmooth({0, 180, 180}, false, false)
-        discardZone.shuffle()
-        discardZone.setPositionSmooth(constants.getLandingPosition(constants.players[color].drawDeckZone), false, true)
-        Wait.time(function()
-            helper.getDeckOrCard(constants.players[color].drawDeckZone).shuffle()
+function helper.resetDiscard(color)
+    local player = constants.players[color]
+    local discard = helper.getDeckOrCard(player.discardZone)
+    if discard then
+        local continuation = helper.createContinuation()
+
+        discard.setRotationSmooth({0, 180, 180}, false, false)
+        discard.setPositionSmooth(constants.getLandingPosition(player.drawDeckZone), false, true)
+
+        Wait.time(function() -- Once moved.
+            local replenishedDeckOrCard = helper.getDeckOrCard(player.drawDeckZone)
+            assert(replenishedDeckOrCard)
+            if replenishedDeckOrCard.type == "Deck" then
+                replenishedDeckOrCard.shuffle()
+                Wait.time(function () -- Once shuffled.
+                    continuation.run(replenishedDeckOrCard)
+                end, 1.5)
+            else
+                continuation.run(replenishedDeckOrCard)
+            end
         end, 0.5)
-        return true
+
+        return continuation
     else
-        return false
+        return nil
     end
+end
+
+function helper.getCardCount(deckZone)
+    local deckOrCard = helper.getDeckOrCard(deckZone)
+    if not deckOrCard then
+        return 0
+    elseif deckOrCard.type == "Card" then
+        return 1
+    elseif deckOrCard.type == "Deck" then
+        return deckOrCard.getQuantity()
+    else
+        return 0
+    end
+end
+
+-- Prefer the "deal" method when possible.
+function helper.moveCardFromZone(zone, position, rotation, smooth, flipAtTheEnd)
+    local deckOrCard = helper.getDeckOrCard(zone)
+    if deckOrCard then
+        if deckOrCard.type == "Deck" then
+            local parameters = {
+                position = position,
+                callback_function = function (card)
+                    if flipAtTheEnd then
+                        card.flip()
+                    end
+                end
+            }
+            if rotation then
+                parameters.rotation = rotation
+            end
+            parameters.smooth = smooth or false
+            deckOrCard.takeObject(parameters)
+            return true
+        elseif deckOrCard.type == "Card" then
+            if smooth then
+                deckOrCard.setPositionSmooth(position)
+            else
+                deckOrCard.setPosition(position)
+            end
+            if rotation then
+                if smooth then
+                    deckOrCard.setRotationSmooth(rotation)
+                else
+                    deckOrCard.setRotation(rotation)
+                end
+            end
+            Wait.time(function() -- Once moved and rotated.
+                deckOrCard.flip()
+            end, 0.2)
+            return true
+        else
+            assert(false)
+        end
+    end
+    return false
+end
+
+function helper.moveCardFromZoneGUID(zoneGUID, position, rotation, smooth)
+    assert(type(zoneGUID) == 'string', tostring(zoneGUID) .. ' is not a GUID')
+    local zone = getObjectFromGUID(zoneGUID)
+    assert(zone, "Failed to resolve GUID: " .. tostring(zoneGUID))
+    return helper.moveCardFromZone(zone, position, rotation, smooth)
 end
 
 function helper.getDeckOrCard(zone)
@@ -150,85 +271,11 @@ function helper.getCardFromGUID(zoneGUID)
     return helper.getCard(zone)
 end
 
-function helper.moveCardFromZone(zone, position, rotation, smooth, flipAtTheEnd)
-    local deckOrCard = helper.getDeckOrCard(zone)
-    if deckOrCard then
-        if deckOrCard.type == "Deck" then
-            local parameters = {
-                position = position,
-                callback_function = function (card)
-                    if flipAtTheEnd then
-                        card.flip()
-                    end
-                end
-            }
-            if rotation then
-                parameters.rotation = rotation
-            end
-            parameters.smooth = smooth or false
-            deckOrCard.takeObject(parameters)
-            return true
-        elseif deckOrCard.type == "Card" then
-            if smooth then
-                deckOrCard.setPositionSmooth(position)
-            else
-                deckOrCard.setPosition(position)
-            end
-            if rotation then
-                if smooth then
-                    deckOrCard.setRotationSmooth(rotation)
-                else
-                    deckOrCard.setRotation(rotation)
-                end
-            end
-            Wait.time(function() deckOrCard.flip() end, 0.2)
-            return true
-        end
-    end
-    return false
-end
-
-function helper.moveCardFromZoneGUID(zoneGUID, position, rotation, smooth)
-    assert(type(zoneGUID) == 'string', tostring(zoneGUID) .. ' is not a GUID')
-    local zone = getObjectFromGUID(zoneGUID)
-    assert(zone, "Failed to resolve GUID: " .. tostring(zoneGUID))
-    return helper.moveCardFromZone(zone, position, rotation, smooth)
-end
-
-function helper.getPlayerTextColors(playerColor)
-
-    local background = {0, 0, 0, 1}
-    local foreground = {1, 1, 1, 1}
-
-    if playerColor == 'Green' then
-        background = {0.192, 0.701, 0.168, 1}
-        foreground = {0.7804, 0.7804, 0.7804, 1}
-    elseif playerColor == 'Yellow' then
-        background = {0.9058, 0.898, 0.1725, 1}
-        foreground = {0, 0, 0, 1}
-    elseif playerColor == 'Blue' then
-        background = {0.118, 0.53, 1, 1}
-        foreground = {0.7804, 0.7804, 0.7804, 1}
-    elseif playerColor == 'Red' then
-        background =  {0.856, 0.1, 0.094, 1}
-        foreground = {0.7804, 0.7804, 0.7804, 1}
-    end
-
-    return {
-        bg = background,
-        fg = foreground
-    }
-end
-
-function helper.toVector(data)
-    if not data or core.isSomeKindOfObject(data) then
-        return data
-    else
-        return Vector(data[1], data[2], data[3])
-    end
-end
-
-function helper.createAbsoluteSnapPointFromZone(zone, rotationSnap, tags)
+--[[
+    Create a snapPoint relative to self centered on the provided zone but at the
+    height of self.
+]]--
+function helper.createRelativeSnapPointFromZone(zone, rotationSnap, tags)
     local position = zone.getPosition()
     position:setAt("y", self.getPosition().y)
     local snapPoint = {
@@ -345,13 +392,48 @@ function helper.createAbsoluteButtonWithRoundness(object, roundness, quirk, para
     object.createButton(parameters)
 end
 
+function helper.getPlayerTextColors(color)
+
+    local background = {0, 0, 0, 1}
+    local foreground = {1, 1, 1, 1}
+
+    if color == 'Green' then
+        background = {0.192, 0.701, 0.168, 1}
+        foreground = {0.7804, 0.7804, 0.7804, 1}
+    elseif color == 'Yellow' then
+        background = {0.9058, 0.898, 0.1725, 1}
+        foreground = {0, 0, 0, 1}
+    elseif color == 'Blue' then
+        background = {0.118, 0.53, 1, 1}
+        foreground = {0.7804, 0.7804, 0.7804, 1}
+    elseif color == 'Red' then
+        background =  {0.856, 0.1, 0.094, 1}
+        foreground = {0.7804, 0.7804, 0.7804, 1}
+    end
+
+    return {
+        bg = background,
+        fg = foreground
+    }
+end
+
+function helper.getPlayer(color)
+    local player = constants.players[color]
+    assert(player, "Unknow player color: " .. tostring(color))
+    return player
+end
+
+function helper.hasPlayer(color)
+    return constants.players[color] ~= nil
+end
+
 -- Typical preamble for any player action.
 -- The calling object must provide the typical "activateButtons" function.
-function helper.startPlayerAction(playerColor)
+function helper.startPlayerAction(color)
     assert(activateButtons, "An activateButtons function must be provided by the caller.")
 
-    if playerColor ~= "Red" and playerColor ~= "Blue" and playerColor ~= "Green" and playerColor ~= "Yellow" then
-        broadcastToColor(i18n("noTouch"), playerColor, "Pink")
+    if color ~= "Red" and color ~= "Blue" and color ~= "Green" and color ~= "Yellow" then
+        broadcastToColor(i18n("noTouch"), color, "Pink")
         return false
     end
 
@@ -362,8 +444,8 @@ function helper.startPlayerAction(playerColor)
     return true
 end
 
-function helper.getLeader(playerColor)
-    local leaderZone = helper.getPlayer(playerColor).leader_zone
+function helper.getLeader(color)
+    local leaderZone = helper.getPlayer(color).leader_zone
     for _, object in ipairs(leaderZone.getObjects()) do
         if object.hasTag("Leader") then
             return object
@@ -372,19 +454,123 @@ function helper.getLeader(playerColor)
     return nil
 end
 
-function helper.getLeaderName(playerColor)
-    local leader = helper.getLeader(playerColor)
+function helper.getLeaderName(color)
+    local leader = helper.getLeader(color)
     if leader then
         return leader.getName()
     else
-        log(playerColor .. " player has no leader")
+        log(color .. " player has no leader")
         return "?"
     end
 end
 
+function helper.landTroopsFromOrbit(color, count)
+    constants.structure.main.board.call("landTroopsFromOrbit", {color, count})
+end
+
+function helper.sendTroopsBackToOrbit(color, troops)
+    constants.structure.main.board.call("sendTroopsBackToOrbit", {color, troops})
+end
+
+function helper.getTroopsFromOrbit(color)
+    return constants.structure.main.board.call("getTroopsFromOrbit", color)
+end
+
+function helper.grantTechTile(color, techTile)
+    local playerBoard = helper.getPlayer(color).board
+    local techPark = playerBoard.call("getTechPark")
+    parkModule.putObject(techTile, techPark)
+end
+
+function helper.getScoreTokens(color)
+    local playerBoard = helper.getPlayer(color).board
+    local scorePark = playerBoard.call("getScorePark")
+    return parkModule.getObjects(scorePark)
+end
+
+function helper.grantScoreToken(color, token)
+    local playerBoard = helper.getPlayer(color).board
+    local scorePark = playerBoard.call("getScorePark")
+    parkModule.putObject(token, scorePark)
+end
+
+function helper.grantScoreTokenFromBag(color, tokenBag)
+    local playerBoard = helper.getPlayer(color).board
+    local scorePark = playerBoard.call("getScorePark")
+    parkModule.putObjectFromBag(tokenBag, scorePark)
+end
+
+function helper.getPlayerScore(color)
+    local playerBoard = helper.getPlayer(color).board
+    return playerBoard.call("getScore")
+end
+
+function helper.hasTech(color, techName)
+    local techs = constants.players[color].techZone.getObjects()
+    for _, tech in ipairs(techs) do
+        if tech.hasTag(techName) then
+            return true
+        end
+    end
+    return false
+end
+
+function helper.hasACouncilSeat(color)
+    for _, object in ipairs(constants.structure.main.councilZone.getObjects()) do
+        if object.getName() == color .. " Councilor" then
+            return true
+        end
+    end
+    return false
+end
+
+function helper.payResource(color, resourceName, amount)
+    local playerResource = constants.players[color][resourceName]
+    if playerResource.call("collectVal") < amount then
+        broadcastToColor(i18n(helper.toCamelCase("no", resourceName)), color, color)
+        return false
+    else
+        Wait.time(function()
+                playerResource.call("decrementVal")
+            end, 0.35, amount)
+        return true
+    end
+end
+
+function helper.gainResource(color, resourceName, amount)
+    local playerResource = constants.players[color][resourceName]
+    Wait.time(function()
+            playerResource.call("incrementVal")
+        end, 0.35, amount)
+end
+
+function helper.getSpecimenCount(color)
+    return constants.structure.immortality.board.call("getSpecimenCount", color)
+end
+
+function helper.hasReachedOneHelix(color)
+    return constants.structure.immortality.board.call("hasReachedOneHelix", color)
+end
+
+function helper.hasReachedTwoHelices(color)
+    return constants.structure.immortality.board.call("hasReachedTwoHelices", color)
+end
+
+function helper.getDreadnoughtRestingPosition(dreadnoughName)
+    return constants.structure.main.makerAndRecall.call("getDreadnoughtRestingPosition", dreadnoughName)
+end
+
+function helper.setSharedTable(tableName, table)
+    constants.structure.main.board.setTable(tableName, table)
+end
+
+function helper.getSharedTable(tableName)
+    return constants.structure.main.board.getTable(tableName)
+end
+
 function helper.toCamelCase(...)
     local chameauString = ""
-    for i, str in ipairs(arg) do
+    for _, str in ipairs(arg) do
         chameauString = chameauString .. str:gsub("^%l", string.upper)
     end
     return chameauString
@@ -398,107 +584,53 @@ function helper.ToCamelCase(...)
     return dromadaireString
 end
 
-function helper.landTroopsFromOrbit(playerColor, count)
-    local mainBoard = getObjectFromGUID('2da390')
-    mainBoard.call("landTroopsFromOrbit", {playerColor, count})
+function helper.toVector(data)
+    if not data then
+        log("nothing to vectorize")
+        return Vector(0, 0, 0)
+    elseif core.isSomeKindOfObject(data) then
+        return data
+    else
+        return Vector(data[1], data[2], data[3])
+    end
 end
 
-function helper.sendTroopsBackToOrbit(playerColor, troops)
-    local mainBoard = getObjectFromGUID('2da390')
-    mainBoard.call("sendTroopsBackToOrbit", {playerColor, troops})
+function helper.repeatMovingAction(object, action, count)
+    if count > 0 then
+        action()
+        Wait.condition(function()
+                helper.repeatMovingAction(object, action, count - 1)
+            end, function()
+                -- Or resting?
+                return not object.isSmoothMoving()
+            end)
+    end
 end
 
-function helper.getTroopsFromOrbit(playerColor)
-    local mainBoard = getObjectFromGUID('2da390')
-    return mainBoard.call("getTroopsFromOrbit", playerColor)
+-- Intended to be used in a coroutine.
+function helper.sleep(duration)
+    local Time = os.clock() + duration
+    while os.clock() < Time do
+        coroutine.yield()
+    end
 end
 
-function helper.grantTechTile(playerColor, techTile)
-    local playerBoard = helper.getPlayer(playerColor).board
-    local techPark = playerBoard.call("getTechPark")
-    parkModule.putObject(techTile, techPark)
-end
+function helper.createContinuation()
+    local continuation = {}
 
-function helper.getScoreTokens(playerColor)
-    local playerBoard = helper.getPlayer(playerColor).board
-    local scorePark = playerBoard.call("getScorePark")
-    return parkModule.getObjects(scorePark)
-end
+    continuation.actions = {}
 
-function helper.grantScoreToken(playerColor, token)
-    local playerBoard = helper.getPlayer(playerColor).board
-    local scorePark = playerBoard.call("getScorePark")
-    parkModule.putObject(token, scorePark)
-end
+    continuation.doAfter = function (action)
+        table.insert(continuation.actions, action)
+    end
 
-function helper.grantScoreTokenFromBag(playerColor, tokenBag)
-    local playerBoard = helper.getPlayer(playerColor).board
-    local scorePark = playerBoard.call("getScorePark")
-    parkModule.putObjectFromBag(tokenBag, scorePark)
-end
-
-function helper.getPlayerScore(playerColor)
-    local playerBoard = helper.getPlayer(playerColor).board
-    return playerBoard.call("getScore")
-end
-
-function helper.getPlayer(playerColor)
-    local player = constants.players[playerColor]
-    assert(player, "Unknow player color: " .. tostring(playerColor))
-    return player
-end
-
-function helper.hasPlayer(playerColor)
-    return constants.players[playerColor] ~= nil
-end
-
-function helper.hasTech(playerColor, techName)
-    local techs = constants.players[playerColor].techZone.getObjects()
-    for _, tech in ipairs(techs) do
-        if tech.hasTag(techName) then
-            return true
+    continuation.run = function (parameters)
+        for _, action in ipairs(continuation.actions) do
+            action(parameters)
         end
     end
-    return false
-end
 
--- TODO Rework
-function helper.getSpecimenCount(color)
-    local zone = getObjectFromGUID("f5de09")
-    local specimenCount = 0
-    for _, troop in ipairs(zone.getObjects()) do
-        if troop.hasTag("Troop") and troop.hasTag(color) then
-            specimenCount = specimenCount + 1
-        end
-    end
-    return specimenCount
-end
-
--- TODO Rework
-function helper.hasReachedResearchLevelOne(color)
-    local scriptZone_middleTrack_research = getObjectFromGUID("60a0fd")
-    local objs = scriptZone_middleTrack_research.getObjects()
-    for _, item in ipairs(objs) do
-        if item.hasTag(color) then
-            return true
-        end
-    end
-    return false
-end
-
-function helper.getDreadnoughtRestingPosition(dreadnoughName)
-    local makerAndRecall = getObjectFromGUID('120026')
-    return makerAndRecall.call("getDreadnoughtRestingPosition", dreadnoughName)
-end
-
-function helper.setSharedTable(tableName, table)
-    local mainBoard = getObjectFromGUID('2da390')
-    mainBoard.setTable(tableName, table)
-end
-
-function helper.getSharedTable(tableName)
-    local mainBoard = getObjectFromGUID('2da390')
-    return mainBoard.getTable(tableName)
+    return continuation
 end
 
 return helper
