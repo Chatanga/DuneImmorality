@@ -33,13 +33,6 @@ _ = require("Core").registerLoadablePart(function(savedData)
         ["Yellow"] = getObjectFromGUID("65876d")
     }
 
-    pos_reveal = {
-        ["Red"] = constants.players["Red"].board.getPosition() + Vector(13, 0.69, -5),
-        ["Blue"] = constants.players["Blue"].board.getPosition() + Vector(13, 0.69, -5),
-        ["Green"] =  constants.players["Green"].board.getPosition() + Vector(-13, 0.69, -5),
-        ["Yellow"] = constants.players["Yellow"].board.getPosition() + Vector(-13, 0.69, -5)
-    }
-
     controlable_spaces = {
         imperial_basin = {
             zone = getObjectFromGUID("3fe117"),
@@ -109,8 +102,6 @@ _ = require("Core").registerLoadablePart(function(savedData)
         ["Green"] = getObjectFromGUID('ad6b92'),
         ["Yellow"] = getObjectFromGUID('b92a4c')
     }
-
-    zone_conseil = getObjectFromGUID("e51f6e") -- scripting zone high consil
 
     zone_reputs = {
         ["Emperor"] = getObjectFromGUID('aae631'), -- zone medium size were alliance goes
@@ -417,46 +408,32 @@ function RevealOK(_, color)
     Wait.time(function() activateButtons(color) end, 2)
     local player_hand_table = Player[color].getHandObjects()
     --log("Player[" .. color .. "].getHandObjects() = " .. tostring(Player[color].getHandObjects()))
-    local count = 0
-    local c = 0
-    local d = 0
-    local t = 0
-    for _, obj in ipairs(player_hand_table) do
-        if obj.hasTag('Imperium') then
-            Wait.time(function()
-                if count < 10 then
-                    obj.setPosition({
-                        pos_reveal[color][1] + c, 1.8, pos_reveal[color][3] + d
-                    })
-                    if color == "Yellow" or color == "Green" then
-                        c = c + 2.5
-                        count = count + 1
-                        if count == 8 then
-                            c = 15
-                            d = 3.6
-                        end
-                    end
-                    if color == "Red" or color == "Blue" then
-                        c = c - 2.5
-                        count = count + 1
-                        if count == 8 then
-                            c = -15
-                            d = 3.6
-                        end
-                    end
 
-                end
+    local i = 0
+    local t = 0
+
+    if helperModule.hasHighCouncilSeat(color) then
+        i = i + 1
+    end
+
+    for _, object in ipairs(player_hand_table) do
+        if object.hasTag('Imperium') then
+            Wait.time(function()
+                object.setPosition(helperModule.getRevealCardPosition(color, i))
+                i = i + 1
             end, t)
             t = t + 0.25
         end
     end
+
     Wait.time(function()
         reveal[color] = 1
         -- TableTurnPlayers()
         Turns.enable = false
-        local players = getObjectFromGUID("4a3e76").call(
-                            "getPlayersBasedOnHotseat")
-        if #players > 1 then activatePass(color) end
+        local players = getObjectFromGUID("4a3e76").call("getPlayersBasedOnHotseat")
+        if #players > 1 then
+            activatePass(color)
+        end
     end, 1)
 end
 
@@ -640,11 +617,7 @@ end
 function CountForce(name)
     local zoneObjects = zone_combat.getObjects()
     local force = 0
-    local conseilObjects = zone_conseil.getObjects()
-    local techZone = constants.players[name].techZone.getObjects()
-    local test1 = 0
-    local test2 = 0
-    for i, object in ipairs(zoneObjects) do
+    for _, object in ipairs(zoneObjects) do
         if object.getName() == name then
             force = force + 2
         elseif object.getName() == name .. " Dreadnought" or object.getName() == name .. " dreadnought" then
@@ -656,13 +629,9 @@ function CountForce(name)
             end
         end
     end
-    for _, obj in ipairs(conseilObjects) do
-        if obj.getName() == name .. " Councilor" then test1 = 1 end
+    if helperModule.hasHighCouncilSeat(name) and helperModule.hasTech(name, "restricted_ordnance") then
+        force = force + 4
     end
-    for _, obj in ipairs(techZone) do
-        if obj.hasTag("Restricted Ordnance") then test2 = 1 end
-    end
-    if test1 == 1 and test2 == 1 then force = force + 4 end
 
     if force == 0 then
         marker_combat[name].setPositionSmooth(marker_combat_pos_ini[name],

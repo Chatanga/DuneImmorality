@@ -1674,3 +1674,10 @@ function getPlayersBasedOnHotseat()
     return players
 
 end
+
+function createHighCouncilCard(parameters)
+    return localeAssets.createHighCouncilCard(
+        parameters.color,
+        parameters.hasRestrictedOrdnance,
+        parameters.position)
+end

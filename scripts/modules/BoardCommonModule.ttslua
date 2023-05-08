@@ -1015,16 +1015,22 @@ function boardCommonModule.HighCouncil(color)
             constants.players[color].council_token.setPositionSmooth(destination, false, false)
             constants.players[color].council_token.interactable = false
 
-            local council_influence_bonus_bag = getObjectFromGUID("074f6d")
-            council_influence_bonus_bag.takeObject({
-                position = constants.players[color].council_bonus_zone,
-                rotation = Vector(0, 180, 0),
-                callback_function = function (object)
-                    object.locked = true
-                    object.setScale(Vector(0.4, 1, 0.4))
-                    object.setPosition(object.getPosition() + Vector(0, -0.2, 0))
-                end
-            })
+            if false then
+                local council_influence_bonus_bag = getObjectFromGUID("074f6d")
+                council_influence_bonus_bag.takeObject({
+                    position = constants.players[color].council_bonus_zone,
+                    rotation = Vector(0, 180, 0),
+                    callback_function = function (object)
+                        object.locked = true
+                        object.setScale(Vector(0.4, 1, 0.4))
+                        object.setPosition(object.getPosition() + Vector(0, -0.2, 0))
+                    end
+                })
+            else
+                Wait.time(function ()
+                    constants.players[color].board.call("updateHighCouncilCard")
+                end, 1)
+            end
 
             if leader.hasTag("Ilban") then
 

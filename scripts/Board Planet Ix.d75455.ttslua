@@ -354,6 +354,9 @@ function applyBuyEffect(color, techName)
     elseif techName == "artillery" then
     elseif techName == "holoprojectors" then
     elseif techName == "restricted_ordnance" then
+        Wait.time(function ()
+            constants.players[color].board.call("updateHighCouncilCard")
+        end, 1)
     elseif techName == "shuttle_fleet" then
         -- 2 influences différentes
     elseif techName == "spy_satellites" then

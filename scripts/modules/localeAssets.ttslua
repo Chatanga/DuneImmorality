@@ -45,7 +45,7 @@ function createIntrigueCustomDeck(faceUrl, width, height)
 end
 
 function generateCardData(guid, card, customDeck, customDeckId, cardId)
-    assert(guid, "guid")
+    -- assert(guid, "guid")
     assert(customDeck, "customDeck")
     assert(customDeckId, "customDeckId")
     assert(cardId, "cardId")
@@ -129,6 +129,26 @@ function reloadCard(guid, definition)
 
     card.setCustomObject(parameters)
     card.reload()
+end
+
+function createCard(definition, position, whenCreated)
+    local customDeck = definition.deck
+    local index = definition.luaIndex - 1
+
+    local customDeckId = nextCustomDeckId()
+    local cardId = tostring(customDeckId * 100 + index)
+
+    local data = generateCardData(nil, nil, customDeck, customDeckId, cardId)
+
+    local spawnParameters = {
+        data = data,
+        position = position,
+        rotation = {0, 180, 0},
+        scale = {1.05, 1.00, 1.05},
+        callback_function = whenCreated
+    }
+
+    spawnObjectData(spawnParameters)
 end
 
 function mutateCard(guid, definition)
@@ -318,7 +338,7 @@ function mututateBook(guid, url)
     spawnObjectData(spawnParameters)
 end
 
-function localeAssets.load()
+function localeAssets.getCurrentResources()
     local currentLocale = i18n.getLocale()
     --log("localeAssets.load() -> currentLocale = " .. tostring(currentLocale))
 
@@ -331,9 +351,16 @@ function localeAssets.load()
     end
 
     local resources = localeAssets[currentLocale]
-
     if not resources then
         log("No asset for locale " .. currentLocale)
+    end
+
+    return resources
+end
+
+function localeAssets.load()
+    local resources = localeAssets.getCurrentResources()
+    if not resources then
         return
     end
 
@@ -402,6 +429,33 @@ function localeAssets.load()
 
 end
 
+function localeAssets.createHighCouncilCard(color, hasRestrictedOrdnance, position)
+    local resources = localeAssets.getCurrentResources()
+    if not resources then
+        return
+    end
+
+    local player = constants.players[color]
+    if player.highCouncilCard then
+        player.highCouncilCard.destruct()
+        player.highCouncilCard = nil
+    end
+
+    local name = "cardHighCouncilCardWithoutRestrictedOrdnance"
+    if hasRestrictedOrdnance then
+        name = "cardHighCouncilCardWithRestrictedOrdnance"
+    end
+
+    createCard(resources.cards[name], position, function (card)
+        player.highCouncilCard = card
+        --card.interactable = false
+        card.setTags({"Special"})
+        Wait.time(function()
+            card.setLock(true)
+        end, 1)
+    end)
+end
+
 function range(first, last, gaps)
     local indexes = {}
     local isGap = {}
@@ -431,7 +485,10 @@ customDecks.en = {
     teilaxImperium = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2042987130216749349/E758512421B5CB27BBA228EF5F1880A7F3DC564D/", 6, 5),
     -- tleilax with reclaimed forces
     teilaxResearch = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2029469358268075509/D9BD273651404E7DE7F0E22B36F2D426D82B07A8/", 4, 5),
-    teilaxIntrigue = createIntrigueCustomDeck("http://cloud-3.steamusercontent.com/ugc/1892101972249341287/9FED90CD510F26618717CEB63FDA744CE916C6BA/", 6, 2)
+    teilaxIntrigue = createIntrigueCustomDeck("http://cloud-3.steamusercontent.com/ugc/1892101972249341287/9FED90CD510F26618717CEB63FDA744CE916C6BA/", 6, 2),
+    -- special cards
+    highCouncilCardWithoutRestrictedOrdnance = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2044114931109006909/AE55C2BB6B9BE3CF9F407EF5C610DC30B154D5CE/", 1, 1),
+    highCouncilCardWithRestrictedOrdnance = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2044114931109006257/D5C0242C3F8B78E9253EF1084F10E513AC001B4C/", 1, 1)
 }
 
 localeAssets.en = {
@@ -508,7 +565,9 @@ localeAssets.en = {
             31, 32, 33, 34
         }}},
         cardControlTheSpice = {deck = customDecks.en.ixImperium, luaIndex = 33},
-        cardsExperimentation = {{deck = customDecks.en.teilaxImperium, luaIndexes = {7, 7}}}
+        cardsExperimentation = {{deck = customDecks.en.teilaxImperium, luaIndexes = {7, 7}}},
+        cardHighCouncilCardWithoutRestrictedOrdnance = {deck = customDecks.en.highCouncilCardWithoutRestrictedOrdnance, luaIndex = 1},
+        cardHighCouncilCardWithRestrictedOrdnance = {deck = customDecks.en.highCouncilCardWithRestrictedOrdnance, luaIndex = 1}
     },
     tleilaxuOrderedCards = {
         "beguiling_pheromones",
@@ -557,6 +616,9 @@ customDecks.fr = {
     -- reclaimed forces
     teilaxResearchReclaimedForces = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2063250888847577276/60812AEA733FF5558BA9190E47CBD474EBF38C94/", 1, 1),
     teilaxIntrigue = createIntrigueCustomDeck("http://cloud-3.steamusercontent.com/ugc/2063250888848685998/83BA634F05FC7A14933153A18B7AEF83E07E3C14/", 6, 3),
+    -- special cards
+    highCouncilCardWithoutRestrictedOrdnance = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2044114931109007208/BEC43C979193F71220B89199159DFE61BCEECBB7/", 1, 1),
+    highCouncilCardWithRestrictedOrdnance = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2044114931109006596/A25FD31F949807A7779195788AAAD8AA50DDB080/", 1, 1)
 }
 
 localeAssets.fr = {
@@ -603,6 +665,8 @@ localeAssets.fr = {
         cardsBaseIntrigue = {{deck = customDecks.fr.intrigue, luaIndexes = range(1, 40)}},
         cardControlTheSpice = {deck = customDecks.fr.ixImperiumControlTheSpice, luaIndex = 1},
         cardsExperimentation = {{deck = customDecks.fr.teilaxImperiumExperimentation, luaIndexes = range(1, 2)}},
+        cardHighCouncilCardWithoutRestrictedOrdnance = {deck = customDecks.fr.highCouncilCardWithoutRestrictedOrdnance, luaIndex = 1},
+        cardHighCouncilCardWithRestrictedOrdnance = {deck = customDecks.fr.highCouncilCardWithRestrictedOrdnance, luaIndex = 1}
     },
     tleilaxuOrderedCards = {
         "beguiling_pheromones",

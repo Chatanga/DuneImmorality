@@ -390,7 +390,7 @@ function ConflictZone()
             if card.type == 'Card' or card.type == 'Deck' then
                 if card.hasTag('Intrigue') then
                     card.setPosition(pos_intrigue_discard)
-                else
+                elseif card.hasTag('Imperium') then
                     card.setPosition(constants.players[col].pos_discard)
                 end
             end

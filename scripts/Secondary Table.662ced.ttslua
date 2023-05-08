@@ -11,6 +11,10 @@ _ = require("Core").registerLoadablePart(function()
     activateButtons()
 end)
 
+function isSoundEnabled()
+    return soundEnabled
+end
+
 function onLocaleChange()
     self.clearButtons()
     activateButtons()

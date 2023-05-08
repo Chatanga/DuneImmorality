@@ -99,12 +99,13 @@ function cancelChoice(obj) atomicsModule.homeButton(obj) end
 function nukeImperiumRow(obj, color)
     local t = 0
     obj.clearButtons()
-    if board_display_leaders.getVar("sound_active") then
+    local soundEnabled = board_display_leaders.call("isSoundEnabled")
+    if soundEnabled then
         t = 2
-    MusicPlayer.setCurrentAudioclip({
-        url = "http://cloud-3.steamusercontent.com/ugc/2002447125408335433/56A15AA85A1C45DE92FA3FD2372F0ECE6ABA0495/",
-        title = "Explosion"
-    })
+        MusicPlayer.setCurrentAudioclip({
+            url = "http://cloud-3.steamusercontent.com/ugc/2002447125408335433/56A15AA85A1C45DE92FA3FD2372F0ECE6ABA0495/",
+            title = "Explosion"
+        })
     end
     Wait.time(function()
         for i = 1, 5, 1 do

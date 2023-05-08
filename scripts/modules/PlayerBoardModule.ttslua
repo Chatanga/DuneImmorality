@@ -262,4 +262,16 @@ function playerBoardModule.addAll(objects, otherObjects)
     end
 end
 
+function updateHighCouncilCard()
+    local highCouncilCardPosition = helperModule.getRevealCardPosition(playerBoardModule.playerColor, 0)
+    local setup = getObjectFromGUID("4a3e76")
+    if helperModule.hasHighCouncilSeat(playerBoardModule.playerColor) then
+        local hasRestrictedOrdnance = helperModule.hasTech(playerBoardModule.playerColor, "restricted_ordnance")
+        setup.call("createHighCouncilCard", {
+            color = playerBoardModule.playerColor,
+            hasRestrictedOrdnance = hasRestrictedOrdnance,
+            position = highCouncilCardPosition})
+    end
+end
+
 return playerBoardModule

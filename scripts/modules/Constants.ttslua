@@ -366,7 +366,7 @@ _ = core.registerLoadablePart(function(_)
         -- GUID reporting.
         local player = core.resolveGUIDs(false, unresolvedPlayer)
         constants.players[color] = player
-        -- Not having a swordmaster anymore is a sure sign that a player has
+    -- Not having a swordmaster anymore is a sure sign that a player has
         -- been shutdown.
         local alive = getObjectFromGUID(unresolvedPlayer.swordmaster) ~= nil
         if alive then

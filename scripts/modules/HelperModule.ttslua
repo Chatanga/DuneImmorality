@@ -310,6 +310,16 @@ function helperModule.hasPlayer(playerColor)
     return constants.players[playerColor] ~= nil
 end
 
+function helperModule.hasHighCouncilSeat(color)
+    local councilZone = getObjectFromGUID("e51f6e")
+    for _, object in ipairs(councilZone.getObjects()) do
+        if object.getName() == color .. " Councilor" then
+            return true
+        end
+    end
+    return false
+end
+
 function helperModule.hasTech(playerColor, techName)
     local techs = constants.players[playerColor].techZone.getObjects()
     for _, tech in ipairs(techs) do
@@ -323,6 +333,25 @@ end
 function helperModule.getDreadnoughtRestingPosition(dreadnoughName)
     local makerAndRecall = getObjectFromGUID('120026')
     return makerAndRecall.call("getDreadnoughtRestingPosition", dreadnoughName)
+end
+
+function helperModule.getRevealCardPosition(color, i)
+    local offsets = {
+        Red = Vector(13, 0.69, -5),
+        Blue = Vector(13, 0.69, -5),
+        Green = Vector(-13, 0.69, -5),
+        Yellow = Vector(-13, 0.69, -5)
+    }
+
+    local step = 0
+    if color == "Yellow" or color == "Green" then
+        step = 2.5
+    end
+    if color == "Red" or color == "Blue" then
+        step = -2.5
+    end
+    local p = constants.players[color].board.getPosition() + offsets[color]
+    return p + Vector(i * step, 1.8, 0)
 end
 
 function helperModule.setSharedTable(tableName, table)
