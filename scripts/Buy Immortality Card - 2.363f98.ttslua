@@ -7,14 +7,15 @@ helper = require("HelperModule")
 
 buyModule = require("BuyModule")
 
-slot = constants.tleilaxuRow[2]
+local slot = nil
 
 _ = require("Core").registerLoadablePart(function()
+    slot = constants.structure.immortality.tleilaxuRowSlots[2]
+
     self.interactable = false
     activateButtons()
 
-    local slotZone = getObjectFromGUID(slot.zoneGuid)
-    local snapPoint = helper.createRelativeSnapPointFromZone(slotZone, true, {"Imperium"})
+    local snapPoint = helper.createRelativeSnapPointFromZone(slot.zone, true, {"Imperium"})
     self.setSnapPoints({snapPoint})
 end)
 
@@ -24,11 +25,9 @@ function onLocaleChange()
 end
 
 function activateButtons()
-    local slotZone = getObjectFromGUID(slot.zoneGuid)
-    helper.createAbsoluteAcquireButton(slotZone, -1.2, 0.2, "buyImmortalityCard")
+    helper.createAbsoluteAcquireButton(slot.zone, -1.2, 0.2, "buyImmortalityCard")
 end
 
 function buyImmortalityCard(_, color)
-    local slotZone = getObjectFromGUID(slot.zoneGuid)
-    buyModule.buy(slotZone, color, true)
+    buyModule.buy(slot.zone, color, true)
 end

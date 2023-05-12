@@ -28,6 +28,8 @@ playerBoardModule.techPark = nil
 playerBoardModule.alive = true
 
 function playerBoardModule.init(playerColor, centerPosition, savedData)
+    self.interactable = false
+
     playerBoardModule.playerColor = playerColor
 
     if savedData ~= '' then
@@ -467,6 +469,8 @@ function playerBoardModule.revealEarly(color)
         color = "Red"
     })
 end
+
+function doNothing() end
 
 function cancelChoice(color)
     if color == playerBoardModule.playerColor then

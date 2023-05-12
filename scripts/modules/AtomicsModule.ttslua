@@ -96,7 +96,7 @@ function nukeImperiumRow(_, color)
 
     Wait.time(function()
         for i = 1, 5, 1 do
-            local slot = constants.imperiumRowSlots[i]
+            local slot = constants.structure.imperium.imperiumRowSlots[i]
             helper.moveCardFromZoneGUID(slot.zoneGuid, constants.lowerTrashPosition, Vector(0, 180, 0), false)
             helper.moveCardFromZoneGUID(constants.imperiumDeckZone, slot.pos, Vector(0, 180, 0), true)
         end

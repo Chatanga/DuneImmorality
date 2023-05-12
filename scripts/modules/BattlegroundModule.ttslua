@@ -43,15 +43,15 @@ end
 local controlable_spaces = {
     imperialBasin = {
         zone = getObjectFromGUID("3fe117"),
-        position = constants.getLandingPositionFromGUID("3fe117")
+        position = helperModule.getLandingPositionFromGUID("3fe117")
     },
     arrakeen = {
         zone = getObjectFromGUID("f1f53d"),
-        position = constants.getLandingPositionFromGUID("f1f53d"),
+        position = helperModule.getLandingPositionFromGUID("f1f53d"),
     },
     carthag = {
         zone = getObjectFromGUID("9fc2e1"),
-        position = constants.getLandingPositionFromGUID("9fc2e1"),
+        position = helperModule.getLandingPositionFromGUID("9fc2e1"),
     }
 }
 
@@ -113,7 +113,7 @@ function addTroopInDefense(controlableSpace)
         local troops = helper.getTroopsFromOrbit(controllingPlayer)
         for _, troop in ipairs(troops) do
             troop.locked = false
-            troop.setPositionSmooth(constants.getLandingPositionFromGUID('6d632e'), false, false)
+            troop.setPositionSmooth(helperModule.getLandingPositionFromGUID('6d632e'), false, false)
             troop.setRotation(Vector(0, 0, 0))
             local leaderName = helper.getLeaderName(joueur)
             broadcastToAll(i18n("defenseTroop"):format(leaderName), joueur)

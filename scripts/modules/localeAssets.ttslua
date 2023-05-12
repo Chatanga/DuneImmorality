@@ -345,14 +345,14 @@ function localeAssets.load()
     end
 
     -- Leaders tiles
-    for leaderName, leader in pairs(constants.leaders) do
-        local leaderTile = getObjectFromGUID(leader.GUID)
+    for leaderName, leaderGUID in pairs(constants.leaders) do
+        local leaderTile = getObjectFromGUID(leaderGUID)
         if leaderTile then
             local params = {image = resources.leaders[leaderName]}
             leaderTile.setCustomObject(params)
             core.safeReload(leaderTile)
         else
-            log("No leader tile with GUID " .. tostring(leader.GUID))
+            log("No leader tile with GUID " .. tostring(leaderGUID))
         end
     end
 

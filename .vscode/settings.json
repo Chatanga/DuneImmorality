@@ -1,13 +1,14 @@
 {
     "Lua.diagnostics.globals": [
-        "broadcastToAll",
+        "Vector",
+        "getObjectFromGUID",
+        "self",
+        "broadcastToColor",
         "Wait",
         "Player",
-        "Vector",
-        "self",
-        "Global",
-        "log",
-        "broadcastToColor",
-        "getObjectFromGUID"
+        "Turns",
+        "broadcastToAll",
+        "MusicPlayer",
+        "log"
     ]
 }

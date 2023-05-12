@@ -422,6 +422,8 @@ function activateNumberOfBan()
     activateButtons()
 end
 
+function doNothing() end
+
 function activateBlackMarket(index)
     local colors = {
         on = { color = "Black", font_color = "Grey" },
@@ -674,13 +676,13 @@ function setUpImmortality()
         deck.shuffle()
         Wait.time(function()
             local params1 = {}
-            params1.position = constants.tleilaxuRow[1].pos
+            params1.position = constants.structure.immortality.tleilaxuRowSlots[1].pos
             params1.rotation = {0.00, 180.00, 0.00}
             deck.takeObject(params1)
         end, 0.35)
         Wait.time(function()
             local params2 = {}
-            params2.position = constants.tleilaxuRow[2].pos
+            params2.position = constants.structure.immortality.tleilaxuRowSlots[2].pos
             params2.rotation = {0.00, 180.00, 0.00}
             deck.takeObject(params2)
         end, 0.7)
@@ -1035,7 +1037,7 @@ function moveTechDecks()
     end
     techs.randomize()
 
-    local centerPos = constants.getLandingPositionFromGUID(constants.ixPlanetBoard)
+    local centerPos = helperModule.getLandingPositionFromGUID(constants.ixPlanetBoard)
     local techSlotPos = {
         centerPos + Vector(1.69, 3.02, 2.35),
         centerPos + Vector(1.69, 3.02, 0.30),
@@ -1077,7 +1079,7 @@ function ImperiumDeal()
 
     for i = 1, 5 do
         Wait.time(function()
-            local slot = constants.imperiumRowSlots[i]
+            local slot = constants.structure.imperium.imperiumRowSlots[i]
             helper.moveCardFromZoneGUID(constants.imperiumDeckZone, slot.pos, Vector(0, 180, 0), true)
         end, i * 0.35)
     end

@@ -40,7 +40,7 @@ function RevealConflict()
         for _, object in ipairs(objects) do
             if object.type == 'Deck' then
                 object.takeObject({
-                    position = constants.getLandingPosition(self),
+                    position = helperModule.getLandingPosition(self),
                     top = true,
                     flip = true
                 })

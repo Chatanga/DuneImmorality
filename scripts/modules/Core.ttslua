@@ -153,7 +153,8 @@ function core.resolveGUIDs(reportUnresolvedGUIDs, data)
                     log("[resolveGUIDs] Unknow GUID: '" .. data .. "'")
                 end
             else
-                log("[resolveGUIDs] Not a GUID: " .. data)
+                --log("[resolveGUIDs] Not a GUID: " .. data)
+                -- NOP
             end
         elseif t == "table" then
             if not core.isSomeKindOfObject(data) then
@@ -168,7 +169,8 @@ function core.resolveGUIDs(reportUnresolvedGUIDs, data)
         elseif t == "number" then
             -- NOP
         else
-            log("[resolveGUIDs] Unknown type: " .. t)
+            --log("[resolveGUIDs] Unknown type: " .. t)
+            -- NOP
         end
     end
     return newData

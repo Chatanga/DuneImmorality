@@ -3,6 +3,8 @@ require("locales")
 
 constants = require("Constants")
 
+helperModule = require("HelperModule")
+
 boardCommonModule = require("BoardCommonModule")
 
 battlegroundModule = require("BattlegroundModule")
@@ -82,7 +84,7 @@ function createGarrisonPark(playerColor, origin)
         playerColor,
         false)
 
-    local textColors =  helper.getPlayerTextColors(playerColor)
+    local textColors = helper.getPlayerTextColors(playerColor)
 
     helper.createAbsoluteButton(self, {
         click_function = "landOne" .. playerColor .. "TroopFromOrbit",

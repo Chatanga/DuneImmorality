@@ -45,7 +45,7 @@ theme = {
 }
 
 positioning = {
-    pos_intrigue_discard = constants.getLandingPositionFromGUID("976c3a"),
+    pos_intrigue_discard = helper.getLandingPositionFromGUID("976c3a"),
     conflict_discard = core.getHardcodedPositionFromGUID('cb0478', -1.15463293, 0.63, -9.798157) + constants.someHeight
 }
 

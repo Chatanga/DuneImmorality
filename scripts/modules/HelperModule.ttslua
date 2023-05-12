@@ -65,7 +65,20 @@ createContinuation()
 
 ]]--
 
-function self.doNothing() end
+function helper.getLandingPositionFromGUID(anchorGUID)
+    local anchor = getObjectFromGUID(anchorGUID)
+    if anchor then
+        return helper.getLandingPosition(anchor)
+    else
+        log("[getLandingPositionFromGUID] Unknown GUID: " .. tostring(anchorGUID))
+        return Vector(0, 0, 0)
+    end
+end
+
+function helper.getLandingPosition(anchor)
+    assert(anchor)
+    return anchor.getPosition() + constants.someHeight
+end
 
 function helper.drawIntrigue(color)
     local cardCount = 1
@@ -138,7 +151,7 @@ function helper.resetDiscard(color)
         local continuation = helper.createContinuation()
 
         discard.setRotationSmooth({0, 180, 180}, false, false)
-        discard.setPositionSmooth(constants.getLandingPosition(player.drawDeckZone), false, true)
+        discard.setPositionSmooth(helperModule.getLandingPosition(player.drawDeckZone), false, true)
 
         Wait.time(function() -- Once moved.
             local replenishedDeckOrCard = helper.getDeckOrCard(player.drawDeckZone)

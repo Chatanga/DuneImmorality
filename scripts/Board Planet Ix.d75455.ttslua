@@ -147,7 +147,7 @@ end
 
 function createTechZones()
 
-    local origin = constants.getLandingPositionFromGUID(constants.ixPlanetBoard)
+    local origin = helper.getLandingPositionFromGUID(constants.ixPlanetBoard)
     local techSlotPositions = {
         Vector(1.69, 3.02, 2.35) + origin,
         Vector(1.69, 3.02, 0.30) + origin,
@@ -338,7 +338,7 @@ function createNegotiationPark(playerColor)
 
     local baseOffset = Vector(-0.75, 0, -1.5)
 
-    local origin = constants.getLandingPositionFromGUID(constants.ixPlanetBoard) + baseOffset + offsets[playerColor]
+    local origin = helper.getLandingPositionFromGUID(constants.ixPlanetBoard) + baseOffset + offsets[playerColor]
     origin:setAt('y', 0.86) -- ground level
     local slots = {}
     for k = 1, 2 do
