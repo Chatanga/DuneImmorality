@@ -270,85 +270,31 @@ function ConflictZone()
 
     end
 
-    local items2 = getObjectFromGUID("83ea90").getObjects()
-    for _, item2 in ipairs(items2) do
-        if item2.getName() == "Yellow Swordmaster" then
-            item2.setPositionSmooth(constants.players["Yellow"].agent_positions[3], false, true)
-            item2.setRotation({0, 180, 0})
-            local Time = os.clock() + 0.1
-            while os.clock() < Time do coroutine.yield() end
-
-        elseif item2.getName() == "Green Swordmaster" then
-            item2.setPositionSmooth(constants.players["Green"].agent_positions[3], false, true)
-            item2.setRotation({0, 180, 0})
-            local Time = os.clock() + 0.1
-            while os.clock() < Time do coroutine.yield() end
-
-        elseif item2.getName() == "Blue Swordmaster" then
-            item2.setPositionSmooth(constants.players["Blue"].agent_positions[3], false, true)
-            item2.setRotation({0, 180, 0})
-            local Time = os.clock() + 0.1
-            while os.clock() < Time do coroutine.yield() end
-
-        elseif item2.getName() == "Red Swordmaster" then
-            item2.setPositionSmooth(constants.players["Red"].agent_positions[3], false, true)
-            item2.setRotation({0, 180, 0})
-            local Time = os.clock() + 0.1
-            while os.clock() < Time do coroutine.yield() end
-
+    local objectByGUID = {}
+    for _, zoneGUID in ipairs({"83ea90", "c68e45", "04f512"}) do
+        for _, object in ipairs(getObjectFromGUID(zoneGUID).getObjects()) do
+            objectByGUID[object.getGUID()] = object
         end
     end
 
-    local items = getObjectFromGUID("c68e45").getObjects()
-    for _, item in ipairs(items) do
-        if item.getName() == "Yellow Swordmaster" then
-            item.setPositionSmooth(constants.players["Yellow"].agent_positions[3], false, true)
-            item.setRotation({0, 180, 0})
-            local Time = os.clock() + 0.1
-            while os.clock() < Time do coroutine.yield() end
-
-        elseif item.getName() == "Green Swordmaster" then
-            item.setPositionSmooth(constants.players["Green"].agent_positions[3], false, true)
-            item.setRotation({0, 180, 0})
-            local Time = os.clock() + 0.1
-            while os.clock() < Time do coroutine.yield() end
-
-        elseif item.getName() == "Blue Swordmaster" then
-            item.setPositionSmooth(constants.players["Blue"].agent_positions[3], false, true)
-            item.setRotation({0, 180, 0})
-            local Time = os.clock() + 0.1
-            while os.clock() < Time do coroutine.yield() end
-
-        elseif item.getName() == "Red Swordmaster" then
-            item.setPositionSmooth(constants.players["Red"].agent_positions[3], false, true)
-            item.setRotation({0, 180, 0})
-            local Time = os.clock() + 0.1
-            while os.clock() < Time do coroutine.yield() end
-
-        elseif item.getName() == "Red Combat Marker" then
-            item.setPositionSmooth(combat_marker_offside_positions['Red'], false, true)
-            item.setRotation({0, 180, 0})
-            local Time = os.clock() + 0.1
-            while os.clock() < Time do coroutine.yield() end
-
-        elseif item.getName() == "Blue Combat Marker" then
-            item.setPositionSmooth(combat_marker_offside_positions['Blue'], false, true)
-            item.setRotation({0, 180, 0})
-            local Time = os.clock() + 0.1
-            while os.clock() < Time do coroutine.yield() end
-
-        elseif item.getName() == "Green Combat Marker" then
-            item.setPositionSmooth(combat_marker_offside_positions['Green'], false, true)
-            item.setRotation({0, 180, 0})
-            local Time = os.clock() + 0.1
-            while os.clock() < Time do coroutine.yield() end
-
-        elseif item.getName() == "Yellow Combat Marker" then
-            item.setPositionSmooth(combat_marker_offside_positions['Yellow'], false, true)
-            item.setRotation({0, 180, 0})
-            local Time = os.clock() + 0.1
-            while os.clock() < Time do coroutine.yield() end
-
+    for _, item in pairs(objectByGUID) do
+        for _, color in ipairs({"Yellow", "Green", "Blue", "Red"}) do
+            if item.getName() == color .. " Swordmaster" then
+                item.setPositionSmooth(constants.players[color].agent_positions[3], false, true)
+                item.setRotation({0, 180, 0})
+                local Time = os.clock() + 0.1
+                while os.clock() < Time do
+                    coroutine.yield()
+                end
+            end
+            if item.getName() == color .. " Combat Marker" then
+                item.setPositionSmooth(combat_marker_offside_positions[color], false, true)
+                item.setRotation({0, 180, 0})
+                local Time = os.clock() + 0.1
+                while os.clock() < Time do
+                    coroutine.yield()
+                end
+            end
         end
     end
 
