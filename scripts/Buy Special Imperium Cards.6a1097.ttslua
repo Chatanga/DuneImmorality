@@ -134,7 +134,7 @@ function moveCardFromDeck(pColor, deck, scoreToMove)
             deck.setPosition(constants.players[pColor].pos_discard)
         end
 
-        local spaceportCheck = helperModule.hasTech(pColor, "Spaceport")
+        local spaceportCheck = helperModule.hasTech(pColor, "spaceport")
 
         if spaceportCheck then
             Player[pColor].showConfirmDialog(

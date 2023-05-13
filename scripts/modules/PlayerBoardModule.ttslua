@@ -204,6 +204,16 @@ function playerBoardModule.onObjectEnterScriptingZone(zone, enter_object)
                 playerBoardModule.updatePlayerScore()
             end
         end
+
+        if zone == constants.players[playerBoardModule.playerColor].techZone then
+            for _, object in ipairs(zone.getObjects()) do
+                if object.getDescription() == "Tech" then
+                    if helperModule.getTechName(object) == "minimic_film" then
+                        updateSpecialSummaryCards()
+                    end
+                end
+            end
+        end
     end
 end
 
@@ -214,6 +224,10 @@ function playerBoardModule.onObjectLeaveScriptingZone(zone, enter_object)
             if description == "VP" then
                 playerBoardModule.updatePlayerScore()
             end
+        end
+
+        if zone.guid == "04f512" and helperModule.isAgent(enter_object, playerBoardModule.playerColor) then
+            updateSpecialSummaryCards()
         end
     end
 end
@@ -262,16 +276,14 @@ function playerBoardModule.addAll(objects, otherObjects)
     end
 end
 
-function updateHighCouncilCard()
+function updateSpecialSummaryCards()
     local highCouncilCardPosition = helperModule.getRevealCardPosition(playerBoardModule.playerColor, 0)
     local setup = getObjectFromGUID("4a3e76")
-    if helperModule.hasHighCouncilSeat(playerBoardModule.playerColor) then
-        local hasRestrictedOrdnance = helperModule.hasTech(playerBoardModule.playerColor, "restricted_ordnance")
-        setup.call("createHighCouncilCard", {
-            color = playerBoardModule.playerColor,
-            hasRestrictedOrdnance = hasRestrictedOrdnance,
-            position = highCouncilCardPosition})
-    end
+    local prestige = helperModule.getPrestigeBonus(playerBoardModule.playerColor)
+    setup.call("createSeatOfPowerCard", {
+        color = playerBoardModule.playerColor,
+        prestige = prestige,
+        position = highCouncilCardPosition})
 end
 
 return playerBoardModule

@@ -70,7 +70,7 @@ function buyModule.Buy(zone, pColor, pos, activateButton, buyTleilaxu)
                     end
                 end
 
-                local spaceportCheck = helperModule.hasTech(pColor, "Spaceport")
+                local spaceportCheck = helperModule.hasTech(pColor, "spaceport")
 
                 if buyTleilaxu and middleSearch or spaceportCheck then
                     Player[pColor].showConfirmDialog(

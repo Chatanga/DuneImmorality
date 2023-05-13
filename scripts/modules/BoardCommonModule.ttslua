@@ -144,24 +144,24 @@ _ = core.registerLoadablePart(function(_)
 end)
 
 function boardCommonModule.CheckAgentAndPlayer(color, zone)
-
-    local authorized = false
-    if color ~= "Red" and color ~= "Blue" and color ~= "Green" and color ~=
-        "Yellow" then
+    if color ~= "Red" and color ~= "Blue" and color ~= "Green" and color ~= "Yellow" then
         broadcastToColor(i18n("noTouch"), color, {1, 0.011765, 0})
+        return false
+    elseif not boardCommonModule.hasAgentInSpace(color, zone) then
+        broadcastToColor(i18n("noAgent"), color, "Purple")
+        return false
     else
-        local obj = zone.getObjects()
-        for _, item in ipairs(obj) do
-            if item.getName() == "" .. color .. " Agent" or item.getName() == "" ..
-                color .. " Swordmaster" or item.getName() == "Mentat" then
-                authorized = true
-            end
-        end
-        if not authorized then
-            broadcastToColor(i18n("noAgent"), color, "Purple")
+        return true
+    end
+end
+
+function boardCommonModule.hasAgentInSpace(color, spaceZone)
+    for _, object in ipairs(spaceZone.getObjects()) do
+        if helperModule.isAgent(object, color) then
+            return true
         end
     end
-    return authorized
+    return false
 end
 
 function HarvestSpice(color, base, bonusRef)
@@ -1028,8 +1028,8 @@ function boardCommonModule.HighCouncil(color)
                 })
             else
                 Wait.time(function ()
-                    constants.players[color].board.call("updateHighCouncilCard")
-                end, 1)
+                    constants.players[color].board.call("updateSpecialSummaryCards")
+                end, 2)
             end
 
             if leader.hasTag("Ilban") then

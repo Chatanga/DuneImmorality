@@ -1,4 +1,6 @@
+import copy
 import json
+import math
 import os
 import re
 import sys
@@ -80,11 +82,23 @@ def rectify_rotation(object):
             c = 0
         object['Transform'][coordinate] = c
 
+def set_scale(object, s):
+    sx, sy, sz = s
+    object['Transform']['scaleX'] = sx
+    object['Transform']['scaleY'] = sy
+    object['Transform']['scaleZ'] = sz
+
 def translate(object, d):
     dx, dy, dz = d
     object['Transform']['posX'] += dx
     object['Transform']['posY'] += dy
     object['Transform']['posZ'] += dz
+
+def get_position(object):
+    return (
+        object['Transform']['posX'],
+        object['Transform']['posY'],
+        object['Transform']['posZ'])
 
 def get_script_name(object):
     guid = object['GUID']
@@ -183,6 +197,10 @@ def rectify_name(object):
         else:
             print("Missing script file for GUID", guid)
 
+def distance(p1, p2):
+    (x1, y1, z1) = p1
+    (x2, y2, z2) = p2
+    return math.sqrt((x1 - x2)**2 + (y1 - y2)**2 + (z1 - z2)**2)
 def patch_save(input_path, output_path):
 
     save = None
@@ -203,9 +221,40 @@ def patch_save(input_path, output_path):
         object_by_guid[guid] = object
 
         rectify_rotation(object)
-        #rectify_name(object)
 
-        new_objects.append(object)
+        if False and guid == '83ea90':
+            set_scale(object, (1.5, 5, 1.2))
+            clone = copy.deepcopy(object)
+            clone['guid'] = '04f512'
+            translate(object, (0, 0, -1))
+            translate(clone, (0, 0, 1))
+            new_objects.append(clone)
+
+        p = get_position(object)
+        useless_zone_positions = {
+            (8.15, 0.85, -10.35),
+            (8.15, 0.85, -7.65),
+            (1.55, 0.85, -10.35),
+            (1.55, 0.85, -7.65),
+            (6.57, 1.06, 9.26),
+            (7.47, 1.06, 9.26),
+            (6.57, 1.06, 8.36),
+            (7.47, 1.06, 8.36),
+        }
+        excluded = False
+        for c in useless_zone_positions:
+            if distance(p, c) < 0.5:
+                excluded = True
+                continue
+
+        if not excluded:
+            new_objects.append(object)
+
+    set_scale(object_by_guid['07e239'], (1.25, 1, 2))
+
+    if False:
+        object_by_guid['d5c2db']['CustomImage']['ImageURL'] = 'http://cloud-3.steamusercontent.com/ugc/2044113755429339520/A5D3465456933CA0C042692C1E53D8144F1AEE0F/'
+        object_by_guid['ab7ac5']['CustomImage']['ImageURL'] = 'http://cloud-3.steamusercontent.com/ugc/2044113755429340246/4D84EECE9CC6087E2172253B53015A800F8A3273/'
 
     save['ObjectStates'] = new_objects
 

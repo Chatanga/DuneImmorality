@@ -360,20 +360,17 @@ function ConflictZone()
         end
     end
 
-    local stack = getObjectFromGUID('07e239')
-
-    local object = stack.getObjects()[1]
-
-    if object ~= nil then
-        if object.type == 'Deck' then
-            object.takeObject({
+    local conflictDeckOrCard = helperModule.GetDeckOrCardFromGUID('07e239')
+    if conflictDeckOrCard then
+        if conflictDeckOrCard.type == 'Deck' then
+            conflictDeckOrCard.takeObject({
                 position = conflict_discard,
                 top = true,
                 flip = true
             })
-        elseif object.type == 'Card' then
-            object.setPosition(conflict_discard)
-            object.setRotation({0, 180, 0})
+        elseif conflictDeckOrCard.type == 'Card' then
+            conflictDeckOrCard.setPosition(conflict_discard)
+            conflictDeckOrCard.setRotation({0, 180, 0})
         end
     end
 

@@ -320,19 +320,56 @@ function helperModule.hasHighCouncilSeat(color)
     return false
 end
 
+function helperModule.getTechName(techTile)
+    local boardPlanetIx = getObjectFromGUID('d75455')
+    -- More general alternative to tech.hasTag(techName)
+    return boardPlanetIx.call("getTechName", techTile)
+end
+
 function helperModule.hasTech(playerColor, techName)
     local techs = constants.players[playerColor].techZone.getObjects()
     for _, tech in ipairs(techs) do
-        if tech.hasTag(techName) then
+        if helperModule.getTechName(tech) == techName then
             return true
         end
     end
     return false
 end
 
+function helperModule.isAgent(object, color)
+    local name = object.getName()
+    if name == "" .. color .. " Agent" or name == "" .. color .. " Swordmaster" then
+        return true
+    elseif object.getName() == "Mentat" then
+        return object.getColorTint() == constants.players[color].swordmaster.getColorTint()
+    end
+end
+
 function helperModule.getDreadnoughtRestingPosition(dreadnoughName)
     local makerAndRecall = getObjectFromGUID('120026')
     return makerAndRecall.call("getDreadnoughtRestingPosition", dreadnoughName)
+end
+
+function helperModule.getPrestigeBonus(color)
+    local prestige = 0
+
+    if helperModule.hasHighCouncilSeat(color) then
+        prestige = prestige + 2
+    end
+    if helperModule.hasTech(color, "minimic_film") then
+        prestige = prestige + 1
+    end
+
+    local boardPlanetIx = getObjectFromGUID("d75455")
+    local boardNormalCHOAMOverlay = getObjectFromGUID("0552a2")
+
+    if boardPlanetIx and boardPlanetIx.call("hasAgentInTechNegotiation", color) then
+        prestige = prestige + 1
+    elseif boardNormalCHOAMOverlay and boardNormalCHOAMOverlay.call("hasAgentInHallOfOratory", color) then
+        prestige = prestige + 1
+    end
+
+    return prestige
 end
 
 function helperModule.getRevealCardPosition(color, i)
@@ -351,7 +388,7 @@ function helperModule.getRevealCardPosition(color, i)
         step = -2.5
     end
     local p = constants.players[color].board.getPosition() + offsets[color]
-    return p + Vector(i * step, 1.8, 0)
+    return p + Vector(i * step, 0, 0)
 end
 
 function helperModule.setSharedTable(tableName, table)

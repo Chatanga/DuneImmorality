@@ -104,6 +104,7 @@ _ = require("Core").registerLoadablePart(function(savedData)
     }
 
     Dreadnought_zone = getObjectFromGUID("83ea90")
+    TechNegociation_zone = getObjectFromGUID("04f512")
     activateButtons()
 end)
 
@@ -354,9 +355,6 @@ function applyBuyEffect(color, techName)
     elseif techName == "artillery" then
     elseif techName == "holoprojectors" then
     elseif techName == "restricted_ordnance" then
-        Wait.time(function ()
-            constants.players[color].board.call("updateHighCouncilCard")
-        end, 1)
     elseif techName == "shuttle_fleet" then
         -- 2 influences différentes
     elseif techName == "spy_satellites" then
@@ -488,7 +486,7 @@ function TechNegotiation(_, color)
     self.clearButtons()
     Wait.time(activateButtons, 1)
 
-    if boardCommonModule.CheckAgentAndPlayer(color, Dreadnought_zone) then
+    if boardCommonModule.CheckAgentAndPlayer(color, TechNegociation_zone) then
         local leaderName = helperModule.getLeaderName(color)
 
         local orbit = constants.players[color].board.call("getOrbitPark")
@@ -503,6 +501,8 @@ function TechNegotiation(_, color)
         else
             registerTechDiscount(color, "tech_negotiation", 1)
         end
+
+        constants.players[color].board.call("updateSpecialSummaryCards")
     end
 end
 
@@ -588,4 +588,8 @@ function buyDreadnought(_, color)
             break
         end
     end
+end
+
+function hasAgentInTechNegotiation(color)
+    return boardCommonModule.hasAgentInSpace(color, TechNegociation_zone)
 end

@@ -1681,3 +1681,10 @@ function createHighCouncilCard(parameters)
         parameters.hasRestrictedOrdnance,
         parameters.position)
 end
+
+function createSeatOfPowerCard(parameters)
+    return localeAssets.createSeatOfPowerCard(
+        parameters.color,
+        parameters.prestige,
+        parameters.position)
+end

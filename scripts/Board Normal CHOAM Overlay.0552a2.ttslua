@@ -310,3 +310,7 @@ function HallOfOratory(_, color)
         broadcastToAll(i18n("oratory"):format(leaderName), color)
     end
 end
+
+function hasAgentInHallOfOratory(color)
+    return boardCommonModule.hasAgentInSpace(color, HallOfOratory_zone)
+end
