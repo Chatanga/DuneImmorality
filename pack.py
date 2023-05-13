@@ -13,6 +13,7 @@ def inject_script_and_UI(name, id, element):
                 element['LuaScript'] = script_file.read()
         except FileNotFoundError:
             print("Script Lua", file_name, "introuvable.", file = sys.stderr)
+            element.pop('LuaScript')
 
     if element['XmlUI'] == '...':
         try:
@@ -20,6 +21,7 @@ def inject_script_and_UI(name, id, element):
                 element['XmlUI'] = script_file.read()
         except FileNotFoundError:
             print("Description UI XML", file_name, "introuvable.", file = sys.stderr)
+            element.pop('XmlUI')
 
 def pack_save(save_file_name):
     save = None
