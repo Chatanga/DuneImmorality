@@ -41,22 +41,22 @@ pion_reput = {
 
 initial_position_pion_reput = {
     emperor = {
-        Red = core.getHardcodedPositionFromGUID('acfcef', -9.718932, 0.7525001, 1.85001934),
-        Blue = core.getHardcodedPositionFromGUID('426a23', -10.1873131, 0.7525, 1.85005856),
+        Red = core.getHardcodedPositionFromGUID('acfcef', -9.718932, 0.752500057, 1.85001969),
+        Blue = core.getHardcodedPositionFromGUID('426a23', -10.1873131, 0.7525, 1.85005844),
         Green = core.getHardcodedPositionFromGUID('d7c9ba', -9.273371, 0.754999936, 1.85001135),
-        Yellow = core.getHardcodedPositionFromGUID('489871', -8.834659, 0.7550001, 1.85005462)
+        Yellow = core.getHardcodedPositionFromGUID('489871', -8.834659, 0.755000055, 1.8500545)
     },
     spacingGuild = {
         Red = core.getHardcodedPositionFromGUID('be464e', -9.737917, 0.752500057, -3.64000726),
         Blue = core.getHardcodedPositionFromGUID('4069d8', -10.1552429, 0.7525, -3.64000773),
         Green = core.getHardcodedPositionFromGUID('89da7d', -9.288127, 0.754999936, -3.64001036),
-        Yellow = core.getHardcodedPositionFromGUID('9d0075', -8.846331, 0.7550001, -3.63998413)
+        Yellow = core.getHardcodedPositionFromGUID('9d0075', -8.846331, 0.755000055, -3.63998413)
     },
     beneGesserit = {
-        Red = core.getHardcodedPositionFromGUID('713eae', -9.766583, 0.7525001, -9.100027),
+        Red = core.getHardcodedPositionFromGUID('713eae', -9.766583, 0.752500057, -9.100027),
         Blue = core.getHardcodedPositionFromGUID('2a88a6', -10.2121153, 0.7525, -9.100084),
         Green = core.getHardcodedPositionFromGUID('2dc980', -9.319731, 0.754999936, -9.100017),
-        Yellow = core.getHardcodedPositionFromGUID('a3729e', -8.888711, 0.7550001, -9.100081)
+        Yellow = core.getHardcodedPositionFromGUID('a3729e', -8.888711, 0.755000055, -9.100081)
     },
     fremen = {
         Red = core.getHardcodedPositionFromGUID('088f51', -9.762483, 0.752500057, -14.5700312),
@@ -68,7 +68,7 @@ initial_position_pion_reput = {
 
 initial_alliance_pos = {
     emperor = core.getHardcodedPositionFromGUID('13e990', -9.511963, 0.780000031, 5.860889),
-    spacingGuild = core.getHardcodedPositionFromGUID('ad1aae', -9.507135, 0.780000031, 0.24908103),
+    spacingGuild = core.getHardcodedPositionFromGUID('ad1aae', -9.507135, 0.780000031, 0.249080971),
     beneGesserit = core.getHardcodedPositionFromGUID('33452e', -9.551374, 0.780000031, -5.21345472),
     fremen = core.getHardcodedPositionFromGUID('4c2bcc', -9.543688, 0.780000031, -10.6707687)
 }

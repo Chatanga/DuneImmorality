@@ -230,6 +230,9 @@ def patch_save(input_path, output_path):
             translate(clone, (0, 0, 1))
             new_objects.append(clone)
 
+        if "LuaScriptState" in object:
+            object.pop("LuaScriptState")
+
         p = get_position(object)
         useless_zone_positions = {
             (8.15, 0.85, -10.35),

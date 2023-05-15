@@ -168,20 +168,6 @@ _ = require("Core").registerLoadablePart(function(savedData)
             obj.setInvisibleTo({"Red", "Blue", "Green", "Yellow", "White", "Grey", "Brown", "Pink", "Purple", "Orange"})
         end
     end
-
-    if false then
-        for player_color, _ in pairs(constants.players) do
-            local player = Player[player_color]
-            for i = 1, player.getHandCount() do
-                local t = player.getHandTransform()
-                local p = t.position
-                -- TODO Stop doing this!
-                p.y = p.y - 1
-                t.position = p
-                player.setHandTransform(t, i)
-            end
-        end
-    end
 end)
 
 function onSave()

@@ -123,7 +123,7 @@ function playerBoardModule.initPlayerScore()
 end
 
 function playerBoardModule.generateGlobalScoreboardPositions()
-    local origin = constants.players[playerBoardModule.playerColor].score_marker.getPosition()
+    local origin = constants.players[playerBoardModule.playerColor].score_marker_initial_position
 
     -- Avoid collision between markers by giving a different height to each.
     local h = 1

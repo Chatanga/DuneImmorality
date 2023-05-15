@@ -60,7 +60,6 @@ function generateCardData(guid, card, customDeck, customDeckId, cardId)
     end
 
     local data = {
-        GUID = guid,
         Name = "Card",
         Transform = {
             posX = 0,
@@ -108,6 +107,11 @@ function generateCardData(guid, card, customDeck, customDeckId, cardId)
         }
     }
 
+    if guid then
+        -- Will create a clone with a type such as "Card(Clone)".
+        data.GUID = guid
+    end
+
     if card then
         data.Nickname = card.getName()
         data.Description = card.getDescription()
@@ -151,7 +155,7 @@ function createCard(definition, position, whenCreated)
     spawnObjectData(spawnParameters)
 end
 
-function mutateCard(guid, definition)
+function mutateCard(guid, definition, whenMutated)
     local card = getObjectFromGUID(guid)
     assert(card, "No card with GUID " .. tostring(guid))
 
@@ -167,7 +171,8 @@ function mutateCard(guid, definition)
         data = data,
         position = card.getPosition(),
         rotation = card.getRotation(),
-        scale = card.getScale()
+        scale = card.getScale(),
+        callback_function = whenMutated
     }
 
     card.destruct()
@@ -436,14 +441,24 @@ function localeAssets.createSeatOfPowerCard(color, prestige, position)
     end
 
     local player = constants.players[color]
+
+    for _, object in ipairs(player.playZone.getObjects()) do
+        if object.hasTag("Special") then
+            player.seatOfPowerCard = object
+        end
+    end
+
     if 0 < prestige and prestige <= 4 then
         local name = "cardSeatOfPower" .. tostring(prestige)
         if player.seatOfPowerCard then
-            mutateCard(player.seatOfPowerCard.getGUID(), resources.cards[name])
+            mutateCard(player.seatOfPowerCard.getGUID(), resources.cards[name], function (card)
+                player.seatOfPowerCard = card
+                --card.setTags({"Special"})
+                card.setLock(true)
+            end)
         else
             createCard(resources.cards[name], position, function (card)
                 player.seatOfPowerCard = card
-                -- TODO Save it.
                 card.setTags({"Special"})
                 card.setLock(true)
             end)

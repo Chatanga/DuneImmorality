@@ -94,6 +94,8 @@ _ = require("Core").registerLoadablePart(function(savedData)
         for color, GUID in pairs(state.negotiationZoneGUIDs) do
             negotiationZones[color] = getObjectFromGUID(GUID)
         end
+    else
+        createTechZones()
     end
 
     negotiationParks = {
@@ -121,8 +123,8 @@ function saveState()
     for i, zone in ipairs(techSlotZones) do
         state.techSlotZoneGUIDs[i] = zone.getGUID()
     end
-    for i, zone in ipairs(negotiationZones) do
-        state.negotiationZoneGUIDs[i] = zone.getGUID()
+    for color, zone in pairs(negotiationZones) do
+        state.negotiationZoneGUIDs[color] = zone.getGUID()
     end
     self.script_state = JSON.encode(state)
 end
@@ -218,12 +220,11 @@ function createTechZones()
                 if #techSlotZones == 3 then
                     self.clearButtons()
                     activateButtons()
+                    saveState()
                 end
             end
         })
     end
-
-    saveState()
 end
 
 function acquireTech1(object, playerColor)

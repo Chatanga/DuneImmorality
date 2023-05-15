@@ -17,10 +17,10 @@ pos_trash = constants.pos_trash_lower
 zone_deck = constants.zone_deck_imperium
 
 combat_marker_offside_positions = {
-    Red = core.getHardcodedPositionFromGUID('2d1d17', 1.2240926, 1.27231038, -12.0979958) + Vector(0, 0, 0),
-    Blue = core.getHardcodedPositionFromGUID('f22e20', 1.20187283, 1.57164335, -12.094532) + Vector(1, 0, 0),
-    Yellow = core.getHardcodedPositionFromGUID('c2dd31', 1.27505, 0.679791868, -12.117794) + Vector(2, 0, 0),
-    Green = core.getHardcodedPositionFromGUID('a1a9a7', 1.23221791, 0.972619534, -12.1029119) + Vector(3, 0, 0)
+    Red = core.getHardcodedPositionFromGUID('2d1d17', 1.20173931, 1.2722795, -12.093792) + Vector(0, 0, 0),
+    Blue = core.getHardcodedPositionFromGUID('f22e20', 1.161782, 1.57149315, -12.090004) + Vector(1, 0, 0),
+    Yellow = core.getHardcodedPositionFromGUID('c2dd31', 1.27570391, 0.6798308, -12.11749) + Vector(2, 0, 0),
+    Green = core.getHardcodedPositionFromGUID('a1a9a7', 1.2276181, 0.9726786, -12.102025) + Vector(3, 0, 0)
 }
 
 -- TODO Make these positions relative to some anchor.
@@ -320,16 +320,9 @@ function ConflictZone()
         end
     end
 
-    local zonaCartas = {
-        ["Yellow"] = getObjectFromGUID("ae1ef8"),
-        ["Green"] = getObjectFromGUID("890115"),
-        ["Red"] = getObjectFromGUID("cd9716"),
-        ["Blue"] = getObjectFromGUID("f20a74")
-    }
-
-    for col, zone in pairs(zonaCartas) do
-        local tablaCartas = zone.getObjects()
-        for _, card in ipairs(tablaCartas) do
+    for col, player in pairs(constants.players) do
+        local cards = player.playZone.getObjects()
+        for _, card in ipairs(cards) do
             if card.type == 'Card' or card.type == 'Deck' then
                 if card.hasTag('Intrigue') then
                     card.setPosition(pos_intrigue_discard)
@@ -338,6 +331,9 @@ function ConflictZone()
                 end
             end
         end
+        Wait.time(function ()
+            player.board.call("updateSpecialSummaryCards")
+        end, 2)
     end
 
     local Time = os.clock() + 1 -- wait after collecting reveal zones into discards for letting time for cards to stack in the discard pile before drawing for holtzman effects
