@@ -253,7 +253,7 @@ def patch_save(input_path, output_path):
         if not excluded:
             new_objects.append(object)
 
-    set_scale(object_by_guid['07e239'], (1.25, 1, 2))
+    #set_scale(object_by_guid['07e239'], (1.25, 1, 2))
 
     if False:
         object_by_guid['d5c2db']['CustomImage']['ImageURL'] = 'http://cloud-3.steamusercontent.com/ugc/2044113755429339520/A5D3465456933CA0C042692C1E53D8144F1AEE0F/'

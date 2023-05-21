@@ -55,7 +55,7 @@ text_size = 80 -- Set number. Defaults to 100.
 
 _ = core.registerLoadablePart(function(saved_data)
     self.interactable = false
-    pos_intrigue_discard = constants.getLandingPositionFromGUID("976c3a")
+    pos_intrigue_discard = constants.getLandingPositionFromGUID("90f762")
 
     buttonPass = {
         ["Red"] = getObjectFromGUID("0e9fa2"),

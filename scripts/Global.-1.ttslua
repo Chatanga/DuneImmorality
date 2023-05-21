@@ -14,6 +14,8 @@ _ = require("Core").registerLoadablePart(function(savedData)
         locale = state.locale
     end
 
+    bufferedNextPlayer = nil
+
     -- Réinitialise les triggers des plateaux de joueurs.
     onPlayerTurn(nil, nil)
 
@@ -832,13 +834,26 @@ end
 
 -- Illumine le plateau du joueur dont c’est le tour (et éteint les autres).
 function onPlayerTurn(player, previous_player)
-    local indexed_colors = {"Green", "Yellow", "Blue", "Red"}
-    for i, color in ipairs(indexed_colors) do
-        local effect_index = 0 -- black index (no color actually)
-        if player and player.color == color then
-            effect_index = i
-        end
-        local board = constants.players[color].board
-        board.AssetBundle.playTriggerEffect(effect_index)
+    --[[
+        In some occasions, this method is called twice in the same frame. If so,
+        only the first call to playTriggerEffect will be taken into account.
+        It forces us to memorize the value and defer the call to only consider
+        the last value received.
+    ]]--
+    if bufferedNextPlayer then
+        log("Supersede " .. bufferedNextPlayer .. " by " .. tostring(player and player.color))
     end
+    bufferedNextPlayer = player and player.color
+    Wait.frames(function ()
+        local indexed_colors = {"Green", "Yellow", "Blue", "Red"}
+        for i, color in ipairs(indexed_colors) do
+            local effect_index = 0 -- black index (no color actually)
+            if bufferedNextPlayer == color then
+                effect_index = i
+            end
+            local board = constants.players[color].board
+            board.AssetBundle.playTriggerEffect(effect_index)
+        end
+        bufferedNextPlayer = nil
+    end)
 end
