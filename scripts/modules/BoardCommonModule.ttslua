@@ -553,6 +553,7 @@ function boardCommonModule.initReputationLevels()
                 none = zero + step * 0,
                 friendship = zero + step * 2,
                 alliance = zero + step * 4,
+                min = zero + step * 1,
                 max = zero + step * 6,
             }
         end
@@ -586,7 +587,7 @@ function boardCommonModule.ReputationDown(color, faction)
     local reputationLevels = boardCommonModule.getReputationLevels(faction, color)
     local pos = pion_reput[faction][color].getPosition()
     local leaderName = helperModule.getLeaderName(color)
-    if pos.z > reputationLevels.none then
+    if pos.z > reputationLevels.min then
         pion_reput[faction][color].setPositionSmooth({
             pos.x, pos.y, pos.z - reputationLevels.step
         }, false, false)

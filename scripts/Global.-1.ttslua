@@ -793,6 +793,11 @@ function Friendship(faction, color)
     end
     if not hasFriendship then
         give2influence(faction, color)
+
+        if helperModule.getLeaderName(color) == "Tessia Vernius" then
+            local mainBoard = getObjectFromGUID('2da390')
+            mainBoard.call("recallSnooper", {factionName = faction, color = color})
+        end
     end
 end
 

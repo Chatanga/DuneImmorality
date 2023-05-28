@@ -541,14 +541,12 @@ function BonusFremen(_, color)
     constants.players[color].water.call("incrementVal")
     local leaderName = helperModule.getLeaderName(color)
     broadcastToAll(i18n("fremenBonus"):format(leaderName), color)
-
 end
 
 function BonusBene(_, color)
     Wait.time(function() boardCommonModule.drawIntrigue(color) end, 0.75)
     local leaderName = helperModule.getLeaderName(color)
     broadcastToAll(i18n("beneBonus"):format(leaderName), color)
-
 end
 
 function BonusSpatial(_, color)
@@ -568,7 +566,6 @@ function BonusSpatial(_, color)
         Wait.time(function() constants.alivePlayers[color].solari.call("incrementVal") end, t0)
     end
     broadcastToAll(i18n("spaceBonus"):format(leaderName, solariAmount), color)
-
 end
 
 function BonusEmperor(_, color)
@@ -577,7 +574,86 @@ function BonusEmperor(_, color)
 
     helperModule.landTroopsFromOrbit(color, 2)
     broadcastToAll(i18n("emperorBonus"):format(leaderName), color)
+end
 
+function recallSnooper(parameters)
+    local factionName = parameters.factionName
+    local color = parameters.color
+
+    local factions = {
+        ["Emperor"] = {
+            id = "emperor",
+            upAction = "EmperorUp",
+            bonusAction = function() BonusEmperor(nil, color) end,
+            snooperGUID = "a58ce8"
+        },
+        ["Spacing Guild"] = {
+            id = "spacingGuild",
+            upAction = "GuildUp",
+            bonusAction = function() BonusSpatial(nil, color) end,
+            snooperGUID = "857f74"
+        },
+        ["Bene Gesserit"] = {
+            id = "beneGesserit",
+            upAction = "BeneUp",
+            bonusAction = function() BonusBene(nil, color) end,
+            snooperGUID = "bed196"
+        },
+        ["Fremen"] = {
+            id = "fremen",
+            upAction = "FremenUp",
+            bonusAction = function() BonusFremen(nil, color) end,
+            snooperGUID = "b10897"
+        }
+    }
+
+    local foundSnooper = nil
+    local snooperRank = 4
+    for name, faction in pairs(factions) do
+        local snooper = getObjectFromGUID(faction.snooperGUID)
+        if not isInZone(constants.players[color].leader_zone, snooper) then
+            if factionName == name then
+                foundSnooper = snooper
+            else
+                snooperRank = snooperRank - 1
+            end
+        end
+    end
+
+    if foundSnooper then
+        Wait.time(function()
+            local p = constants.leaderPos[color] + Vector(snooperRank / 4 - 2, 0, 1.4 - snooperRank / 2)
+            foundSnooper.setPositionSmooth(p)
+
+            local factionLabel = i18n(factions[factionName].id)
+
+            if snooperRank == 1 then
+                broadcastToAll(i18n("firstSnooperRecall"):format(factionLabel), color)
+                Player[color].showInfoDialog(i18n("firstSnooperRecallEffectInfo"))
+            elseif snooperRank == 2 then
+                broadcastToAll(i18n("secondSnooperRecall"):format(factionLabel), color)
+                factions[factionName].bonusAction()
+            elseif snooperRank == 3 then
+                broadcastToAll(i18n("thirdSnooperRecall"):format(factionLabel), color)
+                boardCommonModule[factions[factionName].upAction](color)
+            elseif snooperRank == 4 then
+                broadcastToAll(i18n("fourthSnooperRecall"):format(factionLabel), color)
+                factions[factionName].bonusAction()
+                boardCommonModule[factions[factionName].upAction](color)
+            else
+                assert(false)
+            end
+        end, 1)
+    end
+end
+
+function isInZone(zone, object)
+    for _, otherObject in ipairs(zone.getObjects()) do
+        if otherObject == object then
+            return true
+        end
+    end
+    return false
 end
 
 zone_alliance = {

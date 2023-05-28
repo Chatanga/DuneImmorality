@@ -33,10 +33,21 @@ function getAveragePosition(guids)
     return p * (1 / count)
 end
 
-function onClaim(_)
-    for _, snooper in ipairs(snoopers) do
+function onClaim(color)
+    local snapPoints = {}
+    for i, snooper in ipairs(snoopers) do
         local object = getObjectFromGUID(snooper.guid)
         object.setPositionSmooth(snooper.position, false, false)
         object.setRotationSmooth(Vector(0, 90, 0))
+        Wait.time(function ()
+            object.setLock(true)
+        end, 3)
+
+        local p = constants.leaderPos[color] + Vector(i / 4 - 2, 0, 1.4 - i / 2)
+        table.insert(snapPoints, {
+            position = self.positionToLocal(p),
+            tags = { "Snooper" }
+        })
     end
+    self.setSnapPoints(snapPoints)
 end

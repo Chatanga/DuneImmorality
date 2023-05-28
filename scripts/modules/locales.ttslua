@@ -233,7 +233,12 @@ i18n.locales.en = {
     removeNegotiator = "-1",
     negotiatorAdded = "%s has sent a negotiator to Ix",
     negotiatorLimitWarning = "No negotiator available!",
-    negotiatorRemoved = "%s has recalled a negotiator from Ix"
+    negotiatorRemoved = "%s has recalled a negotiator from Ix",
+    firstSnooperRecall = "Tessia Vernius has recalled her first snooper from the Faction %s.",
+    secondSnooperRecall = "Tessia Vernius has recalled her second snooper from the Faction %s.",
+    thirdSnooperRecall = "Tessia Vernius has recalled her third snooper from the Faction %s.",
+    fourthSnooperRecall = "Tessia Vernius has recalled her fourth snooper from the Faction %s.",
+    firstSnooperRecallEffectInfo = "Having recalled you first snooper, you may discard a card to get 1 spice."
 }
 
 i18n.locales.fr = {
@@ -472,5 +477,10 @@ i18n.locales.fr = {
     removeNegotiator = "-1",
     negotiatorAdded = "%s a envoyé un négociateur auprès de Ix",
     negotiatorLimitWarning = "Aucun négociateur de disponible !",
-    negotiatorRemoved = "%s a rappelé un négociateur de Ix"
+    negotiatorRemoved = "%s a rappelé un négociateur de Ix",
+    firstSnooperRecall = "Tessia Vernius a rappelé son premier fouineur de la Faction %s.",
+    secondSnooperRecall = "Tessia Vernius a rappelé son second fouineur de la Faction %s.",
+    thirdSnooperRecall = "Tessia Vernius a rappelé son troisième fouineur de la Faction %s.",
+    fourthSnooperRecall = "Tessia Vernius a rappelé son quatrième fouineur de la Faction %s.",
+    firstSnooperRecallEffectInfo = "Ayant rappelé votre premier fouineur, vous pouvez défausser une carte pour gagne 1 Épice."
 }
