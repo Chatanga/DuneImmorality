@@ -101,6 +101,12 @@ _ = require("Core").registerLoadablePart(function(saved_data)
     if saved_data ~= "" then
         local loaded_data = JSON.decode(saved_data)
         researchConducted = loaded_data.researchConducted
+        for _, path in pairs(researchConducted) do
+            for i, coords in ipairs(path) do
+                -- Needs to be reconstructed since objects are not saved as is.
+                path[i] = Vector(coords.x, coords.y, coords.z)
+            end
+        end
         for color, GUID in pairs(loaded_data.axlotlTanksZoneGUIDs) do
             axlotlTanksZones[color] = getObjectFromGUID(GUID)
         end
