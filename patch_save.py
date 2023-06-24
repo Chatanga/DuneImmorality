@@ -233,43 +233,45 @@ def patch_save(input_path, output_path):
         if "LuaScriptState" in object:
             object.pop("LuaScriptState")
 
-        p = get_position(object)
-        useless_zone_positions = {
-            # PV rows
-            (22.28, 1.52, 21.85),
-            (22.28, 1.52, -1.15),
-            (-22.28, 1.52, 21.85),
-            (-22.28, 1.52, -1.15),
-            # Troops in orbit
-            (27.5, 1.29, 16.6),
-            (27.5, 1.29, -6.4),
-            (-27.5, 1.29, 16.6),
-            (-27.5, 1.29, -6.4),
-            # Garrisons
-            (8.15, 0.85, -10.35),
-            (8.15, 0.85, -7.65),
-            (1.55, 0.85, -10.35),
-            (1.55, 0.85, -7.65),
-            # Negociators
-            (6.57, 1.06, 9.26),
-            (7.47, 1.06, 9.26),
-            (6.57, 1.06, 8.36),
-            (7.47, 1.06, 8.36),
-            # Specimens
-            (2.1, 1.06, 15.72),
-            (2.1, 1.06, 14.72),
-            (0.5, 1.06, 15.72),
-            (0.5, 1.06, 14.72),
-            # Tech tiles
-            (9.26, 1.4, 12.86),
-            (9.26, 1.4, 10.81),
-            (9.26, 1.4, 8.76),
-        }
         excluded = False
-        for c in useless_zone_positions:
-            if distance(p, c) < 0.5 and object['Transform']['scaleZ'] < 5:
-                excluded = True
-                continue
+
+        if object["Name"] == "ScriptingTrigger":
+            p = get_position(object)
+            useless_zone_positions = {
+                # PV rows
+                (22.28, 1.52, 21.85),
+                (22.28, 1.52, -1.15),
+                (-22.28, 1.52, 21.85),
+                (-22.28, 1.52, -1.15),
+                # Troops in orbit
+                (27.5, 1.29, 16.6),
+                (27.5, 1.29, -6.4),
+                (-27.5, 1.29, 16.6),
+                (-27.5, 1.29, -6.4),
+                # Garrisons
+                (8.15, 0.85, -10.35),
+                (8.15, 0.85, -7.65),
+                (1.55, 0.85, -10.35),
+                (1.55, 0.85, -7.65),
+                # Negociators
+                (6.57, 1.06, 9.26),
+                (7.47, 1.06, 9.26),
+                (6.57, 1.06, 8.36),
+                (7.47, 1.06, 8.36),
+                # Specimens
+                (2.1, 1.06, 15.72),
+                (2.1, 1.06, 14.72),
+                (0.5, 1.06, 15.72),
+                (0.5, 1.06, 14.72),
+                # Tech tiles
+                (9.26, 1.4, 12.86),
+                (9.26, 1.4, 10.81),
+                (9.26, 1.4, 8.76),
+            }
+            for c in useless_zone_positions:
+                if distance(p, c) < 0.5 and object['Transform']['scaleZ'] < 5:
+                    excluded = True
+                    continue
 
         if not excluded:
             new_objects.append(object)
