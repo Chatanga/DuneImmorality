@@ -503,6 +503,7 @@ customDecks.en = {
     highCouncilCardWithoutRestrictedOrdnance = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2044114931109006909/AE55C2BB6B9BE3CF9F407EF5C610DC30B154D5CE/", 1, 1),
     highCouncilCardWithRestrictedOrdnance = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2044114931109006257/D5C0242C3F8B78E9253EF1084F10E513AC001B4C/", 1, 1),
     seatOfPowerDeck = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2044115565050311157/E7E6E09C7D61392154D16277F3FEA3E4ADFCADAC/", 4, 1),
+    thumperDeck = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2027231506426140597/EED43686A0319F3C194702074F2D2B3E893642F7/", 1, 1)
 }
 
 localeAssets.en = {
@@ -543,7 +544,8 @@ localeAssets.en = {
             41, 42, 43, 44, 44, 45, 46, 46, 46}},
             {deck = customDecks.en.ixImperium, luaIndexes = {31}},
             -- {deck = customDecks.en.ixImperium, luaIndexes = {32, 32}}, No need to add it, the one (32) in the main texture is already the fixed version.
-            {deck = customDecks.en.ixImperium, luaIndexes = {34}}
+            {deck = customDecks.en.ixImperium, luaIndexes = {34}},
+            {deck = customDecks.en.thumperDeck, luaIndexes = {1}}
         },
         -- cardJessicaOfArrakis = {deck = customDecks.en.ixImperium, luaIndex = 31},
         -- cardDuncanLoyalBlade = {deck = customDecks.en.ixImperium, luaIndex = 34},
@@ -637,7 +639,7 @@ customDecks.fr = {
     -- special cards
     highCouncilCardWithoutRestrictedOrdnance = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2044114931109007208/BEC43C979193F71220B89199159DFE61BCEECBB7/", 1, 1),
     highCouncilCardWithRestrictedOrdnance = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2044114931109006596/A25FD31F949807A7779195788AAAD8AA50DDB080/", 1, 1),
-    seatOfPowerDeck = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2044115565050311673/AE3985811F9E7436655ABCCC1664368BBFF7395C/", 4, 1),
+    seatOfPowerDeck = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2044115565050311673/AE3985811F9E7436655ABCCC1664368BBFF7395C/", 4, 1)
 }
 
 localeAssets.fr = {
@@ -670,7 +672,9 @@ localeAssets.fr = {
         cardsFoldspace = {{deck = customDecks.fr.imperiumFoldedSpace, luaIndexes = range(1, 6)}},
         cardsLiaison = {{deck = customDecks.fr.imperiumArrakisLiasion, luaIndexes = range(1, 8)}},
         cardsTSMF = {{deck = customDecks.fr.imperiumTheSpiceMustFlow, luaIndexes = range(1, 10)}},
-        cardsBaseImperium = {{deck = customDecks.fr.imperium, luaIndexes = range(1, 69)}},
+        cardsBaseImperium = {
+            {deck = customDecks.fr.imperium, luaIndexes = range(1, 69)},
+            {deck = customDecks.en.thumperDeck, luaIndexes = {1}}},
         -- cardJessicaOfArrakis = {deck = customDecks.fr.imperium, luaIndex = 7},
         -- cardDuncanLoyalBlade = {deck = customDecks.fr.imperium, luaIndex = 69},
         cardsIxImperium = {{deck = customDecks.fr.ixImperium, luaIndexes = range(1, 36)}},
