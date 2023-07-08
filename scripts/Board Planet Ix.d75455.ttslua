@@ -271,7 +271,7 @@ function acquireTech(index, _, playerColor)
         local negotiatorCount = #parkModule.getObjects(negotiationParks[playerColor])
 
         local adjustedTechCost = math.max(0, techCost - discountAmount - negotiatorCount)
-        local recalledNegociatorCount = techCost - adjustedTechCost - discountAmount
+        local recalledNegociatorCount = math.max(0, techCost - adjustedTechCost - discountAmount)
 
         if paySpiceCost(playerColor, adjustedTechCost) then
 
