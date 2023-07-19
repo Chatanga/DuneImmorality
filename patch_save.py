@@ -233,7 +233,7 @@ def patch_save(input_path, output_path):
         if "LuaScriptState" in object:
             object.pop("LuaScriptState")
 
-        if guid == '99d41d':
+        if False and guid == '99d41d':
             customDeck = {
                 "FaceURL": "http://cloud-3.steamusercontent.com/ugc/2027231506426140597/EED43686A0319F3C194702074F2D2B3E893642F7/",
                 "BackURL": "http://cloud-3.steamusercontent.com/ugc/1892102433196500461/C3DC7A02CF378129569B414967C9BE25097C6E77/",
