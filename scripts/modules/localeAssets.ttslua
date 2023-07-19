@@ -619,7 +619,7 @@ customDecks.fr = {
     -- dune planet
     starterDunePlanet = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2029469358268102690/98F5861E28F3167495D3F2890879072BF3A84E60/", 2, 2),
     -- base without foldspace, nor liason, nor the spice must flow, but with Jessica of Arrakis and Duncan Loyal Blade
-    imperium = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2029469358268104070/CC2D301CA075930201B3883D82F4C6E1A0837273/", 10, 7),
+    imperium = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2027233408244872967/CC2D301CA075930201B3883D82F4C6E1A0837273/", 10, 7),
     imperiumFoldedSpace = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2029469358268101016/AE481C2ED19B085E2669F22420FD282982FD11A9/", 3, 2),
     imperiumArrakisLiasion = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2029469358268100070/D7411DB495E6EB13D6B64F5E46CCF69FF322039F/", 4, 2),
     imperiumTheSpiceMustFlow = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2029469358268101681/B6E08F8328DB699C60A8F058E88AA6443BA2F716/", 5, 2),
