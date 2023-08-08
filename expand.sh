@@ -1,2 +1,2 @@
 #! /bin/bash
-python expand_positions.py tmp/mod.patched.json scripts/
+python3 expand_positions.py tmp/mod.patched.json scripts/

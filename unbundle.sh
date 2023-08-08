@@ -19,6 +19,8 @@ done
 
 for f in $target/modules/*.lua
 do
-	filename=$(basename "$f" lua)ttslua
-	mv "$f" "$target/modules/$filename"
+	if [ -f "f" ]; then
+		filename=$(basename "$f" lua)ttslua
+		mv "$f" "$target/modules/$filename"
+	fi
 done

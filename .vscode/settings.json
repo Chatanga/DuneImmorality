@@ -9,6 +9,16 @@
         "Turns",
         "broadcastToAll",
         "MusicPlayer",
-        "log"
+        "log",
+        "spawnObjectData",
+        "JSON",
+        "Global",
+        "getSeatedPlayers",
+        "spawnObject",
+        "Time",
+        "getObjectsWithTag",
+        "startLuaCoroutine",
+        "UI",
+        "Color"
     ]
 }

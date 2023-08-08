@@ -58,7 +58,7 @@ def process(positions, filename, content):
             prefix_length = len(function_name + "(")
             new_from_index = start_index + prefix_length + 1
             skip = False
-            declaration_prefix = 'function core.'
+            declaration_prefix = 'function Core.'
             if start_index >= len(declaration_prefix) and content[start_index - len(declaration_prefix) : start_index] == declaration_prefix:
                 skip = True
             else:

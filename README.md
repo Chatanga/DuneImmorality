@@ -1,84 +1,46 @@
-# Important :
-- Activation de "Physic Full" côté joueur pour que la dépose de cartes soit correcte.
+# Dune Immortality TTS mod
 
-# Tests à faire (et cartographier / tracer vers le code et les objets du monde :
-- suppression / paralysie des joueurs surnuméraires.
-- protection des boutons.
-- achat de cartes Imperium ou d'intrigue.
-- atomiques de famille.
-- achat de carte Tleilaxu (avec paiement en spécimens).
-- tirage de 1 ou 5 cartes à partir d'une pioche vide, partiellement suffisante ou complètement suffisante.
-- révélation d'une main vide ou contenant des cartes, de manière prématurée ou non.
-- attribution des jetons d'amitié et d'alliance.
-- vol de jeton d'alliance.
-- montée et descente sur les pistes d'influence (avec bornes).
-- montée et descente sur la piste commerciale (avec bornes).
-- mise à jour des marqueurs de force.
-- prérequis d'accès à une zone.
-- attribution de cartes Imperium ou d'intrigue.
-- attribution de troupes ou de spécimens (avec bornes).
-- attribution d'épice, eau ou solari.
-- attribution de scarabés.
-- attribution de jetons de PV.
-- attribution du mentat (pourvu qu'il soit disponible).
-- attribution automatique de dreadnoughts ?
-- attribution du contrôle d'un espace (peut être remis en cause trop facilement).
-- déploiement automatique d'une troupe en fonction du contrôle.
-- attribution ressources supplémentaire grâce au contrôle d'espace.
-- mise à jour des compteurs de scores.
-- mise à jour du marqueur du faiseur.
-- incrémentation de l'épice lors du rappel.
-- récupération des troupes et dreadnoughts lors du rappel.
-- mise à jour du conflit lors du rappel.
-- passage du marqueur de premier joueur lors du rappel.
-- mécanisme pour passer le tour et détection de la fin de manche (bataille).
-- attribution des récompenses sur le plateau du Bene Tleilax.
-- l'activation / désactivation des 2 extensions et du mode épique.
-- le marché noir.
-- les comportements de tous les chefs...
-- la prise en compte de toutes les tuiles technologiques...
-- la mobilité complète des blocs de jeu (à réaliser par un second patch Python).
-- le support de la maison Hagal.
+![Capture](resources/capture.jpg)
 
-# À faire :
-- Distinguer les Bases des Modules.
-- Corriger hidden pick à 3 joueurs.
-- Corriger fin de paquet cartes recherche du Bene Tleilax.
-- Retirer le suffixe module des modules ?
-- Pas de passage de "round start" à "player turns" au 1er tour.
-- gérer plus finement les hauteurs des boutons.
-- ajouter des colliders.
-- améliorer la qualité des décalcos (et pointillés pour la zone du marqueur premier joueur).
-- mettre à jour les crédits (y compris pour les textures).
-- Mode solo.
-- Enhanced Recall for Endgame -> detected end of game: reveal intrigue and grant VP tokens automatically.
-- Marker -> token pour éviter la confusion avec Maker.
-- Nombre de joueurs actifs et mode de jeu (multi / hot seat).
-- Mettre à jour / à niveau les textures.
-- Mettre à jour boutons acquisition tech avec coût réel.
-- Déploiement de spécimens : le faire directement.
-- Abstraire la création de boutons façon Ark Nova (et ajouter une icône "activate" pour le pay & get).
-- Mettre à jour les URL des cartes françaises.
-- Gérer les tuiles technologiques comme des cartes (et ne plus les dupliquer -> problématique d'identification) ?
-- Explorer la notion de tour, multi(, solo) et hotseat.
-- Automatiser la maison Hagal.
-- Traduire les cartes de la maison Hagal.
-- Grande conception avant refactoring.
-- Identifier les actions de haut niveau, introduire un module services pour les regrouper en déléguant au mieux.
-- Uniformiser nommage et usage "local" (déclarer que des "local" (au chunk donc) ?).
-- Expliciter la gestion des tours.
-- Retirer vieilles ressources.
-- Éclater "Buy Special Imperium Cards.6a1097" pour uniformiser et simplifier.
+ID: 2956104551
 
-# À garder à l’esprit
-- Limiter autant que possible les appels de fonction au chargement, car peu pratique à débugger.
-- Au chargement, ne pas dépendre d'autres objets (sont-ils même résolvables ?), ni d'autres scripts.
-- Dans la fonction onLoad, dépendre éventuellement des autres objets, mais pas de l'état interne de leurs scripts (call).
-- Différence sauvegarde implicite / explicite ?
-- Toujours sauver / restaurer l'état d'un script s'il existe.
+## To do
 
-# Liens :
-- Mods -> $HOME/.local/share/Tabletop Simulator/Mods/
-- Saves -> $HOME/.local/share/Tabletop Simulator/Saves/
-- Tabletop Simulator Lua -> /tmp/TabletopSimulator/Tabletop Simulator Lua/
-- Mod : 2956104551.
+- Consolidate actions (textual log).
+- Combat and combat outcome phases.
+- The Tleilaxu part.
+- Identify and detect played cards.
+- Score track.
+- Reminder.
+- Game over.
+- Wrapping Leader -> Action.
+- Resource and ability allocation of leaders (including Hagal + difficulty).
+- The Hagal house.
+- Introduce the graphic log.
+- Restore translations.
+- Restore music.
+- Blitz!
+- Arrakeen Scouts.
+
+## Principles
+
+1. Anything -> Action (+ log) -> Anything
+2. Anything (-> Leader/Hagal -> Action (+ log)) -> Anything
+
+## Thoughts
+
+On the script side:
+- A single Global script both to simplify and for performance reasons (especially during assembly).
+- Introduction of a 'lazyRequire' allowing cyclic dependencies.
+- Hunt for Wait.time/frames and management of those which remain.
+- Centralization of actions in a single module serving as a facade (with log), accessed directly or via a Leader/Hagal to modulate the actions of a player (and group together in one place the leader capabilities, including fanmade).
+- Reimplementation of the turn system to overcome the limitations of the TTS built-in system.
+- More procedurally generated content.
+- Transformation of tech tiles and leaders into cards.
+
+UI side:
+- The graphic elements of the trays play the role of buttons (which are no longer directly visible). e.g. click on the influence track to modify its influence or on a space to send an agent there. It's more aesthetic and also more ergonomic it seems to me (especially because the click surfaces are larger).
+- A single turn pass button.
+- A more systematic (but adaptive) division of the game phases (explicit turns for the fight, for the rewards, for the endgame, etc.)
+
+It should be noted in passing that the positioning on the elements of the game is essentially done using (numerous) zones (and procedural creation of transitory anchoring objects). Where possible, transitional areas are also created procedurally based on the position of objects. An alternative approach that can be seen in the xxx mod is to create separate objects for locations. It has the advantage of being easily manipulated under TTS, but it is more restrictive to create. When it comes to repositioning bulk content, I'm using a Python script here that directly manipulates the save file.

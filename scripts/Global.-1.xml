@@ -1,0 +1,74 @@
+<Panel position="0 0" width="450" height="700" color="#000000" id="setupPane" rotation="0 0 0" outline="#6c3892" outlineSize="1" active="False">
+	<Defaults>
+		<Text class="primary" color="#8e5ab4" fontSize="16" alignment="MiddleLeft"/>
+		<Text class="secondary" color="#efd9ff" alignment="MiddleRight"/>
+		<Text class="note" color="#df9730" fontSize="10" fontStyle="italic" alignment="MiddleLeft"/>
+		<Dropdown itemBackgroundColors="#6c389244|#df9730|#FFFFFF|#361441" textColor="#6c3892" itemTextColor="#6c3892" fontStyle="bold"/>
+		<InputField colors="#00000000|#6c389244|#6c3892" textColor="#efd9ff" fontStyle="bold"/>
+		<Toggle colors="#efd9ff|#ffd60b|#efd9ff|#222222" textColor="#efd9ff"/>
+		<Button colors="#6c3892|#df9730|#361441|#222222" textColor="#ffd60b"  fontSize="16" outline="#efd9ff" outlineSize="3 3"/>
+	</Defaults>
+	<VerticalLayout>
+		<Image ignoreLayout="True" image="http://cloud-3.steamusercontent.com/ugc/2027234042549661387/D9B4C518F1CC8DB3B299B6552E439410D9346C33/"/>
+		<VerticalLayout padding="40 40 150 50">
+
+			<HorizontalLayout>
+				<Text class="primary">Language</Text>
+				<Dropdown id="language" onValueChanged="Global/setLanguage">
+					<Option></Option>
+				</Dropdown>
+			</HorizontalLayout>
+
+			<Text class="primary">Players</Text>
+			<VerticalLayout padding="25 0 0 0">
+				<Toggle id="randomizePlayerPositions" onValueChanged="Global/setRandomizePlayerPositions" isOn="True">Randomize players' positions</Toggle>
+				<HorizontalLayout>
+					<Toggle id="virtualHotSeat" onValueChanged="Global/setVirtualHotSeat" isOn="False">1 or 2 players</Toggle>
+					<Dropdown id="numberOfPlayers" onValueChanged="Global/setNumberOfPlayers" flexibleWidth="2.5" active="False">
+						<Option></Option>
+					</Dropdown>
+					<Dropdown id="difficulty" onValueChanged="Global/setDifficulty" flexibleWidth="3" active="False">
+						<Option></Option>
+					</Dropdown>
+				</HorizontalLayout>
+				<!--VerticalLayout padding="25 0 0 0">
+					<Text class="note">Don't use native hot seat games!</Text>
+				</VerticalLayout-->
+			</VerticalLayout>
+
+			<Text class="primary">Extensions</Text>
+			<VerticalLayout padding="25 0 0 0">
+				<Toggle id="riseOfIx" isOn="True" onValueChanged="Global/setRiseOfIx">Rise of Ix</Toggle>
+				<VerticalLayout padding="25 0 0 0">
+					<Toggle id="epicMode" isOn="False" onValueChanged="Global/setEpicMode">Epic mode</Toggle>
+				</VerticalLayout>
+				<Toggle id="immortality" isOn="True" onValueChanged="Global/setImmortality">Immortality</Toggle>
+				<VerticalLayout padding="25 0 0 0">
+					<Toggle id="goTo11" isOn="False" onValueChanged="Global/setGoTo11">Go to 11</Toggle>
+				</VerticalLayout>
+			</VerticalLayout>
+
+			<HorizontalLayout>
+				<Text class="primary">Leader selection</Text>
+				<Dropdown id="leaderSelection" flexibleWidth="4" onValueChanged="Global/setLeaderSelection">
+					<Option></Option>
+				</Dropdown>
+			</HorizontalLayout>
+			<VerticalLayout padding="25 0 0 0">
+				<Toggle id="fanMadeLeaders" isOn="False" onValueChanged="Global/setFanMadeLeaders">Fan made leaders</Toggle>
+			</VerticalLayout>
+
+			<HorizontalLayout>
+				<Text class="primary">Variants</Text>
+				<Dropdown id="variant" flexibleWidth="1.5" onValueChanged="Global/setVariant">
+					<Option></Option>
+				</Dropdown>
+			</HorizontalLayout>
+
+		</VerticalLayout>
+		<HorizontalLayout padding="100 100 0 20">
+			<Button id="setUpButton" minHeight="26" onClick="Global/setUp">Setup</Button>
+		</HorizontalLayout>
+	</VerticalLayout>
+	<Image position="0 350" width="256" height="256" image="http://cloud-3.steamusercontent.com/ugc/2027234042549282632/81266F80932D7A9A8628827099C5390739D09108/"/>
+</Panel>
