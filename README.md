@@ -1,4 +1,4 @@
-# Dune Immortality TTS mod
+# Dune Immorality TTS mod
 
 ![Capture](resources/capture.jpg)
 
