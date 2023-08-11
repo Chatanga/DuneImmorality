@@ -1,17 +1,17 @@
-local Core = require("utils.Core")
+local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local Park = require("utils.Park")
 local I18N = require("utils.I18N")
 
-local Resource = Helper.lazyRequire("Resource")
-local TleilaxuResearch = Helper.lazyRequire("TleilaxuResearch")
-local TurnControl = Helper.lazyRequire("TurnControl")
-local Utils = Helper.lazyRequire("Utils")
-local Deck = Helper.lazyRequire("Deck")
-local MainBoard = Helper.lazyRequire("MainBoard")
-local Hagal = Helper.lazyRequire("Hagal")
-local Combat = Helper.lazyRequire("Combat")
-local Leader = Helper.lazyRequire("Leader")
+local Resource = Module.lazyRequire("Resource")
+local TleilaxuResearch = Module.lazyRequire("TleilaxuResearch")
+local TurnControl = Module.lazyRequire("TurnControl")
+local Utils = Module.lazyRequire("Utils")
+local Deck = Module.lazyRequire("Deck")
+local MainBoard = Module.lazyRequire("MainBoard")
+local Hagal = Module.lazyRequire("Hagal")
+local Combat = Module.lazyRequire("Combat")
+local Leader = Module.lazyRequire("Leader")
 
 local Playboard = {
     -- Temporary structure (set to nil *after* loading).
@@ -26,18 +26,18 @@ local Playboard = {
             leaderZone = "66cdbb",
             dreadnoughts = {"1a3c82", "a8f306"},
             dreadnoughtPositions = {
-                Core.getHardcodedPositionFromGUID('1a3c82', -26.300024, 1.112601, 18.6999645),
-                Core.getHardcodedPositionFromGUID('a8f306', -28.700037, 1.112601, 18.699976)
+                Helper.getHardcodedPositionFromGUID('1a3c82', -26.300024, 1.112601, 18.6999645),
+                Helper.getHardcodedPositionFromGUID('a8f306', -28.700037, 1.112601, 18.699976)
             },
             agents = {"7751c8", "afa978"},
             agentPositions = {
-                Core.getHardcodedPositionFromGUID('7751c8', -17.0, 1.11060047, 20.3),
-                Core.getHardcodedPositionFromGUID('afa978', -18.3, 1.11060047, 20.3)
+                Helper.getHardcodedPositionFromGUID('7751c8', -17.0, 1.11060047, 20.3),
+                Helper.getHardcodedPositionFromGUID('afa978', -18.3, 1.11060047, 20.3)
             },
             swordmaster = "ed3490",
             councilToken = "f19a48",
             fourPlayerVictoryToken = "a6c2e0",
-            fourPlayerVictoryTokenInitialPosition = Core.getHardcodedPositionFromGUID('a6c2e0', -13.0, 1.31223142, 21.85),
+            fourPlayerVictoryTokenInitialPosition = Helper.getHardcodedPositionFromGUID('a6c2e0', -13.0, 1.31223142, 21.85),
             scoreMarker = "4feaca",
             flagBag = '61453d',
             troops = {
@@ -55,17 +55,17 @@ local Playboard = {
                 "af7cd0"
             },
             forceMarker = '2d1d17',
-            discardPosition = Core.getHardcodedPositionFromGUID('e07493', -14.0, 1.5, 16.5) + Helper.someHeight,
+            discardPosition = Helper.getHardcodedPositionFromGUID('e07493', -14.0, 1.5, 16.5) + Helper.someHeight,
             drawDeckZone = "4f08fc",
             discardZone = "e07493",
             trash = "ea3fe1",
             tleilaxuToken = "2bfc39",
-            tleilaxuTokenInitalPosition = Core.getHardcodedPositionFromGUID('2bfc39', 0.5446165, 0.877500236, 22.0549927),
+            tleilaxuTokenInitalPosition = Helper.getHardcodedPositionFromGUID('2bfc39', 0.5446165, 0.877500236, 22.0549927),
             researchToken = "39e0f3",
-            researchTokenInitalPosition = Core.getHardcodedPositionFromGUID('39e0f3', 0.37, 0.88, 18.2351761),
+            researchTokenInitalPosition = Helper.getHardcodedPositionFromGUID('39e0f3', 0.37, 0.88, 18.2351761),
             cargo = "e9096d",
-            leaderPos = Core.getHardcodedPositionFromGUID('66cdbb', -19.0, 1.25, 17.5),
-            firstPlayerPosition = Core.getHardcodedPositionFromGUID('346e0d', -14.0, 1.5, 19.7) + Vector(0, -0.4, 0),
+            leaderPos = Helper.getHardcodedPositionFromGUID('66cdbb', -19.0, 1.25, 17.5),
+            firstPlayerPosition = Helper.getHardcodedPositionFromGUID('346e0d', -14.0, 1.5, 19.7) + Vector(0, -0.4, 0),
             startEndTurnButton = "895594"
         },
         Blue = {
@@ -78,18 +78,18 @@ local Playboard = {
             leaderZone = "681774",
             dreadnoughts = {"82789e", "60f208"},
             dreadnoughtPositions = {
-                Core.getHardcodedPositionFromGUID('82789e', -26.3000412, 1.112601, -4.300036),
-                Core.getHardcodedPositionFromGUID('60f208', -28.7000523, 1.11260128, -4.300048)
+                Helper.getHardcodedPositionFromGUID('82789e', -26.3000412, 1.112601, -4.300036),
+                Helper.getHardcodedPositionFromGUID('60f208', -28.7000523, 1.11260128, -4.300048)
             },
             agents = {"64d013", "106d8b"},
             agentPositions = {
-                Core.getHardcodedPositionFromGUID('64d013', -17.0, 1.11060047, -2.70000482),
-                Core.getHardcodedPositionFromGUID('106d8b', -18.3, 1.11060047, -2.7)
+                Helper.getHardcodedPositionFromGUID('64d013', -17.0, 1.11060047, -2.70000482),
+                Helper.getHardcodedPositionFromGUID('106d8b', -18.3, 1.11060047, -2.7)
             },
             swordmaster = "a78ad7",
             councilToken = "f5b14a",
             fourPlayerVictoryToken = "311255",
-            fourPlayerVictoryTokenInitialPosition = Core.getHardcodedPositionFromGUID('311255', -13.0, 1.11223137, -1.14999938),
+            fourPlayerVictoryTokenInitialPosition = Helper.getHardcodedPositionFromGUID('311255', -13.0, 1.11223137, -1.14999938),
             scoreMarker = "1b1e76",
             flagBag = '8627e0',
             troops = {
@@ -107,17 +107,17 @@ local Playboard = {
                 "694553"
             },
             forceMarker = 'f22e20',
-            discardPosition = Core.getHardcodedPositionFromGUID('26bf8b', -14.0, 1.5, -6.5) + Helper.someHeight,
+            discardPosition = Helper.getHardcodedPositionFromGUID('26bf8b', -14.0, 1.5, -6.5) + Helper.someHeight,
             drawDeckZone = "907f66",
             discardZone = "26bf8b",
             trash = "52a539",
             tleilaxuToken = "96607f",
-            tleilaxuTokenInitalPosition = Core.getHardcodedPositionFromGUID('96607f', 0.544616759, 0.8800002, 22.75),
+            tleilaxuTokenInitalPosition = Helper.getHardcodedPositionFromGUID('96607f', 0.544616759, 0.8800002, 22.75),
             researchToken = "292658",
-            researchTokenInitalPosition = Core.getHardcodedPositionFromGUID('292658', 0.37, 0.8775002, 18.9369965),
+            researchTokenInitalPosition = Helper.getHardcodedPositionFromGUID('292658', 0.37, 0.8775002, 18.9369965),
             cargo = "68e424",
-            leaderPos = Core.getHardcodedPositionFromGUID('681774', -19.0, 1.25506675, -5.5),
-            firstPlayerPosition = Core.getHardcodedPositionFromGUID('1fc559', -14.0, 1.501278, -3.3) + Vector(0, -0.4, 0),
+            leaderPos = Helper.getHardcodedPositionFromGUID('681774', -19.0, 1.25506675, -5.5),
+            firstPlayerPosition = Helper.getHardcodedPositionFromGUID('1fc559', -14.0, 1.501278, -3.3) + Vector(0, -0.4, 0),
             startEndTurnButton = "9eeccd"
         },
         Green = {
@@ -130,18 +130,18 @@ local Playboard = {
             leaderZone = "cf1486",
             dreadnoughts = {"a15087", "734250"},
             dreadnoughtPositions = {
-                Core.getHardcodedPositionFromGUID('a15087', 26.2999744, 1.112601, 18.6999722),
-                Core.getHardcodedPositionFromGUID('734250', 28.69997, 1.11260116, 18.6999664)
+                Helper.getHardcodedPositionFromGUID('a15087', 26.2999744, 1.112601, 18.6999722),
+                Helper.getHardcodedPositionFromGUID('734250', 28.69997, 1.11260116, 18.6999664)
             },
             agents = {"66ae45", "bceb0e"},
             agentPositions = {
-                Core.getHardcodedPositionFromGUID('66ae45', 17.0, 1.11060035, 20.2999935),
-                Core.getHardcodedPositionFromGUID('bceb0e', 18.3, 1.11060047, 20.3)
+                Helper.getHardcodedPositionFromGUID('66ae45', 17.0, 1.11060035, 20.2999935),
+                Helper.getHardcodedPositionFromGUID('bceb0e', 18.3, 1.11060047, 20.3)
             },
             swordmaster = "fb1629",
             councilToken = "a0028d",
             fourPlayerVictoryToken = "66444c",
-            fourPlayerVictoryTokenInitialPosition = Core.getHardcodedPositionFromGUID('66444c', 13.0, 1.31223142, 21.85),
+            fourPlayerVictoryTokenInitialPosition = Helper.getHardcodedPositionFromGUID('66444c', 13.0, 1.31223142, 21.85),
             scoreMarker = "76039f",
             flagBag = 'ad6b92',
             troops = {
@@ -159,17 +159,17 @@ local Playboard = {
                 "fc9c62"
             },
             forceMarker = 'a1a9a7',
-            discardPosition = Core.getHardcodedPositionFromGUID('2298aa', 24.0, 1.5, 16.5) + Helper.someHeight,
+            discardPosition = Helper.getHardcodedPositionFromGUID('2298aa', 24.0, 1.5, 16.5) + Helper.someHeight,
             drawDeckZone = "6d8a2e",
             discardZone = "2298aa",
             trash = "4060b5",
             tleilaxuToken = "63d39f",
-            tleilaxuTokenInitalPosition = Core.getHardcodedPositionFromGUID('63d39f', 1.24461639, 0.8800001, 22.05),
+            tleilaxuTokenInitalPosition = Helper.getHardcodedPositionFromGUID('63d39f', 1.24461639, 0.8800001, 22.05),
             researchToken = "658b17",
-            researchTokenInitalPosition = Core.getHardcodedPositionFromGUID('658b17', 0.37, 0.877500236, 20.34),
+            researchTokenInitalPosition = Helper.getHardcodedPositionFromGUID('658b17', 0.37, 0.877500236, 20.34),
             cargo = "34281d",
-            leaderPos = Core.getHardcodedPositionFromGUID('cf1486', 19.0, 1.18726385, 17.5),
-            firstPlayerPosition = Core.getHardcodedPositionFromGUID('59523d', 14.0, 1.45146358, 19.7) + Vector(0, -0.4, 0),
+            leaderPos = Helper.getHardcodedPositionFromGUID('cf1486', 19.0, 1.18726385, 17.5),
+            firstPlayerPosition = Helper.getHardcodedPositionFromGUID('59523d', 14.0, 1.45146358, 19.7) + Vector(0, -0.4, 0),
             startEndTurnButton = "96aa58"
         },
         Yellow = {
@@ -182,18 +182,18 @@ local Playboard = {
             leaderZone = "a677e0",
             dreadnoughts = {"5469fb", "71a414"},
             dreadnoughtPositions = {
-                Core.getHardcodedPositionFromGUID('5469fb', 26.2999554, 1.11260116, -4.30001163),
-                Core.getHardcodedPositionFromGUID('71a414', 28.6999569, 1.11260128, -4.30003357)
+                Helper.getHardcodedPositionFromGUID('5469fb', 26.2999554, 1.11260116, -4.30001163),
+                Helper.getHardcodedPositionFromGUID('71a414', 28.6999569, 1.11260128, -4.30003357)
             },
             agents = {"5068c8", "67b476"},
             agentPositions = {
-                Core.getHardcodedPositionFromGUID('5068c8', 17.0, 1.11060035, -2.70000386),
-                Core.getHardcodedPositionFromGUID('67b476', 18.3, 1.11060047, -2.699999)
+                Helper.getHardcodedPositionFromGUID('5068c8', 17.0, 1.11060035, -2.70000386),
+                Helper.getHardcodedPositionFromGUID('67b476', 18.3, 1.11060047, -2.699999)
             },
             swordmaster = "635c49",
             councilToken = "1be491",
             fourPlayerVictoryToken = "4e8873",
-            fourPlayerVictoryTokenInitialPosition = Core.getHardcodedPositionFromGUID('4e8873', 13.0, 1.31223154, -1.14999938),
+            fourPlayerVictoryTokenInitialPosition = Helper.getHardcodedPositionFromGUID('4e8873', 13.0, 1.31223154, -1.14999938),
             scoreMarker = "20bbd1",
             flagBag = 'b92a4c',
             troops = {
@@ -211,17 +211,17 @@ local Playboard = {
                 "b5d32e"
             },
             forceMarker = 'c2dd31',
-            discardPosition = Core.getHardcodedPositionFromGUID('6bb3b6', 24.0, 1.5, -6.5) + Helper.someHeight,
+            discardPosition = Helper.getHardcodedPositionFromGUID('6bb3b6', 24.0, 1.5, -6.5) + Helper.someHeight,
             drawDeckZone = "e6cfee",
             discardZone = "6bb3b6",
             trash = "7d1e07",
             tleilaxuToken = "d20bcf",
-            tleilaxuTokenInitalPosition = Core.getHardcodedPositionFromGUID('d20bcf', 1.24461651, 0.880000234, 22.75),
+            tleilaxuTokenInitalPosition = Helper.getHardcodedPositionFromGUID('d20bcf', 1.24461651, 0.880000234, 22.75),
             researchToken = "8988cf",
-            researchTokenInitalPosition = Core.getHardcodedPositionFromGUID('8988cf', 0.37, 0.88, 19.6394081),
+            researchTokenInitalPosition = Helper.getHardcodedPositionFromGUID('8988cf', 0.37, 0.88, 19.6394081),
             cargo = "8fa76f",
-            leaderPos = Core.getHardcodedPositionFromGUID('a677e0', 19.0, 1.17902148, -5.5),
-            firstPlayerPosition = Core.getHardcodedPositionFromGUID('e9a44c', 14.0, 1.44851, -3.3) + Vector(0, -0.4, 0),
+            leaderPos = Helper.getHardcodedPositionFromGUID('a677e0', 19.0, 1.17902148, -5.5),
+            firstPlayerPosition = Helper.getHardcodedPositionFromGUID('e9a44c', 14.0, 1.44851, -3.3) + Vector(0, -0.4, 0),
             startEndTurnButton = "3d1b90"
         }
     },
@@ -229,6 +229,7 @@ local Playboard = {
     nextPlayer = nil
 }
 
+---
 function Playboard.onLoad(state)
     for color, unresolvedContent in pairs(Playboard.unresolvedContentByColor) do
         Playboard.playboards[color] = Playboard.new(color, unresolvedContent, state)
@@ -259,7 +260,7 @@ function Playboard.new(color, unresolvedContent, state)
     end
 
     if playboard.alive then
-        playboard.content = Core.resolveGUIDs(true, unresolvedContent)
+        playboard.content = Helper.resolveGUIDs(true, unresolvedContent)
     else
         log(color .. " player is not alive")
         return nil
@@ -286,7 +287,7 @@ function Playboard.new(color, unresolvedContent, state)
     playboard:createButtons()
     playboard:updateState()
 
-    Core.registerEventListener("locale", board.getGUID(), function ()
+    Helper.registerEventListener("locale", board.getGUID(), function ()
         playboard:createButtons()
     end)
 
@@ -310,14 +311,14 @@ function Playboard.setUp(ix, immortality, epic, activeOpponents)
         end
     end
 
-    Core.registerEventListener("phaseStart", "Playboard", function (phase, firstPlayer)
+    Helper.registerEventListener("phaseStart", "Playboard", function (phase, firstPlayer)
         if phase == "leaderSelection" or phase == "round" then
             local playboard = Playboard.playboards[firstPlayer]
             MainBoard.firstPlayerMarker.setPositionSmooth(playboard.content.firstPlayerPosition, false, false)
         end
     end)
 
-    Core.registerEventListener("phaseTurn", "Playboard", function (phase, color)
+    Helper.registerEventListener("phaseTurn", "Playboard", function (phase, color)
         local indexedColors = {"Green", "Yellow", "Blue", "Red"}
         for i, otherColor in ipairs(indexedColors) do
             local playboard = Playboard.playboards[otherColor]
@@ -669,7 +670,7 @@ end
 
 ---
 function Playboard:createExclusiveCallback(name, f)
-    return Helper.wrapCallback({"Playboard", name, self.color}, function (_, color, _)
+    return Helper.createGlobalCallback(function (_, color, _)
         if self.color == color then
             -- Inhibit the buttons for a short time.
             self.content.board.clearButtons()
@@ -686,7 +687,7 @@ end
 
 ---
 function Playboard:createCallback(name, f)
-    return Helper.wrapCallback({"Playboard", name, self.color}, function (_, color, _)
+    return Helper.createGlobalCallback(function (_, color, _)
         if self.color == color then
             f()
         else

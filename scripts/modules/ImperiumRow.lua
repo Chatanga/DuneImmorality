@@ -1,15 +1,16 @@
-local Core = require("utils.Core")
+local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local AcquireCard = require("utils.AcquireCard")
 
-local Deck = Helper.lazyRequire("Deck")
-local Playboard = Helper.lazyRequire("Playboard")
+local Deck = Module.lazyRequire("Deck")
+local Playboard = Module.lazyRequire("Playboard")
+local Action = Module.lazyRequire("Action")
 
 local ImperiumRow = {}
 
 ---
 function ImperiumRow.onLoad(state)
-    Helper.append(ImperiumRow, Core.resolveGUIDs(true, {
+    Helper.append(ImperiumRow, Helper.resolveGUIDs(true, {
         deckZone = "8bd982",
         reservationSlotZone = "473cf7",
         slotZones = {
@@ -21,9 +22,14 @@ function ImperiumRow.onLoad(state)
         }
     }))
 
-    AcquireCard.new(ImperiumRow.reservationSlotZone, "Imperium", ImperiumRow.acquireReservedImperiumCard)
-    for _, zone in ipairs(ImperiumRow.slotZones) do
-        AcquireCard.new(zone, "Imperium", ImperiumRow.acquireImperiumCard)
+    ImperiumRow.reseveAcquireCards = AcquireCard.new(ImperiumRow.reservationSlotZone, "Imperium", nil)
+
+    ImperiumRow.acquireCards = {}
+    for i, zone in ipairs(ImperiumRow.slotZones) do
+        local acquireCard = AcquireCard.new(zone, "Imperium", function (_, color)
+            Action.acquireImperiumCard(color, i)
+        end)
+        table.insert(ImperiumRow.acquireCards, acquireCard)
     end
 end
 
@@ -38,26 +44,46 @@ function ImperiumRow.setUp(ix, immortality)
 end
 
 ---
-function ImperiumRow.acquireReservedImperiumCard(acquireCard, color)
-    if Playboard.is(color, "helenaRichese") then
-        local card = Helper.getCard(acquireCard.zone)
+function ImperiumRow.acquireReservedImperiumCard(color)
+    local card = Helper.getCard(ImperiumRow.reseveAcquireCards.zone)
+    if card then
         Playboard.giveCard(color, card, false)
+        return true
+    else
+        return false
     end
 end
 
 ---
-function ImperiumRow.acquireImperiumCard(acquireCard, color)
+function ImperiumRow.reserveImperiumCard(indexInRow)
+    local acquireCard = ImperiumRow.acquireCards[indexInRow]
     local card = Helper.getCard(acquireCard.zone)
     if card then
-        if Playboard.is(color, "helenaRichese") and not Playboard.hasRevealed(color) then
-            -- Simply reserve the card.
-            card.setPosition(ImperiumRow.reservationSlotZone.getPosition())
-        else
-            Playboard.giveCard(color, card, false)
-        end
+        -- Simply reserve the card.
+        card.setPosition(ImperiumRow.reservationSlotZone.getPosition())
 
         -- Replenish the slot in the row.
         Helper.moveCardFromZone(ImperiumRow.deckZone, acquireCard.zone.getPosition(), Vector(0, 180, 0), false, false)
+
+        return true
+    else
+        return false
+    end
+end
+
+---
+function ImperiumRow.acquireImperiumCard(indexInRow, color)
+    local acquireCard = ImperiumRow.acquireCards[indexInRow]
+    local card = Helper.getCard(acquireCard.zone)
+    if card then
+        Playboard.giveCard(color, card, false)
+
+        -- Replenish the slot in the row.
+        Helper.moveCardFromZone(ImperiumRow.deckZone, acquireCard.zone.getPosition(), Vector(0, 180, 0), false, false)
+
+        return true
+    else
+        return false
     end
 end
 

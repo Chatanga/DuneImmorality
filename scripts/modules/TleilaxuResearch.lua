@@ -690,7 +690,7 @@ end
 
 ---
 function TleilaxuResearch.hasReachedOneHelices()
-    assert(false, "TODO")
+    error("TODO")
 end
 
 ---

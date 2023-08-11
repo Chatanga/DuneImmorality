@@ -1,16 +1,16 @@
-local Core = require("utils.Core")
+local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local AcquireCard = require("utils.AcquireCard")
 
-local Deck = Helper.lazyRequire("Deck")
-local Playboard = Helper.lazyRequire("Playboard")
-local Utils = Helper.lazyRequire("Utils")
+local Deck = Module.lazyRequire("Deck")
+local Playboard = Module.lazyRequire("Playboard")
+local Utils = Module.lazyRequire("Utils")
 
 local Intrigue = {}
 
 ---
 function Intrigue.onLoad(state)
-    Helper.append(Intrigue, Core.resolveGUIDs(true, {
+    Helper.append(Intrigue, Helper.resolveGUIDs(true, {
         deckZone = 'a377d8',
         discardZone = '80642b'
     }))

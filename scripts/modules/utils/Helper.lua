@@ -1,10 +1,129 @@
-local Core = require("utils.Core")
-
-local Helper = {}
+local Helper = {
+    eventListenersByTopic = {}
+}
 
 Helper.someHeight = Vector(0, 0.3, 0)
 
 math.randomseed(os.time())
+
+---
+function Helper.registerEventListener(topic, byTopicKey, listener)
+    assert(listener)
+    local listeners = Helper.eventListenersByTopic[topic]
+    if not listeners then
+        listeners = {}
+        Helper.eventListenersByTopic[topic] = listeners
+        --log("Adding Helper handle: " .. tostring(topic))
+        Helper["" .. topic] = function (...)
+            Helper.emitEvent(topic, ...)
+        end
+    end
+    listeners[byTopicKey] = listener
+end
+
+---
+function Helper.unregisterEventListener(topic, byTopicKey)
+    local listeners = Helper.eventListenersByTopic[topic]
+    assert(listeners and listeners[byTopicKey])
+    listeners[byTopicKey] = nil
+    if #Helper.eventListenersByTopic[topic] == 0 then
+        Helper.eventListenersByTopic[topic] = nil
+        Helper["" .. topic] = nil
+    end
+end
+
+---
+function Helper.emitEvent(topic, ...)
+    local listeners = Helper.eventListenersByTopic[topic]
+    if listeners then
+        for _, eventListener in pairs(listeners) do
+            eventListener(...)
+        end
+    end
+end
+
+---
+function Helper.getIdentity()
+    if self then
+        if self.guid == "-1" then
+            return "Global"
+        else
+            return self.getGUID() .. " - " .. self.getName()
+        end
+    else
+        return "?"
+    end
+end
+
+---
+function Helper.isSomeKindOfObject(data)
+    return getmetatable(data) ~= nil
+end
+
+---
+function Helper.stillExist(object)
+    return object and getObjectFromGUID(object.getGUID())
+end
+
+---
+function Helper.resolveGUIDs(reportUnresolvedGUIDs, data)
+    local newData = data
+    if data then
+        local t = type(data)
+        if t == "string" then
+            if string.match(data, "[a-z0-9][a-z0-9][a-z0-9][a-z0-9][a-z0-9][a-z0-9]") then
+                newData = getObjectFromGUID(data)
+                if not newData and reportUnresolvedGUIDs then
+                    log("[resolveGUIDs] Unknow GUID: '" .. data .. "'")
+                end
+            else
+                --log("[resolveGUIDs] Not a GUID: " .. data)
+                -- NOP
+            end
+        elseif t == "table" then
+            if not Helper.isSomeKindOfObject(data) then
+                newData = {}
+                for i, v in ipairs(data) do
+                    newData[i] = Helper.resolveGUIDs(reportUnresolvedGUIDs, v)
+                end
+                for k, v in pairs(data) do
+                    newData[k] = Helper.resolveGUIDs(reportUnresolvedGUIDs, v)
+                end
+            end
+        elseif t == "number" then
+            -- NOP
+        else
+            --log("[resolveGUIDs] Unknown type: " .. t)
+            -- NOP
+        end
+    end
+    return newData
+end
+
+--[[
+    A rather useless function in appearance. However, calls to this function are
+    intended to be patched by a small utility which will replace the provided
+    coordinates by those existing in the TTS save file.
+
+    Why not doing this replacement at runtime you're wondering? Because scripts
+    are reloaded on multiple occasions: when loading a mod (which is nothing
+    more than a blank save), when restoring a game at any point, but also when
+    spawning an object or simply moving an instance out of a bag.
+
+    In other words, no assumptions can be made on the world state, at least
+    regarding any object which can move around. This is especially true for
+    inline code running before 'onLoad' which can well be executed before all
+    legitimate objects have been created or recreated.
+
+    As such, things like taking the "initial" position of an object is doomed to
+    fail, and one shall rely on hardcoded positions or using some kind of anchor
+    objects. This function and its small update utility is simply a way to get
+    around this problem when developing by recovering a truly stable information.
+]]--
+---
+function Helper.getHardcodedPositionFromGUID(GUID, x, y, z)
+    return Vector(x, y, z)
+end
 
 ---
 function Helper.getLandingPositionFromGUID(anchorGUID)
@@ -319,7 +438,7 @@ function Helper.toVector(data)
     if not data then
         log("nothing to vectorize")
         return Vector(0, 0, 0)
-    elseif Core.isSomeKindOfObject(data) then
+    elseif Helper.isSomeKindOfObject(data) then
         return data
     else
         return Vector(data[1], data[2], data[3])
@@ -423,14 +542,14 @@ function Helper.newInheritingObject(superclass, class, instance)
 end
 
 ---
-function Helper.wrapCallback(keys, f)
-    local uniqueName = "callback"
-    for _, key in ipairs(keys) do
-        uniqueName = uniqueName .. "_" .. tostring(key)
-    end
+function Helper.createGlobalCallback(f)
+    local globalCounterName = "__generatedCallbackNextIndex"
+    local nextIndex = Global.getVar(globalCounterName) or 1
+    local uniqueName = "__generatedCallback" .. tostring(nextIndex)
     Global.setVar(uniqueName, function (object, color, altClick)
         f(object, color, altClick)
     end)
+    Global.setVar(globalCounterName, nextIndex + 1)
     return uniqueName
 end
 
@@ -573,34 +692,6 @@ function Helper.shuffle(table)
         local j = math.random(i)
         table[i], table[j] = table[j], table[i]
     end
-end
-
----
-function Helper.lazyRequire(moduleName)
-    local lazyModule = {}
-
-    local meta = {
-        module = nil
-    }
-    meta.__index = function(_, key)
-        if not meta.module then
-            meta.module = Helper.allModules[moduleName]
-        end
-        if meta.module then
-            local item = meta.module[key]
-            if type(item) ~= "function" then
-                log("Accessing inner field: " .. moduleName .. "." .. key)
-            end
-            return item
-        else
-            log("Unresolvable module " .. moduleName)
-            return nil
-        end
-    end
-
-    setmetatable(lazyModule, meta)
-
-    return lazyModule
 end
 
 ---

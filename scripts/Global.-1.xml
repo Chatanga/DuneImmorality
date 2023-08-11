@@ -2,7 +2,7 @@
 	<Defaults>
 		<Text class="primary" color="#8e5ab4" fontSize="16" alignment="MiddleLeft"/>
 		<Text class="secondary" color="#efd9ff" alignment="MiddleRight"/>
-		<Text class="note" color="#df9730" fontSize="10" fontStyle="italic" alignment="MiddleLeft"/>
+		<Text class="epigraph" color="#df9730" fontSize="12" fontStyle="italic" alignment="MiddleCenter"/>
 		<Dropdown itemBackgroundColors="#6c389244|#df9730|#FFFFFF|#361441" textColor="#6c3892" itemTextColor="#6c3892" fontStyle="bold"/>
 		<InputField colors="#00000000|#6c389244|#6c3892" textColor="#efd9ff" fontStyle="bold"/>
 		<Toggle colors="#efd9ff|#ffd60b|#efd9ff|#222222" textColor="#efd9ff"/>
@@ -11,6 +11,9 @@
 	<VerticalLayout>
 		<Image ignoreLayout="True" image="http://cloud-3.steamusercontent.com/ugc/2027234042549661387/D9B4C518F1CC8DB3B299B6552E439410D9346C33/"/>
 		<VerticalLayout padding="40 40 150 50">
+			<VerticalLayout padding="0 0 0 20">
+				<Text class="epigraph">"A setup is a very delicate time..."</Text>
+			</VerticalLayout>
 
 			<HorizontalLayout>
 				<Text class="primary">Language</Text>
@@ -31,9 +34,6 @@
 						<Option></Option>
 					</Dropdown>
 				</HorizontalLayout>
-				<!--VerticalLayout padding="25 0 0 0">
-					<Text class="note">Don't use native hot seat games!</Text>
-				</VerticalLayout-->
 			</VerticalLayout>
 
 			<Text class="primary">Extensions</Text>

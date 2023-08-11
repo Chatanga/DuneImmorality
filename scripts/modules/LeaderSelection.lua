@@ -1,10 +1,10 @@
-local Core = require("utils.Core")
+local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 
-local Deck = Helper.lazyRequire("Deck")
-local TurnControl = Helper.lazyRequire("TurnControl")
-local Playboard = Helper.lazyRequire("Playboard")
-local Hagal = Helper.lazyRequire("Hagal")
+local Deck = Module.lazyRequire("Deck")
+local TurnControl = Module.lazyRequire("TurnControl")
+local Playboard = Module.lazyRequire("Playboard")
+local Hagal = Module.lazyRequire("Hagal")
 
 local LeaderSelection = {
     selectionMethods = {
@@ -18,7 +18,7 @@ local LeaderSelection = {
 
 ---
 function LeaderSelection.onLoad(state)
-    Helper.append(LeaderSelection, Core.resolveGUIDs(true, {
+    Helper.append(LeaderSelection, Helper.resolveGUIDs(true, {
         deckZone = getObjectFromGUID("23f2b5"),
         secondaryTable = getObjectFromGUID("662ced"),
     }))
@@ -34,7 +34,7 @@ function LeaderSelection.setUp(ix, immortality, fanMadeLeaders, opponents, selec
         elseif selectionMethod == "hiddenPick" then
             LeaderSelection.setUpPicking(opponents, #deck.getObjects(), false, true)
         else
-            assert(false, LeaderSelection)
+            error(LeaderSelection)
         end
 
         LeaderSelection.layoutLeaders(#deck.getObjects(), function (_, position)
@@ -77,7 +77,7 @@ function LeaderSelection.setUpPicking(opponents, numberOfLeaders, random, hidden
 
     if hidden then
         Helper.createAbsoluteButtonWithRoundness(LeaderSelection.secondaryTable, 2, false, {
-            click_function = Helper.wrapCallback({ "nop" }, function () end),
+            click_function = Helper.createGlobalCallback(function () end),
             label = "Adjust the number of leaders who will be randomly\nselected for the players to choose among:",
             position = LeaderSelection.secondaryTable.getPosition() + Vector(0, 1.8, -28),
             width = 0,
@@ -96,7 +96,7 @@ function LeaderSelection.setUpPicking(opponents, numberOfLeaders, random, hidden
         -- TTS input widgets are shitty. Let's forget them.
 
         Helper.createAbsoluteButtonWithRoundness(LeaderSelection.secondaryTable, 2, false, {
-            click_function = Helper.wrapCallback({ "leaderSelectionPoolSizeMinus" }, function ()
+            click_function = Helper.createGlobalCallback(function ()
                 adjustValue(LeaderSelection.leaderSelectionPoolSize - 1)
             end),
             label = "-",
@@ -109,7 +109,7 @@ function LeaderSelection.setUpPicking(opponents, numberOfLeaders, random, hidden
         })
 
         Helper.createAbsoluteButtonWithRoundness(LeaderSelection.secondaryTable, 1, false, {
-            click_function = Helper.wrapCallback({ "nop" }, function () end),
+            click_function = Helper.createGlobalCallback(function () end),
             label = tostring(LeaderSelection.leaderSelectionPoolSize),
             position = LeaderSelection.secondaryTable.getPosition() + Vector(0, 1.8, -29),
             width = 0,
@@ -119,7 +119,7 @@ function LeaderSelection.setUpPicking(opponents, numberOfLeaders, random, hidden
         })
 
         Helper.createAbsoluteButtonWithRoundness(LeaderSelection.secondaryTable, 2, false, {
-            click_function = Helper.wrapCallback({ "leaderSelectionPoolSizePlus" }, function ()
+            click_function = Helper.createGlobalCallback(function ()
                 adjustValue(LeaderSelection.leaderSelectionPoolSize + 1)
             end),
             label = "+",
@@ -133,7 +133,7 @@ function LeaderSelection.setUpPicking(opponents, numberOfLeaders, random, hidden
     end
 
     Helper.createAbsoluteButtonWithRoundness(LeaderSelection.secondaryTable, 2, false, {
-        click_function = Helper.wrapCallback({ "nop" }, function () end),
+        click_function = Helper.createGlobalCallback(function () end),
         label = "You can flip out (or delete) any leader you want to exclude.\nOnce satisfied, hit the 'Start' button.",
         position = LeaderSelection.secondaryTable.getPosition() + Vector(0, 1.8, -30),
         width = 0,
@@ -143,7 +143,7 @@ function LeaderSelection.setUpPicking(opponents, numberOfLeaders, random, hidden
     })
 
     Helper.createAbsoluteButtonWithRoundness(LeaderSelection.secondaryTable, 2, false, {
-        click_function = Helper.wrapCallback({ "startLeaderSelection" }, function ()
+        click_function = Helper.createGlobalCallback(function ()
             if #LeaderSelection.getVisibleLeaders() >= #Helper.getKeys(opponents) then
                 local visibleLeaders = LeaderSelection.prepareVisibleLeaders(hidden)
                 LeaderSelection.createDynamicLeaderSelection(visibleLeaders)
@@ -163,7 +163,7 @@ function LeaderSelection.setUpPicking(opponents, numberOfLeaders, random, hidden
     })
 
     if random then
-        Core.registerEventListener("phaseStart", "LeaderSelection", function (phase, _)
+        Helper.registerEventListener("phaseStart", "LeaderSelection", function (phase, _)
             if phase == 'leaderSelection' then
                 -- Rivals
                 for color, opponent in pairs(opponents) do
@@ -184,7 +184,7 @@ function LeaderSelection.setUpPicking(opponents, numberOfLeaders, random, hidden
     end
 
     if hidden then
-        Core.registerEventListener("phaseTurn", "LeaderSelection", function (phase, color)
+        Helper.registerEventListener("phaseTurn", "LeaderSelection", function (phase, color)
             if phase == 'leaderSelection' then
                 local remainingLeaders = {}
                 for leader, selected in pairs(LeaderSelection.dynamicLeaderSelection) do
@@ -201,7 +201,7 @@ function LeaderSelection.setUpPicking(opponents, numberOfLeaders, random, hidden
         end)
     end
 
-    Core.registerEventListener("phaseEnd", "LeaderSelection", function (phase)
+    Helper.registerEventListener("phaseEnd", "LeaderSelection", function (phase)
         if phase == 'leaderSelection' then
             for leader, selected in pairs(LeaderSelection.dynamicLeaderSelection) do
                 if selected then
@@ -262,7 +262,7 @@ function LeaderSelection.createDynamicLeaderSelection(leaders)
             LeaderSelection.dynamicLeaderSelection[leader] = false
             local position = leader.getPosition()
             Helper.createAbsoluteButtonWithRoundness(leader, 1, false, {
-                click_function = Helper.wrapCallback({ "LeaderSelection", i }, function (_, color, _)
+                click_function = Helper.createGlobalCallback(function (_, color, _)
                     if color == TurnControl.getCurrentPlayer() then
                         LeaderSelection.claimLeader(color, leader)
                         Wait.time(TurnControl.endOfTurn, 1)

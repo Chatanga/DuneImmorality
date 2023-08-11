@@ -1,17 +1,17 @@
-local Core = require("utils.Core")
+local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local I18N = require("utils.I18N")
 local AcquireCard = require("utils.AcquireCard")
 
-local Deck = Helper.lazyRequire("Deck")
-local Playboard = Helper.lazyRequire("Playboard")
-local TleilaxuResearch = Helper.lazyRequire("TleilaxuResearch")
+local Deck = Module.lazyRequire("Deck")
+local Playboard = Module.lazyRequire("Playboard")
+local TleilaxuResearch = Module.lazyRequire("TleilaxuResearch")
 
 local TleilaxuRow = {}
 
 ---
 function TleilaxuRow.onLoad(_)
-    Helper.append(TleilaxuRow, Core.resolveGUIDs(true, {
+    Helper.append(TleilaxuRow, Helper.resolveGUIDs(true, {
         deckZone = "14b2ca",
         slotZones = {
             'e5ba35',

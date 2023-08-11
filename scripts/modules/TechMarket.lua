@@ -1,11 +1,11 @@
-local Core = require("utils.Core")
+local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local Park = require("utils.Park")
 local AcquireCard = require("utils.AcquireCard")
 
-local Playboard = Helper.lazyRequire("Playboard")
-local Action = Helper.lazyRequire("Action")
-local Deck = Helper.lazyRequire("Deck")
+local Playboard = Module.lazyRequire("Playboard")
+local Action = Module.lazyRequire("Action")
+local Deck = Module.lazyRequire("Deck")
 
 local TechMarket = {
     techCosts = {
@@ -46,7 +46,7 @@ function TechMarket.setUp()
 
     TechMarket.createNegotiationButton()
 
-    TechMarket.techSlotZones = Core.resolveGUIDs(true, {
+    TechMarket.techSlotZones = Helper.resolveGUIDs(true, {
         "7e131d",
         "5a22f7",
         "9c81c1"
@@ -74,7 +74,7 @@ function TechMarket.createNegotiationButton()
     Helper.createTransientAnchor("AgentPark", Vector(position.x, 0.4, position.z)).doAfter(function (anchor)
         anchor.interactable = false
         Helper.createAbsoluteButtonWithRoundness(anchor, 1, false, {
-            click_function = Helper.wrapCallback({ "TechNegotiation" }, function (_, color, altClick)
+            click_function = Helper.createGlobalCallback(function (_, color, altClick)
                 if altClick then
                     Action.troops(color, "negotiation", "supply", 1)
                 else

@@ -527,39 +527,27 @@ function Deck.generateTechDeck(deckZones)
 end
 
 --
-function Deck.generateConflictDeck(deckZone, discardZone, ix, epic)
+function Deck.generateConflictDeck(deckZone, ix, epic)
     assert(deckZone)
     local continuation = Helper.createContinuation()
 
     local cardCounts = epic and { 0, 5, 5 } or { 1, 5, 4 }
 
-    local holder = {}
-    holder.generator = function (level)
-        if level > 0 then
-            local cardCount = cardCounts[level]
-            if cardCount > 0 then
-                local position = deckZone.getPosition() + Vector(0, 4 - level, 0)
-                local contributions = Deck.mergeStandardContributionSets(Deck.conflict["level" .. tostring(level)], ix, false)
-                Deck.generateDeck("Conflict", position, contributions, Deck.sources.conflict).doAfter(function (deck)
-                    holder.generator(level - 1)
-                    deck.shuffle()
-                    local n = #deck.getObjects() - cardCounts[level]
-                    for _ = 1, n do
-                        deck.takeObject({ position = discardZone.getPosition() })
-                    end
-                end)
-            else
-                holder.generator(level - 1)
+    local contributions = {}
+    for level = 1, 3 do
+        local cardCount = cardCounts[level]
+        if cardCount > 0 then
+            local levelContributions = Deck.mergeStandardContributionSets(Deck.conflict["level" .. tostring(level)], ix, false)
+            local cardNames = Helper.getKeys(levelContributions)
+            Helper.shuffle(cardNames)
+            for i = 1, cardCounts[level] do
+                contributions[cardNames[i]] = 1
             end
-        else
-            Wait.time(function ()
-                Helper.getDeckOrCard(discardZone).destruct()
-                continuation.run(Helper.getDeckOrCard(deckZone))
-            end, 2)
         end
     end
 
-    holder.generator(3)
+    local position = deckZone.getPosition() + Vector(0, 1, 0)
+    Deck.generateDeck("Conflict", position, contributions, Deck.sources.conflict).doAfter(continuation.run)
 
     return continuation
 end

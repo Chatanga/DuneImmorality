@@ -1,9 +1,9 @@
-local Core = require("utils.Core")
+local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 
-local Deck = Helper.lazyRequire("Deck")
-local TurnControl = Helper.lazyRequire("TurnControl")
-local LeaderSelection = Helper.lazyRequire("LeaderSelection")
+local Deck = Module.lazyRequire("Deck")
+local TurnControl = Module.lazyRequire("TurnControl")
+local LeaderSelection = Module.lazyRequire("LeaderSelection")
 
 local Hagal = {
     soloDifficulties = {
@@ -26,7 +26,7 @@ local Hagal = {
 
 ---
 function Hagal.onLoad(state)
-    Helper.append(Hagal, Core.resolveGUIDs(true, {
+    Helper.append(Hagal, Helper.resolveGUIDs(true, {
         deckZone = "8f49e3",
     }))
 end

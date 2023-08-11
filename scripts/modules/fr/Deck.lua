@@ -29,7 +29,7 @@ customDecks.fr = {
 ]]--
 
 function Deck.loadCustomDecks(loader)
-    assert(false, "TODO")
+    error("TODO")
 end
 
 --[[

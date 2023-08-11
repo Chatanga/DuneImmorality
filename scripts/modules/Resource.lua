@@ -1,9 +1,9 @@
-local Core = require("utils.Core")
+local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local I18N = require("utils.I18N")
 
-local TurnControl = Helper.lazyRequire("TurnControl")
-local Playboard = Helper.lazyRequire("Playboard")
+local TurnControl = Module.lazyRequire("TurnControl")
+local Playboard = Module.lazyRequire("Playboard")
 
 local Resource = {
     MIN_VALUE = 0,
@@ -67,7 +67,7 @@ function Resource.new(token, color, resourceName, value, state)
         color = { 0, 0, 0, 0 }
     })
 
-    Core.registerEventListener("locale", token.getGUID(), function ()
+    Helper.registerEventListener("locale", token.getGUID(), function ()
         resource:updateButton()
     end)
 

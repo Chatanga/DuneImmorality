@@ -1,8 +1,8 @@
-Core = require("utils.Core")
-Helper = require("utils.Helper")
+local Module = require("utils.Module")
+local Helper = require("utils.Helper")
 
-local Playboard = Helper.lazyRequire("Playboard")
-local Hagal = Helper.lazyRequire("Hagal")
+local Playboard = Module.lazyRequire("Playboard")
+local Hagal = Module.lazyRequire("Hagal")
 
 local TurnControl = {
     phaseOrder = {
@@ -70,7 +70,7 @@ function TurnControl.startPhase(phase, reversed)
 
     TurnControl.reversed = reversed
     if TurnControl.currentPhase then
-        Core.emitEvent("phaseEnd", TurnControl.currentPhase)
+        Helper.emitEvent("phaseEnd", TurnControl.currentPhase)
     end
     TurnControl.currentPhase = phase
     if reversed then
@@ -78,7 +78,7 @@ function TurnControl.startPhase(phase, reversed)
     else
         TurnControl.currentPlayerLuaIndex = TurnControl.firstPlayerLuaIndex
     end
-    Core.emitEvent("phaseStart", TurnControl.currentPhase, TurnControl.players[TurnControl.firstPlayerLuaIndex])
+    Helper.emitEvent("phaseStart", TurnControl.currentPhase, TurnControl.players[TurnControl.firstPlayerLuaIndex])
 
     Wait.frames(function ()
         TurnControl.next(TurnControl.currentPlayerLuaIndex)
@@ -97,7 +97,7 @@ function TurnControl.next(starPlayerLuaIndex)
     if TurnControl.currentPlayerLuaIndex then
         local player = TurnControl.players[TurnControl.currentPlayerLuaIndex]
         log("Turn phase: " .. player)
-        Core.emitEvent("phaseTurn", TurnControl.currentPhase, player)
+        Helper.emitEvent("phaseTurn", TurnControl.currentPhase, player)
     else
         local nextPhase = TurnControl.getNextPhase(TurnControl.currentPhase)
         if nextPhase then

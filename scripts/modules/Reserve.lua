@@ -1,15 +1,15 @@
-local Core = require("utils.Core")
+local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local AcquireCard = require("utils.AcquireCard")
 
-local Deck = Helper.lazyRequire("Deck")
-local Playboard = Helper.lazyRequire("Playboard")
+local Deck = Module.lazyRequire("Deck")
+local Playboard = Module.lazyRequire("Playboard")
 
 local Reserve = {}
 
 ---
 function Reserve.onLoad(_)
-    Helper.append(Reserve, Core.resolveGUIDs(true, {
+    Helper.append(Reserve, Helper.resolveGUIDs(true, {
         foldspaceSlotZone = "6b62e0",
         arrakisLiaisonSlotZone = "cbcd9a",
         theSpiceMustFlowSlotZone = "c087d2"

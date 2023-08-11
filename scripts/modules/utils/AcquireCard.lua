@@ -1,4 +1,3 @@
-local Core = require("utils.Core")
 local Helper = require("utils.Helper")
 local I18N = require("utils.I18N")
 
@@ -24,7 +23,7 @@ function AcquireCard.new(zone, snapPointTag, acquire)
         if acquire then
             acquireCard:createButton(acquire)
 
-            Core.registerEventListener("locale", anchor.getGUID(), function ()
+            Helper.registerEventListener("locale", anchor.getGUID(), function ()
                 anchor.clearButtons()
                 acquireCard:createButton(acquire)
             end)
@@ -36,8 +35,7 @@ function AcquireCard.new(zone, snapPointTag, acquire)
                 end
             end
 
-            Core.registerEventListener("onObjectEnterScriptingZone", anchor.getGUID(), updateButtonHeight)
-            Core.registerEventListener("onObjectLeaveScriptingZone", anchor.getGUID(), updateButtonHeight)
+            Helper.registerEventListener("objectEnterOrLeaveScriptingZone", anchor.getGUID(), updateButtonHeight)
         end
     end)
 
@@ -45,8 +43,18 @@ function AcquireCard.new(zone, snapPointTag, acquire)
 end
 
 ---
+function AcquireCard.onObjectEnterScriptingZone(...)
+    Helper.emitEvent("objectEnterOrLeaveScriptingZone", ...)
+end
+
+---
+function AcquireCard.onObjectLeaveScriptingZone(...)
+    Helper.emitEvent("objectEnterOrLeaveScriptingZone", ...)
+end
+
+---
 function AcquireCard:createButton(acquire)
-    local callback = Helper.wrapCallback({"AcquireCard", self.anchor.getGUID()}, function (_, color, _)
+    local callback = Helper.createGlobalCallback(function (_, color, _)
         acquire(self, color)
     end)
     self:createAbsoluteAcquireButton(callback)

@@ -1,21 +1,21 @@
-local Core = require("utils.Core")
+local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local Park = require("utils.Park")
 
-local Resource = Helper.lazyRequire("Resource")
-local Utils = Helper.lazyRequire("Utils")
-local Playboard = Helper.lazyRequire("Playboard")
-local InfluenceTrack = Helper.lazyRequire("InfluenceTrack")
-local Action = Helper.lazyRequire("Action")
-local TleilaxuResearch = Helper.lazyRequire("TleilaxuResearch")
-local TechMarket = Helper.lazyRequire("TechMarket")
-local Combat = Helper.lazyRequire("Combat")
+local Resource = Module.lazyRequire("Resource")
+local Utils = Module.lazyRequire("Utils")
+local Playboard = Module.lazyRequire("Playboard")
+local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
+local Action = Module.lazyRequire("Action")
+local TleilaxuResearch = Module.lazyRequire("TleilaxuResearch")
+local TechMarket = Module.lazyRequire("TechMarket")
+local Combat = Module.lazyRequire("Combat")
 
 local MainBoard = {}
 
 ---
 function MainBoard.onLoad(state)
-    Helper.append(MainBoard, Core.resolveGUIDs(true, {
+    Helper.append(MainBoard, Helper.resolveGUIDs(true, {
         board = "2da390",
         factions = {
             emperor = {
@@ -113,7 +113,7 @@ function MainBoard.onLoad(state)
         phaseMarker = "fb41e2"
     }))
 
-    local p = Core.getHardcodedPositionFromGUID('fb41e2', -4.08299875, 0.721966565, -12.0102692)
+    local p = Helper.getHardcodedPositionFromGUID('fb41e2', -4.08299875, 0.721966565, -12.0102692)
     local offset = Vector(0, 0, -0.64)
     MainBoard.phaseMarkerPositions = {
         roundStart = p + offset * 0,
@@ -173,30 +173,9 @@ function MainBoard.createSpaceButton(space, position, slots)
         end
         anchor.setSnapPoints(snapPoints)
 
-        local asyncActionName = Helper.toCamelCase("asyncGo", space.name)
-        local actionName = Helper.toCamelCase("go", space.name)
         Helper.createAbsoluteButtonWithRoundness(anchor, 10, false, {
-            click_function = Helper.wrapCallback({ actionName }, function (_, color, _)
-                local asyncAction = MainBoard[asyncActionName]
-                local action = MainBoard[actionName]
-                if not Park.isEmpty(Playboard.getAgentPark(color)) then
-                    local agentPark = Playboard.getAgentPark(color)
-                    if asyncAction then
-                        asyncAction(color).doAfter(function (success)
-                            if success then
-                                Park.transfert(1, agentPark, space.park)
-                                Action.sendAgent(space.name, {}, {})
-                            end
-                        end)
-                    elseif action then
-                        if action(color) then
-                            Park.transfert(1, agentPark, space.park)
-                            Action.sendAgent(space.name, {}, {})
-                        end
-                    else
-                        log("Unknow space action: " .. actionName)
-                    end
-                end
+            click_function = Helper.createGlobalCallback(function (_, color, _)
+                MainBoard.sendAgent(color, space.name)
             end),
             position = Vector(position.x, 0.7, position.z),
             width = space.zone.getScale().x * 500,
@@ -208,58 +187,31 @@ function MainBoard.createSpaceButton(space, position, slots)
     end)
 end
 
-function MainBoard.disabled__onObjectDrop(color, object)
-    if Utils.isAgent(color, object) then
-        Wait.condition(
-            function ()
-                for spaceName, space in pairs(MainBoard.spaces) do
-                    if Helper.contains(space.zone, object) then
-                        MainBoard.disabled__activateSpace(color, spaceName, object)
-                        break
-                    end
-                end
-            end,
-            function ()
-                return object.resting
-            end,
-            1)
-    end
-end
-
-function MainBoard.disabled__activateSpace(color, spaceName, object)
-    object.setLock(true)
-    local agentColor = object.getColorTint()
-    object.setColorTint({ 0.5, 0.5, 0.5, 1 })
-
-    local success = false
-    local actionName = Helper.toCamelCase("go", spaceName)
-    local action = MainBoard[actionName]
-    if action then
-        Action.sendAgent(spaceName, {}, {})
-        success = action(color)
-    else
-        log("Unknow space action: " .. actionName)
-    end
-
+---
+function MainBoard.sendAgent(color, spaceName)
     local space = MainBoard.spaces[spaceName]
-    local p = space.zone.getPosition() + Vector(0.82, 0, 0.62)
-    p:setAt('y', 0.76)
-    spawnObject({
-        type = 'Chinese_Checkers_Piece',
-        position = p,
-        scale = { 0.2, 0.2, 0.2 },
-        sound = true,
-        locked = true,
-        callback_function = function (marble)
-            marble.setColorTint(success and { 0, 1, 0, 1 } or { 1, 0, 0, 1 })
-            Helper.markAsTransient(marble)
-            Wait.time(function ()
-                marble.destruct()
-                object.setLock(false)
-                object.setColorTint(agentColor)
-            end, 1)
+
+    local asyncActionName = Helper.toCamelCase("asyncGo", space.name)
+    local actionName = Helper.toCamelCase("go", space.name)
+
+    local asyncAction = MainBoard[asyncActionName]
+    local action = MainBoard[actionName]
+    if not Park.isEmpty(Playboard.getAgentPark(color)) then
+        local agentPark = Playboard.getAgentPark(color)
+        if asyncAction then
+            asyncAction(color).doAfter(function (success)
+                if success then
+                    Park.transfert(1, agentPark, space.park)
+                end
+            end)
+        elseif action then
+            if action(color) then
+                Park.transfert(1, agentPark, space.park)
+            end
+        else
+            log("Unknow space action: " .. actionName)
         end
-    })
+    end
 end
 
 ---
@@ -501,7 +453,7 @@ end
 
 ---
 function MainBoard.getHighCouncilSeatPosition(color)
-    assert(false, "TODO (create a high council park)")
+    error("TODO (create a high council park)")
     return nil
 end
 

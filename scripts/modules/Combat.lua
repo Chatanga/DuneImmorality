@@ -1,9 +1,10 @@
-local Core = require("utils.Core")
-local Park = require("utils.Park")
+local Module = require("utils.Module")
 local Helper = require("utils.Helper")
+local Park = require("utils.Park")
 
-local Playboard = Helper.lazyRequire("Playboard")
-local Action = Helper.lazyRequire("Action")
+local Playboard = Module.lazyRequire("Playboard")
+local Action = Module.lazyRequire("Action")
+local Deck = Module.lazyRequire("Deck")
 
 local Combat = {
     origins = {
@@ -15,7 +16,9 @@ local Combat = {
 }
 
 function Combat.onLoad(_)
-    Helper.append(Combat, Core.resolveGUIDs(true, {
+    Helper.append(Combat, Helper.resolveGUIDs(true, {
+        conflictDeckZone = getObjectFromGUID("07e239"),
+        conflictDiscardZone = getObjectFromGUID("43f00f"),
         combatDetectionZone = "722609",
         combatCenterZone = "6d632e",
         combatTokenZone = "1d4424",
@@ -24,7 +27,7 @@ end
 
 ---
 function Combat.setUp(ix, epic)
-    Helper.allModules.Deck.generateConflictDeck(getObjectFromGUID("07e239"), getObjectFromGUID("43f00f"), ix, epic)
+    Deck.generateConflictDeck(Combat.conflictDeckZone, ix, epic)
 
     Combat.garrisonParks = {}
     for color, _ in pairs(Playboard.getPlayboardByColor()) do
@@ -105,7 +108,7 @@ function Combat.createButton(color, park)
     local areaColor = Color.fromString(color)
     areaColor:setAt('a', 0.3)
     Helper.createAbsoluteButtonWithRoundness(park.anchor, 7, false, {
-        click_function = Helper.wrapCallback({ color, "Garrison" }, function (_, playerColor, altClick)
+        click_function = Helper.createGlobalCallback(function (_, playerColor, altClick)
             if playerColor == color then
                 if altClick then
                     Action.troops(color, "garrison", "supply", 1)

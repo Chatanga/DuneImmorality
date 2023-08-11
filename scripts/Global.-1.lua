@@ -1,39 +1,39 @@
-local Core = require("utils.Core")
+local constructionModeEnabled = false
+local validateDefaultSetup = false
+
+local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local XmlUI = require("utils.XmlUI")
 
-local constructionModeEnabled = false
-
--- FIXME Too specific.
-require("Locales")
-Locale = "fr"
-
-Helper.allModules = {
+--[[
+    Remember that 'require' must have a literal parameter, since it is not a
+    real function, but simply a macro for 'luabundler'.
+]]--
+local allModules = Module.registerModules({
     Action = require("Action"),
     Combat = require("Combat"),
+    CommercialTrack = require("CommercialTrack"),
     Deck = require("Deck"),
+    Hagal = require("Hagal"),
     ImperiumRow = require("ImperiumRow"),
+    InfluenceTrack = require("InfluenceTrack"),
     Intrigue = require("Intrigue"),
+    Leader = require("Leader"),
+    LeaderSelection = require("LeaderSelection"),
+    Locales = require("Locales"),
     MainBoard = require("MainBoard"),
     Playboard = require("Playboard"),
-    InfluenceTrack = require("InfluenceTrack"),
     Reserve = require("Reserve"),
     Resource = require("Resource"),
+    TechMarket = require("TechMarket"),
     TleilaxuResearch = require("TleilaxuResearch"),
     TleilaxuRow = require("TleilaxuRow"),
     TurnControl = require("TurnControl"),
     Utils = require("Utils"),
-    CommercialTrack = require("CommercialTrack"),
-    TechMarket = require("TechMarket"),
-    LeaderSelection = require("LeaderSelection"),
-    Hagal = require("Hagal"),
-    Leader = require("Leader"),
-}
+})
 
 local state = {
 }
-
-local setupUI
 
 local settings = {
     color_all = {
@@ -60,13 +60,13 @@ local settings = {
         "4 (hotseat)"
     },
     numberOfPlayers = {},
-    difficulty_all = Helper.allModules.Hagal.soloDifficulties,
+    difficulty_all = allModules.Hagal.soloDifficulties,
     difficulty = {},
     riseOfIx = true,
     epicMode = false,
     immortality = true,
     goTo11 = false,
-    leaderSelection_all = Helper.allModules.LeaderSelection.selectionMethods,
+    leaderSelection_all = allModules.LeaderSelection.selectionMethods,
     leaderSelection = "reversePick",
     fanMadeLeaders = false,
     variant_all = {
@@ -77,18 +77,18 @@ local settings = {
     variant = "none"
 }
 
+local setupUI
+
 ---
 function onLoad(scriptState)
-    log("[Global]")
     log("--------< Dune Immorality >--------")
     Helper.destroyTransientObjects()
 
     if constructionModeEnabled then
-        --Global.UI.hide("setupPane")
         return
     end
 
-    local inventory = Core.resolveGUIDs(true, {
+    local inventory = Helper.resolveGUIDs(true, {
         primaryTable = "2b4b92",
         secondaryTable = "662ced",
     })
@@ -97,20 +97,23 @@ function onLoad(scriptState)
     end
 
     state = scriptState ~= "" and JSON.decode(scriptState) or {}
+    Module.redirect("onLoad", state)
 
-    for moduleName, module in pairs(Helper.allModules) do
-        if module["onLoad"] then
-            --log("[" .. moduleName .. "]")
-            module["onLoad"](state)
-        end
-    end
+    Module.registerModuleRedirections({
+        "onPlayerTurn",
+        "onObjectEnterScriptingZone",
+        "onObjectLeaveScriptingZone",
+        "onObjectDrop",
+        "onPlayerChangeColor",
+        "onPlayerConnect",
+        "onPlayerDisconnect" })
 
     setupUI = XmlUI.new(Global, "setupPane", settings)
-    if true then
+    if validateDefaultSetup then
+        Wait.frames(setUp, 1)
+    else
         setupUI:show()
         updateSetupButton()
-    else
-        Wait.frames(setUp, 1)
     end
 end
 
@@ -124,50 +127,18 @@ function onSave()
 end
 
 ---
-function onPlayerTurn(player, previousPlayer)
-    dispatchEvent("onPlayerTurn", player, previousPlayer)
-end
-
----
-function onObjectEnterScriptingZone(zone, enterObject)
-    dispatchEvent("onObjectEnterScriptingZone", zone, enterObject)
-end
-
----
-function onObjectLeaveScriptingZone(zone, enterObject)
-    dispatchEvent("onObjectLeaveScriptingZone", zone, enterObject)
-end
-
----
-function onObjectDrop(playerColor, object)
-    dispatchEvent("onObjectDrop", playerColor, object)
-end
-
----
-function onPlayerChangeColor(playerColor)
+function onPlayerChangeColor(color)
     updateSetupButton()
-    dispatchEvent("onPlayerChangeColor", playerColor)
 end
 
 ---
-function onPlayerConnect(playerColor)
+function onPlayerConnect(color)
     updateSetupButton()
-    dispatchEvent("onPlayerConnect", playerColor)
 end
 
 ---
-function onPlayerDisconnect(playerColor)
+function onPlayerDisconnect(color)
     updateSetupButton()
-    dispatchEvent("onObjectDrop", onPlayerDisconnect)
-end
-
----
-function dispatchEvent(name, ...)
-    for _, module in pairs(Helper.allModules) do
-        if module[name] then
-            module[name](...)
-        end
-    end
 end
 
 local PlayerSet = {}
@@ -191,7 +162,7 @@ function setUp()
     local fanMadeLeaders = settings.fanMadeLeaders == true
     local variant = settings.variant
 
-    local properlySeatedPlayers = getProperlySeatedPlayers()
+    local properlySeatedPlayers = PlayerSet.getProperlySeatedPlayers()
     if not virtualHotSeat then
         numberOfPlayers = math.min(4, #properlySeatedPlayers)
     end
@@ -201,37 +172,37 @@ function setUp()
         PlayerSet.randomizePlayerPositions(activeOpponents)
     end
 
-    Helper.allModules.Playboard.setUp(riseOfIx, immortality, epicMode, activeOpponents)
-    Helper.allModules.Combat.setUp(riseOfIx, epicMode)
-    Helper.allModules.LeaderSelection.setUp(riseOfIx, immortality, fanMadeLeaders, activeOpponents, leaderSelection)
+    allModules.Playboard.setUp(riseOfIx, immortality, epicMode, activeOpponents)
+    allModules.Combat.setUp(riseOfIx, epicMode)
+    allModules.LeaderSelection.setUp(riseOfIx, immortality, fanMadeLeaders, activeOpponents, leaderSelection)
 
     if numberOfPlayers < 3 then
-        Helper.allModules.Hagal.setUp(riseOfIx, immortality, numberOfPlayers, difficulty)
+        allModules.Hagal.setUp(riseOfIx, immortality, numberOfPlayers, difficulty)
     else
-        Helper.allModules.Hagal.tearDown()
+        allModules.Hagal.tearDown()
     end
 
-    Helper.allModules.MainBoard.setUp(riseOfIx)
+    allModules.MainBoard.setUp(riseOfIx)
     if riseOfIx then
-        Helper.allModules.CommercialTrack.setUp()
-        Helper.allModules.TechMarket.setUp()
+        allModules.CommercialTrack.setUp()
+        allModules.TechMarket.setUp()
     else
-        Helper.allModules.CommercialTrack.tearDown()
-        Helper.allModules.TechMarket.tearDown()
+        allModules.CommercialTrack.tearDown()
+        allModules.TechMarket.tearDown()
     end
 
-    Helper.allModules.Intrigue.setUp(riseOfIx, immortality)
-    Helper.allModules.ImperiumRow.setUp(riseOfIx, immortality)
-    Helper.allModules.Reserve.setUp()
+    allModules.Intrigue.setUp(riseOfIx, immortality)
+    allModules.ImperiumRow.setUp(riseOfIx, immortality)
+    allModules.Reserve.setUp()
     if immortality then
-        Helper.allModules.TleilaxuResearch.setUp()
-        Helper.allModules.TleilaxuRow.setUp()
+        allModules.TleilaxuResearch.setUp()
+        allModules.TleilaxuRow.setUp()
     else
-        Helper.allModules.TleilaxuResearch.tearDown()
-        Helper.allModules.TleilaxuRow.tearDown()
+        allModules.TleilaxuResearch.tearDown()
+        allModules.TleilaxuRow.tearDown()
     end
 
-    Helper.allModules.TurnControl.setUp(PlayerSet.toOrderedPlayerList(activeOpponents))
+    allModules.TurnControl.setUp(PlayerSet.toOrderedPlayerList(activeOpponents))
 
     -- TurnControl.start() is called by "LeaderSelection.setUp" asynchronously (FIXME: use a continuation for readiness)
 end
@@ -322,7 +293,6 @@ function PlayerSet.randomizePlayerPositions(activeOpponents)
     end
 end
 
---- TODO Too fast?
 function PlayerSet.switchPositions(opponent, newColor)
     if opponent ~= "rival" and opponent ~= "puppet" then
         local oldColor = opponent.color
@@ -341,7 +311,7 @@ function PlayerSet.switchPositions(opponent, newColor)
 end
 
 ---
-function getProperlySeatedPlayers()
+function PlayerSet.getProperlySeatedPlayers()
     local properlySeatedPlayers = {}
     for _, color in ipairs(getSeatedPlayers()) do
         if settings.color_all[color] then
@@ -369,19 +339,19 @@ function setVirtualHotSeat(player, value, id)
     else
         settings.numberOfPlayers = {}
     end
-    applyNumberOfPlayers()
+    PlayerSet.applyNumberOfPlayers()
     setupUI:toUI()
 end
 
 ---
 function setNumberOfPlayers(player, value, id)
     setupUI:fromUI(player, value, id)
-    applyNumberOfPlayers()
+    PlayerSet.applyNumberOfPlayers()
     setupUI:toUI()
 end
 
 ---
-function applyNumberOfPlayers()
+function PlayerSet.applyNumberOfPlayers()
     if type(settings.numberOfPlayers) == "table" or settings.numberOfPlayers > 2 then
         settings.difficulty = {}
 
@@ -463,7 +433,7 @@ end
 ---
 function updateSetupButton()
     if setupUI then
-        local properlySeatedPlayers = getProperlySeatedPlayers()
+        local properlySeatedPlayers = PlayerSet.getProperlySeatedPlayers()
 
         local minPlayerCount
         if type(settings.numberOfPlayers) == "table" then

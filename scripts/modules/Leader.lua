@@ -1,6 +1,7 @@
+local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 
-local Action = Helper.lazyRequire("Action")
+local Action = Module.lazyRequire("Action")
 
 local Leader = {}
 

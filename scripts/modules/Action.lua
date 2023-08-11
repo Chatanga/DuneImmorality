@@ -1,47 +1,19 @@
+local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local Park = require("utils.Park")
 
-local Utils = Helper.lazyRequire("Utils")
-local Playboard = Helper.lazyRequire("Playboard")
-local InfluenceTrack = Helper.lazyRequire("InfluenceTrack")
-local Combat = Helper.lazyRequire("Combat")
-local TleilaxuResearch = Helper.lazyRequire("TleilaxuResearch")
-local Intrigue = Helper.lazyRequire("Intrigue")
-local Reserve = Helper.lazyRequire("Reserve")
-local MainBoard = Helper.lazyRequire("MainBoard")
-local TechMarket = Helper.lazyRequire("TechMarket")
+local Utils = Module.lazyRequire("Utils")
+local Playboard = Module.lazyRequire("Playboard")
+local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
+local Combat = Module.lazyRequire("Combat")
+local TleilaxuResearch = Module.lazyRequire("TleilaxuResearch")
+local Intrigue = Module.lazyRequire("Intrigue")
+local Reserve = Module.lazyRequire("Reserve")
+local MainBoard = Module.lazyRequire("MainBoard")
+local TechMarket = Module.lazyRequire("TechMarket")
+local ImperiumRow = Module.lazyRequire("ImperiumRow")
 
 --[[
-
-    Playboard.setLeader -> wrapping Action
-
-    Action.sendAgent(spaceName) => query (play + discard) & flush imperiumCards + intrigueCards
-
-    Action.setContext((phase, color (=> leader),) context) -- on clic action cascade
-            context = space(name) | imperium_card(name) (< signet) | intrigue_card(name) | leader_ability | influence_track_bonus(faction, level) | commercial_track_bonus(level) | research_track_bonus | tleilaxu_track_bonus | imperium_card_bonus(card) | tech_tile_bonus(tech) | tech_tile_effect(tech) | conflict_reward(conflict, position) | flag_control(space)
-
-    -- On oublie les actions génériques, trop fragiles.
-    -- On mantient la coalescence dans Resource et on ne la gère pas dans Action.
-
-    -- Changer la couleur des troupes déployables.
-
-    (color <=> leader)
-    log:
-            [Round]
-            <leader>
-                Tech (Moteur Holtzman) > +1 carte
-            [Agent / révélation]
-            <leader>
-                    Intrigue (Méditation Bindu) > +1 carte
-                    Tech (Drone d'entraînement)
-                    -1 carte (Dague)
-                    +1 troupe
-                    Carte (Expérimentation)
-                    Agent (Bassin impérial) > +2 épices
-                    Research > +1 spécimen
-
-]]--
-
 local Action = {
     executionQueue = {}
 }
@@ -76,42 +48,46 @@ function Action.pause(durationInSeconds)
         coroutine.yield(0)
     end
 end
+]]--
 
--- Phases ------------------------------------------------------------------------------------------------
+--[[
+
+    Playboard.setLeader -> wrapping Action
+
+    Action.sendAgent(spaceName) => query (play + discard) & flush imperiumCards + intrigueCards
+
+    Action.setContext((phase, color (=> leader),) context) -- on clic action cascade
+            context = space(name) | imperium_card(name) (< signet) | intrigue_card(name) | leader_ability | influence_track_bonus(faction, level) | commercial_track_bonus(level) | research_track_bonus | tleilaxu_track_bonus | imperium_card_bonus(card) | tech_tile_bonus(tech) | tech_tile_effect(tech) | conflict_reward(conflict, position) | flag_control(space)
+
+    -- On oublie les actions génériques, trop fragiles.
+    -- On mantient la coalescence dans Resource et on ne la gère pas dans Action.
+
+    -- Changer la couleur des troupes déployables.
+
+    (color <=> leader)
+    log:
+            [Round]
+            <leader>
+                Tech (Moteur Holtzman) > +1 carte
+            [Agent / révélation]
+            <leader>
+                    Intrigue (Méditation Bindu) > +1 carte
+                    Tech (Drone d'entraînement)
+                    -1 carte (Dague)
+                    +1 troupe
+                    Carte (Expérimentation)
+                    Agent (Bassin impérial) > +2 épices
+                    Research > +1 spécimen
+
+]]--
+local Action = {}
 
 ---
-function Action.roundStart()
+function Action.onLoad(state)
+    Helper.registerEventListener("phaseTurn", "Action", function (phase, color)
+        -- NOP
+    end)
 end
-
----
-function Action.playerTurn(color)
-end
-
----
-function Action.combat()
-end
-
----
-function Action.fightTurn(color)
-end
-
----
-function Action.combatOutcome(winner)
-end
-
----
-function Action.exploitationTurn(color)
-end
-
----
-function Action.makersAndRecall()
-end
-
----
-function Action.endgame()
-end
-
--- Action ------------------------------------------------------------------------------------------------
 
 ---
 function Action.sendAgent(spaceName, cardContext, intrigueContext)
@@ -204,7 +180,7 @@ function Action.getPark(color, parkName)
     elseif parkName == "tanks" then
         return TleilaxuResearch.getTankPark(color)
     else
-        assert(false, "Unknow park name: " .. tostring(parkName))
+        error("Unknow park name: " .. tostring(parkName))
     end
 end
 
@@ -212,7 +188,7 @@ end
 function Action.gainVictoryPoint(name)
     local victoryPointArea = {
         base = {
-            theSpicemustFlowBag = "43c7b5",
+            theSpiceMustFlowBag = "43c7b5",
             guildAmbassadorBag = "4bdbd5",
             sayyadinaBag = "4575f3",
             opulenceBag = "67fbba",
@@ -246,7 +222,17 @@ function Action.voiceForbid(space)
 end
 
 ---
-function Action.acquireImperiumCard(name)
+function Action.acquireReservedImperiumCard(color)
+    if Playboard.is(color, "helenaRichese") then
+        return ImperiumRow.acquireReservedImperiumCard(color)
+    else
+        return false
+    end
+end
+
+---
+function Action.acquireImperiumCard(color, indexInRow)
+    return ImperiumRow.acquireImperiumCard(indexInRow, color)
 end
 
 ---

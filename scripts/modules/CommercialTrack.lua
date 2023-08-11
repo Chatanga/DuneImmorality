@@ -1,23 +1,23 @@
-local Core = require("utils.Core")
+local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 
-local Playboard = Helper.lazyRequire("Playboard")
-local TechMarket = Helper.lazyRequire("TechMarket")
-local TurnControl = Helper.lazyRequire("TurnControl")
-local Action = Helper.lazyRequire("Action")
+local Playboard = Module.lazyRequire("Playboard")
+local TechMarket = Module.lazyRequire("TechMarket")
+local TurnControl = Module.lazyRequire("TurnControl")
+local Action = Module.lazyRequire("Action")
 
 local CommercialTrack = {
     initialCargoPositions = {
-        Yellow = Core.getHardcodedPositionFromGUID('8fa76f', 8.999577, 0.680369258, 2.85036778),
-        Green = Core.getHardcodedPositionFromGUID('34281d', 8.44957352, 0.680363059, 2.850372),
-        Blue = Core.getHardcodedPositionFromGUID('68e424', 7.34955072, 0.680377, 2.8544054),
-        Red = Core.getHardcodedPositionFromGUID('e9096d', 7.89962, 0.6803636, 2.8532238)
+        Yellow = Helper.getHardcodedPositionFromGUID('8fa76f', 8.999577, 0.680369258, 2.85036778),
+        Green = Helper.getHardcodedPositionFromGUID('34281d', 8.44957352, 0.680363059, 2.850372),
+        Blue = Helper.getHardcodedPositionFromGUID('68e424', 7.34955072, 0.680377, 2.8544054),
+        Red = Helper.getHardcodedPositionFromGUID('e9096d', 7.89962, 0.6803636, 2.8532238)
     }
 }
 
 ---
 function CommercialTrack.onLoad(state)
-    Helper.append(CommercialTrack, Core.resolveGUIDs(true, {
+    Helper.append(CommercialTrack, Helper.resolveGUIDs(true, {
         levelSlots = {
             { cargoZone = "1eeba7" },
             { cargoZone = "4c40e8", bonusZone = "1cb928" },
@@ -46,7 +46,7 @@ function CommercialTrack.createLevelButton(level, levelSlot)
         levelSlot.anchor = anchor
         anchor.interactable = false
         Helper.createAbsoluteButtonWithRoundness(anchor, 0.75, false, {
-            click_function = Helper.wrapCallback({ levelSlot }, function (_, color, _)
+            click_function = Helper.createGlobalCallback(function (_, color, _)
                 local cargoLevel = CommercialTrack.getCargoLevel(color)
                 if cargoLevel < level then
                     CommercialTrack.cargoGoUp(color, level - cargoLevel)

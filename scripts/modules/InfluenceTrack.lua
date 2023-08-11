@@ -1,46 +1,46 @@
-local Core = require("utils.Core")
+local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local I18N = require("utils.I18N")
 
-local Utils = Helper.lazyRequire("Utils")
-local TurnControl = Helper.lazyRequire("TurnControl")
-local Action = Helper.lazyRequire("Action")
-local Playboard = Helper.lazyRequire("Playboard")
+local Utils = Module.lazyRequire("Utils")
+local TurnControl = Module.lazyRequire("TurnControl")
+local Action = Module.lazyRequire("Action")
+local Playboard = Module.lazyRequire("Playboard")
 
 local InfluenceTrack = {
     influenceTokens = nil,
     friendshipBags = nil,
     influenceTokenInitialPositions = {
         emperor = {
-            Red = Core.getHardcodedPositionFromGUID('acfcef', -9.718932, 0.752500057, 1.85002029),
-            Blue = Core.getHardcodedPositionFromGUID('426a23', -10.1873131, 0.7525, 1.85005832),
-            Green = Core.getHardcodedPositionFromGUID('d7c9ba', -9.273371, 0.754999936, 1.8500092),
-            Yellow = Core.getHardcodedPositionFromGUID('489871', -8.834659, 0.755000055, 1.85005462)
+            Red = Helper.getHardcodedPositionFromGUID('acfcef', -9.718932, 0.752500057, 1.85002029),
+            Blue = Helper.getHardcodedPositionFromGUID('426a23', -10.1873131, 0.7525, 1.85005832),
+            Green = Helper.getHardcodedPositionFromGUID('d7c9ba', -9.273371, 0.754999936, 1.8500092),
+            Yellow = Helper.getHardcodedPositionFromGUID('489871', -8.834659, 0.755000055, 1.85005462)
         },
         spacingGuild = {
-            Red = Core.getHardcodedPositionFromGUID('be464e', -9.737917, 0.752500057, -3.640007),
-            Blue = Core.getHardcodedPositionFromGUID('4069d8', -10.1552429, 0.7525, -3.64000773),
-            Green = Core.getHardcodedPositionFromGUID('89da7d', -9.288127, 0.754999936, -3.64001),
-            Yellow = Core.getHardcodedPositionFromGUID('9d0075', -8.846331, 0.755000055, -3.63998413)
+            Red = Helper.getHardcodedPositionFromGUID('be464e', -9.737917, 0.752500057, -3.640007),
+            Blue = Helper.getHardcodedPositionFromGUID('4069d8', -10.1552429, 0.7525, -3.64000773),
+            Green = Helper.getHardcodedPositionFromGUID('89da7d', -9.288127, 0.754999936, -3.64001),
+            Yellow = Helper.getHardcodedPositionFromGUID('9d0075', -8.846331, 0.755000055, -3.63998413)
         },
         beneGesserit = {
-            Red = Core.getHardcodedPositionFromGUID('713eae', -9.766583, 0.752500057, -9.100027),
-            Blue = Core.getHardcodedPositionFromGUID('2a88a6', -10.2121153, 0.7525, -9.100084),
-            Green = Core.getHardcodedPositionFromGUID('2dc980', -9.319731, 0.754999936, -9.100017),
-            Yellow = Core.getHardcodedPositionFromGUID('a3729e', -8.888711, 0.755000055, -9.100081)
+            Red = Helper.getHardcodedPositionFromGUID('713eae', -9.766583, 0.752500057, -9.100027),
+            Blue = Helper.getHardcodedPositionFromGUID('2a88a6', -10.2121153, 0.7525, -9.100084),
+            Green = Helper.getHardcodedPositionFromGUID('2dc980', -9.319731, 0.754999936, -9.100017),
+            Yellow = Helper.getHardcodedPositionFromGUID('a3729e', -8.888711, 0.755000055, -9.100081)
         },
         fremen = {
-            Red = Core.getHardcodedPositionFromGUID('088f51', -9.762483, 0.752500057, -14.5700312),
-            Blue = Core.getHardcodedPositionFromGUID('0e6e41', -10.2238894, 0.7525, -14.5700541),
-            Green = Core.getHardcodedPositionFromGUID('d390dc', -9.328378, 0.754999936, -14.570013),
-            Yellow = Core.getHardcodedPositionFromGUID('77d7c8', -8.887749, 0.755000055, -14.5700006)
+            Red = Helper.getHardcodedPositionFromGUID('088f51', -9.762483, 0.752500057, -14.5700312),
+            Blue = Helper.getHardcodedPositionFromGUID('0e6e41', -10.2238894, 0.7525, -14.5700541),
+            Green = Helper.getHardcodedPositionFromGUID('d390dc', -9.328378, 0.754999936, -14.570013),
+            Yellow = Helper.getHardcodedPositionFromGUID('77d7c8', -8.887749, 0.755000055, -14.5700006)
         }
     },
     allianceTokenInitialPositions = {
-        emperor = Core.getHardcodedPositionFromGUID('13e990', -9.511963, 0.78, 5.86089),
-        spacingGuild = Core.getHardcodedPositionFromGUID('ad1aae', -9.507135, 0.780000031, 0.24908106),
-        beneGesserit = Core.getHardcodedPositionFromGUID('33452e', -9.551374, 0.780000031, -5.21345472),
-        fremen = Core.getHardcodedPositionFromGUID('4c2bcc', -9.543688, 0.780000031, -10.6707687)
+        emperor = Helper.getHardcodedPositionFromGUID('13e990', -9.511963, 0.78, 5.86089),
+        spacingGuild = Helper.getHardcodedPositionFromGUID('ad1aae', -9.507135, 0.780000031, 0.24908106),
+        beneGesserit = Helper.getHardcodedPositionFromGUID('33452e', -9.551374, 0.780000031, -5.21345472),
+        fremen = Helper.getHardcodedPositionFromGUID('4c2bcc', -9.543688, 0.780000031, -10.6707687)
     },
     allianceTokens = nil,
     allianceZones = nil,
@@ -49,8 +49,8 @@ local InfluenceTrack = {
 
 ---
 function InfluenceTrack.onLoad(state)
-    InfluenceTrack.influenceTokenInitialPositions = Core.resolveGUIDs(true, InfluenceTrack.influenceTokenInitialPositions)
-    InfluenceTrack.influenceTokens = Core.resolveGUIDs(true, {
+    InfluenceTrack.influenceTokenInitialPositions = Helper.resolveGUIDs(true, InfluenceTrack.influenceTokenInitialPositions)
+    InfluenceTrack.influenceTokens = Helper.resolveGUIDs(true, {
         emperor = {
             Red = 'acfcef',
             Blue = '426a23',
@@ -76,14 +76,14 @@ function InfluenceTrack.onLoad(state)
             Yellow = '77d7c8'
         }
     })
-    InfluenceTrack.friendshipBags = Core.resolveGUIDs(true, {
+    InfluenceTrack.friendshipBags = Helper.resolveGUIDs(true, {
         emperor = "6a4186",
         spacingGuild = "400d45",
         beneGesserit = "e763f6",
         fremen = "8bcfe7"
     })
-    InfluenceTrack.allianceTokenInitialPositions = Core.resolveGUIDs(true, InfluenceTrack.allianceTokenInitialPositions)
-    InfluenceTrack.allianceTokens = Core.resolveGUIDs(true, {
+    InfluenceTrack.allianceTokenInitialPositions = Helper.resolveGUIDs(true, InfluenceTrack.allianceTokenInitialPositions)
+    InfluenceTrack.allianceTokens = Helper.resolveGUIDs(true, {
         emperor = '13e990',
         spacingGuild = 'ad1aae',
         beneGesserit = '33452e',
@@ -129,7 +129,7 @@ function InfluenceTrack.initInfluenceTracksLevels()
                 anchor.interactable = false
                 local actionName = "Progress on the " .. faction .. " influence track"
                 Helper.createAbsoluteButtonWithRoundness(anchor, 1, false, {
-                    click_function = Helper.wrapCallback({ actionName, i }, function (_, color, _)
+                    click_function = Helper.createGlobalCallback(function (_, color, _)
                         local rank = InfluenceTrack.getInfluenceTracksRank(faction, color)
                         InfluenceTrack.changeInfluenceTracksRank(color, faction, i - rank)
                     end),
