@@ -26,8 +26,8 @@ local Playboard = {
             leaderZone = "66cdbb",
             dreadnoughts = {"1a3c82", "a8f306"},
             dreadnoughtPositions = {
-                Helper.getHardcodedPositionFromGUID('1a3c82', -26.300024, 1.112601, 18.6999645),
-                Helper.getHardcodedPositionFromGUID('a8f306', -28.700037, 1.112601, 18.699976)
+                Helper.getHardcodedPositionFromGUID('1a3c82', -26.3000431, 1.112601, 18.6999626),
+                Helper.getHardcodedPositionFromGUID('a8f306', -28.7000542, 1.1126014, 18.6999741)
             },
             agents = {"7751c8", "afa978"},
             agentPositions = {
@@ -78,18 +78,18 @@ local Playboard = {
             leaderZone = "681774",
             dreadnoughts = {"82789e", "60f208"},
             dreadnoughtPositions = {
-                Helper.getHardcodedPositionFromGUID('82789e', -26.3000412, 1.112601, -4.300036),
-                Helper.getHardcodedPositionFromGUID('60f208', -28.7000523, 1.11260128, -4.300048)
+                Helper.getHardcodedPositionFromGUID('82789e', -26.30006, 1.11260116, -4.30004025),
+                Helper.getHardcodedPositionFromGUID('60f208', -28.7000713, 1.11260128, -4.30005264)
             },
             agents = {"64d013", "106d8b"},
             agentPositions = {
                 Helper.getHardcodedPositionFromGUID('64d013', -17.0, 1.11060047, -2.70000482),
-                Helper.getHardcodedPositionFromGUID('106d8b', -18.3, 1.11060047, -2.7)
+                Helper.getHardcodedPositionFromGUID('106d8b', -18.3, 1.11060035, -2.7)
             },
             swordmaster = "a78ad7",
             councilToken = "f5b14a",
             fourPlayerVictoryToken = "311255",
-            fourPlayerVictoryTokenInitialPosition = Helper.getHardcodedPositionFromGUID('311255', -13.0, 1.11223137, -1.14999938),
+            fourPlayerVictoryTokenInitialPosition = Helper.getHardcodedPositionFromGUID('311255', -13.0, 1.11223137, -1.1499995),
             scoreMarker = "1b1e76",
             flagBag = '8627e0',
             troops = {
@@ -130,8 +130,8 @@ local Playboard = {
             leaderZone = "cf1486",
             dreadnoughts = {"a15087", "734250"},
             dreadnoughtPositions = {
-                Helper.getHardcodedPositionFromGUID('a15087', 26.2999744, 1.112601, 18.6999722),
-                Helper.getHardcodedPositionFromGUID('734250', 28.69997, 1.11260116, 18.6999664)
+                Helper.getHardcodedPositionFromGUID('a15087', 26.2999687, 1.11260116, 18.6999722),
+                Helper.getHardcodedPositionFromGUID('734250', 28.6999531, 1.11260128, 18.6999645)
             },
             agents = {"66ae45", "bceb0e"},
             agentPositions = {
@@ -141,7 +141,7 @@ local Playboard = {
             swordmaster = "fb1629",
             councilToken = "a0028d",
             fourPlayerVictoryToken = "66444c",
-            fourPlayerVictoryTokenInitialPosition = Helper.getHardcodedPositionFromGUID('66444c', 13.0, 1.31223142, 21.85),
+            fourPlayerVictoryTokenInitialPosition = Helper.getHardcodedPositionFromGUID('66444c', 13.0, 1.31223154, 21.85),
             scoreMarker = "76039f",
             flagBag = 'ad6b92',
             troops = {
@@ -182,18 +182,18 @@ local Playboard = {
             leaderZone = "a677e0",
             dreadnoughts = {"5469fb", "71a414"},
             dreadnoughtPositions = {
-                Helper.getHardcodedPositionFromGUID('5469fb', 26.2999554, 1.11260116, -4.30001163),
-                Helper.getHardcodedPositionFromGUID('71a414', 28.6999569, 1.11260128, -4.30003357)
+                Helper.getHardcodedPositionFromGUID('5469fb', 26.2999344, 1.11260128, -4.300015),
+                Helper.getHardcodedPositionFromGUID('71a414', 28.6999378, 1.11260116, -4.30003929)
             },
             agents = {"5068c8", "67b476"},
             agentPositions = {
-                Helper.getHardcodedPositionFromGUID('5068c8', 17.0, 1.11060035, -2.70000386),
+                Helper.getHardcodedPositionFromGUID('5068c8', 17.0, 1.11060047, -2.70000386),
                 Helper.getHardcodedPositionFromGUID('67b476', 18.3, 1.11060047, -2.699999)
             },
             swordmaster = "635c49",
             councilToken = "1be491",
             fourPlayerVictoryToken = "4e8873",
-            fourPlayerVictoryTokenInitialPosition = Helper.getHardcodedPositionFromGUID('4e8873', 13.0, 1.31223154, -1.14999938),
+            fourPlayerVictoryTokenInitialPosition = Helper.getHardcodedPositionFromGUID('4e8873', 13.0, 1.31223142, -1.14999938),
             scoreMarker = "20bbd1",
             flagBag = 'b92a4c',
             troops = {

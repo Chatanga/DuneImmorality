@@ -4,7 +4,18 @@
 
 ID: 2956104551
 
-## To do
+## Build process
+
+![Capture](workflow.png)
+
+The whole process could be executed with a single call:
+
+    ./build
+
+The two Python scripts `upload.py` and `listen.py` are a work in progress to use the TTS Editor API.
+The second is especially useful to translate the error messages locations into ctrl-clickable links.
+
+## TODO
 
 - Consolidate actions (textual log).
 - Combat and combat outcome phases.

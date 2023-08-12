@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import json
 import re
 import select
@@ -22,14 +24,9 @@ def listen(host, port):
                 rxset.append(connection)
             else:
                 try:
-                    data = bytearray()
-                    while True:
-                        packet = sock.recv(BUFFER_SIZE)
-                        data.extend(packet)
-                        if len(packet) < BUFFER_SIZE:
-                            break
+                    data = sock.makefile("rb")
                     try:
-                        handleMessage(json.loads(data.decode('utf-8')))
+                        handleMessage(json.load(data))
                     except Exception as e:
                         print(e)
                 finally:
@@ -37,15 +34,26 @@ def listen(host, port):
                     sock.close()
 
 def handleMessage(message):
-    if message['messageID'] == 3:
+    id = message['messageID']
+    if id == 2:
+        body = message['message']
+        print('\033[94m', end = '')
+        print(f'> {body}', end = '')
+        print('\033[0m')
+    elif id == 3:
         result = re.search('([^:]*):\((\d+),(\d+)-(\d+)\): (.*)', message['error'])
         lineNumber = result.group(2)
-        colNumber = result.group(3)
+        startColNumber = int(result.group(3)) + 1
+        endColNumber = int(result.group(4)) + 1
         location = relocate(int(lineNumber))
         if location:
             file, lineNumber = location
             error = message['error']
-            print(f'scripts/{file}:{lineNumber}:{colNumber}: {error}', file = sys.stderr)
+            print('\033[91m', file = sys.stderr, end = '')
+            print(f'scripts/{file}:{lineNumber}:{startColNumber},{endColNumber}: {error}', file = sys.stderr, end = '')
+            print('\033[0m', file = sys.stderr)
+    else:
+        print("Ignoring message with ID", id)
 
 def relocate(lineNumber):
     file_origin = 0
