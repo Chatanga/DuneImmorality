@@ -51,7 +51,7 @@ function Intrigue.stealIntrigue(color, otherColor, amount)
     -- Add an offset to put the card on the left side of the player's hand.
     local position = Player[color].getHandTransform().position + Vector(-7.5, 0, 0)
     Wait.time(function() -- Why?
-        Helper.moveCard(table.remove(intrigues, 1), position, nil, false, false)
+        Helper.moveObject(table.remove(intrigues, 1), position, nil, false, false)
     end, 0.25, realAmount)
 end
 

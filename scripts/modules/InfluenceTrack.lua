@@ -3,7 +3,6 @@ local Helper = require("utils.Helper")
 local I18N = require("utils.I18N")
 
 local Utils = Module.lazyRequire("Utils")
-local TurnControl = Module.lazyRequire("TurnControl")
 local Action = Module.lazyRequire("Action")
 local Playboard = Module.lazyRequire("Playboard")
 
@@ -288,17 +287,23 @@ function InfluenceTrack.hasAlliance(faction, color)
 end
 
 ---
+function InfluenceTrack.hasAnyAlliance(color)
+    for faction, _ in pairs(InfluenceTrack.influenceTokenInitialPositions) do
+        if InfluenceTrack.hasAlliance(faction, color) then
+            return true
+        end
+    end
+    return false
+end
+
+---
 function InfluenceTrack.gainAlliance(faction, color)
     Playboard.grantScoreToken(color, InfluenceTrack.allianceTokens[faction])
 
     if faction == "emperor" then
         Action.troops(color, "supply", "garrison", 2)
     elseif faction == "spacingGuild" then
-        local solariAmount = 3
-        if Playboard.is(color, "yunaMoritani") and not TurnControl.isCombat() then
-            solariAmount = 4
-        end
-        Action.resource(color, "solari", solariAmount)
+        Action.resource(color, "solari", 3)
     elseif faction == "beneGesserit" then
         Action.drawIntrigue(color, 1)
     elseif faction == "fremen" then

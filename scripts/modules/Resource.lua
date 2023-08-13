@@ -67,7 +67,7 @@ function Resource.new(token, color, resourceName, value, state)
         color = { 0, 0, 0, 0 }
     })
 
-    Helper.registerEventListener("locale", token.getGUID(), function ()
+    Helper.registerEventListener("locale", function ()
         resource:updateButton()
     end)
 

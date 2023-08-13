@@ -23,7 +23,7 @@ function AcquireCard.new(zone, snapPointTag, acquire)
         if acquire then
             acquireCard:createButton(acquire)
 
-            Helper.registerEventListener("locale", anchor.getGUID(), function ()
+            Helper.registerEventListener("locale", function ()
                 anchor.clearButtons()
                 acquireCard:createButton(acquire)
             end)
@@ -35,7 +35,7 @@ function AcquireCard.new(zone, snapPointTag, acquire)
                 end
             end
 
-            Helper.registerEventListener("objectEnterOrLeaveScriptingZone", anchor.getGUID(), updateButtonHeight)
+            Helper.registerEventListener("objectEnterOrLeaveScriptingZone", updateButtonHeight)
         end
     end)
 

@@ -5,6 +5,7 @@ local Deck = Module.lazyRequire("Deck")
 local TurnControl = Module.lazyRequire("TurnControl")
 local Playboard = Module.lazyRequire("Playboard")
 local Hagal = Module.lazyRequire("Hagal")
+local Leader = Module.lazyRequire("Leader")
 
 local LeaderSelection = {
     selectionMethods = {
@@ -163,7 +164,7 @@ function LeaderSelection.setUpPicking(opponents, numberOfLeaders, random, hidden
     })
 
     if random then
-        Helper.registerEventListener("phaseStart", "LeaderSelection", function (phase, _)
+        Helper.registerEventListener("phaseStart", function (phase, _)
             if phase == 'leaderSelection' then
                 -- Rivals
                 for color, opponent in pairs(opponents) do
@@ -184,7 +185,7 @@ function LeaderSelection.setUpPicking(opponents, numberOfLeaders, random, hidden
     end
 
     if hidden then
-        Helper.registerEventListener("phaseTurn", "LeaderSelection", function (phase, color)
+        Helper.registerEventListener("phaseTurn", function (phase, color)
             if phase == 'leaderSelection' then
                 local remainingLeaders = {}
                 for leader, selected in pairs(LeaderSelection.dynamicLeaderSelection) do
@@ -201,13 +202,13 @@ function LeaderSelection.setUpPicking(opponents, numberOfLeaders, random, hidden
         end)
     end
 
-    Helper.registerEventListener("phaseEnd", "LeaderSelection", function (phase)
+    Helper.registerEventListener("phaseEnd", function (phase)
         if phase == 'leaderSelection' then
             for leader, selected in pairs(LeaderSelection.dynamicLeaderSelection) do
                 if selected then
                     leader.setInvisibleTo({})
                 else
-                    leader.destruct()
+                    LeaderSelection.destructLeader(leader)
                 end
             end
             LeaderSelection.secondaryTable.destruct()
@@ -242,7 +243,7 @@ function LeaderSelection.prepareVisibleLeaders(hidden)
     for _, object in ipairs(LeaderSelection.deckZone.getObjects()) do
         if object.hasTag("Leader") then
             if object.is_face_down then
-                object.destruct()
+                LeaderSelection.destructLeader(object)
             else
                 table.insert(leaders, object)
                 if hidden then
@@ -275,7 +276,7 @@ function LeaderSelection.createDynamicLeaderSelection(leaders)
                 tooltip = "Claim"
             })
         else
-            leader.destruct()
+            LeaderSelection.destructLeader(leader)
         end
     end
 end
@@ -300,6 +301,14 @@ function LeaderSelection.claimLeader(color, leader)
     else
         return false
     end
+end
+
+---
+function LeaderSelection.destructLeader(leader)
+    local name = leader.getDescription()
+    Helper.dump("destruct leader", name)
+    Leader.getLeader(name).tearDown()
+    leader.destruct()
 end
 
 return LeaderSelection

@@ -7,7 +7,7 @@ Helper.someHeight = Vector(0, 0.3, 0)
 math.randomseed(os.time())
 
 ---
-function Helper.registerEventListener(topic, byTopicKey, listener)
+function Helper.registerEventListener(topic, listener)
     assert(listener)
     local listeners = Helper.eventListenersByTopic[topic]
     if not listeners then
@@ -18,14 +18,16 @@ function Helper.registerEventListener(topic, byTopicKey, listener)
             Helper.emitEvent(topic, ...)
         end
     end
-    listeners[byTopicKey] = listener
+    listeners[listener] = listener
+    return listener
 end
 
 ---
-function Helper.unregisterEventListener(topic, byTopicKey)
+function Helper.unregisterEventListener(topic, listener)
+    assert(listener)
     local listeners = Helper.eventListenersByTopic[topic]
-    assert(listeners and listeners[byTopicKey])
-    listeners[byTopicKey] = nil
+    assert(listeners and listeners[listener])
+    listeners[listener] = nil
     if #Helper.eventListenersByTopic[topic] == 0 then
         Helper.eventListenersByTopic[topic] = nil
         Helper["" .. topic] = nil
@@ -141,9 +143,8 @@ function Helper.getLandingPosition(anchor)
     return anchor.getPosition() + Helper.someHeight
 end
 
-function Helper.moveCard(card, position, rotation, smooth, flipAtTheEnd)
+function Helper.moveObject(card, position, rotation, smooth, flipAtTheEnd)
     assert(card)
-    assert(card.type == "Card")
     if smooth then
         card.setPositionSmooth(position)
     else
@@ -180,7 +181,7 @@ function Helper.moveCardFromZone(zone, position, rotation, smooth, flipAtTheEnd)
             deckOrCard.takeObject(parameters)
             return true
         elseif deckOrCard.type == "Card" then
-            Helper.moveCard(deckOrCard, position, rotation, smooth, flipAtTheEnd)
+            Helper.moveObject(deckOrCard, position, rotation, smooth, flipAtTheEnd)
             return true
         else
             assert(false)
@@ -688,6 +689,7 @@ end
 --- Fisher-Yates shuffle, in-place – for each position, pick an element from those not yet picked.
 function Helper.shuffle(table)
     assert(table)
+    assert(#table > 0 or #Helper.getKeys(table) == 0, "Not an indexed table")
     for i = #table, 2, -1 do
         local j = math.random(i)
         table[i], table[j] = table[j], table[i]
@@ -725,6 +727,11 @@ function Helper.tableContains(table, element)
         end
     end
     return false
+end
+
+---
+function Helper.isElementOf(element, elements)
+    return Helper.tableContains(elements, element)
 end
 
 ---

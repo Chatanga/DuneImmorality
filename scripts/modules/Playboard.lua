@@ -12,6 +12,7 @@ local MainBoard = Module.lazyRequire("MainBoard")
 local Hagal = Module.lazyRequire("Hagal")
 local Combat = Module.lazyRequire("Combat")
 local Leader = Module.lazyRequire("Leader")
+local Action = Module.lazyRequire("Action")
 
 local Playboard = {
     -- Temporary structure (set to nil *after* loading).
@@ -287,7 +288,7 @@ function Playboard.new(color, unresolvedContent, state)
     playboard:createButtons()
     playboard:updateState()
 
-    Helper.registerEventListener("locale", board.getGUID(), function ()
+    Helper.registerEventListener("locale", function ()
         playboard:createButtons()
     end)
 
@@ -306,19 +307,35 @@ function Playboard.setUp(ix, immortality, epic, activeOpponents)
                 end)
                 Deck.generateStarterDiscard(playboard.content.discardZone, immortality, epic)
             end
+
+            Helper.registerEventListener("phaseEnd", function (phase)
+                if phase == "leaderSelection" then
+                    log(color)
+                    playboard.leader.setUp(color, epic)
+
+                    Helper.registerEventListener("phaseTurn", function (otherPhase, otherColor)
+                        if otherColor == color then
+                            local instruction = playboard.leader.instruct(otherPhase)
+                            if instruction then
+                                Helper.findPlayer(color).broadcast(instruction, Color.fromString("Pink"))
+                            end
+                        end
+                    end)
+                end
+            end)
         else
             playboard:shutdown()
         end
     end
 
-    Helper.registerEventListener("phaseStart", "Playboard", function (phase, firstPlayer)
+    Helper.registerEventListener("phaseStart", function (phase, firstPlayer)
         if phase == "leaderSelection" or phase == "round" then
             local playboard = Playboard.playboards[firstPlayer]
             MainBoard.firstPlayerMarker.setPositionSmooth(playboard.content.firstPlayerPosition, false, false)
         end
     end)
 
-    Helper.registerEventListener("phaseTurn", "Playboard", function (phase, color)
+    Helper.registerEventListener("phaseTurn", function (phase, color)
         local indexedColors = {"Green", "Yellow", "Blue", "Red"}
         for i, otherColor in ipairs(indexedColors) do
             local playboard = Playboard.playboards[otherColor]
@@ -1110,15 +1127,17 @@ function Playboard.setLeader(color, leaderCard)
             log("Not a leader compatible with a rival: " .. leaderCard.getDescription())
             return false
         end
+        playboard.leader = Action
+    else
+        playboard.leader = Leader.getLeader(leaderCard.getDescription())
     end
-    playboard.leader = Leader.new(leaderCard)
     local position = playboard.content.leaderZone.getPosition()
     leaderCard.setPosition(position)
     return true
 end
 
 ---
-function Playboard.findLeader(color)
+function Playboard.findLeaderCard(color)
     local leaderZone = Playboard.getPlayer(color).leaderZone
     for _, object in ipairs(leaderZone.getObjects()) do
         if object.hasTag("Leader") or object.hasTag("Hagal") then
@@ -1129,19 +1148,14 @@ function Playboard.findLeader(color)
 end
 
 ---
-function Playboard.getLeaderName(color)
-    local leader = Playboard.findLeader(color)
-    return leader and leader.getName() or "?"
+function Playboard.getLeader(color)
+    return Playboard.playboards[color].leader
 end
 
 ---
-function Playboard.is(color, leaderName)
-    local leader = Playboard.findLeader(color)
-    if leader then
-        return leader.getDescription() == leaderName
-    else
-        return false
-    end
+function Playboard.getLeaderName(color)
+    local leader = Playboard.findLeaderCard(color)
+    return leader and leader.getName() or "?"
 end
 
 ---

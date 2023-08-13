@@ -2,7 +2,7 @@ local Utils = {}
 
 ---
 function Utils.isUnit(color, object)
-    return isTroop(color, object) or isDreadnought(color, object)
+    return Utils.isTroop(color, object) or Utils.isDreadnought(color, object)
 end
 
 ---
@@ -68,7 +68,7 @@ function Utils.assertIsPlayerColor(color)
         or color == "Yellow"
         or color == "Blue"
         or color == "Red",
-        "Not a player color: " .. tostring(color), "Not an integer: " .. tostring(n))
+        "Not a player color: " .. tostring(color))
 end
 
 ---
@@ -96,7 +96,7 @@ function Utils.assertIsDreadnoughtLocation(location)
         or location == "garrison" -- when recruited
         or location == "combat" -- when deployed
         or location == "carthag" -- when occupying the place
-        or location == "arrkeen" -- when occupying the place
+        or location == "arrakeen" -- when occupying the place
         or location == "imperialBassin", -- when occupying the place
         "No a dreadnought location: " .. tostring(location))
 end

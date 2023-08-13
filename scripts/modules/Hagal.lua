@@ -44,7 +44,8 @@ end
 
 ---
 function Hagal.tearDown()
-    -- NOP
+    -- 5 solari patch.
+    getObjectFromGUID("ba730f").destruct()
 end
 
 ---

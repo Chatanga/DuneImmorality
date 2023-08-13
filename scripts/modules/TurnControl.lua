@@ -19,7 +19,7 @@ local TurnControl = {
     reversed = false,
     currentRound = 0,
     currentPhaseLuaIndex = nil,
-    currentPlayerLuaIndex = nil
+    currentPlayerLuaIndex = nil,
 }
 
 --- Initialize the turn system with the provided players (or all the seated players) and start a new round.
@@ -78,6 +78,7 @@ function TurnControl.startPhase(phase, reversed)
     else
         TurnControl.currentPlayerLuaIndex = TurnControl.firstPlayerLuaIndex
     end
+    TurnControl.activatedPlayers = {}
     Helper.emitEvent("phaseStart", TurnControl.currentPhase, TurnControl.players[TurnControl.firstPlayerLuaIndex])
 
     Wait.frames(function ()
@@ -111,7 +112,7 @@ function TurnControl.findActivePlayer(starPlayerLuaIndex)
     local playerLuaIndex = starPlayerLuaIndex
     local n = TurnControl.getPlayerCount()
     for _ = 1, n do
-        if TurnControl.isPlayerActive(playerLuaIndex) then
+        if not TurnControl.activatedPlayers[playerLuaIndex] and TurnControl.isPlayerActive(playerLuaIndex) then
             return playerLuaIndex
         end
         playerLuaIndex = TurnControl.getNextPlayer(playerLuaIndex, TurnControl.reversed)
@@ -161,13 +162,17 @@ function TurnControl.isPlayerActive(playerLuaIndex)
     --Helper.dump(playerLuaIndex, "->", color)
 
     if phase == 'leaderSelection' then
-        return Playboard.findLeader(color) == nil
+        return Playboard.getLeader(color) == nil
     elseif phase == 'startOfGame' then
-        -- TODO Check once leader preparation.
-        return false
+        if Playboard.getLeader(color).instruct(phase) then
+            TurnControl.activatedPlayers[playerLuaIndex] = 1
+            return true
+        end
     elseif phase == 'startOfRound' then
-        -- TODO Check once leader abilities.
-        return false
+        if Playboard.getLeader(color).instruct(phase) then
+            TurnControl.activatedPlayers[playerLuaIndex] = 1
+            return true
+        end
     elseif phase == 'agentOrReveal' then
         return Playboard.couldSendAgentOrReveal(color)
     elseif phase == 'combat' then
@@ -182,7 +187,7 @@ function TurnControl.isPlayerActive(playerLuaIndex)
         assert(false)
     end
 
-    return true
+    return false
 end
 
 ---

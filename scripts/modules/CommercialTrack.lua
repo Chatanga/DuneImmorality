@@ -110,13 +110,7 @@ end
 
 ---
 function CommercialTrack.pickSolariBonus(color)
-    local solariAmount = 5
-    if Playboard.is(color, "yunaMoritani") and not TurnControl.isCombat() then
-        solariAmount = 6
-    end
-
-    Action.resource(color, "solari", solariAmount)
-
+    Action.resource(color, "solari", 5)
     for otherColor, _ in pairs(Playboard.getPlayboardByColor()) do
         if otherColor ~= color then
             Action.resource(otherColor, "solari", 1)

@@ -135,4 +135,9 @@ function Combat.getDreadnoughtPark(color)
     return Combat.dreadnoughtParks[color]
 end
 
+---
+function Combat.setDreadnoughtStrength(strength)
+    -- TODO
+end
+
 return Combat

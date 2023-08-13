@@ -175,7 +175,7 @@ function MainBoard.createSpaceButton(space, position, slots)
 
         Helper.createAbsoluteButtonWithRoundness(anchor, 10, false, {
             click_function = Helper.createGlobalCallback(function (_, color, _)
-                MainBoard.sendAgent(color, space.name)
+                Action.sendAgent(color, space.name)
             end),
             position = Vector(position.x, 0.7, position.z),
             width = space.zone.getScale().x * 500,
@@ -318,10 +318,6 @@ end
 function MainBoard.anySpiceSpace(color, waterCost, spiceBaseAmount, spiceBonus)
     if MainBoard.payResource(color, "water", waterCost) then
         local harvestedSpiceAmount = MainBoard.harvestSpice(spiceBaseAmount, spiceBonus)
-        if Playboard.is(color, "arianaThorvald") then
-            harvestedSpiceAmount = spiceBaseAmount - 1
-            MainBoard.drawImperiumCards(color, 1)
-        end
         MainBoard.gainResource(color, "spice", harvestedSpiceAmount)
         return true
     else
@@ -546,34 +542,14 @@ function MainBoard.gainResource(color, resourceName, amount)
     Utils.assertIsPlayerColor(color)
     Utils.assertIsResourceName(resourceName)
     Utils.assertIsInteger(amount)
-
-    local finalAmount = amount
-    if resourceName == "solari" and Playboard.is(color, "yunaMoritani") then
-        finalAmount = amount + 1
-    end
-    Action.resource(color, resourceName, finalAmount)
+    Action.resource(color, resourceName, amount)
 end
 
 -- Implied: when sending an agent on a board space.
 ---
 function MainBoard.payResource(color, resourceName, amount)
-    Utils.assertIsPlayerColor(color)
-    Utils.assertIsResourceName(resourceName)
-    Utils.assertIsInteger(amount)
-
-    local finalAmount = amount
-    if resourceName == "solari" and Playboard.is(color, "letoAtreides") then
-        finalAmount = amount - 1
-    end
-
-    if Action.resource(color, resourceName, -finalAmount) then
-        if Playboard.is(color, "ilbanRichese") then
-            MainBoard.drawImperiumCards(color, 1)
-        end
-        return true
-    else
-        return false
-    end
+    local leader = Playboard.getLeader(color)
+    return leader.resource(color, resourceName, -amount)
 end
 
 -- Implied: when sending an agent on a board space.
@@ -581,12 +557,7 @@ end
 function MainBoard.gainInfluence(color, faction)
     Utils.assertIsPlayerColor(color)
     Utils.assertIsFaction(faction)
-
-    if Playboard.is(color, "shaddamIV") then
-        Action.influence(color, faction, -1)
-    else
-        Action.influence(color, faction, 1)
-    end
+    Action.influence(color, faction, 1)
 end
 
 -- Implied: when sending an agent on a board space.
@@ -597,6 +568,93 @@ function MainBoard.drawImperiumCards(color, amount)
         realAmount = amount + 1
     end
     Action.drawImperiumCards(color, realAmount)
+end
+
+---
+function MainBoard.isEmperorSpace(spaceName)
+    return Helper.isElementOf(spaceName, {
+        "conspire",
+        "wealth" })
+end
+
+---
+function MainBoard.isSpacingGuildSpace(spaceName)
+    return Helper.isElementOf(spaceName, {
+        "heighliner",
+        "foldspace" })
+end
+
+---
+function MainBoard.isBeneGesseritSpace(spaceName)
+    return Helper.isElementOf(spaceName, {
+        "selectiveBreeding",
+        "secrets" })
+end
+
+---
+function MainBoard.isFremenSpace(spaceName)
+    return Helper.isElementOf(spaceName, {
+        "hardyWarriors",
+        "stillsuits" })
+end
+
+---
+function MainBoard.isFactionSpace(spaceName)
+    return MainBoard.isEmperorSpace(spaceName)
+        or MainBoard.isSpacingGuildSpace(spaceName)
+        or MainBoard.isBeneGesseritSpace(spaceName)
+        or MainBoard.isFremenSpace(spaceName)
+end
+
+---
+function MainBoard.isLandsraadSpace(spaceName)
+    return Helper.isElementOf(spaceName, {
+        "highCouncil",
+        "mentat",
+        "swordmaster",
+        "rallyTroops",
+        "hallOfOratory",
+        "highCouncil",
+        "mentat",
+        "swordmaster",
+        "rallyTroops",
+        "hallOfOratory",
+        "techNegotiation",
+        "dreadnought" })
+end
+
+---
+function MainBoard.isCHOAMSpace(spaceName)
+    return Helper.isElementOf(spaceName, {
+        "secureContract",
+        "sellMelange",
+        "secureContract",
+        "sellMelange",
+        "smuggling",
+        "interstellarShipping" })
+end
+
+---
+function MainBoard.isCitySpace(spaceName)
+    return Helper.isElementOf(spaceName, {
+        "arrakeen",
+        "carthag",
+        "researchStation",
+        "sietchTabr" })
+end
+
+---
+function MainBoard.isDesertSpace(spaceName)
+    return Helper.isElementOf(spaceName, {
+        "imperialBasin",
+        "haggaBasin",
+        "theGreatFlat" })
+end
+
+---
+function MainBoard.isSpiceTradeSpace(spaceName)
+    return MainBoard.isDesertSpace(spaceName)
+        or MainBoard.isCHOAMSpace(spaceName)
 end
 
 return MainBoard

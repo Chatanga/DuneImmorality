@@ -12,6 +12,7 @@ local Reserve = Module.lazyRequire("Reserve")
 local MainBoard = Module.lazyRequire("MainBoard")
 local TechMarket = Module.lazyRequire("TechMarket")
 local ImperiumRow = Module.lazyRequire("ImperiumRow")
+local CommercialTrack = Module.lazyRequire("CommercialTrack")
 
 --[[
 local Action = {
@@ -51,20 +52,6 @@ end
 ]]--
 
 --[[
-
-    Playboard.setLeader -> wrapping Action
-
-    Action.sendAgent(spaceName) => query (play + discard) & flush imperiumCards + intrigueCards
-
-    Action.setContext((phase, color (=> leader),) context) -- on clic action cascade
-            context = space(name) | imperium_card(name) (< signet) | intrigue_card(name) | leader_ability | influence_track_bonus(faction, level) | commercial_track_bonus(level) | research_track_bonus | tleilaxu_track_bonus | imperium_card_bonus(card) | tech_tile_bonus(tech) | tech_tile_effect(tech) | conflict_reward(conflict, position) | flag_control(space)
-
-    -- On oublie les actions génériques, trop fragiles.
-    -- On mantient la coalescence dans Resource et on ne la gère pas dans Action.
-
-    -- Changer la couleur des troupes déployables.
-
-    (color <=> leader)
     log:
             [Round]
             <leader>
@@ -80,21 +67,85 @@ end
                     Research > +1 spécimen
 
 ]]--
-local Action = {}
+local Action = {
+    context = {}
+}
 
 ---
 function Action.onLoad(state)
-    Helper.registerEventListener("phaseTurn", "Action", function (phase, color)
-        -- NOP
+    Helper.registerEventListener("phaseStart", function (phase, color)
+        Action.context = {
+            phase = phase
+        }
+    end)
+    Helper.registerEventListener("phaseTurn", function (phase, color)
+        Action.context = {
+            phase = phase,
+            color = color
+        }
     end)
 end
 
+--[[
+    space(name)
+    imperium_card(name) (< signet)
+    intrigue_card(name)
+    leader_ability
+    influence_track_bonus(faction, level)
+    commercial_track_bonus(level)
+    research_track_bonus
+    tleilaxu_track_bonus
+    imperium_card_bonus(card)
+    tech_tile_bonus(tech)
+    tech_tile_effect(tech)
+    conflict_reward(conflict, position)
+    flag_control(space)
+]]--
 ---
-function Action.sendAgent(spaceName, cardContext, intrigueContext)
+function Action.checkContext(attributes)
+    for name, expectedValue in pairs(attributes) do
+        local value = Action.context and Action.context[name] or nil
+        local valid
+        if type(expectedValue) == "function" then
+            valid = expectedValue(value)
+        else
+            valid = value == expectedValue
+        end
+        if not valid then
+            --Helper.dump("Bad context key:", name, "->", value)
+            return false
+        end
+    end
+    return true
 end
 
 ---
-function Action.reveal()
+function Action.instruct(phase, color)
+end
+
+---
+function Action.setUp(color, epic)
+    Action.resource(color, "water", 1)
+    if epic then
+        Action.troops(color, "supply", "garrison", 5)
+        Action.drawIntrigues(color, 1)
+    else
+        Action.troops(color, "supply", "garrison", 3)
+    end
+end
+
+---
+function Action.tearDown()
+end
+
+---
+function Action.sendAgent(color, spaceName)
+    Action.context.space = spaceName
+    MainBoard.sendAgent(color, spaceName)
+end
+
+---
+function Action.reveal(color)
 end
 
 ---
@@ -145,17 +196,8 @@ end
 
 ---
 function Action.influence(color, faction, amount)
+    -- Generic if not faction
     return InfluenceTrack.change(color, faction, amount)
-end
-
----
-function Action.gainCommercialMoves(color, count)
-    -- TODO
-end
-
----
-function Action.gainPersuasion(color, amount)
-    -- TODO
 end
 
 ---
@@ -164,11 +206,11 @@ function Action.troops(color, from, to, amount)
     Utils.assertIsTroopLocation(from)
     Utils.assertIsTroopLocation(to)
     Utils.assertIsInteger(amount)
-    return Park.transfert(amount, Action.getPark(color, from), Action.getPark(color, to))
+    return Park.transfert(amount, Action.getTroopPark(color, from), Action.getTroopPark(color, to))
 end
 
 ---
-function Action.getPark(color, parkName)
+function Action.getTroopPark(color, parkName)
     if parkName == "supply" then
         return Playboard.getSupplyPark(color)
     elseif parkName == "garrison" then
@@ -223,11 +265,7 @@ end
 
 ---
 function Action.acquireReservedImperiumCard(color)
-    if Playboard.is(color, "helenaRichese") then
-        return ImperiumRow.acquireReservedImperiumCard(color)
-    else
-        return false
-    end
+    return false
 end
 
 ---
@@ -241,35 +279,53 @@ function Action.acquireFoldspaceCard(color)
 end
 
 ---
-function Action.imperiumCardEffect(name)
+function Action.signetRing(color)
 end
 
 ---
-function Action.intrigueCardEffect(name)
+function Action.advanceFreighter(color, positiveAmount)
+    Utils.assertIsPositiveInteger(positiveAmount)
+    for _ = 1, positiveAmount do
+        CommercialTrack.cargoUp(color)
+    end
 end
 
 ---
-function Action.leaderPassiveEffect(name)
+function Action.recallFreighter(color)
+    CommercialTrack.cargoReset(color)
 end
 
 ---
-function Action.giveInstructions(message)
+function Action.moveFreighter(color, amount)
+    -- Generic
 end
 
 ---
-function Action.claimLeader(name)
+function Action.dreadnought(color, from, to, amount)
+    Utils.assertIsPlayerColor(color)
+    Utils.assertIsDreadnoughtLocation(from)
+    Utils.assertIsDreadnoughtLocation(to)
+    Utils.assertIsInteger(amount)
+    return Park.transfert(amount, Action.getDreadnoughtPark(color, from), Action.getDreadnoughtPark(color, to))
 end
 
 ---
-function Action.advanceFreighter(positiveAmount)
-end
-
----
-function Action.recallFreighter()
-end
-
----
-function Action.dreadnought(from, to)
+function Action.getDreadnoughtPark(color, parkName)
+    if parkName == "supply" then
+        return Playboard.getDreadnoughtSupplyPark(color)
+    elseif parkName == "garrison" then
+        return Combat.getDreadnoughtGarrisonPark(color)
+    elseif parkName == "combat" then
+        return nil
+    elseif parkName == "carthag" then
+        return nil
+    elseif parkName == "arrakeen" then
+        return nil
+    elseif parkName == "imperialBassin" then
+        return nil
+    else
+        error("Unknow park name: " .. tostring(parkName))
+    end
 end
 
 ---
@@ -277,7 +333,15 @@ function Action.flagControl(space)
 end
 
 ---
-function Action.acquireTech(name, spiceCost, negotiatorCost, solariCost)
+function Action.dreadnoughtControl(space)
+end
+
+---
+function Action.acquireTech(name)
+end
+
+---
+function Action.acquireTechWithSolari(name)
 end
 
 ---
@@ -301,16 +365,15 @@ function Action.acquireReclaimedForcesCard(option)
 end
 
 ---
-function Action.research()
-    -- pending generic
+function Action.researchRight()
 end
 
 ---
-function Action.researchUp()
+function Action.researchLeft()
 end
 
 ---
-function Action.researchDown()
+function Action.rollbackResearch()
 end
 
 ---
@@ -325,12 +388,7 @@ end
 function Action.drawIntrigues(color, amount)
     Utils.assertIsPlayerColor(color)
     Utils.assertIsInteger(amount)
-
-    local realAmount = amount
-    if Playboard.is(color, "hasimirFenring") then
-        realAmount = realAmount + 1
-    end
-    return Intrigue.drawIntrigue(color, realAmount)
+    return Intrigue.drawIntrigue(color, amount)
 end
 
 ---
@@ -342,12 +400,13 @@ function Action.stealIntrigue(color, otherColor, amount)
     return Intrigue.stealIntrigue(color, otherColor, amount)
 end
 
---[[
 function Action.trashImperiumCard(name)
 end
 
-function Action.trashIntrigueCard(?)
+function Action.discardImperiumCard(name)
 end
-]]--
+
+function Action.discardIntrigueCard(name)
+end
 
 return Action
