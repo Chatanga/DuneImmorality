@@ -1,3 +1,6 @@
-tmp/
-misc/
-web/
+/tmp/
+/misc/
+/web/
+/old/
+/resources/
+/doc/
