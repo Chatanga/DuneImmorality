@@ -290,7 +290,7 @@ function TleilaxuResearch.createAxlotlTanksPark(playerColor)
                 local y = (k - 1) * 0.4
                 local z = (1.5 - j) * 0.4
                 local slot = Vector(x, y, z) + origin
-                slots[#slots + 1] = slot
+                table.insert(slots, slot)
             end
         end
     end

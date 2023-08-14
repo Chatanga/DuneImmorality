@@ -30,16 +30,22 @@ function Combat.setUp(ix, epic)
     Deck.generateConflictDeck(Combat.conflictDeckZone, ix, epic)
 
     Combat.garrisonParks = {}
-    for color, _ in pairs(Playboard.getPlayboardByColor()) do
+    for color, _ in pairs(Playboard.getPlayboards()) do
         Combat.garrisonParks[color] = Combat.createGarrisonPark(color)
     end
 
     if ix then
         Combat.dreadnoughtParks = {}
-        for color, _ in pairs(Playboard.getPlayboardByColor()) do
+        for color, _ in pairs(Playboard.getPlayboards()) do
             Combat.dreadnoughtParks[color] = Combat.createDreadnoughtPark(color)
         end
     end
+
+    Helper.registerEventListener("phaseStart", function (phase)
+        if phase == "recall" then
+            -- TODO Recalling troops lost in combat.
+        end
+    end)
 end
 
 ---
@@ -50,7 +56,7 @@ function Combat.createGarrisonPark(color)
             local x = (i - 2.5) * 0.45
             local z = (j - 2) * 0.45
             local slot = Combat.origins[color] + Vector(x, 0, z)
-            slots[#slots + 1] = slot
+            table.insert(slots, slot)
         end
     end
 
@@ -138,6 +144,11 @@ end
 ---
 function Combat.setDreadnoughtStrength(strength)
     -- TODO
+end
+
+---
+function Combat.isInCombat(color)
+    return false
 end
 
 return Combat

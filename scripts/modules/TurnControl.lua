@@ -3,15 +3,18 @@ local Helper = require("utils.Helper")
 
 local Playboard = Module.lazyRequire("Playboard")
 local Hagal = Module.lazyRequire("Hagal")
+local Combat = Module.lazyRequire("Combat")
 
 local TurnControl = {
     phaseOrder = {
         'leaderSelection',
-        'startOfGame',
-        'startOfRound',
-        'agentOrReveal',
+        'gameStart',
+        'roundStart',
+        'playerTurns',
         'combat',
         'outcome',
+        'makers',
+        'recall',
         'endgame',
     },
     players = {},
@@ -136,18 +139,23 @@ end
 ---
 function TurnControl.getNextPhase(phase)
     if phase == 'leaderSelection' then
-        return 'startOfGame'
-    elseif phase == 'startOfGame' then
-        return 'startOfRound'
-    elseif phase == 'startOfRound' then
-        return 'agentOrReveal'
-    elseif phase == 'agentOrReveal' then
+        return 'gameStart'
+    elseif phase == 'gameStart' then
+        return 'roundStart'
+    elseif phase == 'roundStart' then
+        return 'playerTurns'
+    elseif phase == 'playerTurns' then
         return 'combat'
     elseif phase == 'combat' then
         return 'outcome'
     elseif phase == 'outcome' then
+        return 'makers'
+    elseif phase == 'makers' then
+        return 'recall'
+    elseif phase == 'recall' then
         -- Leave it to the players to decide when the game ends.
-        return nil
+        --return 'endgame'
+        return 'roundStart'
     elseif phase == 'endgame' then
         return nil
     else
@@ -163,31 +171,34 @@ function TurnControl.isPlayerActive(playerLuaIndex)
 
     if phase == 'leaderSelection' then
         return Playboard.getLeader(color) == nil
-    elseif phase == 'startOfGame' then
+    elseif phase == 'gameStart' then
         if Playboard.getLeader(color).instruct(phase) then
             TurnControl.activatedPlayers[playerLuaIndex] = 1
             return true
         end
-    elseif phase == 'startOfRound' then
+    elseif phase == 'roundStart' then
         if Playboard.getLeader(color).instruct(phase) then
             TurnControl.activatedPlayers[playerLuaIndex] = 1
             return true
         end
-    elseif phase == 'agentOrReveal' then
+    elseif phase == 'playerTurns' then
         return Playboard.couldSendAgentOrReveal(color)
     elseif phase == 'combat' then
         -- TODO Pass count < player in combat count.
-        return Playboard.isInCombat(color)
+        return Combat.isInCombat(color)
     elseif phase == 'outcome' then
         -- TODO Player is victorious and the combat provied a reward (auto?) or a dreadnought needs to be placed or a combat card remains to be played.
-        return Playboard.isInCombat(color)
+        return Combat.isInCombat(color)
+    elseif phase == 'makers' then
+        return false
+    elseif phase == 'recall' then
+        return false
     elseif phase == 'endgame' then
-        return nil
+        -- TODO
+        return false
     else
-        assert(false)
+        error("Unknown phase: " .. phase)
     end
-
-    return false
 end
 
 ---

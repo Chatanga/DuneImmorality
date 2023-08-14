@@ -65,7 +65,7 @@ end
 
 ---
 function CommercialTrack.getCargoLevel(color)
-    local p = Playboard.getPlayer(color).cargo.getPosition()
+    local p = Playboard.getContent(color).cargo.getPosition()
     return math.floor((p.z - CommercialTrack.initialCargoPositions[color].z) / 1.1 + 0.5)
 end
 
@@ -73,12 +73,12 @@ end
 function CommercialTrack.setCargoPositionSmooth(color, level)
     local p = CommercialTrack.initialCargoPositions[color]:copy()
     p:setAt('z', p.z + 1.1 * level)
-    Playboard.getPlayer(color).cargo.setPositionSmooth(p, false, true)
+    Playboard.getContent(color).cargo.setPositionSmooth(p, false, true)
 end
 
 ---
 function CommercialTrack.cargoGoUp(color, count)
-    Helper.repeatMovingAction(Playboard.getPlayer(color).cargo, count, function ()
+    Helper.repeatMovingAction(Playboard.getContent(color).cargo, count, function ()
         CommercialTrack.cargoUp(color)
     end)
 end
@@ -111,7 +111,7 @@ end
 ---
 function CommercialTrack.pickSolariBonus(color)
     Action.resource(color, "solari", 5)
-    for otherColor, _ in pairs(Playboard.getPlayboardByColor()) do
+    for otherColor, _ in pairs(Playboard.getPlayboards()) do
         if otherColor ~= color then
             Action.resource(otherColor, "solari", 1)
         end

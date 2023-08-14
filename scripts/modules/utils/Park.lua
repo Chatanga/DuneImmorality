@@ -109,7 +109,7 @@ function Park.putObjects(objects, toPark)
     assert(objects, "No objects provided.")
     local holders = {}
     for _, object in ipairs(objects) do
-        holders[#holders + 1] = {object = object}
+        table.insert(holders, { object = object })
     end
     return Park.putHolders(holders, toPark)
 end
@@ -196,7 +196,7 @@ function Park.getObjects(park)
                 Helper.hasAllTags(object, park.tags) and
                 (not park.description or park.description == object.getDescription())
             if isOneOfThem then
-                objects[#objects + 1] = object
+                table.insert(objects, object)
             end
         end
     end

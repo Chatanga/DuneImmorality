@@ -31,16 +31,14 @@ Having launched `./listen.py` in another terminal will provide you with an immed
 
 ## TODO
 
-- Leader over Action.
 - Combat and conflict.
 - Tleilaxu board.
 - Identify and detect played cards.
-- Reveal.
-- Score track.
+- Advanced reveal.
 - Instruction reminder.
 - Endgame.
 - The Hagal house (+resources +difficulty).
-- Introduce the graphic log.
+- Introduce the graphic log?
 - Restore translations.
 - Restore music.
 - Blitz!

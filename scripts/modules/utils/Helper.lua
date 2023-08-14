@@ -889,4 +889,15 @@ function Helper.cons(head, tail)
     return list
 end
 
+---
+function Helper.distance(object, position)
+    local p = object.getPosition()
+    return math.sqrt((p.x - position.x)^2 + (p.y - position.y)^2 + (p.z - position.z)^2)
+end
+
+---
+function Helper.isAround(object, position)
+    return Helper.distance(object, position) < 1
+end
+
 return Helper

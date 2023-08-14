@@ -64,6 +64,8 @@ function Leader.getLeader(name)
 end
 
 function Leader.vladimirHarkonnen.setUp(color, epic)
+    Action.setUp(color, epic)
+
     --- Masterstroke
     local position = Player[color].getHandTransform().position
     local tokenBag = getObjectFromGUID('f89231')
@@ -88,7 +90,7 @@ end
 
 function Leader.vladimirHarkonnen.instruct(phase, color)
     -- Masterstroke
-    if phase == "startOfGame" then
+    if phase == "gameStart" then
         return "Secretly choose 2 Factions."
     end
 end
@@ -118,7 +120,7 @@ end
 --- Ruthless negotiator
 function Leader.ilbanRichese.resource(color, resourceName, amount)
     local success = Action.resource(color, resourceName, amount)
-    if success and amount < 0 and Action.checkContext({ phase = "agentOrReveal", color = color, space = MainBoard.isLandsraadSpace }) then
+    if success and amount < 0 and Action.checkContext({ phase = "playerTurns", color = color, space = MainBoard.isLandsraadSpace }) then
         Action.drawImperiumCards(color, 1)
     end
     return success
@@ -139,7 +141,7 @@ end
 --- Landsraad popularity
 function Leader.letoAtreides.resource(color, resourceName, amount)
     local finalAmount = amount
-    if resourceName == "solari" and amount < 0 and Action.checkContext({ phase = "agentOrReveal", color = color, space = MainBoard.isLandsraadSpace }) then
+    if resourceName == "solari" and amount < 0 and Action.checkContext({ phase = "playerTurns", color = color, space = MainBoard.isLandsraadSpace }) then
         finalAmount = amount + 1
     end
     return Action.resource(color, resourceName, finalAmount)
@@ -147,6 +149,7 @@ end
 
 --- Prescience
 function Leader.paulAtreides.setUp(color, epic)
+    Action.setUp(color, epic)
     -- TODO Add prescience button
 end
 
@@ -197,17 +200,19 @@ end
 
 function Leader.ilesaEcaz.instruct(phase, color)
     --- One step ahead
-    if phase == "startOfRound" then
+    if phase == "roundStart" then
         return "Set aside a card from your hand."
     end
 end
 
 --- Heavy lasgun cannons
 function Leader.rhomburVernius.setUp(color, epic)
+    Action.setUp(color, epic)
     Combat.setDreadnoughtStrength(3)
 end
 
 function Leader.tessiaVernius.setUp(color, epic)
+    Action.setUp(color, epic)
 
     local getAveragePosition = function (spaceNames)
         local p = Vector(0, 0, 0)
@@ -270,7 +275,7 @@ end
 -- Final delivery
 function Leader.yunaMoritani.resource(color, resourceName, amount)
     local finalAmount = amount
-    if resourceName == "solari" and amount > 0 and Action.checkContext({ phase = "agentOrReveal", color = color }) then
+    if resourceName == "solari" and amount > 0 and Action.checkContext({ phase = "playerTurns", color = color }) then
         finalAmount = amount + 1
     end
     return Action.resource(color, resourceName, finalAmount)
@@ -278,6 +283,7 @@ end
 
 --- Intelligence
 function Leader.hundroMoritani.setUp(color, epic)
+    Action.setUp(color, epic)
     Wait.frames(function ()
         Action.drawIntrigues(color, 2)
     end, 1)
@@ -285,7 +291,7 @@ end
 
 function Leader.hundroMoritani.instruct(phase, color)
     -- Intelligence
-    if phase == "startOfGame" then
+    if phase == "gameStart" then
         return "Keep one intrigue and put the other on top of the intrigue deck."
     end
 end

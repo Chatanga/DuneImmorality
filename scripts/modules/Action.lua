@@ -121,6 +121,7 @@ end
 
 ---
 function Action.instruct(phase, color)
+    -- NOP
 end
 
 ---
@@ -136,6 +137,7 @@ end
 
 ---
 function Action.tearDown()
+    -- NOP
 end
 
 ---
@@ -146,14 +148,14 @@ end
 
 ---
 function Action.reveal(color)
+    Playboard.getPlayboard(color):revealHand()
 end
 
 ---
 function Action.takeMentat(color)
     local mentat = MainBoard.getMentat()
     if mentat then
-        Park.putObject(mentat, Playboard.getAgentPark(color))
-        return true
+        return Park.putObject(mentat, Playboard.getAgentPark(color))
     else
         return false
     end
@@ -166,10 +168,17 @@ end
 
 ---
 function Action.takeHighCouncilSeat(color)
-    local destination = MainBoard.getHighCouncilSeatPosition(color)
     local token = Playboard.getCouncilToken(color)
-    token.setPositionSmooth(destination, false, false)
-    token.interactable = false
+    if not Playboard.hasACouncilSeat(color) then
+        token.interactable = false
+        -- TODO Get rid of this.
+        Wait.time(function ()
+            Playboard.updatePersuasion(color)
+        end, 1)
+        return Park.putObject(token, MainBoard.getHighCouncilSeatPark())
+    else
+        return false
+    end
 end
 
 ---
@@ -190,7 +199,7 @@ end
 ---
 function Action.drawImperiumCards(color, amount)
     Utils.assertIsPlayerColor(color)
-    Playboard.playboards[color]:drawCards(amount)
+    Playboard.getPlayboard(color):drawCards(amount)
     return true
 end
 

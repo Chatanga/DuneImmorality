@@ -21,7 +21,9 @@ end
 
 ---
 function Intrigue.setUp(ix, immortality)
-    Deck.generateIntrigueDeck(Intrigue.deckZone, ix, immortality)
+    Deck.generateIntrigueDeck(Intrigue.deckZone, ix, immortality).doAfter(function (deck)
+        deck.shuffle()
+    end)
 end
 
 ---

@@ -244,7 +244,7 @@ function Playboard.new(color, unresolvedContent, state)
 
     local playboard = Helper.newObject(Playboard, {
         color = color,
-        player = nil,
+        content = nil,
         agentPark = nil,
         dreadnoughtPark = nil,
         supplyPark = nil,
@@ -310,7 +310,6 @@ function Playboard.setUp(ix, immortality, epic, activeOpponents)
 
             Helper.registerEventListener("phaseEnd", function (phase)
                 if phase == "leaderSelection" then
-                    log(color)
                     playboard.leader.setUp(color, epic)
 
                     Helper.registerEventListener("phaseTurn", function (otherPhase, otherColor)
@@ -323,6 +322,8 @@ function Playboard.setUp(ix, immortality, epic, activeOpponents)
                     end)
                 end
             end)
+
+            playboard:updatePlayerScore()
         else
             playboard:shutdown()
         end
@@ -330,15 +331,17 @@ function Playboard.setUp(ix, immortality, epic, activeOpponents)
 
     Helper.registerEventListener("phaseStart", function (phase, firstPlayer)
         if phase == "leaderSelection" or phase == "round" then
-            local playboard = Playboard.playboards[firstPlayer]
+            local playboard = Playboard.getPlayboard(firstPlayer)
             MainBoard.firstPlayerMarker.setPositionSmooth(playboard.content.firstPlayerPosition, false, false)
+        elseif phase == "recall" then
+            -- TODO Send all played cards to the discard (general discard for intrigue cards).
         end
     end)
 
     Helper.registerEventListener("phaseTurn", function (phase, color)
         local indexedColors = {"Green", "Yellow", "Blue", "Red"}
         for i, otherColor in ipairs(indexedColors) do
-            local playboard = Playboard.playboards[otherColor]
+            local playboard = Playboard.getPlayboard(otherColor)
             if playboard.opponent then
                 local effectIndex = 0 -- black index (no color actually)
                 if otherColor == color then
@@ -407,7 +410,16 @@ function Playboard:updateState()
 end
 
 ---
-function Playboard.getPlayboardByColor(filterOutRival)
+function Playboard.getPlayboard(color)
+    assert(#Helper.getKeys(Playboard.playboards) > 0, "No playboard at all: probably called in 'new'.")
+    local playboard = Playboard.playboards[color]
+    assert(playboard, "No playboard for color " .. tostring(color))
+    return playboard
+end
+
+---
+function Playboard.getPlayboards(filterOutRival)
+    assert(#Helper.getKeys(Playboard.playboards) > 0, "No playboard at all: probably called in 'new'.")
     local filteredPlayboards = {}
     for color, playboard in pairs(Playboard.playboards) do
         if playboard.opponent and (not filterOutRival or playboard.opponent ~= "rival") then
@@ -419,7 +431,7 @@ end
 
 ---
 function Playboard.getBoard(color)
-    return Playboard.getPlayer(color).board
+    return Playboard.getContent(color).board
 end
 
 ---
@@ -461,9 +473,9 @@ function Playboard:createSupplyPark(centerPosition)
             local x = (i - 2.5) * 0.5
             local z = (j - 2.5) * 0.5
             local slot = Vector(x, 0.29, z):rotateOver('y', -45) + centerPosition
-            allSlots[#allSlots + 1] = slot
+            table.insert(allSlots, slot)
             if i < 3 or j < 3 then
-                slots[#slots + 1] = slot
+                table.insert(slots, slot)
             end
         end
     end
@@ -498,7 +510,7 @@ function Playboard:createTechPark(centerPosition)
             end
                 local z = (j - 2) * 2 + 0.4
             local slot = Vector(x, 0.2, z) + centerPosition
-            slots[#slots + 1] = slot
+            table.insert(slots, slot)
         end
     end
 
@@ -509,7 +521,6 @@ end
 function Playboard:initPlayerScore()
     self:generatePlayerScoreboardPositions()
     self:createPlayerScoreboardPark()
-    self:updatePlayerScore()
 end
 
 ---
@@ -517,21 +528,19 @@ function Playboard:generatePlayerScoreboardPositions()
     local origin = self.content.scoreMarker.getPosition()
 
     -- Avoid collision between markers by giving a different height to each.
-    local h = 1
-    for color, _ in pairs(Playboard.getPlayboardByColor()) do
-        if color == self.color then
-            break
-        else
-            h = h + 0.5
-        end
-    end
+    local heights = {
+        Green = 1,
+        Yellow = 1.5,
+        Blue = 2,
+        Red = 2.5,
+    }
 
     self.scorePositions = {}
-    for i = 1, 14 do
+    for i = 0, 12 do
         self.scorePositions[i] = {
             origin.x,
-            2.7 + h,
-            origin.z + (i - 2) * 1.165
+            1 + heights[self.color],
+            origin.z + i * 1.165
         }
     end
 end
@@ -546,9 +555,9 @@ function Playboard:createPlayerScoreboardPark()
     end
 
     local slots = {}
-    for i = 0, 17 do
-        slots[i + 1] = Vector(
-            origin.x + i * 1.092 * direction,
+    for i = 1, 18 do
+        slots[i] = Vector(
+            origin.x + (i - 1) * 1.092 * direction,
             origin.y,
             origin.z)
     end
@@ -558,45 +567,38 @@ end
 
 ---
 function Playboard:updatePlayerScore()
-    local zoneObjects = self.scorePark.zone.getObjects()
-    local newScore = 0
-    for _, object in ipairs(zoneObjects) do
-        if object.getDescription() == "VP" then
-            newScore = newScore + 1
-        end
-    end
-
-    local vpIndex = math.min(14, newScore + 1)
+    local cappedScore = math.min(14, self:getScore())
     local scoreMarker = self.content.scoreMarker
-    scoreMarker.setPositionSmooth(self.scorePositions[vpIndex])
-    scoreMarker.setRotationSmooth({0, 0, 0}, false, false)
-
-    if newScore ~= self.score then
-        self.score = newScore
-        local setup = getObjectFromGUID("4a3e76")
-        setup.call("updateScores")
-    end
+    scoreMarker.setLock(false)
+    scoreMarker.setPositionSmooth(self.scorePositions[cappedScore])
 end
 
 ---
-function Playboard.onObjectEnterScriptingZone(zone, enterObject)
-    if Playboard.alive then
-        if zone.guid == Playboard.scorePark.zone.guid then
-            local description = enterObject.getDescription()
-            if description == "VP" then
-                Playboard:updatePlayerScore()
+function Playboard.onObjectEnterScriptingZone(zone, object)
+    for color, playboard in pairs(Playboard.playboards) do
+        if playboard.opponent then
+            if zone == playboard.scorePark.zone then
+                if Utils.isVictoryPointToken(object) then
+                    playboard:updatePlayerScore()
+                end
+            elseif zone == playboard.agentPark.zone then
+                if Utils.isMentat(object) then
+                    object.addTag(color)
+                    object.setColorTint(playboard.content.swordmaster.getColorTint())
+                end
             end
         end
     end
 end
 
 ---
-function Playboard.onObjectLeaveScriptingZone(zone, enterObject)
-    if Playboard.alive then
-        if zone.guid == Playboard.scorePark.zone.guid then
-            local description = enterObject.getDescription()
-            if description == "VP" then
-                Playboard:updatePlayerScore()
+function Playboard.onObjectLeaveScriptingZone(zone, object)
+    for color, playboard in pairs(Playboard.playboards) do
+        if playboard.opponent then
+            if zone == playboard.scorePark.zone then
+                if Utils.isVictoryPointToken(object) then
+                    playboard:updatePlayerScore()
+                end
             end
         end
     end
@@ -611,33 +613,33 @@ end
 
 ---
 function Playboard:cleanUp(base, ix, immortality)
-    local player = self.content
+    local content = self.content
 
     local toBeRemoved = {}
 
     if base then
         Helper.addAll(toBeRemoved, {
-            player.swordmaster,
-            player.councilToken,
-            player.scoreMarker,
-            player.flagBag,
-            player.forceMarker,
-            player.startEndTurnButton
+            content.swordmaster,
+            content.councilToken,
+            content.scoreMarker,
+            content.flagBag,
+            content.forceMarker,
+            content.startEndTurnButton
         })
-        Helper.addAll(toBeRemoved, player.agents)
-        Helper.addAll(toBeRemoved, player.troops)
+        Helper.addAll(toBeRemoved, content.agents)
+        Helper.addAll(toBeRemoved, content.troops)
     end
 
     if ix then
-        Helper.addAll(toBeRemoved, player.dreadnoughts)
-        table.insert(toBeRemoved, player.flagBag)
-        table.insert(toBeRemoved, player.cargo)
+        Helper.addAll(toBeRemoved, content.dreadnoughts)
+        table.insert(toBeRemoved, content.flagBag)
+        table.insert(toBeRemoved, content.cargo)
         -- TODO Add atomics.
     end
 
     if immortality then
-        table.insert(toBeRemoved, player.tleilaxuToken)
-        table.insert(toBeRemoved, player.researchToken)
+        table.insert(toBeRemoved, content.tleilaxuToken)
+        table.insert(toBeRemoved, content.researchToken)
     end
 
     for _, object in ipairs(toBeRemoved) do
@@ -668,7 +670,7 @@ function Playboard.onPlayerTurn(player, previousPlayer)
             if Playboard.nextPlayer == color then
                 effectIndex = i
             end
-            local board = Playboard.playboards[color].content.board
+            local board = Playboard.getPlayboard(color).content.board
             board.AssetBundle.playTriggerEffect(effectIndex)
         end
         Playboard.nextPlayer = nil
@@ -811,7 +813,7 @@ end
 
 ---
 function Playboard.hasRevealed(color)
-    return Playboard.playboards[color].revealed
+    return Playboard.getPlayboard(color).revealed
 end
 
 ---
@@ -820,7 +822,7 @@ function Playboard:tryRevealHandEarly()
         return
     end
 
-    local origin = Playboard.playboards[self.color]:newSymmetricBoardPosition(-8, 0, -4.5)
+    local origin = Playboard.getPlayboard(self.color):newSymmetricBoardPosition(-8, 0, -4.5)
 
     local board = self.content.board
 
@@ -905,7 +907,7 @@ end
 
 ---
 function Playboard.couldSendAgentOrReveal(color)
-    local playboard = Playboard.playboards[color]
+    local playboard = Playboard.getPlayboard(color)
     if playboard.opponent == "rival" then
         return playboard:stillHavePlayableAgents()
     else
@@ -914,25 +916,10 @@ function Playboard.couldSendAgentOrReveal(color)
 end
 
 ---
-function Playboard.isInCombat(color)
-    return not (Combat.getGarrisonPark(color).isEmpty() and Combat.getDreadnoughtPark(color).isEmpty())
-end
-
----
-function Playboard.isAgent(object, color)
-    local name = object.getName()
-    if name == color .. " Agent" or name == color .. " Swordmaster" then
-        return true
-    elseif object.getName() == "Mentat" then
-        return object.getColorTint() == Playboard.getPlayer(color).swordmaster.getColorTint()
-    end
-end
-
----
 function Playboard:tryToDrawCards(count, message)
-    local player = self.content
-    local deck = Helper.getDeckOrCard(player.drawDeckZone)
-    local discard = Helper.getDeckOrCard(player.discardZone)
+    local content = self.content
+    local deck = Helper.getDeckOrCard(content.drawDeckZone)
+    local discard = Helper.getDeckOrCard(content.discardZone)
 
     local needDiscardReset = Helper.getCardCount(deck) < count
     local availableCardCount = Helper.getCardCount(deck) + Helper.getCardCount(discard)
@@ -984,16 +971,16 @@ end
 
 ---
 function Playboard:resetDiscard()
-    local player = self.content
-    local discard = Helper.getDeckOrCard(player.discardZone)
+    local content = self.content
+    local discard = Helper.getDeckOrCard(content.discardZone)
     if discard then
         local continuation = Helper.createContinuation()
 
         discard.setRotationSmooth({0, 180, 180}, false, false)
-        discard.setPositionSmooth(Helper.getLandingPosition(player.drawDeckZone), false, true)
+        discard.setPositionSmooth(Helper.getLandingPosition(content.drawDeckZone), false, true)
 
         Wait.time(function() -- Once moved.
-            local replenishedDeckOrCard = Helper.getDeckOrCard(player.drawDeckZone)
+            local replenishedDeckOrCard = Helper.getDeckOrCard(content.drawDeckZone)
             assert(replenishedDeckOrCard)
             if replenishedDeckOrCard.type == "Deck" then
                 replenishedDeckOrCard.shuffle()
@@ -1110,18 +1097,18 @@ end
 
 ---
 function Playboard.hasPlayer(color)
-    return Playboard.getPlayer(color) ~= nil
+    return Playboard.getContent(color) ~= nil
 end
 
 ---
 function Playboard.isRival(color)
-    local playerboard = Playboard.playboards[color]
+    local playerboard = Playboard.getPlayboard(color)
     return playerboard.opponent == "rival"
 end
 
 ---
 function Playboard.setLeader(color, leaderCard)
-    local playboard = Playboard.playboards[color]
+    local playboard = Playboard.getPlayboard(color)
     if playboard.opponent == "rival" then
         if Hagal.getRivalCount() == 2 and not Hagal.isLeaderCompatible(leaderCard) then
             log("Not a leader compatible with a rival: " .. leaderCard.getDescription())
@@ -1138,7 +1125,7 @@ end
 
 ---
 function Playboard.findLeaderCard(color)
-    local leaderZone = Playboard.getPlayer(color).leaderZone
+    local leaderZone = Playboard.getContent(color).leaderZone
     for _, object in ipairs(leaderZone.getObjects()) do
         if object.hasTag("Leader") or object.hasTag("Hagal") then
             return object
@@ -1149,7 +1136,7 @@ end
 
 ---
 function Playboard.getLeader(color)
-    return Playboard.playboards[color].leader
+    return Playboard.getPlayboard(color).leader
 end
 
 ---
@@ -1159,65 +1146,71 @@ function Playboard.getLeaderName(color)
 end
 
 ---
-function Playboard.getPlayer(color)
-    local playboard = Playboard.playboards[color]
+function Playboard.getContent(color)
+    local playboard = Playboard.getPlayboard(color)
     assert(playboard, "Unknow player color: " .. tostring(color))
     return playboard.content
 end
 
 ---
 function Playboard.getAgentPark(color)
-    return Playboard.playboards[color].agentPark
+    return Playboard.getPlayboard(color).agentPark
 end
 
 ---
 function Playboard.getDreadnoughtPark(color)
-    return Playboard.playboards[color].dreadnoughtPark
+    return Playboard.getPlayboard(color).dreadnoughtPark
 end
 
 ---
 function Playboard.getSupplyPark(color)
-    return Playboard.playboards[color].supplyPark
+    return Playboard.getPlayboard(color).supplyPark
 end
 
 ---
 function Playboard.getTechPark(color)
-    return Playboard.playboards[color].techPark
+    return Playboard.getPlayboard(color).techPark
 end
 
 ---
 function Playboard.getScorePark(color)
-    return Playboard.playboards[color].scorePark
+    return Playboard.getPlayboard(color).scorePark
 end
 
 ---
-function Playboard.getScore(color)
-    return Playboard.playboards[color].score
+function Playboard:getScore()
+    local score = 0
+    for _, object in ipairs(self.scorePark.zone.getObjects()) do
+        if Utils.isVictoryPointToken(object) then
+            score = score + 1
+        end
+    end
+    return score
 end
 
 ---
 function Playboard.grantTechTile(color, techTile)
-    Park.putObject(techTile, Playboard.playboards[color].techPark)
+    Park.putObject(techTile, Playboard.getPlayboard(color).techPark)
 end
 
 ---
 function Playboard.getScoreTokens(color)
-    return Park.getObjects(Playboard.playboards[color].scorePark)
+    return Park.getObjects(Playboard.getPlayboard(color).scorePark)
 end
 
 ---
 function Playboard.grantScoreToken(color, token)
-    Park.putObject(token, Playboard.playboards[color].scorePark)
+    Park.putObject(token, Playboard.getPlayboard(color).scorePark)
 end
 
 ---
 function Playboard.grantScoreTokenFromBag(color, tokenBag)
-    Park.putObjectFromBag(tokenBag, Playboard.playboards[color].scorePark)
+    Park.putObjectFromBag(tokenBag, Playboard.getPlayboard(color).scorePark)
 end
 
 ---
 function Playboard.hasTech(color, techName)
-    local techs = Playboard.playboards[color].techPark.zone.getObjects()
+    local techs = Playboard.getPlayboard(color).techPark.zone.getObjects()
     for _, tech in ipairs(techs) do
         if tech.hasTag(techName) then
             return true
@@ -1228,12 +1221,21 @@ end
 
 ---
 function Playboard.hasACouncilSeat(color)
-    for _, object in ipairs(Constants.structure.main.councilZone.getObjects()) do
-        if object.getName() == color .. " Councilor" then
-            return true
-        end
+    local zone = MainBoard.getHighCouncilSeatPark().zone
+    local token = Playboard.getCouncilToken(color)
+    return Helper.contains(zone, token)
+end
+
+---
+function Playboard.updatePersuasion(color)
+    local persuasion = 0
+    if Playboard.hasACouncilSeat(color) then
+        persuasion = persuasion + 2
     end
-    return false
+    -- TODO Check Hall of Oratory or Tech Negotiation
+    -- TODO Check Intrigue
+    -- TODO Check Tech
+    Playboard.getPlayboard(color)["persuasion"]:set(persuasion)
 end
 
 ---
@@ -1248,24 +1250,24 @@ end
 
 ---
 function Playboard.getSwordmaster(color)
-    local player = Playboard.getPlayer(color)
-    return player.swordmaster
+    local content = Playboard.getContent(color)
+    return content.swordmaster
 end
 
 ---
 function Playboard.getCouncilToken(color)
-    local player = Playboard.getPlayer(color)
-    return player.councilToken
+    local content = Playboard.getContent(color)
+    return content.councilToken
 end
 
 ---
 function Playboard.getResource(color, resourceName)
-    return Playboard.playboards[color][resourceName]
+    return Playboard.getPlayboard(color)[resourceName]
 end
 
 ---
 function Playboard.payResource(color, resourceName, amount)
-    local playerResource = Playboard.getPlayer(color)[resourceName]
+    local playerResource = Playboard.getContent(color)[resourceName]
     if playerResource.call("collectVal") < amount then
         broadcastToColor(I18N(Helper.toCamelCase("no", resourceName)), color, color)
         return false
@@ -1279,7 +1281,7 @@ end
 
 ---
 function Playboard.gainResource(color, resourceName, amount)
-    local playerResource = Playboard.getPlayer(color)[resourceName]
+    local playerResource = Playboard.getContent(color)[resourceName]
     Wait.time(function()
         playerResource.call("incrementVal")
     end, 0.35, amount)
@@ -1287,36 +1289,36 @@ end
 
 ---
 function Playboard.giveCard(color, card, isTleilaxuCard)
-    local player = Playboard.getPlayer(color)
-    assert(player)
+    local content = Playboard.getContent(color)
+    assert(content)
 
     -- Acquire the card (not smoothly to avoid being grabbed by a player hand zone).
-    card.setPosition(player.discardPosition)
+    card.setPosition(content.discardPosition)
 
-    -- Move it on the top of the player deck if possible and wanted.
+    -- Move it on the top of the content deck if possible and wanted.
     if (isTleilaxuCard and TleilaxuResearch.hasReachedOneHelix(color)) or Playboard.hasTech(color, "Spaceport") then
         Player[color].showConfirmDialog(
             I18N("dialogCardAbove"),
             function(_)
-                Helper.moveCardFromZone(player.discardZone, player.drawDeckZone.getPosition(), Vector(0, 180, 180), false)
+                Helper.moveCardFromZone(content.discardZone, content.drawDeckZone.getPosition(), Vector(0, 180, 180), false)
             end)
     end
 end
 
 ---
 function Playboard.giveCardFromZone(color, zone, isTleilaxuCard)
-    local player = Playboard.getPlayer(color)
-    assert(player)
+    local content = Playboard.getContent(color)
+    assert(content)
 
     -- Acquire the card (not smoothly to avoid being grabbed by a player hand zone).
-    Helper.moveCardFromZone(zone, player.discardZone.getPosition(), nil, false)
+    Helper.moveCardFromZone(zone, content.discardZone.getPosition(), nil, false)
 
     -- Move it on the top of the player deck if possible and wanted.
     if (isTleilaxuCard and TleilaxuResearch.hasReachedOneHelix(color)) or Playboard.hasTech(color, "Spaceport") then
         Player[color].showConfirmDialog(
             I18N("dialogCardAbove"),
             function(_)
-                Helper.moveCardFromZone(player.discardZone, player.drawDeckZone.getPosition(), Vector(0, 180, 180), false)
+                Helper.moveCardFromZone(content.discardZone, content.drawDeckZone.getPosition(), Vector(0, 180, 180), false)
             end)
     end
 end

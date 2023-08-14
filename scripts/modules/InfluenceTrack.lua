@@ -243,7 +243,7 @@ function InfluenceTrack.challengeAlliance(faction)
     local bestRank = 4
     local allianceOwner
 
-    for color, _ in pairs(Playboard.playboards) do
+    for color, _ in pairs(Playboard.getPlayboards()) do
         if InfluenceTrack.hasAlliance(faction, color) then
             allianceOwner = color
         end

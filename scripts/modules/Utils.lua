@@ -1,66 +1,56 @@
 local Utils = {}
 
 ---
-function Utils.isUnit(color, object)
-    return Utils.isTroop(color, object) or Utils.isDreadnought(color, object)
-end
-
----
 function Utils.isTroop(color, object)
-    return object.getName() == color
+    return object.hasTag("Troop") and object.hasTag(color)
 end
 
 ---
 function Utils.isDreadnought(color, object)
-    return object.getName() == color .. " Dreadnought" or object.getName() == color .. " dreadnought"
+    return object.hasTag("Dreadnought") and object.hasTag(color)
+end
+
+---
+function Utils.isUnit(color, object)
+    -- TODO Add a "Unit" tag?
+    return (object.hasTag("Troop") or object.hasTag("Dreadnought")) and object.hasTag(color)
 end
 
 ---
 function Utils.isFlag(color, object)
-    return object.getName() == color .. " Flag"
+    return object.hasTag("Flag") and object.hasTag(color)
 end
 
 ---
 function Utils.isAgent(color, object)
-    assert(object.getDescription() == "Agent" == object.hasTag("Agent"))
-    local name = object.getName()
-    return
-        name == "" .. color .. " Agent" or
-        name == "" .. color .. " Swordmaster" or
-        name == "Mentat" -- TODO Check the Mentat ownership.
+    return object.hasTag("Agent") and object.hasTag(color)
 end
 
 ---
 function Utils.isMentat(object)
-    return object.getName() == "Mentat"
+    -- TODO Acknowledge is unique nature.
+    return object.hasTag("Mentat")
 end
 
---[[
-function MainBoard.createUpDownButton(factionPrefix, label, position)
-    local parameters = {
-        function_owner = self,
-        scale = {0.15, 0.100000001490116, 0.100000001490116},
-        width = 300,
-        height = 450,
-        font_size = 350,
-        color = {0.25, 0.25, 0.25, 1},
-        font_color = {0.7843, 0.7843, 0.7843, 1},
-        tooltip = I18N("toolTipDecreaseRep")
-    }
-
-    parameters.click_function = factionPrefix .. "Down"
-    parameters.label = "↓"
-    parameters.tooltip = I18N("toolTipDecreaseRep")
-    parameters.position = Utils.toVector(position) + Vector(0, 0, 0.05)
-    self.createButton(parameters)
-
-    parameters.click_function = factionPrefix .. "Up"
-    parameters.label = "↑"
-    parameters.tooltip = I18N("toolTipIncreaseRep")
-    parameters.position = Utils.toVector(position) - Vector(0, 0, 0.05)
-    self.createButton(parameters)
+---
+function Utils.isVictoryPointToken(object)
+    return object.hasTag("VictoryPointToken")
 end
-]]--
+
+---
+function Utils.isLeader(object)
+    return object.hasTag("Leader")
+end
+
+---
+function Utils.isImperiumCard(object)
+    return object.hasTag("Imperium")
+end
+
+---
+function Utils.isIntrigueCard(object)
+    return object.hasTag("Intrigue")
+end
 
 ---
 function Utils.assertIsPlayerColor(color)

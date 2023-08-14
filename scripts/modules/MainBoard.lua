@@ -6,7 +6,6 @@ local Resource = Module.lazyRequire("Resource")
 local Utils = Module.lazyRequire("Utils")
 local Playboard = Module.lazyRequire("Playboard")
 local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
-local Action = Module.lazyRequire("Action")
 local TleilaxuResearch = Module.lazyRequire("TleilaxuResearch")
 local TechMarket = Module.lazyRequire("TechMarket")
 local Combat = Module.lazyRequire("Combat")
@@ -16,7 +15,7 @@ local MainBoard = {}
 ---
 function MainBoard.onLoad(state)
     Helper.append(MainBoard, Helper.resolveGUIDs(true, {
-        board = "2da390",
+        board = "483a1a", -- Inner state: "21cc52"
         factions = {
             emperor = {
                 alliance = "13e990",
@@ -107,8 +106,14 @@ function MainBoard.onLoad(state)
             theGreatFlat = "116807"
         },
         mentat = "c2a908",
-        highCouncilZone = "e51f6e",
-        ixHighCouncilZone = "a719db",
+        mentatZones = {
+            base = "a11936",
+            ix = "0b21df"
+        },
+        highCouncilZones = {
+            base = "e51f6e",
+            ix = "a719db"
+        },
         firstPlayerMarker = "1f5576",
         phaseMarker = "fb41e2"
     }))
@@ -132,16 +137,19 @@ end
 ---
 function MainBoard.setUp(riseOfIx)
     if riseOfIx then
-        MainBoard.board.setCustomObject({
-            image = "http://cloud-3.steamusercontent.com/ugc/2027235268872198195/4BA9CC66723C1B7C04E41E1D56B4294454FAC831/"
-        })
-        MainBoard.board = MainBoard.board.reload()
+        MainBoard.highCouncilZones.base.destruct()
+        MainBoard.highCouncilZone = MainBoard.highCouncilZones.ix
+        MainBoard.mentatZones.base.destruct()
+        MainBoard.mentatZone = MainBoard.mentatZones.ix
         Helper.append(MainBoard.spaces, MainBoard.ixSpaces)
     else
-        MainBoard.board.setCustomObject({
-            image = "http://cloud-3.steamusercontent.com/ugc/2027235268872218380/1365C1EC07538B6797E8162398CB43CD111C1C7C/"
-        })
+        MainBoard.highCouncilZones.ix.destruct()
+        MainBoard.highCouncilZone = MainBoard.highCouncilZones.base
+        MainBoard.mentatZones.ix.destruct()
+        MainBoard.mentatZone = MainBoard.mentatZones.base
+        MainBoard.board.setState(2)
     end
+    MainBoard.highCouncilPark = MainBoard:createHighCouncilPark(MainBoard.highCouncilZone)
 
     for name, space in pairs(MainBoard.spaces) do
         space.name = name
@@ -157,6 +165,67 @@ function MainBoard.setUp(riseOfIx)
 
         MainBoard.createSpaceButton(space, p, slots)
     end
+
+    Helper.registerEventListener("phaseStart", function (phase)
+        if phase == "roundStart" then
+            MainBoard.phaseMarker.setPosition(MainBoard.phaseMarkerPositions.roundStart)
+        elseif phase == "playerTurns" then
+            MainBoard.phaseMarker.setPosition(MainBoard.phaseMarkerPositions.playerTurns)
+        elseif phase == "combat" then
+            MainBoard.phaseMarker.setPosition(MainBoard.phaseMarkerPositions.combat)
+        elseif phase == "makers" then
+            MainBoard.phaseMarker.setPosition(MainBoard.phaseMarkerPositions.makers)
+
+            for _, desert in ipairs({ "imperialBasin", "haggaBasin", "theGreatFlat" }) do
+                local space = MainBoard.spaces[desert]
+                local spiceBonus = MainBoard.spiceBonuses[desert]
+                if Park.isEmpty(space.park) then
+                    spiceBonus:change(1)
+                end
+            end
+        elseif phase == "recall" then
+            MainBoard.phaseMarker.setPosition(MainBoard.phaseMarkerPositions.recall)
+
+            -- Recalling Mentat.
+            MainBoard.mentat.getPosition(MainBoard.mentatZone.getPosition())
+
+            -- Recalling agents.
+            for _, space in pairs(MainBoard.spaces) do
+                for _, agent in ipairs(Park.getObjects(space.park)) do
+                    assert(agent.hasTag("Agent"))
+                    for color, _ in pairs(Playboard.getPlayboards()) do
+                        if agent.hasTag(color) then
+                            Park.putObject(agent, Playboard.getAgentPark(color))
+                        end
+                    end
+                end
+            end
+        end
+    end)
+end
+
+---
+function MainBoard:createHighCouncilPark(zone)
+    local seats = {}
+    for i = 1, 4 do
+        local x = (i - 2.5) * zone.getScale().x / 4
+        local seat = Vector(x, 0, 0) + zone.getPosition()
+        table.insert(seats, seat)
+    end
+
+    return Park.createPark(
+        "HighCouncil",
+        seats,
+        Vector(0, 0, 0),
+        zone,
+        { "HighCouncilSeatToken" },
+        nil,
+        true)
+end
+
+---
+function MainBoard.getHighCouncilSeatPark()
+    return MainBoard.highCouncilPark
 end
 
 ---
@@ -175,7 +244,7 @@ function MainBoard.createSpaceButton(space, position, slots)
 
         Helper.createAbsoluteButtonWithRoundness(anchor, 10, false, {
             click_function = Helper.createGlobalCallback(function (_, color, _)
-                Action.sendAgent(color, space.name)
+                Playboard.getLeader(color).sendAgent(color, space.name)
             end),
             position = Vector(position.x, 0.7, position.z),
             width = space.zone.getScale().x * 500,
@@ -218,8 +287,8 @@ end
 function MainBoard.goConspire(color)
     if MainBoard.payResource(color, "spice", 4) then
         MainBoard.gainResource(color, "solari", 5)
-        Action.troops(color, "supply", "garrison", 2)
-        Action.drawIntrigues(color, 1)
+        Playboard.getLeader(color).troops(color, "supply", "garrison", 2)
+        Playboard.getLeader(color).drawIntrigues(color, 1)
         MainBoard.gainInfluence(color, "emperor")
         return true
     else
@@ -237,7 +306,7 @@ end
 function MainBoard.goHeighliner(color)
     if MainBoard.payResource(color, "spice", 6) then
         MainBoard.gainResource(color, "water", 2)
-        Action.troops(color, "supply", "garrison", 5)
+        Playboard.getLeader(color).troops(color, "supply", "garrison", 5)
         MainBoard.gainInfluence(color, "spacingGuild")
         return true
     else
@@ -247,7 +316,7 @@ end
 
 ---
 function MainBoard.goFoldspace(color)
-    Action.acquireFoldspaceCard(color)
+    Playboard.getLeader(color).acquireFoldspaceCard(color)
     MainBoard.gainInfluence(color, "spacingGuild")
     return true
 end
@@ -264,11 +333,11 @@ end
 
 ---
 function MainBoard.goSecrets(color)
-    Action.drawIntrigues(color, 1)
-    for otherColor, _ in pairs(Playboard.getPlayboardByColor()) do
+    Playboard.getLeader(color).drawIntrigues(color, 1)
+    for otherColor, _ in pairs(Playboard.getPlayboards()) do
         if otherColor ~= color then
             if #Playboard.getIntrigues(otherColor) > 3 then
-                Action.stealIntrigue(color, otherColor, 1)
+                Playboard.getLeader(color).stealIntrigue(color, otherColor, 1)
             end
         end
     end
@@ -279,7 +348,7 @@ end
 ---
 function MainBoard.goHardyWarriors(color)
     if MainBoard.payResource(color, "water", 1) then
-        Action.troops(color, "supply", "garrison", 2)
+        Playboard.getLeader(color).troops(color, "supply", "garrison", 2)
         MainBoard.gainInfluence(color, "fremen")
         return true
     else
@@ -337,7 +406,7 @@ end
 function MainBoard.goSietchTabr(color)
     if (InfluenceTrack.hasFriendship(color, "fremen")) then
         MainBoard.gainResource(color, "water", 1)
-        Action.troops(color, "supply", "garrison", 1)
+        Playboard.getLeader(color).troops(color, "supply", "garrison", 1)
         return true
     else
         return false
@@ -351,7 +420,7 @@ function MainBoard.goResearchStation(color)
             MainBoard.drawImperiumCards(color, 3)
         else
             MainBoard.drawImperiumCards(color, 2)
-            Action.research()
+            Playboard.getLeader(color).research()
         end
         return true
     else
@@ -361,8 +430,8 @@ end
 
 ---
 function MainBoard.goCarthag(color)
-    Action.drawIntrigues(color, 1)
-    Action.troops(color, "supply", "garrison", 1)
+    Playboard.getLeader(color).drawIntrigues(color, 1)
+    Playboard.getLeader(color).troops(color, "supply", "garrison", 1)
     MainBoard.applyControlOfAnySpace(MainBoard.spaces.carthag, "solari")
     return true
 end
@@ -389,7 +458,7 @@ function MainBoard.getControllingPlayer(space)
 
     -- Check player dreadnoughts first since they supersede flags.
     for _, object in ipairs(space.zone.getObjects()) do
-        for color, _ in pairs(Playboard.playboards) do
+        for color, _ in pairs(Playboard.getPlayboards()) do
             if Utils.isDreadnought(color, object) then
                 assert(not controllingPlayer, "Too many dreadnoughts")
                 controllingPlayer = color
@@ -400,7 +469,7 @@ function MainBoard.getControllingPlayer(space)
     -- Check player flags otherwise.
     if not controllingPlayer then
         for _, object in ipairs(space.zone.getObjects()) do
-            for color, _ in pairs(Playboard.getPlayboardByColor()) do
+            for color, _ in pairs(Playboard.getPlayboards()) do
                 if Utils.isFlag(color, object) then
                     assert(not controllingPlayer, "Too many flags around")
                     controllingPlayer = color
@@ -415,7 +484,7 @@ end
 ---
 function MainBoard.goSwordmaster(color)
     if not Playboard.hasSwordmaster(color) and MainBoard.payResource(color, "solari", 8) then
-        Action.recruitSwordmaster(color)
+        Playboard.getLeader(color).recruitSwordmaster(color)
         return true
     else
         return false
@@ -425,7 +494,7 @@ end
 ---
 function MainBoard.goMentat(color)
     if MainBoard.payResource(color, "solari", 2) then
-        Action.takeMentat(color)
+        Playboard.getLeader(color).takeMentat(color)
         return true
     else
         return false
@@ -439,18 +508,12 @@ end
 
 ---
 function MainBoard.goHighCouncil(color)
-    if MainBoard.payResource(color, "solari", 5) then
-        Action.takeHighCouncilSeat(color)
-        return true
+    -- FIXME Interleaved conditions...
+    if not Playboard.hasACouncilSeat(color) and MainBoard.payResource(color, "solari", 5) then
+        return Playboard.getLeader(color).takeHighCouncilSeat(color)
     else
         return false
     end
-end
-
----
-function MainBoard.getHighCouncilSeatPosition(color)
-    error("TODO (create a high council park)")
-    return nil
 end
 
 ---
@@ -486,7 +549,7 @@ end
 ---
 function MainBoard.goRallyTroops(color)
     if MainBoard.payResource(color, "solari", 4) then
-        Action.troops(color, "supply", "garrison", 4)
+        Playboard.getLeader(color).troops(color, "supply", "garrison", 4)
         return true
     else
         return false
@@ -495,22 +558,22 @@ end
 
 ---
 function MainBoard.goHallOfOratory(color)
-    Action.troops(color, "supply", "garrison", 1)
-    Action.gainPersuasion(color, 1)
+    Playboard.getLeader(color).troops(color, "supply", "garrison", 1)
+    Playboard.getLeader(color).gainPersuasion(color, 1)
     return true
 end
 
 ---
 function MainBoard.goSmuggling(color)
     MainBoard.gainResource(color, "solari", 1)
-    Action.gainCommercialMoves(color, 1)
+    Playboard.getLeader(color).moveFreighter(color, 1)
     return true
 end
 
 ---
 function MainBoard.goInterstellarShipping(color)
     if (InfluenceTrack.hasFriendship(color, "spacingGuild")) then
-        Action.gainCommercialMoves(color, 2)
+        Playboard.getLeader(color).moveFreighter(color, 2)
         return true
     else
         return false
@@ -519,7 +582,7 @@ end
 
 ---
 function MainBoard.goTechNegotiation(color)
-    if not Action.troops(color, "supply", "negotiation", 1) then
+    if not Playboard.getLeader(color).troops(color, "supply", "negotiation", 1) then
         TechMarket.registerTechDiscount(color, "tech_negotiation", 1)
     end
     return true
@@ -542,14 +605,13 @@ function MainBoard.gainResource(color, resourceName, amount)
     Utils.assertIsPlayerColor(color)
     Utils.assertIsResourceName(resourceName)
     Utils.assertIsInteger(amount)
-    Action.resource(color, resourceName, amount)
+    Playboard.getLeader(color).resource(color, resourceName, amount)
 end
 
 -- Implied: when sending an agent on a board space.
 ---
 function MainBoard.payResource(color, resourceName, amount)
-    local leader = Playboard.getLeader(color)
-    return leader.resource(color, resourceName, -amount)
+    return Playboard.getLeader(color).resource(color, resourceName, -amount)
 end
 
 -- Implied: when sending an agent on a board space.
@@ -557,7 +619,7 @@ end
 function MainBoard.gainInfluence(color, faction)
     Utils.assertIsPlayerColor(color)
     Utils.assertIsFaction(faction)
-    Action.influence(color, faction, 1)
+    Playboard.getLeader(color).influence(color, faction, 1)
 end
 
 -- Implied: when sending an agent on a board space.
@@ -567,7 +629,7 @@ function MainBoard.drawImperiumCards(color, amount)
     if TleilaxuResearch.hasReachedTwoHelices(color) then
         realAmount = amount + 1
     end
-    Action.drawImperiumCards(color, realAmount)
+    Playboard.getLeader(color).drawImperiumCards(color, realAmount)
 end
 
 ---
@@ -655,6 +717,19 @@ end
 function MainBoard.isSpiceTradeSpace(spaceName)
     return MainBoard.isDesertSpace(spaceName)
         or MainBoard.isCHOAMSpace(spaceName)
+end
+
+---
+function MainBoard.onObjectEnterScriptingZone(zone, object)
+    if zone == MainBoard.mentatZone then
+        if Utils.isMentat(object) then
+            for color, _ in pairs(Playboard.getPlayboards()) do
+                object.removeTag(color)
+            end
+            -- FIXME One case of whitewashing too many?
+            object.setColorTint(Color.fromString("White"))
+        end
+    end
 end
 
 return MainBoard

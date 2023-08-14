@@ -785,12 +785,12 @@ function Deck.generateDeck(deckName, position, contributions, sources)
         for _ = 1, cardinality do
             local index = source.luaIndex - 1
             local cardId = tostring(customDeckId * 100 + index)
-            data.DeckIDs[#data.DeckIDs + 1] = tostring(cardId)
+            table.insert(data.DeckIDs, tostring(cardId))
             local cardData = Deck.generateCardData(customDeck, customDeckId, cardId)
             cardData.Tags = { deckName }
 
             cardData.Description = name
-            data.ContainedObjects[#data.ContainedObjects + 1] = cardData
+            table.insert(data.ContainedObjects, cardData)
         end
         ::continue::
     end

@@ -61,11 +61,11 @@ end
 function Hagal.lateActivate(phase, color, playboard)
     if phase == "leaderSelection" then
         Hagal.pickAnyCompatibleLeader(color)
-    elseif phase == "startOfGame" then
+    elseif phase == "gameStart" then
         log("TODO")
-    elseif phase == "startOfRound" then
+    elseif phase == "roundStart" then
         log("TODO")
-    elseif phase == "agentOrReveal" then
+    elseif phase == "playerTurns" then
         log("TODO")
     elseif phase == "combat" then
         log("TODO")

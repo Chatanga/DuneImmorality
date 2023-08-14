@@ -42,6 +42,7 @@ def handleMessage(message):
         debug("Loading new game.")
         pass
     elif id == 2:
+        # Messages could be received out of order compared to the ingame log, which is weird with a locale TCP connection...
         body = message['message']
         info(body)
     elif id == 3:

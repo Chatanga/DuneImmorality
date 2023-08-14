@@ -40,7 +40,7 @@ end
 ---
 function TechMarket.setUp()
 
-    for color, _ in pairs(Playboard.getPlayboardByColor()) do
+    for color, _ in pairs(Playboard.getPlayboards()) do
         TechMarket.negotiationParks[color] = TechMarket.createNegotiationPark(color)
     end
 
@@ -226,7 +226,7 @@ function TechMarket.createNegotiationPark(color)
                 local y = (k - 1) * 0.4
                 local z = (1.5 - j) * 0.4
                 local slot = Vector(x, y, z) + origin
-                slots[#slots + 1] = slot
+                table.insert(slots, slot)
             end
         end
     end

@@ -92,7 +92,7 @@ function onLoad(scriptState)
         primaryTable = "2b4b92",
         secondaryTable = "662ced",
     })
-    for _, object in ipairs(inventory) do
+    for _, object in pairs(inventory) do
         object.interactable = false
     end
 
