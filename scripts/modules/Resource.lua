@@ -55,7 +55,13 @@ function Resource.new(token, color, resourceName, value, state)
 
     Helper.createAbsoluteButtonWithRoundness(token, 1, false, {
         label = tostring(resource.value),
-        click_function = "Resource_" .. ((resource.color ~= nil) and "changeValue" or "setValue"),
+        click_function = Helper.createGlobalCallback(function (_, otherColor, altClick)
+            if resource.color then
+                resource:changeValue(otherColor, altClick)
+            else
+                resource:setValue(otherColor, altClick)
+            end
+        end),
         tooltip = resource:getTooltip(),
         position = token.getPosition() + offset,
         height = 800,
@@ -81,6 +87,9 @@ function Resource:updateState()
     -- Do *not* change self.state reference!
     self.state.value = self.value
     self.state.laggingValue = self.laggingValue
+    if self.value == self.laggingValue then
+        Helper.emitEvent(self.resourceName .. "ValueChanged", self.color, self.value)
+    end
 end
 
 ---
@@ -108,10 +117,7 @@ function Resource.findResourceFromToken(token)
 end
 
 ---
-function Resource_setValue(token, _, altClick)
-    local self = Resource.findResourceFromToken(token)
-    assert(self)
-
+function Resource:setValue(_, altClick)
     local change = altClick and -1 or 1
     local newValue = math.min(math.max(self.value + change, self.MIN_VALUE), self.MAX_VALUE)
     if self.value ~= newValue then
@@ -123,10 +129,7 @@ function Resource_setValue(token, _, altClick)
 end
 
 ---
-function Resource_changeValue(token, color, altClick)
-    local self = Resource.findResourceFromToken(token)
-    assert(self)
-
+function Resource:changeValue(color, altClick)
     local playerActingStr = ""
     local msgColor = color
 

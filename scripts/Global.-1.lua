@@ -1,15 +1,17 @@
 local constructionModeEnabled = false
-local validateDefaultSetup = false
+local validateDefaultSetup = true
 
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local XmlUI = require("utils.XmlUI")
+local AcquireCard = require("utils.AcquireCard")
 
 --[[
     Remember that 'require' must have a literal parameter, since it is not a
     real function, but simply a macro for 'luabundler'.
 ]]--
 local allModules = Module.registerModules({
+    AcquireCard, -- To take advantage of Module.registerModuleRedirections.
     Action = require("Action"),
     Combat = require("Combat"),
     CommercialTrack = require("CommercialTrack"),
@@ -110,6 +112,15 @@ function onLoad(scriptState)
 
     setupUI = XmlUI.new(Global, "setupPane", settings)
     if validateDefaultSetup then
+        settings.virtualHotSeat = true
+        settings.leaderSelection = {
+            Green = "rhomburVernius",
+            Yellow = "ilbanRichese",
+            Red = "helenaRichese",
+        }
+        settings.virtualHotSeat = true
+        settings.numberOfPlayers = 3
+        settings.randomizePlayerPositions = false
         Wait.frames(setUp, 1)
     else
         setupUI:show()

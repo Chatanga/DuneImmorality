@@ -28,35 +28,36 @@ end
 ---
 function LeaderSelection.setUp(ix, immortality, fanMadeLeaders, opponents, selectionMethod)
     Deck.generateLeaderDeck(LeaderSelection.deckZone, ix, immortality, fanMadeLeaders).doAfter(function (deck)
-        if selectionMethod == "random" then
-            LeaderSelection.setUpPicking(opponents, #deck.getObjects(), true, false)
-        elseif selectionMethod == "reversePick" then
-            LeaderSelection.setUpPicking(opponents, #deck.getObjects(), false, false)
-        elseif selectionMethod == "hiddenPick" then
-            LeaderSelection.setUpPicking(opponents, #deck.getObjects(), false, true)
-        else
-            error(LeaderSelection)
-        end
+        local numberOfLeaders = #deck.getObjects()
+        local continuation = Helper.createContinuation()
+        continuation.count = numberOfLeaders
 
-        LeaderSelection.layoutLeaders(#deck.getObjects(), function (_, position)
+        LeaderSelection.layoutLeaders(numberOfLeaders, function (_, position)
             deck.takeObject({
                 position = position,
-                flip = true
+                flip = true,
+                callback_function = function (card)
+                    continuation.count = continuation.count - 1
+                    if continuation.count == 0 then
+                        Wait.time(continuation.run, 1)
+                    end
+                end
             })
         end)
 
-        local w = LeaderSelection.deckZone.getScale().x
-        local h = LeaderSelection.deckZone.getScale().z
-        local cardCount = #deck.getObjects()
-        local origin = LeaderSelection.deckZone.getPosition() - Vector(w / 2 - 6, 0, h / 2 - 10)
-        for i = 0, cardCount - 1 do
-            local x = (i % 6) * 5
-            local y = math.floor(i / 6) * 4
-            deck.takeObject({
-                position = origin + Vector(x, 1, y),
-                flip = true
-            })
-        end
+        continuation.doAfter(function ()
+            if type(selectionMethod) == "table" then
+                LeaderSelection.setUpTest(opponents, selectionMethod)
+            elseif selectionMethod == "random" then
+                LeaderSelection.setUpPicking(opponents, numberOfLeaders, true, false)
+            elseif selectionMethod == "reversePick" then
+                LeaderSelection.setUpPicking(opponents, numberOfLeaders, false, false)
+            elseif selectionMethod == "hiddenPick" then
+                LeaderSelection.setUpPicking(opponents, numberOfLeaders, false, true)
+            else
+                error(selectionMethod)
+            end
+        end)
     end)
 end
 
@@ -70,6 +71,25 @@ function LeaderSelection.layoutLeaders(count, callback)
         local y = math.floor(i / 6) * 4
         callback(i + 1, origin + Vector(x, 1, y))
     end
+end
+
+---
+function LeaderSelection.setUpTest(opponents, leaderNames)
+    for color, _ in pairs(opponents) do
+        assert(leaderNames[color], "No leader for color " .. color)
+        assert(#LeaderSelection.deckZone.getObjects(), "No leader to select")
+        for _, object in ipairs(LeaderSelection.deckZone.getObjects()) do
+            if object.hasTag("Leader") then
+                if object.getDescription() == leaderNames[color] then
+                    Playboard.setLeader(color, object)
+                    break
+                end
+            end
+        end
+        assert(Playboard.getLeader(color), "Unknown leader " .. leaderNames[color])
+    end
+
+    TurnControl.start(true)
 end
 
 ---

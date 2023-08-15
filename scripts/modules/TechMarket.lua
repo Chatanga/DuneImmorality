@@ -40,7 +40,7 @@ end
 ---
 function TechMarket.setUp()
 
-    for color, _ in pairs(Playboard.getPlayboards()) do
+    for _, color in ipairs(Playboard.getPlayboardColors()) do
         TechMarket.negotiationParks[color] = TechMarket.createNegotiationPark(color)
     end
 

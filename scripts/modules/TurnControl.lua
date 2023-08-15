@@ -57,13 +57,37 @@ function TurnControl.getFirstPlayer()
 end
 
 ---
+function TurnControl.getPhaseTurnSequence()
+    local turnSequence = {}
+    local playerLuaIndex = TurnControl.firstPlayerLuaIndex
+    repeat
+        table.insert(turnSequence, TurnControl.players[playerLuaIndex])
+        playerLuaIndex = TurnControl.getNextPlayer(playerLuaIndex, TurnControl.reversed)
+    until playerLuaIndex == TurnControl.firstPlayerLuaIndex
+    return turnSequence
+end
+
+---
+function TurnControl.setPhaseTurnSequence(turnSequence)
+    TurnControl.customTurnSequence = {}
+    for _, color in ipairs(turnSequence) do
+        for playerLuaIndex, otherColor in ipairs(TurnControl.players) do
+            if otherColor == color then
+                table.insert(TurnControl.customTurnSequence, playerLuaIndex)
+            end
+        end
+    end
+end
+
+---
 function TurnControl.start(reverseLeaderSelection)
     TurnControl.startPhase(TurnControl.phaseOrder[1], reverseLeaderSelection)
 end
 
 ---
 function TurnControl.startPhase(phase, reversed)
-    log("Start phase: " .. phase)
+    log("=== Phase: " .. phase .. " ===")
+    broadcastToAll("Phase: " .. phase, Color.fromString("Pink"))
     if phase == "round" then
         TurnControl.currentRound = TurnControl.currentRound + 1
         if TurnControl.currentRound > 1 then
@@ -82,10 +106,15 @@ function TurnControl.startPhase(phase, reversed)
         TurnControl.currentPlayerLuaIndex = TurnControl.firstPlayerLuaIndex
     end
     TurnControl.activatedPlayers = {}
+    TurnControl.customTurnSequence = nil
     Helper.emitEvent("phaseStart", TurnControl.currentPhase, TurnControl.players[TurnControl.firstPlayerLuaIndex])
 
     Wait.frames(function ()
-        TurnControl.next(TurnControl.currentPlayerLuaIndex)
+        if TurnControl.customTurnSequence then
+            TurnControl.next(TurnControl.customTurnSequence[1])
+        else
+            TurnControl.next(TurnControl.currentPlayerLuaIndex)
+        end
     end, 1)
 end
 
@@ -97,10 +126,10 @@ end
 ---
 function TurnControl.next(starPlayerLuaIndex)
     TurnControl.currentPlayerLuaIndex = TurnControl.findActivePlayer(starPlayerLuaIndex)
-    --Helper.dump("TurnControl.currentPlayerLuaIndex =", TurnControl.currentPlayerLuaIndex)
+    Helper.dump("TurnControl.currentPlayerLuaIndex =", TurnControl.currentPlayerLuaIndex)
     if TurnControl.currentPlayerLuaIndex then
         local player = TurnControl.players[TurnControl.currentPlayerLuaIndex]
-        log("Turn phase: " .. player)
+        log("--- Turn: " .. player .. " ---")
         Helper.emitEvent("phaseTurn", TurnControl.currentPhase, player)
     else
         local nextPhase = TurnControl.getNextPhase(TurnControl.currentPhase)
@@ -125,15 +154,24 @@ end
 
 ---
 function TurnControl.getNextPlayer(playerLuaIndex, reversed)
-    local n = TurnControl.getPlayerCount()
-    local nextPlayerLuaIndex
-    if reversed then
-        nextPlayerLuaIndex = ((playerLuaIndex + n - 2) % n) + 1
+    if TurnControl.customTurnSequence then
+        for i, otherPlayerLuaIndex in ipairs(TurnControl.customTurnSequence) do
+            if otherPlayerLuaIndex == playerLuaIndex then
+                return TurnControl.customTurnSequence[(i % #TurnControl.customTurnSequence) + 1]
+            end
+        end
+        error("Incorrect custom turn sequence")
     else
-        nextPlayerLuaIndex = (playerLuaIndex % n) + 1
+        local n = TurnControl.getPlayerCount()
+        local nextPlayerLuaIndex
+        if reversed then
+            nextPlayerLuaIndex = ((playerLuaIndex + n - 2) % n) + 1
+        else
+            nextPlayerLuaIndex = (playerLuaIndex % n) + 1
+        end
+        --Helper.dump(playerLuaIndex, " % ", n, "->", nextPlayerLuaIndex)
+        return nextPlayerLuaIndex
     end
-    --Helper.dump(playerLuaIndex, " % ", n, "->", nextPlayerLuaIndex)
-    return nextPlayerLuaIndex
 end
 
 ---
@@ -172,12 +210,12 @@ function TurnControl.isPlayerActive(playerLuaIndex)
     if phase == 'leaderSelection' then
         return Playboard.getLeader(color) == nil
     elseif phase == 'gameStart' then
-        if Playboard.getLeader(color).instruct(phase) then
+        if Playboard.getLeader(color).instruct(phase, color) then
             TurnControl.activatedPlayers[playerLuaIndex] = 1
             return true
         end
     elseif phase == 'roundStart' then
-        if Playboard.getLeader(color).instruct(phase) then
+        if Playboard.getLeader(color).instruct(phase, color) then
             TurnControl.activatedPlayers[playerLuaIndex] = 1
             return true
         end
@@ -185,9 +223,11 @@ function TurnControl.isPlayerActive(playerLuaIndex)
         return Playboard.couldSendAgentOrReveal(color)
     elseif phase == 'combat' then
         -- TODO Pass count < player in combat count.
+        TurnControl.activatedPlayers[playerLuaIndex] = 1
         return Combat.isInCombat(color)
     elseif phase == 'outcome' then
         -- TODO Player is victorious and the combat provied a reward (auto?) or a dreadnought needs to be placed or a combat card remains to be played.
+        TurnControl.activatedPlayers[playerLuaIndex] = 1
         return Combat.isInCombat(color)
     elseif phase == 'makers' then
         return false

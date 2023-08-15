@@ -111,7 +111,7 @@ end
 ---
 function CommercialTrack.pickSolariBonus(color)
     Action.resource(color, "solari", 5)
-    for otherColor, _ in pairs(Playboard.getPlayboards()) do
+    for _, otherColor in ipairs(Playboard.getPlayboardColors()) do
         if otherColor ~= color then
             Action.resource(otherColor, "solari", 1)
         end

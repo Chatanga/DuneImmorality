@@ -31,15 +31,17 @@ Having launched `./listen.py` in another terminal will provide you with an immed
 
 ## TODO
 
-- Combat and conflict.
 - Tleilaxu board.
 - Identify and detect played cards.
 - Advanced reveal.
-- Instruction reminder.
 - Endgame.
+- Instructions (active / inactive player).
 - The Hagal house (+resources +difficulty).
 - Introduce the graphic log?
+- Migrer les description dans GMNotes.
 - Restore translations.
-- Restore music.
+- Restore selectable combat music.
 - Blitz!
 - Arrakeen Scouts.
+- Keep Module special, but unify everything else?
+- Fanmade leaders.

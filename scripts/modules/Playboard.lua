@@ -270,6 +270,30 @@ function Playboard.new(color, unresolvedContent, state)
     local board = playboard.content.board
     board.interactable = false
 
+    for _, itemName in ipairs({
+        "councilToken",
+        "cargo",
+    }) do
+        local item = playboard.content[itemName]
+        assert(item, "No " .. itemName .. " item")
+        -- We want physics, but not player.
+        item.setLock(false)
+        item.interactable = false
+    end
+
+    for _, itemName in ipairs({
+        "scoreMarker",
+        "forceMarker",
+        "tleilaxuToken",
+        "researchToken",
+    }) do
+        local item = playboard.content[itemName]
+        assert(item, "No " .. itemName .. " item")
+        -- We don't want physics, nor player.
+        item.setLock(true)
+        item.interactable = false
+    end
+
     -- FIXME Why this offset? In particular, why the Z component introduces an asymmetry?
     local offset = Vector(0, 0.55, 5.1)
     local centerPosition = board.getPosition() + offset
@@ -307,22 +331,6 @@ function Playboard.setUp(ix, immortality, epic, activeOpponents)
                 end)
                 Deck.generateStarterDiscard(playboard.content.discardZone, immortality, epic)
             end
-
-            Helper.registerEventListener("phaseEnd", function (phase)
-                if phase == "leaderSelection" then
-                    playboard.leader.setUp(color, epic)
-
-                    Helper.registerEventListener("phaseTurn", function (otherPhase, otherColor)
-                        if otherColor == color then
-                            local instruction = playboard.leader.instruct(otherPhase)
-                            if instruction then
-                                Helper.findPlayer(color).broadcast(instruction, Color.fromString("Pink"))
-                            end
-                        end
-                    end)
-                end
-            end)
-
             playboard:updatePlayerScore()
         else
             playboard:shutdown()
@@ -333,42 +341,80 @@ function Playboard.setUp(ix, immortality, epic, activeOpponents)
         if phase == "leaderSelection" or phase == "round" then
             local playboard = Playboard.getPlayboard(firstPlayer)
             MainBoard.firstPlayerMarker.setPositionSmooth(playboard.content.firstPlayerPosition, false, false)
-        elseif phase == "recall" then
+        end
+
+        if phase == "roundStart" then
+            -- TODO Query acquired tech tiles for round start recurring effects.
+        end
+
+        if phase == "recall" then
+            for color, playboard in pairs(Playboard._getPlayboards()) do
+                playboard.revealed = false
+                playboard.persuasion:set(Playboard.hasACouncilSeat(color) and 2 or 0)
+                playboard.strength:set(0)
+                -- TODO Query acquired tech tiles for specific persuasion / strength permanent effects.
+            end
             -- TODO Send all played cards to the discard (general discard for intrigue cards).
         end
     end)
 
-    Helper.registerEventListener("phaseTurn", function (phase, color)
-        local indexedColors = {"Green", "Yellow", "Blue", "Red"}
-        for i, otherColor in ipairs(indexedColors) do
-            local playboard = Playboard.getPlayboard(otherColor)
-            if playboard.opponent then
-                local effectIndex = 0 -- black index (no color actually)
-                if otherColor == color then
-                    effectIndex = i
-                    playboard.content.startEndTurnButton.interactable = true
-                    if playboard.opponent == "rival" then
-                        Hagal.activate(phase, color, playboard)
-                    else
-                        if phase ~= "leaderSelection" then
-                            playboard:createEndOfTurnButton()
-                        end
-                        Playboard.movePlayerIfNeeded(color)
-                    end
-                else
-                    playboard.content.startEndTurnButton.interactable = false
-                    playboard.content.startEndTurnButton.clearButtons()
-                end
-                local board = playboard.content.board
-                board.AssetBundle.playTriggerEffect(effectIndex)
+    Helper.registerEventListener("phaseEnd", function (phase)
+        if phase == "leaderSelection" then
+            for color, playboard in pairs(Playboard._getPlayboards()) do
+                playboard.leader.setUp(color, epic)
             end
         end
+    end)
+
+    Helper.registerEventListener("phaseTurn", function (phase, color)
+        local playboard = Playboard.getPlayboard(color)
+        if playboard.leader then
+            local instruction = playboard.leader.instruct(phase, color)
+            if instruction then
+                -- Wait for setActivePlayer to change the (hotseated) player if needed.
+                Wait.frames(function ()
+                    local player = Helper.findPlayer(color)
+                    assert(player, "No " .. tostring(color) .. " player!")
+                    player.broadcast(instruction, Color.fromString("Pink"))
+                end, 1)
+            end
+        end
+
+        Playboard.setActivePlayer(phase, color)
 
         MusicPlayer.setCurrentAudioclip({
             url = "http://cloud-3.steamusercontent.com/ugc/2027235268872374937/7FE5FD8B14ED882E57E302633A16534C04C18ECE/",
             title = "Next turn"
         })
     end)
+end
+
+---
+function Playboard.setActivePlayer(phase, color)
+    local indexedColors = {"Green", "Yellow", "Blue", "Red"}
+    for i, otherColor in ipairs(indexedColors) do
+        local playboard = Playboard.getPlayboard(otherColor)
+        if playboard.opponent then
+            local effectIndex = 0 -- black index (no color actually)
+            if otherColor == color then
+                effectIndex = i
+                playboard.content.startEndTurnButton.interactable = true
+                if playboard.opponent == "rival" then
+                    Hagal.activate(phase, color, playboard)
+                else
+                    if phase ~= "leaderSelection" then
+                        playboard:createEndOfTurnButton()
+                    end
+                    playboard.movePlayerIfNeeded(color)
+                end
+            else
+                playboard.content.startEndTurnButton.interactable = false
+                playboard.content.startEndTurnButton.clearButtons()
+            end
+            local board = playboard.content.board
+            board.AssetBundle.playTriggerEffect(effectIndex)
+        end
+    end
 end
 
 ---
@@ -418,7 +464,7 @@ function Playboard.getPlayboard(color)
 end
 
 ---
-function Playboard.getPlayboards(filterOutRival)
+function Playboard._getPlayboards(filterOutRival)
     assert(#Helper.getKeys(Playboard.playboards) > 0, "No playboard at all: probably called in 'new'.")
     local filteredPlayboards = {}
     for color, playboard in pairs(Playboard.playboards) do
@@ -427,6 +473,11 @@ function Playboard.getPlayboards(filterOutRival)
         end
     end
     return filteredPlayboards
+end
+
+---
+function Playboard.getPlayboardColors(filterOutRival)
+    return Helper.getKeys(Playboard._getPlayboards(filterOutRival))
 end
 
 ---
@@ -580,6 +631,10 @@ function Playboard.onObjectEnterScriptingZone(zone, object)
             if zone == playboard.scorePark.zone then
                 if Utils.isVictoryPointToken(object) then
                     playboard:updatePlayerScore()
+                    local controlableSpace = MainBoard.findControlableSpace(object)
+                    if controlableSpace then
+                        MainBoard.occupy(controlableSpace, playboard.content.flagBag)
+                    end
                 end
             elseif zone == playboard.agentPark.zone then
                 if Utils.isMentat(object) then
@@ -1227,15 +1282,17 @@ function Playboard.hasACouncilSeat(color)
 end
 
 ---
-function Playboard.updatePersuasion(color)
-    local persuasion = 0
-    if Playboard.hasACouncilSeat(color) then
-        persuasion = persuasion + 2
+function Playboard.takeHighCouncilSeat(color)
+    local token = Playboard.getCouncilToken(color)
+    if not Playboard.hasACouncilSeat(color) then
+        if Park.putObject(token, MainBoard.getHighCouncilSeatPark()) then
+            token.interactable = false
+            local playboard = Playboard.getPlayboard(color)
+            playboard.persuasion:change(2)
+            return true
+        end
     end
-    -- TODO Check Hall of Oratory or Tech Negotiation
-    -- TODO Check Intrigue
-    -- TODO Check Tech
-    Playboard.getPlayboard(color)["persuasion"]:set(persuasion)
+    return false
 end
 
 ---
@@ -1262,11 +1319,13 @@ end
 
 ---
 function Playboard.getResource(color, resourceName)
+    Utils.assertIsResourceName(resourceName)
     return Playboard.getPlayboard(color)[resourceName]
 end
 
 ---
 function Playboard.payResource(color, resourceName, amount)
+    Utils.assertIsResourceName(resourceName)
     local playerResource = Playboard.getContent(color)[resourceName]
     if playerResource.call("collectVal") < amount then
         broadcastToColor(I18N(Helper.toCamelCase("no", resourceName)), color, color)
@@ -1281,6 +1340,7 @@ end
 
 ---
 function Playboard.gainResource(color, resourceName, amount)
+    Utils.assertIsResourceName(resourceName)
     local playerResource = Playboard.getContent(color)[resourceName]
     Wait.time(function()
         playerResource.call("incrementVal")

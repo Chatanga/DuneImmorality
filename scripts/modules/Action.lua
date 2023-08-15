@@ -121,7 +121,40 @@ end
 
 ---
 function Action.instruct(phase, color)
-    -- NOP
+    local instructions = {
+        leaderSelection = {
+            "Select a leader on the upper board",
+            "Wait for your opponents to select their leaders."
+        },
+        playerTurns = {
+            "Send an agent or reveal your hand, then press End of Turn.",
+            "Wait for your opponents to play their agent / reveal turn."
+        },
+        combat = {
+            "Play an intrigue and press End of Turn or simply press End of Turn to pass.",
+            "Wait for your opponents in combat to play an intrigue or pass their turn."
+        },
+        outcome = {
+            "Take your reward and play intrigue cards if you may, then press End of Turn.",
+            "Wait for your opponents to collect their reward and play any intrigue."
+        },
+        endgame = {
+            "Play any Endgame card and Tech tile you possess to gain final victory points.",
+            "Wait for your oppenents to play any Endgame card or Tech tiles they possess."
+        },
+    }
+
+    local instruction = instructions[phase]
+    if instruction then
+        Helper.dump(Action.context.color, "?=", color)
+        if Action.context.color == color then
+            return instruction[1]
+        else
+            return instruction[2]
+        end
+    else
+        return nil
+    end
 end
 
 ---
@@ -168,17 +201,7 @@ end
 
 ---
 function Action.takeHighCouncilSeat(color)
-    local token = Playboard.getCouncilToken(color)
-    if not Playboard.hasACouncilSeat(color) then
-        token.interactable = false
-        -- TODO Get rid of this.
-        Wait.time(function ()
-            Playboard.updatePersuasion(color)
-        end, 1)
-        return Park.putObject(token, MainBoard.getHighCouncilSeatPark())
-    else
-        return false
-    end
+    return Playboard.takeHighCouncilSeat(color)
 end
 
 ---

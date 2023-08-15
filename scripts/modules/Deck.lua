@@ -267,7 +267,7 @@ local Deck = {
                 battleForArrakeen = 1,
             },
             ix = {
-                economySupremacy = 1,
+                economicSupremacy = 1,
             },
         },
     },
@@ -348,7 +348,7 @@ local Deck = {
     leaders = {
         base = {
             vladimirHarkonnen = 1,
-            glossuRabban = 1,
+            glossuRabban = 1, -- FIXME Full name
             ilbanRichese = 1,
             helenaRichese = 1,
             letoAtreides = 1,

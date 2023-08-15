@@ -115,7 +115,7 @@ function MainBoard.onLoad(state)
             ix = "a719db"
         },
         firstPlayerMarker = "1f5576",
-        phaseMarker = "fb41e2"
+        phaseMarker = "fb41e2",
     }))
 
     local p = Helper.getHardcodedPositionFromGUID('fb41e2', -4.08299875, 0.721966565, -12.0102692)
@@ -193,7 +193,7 @@ function MainBoard.setUp(riseOfIx)
             for _, space in pairs(MainBoard.spaces) do
                 for _, agent in ipairs(Park.getObjects(space.park)) do
                     assert(agent.hasTag("Agent"))
-                    for color, _ in pairs(Playboard.getPlayboards()) do
+                    for _, color in ipairs(Playboard.getPlayboardColors()) do
                         if agent.hasTag(color) then
                             Park.putObject(agent, Playboard.getAgentPark(color))
                         end
@@ -229,6 +229,40 @@ function MainBoard.getHighCouncilSeatPark()
 end
 
 ---
+function MainBoard.findControlableSpace(victoryPointToken)
+    local description = victoryPointToken.getDescription()
+    if description == "secureImperialBasin" or description == "battleForImperialBasin" then
+        return MainBoard.banners.imperialBasinBannerZone
+    elseif description == "siegeOfArrakeen" or description == "battleForArrakeen" then
+        return MainBoard.banners.arrakeenBannerZone
+    elseif description == "siegeOfCarthag" or description == "battleForCarthag" then
+        return MainBoard.banners.carthagBannerZone
+    else
+        return nil
+    end
+end
+
+---
+function MainBoard.occupy(controlableSpace, flagBag)
+    local objects = controlableSpace.getObjects()
+    for _, object in ipairs(objects) do
+        if Utils.isFlag(object) then
+            object.destruct()
+        end
+    end
+    local p = controlableSpace.getPosition()
+    flagBag.takeObject({
+        -- Position is adjusted so as to insert the token below any dreadnought.
+        position = Vector(p.x, 0.78, p.z),
+        rotation = Vector(0, 180, 0),
+        smooth = false,
+        callback_function = function (flag)
+            flag.setLock(true)
+        end
+    })
+end
+
+---
 function MainBoard.createSpaceButton(space, position, slots)
     local zone = space.zone -- Park.createBoundingZone(0, Vector(1, 3, 0.5), slots)
     local tags = { "Agent" }
@@ -244,7 +278,9 @@ function MainBoard.createSpaceButton(space, position, slots)
 
         Helper.createAbsoluteButtonWithRoundness(anchor, 10, false, {
             click_function = Helper.createGlobalCallback(function (_, color, _)
-                Playboard.getLeader(color).sendAgent(color, space.name)
+                if Playboard.getLeader(color) then
+                    Playboard.getLeader(color).sendAgent(color, space.name)
+                end
             end),
             position = Vector(position.x, 0.7, position.z),
             width = space.zone.getScale().x * 500,
@@ -300,6 +336,7 @@ end
 function MainBoard.goWealth(color)
     MainBoard.gainResource(color, "solari", 2)
     MainBoard.gainInfluence(color, "emperor")
+    return true
 end
 
 ---
@@ -334,7 +371,7 @@ end
 ---
 function MainBoard.goSecrets(color)
     Playboard.getLeader(color).drawIntrigues(color, 1)
-    for otherColor, _ in pairs(Playboard.getPlayboards()) do
+    for _, otherColor in ipairs(Playboard.getPlayboardColors()) do
         if otherColor ~= color then
             if #Playboard.getIntrigues(otherColor) > 3 then
                 Playboard.getLeader(color).stealIntrigue(color, otherColor, 1)
@@ -366,7 +403,7 @@ end
 ---
 function MainBoard.goImperialBasin(color)
     if MainBoard.anySpiceSpace(color, 0, 1, MainBoard.spiceBonuses.imperialBasin) then
-        MainBoard.applyControlOfAnySpace(MainBoard.spaces.imperialBasin, "spice")
+        MainBoard.applyControlOfAnySpace(MainBoard.banners.imperialBasinBannerZone, "spice")
         return true
     else
         return false
@@ -432,20 +469,20 @@ end
 function MainBoard.goCarthag(color)
     Playboard.getLeader(color).drawIntrigues(color, 1)
     Playboard.getLeader(color).troops(color, "supply", "garrison", 1)
-    MainBoard.applyControlOfAnySpace(MainBoard.spaces.carthag, "solari")
+    MainBoard.applyControlOfAnySpace(MainBoard.banners.carthagBannerZone, "solari")
     return true
 end
 
 ---
 function MainBoard.goArrakeen(color)
     MainBoard.drawImperiumCards(color, 1)
-    MainBoard.applyControlOfAnySpace(MainBoard.spaces.arrakeen, "solari")
+    MainBoard.applyControlOfAnySpace(MainBoard.banners.arrakeenBannerZone, "solari")
     return true
 end
 
 ---
-function MainBoard.applyControlOfAnySpace(space, resourceName)
-    local controllingPlayer = MainBoard.getControllingPlayer(space)
+function MainBoard.applyControlOfAnySpace(bannerZone, resourceName)
+    local controllingPlayer = MainBoard.getControllingPlayer(bannerZone)
     if controllingPlayer then
         MainBoard.gainResource(controllingPlayer, resourceName, 1)
     end
@@ -453,13 +490,13 @@ function MainBoard.applyControlOfAnySpace(space, resourceName)
 end
 
 ---
-function MainBoard.getControllingPlayer(space)
+function MainBoard.getControllingPlayer(bannerZone)
     local controllingPlayer = nil
 
     -- Check player dreadnoughts first since they supersede flags.
-    for _, object in ipairs(space.zone.getObjects()) do
-        for color, _ in pairs(Playboard.getPlayboards()) do
-            if Utils.isDreadnought(color, object) then
+    for _, object in ipairs(bannerZone.getObjects()) do
+        for _, color in ipairs(Playboard.getPlayboardColors()) do
+            if Utils.isDreadnought(object, color) then
                 assert(not controllingPlayer, "Too many dreadnoughts")
                 controllingPlayer = color
             end
@@ -468,9 +505,9 @@ function MainBoard.getControllingPlayer(space)
 
     -- Check player flags otherwise.
     if not controllingPlayer then
-        for _, object in ipairs(space.zone.getObjects()) do
-            for color, _ in pairs(Playboard.getPlayboards()) do
-                if Utils.isFlag(color, object) then
+        for _, object in ipairs(bannerZone.getObjects()) do
+            for _, color in ipairs(Playboard.getPlayboardColors()) do
+                if Utils.isFlag(object, color) then
                     assert(not controllingPlayer, "Too many flags around")
                     controllingPlayer = color
                 end
@@ -559,7 +596,7 @@ end
 ---
 function MainBoard.goHallOfOratory(color)
     Playboard.getLeader(color).troops(color, "supply", "garrison", 1)
-    Playboard.getLeader(color).gainPersuasion(color, 1)
+    MainBoard.gainResource(color, "persuasion", 1)
     return true
 end
 
@@ -583,6 +620,7 @@ end
 ---
 function MainBoard.goTechNegotiation(color)
     if not Playboard.getLeader(color).troops(color, "supply", "negotiation", 1) then
+        MainBoard.gainResource(color, "persuasion", 1)
         TechMarket.registerTechDiscount(color, "tech_negotiation", 1)
     end
     return true
@@ -723,7 +761,7 @@ end
 function MainBoard.onObjectEnterScriptingZone(zone, object)
     if zone == MainBoard.mentatZone then
         if Utils.isMentat(object) then
-            for color, _ in pairs(Playboard.getPlayboards()) do
+            for _, color in ipairs(Playboard.getPlayboardColors()) do
                 object.removeTag(color)
             end
             -- FIXME One case of whitewashing too many?

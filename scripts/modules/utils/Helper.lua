@@ -178,16 +178,15 @@ function Helper.moveCardFromZone(zone, position, rotation, smooth, flipAtTheEnd)
             if rotation then
                 parameters.rotation = rotation
             end
-            deckOrCard.takeObject(parameters)
-            return true
+            return deckOrCard.takeObject(parameters)
         elseif deckOrCard.type == "Card" then
             Helper.moveObject(deckOrCard, position, rotation, smooth, flipAtTheEnd)
-            return true
+            return deckOrCard
         else
             assert(false)
         end
     end
-    return false
+    return nil
 end
 
 ---

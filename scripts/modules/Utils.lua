@@ -1,35 +1,33 @@
 local Utils = {}
 
 ---
-function Utils.isTroop(color, object)
-    return object.hasTag("Troop") and object.hasTag(color)
+function Utils.isTroop(object, color)
+    return object.hasTag("Troop") and (not color or object.hasTag(color))
 end
 
 ---
-function Utils.isDreadnought(color, object)
-    return object.hasTag("Dreadnought") and object.hasTag(color)
+function Utils.isDreadnought(object, color)
+    return object.hasTag("Dreadnought") and (not color or object.hasTag(color))
 end
 
 ---
-function Utils.isUnit(color, object)
-    -- TODO Add a "Unit" tag?
-    return (object.hasTag("Troop") or object.hasTag("Dreadnought")) and object.hasTag(color)
+function Utils.isUnit(object, color)
+    return Utils.isTroop(object, color) or Utils.isDreadnought(object, color)
 end
 
 ---
-function Utils.isFlag(color, object)
-    return object.hasTag("Flag") and object.hasTag(color)
+function Utils.isFlag(object, color)
+    return object.hasTag("Flag") and (not color or object.hasTag(color))
 end
 
 ---
-function Utils.isAgent(color, object)
-    return object.hasTag("Agent") and object.hasTag(color)
+function Utils.isAgent(object, color)
+    return object.hasTag("Agent") and (not color or object.hasTag(color))
 end
 
 ---
-function Utils.isMentat(object)
-    -- TODO Acknowledge is unique nature.
-    return object.hasTag("Mentat")
+function Utils.isMentat(object, color)
+    return object.hasTag("Mentat") and (not color or object.hasTag(color))
 end
 
 ---
@@ -95,7 +93,9 @@ end
 function Utils.assertIsResourceName(resourceName)
     assert(resourceName == "spice"
         or resourceName == "water"
-        or resourceName == "solari",
+        or resourceName == "solari"
+        or resourceName == "persuasion"
+        or resourceName == "strength",
         "No a resource name: " .. tostring(resourceName))
 end
 

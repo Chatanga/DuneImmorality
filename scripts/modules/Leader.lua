@@ -208,7 +208,7 @@ end
 --- Heavy lasgun cannons
 function Leader.rhomburVernius.setUp(color, epic)
     Action.setUp(color, epic)
-    Combat.setDreadnoughtStrength(3)
+    Combat.setDreadnoughtStrength(color, 4)
 end
 
 function Leader.tessiaVernius.setUp(color, epic)
