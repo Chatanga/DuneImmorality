@@ -1,11 +1,11 @@
 local Helper = require("utils.Helper")
 local I18N = require("utils.I18N")
 
-local AcquireCard = {}
+local AcquireCard = Helper.createClass()
 
 ---
 function AcquireCard.new(zone, snapPointTag, acquire)
-    local acquireCard = Helper.newObject(AcquireCard, {
+    local acquireCard = Helper.createClassInstance(AcquireCard, {
         zone = zone,
         anchor = nil
     })

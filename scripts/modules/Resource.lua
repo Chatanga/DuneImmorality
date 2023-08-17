@@ -5,11 +5,11 @@ local I18N = require("utils.I18N")
 local TurnControl = Module.lazyRequire("TurnControl")
 local Playboard = Module.lazyRequire("Playboard")
 
-local Resource = {
+local Resource = Helper.createClass(nil, {
     MIN_VALUE = 0,
     MAX_VALUE = 99,
     resources = {}
-}
+})
 
 ---
 function Resource.new(token, color, resourceName, value, state)
@@ -17,7 +17,7 @@ function Resource.new(token, color, resourceName, value, state)
 
     token.interactable = false
 
-    local resource = Helper.newObject(Resource, {
+    local resource = Helper.createClassInstance(Resource, {
         token = token,
         color = color,
         resourceName = resourceName,

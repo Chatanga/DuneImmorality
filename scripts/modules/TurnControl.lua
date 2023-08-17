@@ -87,7 +87,7 @@ end
 function TurnControl.startPhase(phase, reversed)
     log("=== Phase: " .. phase .. " ===")
     broadcastToAll("Phase: " .. phase, Color.fromString("Pink"))
-    if phase == "round" then
+    if phase == "roundStart" then
         TurnControl.currentRound = TurnControl.currentRound + 1
         if TurnControl.currentRound > 1 then
             TurnControl.firstPlayerLuaIndex = TurnControl.getNextPlayer(TurnControl.firstPlayerLuaIndex, TurnControl.reversed)
@@ -129,7 +129,7 @@ function TurnControl.next(starPlayerLuaIndex)
     if TurnControl.currentPlayerLuaIndex then
         local player = TurnControl.players[TurnControl.currentPlayerLuaIndex]
         log("--- Turn: " .. player .. " ---")
-        Helper.emitEvent("phaseTurn", TurnControl.currentPhase, player)
+        Helper.emitEvent("playerTurns", TurnControl.currentPhase, player)
     else
         local nextPhase = TurnControl.getNextPhase(TurnControl.currentPhase)
         if nextPhase then

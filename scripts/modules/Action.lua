@@ -67,9 +67,9 @@ end
                     Research > +1 spécimen
 
 ]]--
-local Action = {
+local Action = Helper.createClass(nil, {
     context = {}
-}
+})
 
 ---
 function Action.onLoad(state)
@@ -78,7 +78,7 @@ function Action.onLoad(state)
             phase = phase
         }
     end)
-    Helper.registerEventListener("phaseTurn", function (phase, color)
+    Helper.registerEventListener("playerTurns", function (phase, color)
         Action.context = {
             phase = phase,
             color = color

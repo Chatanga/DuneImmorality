@@ -53,8 +53,8 @@ function Module.lazyRequire(name)
         end
         if meta.module then
             local item = meta.module[key]
-            if type(item) ~= "function" then
-                log("Accessing inner field: " .. name .. "." .. key)
+            if item and type(item) ~= "function" then
+                log("Accessing inner field: " .. name .. "." .. key .. " (" .. type(item) .. ")")
             end
             return item
         else
@@ -62,6 +62,9 @@ function Module.lazyRequire(name)
             return nil
         end
     end
+
+    -- When used as a class.
+    lazyModule.__index = lazyModule
 
     setmetatable(lazyModule, meta)
 

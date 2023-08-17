@@ -205,7 +205,7 @@ function LeaderSelection.setUpPicking(opponents, numberOfLeaders, random, hidden
     end
 
     if hidden then
-        Helper.registerEventListener("phaseTurn", function (phase, color)
+        Helper.registerEventListener("playerTurns", function (phase, color)
             if phase == 'leaderSelection' then
                 local remainingLeaders = {}
                 for leader, selected in pairs(LeaderSelection.dynamicLeaderSelection) do

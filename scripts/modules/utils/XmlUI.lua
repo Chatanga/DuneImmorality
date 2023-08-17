@@ -1,10 +1,10 @@
 local Helper = require("utils.Helper")
 
-local XmlUI = {}
+local XmlUI = Helper.createClass()
 
 ---
 function XmlUI.new(holder, id, fields)
-    local xmlUI = Helper.newObject(XmlUI, {
+    local xmlUI = Helper.createClassInstance(XmlUI, {
         holder = holder,
         xml = holder.UI.getXmlTable(), -- Why the retrieved XML is always stale (even after some time)?
         id = id,

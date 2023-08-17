@@ -114,7 +114,7 @@ function onLoad(scriptState)
     if validateDefaultSetup then
         settings.virtualHotSeat = true
         settings.leaderSelection = {
-            Green = "rhomburVernius",
+            Green = "ilesaEcaz",
             Yellow = "ilbanRichese",
             Red = "helenaRichese",
         }

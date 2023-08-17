@@ -13,7 +13,7 @@ local Hagal = Module.lazyRequire("Hagal")
 local Leader = Module.lazyRequire("Leader")
 local Rival = Module.lazyRequire("Rival")
 
-local Playboard = {
+local Playboard = Helper.createClass(nil, {
     -- Temporary structure (set to nil *after* loading).
     unresolvedContentByColor = {
         Red = {
@@ -227,7 +227,7 @@ local Playboard = {
     },
     playboards = {},
     nextPlayer = nil
-}
+})
 
 ---
 function Playboard.onLoad(state)
@@ -241,7 +241,7 @@ end
 function Playboard.new(color, unresolvedContent, state)
     --log("Playboard.new(" .. tostring(color) .. ", _, _)")
 
-    local playboard = Helper.newObject(Playboard, {
+    local playboard = Helper.createClassInstance(Playboard, {
         color = color,
         content = nil,
         agentPark = nil,
@@ -302,6 +302,10 @@ function Playboard.new(color, unresolvedContent, state)
         playboard[resourceName] = Resource.new(token, color, resourceName, 0, state)
     end
 
+    Helper.createTransientAnchor("instructionTextAnchor", board.getPosition() + playboard:newSymmetricBoardPosition(12, -0.5, -8)).doAfter(function (anchor)
+        playboard.instructionTextAnchor = anchor
+    end)
+
     playboard.agentPark = playboard:createAgentPark(unresolvedContent.agentPositions)
     playboard.dreadnoughtPark = playboard:createDreadnoughtPark(unresolvedContent.dreadnoughtPositions)
     playboard.supplyPark = playboard:createSupplyPark(centerPosition)
@@ -337,7 +341,7 @@ function Playboard.setUp(ix, immortality, epic, activeOpponents)
     end
 
     Helper.registerEventListener("phaseStart", function (phase, firstPlayer)
-        if phase == "leaderSelection" or phase == "round" then
+        if phase == "leaderSelection" or phase == "roundStart" then
             local playboard = Playboard.getPlayboard(firstPlayer)
             MainBoard.firstPlayerMarker.setPositionSmooth(playboard.content.firstPlayerPosition, false, false)
         end
@@ -369,7 +373,7 @@ function Playboard.setUp(ix, immortality, epic, activeOpponents)
         end
     end)
 
-    Helper.registerEventListener("phaseTurn", function (phase, color)
+    Helper.registerEventListener("playerTurns", function (phase, color)
         local playboard = Playboard.getPlayboard(color)
         if playboard.leader then
             if false then
@@ -387,20 +391,16 @@ function Playboard.setUp(ix, immortality, epic, activeOpponents)
             for otherColor, otherPlayboard in pairs(Playboard._getPlayboards()) do
                 if Playboard.isHuman(otherColor) then
                     local instruction = playboard.leader.instruct(phase, otherColor)
-                    if instruction then
-                        otherPlayboard.leaderCard.clearButtons() -- FIXME
-                        --Helper.createAbsoluteButtonWithRoundness(otherPlayboard.leaderCard, 1, false, {
-                        otherPlayboard.content.board.createButton({
+                    if instruction and otherPlayboard.instructionTextAnchor then
+                        otherPlayboard.instructionTextAnchor.clearButtons()
+                        Helper.createAbsoluteButtonWithRoundness(otherPlayboard.instructionTextAnchor, 1, false, {
                             click_function = "NOP",
                             label = instruction,
-                            --position = otherPlayboard.leaderCard.getPosition() + Vector(0, 0.5, 0),
-                            --width = 1100,
-                            --height = 250,
-                            --font_size = 150,
-                            position = otherPlayboard:newSymmetricBoardPosition(12, 0, 8),
+                            position = otherPlayboard.instructionTextAnchor.getPosition() + Vector(0, 0.5, 0),
                             width = 0,
                             height = 0,
                             font_size = 200,
+                            scale = Vector(1, 1, 1),
                             color = { 0, 0, 0, 0.90 },
                             font_color = Color.fromString("White")
                         })
@@ -1209,11 +1209,12 @@ function Playboard.setLeader(color, leaderCard)
                 log("Not a leader compatible with a rival: " .. leaderCard.getDescription())
                 return false
             end
-            playboard.leader = Hagal.getRival(Leader.getLeader(leaderCard.getDescription()))
+            playboard.leader = Hagal.newRival(Leader.getLeader(leaderCard.getDescription()))
         end
     else
         playboard.leader = Leader.getLeader(leaderCard.getDescription())
     end
+    assert(playboard.leader)
     local position = playboard.content.leaderZone.getPosition()
     leaderCard.setPosition(position)
     playboard.leaderCard = leaderCard

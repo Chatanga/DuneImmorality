@@ -323,7 +323,8 @@ function Helper.createAbsoluteWidgetWithRoundnessParameters(object, roundness, q
 
     --[[
         Scale is a problem here. We change it to artificially adjust the roundness, but
-        the final scale could also modify the font height since its end value is capped...
+        we also needs to ajust the font height, which is capped and more or less blurry
+        depending on it...
     ]]--
 
     local scale = object.getScale()
@@ -390,6 +391,7 @@ function Helper.createAbsoluteWidgetWithRoundnessParameters(object, roundness, q
         font_size = 1
     end
     font_size = font_size * rescale
+    assert(font_size <= 720, "You hit the max font size of 720.")
     parameters['font_size'] = font_size
 
     return parameters
@@ -513,30 +515,22 @@ function Helper.trace(name, data)
 end
 
 ---
-function Helper.newObject(class, instance)
-    assert(class)
-    assert(instance)
-
+function Helper.createClass(superclass, data)
+    --  We can't make this test unfortunately, since it superclasses typically come through lazyRequire.
+    --assert(not superclass or superclass.__index, "Superclass doesn't look like a class itself.")
+    local class = data or {}
     class.__index = class
-    setmetatable(instance, class)
-    return instance
+    if superclass then
+        setmetatable(class, superclass)
+    end
+    return class
 end
 
 ---
-function Helper.newInheritingObject(superclass, class, instance)
+function Helper.createClassInstance(class, data)
     assert(class)
-    assert(instance)
-
-    class.superclass = superclass
-
-    class.__index = function(_, key)
-        local item = class[key]
-        if not item then
-            item = class.superclass[key]
-        end
-        return item
-    end
-
+    assert(class.__index, "Provided class doesn't look like a class actually.")
+    local instance = data or {}
     setmetatable(instance, class)
     return instance
 end

@@ -25,6 +25,8 @@ local Hagal = {
     },
 }
 
+local Rival = Helper.createClass(Action)
+
 ---
 function Hagal.onLoad(state)
     Helper.append(Hagal, Helper.resolveGUIDs(true, {
@@ -50,15 +52,10 @@ function Hagal.tearDown()
 end
 
 ---
-function Hagal.getLeader(leader)
-    local Rival
-    if leader then
-        Rival = Helper.shallowCopy(Hagal)
-        Rival.leader = leader
-    else
-        Rival = Hagal
-    end
-    return Helper.newInheritingObject(Action, Rival, {})
+function Hagal.newRival(leader)
+    return Helper.createClassInstance(Rival, {
+        leader = leader
+    })
 end
 
 ---
