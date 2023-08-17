@@ -10,9 +10,8 @@ local Utils = Module.lazyRequire("Utils")
 local Deck = Module.lazyRequire("Deck")
 local MainBoard = Module.lazyRequire("MainBoard")
 local Hagal = Module.lazyRequire("Hagal")
-local Combat = Module.lazyRequire("Combat")
 local Leader = Module.lazyRequire("Leader")
-local Action = Module.lazyRequire("Action")
+local Rival = Module.lazyRequire("Rival")
 
 local Playboard = {
     -- Temporary structure (set to nil *after* loading).
@@ -344,6 +343,9 @@ function Playboard.setUp(ix, immortality, epic, activeOpponents)
         end
 
         if phase == "roundStart" then
+            for color, playboard in pairs(Playboard._getPlayboards()) do
+                playboard.leader.drawImperiumCards(color, 5)
+            end
             -- TODO Query acquired tech tiles for round start recurring effects.
         end
 
@@ -355,6 +357,7 @@ function Playboard.setUp(ix, immortality, epic, activeOpponents)
                 -- TODO Query acquired tech tiles for specific persuasion / strength permanent effects.
             end
             -- TODO Send all played cards to the discard (general discard for intrigue cards).
+            -- TODO Flip any used tech.
         end
     end)
 
@@ -369,14 +372,40 @@ function Playboard.setUp(ix, immortality, epic, activeOpponents)
     Helper.registerEventListener("phaseTurn", function (phase, color)
         local playboard = Playboard.getPlayboard(color)
         if playboard.leader then
-            local instruction = playboard.leader.instruct(phase, color)
-            if instruction then
-                -- Wait for setActivePlayer to change the (hotseated) player if needed.
-                Wait.frames(function ()
-                    local player = Helper.findPlayer(color)
-                    assert(player, "No " .. tostring(color) .. " player!")
-                    player.broadcast(instruction, Color.fromString("Pink"))
-                end, 1)
+            if false then
+                local instruction = playboard.leader.instruct(phase, color)
+                if instruction then
+                    -- Wait for setActivePlayer to change the (hotseated) player if needed.
+                    Wait.frames(function ()
+                        local player = Helper.findPlayer(color)
+                        assert(player, "No " .. tostring(color) .. " player!")
+                        player.broadcast(instruction, Color.fromString("Pink"))
+                    end, 1)
+                end
+            end
+
+            for otherColor, otherPlayboard in pairs(Playboard._getPlayboards()) do
+                if Playboard.isHuman(otherColor) then
+                    local instruction = playboard.leader.instruct(phase, otherColor)
+                    if instruction then
+                        otherPlayboard.leaderCard.clearButtons() -- FIXME
+                        --Helper.createAbsoluteButtonWithRoundness(otherPlayboard.leaderCard, 1, false, {
+                        otherPlayboard.content.board.createButton({
+                            click_function = "NOP",
+                            label = instruction,
+                            --position = otherPlayboard.leaderCard.getPosition() + Vector(0, 0.5, 0),
+                            --width = 1100,
+                            --height = 250,
+                            --font_size = 150,
+                            position = otherPlayboard:newSymmetricBoardPosition(12, 0, 8),
+                            width = 0,
+                            height = 0,
+                            font_size = 200,
+                            color = { 0, 0, 0, 0.90 },
+                            font_color = Color.fromString("White")
+                        })
+                    end
+                end
             end
         end
 
@@ -403,9 +432,9 @@ function Playboard.setActivePlayer(phase, color)
                     Hagal.activate(phase, color, playboard)
                 else
                     if phase ~= "leaderSelection" then
-                        playboard:createEndOfTurnButton()
+                        playboard:_createEndOfTurnButton()
                     end
-                    playboard.movePlayerIfNeeded(color)
+                    Playboard._movePlayerIfNeeded(color)
                 end
             else
                 playboard.content.startEndTurnButton.interactable = false
@@ -417,23 +446,25 @@ function Playboard.setActivePlayer(phase, color)
     end
 end
 
----
-function Playboard.movePlayerIfNeeded(color)
-    local otherPlayers = {}
+--- Hotseat
+function Playboard._movePlayerIfNeeded(color)
+    local anyOtherPlayer = nil
     for _, player in ipairs(Player.getPlayers()) do
         if player.color == color then
             return
         else
-            table.insert(otherPlayers, player)
+            anyOtherPlayer = player
         end
     end
-    if #otherPlayers == 1 then
-        otherPlayers[1].changeColor(color)
+    if anyOtherPlayer then
+        Playboard.getPlayboard(anyOtherPlayer.color).opponent = "puppet"
+        Playboard.getPlayboard(color).opponent = anyOtherPlayer
+        anyOtherPlayer.changeColor(color)
     end
 end
 
 ---
-function Playboard:createEndOfTurnButton()
+function Playboard:_createEndOfTurnButton()
     self.content.startEndTurnButton.createButton({
         click_function = self:createExclusiveCallback("onEndOfTurn", function ()
             self.content.startEndTurnButton.AssetBundle.playTriggerEffect(0)
@@ -1162,19 +1193,30 @@ function Playboard.isRival(color)
 end
 
 ---
+function Playboard.isHuman(color)
+    local playerboard = Playboard.getPlayboard(color)
+    return playerboard.opponent ~= "rival"
+end
+
+---
 function Playboard.setLeader(color, leaderCard)
     local playboard = Playboard.getPlayboard(color)
     if playboard.opponent == "rival" then
-        if Hagal.getRivalCount() == 2 and not Hagal.isLeaderCompatible(leaderCard) then
-            log("Not a leader compatible with a rival: " .. leaderCard.getDescription())
-            return false
+        if Hagal.getRivalCount() == 1 then
+            playboard.leader = Hagal.getRival(nil)
+        else
+            if not Hagal.isLeaderCompatible(leaderCard) then
+                log("Not a leader compatible with a rival: " .. leaderCard.getDescription())
+                return false
+            end
+            playboard.leader = Hagal.getRival(Leader.getLeader(leaderCard.getDescription()))
         end
-        playboard.leader = Action
     else
         playboard.leader = Leader.getLeader(leaderCard.getDescription())
     end
     local position = playboard.content.leaderZone.getPosition()
     leaderCard.setPosition(position)
+    playboard.leaderCard = leaderCard
     return true
 end
 

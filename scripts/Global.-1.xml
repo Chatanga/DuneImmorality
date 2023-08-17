@@ -54,9 +54,9 @@
 					<Option></Option>
 				</Dropdown>
 			</HorizontalLayout>
-			<VerticalLayout padding="25 0 0 0">
+			<!--VerticalLayout padding="25 0 0 0">
 				<Toggle id="fanMadeLeaders" isOn="False" onValueChanged="Global/setFanMadeLeaders">Fan made leaders</Toggle>
-			</VerticalLayout>
+			</VerticalLayout-->
 
 			<HorizontalLayout>
 				<Text class="primary">Variants</Text>

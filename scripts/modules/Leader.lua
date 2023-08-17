@@ -16,39 +16,12 @@ local Leader = {
     paulAtreides = {},
     arianaThorvald = {},
     memnonThorvald = {},
-
     armandEcaz = {},
     ilesaEcaz = {},
     rhomburVernius = {},
     tessiaVernius = {},
     yunaMoritani = {},
     hundroMoritani = {},
-
-    metulli = {},
-    hasimirFenring = {},
-    scytale = {},
-    margotFenring = {},
-    feydRauthaHarkonnen = {},
-    serenaButler = {},
-    lietKynes = {},
-    wensiciaCorrino = {},
-    irulanCorrino = {},
-    hwiNoree = {},
-    whitmoreBlund = {},
-    drisq = {},
-    executrix = {},
-    milesTeg = {},
-    esmarTuek = {},
-    vorianAtreides = {},
-    xavierHarkonnen = {},
-    normaCenva = {},
-    abuldurHarkonnen = {},
-    arkhane = {},
-    stabanTuek = {},
-    tylwythWaff = {},
-    torgTheYoung = {},
-
-    shaddamIV = {},
 }
 
 ---
@@ -300,16 +273,6 @@ end
 function Leader.hundroMoritani.signetRing(color)
     return Action.resource(color, "spice", 1)
         and Action.cargo(color, nil, 1)
-end
-
----
-function Leader.hasimirFenring.drawIntrigues(color, amount)
-    return Action.drawIntrigues(color, amount + 1)
-end
-
----
-function Leader.shaddamIV.influence(color, faction, amount)
-    return Action.influence(color, faction, amount == 1 and -1 or amount)
 end
 
 return Leader

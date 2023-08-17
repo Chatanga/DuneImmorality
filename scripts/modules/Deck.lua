@@ -364,45 +364,6 @@ local Deck = {
             yunaMoritani = 1,
             hundroMoritani = 1,
         },
-        fanMade = {
-            --[[
-                maxK: https://boardgamegeek.com/thread/2899772/12-new-fan-made-house-leaders-play-them
-                tylerBeck: https://boardgamegeek.com/thread/2963793/ideas-2-new-immortality-leaders
-                alexPR: https://boardgamegeek.com/filepage/253799/26-fan-made-leaders (+ rework)
-                arkhane: https://forum.cwowd.com/t/dune-imperium-personnages-fanmade/45175
-            ]]--
-            arkhane = {
-                base = {
-                    metulli = 1,
-                    hasimirFenring = 1,
-                    scytale = 1,
-                    margotFenring = 1,
-                    feydRauthaHarkonnen = 1,
-                    serenaButler = 1,
-                    lietKynes = 1,
-                    wensiciaCorrino = 1,
-                    irulanCorrino = 1,
-                    hwiNoree = 1,
-                    whitmoreBlund = 1,
-                    drisq = 1,
-                    executrix = 1,
-                    milesTeg = 1,
-                    esmarTuek = 1,
-                    vorianAtreides = 1,
-                },
-                ix = {
-                    xavierHarkonnen = 1,
-                    normaCenva = 1,
-                    abuldurHarkonnen = 1,
-                    arkhane = 1,
-                    stabanTuek = 1,
-                },
-                immortality = {
-                    tylwythWaff = 1,
-                    torgTheYoung = 1,
-                }
-            },
-        },
     }
 }
 

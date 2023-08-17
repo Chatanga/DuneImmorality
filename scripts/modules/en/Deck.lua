@@ -77,30 +77,6 @@ local Deck = {
         tessiaVernius = { "http://cloud-3.steamusercontent.com/ugc/1892102433196279035/29817122A32B50C285EE07E0DAC32FDE9A237CEC/", 1, 1 },
         yunaMoritani = { "http://cloud-3.steamusercontent.com/ugc/1892102433196277499/FA54B129B168169E3D58BA61536FCC0BB5AB7D34/", 1, 1 },
         hundroMoritani = { "http://cloud-3.steamusercontent.com/ugc/1892102433196275601/6A89778D9C4BB8AC07FE503D48A4483D13DF6E5B/", 1, 1 },
-        -- Fanmade
-        metulli = { "file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/resources/preserved/Leaders fan made/09663a73d24af2db6a9315d87c5953614c0b0f32.jpeg", 1, 1 }, -- Duke? Not count Flambert Mutelli?
-        hasimirFenring = { "file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/resources/preserved/Leaders fan made/3657671646912d7026e790b8de187b49975cbd0e.jpeg", 1, 1 },
-        scytale = { "file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/resources/preserved/Leaders fan made/bfa284bbaba15a609401208f4d834fe916ea960e.jpeg", 1, 1 },
-        torgTheYoung = { "file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/resources/preserved/Leaders fan made/66dcbbe36459c57fd8f631d8576f2cf01dfdc092.jpeg", 1, 1 },
-        margotFenring = { "file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/resources/preserved/Leaders fan made/1964022795283817f32d219c1c38050a9b5303ad.jpeg", 1, 1 },
-        feydRauthaHarkonnen = { "file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/resources/preserved/Leaders fan made/d80761b2286a313a11939e3d45debcf24f7d30cc.jpeg", 1, 1 },
-        stabanTuek = { "file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/resources/preserved/Leaders fan made/1fcb42b17a8f7f711758bf5869cd3b7328e4542f.jpeg", 1, 1 },
-        tylwythWaff = { "file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/resources/preserved/Leaders fan made/a7741dffe841114bddb8b6f8a2a57d2c59cddeeb.jpeg", 1, 1 },
-        serenaButler = { "file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/resources/preserved/Leaders fan made/c4934e0587d33e2f1bb051d746a7eb30d2a6dea7.jpeg", 1, 1 },
-        lietKynes = { "file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/resources/preserved/Leaders fan made/dc956cb7acbd2370dc3d86484765e413f36dbbff.jpeg", 1, 1 },
-        arkhane = { "file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/resources/preserved/Leaders fan made/43f98bf29b58c81d6c1fabdc6d166bc0ed122953.jpeg", 1, 1 },
-        wensiciaCorrino = { "file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/resources/preserved/Leaders fan made/c3d5184ad0f809a3f1f38bb16096af5dd4437fa5.jpeg", 1, 1 },
-        irulanCorrino = { "file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/resources/preserved/Leaders fan made/4c33fe97c3efcabf776df966b59d2af15401d07e.jpeg", 1, 1 },
-        hwiNoree = { "file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/resources/preserved/Leaders fan made/d3bb757794fcb5b9cf5d58798a697b354bd34eea.jpeg", 1, 1 },
-        whitmoreBlund = { "file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/resources/preserved/Leaders fan made/feb8f943c50dfb711640347c6397243d71f9780a.jpeg", 1, 1 },
-        drisq = { "file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/resources/preserved/Leaders fan made/2f2f3cf34b2737b7caef26433b3ecee9fe41b3af.jpeg", 1, 1 },
-        executrix = { "file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/resources/preserved/Leaders fan made/69c591c92ed7fba903ecdad9c2ccc2b99ebbc5b0.jpeg", 1, 1 },
-        milesTeg = { "file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/resources/preserved/Leaders fan made/299ecfbed3cd8f16774c5c69f8a957768cbbb66d.jpeg", 1, 1 },
-        esmarTuek = { "file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/resources/preserved/Leaders fan made/edaf5084889aa22c19b915dfaddfeadab97f440f.jpeg", 1, 1 },
-        abuldurHarkonnen = { "file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/resources/preserved/Leaders fan made/40b8a2b4f6f5da9a0c2d7738a3f5bfd925167438.jpeg", 1, 1 },
-        normaCenva = { "file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/resources/preserved/Leaders fan made/4e8fc979a8689926a3a02ea748f402e7d76570ba.jpeg", 1, 1 },
-        vorianAtreides = { "file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/resources/preserved/Leaders fan made/dfdb8318608d8f7b39273b40ebb4120fcee56b3e.jpeg", 1, 1 },
-        xavierHarkonnen = { "file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/resources/preserved/Leaders fan made/43e90624d39b5a904ff112bd5a0b7c3d8aa21502.jpeg", 1, 1 },
     }
 }
 
@@ -375,7 +351,7 @@ function Deck.loadCustomDecks(loader)
         "grandVision",
         "battleForCarthag",
         "battleForArrakeen",
-        "economySupremacy"
+        "economicSupremacy"
     })
 
     Deck.load(loader, cards.hagal, "hagal", "hagal", 1, {

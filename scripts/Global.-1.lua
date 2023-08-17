@@ -70,7 +70,7 @@ local settings = {
     goTo11 = false,
     leaderSelection_all = allModules.LeaderSelection.selectionMethods,
     leaderSelection = "reversePick",
-    fanMadeLeaders = false,
+    --fanMadeLeaders = false,
     variant_all = {
         none = "None",
         blitz = "Blitz!",
@@ -170,7 +170,7 @@ function setUp()
     local immortality = settings.immortality == true
     local goTo11 = settings.goTo11 == true
     local leaderSelection = settings.leaderSelection
-    local fanMadeLeaders = settings.fanMadeLeaders == true
+    local fanMadeLeaders = false --settings.fanMadeLeaders == true
     local variant = settings.variant
 
     local properlySeatedPlayers = PlayerSet.getProperlySeatedPlayers()
@@ -213,7 +213,7 @@ function setUp()
         allModules.TleilaxuRow.tearDown()
     end
 
-    allModules.TurnControl.setUp(PlayerSet.toOrderedPlayerList(activeOpponents))
+    allModules.TurnControl.setUp(numberOfPlayers, PlayerSet.toOrderedPlayerList(activeOpponents))
 
     -- TurnControl.start() is called by "LeaderSelection.setUp" asynchronously (FIXME: use a continuation for readiness)
 end
@@ -241,12 +241,13 @@ function PlayerSet.findActiveOpponents(properlySeatedPlayers, numberOfPlayers)
         end
     end
 
-    local remainingRivalCount = math.max(0, 3 - numberOfPlayers)
+    local remainingCount = math.max(0, 3 - numberOfPlayers)
+    local opponentType = remainingCount == 2 and "rival" or "hagal"
     for _, color in ipairs(colorsByPreference) do
-        if remainingRivalCount > 0 then
+        if remainingCount > 0 then
             if not activeOpponents[color] then
-                activeOpponents[color] = "rival"
-                remainingRivalCount = remainingRivalCount - 1
+                activeOpponents[color] = opponentType
+                remainingCount = remainingCount - 1
             end
         else
             break
@@ -305,7 +306,7 @@ function PlayerSet.randomizePlayerPositions(activeOpponents)
 end
 
 function PlayerSet.switchPositions(opponent, newColor)
-    if opponent ~= "rival" and opponent ~= "puppet" then
+    if opponent ~= "hagal" and opponent ~= "rival" and opponent ~= "puppet" then
         local oldColor = opponent.color
         local player = PlayerSet.findPlayer(newColor)
         if oldColor ~= newColor then

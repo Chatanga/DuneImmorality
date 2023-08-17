@@ -87,7 +87,6 @@ function Combat.setUpConflict()
     if card then
         local i = 0
         for _, object in pairs(Combat.victoryPointTokenBag.getObjects()) do
-            Helper.dump(object.description, "=?=", card.getDescription())
             if object.description == card.getDescription() then
                 local origin = Combat.victoryPointTokenZone.getPosition()
                 local position = origin + Vector(0.5 - (i % 2), 0.5 + math.floor(i / 2), 0)

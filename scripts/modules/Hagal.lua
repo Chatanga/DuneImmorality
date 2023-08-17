@@ -4,6 +4,7 @@ local Helper = require("utils.Helper")
 local Deck = Module.lazyRequire("Deck")
 local TurnControl = Module.lazyRequire("TurnControl")
 local LeaderSelection = Module.lazyRequire("LeaderSelection")
+local Action = Module.lazyRequire("Action")
 
 local Hagal = {
     soloDifficulties = {
@@ -21,7 +22,7 @@ local Hagal = {
         memnonThorvald = 1,
         rhomburVernius = 1,
         hundroMoritani = 1,
-    }
+    },
 }
 
 ---
@@ -46,6 +47,18 @@ end
 function Hagal.tearDown()
     -- 5 solari patch.
     getObjectFromGUID("ba730f").destruct()
+end
+
+---
+function Hagal.getLeader(leader)
+    local Rival
+    if leader then
+        Rival = Helper.shallowCopy(Hagal)
+        Rival.leader = leader
+    else
+        Rival = Hagal
+    end
+    return Helper.newInheritingObject(Action, Rival, {})
 end
 
 ---

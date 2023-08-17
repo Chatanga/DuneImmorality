@@ -2,8 +2,8 @@ local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 
 local Playboard = Module.lazyRequire("Playboard")
-local Hagal = Module.lazyRequire("Hagal")
 local Combat = Module.lazyRequire("Combat")
+local Hagal = Module.lazyRequire("Hagal")
 
 local TurnControl = {
     phaseOrder = {
@@ -26,22 +26,21 @@ local TurnControl = {
 }
 
 --- Initialize the turn system with the provided players (or all the seated players) and start a new round.
-function TurnControl.setUp(players, epicMode, goToEleven)
+function TurnControl.setUp(numberOfPlayers, players)
     Turns.enable = false
     TurnControl.players = players
 
-    local rivalCount = Hagal.getRivalCount()
-    if rivalCount == 1 then
+    if numberOfPlayers == 1 then
         for i, player in ipairs(players) do
-            if Playboard.isRival(player) then
+            if Playboard.isHuman(player) then
                 TurnControl.firstPlayerLuaIndex = TurnControl.getNextPlayer(i, true)
                 break
             end
         end
-    elseif rivalCount == 2 then
+    elseif numberOfPlayers == 2 then
         for i, player in ipairs(players) do
             if Playboard.isRival(player) then
-                TurnControl.firstPlayerLuaIndex = i
+                TurnControl.firstPlayerLuaIndex = TurnControl.getNextPlayer(i, math.random() > 0)
                 break
             end
         end
@@ -134,7 +133,8 @@ function TurnControl.next(starPlayerLuaIndex)
     else
         local nextPhase = TurnControl.getNextPhase(TurnControl.currentPhase)
         if nextPhase then
-            TurnControl.startPhase(nextPhase, false)
+            TurnControl.reversed = Hagal.getRivalCount() == 1 and not TurnControl.reversed or false
+            TurnControl.startPhase(nextPhase, TurnControl.reversed)
         end
     end
 end

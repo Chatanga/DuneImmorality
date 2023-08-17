@@ -31,6 +31,7 @@ Having launched `./listen.py` in another terminal will provide you with an immed
 
 ## TODO
 
+- Ix board .
 - Tleilaxu board.
 - Identify and detect played cards.
 - Advanced reveal.

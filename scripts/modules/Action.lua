@@ -123,30 +123,29 @@ end
 function Action.instruct(phase, color)
     local instructions = {
         leaderSelection = {
-            "Select a leader on the upper board",
-            "Wait for your opponents to select their leaders."
+            "Select a leader\non the upper board",
+            "Wait for your opponent\nto select their leaders."
         },
         playerTurns = {
-            "Send an agent or reveal your hand, then press End of Turn.",
-            "Wait for your opponents to play their agent / reveal turn."
+            "Send an agent\nor reveal your hand,\nthen press End of Turn.",
+            "Wait for your opponent\nto play their\nagent / reveal turn."
         },
         combat = {
-            "Play an intrigue and press End of Turn or simply press End of Turn to pass.",
-            "Wait for your opponents in combat to play an intrigue or pass their turn."
+            "Play an intrigue and\npress End of Turn or simply\npress End of Turn to pass.",
+            "Wait for your opponent\nin combat to play an\nintrigue or pass their turn."
         },
         outcome = {
-            "Take your reward and play intrigue cards if you may, then press End of Turn.",
-            "Wait for your opponents to collect their reward and play any intrigue."
+            "Take your reward and play\nintrigue cards if you may,\nthen press End of Turn.",
+            "Wait for your opponent\nto collect their reward\nand play any intrigue."
         },
         endgame = {
-            "Play any Endgame card and Tech tile you possess to gain final victory points.",
-            "Wait for your oppenents to play any Endgame card or Tech tiles they possess."
+            "Play any Endgame card and\nTech tile you possess\nto gain final victory points.",
+            "Wait for your oppenent\nto play any Endgame card\nor Tech tiles they possess."
         },
     }
 
     local instruction = instructions[phase]
     if instruction then
-        Helper.dump(Action.context.color, "?=", color)
         if Action.context.color == color then
             return instruction[1]
         else
