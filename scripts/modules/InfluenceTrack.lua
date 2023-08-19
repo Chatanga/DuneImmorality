@@ -125,7 +125,6 @@ function InfluenceTrack.initInfluenceTracksLevels()
             local levelPosition = meanStartPosition + Vector(0, 0, meanStep * i)
             levelPosition:setAt('y', 0.5)
             Helper.createTransientAnchor(faction .. "Rank" .. tostring(i), levelPosition).doAfter(function (anchor)
-                anchor.interactable = false
                 local actionName = "Progress on the " .. faction .. " influence track"
                 Helper.createAbsoluteButtonWithRoundness(anchor, 1, false, {
                     click_function = Helper.createGlobalCallback(function (_, color, _)

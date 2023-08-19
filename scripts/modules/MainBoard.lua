@@ -69,6 +69,10 @@ function MainBoard.onLoad(state)
             -- CHOAM
             secureContract = { zone = "db4022", anchor = nil },
             sellMelange = { zone = "7539a3", anchor = nil },
+            sellMelange_1 = { zone = "107a42", anchor = nil },
+            sellMelange_2 = { zone = "43cb14", anchor = nil },
+            sellMelange_3 = { zone = "b00ba5", anchor = nil },
+            sellMelange_4 = { zone = "debf5e", anchor = nil },
             -- Dune
             arrakeen = { zone = "17b646", anchor = nil },
             carthag = { zone = "b1c938", anchor = nil },
@@ -89,10 +93,16 @@ function MainBoard.onLoad(state)
             -- CHOAM
             secureContract = Helper.erase,
             sellMelange = Helper.erase,
+            sellMelange_1 = Helper.erase,
+            sellMelange_2 = Helper.erase,
+            sellMelange_3 = Helper.erase,
+            sellMelange_4 = Helper.erase,
             smuggling = { zone = "82589e", anchor = nil },
             interstellarShipping = { zone = "487ad9", anchor = nil },
             -- Ix
             techNegotiation = { zone = "04f512", anchor = nil },
+            techNegotiation_1 = { zone = "a7cdf8", anchor = nil },
+            techNegotiation_2 = { zone = "479378", anchor = nil },
             dreadnought = { zone = "83ea90", anchor = nil },
         },
         banners = {
@@ -141,13 +151,27 @@ function MainBoard.setUp(riseOfIx)
         MainBoard.highCouncilZone = MainBoard.highCouncilZones.ix
         MainBoard.mentatZones.base.destruct()
         MainBoard.mentatZone = MainBoard.mentatZones.ix
-        Helper.append(MainBoard.spaces, MainBoard.ixSpaces)
+
+        for spaceName, ixSpace in pairs(MainBoard.ixSpaces) do
+            local baseSpace = MainBoard.spaces[spaceName]
+            if baseSpace then
+                baseSpace.zone.destruct()
+            end
+            MainBoard.spaces[spaceName] = ixSpace ~= Helper.erase and ixSpace or nil
+        end
     else
         MainBoard.highCouncilZones.ix.destruct()
         MainBoard.highCouncilZone = MainBoard.highCouncilZones.base
         MainBoard.mentatZones.ix.destruct()
         MainBoard.mentatZone = MainBoard.mentatZones.base
         MainBoard.board.setState(2)
+
+        for _, ixSpace in pairs(MainBoard.ixSpaces) do
+            if ixSpace ~= Helper.erase then
+                ixSpace.zone.destruct()
+            end
+        end
+        MainBoard.ixSpaces = nil
     end
     MainBoard.highCouncilPark = MainBoard:createHighCouncilPark(MainBoard.highCouncilZone)
 
@@ -220,12 +244,18 @@ function MainBoard:createHighCouncilPark(zone)
         zone,
         { "HighCouncilSeatToken" },
         nil,
+        true,
         true)
 end
 
 ---
 function MainBoard.getHighCouncilSeatPark()
     return MainBoard.highCouncilPark
+end
+
+---
+function Playboard.getPlayedCardsThisTurn()
+    -- TODO
 end
 
 ---
@@ -266,35 +296,35 @@ end
 function MainBoard.createSpaceButton(space, position, slots)
     local zone = space.zone -- Park.createBoundingZone(0, Vector(1, 3, 0.5), slots)
     local tags = { "Agent" }
-    space.park = Park.createPark("AgentPark", slots, Vector(0, 0, 0), zone, tags, nil, false)
+    space.park = Park.createPark("AgentPark", slots, Vector(0, 0, 0), zone, tags, nil, false, true)
 
-    Helper.createTransientAnchor("AgentPark", position - Vector(0, 0.4, 0)).doAfter(function (anchor)
-        anchor.interactable = false
+    Helper.createTransientAnchor("AgentPark", position - Vector(0, 0.5, 0)).doAfter(function (anchor)
         local snapPoints = {}
         for _, slot in ipairs(slots) do
             table.insert(snapPoints, Helper.createRelativeSnapPoint(anchor, slot, false, tags))
         end
         anchor.setSnapPoints(snapPoints)
 
-        Helper.createAbsoluteButtonWithRoundness(anchor, 10, false, {
-            click_function = Helper.createGlobalCallback(function (_, color, _)
-                if Playboard.getLeader(color) then
-                    Playboard.getLeader(color).sendAgent(color, space.name)
-                end
-            end),
-            position = Vector(position.x, 0.7, position.z),
-            width = space.zone.getScale().x * 500,
-            height = space.zone.getScale().z * 500,
-            color = { 0, 0, 0, 0 },
-            tooltip = "Send agent to " .. space.name
-        })
-
+        local tooltip = "Send agent to " .. space.name
+        Helper.createAreaButton(space.zone, anchor, 0.7, tooltip, function (_, color, _)
+            if Playboard.getLeader(color) then
+                Playboard.getLeader(color).sendAgent(color, space.name)
+            end
+        end)
     end)
 end
 
 ---
 function MainBoard.sendAgent(color, spaceName)
     local space = MainBoard.spaces[spaceName]
+
+    local parentSpace = space
+    local underscoreIndex = string.find(spaceName, "_")
+    if underscoreIndex then
+        local parentSpaceName = string.sub(spaceName, 1, underscoreIndex - 1)
+        parentSpace = MainBoard.spaces[parentSpaceName]
+        assert(parentSpace, "No parent space name named: " .. parentSpaceName)
+    end
 
     local asyncActionName = Helper.toCamelCase("asyncGo", space.name)
     local actionName = Helper.toCamelCase("go", space.name)
@@ -304,14 +334,16 @@ function MainBoard.sendAgent(color, spaceName)
     if not Park.isEmpty(Playboard.getAgentPark(color)) then
         local agentPark = Playboard.getAgentPark(color)
         if asyncAction then
+            Helper.emitEvent("agentSent", color, spaceName)
             asyncAction(color).doAfter(function (success)
                 if success then
-                    Park.transfert(1, agentPark, space.park)
+                    Park.transfert(1, agentPark, parentSpace.park)
                 end
             end)
         elseif action then
+            Helper.emitEvent("agentSent", color, spaceName)
             if action(color) then
-                Park.transfert(1, agentPark, space.park)
+                Park.transfert(1, agentPark, parentSpace.park)
             end
         else
             log("Unknow space action: " .. actionName)
@@ -559,7 +591,6 @@ function MainBoard.goSecureContract(color)
     return true
 end
 
----
 function MainBoard.asyncGoSellMelange(color)
     local continuation = Helper.createContinuation()
     local options = {
@@ -569,18 +600,36 @@ function MainBoard.asyncGoSellMelange(color)
         "5 -> 12",
     }
     Player[color].showOptionsDialog("Select spice amount to be converted into solari.", options, 1, function (_, index, _)
-        local spiceCost = index + 1
-        local solariBenefit = (index + 1) * 2 + 2
-        local success
-        if MainBoard.payResource(color, "spice", spiceCost) then
-            MainBoard.gainResource(color, "solari", solariBenefit)
-            success = true
-        else
-            success = false
-        end
-        continuation.run(success)
+        continuation.run(MainBoard.sellMelange(color, index))
     end)
     return continuation
+end
+
+function MainBoard.goSellMelange_1(color)
+    return MainBoard.sellMelange(color, 1)
+end
+
+function MainBoard.goSellMelange_2(color)
+    return MainBoard.sellMelange(color, 2)
+end
+
+function MainBoard.goSellMelange_3(color)
+    return MainBoard.sellMelange(color, 3)
+end
+
+function MainBoard.goSellMelange_4(color)
+    return MainBoard.sellMelange(color, 4)
+end
+
+function MainBoard.sellMelange(color, index)
+    local spiceCost = index + 1
+    local solariBenefit = (index + 1) * 2 + 2
+    if MainBoard.payResource(color, "spice", spiceCost) then
+        MainBoard.gainResource(color, "solari", solariBenefit)
+        return true
+    else
+        return false
+    end
 end
 
 ---
@@ -617,19 +666,42 @@ function MainBoard.goInterstellarShipping(color)
     end
 end
 
----
-function MainBoard.goTechNegotiation(color)
-    if not Playboard.getLeader(color).troops(color, "supply", "negotiation", 1) then
-        MainBoard.gainResource(color, "persuasion", 1)
-        TechMarket.registerTechDiscount(color, "tech_negotiation", 1)
-    end
+function MainBoard.asyncGoTechNegotiation(color)
+    local continuation = Helper.createContinuation()
+    local options = {
+        "Buy tech. with -1 discount",
+        "Send a negotiator"
+    }
+    Player[color].showOptionsDialog("Select option.", options, 1, function (_, index, _)
+        local success = true
+        if index == 1 then
+            MainBoard.goTechNegotiation_1(color)
+        elseif index == 2 then
+            MainBoard.goTechNegotiation_2(color)
+        else
+            success = false
+        end
+        continuation.run(success)
+    end)
+    return continuation
+end
+
+function MainBoard.goTechNegotiation_1(color)
+    MainBoard.gainResource(color, "persuasion", 1)
+    TechMarket.registerAcquireTechOption(color, "tech_negotiation", "spice", 1)
+    return true
+end
+
+function MainBoard.goTechNegotiation_2(color)
+    Playboard.getLeader(color).troops(color, "supply", "negotiation", 1)
+    MainBoard.gainResource(color, "persuasion", 1)
     return true
 end
 
 ---
 function MainBoard.goDreadnought(color)
     if MainBoard.payResource(color, "solari", 3) then
-        TechMarket.registerTechDiscount(color, "dreadnought", 0)
+        TechMarket.registerAcquireTechOption(color, "dreadnought", "spice", 0)
         Park.transfert(1, Playboard.getDreadnoughtPark(color), Combat.getDreadnoughtPark(color))
         return true
     else

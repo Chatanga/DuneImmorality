@@ -10,12 +10,9 @@ function AcquireCard.new(zone, snapPointTag, acquire)
         anchor = nil
     })
 
-    local p = zone.getPosition()
-    -- FIXME Hardcoded height, use an existing parent anchor.
-    p:setAt('y', 0.5)
-    Helper.createTransientAnchor("Slot anchor", p).doAfter(function (anchor)
+    local position = zone.getPosition() - Vector(0, 0.5, 0)
+    Helper.createTransientAnchor("Slot anchor", position).doAfter(function (anchor)
         acquireCard.anchor = anchor
-        acquireCard.anchor.interactable = false
 
         local snapPoint = Helper.createRelativeSnapPointFromZone(anchor, zone, true, { snapPointTag })
         anchor.setSnapPoints({ snapPoint })
@@ -28,18 +25,24 @@ function AcquireCard.new(zone, snapPointTag, acquire)
                 acquireCard:createButton(acquire)
             end)
 
-            local updateButtonHeight = function (z, o)
+            acquireCard.updateButtonHeight = function (z, o)
                 if z == zone then
                     anchor.clearButtons()
                     acquireCard:createButton(acquire)
                 end
             end
 
-            Helper.registerEventListener("objectEnterOrLeaveScriptingZone", updateButtonHeight)
+            Helper.registerEventListener("objectEnterOrLeaveScriptingZone", acquireCard.updateButtonHeight)
         end
     end)
 
     return acquireCard
+end
+
+---
+function AcquireCard:delete()
+    Helper.unregisterEventListener("objectEnterOrLeaveScriptingZone", self.updateButtonHeight)
+    self.anchor.clearButtons()
 end
 
 ---
@@ -54,35 +57,11 @@ end
 
 ---
 function AcquireCard:createButton(acquire)
-    local callback = Helper.createGlobalCallback(function (_, color, _)
+    local cardCount = Helper.getCardCount(Helper.getDeckOrCard(self.zone))
+    local height = 0.7 + 0.1 + cardCount * 0.01
+    Helper.createAreaButton(self.zone, self.anchor, height, I18N("acquireButton"), function (_, color, _)
         acquire(self, color)
     end)
-    self:createAbsoluteAcquireButton(callback)
-end
-
----
-function AcquireCard:createAbsoluteAcquireButton(action)
-    local cardCount = Helper.getCardCount(Helper.getDeckOrCard(self.zone))
-
-    local position = self.anchor.getPosition()
-    position.y = position.y + cardCount * 0.01 + 0.25
-    position.z = position.z
-
-    local zoneScale = self.zone.getScale()
-
-    local sizeFactor = 350 -- 500
-
-    local parameters = {
-        click_function = action,
-        position = position,
-        width = zoneScale.x * sizeFactor,
-        height = zoneScale.z * sizeFactor,
-        color = { 0, 0, 0, 0 },
-        font_color = { 1, 1, 1, 100 },
-        tooltip = I18N("acquireButton")
-    }
-
-    Helper.createAbsoluteButtonWithRoundness(self.anchor, 0.75, false, parameters)
 end
 
 return AcquireCard

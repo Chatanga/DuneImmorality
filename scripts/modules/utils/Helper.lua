@@ -284,6 +284,41 @@ function Helper.createRelativeSnapPoint(parent, position, rotationSnap, tags)
     return snapPoint
 end
 
+---
+function Helper.createAnchoredAreaButton(zone, ground, aboveGround, tooltip, callback)
+    assert(zone)
+    assert(aboveGround)
+    local p = zone.getPosition()
+    local anchorPosition = Vector(p.x, ground - 0.5, p.z)
+    Helper.createTransientAnchor(nil, anchorPosition).doAfter(function (anchor)
+        Helper.createAreaButton(zone, anchor, ground + aboveGround, tooltip, callback)
+    end)
+end
+
+---
+function Helper.createAreaButton(zone, anchor, height, tooltip, callback)
+    assert(zone)
+    assert(anchor)
+    assert(height)
+
+    local anchorPosition = anchor.getPosition()
+    local zoneScale = zone.getScale()
+    local sizeFactor = 500 -- 350
+
+    local parameters = {
+        click_function = Helper.createGlobalCallback(callback),
+        position = Vector(anchorPosition.x, height, anchorPosition.z),
+        width = zoneScale.x * sizeFactor,
+        height = zoneScale.z * sizeFactor,
+        color = { 0, 0, 0, 0 },
+        font_color = { 1, 1, 1, 100 },
+        tooltip = tooltip
+    }
+
+    -- 0.75 | 10 ?
+    Helper.createAbsoluteButtonWithRoundness(anchor, 0.75, false, parameters)
+end
+
 --[[
     Indirect call to createButton adjusting the provided parameters to
     counteract the position, scale and rotation of the parent object.
@@ -309,6 +344,7 @@ end
 
 ---
 function Helper.createAbsoluteWidgetWithRoundnessParameters(object, roundness, quirk, parameters)
+    assert(object)
     assert(roundness >= 0, "Zero or negative roundness won't work as intended.")
     assert(roundness <= 10, "Roundness beyond 10 won't work as intended.")
     if parameters.color and parameters.font_color then
@@ -541,7 +577,9 @@ function Helper.createGlobalCallback(f)
     local nextIndex = Global.getVar(globalCounterName) or 1
     local uniqueName = "__generatedCallback" .. tostring(nextIndex)
     Global.setVar(uniqueName, function (object, color, altClick)
-        f(object, color, altClick)
+        if f then
+            f(object, color, altClick)
+        end
     end)
     Global.setVar(globalCounterName, nextIndex + 1)
     return uniqueName
@@ -621,6 +659,7 @@ function Helper.createTransientAnchor(nickname, position)
         position = position,
         callback_function = function (anchor)
             Helper.markAsTransient(anchor)
+            anchor.interactable = false
             continuation.run(anchor)
         end})
 
@@ -640,12 +679,15 @@ end
 
 ---
 function Helper.destroyTransientObjects()
+    local count = 0
     for _, object in ipairs(Global.getObjects()) do
         if Helper.isTransient(object) then
             --log("Destroy " .. object.getName())
             object.destruct()
+            count = count + 1
         end
     end
+    log("Destroyed " .. tostring(count) .. " anchors.")
 end
 
 Helper.erase = "__erase__"
@@ -755,6 +797,36 @@ function Helper.dump(...)
             str = str .. " "
         end
         str = str .. tostring(element)
+    end
+    log(str)
+end
+
+---
+function Helper.dumpFunction(...)
+    local arg = {...}
+    local str
+    local argCount = #arg
+    for i, element in ipairs(arg) do
+        if i == 1 then
+            assert(type(element) == "string")
+            str = element .. "("
+        else
+            local strElement
+            if type(element) == "string" then
+                strElement = '"' .. tostring(element) .. '"'
+            elseif type(element) == "function" then
+                strElement = '<func>'
+            else
+                strElement = tostring(element) or "?"
+            end
+            str = str .. strElement
+        end
+
+        if i == argCount then
+            str = str .. ")"
+        elseif i > 1 then
+            str = str .. ", "
+        end
     end
     log(str)
 end
@@ -883,14 +955,41 @@ function Helper.cons(head, tail)
 end
 
 ---
-function Helper.distance(object, position)
-    local p = object.getPosition()
-    return math.sqrt((p.x - position.x)^2 + (p.y - position.y)^2 + (p.z - position.z)^2)
+function Helper.filter(elements, p)
+    local filteredElements = {}
+    for _, element in ipairs(elements) do
+        if p(element) then
+            table.insert(filteredElements, element)
+        end
+    end
+    return filteredElements
 end
 
 ---
-function Helper.isAround(object, position)
-    return Helper.distance(object, position) < 1
+function Helper.map(elements, f)
+    local newElements = {}
+    for k, v in pairs(elements) do
+        table.insert(newElements, v)
+    end
+    return newElements
+end
+
+---
+function Helper.forEach(elements, f)
+    for k, v in ipairs(elements) do
+        f(k, v)
+    end
+end
+
+---
+function Helper.forEachRecursively(elements, f)
+    for k, v in pairs(elements) do
+        if type(v) == "table" and not Helper.isSomeKindOfObject(v) then
+            Helper.forEachRecursively(v, f)
+        else
+            f(k, v)
+        end
+    end
 end
 
 return Helper

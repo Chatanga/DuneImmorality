@@ -1,13 +1,36 @@
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
-local I18N = require("utils.I18N")
 local AcquireCard = require("utils.AcquireCard")
 
 local Deck = Module.lazyRequire("Deck")
 local Playboard = Module.lazyRequire("Playboard")
 local TleilaxuResearch = Module.lazyRequire("TleilaxuResearch")
+local Action = Module.lazyRequire("Action")
 
-local TleilaxuRow = {}
+local TleilaxuRow = {
+    tleilaxuCardCostByName = {
+        beguilingPheromones = 3,
+        dogchair = 2,
+        contaminator = 1,
+        corrinoGenes = 1,
+        faceDancer = 2,
+        faceDancerInitiate = 1,
+        fromTheTanks = 2,
+        ghola = 3,
+        guildImpersonator = 2,
+        industrialEspionage = 1,
+        scientificBreakthrough = 3,
+        sligFarmer = 2,
+        stitchedHorror = 3,
+        subjectX137 = 2,
+        tleilaxuInfiltrator = 2,
+        twistedMentat = 4,
+        unnaturalReflexes = 3,
+        usurper = 4,
+        piterGeniusAdvisor = 3,
+        reclaimedForces = 3
+    }
+}
 
 ---
 function TleilaxuRow.onLoad(_)
@@ -20,8 +43,12 @@ function TleilaxuRow.onLoad(_)
         }
     }))
 
-    for _, zone in ipairs(TleilaxuRow.slotZones) do
-        AcquireCard.new(zone, "Imperium", TleilaxuRow.acquireTleilaxuImperiumCard)
+    TleilaxuRow.acquireCards = {}
+    for i, zone in ipairs(TleilaxuRow.slotZones) do
+        local acquireCard = AcquireCard.new(zone, "Imperium", function (_, color)
+            Action.acquireTleilaxuCard(color, i)
+        end)
+        table.insert(TleilaxuRow.acquireCards, acquireCard)
     end
 end
 
@@ -39,47 +66,51 @@ end
 
 ---
 function TleilaxuRow.tearDown()
-    -- NOP
-end
-
----
-function TleilaxuRow.acquireTleilaxuImperiumCard(acquireCard, color)
-    local card = Helper.getCard(acquireCard.zone)
-    if TleilaxuRow.paySpecimenPrice(color, card) then
-        Playboard.giveCard(color, card, true)
-
-        -- Replenish the slot in the row.
-        Helper.moveCardFromZone(TleilaxuRow.deckZone, acquireCard.zone.getPosition(), Vector(0, 180, 0), false)
+    TleilaxuRow.deckZone.destruct()
+    for _, slotZone in ipairs(TleilaxuRow.slotZones) do
+        slotZone.destruct()
     end
 end
 
 ---
-function TleilaxuRow.paySpecimenPrice(color, card)
-    local setup = getObjectFromGUID("4a3e76")
-    local price = setup.call("getTleilaxuCardPrice", card)
+function TleilaxuRow.acquireTleilaxuCard(indexInRow, color)
+    local acquireCard = TleilaxuRow.acquireCards[indexInRow]
+    local card = Helper.getCard(acquireCard.zone)
+    local cardName = card.getDescription()
+    local price = TleilaxuRow.tleilaxuCardCostByName[cardName]
+    assert(price, "Unknown tleilaxu card: " .. cardName)
+    assert((cardName == "reclaimedForces") == (indexInRow == 3))
 
-    local specimenCount = TleilaxuResearch.getSpecimenCount(color)
+    if card and TleilaxuResearch.getSpecimenCount(color) >= price then
+        local leader = Playboard.getLeader(color)
+        if cardName == "reclaimedForces" then
+            local options = {
+                "Troops",
+                "Beetle"
+            }
+            Player[color].showOptionsDialog("Reclaimed forces", options, 1, function (_, index, _)
+                if index == 1 then
+                    leader.troops(color, "tanks", "supply", price)
+                    leader.troops(color, "supply", "garrison", 2)
+                elseif index == 2 then
+                    leader.troops(color, "tanks", "supply", price)
+                    leader.beetle(color)
+                end
+            end)
+            return true
+        else
+            leader.troops(color, "tanks", "supply", price)
 
-    if price > specimenCount then
-        broadcastToColor(I18N("notEnoughSpecimen"), color, "Red")
+            -- TODO "Reclaimed Forces" -> dialogue de choix.
+            Playboard.giveCard(color, card, false)
+
+            -- Replenish the slot in the row.
+            Helper.moveCardFromZone(TleilaxuRow.deckZone, acquireCard.zone.getPosition(), Vector(0, 180, 0), false, false)
+            return true
+        end
+    else
         return false
     end
-
-    Wait.time(
-        function()
-            getObjectFromGUID("d5c2db").Call("RemoveSpecimenCall", {color = color, silent = true})
-        end,
-        0.3, price)
-
-    local specimen = I18N("specimens")
-    if price == 1 then
-        specimen = I18N("specimen")
-    end
-
-    local leaderName = Helper.getLeaderName(color)
-    broadcastToAll(I18N("acquiredTleilaxu"):format(leaderName, price, specimen), color)
-
-    return true
 end
 
 return TleilaxuRow

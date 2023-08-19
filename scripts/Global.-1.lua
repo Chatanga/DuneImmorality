@@ -102,7 +102,6 @@ function onLoad(scriptState)
     Module.redirect("onLoad", state)
 
     Module.registerModuleRedirections({
-        "onPlayerTurn",
         "onObjectEnterScriptingZone",
         "onObjectLeaveScriptingZone",
         "onObjectDrop",
@@ -112,14 +111,17 @@ function onLoad(scriptState)
 
     setupUI = XmlUI.new(Global, "setupPane", settings)
     if validateDefaultSetup then
+        settings.riseOfIx = true
+        settings.immortality = true
         settings.virtualHotSeat = true
         settings.leaderSelection = {
             Green = "ilesaEcaz",
             Yellow = "ilbanRichese",
             Red = "helenaRichese",
+            Blue = "letoAtreides",
         }
         settings.virtualHotSeat = true
-        settings.numberOfPlayers = 3
+        settings.numberOfPlayers = 4
         settings.randomizePlayerPositions = false
         Wait.frames(setUp, 1)
     else

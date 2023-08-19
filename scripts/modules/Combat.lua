@@ -65,7 +65,7 @@ function Combat.setUp(ix, epic)
     Helper.registerEventListener("phaseStart", function (phase)
         if phase == "roundStart" then
             Combat.setUpConflict()
-        elseif phase == "outcome" then
+        elseif phase == "combatEnd" then
             local forces = Combat.calculateCombatForces()
             local turnSequence = Combat.calculateOutcomeTurnSequence(forces)
             TurnControl.setPhaseTurnSequence(turnSequence)
@@ -148,7 +148,8 @@ function Combat.createGarrisonPark(color)
         zone,
         { "Troop", color },
         nil,
-        false)
+        false,
+        true)
 
     local p = zone.getPosition()
     -- FIXME Hardcoded height, use an existing parent anchor.
@@ -182,7 +183,8 @@ function Combat.createDreadnoughtPark(color)
         zone,
         { "Dreadnought", color },
         nil,
-        false)
+        false,
+        true)
 
     return park
 end
@@ -242,17 +244,17 @@ function Combat.calculateOutcomeTurnSequence(forces)
         distinctForces[color] = forces[color] - i * 0.1
     end
 
-    local outcomeTurnSequence = Helper.getKeys(forces)
-    table.sort(outcomeTurnSequence, function(c1, c2)
+    local combatEndTurnSequence = Helper.getKeys(forces)
+    table.sort(combatEndTurnSequence, function(c1, c2)
         return distinctForces[c1] > distinctForces[c2]
     end)
 
     -- No Nth winner in a N players game.
-    if #outcomeTurnSequence == #Playboard.getPlayboardColors() then
-        table.remove(outcomeTurnSequence, #outcomeTurnSequence)
+    if #combatEndTurnSequence == #Playboard.getPlayboardColors() then
+        table.remove(combatEndTurnSequence, #combatEndTurnSequence)
     end
 
-    return outcomeTurnSequence
+    return combatEndTurnSequence
 end
 
 ---

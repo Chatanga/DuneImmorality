@@ -11,7 +11,6 @@ function Park.createCommonPark(tags, slots, margins, rotation)
     local p = slots[1]
     p:setAt("y", 1)
     Helper.createTransientAnchor(name .. "Park", p).doAfter(function (anchor)
-        anchor.interactable = false
         local snapPoints = {}
         for _, slot in ipairs(slots) do
             table.insert(snapPoints, Helper.createRelativeSnapPoint(anchor, slot, false, tags))
@@ -26,7 +25,8 @@ function Park.createCommonPark(tags, slots, margins, rotation)
         zone,
         tags,
         nil,
-        false)
+        false,
+        true)
 end
 
 --[[
@@ -44,7 +44,7 @@ end
     locked: should the park content be locked?
 ]]--
 ---
-function Park.createPark(name, slots, rotation, zone, tags, description, locked)
+function Park.createPark(name, slots, rotation, zone, tags, description, locked, smooth)
     assert(#slots > 0, "No slot provided for new park.")
     assert(zone, "No park zone provided.")
 
@@ -59,7 +59,8 @@ function Park.createPark(name, slots, rotation, zone, tags, description, locked)
         zone = zone,
         tags = tags,
         description = description,
-        locked = locked
+        locked = locked,
+        smooth = smooth
     }
 end
 
@@ -88,7 +89,7 @@ function Park.transfert(n, fromPark, toPark)
         end
     end
 
-    return Park.putHolders(holders, toPark)
+    return Park._putHolders(holders, toPark)
 end
 
 --[[
@@ -111,7 +112,7 @@ function Park.putObjects(objects, toPark)
     for _, object in ipairs(objects) do
         table.insert(holders, { object = object })
     end
-    return Park.putHolders(holders, toPark)
+    return Park._putHolders(holders, toPark)
 end
 
 --[[
@@ -119,11 +120,11 @@ end
 ---
 function Park.putObjectFromBag(objectBag, toPark)
     assert(objectBag, "No object bag provided.")
-    return Park.putHolders({{bag = objectBag}}, toPark) > 0
+    return Park._putHolders({{bag = objectBag}}, toPark) > 0
 end
 
 ---
-function Park.putHolders(holders, toPark)
+function Park._putHolders(holders, toPark)
     assert(holders, "No holders provided.")
     assert(toPark, "No destination park.")
 
@@ -158,10 +159,10 @@ function Park.putHolders(holders, toPark)
     for i = 1, count do
         local holder = holders[i]
         if holder.object then
-            Park.moveObjectToPark(holder.object, emptySlots[i + skipCount], toPark)
+            Park._moveObjectToPark(holder.object, emptySlots[i + skipCount], toPark)
             newObjectsInTransit[holder.object] = now
         elseif holder.bag then
-            Park.takeObjectToPark(holder.bag, emptySlots[i + skipCount], toPark)
+            Park._takeObjectToPark(holder.bag, emptySlots[i + skipCount], toPark)
             -- Can't really register anything for a transit and doing it
             -- asynchronously would be both too late and unsafe.
         end
@@ -175,7 +176,7 @@ end
 --[[
 ]]--
 ---
-function Park.waitStabilisation(park, callback)
+function Park._waitStabilisation(park, callback)
     Wait.condition(callback, function()
         local objectsInTransit = Helper.getSharedTable(park.name)
         return #objectsInTransit == 0
@@ -276,21 +277,25 @@ function Park.instantTidyUp(park, newObjectsInTransit)
 end
 
 ---
-function Park.moveObjectToPark(object, slot, park)
+function Park._moveObjectToPark(object, slot, park)
     object.setLock(park.locked)
     local offset = Vector(0, 0, 0)
     if not object.getLock() then
         -- Nice drop are only for unlocked objects.
         offset = Vector(0, 1, 0)
     end
-    object.setPositionSmooth(slot + offset, false, false)
+    if park.smooth then
+        object.setPositionSmooth(slot + offset, false, false)
+    else
+        object.setPosition(slot + offset)
+    end
     if park.rotation then
         object.setRotation(park.rotation:copy())
     end
 end
 
 ---
-function Park.takeObjectToPark(bag, slot, park)
+function Park._takeObjectToPark(bag, slot, park)
     local takeParameters = {}
     local offset = Vector(0, 0, 0)
     if not park.locked then

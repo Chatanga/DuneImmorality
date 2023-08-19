@@ -4,7 +4,6 @@ local Park = require("utils.Park")
 local AcquireCard = require("utils.AcquireCard")
 
 local Playboard = Module.lazyRequire("Playboard")
-local Action = Module.lazyRequire("Action")
 local Deck = Module.lazyRequire("Deck")
 
 local TechMarket = {
@@ -29,12 +28,20 @@ local TechMarket = {
         invasionShips = 5
     },
     negotiationParks = {},
-    techDiscounts = {}
+    acquireTechOptions = {}
 }
 
 ---
 function TechMarket.onLoad(state)
-    TechMarket.negotiationZone = getObjectFromGUID("2253fa")
+    Helper.append(TechMarket, Helper.resolveGUIDs(true, {
+        board = "d75455",
+        negotiationZone = "2253fa",
+        techSlots = {
+            "7e131d",
+            "5a22f7",
+            "9c81c1"
+        },
+    }))
 end
 
 ---
@@ -43,50 +50,37 @@ function TechMarket.setUp()
     for _, color in ipairs(Playboard.getPlayboardColors()) do
         TechMarket.negotiationParks[color] = TechMarket.createNegotiationPark(color)
     end
-
     TechMarket.createNegotiationButton()
 
-    TechMarket.techSlotZones = Helper.resolveGUIDs(true, {
-        "7e131d",
-        "5a22f7",
-        "9c81c1"
-    })
-
-    for i, zone in ipairs(TechMarket.techSlotZones) do
+    for i, zone in ipairs(TechMarket.techSlots) do
         AcquireCard.new(zone, "Tech", TechMarket["acquireTech" .. tostring(i)])
     end
 
-    Deck.generateTechDeck({
-        getObjectFromGUID("7e131d"),
-        getObjectFromGUID("5a22f7"),
-        getObjectFromGUID("9c81c1")
-    })
+    Deck.generateTechDeck(TechMarket.techSlots)
+
+    Helper.registerEventListener("agentSent", function (color, spaceName)
+        TechMarket.acquireTechOptions = {}
+    end)
 end
 
 ---
 function TechMarket.tearDown()
-    getObjectFromGUID("d75455").destruct()
+    TechMarket.board.destruct()
+    TechMarket.negotiationZone.destruct()
+    for _, techSlot in ipairs(TechMarket.techSlots) do
+        techSlot.destruct()
+    end
 end
 
 ---
 function TechMarket.createNegotiationButton()
-    local position = TechMarket.negotiationZone.getPosition()
-    Helper.createTransientAnchor("AgentPark", Vector(position.x, 0.4, position.z)).doAfter(function (anchor)
-        anchor.interactable = false
-        Helper.createAbsoluteButtonWithRoundness(anchor, 1, false, {
-            click_function = Helper.createGlobalCallback(function (_, color, altClick)
-                if altClick then
-                    Action.troops(color, "negotiation", "supply", 1)
-                else
-                    Action.troops(color, "supply", "negotiation", 1)
-                end
-            end),
-            position = Vector(position.x, 0.7, position.z),
-            width = 850,
-            height = 975,
-            color = { 0, 0, 0, 0 },
-            tooltip = "Negotiator: ±1"
-        })
+    Helper.createAnchoredAreaButton(TechMarket.negotiationZone, 0.6, 0.1, "Negotiator: ±1", function (_, color, altClick)
+        local leader = Playboard.getLeader(color)
+        if altClick then
+            leader.troops(color, "negotiation", "supply", 1)
+        else
+            leader.troops(color, "supply", "negotiation", 1)
+        end
     end)
 end
 
@@ -107,36 +101,19 @@ end
 
 ---
 function TechMarket.acquireTech(stackIndex, acquireCard, color)
-    local cardAndDeck = TechMarket.getCardAndDeck(stackIndex)
-    if cardAndDeck.card then
-        local techName = cardAndDeck.card.getDescription()
-        local techCost = TechMarket.techCosts[techName]
-
-        local discount = TechMarket.techDiscounts[color]
-        local discountAmount = 0
-        if discount then
-            discountAmount = discount.amount
-        end
-        local negotiation = TechMarket.getNegotiationPark(color)
-        local negotiatorCount = #Park.getObjects(negotiation)
-
-        local adjustedTechCost = math.max(0, techCost - discountAmount - negotiatorCount)
-        local recalledNegociatorCount = techCost - adjustedTechCost - discountAmount
-
-        if Action.resource(color, "spice", -adjustedTechCost) then
-
-            local supply = Playboard.getSupplyPark(color)
-            Park.transfert(recalledNegociatorCount, negotiation, supply)
-
-            TechMarket.techDiscounts[color] = nil
-
-            Playboard.grantTechTile(color, cardAndDeck.card)
-            if cardAndDeck.deck then
-                local above = acquireCard.zone.getPosition() + Vector(0, 1, 0)
-                Helper.moveCardFromZone(acquireCard.zone, above, nil, false, true)
+    local techTileStack = TechMarket.getTechTileStack(stackIndex)
+    if techTileStack.topCard then
+        local options = Helper.getKeys(TechMarket.acquireTechOptions)
+        if #options > 0 then
+            if #options > 1 then
+                Player[color].showOptionsDialog("Select which tech acquisition option you want to use.", options, 1, function (_, index, _)
+                    if index then
+                        TechMarket._doAcquireTech(techTileStack, acquireCard, options[index], color)
+                    end
+                end)
+            else
+                TechMarket._doAcquireTech(techTileStack, acquireCard, options[1], color)
             end
-
-            TechMarket.applyBuyEffect(color, techName)
         end
     else
         log("No tiles!")
@@ -144,67 +121,107 @@ function TechMarket.acquireTech(stackIndex, acquireCard, color)
 end
 
 ---
-function TechMarket.getCardAndDeck(stackIndex)
-    local cardAndDeck = {}
+function TechMarket._doAcquireTech(techTileStack, acquireCard, option, color)
+    local techName = techTileStack.topCard.getDescription()
+    local techCost = TechMarket.techCosts[techName]
 
-    local zone = TechMarket.techSlotZones[stackIndex]
+    local optionDetails = TechMarket.acquireTechOptions[option]
+    local discountAmount = optionDetails.amount
+    local negotiation = TechMarket.getNegotiationPark(color)
+    local recalledNegociatorCount
+    local adjustedTechCost
+
+    if optionDetails.resourceType == "spice" then
+        local negotiatorCount = #Park.getObjects(negotiation)
+
+        adjustedTechCost = math.max(0, techCost - discountAmount - negotiatorCount)
+        recalledNegociatorCount = techCost - adjustedTechCost - discountAmount
+    else
+        adjustedTechCost = math.max(0, techCost - discountAmount)
+        recalledNegociatorCount = 0
+    end
+
+    local leader = Playboard.getLeader(color)
+    if leader.resource(color, optionDetails.resourceType, -adjustedTechCost) then
+
+        local supply = Playboard.getSupplyPark(color)
+        Park.transfert(recalledNegociatorCount, negotiation, supply)
+
+        TechMarket.acquireTechOptions[option] = nil
+
+        Playboard.grantTechTile(color, techTileStack.topCard)
+        if techTileStack.otherCards then
+            Wait.time(function ()
+                local above = acquireCard.zone.getPosition() + Vector(0, 1, 0)
+                Helper.moveCardFromZone(acquireCard.zone, above, Vector(0, 180, 0), true, false)
+            end, 0.5)
+        else
+            acquireCard:delete()
+        end
+
+        TechMarket.applyBuyEffect(color, techName)
+    end
+end
+
+---
+function TechMarket.getTechTileStack(stackIndex)
+    local techTileStack = {}
+
+    local zone = TechMarket.techSlots[stackIndex]
     for _, object in ipairs(zone.getObjects()) do
-        if object.type == "Card" then
-            cardAndDeck.card = object
-        elseif object.type == "Deck" then
-            cardAndDeck.deck = object.getObjects()
+        if object.type == "Card" and not object.is_face_down then
+            techTileStack.topCard = object
+        elseif object.type == "Deck" or (object.type == "Card" and object.is_face_down) then
+            techTileStack.otherCards = object
         end
     end
 
-    return cardAndDeck
+    return techTileStack
 end
 
 ---
 function TechMarket.applyBuyEffect(color, techName)
-    log(techName)
+    local leader = Playboard.getLeader(color)
     if techName == "windtraps" then
-        Action.resource(color, "water", 1)
+        leader.resource(color, "water", 1)
     elseif techName == "detonationDevices" then
     elseif techName == "memocorders" then
         -- 1 influence
     elseif techName == "flagship" then
-        Action.gainVictoryPoint(color, "flagshipTech")
+        leader.gainVictoryPoint(color, "flagship")
     elseif techName == "spaceport" then
-        Action.drawCards(color, 2)
+        leader.drawImperiumCards(color, 2)
     elseif techName == "artillery" then
     elseif techName == "holoprojectors" then
     elseif techName == "restrictedOrdnance" then
+        if Playboard.hasACouncilSeat(color) then
+            leader.resource(color, "strength", 4)
+        end
     elseif techName == "shuttleFleet" then
         -- 2 influences différentes
     elseif techName == "spySatellites" then
     elseif techName == "disposalFacility" then
         -- 1 trash
     elseif techName == "chaumurky" then
-        Action.drawIntrigues(color, 2)
+        leader.drawIntrigues(color, 2)
     elseif techName == "sonicSnoopers" then
-        Action.drawIntrigues(color, 1)
+        leader.drawIntrigues(color, 1)
     elseif techName == "trainingDrones" then
     elseif techName == "troopTransports" then
     elseif techName == "holtzmanEngine" then
     elseif techName == "minimicFilm" then
+        leader.resource(color, "persuasion", 1)
     elseif techName == "invasionShips" then
-        Action.troops(color, "supply", "garrison", 4)
+        leader.troops(color, "supply", "garrison", 4)
     end
 end
 
 ---
-function TechMarket.registerTechDiscount(color, source, amount)
-    TechMarket.techDiscounts[color] = {
-        source = source,
+function TechMarket.registerAcquireTechOption(color, source, resourceType, amount)
+    TechMarket.acquireTechOptions[source] = {
+        resourceType = resourceType,
         amount = amount
     }
-end
-
----
-function TechMarket.onPlayerTurn(_, previousPlayerColor)
-    if previousPlayerColor then
-        TechMarket.techDiscounts[previousPlayerColor] = nil
-    end
 end
 
 ---
@@ -234,13 +251,14 @@ function TechMarket.createNegotiationPark(color)
     local zone = Park.createBoundingZone(0, Vector(0.25, 0.25, 0.25), slots)
 
     return Park.createPark(
-        "negotiation." .. color,
+        color .. "Negotiation",
         slots,
         Vector(0, 0, 0),
         zone,
         { "Troop", color },
         nil,
-        false)
+        false,
+        true)
 end
 
 ---

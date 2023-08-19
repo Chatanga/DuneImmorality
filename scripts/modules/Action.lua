@@ -13,6 +13,7 @@ local MainBoard = Module.lazyRequire("MainBoard")
 local TechMarket = Module.lazyRequire("TechMarket")
 local ImperiumRow = Module.lazyRequire("ImperiumRow")
 local CommercialTrack = Module.lazyRequire("CommercialTrack")
+local TleilaxuRow = Module.lazyRequire("TleilaxuRow")
 
 --[[
 local Action = {
@@ -134,7 +135,7 @@ function Action.instruct(phase, color)
             "Play an intrigue and\npress End of Turn or simply\npress End of Turn to pass.",
             "Wait for your opponent\nin combat to play an\nintrigue or pass their turn."
         },
-        outcome = {
+        combatEnd = {
             "Take your reward and play\nintrigue cards if you may,\nthen press End of Turn.",
             "Wait for your opponent\nto collect their reward\nand play any intrigue."
         },
@@ -258,8 +259,8 @@ function Action.getTroopPark(color, parkName)
 end
 
 ---
-function Action.gainVictoryPoint(name)
-    local victoryPointArea = {
+function Action.gainVictoryPoint(color, name)
+    local victoryPointArea = Helper.resolveGUIDs(true, {
         base = {
             theSpiceMustFlowBag = "43c7b5",
             guildAmbassadorBag = "4bdbd5",
@@ -280,10 +281,23 @@ function Action.gainVictoryPoint(name)
         },
         immortality = {
             scientificBreakthrough = "d22031",
-            beneTleilaxBag = "082e07",
+            tleilaxBag = "082e07",
             forHumanityBag = "71c0c8"
         }
+    })
+    local holder = {
+        success = false
     }
+    Helper.forEachRecursively(victoryPointArea, function (victoryPointName, victoryPointSource)
+        if name == victoryPointName then
+            Playboard.grantScoreToken(color, victoryPointSource)
+            holder.success = true
+        elseif name .. "Bag" == victoryPointName then
+            Playboard.grantScoreTokenFromBag(color, victoryPointSource)
+            holder.success = true
+        end
+    end)
+    return holder.success
 end
 
 ---
@@ -360,59 +374,56 @@ function Action.getDreadnoughtPark(color, parkName)
 end
 
 ---
-function Action.flagControl(space)
+function Action.flagControl(color, space)
 end
 
 ---
-function Action.dreadnoughtControl(space)
+function Action.dreadnoughtControl(color, space)
 end
 
 ---
-function Action.acquireTech(name)
+function Action.acquireTech(color, name)
 end
 
 ---
-function Action.acquireTechWithSolari(name)
+function Action.acquireTechWithSolari(color, name)
 end
 
 ---
-function Action.destroyTech(name)
+function Action.destroyTech(color, name)
 end
 
 ---
-function Action.techEffect(name)
+function Action.techEffect(color, name)
 end
 
 ---
-function Action.recallSnooper(faction)
+function Action.recallSnooper(color, faction)
 end
 
 ---
-function Action.acquireTleilaxuCard(name)
+function Action.acquireTleilaxuCard(color, indexInRow)
+    return TleilaxuRow.acquireTleilaxuCard(indexInRow, color)
 end
 
 ---
-function Action.acquireReclaimedForcesCard(option)
+function Action.acquireReclaimedForcesCard(color, option)
 end
 
 ---
-function Action.researchRight()
+function Action.research(color, jump)
+    TleilaxuResearch.advanceResearch(color, jump)
+    return true
 end
 
 ---
-function Action.researchLeft()
+function Action.beetle(color)
+    TleilaxuResearch.advanceTleilax(color)
+    return true
 end
 
 ---
-function Action.rollbackResearch()
-end
-
----
-function Action.beetle(positiveAmount)
-end
-
----
-function Action.atomics()
+function Action.atomics(color)
 end
 
 ---

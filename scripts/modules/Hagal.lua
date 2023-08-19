@@ -79,7 +79,7 @@ function Hagal.lateActivate(phase, color, playboard)
         log("TODO")
     elseif phase == "combat" then
         log("TODO")
-    elseif phase == "outcome" then
+    elseif phase == "combatEnd" then
         log("TODO")
     elseif phase == "endgame" then
         log("TODO")
