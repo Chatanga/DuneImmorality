@@ -33,7 +33,7 @@ local TleilaxuRow = {
 }
 
 ---
-function TleilaxuRow.onLoad(_)
+function TleilaxuRow.onLoad(state)
     Helper.append(TleilaxuRow, Helper.resolveGUIDs(true, {
         deckZone = "14b2ca",
         slotZones = {
@@ -42,6 +42,31 @@ function TleilaxuRow.onLoad(_)
             '965fea'
         }
     }))
+
+    if state.settings and state.settings.immortality then
+        TleilaxuRow._staticSetUp()
+    end
+end
+
+---
+function TleilaxuRow.setUp(settings)
+    if settings.immortality then
+        TleilaxuRow._staticSetUp()
+    else
+        TleilaxuRow._tearDown()
+    end
+end
+
+---
+function TleilaxuRow._staticSetUp()
+    Deck.generateTleilaxuDeck(TleilaxuRow.deckZone).doAfter(function (deck)
+        deck.shuffle()
+        for i = 1, 2 do
+            local zone = TleilaxuRow.slotZones[i]
+            Helper.moveCardFromZone(TleilaxuRow.deckZone, zone.getPosition(), Vector(0, 180, 0), false, false)
+        end
+    end)
+    Deck.generateSpecialDeck("reclaimedForces", TleilaxuRow.slotZones[3])
 
     TleilaxuRow.acquireCards = {}
     for i, zone in ipairs(TleilaxuRow.slotZones) do
@@ -53,19 +78,7 @@ function TleilaxuRow.onLoad(_)
 end
 
 ---
-function TleilaxuRow.setUp()
-    Deck.generateTleilaxuDeck(TleilaxuRow.deckZone).doAfter(function (deck)
-        deck.shuffle()
-        for i = 1, 2 do
-            local zone = TleilaxuRow.slotZones[i]
-            Helper.moveCardFromZone(TleilaxuRow.deckZone, zone.getPosition(), Vector(0, 180, 0), false, false)
-        end
-    end)
-    Deck.generateSpecialDeck("reclaimedForces", TleilaxuRow.slotZones[3])
-end
-
----
-function TleilaxuRow.tearDown()
+function TleilaxuRow._tearDown()
     TleilaxuRow.deckZone.destruct()
     for _, slotZone in ipairs(TleilaxuRow.slotZones) do
         slotZone.destruct()

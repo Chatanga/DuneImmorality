@@ -17,9 +17,11 @@ local allModules = Module.registerModules({
     CommercialTrack = require("CommercialTrack"),
     Deck = require("Deck"),
     Hagal = require("Hagal"),
+    ImperiumCard = require("ImperiumCard"),
     ImperiumRow = require("ImperiumRow"),
     InfluenceTrack = require("InfluenceTrack"),
     Intrigue = require("Intrigue"),
+    IntrigueCard = require("IntrigueCard"),
     Leader = require("Leader"),
     LeaderSelection = require("LeaderSelection"),
     Locales = require("Locales"),
@@ -34,52 +36,51 @@ local allModules = Module.registerModules({
     Utils = require("Utils"),
 })
 
-local state = {
+local PlayerSet = {
+    fields = {
+        color_all = {
+            Green = true,
+            Yellow = true,
+            Blue = true,
+            Red = true
+        },
+        language_all = {
+            de = "Deutsch",
+            en = "English",
+            ep = "Español",
+            fr = "Français",
+            it = "Italiano",
+            jp = "日本語"
+        },
+        language = "en",
+        randomizePlayerPositions = true,
+        virtualHotSeat = false,
+        numberOfPlayers_all = {
+            "1 (+2)",
+            "2 (+1)",
+            "3 (hotseat)",
+            "4 (hotseat)"
+        },
+        numberOfPlayers = {},
+        difficulty_all = allModules.Hagal.soloDifficulties,
+        difficulty = {},
+        riseOfIx = true,
+        epicMode = false,
+        immortality = true,
+        goTo11 = false,
+        leaderSelection_all = allModules.LeaderSelection.selectionMethods,
+        leaderSelection = "reversePick",
+        fanMadeLeaders = false,
+        variant_all = {
+            none = "None",
+            blitz = "Blitz!",
+            arrakeenScouts = "Arrakeen scouts"
+        },
+        variant = "none"
+    }
 }
 
-local settings = {
-    color_all = {
-        Green = true,
-        Yellow = true,
-        Blue = true,
-        Red = true
-    },
-    language_all = {
-        de = "Deutsch",
-        en = "English",
-        ep = "Español",
-        fr = "Français",
-        it = "Italiano",
-        jp = "日本語"
-    },
-    language = "en",
-    randomizePlayerPositions = true,
-    virtualHotSeat = false,
-    numberOfPlayers_all = {
-        "1 (+2)",
-        "2 (+1)",
-        "3 (hotseat)",
-        "4 (hotseat)"
-    },
-    numberOfPlayers = {},
-    difficulty_all = allModules.Hagal.soloDifficulties,
-    difficulty = {},
-    riseOfIx = true,
-    epicMode = false,
-    immortality = true,
-    goTo11 = false,
-    leaderSelection_all = allModules.LeaderSelection.selectionMethods,
-    leaderSelection = "reversePick",
-    --fanMadeLeaders = false,
-    variant_all = {
-        none = "None",
-        blitz = "Blitz!",
-        arrakeenScouts = "Arrakeen scouts"
-    },
-    variant = "none"
-}
-
-local setupUI
+local settings
 
 ---
 function onLoad(scriptState)
@@ -90,16 +91,30 @@ function onLoad(scriptState)
         return
     end
 
-    local inventory = Helper.resolveGUIDs(true, {
+    Helper.noPhysicsNorPlay(Helper.resolveGUIDs(true, {
         primaryTable = "2b4b92",
         secondaryTable = "662ced",
-    })
-    for _, object in pairs(inventory) do
-        object.interactable = false
-    end
+    }))
 
-    state = scriptState ~= "" and JSON.decode(scriptState) or {}
-    Module.redirect("onLoad", state)
+    local state = scriptState ~= "" and JSON.decode(scriptState) or {}
+
+    --Module.callOnAllRegisteredModules("onLoad", state)
+    -- Order matter, now that we reload with "staticSetUp" (for the same reason setUp is ordered too).
+    allModules.Deck.onLoad(state)
+    allModules.Playboard.onLoad(state)
+    allModules.Combat.onLoad(state)
+    allModules.LeaderSelection.onLoad(state)
+    allModules.Hagal.onLoad(state)
+    allModules.MainBoard.onLoad(state)
+    allModules.CommercialTrack.onLoad(state)
+    allModules.TechMarket.onLoad(state)
+    allModules.Intrigue.onLoad(state)
+    allModules.InfluenceTrack.onLoad(state)
+    allModules.ImperiumRow.onLoad(state)
+    allModules.Reserve.onLoad(state)
+    allModules.TleilaxuResearch.onLoad(state)
+    allModules.TleilaxuRow.onLoad(state)
+    allModules.TurnControl.onLoad(state)
 
     Module.registerModuleRedirections({
         "onObjectEnterScriptingZone",
@@ -109,125 +124,98 @@ function onLoad(scriptState)
         "onPlayerConnect",
         "onPlayerDisconnect" })
 
-    setupUI = XmlUI.new(Global, "setupPane", settings)
-    if validateDefaultSetup then
-        settings.riseOfIx = true
-        settings.immortality = true
-        settings.virtualHotSeat = true
-        settings.leaderSelection = {
-            Green = "ilesaEcaz",
-            Yellow = "ilbanRichese",
-            Red = "helenaRichese",
-            Blue = "letoAtreides",
-        }
-        settings.virtualHotSeat = true
-        settings.numberOfPlayers = 4
-        settings.randomizePlayerPositions = false
-        Wait.frames(setUp, 1)
-    else
-        setupUI:show()
-        updateSetupButton()
+    if not state.settings then
+        if validateDefaultSetup then
+            Wait.frames(function ()
+                setUp({
+                    language = "en",
+                    randomizePlayerPositions = false,
+                    virtualHotSeat = true,
+                    numberOfPlayers = 3,
+                    difficulty = nil,
+                    riseOfIx = true,
+                    epicMode = false,
+                    immortality = true,
+                    goTo11 = false,
+                    leaderSelection = {
+                        Green = "ilesaEcaz",
+                        Yellow = "ilbanRichese",
+                        Red = "helenaRichese",
+                    },
+                    fanMadeLeaders = false,
+                    variant = nil,
+                })
+            end, 1)
+        else
+            PlayerSet.ui = XmlUI.new(Global, "setupPane", PlayerSet.fields)
+            PlayerSet.ui:show()
+            PlayerSet.updateSetupButton()
+        end
     end
 end
 
 ---
 function onSave()
-    if state then
-        return JSON.encode(state)
+    if constructionModeEnabled then
+        return
+    end
+
+    local savedState = {
+        settings = settings
+    }
+    Module.callOnAllRegisteredModules("onSave", savedState)
+    if #Helper.getKeys(savedState) then
+        return JSON.encode(savedState)
     else
         return ''
     end
 end
 
 ---
+function setUp(newSettings)
+    settings = newSettings
+
+    local properlySeatedPlayers = PlayerSet.getProperlySeatedPlayers()
+    if not settings.virtualHotSeat then
+        settings.numberOfPlayers = math.min(4, #properlySeatedPlayers)
+    end
+
+    local activeOpponents = PlayerSet.findActiveOpponents(properlySeatedPlayers, settings.numberOfPlayers)
+    if settings.randomizePlayerPositions then
+        PlayerSet.randomizePlayerPositions(activeOpponents)
+    end
+
+    allModules.Deck.setUp(settings)
+    allModules.Playboard.setUp(settings, activeOpponents)
+    allModules.Combat.setUp(settings)
+    allModules.LeaderSelection.setUp(settings, activeOpponents)
+    allModules.Hagal.setUp(settings)
+    allModules.MainBoard.setUp(settings)
+    allModules.CommercialTrack.setUp(settings)
+    allModules.TechMarket.setUp(settings)
+    allModules.Intrigue.setUp(settings)
+    allModules.ImperiumRow.setUp(settings)
+    allModules.Reserve.setUp()
+    allModules.TleilaxuResearch.setUp(settings)
+    allModules.TleilaxuRow.setUp(settings)
+    allModules.TurnControl.setUp(settings, PlayerSet.toOrderedPlayerList(activeOpponents))
+
+    -- TurnControl.start() is called by "LeaderSelection" asynchronously. (FIXME: use a continuation for readiness?)
+end
+
+---
 function onPlayerChangeColor(color)
-    updateSetupButton()
+    PlayerSet.updateSetupButton()
 end
 
 ---
 function onPlayerConnect(color)
-    updateSetupButton()
+    PlayerSet.updateSetupButton()
 end
 
 ---
 function onPlayerDisconnect(color)
-    updateSetupButton()
-end
-
-local PlayerSet = {}
-
----
-function setUp()
-    setupUI:hide()
-    setupUI = nil
-
-    -- Normalize values.
-    local language = settings.language
-    local randomizePlayerPositions = settings.randomizePlayerPositions == true
-    local virtualHotSeat = settings.virtualHotSeat == true
-    local numberOfPlayers = settings.numberOfPlayers
-    local difficulty = settings.difficulty
-    local riseOfIx = settings.riseOfIx == true
-    local epicMode = settings.epicMode == true
-    local immortality = settings.immortality == true
-    local goTo11 = settings.goTo11 == true
-    local leaderSelection = settings.leaderSelection
-    local fanMadeLeaders = false --settings.fanMadeLeaders == true
-    local variant = settings.variant
-
-    local properlySeatedPlayers = PlayerSet.getProperlySeatedPlayers()
-    if not virtualHotSeat then
-        numberOfPlayers = math.min(4, #properlySeatedPlayers)
-    end
-
-    local activeOpponents = PlayerSet.findActiveOpponents(properlySeatedPlayers, numberOfPlayers)
-    if randomizePlayerPositions then
-        PlayerSet.randomizePlayerPositions(activeOpponents)
-    end
-
-    allModules.Playboard.setUp(riseOfIx, immortality, epicMode, activeOpponents)
-    allModules.Combat.setUp(riseOfIx, epicMode)
-    allModules.LeaderSelection.setUp(riseOfIx, immortality, fanMadeLeaders, activeOpponents, leaderSelection)
-
-    if numberOfPlayers < 3 then
-        allModules.Hagal.setUp(riseOfIx, immortality, numberOfPlayers, difficulty)
-    else
-        allModules.Hagal.tearDown()
-    end
-
-    allModules.MainBoard.setUp(riseOfIx)
-    if riseOfIx then
-        allModules.CommercialTrack.setUp()
-        allModules.TechMarket.setUp()
-    else
-        allModules.CommercialTrack.tearDown()
-        allModules.TechMarket.tearDown()
-    end
-
-    allModules.Intrigue.setUp(riseOfIx, immortality)
-    allModules.ImperiumRow.setUp(riseOfIx, immortality)
-    allModules.Reserve.setUp()
-    if immortality then
-        allModules.TleilaxuResearch.setUp()
-        allModules.TleilaxuRow.setUp()
-    else
-        allModules.TleilaxuResearch.tearDown()
-        allModules.TleilaxuRow.tearDown()
-    end
-
-    allModules.TurnControl.setUp(numberOfPlayers, PlayerSet.toOrderedPlayerList(activeOpponents))
-
-    -- TurnControl.start() is called by "LeaderSelection.setUp" asynchronously (FIXME: use a continuation for readiness)
-end
-
----
-function PlayerSet.findPlayer(color)
-    for _, player in ipairs(Player.getPlayers()) do
-        if player.color == color then
-            return player
-        end
-    end
-    return nil
+    PlayerSet.updateSetupButton()
 end
 
 ---
@@ -237,7 +225,7 @@ function PlayerSet.findActiveOpponents(properlySeatedPlayers, numberOfPlayers)
     local activeOpponents = {}
     for i, color in ipairs(properlySeatedPlayers) do
         if i <= numberOfPlayers then
-            activeOpponents[color] = PlayerSet.findPlayer(color)
+            activeOpponents[color] = Helper.findPlayer(color)
         else
             break
         end
@@ -307,15 +295,16 @@ function PlayerSet.randomizePlayerPositions(activeOpponents)
     end
 end
 
+---
 function PlayerSet.switchPositions(opponent, newColor)
     if opponent ~= "hagal" and opponent ~= "rival" and opponent ~= "puppet" then
         local oldColor = opponent.color
-        local player = PlayerSet.findPlayer(newColor)
+        local player = Helper.findPlayer(newColor)
         if oldColor ~= newColor then
             if player then
                 player:changeColor("Teal")
             end
-            Helper.dump("switchPositions:", opponent.color, "->", newColor)
+            --Helper.dump("switchPositions:", opponent.color, "->", newColor)
             opponent:changeColor(newColor)
             if player then
                 player:changeColor(oldColor)
@@ -328,7 +317,7 @@ end
 function PlayerSet.getProperlySeatedPlayers()
     local properlySeatedPlayers = {}
     for _, color in ipairs(getSeatedPlayers()) do
-        if settings.color_all[color] then
+        if PlayerSet.fields.color_all[color] then
             table.insert(properlySeatedPlayers, color)
         end
     end
@@ -337,130 +326,152 @@ end
 
 ---
 function setLanguage(player, value, id)
-    setupUI:fromUI(player, value, id)
+    PlayerSet.ui:fromUI(player, value, id)
 end
 
 ---
 function setRandomizePlayerPositions(player, value, id)
-    setupUI:fromUI(player, value, id)
+    PlayerSet.ui:fromUI(player, value, id)
 end
 
 ---
 function setVirtualHotSeat(player, value, id)
-    setupUI:fromUI(player, value, id)
+    PlayerSet.ui:fromUI(player, value, id)
     if value == "True" then
-        settings.numberOfPlayers = 1
+        PlayerSet.fields.numberOfPlayers = 1
     else
-        settings.numberOfPlayers = {}
+        PlayerSet.fields.numberOfPlayers = {}
     end
     PlayerSet.applyNumberOfPlayers()
-    setupUI:toUI()
+    PlayerSet.ui:toUI()
 end
 
 ---
 function setNumberOfPlayers(player, value, id)
-    setupUI:fromUI(player, value, id)
+    PlayerSet.ui:fromUI(player, value, id)
     PlayerSet.applyNumberOfPlayers()
-    setupUI:toUI()
+    PlayerSet.ui:toUI()
 end
 
 ---
 function PlayerSet.applyNumberOfPlayers()
-    if type(settings.numberOfPlayers) == "table" or settings.numberOfPlayers > 2 then
-        settings.difficulty = {}
+    if type(PlayerSet.fields.numberOfPlayers) == "table" or PlayerSet.fields.numberOfPlayers > 2 then
+        PlayerSet.fields.difficulty = {}
 
-        settings.fanMadeLeaders = false
+        PlayerSet.fields.fanMadeLeaders = false
 
-        settings.variant_all = {
+        PlayerSet.fields.variant_all = {
             none = "None",
             blitz = "Blitz!",
             arrakeenScouts = "Arrakeen scouts"
         }
     else
-        if settings.numberOfPlayers == 1 then
-            settings.difficulty = 1
+        if PlayerSet.fields.numberOfPlayers == 1 then
+            PlayerSet.fields.difficulty = 1
         else
-            settings.difficulty = {}
+            PlayerSet.fields.difficulty = {}
         end
 
-        settings.fanMadeLeaders = {}
+        PlayerSet.fields.fanMadeLeaders = {}
 
-        settings.variant_all = {
+        PlayerSet.fields.variant_all = {
             none = "None"
         }
     end
-    updateSetupButton()
+    PlayerSet.updateSetupButton()
 end
 
 ---
 function setDifficulty(player, value, id)
-    setupUI:fromUI(player, value, id)
+    PlayerSet.ui:fromUI(player, value, id)
 end
 
 ---
 function setRiseOfIx(player, value, id)
-    setupUI:fromUI(player, value, id)
+    PlayerSet.ui:fromUI(player, value, id)
     if value == "True" then
-        settings.epicMode = false
+        PlayerSet.fields.epicMode = false
     else
-        settings.epicMode = {}
+        PlayerSet.fields.epicMode = {}
     end
-    setupUI:toUI()
+    PlayerSet.ui:toUI()
 end
 
 ---
 function setEpicMode(player, value, id)
-    setupUI:fromUI(player, value, id)
+    PlayerSet.ui:fromUI(player, value, id)
 end
 
 ---
 function setImmortality(player, value, id)
-    setupUI:fromUI(player, value, id)
+    PlayerSet.ui:fromUI(player, value, id)
     if value == "True" then
-        settings.goTo11 = false
+        PlayerSet.fields.goTo11 = false
     else
-        settings.goTo11 = {}
+        PlayerSet.fields.goTo11 = {}
     end
-    setupUI:toUI()
+    PlayerSet.ui:toUI()
 end
 
 ---
 function setGoTo11(player, value, id)
-    setupUI:fromUI(player, value, id)
+    PlayerSet.ui:fromUI(player, value, id)
 end
 
 ---
 function setLeaderSelection(player, value, id)
-    setupUI:fromUI(player, value, id)
+    PlayerSet.ui:fromUI(player, value, id)
 end
 
 ---
 function setFanMadeLeaders(player, value, id)
-    setupUI:fromUI(player, value, id)
+    PlayerSet.ui:fromUI(player, value, id)
 end
 
 ---
 function setVariant(player, value, id)
-    setupUI:fromUI(player, value, id)
+    PlayerSet.ui:fromUI(player, value, id)
 end
 
 ---
-function updateSetupButton()
-    if setupUI then
+function PlayerSet.updateSetupButton()
+    if PlayerSet.ui then
         local properlySeatedPlayers = PlayerSet.getProperlySeatedPlayers()
 
         local minPlayerCount
-        if type(settings.numberOfPlayers) == "table" then
+        if type(PlayerSet.fields.numberOfPlayers) == "table" then
             minPlayerCount = 3
         else
             minPlayerCount = 1
         end
 
         if #properlySeatedPlayers >= minPlayerCount then
-            setupUI:setButton("setUpButton", "Setup", true)
+            PlayerSet.ui:setButton("setUpButton", "Setup", true)
         else
-            setupUI:setButton("setUpButton", "Not enough players", false)
+            PlayerSet.ui:setButton("setUpButton", "Not enough players", false)
         end
-        setupUI:toUI()
+
+        PlayerSet.ui:toUI()
     end
+end
+
+---
+function setUpFromUI()
+    PlayerSet.ui:hide()
+    PlayerSet.ui = nil
+
+    setUp({
+        language = PlayerSet.fields.language,
+        randomizePlayerPositions = PlayerSet.fields.randomizePlayerPositions == true,
+        virtualHotSeat = PlayerSet.fields.virtualHotSeat == true,
+        numberOfPlayers = PlayerSet.fields.numberOfPlayers,
+        difficulty = PlayerSet.fields.difficulty,
+        riseOfIx = PlayerSet.fields.riseOfIx == true,
+        epicMode = PlayerSet.fields.epicMode == true,
+        immortality = PlayerSet.fields.immortality == true,
+        goTo11 = PlayerSet.fields.goTo11 == true,
+        leaderSelection = PlayerSet.fields.leaderSelection,
+        fanMadeLeaders = PlayerSet.fields.fanMadeLeaders == true,
+        variant = PlayerSet.fields.variant,
+    })
 end

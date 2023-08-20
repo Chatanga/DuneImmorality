@@ -12,7 +12,7 @@ local Resource = Helper.createClass(nil, {
 })
 
 ---
-function Resource.new(token, color, resourceName, value, state)
+function Resource.new(token, color, resourceName, value)
     --log("Resource.new(_, " .. tostring(color) .. ", " .. tostring(resourceName) .. ", " .. tostring(value) .. ", _)")
 
     token.interactable = false
@@ -23,14 +23,8 @@ function Resource.new(token, color, resourceName, value, state)
         resourceName = resourceName,
         value = value,
         laggingValue = value,
-        state = Helper.createTable(state, resourceName, color)
     })
     Resource.resources[token.getGUID()] = resource
-
-    if #resource.state > 0 then
-        resource.value = state.value
-        resource.laggingValue = state.laggingValue
-    end
 
     local fontColors = {
         spice = { 0.9, 0.9, 0.9, 100 },
@@ -55,7 +49,7 @@ function Resource.new(token, color, resourceName, value, state)
 
     Helper.createAbsoluteButtonWithRoundness(token, 1, false, {
         label = tostring(resource.value),
-        click_function = Helper.createGlobalCallback(function (_, otherColor, altClick)
+        click_function = Helper.registerGlobalCallback(function (_, otherColor, altClick)
             if resource.color then
                 resource:changeValue(otherColor, altClick)
             else
@@ -84,9 +78,6 @@ end
 
 ---
 function Resource:updateState()
-    -- Do *not* change self.state reference!
-    self.state.value = self.value
-    self.state.laggingValue = self.laggingValue
     if self.value == self.laggingValue then
         Helper.emitEvent(self.resourceName .. "ValueChanged", self.color, self.value)
     end

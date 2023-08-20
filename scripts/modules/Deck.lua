@@ -17,7 +17,7 @@ local Deck = {
             controlTheSpice = 1,
         },
         immortality = {
-            duneTheDesertPlanet = Helper.erase,
+            duneTheDesertPlanet = Helper.ERASE,
             experimentation = 2,
         }
     },
@@ -298,8 +298,8 @@ local Deck = {
         },
         ix = {
             core = {
-                rallyTroops = Helper.erase,
-                hallOfOratory = Helper.erase,
+                rallyTroops = Helper.ERASE,
+                hallOfOratory = Helper.ERASE,
             },
             solo = {
                 interstellarShipping = 1,
@@ -316,7 +316,7 @@ local Deck = {
             core = {},
             solo = {
                 researchStation = 1,
-                cathag = Helper.erase,
+                cathag = Helper.ERASE,
                 carthag1 = 1,
                 carthag2 = 1,
                 carthag3 = 1,
@@ -378,12 +378,31 @@ local leaderCardBack = "http://cloud-3.steamusercontent.com/ugc/2027235268872195
 
 local customDeckBaseId = 900
 
-local en = require("en.Deck")
-local fr = require("fr.Deck")
+---
+function Deck.onLoad(state)
+    if state.settings then
+        Deck._staticSetUp(state.settings)
+    end
+end
 
 ---
-function Deck.onLoad(_)
-    Deck.sources = en.loadCustomDecks(Deck)
+function Deck.setUp(settings)
+    Deck._staticSetUp(settings)
+end
+
+---
+function Deck._staticSetUp(settings)
+    local support
+
+    if settings.language == "en" then
+        support = require("en.Deck")
+    elseif settings.language == "fr" then
+        support = require("fr.Deck")
+    else
+        error("Unsupported language: " .. settings.language)
+    end
+
+    Deck.sources = support.loadCustomDecks(Deck)
 end
 
 ---
@@ -573,7 +592,7 @@ function Deck.mergeContributionSets(contributionSets)
     for _, contributionSet in ipairs(contributionSets) do
         for name, arity in pairs(contributionSet) do
             local currentArity
-            if arity == Helper.erase then
+            if arity == Helper.ERASE then
                 currentArity = nil
             else
                 currentArity = contributions[name]

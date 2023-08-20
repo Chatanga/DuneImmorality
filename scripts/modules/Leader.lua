@@ -13,13 +13,14 @@ local Leader = Helper.createClass(Action)
 function Leader.getLeader(name)
     local LeaderClass = Leader[name]
     assert(LeaderClass, "Unknown leader: " .. tostring(name))
+    LeaderClass.name = name
     return Helper.createClassInstance(LeaderClass)
 end
 
 Leader.vladimirHarkonnen = Helper.createClass(Leader, {
 
-    setUp = function (color, epic)
-        Action.setUp(color, epic)
+    setUp = function (color, settings)
+        Action.setUp(color, settings.epicMode)
 
         --- Masterstroke
         local position = Player[color].getHandTransform().position
@@ -59,8 +60,8 @@ Leader.vladimirHarkonnen = Helper.createClass(Leader, {
 Leader.glossuRabban = Helper.createClass(Leader, {
 
     --- Arrakis fiefdom
-    setUp = function (color, epic)
-        Action.setUp(color, epic)
+    setUp = function (color, settings)
+        Action.setUp(color, settings.epicMode)
         Action.resource(color, "spice", 1)
         Action.resource(color, "solari", 1)
     end,
@@ -118,8 +119,8 @@ Leader.letoAtreides = Helper.createClass(Leader, {
 Leader.paulAtreides = Helper.createClass(Leader, {
 
     --- Prescience
-    setUp = function (color, epic)
-        Action.setUp(color, epic)
+    setUp = function (color, settings)
+        Action.setUp(color, settings.epicMode)
         -- TODO Add prescience button
     end,
 
@@ -170,6 +171,9 @@ Leader.memnonThorvald = Helper.createClass(Leader, {
     end,
 })
 
+Leader.armandEcaz = Helper.createClass(Leader, {
+})
+
 Leader.ilesaEcaz = Helper.createClass(Leader, {
 
     --- Guild contacts
@@ -194,16 +198,16 @@ Leader.ilesaEcaz = Helper.createClass(Leader, {
 Leader.rhomburVernius = Helper.createClass(Leader, {
 
     --- Heavy lasgun cannons
-    setUp = function (color, epic)
-        Action.setUp(color, epic)
+    setUp = function (color, settings)
+        Action.setUp(color, settings.epicMode)
         Combat.setDreadnoughtStrength(color, 4)
     end
 })
 
 Leader.tessiaVernius = Helper.createClass(Leader, {
 
-    setUp = function (color, epic)
-        Action.setUp(color, epic)
+    setUp = function (color, settings)
+        Action.setUp(color, settings.epicMode)
 
         local getAveragePosition = function (spaceNames)
             local p = Vector(0, 0, 0)
@@ -261,8 +265,8 @@ Leader.yunaMoritani = Helper.createClass(Leader, {
     end,
 
     --- Smuggling operation
-    setUp = function (color, epic)
-        Action.setUp(color, epic)
+    setUp = function (color, settings)
+        Action.setUp(color, settings.epicMode)
         Action.resource(color, "water", -1)
     end,
 })
@@ -282,8 +286,8 @@ Leader.yunaMoritani = Helper.createClass(Leader, {
 Leader.hundroMoritani = Helper.createClass(Leader, {
 
     --- Intelligence
-    setUp = function (color, epic)
-        Action.setUp(color, epic)
+    setUp = function (color, settings)
+        Action.setUp(color, settings.epicMode)
         Wait.frames(function ()
             Action.drawIntrigues(color, 2)
         end, 1)
@@ -299,7 +303,7 @@ Leader.hundroMoritani = Helper.createClass(Leader, {
     --- Couriers
     signetRing = function (color)
         return Action.resource(color, "spice", 1)
-            and Action.cargo(color, nil, 1)
+            and Action.freighter(color, nil, 1)
     end
 })
 

@@ -50,13 +50,13 @@
 
 			<HorizontalLayout>
 				<Text class="primary">Leader selection</Text>
-				<Dropdown id="leaderSelection" flexibleWidth="4" onValueChanged="Global/setLeaderSelection">
+				<Dropdown id="leaderSelection" flexibleWidth="4" onValueChanged="Global/setSelectionMethod">
 					<Option></Option>
 				</Dropdown>
 			</HorizontalLayout>
-			<!--VerticalLayout padding="25 0 0 0">
+			<VerticalLayout padding="25 0 0 0">
 				<Toggle id="fanMadeLeaders" isOn="False" onValueChanged="Global/setFanMadeLeaders">Fan made leaders</Toggle>
-			</VerticalLayout-->
+			</VerticalLayout>
 
 			<HorizontalLayout>
 				<Text class="primary">Variants</Text>
@@ -67,7 +67,7 @@
 
 		</VerticalLayout>
 		<HorizontalLayout padding="100 100 0 20">
-			<Button id="setUpButton" minHeight="26" onClick="Global/setUp">Setup</Button>
+			<Button id="setUpButton" minHeight="26" onClick="Global/setUpFromUI">Setup</Button>
 		</HorizontalLayout>
 	</VerticalLayout>
 	<Image position="0 350" width="256" height="256" image="http://cloud-3.steamusercontent.com/ugc/2027234042549282632/81266F80932D7A9A8628827099C5390739D09108/"/>

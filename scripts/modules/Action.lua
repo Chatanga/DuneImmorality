@@ -15,66 +15,13 @@ local ImperiumRow = Module.lazyRequire("ImperiumRow")
 local CommercialTrack = Module.lazyRequire("CommercialTrack")
 local TleilaxuRow = Module.lazyRequire("TleilaxuRow")
 
---[[
-local Action = {
-    executionQueue = {}
-}
-
----
-function Action.onLoad(_)
-    startLuaCoroutine(Global, "Actions_execute")
-end
-
----
-function Action.apply()
-    for _, action in ipairs(Action.transaction) do
-        table.insert(Action.executionQueue, action)
-    end
-end
-
----
-function Actions_execute()
-    while true do
-        while #Action.executionQueue > 0 do
-            local action = table.remove(Action.executionQueue, 1)
-            action.run()
-        end
-        Action.pause(0.5)
-    end
-end
-
----
-function Action.pause(durationInSeconds)
-    local t0 = Time.time
-    while Time.time - t0 < durationInSeconds do
-        coroutine.yield(0)
-    end
-end
-]]--
-
---[[
-    log:
-            [Round]
-            <leader>
-                Tech (Moteur Holtzman) > +1 carte
-            [Agent / révélation]
-            <leader>
-                    Intrigue (Méditation Bindu) > +1 carte
-                    Tech (Drone d'entraînement)
-                    -1 carte (Dague)
-                    +1 troupe
-                    Carte (Expérimentation)
-                    Agent (Bassin impérial) > +2 épices
-                    Research > +1 spécimen
-
-]]--
 local Action = Helper.createClass(nil, {
     context = {}
 })
 
 ---
-function Action.onLoad(state)
-    Helper.registerEventListener("phaseStart", function (phase, color)
+function Action.onLoad()
+    Helper.registerEventListener("phaseStart", function (phase, _)
         Action.context = {
             phase = phase
         }
@@ -158,9 +105,9 @@ function Action.instruct(phase, color)
 end
 
 ---
-function Action.setUp(color, epic)
+function Action.setUp(color, settings)
     Action.resource(color, "water", 1)
-    if epic then
+    if settings.epicMode then
         Action.troops(color, "supply", "garrison", 5)
         Action.drawIntrigues(color, 1)
     else
@@ -228,7 +175,7 @@ end
 
 ---
 function Action.influence(color, faction, amount)
-    -- Generic if not faction
+    -- Generic if no faction
     return InfluenceTrack.change(color, faction, amount)
 end
 
@@ -238,11 +185,11 @@ function Action.troops(color, from, to, amount)
     Utils.assertIsTroopLocation(from)
     Utils.assertIsTroopLocation(to)
     Utils.assertIsInteger(amount)
-    return Park.transfert(amount, Action.getTroopPark(color, from), Action.getTroopPark(color, to))
+    return Park.transfert(amount, Action._getTroopPark(color, from), Action._getTroopPark(color, to))
 end
 
 ---
-function Action.getTroopPark(color, parkName)
+function Action._getTroopPark(color, parkName)
     if parkName == "supply" then
         return Playboard.getSupplyPark(color)
     elseif parkName == "garrison" then
@@ -331,13 +278,13 @@ end
 function Action.advanceFreighter(color, positiveAmount)
     Utils.assertIsPositiveInteger(positiveAmount)
     for _ = 1, positiveAmount do
-        CommercialTrack.cargoUp(color)
+        CommercialTrack.freighterUp(color)
     end
 end
 
 ---
 function Action.recallFreighter(color)
-    CommercialTrack.cargoReset(color)
+    CommercialTrack.freighterReset(color)
 end
 
 ---
@@ -351,11 +298,11 @@ function Action.dreadnought(color, from, to, amount)
     Utils.assertIsDreadnoughtLocation(from)
     Utils.assertIsDreadnoughtLocation(to)
     Utils.assertIsInteger(amount)
-    return Park.transfert(amount, Action.getDreadnoughtPark(color, from), Action.getDreadnoughtPark(color, to))
+    return Park.transfert(amount, Action._getDreadnoughtPark(color, from), Action._getDreadnoughtPark(color, to))
 end
 
 ---
-function Action.getDreadnoughtPark(color, parkName)
+function Action._getDreadnoughtPark(color, parkName)
     if parkName == "supply" then
         return Playboard.getDreadnoughtSupplyPark(color)
     elseif parkName == "garrison" then
@@ -424,6 +371,7 @@ end
 
 ---
 function Action.atomics(color)
+    ImperiumRow.nuke(color)
 end
 
 ---
@@ -442,12 +390,15 @@ function Action.stealIntrigue(color, otherColor, amount)
     return Intrigue.stealIntrigue(color, otherColor, amount)
 end
 
+---
 function Action.trashImperiumCard(name)
 end
 
+---
 function Action.discardImperiumCard(name)
 end
 
+---
 function Action.discardIntrigueCard(name)
 end
 

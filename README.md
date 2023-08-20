@@ -29,7 +29,7 @@ Having launched `./listen.py` in another terminal will provide you with an immed
 - Game -> Action (+log)
 - Player (-> Leader/Hagal -> Action (+log))
 
-## Sequencing
+## Sequencing (partial)
 
     Global.setUp
             LeaderSelection.setUp
@@ -37,7 +37,8 @@ Having launched `./listen.py` in another terminal will provide you with an immed
                     Playboard.setLeader(color, leader)]
                 [LeaderSelection.setUpPicking]
 
-    TurnControl >-(phaseStart, leaderSelection)->
+    TurnControl.start
+        TurnControl.startPhase(leaderSelection)
             [Hagal.pickAnyCompatibleLeader(color)
                 LeaderSelection.claimLeader(color, leaderOrPseudoLeader)
                     Playboard.setLeader(color, leader)]
@@ -49,18 +50,25 @@ Having launched `./listen.py` in another terminal will provide you with an immed
                     Hagal.newRival(Leader.getLeader(leaderCard) | nil) |
                     Leader.getLeader(leaderCard)
 
-    TurnControl.next
-            TurnControl.findNextPlayer
-                Playboard.aceptTurn
-            TurnControl >-(playerTurns, _)->
-                Playboard.setActivePlayer(phase, color)
-                    [Hagal.activate(phase, color, playboard)
-                            Hagal.lateActivate(phase, color, playboard) -- En tandem avec leader as Rival.]
+    TurnControl.endOfTurn
+        TurnControl.next
+            TurnControl.findActivePlayer
+                TurnControl >-(playerTurns, color)->
+                    Playboard.setActivePlayer(phase, color)
+                        [Hagal.activate(phase, color, playboard)
+                                Hagal.lateActivate(phase, color, playboard) -- En tandem avec leader as Rival.]
+                TurnControl.startPhase(TurnControl.getNextPhase)
+
+    TurnControl.endOfTurn
+        TurnControl.next
+            TurnControl.findActivePlayer
+                TurnControl.startPhase(nextPhase)
 
 ## TODO (by priority)
 
 - Identify and detect played cards.
 - Advanced reveal.
+- Family atomics.
 - Endgame.
 - The Hagal house (with resources and difficulty levels).
 
@@ -68,8 +76,6 @@ Having launched `./listen.py` in another terminal will provide you with an immed
 - Restore translations.
 
 - Restore selectable combat music.
-
-- Persisting state(s).
 
 - Blitz!
 - Arrakeen Scouts.
@@ -82,3 +88,4 @@ Having launched `./listen.py` in another terminal will provide you with an immed
 - Move the Tleilaxu track in its own module?
 - Where to put VP and how trash them?
 - Explain font_size ratio / support.
+- Check for anchor and callback leaks.

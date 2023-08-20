@@ -29,7 +29,7 @@ function Module._lazyRequireAll(path, modulesByName)
     local modules = {}
 
     for name, node in pairs(modulesByName) do
-        -- Can’t work! Find a way to distinguish between a node and a module.
+        -- FIXME Can’t work! Find a way to distinguish between a node and a module.
         if type(node) == "table" and false then
             modules[name] = Module._lazyRequireAll(path .. name .. ".", node)
         else
@@ -63,7 +63,7 @@ function Module.lazyRequire(name)
         end
     end
 
-    -- When used as a class.
+    -- Necessary redirection when used as a class.
     lazyModule.__index = lazyModule
 
     setmetatable(lazyModule, meta)
@@ -114,7 +114,7 @@ function Module.registerModuleRedirections(functionNames)
 end
 
 ---
-function Module.redirect(functionName, ...)
+function Module.callOnAllRegisteredModules(functionName, ...)
     for _, module in pairs(Module.modulesByName) do
         if module[functionName] then
             module[functionName](...)

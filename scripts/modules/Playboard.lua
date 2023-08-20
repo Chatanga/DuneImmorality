@@ -12,8 +12,10 @@ local MainBoard = Module.lazyRequire("MainBoard")
 local Hagal = Module.lazyRequire("Hagal")
 local Leader = Module.lazyRequire("Leader")
 local Combat = Module.lazyRequire("Combat")
+local ImperiumCard = Module.lazyRequire("ImperiumCard")
 
 local Playboard = Helper.createClass(nil, {
+    ALL_RESOURCE_NAMES = { "spice", "water", "solari", "persuasion", "strength" },
     -- Temporary structure (set to nil *after* loading).
     unresolvedContentByColor = {
         Red = {
@@ -55,7 +57,7 @@ local Playboard = Helper.createClass(nil, {
                 "af7cd0"
             },
             forceMarker = '2d1d17',
-            discardPosition = Helper.getHardcodedPositionFromGUID('e07493', -14.0, 1.5, 16.5) + Helper.someHeight,
+            discardPosition = Helper.getHardcodedPositionFromGUID('e07493', -14.0, 1.5, 16.5),
             drawDeckZone = "4f08fc",
             discardZone = "e07493",
             trash = "ea3fe1",
@@ -63,7 +65,7 @@ local Playboard = Helper.createClass(nil, {
             tleilaxTokenInitalPosition = Helper.getHardcodedPositionFromGUID('2bfc39', 0.5446165, 0.877500236, 22.0549927),
             researchToken = "39e0f3",
             researchTokenInitalPosition = Helper.getHardcodedPositionFromGUID('39e0f3', 0.37, 0.88, 18.2351761),
-            cargo = "e9096d",
+            freighter = "e9096d",
             leaderPos = Helper.getHardcodedPositionFromGUID('66cdbb', -19.0, 1.25, 17.5),
             firstPlayerPosition = Helper.getHardcodedPositionFromGUID('346e0d', -14.0, 1.5, 19.7) + Vector(0, -0.4, 0),
             startEndTurnButton = "895594"
@@ -107,7 +109,7 @@ local Playboard = Helper.createClass(nil, {
                 "694553"
             },
             forceMarker = 'f22e20',
-            discardPosition = Helper.getHardcodedPositionFromGUID('26bf8b', -14.0, 1.5, -6.5) + Helper.someHeight,
+            discardPosition = Helper.getHardcodedPositionFromGUID('26bf8b', -14.0, 1.5, -6.5),
             drawDeckZone = "907f66",
             discardZone = "26bf8b",
             trash = "52a539",
@@ -115,7 +117,7 @@ local Playboard = Helper.createClass(nil, {
             tleilaxTokenInitalPosition = Helper.getHardcodedPositionFromGUID('96607f', 0.544616759, 0.8800002, 22.75),
             researchToken = "292658",
             researchTokenInitalPosition = Helper.getHardcodedPositionFromGUID('292658', 0.37, 0.8775002, 18.9369965),
-            cargo = "68e424",
+            freighter = "68e424",
             leaderPos = Helper.getHardcodedPositionFromGUID('681774', -19.0, 1.25506675, -5.5),
             firstPlayerPosition = Helper.getHardcodedPositionFromGUID('1fc559', -14.0, 1.501278, -3.3) + Vector(0, -0.4, 0),
             startEndTurnButton = "9eeccd"
@@ -159,7 +161,7 @@ local Playboard = Helper.createClass(nil, {
                 "fc9c62"
             },
             forceMarker = 'a1a9a7',
-            discardPosition = Helper.getHardcodedPositionFromGUID('2298aa', 24.0, 1.5, 16.5) + Helper.someHeight,
+            discardPosition = Helper.getHardcodedPositionFromGUID('2298aa', 24.0, 1.5, 16.5),
             drawDeckZone = "6d8a2e",
             discardZone = "2298aa",
             trash = "4060b5",
@@ -167,7 +169,7 @@ local Playboard = Helper.createClass(nil, {
             tleilaxTokenInitalPosition = Helper.getHardcodedPositionFromGUID('63d39f', 1.24461639, 0.8800001, 22.05),
             researchToken = "658b17",
             researchTokenInitalPosition = Helper.getHardcodedPositionFromGUID('658b17', 0.37, 0.877500236, 20.34),
-            cargo = "34281d",
+            freighter = "34281d",
             leaderPos = Helper.getHardcodedPositionFromGUID('cf1486', 19.0, 1.18726385, 17.5),
             firstPlayerPosition = Helper.getHardcodedPositionFromGUID('59523d', 14.0, 1.45146358, 19.7) + Vector(0, -0.4, 0),
             startEndTurnButton = "96aa58"
@@ -211,7 +213,7 @@ local Playboard = Helper.createClass(nil, {
                 "b5d32e"
             },
             forceMarker = 'c2dd31',
-            discardPosition = Helper.getHardcodedPositionFromGUID('6bb3b6', 24.0, 1.5, -6.5) + Helper.someHeight,
+            discardPosition = Helper.getHardcodedPositionFromGUID('6bb3b6', 24.0, 1.5, -6.5),
             drawDeckZone = "e6cfee",
             discardZone = "6bb3b6",
             trash = "7d1e07",
@@ -219,7 +221,7 @@ local Playboard = Helper.createClass(nil, {
             tleilaxTokenInitalPosition = Helper.getHardcodedPositionFromGUID('d20bcf', 1.24461651, 0.880000234, 22.75),
             researchToken = "8988cf",
             researchTokenInitalPosition = Helper.getHardcodedPositionFromGUID('8988cf', 0.37, 0.88, 19.6394081),
-            cargo = "8fa76f",
+            freighter = "8fa76f",
             leaderPos = Helper.getHardcodedPositionFromGUID('a677e0', 19.0, 1.17902148, -5.5),
             firstPlayerPosition = Helper.getHardcodedPositionFromGUID('e9a44c', 14.0, 1.44851, -3.3) + Vector(0, -0.4, 0),
             startEndTurnButton = "3d1b90"
@@ -232,15 +234,40 @@ local Playboard = Helper.createClass(nil, {
 ---
 function Playboard.onLoad(state)
     for color, unresolvedContent in pairs(Playboard.unresolvedContentByColor) do
-        Playboard.playboards[color] = Playboard.new(color, unresolvedContent, state)
+        local alive = true
+        local subState = nil
+        if state.Playboard then
+            subState = state.Playboard[color]
+            alive = subState ~= nil
+        end
+        if alive then
+            Playboard.playboards[color] = Playboard.new(color, unresolvedContent, subState)
+        else
+            log(color .. " player is not alive (quite dead in fact).")
+        end
     end
     Playboard.unresolvedContentByColor = nil
+
+    if state.settings then
+        Playboard._staticSetUp(state.settings)
+    end
 end
 
 ---
-function Playboard.new(color, unresolvedContent, state)
-    --log("Playboard.new(" .. tostring(color) .. ", _, _)")
+function Playboard.onSave(state)
+    state.Playboard =
+        Helper.map(Playboard.playboards, function (color, playboard)
+            local resourceValues = {}
+            for _, resourceName in ipairs(Playboard.ALL_RESOURCE_NAMES) do
+                resourceValues[resourceName] = playboard[resourceName]:get()
+            end
+            return resourceValues
+        end)
+end
 
+---
+function Playboard.new(color, unresolvedContent, subState)
+    Helper.dump("Playboard.new", color)
     local playboard = Helper.createClassInstance(Playboard, {
         color = color,
         content = nil,
@@ -251,58 +278,36 @@ function Playboard.new(color, unresolvedContent, state)
         scorePositions = {},
         scorePark = nil,
         techPark = nil,
-        alive = true,
-        state = Helper.createTable(state, "players", color)
     })
-
-    if #playboard.state > 0 then
-        playboard.alive = state.alive
-    end
-
-    if playboard.alive then
-        playboard.content = Helper.resolveGUIDs(true, unresolvedContent)
-    else
-        log(color .. " player is not alive")
-        return nil
-    end
+    playboard.content = Helper.resolveGUIDs(true, unresolvedContent)
 
     local board = playboard.content.board
     board.interactable = false
 
-    for _, itemName in ipairs({
-        "councilToken",
-        "cargo",
-        "tleilaxToken",
-        "researchToken",
-    }) do
-        local item = playboard.content[itemName]
-        assert(item, "No " .. itemName .. " item")
-        -- We want physics, but not player.
-        item.setLock(false)
-        item.interactable = false
-    end
-
-    for _, itemName in ipairs({
-        "scoreMarker",
-        "forceMarker",
-    }) do
-        local item = playboard.content[itemName]
-        assert(item, "No " .. itemName .. " item")
-        -- We don't want physics, nor player.
-        item.setLock(true)
-        item.interactable = false
+    if not subState then
+        Helper.noPlay({
+            playboard.content.councilToken,
+            playboard.content.freighter,
+            playboard.content.tleilaxToken,
+            playboard.content.researchToken,
+        })
+        Helper.noPhysicsNorPlay({
+            playboard.content.scoreMarker,
+            playboard.content.forceMarker,
+        })
     end
 
     -- FIXME Why this offset? In particular, why the Z component introduces an asymmetry?
     local offset = Vector(0, 0.55, 5.1)
     local centerPosition = board.getPosition() + offset
 
-    for _, resourceName in ipairs({ "spice", "water", "solari", "persuasion", "strength" }) do
+    for _, resourceName in ipairs(Playboard.ALL_RESOURCE_NAMES) do
         local token = playboard.content[resourceName]
-        playboard[resourceName] = Resource.new(token, color, resourceName, 0, state)
+        local value = subState and subState[resourceName] or 0
+        playboard[resourceName] = Resource.new(token, color, resourceName, value)
     end
 
-    Helper.createTransientAnchor("instructionTextAnchor", board.getPosition() + playboard:newSymmetricBoardPosition(12, -0.5, -8)).doAfter(function (anchor)
+    Helper.createTransientAnchor("InstructionTextAnchor", board.getPosition() + playboard:newSymmetricBoardPosition(12, -0.5, -8)).doAfter(function (anchor)
         playboard.instructionTextAnchor = anchor
     end)
 
@@ -315,7 +320,6 @@ function Playboard.new(color, unresolvedContent, state)
     playboard.scorePark = playboard:createPlayerScoreboardPark()
 
     playboard:createButtons()
-    playboard:updateState()
 
     Helper.registerEventListener("locale", function ()
         playboard:createButtons()
@@ -325,23 +329,28 @@ function Playboard.new(color, unresolvedContent, state)
 end
 
 ---
-function Playboard.setUp(ix, immortality, epic, activeOpponents)
+function Playboard.setUp(settings, activeOpponents)
     for color, playboard in pairs(Playboard.playboards) do
-        playboard:cleanUp(false, not ix, not immortality)
-        playboard.opponent = activeOpponents[color]
-        if playboard.opponent then
+        playboard:cleanUp(false, not settings.riseOfIx, not settings.immortality)
+        if activeOpponents[color] then
+            playboard.opponent = activeOpponents[color]
             if playboard.opponent ~= "rival" then
-                Deck.generateStarterDeck(playboard.content.drawDeckZone, immortality, epic).doAfter(function (deck)
+                Deck.generateStarterDeck(playboard.content.drawDeckZone, settings.immortality, settings.epicMode).doAfter(function (deck)
                     deck.shuffle()
                 end)
-                Deck.generateStarterDiscard(playboard.content.discardZone, immortality, epic)
+                Deck.generateStarterDiscard(playboard.content.discardZone, settings.immortality, settings.epicMode)
             end
             playboard:updatePlayerScore()
         else
-            playboard:shutdown()
+            playboard:tearDown()
         end
     end
 
+    Playboard._staticSetUp(settings)
+end
+
+---
+function Playboard._staticSetUp(settings)
     Helper.registerEventListener("phaseStart", function (phase, firstPlayer)
         if phase == "leaderSelection" or phase == "roundStart" then
             local playboard = Playboard.getPlayboard(firstPlayer)
@@ -370,7 +379,8 @@ function Playboard.setUp(ix, immortality, epic, activeOpponents)
     Helper.registerEventListener("phaseEnd", function (phase)
         if phase == "leaderSelection" then
             for color, playboard in pairs(Playboard._getPlayboards()) do
-                playboard.leader.setUp(color, epic)
+                --Helper.dump(color, "->", playboard.leader.name)
+                playboard.leader.setUp(color, settings)
             end
         end
     end)
@@ -424,8 +434,8 @@ end
 function Playboard.setActivePlayer(phase, color)
     local indexedColors = {"Green", "Yellow", "Blue", "Red"}
     for i, otherColor in ipairs(indexedColors) do
-        local playboard = Playboard.getPlayboard(otherColor)
-        if playboard.opponent then
+        local playboard = Playboard.playboards[otherColor]
+        if playboard then
             local effectIndex = 0 -- black index (no color actually)
             if otherColor == color then
                 effectIndex = i
@@ -518,22 +528,16 @@ function Playboard.acceptTurn(phase, color)
 end
 
 ---
-function Playboard:updateState()
-    -- Do *not* change self.state reference!
-    self.state.alive = self.alive
-end
-
----
 function Playboard.getPlayboard(color)
-    assert(#Helper.getKeys(Playboard.playboards) > 0, "No playboard at all: probably called in 'new'.")
+    assert(#Helper.getKeys(Playboard.playboards) > 0, "No playboard at all: too soon!")
     local playboard = Playboard.playboards[color]
-    assert(playboard, "No playboard for color " .. tostring(color))
+    --assert(playboard, "No playboard for color " .. tostring(color))
     return playboard
 end
 
 ---
 function Playboard._getPlayboards(filterOutRival)
-    assert(#Helper.getKeys(Playboard.playboards) > 0, "No playboard at all: probably called in 'new'.")
+    assert(#Helper.getKeys(Playboard.playboards) > 0, "No playboard at all: too soon!")
     local filteredPlayboards = {}
     for color, playboard in pairs(Playboard.playboards) do
         if playboard.opponent and (not filterOutRival or playboard.opponent ~= "rival") then
@@ -666,6 +670,7 @@ end
 
 ---
 function Playboard:generatePlayerScoreboardPositions()
+    assert(self.content.scoreMarker, self.color .. ": no score marker!")
     local origin = self.content.scoreMarker.getPosition()
 
     -- Avoid collision between markers by giving a different height to each.
@@ -750,10 +755,9 @@ function Playboard.onObjectLeaveScriptingZone(zone, object)
 end
 
 ---
-function Playboard:shutdown()
-    self.alive = false
-    self:updateState()
+function Playboard:tearDown()
     self:cleanUp(true, true, true)
+    Playboard.playboards[self.color] = nil
 end
 
 ---
@@ -778,7 +782,7 @@ function Playboard:cleanUp(base, ix, immortality)
     if ix then
         Helper.addAll(toBeRemoved, content.dreadnoughts)
         table.insert(toBeRemoved, content.flagBag)
-        table.insert(toBeRemoved, content.cargo)
+        table.insert(toBeRemoved, content.freighter)
         -- TODO Add atomics.
     end
 
@@ -807,7 +811,7 @@ end
 
 ---
 function Playboard:createExclusiveCallback(name, f)
-    return Helper.createGlobalCallback(function (_, color, _)
+    return Helper.registerGlobalCallback(function (_, color, _)
         if self.color == color then
             -- Inhibit the buttons for a short time.
             self.content.board.clearButtons()
@@ -824,7 +828,7 @@ end
 
 ---
 function Playboard:createCallback(name, f)
-    return Helper.createGlobalCallback(function (_, color, _)
+    return Helper.registerGlobalCallback(function (_, color, _)
         if self.color == color then
             f()
         else
@@ -986,6 +990,10 @@ end
 ---
 function Playboard:revealHand()
     local cards = Helper.filter(Player[self.color].getHandObjects(), function (card) return card.hasTag('Imperium') end)
+    for _, card in ipairs(cards) do
+        self.persuasion:change(ImperiumCard.getFixedRevealPersuasion(self.color, card))
+        self.strength:change(ImperiumCard.getFixedRevealStrength(self.color, card))
+    end
     Park.putObjects(cards, self.revealPark)
     self.revealed = true
 end
@@ -1086,7 +1094,7 @@ function Playboard:resetDiscard()
         local continuation = Helper.createContinuation()
 
         discard.setRotationSmooth({0, 180, 180}, false, false)
-        discard.setPositionSmooth(Helper.getLandingPosition(content.drawDeckZone), false, true)
+        discard.setPositionSmooth(content.drawDeckZone + Vector(0, 1, 0), false, true)
 
         Wait.time(function() -- Once moved.
             local replenishedDeckOrCard = Helper.getDeckOrCard(content.drawDeckZone)

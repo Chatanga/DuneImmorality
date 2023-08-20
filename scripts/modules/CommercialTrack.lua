@@ -3,11 +3,9 @@ local Helper = require("utils.Helper")
 
 local Playboard = Module.lazyRequire("Playboard")
 local TechMarket = Module.lazyRequire("TechMarket")
-local TurnControl = Module.lazyRequire("TurnControl")
-local Action = Module.lazyRequire("Action")
 
 local CommercialTrack = {
-    initialCargoPositions = {
+    initialFreighterPositions = {
         Yellow = Helper.getHardcodedPositionFromGUID('8fa76f', 8.999577, 0.680369258, 2.85036778),
         Green = Helper.getHardcodedPositionFromGUID('34281d', 8.44957352, 0.680363059, 2.850372),
         Blue = Helper.getHardcodedPositionFromGUID('68e424', 7.34955072, 0.680377, 2.8544054),
@@ -33,23 +31,32 @@ function CommercialTrack.onLoad(state)
             tech = "0990d7", -- Implicit when the freighter is reset.
         }
     }))
+
+    if state.settings and state.settings.riseOfIx then
+        CommercialTrack._staticSetUp()
+    end
 end
 
 ---
-function CommercialTrack.setUp()
+function CommercialTrack.setUp(settings)
+    if not settings.riseOfIx then
+        CommercialTrack._tearDown()
+    end
+end
 
+---
+function CommercialTrack._staticSetUp()
     for i, levelSlot in ipairs(CommercialTrack.levelSlots) do
-        CommercialTrack.createLevelButton(i - 1, levelSlot)
+        CommercialTrack._createLevelButton(i - 1, levelSlot)
     end
 
     for bonusName, bonusSlot in pairs(CommercialTrack.bonusSlots) do
-        CommercialTrack.createBonusButton(bonusName, bonusSlot)
+        CommercialTrack._createBonusButton(bonusName, bonusSlot)
     end
 end
 
 ---
-function CommercialTrack.tearDown()
-
+function CommercialTrack._tearDown()
     for _, levelSlot in ipairs(CommercialTrack.levelSlots) do
         levelSlot.destruct()
     end
@@ -64,24 +71,24 @@ function CommercialTrack.tearDown()
 end
 
 ---
-function CommercialTrack.createLevelButton(level, levelSlot)
+function CommercialTrack._createLevelButton(level, levelSlot)
     local tooltip = level == 0 and "Recall your freighter" or "Progress on the commercial track"
     local ground = levelSlot.getPosition().y - 0.5
     Helper.createAnchoredAreaButton(levelSlot, ground, 0.2, tooltip, function (_, color, _)
-        local cargoLevel = CommercialTrack.getCargoLevel(color)
-        if cargoLevel < level then
-            CommercialTrack.cargoGoUp(color, level - cargoLevel)
+        local freighterLevel = CommercialTrack._getFreighterLevel(color)
+        if freighterLevel < level then
+            CommercialTrack.freighterGoUp(color, level - freighterLevel)
         elseif level == 0 then
-            CommercialTrack.cargoReset(color)
+            CommercialTrack.freighterReset(color)
         end
     end)
 end
 
 ---
-function CommercialTrack.createBonusButton(bonusName, bonusSlot)
+function CommercialTrack._createBonusButton(bonusName, bonusSlot)
     local tooltip = "Pick your " .. bonusName .. " bonus"
     local ground = bonusSlot.getPosition().y - 0.5
-    local callbackName = Helper.toCamelCase("pick", bonusName, "bonus")
+    local callbackName = Helper.toCamelCase("_pick", bonusName, "bonus")
     local callback = CommercialTrack[callbackName]
     assert(callback, "No callback named " .. callbackName)
     Helper.createAnchoredAreaButton(bonusSlot, ground, 0.2, tooltip, function (_, color, _)
@@ -90,30 +97,30 @@ function CommercialTrack.createBonusButton(bonusName, bonusSlot)
 end
 
 ---
-function CommercialTrack.getCargoLevel(color)
-    local p = Playboard.getContent(color).cargo.getPosition()
-    return math.floor((p.z - CommercialTrack.initialCargoPositions[color].z) / 1.1 + 0.5)
+function CommercialTrack._getFreighterLevel(color)
+    local p = Playboard.getContent(color).freighter.getPosition()
+    return math.floor((p.z - CommercialTrack.initialFreighterPositions[color].z) / 1.1 + 0.5)
 end
 
 ---
-function CommercialTrack.setCargoPositionSmooth(color, level)
-    local p = CommercialTrack.initialCargoPositions[color]:copy()
+function CommercialTrack._setFreighterPositionSmooth(color, level)
+    local p = CommercialTrack.initialFreighterPositions[color]:copy()
     p:setAt('z', p.z + 1.1 * level)
-    Playboard.getContent(color).cargo.setPositionSmooth(p, false, true)
+    Playboard.getContent(color).freighter.setPositionSmooth(p, false, true)
 end
 
 ---
-function CommercialTrack.cargoGoUp(color, count)
-    Helper.repeatMovingAction(Playboard.getContent(color).cargo, count, function ()
-        CommercialTrack.cargoUp(color)
+function CommercialTrack.freighterGoUp(color, count)
+    Helper.repeatMovingAction(Playboard.getContent(color).freighter, count, function ()
+        CommercialTrack.freighterUp(color)
     end)
 end
 
 ---
-function CommercialTrack.cargoUp(color)
-    local level = CommercialTrack.getCargoLevel(color)
+function CommercialTrack.freighterUp(color)
+    local level = CommercialTrack._getFreighterLevel(color)
     if level < 3 then
-        CommercialTrack.setCargoPositionSmooth(color, level + 1)
+        CommercialTrack._setFreighterPositionSmooth(color, level + 1)
         return true
     else
         return false
@@ -121,12 +128,12 @@ function CommercialTrack.cargoUp(color)
 end
 
 ---
-function CommercialTrack.cargoReset(color)
-    local level = CommercialTrack.getCargoLevel(color)
+function CommercialTrack.freighterReset(color)
+    local level = CommercialTrack._getFreighterLevel(color)
     if level > 0 then
-        CommercialTrack.setCargoPositionSmooth(color, 0)
+        CommercialTrack._setFreighterPositionSmooth(color, 0)
         if level >= 3 then
-            TechMarket.registerAcquireTechOption(color, "cargo", "spice", 2)
+            TechMarket.registerAcquireTechOption(color, "freighter", "spice", 2)
         end
         return true
     else
@@ -135,7 +142,7 @@ function CommercialTrack.cargoReset(color)
 end
 
 ---
-function CommercialTrack.pickSolariBonus(color)
+function CommercialTrack._pickSolariBonus(color)
     local leader = Playboard.getLeader(color)
     leader.resource(color, "solari", 5)
     for _, otherColor in ipairs(Playboard.getPlayboardColors()) do
@@ -146,13 +153,13 @@ function CommercialTrack.pickSolariBonus(color)
 end
 
 ---
-function CommercialTrack.pickSpiceBonus(color)
+function CommercialTrack._pickSpiceBonus(color)
     local leader = Playboard.getLeader(color)
     leader.resource(color, "spice", 2)
 end
 
 ---
-function CommercialTrack.pickTroopsAndInfluenceBonus(color)
+function CommercialTrack._pickTroopsAndInfluenceBonus(color)
     local leader = Playboard.getLeader(color)
     local troopAmount = 2
     if Playboard.hasTech(color, "troopTransports") then

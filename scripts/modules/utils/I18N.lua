@@ -22,8 +22,7 @@ function I18N.translateCountable(count, singular, plural)
     end
 end
 
--- local function translate(id)
-
+---
 function I18N.translate(id)
     local currentLocale = I18N.getLocale()
     -- TODO Temporary
@@ -38,8 +37,6 @@ function I18N.translate(id)
     return result
 end
 
--- I18N.translate = translate
-
-setmetatable(I18N, {__call = function(_, ...) return I18N.translate(...) end})
+setmetatable(I18N, { __call = function(_, ...) return I18N.translate(...) end })
 
 return I18N

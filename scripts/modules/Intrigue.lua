@@ -17,11 +17,20 @@ function Intrigue.onLoad(state)
 
     AcquireCard.new(Intrigue.deckZone, "Intrigue", Intrigue.acquireIntrigueCard)
     AcquireCard.new(Intrigue.discardZone, "Intrigue", nil)
+
+    if state.settings then
+        Intrigue._staticSetUp(state.settings)
+    end
 end
 
 ---
-function Intrigue.setUp(ix, immortality)
-    Deck.generateIntrigueDeck(Intrigue.deckZone, ix, immortality).doAfter(function (deck)
+function Intrigue.setUp(settings)
+    Intrigue._staticSetUp(settings)
+end
+
+---
+function Intrigue._staticSetUp(settings)
+    Deck.generateIntrigueDeck(Intrigue.deckZone, settings.riseOfx, settings.immortality).doAfter(function (deck)
         deck.shuffle()
     end)
 end

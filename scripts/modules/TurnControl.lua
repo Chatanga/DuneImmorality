@@ -2,7 +2,6 @@ local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 
 local Playboard = Module.lazyRequire("Playboard")
-local Combat = Module.lazyRequire("Combat")
 local Hagal = Module.lazyRequire("Hagal")
 
 local TurnControl = {
@@ -25,19 +24,41 @@ local TurnControl = {
     currentPlayerLuaIndex = nil,
 }
 
+function TurnControl.onLoad(state)
+    if state.TurnControl then
+        TurnControl.players = state.TurnControl.players
+        TurnControl.firstPlayerLuaIndex = state.TurnControl.firstPlayerLuaIndex
+        TurnControl.reversed = state.TurnControl.reversed
+        TurnControl.currentRound = state.TurnControl.currentRound
+        TurnControl.currentPhaseLuaIndex = state.TurnControl.currentPhaseLuaIndex
+        TurnControl.currentPlayerLuaIndex = state.TurnControl.currentPlayerLuaIndex
+    end
+end
+
+function TurnControl.onSave(state)
+    state.TurnControl = {
+        players = TurnControl.players,
+        firstPlayerLuaIndex = TurnControl.firstPlayerLuaIndex,
+        reversed = TurnControl.reversed,
+        currentRound = TurnControl.currentRound,
+        currentPhaseLuaIndex = TurnControl.currentPhaseLuaIndex,
+        currentPlayerLuaIndex = TurnControl.currentPlayerLuaIndex,
+    }
+end
+
 --- Initialize the turn system with the provided players (or all the seated players) and start a new round.
-function TurnControl.setUp(numberOfPlayers, players)
+function TurnControl.setUp(settings, players)
     Turns.enable = false
     TurnControl.players = players
 
-    if numberOfPlayers == 1 then
+    if settings.numberOfPlayers == 1 then
         for i, player in ipairs(players) do
             if Playboard.isHuman(player) then
                 TurnControl.firstPlayerLuaIndex = TurnControl.getNextPlayer(i, true)
                 break
             end
         end
-    elseif numberOfPlayers == 2 then
+    elseif settings.numberOfPlayers == 2 then
         for i, player in ipairs(players) do
             if Playboard.isRival(player) then
                 TurnControl.firstPlayerLuaIndex = TurnControl.getNextPlayer(i, math.random() > 0)
@@ -204,7 +225,6 @@ end
 function TurnControl.isPlayerActive(playerLuaIndex)
     local phase = TurnControl.currentPhase
     local color = TurnControl.players[playerLuaIndex]
-    --Helper.dump(playerLuaIndex, "->", color)
     return Playboard.acceptTurn(phase, color)
 end
 

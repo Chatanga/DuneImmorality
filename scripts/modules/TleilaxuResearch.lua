@@ -66,11 +66,32 @@ function TleilaxuResearch.onLoad(state)
         }
     }))
 
-    TleilaxuResearch.spiceBonus = Resource.new(TleilaxuResearch.tleilaxSpiceBonusToken, nil, "spice", 2, state)
+    local value = state.MainBoard and state.TleilaxuResearch.tleilaxSpiceBonusToken or 2
+    TleilaxuResearch.spiceBonus = Resource.new(TleilaxuResearch.tleilaxSpiceBonusToken, nil, "spice", value)
+
+    if state.settings and state.settings.immortality then
+        TleilaxuResearch._staticSetUp()
+    end
 end
 
 ---
-function TleilaxuResearch.setUp()
+function TleilaxuResearch.onSave(state)
+    state.TleilaxuResearch = {
+        spiceBonus = TleilaxuResearch.spiceBonus:get(),
+    }
+end
+
+---
+function TleilaxuResearch.setUp(settings)
+    if settings.immortality then
+        TleilaxuResearch._staticSetUp()
+    else
+        TleilaxuResearch._tearDown()
+    end
+end
+
+---
+function TleilaxuResearch._staticSetUp()
     TleilaxuResearch.researchTokenOrigin = TleilaxuResearch.getAveragePosition("researchTokenInitalPosition")
     TleilaxuResearch.generateReseachButtons()
 
@@ -84,7 +105,7 @@ function TleilaxuResearch.setUp()
 end
 
 ---
-function TleilaxuResearch.tearDown()
+function TleilaxuResearch._tearDown()
     TleilaxuResearch.TanksZone.destruct()
     TleilaxuResearch.board.destruct()
     TleilaxuResearch.tleilaxSpiceBonusToken.destruct()

@@ -1,8 +1,9 @@
 local Helper = {
-    eventListenersByTopic = {}
+    eventListenersByTopic = {},
+    ERASE = function ()
+        return "__erase__"
+    end
 }
-
-Helper.someHeight = Vector(0, 0.3, 0)
 
 math.randomseed(os.time())
 
@@ -125,22 +126,6 @@ end
 ---
 function Helper.getHardcodedPositionFromGUID(GUID, x, y, z)
     return Vector(x, y, z)
-end
-
----
-function Helper.getLandingPositionFromGUID(anchorGUID)
-    local anchor = getObjectFromGUID(anchorGUID)
-    if anchor then
-        return Helper.getLandingPosition(anchor)
-    else
-        log("[getLandingPositionFromGUID] Unknown GUID: " .. tostring(anchorGUID))
-        return Vector(0, 0, 0)
-    end
-end
-
----
-function Helper.getLandingPosition(anchor)
-    return anchor.getPosition() + Helper.someHeight
 end
 
 function Helper.moveObject(card, position, rotation, smooth, flipAtTheEnd)
@@ -306,7 +291,7 @@ function Helper.createAreaButton(zone, anchor, height, tooltip, callback)
     local sizeFactor = 500 -- 350
 
     local parameters = {
-        click_function = Helper.createGlobalCallback(callback),
+        click_function = Helper.registerGlobalCallback(callback),
         position = Vector(anchorPosition.x, height, anchorPosition.z),
         width = zoneScale.x * sizeFactor,
         height = zoneScale.z * sizeFactor,
@@ -317,6 +302,8 @@ function Helper.createAreaButton(zone, anchor, height, tooltip, callback)
 
     -- 0.75 | 10 ?
     Helper.createAbsoluteButtonWithRoundness(anchor, 0.75, false, parameters)
+
+    return parameters.click_function
 end
 
 --[[
@@ -572,20 +559,45 @@ function Helper.createClassInstance(class, data)
 end
 
 ---
-function Helper.createGlobalCallback(f)
-    local globalCounterName = "__generatedCallbackNextIndex"
-    local nextIndex = Global.getVar(globalCounterName) or 1
-    local uniqueName = "__generatedCallback" .. tostring(nextIndex)
-    Global.setVar(uniqueName, function (object, color, altClick)
-        if f then
-            f(object, color, altClick)
-        end
-    end)
-    Global.setVar(globalCounterName, nextIndex + 1)
+function Helper.getNopCallback()
+    local uniqueName = "__generatedCallback0"
+    local nopCallback = Global.getVar(uniqueName)
+    if not nopCallback then
+        nopCallback = Helper.registerGlobalCallback(function ()
+            -- NOP
+        end)
+    end
     return uniqueName
 end
 
---- The created anchor will be saved but automatically destroyed when reloaded.
+---
+function Helper.registerGlobalCallback(callback)
+    local GLOBAL_COUNTER_NAME = "__generatedCallbackNextIndex"
+    if callback then
+        local nextIndex = Global.getVar(GLOBAL_COUNTER_NAME) or 1
+        local uniqueName = "__generatedCallback" .. tostring(nextIndex)
+        Global.setVar(uniqueName, function (object, color, altClick)
+            if callback then
+                callback(object, color, altClick)
+            end
+        end)
+        Global.setVar(GLOBAL_COUNTER_NAME, nextIndex + 1)
+        return uniqueName
+    else
+        return Helper.getNopCallback()
+    end
+end
+
+---
+function Helper.unregisterGlobalCallback(uniqueName)
+    local callback = Global.getVar(uniqueName)
+    assert(callback, "Unknown global callback: " .. uniqueName)
+    if uniqueName ~= "__generatedCallback0" then
+        Global.setVar(uniqueName, nil)
+    end
+end
+
+--- The created anchor will be saved but could be automatically destroyed at reload using Helper.destroyTransientObjects().
 function Helper.createTransientAnchor(nickname, position)
     local continuation = Helper.createContinuation()
 
@@ -690,17 +702,12 @@ function Helper.destroyTransientObjects()
     log("Destroyed " .. tostring(count) .. " anchors.")
 end
 
-Helper.erase = "__erase__"
-
 ---
 function Helper.append(parent, set)
     for name, value in pairs(set) do
-        if value == Helper.erase then
-            parent[name] = nil
-        else
-            parent[name] = value
-        end
+        parent[name] = value
     end
+    return parent
 end
 
 ---
@@ -849,11 +856,6 @@ function Helper.shallowCopy(elements)
     for k, v in pairs(elements) do
         copy[k] = v
     end
-    --[[
-    for i, e in ipairs(elements) do
-        copy[i] = e
-    end
-    ]]--
     return copy
 end
 
@@ -866,18 +868,12 @@ function Helper.deepCopy(something)
             for k, v in pairs(something) do
                 copy[k] = Helper.deepCopy(v)
             end
-            --[[
-            for i, e in ipairs(something) do
-                copy[i] = e:copy()
-            end
-            ]]--
             return copy
         else
             return something
         end
     else
         assert(false)
-        --return something:copy()
     end
 end
 
@@ -969,7 +965,7 @@ end
 function Helper.map(elements, f)
     local newElements = {}
     for k, v in pairs(elements) do
-        table.insert(newElements, v)
+        newElements[k] = f(k, v)
     end
     return newElements
 end
@@ -989,6 +985,20 @@ function Helper.forEachRecursively(elements, f)
         else
             f(k, v)
         end
+    end
+end
+
+function Helper.noPhysicsNorPlay(objects)
+    for _, object in pairs(objects) do
+        object.setLock(true)
+        object.interactable = false
+    end
+end
+
+function Helper.noPlay(objects)
+    for _, object in pairs(objects) do
+        object.setLock(false)
+        object.interactable = false
     end
 end
 

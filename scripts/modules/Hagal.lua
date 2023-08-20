@@ -32,21 +32,34 @@ function Hagal.onLoad(state)
     Helper.append(Hagal, Helper.resolveGUIDs(true, {
         deckZone = "8f49e3",
     }))
+
+    if state.settings and state.settings.numberOfPlayers < 3 then
+        Hagal._staticSetUp(state.settings)
+    end
 end
 
 ---
-function Hagal.setUp(ix, immortality, numberOfPlayers, difficulty)
-    if numberOfPlayers < 3 then
-        Hagal.numberOfPlayers = numberOfPlayers
-        Hagal.difficulty = difficulty
-        Deck.generateHagalDeck(Hagal.deckZone, ix, immortality, numberOfPlayers).doAfter(function (deck)
+function Hagal.setUp(settings)
+    if settings.numberOfPlayers < 3 then
+        Hagal._staticSetUp(settings)
+    else
+        Hagal._tearDown()
+    end
+end
+
+---
+function Hagal._staticSetUp(settings)
+    if settings.numberOfPlayers < 3 then
+        Hagal.numberOfPlayers = settings.numberOfPlayers
+        Hagal.difficulty = settings.difficulty
+        Deck.generateHagalDeck(Hagal.deckZone, settings.riseOfIx, settings.immortality, settings.numberOfPlayers).doAfter(function (deck)
             deck.shuffle()
         end)
     end
 end
 
 ---
-function Hagal.tearDown()
+function Hagal._tearDown()
     -- 5 solari patch.
     getObjectFromGUID("ba730f").destruct()
 end

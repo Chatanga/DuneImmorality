@@ -18,16 +18,18 @@ local LeaderSelection = {
 }
 
 ---
-function LeaderSelection.onLoad(state)
+function LeaderSelection.onLoad()
     Helper.append(LeaderSelection, Helper.resolveGUIDs(true, {
         deckZone = getObjectFromGUID("23f2b5"),
         secondaryTable = getObjectFromGUID("662ced"),
     }))
+
+    -- We don't event try to save the leader selection state.
 end
 
 ---
-function LeaderSelection.setUp(ix, immortality, fanMadeLeaders, opponents, selectionMethod)
-    Deck.generateLeaderDeck(LeaderSelection.deckZone, ix, immortality, fanMadeLeaders).doAfter(function (deck)
+function LeaderSelection.setUp(settings, opponents)
+    Deck.generateLeaderDeck(LeaderSelection.deckZone, settings.riseOfIx, settings.immortality, settings.fanMadeLeaders).doAfter(function (deck)
         local numberOfLeaders = #deck.getObjects()
         local continuation = Helper.createContinuation()
         continuation.count = numberOfLeaders
@@ -46,16 +48,16 @@ function LeaderSelection.setUp(ix, immortality, fanMadeLeaders, opponents, selec
         end)
 
         continuation.doAfter(function ()
-            if type(selectionMethod) == "table" then
-                LeaderSelection.setUpTest(opponents, selectionMethod)
-            elseif selectionMethod == "random" then
+            if type(settings.leaderSelection) == "table" then
+                LeaderSelection.setUpTest(opponents, settings.leaderSelection)
+            elseif settings.leaderSelection == "random" then
                 LeaderSelection.setUpPicking(opponents, numberOfLeaders, true, false)
-            elseif selectionMethod == "reversePick" then
+            elseif settings.leaderSelection == "reversePick" then
                 LeaderSelection.setUpPicking(opponents, numberOfLeaders, false, false)
-            elseif selectionMethod == "hiddenPick" then
+            elseif settings.leaderSelection == "hiddenPick" then
                 LeaderSelection.setUpPicking(opponents, numberOfLeaders, false, true)
             else
-                error(selectionMethod)
+                error(settings.leaderSelection)
             end
         end)
     end)
@@ -98,7 +100,7 @@ function LeaderSelection.setUpPicking(opponents, numberOfLeaders, random, hidden
 
     if hidden then
         Helper.createAbsoluteButtonWithRoundness(LeaderSelection.secondaryTable, 2, false, {
-            click_function = Helper.createGlobalCallback(function () end),
+            click_function = Helper.getNopCallback(),
             label = "Adjust the number of leaders who will be randomly\nselected for the players to choose among:",
             position = LeaderSelection.secondaryTable.getPosition() + Vector(0, 1.8, -28),
             width = 0,
@@ -117,7 +119,7 @@ function LeaderSelection.setUpPicking(opponents, numberOfLeaders, random, hidden
         -- TTS input widgets are shitty. Let's forget them.
 
         Helper.createAbsoluteButtonWithRoundness(LeaderSelection.secondaryTable, 2, false, {
-            click_function = Helper.createGlobalCallback(function ()
+            click_function = Helper.registerGlobalCallback(function ()
                 adjustValue(LeaderSelection.leaderSelectionPoolSize - 1)
             end),
             label = "-",
@@ -130,7 +132,7 @@ function LeaderSelection.setUpPicking(opponents, numberOfLeaders, random, hidden
         })
 
         Helper.createAbsoluteButtonWithRoundness(LeaderSelection.secondaryTable, 1, false, {
-            click_function = Helper.createGlobalCallback(function () end),
+            click_function = Helper.getNopCallback(),
             label = tostring(LeaderSelection.leaderSelectionPoolSize),
             position = LeaderSelection.secondaryTable.getPosition() + Vector(0, 1.8, -29),
             width = 0,
@@ -140,7 +142,7 @@ function LeaderSelection.setUpPicking(opponents, numberOfLeaders, random, hidden
         })
 
         Helper.createAbsoluteButtonWithRoundness(LeaderSelection.secondaryTable, 2, false, {
-            click_function = Helper.createGlobalCallback(function ()
+            click_function = Helper.registerGlobalCallback(function ()
                 adjustValue(LeaderSelection.leaderSelectionPoolSize + 1)
             end),
             label = "+",
@@ -154,7 +156,7 @@ function LeaderSelection.setUpPicking(opponents, numberOfLeaders, random, hidden
     end
 
     Helper.createAbsoluteButtonWithRoundness(LeaderSelection.secondaryTable, 2, false, {
-        click_function = Helper.createGlobalCallback(function () end),
+        click_function = Helper.getNopCallback(),
         label = "You can flip out (or delete) any leader you want to exclude.\nOnce satisfied, hit the 'Start' button.",
         position = LeaderSelection.secondaryTable.getPosition() + Vector(0, 1.8, -30),
         width = 0,
@@ -164,7 +166,7 @@ function LeaderSelection.setUpPicking(opponents, numberOfLeaders, random, hidden
     })
 
     Helper.createAbsoluteButtonWithRoundness(LeaderSelection.secondaryTable, 2, false, {
-        click_function = Helper.createGlobalCallback(function ()
+        click_function = Helper.registerGlobalCallback(function ()
             if #LeaderSelection.getVisibleLeaders() >= #Helper.getKeys(opponents) then
                 local visibleLeaders = LeaderSelection.prepareVisibleLeaders(hidden)
                 LeaderSelection.createDynamicLeaderSelection(visibleLeaders)
@@ -283,7 +285,7 @@ function LeaderSelection.createDynamicLeaderSelection(leaders)
             LeaderSelection.dynamicLeaderSelection[leader] = false
             local position = leader.getPosition()
             Helper.createAbsoluteButtonWithRoundness(leader, 1, false, {
-                click_function = Helper.createGlobalCallback(function (_, color, _)
+                click_function = Helper.registerGlobalCallback(function (_, color, _)
                     if color == TurnControl.getCurrentPlayer() then
                         LeaderSelection.claimLeader(color, leader)
                         Wait.time(TurnControl.endOfTurn, 1)
@@ -327,7 +329,7 @@ end
 function LeaderSelection.destructLeader(leader)
     local name = leader.getDescription()
     Helper.dump("destruct leader", name)
-    Leader.getLeader(name).tearDown()
+    -- No need: Leader.getLeader(name).tearDown()
     leader.destruct()
 end
 

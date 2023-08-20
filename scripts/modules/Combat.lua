@@ -10,6 +10,15 @@ local TurnControl = Module.lazyRequire("TurnControl")
 local MainBoard = Module.lazyRequire("MainBoard")
 
 local Combat = {
+    -- Temporary structure (set to nil *after* loading).
+    unresolvedContent = {
+        conflictDeckZone = "07e239",
+        conflictDiscardZone = "43f00f",
+        combatCenterZone = "6d632e",
+        combatTokenZone = "1d4424",
+        victoryPointTokenZone = "25b541",
+        victoryPointTokenBag = "d9a457"
+    },
     origins = {
         Green = Vector(8.15, 0.85, -7.65),
         Yellow = Vector(8.15, 0.85, -10.35),
@@ -17,18 +26,11 @@ local Combat = {
         Red = Vector(1.55, 0.85, -7.65),
     },
     victoryPointTokenPositions = {},
-    dreadnoughStrengths = {},
+    dreadnoughStrengths = {}
 }
 
-function Combat.onLoad(_)
-    Helper.append(Combat, Helper.resolveGUIDs(true, {
-        conflictDeckZone = "07e239",
-        conflictDiscardZone = "43f00f",
-        combatCenterZone = "6d632e",
-        combatTokenZone = "1d4424",
-        victoryPointTokenZone = "25b541",
-        victoryPointTokenBag = "d9a457"
-    }))
+function Combat.onLoad(state)
+    Helper.append(Combat, Helper.resolveGUIDs(true, Combat.unresolvedContent))
 
     local origin = Combat.combatTokenZone.getPosition()
     Combat.noCombatForcePositions = Vector(origin.x, 0.66, origin.z)
@@ -40,35 +42,44 @@ function Combat.onLoad(_)
             origin.z - 0.93 - math.floor(i / 10) * 1.03
         )
     end
+
+    if state.settings then
+        Combat._staticSetUp(state.settings)
+    end
 end
 
 ---
-function Combat.setUp(ix, epic)
-    Deck.generateConflictDeck(Combat.conflictDeckZone, ix, epic)
+function Combat.setUp(settings)
+    Deck.generateConflictDeck(Combat.conflictDeckZone, settings.riseOfIx, settings.epicMode)
+    Combat._staticSetUp(settings)
+end
 
+---
+function Combat._staticSetUp(settings)
     Combat.garrisonParks = {}
     for _, color in ipairs(Playboard.getPlayboardColors()) do
-        Combat.garrisonParks[color] = Combat.createGarrisonPark(color)
+        Combat.garrisonParks[color] = Combat._createGarrisonPark(color)
     end
 
-    if ix then
+    if settings.riseOfIx then
         Combat.dreadnoughtParks = {}
         for _, color in ipairs(Playboard.getPlayboardColors()) do
-            Combat.dreadnoughtParks[color] = Combat.createDreadnoughtPark(color)
+            Combat.dreadnoughtParks[color] = Combat._createDreadnoughtPark(color)
         end
     end
 
     Helper.registerEventListener("strengthValueChanged", function ()
-        Combat.updateCombatForces(Combat.calculateCombatForces())
+        Combat._updateCombatForces(Combat._calculateCombatForces())
     end)
 
     Helper.registerEventListener("phaseStart", function (phase)
         if phase == "roundStart" then
-            Combat.setUpConflict()
+            Combat._setUpConflict()
         elseif phase == "combatEnd" then
-            local forces = Combat.calculateCombatForces()
-            local turnSequence = Combat.calculateOutcomeTurnSequence(forces)
+            local forces = Combat._calculateCombatForces()
+            local turnSequence = Combat._calculateOutcomeTurnSequence(forces)
             TurnControl.setPhaseTurnSequence(turnSequence)
+            -- TODO Add control flag if appropriate.
         elseif phase == "recall" then
             for _, object in ipairs(Combat.victoryPointTokenZone.getObjects()) do
                 if Utils.isVictoryPointToken(object) then
@@ -76,13 +87,21 @@ function Combat.setUp(ix, epic)
                     object.destruct()
                 end
             end
-            -- TODO Recalling troops lost in combat.
+            for _, object in ipairs(Combat.combatCenterZone) do
+                for _, color in ipairs(Playboard.getPlayboardColors) do
+                    if Utils.isTroop(object, color) then
+                        Park.putObject(object, Playboard.getSupplyPark())
+                    elseif Utils.isDreadnought(object, color) then
+                        Park.putObject(object, Combat.dreadnoughtParks[color])
+                    end
+                end
+            end
         end
     end)
 end
 
 ---
-function Combat.setUpConflict()
+function Combat._setUpConflict()
     local card = Helper.moveCardFromZone(Combat.conflictDeckZone, Combat.conflictDiscardZone.getPosition(), nil, true, true)
     if card then
         local i = 0
@@ -116,19 +135,19 @@ end
 ---
 function Combat.onObjectEnterScriptingZone(zone, object)
     if zone == Combat.combatCenterZone and Utils.isUnit(object) then
-        Combat.updateCombatForces(Combat.calculateCombatForces())
+        Combat._updateCombatForces(Combat._calculateCombatForces())
     end
 end
 
 ---
 function Combat.onObjectLeaveScriptingZone(zone, object)
     if zone == Combat.combatCenterZone and Utils.isUnit(object) then
-        Combat.updateCombatForces(Combat.calculateCombatForces())
+        Combat._updateCombatForces(Combat._calculateCombatForces())
     end
 end
 
 ---
-function Combat.createGarrisonPark(color)
+function Combat._createGarrisonPark(color)
     local slots = {}
     for j = 3, 1, -1 do
         for i = 1, 4 do
@@ -158,14 +177,14 @@ function Combat.createGarrisonPark(color)
         park.anchor = anchor
         anchor.locked = true
         anchor.interactable = true
-        Combat.createButton(color, park)
+        Combat._createButton(color, park)
     end)
 
     return park
 end
 
 ---
-function Combat.createDreadnoughtPark(color)
+function Combat._createDreadnoughtPark(color)
     local origin = Combat.origins[color]
     local center = Helper.getCenter(Helper.getValues(Combat.origins))
     local dir = Helper.signum((origin - center).x)
@@ -190,12 +209,12 @@ function Combat.createDreadnoughtPark(color)
 end
 
 ---
-function Combat.createButton(color, park)
+function Combat._createButton(color, park)
     local position = park.anchor.getPosition()
     local areaColor = Color.fromString(color)
     areaColor:setAt('a', 0.3)
     Helper.createAbsoluteButtonWithRoundness(park.anchor, 7, false, {
-        click_function = Helper.createGlobalCallback(function (_, playerColor, altClick)
+        click_function = Helper.registerGlobalCallback(function (_, playerColor, altClick)
             if playerColor == color then
                 if altClick then
                     Action.troops(color, "garrison", "supply", 1)
@@ -238,7 +257,7 @@ function Combat.isInCombat(color)
 end
 
 ---
-function Combat.calculateOutcomeTurnSequence(forces)
+function Combat._calculateOutcomeTurnSequence(forces)
     local distinctForces = {}
     for i, color in ipairs(TurnControl.getPhaseTurnSequence()) do
         distinctForces[color] = forces[color] - i * 0.1
@@ -258,10 +277,9 @@ function Combat.calculateOutcomeTurnSequence(forces)
 end
 
 ---
-function Combat.calculateCombatForces()
+function Combat._calculateCombatForces()
     local forces = {}
 
-    -- TODO Better having a zone with filtering tags.
     for _, color in ipairs(Playboard.getPlayboardColors()) do
         local force = 0
         for _, object in ipairs(Combat.combatCenterZone.getObjects()) do
@@ -287,7 +305,7 @@ function Combat.calculateCombatForces()
 end
 
 ---
-function Combat.updateCombatForces(forces)
+function Combat._updateCombatForces(forces)
     local occupations = {}
 
     -- TODO Better having a zone with filtering tags.

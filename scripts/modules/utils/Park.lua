@@ -1,5 +1,6 @@
 local Helper = require("utils.Helper")
 
+-- TODO Make it a class (and upgrade createPark into newPark).
 local Park = {}
 
 ---
@@ -103,8 +104,6 @@ function Park.putObject(object, toPark)
     return Park.putObjects({object}, toPark) > 0
 end
 
---[[
-]]--
 ---
 function Park.putObjects(objects, toPark)
     assert(objects, "No objects provided.")
@@ -115,8 +114,6 @@ function Park.putObjects(objects, toPark)
     return Park._putHolders(holders, toPark)
 end
 
---[[
-]]--
 ---
 function Park.putObjectFromBag(objectBag, toPark)
     assert(objectBag, "No object bag provided.")
@@ -145,9 +142,9 @@ function Park._putHolders(holders, toPark)
         end
     end
 
-    Park.instantTidyUp(toPark, newObjectsInTransit)
+    Park._instantTidyUp(toPark, newObjectsInTransit)
 
-    local emptySlots = Park.findEmptySlots(toPark)
+    local emptySlots = Park._findEmptySlots(toPark)
 
     -- Count *after* newObjectsInTransit (and it's a sparse table).
     local skipCount = 0
@@ -173,8 +170,6 @@ function Park._putHolders(holders, toPark)
     return count
 end
 
---[[
-]]--
 ---
 function Park._waitStabilisation(park, callback)
     Wait.condition(callback, function()
@@ -183,8 +178,6 @@ function Park._waitStabilisation(park, callback)
     end)
 end
 
---[[
-]]--
 ---
 function Park.getObjects(park)
     assert(park)
@@ -216,7 +209,7 @@ function Park.isEmpty(park)
 end
 
 ---
-function Park.instantTidyUp(park, newObjectsInTransit)
+function Park._instantTidyUp(park, newObjectsInTransit)
 
     local freeSlots = {}
     local freeSlotCount = 0
@@ -313,7 +306,7 @@ function Park._takeObjectToPark(bag, slot, park)
 end
 
 ---
-function Park.findEmptySlots(park)
+function Park._findEmptySlots(park)
     local freeSlots = Park.deepCopy(park.slots)
 
     for _, object in ipairs(Park.getObjects(park)) do
@@ -331,7 +324,7 @@ function Park.findEmptySlots(park)
     return freeSlots
 end
 
----
+--- TODO Unify with Helper.deepCopy which doesn't use copy?
 function Park.deepCopy(c)
     local copy = {}
     for i, e in ipairs(c) do

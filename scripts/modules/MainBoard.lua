@@ -52,58 +52,58 @@ function MainBoard.onLoad(state)
         },
         spaces = {
             -- Factions
-            conspire = { zone = "cd9386", anchor = nil },
-            wealth = { zone = "b2c461", anchor = nil },
-            heighliner = { zone = "8b0515", anchor = nil },
-            foldspace = { zone = "9a9eb5", anchor = nil },
-            selectiveBreeding = { zone = "7dc6e5", anchor = nil },
-            secrets = { zone = "1f7c08", anchor = nil },
-            hardyWarriors = { zone = "a2fd8e", anchor = nil },
-            stillsuits = { zone = "556f43", anchor = nil },
+            conspire = { zone = "cd9386" },
+            wealth = { zone = "b2c461" },
+            heighliner = { zone = "8b0515" },
+            foldspace = { zone = "9a9eb5" },
+            selectiveBreeding = { zone = "7dc6e5" },
+            secrets = { zone = "1f7c08" },
+            hardyWarriors = { zone = "a2fd8e" },
+            stillsuits = { zone = "556f43" },
             -- Landsraad
-            highCouncil = { zone = "8a6315", anchor = nil },
-            mentat = { zone = "30cff9", anchor = nil },
-            swordmaster = { zone = '6cc2f8', anchor = nil },
-            rallyTroops = { zone = '6932df', anchor = nil },
-            hallOfOratory = { zone = '3e7409', anchor = nil },
+            highCouncil = { zone = "8a6315" },
+            mentat = { zone = "30cff9" },
+            swordmaster = { zone = '6cc2f8' },
+            rallyTroops = { zone = '6932df' },
+            hallOfOratory = { zone = '3e7409' },
             -- CHOAM
-            secureContract = { zone = "db4022", anchor = nil },
-            sellMelange = { zone = "7539a3", anchor = nil },
-            sellMelange_1 = { zone = "107a42", anchor = nil },
-            sellMelange_2 = { zone = "43cb14", anchor = nil },
-            sellMelange_3 = { zone = "b00ba5", anchor = nil },
-            sellMelange_4 = { zone = "debf5e", anchor = nil },
+            secureContract = { zone = "db4022" },
+            sellMelange = { zone = "7539a3" },
+            sellMelange_1 = { zone = "107a42" },
+            sellMelange_2 = { zone = "43cb14" },
+            sellMelange_3 = { zone = "b00ba5" },
+            sellMelange_4 = { zone = "debf5e" },
             -- Dune
-            arrakeen = { zone = "17b646", anchor = nil },
-            carthag = { zone = "b1c938", anchor = nil },
-            researchStation = { zone = "af11aa", anchor = nil },
-            sietchTabr = { zone = "5bc970", anchor = nil },
+            arrakeen = { zone = "17b646" },
+            carthag = { zone = "b1c938" },
+            researchStation = { zone = "af11aa" },
+            sietchTabr = { zone = "5bc970" },
             -- Desert
-            imperialBasin = { zone = "2c77c1", anchor = nil },
-            haggaBasin = { zone = "622708", anchor = nil },
-            theGreatFlat = { zone = "69f925", anchor = nil },
+            imperialBasin = { zone = "2c77c1" },
+            haggaBasin = { zone = "622708" },
+            theGreatFlat = { zone = "69f925" },
         },
         ixSpaces = {
             -- Landsraad
-            highCouncil = { zone = "dbdd82", anchor = nil },
-            mentat = { zone = "d6c7dd", anchor = nil },
-            swordmaster = { zone = "035975", anchor = nil },
-            rallyTroops = Helper.erase,
-            hallOfOratory = Helper.erase,
+            highCouncil = { zone = "dbdd82" },
+            mentat = { zone = "d6c7dd" },
+            swordmaster = { zone = "035975" },
+            rallyTroops = Helper.ERASE,
+            hallOfOratory = Helper.ERASE,
             -- CHOAM
-            secureContract = Helper.erase,
-            sellMelange = Helper.erase,
-            sellMelange_1 = Helper.erase,
-            sellMelange_2 = Helper.erase,
-            sellMelange_3 = Helper.erase,
-            sellMelange_4 = Helper.erase,
-            smuggling = { zone = "82589e", anchor = nil },
-            interstellarShipping = { zone = "487ad9", anchor = nil },
+            secureContract = Helper.ERASE,
+            sellMelange = Helper.ERASE,
+            sellMelange_1 = Helper.ERASE,
+            sellMelange_2 = Helper.ERASE,
+            sellMelange_3 = Helper.ERASE,
+            sellMelange_4 = Helper.ERASE,
+            smuggling = { zone = "82589e" },
+            interstellarShipping = { zone = "487ad9" },
             -- Ix
-            techNegotiation = { zone = "04f512", anchor = nil },
-            techNegotiation_1 = { zone = "a7cdf8", anchor = nil },
-            techNegotiation_2 = { zone = "479378", anchor = nil },
-            dreadnought = { zone = "83ea90", anchor = nil },
+            techNegotiation = { zone = "04f512" },
+            techNegotiation_1 = { zone = "a7cdf8" },
+            techNegotiation_2 = { zone = "479378" },
+            dreadnought = { zone = "83ea90" },
         },
         banners = {
             arrakeenBannerZone = "f1f53d",
@@ -140,13 +140,39 @@ function MainBoard.onLoad(state)
 
     MainBoard.spiceBonuses = {}
     for name, token in pairs(MainBoard.spiceBonusTokens) do
-        MainBoard.spiceBonuses[name] = Resource.new(token, nil, "spice", 0, state)
+        local value = state.MainBoard and state.MainBoard.spiceBonuses[name] or 0
+        MainBoard.spiceBonuses[name] = Resource.new(token, nil, "spice", value)
+    end
+
+    if state.settings then
+        MainBoard.highCouncilZone = getObjectFromGUID(state.MainBoard.highCouncilZoneGUID)
+        MainBoard.mentatZone = getObjectFromGUID(state.MainBoard.mentatZoneGUID)
+        MainBoard.spaces = Helper.map(state.MainBoard.spaceGUIDs, function (_, guid)
+            return { zone = getObjectFromGUID(guid) }
+        end)
+        MainBoard._staticSetUp(state.MainBoard.settings)
     end
 end
 
 ---
-function MainBoard.setUp(riseOfIx)
-    if riseOfIx then
+function MainBoard.onSave(state)
+    if state.settings then
+        state.MainBoard = {
+            spiceBonuses = Helper.map(MainBoard.spiceBonuses, function (name, resource)
+                return resource:get()
+            end),
+            highCouncilZoneGUID = MainBoard.highCouncilZone.getGUID(),
+            mentatZoneGUID = MainBoard.mentatZone.getGUID(),
+            spaceGUIDs = Helper.map(MainBoard.spaces, function (_, space)
+                return space.zone.getGUID()
+            end)
+        }
+    end
+end
+
+---
+function MainBoard.setUp(settings)
+    if settings.riseOfIx then
         MainBoard.highCouncilZones.base.destruct()
         MainBoard.highCouncilZone = MainBoard.highCouncilZones.ix
         MainBoard.mentatZones.base.destruct()
@@ -157,7 +183,7 @@ function MainBoard.setUp(riseOfIx)
             if baseSpace then
                 baseSpace.zone.destruct()
             end
-            MainBoard.spaces[spaceName] = ixSpace ~= Helper.erase and ixSpace or nil
+            MainBoard.spaces[spaceName] = (ixSpace ~= Helper.ERASE and ixSpace or nil)
         end
     else
         MainBoard.highCouncilZones.ix.destruct()
@@ -167,12 +193,18 @@ function MainBoard.setUp(riseOfIx)
         MainBoard.board.setState(2)
 
         for _, ixSpace in pairs(MainBoard.ixSpaces) do
-            if ixSpace ~= Helper.erase then
+            if ixSpace ~= Helper.ERASE then
                 ixSpace.zone.destruct()
             end
         end
-        MainBoard.ixSpaces = nil
     end
+    MainBoard.ixSpaces = nil
+
+    MainBoard._staticSetUp(settings)
+end
+
+---
+function MainBoard._staticSetUp(settings)
     MainBoard.highCouncilPark = MainBoard:createHighCouncilPark(MainBoard.highCouncilZone)
 
     for name, space in pairs(MainBoard.spaces) do

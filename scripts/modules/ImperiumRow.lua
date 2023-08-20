@@ -22,8 +22,25 @@ function ImperiumRow.onLoad(state)
         }
     }))
 
-    ImperiumRow.reseveAcquireCards = AcquireCard.new(ImperiumRow.reservationSlotZone, "Imperium", nil)
+    if state.settings then
+        ImperiumRow._staticSetUp()
+    end
+end
 
+---
+function ImperiumRow.setUp(settings)
+    Deck.generateImperiumDeck(ImperiumRow.deckZone, settings.riseOfIx, settings.immortality).doAfter(function (deck)
+        deck.shuffle()
+        for _, zone in ipairs(ImperiumRow.slotZones) do
+            Helper.moveCardFromZone(ImperiumRow.deckZone, zone.getPosition(), Vector(0, 180, 0), false, false)
+        end
+    end)
+    ImperiumRow._staticSetUp()
+end
+
+---
+function ImperiumRow._staticSetUp()
+    ImperiumRow.reseveAcquireCards = AcquireCard.new(ImperiumRow.reservationSlotZone, "Imperium", nil)
     ImperiumRow.acquireCards = {}
     for i, zone in ipairs(ImperiumRow.slotZones) do
         local acquireCard = AcquireCard.new(zone, "Imperium", function (_, color)
@@ -31,16 +48,6 @@ function ImperiumRow.onLoad(state)
         end)
         table.insert(ImperiumRow.acquireCards, acquireCard)
     end
-end
-
----
-function ImperiumRow.setUp(ix, immortality)
-    Deck.generateImperiumDeck(ImperiumRow.deckZone, ix, immortality).doAfter(function (deck)
-        deck.shuffle()
-        for _, zone in ipairs(ImperiumRow.slotZones) do
-            Helper.moveCardFromZone(ImperiumRow.deckZone, zone.getPosition(), Vector(0, 180, 0), false, false)
-        end
-    end)
 end
 
 ---
@@ -88,31 +95,16 @@ function ImperiumRow.acquireImperiumCard(indexInRow, color)
 end
 
 ---
-function ImperiumRow.nuke(_, color)
-    local t = 0
-    self.clearButtons()
-
+function ImperiumRow.nuke(color)
     local secondaryTable = getObjectFromGUID("662ced")
     if secondaryTable.getVar("sound_active") then
-        t = 2
         MusicPlayer.setCurrentAudioclip({
             url = "http://cloud-3.steamusercontent.com/ugc/2002447125408335433/56A15AA85A1C45DE92FA3FD2372F0ECE6ABA0495/",
             title = "Explosion"
         })
     end
 
-    Wait.time(function()
-        for i = 1, 5, 1 do
-            local slot = constants.structure.imperium.imperiumRowSlots[i]
-            helper.moveCardFromZoneGUID(slot.zoneGuid, constants.lowerTrashPosition, Vector(0, 180, 0), false)
-            helper.moveCardFromZoneGUID(constants.imperiumDeckZone, slot.pos, Vector(0, 180, 0), true)
-        end
-
-        self.destruct()
-
-        local leaderName = helper.getLeaderName(color)
-        broadcastToAll(leaderName .. i18n("atomicsUsed"), color)
-    end, t)
+    -- TODO
 end
 
 return ImperiumRow

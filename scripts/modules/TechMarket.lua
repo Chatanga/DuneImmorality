@@ -42,10 +42,23 @@ function TechMarket.onLoad(state)
             "9c81c1"
         },
     }))
+
+    if state.settings and state.settings.riseOfIx then
+        TechMarket._staticSetUp()
+    end
 end
 
 ---
-function TechMarket.setUp()
+function TechMarket.setUp(settings)
+    if settings.riseOfIx then
+        TechMarket._staticSetUp()
+    else
+        TechMarket._tearDown()
+    end
+end
+
+---
+function TechMarket._staticSetUp()
 
     for _, color in ipairs(Playboard.getPlayboardColors()) do
         TechMarket.negotiationParks[color] = TechMarket.createNegotiationPark(color)
@@ -64,7 +77,7 @@ function TechMarket.setUp()
 end
 
 ---
-function TechMarket.tearDown()
+function TechMarket._tearDown()
     TechMarket.board.destruct()
     TechMarket.negotiationZone.destruct()
     for _, techSlot in ipairs(TechMarket.techSlots) do

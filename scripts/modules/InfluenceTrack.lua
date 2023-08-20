@@ -7,8 +7,6 @@ local Action = Module.lazyRequire("Action")
 local Playboard = Module.lazyRequire("Playboard")
 
 local InfluenceTrack = {
-    influenceTokens = nil,
-    friendshipBags = nil,
     influenceTokenInitialPositions = {
         emperor = {
             Red = Helper.getHardcodedPositionFromGUID('acfcef', -9.718932, 0.752500057, 1.85002029),
@@ -41,53 +39,51 @@ local InfluenceTrack = {
         beneGesserit = Helper.getHardcodedPositionFromGUID('33452e', -9.551374, 0.780000031, -5.21345472),
         fremen = Helper.getHardcodedPositionFromGUID('4c2bcc', -9.543688, 0.780000031, -10.6707687)
     },
-    allianceTokens = nil,
-    allianceZones = nil,
     influenceLevels = {}
 }
 
 ---
-function InfluenceTrack.onLoad(state)
-    InfluenceTrack.influenceTokenInitialPositions = Helper.resolveGUIDs(true, InfluenceTrack.influenceTokenInitialPositions)
-    InfluenceTrack.influenceTokens = Helper.resolveGUIDs(true, {
-        emperor = {
-            Red = 'acfcef',
-            Blue = '426a23',
-            Green = 'd7c9ba',
-            Yellow = '489871'
+function InfluenceTrack.onLoad()
+    Helper.append(InfluenceTrack, Helper.resolveGUIDs(true, {
+        influenceTokens = {
+            emperor = {
+                Red = 'acfcef',
+                Blue = '426a23',
+                Green = 'd7c9ba',
+                Yellow = '489871'
+            },
+            spacingGuild = {
+                Red = 'be464e',
+                Blue = '4069d8',
+                Green = '89da7d',
+                Yellow = '9d0075'
+            },
+            beneGesserit = {
+                Red = '713eae',
+                Blue = '2a88a6',
+                Green = '2dc980',
+                Yellow = 'a3729e'
+            },
+            fremen = {
+                Red = '088f51',
+                Blue = '0e6e41',
+                Green = 'd390dc',
+                Yellow = '77d7c8'
+            }
         },
-        spacingGuild = {
-            Red = 'be464e',
-            Blue = '4069d8',
-            Green = '89da7d',
-            Yellow = '9d0075'
+        friendshipBags = {
+            emperor = "6a4186",
+            spacingGuild = "400d45",
+            beneGesserit = "e763f6",
+            fremen = "8bcfe7"
         },
-        beneGesserit = {
-            Red = '713eae',
-            Blue = '2a88a6',
-            Green = '2dc980',
-            Yellow = 'a3729e'
-        },
-        fremen = {
-            Red = '088f51',
-            Blue = '0e6e41',
-            Green = 'd390dc',
-            Yellow = '77d7c8'
+        allianceTokens = {
+            emperor = '13e990',
+            spacingGuild = 'ad1aae',
+            beneGesserit = '33452e',
+            fremen = '4c2bcc'
         }
-    })
-    InfluenceTrack.friendshipBags = Helper.resolveGUIDs(true, {
-        emperor = "6a4186",
-        spacingGuild = "400d45",
-        beneGesserit = "e763f6",
-        fremen = "8bcfe7"
-    })
-    InfluenceTrack.allianceTokenInitialPositions = Helper.resolveGUIDs(true, InfluenceTrack.allianceTokenInitialPositions)
-    InfluenceTrack.allianceTokens = Helper.resolveGUIDs(true, {
-        emperor = '13e990',
-        spacingGuild = 'ad1aae',
-        beneGesserit = '33452e',
-        fremen = '4c2bcc'
-    })
+    }))
 
     InfluenceTrack.influenceLevels = InfluenceTrack.initInfluenceTracksLevels()
 
@@ -127,7 +123,7 @@ function InfluenceTrack.initInfluenceTracksLevels()
             Helper.createTransientAnchor(faction .. "Rank" .. tostring(i), levelPosition).doAfter(function (anchor)
                 local actionName = "Progress on the " .. faction .. " influence track"
                 Helper.createAbsoluteButtonWithRoundness(anchor, 1, false, {
-                    click_function = Helper.createGlobalCallback(function (_, color, _)
+                    click_function = Helper.registerGlobalCallback(function (_, color, _)
                         local rank = InfluenceTrack.getInfluenceTracksRank(faction, color)
                         InfluenceTrack.changeInfluenceTracksRank(color, faction, i - rank)
                     end),
@@ -183,6 +179,9 @@ function InfluenceTrack.changeInfluenceTracksRank(color, faction, change)
     Utils.assertIsFaction(faction)
     Utils.assertIsInteger(change)
 
+    assert(InfluenceTrack.influenceLevels)
+    assert(InfluenceTrack.influenceLevels[faction], tostring(faction))
+    assert(InfluenceTrack.influenceLevels[faction], tostring(faction) .. "/" .. tostring(color))
     local levels = InfluenceTrack.influenceLevels[faction][color]
     local token = InfluenceTrack.influenceTokens[faction][color]
 
