@@ -1,7 +1,7 @@
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local Park = require("utils.Park")
-local AcquireCard = require("utils.AcquireCard")
+local I18N = require("utils.I18N")
 
 local Resource = Module.lazyRequire("Resource")
 local Playboard = Module.lazyRequire("Playboard")
@@ -174,6 +174,16 @@ function TleilaxuResearch.generateReseachButtons()
 end
 
 ---
+function TleilaxuResearch.findResearchCellBenefits(cellPosition)
+    for existingCellPosition, cell in pairs(TleilaxuResearch.researchCellBenefits) do
+        if Vector.distance(existingCellPosition, cellPosition) < 0.1 then
+            return cell
+        end
+    end
+    return nil
+end
+
+---
 function TleilaxuResearch.advanceResearch(color, jump)
     local leader = Playboard.getLeader(color)
     local researchToken = Playboard.getContent(color).researchToken
@@ -183,7 +193,7 @@ function TleilaxuResearch.advanceResearch(color, jump)
     local p = TleilaxuResearch.researchSpaceToWorldPosition(newCellPosition)
     researchToken.setPositionSmooth(p + Vector(0, 1, 0.25))
 
-    local researchCellBenefits = TleilaxuResearch.researchCellBenefits[newCellPosition]
+    local researchCellBenefits = TleilaxuResearch.findResearchCellBenefits(newCellPosition)
     assert(researchCellBenefits, "No cell benefits at cell " .. tostring(newCellPosition))
 
     for _, resource in ipairs({"spice", "solari"}) do
@@ -193,7 +203,7 @@ function TleilaxuResearch.advanceResearch(color, jump)
     end
 
     if researchCellBenefits.specimen then
-        leader.troop(color, "suppy", "tanks", 1)
+        leader.troops(color, "supply", "tanks", 1)
     end
 
     if researchCellBenefits.beetle then
@@ -208,7 +218,7 @@ function TleilaxuResearch.advanceResearch(color, jump)
     end
 
     if researchCellBenefits.solariToBeetle then
-        Player[color].showConfirmDialog(i18n("confirmSolarisToBeetles"), function()
+        Player[color].showConfirmDialog(I18N("confirmSolarisToBeetles"), function()
             if leader.resource(color, "solari", -7) then
                 local tleilaxToken = Playboard.getContent(color).tleilaxToken
                 Helper.repeatMovingAction(tleilaxToken, function() TleilaxuResearch.advanceTleilax(color) end , 2)

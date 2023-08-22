@@ -267,7 +267,6 @@ end
 
 ---
 function Playboard.new(color, unresolvedContent, subState)
-    Helper.dump("Playboard.new", color)
     local playboard = Helper.createClassInstance(Playboard, {
         color = color,
         content = nil,
@@ -311,7 +310,8 @@ function Playboard.new(color, unresolvedContent, subState)
         playboard.instructionTextAnchor = anchor
     end)
 
-    playboard.revealPark = playboard:createRevealCardPark()
+    playboard.agentCardPark = playboard:createCardPark(Vector(0, 0, 4))
+    playboard.revealCardPark = playboard:createCardPark(Vector(0, 0, 0))
     playboard.agentPark = playboard:createAgentPark(unresolvedContent.agentPositions)
     playboard.dreadnoughtPark = playboard:createDreadnoughtPark(unresolvedContent.dreadnoughtPositions)
     playboard.supplyPark = playboard:createSupplyPark(centerPosition)
@@ -558,7 +558,7 @@ function Playboard.getBoard(color)
 end
 
 ---
-function Playboard:createRevealCardPark()
+function Playboard:createCardPark(globalOffset)
     local offsets = {
         Red = Vector(13, 0.69, -5),
         Blue = Vector(13, 0.69, -5),
@@ -572,7 +572,7 @@ function Playboard:createRevealCardPark()
     if self.color == "Red" or self.color == "Blue" then
         step = -2.5
     end
-    local origin = self.content.board.getPosition() + offsets[self.color]
+    local origin = self.content.board.getPosition() + offsets[self.color] + globalOffset
 
     local slots = {}
     for i = 0, 11 do
@@ -692,7 +692,7 @@ function Playboard:generatePlayerScoreboardPositions()
 end
 
 ---
-function Playboard:createPlayerScoreboardPark()
+function Playboard:createPlayerScorePark()
     local origin = self.content.fourPlayerVictoryTokenInitialPosition
 
     local direction = 1
@@ -989,12 +989,17 @@ end
 
 ---
 function Playboard:revealHand()
-    local cards = Helper.filter(Player[self.color].getHandObjects(), function (card) return card.hasTag('Imperium') end)
-    for _, card in ipairs(cards) do
-        self.persuasion:change(ImperiumCard.getFixedRevealPersuasion(self.color, card))
-        self.strength:change(ImperiumCard.getFixedRevealStrength(self.color, card))
-    end
-    Park.putObjects(cards, self.revealPark)
+    local revealedCards = Helper.filter(Player[self.color].getHandObjects(), function (card)
+        --[[
+            We leave the sister card in the player's hand to simplify things and
+            make clear to the player that the card must be manually revealed.
+        ]]--
+        return card.hasTag('Imperium') and card.getDescription() ~= "beneGesseritSister"
+    end)
+    local output = ImperiumCard.evaluateReveal(self.color, Park.getObjects(self.agentCardPark), revealedCards)
+    self.persuasion:change(output.persuasion or 0)
+    self.strength:change(output.sword or 0)
+    Park.putObjects(revealedCards, self.revealCardPark)
     self.revealed = true
 end
 
@@ -1324,6 +1329,7 @@ end
 
 ---
 function Playboard.getScoreTokens(color)
+    log(color)
     return Park.getObjects(Playboard.getPlayboard(color).scorePark)
 end
 

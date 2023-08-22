@@ -87,8 +87,8 @@ function Combat._staticSetUp(settings)
                     object.destruct()
                 end
             end
-            for _, object in ipairs(Combat.combatCenterZone) do
-                for _, color in ipairs(Playboard.getPlayboardColors) do
+            for _, object in ipairs(Combat.combatCenterZone.getObjects()) do
+                for _, color in ipairs(Playboard.getPlayboardColors()) do
                     if Utils.isTroop(object, color) then
                         Park.putObject(object, Playboard.getSupplyPark())
                     elseif Utils.isDreadnought(object, color) then
@@ -329,6 +329,17 @@ function Combat._updateCombatForces(forces)
 
         forces[color] = force
     end
+end
+
+---
+function Combat.getNumberOfDreadnoughtsInConflict(color)
+    local count = 0
+    for _, object in ipairs(Combat.combatCenterZone.getObjects()) do
+        if Utils.isDreadnought(object, color) then
+            count = count + 1
+        end
+    end
+    return count
 end
 
 return Combat

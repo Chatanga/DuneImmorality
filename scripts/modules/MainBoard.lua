@@ -775,31 +775,63 @@ function MainBoard.drawImperiumCards(color, amount)
 end
 
 ---
+function MainBoard.hasAgentInSpace(spaceName, color)
+    local space = MainBoard.spaces[spaceName]
+    assert(space, "Unknow space: " .. spaceName)
+    for _, object in ipairs(space.zone.getObjects()) do
+        if Utils.isAgent(object, color) then
+            return true
+        end
+    end
+    return false
+end
+
+---
 function MainBoard.isEmperorSpace(spaceName)
-    return Helper.isElementOf(spaceName, {
+    return Helper.isElementOf(spaceName, MainBoard.getEmperorSpaces())
+end
+
+---
+function MainBoard.getEmperorSpaces()
+    return {
         "conspire",
-        "wealth" })
+        "wealth" }
 end
 
 ---
 function MainBoard.isSpacingGuildSpace(spaceName)
-    return Helper.isElementOf(spaceName, {
+    return Helper.isElementOf(spaceName, MainBoard.getSpacingGuildSpace())
+end
+
+---
+function MainBoard.getSpacingGuildSpace()
+    return {
         "heighliner",
-        "foldspace" })
+        "foldspace" }
 end
 
 ---
 function MainBoard.isBeneGesseritSpace(spaceName)
-    return Helper.isElementOf(spaceName, {
+    return Helper.isElementOf(spaceName, MainBoard.getBeneGesseritSpaces())
+end
+
+---
+function MainBoard.getBeneGesseritSpaces()
+    return {
         "selectiveBreeding",
-        "secrets" })
+        "secrets" }
 end
 
 ---
 function MainBoard.isFremenSpace(spaceName)
-    return Helper.isElementOf(spaceName, {
+    return Helper.isElementOf(spaceName, MainBoard.getFremenSpaces())
+end
+
+---
+function MainBoard.getFremenSpaces()
+    return {
         "hardyWarriors",
-        "stillsuits" })
+        "stillsuits" }
 end
 
 ---
@@ -812,7 +844,12 @@ end
 
 ---
 function MainBoard.isLandsraadSpace(spaceName)
-    return Helper.isElementOf(spaceName, {
+    return Helper.isElementOf(spaceName, MainBoard.getLandsraadSpaces())
+end
+
+---
+function MainBoard.getLandsraadSpaces()
+    return {
         "highCouncil",
         "mentat",
         "swordmaster",
@@ -824,35 +861,50 @@ function MainBoard.isLandsraadSpace(spaceName)
         "rallyTroops",
         "hallOfOratory",
         "techNegotiation",
-        "dreadnought" })
+        "dreadnought" }
 end
 
 ---
 function MainBoard.isCHOAMSpace(spaceName)
-    return Helper.isElementOf(spaceName, {
+    return Helper.isElementOf(spaceName, MainBoard.getCHOAMSpaces())
+end
+
+---
+function MainBoard.getCHOAMSpaces()
+    return {
         "secureContract",
         "sellMelange",
         "secureContract",
         "sellMelange",
         "smuggling",
-        "interstellarShipping" })
+        "interstellarShipping" }
 end
 
 ---
 function MainBoard.isCitySpace(spaceName)
-    return Helper.isElementOf(spaceName, {
+    return Helper.isElementOf(spaceName, MainBoard.getCitySpaces())
+end
+
+---
+function MainBoard.getCitySpaces()
+    return {
         "arrakeen",
         "carthag",
         "researchStation",
-        "sietchTabr" })
+        "sietchTabr" }
 end
 
 ---
 function MainBoard.isDesertSpace(spaceName)
-    return Helper.isElementOf(spaceName, {
+    return Helper.isElementOf(spaceName, MainBoard.getDesertSpaces())
+end
+
+---
+function MainBoard.getDesertSpaces()
+    return {
         "imperialBasin",
         "haggaBasin",
-        "theGreatFlat" })
+        "theGreatFlat" }
 end
 
 ---

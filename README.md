@@ -66,8 +66,6 @@ Having launched `./listen.py` in another terminal will provide you with an immed
 
 ## TODO (by priority)
 
-- Identify and detect played cards.
-- Advanced reveal.
 - Family atomics.
 - Endgame.
 - The Hagal house (with resources and difficulty levels).

@@ -152,16 +152,6 @@ function InfluenceTrack.hasFriendship(color, faction)
 end
 
 ---
-function InfluenceTrack.hasReachedAllianceLevel(color, faction)
-    Utils.assertIsPlayerColor(color)
-    Utils.assertIsFaction(faction)
-
-    local influenceLevels = InfluenceTrack.influenceLevels[faction][color]
-    local z = InfluenceTrack.influenceTokens[faction][color].getPosition().z
-    return z - influenceLevels.step < influenceLevels.alliance and z > influenceLevels.alliance
-end
-
----
 function InfluenceTrack.getInfluenceTracksRank(faction, color)
     local influenceLevels = InfluenceTrack.influenceLevels[faction][color]
     local pos = InfluenceTrack.influenceTokens[faction][color].getPosition()
@@ -242,7 +232,7 @@ function InfluenceTrack.challengeAlliance(faction)
     local allianceOwner
 
     for _, color in ipairs(Playboard.getPlayboardColors()) do
-        if InfluenceTrack.hasAlliance(faction, color) then
+        if InfluenceTrack.hasAlliance(color, faction) then
             allianceOwner = color
         end
         local rank = InfluenceTrack.getInfluenceTracksRank(faction, color)
@@ -274,7 +264,7 @@ function InfluenceTrack.challengeAlliance(faction)
 end
 
 ---
-function InfluenceTrack.hasAlliance(faction, color)
+function InfluenceTrack.hasAlliance(color, faction)
     local playerVictoryTokens = Playboard.getScoreTokens(color)
     for _, victoryToken in ipairs(playerVictoryTokens) do
         if victoryToken == InfluenceTrack.allianceTokens[faction] then
@@ -287,7 +277,7 @@ end
 ---
 function InfluenceTrack.hasAnyAlliance(color)
     for faction, _ in pairs(InfluenceTrack.influenceTokenInitialPositions) do
-        if InfluenceTrack.hasAlliance(faction, color) then
+        if InfluenceTrack.hasAlliance(color, faction) then
             return true
         end
     end

@@ -971,6 +971,15 @@ function Helper.map(elements, f)
 end
 
 ---
+function Helper.mapValues(elements, f)
+    local newElements = {}
+    for k, v in ipairs(elements) do
+        newElements[k] = f(v)
+    end
+    return newElements
+end
+
+---
 function Helper.forEach(elements, f)
     for k, v in ipairs(elements) do
         f(k, v)
