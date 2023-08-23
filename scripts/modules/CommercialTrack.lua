@@ -39,7 +39,9 @@ end
 
 ---
 function CommercialTrack.setUp(settings)
-    if not settings.riseOfIx then
+    if settings.riseOfIx then
+        CommercialTrack._staticSetUp()
+    else
         CommercialTrack._tearDown()
     end
 end

@@ -132,11 +132,10 @@ end
 ---
 function TleilaxuResearch.worlPositionToResearchSpace(positionInWorldSpace)
     local offset = positionInWorldSpace - TleilaxuResearch.researchTokenOrigin
-    local positionInResearchSpace = Vector(
-        math.floor((offset.x + 0.07) / 1.225 + 0.5),
-        0,
-        math.floor((offset.z) / 0.7))
-        return positionInResearchSpace
+    local x = math.floor((offset.x + 0.07) / 1.225 + 0.5)
+    local z = x == 0 and 0 or math.floor((offset.z) / 0.7)
+    local positionInResearchSpace = Vector(x, 0, z)
+    return positionInResearchSpace
 end
 
 ---
@@ -193,38 +192,37 @@ function TleilaxuResearch.advanceResearch(color, jump)
     local p = TleilaxuResearch.researchSpaceToWorldPosition(newCellPosition)
     researchToken.setPositionSmooth(p + Vector(0, 1, 0.25))
 
-    local researchCellBenefits = TleilaxuResearch.findResearchCellBenefits(newCellPosition)
-    assert(researchCellBenefits, "No cell benefits at cell " .. tostring(newCellPosition))
+    Helper.onceMotionless(researchToken).doAfter(function ()
+        local researchCellBenefits = TleilaxuResearch.findResearchCellBenefits(newCellPosition)
+        assert(researchCellBenefits, "No cell benefits at cell " .. tostring(newCellPosition))
 
-    for _, resource in ipairs({"spice", "solari"}) do
-        if researchCellBenefits[resource] then
-            leader.resource(color, resource, researchCellBenefits[resource])
-        end
-    end
-
-    if researchCellBenefits.specimen then
-        leader.troops(color, "supply", "tanks", 1)
-    end
-
-    if researchCellBenefits.beetle then
-        leader.beetle(color, 1)
-    end
-
-    if researchCellBenefits.research then
-        Wait.time(function ()
-            local nextCellPosition = newCellPosition.z + Vector(0, 0, Helper.signum(newCellPosition.z))
-            leader.research(color, nextCellPosition)
-        end, 1)
-    end
-
-    if researchCellBenefits.solariToBeetle then
-        Player[color].showConfirmDialog(I18N("confirmSolarisToBeetles"), function()
-            if leader.resource(color, "solari", -7) then
-                local tleilaxToken = Playboard.getContent(color).tleilaxToken
-                Helper.repeatMovingAction(tleilaxToken, function() TleilaxuResearch.advanceTleilax(color) end , 2)
+        for _, resource in ipairs({"spice", "solari"}) do
+            if researchCellBenefits[resource] then
+                leader.resource(color, resource, researchCellBenefits[resource])
             end
-        end)
-    end
+        end
+
+        if researchCellBenefits.specimen then
+            leader.troops(color, "supply", "tanks", 1)
+        end
+
+        if researchCellBenefits.beetle then
+            leader.beetle(color, 1)
+        end
+
+        if researchCellBenefits.research then
+            leader.research(color, Vector(1, 0, -Helper.signum(newCellPosition.z)))
+        end
+
+        if researchCellBenefits.solariToBeetle then
+            Player[color].showConfirmDialog(I18N("confirmSolarisToBeetles"), function()
+                if leader.resource(color, "solari", -7) then
+                    local tleilaxToken = Playboard.getContent(color).tleilaxToken
+                    TleilaxuResearch.advanceTleilax(color)
+                end
+            end)
+        end
+    end)
 end
 
 ---
@@ -248,12 +246,16 @@ end
 
 ---
 function TleilaxuResearch.worlPositionToTleilaxSpace(positionInWorldSpace)
+    local nearestLevel = nil
+    local nearestDistance = 0
     for level, zone in ipairs(TleilaxuResearch.tleilaxuLevelZones) do
-        if Vector.distance(positionInWorldSpace, zone.getPosition()) < 0.75 then
-            return level
+        local d = Vector.distance(positionInWorldSpace, zone.getPosition())
+        if not nearestLevel or d < nearestDistance then
+            nearestLevel = level
+            nearestDistance = d
         end
     end
-    error("Not a position in Tleilax space: " .. tostring(positionInWorldSpace))
+    return nearestLevel
 end
 
 ---
@@ -283,22 +285,30 @@ function TleilaxuResearch.advanceTleilax(color)
     local p = TleilaxuResearch.tleilaxSpaceToWorldPosition(newLevel)
     tleilaxToken.setPositionSmooth(p + Vector(0, 1, 0.25))
 
-    local researchLevelBenefits = TleilaxuResearch.tleilaxLevelBenefits[newLevel] or {}
-    assert(researchLevelBenefits, "No level benefits at level " .. tostring(newLevel))
+    local continuation = Helper.createContinuation()
 
-    if researchLevelBenefits.intrigue then
-        leader.drawIntrigues(color, 1)
-    end
+    Helper.onceMotionless(tleilaxToken).doAfter(function ()
+        local researchLevelBenefits = TleilaxuResearch.tleilaxLevelBenefits[newLevel] or {}
+        assert(researchLevelBenefits, "No level benefits at level " .. tostring(newLevel))
 
-    if researchLevelBenefits.victoryToken then
-        leader.gainVictoryPoint(color, "tleilax")
-    end
+        if researchLevelBenefits.intrigue then
+            leader.drawIntrigues(color, 1)
+        end
 
-    if researchLevelBenefits.spiceBonus then
-        local amount = TleilaxuResearch.spiceBonus:get()
-        leader.resource(color, "spice", amount)
-        TleilaxuResearch.spiceBonus:set(0)
-    end
+        if researchLevelBenefits.victoryToken then
+            leader.gainVictoryPoint(color, "tleilax")
+        end
+
+        if researchLevelBenefits.spiceBonus then
+            local amount = TleilaxuResearch.spiceBonus:get()
+            leader.resource(color, "spice", amount)
+            TleilaxuResearch.spiceBonus:set(0)
+        end
+
+        continuation.run(tleilaxToken)
+    end)
+
+    return continuation
 end
 
 ---

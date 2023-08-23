@@ -105,7 +105,7 @@ local function perSwordCard(value)
                 for _, effect in ipairs(card.reveal) do
                     effect(pseudoInput, output)
                 end
-                if output.sword > 0 then
+                if output.sword and output.sword > 0 then
                     count = count + 1
                 end
             end
@@ -214,20 +214,23 @@ local function twoHelices(value)
     end
 end
 
--- TODO Add Tleilax cards.
 local ImperiumCard = {
-    -- base
+    -- starter: base
     duneTheDesertPlanet = {agentIcons = {'yellow'}, reveal = {persuasion(1)}},
     seekAllies = {agentIcons = {'emperor', 'spacingGuild', 'beneGesserit', 'fremen'}},
     signetRing = {agentIcons = {'green', 'blue','yellow'}, reveal = {persuasion(1)}},
     diplomacy = {agentIcons = {'emperor', 'spacingGuild', 'beneGesserit', 'fremen'}, reveal = {persuasion(1)}},
     reconnaissance = {agentIcons = {'blue'}, reveal = {persuasion(1)}},
     convincingArgument = {reveal = {persuasion(2)}},
-    dagger = {agentIcons = {'green'}, reveal = {sword(1)}},
-    -- ix
+    dagger = {agentIcons = {'green', 'blue'}, reveal = {sword(1)}},
+    -- starter: ix
     controlTheSpice = {agentIcons = {'yellow'}, reveal = {spice(1)}},
-    -- immortality
+    -- starter: immortality
     experimentation = {agentIcons = {'yellow'}, reveal = {persuasion(1)}},
+    -- reserve
+    arrakisLiaison = {cost = 2, agentsIcons = {'blue'}, reveal = {persuasion(2)}},
+    foldspace = {cost = 0, agentIcons = {'emperor', 'spacingGuild', 'beneGesserit', 'fremen', 'green', 'blue', 'yellow'}},
+    theSpiceMustFlow = {cost = 9, acquireBonus = {'+1 VP'}, reveal = {spice(1)}},
     -- base
     arrakisRecruiter = {cost = 2, agentIcons = {'blue'}, reveal = {persuasion(1), sword(1)}},
     assassinationMission = {cost = 1, reveal = {sword(1), solari(1)}},
@@ -249,7 +252,7 @@ local ImperiumCard = {
     gunThopter = {cost = 4, agentIcons = {'blue', 'yellow'}, reveal = {sword(3), 'may deploy 1x troop from garrison'}},
     gurneyHalleck = {cost = 6, agentIcons = {'blue'}, reveal = {persuasion(2), '-3 Sol -> +2 troops may deploy to conflict'}},
     imperialSpy = {factions = {'emperor'}, cost = 2, agentIcons = {'emperor'}, reveal = {persuasion(1), sword(1)}},
-    kwisatzHaderach = {factions = {'beneGesserit'}, cost = 8, agentIcons = {'Any'}, infiltrate = true},
+    kwisatzHaderach = {factions = {'beneGesserit'}, cost = 8, agentIcons = {'any'}, infiltrate = true},
     ladyJessica = {factions = {'beneGesserit'}, cost = 7, acquireBonus = {influence(nil, 1)}, agentIcons = {'beneGesserit', 'green', 'blue', 'yellow'}, reveal = {persuasion(3), sword(1)}},
     lietKynes = {factions = {'emperor', 'fremen'}, cost = 5, acquireBonus = {influence('emperor', 1)}, agentIcons = {'fremen', 'blue'}, reveal = {persuasion(perFremen(2))}},
     missionariaProtectiva = {factions = {'beneGesserit'}, cost = 1, agentIcons = {'blue'}, reveal = {persuasion(1)}},
@@ -363,7 +366,7 @@ function ImperiumCard._resolveCard(card)
     return cardInfo
 end
 
-function ImperiumCard.evaluateReveal(color, playedCards, revealedCards)
+function ImperiumCard.evaluateReveal(color, playedCards, revealedCards, artillery)
     local input = {
         color = color,
         playedCards = Helper.mapValues(playedCards, ImperiumCard._resolveCard),
@@ -381,6 +384,10 @@ function ImperiumCard.evaluateReveal(color, playedCards, revealedCards)
                 end
              end
         end
+    end
+    if artillery then
+        input.card = nil
+        sword(perSwordCard(1))(input, output)
     end
     log(output)
     return output

@@ -39,7 +39,8 @@ local InfluenceTrack = {
         beneGesserit = Helper.getHardcodedPositionFromGUID('33452e', -9.551374, 0.780000031, -5.21345472),
         fremen = Helper.getHardcodedPositionFromGUID('4c2bcc', -9.543688, 0.780000031, -10.6707687)
     },
-    influenceLevels = {}
+    influenceLevels = {},
+    actionsLocked = {},
 }
 
 ---
@@ -124,8 +125,13 @@ function InfluenceTrack.initInfluenceTracksLevels()
                 local actionName = "Progress on the " .. faction .. " influence track"
                 Helper.createAbsoluteButtonWithRoundness(anchor, 1, false, {
                     click_function = Helper.registerGlobalCallback(function (_, color, _)
-                        local rank = InfluenceTrack.getInfluenceTracksRank(faction, color)
-                        InfluenceTrack.changeInfluenceTracksRank(color, faction, i - rank)
+                        if not InfluenceTrack.actionsLocked[color] then
+                            local rank = InfluenceTrack.getInfluenceTracksRank(faction, color)
+                            InfluenceTrack.actionsLocked[color] = true
+                            InfluenceTrack.changeInfluenceTracksRank(color, faction, i - rank).doAfter(function ()
+                                InfluenceTrack.actionsLocked[color] = false
+                            end)
+                        end
                     end),
                     position = Vector(levelPosition.x, 0.7, levelPosition.z),
                     width = 1000,
@@ -246,9 +252,6 @@ function InfluenceTrack.challengeAlliance(faction)
     end
 
     if not Helper.tableContains(bestRankedPlayers, allianceOwner) then
-        log(allianceOwner)
-        log(bestRankedPlayers)
-
         local position = InfluenceTrack.allianceTokenInitialPositions[faction]
         InfluenceTrack.allianceTokens[faction].setPositionSmooth(position, false, false)
 
@@ -293,7 +296,7 @@ function InfluenceTrack.gainAlliance(faction, color)
     elseif faction == "spacingGuild" then
         Action.resource(color, "solari", 3)
     elseif faction == "beneGesserit" then
-        Action.drawIntrigue(color, 1)
+        Action.drawIntrigues(color, 1)
     elseif faction == "fremen" then
         Action.resource(color, "water", 1)
     else

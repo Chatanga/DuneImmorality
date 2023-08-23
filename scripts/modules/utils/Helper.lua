@@ -15,9 +15,9 @@ function Helper.registerEventListener(topic, listener)
         listeners = {}
         Helper.eventListenersByTopic[topic] = listeners
         --log("Adding Helper handle: " .. tostring(topic))
-        Helper["" .. topic] = function (...)
-            Helper.emitEvent(topic, ...)
-        end
+        --Helper["" .. topic] = function (...)
+        --    Helper.emitEvent(topic, ...)
+        --end
     end
     listeners[listener] = listener
     return listener
@@ -29,9 +29,9 @@ function Helper.unregisterEventListener(topic, listener)
     local listeners = Helper.eventListenersByTopic[topic]
     assert(listeners and listeners[listener])
     listeners[listener] = nil
-    if #Helper.eventListenersByTopic[topic] == 0 then
+    if #Helper.getKeys(listeners) == 0 then
         Helper.eventListenersByTopic[topic] = nil
-        Helper["" .. topic] = nil
+        -- Helper["" .. topic] = nil
     end
 end
 
@@ -484,23 +484,29 @@ function Helper.repeatMovingAction(object, count, action)
     local continuation = Helper.createContinuation()
     if count > 0 then
         action()
-        Wait.condition(function()
+        Helper.onceMotionless(object).doAfter(function ()
             Helper.repeatMovingAction(object, count - 1, action).doAfter(function (_)
                 continuation.run(object)
             end)
-        end, function()
-            -- Or resting?
-            return not object.isSmoothMoving()
         end)
     else
-        Wait.condition(function()
+        Helper.onceMotionless(object).doAfter(function ()
             continuation.run(object)
-        end, function()
-            -- Or resting?
-            return not object.isSmoothMoving()
         end)
     end
     return continuation
+end
+
+---
+function Helper.onceMotionless(object)
+    local continuation = Helper.createContinuation()
+    Wait.condition(function()
+        continuation.run(object)
+    end, function()
+        -- Or resting?
+        return not object.isSmoothMoving()
+    end)
+return continuation
 end
 
 -- Intended to be used in a coroutine.

@@ -51,6 +51,11 @@ function Utils.isIntrigueCard(object)
 end
 
 ---
+function Utils.isTech(object)
+    return object.hasTag("Tech")
+end
+
+---
 function Utils.assertIsPlayerColor(color)
     assert(color == "Green"
         or color == "Yellow"

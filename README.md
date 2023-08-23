@@ -56,7 +56,7 @@ Having launched `./listen.py` in another terminal will provide you with an immed
                 TurnControl >-(playerTurns, color)->
                     Playboard.setActivePlayer(phase, color)
                         [Hagal.activate(phase, color, playboard)
-                                Hagal.lateActivate(phase, color, playboard) -- En tandem avec leader as Rival.]
+                                Hagal.lateActivate(phase, color, playboard) -- with leader as Rival.]
                 TurnControl.startPhase(TurnControl.getNextPhase)
 
     TurnControl.endOfTurn
@@ -67,23 +67,28 @@ Having launched `./listen.py` in another terminal will provide you with an immed
 ## TODO (by priority)
 
 - Family atomics.
+- Add a rollback with dialog option to the research and tleilaxu tracks.
+- Add a default buy dialog for a tech, lacking any other option.
+- Consolidate the Action facade.
 - Endgame.
+
 - The Hagal house (with resources and difficulty levels).
 
-- Migrer les description dans GMNotes.
-- Restore translations.
-
-- Restore selectable combat music.
+- Migrer les description dans GMNotes (JSON?).
+- Restore translations (tokens included).
 
 - Blitz!
 - Arrakeen Scouts.
 
+- Restore selectable combat music.
+
 - Fanmade leaders.
 
+- Action cooldowns.
 - Introduce the graphic log?
 - Keep Module special, but unify everything else?
 - Decouple the tech effects / benefits?
 - Move the Tleilaxu track in its own module?
-- Where to put VP and how trash them?
+- Where to put combat VP and how trash them?
 - Explain font_size ratio / support.
 - Check for anchor and callback leaks.

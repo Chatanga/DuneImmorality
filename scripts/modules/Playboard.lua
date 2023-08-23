@@ -68,7 +68,8 @@ local Playboard = Helper.createClass(nil, {
             freighter = "e9096d",
             leaderPos = Helper.getHardcodedPositionFromGUID('66cdbb', -19.0, 1.25, 17.5),
             firstPlayerPosition = Helper.getHardcodedPositionFromGUID('346e0d', -14.0, 1.5, 19.7) + Vector(0, -0.4, 0),
-            startEndTurnButton = "895594"
+            startEndTurnButton = "895594",
+            nukeToken = "d5ff47",
         },
         Blue = {
             board = "77ca63",
@@ -120,7 +121,8 @@ local Playboard = Helper.createClass(nil, {
             freighter = "68e424",
             leaderPos = Helper.getHardcodedPositionFromGUID('681774', -19.0, 1.25506675, -5.5),
             firstPlayerPosition = Helper.getHardcodedPositionFromGUID('1fc559', -14.0, 1.501278, -3.3) + Vector(0, -0.4, 0),
-            startEndTurnButton = "9eeccd"
+            startEndTurnButton = "9eeccd",
+            nukeToken = "700023",
         },
         Green = {
             board = "0bbae1",
@@ -172,7 +174,8 @@ local Playboard = Helper.createClass(nil, {
             freighter = "34281d",
             leaderPos = Helper.getHardcodedPositionFromGUID('cf1486', 19.0, 1.18726385, 17.5),
             firstPlayerPosition = Helper.getHardcodedPositionFromGUID('59523d', 14.0, 1.45146358, 19.7) + Vector(0, -0.4, 0),
-            startEndTurnButton = "96aa58"
+            startEndTurnButton = "96aa58",
+            nukeToken = "0a22ec",
         },
         Yellow = {
             board = "fdd5f9",
@@ -224,7 +227,8 @@ local Playboard = Helper.createClass(nil, {
             freighter = "8fa76f",
             leaderPos = Helper.getHardcodedPositionFromGUID('a677e0', 19.0, 1.17902148, -5.5),
             firstPlayerPosition = Helper.getHardcodedPositionFromGUID('e9a44c', 14.0, 1.44851, -3.3) + Vector(0, -0.4, 0),
-            startEndTurnButton = "3d1b90"
+            startEndTurnButton = "3d1b90",
+            nukeToken = "7e10a9",
         }
     },
     playboards = {},
@@ -317,7 +321,7 @@ function Playboard.new(color, unresolvedContent, subState)
     playboard.supplyPark = playboard:createSupplyPark(centerPosition)
     playboard.techPark = playboard:createTechPark(centerPosition)
     playboard:generatePlayerScoreboardPositions()
-    playboard.scorePark = playboard:createPlayerScoreboardPark()
+    playboard.scorePark = playboard:createPlayerScorePark()
 
     playboard:createButtons()
 
@@ -366,13 +370,21 @@ function Playboard._staticSetUp(settings)
 
         if phase == "recall" then
             for color, playboard in pairs(Playboard._getPlayboards()) do
+                local minimicFilm = Playboard.hasTech(color, "minimicFilm")
+                local restrictedOrdnance = Playboard.hasTech(color, "restrictedOrdnance")
+                local councilSeat = Playboard.hasACouncilSeat(color)
+
                 playboard.revealed = false
-                playboard.persuasion:set(Playboard.hasACouncilSeat(color) and 2 or 0)
-                playboard.strength:set(0)
+                playboard.persuasion:set((councilSeat and 2 or 0) + (minimicFilm and 1 or 0))
+                playboard.strength:set((restrictedOrdnance and councilSeat) and 4 or 0)
                 -- TODO Query acquired tech tiles for specific persuasion / strength permanent effects.
+
+                playboard.content.board.clearButtons()
+                self.content.nukeToken.clearButtons()
+                playboard:createButtons()
+                -- TODO Send all played cards to the discard (general discard for intrigue cards).
+                -- TODO Flip any used tech.
             end
-            -- TODO Send all played cards to the discard (general discard for intrigue cards).
-            -- TODO Flip any used tech.
         end
     end)
 
@@ -660,7 +672,7 @@ function Playboard:createTechPark(centerPosition)
                 x = -x
             end
                 local z = (j - 2) * 2 + 0.4
-            local slot = Vector(x, 0.2, z) + centerPosition
+            local slot = Vector(x, 0.5, z) + centerPosition
             table.insert(slots, slot)
         end
     end
@@ -815,6 +827,7 @@ function Playboard:createExclusiveCallback(name, f)
         if self.color == color then
             -- Inhibit the buttons for a short time.
             self.content.board.clearButtons()
+            self.content.nukeToken.clearButtons()
             Wait.time(function()
                 self:createButtons()
             end, 0.3)
@@ -895,7 +908,7 @@ function Playboard:createButtons()
 
     -- function Playboard_onDoNothing(_, _, _) end
     board.createButton({
-        click_function = "NOP",
+        click_function = Helper.registerGlobalCallback(),
         label = I18N("agentTurn"),
         position = self:newSymmetricBoardPosition(-14.8, 0, -1),
         rotation = self:newSymmetricBoardRotation(0, -90, 0),
@@ -910,7 +923,7 @@ function Playboard:createButtons()
         click_function = self:createExclusiveCallback("onRevealHand", function ()
             self:onRevealHand()
         end),
-        label = I18N("revealHandButton"),
+        label = self.revealed and "Recalculate" or I18N("revealHandButton"),
         position = self:newSymmetricBoardPosition(-14.8, 0, -5),
         rotation = self:newSymmetricBoardRotation(0, -90, 0),
         width = 1600,
@@ -919,6 +932,20 @@ function Playboard:createButtons()
         color = self.color,
         font_color = fontColor
     })
+
+    self.content.nukeToken.createButton({
+        click_function = self:createExclusiveCallback("onRevealHand", function ()
+            self:nukeConfirm()
+        end),
+        tooltip = I18N('atomics'),
+        position = Vector(0, 0, 0),
+        width = 700,
+        height = 700,
+        scale = Vector(3, 3, 3),
+        font_size = 300,
+        font_color = {1, 1, 1, 100},
+        color = {0, 0, 0, 0}
+    })
 end
 
 ---
@@ -926,24 +953,17 @@ function Playboard:onRevealHand()
     local currentPlayer = TurnControl.getCurrentPlayer()
     if currentPlayer and currentPlayer ~= self.color then
         broadcastToColor(I18N("revealNotTurn"), self.color, "Pink")
-    elseif self:stillHavePlayableAgents() then
-        self:tryRevealHandEarly()
     else
-        self:revealHand()
+        if not self.revealed and self:stillHavePlayableAgents() then
+            self:tryRevealHandEarly()
+        else
+            self:revealHand()
+        end
     end
-end
-
----
-function Playboard.hasRevealed(color)
-    return Playboard.getPlayboard(color).revealed
 end
 
 ---
 function Playboard:tryRevealHandEarly()
-    if self.revealed then
-        return
-    end
-
     local origin = Playboard.getPlayboard(self.color):newSymmetricBoardPosition(-8, 0, -4.5)
 
     local board = self.content.board
@@ -989,17 +1009,30 @@ end
 
 ---
 function Playboard:revealHand()
-    local revealedCards = Helper.filter(Player[self.color].getHandObjects(), function (card)
+    local properCard = function (card)
         --[[
             We leave the sister card in the player's hand to simplify things and
             make clear to the player that the card must be manually revealed.
         ]]--
         return card.hasTag('Imperium') and card.getDescription() ~= "beneGesseritSister"
-    end)
-    local output = ImperiumCard.evaluateReveal(self.color, Park.getObjects(self.agentCardPark), revealedCards)
-    self.persuasion:change(output.persuasion or 0)
-    self.strength:change(output.sword or 0)
+    end
+
+    local revealedCards = Helper.filter(Player[self.color].getHandObjects(), properCard)
+    local alreadyRevealedCards = Helper.filter(Park.getObjects(self.revealCardPark), properCard)
+    local allRevealedCards = Helper.concatTables(revealedCards, alreadyRevealedCards)
+
+    local minimicFilm = Playboard.hasTech(self.color, "minimicFilm")
+    local restrictedOrdnance = Playboard.hasTech(self.color, "restrictedOrdnance")
+    local councilSeat = Playboard.hasACouncilSeat(self.color)
+    local artillery = Playboard.hasTech(self.color, "artillery")
+
+    local output = ImperiumCard.evaluateReveal(self.color, Park.getObjects(self.agentCardPark), allRevealedCards, artillery)
+
+    self.persuasion:set((output.persuasion or 0) + (councilSeat and 2 or 0) + (minimicFilm and 1 or 0))
+    self.strength:set((output.sword or 0) + ((restrictedOrdnance and councilSeat) and 4 or 0))
+
     Park.putObjects(revealedCards, self.revealCardPark)
+
     self.revealed = true
 end
 
@@ -1121,74 +1154,47 @@ function Playboard:resetDiscard()
 end
 
 ---
-function Playboard.activateButtons()
-    self.clearButtons()
-    self.createButton({
-        click_function = 'nukeConfirm',
-        label = i18n('atomics'),
-        function_owner = self,
-        position = {0, 0.1, 0},
-        rotation = {0, 0, 0},
-        width = 700,
-        height = 700,
+function Playboard:nukeConfirm()
+    self.content.nukeToken.clearButtons()
+    self.content.nukeToken.createButton({
+        click_function = Helper.registerGlobalCallback(),
+        label = I18N("atomicsConfirm"),
+        position = Vector(0, -0.1, 3.5),
+        width = 0,
+        height = 0,
         scale = Vector(3, 3, 3),
-        font_size = 300,
-        font_color = {1, 1, 1, 100},
+        font_size = 260,
+        font_color = {1, 0, 0, 100},
         color = {0, 0, 0, 0}
     })
-end
-
----
-function Playboard.nukeConfirm(_, color)
-    if self.hasTag(color) then
-        self.clearButtons()
-        self.createButton({
-            click_function = 'doNothing',
-            label = i18n("atomicsConfirm"),
-            function_owner = self,
-            position = {0, 0.2, -2},
-            rotation = {0, 0, 0},
-            width = 0,
-            height = 0,
-            scale = Vector(3, 3, 3),
-            font_size = 300,
-            font_color = {1, 0, 0, 100},
-            color = {0, 0, 0, 0}
-        })
-        self.createButton({
-            click_function = 'nukeImperiumRow',
-            label = i18n('yes'),
-            function_owner = self,
-            position = {-4, 0.2, 1},
-            rotation = {0, 0, 0},
-            width = 500,
-            height = 300,
-            scale = Vector(3, 3, 3),
-            font_size = 300,
-            font_color = {1, 1, 1},
-            color = "Green"
-        })
-        self.createButton({
-            click_function = 'cancelChoice',
-            label = i18n('no'),
-            function_owner = self,
-            position = {4, 0.2, 1},
-            rotation = {0, 0, 0},
-            width = 500,
-            height = 300,
-            scale = Vector(3, 3, 3),
-            font_size = 300,
-            font_color = {1, 1, 1},
-            color = "Red"
-        })
-    else
-        broadcastToColor(i18n("noTouch"), color, color)
-    end
-end
-
----
-function Playboard.cancelChoice(_)
-    activateButtons()
+    self.content.nukeToken.createButton({
+        click_function = self:createExclusiveCallback("confirmNuke", function ()
+            self.leader.atomics(self.color)
+            self:createButtons()
+        end),
+        label = I18N('yes'),
+        position = {-5, -0.1, 0},
+        rotation = {0, 0, 0},
+        width = 550,
+        height = 350,
+        scale = Vector(3, 3, 3),
+        font_size = 300,
+        font_color = {1, 1, 1},
+        color = "Green"
+    })
+    self.content.nukeToken.createButton({
+        click_function = self:createExclusiveCallback("cancelNuke", function ()
+            self:createButtons()
+        end),
+        label = I18N('no'),
+        position = Vector(5, -0.1, 0),
+        width = 550,
+        height = 350,
+        scale = Vector(3, 3, 3),
+        font_size = 300,
+        font_color = {1, 1, 1},
+        color = "Red"
+    })
 end
 
 ---
@@ -1329,7 +1335,6 @@ end
 
 ---
 function Playboard.getScoreTokens(color)
-    log(color)
     return Park.getObjects(Playboard.getPlayboard(color).scorePark)
 end
 
@@ -1347,7 +1352,7 @@ end
 function Playboard.hasTech(color, techName)
     local techs = Playboard.getPlayboard(color).techPark.zone.getObjects()
     for _, tech in ipairs(techs) do
-        if tech.hasTag(techName) then
+        if tech.getDescription() == techName then
             return true
         end
     end

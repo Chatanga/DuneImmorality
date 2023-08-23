@@ -148,7 +148,7 @@ function TechMarket._doAcquireTech(techTileStack, acquireCard, option, color)
         local negotiatorCount = #Park.getObjects(negotiation)
 
         adjustedTechCost = math.max(0, techCost - discountAmount - negotiatorCount)
-        recalledNegociatorCount = techCost - adjustedTechCost - discountAmount
+        recalledNegociatorCount = math.max(0, techCost - adjustedTechCost - discountAmount)
     else
         adjustedTechCost = math.max(0, techCost - discountAmount)
         recalledNegociatorCount = 0
@@ -169,6 +169,7 @@ function TechMarket._doAcquireTech(techTileStack, acquireCard, option, color)
                 Helper.moveCardFromZone(acquireCard.zone, above, Vector(0, 180, 0), true, false)
             end, 0.5)
         else
+            Helper.dump("acquireCard:delete()", acquireCard)
             acquireCard:delete()
         end
 

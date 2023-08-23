@@ -104,7 +104,7 @@ function ImperiumRow.nuke(color)
         })
     end
 
-    -- TODO
+    log("TODO")
 end
 
 return ImperiumRow

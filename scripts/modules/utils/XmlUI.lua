@@ -55,7 +55,7 @@ function XmlUI:fromUI(player, value, id)
     assert(false)
 end
 
----
+--- TODO Add translation.
 function XmlUI:toUI()
     local root =  XmlUI._findXmlElement(self.xml, self.id)
     assert(root, "Unknown id: " .. self.id)
