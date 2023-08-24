@@ -301,7 +301,7 @@ local ImperiumCard = {
     spiceTrader = {factions = {'fremen'}, cost = 4, agentIcons = {'blue', 'yellow'}, reveal = {persuasion(2), sword(1)}},
     treachery = {cost = 6, agentIcons = {'emperor', 'spacingGuild', 'beneGesserit', 'fremen'}, reveal = {'+2 troops and deploy them to conflict'}},
     truthsayer = {factions = {'emperor', 'beneGesserit'}, cost = 3, agentIcons = {'emperor', 'beneGesserit', 'green'}, reveal = {persuasion(1), sword(1)}},
-    waterPeddler = {cost = 1, acquireBonus = {water(1)}, reveal = {water(1)}},
+    waterPeddlersUnion = {cost = 1, acquireBonus = {water(1)}, reveal = {water(1)}},
     webOfPower = {factions = {'beneGesserit'}, cost = 4, agentIcons = {'beneGesserit'}, infiltrate = true, reveal = {persuasion(1), influence(nil, 1)}},
     weirdingWay = {factions = {'beneGesserit'}, cost = 3, agentIcons = {'blue', 'yellow'}, reveal = {persuasion(1), sword(2)}},
     -- immortality
@@ -391,6 +391,11 @@ function ImperiumCard.evaluateReveal(color, playedCards, revealedCards, artiller
     end
     log(output)
     return output
+end
+
+function ImperiumCard.getTleilaxuCardCost(cardName)
+    local card = ImperiumCard._resolveCard(cardName)
+    return card.cost
 end
 
 return ImperiumCard

@@ -69,7 +69,9 @@ function TechMarket._staticSetUp()
         AcquireCard.new(zone, "Tech", TechMarket["acquireTech" .. tostring(i)])
     end
 
-    Deck.generateTechDeck(TechMarket.techSlots)
+    Deck.generateTechDeck(TechMarket.techSlots).doAfter(function (deck)
+        deck.interactable = false
+    end)
 
     Helper.registerEventListener("agentSent", function (color, spaceName)
         TechMarket.acquireTechOptions = {}
@@ -113,7 +115,7 @@ function TechMarket.acquireTech3(acquireCard, color)
 end
 
 ---
-function TechMarket.acquireTech(stackIndex, acquireCard, color)
+function TechMarket.acquireTech_Later(stackIndex, acquireCard, color)
     local techTileStack = TechMarket.getTechTileStack(stackIndex)
     if techTileStack.topCard then
         local options = Helper.getKeys(TechMarket.acquireTechOptions)
@@ -130,6 +132,31 @@ function TechMarket.acquireTech(stackIndex, acquireCard, color)
         end
     else
         log("No tiles!")
+    end
+end
+
+---
+function TechMarket.acquireTech(stackIndex, acquireCard, color)
+    local techTileStack = TechMarket.getTechTileStack(stackIndex)
+    if techTileStack.topCard then
+        local techName = techTileStack.topCard.getDescription()
+
+        local continuation = Helper.createContinuation()
+
+        Playboard.grantTechTile(color, techTileStack.topCard)
+        if techTileStack.otherCards then
+            Wait.time(function ()
+                local above = acquireCard.zone.getPosition() + Vector(0, 1, 0)
+                local card = Helper.moveCardFromZone(acquireCard.zone, above, Vector(0, 180, 0), true, false)
+                Helper.onceMotionless(card).doAfter(function ()
+                    continuation.run(card)
+                end)
+            end, 0.5)
+        end
+
+        TechMarket.applyBuyEffect(color, techName)
+
+        return continuation
     end
 end
 
@@ -156,6 +183,7 @@ function TechMarket._doAcquireTech(techTileStack, acquireCard, option, color)
 
     local leader = Playboard.getLeader(color)
     if leader.resource(color, optionDetails.resourceType, -adjustedTechCost) then
+        local continuation = Helper.createContinuation()
 
         local supply = Playboard.getSupplyPark(color)
         Park.transfert(recalledNegociatorCount, negotiation, supply)
@@ -166,15 +194,19 @@ function TechMarket._doAcquireTech(techTileStack, acquireCard, option, color)
         if techTileStack.otherCards then
             Wait.time(function ()
                 local above = acquireCard.zone.getPosition() + Vector(0, 1, 0)
-                Helper.moveCardFromZone(acquireCard.zone, above, Vector(0, 180, 0), true, false)
+                local card = Helper.moveCardFromZone(acquireCard.zone, above, Vector(0, 180, 0), true, false)
+                Helper.onceMotionless(card).doAfter(function ()
+                    continuation.run(card)
+                end)
             end, 0.5)
-        else
-            Helper.dump("acquireCard:delete()", acquireCard)
-            acquireCard:delete()
         end
 
         TechMarket.applyBuyEffect(color, techName)
+
+        return continuation
     end
+
+    return nil
 end
 
 ---

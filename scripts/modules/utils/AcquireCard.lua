@@ -62,12 +62,23 @@ end
 function AcquireCard:_createButton(acquire)
     if self.callbackName then
         Helper.unregisterGlobalCallback(self.callbackName)
+        self.callbackName = nil
     end
     local cardCount = Helper.getCardCount(Helper.getDeckOrCard(self.zone))
-    local height = 0.7 + 0.1 + cardCount * 0.01
-    self.callbackName = Helper.createAreaButton(self.zone, self.anchor, height, I18N("acquireButton"), function (_, color)
-        acquire(self, color)
-    end)
+    if cardCount > 0 then
+        local height = 0.7 + 0.1 + cardCount * 0.01
+        self.callbackName = Helper.createAreaButton(self.zone, self.anchor, height, I18N("acquireButton"), function (_, color)
+            if not self.disabled then
+                local continuation = acquire(self, color)
+                if continuation then
+                    self.disabled = true
+                    continuation.doAfter(function ()
+                        self.disabled = false
+                    end)
+                end
+            end
+        end)
+    end
 end
 
 return AcquireCard

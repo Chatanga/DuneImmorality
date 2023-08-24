@@ -224,7 +224,7 @@ function Action.gainVictoryPoint(color, name)
             ixianEngineerBag = "3371d8",
             flagship = "366237",
             spySatellites = "73a68f",
-            choamShares = "c530e6"
+            choamSharess = "c530e6"
         },
         immortality = {
             scientificBreakthrough = "d22031",

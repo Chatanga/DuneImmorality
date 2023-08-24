@@ -59,6 +59,7 @@ function Park.createPark(name, slots, rotation, zone, tags, description, locked,
         rotation = rotation,
         zone = zone,
         tags = tags,
+        tagUnion = false,
         description = description,
         locked = locked,
         smooth = smooth
@@ -187,7 +188,7 @@ function Park.getObjects(park)
         local objectsInTransit = Helper.getSharedTable(park.name)
         if not Helper.tableContains(objectsInTransit, object) then
             local isOneOfThem =
-                Helper.hasAllTags(object, park.tags) and
+                (park.tagUnion and Helper.hasAnyTag(object, park.tags) or Helper.hasAllTags(object, park.tags)) and
                 (not park.description or park.description == object.getDescription())
             if isOneOfThem then
                 table.insert(objects, object)

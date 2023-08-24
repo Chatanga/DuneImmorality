@@ -2,6 +2,7 @@ local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local Park = require("utils.Park")
 local I18N = require("utils.I18N")
+local Set = require("utils.Set")
 
 local Resource = Module.lazyRequire("Resource")
 local TleilaxuResearch = Module.lazyRequire("TleilaxuResearch")
@@ -13,6 +14,7 @@ local Hagal = Module.lazyRequire("Hagal")
 local Leader = Module.lazyRequire("Leader")
 local Combat = Module.lazyRequire("Combat")
 local ImperiumCard = Module.lazyRequire("ImperiumCard")
+local IntrigueCard = Module.lazyRequire("IntrigueCard")
 
 local Playboard = Helper.createClass(nil, {
     ALL_RESOURCE_NAMES = { "spice", "water", "solari", "persuasion", "strength" },
@@ -382,6 +384,7 @@ function Playboard._staticSetUp(settings)
                 playboard.content.board.clearButtons()
                 self.content.nukeToken.clearButtons()
                 playboard:createButtons()
+
                 -- TODO Send all played cards to the discard (general discard for intrigue cards).
                 -- TODO Flip any used tech.
             end
@@ -429,6 +432,10 @@ function Playboard._staticSetUp(settings)
                             font_color = Color.fromString("White")
                         })
                     end
+
+                    playboard.alreadyPlayedCards = Helper.filter(Park.getObjects(playboard.agentCardPark), function (card)
+                        return card.hasTag('ImperiumCard') or card.hasTag('ImperiumCard')
+                    end)
                 end
             end
         end
@@ -591,7 +598,8 @@ function Playboard:createCardPark(globalOffset)
         table.insert(slots, origin + Vector(i * step, 0, 0))
     end
 
-    local park = Park.createCommonPark({ "Imperium" }, slots, Vector(2.4, 0.5, 3.2), Vector(0, 180, 0))
+    local park = Park.createCommonPark({ "Imperium", "Intrigue" }, slots, Vector(2.4, 0.5, 3.2), Vector(0, 180, 0))
+    park.tagUnion = true
     park.smooth = false
     return park
 end
@@ -1009,6 +1017,14 @@ end
 
 ---
 function Playboard:revealHand()
+    local playedIntrigues = Helper.filter(Park.getObjects(self.agentCardPark), function (card)
+        return card.hasTag('Intrigue')
+    end)
+
+    local playedCards = Helper.filter(Park.getObjects(self.agentCardPark), function (card)
+        return card.hasTag('Imperium')
+    end)
+
     local properCard = function (card)
         --[[
             We leave the sister card in the player's hand to simplify things and
@@ -1026,10 +1042,11 @@ function Playboard:revealHand()
     local councilSeat = Playboard.hasACouncilSeat(self.color)
     local artillery = Playboard.hasTech(self.color, "artillery")
 
-    local output = ImperiumCard.evaluateReveal(self.color, Park.getObjects(self.agentCardPark), allRevealedCards, artillery)
+    local output1 = IntrigueCard.evaluatePlot(self.color, playedIntrigues, allRevealedCards, artillery)
+    local output2 = ImperiumCard.evaluateReveal(self.color, playedCards, allRevealedCards, artillery)
 
-    self.persuasion:set((output.persuasion or 0) + (councilSeat and 2 or 0) + (minimicFilm and 1 or 0))
-    self.strength:set((output.sword or 0) + ((restrictedOrdnance and councilSeat) and 4 or 0))
+    self.persuasion:set((output1.persuasion or 0) + (output2.persuasion or 0) + (councilSeat and 2 or 0) + (minimicFilm and 1 or 0))
+    self.strength:set((output2.sword or 0) + ((restrictedOrdnance and councilSeat) and 4 or 0))
 
     Park.putObjects(revealedCards, self.revealCardPark)
 
@@ -1058,6 +1075,17 @@ end
 ---
 function Playboard:stillHavePlayableAgents()
     return #Park.getObjects(self.agentPark) > 0
+end
+
+---
+function Playboard.getCardsPlayedThisTurn(color)
+    local playboard = Playboard.getPlayboard(color)
+
+    local playedCards = Helper.filter(Park.getObjects(self.agentCardPark), function (card)
+        return card.hasTag('Imperium') or card.hasTag('Intrigue')
+    end)
+
+    return Set.new(playedCards) - Set.new(playboard.alreadyPlayedCards)
 end
 
 ---

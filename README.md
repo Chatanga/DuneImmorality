@@ -67,14 +67,14 @@ Having launched `./listen.py` in another terminal will provide you with an immed
 ## TODO (by priority)
 
 - Family atomics.
+- Trash remaining combat VP.
 - Add a rollback with dialog option to the research and tleilaxu tracks.
-- Add a default buy dialog for a tech, lacking any other option.
-- Consolidate the Action facade.
-- Endgame.
+- Consolidate the Action facade (with basic logging).
+- Endgame activation.
 
 - The Hagal house (with resources and difficulty levels).
 
-- Migrer les description dans GMNotes (JSON?).
+- Migrate description in GMNotes.
 - Restore translations (tokens included).
 
 - Blitz!
@@ -84,11 +84,12 @@ Having launched `./listen.py` in another terminal will provide you with an immed
 
 - Fanmade leaders.
 
-- Action cooldowns.
+## Later
+
+- Restore tech cost (with a default buy dialog when other options are lacking).
+- Fix the 6 tech park saturation.
 - Introduce the graphic log?
 - Keep Module special, but unify everything else?
-- Decouple the tech effects / benefits?
 - Move the Tleilaxu track in its own module?
-- Where to put combat VP and how trash them?
-- Explain font_size ratio / support.
+- Workaround the font_size ratio / support for the boards.
 - Check for anchor and callback leaks.

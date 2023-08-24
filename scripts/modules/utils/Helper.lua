@@ -525,10 +525,17 @@ function Helper.createContinuation()
     continuation.actions = {}
 
     continuation.doAfter = function (action)
-        table.insert(continuation.actions, action)
+        assert(type(action) == 'function')
+        if continuation.done then
+            action(continuation.parameters)
+        else
+            table.insert(continuation.actions, action)
+        end
     end
 
     continuation.run = function (parameters)
+        continuation.done = true
+        continuation.parameters = parameters
         for _, action in ipairs(continuation.actions) do
             action(parameters)
         end
@@ -790,6 +797,16 @@ function Helper.hasAllTags(object, tags)
         end
     end
     return true
+end
+
+---
+function Helper.hasAnyTag(object, tags)
+    for _, tag in ipairs(tags) do
+        if object.hasTag(tag) then
+            return true
+        end
+    end
+    return false
 end
 
 ---

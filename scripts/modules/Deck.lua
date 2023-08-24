@@ -92,7 +92,7 @@ local Deck = {
             imperialBashar = 1,
             jamis = 1,
             landingRights = 1,
-            waterPeddler = 1,
+            waterPeddlersUnion = 1,
             treachery = 2,
             truthsayer = 2,
             spiceTrader = 1,
@@ -172,26 +172,26 @@ local Deck = {
             dispatchAnEnvoy = 1,
             infiltrate = 1,
             knowTheirWays = 1,
-            masterTacitian = 3,
-            planWithinPlans = 1,
+            masterTactician = 3,
+            plansWithinPlans = 1,
             privateArmy = 2,
             doubleCross = 1,
-            concilorsDispensiation = 2,
+            councilorsDispensation = 2,
             cornerTheMarket = 1,
             charisma = 1,
             calculatedHire = 1,
-            choamShare = 1,
+            choamShares = 1,
             bypassProtocol = 1,
             recruitmentMission = 1,
             reinforcements = 1,
             binduSuspension = 1,
-            secretOfTheSiterhood = 1,
+            secretOfTheSisterhood = 1,
             rapidMobilization = 1,
             stagedIncident = 1,
             theSleeperMustAwaken = 1,
             tiebreaker = 1,
             toTheVictor = 1,
-            waterPeedelsUnion = 1,
+            waterPeedlersUnion = 1,
             windfall = 1,
             waterOfLife = 1,
             urgentMission = 1,
@@ -498,7 +498,7 @@ function Deck.generateTechDeck(deckZones)
 
             remaining = remaining - 1
             if remaining == 0 then
-                continuation.run()
+                continuation.run(deck)
             end
         end)
     end

@@ -6,31 +6,9 @@ local Deck = Module.lazyRequire("Deck")
 local Playboard = Module.lazyRequire("Playboard")
 local TleilaxuResearch = Module.lazyRequire("TleilaxuResearch")
 local Action = Module.lazyRequire("Action")
+local ImperiumCard = Module.lazyRequire("ImperiumCard")
 
-local TleilaxuRow = {
-    tleilaxuCardCostByName = {
-        beguilingPheromones = 3,
-        dogchair = 2,
-        contaminator = 1,
-        corrinoGenes = 1,
-        faceDancer = 2,
-        faceDancerInitiate = 1,
-        fromTheTanks = 2,
-        ghola = 3,
-        guildImpersonator = 2,
-        industrialEspionage = 1,
-        scientificBreakthrough = 3,
-        sligFarmer = 2,
-        stitchedHorror = 3,
-        subjectX137 = 2,
-        tleilaxuInfiltrator = 2,
-        twistedMentat = 4,
-        unnaturalReflexes = 3,
-        usurper = 4,
-        piterGeniusAdvisor = 3,
-        reclaimedForces = 3
-    }
-}
+local TleilaxuRow = {}
 
 ---
 function TleilaxuRow.onLoad(state)
@@ -90,7 +68,7 @@ function TleilaxuRow.acquireTleilaxuCard(indexInRow, color)
     local acquireCard = TleilaxuRow.acquireCards[indexInRow]
     local card = Helper.getCard(acquireCard.zone)
     local cardName = card.getDescription()
-    local price = TleilaxuRow.tleilaxuCardCostByName[cardName]
+    local price = ImperiumCard.getTleilaxuCardCost(cardName)
     assert(price, "Unknown tleilaxu card: " .. cardName)
     assert((cardName == "reclaimedForces") == (indexInRow == 3))
 
