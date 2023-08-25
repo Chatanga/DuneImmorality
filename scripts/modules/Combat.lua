@@ -79,18 +79,16 @@ function Combat._staticSetUp(settings)
             local forces = Combat._calculateCombatForces()
             local turnSequence = Combat._calculateOutcomeTurnSequence(forces)
             TurnControl.setPhaseTurnSequence(turnSequence)
-            -- TODO Add control flag if appropriate.
         elseif phase == "recall" then
             for _, object in ipairs(Combat.victoryPointTokenZone.getObjects()) do
                 if Utils.isVictoryPointToken(object) then
-                    -- TODO Send to trash instead.
-                    object.destruct()
+                    Utils.trash(object)
                 end
             end
             for _, object in ipairs(Combat.combatCenterZone.getObjects()) do
                 for _, color in ipairs(Playboard.getPlayboardColors()) do
                     if Utils.isTroop(object, color) then
-                        Park.putObject(object, Playboard.getSupplyPark())
+                        Park.putObject(object, Playboard.getSupplyPark(color))
                     elseif Utils.isDreadnought(object, color) then
                         Park.putObject(object, Combat.dreadnoughtParks[color])
                     end

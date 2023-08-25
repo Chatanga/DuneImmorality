@@ -361,7 +361,7 @@ local ImperiumCard = {
 function ImperiumCard._resolveCard(card)
     local cardName = card.getDescription()
     local cardInfo = ImperiumCard[cardName]
-    assert(cardInfo, "Unknown card: " .. cardName)
+    assert(cardInfo, "Unknown card: " .. tostring(cardName))
     cardInfo.name = cardName
     return cardInfo
 end
@@ -393,8 +393,8 @@ function ImperiumCard.evaluateReveal(color, playedCards, revealedCards, artiller
     return output
 end
 
-function ImperiumCard.getTleilaxuCardCost(cardName)
-    local card = ImperiumCard._resolveCard(cardName)
+function ImperiumCard.getTleilaxuCardCost(card)
+    local card = ImperiumCard._resolveCard(card)
     return card.cost
 end
 

@@ -777,10 +777,13 @@ end
 ---
 function MainBoard.hasAgentInSpace(spaceName, color)
     local space = MainBoard.spaces[spaceName]
-    assert(space, "Unknow space: " .. spaceName)
-    for _, object in ipairs(space.zone.getObjects()) do
-        if Utils.isAgent(object, color) then
-            return true
+    -- Avoid since it depends on the active extensions.
+    --assert(space, "Unknow space: " .. spaceName)
+    if space then
+        for _, object in ipairs(space.zone.getObjects()) do
+            if Utils.isAgent(object, color) then
+                return true
+            end
         end
     end
     return false

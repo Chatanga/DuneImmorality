@@ -44,10 +44,16 @@ Leader.vladimirHarkonnen = Helper.createClass(Leader, {
         tokenBag.destruct()
     end,
 
-    instruct = function (phase, color)
+    instruct = function (phase, isActivePlayer)
         -- Masterstroke
         if phase == "gameStart" then
-            return "Secretly choose 2 Factions."
+            if isActivePlayer then
+                return "Secretly choose 2 Factions."
+            else
+                return "Wait for vladimir Harkonnen\nto secretly choose\nits two factions."
+            end
+        else
+            return Leader.instruct(phase, isActivePlayer)
         end
     end,
 
@@ -181,16 +187,16 @@ Leader.ilesaEcaz = Helper.createClass(Leader, {
         return Action.resource(color, "solari", -1) and Action.acquireFoldspaceCard(color)
     end,
 
-    instruct = function (phase, color)
+    instruct = function (phase, isActivePlayer)
         --- One step ahead
         if phase == "roundStart" then
-            if Action.context.color == color then
+            if isActivePlayer then
                 return "Set aside a card\nfrom your hand."
             else
                 return "Wait for Ilesa Ecaz\nto set aside a card\nfrom her hand."
             end
         else
-            return Leader.instruct(phase, color)
+            return Leader.instruct(phase, isActivePlayer)
         end
     end,
 })
@@ -293,10 +299,16 @@ Leader.hundroMoritani = Helper.createClass(Leader, {
         end, 1)
     end,
 
-    instruct = function (phase, color)
+    instruct = function (phase, isActivePlayer)
         -- Intelligence
         if phase == "gameStart" then
-            return "Keep one intrigue and put the other on top of the intrigue deck."
+            if isActivePlayer then
+                return "Keep one intrigue\nand put the other\non top of the intrigue deck."
+            else
+                return "Wait for Hundro Moritani\nto choose between\nits two intrigues."
+            end
+        else
+            return Leader.instruct(phase, isActivePlayer)
         end
     end,
 

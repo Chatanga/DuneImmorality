@@ -164,9 +164,11 @@ function TleilaxuResearch.generateReseachButtons()
             local tokenCellPosition = TleilaxuResearch.worlPositionToResearchSpace(token.getPosition())
             local jump = cellPosition - tokenCellPosition
             if jump.x == 1 and math.abs(jump.z) <= 1 then
-                TleilaxuResearch.advanceResearch(color, jump)
+                TleilaxuResearch._advanceResearch(color, jump, true)
             else
-                log("One cell at a time!")
+                Player[color].showConfirmDialog("Forbidden move. Do you confirm it neverless?", function()
+                    TleilaxuResearch._advanceResearch(color, jump, false)
+                end)
             end
         end)
     end
@@ -184,6 +186,11 @@ end
 
 ---
 function TleilaxuResearch.advanceResearch(color, jump)
+    TleilaxuResearch._advanceResearch(color, jump, true)
+end
+
+---
+function TleilaxuResearch._advanceResearch(color, jump, withBenefits)
     local leader = Playboard.getLeader(color)
     local researchToken = Playboard.getContent(color).researchToken
     local cellPosition = TleilaxuResearch.worlPositionToResearchSpace(researchToken.getPosition())
@@ -192,37 +199,38 @@ function TleilaxuResearch.advanceResearch(color, jump)
     local p = TleilaxuResearch.researchSpaceToWorldPosition(newCellPosition)
     researchToken.setPositionSmooth(p + Vector(0, 1, 0.25))
 
-    Helper.onceMotionless(researchToken).doAfter(function ()
-        local researchCellBenefits = TleilaxuResearch.findResearchCellBenefits(newCellPosition)
-        assert(researchCellBenefits, "No cell benefits at cell " .. tostring(newCellPosition))
+    if withBenefits then
+        Helper.onceMotionless(researchToken).doAfter(function ()
+            local researchCellBenefits = TleilaxuResearch.findResearchCellBenefits(newCellPosition)
+            assert(researchCellBenefits, "No cell benefits at cell " .. tostring(newCellPosition))
 
-        for _, resource in ipairs({"spice", "solari"}) do
-            if researchCellBenefits[resource] then
-                leader.resource(color, resource, researchCellBenefits[resource])
-            end
-        end
-
-        if researchCellBenefits.specimen then
-            leader.troops(color, "supply", "tanks", 1)
-        end
-
-        if researchCellBenefits.beetle then
-            leader.beetle(color, 1)
-        end
-
-        if researchCellBenefits.research then
-            leader.research(color, Vector(1, 0, -Helper.signum(newCellPosition.z)))
-        end
-
-        if researchCellBenefits.solariToBeetle then
-            Player[color].showConfirmDialog(I18N("confirmSolarisToBeetles"), function()
-                if leader.resource(color, "solari", -7) then
-                    local tleilaxToken = Playboard.getContent(color).tleilaxToken
-                    TleilaxuResearch.advanceTleilax(color)
+            for _, resource in ipairs({"spice", "solari"}) do
+                if researchCellBenefits[resource] then
+                    leader.resource(color, resource, researchCellBenefits[resource])
                 end
-            end)
-        end
-    end)
+            end
+
+            if researchCellBenefits.specimen then
+                leader.troops(color, "supply", "tanks", 1)
+            end
+
+            if researchCellBenefits.beetle then
+                leader.beetle(color, 1)
+            end
+
+            if researchCellBenefits.research then
+                leader.research(color, Vector(1, 0, -Helper.signum(newCellPosition.z)))
+            end
+
+            if researchCellBenefits.solariToBeetle then
+                Player[color].showConfirmDialog(I18N("confirmSolarisToBeetles"), function()
+                    if leader.resource(color, "solari", -7) then
+                        TleilaxuResearch.advanceTleilax(color, 1)
+                    end
+                end)
+            end
+        end)
+    end
 end
 
 ---
@@ -267,48 +275,51 @@ function TleilaxuResearch.generateTleilaxButtons()
             local tokenLevel = TleilaxuResearch.worlPositionToTleilaxSpace(token.getPosition())
             local jump = level - tokenLevel
             if jump == 1 then
-                TleilaxuResearch.advanceTleilax(color)
+                TleilaxuResearch._advanceTleilax(color, jump, true)
             else
-                log("One cell at a time!")
+                Player[color].showConfirmDialog("Forbidden move. Do you confirm it neverless?", function()
+                    TleilaxuResearch._advanceTleilax(color, jump, false)
+                end)
             end
         end)
     end
 end
 
 ---
-function TleilaxuResearch.advanceTleilax(color)
+function TleilaxuResearch.advanceTleilax(color, jump)
+    TleilaxuResearch._advanceTleilax(color, jump, true)
+end
+
+---
+function TleilaxuResearch._advanceTleilax(color, jump, withBenefits)
     local leader = Playboard.getLeader(color)
     local tleilaxToken = Playboard.getContent(color).tleilaxToken
     local level = TleilaxuResearch.worlPositionToTleilaxSpace(tleilaxToken.getPosition())
-    local newLevel = level + 1
+    local newLevel = level + jump
 
     local p = TleilaxuResearch.tleilaxSpaceToWorldPosition(newLevel)
     tleilaxToken.setPositionSmooth(p + Vector(0, 1, 0.25))
 
-    local continuation = Helper.createContinuation()
+    if withBenefits then
+        Helper.onceMotionless(tleilaxToken).doAfter(function ()
+            local researchLevelBenefits = TleilaxuResearch.tleilaxLevelBenefits[newLevel] or {}
+            assert(researchLevelBenefits, "No level benefits at level " .. tostring(newLevel))
 
-    Helper.onceMotionless(tleilaxToken).doAfter(function ()
-        local researchLevelBenefits = TleilaxuResearch.tleilaxLevelBenefits[newLevel] or {}
-        assert(researchLevelBenefits, "No level benefits at level " .. tostring(newLevel))
+            if researchLevelBenefits.intrigue then
+                leader.drawIntrigues(color, 1)
+            end
 
-        if researchLevelBenefits.intrigue then
-            leader.drawIntrigues(color, 1)
-        end
+            if researchLevelBenefits.victoryToken then
+                leader.gainVictoryPoint(color, "tleilax")
+            end
 
-        if researchLevelBenefits.victoryToken then
-            leader.gainVictoryPoint(color, "tleilax")
-        end
-
-        if researchLevelBenefits.spiceBonus then
-            local amount = TleilaxuResearch.spiceBonus:get()
-            leader.resource(color, "spice", amount)
-            TleilaxuResearch.spiceBonus:set(0)
-        end
-
-        continuation.run(tleilaxToken)
-    end)
-
-    return continuation
+            if researchLevelBenefits.spiceBonus then
+                local amount = TleilaxuResearch.spiceBonus:get()
+                leader.resource(color, "spice", amount)
+                TleilaxuResearch.spiceBonus:set(0)
+            end
+        end)
+    end
 end
 
 ---

@@ -16,6 +16,7 @@ local allModules = Module.registerModules({
     Combat = require("Combat"),
     CommercialTrack = require("CommercialTrack"),
     Deck = require("Deck"),
+    ScoreBoard = require("ScoreBoard"),
     Hagal = require("Hagal"),
     ImperiumCard = require("ImperiumCard"),
     ImperiumRow = require("ImperiumRow"),
@@ -101,6 +102,7 @@ function onLoad(scriptState)
     --Module.callOnAllRegisteredModules("onLoad", state)
     -- Order matter, now that we reload with "staticSetUp" (for the same reason setUp is ordered too).
     allModules.Deck.onLoad(state)
+    allModules.ScoreBoard.onLoad(state)
     allModules.Playboard.onLoad(state)
     allModules.Combat.onLoad(state)
     allModules.LeaderSelection.onLoad(state)
@@ -186,6 +188,7 @@ function setUp(newSettings)
     end
 
     allModules.Deck.setUp(settings)
+    allModules.ScoreBoard.setUp(settings)
     allModules.Playboard.setUp(settings, activeOpponents)
     allModules.Combat.setUp(settings)
     allModules.LeaderSelection.setUp(settings, activeOpponents)

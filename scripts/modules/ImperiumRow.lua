@@ -5,6 +5,7 @@ local AcquireCard = require("utils.AcquireCard")
 local Deck = Module.lazyRequire("Deck")
 local Playboard = Module.lazyRequire("Playboard")
 local Action = Module.lazyRequire("Action")
+local Utils = Module.lazyRequire("Utils")
 
 local ImperiumRow = {}
 
@@ -40,19 +41,17 @@ end
 
 ---
 function ImperiumRow._staticSetUp()
-    ImperiumRow.reseveAcquireCards = AcquireCard.new(ImperiumRow.reservationSlotZone, "Imperium", nil)
-    ImperiumRow.acquireCards = {}
+    AcquireCard.new(ImperiumRow.reservationSlotZone, "Imperium", nil)
     for i, zone in ipairs(ImperiumRow.slotZones) do
-        local acquireCard = AcquireCard.new(zone, "Imperium", function (_, color)
+        AcquireCard.new(zone, "Imperium", function (_, color)
             Action.acquireImperiumCard(color, i)
         end)
-        table.insert(ImperiumRow.acquireCards, acquireCard)
     end
 end
 
 ---
 function ImperiumRow.acquireReservedImperiumCard(color)
-    local card = Helper.getCard(ImperiumRow.reseveAcquireCards.zone)
+    local card = Helper.getCard(ImperiumRow.reservationSlotZone)
     if card then
         Playboard.giveCard(color, card, false)
         return true
@@ -63,15 +62,11 @@ end
 
 ---
 function ImperiumRow.reserveImperiumCard(indexInRow)
-    local acquireCard = ImperiumRow.acquireCards[indexInRow]
-    local card = Helper.getCard(acquireCard.zone)
+    local zone = ImperiumRow.slotZones[indexInRow]
+    local card = Helper.getCard(zone)
     if card then
-        -- Simply reserve the card.
         card.setPosition(ImperiumRow.reservationSlotZone.getPosition())
-
-        -- Replenish the slot in the row.
-        Helper.moveCardFromZone(ImperiumRow.deckZone, acquireCard.zone.getPosition(), Vector(0, 180, 0), false, false)
-
+        ImperiumRow._replenish(indexInRow)
         return true
     else
         return false
@@ -80,14 +75,11 @@ end
 
 ---
 function ImperiumRow.acquireImperiumCard(indexInRow, color)
-    local acquireCard = ImperiumRow.acquireCards[indexInRow]
-    local card = Helper.getCard(acquireCard.zone)
+    local zone = ImperiumRow.slotZones[indexInRow]
+    local card = Helper.getCard(zone)
     if card then
         Playboard.giveCard(color, card, false)
-
-        -- Replenish the slot in the row.
-        Helper.moveCardFromZone(ImperiumRow.deckZone, acquireCard.zone.getPosition(), Vector(0, 180, 0), false, false)
-
+        ImperiumRow._replenish(indexInRow)
         return true
     else
         return false
@@ -104,7 +96,19 @@ function ImperiumRow.nuke(color)
         })
     end
 
-    log("TODO")
+    for i, zone in ipairs(ImperiumRow.slotZones) do
+        local card = Helper.getCard(zone)
+        if card then
+            Utils.trash(card)
+            ImperiumRow._replenish(i)
+        end
+    end
+end
+
+---
+function ImperiumRow._replenish(indexInRow)
+    local position = ImperiumRow.slotZones[indexInRow].getPosition()
+    Helper.moveCardFromZone(ImperiumRow.deckZone, position, Vector(0, 180, 0), false, false)
 end
 
 return ImperiumRow

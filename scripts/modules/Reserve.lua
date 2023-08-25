@@ -4,6 +4,7 @@ local AcquireCard = require("utils.AcquireCard")
 
 local Deck = Module.lazyRequire("Deck")
 local Playboard = Module.lazyRequire("Playboard")
+local ScoreBoard = Module.lazyRequire("ScoreBoard")
 
 local Reserve = {}
 
@@ -47,9 +48,7 @@ end
 
 ---
 function Reserve.acquireTheSpiceMustFlow(acquireCard, color)
-    Playboard.giveCardFromZone(color, acquireCard.zone, false)
-    local theSpiceMustFlowZoneVictoryTokenBag = getObjectFromGUID("43c7b5")
-    Playboard.grantScoreTokenFromBag(color, theSpiceMustFlowZoneVictoryTokenBag)
+    ScoreBoard.gainVictoryPoint(color, "theSpiceMustFlow")
 end
 
 return Reserve

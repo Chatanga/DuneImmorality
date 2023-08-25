@@ -67,8 +67,8 @@ end
 function TleilaxuRow.acquireTleilaxuCard(indexInRow, color)
     local acquireCard = TleilaxuRow.acquireCards[indexInRow]
     local card = Helper.getCard(acquireCard.zone)
+    local price = ImperiumCard.getTleilaxuCardCost(card)
     local cardName = card.getDescription()
-    local price = ImperiumCard.getTleilaxuCardCost(cardName)
     assert(price, "Unknown tleilaxu card: " .. cardName)
     assert((cardName == "reclaimedForces") == (indexInRow == 3))
 
@@ -85,7 +85,7 @@ function TleilaxuRow.acquireTleilaxuCard(indexInRow, color)
                     leader.troops(color, "supply", "garrison", 2)
                 elseif index == 2 then
                     leader.troops(color, "tanks", "supply", price)
-                    leader.beetle(color)
+                    leader.beetle(color, 1)
                 end
             end)
             return true

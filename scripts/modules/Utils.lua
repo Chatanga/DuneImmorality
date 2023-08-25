@@ -134,4 +134,19 @@ function Utils.assertIsStrictlyPositive(n)
     assert(Utils.isInteger(n) and n > 0, "Not a strictly positive integer: " .. tostring(n))
 end
 
+---
+function Utils.assertIsInRange(min, max, n)
+    assert(Utils.isInteger(min))
+    assert(Utils.isInteger(max))
+    assert(Utils.isInteger(n), "Not an integer: " .. tostring(n))
+    assert(min <= n and n <= max, "Not in range [" .. tostring(min) .. ", " .. tostring(max) .. "]: " .. tostring(n))
+end
+
+---
+function Utils.trash(object)
+    object.interactable = false
+    object.setLock(false)
+    object.setPosition(getObjectFromGUID('ef8614').getPosition() + Vector(0, 1, 0))
+end
+
 return Utils

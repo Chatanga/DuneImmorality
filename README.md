@@ -66,9 +66,6 @@ Having launched `./listen.py` in another terminal will provide you with an immed
 
 ## TODO (by priority)
 
-- Family atomics.
-- Trash remaining combat VP.
-- Add a rollback with dialog option to the research and tleilaxu tracks.
 - Consolidate the Action facade (with basic logging).
 - Endgame activation.
 

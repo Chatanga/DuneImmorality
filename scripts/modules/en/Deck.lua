@@ -249,7 +249,7 @@ function Deck.loadCustomDecks(loader)
         "sligFarmer",
         "stitchedHorror",
         "subjectX137",
-        "tleilaxuInflitrator",
+        "tleilaxuInfiltrator",
         "twistedMentat",
         "unnaturalReflexes",
         "usurp",

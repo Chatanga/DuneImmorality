@@ -15,6 +15,8 @@ local Leader = Module.lazyRequire("Leader")
 local Combat = Module.lazyRequire("Combat")
 local ImperiumCard = Module.lazyRequire("ImperiumCard")
 local IntrigueCard = Module.lazyRequire("IntrigueCard")
+local Intrigue = Module.lazyRequire("Intrigue")
+local Reserve = Module.lazyRequire("Reserve")
 
 local Playboard = Helper.createClass(nil, {
     ALL_RESOURCE_NAMES = { "spice", "water", "solari", "persuasion", "strength" },
@@ -59,7 +61,6 @@ local Playboard = Helper.createClass(nil, {
                 "af7cd0"
             },
             forceMarker = '2d1d17',
-            discardPosition = Helper.getHardcodedPositionFromGUID('e07493', -14.0, 1.5, 16.5),
             drawDeckZone = "4f08fc",
             discardZone = "e07493",
             trash = "ea3fe1",
@@ -112,7 +113,6 @@ local Playboard = Helper.createClass(nil, {
                 "694553"
             },
             forceMarker = 'f22e20',
-            discardPosition = Helper.getHardcodedPositionFromGUID('26bf8b', -14.0, 1.5, -6.5),
             drawDeckZone = "907f66",
             discardZone = "26bf8b",
             trash = "52a539",
@@ -165,7 +165,6 @@ local Playboard = Helper.createClass(nil, {
                 "fc9c62"
             },
             forceMarker = 'a1a9a7',
-            discardPosition = Helper.getHardcodedPositionFromGUID('2298aa', 24.0, 1.5, 16.5),
             drawDeckZone = "6d8a2e",
             discardZone = "2298aa",
             trash = "4060b5",
@@ -218,7 +217,6 @@ local Playboard = Helper.createClass(nil, {
                 "b5d32e"
             },
             forceMarker = 'c2dd31',
-            discardPosition = Helper.getHardcodedPositionFromGUID('6bb3b6', 24.0, 1.5, -6.5),
             drawDeckZone = "e6cfee",
             discardZone = "6bb3b6",
             trash = "7d1e07",
@@ -371,22 +369,8 @@ function Playboard._staticSetUp(settings)
         end
 
         if phase == "recall" then
-            for color, playboard in pairs(Playboard._getPlayboards()) do
-                local minimicFilm = Playboard.hasTech(color, "minimicFilm")
-                local restrictedOrdnance = Playboard.hasTech(color, "restrictedOrdnance")
-                local councilSeat = Playboard.hasACouncilSeat(color)
-
-                playboard.revealed = false
-                playboard.persuasion:set((councilSeat and 2 or 0) + (minimicFilm and 1 or 0))
-                playboard.strength:set((restrictedOrdnance and councilSeat) and 4 or 0)
-                -- TODO Query acquired tech tiles for specific persuasion / strength permanent effects.
-
-                playboard.content.board.clearButtons()
-                self.content.nukeToken.clearButtons()
-                playboard:createButtons()
-
-                -- TODO Send all played cards to the discard (general discard for intrigue cards).
-                -- TODO Flip any used tech.
+            for _, playboard in pairs(Playboard._getPlayboards()) do
+                playboard:_recall()
             end
         end
     end)
@@ -402,41 +386,29 @@ function Playboard._staticSetUp(settings)
 
     Helper.registerEventListener("playerTurns", function (phase, color)
         local playboard = Playboard.getPlayboard(color)
-        if playboard.leader then
-            if false then
-                local instruction = playboard.leader.instruct(phase, color)
-                if instruction then
-                    -- Wait for setActivePlayer to change the (hotseated) player if needed.
-                    Wait.frames(function ()
-                        local player = Helper.findPlayer(color)
-                        assert(player, "No " .. tostring(color) .. " player!")
-                        player.broadcast(instruction, Color.fromString("Pink"))
-                    end, 1)
-                end
-            end
+        assert(playboard.leader, color .. " has no leader.")
 
-            for otherColor, otherPlayboard in pairs(Playboard._getPlayboards()) do
-                if Playboard.isHuman(otherColor) then
-                    local instruction = playboard.leader.instruct(phase, otherColor)
-                    if instruction and otherPlayboard.instructionTextAnchor then
-                        otherPlayboard.instructionTextAnchor.clearButtons()
-                        Helper.createAbsoluteButtonWithRoundness(otherPlayboard.instructionTextAnchor, 1, false, {
-                            click_function = "NOP",
-                            label = instruction,
-                            position = otherPlayboard.instructionTextAnchor.getPosition() + Vector(0, 0.5, 0),
-                            width = 0,
-                            height = 0,
-                            font_size = 200,
-                            scale = Vector(1, 1, 1),
-                            color = { 0, 0, 0, 0.90 },
-                            font_color = Color.fromString("White")
-                        })
-                    end
-
-                    playboard.alreadyPlayedCards = Helper.filter(Park.getObjects(playboard.agentCardPark), function (card)
-                        return card.hasTag('ImperiumCard') or card.hasTag('ImperiumCard')
-                    end)
+        for otherColor, otherPlayboard in pairs(Playboard._getPlayboards()) do
+            if Playboard.isHuman(otherColor) then
+                local instruction = playboard.leader.instruct(phase, color == otherColor) or "-"
+                if otherPlayboard.instructionTextAnchor then
+                    otherPlayboard.instructionTextAnchor.clearButtons()
+                    Helper.createAbsoluteButtonWithRoundness(otherPlayboard.instructionTextAnchor, 1, false, {
+                        click_function = "NOP",
+                        label = instruction,
+                        position = otherPlayboard.instructionTextAnchor.getPosition() + Vector(0, 0.5, 0),
+                        width = 0,
+                        height = 0,
+                        font_size = 200,
+                        scale = Vector(1, 1, 1),
+                        color = { 0, 0, 0, 0.90 },
+                        font_color = Color.fromString("White")
+                    })
                 end
+
+                playboard.alreadyPlayedCards = Helper.filter(Park.getObjects(playboard.agentCardPark), function (card)
+                    return Utils.isImperiumCard(card) or Utils.isIntrigueCard(card)
+                end)
             end
         end
 
@@ -447,6 +419,47 @@ function Playboard._staticSetUp(settings)
             title = "Next turn"
         })
     end)
+end
+
+---
+function Playboard:_recall()
+    local minimicFilm = Playboard.hasTech(self.color, "minimicFilm")
+    local restrictedOrdnance = Playboard.hasTech(self.color, "restrictedOrdnance")
+    local councilSeat = Playboard.hasACouncilSeat(self.color)
+
+    self.revealed = false
+    self.persuasion:set((councilSeat and 2 or 0) + (minimicFilm and 1 or 0))
+    self.strength:set((restrictedOrdnance and councilSeat) and 4 or 0)
+
+    self:clearButtons()
+    self:createButtons()
+
+    -- Send all played cards to the discard, save those which shouldn't.
+    Helper.forEach(Helper.filter(Park.getObjects(self.agentCardPark), Utils.isImperiumCard), function (_, card)
+        if card.getDescription() == "foldspace" then
+            card.setPositionSmooth(Reserve.foldspaceSlotZone.getPosition())
+        elseif card.getDescription() == "seekAllies" then
+            card.setPositionSmooth(self.content.trash.getPosition() + Vector(0, 1, 0))
+        else
+            card.setPositionSmooth(self.content.discardZone.getPosition())
+        end
+    end)
+
+    -- Send all revealed cards to the discard.
+    Helper.forEach(Helper.filter(Park.getObjects(self.revealCardPark), Utils.isImperiumCard), function (_, card)
+        card.setPositionSmooth(self.content.discardZone.getPosition())
+    end)
+
+    -- Send all played intrigues to their discard.
+    local playedIntrigueCards = Helper.concatTables(
+        Helper.filter(Park.getObjects(self.agentCardPark), Utils.isIntrigueCard),
+        Helper.filter(Park.getObjects(self.revealCardPark), Utils.isIntrigueCard)
+    )
+    Helper.forEach(playedIntrigueCards, function (_, card)
+        card.setPositionSmooth(Intrigue.discardZone)
+    end)
+
+    -- TODO Flip any used tech.
 end
 
 ---
@@ -834,8 +847,7 @@ function Playboard:createExclusiveCallback(name, f)
     return Helper.registerGlobalCallback(function (_, color, _)
         if self.color == color then
             -- Inhibit the buttons for a short time.
-            self.content.board.clearButtons()
-            self.content.nukeToken.clearButtons()
+            self:clearButtons()
             Wait.time(function()
                 self:createButtons()
             end, 0.3)
@@ -865,6 +877,13 @@ function Playboard:getFontColor()
         fontColor = { 0.1, 0.1, 0.1 }
     end
     return fontColor
+end
+
+function Playboard:clearButtons()
+    self.content.board.clearButtons()
+    if self.content.nukeToken then
+        self.content.nukeToken.clearButtons()
+    end
 end
 
 ---
@@ -941,19 +960,21 @@ function Playboard:createButtons()
         font_color = fontColor
     })
 
-    self.content.nukeToken.createButton({
-        click_function = self:createExclusiveCallback("onRevealHand", function ()
-            self:nukeConfirm()
-        end),
-        tooltip = I18N('atomics'),
-        position = Vector(0, 0, 0),
-        width = 700,
-        height = 700,
-        scale = Vector(3, 3, 3),
-        font_size = 300,
-        font_color = {1, 1, 1, 100},
-        color = {0, 0, 0, 0}
-    })
+    if self.content.nukeToken then
+        self.content.nukeToken.createButton({
+            click_function = self:createExclusiveCallback("onNuke", function ()
+                self:nukeConfirm()
+            end),
+            tooltip = I18N('atomics'),
+            position = Vector(0, 0, 0),
+            width = 700,
+            height = 700,
+            scale = Vector(3, 3, 3),
+            font_size = 300,
+            font_color = {1, 1, 1, 100},
+            color = {0, 0, 0, 0}
+        })
+    end
 end
 
 ---
@@ -1017,25 +1038,24 @@ end
 
 ---
 function Playboard:revealHand()
-    local playedIntrigues = Helper.filter(Park.getObjects(self.agentCardPark), function (card)
-        return card.hasTag('Intrigue')
-    end)
-
-    local playedCards = Helper.filter(Park.getObjects(self.agentCardPark), function (card)
-        return card.hasTag('Imperium')
-    end)
+    local playedIntrigues = Helper.filter(Park.getObjects(self.agentCardPark), Utils.isIntrigueCard)
+    local playedCards = Helper.filter(Park.getObjects(self.agentCardPark), Utils.isImperiumCard)
 
     local properCard = function (card)
         --[[
             We leave the sister card in the player's hand to simplify things and
             make clear to the player that the card must be manually revealed.
         ]]--
-        return card.hasTag('Imperium') and card.getDescription() ~= "beneGesseritSister"
+        return Utils.isImperiumCard(card) and card.getDescription() ~= "beneGesseritSister"
     end
 
     local revealedCards = Helper.filter(Player[self.color].getHandObjects(), properCard)
     local alreadyRevealedCards = Helper.filter(Park.getObjects(self.revealCardPark), properCard)
     local allRevealedCards = Helper.concatTables(revealedCards, alreadyRevealedCards)
+
+    -- FIXME The agent could have been removed (e.g. Kwisatz Haderach)
+    local techNegotiation = MainBoard.hasAgentInSpace("techNegotiation", self.color)
+    local hallOfOratory = MainBoard.hasAgentInSpace("hallOfOratory", self.color)
 
     local minimicFilm = Playboard.hasTech(self.color, "minimicFilm")
     local restrictedOrdnance = Playboard.hasTech(self.color, "restrictedOrdnance")
@@ -1045,8 +1065,16 @@ function Playboard:revealHand()
     local output1 = IntrigueCard.evaluatePlot(self.color, playedIntrigues, allRevealedCards, artillery)
     local output2 = ImperiumCard.evaluateReveal(self.color, playedCards, allRevealedCards, artillery)
 
-    self.persuasion:set((output1.persuasion or 0) + (output2.persuasion or 0) + (councilSeat and 2 or 0) + (minimicFilm and 1 or 0))
-    self.strength:set((output2.sword or 0) + ((restrictedOrdnance and councilSeat) and 4 or 0))
+    self.persuasion:set(
+        (output1.persuasion or 0) +
+        (output2.persuasion or 0) +
+        (techNegotiation and 1 or 0) +
+        (hallOfOratory and 1 or 0) +
+        (councilSeat and 2 or 0) +
+        (minimicFilm and 1 or 0))
+    self.strength:set(
+        (output2.sword or 0) +
+        ((restrictedOrdnance and councilSeat) and 4 or 0))
 
     Park.putObjects(revealedCards, self.revealCardPark)
 
@@ -1082,7 +1110,7 @@ function Playboard.getCardsPlayedThisTurn(color)
     local playboard = Playboard.getPlayboard(color)
 
     local playedCards = Helper.filter(Park.getObjects(self.agentCardPark), function (card)
-        return card.hasTag('Imperium') or card.hasTag('Intrigue')
+        return Utils.isImperiumCard(card) or Utils.isIntrigueCard(card)
     end)
 
     return Set.new(playedCards) - Set.new(playboard.alreadyPlayedCards)
@@ -1156,24 +1184,31 @@ end
 function Playboard:resetDiscard()
     local content = self.content
     local discard = Helper.getDeckOrCard(content.discardZone)
+    log(1)
     if discard then
+        log(2)
         local continuation = Helper.createContinuation()
 
         discard.setRotationSmooth({0, 180, 180}, false, false)
         discard.setPositionSmooth(content.drawDeckZone + Vector(0, 1, 0), false, true)
 
-        Wait.time(function() -- Once moved.
+        log(3)
+        Helper.onceMoved(discard).doAfter(function ()
+            log(4)
             local replenishedDeckOrCard = Helper.getDeckOrCard(content.drawDeckZone)
             assert(replenishedDeckOrCard)
+            log(5)
             if replenishedDeckOrCard.type == "Deck" then
                 replenishedDeckOrCard.shuffle()
+                log(6)
                 Wait.time(function () -- Once shuffled.
                     continuation.run(replenishedDeckOrCard)
                 end, 1.5)
             else
+                log(7)
                 continuation.run(replenishedDeckOrCard)
             end
-        end, 0.5)
+        end)
 
         return continuation
     else
@@ -1198,7 +1233,7 @@ function Playboard:nukeConfirm()
     self.content.nukeToken.createButton({
         click_function = self:createExclusiveCallback("confirmNuke", function ()
             self.leader.atomics(self.color)
-            self:createButtons()
+            self.content.nukeToken.destruct()
         end),
         label = I18N('yes'),
         position = {-5, -0.1, 0},
@@ -1469,7 +1504,7 @@ function Playboard.giveCard(color, card, isTleilaxuCard)
     assert(content)
 
     -- Acquire the card (not smoothly to avoid being grabbed by a player hand zone).
-    card.setPosition(content.discardPosition)
+    card.setPosition(content.discardZone.getPosition())
 
     -- Move it on the top of the content deck if possible and wanted.
     if (isTleilaxuCard and TleilaxuResearch.hasReachedOneHelix(color)) or Playboard.hasTech(color, "Spaceport") then
@@ -1501,24 +1536,12 @@ end
 
 ---
 function Playboard.getIntrigues(color)
-    local intrigues = {}
-    for _, card in ipairs(Player[color].getHandObjects()) do
-        if card.hasTag('Intrigue') then
-            table.insert(intrigues, card)
-        end
-    end
-    return intrigues
+    return Helper.filter(Player[color].getHandObjects(), Utils.isIntrigueCard)
 end
 
 ---
 function Playboard.getCards(color)
-    local intrigues = {}
-    for _, card in ipairs(Player[color].getHandObjects().getObject()) do
-        if card.hasTag('Imperium') then
-            table.insert(intrigues, card)
-        end
-    end
-    return intrigues
+    return Helper.filter(Player[color].getHandObjects(), Utils.isImperiumCard)
 end
 
 ---

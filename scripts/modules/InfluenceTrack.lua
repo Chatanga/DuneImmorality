@@ -222,10 +222,10 @@ end
 
 ---
 function InfluenceTrack.loseFriendship(faction, color)
-    -- FIXME Find a better way of identifying VP.
-    local friendshipTokenName = I18N(faction) .. " Friendship"
+    Helper.dumpFunction("loseFriendship", faction, color)
+    local friendshipTokenName = faction .. " Friendship"
     for _, scoreToken in ipairs(Playboard.getScoreTokens(color)) do
-        if scoreToken.getName() == friendshipTokenName then
+        if scoreToken.getDescription() == friendshipTokenName then
             scoreToken.destruct()
         end
     end

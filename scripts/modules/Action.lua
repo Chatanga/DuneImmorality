@@ -68,7 +68,7 @@ function Action.checkContext(attributes)
 end
 
 ---
-function Action.instruct(phase, color)
+function Action.instruct(phase, isActivePlayer)
     local instructions = {
         leaderSelection = {
             "Select a leader\non the upper board",
@@ -94,7 +94,7 @@ function Action.instruct(phase, color)
 
     local instruction = instructions[phase]
     if instruction then
-        if Action.context.color == color then
+        if isActivePlayer then
             return instruction[1]
         else
             return instruction[2]
@@ -175,7 +175,7 @@ end
 
 ---
 function Action.influence(color, faction, amount)
-    -- Generic if no faction
+    assert(faction, "Generic action are not supported.")
     return InfluenceTrack.change(color, faction, amount)
 end
 
@@ -206,76 +206,21 @@ function Action._getTroopPark(color, parkName)
 end
 
 ---
-function Action.gainVictoryPoint(color, name)
-    local victoryPointArea = Helper.resolveGUIDs(true, {
-        base = {
-            theSpiceMustFlowBag = "43c7b5",
-            guildAmbassadorBag = "4bdbd5",
-            sayyadinaBag = "4575f3",
-            opulenceBag = "67fbba",
-            theSleeperMustAwaken = "946ca1",
-            stagedIncident = "bee42f",
-            endgameCardBag = "cfe0cb",
-            endgameTechBag = "1d3e4f",
-            combatVictoryPointBag = "d9a457"
-        },
-        ix = {
-            detonationDevicesBag = "7b3fa2",
-            ixianEngineerBag = "3371d8",
-            flagship = "366237",
-            spySatellites = "73a68f",
-            choamSharess = "c530e6"
-        },
-        immortality = {
-            scientificBreakthrough = "d22031",
-            tleilaxBag = "082e07",
-            forHumanityBag = "71c0c8"
-        }
-    })
-    local holder = {
-        success = false
-    }
-    Helper.forEachRecursively(victoryPointArea, function (victoryPointName, victoryPointSource)
-        if name == victoryPointName then
-            Playboard.grantScoreToken(color, victoryPointSource)
-            holder.success = true
-        elseif name .. "Bag" == victoryPointName then
-            Playboard.grantScoreTokenFromBag(color, victoryPointSource)
-            holder.success = true
-        end
-    end)
-    return holder.success
-end
-
----
-function Action.loseVictoryPoint(name)
-end
-
----
-function Action.voiceForbid(space)
-end
-
----
-function Action.acquireReservedImperiumCard(color)
-    return false
-end
-
----
 function Action.acquireImperiumCard(color, indexInRow)
+    Utils.assertIsPlayerColor(color)
+    Utils.assertIsInRange(1, 5, indexInRow)
     return ImperiumRow.acquireImperiumCard(indexInRow, color)
 end
 
 ---
 function Action.acquireFoldspaceCard(color)
+    Utils.assertIsPlayerColor(color)
     Reserve.acquireFoldspace(Reserve.foldspace, color)
 end
 
 ---
-function Action.signetRing(color)
-end
-
----
 function Action.advanceFreighter(color, positiveAmount)
+    Utils.assertIsPlayerColor(color)
     Utils.assertIsPositiveInteger(positiveAmount)
     for _ = 1, positiveAmount do
         CommercialTrack.freighterUp(color)
@@ -284,12 +229,14 @@ end
 
 ---
 function Action.recallFreighter(color)
-    CommercialTrack.freighterReset(color)
+    Utils.assertIsPlayerColor(color)
+    return CommercialTrack.freighterReset(color)
 end
 
 ---
-function Action.moveFreighter(color, amount)
-    -- Generic
+function Action.moveFreighter(color)
+    Utils.assertIsPlayerColor(color)
+    return CommercialTrack.freighterUp(color)
 end
 
 ---
@@ -321,6 +268,64 @@ function Action._getDreadnoughtPark(color, parkName)
 end
 
 ---
+function Action.acquireTleilaxuCard(color, indexInRow)
+    Utils.assertIsPlayerColor(color)
+    Utils.assertIsInRange(1, 3, indexInRow)
+    return TleilaxuRow.acquireTleilaxuCard(indexInRow, color)
+end
+
+---
+function Action.research(color, jump)
+    Utils.assertIsPlayerColor(color)
+    Utils.assertIsInteger(jump)
+    TleilaxuResearch.advanceResearch(color, jump)
+    return true
+end
+
+---
+function Action.beetle(color, jump)
+    Utils.assertIsPlayerColor(color)
+    Utils.assertIsInteger(jump)
+    TleilaxuResearch.advanceTleilax(color, jump)
+    return true
+end
+
+---
+function Action.atomics(color)
+    Utils.assertIsPlayerColor(color)
+    ImperiumRow.nuke(color)
+    return true
+end
+
+---
+function Action.drawIntrigues(color, amount)
+    Utils.assertIsPlayerColor(color)
+    Utils.assertIsInteger(amount)
+    return Intrigue.drawIntrigue(color, amount)
+end
+
+---
+function Action.stealIntrigue(color, otherColor, amount)
+    Utils.assertIsPlayerColor(color)
+    Utils.assertIsPlayerColor(otherColor)
+    Utils.assertIsInteger(amount)
+    return Intrigue.stealIntrigue(color, otherColor, amount)
+end
+
+--[[
+---
+function Action.voiceForbid(color, space)
+end
+
+---
+function Action.acquireReservedImperiumCard(color)
+end
+
+---
+function Action.signetRing(color)
+end
+
+---
 function Action.flagControl(color, space)
 end
 
@@ -349,48 +354,6 @@ function Action.recallSnooper(color, faction)
 end
 
 ---
-function Action.acquireTleilaxuCard(color, indexInRow)
-    return TleilaxuRow.acquireTleilaxuCard(indexInRow, color)
-end
-
----
-function Action.acquireReclaimedForcesCard(color, option)
-end
-
----
-function Action.research(color, jump)
-    TleilaxuResearch.advanceResearch(color, jump)
-    return true
-end
-
----
-function Action.beetle(color)
-    TleilaxuResearch.advanceTleilax(color)
-    return true
-end
-
----
-function Action.atomics(color)
-    ImperiumRow.nuke(color)
-end
-
----
-function Action.drawIntrigues(color, amount)
-    Utils.assertIsPlayerColor(color)
-    Utils.assertIsInteger(amount)
-    return Intrigue.drawIntrigue(color, amount)
-end
-
----
-function Action.stealIntrigue(color, otherColor, amount)
-    Utils.assertIsPlayerColor(color)
-    Utils.assertIsPlayerColor(otherColor)
-    Utils.assertIsInteger(amount)
-
-    return Intrigue.stealIntrigue(color, otherColor, amount)
-end
-
----
 function Action.trashImperiumCard(name)
 end
 
@@ -401,5 +364,6 @@ end
 ---
 function Action.discardIntrigueCard(name)
 end
+]]--
 
 return Action

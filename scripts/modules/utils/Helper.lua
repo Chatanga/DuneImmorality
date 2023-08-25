@@ -1004,7 +1004,7 @@ end
 
 ---
 function Helper.forEach(elements, f)
-    for k, v in ipairs(elements) do
+    for k, v in pairs(elements) do
         f(k, v)
     end
 end
