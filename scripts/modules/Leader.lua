@@ -6,6 +6,7 @@ local MainBoard = Module.lazyRequire("MainBoard")
 local ImperiumRow = Module.lazyRequire("ImperiumRow")
 local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
 local Combat = Module.lazyRequire("Combat")
+local Playboard = Module.lazyRequire("Playboard")
 
 local Leader = Helper.createClass(Action)
 
@@ -20,7 +21,7 @@ end
 Leader.vladimirHarkonnen = Helper.createClass(Leader, {
 
     setUp = function (color, settings)
-        Action.setUp(color, settings.epicMode)
+        Action.setUp(color, settings)
 
         --- Masterstroke
         local position = Player[color].getHandTransform().position
@@ -97,17 +98,30 @@ Leader.ilbanRichese = Helper.createClass(Leader, {
 
 Leader.helenaRichese = Helper.createClass(Leader, {
 
-    --- Manipulate
-    acquireReservedImperiumCard = function (color, resourceName, amount)
-        return ImperiumRow.acquireReservedImperiumCard(color)
-    end,
-
     --- Eyes everywhere
     sendAgent = function (color, spaceName)
         -- TODO Manage accesses
         local force = MainBoard.isLandsraadSpace(spaceName) or MainBoard.isSpiceTradeSpace(spaceName)
         return Action.sendAgent(color, spaceName)
     end,
+
+    --- Manipulate
+    acquireImperiumCard = function (color, indexInRow)
+        if Action.checkContext({ phase = "playerTurns", color = color }) and Playboard.couldSendAgentOrReveal(color) then
+            return Action.reserveImperiumCard(color, indexInRow)
+        else
+            return Action.acquireImperiumCard(color, indexInRow)
+        end
+    end,
+
+    --- Manipulate
+    acquireReservedImperiumCard = function (color)
+        if Action.checkContext({ phase = "playerTurns", color = color }) and not Playboard.couldSendAgentOrReveal(color) then
+            return ImperiumRow.acquireReservedImperiumCard(color)
+        else
+            return Action.acquireReservedImperiumCard(color)
+        end
+    end
 })
 
 Leader.letoAtreides = Helper.createClass(Leader, {
@@ -126,7 +140,7 @@ Leader.paulAtreides = Helper.createClass(Leader, {
 
     --- Prescience
     setUp = function (color, settings)
-        Action.setUp(color, settings.epicMode)
+        Action.setUp(color, settings)
         -- TODO Add prescience button
     end,
 
@@ -205,7 +219,7 @@ Leader.rhomburVernius = Helper.createClass(Leader, {
 
     --- Heavy lasgun cannons
     setUp = function (color, settings)
-        Action.setUp(color, settings.epicMode)
+        Action.setUp(color, settings)
         Combat.setDreadnoughtStrength(color, 4)
     end
 })
@@ -213,7 +227,7 @@ Leader.rhomburVernius = Helper.createClass(Leader, {
 Leader.tessiaVernius = Helper.createClass(Leader, {
 
     setUp = function (color, settings)
-        Action.setUp(color, settings.epicMode)
+        Action.setUp(color, settings)
 
         local getAveragePosition = function (spaceNames)
             local p = Vector(0, 0, 0)
@@ -272,7 +286,7 @@ Leader.yunaMoritani = Helper.createClass(Leader, {
 
     --- Smuggling operation
     setUp = function (color, settings)
-        Action.setUp(color, settings.epicMode)
+        Action.setUp(color, settings)
         Action.resource(color, "water", -1)
     end,
 })
@@ -293,7 +307,7 @@ Leader.hundroMoritani = Helper.createClass(Leader, {
 
     --- Intelligence
     setUp = function (color, settings)
-        Action.setUp(color, settings.epicMode)
+        Action.setUp(color, settings)
         Wait.frames(function ()
             Action.drawIntrigues(color, 2)
         end, 1)

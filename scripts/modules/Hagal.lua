@@ -75,13 +75,13 @@ end
 function Hagal.activate(phase, color, playboard)
     Wait.frames(function ()
         -- Let the other event listeners do their job (we are simulating a human player here).
-        Hagal.lateActivate(phase, color, playboard)
+        Hagal._lateActivate(phase, color, playboard)
         Wait.time(TurnControl.endOfTurn, 1)
     end, 1)
 end
 
 ---
-function Hagal.lateActivate(phase, color, playboard)
+function Hagal._lateActivate(phase, color, playboard)
     if phase == "leaderSelection" then
         Hagal.pickAnyCompatibleLeader(color)
     elseif phase == "gameStart" then

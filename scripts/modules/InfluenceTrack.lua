@@ -40,7 +40,12 @@ local InfluenceTrack = {
         fremen = Helper.getHardcodedPositionFromGUID('4c2bcc', -9.543688, 0.780000031, -10.6707687)
     },
     influenceLevels = {},
-    actionsLocked = {},
+    actionsLocked = {
+        emperor = {},
+        spacingGuild = {},
+        beneGesserit = {},
+        fremen = {}
+    },
 }
 
 ---
@@ -86,7 +91,7 @@ function InfluenceTrack.onLoad()
         }
     }))
 
-    InfluenceTrack.influenceLevels = InfluenceTrack.initInfluenceTracksLevels()
+    InfluenceTrack.influenceLevels = InfluenceTrack._initInfluenceTracksLevels()
 
     for _, bag in pairs(InfluenceTrack.friendshipBags) do
         bag.interactable = false
@@ -94,7 +99,7 @@ function InfluenceTrack.onLoad()
 end
 
 ---
-function InfluenceTrack.initInfluenceTracksLevels()
+function InfluenceTrack._initInfluenceTracksLevels()
     local influenceLevels = {}
     for faction, initialPositions in pairs(InfluenceTrack.influenceTokenInitialPositions) do
         local factionLevels = {}
@@ -125,11 +130,11 @@ function InfluenceTrack.initInfluenceTracksLevels()
                 local actionName = "Progress on the " .. faction .. " influence track"
                 Helper.createAbsoluteButtonWithRoundness(anchor, 1, false, {
                     click_function = Helper.registerGlobalCallback(function (_, color, _)
-                        if not InfluenceTrack.actionsLocked[color] then
-                            local rank = InfluenceTrack.getInfluenceTracksRank(faction, color)
-                            InfluenceTrack.actionsLocked[color] = true
-                            InfluenceTrack.changeInfluenceTracksRank(color, faction, i - rank).doAfter(function ()
-                                InfluenceTrack.actionsLocked[color] = false
+                        if not InfluenceTrack.actionsLocked[faction][color] then
+                            local rank = InfluenceTrack._getInfluenceTracksRank(faction, color)
+                            InfluenceTrack.actionsLocked[faction][color] = true
+                            InfluenceTrack._changeInfluenceTracksRank(color, faction, i - rank).doAfter(function ()
+                                InfluenceTrack.actionsLocked[faction][color] = false
                             end)
                         end
                     end),
@@ -158,7 +163,7 @@ function InfluenceTrack.hasFriendship(color, faction)
 end
 
 ---
-function InfluenceTrack.getInfluenceTracksRank(faction, color)
+function InfluenceTrack._getInfluenceTracksRank(faction, color)
     local influenceLevels = InfluenceTrack.influenceLevels[faction][color]
     local pos = InfluenceTrack.influenceTokens[faction][color].getPosition()
     return math.floor((pos.z - influenceLevels.none) / influenceLevels.step)
@@ -166,11 +171,11 @@ end
 
 ---
 function InfluenceTrack.change(color, faction, change)
-    InfluenceTrack.changeInfluenceTracksRank(color, faction, change)
+    InfluenceTrack._changeInfluenceTracksRank(color, faction, change)
 end
 
 ---
-function InfluenceTrack.changeInfluenceTracksRank(color, faction, change)
+function InfluenceTrack._changeInfluenceTracksRank(color, faction, change)
     Utils.assertIsPlayerColor(color)
     Utils.assertIsFaction(faction)
     Utils.assertIsInteger(change)
@@ -181,7 +186,7 @@ function InfluenceTrack.changeInfluenceTracksRank(color, faction, change)
     local levels = InfluenceTrack.influenceLevels[faction][color]
     local token = InfluenceTrack.influenceTokens[faction][color]
 
-    local oldRank = InfluenceTrack.getInfluenceTracksRank(faction, color)
+    local oldRank = InfluenceTrack._getInfluenceTracksRank(faction, color)
     local direction = Helper.signum(change)
 
     local realChange = math.min(math.max(oldRank + change, 0), 6) - oldRank
@@ -193,7 +198,7 @@ function InfluenceTrack.changeInfluenceTracksRank(color, faction, change)
         position.z = position.z + levels.step * direction
         token.setPositionSmooth(position, false, false)
     end).doAfter(function (_)
-        local newRank = InfluenceTrack.getInfluenceTracksRank(faction, color)
+        local newRank = InfluenceTrack._getInfluenceTracksRank(faction, color)
         --[[
             Check alliance before friendship (because friendship tokens come
             from a bag which induces a invisible transit with parks, ending in
@@ -201,7 +206,7 @@ function InfluenceTrack.changeInfluenceTracksRank(color, faction, change)
             track in a single move).
         ]]--
         if oldRank >= 4 or newRank >= 4 then
-            InfluenceTrack.challengeAlliance(faction)
+            InfluenceTrack._challengeAlliance(faction)
         end
         if oldRank < 2 and newRank >= 2 then
             InfluenceTrack.gainFriendship(faction, color)
@@ -222,8 +227,7 @@ end
 
 ---
 function InfluenceTrack.loseFriendship(faction, color)
-    Helper.dumpFunction("loseFriendship", faction, color)
-    local friendshipTokenName = faction .. " Friendship"
+    local friendshipTokenName = faction .. "Friendship"
     for _, scoreToken in ipairs(Playboard.getScoreTokens(color)) do
         if scoreToken.getDescription() == friendshipTokenName then
             scoreToken.destruct()
@@ -232,7 +236,7 @@ function InfluenceTrack.loseFriendship(faction, color)
 end
 
 ---
-function InfluenceTrack.challengeAlliance(faction)
+function InfluenceTrack._challengeAlliance(faction)
     local bestRankedPlayers = {}
     local bestRank = 4
     local allianceOwner
@@ -241,7 +245,7 @@ function InfluenceTrack.challengeAlliance(faction)
         if InfluenceTrack.hasAlliance(color, faction) then
             allianceOwner = color
         end
-        local rank = InfluenceTrack.getInfluenceTracksRank(faction, color)
+        local rank = InfluenceTrack._getInfluenceTracksRank(faction, color)
         if rank >= bestRank then
             bestRank = rank
             if rank > bestRank then

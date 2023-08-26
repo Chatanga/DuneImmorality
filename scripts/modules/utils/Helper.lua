@@ -14,10 +14,6 @@ function Helper.registerEventListener(topic, listener)
     if not listeners then
         listeners = {}
         Helper.eventListenersByTopic[topic] = listeners
-        --log("Adding Helper handle: " .. tostring(topic))
-        --Helper["" .. topic] = function (...)
-        --    Helper.emitEvent(topic, ...)
-        --end
     end
     listeners[listener] = listener
     return listener
@@ -31,7 +27,6 @@ function Helper.unregisterEventListener(topic, listener)
     listeners[listener] = nil
     if #Helper.getKeys(listeners) == 0 then
         Helper.eventListenersByTopic[topic] = nil
-        -- Helper["" .. topic] = nil
     end
 end
 
@@ -501,12 +496,22 @@ end
 function Helper.onceMotionless(object)
     local continuation = Helper.createContinuation()
     Wait.condition(function()
-        continuation.run(object)
+        Wait.frames(function ()
+            continuation.run(object)
+        end, 1)
     end, function()
-        -- Or resting?
-        return not object.isSmoothMoving()
+        return object.resting and not object.isSmoothMoving()
     end)
-return continuation
+    return continuation
+end
+
+---
+function Helper.onceShuffled(container)
+    local continuation = Helper.createContinuation()
+    Wait.time(function ()
+        continuation.run(container)
+    end, 1.5) -- TODO Search for a better way.
+    return continuation
 end
 
 -- Intended to be used in a coroutine.
@@ -712,7 +717,7 @@ function Helper.destroyTransientObjects()
             count = count + 1
         end
     end
-    log("Destroyed " .. tostring(count) .. " anchors.")
+    -- log("Destroyed " .. tostring(count) .. " anchors.")
 end
 
 ---

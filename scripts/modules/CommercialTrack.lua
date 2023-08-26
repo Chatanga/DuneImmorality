@@ -79,7 +79,7 @@ function CommercialTrack._createLevelButton(level, levelSlot)
     Helper.createAnchoredAreaButton(levelSlot, ground, 0.2, tooltip, function (_, color, _)
         local freighterLevel = CommercialTrack._getFreighterLevel(color)
         if freighterLevel < level then
-            CommercialTrack.freighterGoUp(color, level - freighterLevel)
+            CommercialTrack._freighterGoUp(color, level - freighterLevel)
         elseif level == 0 then
             CommercialTrack.freighterReset(color)
         end
@@ -112,7 +112,7 @@ function CommercialTrack._setFreighterPositionSmooth(color, level)
 end
 
 ---
-function CommercialTrack.freighterGoUp(color, count)
+function CommercialTrack._freighterGoUp(color, count)
     Helper.repeatMovingAction(Playboard.getContent(color).freighter, count, function ()
         CommercialTrack.freighterUp(color)
     end)

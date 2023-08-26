@@ -66,8 +66,7 @@ Having launched `./listen.py` in another terminal will provide you with an immed
 
 ## TODO (by priority)
 
-- Consolidate the Action facade (with basic logging).
-- Endgame activation.
+- Basic logging in the Action facade.
 
 - The Hagal house (with resources and difficulty levels).
 
@@ -79,9 +78,11 @@ Having launched `./listen.py` in another terminal will provide you with an immed
 
 - Restore selectable combat music.
 
-- Fanmade leaders.
+- [Fanmade leaders](https://drive.google.com/drive/folders/1-V3xcHk6078YR1fyhtJL3tdqv2zg5q3Q).
+- Replace freighters by tokens.
+- Change the [dreadnought model](https://www.thingiverse.com/thing:5326146).
 
-## Later
+## Later (maybe)
 
 - Restore tech cost (with a default buy dialog when other options are lacking).
 - Fix the 6 tech park saturation.
@@ -90,3 +91,4 @@ Having launched `./listen.py` in another terminal will provide you with an immed
 - Move the Tleilaxu track in its own module?
 - Workaround the font_size ratio / support for the boards.
 - Check for anchor and callback leaks.
+- Gather all VP sources in ScoreBoard?

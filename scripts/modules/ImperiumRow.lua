@@ -41,12 +41,26 @@ end
 
 ---
 function ImperiumRow._staticSetUp()
-    AcquireCard.new(ImperiumRow.reservationSlotZone, "Imperium", nil)
     for i, zone in ipairs(ImperiumRow.slotZones) do
         AcquireCard.new(zone, "Imperium", function (_, color)
-            Action.acquireImperiumCard(color, i)
+            local leader = Playboard.getLeader(color)
+            leader.acquireImperiumCard(color, i)
         end)
     end
+
+    AcquireCard.new(ImperiumRow.reservationSlotZone, "Imperium", function (_, color)
+        local leader = Playboard.getLeader(color)
+        leader.acquireReservedImperiumCard(color)
+    end)
+
+    Helper.registerEventListener("phaseStart", function (phase)
+        if phase == "recall" then
+            local cardOrDeck = Helper.getDeckOrCard(ImperiumRow.reservationSlotZone)
+            if cardOrDeck then
+                Utils.trash(cardOrDeck)
+            end
+        end
+    end)
 end
 
 ---

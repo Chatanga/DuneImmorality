@@ -183,7 +183,6 @@ end
 function Park.getObjects(park)
     assert(park)
     local objects = {}
-    --log("park.zone " .. park.name .. "/" .. park.zone.getGUID() .. " -> " .. tostring(#park.zone.getObjects()))
     for _, object in ipairs(park.zone.getObjects()) do
         local objectsInTransit = Helper.getSharedTable(park.name)
         if not Helper.tableContains(objectsInTransit, object) then

@@ -60,7 +60,7 @@ function Action.checkContext(attributes)
             valid = value == expectedValue
         end
         if not valid then
-            --Helper.dump("Bad context key:", name, "->", value)
+            Helper.dump("Bad context key:", name, "->", value)
             return false
         end
     end
@@ -117,18 +117,12 @@ end
 
 ---
 function Action.tearDown()
-    -- NOP
 end
 
 ---
 function Action.sendAgent(color, spaceName)
     Action.context.space = spaceName
     MainBoard.sendAgent(color, spaceName)
-end
-
----
-function Action.reveal(color)
-    Playboard.getPlayboard(color):revealHand()
 end
 
 ---
@@ -203,6 +197,18 @@ function Action._getTroopPark(color, parkName)
     else
         error("Unknow park name: " .. tostring(parkName))
     end
+end
+
+---
+function Action.reserveImperiumCard(color, indexInRow)
+    Utils.assertIsPlayerColor(color)
+    Utils.assertIsInRange(1, 5, indexInRow)
+    return ImperiumRow.reserveImperiumCard(indexInRow, color)
+end
+
+---
+function Action.acquireReservedImperiumCard(color)
+    return false
 end
 
 ---
@@ -318,10 +324,6 @@ function Action.voiceForbid(color, space)
 end
 
 ---
-function Action.acquireReservedImperiumCard(color)
-end
-
----
 function Action.signetRing(color)
 end
 
@@ -358,6 +360,10 @@ function Action.trashImperiumCard(name)
 end
 
 ---
+function Action.reveal(color)
+end
+
+---
 function Action.discardImperiumCard(name)
 end
 
@@ -365,5 +371,13 @@ end
 function Action.discardIntrigueCard(name)
 end
 ]]--
+
+function Action._positive(message)
+    return true
+end
+
+function Action._negative(message)
+    return false
+end
 
 return Action

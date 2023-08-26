@@ -34,7 +34,7 @@ function LeaderSelection.setUp(settings, opponents)
         local continuation = Helper.createContinuation()
         continuation.count = numberOfLeaders
 
-        LeaderSelection.layoutLeaders(numberOfLeaders, function (_, position)
+        LeaderSelection._layoutLeaders(numberOfLeaders, function (_, position)
             deck.takeObject({
                 position = position,
                 flip = true,
@@ -49,13 +49,13 @@ function LeaderSelection.setUp(settings, opponents)
 
         continuation.doAfter(function ()
             if type(settings.leaderSelection) == "table" then
-                LeaderSelection.setUpTest(opponents, settings.leaderSelection)
+                LeaderSelection._setUpTest(opponents, settings.leaderSelection)
             elseif settings.leaderSelection == "random" then
-                LeaderSelection.setUpPicking(opponents, numberOfLeaders, true, false)
+                LeaderSelection._setUpPicking(opponents, numberOfLeaders, true, false)
             elseif settings.leaderSelection == "reversePick" then
-                LeaderSelection.setUpPicking(opponents, numberOfLeaders, false, false)
+                LeaderSelection._setUpPicking(opponents, numberOfLeaders, false, false)
             elseif settings.leaderSelection == "hiddenPick" then
-                LeaderSelection.setUpPicking(opponents, numberOfLeaders, false, true)
+                LeaderSelection._setUpPicking(opponents, numberOfLeaders, false, true)
             else
                 error(settings.leaderSelection)
             end
@@ -64,7 +64,7 @@ function LeaderSelection.setUp(settings, opponents)
 end
 
 ---
-function LeaderSelection.layoutLeaders(count, callback)
+function LeaderSelection._layoutLeaders(count, callback)
     local w = LeaderSelection.deckZone.getScale().x
     local h = LeaderSelection.deckZone.getScale().z
     local origin = LeaderSelection.deckZone.getPosition() - Vector(w / 2 - 6, 0, h / 2 - 10)
@@ -76,7 +76,7 @@ function LeaderSelection.layoutLeaders(count, callback)
 end
 
 ---
-function LeaderSelection.setUpTest(opponents, leaderNames)
+function LeaderSelection._setUpTest(opponents, leaderNames)
     for color, _ in pairs(opponents) do
         assert(leaderNames[color], "No leader for color " .. color)
         assert(#LeaderSelection.deckZone.getObjects(), "No leader to select")
@@ -95,7 +95,7 @@ function LeaderSelection.setUpTest(opponents, leaderNames)
 end
 
 ---
-function LeaderSelection.setUpPicking(opponents, numberOfLeaders, random, hidden)
+function LeaderSelection._setUpPicking(opponents, numberOfLeaders, random, hidden)
     local fontColor = Color(223/255, 151/255, 48/255)
 
     if hidden then
@@ -167,9 +167,9 @@ function LeaderSelection.setUpPicking(opponents, numberOfLeaders, random, hidden
 
     Helper.createAbsoluteButtonWithRoundness(LeaderSelection.secondaryTable, 2, false, {
         click_function = Helper.registerGlobalCallback(function ()
-            if #LeaderSelection.getVisibleLeaders() >= #Helper.getKeys(opponents) then
-                local visibleLeaders = LeaderSelection.prepareVisibleLeaders(hidden)
-                LeaderSelection.createDynamicLeaderSelection(visibleLeaders)
+            if #LeaderSelection._getVisibleLeaders() >= #Helper.getKeys(opponents) then
+                local visibleLeaders = LeaderSelection._prepareVisibleLeaders(hidden)
+                LeaderSelection._createDynamicLeaderSelection(visibleLeaders)
                 LeaderSelection.secondaryTable.clearButtons()
                 TurnControl.start(true)
             else
@@ -212,12 +212,12 @@ function LeaderSelection.setUpPicking(opponents, numberOfLeaders, random, hidden
                 local remainingLeaders = {}
                 for leader, selected in pairs(LeaderSelection.dynamicLeaderSelection) do
                     if not selected then
-                        LeaderSelection.setOnlyVisibleFrom(leader, color)
+                        LeaderSelection._setOnlyVisibleFrom(leader, color)
                         table.insert(remainingLeaders, leader)
                     end
                 end
                 Helper.shuffle(remainingLeaders)
-                LeaderSelection.layoutLeaders(#remainingLeaders, function (i, position)
+                LeaderSelection._layoutLeaders(#remainingLeaders, function (i, position)
                     remainingLeaders[i].setPosition(position)
                 end)
             end
@@ -238,7 +238,7 @@ function LeaderSelection.setUpPicking(opponents, numberOfLeaders, random, hidden
     end)
 end
 
-function LeaderSelection.setOnlyVisibleFrom(object, color)
+function LeaderSelection._setOnlyVisibleFrom(object, color)
     local excludedColors = {}
     for _, otherColor in ipairs(TurnControl.getPlayers()) do
         if otherColor ~= color then
@@ -248,7 +248,7 @@ function LeaderSelection.setOnlyVisibleFrom(object, color)
     object.setInvisibleTo(excludedColors)
 end
 
-function LeaderSelection.getVisibleLeaders()
+function LeaderSelection._getVisibleLeaders()
     local leaders = {}
     for _, object in ipairs(LeaderSelection.deckZone.getObjects()) do
         if object.hasTag("Leader") then
@@ -260,7 +260,7 @@ function LeaderSelection.getVisibleLeaders()
     return leaders
 end
 
-function LeaderSelection.prepareVisibleLeaders(hidden)
+function LeaderSelection._prepareVisibleLeaders(hidden)
     local leaders = {}
     for _, object in ipairs(LeaderSelection.deckZone.getObjects()) do
         if object.hasTag("Leader") then
@@ -277,7 +277,7 @@ function LeaderSelection.prepareVisibleLeaders(hidden)
     return leaders
 end
 
-function LeaderSelection.createDynamicLeaderSelection(leaders)
+function LeaderSelection._createDynamicLeaderSelection(leaders)
     Helper.shuffle(leaders)
 
     for i, leader in ipairs(leaders) do

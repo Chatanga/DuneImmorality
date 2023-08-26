@@ -12,21 +12,21 @@
 		<Image ignoreLayout="True" image="http://cloud-3.steamusercontent.com/ugc/2027234042549661387/D9B4C518F1CC8DB3B299B6552E439410D9346C33/"/>
 		<VerticalLayout padding="40 40 150 50">
 			<VerticalLayout padding="0 0 0 20">
-				<Text class="epigraph">"A setup is a very delicate time..."</Text>
+				<Text class="epigraph" key="prolog"/>
 			</VerticalLayout>
 
 			<HorizontalLayout>
-				<Text class="primary">Language</Text>
+				<Text class="primary" key="language"/>
 				<Dropdown id="language" onValueChanged="Global/setLanguage">
 					<Option></Option>
 				</Dropdown>
 			</HorizontalLayout>
 
-			<Text class="primary">Players</Text>
+			<Text class="primary" key="players"/>
 			<VerticalLayout padding="25 0 0 0">
-				<Toggle id="randomizePlayerPositions" onValueChanged="Global/setRandomizePlayerPositions" isOn="True">Randomize players' positions</Toggle>
+				<Toggle id="randomizePlayerPositions" onValueChanged="Global/setRandomizePlayerPositions" isOn="True" key="randomizePlayersPositions"/>
 				<HorizontalLayout>
-					<Toggle id="virtualHotSeat" onValueChanged="Global/setVirtualHotSeat" isOn="False">1 or 2 players</Toggle>
+					<Toggle id="virtualHotSeat" onValueChanged="Global/setVirtualHotSeat" isOn="False" key="virtualHotSeat"/>
 					<Dropdown id="numberOfPlayers" onValueChanged="Global/setNumberOfPlayers" flexibleWidth="2.5" active="False">
 						<Option></Option>
 					</Dropdown>
@@ -36,30 +36,30 @@
 				</HorizontalLayout>
 			</VerticalLayout>
 
-			<Text class="primary">Extensions</Text>
+			<Text class="primary" key="extensions"/>
 			<VerticalLayout padding="25 0 0 0">
-				<Toggle id="riseOfIx" isOn="True" onValueChanged="Global/setRiseOfIx">Rise of Ix</Toggle>
+				<Toggle id="riseOfIx" isOn="True" onValueChanged="Global/setRiseOfIx" key="riseOfIx"/>
 				<VerticalLayout padding="25 0 0 0">
-					<Toggle id="epicMode" isOn="False" onValueChanged="Global/setEpicMode">Epic mode</Toggle>
+					<Toggle id="epicMode" isOn="False" onValueChanged="Global/setEpicMode" key="epicMode"/>
 				</VerticalLayout>
-				<Toggle id="immortality" isOn="True" onValueChanged="Global/setImmortality">Immortality</Toggle>
+				<Toggle id="immortality" isOn="True" onValueChanged="Global/setImmortality" key="immortality"/>
 				<VerticalLayout padding="25 0 0 0">
-					<Toggle id="goTo11" isOn="False" onValueChanged="Global/setGoTo11">Go to 11</Toggle>
+					<Toggle id="goTo11" isOn="False" onValueChanged="Global/setGoTo11" key="goTo11"/>
 				</VerticalLayout>
 			</VerticalLayout>
 
 			<HorizontalLayout>
-				<Text class="primary">Leader selection</Text>
+				<Text class="primary" key="leaderSelection"/>
 				<Dropdown id="leaderSelection" flexibleWidth="4" onValueChanged="Global/setSelectionMethod">
 					<Option></Option>
 				</Dropdown>
 			</HorizontalLayout>
 			<VerticalLayout padding="25 0 0 0">
-				<Toggle id="fanMadeLeaders" isOn="False" onValueChanged="Global/setFanMadeLeaders">Fan made leaders</Toggle>
+				<Toggle id="fanMadeLeaders" isOn="False" onValueChanged="Global/setFanMadeLeaders" key="fanmadeLeaders"/>
 			</VerticalLayout>
 
 			<HorizontalLayout>
-				<Text class="primary">Variants</Text>
+				<Text class="primary" key="variants"/>
 				<Dropdown id="variant" flexibleWidth="1.5" onValueChanged="Global/setVariant">
 					<Option></Option>
 				</Dropdown>
@@ -67,7 +67,7 @@
 
 		</VerticalLayout>
 		<HorizontalLayout padding="100 100 0 20">
-			<Button id="setUpButton" minHeight="26" onClick="Global/setUpFromUI">Setup</Button>
+			<Button id="setUpButton" minHeight="26" onClick="Global/setUpFromUI" key="setup"/>
 		</HorizontalLayout>
 	</VerticalLayout>
 	<Image position="0 350" width="256" height="256" image="http://cloud-3.steamusercontent.com/ugc/2027234042549282632/81266F80932D7A9A8628827099C5390739D09108/"/>

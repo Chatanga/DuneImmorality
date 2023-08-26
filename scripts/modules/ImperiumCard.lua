@@ -389,7 +389,6 @@ function ImperiumCard.evaluateReveal(color, playedCards, revealedCards, artiller
         input.card = nil
         sword(perSwordCard(1))(input, output)
     end
-    log(output)
     return output
 end
 

@@ -413,12 +413,12 @@ function Deck.generateStarterDeck(deckZone, immortality, epic)
     if immortality then
         table.insert(contributionSets, Deck.starter.immortality)
     end
-    local contributions = Deck.mergeContributionSets(contributionSets)
+    local contributions = Deck._mergeContributionSets(contributionSets)
     if not immortality and epic then
         contributions["duneTheDesertPlanet"] = 1
         contributions["controlTheSpice"] = 1
     end
-    Deck.generateDeck("Imperium", deckZone.getPosition(), contributions, Deck.sources.imperium).doAfter(continuation.run)
+    Deck._generateDeck("Imperium", deckZone.getPosition(), contributions, Deck.sources.imperium).doAfter(continuation.run)
     return continuation
 end
 
@@ -427,7 +427,7 @@ function Deck.generateStarterDiscard(discardZone, immortality, epic)
     assert(discardZone)
     local continuation = Helper.createContinuation()
     if immortality and epic then
-        Deck.generateDeck("Imperium", discardZone.getPosition(), Deck.starter.epic, Deck.sources.imperium).doAfter(function (deck)
+        Deck._generateDeck("Imperium", discardZone.getPosition(), Deck.starter.epic, Deck.sources.imperium).doAfter(function (deck)
             deck.flip()
             continuation.run(deck)
         end)
@@ -439,8 +439,8 @@ end
 function Deck.generateImperiumDeck(deckZone, ix, immortality)
     assert(deckZone)
     local continuation = Helper.createContinuation()
-    local contributions = Deck.mergeStandardContributionSets(Deck.imperium, ix, immortality)
-    Deck.generateDeck("Imperium", deckZone.getPosition(), contributions, Deck.sources.imperium).doAfter(continuation.run)
+    local contributions = Deck._mergeStandardContributionSets(Deck.imperium, ix, immortality)
+    Deck._generateDeck("Imperium", deckZone.getPosition(), contributions, Deck.sources.imperium).doAfter(continuation.run)
     return continuation
 end
 
@@ -451,7 +451,7 @@ function Deck.generateSpecialDeck(name, deckZone)
     assert(name)
     assert(Deck.special[name])
     local contributions = { [name] = Deck.special[name] }
-    Deck.generateDeck("Imperium", deckZone.getPosition(), contributions, Deck.sources.special).doAfter(function (deck)
+    Deck._generateDeck("Imperium", deckZone.getPosition(), contributions, Deck.sources.special).doAfter(function (deck)
         deck.flip()
         continuation.run(deck)
     end)
@@ -462,7 +462,7 @@ end
 function Deck.generateTleilaxuDeck(deckZone)
     assert(deckZone)
     local continuation = Helper.createContinuation()
-    Deck.generateDeck("Imperium", deckZone.getPosition(), Deck.tleilaxu, Deck.sources.tleilaxu).doAfter(continuation.run)
+    Deck._generateDeck("Imperium", deckZone.getPosition(), Deck.tleilaxu, Deck.sources.tleilaxu).doAfter(continuation.run)
     return continuation
 end
 
@@ -470,8 +470,8 @@ end
 function Deck.generateIntrigueDeck(deckZone, ix, immortality)
     assert(deckZone)
     local continuation = Helper.createContinuation()
-    local contributions = Deck.mergeStandardContributionSets(Deck.intrigue, ix, immortality)
-    Deck.generateDeck("Intrigue", deckZone.getPosition(), contributions, Deck.sources.intrigue).doAfter(continuation.run)
+    local contributions = Deck._mergeStandardContributionSets(Deck.intrigue, ix, immortality)
+    Deck._generateDeck("Intrigue", deckZone.getPosition(), contributions, Deck.sources.intrigue).doAfter(continuation.run)
     return continuation
 end
 
@@ -492,7 +492,7 @@ function Deck.generateTechDeck(deckZones)
             part[keys[j]] = Deck.tech[keys[j]]
         end
         local deckZone = deckZones[i]
-        Deck.generateDeck("Tech", deckZone.getPosition(), part, Deck.sources.tech).doAfter(function (deck)
+        Deck._generateDeck("Tech", deckZone.getPosition(), part, Deck.sources.tech).doAfter(function (deck)
             local above = deckZone.getPosition() + Vector(0, 1, 0)
             Helper.moveCardFromZone(deckZone, above, nil, true, true)
 
@@ -517,7 +517,7 @@ function Deck.generateConflictDeck(deckZone, ix, epic)
     for level = 1, 3 do
         local cardCount = cardCounts[level]
         if cardCount > 0 then
-            local levelContributions = Deck.mergeStandardContributionSets(Deck.conflict["level" .. tostring(level)], ix, false)
+            local levelContributions = Deck._mergeStandardContributionSets(Deck.conflict["level" .. tostring(level)], ix, false)
             local cardNames = Helper.getKeys(levelContributions)
             Helper.shuffle(cardNames)
             for i = 1, cardCounts[level] do
@@ -527,7 +527,7 @@ function Deck.generateConflictDeck(deckZone, ix, epic)
     end
 
     local position = deckZone.getPosition() + Vector(0, 1, 0)
-    Deck.generateDeck("Conflict", position, contributions, Deck.sources.conflict).doAfter(continuation.run)
+    Deck._generateDeck("Conflict", position, contributions, Deck.sources.conflict).doAfter(continuation.run)
 
     return continuation
 end
@@ -557,8 +557,8 @@ function Deck.generateHagalDeck(deckZone, ix, immortality, playerCount)
         end
     end
 
-    local contributions = Deck.mergeContributionSets(contributionSets)
-    Deck.generateDeck("Hagal", deckZone.getPosition(), contributions, Deck.sources.hagal).doAfter(continuation.run)
+    local contributions = Deck._mergeContributionSets(contributionSets)
+    Deck._generateDeck("Hagal", deckZone.getPosition(), contributions, Deck.sources.hagal).doAfter(continuation.run)
     return continuation
 end
 
@@ -566,16 +566,16 @@ end
 function Deck.generateLeaderDeck(deckZone, ix, immortality, fanMadeLeaders)
     assert(deckZone)
     local continuation = Helper.createContinuation()
-    local contributions = Deck.mergeStandardContributionSets(Deck.leaders, ix, immortality)
+    local contributions = Deck._mergeStandardContributionSets(Deck.leaders, ix, immortality)
     if fanMadeLeaders then
-        contributions = Deck.mergeContributionSets({ contributions, Deck.mergeStandardContributionSets(Deck.leaders.fanMade.arkhane, ix, immortality) })
+        contributions = Deck._mergeContributionSets({ contributions, Deck._mergeStandardContributionSets(Deck.leaders.fanMade.arkhane, ix, immortality) })
     end
-    Deck.generateDeck("Leader", deckZone.getPosition(), contributions, Deck.sources.leaders).doAfter(continuation.run)
+    Deck._generateDeck("Leader", deckZone.getPosition(), contributions, Deck.sources.leaders).doAfter(continuation.run)
     return continuation
 end
 
 ---
-function Deck.mergeStandardContributionSets(root, ix, immortality)
+function Deck._mergeStandardContributionSets(root, ix, immortality)
     local contributionSets = { root.base }
     if ix then
         table.insert(contributionSets, root.ix)
@@ -583,11 +583,11 @@ function Deck.mergeStandardContributionSets(root, ix, immortality)
     if immortality then
         table.insert(contributionSets, root.immortality)
     end
-    return Deck.mergeContributionSets(contributionSets)
+    return Deck._mergeContributionSets(contributionSets)
 end
 
 ---
-function Deck.mergeContributionSets(contributionSets)
+function Deck._mergeContributionSets(contributionSets)
     local contributions = {}
     for _, contributionSet in ipairs(contributionSets) do
         for name, arity in pairs(contributionSet) do
@@ -610,13 +610,12 @@ end
 
 --- Load part of a "custom deck" (an image made of tiled cards) into a named card
 --- collection. Only the cards listed in cardNames are added.
+--- The startLuaIndex could be greater than 1 to skip the first cards, whereas
+--- empty names ("") allows to skip intermediate cards.
 ---@param cards any The set where to add the namec cards.
----@param customDeck any A custom deck (API struct) as returned by
---- Deck.createImperiumCustomDeck.
+---@param customDeck any A custom deck (API struct) as returned by Deck.createImperiumCustomDeck.
 ---@param startLuaIndex any The Lua start index for the card names.
 ---@param cardNames any An list of card names matching those in the custon deck.
----The startLuaIndex could be greater than 1 to skip the first cards, whereas
---- empty names ("") allows to skip intermediate cards.
 function Deck.loadCustomDeck(cards, customDeck, startLuaIndex, cardNames)
     assert(cards)
     assert(customDeck)
@@ -630,7 +629,7 @@ function Deck.loadCustomDeck(cards, customDeck, startLuaIndex, cardNames)
 end
 
 ---
-function Deck.generateCardData(customDeck, customDeckId, cardId)
+function Deck._generateCardData(customDeck, customDeckId, cardId)
     assert(customDeck, "customDeck")
     assert(customDeckId, "customDeckId")
     assert(cardId, "cardId")
@@ -687,7 +686,7 @@ function Deck.generateCardData(customDeck, customDeckId, cardId)
 end
 
 ---
-function Deck.generateDeck(deckName, position, contributions, sources)
+function Deck._generateDeck(deckName, position, contributions, sources)
     assert(deckName)
     assert(position)
     assert(contributions)
@@ -755,7 +754,7 @@ function Deck.generateDeck(deckName, position, contributions, sources)
         end
 
         if source.customDeck ~= customDeck then
-            customDeckId = Deck.nextCustomDeckId()
+            customDeckId = Deck._nextCustomDeckId()
             data.CustomDeck[tostring(customDeckId)] = source.customDeck
             data.Transform.scaleX = source.customDeck.__scale
             data.Transform.scaleZ = source.customDeck.__scale
@@ -766,7 +765,7 @@ function Deck.generateDeck(deckName, position, contributions, sources)
             local index = source.luaIndex - 1
             local cardId = tostring(customDeckId * 100 + index)
             table.insert(data.DeckIDs, tostring(cardId))
-            local cardData = Deck.generateCardData(customDeck, customDeckId, cardId)
+            local cardData = Deck._generateCardData(customDeck, customDeckId, cardId)
             cardData.Tags = { deckName }
 
             cardData.Description = name
@@ -792,53 +791,53 @@ function Deck.generateDeck(deckName, position, contributions, sources)
 end
 
 ---
-function Deck.nextCustomDeckId()
+function Deck._nextCustomDeckId()
     customDeckBaseId = customDeckBaseId + 1
     return customDeckBaseId
 end
 
 ---
 function Deck.createImperiumCustomDeck(faceUrl, width, height)
-    return Deck.createCustomDeck(imperiumCardBack, faceUrl, width, height, 1.05)
+    return Deck._createCustomDeck(imperiumCardBack, faceUrl, width, height, 1.05)
 end
 
 ---
 function Deck.createIntrigueCustomDeck(faceUrl, width, height)
-    return Deck.createCustomDeck(intrigueCardBack, faceUrl, width, height, 1)
+    return Deck._createCustomDeck(intrigueCardBack, faceUrl, width, height, 1)
 end
 
 ---
 function Deck.createTechCustomDeck(faceUrl, width, height)
-    return Deck.createCustomDeck(techCardBack, faceUrl, width, height, 0.52)
+    return Deck._createCustomDeck(techCardBack, faceUrl, width, height, 0.52)
 end
 
 ---
 function Deck.createConflict1CustomDeck(faceUrl, width, height)
-    return Deck.createCustomDeck(conflict1CardBack, faceUrl, width, height, 1)
+    return Deck._createCustomDeck(conflict1CardBack, faceUrl, width, height, 1)
 end
 
 ---
 function Deck.createConflict2CustomDeck(faceUrl, width, height)
-    return Deck.createCustomDeck(conflict2CardBack, faceUrl, width, height, 1)
+    return Deck._createCustomDeck(conflict2CardBack, faceUrl, width, height, 1)
 end
 
 ---
 function Deck.createConflict3CustomDeck(faceUrl, width, height)
-    return Deck.createCustomDeck(conflict3CardBack, faceUrl, width, height, 1)
+    return Deck._createCustomDeck(conflict3CardBack, faceUrl, width, height, 1)
 end
 
 ---
 function Deck.createHagalCustomDeck(faceUrl, width, height)
-    return Deck.createCustomDeck(hagalCardBack, faceUrl, width, height, 0.83)
+    return Deck._createCustomDeck(hagalCardBack, faceUrl, width, height, 0.83)
 end
 
 ---
 function Deck.createLeaderCustomDeck(faceUrl, width, height)
-    return Deck.createCustomDeck(leaderCardBack, faceUrl, width, height, 1.12)
+    return Deck._createCustomDeck(leaderCardBack, faceUrl, width, height, 1.12)
 end
 
 ---
-function Deck.createCustomDeck(backUrl, faceUrl, width, height, scale)
+function Deck._createCustomDeck(backUrl, faceUrl, width, height, scale)
     return {
         FaceURL = faceUrl,
         BackURL = backUrl,

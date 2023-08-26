@@ -51,12 +51,12 @@ function Resource.new(token, color, resourceName, value)
         label = tostring(resource.value),
         click_function = Helper.registerGlobalCallback(function (_, otherColor, altClick)
             if resource.color then
-                resource:changeValue(otherColor, altClick)
+                resource:_changeValue(otherColor, altClick)
             else
-                resource:setValue(otherColor, altClick)
+                resource:_setValue(otherColor, altClick)
             end
         end),
-        tooltip = resource:getTooltip(),
+        tooltip = resource:_getTooltip(),
         position = token.getPosition() + offset,
         height = 800,
         width = 800,
@@ -68,32 +68,32 @@ function Resource.new(token, color, resourceName, value)
     })
 
     Helper.registerEventListener("locale", function ()
-        resource:updateButton()
+        resource:_updateButton()
     end)
 
-    resource:updateButton()
+    resource:_updateButton()
 
     return resource
 end
 
 ---
-function Resource:updateState()
+function Resource:_updateState()
     if self.value == self.laggingValue then
         Helper.emitEvent(self.resourceName .. "ValueChanged", self.color, self.value)
     end
 end
 
 ---
-function Resource:getTooltip()
+function Resource:_getTooltip()
     return self.value .. " " .. I18N.translateCountable(self.value, self.resourceName, self.resourceName .. "s")
 end
 
 ---
-function Resource:updateButton()
+function Resource:_updateButton()
     self.token.editButton({
         index = 0,
         label = tostring(self.value),
-        tooltip = self:getTooltip()
+        tooltip = self:_getTooltip()
     })
 end
 
@@ -108,19 +108,19 @@ function Resource.findResourceFromToken(token)
 end
 
 ---
-function Resource:setValue(_, altClick)
+function Resource:_setValue(_, altClick)
     local change = altClick and -1 or 1
     local newValue = math.min(math.max(self.value + change, self.MIN_VALUE), self.MAX_VALUE)
     if self.value ~= newValue then
         self.value = newValue
         self.laggingValue = self.value
-        self:updateButton()
-        self:updateState()
+        self:_updateButton()
+        self:_updateState()
     end
 end
 
 ---
-function Resource:changeValue(color, altClick)
+function Resource:_changeValue(color, altClick)
     local playerActingStr = ""
     local msgColor = color
 
@@ -140,8 +140,8 @@ function Resource:changeValue(color, altClick)
     local newValue = math.min(math.max(self.value + change, self.MIN_VALUE), self.MAX_VALUE)
     if self.value ~= newValue then
         self.value = newValue
-        self:updateButton()
-        self:updateState()
+        self:_updateButton()
+        self:_updateState()
 
         if self.laggingUpdate then
             Wait.stop(self.laggingUpdate)
@@ -163,7 +163,7 @@ function Resource:changeValue(color, altClick)
             end
 
             self.laggingValue = self.value
-            self:updateState()
+            self:_updateState()
         end, 1)
     end
 end
@@ -173,8 +173,8 @@ function Resource:change(change)
     local newValue = math.min(math.max(self.value + change, self.MIN_VALUE), self.MAX_VALUE)
     self.value = newValue
     self.laggingValue = self.value
-    self:updateButton()
-    self:updateState()
+    self:_updateButton()
+    self:_updateState()
 end
 
 ---
@@ -182,8 +182,8 @@ function Resource:set(value)
     local newValue = math.min(math.max(value, self.MIN_VALUE), self.MAX_VALUE)
     self.value = newValue
     self.laggingValue = value
-    self:updateButton()
-    self:updateState()
+    self:_updateButton()
+    self:_updateState()
 end
 
 ---

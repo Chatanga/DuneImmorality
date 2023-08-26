@@ -32,7 +32,7 @@ function I18N.translate(id)
     local result = I18N.locales[currentLocale][id]
     -- assert(result, ("The id %q was not found in the current locale (%q)"):format(id, currentLocale))
     if not result then
-        result = "<" .. id .. ">"
+        result = "{" .. id .. "}"
     end
     return result
 end

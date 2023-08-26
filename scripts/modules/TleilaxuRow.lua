@@ -92,7 +92,6 @@ function TleilaxuRow.acquireTleilaxuCard(indexInRow, color)
         else
             leader.troops(color, "tanks", "supply", price)
 
-            -- TODO "Reclaimed Forces" -> dialogue de choix.
             Playboard.giveCard(color, card, false)
 
             -- Replenish the slot in the row.

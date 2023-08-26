@@ -1,4 +1,5 @@
 local Helper = require("utils.Helper")
+local I18N = require("utils.I18N")
 
 local XmlUI = Helper.createClass()
 
@@ -38,6 +39,14 @@ function XmlUI:setButton(id, label, interactable)
 end
 
 ---
+function XmlUI:setButtonI18N(id, key, interactable)
+    local element = XmlUI._findXmlElement(self.xml, id)
+    assert(element, "Unknown id: " .. id)
+    XmlUI._setXmlButtonI18N(element, key)
+    XmlUI._setXmlInteractable(element, interactable)
+end
+
+---
 function XmlUI:fromUI(player, value, id)
     local values = self:_getEnumeration(id)
     if values then
@@ -55,7 +64,6 @@ function XmlUI:fromUI(player, value, id)
     assert(false)
 end
 
---- TODO Add translation.
 function XmlUI:toUI()
     local root =  XmlUI._findXmlElement(self.xml, self.id)
     assert(root, "Unknown id: " .. self.id)
@@ -77,6 +85,7 @@ function XmlUI:toUI()
             end
         end
     end
+    XmlUI._translateContent(self.xml)
     self.holder.UI.setXmlTable(self.xml)
 end
 
@@ -141,6 +150,13 @@ function XmlUI._setXmlButton(button, label)
 end
 
 ---
+function XmlUI._setXmlButtonI18N(button, key)
+    assert(button)
+    assert(button.tag == "Button", button.tag)
+    button.attributes.key = key
+end
+
+---
 function XmlUI._setXmlActive(xml, active)
     assert(xml)
     xml.attributes.active = active and "True" or "False"
@@ -154,6 +170,25 @@ function XmlUI._setXmlInteractable(xml, interactable)
         xml.attributes.active = interactable and "True" or "False"
     else
         xml.attributes.interactable = interactable and "True" or "False"
+    end
+end
+
+---
+function XmlUI._translateContent(xml)
+    for _, element in ipairs(xml) do
+        XmlUI._translate(element)
+    end
+end
+
+---
+function XmlUI._translate(node)
+    if node.attributes and node.attributes.key then
+        node.value = I18N(node.attributes.key)
+    end
+    if node.children then
+        for _, child in ipairs(node.children) do
+            XmlUI._translate(child)
+        end
     end
 end
 

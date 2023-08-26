@@ -17,6 +17,7 @@ local ImperiumCard = Module.lazyRequire("ImperiumCard")
 local IntrigueCard = Module.lazyRequire("IntrigueCard")
 local Intrigue = Module.lazyRequire("Intrigue")
 local Reserve = Module.lazyRequire("Reserve")
+local Action = Module.lazyRequire("Action")
 
 local Playboard = Helper.createClass(nil, {
     ALL_RESOURCE_NAMES = { "spice", "water", "solari", "persuasion", "strength" },
@@ -246,8 +247,6 @@ function Playboard.onLoad(state)
         end
         if alive then
             Playboard.playboards[color] = Playboard.new(color, unresolvedContent, subState)
-        else
-            log(color .. " player is not alive (quite dead in fact).")
         end
     end
     Playboard.unresolvedContentByColor = nil
@@ -310,7 +309,7 @@ function Playboard.new(color, unresolvedContent, subState)
         playboard[resourceName] = Resource.new(token, color, resourceName, value)
     end
 
-    Helper.createTransientAnchor("InstructionTextAnchor", board.getPosition() + playboard:newSymmetricBoardPosition(12, -0.5, -8)).doAfter(function (anchor)
+    Helper.createTransientAnchor("InstructionTextAnchor", board.getPosition() + playboard:_newSymmetricBoardPosition(12, -0.5, -8)).doAfter(function (anchor)
         playboard.instructionTextAnchor = anchor
     end)
 
@@ -344,6 +343,11 @@ function Playboard.setUp(settings, activeOpponents)
                 end)
                 Deck.generateStarterDiscard(playboard.content.discardZone, settings.immortality, settings.epicMode)
             end
+
+            if settings.goTo11 then
+                playboard.content.fourPlayerVictoryToken.destruct()
+            end
+
             playboard:updatePlayerScore()
         else
             playboard:tearDown()
@@ -382,15 +386,17 @@ function Playboard._staticSetUp(settings)
                 playboard.leader.setUp(color, settings)
             end
         end
+        for _, playboard in pairs(Playboard._getPlayboards()) do
+            playboard.instructionTextAnchor.clearButtons()
+        end
     end)
 
     Helper.registerEventListener("playerTurns", function (phase, color)
         local playboard = Playboard.getPlayboard(color)
-        assert(playboard.leader, color .. " has no leader.")
 
         for otherColor, otherPlayboard in pairs(Playboard._getPlayboards()) do
             if Playboard.isHuman(otherColor) then
-                local instruction = playboard.leader.instruct(phase, color == otherColor) or "-"
+                local instruction = (playboard.leader or Action).instruct(phase, color == otherColor) or "-"
                 if otherPlayboard.instructionTextAnchor then
                     otherPlayboard.instructionTextAnchor.clearButtons()
                     Helper.createAbsoluteButtonWithRoundness(otherPlayboard.instructionTextAnchor, 1, false, {
@@ -412,7 +418,7 @@ function Playboard._staticSetUp(settings)
             end
         end
 
-        Playboard.setActivePlayer(phase, color)
+        Playboard._setActivePlayer(phase, color)
 
         MusicPlayer.setCurrentAudioclip({
             url = "http://cloud-3.steamusercontent.com/ugc/2027235268872374937/7FE5FD8B14ED882E57E302633A16534C04C18ECE/",
@@ -463,7 +469,7 @@ function Playboard:_recall()
 end
 
 ---
-function Playboard.setActivePlayer(phase, color)
+function Playboard._setActivePlayer(phase, color)
     local indexedColors = {"Green", "Yellow", "Blue", "Red"}
     for i, otherColor in ipairs(indexedColors) do
         local playboard = Playboard.playboards[otherColor]
@@ -549,8 +555,7 @@ function Playboard.acceptTurn(phase, color)
     elseif phase == 'recall' then
         accepted = false
     elseif phase == 'endgame' then
-        -- TODO
-        accepted = false
+        accepted = playboard.lastPhase ~= phase
     else
         error("Unknown phase: " .. phase)
     end
@@ -897,7 +902,7 @@ function Playboard:createButtons()
             self:drawCards(1)
         end),
         label = I18N("drawOneCardButton"),
-        position = self:newOffsetedBoardPosition(-13.5, 0, 1.8),
+        position = self:_newOffsetedBoardPosition(-13.5, 0, 1.8),
         width = 1100,
         height = 250,
         font_size = 150,
@@ -909,10 +914,10 @@ function Playboard:createButtons()
         click_function = self:createExclusiveCallback("onDrawFiveCards", function ()
             -- Note: the Holtzman effect happens at the recall phase (drawing 5
             -- cards is not stricly done when a round starts.)
-            self:tryToDrawCards(5)
+            self:_tryToDrawCards(5)
         end),
         label = I18N("drawFiveCardsButton"),
-        position = self:newOffsetedBoardPosition(-13.5, 0, 2.6),
+        position = self:_newOffsetedBoardPosition(-13.5, 0, 2.6),
         width = 1400,
         height = 250,
         font_size = 150,
@@ -922,10 +927,10 @@ function Playboard:createButtons()
 
     board.createButton({
         click_function = self:createExclusiveCallback("onResetDiscard", function ()
-            self:resetDiscard()
+            self:_resetDiscard()
         end),
         label = I18N("resetDiscardButton"),
-        position = self:newOffsetedBoardPosition(-3.5, 0, 2.6),
+        position = self:_newOffsetedBoardPosition(-3.5, 0, 2.6),
         width = 1200,
         height = 250,
         font_size = 150,
@@ -937,8 +942,8 @@ function Playboard:createButtons()
     board.createButton({
         click_function = Helper.registerGlobalCallback(),
         label = I18N("agentTurn"),
-        position = self:newSymmetricBoardPosition(-14.8, 0, -1),
-        rotation = self:newSymmetricBoardRotation(0, -90, 0),
+        position = self:_newSymmetricBoardPosition(-14.8, 0, -1),
+        rotation = self:_newSymmetricBoardRotation(0, -90, 0),
         width = 0,
         height = 0,
         font_size = 280,
@@ -951,8 +956,8 @@ function Playboard:createButtons()
             self:onRevealHand()
         end),
         label = self.revealed and "Recalculate" or I18N("revealHandButton"),
-        position = self:newSymmetricBoardPosition(-14.8, 0, -5),
-        rotation = self:newSymmetricBoardRotation(0, -90, 0),
+        position = self:_newSymmetricBoardPosition(-14.8, 0, -5),
+        rotation = self:_newSymmetricBoardRotation(0, -90, 0),
         width = 1600,
         height = 320,
         font_size = 280,
@@ -963,7 +968,7 @@ function Playboard:createButtons()
     if self.content.nukeToken then
         self.content.nukeToken.createButton({
             click_function = self:createExclusiveCallback("onNuke", function ()
-                self:nukeConfirm()
+                self:_nukeConfirm()
             end),
             tooltip = I18N('atomics'),
             position = Vector(0, 0, 0),
@@ -993,7 +998,7 @@ end
 
 ---
 function Playboard:tryRevealHandEarly()
-    local origin = Playboard.getPlayboard(self.color):newSymmetricBoardPosition(-8, 0, -4.5)
+    local origin = Playboard.getPlayboard(self.color):_newSymmetricBoardPosition(-8, 0, -4.5)
 
     local board = self.content.board
 
@@ -1023,7 +1028,7 @@ function Playboard:tryRevealHandEarly()
     })
     board.createButton({
         click_function = self:createExclusiveCallback("onCancelReveal", function ()
-            self:resetDiscard()
+            self:_resetDiscard()
         end),
         label = I18N('no'),
         position = origin + Vector(-1, 0, 1),
@@ -1109,11 +1114,11 @@ end
 function Playboard.getCardsPlayedThisTurn(color)
     local playboard = Playboard.getPlayboard(color)
 
-    local playedCards = Helper.filter(Park.getObjects(self.agentCardPark), function (card)
+    local playedCards = Helper.filter(Park.getObjects(playboard.agentCardPark), function (card)
         return Utils.isImperiumCard(card) or Utils.isIntrigueCard(card)
     end)
 
-    return Set.new(playedCards) - Set.new(playboard.alreadyPlayedCards)
+    return Set.newFromSet(playedCards) - Set.newFromSet(playboard.alreadyPlayedCards)
 end
 
 ---
@@ -1127,7 +1132,7 @@ function Playboard.couldSendAgentOrReveal(color)
 end
 
 ---
-function Playboard:tryToDrawCards(count, message)
+function Playboard:_tryToDrawCards(count, message)
     local content = self.content
     local deck = Helper.getDeckOrCard(content.drawDeckZone)
     local discard = Helper.getDeckOrCard(content.discardZone)
@@ -1161,51 +1166,41 @@ function Playboard:drawCards(count)
     local remainingCardToDrawCount = count
 
     local deckOrCard = Helper.getDeckOrCard(self.content.drawDeckZone)
-    if deckOrCard then
-        local drawableCardCount = Helper.getCardCount(deckOrCard)
+    local drawableCardCount = Helper.getCardCount(deckOrCard)
 
-        local dealCardCount = math.min(remainingCardToDrawCount, drawableCardCount)
+    local dealCardCount = math.min(remainingCardToDrawCount, drawableCardCount)
+    if dealCardCount > 0 then
         deckOrCard.deal(dealCardCount, self.color)
+    end
 
-        remainingCardToDrawCount = remainingCardToDrawCount - dealCardCount
+    remainingCardToDrawCount = remainingCardToDrawCount - dealCardCount
 
-        if remainingCardToDrawCount > 0 then
-            local reset = self:resetDiscard()
-            if reset then
-                reset.doAfter(function(_)
-                    self:drawCards(remainingCardToDrawCount)
-                end)
-            end
+    if remainingCardToDrawCount > 0 then
+        local reset = self:_resetDiscard()
+        if reset then
+            reset.doAfter(function()
+                self:drawCards(remainingCardToDrawCount)
+            end)
         end
     end
 end
 
 ---
-function Playboard:resetDiscard()
-    local content = self.content
-    local discard = Helper.getDeckOrCard(content.discardZone)
-    log(1)
+function Playboard:_resetDiscard()
+    local discard = Helper.getDeckOrCard(self.content.discardZone)
     if discard then
-        log(2)
         local continuation = Helper.createContinuation()
 
         discard.setRotationSmooth({0, 180, 180}, false, false)
-        discard.setPositionSmooth(content.drawDeckZone + Vector(0, 1, 0), false, true)
+        discard.setPositionSmooth(self.content.drawDeckZone.getPosition() + Vector(0, 1, 0), false, true)
 
-        log(3)
-        Helper.onceMoved(discard).doAfter(function ()
-            log(4)
-            local replenishedDeckOrCard = Helper.getDeckOrCard(content.drawDeckZone)
+        Helper.onceMotionless(discard).doAfter(function ()
+            local replenishedDeckOrCard = Helper.getDeckOrCard(self.content.drawDeckZone)
             assert(replenishedDeckOrCard)
-            log(5)
             if replenishedDeckOrCard.type == "Deck" then
                 replenishedDeckOrCard.shuffle()
-                log(6)
-                Wait.time(function () -- Once shuffled.
-                    continuation.run(replenishedDeckOrCard)
-                end, 1.5)
+                Helper.onceShuffled(replenishedDeckOrCard).doAfter(continuation.run)
             else
-                log(7)
                 continuation.run(replenishedDeckOrCard)
             end
         end)
@@ -1217,7 +1212,7 @@ function Playboard:resetDiscard()
 end
 
 ---
-function Playboard:nukeConfirm()
+function Playboard:_nukeConfirm()
     self.content.nukeToken.clearButtons()
     self.content.nukeToken.createButton({
         click_function = Helper.registerGlobalCallback(),
@@ -1261,7 +1256,7 @@ function Playboard:nukeConfirm()
 end
 
 ---
-function Playboard.getPlayerTextColors(color)
+function Playboard._getPlayerTextColors(color)
 
     local background = {0, 0, 0, 1}
     local foreground = {1, 1, 1, 1}
@@ -1284,11 +1279,6 @@ function Playboard.getPlayerTextColors(color)
         bg = background,
         fg = foreground
     }
-end
-
----
-function Playboard.hasPlayer(color)
-    return Playboard.getContent(color) ~= nil
 end
 
 ---
@@ -1327,7 +1317,7 @@ function Playboard.setLeader(color, leaderCard)
 end
 
 ---
-function Playboard.findLeaderCard(color)
+function Playboard._findLeaderCard(color)
     local leaderZone = Playboard.getContent(color).leaderZone
     for _, object in ipairs(leaderZone.getObjects()) do
         if object.hasTag("Leader") or object.hasTag("Hagal") then
@@ -1344,7 +1334,7 @@ end
 
 ---
 function Playboard.getLeaderName(color)
-    local leader = Playboard.findLeaderCard(color)
+    local leader = Playboard._findLeaderCard(color)
     return leader and leader.getName() or "?"
 end
 
@@ -1425,13 +1415,13 @@ end
 ---
 function Playboard.hasACouncilSeat(color)
     local zone = MainBoard.getHighCouncilSeatPark().zone
-    local token = Playboard.getCouncilToken(color)
+    local token = Playboard._getCouncilToken(color)
     return Helper.contains(zone, token)
 end
 
 ---
 function Playboard.takeHighCouncilSeat(color)
-    local token = Playboard.getCouncilToken(color)
+    local token = Playboard._getCouncilToken(color)
     if not Playboard.hasACouncilSeat(color) then
         if Park.putObject(token, MainBoard.getHighCouncilSeatPark()) then
             token.interactable = false
@@ -1463,7 +1453,7 @@ function Playboard.getSwordmaster(color)
 end
 
 ---
-function Playboard.getCouncilToken(color)
+function Playboard._getCouncilToken(color)
     local content = Playboard.getContent(color)
     return content.councilToken
 end
@@ -1472,30 +1462,6 @@ end
 function Playboard.getResource(color, resourceName)
     Utils.assertIsResourceName(resourceName)
     return Playboard.getPlayboard(color)[resourceName]
-end
-
----
-function Playboard.payResource(color, resourceName, amount)
-    Utils.assertIsResourceName(resourceName)
-    local playerResource = Playboard.getContent(color)[resourceName]
-    if playerResource.call("collectVal") < amount then
-        broadcastToColor(I18N(Helper.toCamelCase("no", resourceName)), color, color)
-        return false
-    else
-        Wait.time(function()
-            playerResource.call("decrementVal")
-        end, 0.35, amount)
-        return true
-    end
-end
-
----
-function Playboard.gainResource(color, resourceName, amount)
-    Utils.assertIsResourceName(resourceName)
-    local playerResource = Playboard.getContent(color)[resourceName]
-    Wait.time(function()
-        playerResource.call("incrementVal")
-    end, 0.35, amount)
 end
 
 ---
@@ -1540,39 +1506,34 @@ function Playboard.getIntrigues(color)
 end
 
 ---
-function Playboard.getCards(color)
-    return Helper.filter(Player[color].getHandObjects(), Utils.isImperiumCard)
-end
-
----
-function Playboard:newSymmetricBoardPosition(x, y, z)
+function Playboard:_newSymmetricBoardPosition(x, y, z)
     if self.color == "Red" or self.color == "Blue" then
-        return self:newBoardPosition(-x, y, z)
+        return self:_newBoardPosition(-x, y, z)
     else
-        return self:newBoardPosition(x, y, z)
+        return self:_newBoardPosition(x, y, z)
     end
 end
 
 ---
-function Playboard:newSymmetricBoardRotation(x, y, z)
+function Playboard:_newSymmetricBoardRotation(x, y, z)
     if self.color == "Red" or self.color == "Blue" then
-        return self:newBoardPosition(x, -y, z)
+        return self:_newBoardPosition(x, -y, z)
     else
-        return self:newBoardPosition(x, y, z)
+        return self:_newBoardPosition(x, y, z)
     end
 end
 
 ---
-function Playboard:newOffsetedBoardPosition(x, y, z)
+function Playboard:_newOffsetedBoardPosition(x, y, z)
     if self.color == "Red" or self.color == "Blue" then
-        return self:newBoardPosition(17 + x, y, z)
+        return self:_newBoardPosition(17 + x, y, z)
     else
-        return self:newBoardPosition(x, y, z)
+        return self:_newBoardPosition(x, y, z)
     end
 end
 
 ---
-function Playboard:newBoardPosition(x, y, z)
+function Playboard:_newBoardPosition(x, y, z)
     return Vector(x, y + 0.7, -z)
 end
 

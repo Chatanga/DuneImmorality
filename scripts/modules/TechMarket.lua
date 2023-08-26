@@ -61,12 +61,12 @@ end
 function TechMarket._staticSetUp()
 
     for _, color in ipairs(Playboard.getPlayboardColors()) do
-        TechMarket.negotiationParks[color] = TechMarket.createNegotiationPark(color)
+        TechMarket.negotiationParks[color] = TechMarket._createNegotiationPark(color)
     end
-    TechMarket.createNegotiationButton()
+    TechMarket._createNegotiationButton()
 
     for i, zone in ipairs(TechMarket.techSlots) do
-        AcquireCard.new(zone, "Tech", TechMarket["acquireTech" .. tostring(i)])
+        AcquireCard.new(zone, "Tech", TechMarket["_acquireTech" .. tostring(i)])
     end
 
     Deck.generateTechDeck(TechMarket.techSlots).doAfter(function (deck)
@@ -88,7 +88,7 @@ function TechMarket._tearDown()
 end
 
 ---
-function TechMarket.createNegotiationButton()
+function TechMarket._createNegotiationButton()
     Helper.createAnchoredAreaButton(TechMarket.negotiationZone, 0.6, 0.1, "Negotiator: ±1", function (_, color, altClick)
         local leader = Playboard.getLeader(color)
         if altClick then
@@ -100,23 +100,23 @@ function TechMarket.createNegotiationButton()
 end
 
 ---
-function TechMarket.acquireTech1(acquireCard, color)
+function TechMarket._acquireTech1(acquireCard, color)
     TechMarket.acquireTech(1, acquireCard, color)
 end
 
 ---
-function TechMarket.acquireTech2(acquireCard, color)
+function TechMarket._acquireTech2(acquireCard, color)
     TechMarket.acquireTech(2, acquireCard, color)
 end
 
 ---
-function TechMarket.acquireTech3(acquireCard, color)
+function TechMarket._acquireTech3(acquireCard, color)
     TechMarket.acquireTech(3, acquireCard, color)
 end
 
 ---
-function TechMarket.acquireTech_Later(stackIndex, acquireCard, color)
-    local techTileStack = TechMarket.getTechTileStack(stackIndex)
+function TechMarket._acquireTech_Later(stackIndex, acquireCard, color)
+    local techTileStack = TechMarket._getTechTileStack(stackIndex)
     if techTileStack.topCard then
         local options = Helper.getKeys(TechMarket.acquireTechOptions)
         if #options > 0 then
@@ -137,7 +137,7 @@ end
 
 ---
 function TechMarket.acquireTech(stackIndex, acquireCard, color)
-    local techTileStack = TechMarket.getTechTileStack(stackIndex)
+    local techTileStack = TechMarket._getTechTileStack(stackIndex)
     if techTileStack.topCard then
         local techName = techTileStack.topCard.getDescription()
 
@@ -154,7 +154,7 @@ function TechMarket.acquireTech(stackIndex, acquireCard, color)
             end, 0.5)
         end
 
-        TechMarket.applyBuyEffect(color, techName)
+        TechMarket._applyBuyEffect(color, techName)
 
         return continuation
     end
@@ -201,7 +201,7 @@ function TechMarket._doAcquireTech(techTileStack, acquireCard, option, color)
             end, 0.5)
         end
 
-        TechMarket.applyBuyEffect(color, techName)
+        TechMarket._applyBuyEffect(color, techName)
 
         return continuation
     end
@@ -210,7 +210,7 @@ function TechMarket._doAcquireTech(techTileStack, acquireCard, option, color)
 end
 
 ---
-function TechMarket.getTechTileStack(stackIndex)
+function TechMarket._getTechTileStack(stackIndex)
     local techTileStack = {}
 
     local zone = TechMarket.techSlots[stackIndex]
@@ -226,7 +226,7 @@ function TechMarket.getTechTileStack(stackIndex)
 end
 
 ---
-function TechMarket.applyBuyEffect(color, techName)
+function TechMarket._applyBuyEffect(color, techName)
     local leader = Playboard.getLeader(color)
     if techName == "windtraps" then
         leader.resource(color, "water", 1)
@@ -271,7 +271,7 @@ function TechMarket.registerAcquireTechOption(color, source, resourceType, amoun
 end
 
 ---
-function TechMarket.createNegotiationPark(color)
+function TechMarket._createNegotiationPark(color)
     local offsets = {
         Red = Vector(-0.45, 0, 0.45),
         Blue = Vector(-0.45, 0, -0.45),

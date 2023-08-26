@@ -143,7 +143,7 @@ function Set:toList()
     return list
 end
 
-function Set:tostring()
+function Set:toString()
     local str = "{"
     local first = true
     for element, _ in pairs(self.elements) do
@@ -166,6 +166,6 @@ Set.__ge = Set.isSupersetOf
 Set.__le = Set.isSubsetOf
 Set.__gt = function (a, b) return Set.isSupersetOf(a, b) and not Set.isSubsetOf(b, a) end
 Set.__lt = function (a, b) return Set.isSubsetOf(a, b) and not Set.isSupersetOf(b, a) end
-Set.__tostring = Set.tostring
+Set.__tostring = Set.toString
 
 return Set

@@ -205,7 +205,7 @@ end
 
 ---
 function MainBoard._staticSetUp(settings)
-    MainBoard.highCouncilPark = MainBoard:createHighCouncilPark(MainBoard.highCouncilZone)
+    MainBoard.highCouncilPark = MainBoard:_createHighCouncilPark(MainBoard.highCouncilZone)
 
     for name, space in pairs(MainBoard.spaces) do
         space.name = name
@@ -219,7 +219,7 @@ function MainBoard._staticSetUp(settings)
             Vector(p.x + 0.36, 0.68, p.z - 0.3)
         }
 
-        MainBoard.createSpaceButton(space, p, slots)
+        MainBoard._createSpaceButton(space, p, slots)
     end
 
     Helper.registerEventListener("phaseStart", function (phase)
@@ -261,7 +261,7 @@ function MainBoard._staticSetUp(settings)
 end
 
 ---
-function MainBoard:createHighCouncilPark(zone)
+function MainBoard:_createHighCouncilPark(zone)
     local seats = {}
     for i = 1, 4 do
         local x = (i - 2.5) * zone.getScale().x / 4
@@ -284,12 +284,6 @@ end
 function MainBoard.getHighCouncilSeatPark()
     return MainBoard.highCouncilPark
 end
-
----
-function Playboard.getPlayedCardsThisTurn()
-    -- TODO
-end
-
 ---
 function MainBoard.findControlableSpace(victoryPointToken)
     local description = victoryPointToken.getDescription()
@@ -325,7 +319,7 @@ function MainBoard.occupy(controlableSpace, flagBag)
 end
 
 ---
-function MainBoard.createSpaceButton(space, position, slots)
+function MainBoard._createSpaceButton(space, position, slots)
     local zone = space.zone -- Park.createBoundingZone(0, Vector(1, 3, 0.5), slots)
     local tags = { "Agent" }
     space.park = Park.createPark("AgentPark", slots, Vector(0, 0, 0), zone, tags, nil, false, true)
@@ -358,8 +352,8 @@ function MainBoard.sendAgent(color, spaceName)
         assert(parentSpace, "No parent space name named: " .. parentSpaceName)
     end
 
-    local asyncActionName = Helper.toCamelCase("asyncGo", space.name)
-    local actionName = Helper.toCamelCase("go", space.name)
+    local asyncActionName = Helper.toCamelCase("_asyncGo", space.name)
+    local actionName = Helper.toCamelCase("_go", space.name)
 
     local asyncAction = MainBoard[asyncActionName]
     local action = MainBoard[actionName]
@@ -384,12 +378,12 @@ function MainBoard.sendAgent(color, spaceName)
 end
 
 ---
-function MainBoard.goConspire(color)
-    if MainBoard.payResource(color, "spice", 4) then
-        MainBoard.gainResource(color, "solari", 5)
+function MainBoard._goConspire(color)
+    if MainBoard._payResource(color, "spice", 4) then
+        MainBoard._gainResource(color, "solari", 5)
         Playboard.getLeader(color).troops(color, "supply", "garrison", 2)
         Playboard.getLeader(color).drawIntrigues(color, 1)
-        MainBoard.gainInfluence(color, "emperor")
+        MainBoard._gainInfluence(color, "emperor")
         return true
     else
         return false
@@ -397,18 +391,18 @@ function MainBoard.goConspire(color)
 end
 
 ---
-function MainBoard.goWealth(color)
-    MainBoard.gainResource(color, "solari", 2)
-    MainBoard.gainInfluence(color, "emperor")
+function MainBoard._goWealth(color)
+    MainBoard._gainResource(color, "solari", 2)
+    MainBoard._gainInfluence(color, "emperor")
     return true
 end
 
 ---
-function MainBoard.goHeighliner(color)
-    if MainBoard.payResource(color, "spice", 6) then
-        MainBoard.gainResource(color, "water", 2)
+function MainBoard._goHeighliner(color)
+    if MainBoard._payResource(color, "spice", 6) then
+        MainBoard._gainResource(color, "water", 2)
         Playboard.getLeader(color).troops(color, "supply", "garrison", 5)
-        MainBoard.gainInfluence(color, "spacingGuild")
+        MainBoard._gainInfluence(color, "spacingGuild")
         return true
     else
         return false
@@ -416,16 +410,16 @@ function MainBoard.goHeighliner(color)
 end
 
 ---
-function MainBoard.goFoldspace(color)
+function MainBoard._goFoldspace(color)
     Playboard.getLeader(color).acquireFoldspaceCard(color)
-    MainBoard.gainInfluence(color, "spacingGuild")
+    MainBoard._gainInfluence(color, "spacingGuild")
     return true
 end
 
 ---
-function MainBoard.goSelectiveBreeding(color)
-    if MainBoard.payResource(color, "spice", 2) then
-        MainBoard.gainInfluence(color, "beneGesserit")
+function MainBoard._goSelectiveBreeding(color)
+    if MainBoard._payResource(color, "spice", 2) then
+        MainBoard._gainInfluence(color, "beneGesserit")
         return true
     else
         return false
@@ -433,7 +427,7 @@ function MainBoard.goSelectiveBreeding(color)
 end
 
 ---
-function MainBoard.goSecrets(color)
+function MainBoard._goSecrets(color)
     Playboard.getLeader(color).drawIntrigues(color, 1)
     for _, otherColor in ipairs(Playboard.getPlayboardColors()) do
         if otherColor ~= color then
@@ -442,15 +436,15 @@ function MainBoard.goSecrets(color)
             end
         end
     end
-    MainBoard.gainInfluence(color, "beneGesserit")
+    MainBoard._gainInfluence(color, "beneGesserit")
     return true
 end
 
 ---
-function MainBoard.goHardyWarriors(color)
-    if MainBoard.payResource(color, "water", 1) then
+function MainBoard._goHardyWarriors(color)
+    if MainBoard._payResource(color, "water", 1) then
         Playboard.getLeader(color).troops(color, "supply", "garrison", 2)
-        MainBoard.gainInfluence(color, "fremen")
+        MainBoard._gainInfluence(color, "fremen")
         return true
     else
         return false
@@ -458,16 +452,16 @@ function MainBoard.goHardyWarriors(color)
 end
 
 ---
-function MainBoard.goStillsuits(color)
-    MainBoard.gainResource(color, "water", 1)
-    MainBoard.gainInfluence(color, "fremen")
+function MainBoard._goStillsuits(color)
+    MainBoard._gainResource(color, "water", 1)
+    MainBoard._gainInfluence(color, "fremen")
     return true
 end
 
 ---
-function MainBoard.goImperialBasin(color)
-    if MainBoard.anySpiceSpace(color, 0, 1, MainBoard.spiceBonuses.imperialBasin) then
-        MainBoard.applyControlOfAnySpace(MainBoard.banners.imperialBasinBannerZone, "spice")
+function MainBoard._goImperialBasin(color)
+    if MainBoard._anySpiceSpace(color, 0, 1, MainBoard.spiceBonuses.imperialBasin) then
+        MainBoard._applyControlOfAnySpace(MainBoard.banners.imperialBasinBannerZone, "spice")
         return true
     else
         return false
@@ -475,20 +469,20 @@ function MainBoard.goImperialBasin(color)
 end
 
 ---
-function MainBoard.goHaggaBasin(color)
-    return MainBoard.anySpiceSpace(color, 1, 2, MainBoard.spiceBonuses.haggaBasin)
+function MainBoard._goHaggaBasin(color)
+    return MainBoard._anySpiceSpace(color, 1, 2, MainBoard.spiceBonuses.haggaBasin)
 end
 
 ---
-function MainBoard.goTheGreatFlat(color)
-    return MainBoard.anySpiceSpace(color, 2, 3, MainBoard.spiceBonuses.theGreatFlat)
+function MainBoard._goTheGreatFlat(color)
+    return MainBoard._anySpiceSpace(color, 2, 3, MainBoard.spiceBonuses.theGreatFlat)
 end
 
 ---
-function MainBoard.anySpiceSpace(color, waterCost, spiceBaseAmount, spiceBonus)
-    if MainBoard.payResource(color, "water", waterCost) then
-        local harvestedSpiceAmount = MainBoard.harvestSpice(spiceBaseAmount, spiceBonus)
-        MainBoard.gainResource(color, "spice", harvestedSpiceAmount)
+function MainBoard._anySpiceSpace(color, waterCost, spiceBaseAmount, spiceBonus)
+    if MainBoard._payResource(color, "water", waterCost) then
+        local harvestedSpiceAmount = MainBoard._harvestSpice(spiceBaseAmount, spiceBonus)
+        MainBoard._gainResource(color, "spice", harvestedSpiceAmount)
         return true
     else
         return false
@@ -496,7 +490,7 @@ function MainBoard.anySpiceSpace(color, waterCost, spiceBaseAmount, spiceBonus)
 end
 
 ---
-function MainBoard.harvestSpice(baseAmount, spiceBonus)
+function MainBoard._harvestSpice(baseAmount, spiceBonus)
     assert(spiceBonus)
     local spiceAmount = baseAmount + spiceBonus:get()
     spiceBonus:set(0)
@@ -504,9 +498,9 @@ function MainBoard.harvestSpice(baseAmount, spiceBonus)
 end
 
 ---
-function MainBoard.goSietchTabr(color)
+function MainBoard._goSietchTabr(color)
     if (InfluenceTrack.hasFriendship(color, "fremen")) then
-        MainBoard.gainResource(color, "water", 1)
+        MainBoard._gainResource(color, "water", 1)
         Playboard.getLeader(color).troops(color, "supply", "garrison", 1)
         return true
     else
@@ -515,12 +509,12 @@ function MainBoard.goSietchTabr(color)
 end
 
 ---
-function MainBoard.goResearchStation(color)
-    if MainBoard.payResource(color, "water", 2) then
+function MainBoard._goResearchStation(color)
+    if MainBoard._payResource(color, "water", 2) then
         if true then
-            MainBoard.drawImperiumCards(color, 3)
+            MainBoard._drawImperiumCards(color, 3)
         else
-            MainBoard.drawImperiumCards(color, 2)
+            MainBoard._drawImperiumCards(color, 2)
             Playboard.getLeader(color).research()
         end
         return true
@@ -530,25 +524,25 @@ function MainBoard.goResearchStation(color)
 end
 
 ---
-function MainBoard.goCarthag(color)
+function MainBoard._goCarthag(color)
     Playboard.getLeader(color).drawIntrigues(color, 1)
     Playboard.getLeader(color).troops(color, "supply", "garrison", 1)
-    MainBoard.applyControlOfAnySpace(MainBoard.banners.carthagBannerZone, "solari")
+    MainBoard._applyControlOfAnySpace(MainBoard.banners.carthagBannerZone, "solari")
     return true
 end
 
 ---
-function MainBoard.goArrakeen(color)
-    MainBoard.drawImperiumCards(color, 1)
-    MainBoard.applyControlOfAnySpace(MainBoard.banners.arrakeenBannerZone, "solari")
+function MainBoard._goArrakeen(color)
+    MainBoard._drawImperiumCards(color, 1)
+    MainBoard._applyControlOfAnySpace(MainBoard.banners.arrakeenBannerZone, "solari")
     return true
 end
 
 ---
-function MainBoard.applyControlOfAnySpace(bannerZone, resourceName)
+function MainBoard._applyControlOfAnySpace(bannerZone, resourceName)
     local controllingPlayer = MainBoard.getControllingPlayer(bannerZone)
     if controllingPlayer then
-        MainBoard.gainResource(controllingPlayer, resourceName, 1)
+        MainBoard._gainResource(controllingPlayer, resourceName, 1)
     end
     return true
 end
@@ -583,8 +577,8 @@ function MainBoard.getControllingPlayer(bannerZone)
 end
 
 ---
-function MainBoard.goSwordmaster(color)
-    if not Playboard.hasSwordmaster(color) and MainBoard.payResource(color, "solari", 8) then
+function MainBoard._goSwordmaster(color)
+    if not Playboard.hasSwordmaster(color) and MainBoard._payResource(color, "solari", 8) then
         Playboard.getLeader(color).recruitSwordmaster(color)
         return true
     else
@@ -593,8 +587,8 @@ function MainBoard.goSwordmaster(color)
 end
 
 ---
-function MainBoard.goMentat(color)
-    if MainBoard.payResource(color, "solari", 2) then
+function MainBoard._goMentat(color)
+    if MainBoard._payResource(color, "solari", 2) then
         Playboard.getLeader(color).takeMentat(color)
         return true
     else
@@ -608,9 +602,9 @@ function MainBoard.getMentat()
 end
 
 ---
-function MainBoard.goHighCouncil(color)
+function MainBoard._goHighCouncil(color)
     -- FIXME Interleaved conditions...
-    if not Playboard.hasACouncilSeat(color) and MainBoard.payResource(color, "solari", 5) then
+    if not Playboard.hasACouncilSeat(color) and MainBoard._payResource(color, "solari", 5) then
         return Playboard.getLeader(color).takeHighCouncilSeat(color)
     else
         return false
@@ -618,12 +612,12 @@ function MainBoard.goHighCouncil(color)
 end
 
 ---
-function MainBoard.goSecureContract(color)
-    MainBoard.gainResource(color, "solari", 3)
+function MainBoard._goSecureContract(color)
+    MainBoard._gainResource(color, "solari", 3)
     return true
 end
 
-function MainBoard.asyncGoSellMelange(color)
+function MainBoard._asyncGoSellMelange(color)
     local continuation = Helper.createContinuation()
     local options = {
         "2 -> 4",
@@ -632,32 +626,32 @@ function MainBoard.asyncGoSellMelange(color)
         "5 -> 12",
     }
     Player[color].showOptionsDialog("Select spice amount to be converted into solari.", options, 1, function (_, index, _)
-        continuation.run(MainBoard.sellMelange(color, index))
+        continuation.run(MainBoard._sellMelange(color, index))
     end)
     return continuation
 end
 
-function MainBoard.goSellMelange_1(color)
-    return MainBoard.sellMelange(color, 1)
+function MainBoard._goSellMelange_1(color)
+    return MainBoard._sellMelange(color, 1)
 end
 
-function MainBoard.goSellMelange_2(color)
-    return MainBoard.sellMelange(color, 2)
+function MainBoard._goSellMelange_2(color)
+    return MainBoard._sellMelange(color, 2)
 end
 
-function MainBoard.goSellMelange_3(color)
-    return MainBoard.sellMelange(color, 3)
+function MainBoard._goSellMelange_3(color)
+    return MainBoard._sellMelange(color, 3)
 end
 
-function MainBoard.goSellMelange_4(color)
-    return MainBoard.sellMelange(color, 4)
+function MainBoard._goSellMelange_4(color)
+    return MainBoard._sellMelange(color, 4)
 end
 
-function MainBoard.sellMelange(color, index)
+function MainBoard._sellMelange(color, index)
     local spiceCost = index + 1
     local solariBenefit = (index + 1) * 2 + 2
-    if MainBoard.payResource(color, "spice", spiceCost) then
-        MainBoard.gainResource(color, "solari", solariBenefit)
+    if MainBoard._payResource(color, "spice", spiceCost) then
+        MainBoard._gainResource(color, "solari", solariBenefit)
         return true
     else
         return false
@@ -665,8 +659,8 @@ function MainBoard.sellMelange(color, index)
 end
 
 ---
-function MainBoard.goRallyTroops(color)
-    if MainBoard.payResource(color, "solari", 4) then
+function MainBoard._goRallyTroops(color)
+    if MainBoard._payResource(color, "solari", 4) then
         Playboard.getLeader(color).troops(color, "supply", "garrison", 4)
         return true
     else
@@ -675,30 +669,30 @@ function MainBoard.goRallyTroops(color)
 end
 
 ---
-function MainBoard.goHallOfOratory(color)
+function MainBoard._goHallOfOratory(color)
     Playboard.getLeader(color).troops(color, "supply", "garrison", 1)
-    MainBoard.gainResource(color, "persuasion", 1)
+    MainBoard._gainResource(color, "persuasion", 1)
     return true
 end
 
 ---
-function MainBoard.goSmuggling(color)
-    MainBoard.gainResource(color, "solari", 1)
-    Playboard.getLeader(color).moveFreighter(color, 1)
+function MainBoard._goSmuggling(color)
+    MainBoard._gainResource(color, "solari", 1)
+    --Playboard.getLeader(color).moveFreighter(color, 1)
     return true
 end
 
 ---
-function MainBoard.goInterstellarShipping(color)
+function MainBoard._goInterstellarShipping(color)
     if (InfluenceTrack.hasFriendship(color, "spacingGuild")) then
-        Playboard.getLeader(color).moveFreighter(color, 2)
+        --Playboard.getLeader(color).moveFreighter(color, 2)
         return true
     else
         return false
     end
 end
 
-function MainBoard.asyncGoTechNegotiation(color)
+function MainBoard._asyncGoTechNegotiation(color)
     local continuation = Helper.createContinuation()
     local options = {
         "Buy tech. with -1 discount",
@@ -707,9 +701,9 @@ function MainBoard.asyncGoTechNegotiation(color)
     Player[color].showOptionsDialog("Select option.", options, 1, function (_, index, _)
         local success = true
         if index == 1 then
-            MainBoard.goTechNegotiation_1(color)
+            MainBoard._goTechNegotiation_1(color)
         elseif index == 2 then
-            MainBoard.goTechNegotiation_2(color)
+            MainBoard._goTechNegotiation_2(color)
         else
             success = false
         end
@@ -718,21 +712,21 @@ function MainBoard.asyncGoTechNegotiation(color)
     return continuation
 end
 
-function MainBoard.goTechNegotiation_1(color)
-    MainBoard.gainResource(color, "persuasion", 1)
+function MainBoard._goTechNegotiation_1(color)
+    MainBoard._gainResource(color, "persuasion", 1)
     TechMarket.registerAcquireTechOption(color, "tech_negotiation", "spice", 1)
     return true
 end
 
-function MainBoard.goTechNegotiation_2(color)
+function MainBoard._goTechNegotiation_2(color)
     Playboard.getLeader(color).troops(color, "supply", "negotiation", 1)
-    MainBoard.gainResource(color, "persuasion", 1)
+    MainBoard._gainResource(color, "persuasion", 1)
     return true
 end
 
 ---
-function MainBoard.goDreadnought(color)
-    if MainBoard.payResource(color, "solari", 3) then
+function MainBoard._goDreadnought(color)
+    if MainBoard._payResource(color, "solari", 3) then
         TechMarket.registerAcquireTechOption(color, "dreadnought", "spice", 0)
         Park.transfert(1, Playboard.getDreadnoughtPark(color), Combat.getDreadnoughtPark(color))
         return true
@@ -743,7 +737,7 @@ end
 
 -- Implied: when sending an agent on a board space.
 ---
-function MainBoard.gainResource(color, resourceName, amount)
+function MainBoard._gainResource(color, resourceName, amount)
     Utils.assertIsPlayerColor(color)
     Utils.assertIsResourceName(resourceName)
     Utils.assertIsInteger(amount)
@@ -752,13 +746,13 @@ end
 
 -- Implied: when sending an agent on a board space.
 ---
-function MainBoard.payResource(color, resourceName, amount)
+function MainBoard._payResource(color, resourceName, amount)
     return Playboard.getLeader(color).resource(color, resourceName, -amount)
 end
 
 -- Implied: when sending an agent on a board space.
 ---
-function MainBoard.gainInfluence(color, faction)
+function MainBoard._gainInfluence(color, faction)
     Utils.assertIsPlayerColor(color)
     Utils.assertIsFaction(faction)
     Playboard.getLeader(color).influence(color, faction, 1)
@@ -766,7 +760,7 @@ end
 
 -- Implied: when sending an agent on a board space.
 ---
-function MainBoard.drawImperiumCards(color, amount)
+function MainBoard._drawImperiumCards(color, amount)
     local realAmount = amount
     if TleilaxuResearch.hasReachedTwoHelices(color) then
         realAmount = amount + 1

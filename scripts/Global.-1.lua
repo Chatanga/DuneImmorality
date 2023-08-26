@@ -1,10 +1,11 @@
 local constructionModeEnabled = false
-local validateDefaultSetup = true
+local validateDefaultSetup = false
 
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local XmlUI = require("utils.XmlUI")
 local AcquireCard = require("utils.AcquireCard")
+local I18N = require("utils.I18N")
 
 --[[
     Remember that 'require' must have a literal parameter, since it is not a
@@ -46,11 +47,12 @@ local PlayerSet = {
             Red = true
         },
         language_all = {
-            de = "Deutsch",
+            --de = "Deutsch",
             en = "English",
-            ep = "Español",
+            --ep = "Español",
+            --eo = "Esperanto",
             fr = "Français",
-            it = "Italiano",
+            --it = "Italiano",
             jp = "日本語"
         },
         language = "en",
@@ -101,6 +103,15 @@ function onLoad(scriptState)
 
     --Module.callOnAllRegisteredModules("onLoad", state)
     -- Order matter, now that we reload with "staticSetUp" (for the same reason setUp is ordered too).
+    -- FIXME It is too much error prone.
+
+    allModules.Action.onLoad(state)
+    --allModules.ImperiumCard.onLoad(state)
+    --allModules.IntrigueCard.onLoad(state)
+    --allModules.Locales.onLoad(state)
+    --allModules.Resource.onLoad(state)
+    --allModules.Utils.onLoad(state)
+
     allModules.Deck.onLoad(state)
     allModules.ScoreBoard.onLoad(state)
     allModules.Playboard.onLoad(state)
@@ -330,6 +341,8 @@ end
 ---
 function setLanguage(player, value, id)
     PlayerSet.ui:fromUI(player, value, id)
+    I18N.setLocale(PlayerSet.fields.language)
+    PlayerSet.ui:toUI()
 end
 
 ---
@@ -449,9 +462,9 @@ function PlayerSet.updateSetupButton()
         end
 
         if #properlySeatedPlayers >= minPlayerCount then
-            PlayerSet.ui:setButton("setUpButton", "Setup", true)
+            PlayerSet.ui:setButtonI18N("setUpButton", "setup", true)
         else
-            PlayerSet.ui:setButton("setUpButton", "Not enough players", false)
+            PlayerSet.ui:setButtonI18N("setUpButton", "notEnoughPlayers", false)
         end
 
         PlayerSet.ui:toUI()

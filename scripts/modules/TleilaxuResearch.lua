@@ -92,16 +92,16 @@ end
 
 ---
 function TleilaxuResearch._staticSetUp()
-    TleilaxuResearch.researchTokenOrigin = TleilaxuResearch.getAveragePosition("researchTokenInitalPosition")
-    TleilaxuResearch.generateReseachButtons()
+    TleilaxuResearch.researchTokenOrigin = TleilaxuResearch._getAveragePosition("researchTokenInitalPosition")
+    TleilaxuResearch._generateResearchButtons()
 
-    TleilaxuResearch.tleilaxTokenOrigin = TleilaxuResearch.getAveragePosition("tleilaxTokenInitalPosition")
-    TleilaxuResearch.generateTleilaxButtons()
+    TleilaxuResearch.tleilaxTokenOrigin = TleilaxuResearch._getAveragePosition("tleilaxTokenInitalPosition")
+    TleilaxuResearch._generateTleilaxButtons()
 
     for _, color in ipairs(Playboard.getPlayboardColors()) do
-        TleilaxuResearch.tanksParks[color] = TleilaxuResearch.createTanksPark(color)
+        TleilaxuResearch.tanksParks[color] = TleilaxuResearch._createTanksPark(color)
     end
-    TleilaxuResearch.createTanksButton()
+    TleilaxuResearch._createTanksButton()
 end
 
 ---
@@ -120,7 +120,7 @@ function TleilaxuResearch.getSpecimenCount(color)
 end
 
 ---
-function TleilaxuResearch.researchSpaceToWorldPosition(positionInResearchSpace)
+function TleilaxuResearch._researchSpaceToWorldPosition(positionInResearchSpace)
     local offset = Vector(
         positionInResearchSpace.x * 1.225 - 0.07,
         0.27,
@@ -130,7 +130,7 @@ function TleilaxuResearch.researchSpaceToWorldPosition(positionInResearchSpace)
 end
 
 ---
-function TleilaxuResearch.worlPositionToResearchSpace(positionInWorldSpace)
+function TleilaxuResearch._worlPositionToResearchSpace(positionInWorldSpace)
     local offset = positionInWorldSpace - TleilaxuResearch.researchTokenOrigin
     local x = math.floor((offset.x + 0.07) / 1.225 + 0.5)
     local z = x == 0 and 0 or math.floor((offset.z) / 0.7)
@@ -139,7 +139,7 @@ function TleilaxuResearch.worlPositionToResearchSpace(positionInWorldSpace)
 end
 
 ---
-function TleilaxuResearch.getAveragePosition(positionField)
+function TleilaxuResearch._getAveragePosition(positionField)
     local p = Vector(0, 0, 0)
     local count = 0
     for _, color in pairs(Playboard.getPlayboardColors()) do
@@ -150,9 +150,9 @@ function TleilaxuResearch.getAveragePosition(positionField)
 end
 
 ---
-function TleilaxuResearch.generateReseachButtons()
+function TleilaxuResearch._generateResearchButtons()
     for cellPosition, _ in pairs(TleilaxuResearch.researchCellBenefits) do
-        local p = TleilaxuResearch.researchSpaceToWorldPosition(cellPosition)
+        local p = TleilaxuResearch._researchSpaceToWorldPosition(cellPosition)
         local cellZone = spawnObject({
             type = 'ScriptingTrigger',
             position = p,
@@ -161,7 +161,7 @@ function TleilaxuResearch.generateReseachButtons()
         Helper.markAsTransient(cellZone)
         Helper.createAnchoredAreaButton(cellZone, 0.6, 0.1, "Progress on the research track", function (_, color, _)
             local token = Playboard.getContent(color).researchToken
-            local tokenCellPosition = TleilaxuResearch.worlPositionToResearchSpace(token.getPosition())
+            local tokenCellPosition = TleilaxuResearch._worlPositionToResearchSpace(token.getPosition())
             local jump = cellPosition - tokenCellPosition
             if jump.x == 1 and math.abs(jump.z) <= 1 then
                 TleilaxuResearch._advanceResearch(color, jump, true)
@@ -175,7 +175,7 @@ function TleilaxuResearch.generateReseachButtons()
 end
 
 ---
-function TleilaxuResearch.findResearchCellBenefits(cellPosition)
+function TleilaxuResearch._findResearchCellBenefits(cellPosition)
     for existingCellPosition, cell in pairs(TleilaxuResearch.researchCellBenefits) do
         if Vector.distance(existingCellPosition, cellPosition) < 0.1 then
             return cell
@@ -193,15 +193,15 @@ end
 function TleilaxuResearch._advanceResearch(color, jump, withBenefits)
     local leader = Playboard.getLeader(color)
     local researchToken = Playboard.getContent(color).researchToken
-    local cellPosition = TleilaxuResearch.worlPositionToResearchSpace(researchToken.getPosition())
+    local cellPosition = TleilaxuResearch._worlPositionToResearchSpace(researchToken.getPosition())
     local newCellPosition = cellPosition + jump
 
-    local p = TleilaxuResearch.researchSpaceToWorldPosition(newCellPosition)
+    local p = TleilaxuResearch._researchSpaceToWorldPosition(newCellPosition)
     researchToken.setPositionSmooth(p + Vector(0, 1, 0.25))
 
     if withBenefits then
         Helper.onceMotionless(researchToken).doAfter(function ()
-            local researchCellBenefits = TleilaxuResearch.findResearchCellBenefits(newCellPosition)
+            local researchCellBenefits = TleilaxuResearch._findResearchCellBenefits(newCellPosition)
             assert(researchCellBenefits, "No cell benefits at cell " .. tostring(newCellPosition))
 
             for _, resource in ipairs({"spice", "solari"}) do
@@ -236,24 +236,24 @@ end
 ---
 function TleilaxuResearch.hasReachedOneHelix(color)
     local researchToken = Playboard.getContent(color).researchToken
-    local cellPosition = TleilaxuResearch.worlPositionToResearchSpace(researchToken.getPosition())
+    local cellPosition = TleilaxuResearch._worlPositionToResearchSpace(researchToken.getPosition())
     return cellPosition.x >= 4
 end
 
 ---
 function TleilaxuResearch.hasReachedTwoHelices(color)
     local researchToken = Playboard.getContent(color).researchToken
-    local cellPosition = TleilaxuResearch.worlPositionToResearchSpace(researchToken.getPosition())
+    local cellPosition = TleilaxuResearch._worlPositionToResearchSpace(researchToken.getPosition())
     return cellPosition.x == 8
 end
 
 ---
-function TleilaxuResearch.tleilaxSpaceToWorldPosition(positionInTleilaxSpace)
+function TleilaxuResearch._tleilaxSpaceToWorldPosition(positionInTleilaxSpace)
     return TleilaxuResearch.tleilaxuLevelZones[positionInTleilaxSpace].getPosition()
 end
 
 ---
-function TleilaxuResearch.worlPositionToTleilaxSpace(positionInWorldSpace)
+function TleilaxuResearch._worlPositionToTleilaxSpace(positionInWorldSpace)
     local nearestLevel = nil
     local nearestDistance = 0
     for level, zone in ipairs(TleilaxuResearch.tleilaxuLevelZones) do
@@ -267,12 +267,12 @@ function TleilaxuResearch.worlPositionToTleilaxSpace(positionInWorldSpace)
 end
 
 ---
-function TleilaxuResearch.generateTleilaxButtons()
+function TleilaxuResearch._generateTleilaxButtons()
     for level, _ in pairs(TleilaxuResearch.tleilaxLevelBenefits) do
         local levelZone = TleilaxuResearch.tleilaxuLevelZones[level]
         Helper.createAnchoredAreaButton(levelZone, 0.6, 0.1, "Progress on the Tleilax track", function (_, color, _)
             local token = Playboard.getContent(color).tleilaxToken
-            local tokenLevel = TleilaxuResearch.worlPositionToTleilaxSpace(token.getPosition())
+            local tokenLevel = TleilaxuResearch._worlPositionToTleilaxSpace(token.getPosition())
             local jump = level - tokenLevel
             if jump == 1 then
                 TleilaxuResearch._advanceTleilax(color, jump, true)
@@ -294,10 +294,10 @@ end
 function TleilaxuResearch._advanceTleilax(color, jump, withBenefits)
     local leader = Playboard.getLeader(color)
     local tleilaxToken = Playboard.getContent(color).tleilaxToken
-    local level = TleilaxuResearch.worlPositionToTleilaxSpace(tleilaxToken.getPosition())
+    local level = TleilaxuResearch._worlPositionToTleilaxSpace(tleilaxToken.getPosition())
     local newLevel = level + jump
 
-    local p = TleilaxuResearch.tleilaxSpaceToWorldPosition(newLevel)
+    local p = TleilaxuResearch._tleilaxSpaceToWorldPosition(newLevel)
     tleilaxToken.setPositionSmooth(p + Vector(0, 1, 0.25))
 
     if withBenefits then
@@ -323,7 +323,7 @@ function TleilaxuResearch._advanceTleilax(color, jump, withBenefits)
 end
 
 ---
-function TleilaxuResearch.createTanksButton()
+function TleilaxuResearch._createTanksButton()
     Helper.createAnchoredAreaButton(TleilaxuResearch.TanksZone, 0.6, 0.1, "Specimen: ±1", function (_, color, altClick)
         local leader = Playboard.getLeader(color)
         if altClick then
@@ -335,7 +335,7 @@ function TleilaxuResearch.createTanksButton()
 end
 
 ---
-function TleilaxuResearch.createTanksPark(color)
+function TleilaxuResearch._createTanksPark(color)
     local offsets = {
         Red = Vector(-0.65, 0, 0.45),
         Blue = Vector(-0.65, 0, -0.45),

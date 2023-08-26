@@ -50,18 +50,19 @@ end
 function TurnControl.setUp(settings, players)
     Turns.enable = false
     TurnControl.players = players
+    TurnControl.scoreGoal = settings.epicMode and 12 or 10
 
     if settings.numberOfPlayers == 1 then
         for i, player in ipairs(players) do
             if Playboard.isHuman(player) then
-                TurnControl.firstPlayerLuaIndex = TurnControl.getNextPlayer(i, true)
+                TurnControl.firstPlayerLuaIndex = TurnControl._getNextPlayer(i, true)
                 break
             end
         end
     elseif settings.numberOfPlayers == 2 then
         for i, player in ipairs(players) do
             if Playboard.isRival(player) then
-                TurnControl.firstPlayerLuaIndex = TurnControl.getNextPlayer(i, math.random() > 0)
+                TurnControl.firstPlayerLuaIndex = TurnControl._getNextPlayer(i, math.random() > 0)
                 break
             end
         end
@@ -72,17 +73,12 @@ function TurnControl.setUp(settings, players)
 end
 
 ---
-function TurnControl.getFirstPlayer()
-    return TurnControl.players[TurnControl.firstPlayerLuaIndex]
-end
-
----
 function TurnControl.getPhaseTurnSequence()
     local turnSequence = {}
     local playerLuaIndex = TurnControl.firstPlayerLuaIndex
     repeat
         table.insert(turnSequence, TurnControl.players[playerLuaIndex])
-        playerLuaIndex = TurnControl.getNextPlayer(playerLuaIndex, TurnControl.reversed)
+        playerLuaIndex = TurnControl._getNextPlayer(playerLuaIndex, TurnControl.reversed)
     until playerLuaIndex == TurnControl.firstPlayerLuaIndex
     return turnSequence
 end
@@ -101,17 +97,19 @@ end
 
 ---
 function TurnControl.start(reverseLeaderSelection)
-    TurnControl.startPhase(TurnControl.phaseOrder[1], reverseLeaderSelection)
+    TurnControl._startPhase(TurnControl.phaseOrder[1], reverseLeaderSelection)
 end
 
 ---
-function TurnControl.startPhase(phase, reversed)
+function TurnControl._startPhase(phase, reversed)
+    assert(phase)
+
     log("=== Phase: " .. phase .. " ===")
     broadcastToAll("Phase: " .. phase, Color.fromString("Pink"))
     if phase == "roundStart" then
         TurnControl.currentRound = TurnControl.currentRound + 1
         if TurnControl.currentRound > 1 then
-            TurnControl.firstPlayerLuaIndex = TurnControl.getNextPlayer(TurnControl.firstPlayerLuaIndex, TurnControl.reversed)
+            TurnControl.firstPlayerLuaIndex = TurnControl._getNextPlayer(TurnControl.firstPlayerLuaIndex, TurnControl.reversed)
         end
     end
 
@@ -121,7 +119,7 @@ function TurnControl.startPhase(phase, reversed)
     end
     TurnControl.currentPhase = phase
     if reversed then
-        TurnControl.currentPlayerLuaIndex = TurnControl.getNextPlayer(TurnControl.firstPlayerLuaIndex, TurnControl.reversed)
+        TurnControl.currentPlayerLuaIndex = TurnControl._getNextPlayer(TurnControl.firstPlayerLuaIndex, TurnControl.reversed)
     else
         TurnControl.currentPlayerLuaIndex = TurnControl.firstPlayerLuaIndex
     end
@@ -130,50 +128,53 @@ function TurnControl.startPhase(phase, reversed)
 
     Wait.frames(function ()
         if TurnControl.customTurnSequence then
-            TurnControl.next(TurnControl.customTurnSequence[1])
+            TurnControl._next(TurnControl.customTurnSequence[1])
         else
-            TurnControl.next(TurnControl.currentPlayerLuaIndex)
+            TurnControl._next(TurnControl.currentPlayerLuaIndex)
         end
     end, 1)
 end
 
 ---
 function TurnControl.endOfTurn()
-    TurnControl.next(TurnControl.getNextPlayer(TurnControl.currentPlayerLuaIndex, TurnControl.reversed))
+    TurnControl._next(TurnControl._getNextPlayer(TurnControl.currentPlayerLuaIndex, TurnControl.reversed))
 end
 
 ---
-function TurnControl.next(startPlayerLuaIndex)
-    TurnControl.currentPlayerLuaIndex = TurnControl.findActivePlayer(startPlayerLuaIndex)
+function TurnControl._next(startPlayerLuaIndex)
+    TurnControl.currentPlayerLuaIndex = TurnControl._findActivePlayer(startPlayerLuaIndex)
     Helper.dump("TurnControl.currentPlayerLuaIndex =", TurnControl.currentPlayerLuaIndex)
     if TurnControl.currentPlayerLuaIndex then
         local player = TurnControl.players[TurnControl.currentPlayerLuaIndex]
         log("--- Turn: " .. player .. " ---")
         Helper.emitEvent("playerTurns", TurnControl.currentPhase, player)
     else
-        local nextPhase = TurnControl.getNextPhase(TurnControl.currentPhase)
+        local nextPhase = TurnControl._getNextPhase(TurnControl.currentPhase)
         if nextPhase then
             TurnControl.reversed = Hagal.getRivalCount() == 1 and not TurnControl.reversed or false
-            TurnControl.startPhase(nextPhase, TurnControl.reversed)
+            TurnControl._startPhase(nextPhase, TurnControl.reversed)
+        else
+            TurnControl.currentPhase = nil
+            Helper.emitEvent("phaseEnd", TurnControl.currentPhase)
         end
     end
 end
 
 ---
-function TurnControl.findActivePlayer(startPlayerLuaIndex)
+function TurnControl._findActivePlayer(startPlayerLuaIndex)
     local playerLuaIndex = startPlayerLuaIndex
     local n = TurnControl.getPlayerCount()
     for _ = 1, n do
-        if TurnControl.isPlayerActive(playerLuaIndex) then
+        if TurnControl._isPlayerActive(playerLuaIndex) then
             return playerLuaIndex
         end
-        playerLuaIndex = TurnControl.getNextPlayer(playerLuaIndex, TurnControl.reversed)
+        playerLuaIndex = TurnControl._getNextPlayer(playerLuaIndex, TurnControl.reversed)
     end
     return nil
 end
 
 ---
-function TurnControl.getNextPlayer(playerLuaIndex, reversed)
+function TurnControl._getNextPlayer(playerLuaIndex, reversed)
     if TurnControl.customTurnSequence then
         for i, otherPlayerLuaIndex in ipairs(TurnControl.customTurnSequence) do
             if otherPlayerLuaIndex == playerLuaIndex then
@@ -195,7 +196,7 @@ function TurnControl.getNextPlayer(playerLuaIndex, reversed)
 end
 
 ---
-function TurnControl.getNextPhase(phase)
+function TurnControl._getNextPhase(phase)
     if phase == 'leaderSelection' then
         return 'gameStart'
     elseif phase == 'gameStart' then
@@ -211,9 +212,7 @@ function TurnControl.getNextPhase(phase)
     elseif phase == 'makers' then
         return 'recall'
     elseif phase == 'recall' then
-        -- Leave it to the players to decide when the game ends.
-        --return 'endgame'
-        return 'roundStart'
+        return TurnControl._endgameGoalReached() and 'endgame' or 'roundStart'
     elseif phase == 'endgame' then
         return nil
     else
@@ -222,7 +221,16 @@ function TurnControl.getNextPhase(phase)
 end
 
 ---
-function TurnControl.isPlayerActive(playerLuaIndex)
+function TurnControl._endgameGoalReached()
+    local bestScore = 0
+    for _, color in ipairs(Playboard.getPlayboardColors()) do
+        bestScore = math.max(bestScore, Playboard.getPlayboard(color):getScore())
+    end
+    return bestScore >= TurnControl.scoreGoal
+end
+
+---
+function TurnControl._isPlayerActive(playerLuaIndex)
     local phase = TurnControl.currentPhase
     local color = TurnControl.players[playerLuaIndex]
     return Playboard.acceptTurn(phase, color)
@@ -247,6 +255,11 @@ end
 ---
 function TurnControl.getPlayers()
     return TurnControl.players
+end
+
+---
+function TurnControl.getFirstPlayer()
+    return TurnControl.players[TurnControl.firstPlayerLuaIndex]
 end
 
 return TurnControl
