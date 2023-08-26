@@ -3,7 +3,7 @@ local Helper = require("utils.Helper")
 local Park = require("utils.Park")
 
 local Utils = Module.lazyRequire("Utils")
-local Playboard = Module.lazyRequire("Playboard")
+local PlayBoard = Module.lazyRequire("PlayBoard")
 local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
 local Combat = Module.lazyRequire("Combat")
 local TleilaxuResearch = Module.lazyRequire("TleilaxuResearch")
@@ -129,7 +129,7 @@ end
 function Action.takeMentat(color)
     local mentat = MainBoard.getMentat()
     if mentat then
-        return Park.putObject(mentat, Playboard.getAgentPark(color))
+        return Park.putObject(mentat, PlayBoard.getAgentPark(color))
     else
         return false
     end
@@ -137,12 +137,12 @@ end
 
 ---
 function Action.recruitSwordmaster(color)
-    return Playboard.recruitSwordmaster(color)
+    return PlayBoard.recruitSwordmaster(color)
 end
 
 ---
 function Action.takeHighCouncilSeat(color)
-    return Playboard.takeHighCouncilSeat(color)
+    return PlayBoard.takeHighCouncilSeat(color)
 end
 
 ---
@@ -151,7 +151,7 @@ function Action.resource(color, resourceName, amount)
     Utils.assertIsResourceName(resourceName)
     Utils.assertIsInteger(amount)
 
-    local resource = Playboard.getResource(color, resourceName)
+    local resource = PlayBoard.getResource(color, resourceName)
     if resource:get() >= -amount then
         resource:change(amount)
         return true
@@ -163,7 +163,7 @@ end
 ---
 function Action.drawImperiumCards(color, amount)
     Utils.assertIsPlayerColor(color)
-    Playboard.getPlayboard(color):drawCards(amount)
+    PlayBoard.getPlayboard(color):drawCards(amount)
     return true
 end
 
@@ -185,7 +185,7 @@ end
 ---
 function Action._getTroopPark(color, parkName)
     if parkName == "supply" then
-        return Playboard.getSupplyPark(color)
+        return PlayBoard.getSupplyPark(color)
     elseif parkName == "garrison" then
         return Combat.getGarrisonPark(color)
     elseif parkName == "combat" then
@@ -194,6 +194,8 @@ function Action._getTroopPark(color, parkName)
         return TechMarket.getNegotiationPark(color)
     elseif parkName == "tanks" then
         return TleilaxuResearch.getTankPark(color)
+    elseif parkName == "battleground" then
+        return Combat.getBattlegroundPark()
     else
         error("Unknow park name: " .. tostring(parkName))
     end
@@ -257,7 +259,7 @@ end
 ---
 function Action._getDreadnoughtPark(color, parkName)
     if parkName == "supply" then
-        return Playboard.getDreadnoughtSupplyPark(color)
+        return PlayBoard.getDreadnoughtSupplyPark(color)
     elseif parkName == "garrison" then
         return Combat.getDreadnoughtGarrisonPark(color)
     elseif parkName == "combat" then
@@ -318,13 +320,12 @@ function Action.stealIntrigue(color, otherColor, amount)
     return Intrigue.stealIntrigue(color, otherColor, amount)
 end
 
+function Action.signetRing(color)
+end
+
 --[[
 ---
 function Action.voiceForbid(color, space)
-end
-
----
-function Action.signetRing(color)
 end
 
 ---

@@ -3,7 +3,7 @@ local Helper = require("utils.Helper")
 local AcquireCard = require("utils.AcquireCard")
 
 local Deck = Module.lazyRequire("Deck")
-local Playboard = Module.lazyRequire("Playboard")
+local PlayBoard = Module.lazyRequire("PlayBoard")
 local Utils = Module.lazyRequire("Utils")
 
 local Intrigue = {}
@@ -54,7 +54,7 @@ end
 function Intrigue.stealIntrigue(color, otherColor, amount)
     Utils.assertIsPositiveInteger(amount)
 
-    local intrigues = Playboard.getIntrigues(otherColor)
+    local intrigues = PlayBoard.getIntrigues(otherColor)
     local realAmount = math.min(amount, #intrigues)
 
     Helper.shuffle(intrigues)

@@ -145,7 +145,7 @@ function Park._putHolders(holders, toPark)
 
     Park._instantTidyUp(toPark, newObjectsInTransit)
 
-    local emptySlots = Park._findEmptySlots(toPark)
+    local emptySlots = Park.findEmptySlots(toPark)
 
     -- Count *after* newObjectsInTransit (and it's a sparse table).
     local skipCount = 0
@@ -306,7 +306,7 @@ function Park._takeObjectToPark(bag, slot, park)
 end
 
 ---
-function Park._findEmptySlots(park)
+function Park.findEmptySlots(park)
     local freeSlots = Park.deepCopy(park.slots)
 
     for _, object in ipairs(Park.getObjects(park)) do

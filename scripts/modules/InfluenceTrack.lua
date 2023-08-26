@@ -4,7 +4,7 @@ local I18N = require("utils.I18N")
 
 local Utils = Module.lazyRequire("Utils")
 local Action = Module.lazyRequire("Action")
-local Playboard = Module.lazyRequire("Playboard")
+local PlayBoard = Module.lazyRequire("PlayBoard")
 
 local InfluenceTrack = {
     influenceTokenInitialPositions = {
@@ -222,13 +222,13 @@ end
 
 ---
 function InfluenceTrack.gainFriendship(faction, color)
-    Playboard.grantScoreTokenFromBag(color, InfluenceTrack.friendshipBags[faction])
+    PlayBoard.grantScoreTokenFromBag(color, InfluenceTrack.friendshipBags[faction])
 end
 
 ---
 function InfluenceTrack.loseFriendship(faction, color)
     local friendshipTokenName = faction .. "Friendship"
-    for _, scoreToken in ipairs(Playboard.getScoreTokens(color)) do
+    for _, scoreToken in ipairs(PlayBoard.getScoreTokens(color)) do
         if scoreToken.getDescription() == friendshipTokenName then
             scoreToken.destruct()
         end
@@ -241,7 +241,7 @@ function InfluenceTrack._challengeAlliance(faction)
     local bestRank = 4
     local allianceOwner
 
-    for _, color in ipairs(Playboard.getPlayboardColors()) do
+    for _, color in ipairs(PlayBoard.getPlayboardColors()) do
         if InfluenceTrack.hasAlliance(color, faction) then
             allianceOwner = color
         end
@@ -272,7 +272,7 @@ end
 
 ---
 function InfluenceTrack.hasAlliance(color, faction)
-    local playerVictoryTokens = Playboard.getScoreTokens(color)
+    local playerVictoryTokens = PlayBoard.getScoreTokens(color)
     for _, victoryToken in ipairs(playerVictoryTokens) do
         if victoryToken == InfluenceTrack.allianceTokens[faction] then
             return true
@@ -293,7 +293,7 @@ end
 
 ---
 function InfluenceTrack.gainAlliance(faction, color)
-    Playboard.grantScoreToken(color, InfluenceTrack.allianceTokens[faction])
+    PlayBoard.grantScoreToken(color, InfluenceTrack.allianceTokens[faction])
 
     if faction == "emperor" then
         Action.troops(color, "supply", "garrison", 2)

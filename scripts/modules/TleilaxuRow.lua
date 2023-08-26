@@ -3,7 +3,7 @@ local Helper = require("utils.Helper")
 local AcquireCard = require("utils.AcquireCard")
 
 local Deck = Module.lazyRequire("Deck")
-local Playboard = Module.lazyRequire("Playboard")
+local PlayBoard = Module.lazyRequire("PlayBoard")
 local TleilaxuResearch = Module.lazyRequire("TleilaxuResearch")
 local Action = Module.lazyRequire("Action")
 local ImperiumCard = Module.lazyRequire("ImperiumCard")
@@ -73,7 +73,7 @@ function TleilaxuRow.acquireTleilaxuCard(indexInRow, color)
     assert((cardName == "reclaimedForces") == (indexInRow == 3))
 
     if card and TleilaxuResearch.getSpecimenCount(color) >= price then
-        local leader = Playboard.getLeader(color)
+        local leader = PlayBoard.getLeader(color)
         if cardName == "reclaimedForces" then
             local options = {
                 "Troops",
@@ -92,7 +92,7 @@ function TleilaxuRow.acquireTleilaxuCard(indexInRow, color)
         else
             leader.troops(color, "tanks", "supply", price)
 
-            Playboard.giveCard(color, card, false)
+            PlayBoard.giveCard(color, card, false)
 
             -- Replenish the slot in the row.
             Helper.moveCardFromZone(TleilaxuRow.deckZone, acquireCard.zone.getPosition(), Vector(0, 180, 0), false, false)

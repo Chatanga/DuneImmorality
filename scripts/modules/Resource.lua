@@ -3,7 +3,7 @@ local Helper = require("utils.Helper")
 local I18N = require("utils.I18N")
 
 local TurnControl = Module.lazyRequire("TurnControl")
-local Playboard = Module.lazyRequire("Playboard")
+local PlayBoard = Module.lazyRequire("PlayBoard")
 
 local Resource = Helper.createClass(nil, {
     MIN_VALUE = 0,
@@ -152,7 +152,7 @@ function Resource:_changeValue(color, altClick)
             local label = I18N.translateCountable(delta, self.resourceName, self.resourceName .. "s")
 
             if self.color then
-                local leaderName = Playboard.getLeaderName(self.color)
+                local leaderName = PlayBoard.getLeaderName(self.color)
                 if delta < 0 then
                     local text = I18N("spentManually"):format(leaderName, math.abs(delta), label)
                     broadcastToAll(text .. playerActingStr, msgColor)

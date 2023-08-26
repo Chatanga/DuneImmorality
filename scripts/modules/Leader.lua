@@ -6,7 +6,7 @@ local MainBoard = Module.lazyRequire("MainBoard")
 local ImperiumRow = Module.lazyRequire("ImperiumRow")
 local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
 local Combat = Module.lazyRequire("Combat")
-local Playboard = Module.lazyRequire("Playboard")
+local PlayBoard = Module.lazyRequire("PlayBoard")
 
 local Leader = Helper.createClass(Action)
 
@@ -20,10 +20,10 @@ end
 
 Leader.vladimirHarkonnen = Helper.createClass(Leader, {
 
+    --- Masterstroke
     setUp = function (color, settings)
         Action.setUp(color, settings)
 
-        --- Masterstroke
         local position = Player[color].getHandTransform().position
         local tokenBag = getObjectFromGUID('f89231')
         local tokenCount = #tokenBag.getObjects()
@@ -45,8 +45,8 @@ Leader.vladimirHarkonnen = Helper.createClass(Leader, {
         tokenBag.destruct()
     end,
 
+    -- Masterstroke
     instruct = function (phase, isActivePlayer)
-        -- Masterstroke
         if phase == "gameStart" then
             if isActivePlayer then
                 return "Secretly choose 2 Factions."
@@ -68,7 +68,7 @@ Leader.glossuRabban = Helper.createClass(Leader, {
 
     --- Arrakis fiefdom
     setUp = function (color, settings)
-        Action.setUp(color, settings.epicMode)
+        Action.setUp(color, settings)
         Action.resource(color, "spice", 1)
         Action.resource(color, "solari", 1)
     end,
@@ -107,7 +107,7 @@ Leader.helenaRichese = Helper.createClass(Leader, {
 
     --- Manipulate
     acquireImperiumCard = function (color, indexInRow)
-        if Action.checkContext({ phase = "playerTurns", color = color }) and Playboard.couldSendAgentOrReveal(color) then
+        if Action.checkContext({ phase = "playerTurns", color = color }) and PlayBoard.couldSendAgentOrReveal(color) then
             return Action.reserveImperiumCard(color, indexInRow)
         else
             return Action.acquireImperiumCard(color, indexInRow)
@@ -116,7 +116,7 @@ Leader.helenaRichese = Helper.createClass(Leader, {
 
     --- Manipulate
     acquireReservedImperiumCard = function (color)
-        if Action.checkContext({ phase = "playerTurns", color = color }) and not Playboard.couldSendAgentOrReveal(color) then
+        if Action.checkContext({ phase = "playerTurns", color = color }) and not PlayBoard.couldSendAgentOrReveal(color) then
             return ImperiumRow.acquireReservedImperiumCard(color)
         else
             return Action.acquireReservedImperiumCard(color)
@@ -136,6 +136,7 @@ Leader.letoAtreides = Helper.createClass(Leader, {
     end,
 })
 
+-- TODO Add a prescience button.
 Leader.paulAtreides = Helper.createClass(Leader, {
 
     --- Prescience
@@ -201,8 +202,8 @@ Leader.ilesaEcaz = Helper.createClass(Leader, {
         return Action.resource(color, "solari", -1) and Action.acquireFoldspaceCard(color)
     end,
 
+    --- One step ahead
     instruct = function (phase, isActivePlayer)
-        --- One step ahead
         if phase == "roundStart" then
             if isActivePlayer then
                 return "Set aside a card\nfrom your hand."
@@ -224,8 +225,10 @@ Leader.rhomburVernius = Helper.createClass(Leader, {
     end
 })
 
+-- TODO Add automatic snooper recall.
 Leader.tessiaVernius = Helper.createClass(Leader, {
 
+    --- Careful observation
     setUp = function (color, settings)
         Action.setUp(color, settings)
 
@@ -276,30 +279,27 @@ Leader.tessiaVernius = Helper.createClass(Leader, {
 
 Leader.yunaMoritani = Helper.createClass(Leader, {
 
-    ---
-    signetRing = function (color)
-        return Action.resource(color, "solari", -7)
-            and Action.influence(color, nil, 1)
-            and Action.troop(color, "supply", "garrison", 1)
-            and Action.resource(color, "spice", 1)
-    end,
-
     --- Smuggling operation
     setUp = function (color, settings)
         Action.setUp(color, settings)
         Action.resource(color, "water", -1)
     end,
-})
 
-Leader.yunaMoritani = Helper.createClass(Leader, {
-
-    -- Final delivery
+    --- Smuggling operation
     resource = function (color, resourceName, amount)
         local finalAmount = amount
         if resourceName == "solari" and amount > 0 and Action.checkContext({ phase = "playerTurns", color = color }) then
             finalAmount = amount + 1
         end
         return Action.resource(color, resourceName, finalAmount)
+    end,
+
+    --- Final delivery
+    signetRing = function (color)
+        return Action.resource(color, "solari", -7)
+            and Action.influence(color, nil, 1)
+            and Action.troop(color, "supply", "garrison", 1)
+            and Action.resource(color, "spice", 1)
     end,
 })
 
@@ -313,8 +313,8 @@ Leader.hundroMoritani = Helper.createClass(Leader, {
         end, 1)
     end,
 
+    --- Intelligence
     instruct = function (phase, isActivePlayer)
-        -- Intelligence
         if phase == "gameStart" then
             if isActivePlayer then
                 return "Keep one intrigue\nand put the other\non top of the intrigue deck."

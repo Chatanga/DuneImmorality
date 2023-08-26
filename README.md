@@ -66,9 +66,9 @@ Having launched `./listen.py` in another terminal will provide you with an immed
 
 ## TODO (by priority)
 
-- Basic logging in the Action facade.
-
 - The Hagal house (with resources and difficulty levels).
+
+- Basic logging in the Action facade.
 
 - Migrate description in GMNotes.
 - Restore translations (tokens included).

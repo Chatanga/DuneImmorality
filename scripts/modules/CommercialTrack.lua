@@ -1,7 +1,7 @@
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 
-local Playboard = Module.lazyRequire("Playboard")
+local PlayBoard = Module.lazyRequire("PlayBoard")
 local TechMarket = Module.lazyRequire("TechMarket")
 
 local CommercialTrack = {
@@ -100,7 +100,7 @@ end
 
 ---
 function CommercialTrack._getFreighterLevel(color)
-    local p = Playboard.getContent(color).freighter.getPosition()
+    local p = PlayBoard.getContent(color).freighter.getPosition()
     return math.floor((p.z - CommercialTrack.initialFreighterPositions[color].z) / 1.1 + 0.5)
 end
 
@@ -108,12 +108,12 @@ end
 function CommercialTrack._setFreighterPositionSmooth(color, level)
     local p = CommercialTrack.initialFreighterPositions[color]:copy()
     p:setAt('z', p.z + 1.1 * level)
-    Playboard.getContent(color).freighter.setPositionSmooth(p, false, true)
+    PlayBoard.getContent(color).freighter.setPositionSmooth(p, false, true)
 end
 
 ---
 function CommercialTrack._freighterGoUp(color, count)
-    Helper.repeatMovingAction(Playboard.getContent(color).freighter, count, function ()
+    Helper.repeatMovingAction(PlayBoard.getContent(color).freighter, count, function ()
         CommercialTrack.freighterUp(color)
     end)
 end
@@ -145,9 +145,9 @@ end
 
 ---
 function CommercialTrack._pickSolariBonus(color)
-    local leader = Playboard.getLeader(color)
+    local leader = PlayBoard.getLeader(color)
     leader.resource(color, "solari", 5)
-    for _, otherColor in ipairs(Playboard.getPlayboardColors()) do
+    for _, otherColor in ipairs(PlayBoard.getPlayboardColors()) do
         if otherColor ~= color then
             leader.resource(otherColor, "solari", 1)
         end
@@ -156,15 +156,15 @@ end
 
 ---
 function CommercialTrack._pickSpiceBonus(color)
-    local leader = Playboard.getLeader(color)
+    local leader = PlayBoard.getLeader(color)
     leader.resource(color, "spice", 2)
 end
 
 ---
 function CommercialTrack._pickTroopsAndInfluenceBonus(color)
-    local leader = Playboard.getLeader(color)
+    local leader = PlayBoard.getLeader(color)
     local troopAmount = 2
-    if Playboard.hasTech(color, "troopTransports") then
+    if PlayBoard.hasTech(color, "troopTransports") then
         troopAmount = 3
     end
     leader.troops(color, "supply", "garrison", troopAmount)

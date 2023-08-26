@@ -2,7 +2,7 @@ local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local I18N = require("utils.I18N")
 
-local Playboard = Module.lazyRequire("Playboard")
+local PlayBoard = Module.lazyRequire("PlayBoard")
 
 local ScoreBoard = {
     tokens = {}
@@ -85,10 +85,10 @@ function ScoreBoard.gainVictoryPoint(color, name)
     }
     Helper.forEachRecursively(ScoreBoard.tokens, function (victoryPointName, victoryPointSource)
         if name == victoryPointName then
-            Playboard.grantScoreToken(color, victoryPointSource)
+            PlayBoard.grantScoreToken(color, victoryPointSource)
             holder.success = true
         elseif name .. "Bag" == victoryPointName then
-            Playboard.grantScoreTokenFromBag(color, victoryPointSource)
+            PlayBoard.grantScoreTokenFromBag(color, victoryPointSource)
             holder.success = true
         end
     end)

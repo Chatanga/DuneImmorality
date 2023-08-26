@@ -1,5 +1,41 @@
 local constructionModeEnabled = false
-local validateDefaultSetup = false
+local validateDefaultSetup = nil
+validateDefaultSetup = {
+    language = "en",
+    randomizePlayerPositions = false,
+    virtualHotSeat = true,
+    numberOfPlayers = 3,
+    difficulty = nil,
+    riseOfIx = true,
+    epicMode = false,
+    immortality = true,
+    goTo11 = false,
+    leaderSelection = {
+        Green = "ilesaEcaz",
+        Yellow = "ilbanRichese",
+        Red = "helenaRichese",
+    },
+    fanMadeLeaders = false,
+    variant = nil,
+}
+validateDefaultSetup_no = {
+    language = "en",
+    randomizePlayerPositions = false,
+    virtualHotSeat = false,
+    numberOfPlayers = 1,
+    difficulty = 1,
+    riseOfIx = true,
+    epicMode = false,
+    immortality = true,
+    goTo11 = false,
+    leaderSelection = {
+        Green = "letoAtreides",
+        Yellow = "ilbanRichese",
+        Red = "glossuRabban",
+    },
+    fanMadeLeaders = false,
+    variant = nil,
+}
 
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
@@ -19,6 +55,7 @@ local allModules = Module.registerModules({
     Deck = require("Deck"),
     ScoreBoard = require("ScoreBoard"),
     Hagal = require("Hagal"),
+    HagalCard = require("HagalCard"),
     ImperiumCard = require("ImperiumCard"),
     ImperiumRow = require("ImperiumRow"),
     InfluenceTrack = require("InfluenceTrack"),
@@ -28,7 +65,7 @@ local allModules = Module.registerModules({
     LeaderSelection = require("LeaderSelection"),
     Locales = require("Locales"),
     MainBoard = require("MainBoard"),
-    Playboard = require("Playboard"),
+    PlayBoard = require("PlayBoard"),
     Reserve = require("Reserve"),
     Resource = require("Resource"),
     TechMarket = require("TechMarket"),
@@ -106,15 +143,10 @@ function onLoad(scriptState)
     -- FIXME It is too much error prone.
 
     allModules.Action.onLoad(state)
-    --allModules.ImperiumCard.onLoad(state)
-    --allModules.IntrigueCard.onLoad(state)
-    --allModules.Locales.onLoad(state)
-    --allModules.Resource.onLoad(state)
-    --allModules.Utils.onLoad(state)
 
     allModules.Deck.onLoad(state)
     allModules.ScoreBoard.onLoad(state)
-    allModules.Playboard.onLoad(state)
+    allModules.PlayBoard.onLoad(state)
     allModules.Combat.onLoad(state)
     allModules.LeaderSelection.onLoad(state)
     allModules.Hagal.onLoad(state)
@@ -140,24 +172,7 @@ function onLoad(scriptState)
     if not state.settings then
         if validateDefaultSetup then
             Wait.frames(function ()
-                setUp({
-                    language = "en",
-                    randomizePlayerPositions = false,
-                    virtualHotSeat = true,
-                    numberOfPlayers = 3,
-                    difficulty = nil,
-                    riseOfIx = true,
-                    epicMode = false,
-                    immortality = true,
-                    goTo11 = false,
-                    leaderSelection = {
-                        Green = "ilesaEcaz",
-                        Yellow = "ilbanRichese",
-                        Red = "helenaRichese",
-                    },
-                    fanMadeLeaders = false,
-                    variant = nil,
-                })
+                setUp(validateDefaultSetup)
             end, 1)
         else
             PlayerSet.ui = XmlUI.new(Global, "setupPane", PlayerSet.fields)
@@ -200,7 +215,7 @@ function setUp(newSettings)
 
     allModules.Deck.setUp(settings)
     allModules.ScoreBoard.setUp(settings)
-    allModules.Playboard.setUp(settings, activeOpponents)
+    allModules.PlayBoard.setUp(settings, activeOpponents)
     allModules.Combat.setUp(settings)
     allModules.LeaderSelection.setUp(settings, activeOpponents)
     allModules.Hagal.setUp(settings)
@@ -458,7 +473,7 @@ function PlayerSet.updateSetupButton()
         if type(PlayerSet.fields.numberOfPlayers) == "table" then
             minPlayerCount = 3
         else
-            minPlayerCount = 1
+            minPlayerCount = math.min(2, PlayerSet.fields.numberOfPlayers)
         end
 
         if #properlySeatedPlayers >= minPlayerCount then

@@ -3,7 +3,7 @@ local Helper = require("utils.Helper")
 local AcquireCard = require("utils.AcquireCard")
 
 local Deck = Module.lazyRequire("Deck")
-local Playboard = Module.lazyRequire("Playboard")
+local PlayBoard = Module.lazyRequire("PlayBoard")
 local Action = Module.lazyRequire("Action")
 local Utils = Module.lazyRequire("Utils")
 
@@ -43,13 +43,13 @@ end
 function ImperiumRow._staticSetUp()
     for i, zone in ipairs(ImperiumRow.slotZones) do
         AcquireCard.new(zone, "Imperium", function (_, color)
-            local leader = Playboard.getLeader(color)
+            local leader = PlayBoard.getLeader(color)
             leader.acquireImperiumCard(color, i)
         end)
     end
 
     AcquireCard.new(ImperiumRow.reservationSlotZone, "Imperium", function (_, color)
-        local leader = Playboard.getLeader(color)
+        local leader = PlayBoard.getLeader(color)
         leader.acquireReservedImperiumCard(color)
     end)
 
@@ -67,7 +67,7 @@ end
 function ImperiumRow.acquireReservedImperiumCard(color)
     local card = Helper.getCard(ImperiumRow.reservationSlotZone)
     if card then
-        Playboard.giveCard(color, card, false)
+        PlayBoard.giveCard(color, card, false)
         return true
     else
         return false
@@ -92,7 +92,7 @@ function ImperiumRow.acquireImperiumCard(indexInRow, color)
     local zone = ImperiumRow.slotZones[indexInRow]
     local card = Helper.getCard(zone)
     if card then
-        Playboard.giveCard(color, card, false)
+        PlayBoard.giveCard(color, card, false)
         ImperiumRow._replenish(indexInRow)
         return true
     else

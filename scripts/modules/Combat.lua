@@ -2,7 +2,7 @@ local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local Park = require("utils.Park")
 
-local Playboard = Module.lazyRequire("Playboard")
+local PlayBoard = Module.lazyRequire("PlayBoard")
 local Action = Module.lazyRequire("Action")
 local Deck = Module.lazyRequire("Deck")
 local Utils = Module.lazyRequire("Utils")
@@ -57,16 +57,18 @@ end
 ---
 function Combat._staticSetUp(settings)
     Combat.garrisonParks = {}
-    for _, color in ipairs(Playboard.getPlayboardColors()) do
+    for _, color in ipairs(PlayBoard.getPlayboardColors()) do
         Combat.garrisonParks[color] = Combat._createGarrisonPark(color)
     end
 
     if settings.riseOfIx then
         Combat.dreadnoughtParks = {}
-        for _, color in ipairs(Playboard.getPlayboardColors()) do
+        for _, color in ipairs(PlayBoard.getPlayboardColors()) do
             Combat.dreadnoughtParks[color] = Combat._createDreadnoughtPark(color)
         end
     end
+
+    Combat.battlegroundPark = Combat._createBattlegroundPark()
 
     Helper.registerEventListener("strengthValueChanged", function ()
         Combat._updateCombatForces(Combat._calculateCombatForces())
@@ -86,9 +88,9 @@ function Combat._staticSetUp(settings)
                 end
             end
             for _, object in ipairs(Combat.combatCenterZone.getObjects()) do
-                for _, color in ipairs(Playboard.getPlayboardColors()) do
+                for _, color in ipairs(PlayBoard.getPlayboardColors()) do
                     if Utils.isTroop(object, color) then
-                        Park.putObject(object, Playboard.getSupplyPark(color))
+                        Park.putObject(object, PlayBoard.getSupplyPark(color))
                     elseif Utils.isDreadnought(object, color) then
                         Park.putObject(object, Combat.dreadnoughtParks[color])
                     end
@@ -119,7 +121,7 @@ function Combat._setUpConflict()
                 if controlableSpace then
                     local color = MainBoard.getControllingPlayer(controlableSpace)
                     if color then
-                        local troop = Park.getAnyObject(Playboard.getSupplyPark(color))
+                        local troop = Park.getAnyObject(PlayBoard.getSupplyPark(color))
                         if troop then
                             troop.setPositionSmooth(Combat.combatCenterZone.getPosition())
                         end
@@ -207,6 +209,34 @@ function Combat._createDreadnoughtPark(color)
 end
 
 ---
+function Combat._createBattlegroundPark()
+    local slots = {}
+    for j = 1, 8 do
+        for i = 1, 8 do
+            local x = (i - 4.5) * 0.5
+            local z = (j - 4.5) * 0.5
+            local slot = Combat.combatCenterZone.getPosition() + Vector(x, 0, z)
+            table.insert(slots, slot)
+        end
+    end
+    Helper.shuffle(slots)
+
+    local zone = Combat.combatCenterZone
+
+    local park = Park.createPark(
+        "Battleground",
+        slots,
+        Vector(0, 0, 0),
+        zone,
+        { "Troop" },
+        nil,
+        false,
+        true)
+
+    return park
+end
+
+---
 function Combat._createButton(color, park)
     local position = park.anchor.getPosition()
     local areaColor = Color.fromString(color)
@@ -240,6 +270,11 @@ function Combat.getDreadnoughtPark(color)
 end
 
 ---
+function Combat.getBattlegroundPark()
+    return Combat.battlegroundPark
+end
+
+---
 function Combat.setDreadnoughtStrength(color, strength)
     Combat.dreadnoughStrengths[color] = strength
 end
@@ -267,7 +302,7 @@ function Combat._calculateOutcomeTurnSequence(forces)
     end)
 
     -- No Nth winner in a N players game.
-    if #combatEndTurnSequence == #Playboard.getPlayboardColors() then
+    if #combatEndTurnSequence == #PlayBoard.getPlayboardColors() then
         table.remove(combatEndTurnSequence, #combatEndTurnSequence)
     end
 
@@ -278,7 +313,7 @@ end
 function Combat._calculateCombatForces()
     local forces = {}
 
-    for _, color in ipairs(Playboard.getPlayboardColors()) do
+    for _, color in ipairs(PlayBoard.getPlayboardColors()) do
         local force = 0
         for _, object in ipairs(Combat.combatCenterZone.getObjects()) do
             if Utils.isUnit(object, color) then
@@ -293,7 +328,7 @@ function Combat._calculateCombatForces()
         end
 
         if force > 0 then
-            force = force + Playboard.getResource(color, "strength"):get()
+            force = force + PlayBoard.getResource(color, "strength"):get()
         end
 
         forces[color] = force
@@ -307,7 +342,7 @@ function Combat._updateCombatForces(forces)
     local occupations = {}
 
     -- TODO Better having a zone with filtering tags.
-    for _, color in ipairs(Playboard.getPlayboardColors()) do
+    for _, color in ipairs(PlayBoard.getPlayboardColors()) do
         local force = forces[color]
 
         local minorForce = force > 0 and (force - 1) % 20 + 1 or 0
@@ -316,7 +351,7 @@ function Combat._updateCombatForces(forces)
         occupations[minorForce] = (occupations[minorForce] or 0) + 1
         local height = Vector(0, (occupations[minorForce] - 1) * 0.35, 0)
 
-        local forceMarker = Playboard.getContent(color).forceMarker
+        local forceMarker = PlayBoard.getContent(color).forceMarker
         if force > 0 then
             forceMarker.setPositionSmooth(Combat.combatForcePositions[minorForce] + height, false, false)
             forceMarker.setRotationSmooth(Vector(0, 180 + 90 * math.floor(majorForce / 2), 180 * math.min(1, majorForce)))

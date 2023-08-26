@@ -1,7 +1,7 @@
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 
-local Playboard = Module.lazyRequire("Playboard")
+local PlayBoard = Module.lazyRequire("PlayBoard")
 local Hagal = Module.lazyRequire("Hagal")
 
 local TurnControl = {
@@ -54,14 +54,14 @@ function TurnControl.setUp(settings, players)
 
     if settings.numberOfPlayers == 1 then
         for i, player in ipairs(players) do
-            if Playboard.isHuman(player) then
+            if PlayBoard.isHuman(player) then
                 TurnControl.firstPlayerLuaIndex = TurnControl._getNextPlayer(i, true)
                 break
             end
         end
     elseif settings.numberOfPlayers == 2 then
         for i, player in ipairs(players) do
-            if Playboard.isRival(player) then
+            if PlayBoard.isRival(player) then
                 TurnControl.firstPlayerLuaIndex = TurnControl._getNextPlayer(i, math.random() > 0)
                 break
             end
@@ -143,7 +143,7 @@ end
 ---
 function TurnControl._next(startPlayerLuaIndex)
     TurnControl.currentPlayerLuaIndex = TurnControl._findActivePlayer(startPlayerLuaIndex)
-    Helper.dump("TurnControl.currentPlayerLuaIndex =", TurnControl.currentPlayerLuaIndex)
+    --Helper.dump("TurnControl.currentPlayerLuaIndex =", TurnControl.currentPlayerLuaIndex)
     if TurnControl.currentPlayerLuaIndex then
         local player = TurnControl.players[TurnControl.currentPlayerLuaIndex]
         log("--- Turn: " .. player .. " ---")
@@ -223,8 +223,8 @@ end
 ---
 function TurnControl._endgameGoalReached()
     local bestScore = 0
-    for _, color in ipairs(Playboard.getPlayboardColors()) do
-        bestScore = math.max(bestScore, Playboard.getPlayboard(color):getScore())
+    for _, color in ipairs(PlayBoard.getPlayboardColors()) do
+        bestScore = math.max(bestScore, PlayBoard.getPlayboard(color):getScore())
     end
     return bestScore >= TurnControl.scoreGoal
 end
@@ -233,7 +233,7 @@ end
 function TurnControl._isPlayerActive(playerLuaIndex)
     local phase = TurnControl.currentPhase
     local color = TurnControl.players[playerLuaIndex]
-    return Playboard.acceptTurn(phase, color)
+    return PlayBoard.acceptTurn(phase, color)
 end
 
 ---

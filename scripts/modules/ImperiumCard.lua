@@ -3,7 +3,7 @@ local Helper = require("utils.Helper")
 
 local Combat = Module.lazyRequire("Combat")
 local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
-local Mainboard = Module.lazyRequire("Mainboard")
+local MainBoard = Module.lazyRequire("MainBoard")
 local TleilaxuResearch = Module.lazyRequire("TleilaxuResearch")
 
 local function _evaluate(input, value)
@@ -143,8 +143,8 @@ end
 
 local function agentInEmperorSpace(value)
     return function (input)
-        for _, spaceName in ipairs(Mainboard.getImperorSpaces()) do
-            if Mainboard.hasAgentInSpace(spaceName, input.color) then
+        for _, spaceName in ipairs(MainBoard.getImperorSpaces()) do
+            if MainBoard.hasAgentInSpace(spaceName, input.color) then
                 return _evaluate(input, value)
             end
         end
@@ -294,7 +294,7 @@ local ImperiumCard = {
     jamis = {factions = {'fremen'}, cost = 2, agentIcons = {'fremen'}, infiltrate = true, reveal = {persuasion(1), sword(2)}},
     landingRights = {factions = {'spacingGuild'}, cost = 4, agentIcons = {'blue'}, reveal = {persuasion(2)}},
     localFence = {cost = 3, agentIcons = {'blue'}, reveal = {persuasion(2)}},
-    negotiatedWithdrawe = {cost = 4, acquireBonus = {troop(1)}, agentIcons = {'green', 'blue', 'yellow'}, reveal = {persuasion(2), 'Retreat 3x troops - > +1 inf ?'}},
+    negotiatedWithdrawal = {cost = 4, acquireBonus = {troop(1)}, agentIcons = {'green', 'blue', 'yellow'}, reveal = {persuasion(2), 'Retreat 3x troops - > +1 inf ?'}},
     satelliteBan = {factions = {'spacingGuild', 'fremen'}, cost = 5, agentIcons = {'spacingGuild', 'fremen'}, reveal = {persuasion(1), 'Retreat up to 2 troops'}},
     sayyadina = {factions = {'beneGesserit', 'fremen'}, cost = 3, agentIcons = {'beneGesserit', 'fremen'}, reveal = {persuasion(fremenBond(3))}},
     shaiHulud = {factions = {'fremen'}, cost = 7, acquireBonus = {trash(1)}, agentIcons = {'yellow'}, reveal = {sword(fremenBond(5))}},

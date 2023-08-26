@@ -3,7 +3,7 @@ local Helper = require("utils.Helper")
 
 local Deck = Module.lazyRequire("Deck")
 local TurnControl = Module.lazyRequire("TurnControl")
-local Playboard = Module.lazyRequire("Playboard")
+local PlayBoard = Module.lazyRequire("PlayBoard")
 local Hagal = Module.lazyRequire("Hagal")
 local Leader = Module.lazyRequire("Leader")
 
@@ -83,12 +83,12 @@ function LeaderSelection._setUpTest(opponents, leaderNames)
         for _, object in ipairs(LeaderSelection.deckZone.getObjects()) do
             if object.hasTag("Leader") then
                 if object.getDescription() == leaderNames[color] then
-                    Playboard.setLeader(color, object)
+                    PlayBoard.setLeader(color, object)
                     break
                 end
             end
         end
-        assert(Playboard.getLeader(color), "Unknown leader " .. leaderNames[color])
+        assert(PlayBoard.getLeader(color), "Unknown leader " .. leaderNames[color])
     end
 
     TurnControl.start(true)
@@ -317,7 +317,7 @@ end
 ---
 function LeaderSelection.claimLeader(color, leader)
     LeaderSelection.dynamicLeaderSelection[leader] = true
-    if Playboard.setLeader(color, leader) then
+    if PlayBoard.setLeader(color, leader) then
         leader.clearButtons()
         return true
     else

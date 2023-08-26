@@ -3,7 +3,7 @@ local Helper = require("utils.Helper")
 local AcquireCard = require("utils.AcquireCard")
 
 local Deck = Module.lazyRequire("Deck")
-local Playboard = Module.lazyRequire("Playboard")
+local PlayBoard = Module.lazyRequire("PlayBoard")
 local ScoreBoard = Module.lazyRequire("ScoreBoard")
 
 local Reserve = {}
@@ -38,12 +38,12 @@ end
 
 ---
 function Reserve.acquireFoldspace(acquireCard, color)
-    Playboard.giveCardFromZone(color, acquireCard.zone, false)
+    PlayBoard.giveCardFromZone(color, acquireCard.zone, false)
 end
 
 ---
 function Reserve.acquireArrakisLiaison(acquireCard, color)
-    Playboard.giveCardFromZone(color, acquireCard.zone, false)
+    PlayBoard.giveCardFromZone(color, acquireCard.zone, false)
 end
 
 ---

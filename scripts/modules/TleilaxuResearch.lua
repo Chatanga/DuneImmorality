@@ -4,7 +4,7 @@ local Park = require("utils.Park")
 local I18N = require("utils.I18N")
 
 local Resource = Module.lazyRequire("Resource")
-local Playboard = Module.lazyRequire("Playboard")
+local PlayBoard = Module.lazyRequire("PlayBoard")
 
 local TleilaxuResearch = {
     --[[
@@ -98,7 +98,7 @@ function TleilaxuResearch._staticSetUp()
     TleilaxuResearch.tleilaxTokenOrigin = TleilaxuResearch._getAveragePosition("tleilaxTokenInitalPosition")
     TleilaxuResearch._generateTleilaxButtons()
 
-    for _, color in ipairs(Playboard.getPlayboardColors()) do
+    for _, color in ipairs(PlayBoard.getPlayboardColors()) do
         TleilaxuResearch.tanksParks[color] = TleilaxuResearch._createTanksPark(color)
     end
     TleilaxuResearch._createTanksButton()
@@ -142,8 +142,8 @@ end
 function TleilaxuResearch._getAveragePosition(positionField)
     local p = Vector(0, 0, 0)
     local count = 0
-    for _, color in pairs(Playboard.getPlayboardColors()) do
-        p = p + Playboard.getContent(color)[positionField]
+    for _, color in pairs(PlayBoard.getPlayboardColors()) do
+        p = p + PlayBoard.getContent(color)[positionField]
         count = count + 1
     end
     return p * (1 / count)
@@ -160,7 +160,7 @@ function TleilaxuResearch._generateResearchButtons()
         })
         Helper.markAsTransient(cellZone)
         Helper.createAnchoredAreaButton(cellZone, 0.6, 0.1, "Progress on the research track", function (_, color, _)
-            local token = Playboard.getContent(color).researchToken
+            local token = PlayBoard.getContent(color).researchToken
             local tokenCellPosition = TleilaxuResearch._worlPositionToResearchSpace(token.getPosition())
             local jump = cellPosition - tokenCellPosition
             if jump.x == 1 and math.abs(jump.z) <= 1 then
@@ -191,8 +191,8 @@ end
 
 ---
 function TleilaxuResearch._advanceResearch(color, jump, withBenefits)
-    local leader = Playboard.getLeader(color)
-    local researchToken = Playboard.getContent(color).researchToken
+    local leader = PlayBoard.getLeader(color)
+    local researchToken = PlayBoard.getContent(color).researchToken
     local cellPosition = TleilaxuResearch._worlPositionToResearchSpace(researchToken.getPosition())
     local newCellPosition = cellPosition + jump
 
@@ -235,14 +235,14 @@ end
 
 ---
 function TleilaxuResearch.hasReachedOneHelix(color)
-    local researchToken = Playboard.getContent(color).researchToken
+    local researchToken = PlayBoard.getContent(color).researchToken
     local cellPosition = TleilaxuResearch._worlPositionToResearchSpace(researchToken.getPosition())
     return cellPosition.x >= 4
 end
 
 ---
 function TleilaxuResearch.hasReachedTwoHelices(color)
-    local researchToken = Playboard.getContent(color).researchToken
+    local researchToken = PlayBoard.getContent(color).researchToken
     local cellPosition = TleilaxuResearch._worlPositionToResearchSpace(researchToken.getPosition())
     return cellPosition.x == 8
 end
@@ -271,7 +271,7 @@ function TleilaxuResearch._generateTleilaxButtons()
     for level, _ in pairs(TleilaxuResearch.tleilaxLevelBenefits) do
         local levelZone = TleilaxuResearch.tleilaxuLevelZones[level]
         Helper.createAnchoredAreaButton(levelZone, 0.6, 0.1, "Progress on the Tleilax track", function (_, color, _)
-            local token = Playboard.getContent(color).tleilaxToken
+            local token = PlayBoard.getContent(color).tleilaxToken
             local tokenLevel = TleilaxuResearch._worlPositionToTleilaxSpace(token.getPosition())
             local jump = level - tokenLevel
             if jump == 1 then
@@ -292,8 +292,8 @@ end
 
 ---
 function TleilaxuResearch._advanceTleilax(color, jump, withBenefits)
-    local leader = Playboard.getLeader(color)
-    local tleilaxToken = Playboard.getContent(color).tleilaxToken
+    local leader = PlayBoard.getLeader(color)
+    local tleilaxToken = PlayBoard.getContent(color).tleilaxToken
     local level = TleilaxuResearch._worlPositionToTleilaxSpace(tleilaxToken.getPosition())
     local newLevel = level + jump
 
@@ -325,7 +325,7 @@ end
 ---
 function TleilaxuResearch._createTanksButton()
     Helper.createAnchoredAreaButton(TleilaxuResearch.TanksZone, 0.6, 0.1, "Specimen: ±1", function (_, color, altClick)
-        local leader = Playboard.getLeader(color)
+        local leader = PlayBoard.getLeader(color)
         if altClick then
             leader.troops(color, "tanks", "supply", 1)
         else
