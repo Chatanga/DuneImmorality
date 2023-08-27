@@ -125,11 +125,15 @@ end
 
 function Helper.moveObject(card, position, rotation, smooth, flipAtTheEnd)
     assert(card)
+
+    local continuation = Helper.createContinuation()
+
     if smooth then
         card.setPositionSmooth(position)
     else
         card.setPosition(position)
     end
+
     if rotation then
         if smooth then
             card.setRotationSmooth(rotation)
@@ -137,11 +141,15 @@ function Helper.moveObject(card, position, rotation, smooth, flipAtTheEnd)
             card.setRotation(rotation)
         end
     end
-    if flipAtTheEnd then
-        Wait.time(function() -- Once moved and rotated.
+
+    Helper.onceMotionless(card).doAfter(function ()
+        if flipAtTheEnd then
             card.flip()
-        end, 0.2)
-    end
+        end
+        continuation.run(card)
+    end)
+
+    return continuation
 end
 
 --- Prefer the "deal" method when possible? Would it prevent the card from being
@@ -149,32 +157,28 @@ end
 function Helper.moveCardFromZone(zone, position, rotation, smooth, flipAtTheEnd)
     local deckOrCard = Helper.getDeckOrCard(zone)
     if deckOrCard then
+        local continuation = Helper.createContinuation()
+
         if deckOrCard.type == "Deck" then
             local parameters = {
                 position = position,
                 flip = flipAtTheEnd and true,
-                smooth = smooth or false
+                smooth = smooth or false,
+                callback_function = continuation.run
             }
             if rotation then
                 parameters.rotation = rotation
             end
-            return deckOrCard.takeObject(parameters)
+            deckOrCard.takeObject(parameters)
         elseif deckOrCard.type == "Card" then
-            Helper.moveObject(deckOrCard, position, rotation, smooth, flipAtTheEnd)
-            return deckOrCard
+            Helper.moveObject(deckOrCard, position, rotation, smooth, flipAtTheEnd).doAfter(continuation.run)
         else
             assert(false)
         end
+
+        return continuation
     end
     return nil
-end
-
----
-function Helper.moveCardFromZoneGUID(zoneGUID, position, rotation, smooth)
-    assert(type(zoneGUID) == 'string', tostring(zoneGUID) .. ' is not a GUID')
-    local zone = getObjectFromGUID(zoneGUID)
-    assert(zone, "Failed to resolve GUID: " .. tostring(zoneGUID))
-    return Helper.moveCardFromZone(zone, position, rotation, smooth)
 end
 
 ---
@@ -525,7 +529,11 @@ end
 
 ---
 function Helper.createContinuation()
-    local continuation = {}
+    local continuation = {
+        what = function ()
+            return "continuation"
+        end
+    }
 
     continuation.actions = {}
 
@@ -561,6 +569,9 @@ function Helper.createClass(superclass, data)
     --assert(not superclass or superclass.__index, "Superclass doesn't look like a class itself.")
     local class = data or {}
     class.__index = class
+    class.what = function ()
+        return "class"
+    end
     if superclass then
         setmetatable(class, superclass)
     end
@@ -572,8 +583,19 @@ function Helper.createClassInstance(class, data)
     assert(class)
     assert(class.__index, "Provided class doesn't look like a class actually.")
     local instance = data or {}
+    instance.what = function ()
+        return "instance"
+    end
     setmetatable(instance, class)
     return instance
+end
+
+---
+function Helper.getClass(instance)
+    assert(instance.what() == "instance")
+    local class = getmetatable(instance)
+    assert(class and class.what() == "class")
+    return class
 end
 
 ---

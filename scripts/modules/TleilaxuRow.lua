@@ -41,7 +41,7 @@ function TleilaxuRow._staticSetUp()
         deck.shuffle()
         for i = 1, 2 do
             local zone = TleilaxuRow.slotZones[i]
-            Helper.moveCardFromZone(TleilaxuRow.deckZone, zone.getPosition(), Vector(0, 180, 0), false, false)
+            Helper.moveCardFromZone(TleilaxuRow.deckZone, zone.getPosition(), Vector(0, 180, 0))
         end
     end)
     Deck.generateSpecialDeck("reclaimedForces", TleilaxuRow.slotZones[3])
@@ -95,7 +95,7 @@ function TleilaxuRow.acquireTleilaxuCard(indexInRow, color)
             PlayBoard.giveCard(color, card, false)
 
             -- Replenish the slot in the row.
-            Helper.moveCardFromZone(TleilaxuRow.deckZone, acquireCard.zone.getPosition(), Vector(0, 180, 0), false, false)
+            Helper.moveCardFromZone(TleilaxuRow.deckZone, acquireCard.zone.getPosition(), Vector(0, 180, 0))
             return true
         end
     else

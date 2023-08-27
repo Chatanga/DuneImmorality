@@ -22,40 +22,46 @@ local TurnControl = {
     currentRound = 0,
     currentPhaseLuaIndex = nil,
     currentPlayerLuaIndex = nil,
+    customTurnSequence = nil,
 }
 
 function TurnControl.onLoad(state)
-    if state.TurnControl then
-        TurnControl.players = state.TurnControl.players
-        TurnControl.firstPlayerLuaIndex = state.TurnControl.firstPlayerLuaIndex
-        TurnControl.reversed = state.TurnControl.reversed
-        TurnControl.currentRound = state.TurnControl.currentRound
-        TurnControl.currentPhaseLuaIndex = state.TurnControl.currentPhaseLuaIndex
-        TurnControl.currentPlayerLuaIndex = state.TurnControl.currentPlayerLuaIndex
+    if state.settings then
+        if state.TurnControl then
+            TurnControl.players = state.TurnControl.players
+            TurnControl.firstPlayerLuaIndex = state.TurnControl.firstPlayerLuaIndex
+            TurnControl.reversed = state.TurnControl.reversed
+            TurnControl.currentRound = state.TurnControl.currentRound
+            TurnControl.currentPhaseLuaIndex = state.TurnControl.currentPhaseLuaIndex
+            TurnControl.currentPlayerLuaIndex = state.TurnControl.currentPlayerLuaIndex
+            TurnControl.customTurnSequence = state.TurnControl.customTurnSequence
+        end
     end
 end
 
 function TurnControl.onSave(state)
     state.TurnControl = {
         players = TurnControl.players,
+        scoreGoal = TurnControl.scoreGoal,
         firstPlayerLuaIndex = TurnControl.firstPlayerLuaIndex,
+        --
         reversed = TurnControl.reversed,
         currentRound = TurnControl.currentRound,
         currentPhaseLuaIndex = TurnControl.currentPhaseLuaIndex,
         currentPlayerLuaIndex = TurnControl.currentPlayerLuaIndex,
+        customTurnSequence = TurnControl.customTurnSequence,
     }
 end
 
 --- Initialize the turn system with the provided players (or all the seated players) and start a new round.
 function TurnControl.setUp(settings, players)
-    Turns.enable = false
     TurnControl.players = players
     TurnControl.scoreGoal = settings.epicMode and 12 or 10
 
     if settings.numberOfPlayers == 1 then
         for i, player in ipairs(players) do
             if PlayBoard.isHuman(player) then
-                TurnControl.firstPlayerLuaIndex = TurnControl._getNextPlayer(i, true)
+                TurnControl.firstPlayerLuaIndex = TurnControl._getNextPlayer(i)
                 break
             end
         end
@@ -104,8 +110,7 @@ end
 function TurnControl._startPhase(phase, reversed)
     assert(phase)
 
-    log("=== Phase: " .. phase .. " ===")
-    broadcastToAll("Phase: " .. phase, Color.fromString("Pink"))
+    TurnControl.reversed = reversed
     if phase == "roundStart" then
         TurnControl.currentRound = TurnControl.currentRound + 1
         if TurnControl.currentRound > 1 then
@@ -113,18 +118,17 @@ function TurnControl._startPhase(phase, reversed)
         end
     end
 
-    TurnControl.reversed = reversed
-    if TurnControl.currentPhase then
-        Helper.emitEvent("phaseEnd", TurnControl.currentPhase)
-    end
     TurnControl.currentPhase = phase
+    TurnControl.customTurnSequence = nil
     if reversed then
         TurnControl.currentPlayerLuaIndex = TurnControl._getNextPlayer(TurnControl.firstPlayerLuaIndex, TurnControl.reversed)
     else
         TurnControl.currentPlayerLuaIndex = TurnControl.firstPlayerLuaIndex
     end
-    TurnControl.customTurnSequence = nil
-    Helper.emitEvent("phaseStart", TurnControl.currentPhase, TurnControl.players[TurnControl.firstPlayerLuaIndex])
+
+    log("=== Phase: " .. phase .. " ===")
+    broadcastToAll("Phase: " .. phase, Color.fromString("Pink"))
+    Helper.emitEvent("phaseStart", TurnControl.currentPhase, TurnControl.players[TurnControl.currentPlayerLuaIndex])
 
     Wait.frames(function ()
         if TurnControl.customTurnSequence then
@@ -143,20 +147,23 @@ end
 ---
 function TurnControl._next(startPlayerLuaIndex)
     TurnControl.currentPlayerLuaIndex = TurnControl._findActivePlayer(startPlayerLuaIndex)
-    --Helper.dump("TurnControl.currentPlayerLuaIndex =", TurnControl.currentPlayerLuaIndex)
     if TurnControl.currentPlayerLuaIndex then
         local player = TurnControl.players[TurnControl.currentPlayerLuaIndex]
         log("--- Turn: " .. player .. " ---")
         Helper.emitEvent("playerTurns", TurnControl.currentPhase, player)
     else
-        local nextPhase = TurnControl._getNextPhase(TurnControl.currentPhase)
-        if nextPhase then
-            TurnControl.reversed = Hagal.getRivalCount() == 1 and not TurnControl.reversed or false
-            TurnControl._startPhase(nextPhase, TurnControl.reversed)
-        else
-            TurnControl.currentPhase = nil
+        if TurnControl.currentPhase then
             Helper.emitEvent("phaseEnd", TurnControl.currentPhase)
         end
+        Wait.time(function ()
+            local nextPhase = TurnControl._getNextPhase(TurnControl.currentPhase)
+            if nextPhase then
+                TurnControl.reversed = Hagal.getRivalCount() == 1 and not TurnControl.reversed or false
+                TurnControl._startPhase(nextPhase, TurnControl.reversed)
+            else
+                TurnControl.currentPhase = nil
+            end
+        end, TurnControl.currentPhase == "recall" and 2 or 0)
     end
 end
 
@@ -190,7 +197,6 @@ function TurnControl._getNextPlayer(playerLuaIndex, reversed)
         else
             nextPlayerLuaIndex = (playerLuaIndex % n) + 1
         end
-        --Helper.dump(playerLuaIndex, " % ", n, "->", nextPlayerLuaIndex)
         return nextPlayerLuaIndex
     end
 end
@@ -222,9 +228,13 @@ end
 
 ---
 function TurnControl._endgameGoalReached()
+    if TurnControl.currentRound == 10 then
+        return true
+    end
+
     local bestScore = 0
-    for _, color in ipairs(PlayBoard.getPlayboardColors()) do
-        bestScore = math.max(bestScore, PlayBoard.getPlayboard(color):getScore())
+    for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
+        bestScore = math.max(bestScore, PlayBoard.getPlayBoard(color):getScore())
     end
     return bestScore >= TurnControl.scoreGoal
 end
@@ -260,6 +270,11 @@ end
 ---
 function TurnControl.getFirstPlayer()
     return TurnControl.players[TurnControl.firstPlayerLuaIndex]
+end
+
+---
+function TurnControl.getCurrentRound()
+    return TurnControl.currentRound
 end
 
 return TurnControl

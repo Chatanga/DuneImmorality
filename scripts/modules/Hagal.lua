@@ -8,13 +8,15 @@ local LeaderSelection = Module.lazyRequire("LeaderSelection")
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local Action = Module.lazyRequire("Action")
 local HagalCard = Module.lazyRequire("HagalCard")
+local Combat = Module.lazyRequire("Combat")
 
+-- Enlighting clarifications: https://boardgamegeek.com/thread/2578561/summarizing-automa-2p-and-1p-similarities-and-diff
 local Hagal = {
     soloDifficulties = {
         novice = "Mercenary",
         veteran = "Sardaukar",
-        expertPlus = "Mentat",
-        expert = "Kwisatz",
+        expert = "Mentat",
+        expertPlus = "Kwisatz",
     },
     compatibleLeaders = {
         vladimirHarkonnen = 1,
@@ -25,10 +27,12 @@ local Hagal = {
         memnonThorvald = 1,
         rhomburVernius = 1,
         hundroMoritani = 1,
-    },
+    }
 }
 
-local Rival = Helper.createClass(Action)
+local Rival = Helper.createClass(Action, {
+    rivals = {}
+})
 
 ---
 function Hagal.onLoad(state)
@@ -55,10 +59,29 @@ function Hagal._staticSetUp(settings)
     if settings.numberOfPlayers < 3 then
         Hagal.numberOfPlayers = settings.numberOfPlayers
         Hagal.difficulty = settings.difficulty
+
         Deck.generateHagalDeck(Hagal.deckZone, settings.riseOfIx, settings.immortality, settings.numberOfPlayers).doAfter(function (deck)
             deck.shuffle()
         end)
+
+        if settings.difficulty == "novice" then
+            Hagal.swordmasterCountdown = 5
+        elseif settings.difficulty == "veteran" then
+            Hagal.swordmasterCountdown = 4
+        elseif settings.difficulty == "expert" or settings.difficulty == "expertPlus" then
+            Hagal.swordmasterCountdown = 3
+        end
     end
+
+    Helper.registerEventListener("phaseStart", function (phase)
+        if phase == "combat" then
+            for color, _ in pairs(Rival.rivals) do
+                if Combat.isInCombat(color) then
+                    Hagal._setStrengthFromFirstValidCard(color)
+                end
+            end
+        end
+    end)
 end
 
 ---
@@ -68,10 +91,12 @@ function Hagal._tearDown()
 end
 
 ---
-function Hagal.newRival(leader)
-    return Helper.createClassInstance(Rival, {
+function Hagal.newRival(color, leader)
+    local rival = Helper.createClassInstance(Rival, {
         leader = leader
     })
+    Rival.rivals[color] = rival
+    return rival
 end
 
 ---
@@ -79,7 +104,7 @@ function Hagal.activate(phase, color)
     -- A delay before and after the action, to let the human(s) see the progress.
     Wait.time(function ()
         Hagal._lateActivate(phase, color).doAfter(function ()
-            Wait.time(TurnControl.endOfTurn, 2)
+            Wait.time(TurnControl.endOfTurn, 1)
         end)
     end, 1)
 end
@@ -96,7 +121,7 @@ function Hagal._lateActivate(phase, color)
     elseif phase == "roundStart" then
         continuation.run()
     elseif phase == "playerTurns" then
-        Hagal._activateFirstValidCard(color).doAfter(continuation.run)
+        Hagal._activateFirstValidActionCard(color).doAfter(continuation.run)
     elseif phase == "combat" then
         continuation.run()
     elseif phase == "combatEnd" then
@@ -111,48 +136,73 @@ function Hagal._lateActivate(phase, color)
 end
 
 ---
-function Hagal._activateFirstValidCard(color)
+function Hagal._activateFirstValidActionCard(color)
+    return Hagal._activateFirstValidCard(color, function (card)
+        return HagalCard.activate(color, card)
+    end)
+end
+
+---
+function Hagal._setStrengthFromFirstValidCard(color)
+    return Hagal._activateFirstValidCard(color, function (card)
+        return HagalCard.setStrength(color, card)
+    end)
+end
+
+---
+function Hagal._activateFirstValidCard(color, action)
     local continuation = Helper.createContinuation()
 
     local emptySlots = Park.findEmptySlots(PlayBoard.getAgentCardPark(color))
     assert(emptySlots and #emptySlots > 0)
 
-    local i = 0
-    while true do
-        i = i + 1
-        assert(i < 10, "Something is not right!")
-        local card = Helper.moveCardFromZone(Hagal.deckZone, emptySlots[2] + Vector(0, 0.4 * i, 0), nil, true, true)
-        if not card then
-            local cards = {}
-            for _, object in ipairs(getObjects()) do
-                if object.hasTag("Hagal") and (object.type == "Deck" or object.type == "Card") then
-                    table.insert(cards, object)
-                end
+    Hagal._doActivateFirstValidCard(color, action, 0, continuation)
+
+    return continuation
+end
+
+---
+function Hagal._doActivateFirstValidCard(color, action, n, continuation)
+    local emptySlots = Park.findEmptySlots(PlayBoard.getAgentCardPark(color))
+    assert(emptySlots and #emptySlots > 0)
+
+    assert(n < 10, "Something is not right!")
+
+    local success = Helper.moveCardFromZone(Hagal.deckZone, emptySlots[2] + Vector(0, 1 + 0.4 * n, 0), Vector(0, 180, 0))
+    if success then
+        success.doAfter(function (card)
+            log(card.getDescription())
+            if card.getDescription() == "reshuffle" then
+                Hagal._reshuffleDeck(color, action, n, continuation)
+            elseif action(card) then
+                continuation.run(card)
+            else
+                Hagal._doActivateFirstValidCard(color, action, n + 1, continuation)
             end
-            Helper.forEach(cards, function (_, otherCard)
-                otherCard.flip()
-                otherCard.setPosition(Hagal.deckZone.getPosition())
-            end)
-            Wait.time(function ()
-                local deckOrCard = Helper.getDeckOrCard(Hagal.deckZone)
-                assert(deckOrCard)
-                if deckOrCard.type == "Deck" then
-                    deckOrCard.shuffle()
-                    Helper.onceShuffled(deckOrCard).doAfter(function ()
-                        Hagal._activateFirstValidCard(color).doAfter(continuation.run)
-                    end)
-                else
-                    Hagal._activateFirstValidCard(color).doAfter(continuation.run)
-                end
-            end, 3)
-            return continuation
-        else
-            if HagalCard.activateCard(color, card) then
-                Wait.frames(continuation.run, 1)
-                return continuation
+        end)
+    else
+        Hagal._reshuffleDeck(color, action, n, continuation)
+    end
+end
+
+---
+function Hagal._reshuffleDeck(color, action, n, continuation)
+    log("Reshuffling Hagal deck.")
+    for _, object in ipairs(getObjects()) do
+        if object.hasTag("Hagal") and (object.type == "Deck" or object.type == "Card") then
+            if not object.is_face_down then
+                object.flip()
             end
+            object.setPosition(Hagal.deckZone.getPosition())
         end
     end
+    Wait.time(function ()
+        local deck = Helper.getDeck(Hagal.deckZone)
+        deck.shuffle()
+        Helper.onceShuffled(deck).doAfter(function ()
+            Hagal._doActivateFirstValidCard(color, action, n + 1, continuation)
+        end)
+    end, 2)
 end
 
 ---
@@ -192,6 +242,17 @@ function Hagal.pickAnyCompatibleLeader(color)
         leaderOrPseudoLeader = leaders[1]
     end
     LeaderSelection.claimLeader(color, leaderOrPseudoLeader)
+end
+
+---
+function Rival.setUp(color, settings)
+    if Hagal.numberOfPlayers == 1 then
+        Action.resource(color, "water", 1)
+        if settings.difficulty ~= "novice" then
+            Action.troops(color, "supply", "garrison", 3)
+            Action.drawIntrigues(color, 1)
+        end
+    end
 end
 
 return Hagal

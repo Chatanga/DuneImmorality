@@ -66,7 +66,8 @@ Having launched `./listen.py` in another terminal will provide you with an immed
 
 ## TODO (by priority)
 
-- The Hagal house (with resources and difficulty levels).
+- The Hagal house - Solo.
+- The Hagal house - 2 players.
 
 - Basic logging in the Action facade.
 
@@ -92,3 +93,22 @@ Having launched `./listen.py` in another terminal will provide you with an immed
 - Workaround the font_size ratio / support for the boards.
 - Check for anchor and callback leaks.
 - Gather all VP sources in ScoreBoard?
+- Some kind of hungarian notation with Array (ipairs) and Dict (pairs), a Array being a Dict?
+- Investigate weird player tech slot 1.
+- Alt click defeated by area buttons...
+
+3rd agent in deck
+R R H
+dread > troop
+block any IT bonus
+épées uniquement au début du combat
+do control, receive benefit, have troop in defense
+Solari, water, and intrigue cards will be collected, but only from conflict cards, signet ring abilities, or from starting allocations due to the difficulty setting
+Churn?
+Voice!
+Multi-round combat (card detection)!
+
+## Bugs
+
+- Tleilax card topping.
+- Alliance bonuses? Without the alliance?

@@ -273,8 +273,11 @@ local Deck = {
     },
     hagal = {
         base = {
-            core = {
+            other = {
+                -- FIXME
                 churn = 2,
+            },
+            core = {
                 conspire = 2,
                 wealth = 1,
                 heighliner = 1,
@@ -332,7 +335,6 @@ local Deck = {
         holoprojectors = 1,
         minimicFilm = 1,
         windtraps = 1,
-        -- With a Hagal mark:
         detonationDevices = 1,
         memocorders = 1,
         flagship = 1,
@@ -484,6 +486,8 @@ function Deck.generateTechDeck(deckZones)
     local keys = Helper.getKeys(Deck.tech)
     Helper.shuffle(keys)
 
+    local decks = {}
+
     local remaining = 0
     for i = 1, 3 do
         remaining = remaining + 1
@@ -495,10 +499,10 @@ function Deck.generateTechDeck(deckZones)
         Deck._generateDeck("Tech", deckZone.getPosition(), part, Deck.sources.tech).doAfter(function (deck)
             local above = deckZone.getPosition() + Vector(0, 1, 0)
             Helper.moveCardFromZone(deckZone, above, nil, true, true)
-
+            table.insert(decks, deck)
             remaining = remaining - 1
             if remaining == 0 then
-                continuation.run(deck)
+                continuation.run(decks)
             end
         end)
     end

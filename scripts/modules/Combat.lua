@@ -57,13 +57,13 @@ end
 ---
 function Combat._staticSetUp(settings)
     Combat.garrisonParks = {}
-    for _, color in ipairs(PlayBoard.getPlayboardColors()) do
+    for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
         Combat.garrisonParks[color] = Combat._createGarrisonPark(color)
     end
 
     if settings.riseOfIx then
         Combat.dreadnoughtParks = {}
-        for _, color in ipairs(PlayBoard.getPlayboardColors()) do
+        for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
             Combat.dreadnoughtParks[color] = Combat._createDreadnoughtPark(color)
         end
     end
@@ -88,7 +88,7 @@ function Combat._staticSetUp(settings)
                 end
             end
             for _, object in ipairs(Combat.combatCenterZone.getObjects()) do
-                for _, color in ipairs(PlayBoard.getPlayboardColors()) do
+                for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
                     if Utils.isTroop(object, color) then
                         Park.putObject(object, PlayBoard.getSupplyPark(color))
                     elseif Utils.isDreadnought(object, color) then
@@ -102,33 +102,35 @@ end
 
 ---
 function Combat._setUpConflict()
-    local card = Helper.moveCardFromZone(Combat.conflictDeckZone, Combat.conflictDiscardZone.getPosition(), nil, true, true)
-    if card then
-        local i = 0
-        for _, object in pairs(Combat.victoryPointTokenBag.getObjects()) do
-            if object.description == card.getDescription() then
-                local origin = Combat.victoryPointTokenZone.getPosition()
-                local position = origin + Vector(0.5 - (i % 2), 0.5 + math.floor(i / 2), 0)
-                i = i + 1
-                local victoryPointToken = Combat.victoryPointTokenBag.takeObject({
-                    position = position,
-                    rotation = Vector(0, 180, 0),
-                    smooth = true,
-                    guid = object.guid,
-                })
+    local success = Helper.moveCardFromZone(Combat.conflictDeckZone, Combat.conflictDiscardZone.getPosition(), nil, true, true)
+    if success then
+        success.doAfter(function (card)
+            local i = 0
+            for _, object in pairs(Combat.victoryPointTokenBag.getObjects()) do
+                if object.description == card.getDescription() then
+                    local origin = Combat.victoryPointTokenZone.getPosition()
+                    local position = origin + Vector(0.5 - (i % 2), 0.5 + math.floor(i / 2), 0)
+                    i = i + 1
+                    local victoryPointToken = Combat.victoryPointTokenBag.takeObject({
+                        position = position,
+                        rotation = Vector(0, 180, 0),
+                        smooth = true,
+                        guid = object.guid,
+                    })
 
-                local controlableSpace = MainBoard.findControlableSpace(victoryPointToken)
-                if controlableSpace then
-                    local color = MainBoard.getControllingPlayer(controlableSpace)
-                    if color then
-                        local troop = Park.getAnyObject(PlayBoard.getSupplyPark(color))
-                        if troop then
-                            troop.setPositionSmooth(Combat.combatCenterZone.getPosition())
+                    local controlableSpace = MainBoard.findControlableSpace(victoryPointToken)
+                    if controlableSpace then
+                        local color = MainBoard.getControllingPlayer(controlableSpace)
+                        if color then
+                            local troop = Park.getAnyObject(PlayBoard.getSupplyPark(color))
+                            if troop then
+                                troop.setPositionSmooth(Combat.combatCenterZone.getPosition())
+                            end
                         end
                     end
                 end
             end
-        end
+        end)
     end
 end
 
@@ -302,7 +304,7 @@ function Combat._calculateOutcomeTurnSequence(forces)
     end)
 
     -- No Nth winner in a N players game.
-    if #combatEndTurnSequence == #PlayBoard.getPlayboardColors() then
+    if #combatEndTurnSequence == #PlayBoard.getPlayBoardColors() then
         table.remove(combatEndTurnSequence, #combatEndTurnSequence)
     end
 
@@ -313,7 +315,7 @@ end
 function Combat._calculateCombatForces()
     local forces = {}
 
-    for _, color in ipairs(PlayBoard.getPlayboardColors()) do
+    for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
         local force = 0
         for _, object in ipairs(Combat.combatCenterZone.getObjects()) do
             if Utils.isUnit(object, color) then
@@ -342,7 +344,7 @@ function Combat._updateCombatForces(forces)
     local occupations = {}
 
     -- TODO Better having a zone with filtering tags.
-    for _, color in ipairs(PlayBoard.getPlayboardColors()) do
+    for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
         local force = forces[color]
 
         local minorForce = force > 0 and (force - 1) % 20 + 1 or 0

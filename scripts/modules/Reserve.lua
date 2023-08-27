@@ -48,7 +48,8 @@ end
 
 ---
 function Reserve.acquireTheSpiceMustFlow(acquireCard, color)
-    ScoreBoard.gainVictoryPoint(color, "theSpiceMustFlow")
+    local leader = PlayBoard.getLeader(color)
+    leader.gainVictoryPoint(color, "theSpiceMustFlow")
 end
 
 return Reserve

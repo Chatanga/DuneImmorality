@@ -14,6 +14,7 @@ local TechMarket = Module.lazyRequire("TechMarket")
 local ImperiumRow = Module.lazyRequire("ImperiumRow")
 local CommercialTrack = Module.lazyRequire("CommercialTrack")
 local TleilaxuRow = Module.lazyRequire("TleilaxuRow")
+local ScoreBoard = Module.lazyRequire("ScoreBoard")
 
 local Action = Helper.createClass(nil, {
     context = {}
@@ -163,7 +164,7 @@ end
 ---
 function Action.drawImperiumCards(color, amount)
     Utils.assertIsPlayerColor(color)
-    PlayBoard.getPlayboard(color):drawCards(amount)
+    PlayBoard.getPlayBoard(color):drawCards(amount)
     return true
 end
 
@@ -259,9 +260,9 @@ end
 ---
 function Action._getDreadnoughtPark(color, parkName)
     if parkName == "supply" then
-        return PlayBoard.getDreadnoughtSupplyPark(color)
+        return PlayBoard.getDreadnoughtPark(color)
     elseif parkName == "garrison" then
-        return Combat.getDreadnoughtGarrisonPark(color)
+        return Combat.getDreadnoughtPark(color)
     elseif parkName == "combat" then
         return nil
     elseif parkName == "carthag" then
@@ -285,7 +286,6 @@ end
 ---
 function Action.research(color, jump)
     Utils.assertIsPlayerColor(color)
-    Utils.assertIsInteger(jump)
     TleilaxuResearch.advanceResearch(color, jump)
     return true
 end
@@ -320,7 +320,13 @@ function Action.stealIntrigue(color, otherColor, amount)
     return Intrigue.stealIntrigue(color, otherColor, amount)
 end
 
+---
 function Action.signetRing(color)
+end
+
+---
+function Action.gainVictoryPoint(color, name)
+    ScoreBoard.gainVictoryPoint(color, name)
 end
 
 --[[

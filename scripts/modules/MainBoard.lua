@@ -249,7 +249,7 @@ function MainBoard._staticSetUp(settings)
             for _, space in pairs(MainBoard.spaces) do
                 for _, agent in ipairs(Park.getObjects(space.park)) do
                     assert(agent.hasTag("Agent"))
-                    for _, color in ipairs(PlayBoard.getPlayboardColors()) do
+                    for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
                         if agent.hasTag(color) then
                             Park.putObject(agent, PlayBoard.getAgentPark(color))
                         end
@@ -442,7 +442,7 @@ end
 ---
 function MainBoard._goSecrets(color)
     PlayBoard.getLeader(color).drawIntrigues(color, 1)
-    for _, otherColor in ipairs(PlayBoard.getPlayboardColors()) do
+    for _, otherColor in ipairs(PlayBoard.getPlayBoardColors()) do
         if otherColor ~= color then
             if #PlayBoard.getIntrigues(otherColor) > 3 then
                 PlayBoard.getLeader(color).stealIntrigue(color, otherColor, 1)
@@ -572,7 +572,7 @@ function MainBoard.getControllingPlayer(bannerZone)
 
     -- Check player dreadnoughts first since they supersede flags.
     for _, object in ipairs(bannerZone.getObjects()) do
-        for _, color in ipairs(PlayBoard.getPlayboardColors()) do
+        for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
             if Utils.isDreadnought(object, color) then
                 assert(not controllingPlayer, "Too many dreadnoughts")
                 controllingPlayer = color
@@ -583,7 +583,7 @@ function MainBoard.getControllingPlayer(bannerZone)
     -- Check player flags otherwise.
     if not controllingPlayer then
         for _, object in ipairs(bannerZone.getObjects()) do
-            for _, color in ipairs(PlayBoard.getPlayboardColors()) do
+            for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
                 if Utils.isFlag(object, color) then
                     assert(not controllingPlayer, "Too many flags around")
                     controllingPlayer = color
@@ -939,7 +939,7 @@ end
 function MainBoard.onObjectEnterScriptingZone(zone, object)
     if zone == MainBoard.mentatZone then
         if Utils.isMentat(object) then
-            for _, color in ipairs(PlayBoard.getPlayboardColors()) do
+            for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
                 object.removeTag(color)
             end
             -- FIXME One case of whitewashing too many?

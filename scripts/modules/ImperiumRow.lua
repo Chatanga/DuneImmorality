@@ -33,7 +33,7 @@ function ImperiumRow.setUp(settings)
     Deck.generateImperiumDeck(ImperiumRow.deckZone, settings.riseOfIx, settings.immortality).doAfter(function (deck)
         deck.shuffle()
         for _, zone in ipairs(ImperiumRow.slotZones) do
-            Helper.moveCardFromZone(ImperiumRow.deckZone, zone.getPosition(), Vector(0, 180, 0), false, false)
+            Helper.moveCardFromZone(ImperiumRow.deckZone, zone.getPosition(), Vector(0, 180, 0))
         end
     end)
     ImperiumRow._staticSetUp()
@@ -122,7 +122,7 @@ end
 ---
 function ImperiumRow._replenish(indexInRow)
     local position = ImperiumRow.slotZones[indexInRow].getPosition()
-    Helper.moveCardFromZone(ImperiumRow.deckZone, position, Vector(0, 180, 0), false, false)
+    Helper.moveCardFromZone(ImperiumRow.deckZone, position, Vector(0, 180, 0))
 end
 
 return ImperiumRow

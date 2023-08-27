@@ -1,5 +1,5 @@
 local constructionModeEnabled = false
-local validateDefaultSetup = nil
+local validateDefaultSetup
 validateDefaultSetup = {
     language = "en",
     randomizePlayerPositions = false,
@@ -18,12 +18,12 @@ validateDefaultSetup = {
     fanMadeLeaders = false,
     variant = nil,
 }
-validateDefaultSetup_no = {
+validateDefaultSetup = {
     language = "en",
     randomizePlayerPositions = false,
     virtualHotSeat = false,
     numberOfPlayers = 1,
-    difficulty = 1,
+    difficulty = "novice",
     riseOfIx = true,
     epicMode = false,
     immortality = true,
@@ -36,6 +36,7 @@ validateDefaultSetup_no = {
     fanMadeLeaders = false,
     variant = nil,
 }
+--validateDefaultSetup = nil
 
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
@@ -398,7 +399,7 @@ function PlayerSet.applyNumberOfPlayers()
         }
     else
         if PlayerSet.fields.numberOfPlayers == 1 then
-            PlayerSet.fields.difficulty = 1
+            PlayerSet.fields.difficulty = "novice"
         else
             PlayerSet.fields.difficulty = {}
         end

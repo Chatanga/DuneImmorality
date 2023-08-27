@@ -18,7 +18,7 @@ local TleilaxuResearch = {
         [Vector(2, 0, -1)] = { beetle = true },
         [Vector(3, 0, 2)] = { research = true },
         [Vector(3, 0, 0)] = { trashImperiumCard = true, specimen = true },
-        [Vector(3, 0, -2)] = { bettle = true, specimen = true },
+        [Vector(3, 0, -2)] = { beetle = true, specimen = true },
         [Vector(4, 0, 1)] = { beetle = true },
         [Vector(4, 0, -1)] = { specimen = true },
         [Vector(4, 0, -3)] = { research = true },
@@ -98,7 +98,7 @@ function TleilaxuResearch._staticSetUp()
     TleilaxuResearch.tleilaxTokenOrigin = TleilaxuResearch._getAveragePosition("tleilaxTokenInitalPosition")
     TleilaxuResearch._generateTleilaxButtons()
 
-    for _, color in ipairs(PlayBoard.getPlayboardColors()) do
+    for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
         TleilaxuResearch.tanksParks[color] = TleilaxuResearch._createTanksPark(color)
     end
     TleilaxuResearch._createTanksButton()
@@ -142,7 +142,7 @@ end
 function TleilaxuResearch._getAveragePosition(positionField)
     local p = Vector(0, 0, 0)
     local count = 0
-    for _, color in pairs(PlayBoard.getPlayboardColors()) do
+    for _, color in pairs(PlayBoard.getPlayBoardColors()) do
         p = p + PlayBoard.getContent(color)[positionField]
         count = count + 1
     end
@@ -203,6 +203,9 @@ function TleilaxuResearch._advanceResearch(color, jump, withBenefits)
         Helper.onceMotionless(researchToken).doAfter(function ()
             local researchCellBenefits = TleilaxuResearch._findResearchCellBenefits(newCellPosition)
             assert(researchCellBenefits, "No cell benefits at cell " .. tostring(newCellPosition))
+
+            log("---")
+            log(researchCellBenefits)
 
             for _, resource in ipairs({"spice", "solari"}) do
                 if researchCellBenefits[resource] then

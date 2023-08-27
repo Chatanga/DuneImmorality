@@ -50,7 +50,7 @@
 
 			<HorizontalLayout>
 				<Text class="primary" key="leaderSelection"/>
-				<Dropdown id="leaderSelection" flexibleWidth="4" onValueChanged="Global/setSelectionMethod">
+				<Dropdown id="leaderSelection" flexibleWidth="4" onValueChanged="Global/setLeaderSelection">
 					<Option></Option>
 				</Dropdown>
 			</HorizontalLayout>

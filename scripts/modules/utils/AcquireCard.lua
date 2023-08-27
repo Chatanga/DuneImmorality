@@ -67,7 +67,8 @@ function AcquireCard:_createButton(acquire)
     local cardCount = Helper.getCardCount(Helper.getDeckOrCard(self.zone))
     if cardCount > 0 then
         local height = 0.7 + 0.1 + cardCount * 0.01
-        self.callbackName = Helper.createAreaButton(self.zone, self.anchor, height, I18N("acquireButton"), function (_, color)
+        local label = I18N("acquireButton") .. " (" .. tostring(cardCount) .. ")"
+        self.callbackName = Helper.createAreaButton(self.zone, self.anchor, height, label, function (_, color)
             if not self.disabled then
                 local continuation = acquire(self, color)
                 if continuation then

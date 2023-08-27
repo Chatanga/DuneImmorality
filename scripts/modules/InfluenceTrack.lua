@@ -163,6 +163,11 @@ function InfluenceTrack.hasFriendship(color, faction)
 end
 
 ---
+function InfluenceTrack.getInfluence(faction, color)
+    return InfluenceTrack._getInfluenceTracksRank(faction, color)
+end
+
+---
 function InfluenceTrack._getInfluenceTracksRank(faction, color)
     local influenceLevels = InfluenceTrack.influenceLevels[faction][color]
     local pos = InfluenceTrack.influenceTokens[faction][color].getPosition()
@@ -241,7 +246,7 @@ function InfluenceTrack._challengeAlliance(faction)
     local bestRank = 4
     local allianceOwner
 
-    for _, color in ipairs(PlayBoard.getPlayboardColors()) do
+    for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
         if InfluenceTrack.hasAlliance(color, faction) then
             allianceOwner = color
         end
