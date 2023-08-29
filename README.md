@@ -67,6 +67,9 @@ Having launched `./listen.py` in another terminal will provide you with an immed
 ## TODO (by priority)
 
 - The Hagal house - Solo.
+    - Space control (erasing flag, no more VP triggered, and dreadnought).
+    - Automatic rewards for rivals.
+    - Tech activation by rivals.
 - The Hagal house - 2 players.
 
 - Basic logging in the Action facade.
@@ -97,18 +100,8 @@ Having launched `./listen.py` in another terminal will provide you with an immed
 - Investigate weird player tech slot 1.
 - Alt click defeated by area buttons...
 
-3rd agent in deck
-R R H
-dread > troop
-block any IT bonus
-épées uniquement au début du combat
-do control, receive benefit, have troop in defense
-Solari, water, and intrigue cards will be collected, but only from conflict cards, signet ring abilities, or from starting allocations due to the difficulty setting
-Churn?
-Voice!
-Multi-round combat (card detection)!
-
 ## Bugs
 
 - Tleilax card topping.
 - Alliance bonuses? Without the alliance?
+- Mentat intelligent recalling.

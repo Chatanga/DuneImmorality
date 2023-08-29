@@ -64,8 +64,8 @@ local function trash(value)
     return _resource('trash', value)
 end
 
-local function shipment(value)
-    return _resource('shipment', value)
+local function shipments(value)
+    return _resource('shipments', value)
 end
 
 local function research(value)
@@ -275,17 +275,17 @@ local ImperiumCard = {
     thufirHawat = {cost = 5, agentIcons = {'emperor', 'spacingGuild', 'beneGesserit', 'fremen', 'blue', 'yellow'}, reveal = {persuasion(1), intrigue(1)}},
     wormRiders = {factions = {'fremen'}, cost = 6, agentIcons = {'blue', 'yellow'}, reveal = {sword(fremenFriendship(4)), sword(fremenAlliance(2))}},
     -- ix
-    appropriate = {factions = {'emperor'}, cost = 5, acquireBonus = {shipment(1)}, agentIcons = {'green', 'yellow'}, reveal = {persuasion(2)}},
+    appropriate = {factions = {'emperor'}, cost = 5, acquireBonus = {shipments(1)}, agentIcons = {'green', 'yellow'}, reveal = {persuasion(2)}},
     bountyHunter = {cost = 1, agentIcons = {'blue'}, infiltrate = true, reveal = {persuasion(1), sword(1)}},
     choamDelegate = {cost = 1, agentIcons = {'yellow'}, infiltrate = true, reveal = {solari(1)}},
     courtIntrigue = {factions = {'emperor'}, cost = 2, agentIcons = {'emperor'}, infiltrate = true, reveal = {persuasion(1), sword(1)}},
     desertAmbush = {factions = {'fremen'}, cost = 3, agentIcons = {'yellow'}, reveal = {persuasion(1), sword(1)}},
     embeddedAgent = {factions = {'beneGesserit'}, cost = 5, agentIcons = {'green'}, infiltrate = true, reveal = {persuasion(1), intrigue(1)}},
     esmarTuek = {factions = {'spacingGuild'}, cost = 5, agentIcons = {'blue', 'yellow'}, reveal = {spice(2), solari(2)}},
-    freighterFleet = {cost = 2, agentIcons = {'yellow'}, reveal = {shipment(1)}},
+    freighterFleet = {cost = 2, agentIcons = {'yellow'}, reveal = {shipments(1)}},
     fullScaleAssault = {factions = {'emperor'}, cost = 8, acquireBonus = {dreadnought(1)}, agentIcons = {'emperor', 'blue'}, reveal = {persuasion(2), sword(perDreadnoughtInConflict(3))}},
     guildAccord = {factions = {'spacingGuild'}, cost = 6, agentIcons = {'spacingGuild'}, infiltrate = true, reveal = {water(1), spice(spacingGuildAlliance(3))}},
-    guildChiefAdministrator = {factions = {'spacingGuild'}, cost = 4, agentIcons = {'spacingGuild', 'blue', 'yellow'}, reveal = {persuasion(1), shipment(1)}},
+    guildChiefAdministrator = {factions = {'spacingGuild'}, cost = 4, agentIcons = {'spacingGuild', 'blue', 'yellow'}, reveal = {persuasion(1), shipments(1)}},
     imperialBashar = {factions = {'emperor'}, cost = 4, agentIcons = {'blue'}, reveal = {persuasion(1), sword(2), sword(perSwordCard(1))}},
     imperialShockTrooper = {factions = {'emperor'}, cost = 3, reveal = {persuasion(1), sword(2), sword(agentInEmperorSpace(3))}},
     inTheShadows = {factions = {'beneGesserit'}, cost = 2, agentIcons = {'green', 'blue'}, reveal = {influence('spacingGuild', 1)}},

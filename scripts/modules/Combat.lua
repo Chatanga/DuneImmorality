@@ -79,6 +79,7 @@ function Combat._staticSetUp(settings)
             Combat._setUpConflict()
         elseif phase == "combatEnd" then
             local forces = Combat._calculateCombatForces()
+            log(Combat._calculateRanking(forces))
             local turnSequence = Combat._calculateOutcomeTurnSequence(forces)
             TurnControl.setPhaseTurnSequence(turnSequence)
         elseif phase == "recall" then
@@ -107,7 +108,7 @@ function Combat._setUpConflict()
         success.doAfter(function (card)
             local i = 0
             for _, object in pairs(Combat.victoryPointTokenBag.getObjects()) do
-                if object.description == card.getDescription() then
+                if card.getDescription() == object.description then
                     local origin = Combat.victoryPointTokenZone.getPosition()
                     local position = origin + Vector(0.5 - (i % 2), 0.5 + math.floor(i / 2), 0)
                     i = i + 1
@@ -230,10 +231,11 @@ function Combat._createBattlegroundPark()
         slots,
         Vector(0, 0, 0),
         zone,
-        { "Troop" },
+        { "Troop", "Dreadnought" },
         nil,
         false,
         true)
+    park.tagUnion = true
 
     return park
 end
@@ -312,6 +314,52 @@ function Combat._calculateOutcomeTurnSequence(forces)
 end
 
 ---
+function Combat.getRank(color)
+    local forces = Combat._calculateCombatForces()
+    return Combat._calculateRanking(forces)[color]
+end
+
+---
+function Combat._calculateRanking(forces)
+    local ranking = {}
+
+    local remainingForces = Helper.shallowCopy(forces)
+    local potentialWinnerCount = #Helper.getKeys(forces) - 1
+
+    local rank = 1
+    while potentialWinnerCount > 0 do
+        local rankWinners = {}
+        local maxForce = 1
+        for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
+            if remainingForces[color] then
+                if remainingForces[color] > maxForce then
+                    rankWinners = { color }
+                    maxForce = remainingForces[color]
+                elseif remainingForces[color] == maxForce then
+                    table.insert(rankWinners, color)
+                end
+            end
+        end
+
+        if #rankWinners == 0 then
+            break;
+        elseif (#rankWinners > 1) then
+            rank = rank + 1
+        end
+
+        for _, color in ipairs(rankWinners) do
+            ranking[color] = rank
+            potentialWinnerCount = potentialWinnerCount - 1
+            remainingForces[color] = nil
+        end
+
+        rank = rank + 1
+    end
+
+    return ranking
+end
+
+---
 function Combat._calculateCombatForces()
     local forces = {}
 
@@ -357,13 +405,15 @@ function Combat._updateCombatForces(forces)
         if force > 0 then
             forceMarker.setPositionSmooth(Combat.combatForcePositions[minorForce] + height, false, false)
             forceMarker.setRotationSmooth(Vector(0, 180 + 90 * math.floor(majorForce / 2), 180 * math.min(1, majorForce)))
+
+            forces[color] = force
         else
             forceMarker.setPositionSmooth(Combat.noCombatForcePositions + height, false, false)
             forceMarker.setRotationSmooth(Vector(0, 180, 0))
         end
-
-        forces[color] = force
     end
+
+    Helper.emitEvent("combatUpdate", forces)
 end
 
 ---
@@ -375,6 +425,29 @@ function Combat.getNumberOfDreadnoughtsInConflict(color)
         end
     end
     return count
+end
+
+---
+function Combat.getCurrentConflictName()
+    local deckOrCard = Helper.getDeckOrCard(Combat.conflictDiscardZone)
+    assert(deckOrCard)
+    if deckOrCard.type == "Deck" then
+        local objects = deckOrCard.getObjects()
+        return objects[#objects].description
+    else
+        return deckOrCard.getDescription()
+    end
+end
+
+---
+function Combat.gainVictoryPoint(color, name)
+    for _, object in ipairs(Combat.victoryPointTokenZone.getObjects()) do
+        if object.hasTag("victoryPointToken") and object.getDescription() == name then
+            PlayBoard.grantScoreToken(color, object)
+            return true
+        end
+    end
+    return false
 end
 
 return Combat

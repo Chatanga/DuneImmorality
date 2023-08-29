@@ -18,6 +18,7 @@ local IntrigueCard = Module.lazyRequire("IntrigueCard")
 local Intrigue = Module.lazyRequire("Intrigue")
 local Reserve = Module.lazyRequire("Reserve")
 local Action = Module.lazyRequire("Action")
+local Music = Module.lazyRequire("Music")
 
 local PlayBoard = Helper.createClass(nil, {
     ALL_RESOURCE_NAMES = { "spice", "water", "solari", "persuasion", "strength" },
@@ -336,6 +337,9 @@ function PlayBoard.setUp(settings, activeOpponents)
                     deck.shuffle()
                 end)
                 Deck.generateStarterDiscard(playBoard.content.discardZone, settings.immortality, settings.epicMode)
+            else
+                playBoard.content.researchToken.destruct()
+                playBoard.content.researchToken = nil
             end
 
             if settings.goTo11 then
@@ -414,10 +418,11 @@ function PlayBoard._staticSetUp(settings)
 
         PlayBoard._setActivePlayer(phase, color)
 
-        MusicPlayer.setCurrentAudioclip({
-            url = "http://cloud-3.steamusercontent.com/ugc/2027235268872374937/7FE5FD8B14ED882E57E302633A16534C04C18ECE/",
-            title = "Next turn"
-        })
+        Music.play("turn")
+    end)
+
+    Helper.registerEventListener("combatUpdate", function (forces)
+        PlayBoard.combatPassCountdown = #Helper.getKeys(forces)
     end)
 end
 
@@ -539,8 +544,12 @@ function PlayBoard.acceptTurn(phase, color)
     elseif phase == 'playerTurns' then
         accepted = PlayBoard.couldSendAgentOrReveal(color)
     elseif phase == 'combat' then
-        -- TODO Pass count < player in combat count.
-        accepted = playBoard.lastPhase ~= phase and Combat.isInCombat(color)
+        if Combat.isInCombat(color) then
+            accepted = PlayBoard.combatPassCountdown > 0 and #PlayBoard.getIntrigues(color) > 0
+            PlayBoard.combatPassCountdown = PlayBoard.combatPassCountdown - 1
+        else
+            accepted = false
+        end
     elseif phase == 'combatEnd' then
         -- TODO Player is victorious and the combat provied a reward (auto?) or
         -- a dreadnought needs to be placed or a combat card remains to be played.
@@ -1383,6 +1392,7 @@ end
 
 ---
 function PlayBoard.grantTechTile(color, techTile)
+    Helper.dumpFunction("PlayBoard.grantTechTile", color, techTile)
     Park.putObject(techTile, PlayBoard.getPlayBoard(color).techPark)
 end
 

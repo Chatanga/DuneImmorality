@@ -1,8 +1,8 @@
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
-local I18N = require("utils.I18N")
 
 local PlayBoard = Module.lazyRequire("PlayBoard")
+local Combat = Module.lazyRequire("Combat")
 
 local ScoreBoard = {
     tokens = {}
@@ -92,7 +92,7 @@ function ScoreBoard.gainVictoryPoint(color, name)
             holder.success = true
         end
     end)
-    return holder.success
+    return holder.success or Combat.gainVictoryPoint(color, name)
 end
 
 return ScoreBoard

@@ -9,6 +9,7 @@ local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
 local TleilaxuResearch = Module.lazyRequire("TleilaxuResearch")
 local TechMarket = Module.lazyRequire("TechMarket")
 local Combat = Module.lazyRequire("Combat")
+local Hagal = Module.lazyRequire("Hagal")
 
 local MainBoard = {}
 
@@ -247,11 +248,12 @@ function MainBoard._staticSetUp(settings)
 
             -- Recalling agents.
             for _, space in pairs(MainBoard.spaces) do
-                for _, agent in ipairs(Park.getObjects(space.park)) do
-                    assert(agent.hasTag("Agent"))
-                    for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
-                        if agent.hasTag(color) then
-                            Park.putObject(agent, PlayBoard.getAgentPark(color))
+                for _, object in ipairs(Park.getObjects(space.park)) do
+                    if object.hasTag("Agent") and not object.hasTag("Mentat") then
+                        for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
+                            if object.hasTag(color) then
+                                Park.putObject(object, PlayBoard.getAgentPark(color))
+                            end
                         end
                     end
                 end
@@ -519,8 +521,8 @@ end
 ---
 function MainBoard._goSietchTabr(color)
     if (InfluenceTrack.hasFriendship(color, "fremen")) then
-        MainBoard._gainResource(color, "water", 1)
         PlayBoard.getLeader(color).troops(color, "supply", "garrison", 1)
+        MainBoard._gainResource(color, "water", 1)
         return true
     else
         return false
@@ -552,6 +554,7 @@ end
 
 ---
 function MainBoard._goArrakeen(color)
+    PlayBoard.getLeader(color).troops(color, "supply", "garrison", 1)
     MainBoard._drawImperiumCards(color, 1)
     MainBoard._applyControlOfAnySpace(MainBoard.banners.arrakeenBannerZone, "solari")
     return true
@@ -607,7 +610,7 @@ end
 
 ---
 function MainBoard._goMentat(color)
-    if MainBoard._payResource(color, "solari", 2) then
+    if MainBoard._payResource(color, "solari", Hagal.getMentatSpaceCost()) then
         local leader = PlayBoard.getLeader(color)
         leader.takeMentat(color)
         leader.drawImperiumCards(color, 1)
@@ -703,14 +706,14 @@ end
 ---
 function MainBoard._goSmuggling(color)
     MainBoard._gainResource(color, "solari", 1)
-    --PlayBoard.getLeader(color).moveFreighter(color, 1)
+    PlayBoard.getLeader(color).shipments(color, 1)
     return true
 end
 
 ---
 function MainBoard._goInterstellarShipping(color)
     if (InfluenceTrack.hasFriendship(color, "spacingGuild")) then
-        --PlayBoard.getLeader(color).moveFreighter(color, 2)
+        PlayBoard.getLeader(color).shipments(color, 2)
         return true
     else
         return false
@@ -720,8 +723,8 @@ end
 function MainBoard._asyncGoTechNegotiation(color)
     local continuation = Helper.createContinuation()
     local options = {
-        "Buy tech. with -1 discount",
-        "Send a negotiator"
+        "Send a negotiator",
+        "Buy tech. with -1 discount"
     }
     Player[color].showOptionsDialog("Select option.", options, 1, function (_, index, _)
         local success = true
@@ -738,14 +741,14 @@ function MainBoard._asyncGoTechNegotiation(color)
 end
 
 function MainBoard._goTechNegotiation_1(color)
+    PlayBoard.getLeader(color).troops(color, "supply", "negotiation", 1)
     MainBoard._gainResource(color, "persuasion", 1)
-    TechMarket.registerAcquireTechOption(color, "tech_negotiation", "spice", 1)
     return true
 end
 
 function MainBoard._goTechNegotiation_2(color)
-    PlayBoard.getLeader(color).troops(color, "supply", "negotiation", 1)
     MainBoard._gainResource(color, "persuasion", 1)
+    TechMarket.registerAcquireTechOption(color, "tech_negotiation", "spice", 1)
     return true
 end
 
@@ -766,13 +769,13 @@ function MainBoard._gainResource(color, resourceName, amount)
     Utils.assertIsPlayerColor(color)
     Utils.assertIsResourceName(resourceName)
     Utils.assertIsInteger(amount)
-    PlayBoard.getLeader(color).resource(color, resourceName, amount)
+    PlayBoard.getLeader(color).resources(color, resourceName, amount)
 end
 
 -- Implied: when sending an agent on a board space.
 ---
 function MainBoard._payResource(color, resourceName, amount)
-    return PlayBoard.getLeader(color).resource(color, resourceName, -amount)
+    return PlayBoard.getLeader(color).resources(color, resourceName, -amount)
 end
 
 -- Implied: when sending an agent on a board space.
@@ -804,6 +807,14 @@ function MainBoard.hasAgentInSpace(spaceName, color)
                 return true
             end
         end
+    end
+    return false
+end
+
+function MainBoard.hasVoiceToken(spaceName)
+    local space = MainBoard.spaces[spaceName]
+    if space then
+        return #Helper.filter(space.zone.getObjects(), Utils.isVoiceToken) > 0
     end
     return false
 end

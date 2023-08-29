@@ -300,16 +300,18 @@ end
 function InfluenceTrack.gainAlliance(faction, color)
     PlayBoard.grantScoreToken(color, InfluenceTrack.allianceTokens[faction])
 
-    if faction == "emperor" then
-        Action.troops(color, "supply", "garrison", 2)
-    elseif faction == "spacingGuild" then
-        Action.resource(color, "solari", 3)
-    elseif faction == "beneGesserit" then
-        Action.drawIntrigues(color, 1)
-    elseif faction == "fremen" then
-        Action.resource(color, "water", 1)
-    else
-        assert(false)
+    if not PlayBoard.isRival(color) then
+        if faction == "emperor" then
+            Action.troops(color, "supply", "garrison", 2)
+        elseif faction == "spacingGuild" then
+            Action.resources(color, "solari", 3)
+        elseif faction == "beneGesserit" then
+            Action.drawIntrigues(color, 1)
+        elseif faction == "fremen" then
+            Action.resources(color, "water", 1)
+        else
+            assert(false)
+        end
     end
 end
 

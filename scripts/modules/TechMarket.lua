@@ -121,7 +121,7 @@ function TechMarket.pruneStacksForSoloMode()
         end
     end
     if highestHeightIndex then
-        TechMarket._doAcquireTech(highestHeightIndex, TechMarket.acquireCards[highestHeightIndex]).doAfter(function (card)
+        TechMarket._doAcquireTech(highestHeightIndex).doAfter(function (card)
             Wait.time(TechMarket.pruneStacksForSoloMode, 1)
         end)
     else
@@ -143,25 +143,25 @@ function TechMarket._createNegotiationButton()
 end
 
 ---
-function TechMarket._acquireTech1(acquireCard, color)
-    TechMarket.acquireTech(1, acquireCard, color)
+function TechMarket._acquireTech1(_, color)
+    TechMarket.acquireTech(1, color)
 end
 
 ---
-function TechMarket._acquireTech2(acquireCard, color)
-    TechMarket.acquireTech(2, acquireCard, color)
+function TechMarket._acquireTech2(_, color)
+    TechMarket.acquireTech(2, color)
 end
 
 ---
-function TechMarket._acquireTech3(acquireCard, color)
-    TechMarket.acquireTech(3, acquireCard, color)
+function TechMarket._acquireTech3(_, color)
+    TechMarket.acquireTech(3, color)
 end
 
 ---
-function TechMarket.acquireTech(stackIndex, acquireCard, color)
+function TechMarket.acquireTech(stackIndex, color)
     if not TechMarket.frozen then
         TechMarket.frozen = true
-        TechMarket._doAcquireTech(stackIndex, acquireCard, color).doAfter(function ()
+        TechMarket._doAcquireTech(stackIndex, color).doAfter(function ()
             if TechMarket.hagalSoloModeEnabled then
                 TechMarket.pruneStacksForSoloMode()
             end
@@ -170,7 +170,9 @@ function TechMarket.acquireTech(stackIndex, acquireCard, color)
 end
 
 ---
-function TechMarket._doAcquireTech(stackIndex, acquireCard, color)
+function TechMarket._doAcquireTech(stackIndex, color)
+    local acquireCard = TechMarket.acquireCards[stackIndex]
+
     local techTileStack = TechMarket._getTechTileStack(stackIndex)
     if techTileStack.topCard then
         local techName = techTileStack.topCard.getDescription()
@@ -244,7 +246,7 @@ function TechMarket._doBuyTech(techTileStack, acquireCard, option, color)
     end
 
     local leader = PlayBoard.getLeader(color)
-    if leader.resource(color, optionDetails.resourceType, -adjustedTechCost) then
+    if leader.resources(color, optionDetails.resourceType, -adjustedTechCost) then
         local continuation = Helper.createContinuation()
 
         local supply = PlayBoard.getSupplyPark(color)
@@ -269,6 +271,16 @@ function TechMarket._doBuyTech(techTileStack, acquireCard, option, color)
 end
 
 ---
+function TechMarket.getTopCardDetails(stackIndex)
+    local techTileStack = TechMarket._getTechTileStack(stackIndex)
+    if techTileStack.topCard then
+        local techName = techTileStack.topCard.getDescription()
+        return TechMarket.techDetails[techName]
+    end
+    return nil
+end
+
+---
 function TechMarket._getTechTileStack(stackIndex)
     local techTileStack = {}
 
@@ -288,7 +300,7 @@ end
 function TechMarket._applyBuyEffect(color, techName)
     local leader = PlayBoard.getLeader(color)
     if techName == "windtraps" then
-        leader.resource(color, "water", 1)
+        leader.resources(color, "water", 1)
     elseif techName == "detonationDevices" then
     elseif techName == "memocorders" then
         -- 1 influence
@@ -300,7 +312,7 @@ function TechMarket._applyBuyEffect(color, techName)
     elseif techName == "holoprojectors" then
     elseif techName == "restrictedOrdnance" then
         if PlayBoard.hasACouncilSeat(color) then
-            leader.resource(color, "strength", 4)
+            leader.resources(color, "strength", 4)
         end
     elseif techName == "shuttleFleet" then
         -- 2 influences différentes
@@ -315,7 +327,7 @@ function TechMarket._applyBuyEffect(color, techName)
     elseif techName == "troopTransports" then
     elseif techName == "holtzmanEngine" then
     elseif techName == "minimicFilm" then
-        leader.resource(color, "persuasion", 1)
+        leader.resources(color, "persuasion", 1)
     elseif techName == "invasionShips" then
         leader.troops(color, "supply", "garrison", 4)
     end

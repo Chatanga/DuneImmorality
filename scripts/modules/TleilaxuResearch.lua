@@ -204,12 +204,9 @@ function TleilaxuResearch._advanceResearch(color, jump, withBenefits)
             local researchCellBenefits = TleilaxuResearch._findResearchCellBenefits(newCellPosition)
             assert(researchCellBenefits, "No cell benefits at cell " .. tostring(newCellPosition))
 
-            log("---")
-            log(researchCellBenefits)
-
             for _, resource in ipairs({"spice", "solari"}) do
                 if researchCellBenefits[resource] then
-                    leader.resource(color, resource, researchCellBenefits[resource])
+                    leader.resources(color, resource, researchCellBenefits[resource])
                 end
             end
 
@@ -227,7 +224,7 @@ function TleilaxuResearch._advanceResearch(color, jump, withBenefits)
 
             if researchCellBenefits.solariToBeetle then
                 Player[color].showConfirmDialog(I18N("confirmSolarisToBeetles"), function()
-                    if leader.resource(color, "solari", -7) then
+                    if leader.resources(color, "solari", -7) then
                         TleilaxuResearch.advanceTleilax(color, 1)
                     end
                 end)
@@ -318,7 +315,7 @@ function TleilaxuResearch._advanceTleilax(color, jump, withBenefits)
 
             if researchLevelBenefits.spiceBonus then
                 local amount = TleilaxuResearch.spiceBonus:get()
-                leader.resource(color, "spice", amount)
+                leader.resources(color, "spice", amount)
                 TleilaxuResearch.spiceBonus:set(0)
             end
         end)

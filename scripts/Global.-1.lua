@@ -1,4 +1,5 @@
 local constructionModeEnabled = false
+
 local validateDefaultSetup
 validateDefaultSetup = {
     language = "en",
@@ -53,6 +54,7 @@ local allModules = Module.registerModules({
     Action = require("Action"),
     Combat = require("Combat"),
     CommercialTrack = require("CommercialTrack"),
+    ConflictCard = require("ConflictCard"),
     Deck = require("Deck"),
     ScoreBoard = require("ScoreBoard"),
     Hagal = require("Hagal"),
@@ -66,6 +68,7 @@ local allModules = Module.registerModules({
     LeaderSelection = require("LeaderSelection"),
     Locales = require("Locales"),
     MainBoard = require("MainBoard"),
+    Music = require("Music"),
     PlayBoard = require("PlayBoard"),
     Reserve = require("Reserve"),
     Resource = require("Resource"),
@@ -103,7 +106,7 @@ local PlayerSet = {
             "4 (hotseat)"
         },
         numberOfPlayers = {},
-        difficulty_all = allModules.Hagal.soloDifficulties,
+        difficulty_all = Helper.map(allModules.Hagal.difficulties, function (_, v) return v.name end),
         difficulty = {},
         riseOfIx = true,
         epicMode = false,
@@ -145,6 +148,7 @@ function onLoad(scriptState)
 
     allModules.Action.onLoad(state)
 
+    allModules.Music.onLoad(state)
     allModules.Deck.onLoad(state)
     allModules.ScoreBoard.onLoad(state)
     allModules.PlayBoard.onLoad(state)
@@ -214,6 +218,7 @@ function setUp(newSettings)
         PlayerSet.randomizePlayerPositions(activeOpponents)
     end
 
+    allModules.Music.setUp(settings)
     allModules.Deck.setUp(settings)
     allModules.ScoreBoard.setUp(settings)
     allModules.PlayBoard.setUp(settings, activeOpponents)

@@ -146,10 +146,10 @@ end
 ---
 function CommercialTrack._pickSolariBonus(color)
     local leader = PlayBoard.getLeader(color)
-    leader.resource(color, "solari", 5)
+    leader.resources(color, "solari", 5)
     for _, otherColor in ipairs(PlayBoard.getPlayBoardColors()) do
         if otherColor ~= color then
-            leader.resource(otherColor, "solari", 1)
+            leader.resources(otherColor, "solari", 1)
         end
     end
 end
@@ -157,7 +157,7 @@ end
 ---
 function CommercialTrack._pickSpiceBonus(color)
     local leader = PlayBoard.getLeader(color)
-    leader.resource(color, "spice", 2)
+    leader.resources(color, "spice", 2)
 end
 
 ---

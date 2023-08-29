@@ -4,8 +4,8 @@ local AcquireCard = require("utils.AcquireCard")
 
 local Deck = Module.lazyRequire("Deck")
 local PlayBoard = Module.lazyRequire("PlayBoard")
-local Action = Module.lazyRequire("Action")
 local Utils = Module.lazyRequire("Utils")
+local Music = Module.lazyRequire("Music")
 
 local ImperiumRow = {}
 
@@ -102,14 +102,7 @@ end
 
 ---
 function ImperiumRow.nuke(color)
-    local secondaryTable = getObjectFromGUID("662ced")
-    if secondaryTable.getVar("sound_active") then
-        MusicPlayer.setCurrentAudioclip({
-            url = "http://cloud-3.steamusercontent.com/ugc/2002447125408335433/56A15AA85A1C45DE92FA3FD2372F0ECE6ABA0495/",
-            title = "Explosion"
-        })
-    end
-
+    Music.play("atomics")
     for i, zone in ipairs(ImperiumRow.slotZones) do
         local card = Helper.getCard(zone)
         if card then

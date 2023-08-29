@@ -107,7 +107,7 @@ end
 
 ---
 function Action.setUp(color, settings)
-    Action.resource(color, "water", 1)
+    Action.resources(color, "water", 1)
     if settings.epicMode then
         Action.troops(color, "supply", "garrison", 5)
         Action.drawIntrigues(color, 1)
@@ -147,7 +147,7 @@ function Action.takeHighCouncilSeat(color)
 end
 
 ---
-function Action.resource(color, resourceName, amount)
+function Action.resources(color, resourceName, amount)
     Utils.assertIsPlayerColor(color)
     Utils.assertIsResourceName(resourceName)
     Utils.assertIsInteger(amount)
@@ -170,8 +170,13 @@ end
 
 ---
 function Action.influence(color, faction, amount)
-    assert(faction, "Generic action are not supported.")
-    return InfluenceTrack.change(color, faction, amount)
+    Utils.assertIsPlayerColor(color)
+    Utils.assertIsInteger(amount)
+    if faction then
+        return InfluenceTrack.change(color, faction, amount)
+    else
+        return false
+    end
 end
 
 ---
@@ -190,13 +195,11 @@ function Action._getTroopPark(color, parkName)
     elseif parkName == "garrison" then
         return Combat.getGarrisonPark(color)
     elseif parkName == "combat" then
-        return nil
+        return Combat.getBattlegroundPark()
     elseif parkName == "negotiation" then
         return TechMarket.getNegotiationPark(color)
     elseif parkName == "tanks" then
         return TleilaxuResearch.getTankPark(color)
-    elseif parkName == "battleground" then
-        return Combat.getBattlegroundPark()
     else
         error("Unknow park name: " .. tostring(parkName))
     end
@@ -211,6 +214,7 @@ end
 
 ---
 function Action.acquireReservedImperiumCard(color)
+    Utils.assertIsPlayerColor(color)
     return false
 end
 
@@ -243,9 +247,9 @@ function Action.recallFreighter(color)
 end
 
 ---
-function Action.moveFreighter(color)
+function Action.shipments(color, amount)
     Utils.assertIsPlayerColor(color)
-    return CommercialTrack.freighterUp(color)
+    return false
 end
 
 ---
@@ -264,7 +268,7 @@ function Action._getDreadnoughtPark(color, parkName)
     elseif parkName == "garrison" then
         return Combat.getDreadnoughtPark(color)
     elseif parkName == "combat" then
-        return nil
+        return Combat.getBattlegroundPark()
     elseif parkName == "carthag" then
         return nil
     elseif parkName == "arrakeen" then
@@ -322,11 +326,30 @@ end
 
 ---
 function Action.signetRing(color)
+    Utils.assertIsPlayerColor(color)
+    return false
 end
 
 ---
 function Action.gainVictoryPoint(color, name)
-    ScoreBoard.gainVictoryPoint(color, name)
+    Utils.assertIsPlayerColor(color)
+    return ScoreBoard.gainVictoryPoint(color, name)
+end
+
+---
+function Action.acquireTech(color, stackIndex, discount)
+    Utils.assertIsPlayerColor(color)
+    if stackIndex then
+        TechMarket.acquireTech(stackIndex, color)
+        return true
+    else
+        return false
+    end
+end
+
+---
+function Action.control(color, space)
+    -- TODO
 end
 
 --[[
@@ -335,15 +358,7 @@ function Action.voiceForbid(color, space)
 end
 
 ---
-function Action.flagControl(color, space)
-end
-
----
 function Action.dreadnoughtControl(color, space)
-end
-
----
-function Action.acquireTech(color, name)
 end
 
 ---

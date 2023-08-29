@@ -31,6 +31,11 @@ function Utils.isMentat(object, color)
 end
 
 ---
+function Utils.isVoiceToken(object)
+    return object.hasTag("VoiceToken")
+end
+
+---
 function Utils.isVictoryPointToken(object)
     return object.hasTag("VictoryPointToken")
 end
@@ -80,7 +85,7 @@ function Utils.assertIsTroopLocation(location)
         or location == "combat" -- when deployed
         or location == "negotiation" -- when sent as negotiator
         or location == "tanks" -- when sent as specimen
-        or location == "battleground", -- when deployed
+        or location == "combat", -- when deployed
         "No a troop location: " .. tostring(location))
 end
 

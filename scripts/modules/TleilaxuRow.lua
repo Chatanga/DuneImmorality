@@ -7,6 +7,7 @@ local PlayBoard = Module.lazyRequire("PlayBoard")
 local TleilaxuResearch = Module.lazyRequire("TleilaxuResearch")
 local Action = Module.lazyRequire("Action")
 local ImperiumCard = Module.lazyRequire("ImperiumCard")
+local Utils = Module.lazyRequire("Utils")
 
 local TleilaxuRow = {}
 
@@ -101,6 +102,21 @@ function TleilaxuRow.acquireTleilaxuCard(indexInRow, color)
     else
         return false
     end
+end
+
+---
+function TleilaxuRow.trash(indexInRow)
+    local acquireCard = TleilaxuRow.acquireCards[indexInRow]
+    local card = Helper.getCard(acquireCard.zone)
+    local price = ImperiumCard.getTleilaxuCardCost(card)
+    local cardName = card.getDescription()
+    assert(price, "Unknown tleilaxu card: " .. cardName)
+    assert((cardName == "reclaimedForces") == (indexInRow == 3))
+
+    Utils.trash(card)
+
+    -- Replenish the slot in the row.
+    Helper.moveCardFromZone(TleilaxuRow.deckZone, acquireCard.zone.getPosition(), Vector(0, 180, 0))
 end
 
 return TleilaxuRow

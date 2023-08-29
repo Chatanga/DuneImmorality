@@ -9,14 +9,18 @@ local PlayBoard = Module.lazyRequire("PlayBoard")
 local Action = Module.lazyRequire("Action")
 local HagalCard = Module.lazyRequire("HagalCard")
 local Combat = Module.lazyRequire("Combat")
+local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
+local CommercialTrack = Module.lazyRequire("CommercialTrack")
+local TechMarket = Module.lazyRequire("TechMarket")
+local ConflictCard = Module.lazyRequire("ConflictCard")
 
 -- Enlighting clarifications: https://boardgamegeek.com/thread/2578561/summarizing-automa-2p-and-1p-similarities-and-diff
 local Hagal = {
-    soloDifficulties = {
-        novice = "Mercenary",
-        veteran = "Sardaukar",
-        expert = "Mentat",
-        expertPlus = "Kwisatz",
+    difficulties = {
+        novice = { name = "Mercenary", swordmasterArrivalTurn = 5 },
+        veteran = { name = "Sardaukar", swordmasterArrivalTurn = 4 },
+        expert = { name = "Mentat", swordmasterArrivalTurn = 3 },
+        expertPlus = { name = "Kwisatz", swordmasterArrivalTurn = 3 },
     },
     compatibleLeaders = {
         vladimirHarkonnen = 1,
@@ -38,6 +42,7 @@ local Rival = Helper.createClass(Action, {
 function Hagal.onLoad(state)
     Helper.append(Hagal, Helper.resolveGUIDs(true, {
         deckZone = "8f49e3",
+        mentatSpaceCostPatch = "ba730f",
     }))
 
     if state.settings and state.settings.numberOfPlayers < 3 then
@@ -56,21 +61,19 @@ end
 
 ---
 function Hagal._staticSetUp(settings)
-    if settings.numberOfPlayers < 3 then
-        Hagal.numberOfPlayers = settings.numberOfPlayers
-        Hagal.difficulty = settings.difficulty
+    Hagal.numberOfPlayers = settings.numberOfPlayers
+    Hagal.difficulty = settings.difficulty
 
-        Deck.generateHagalDeck(Hagal.deckZone, settings.riseOfIx, settings.immortality, settings.numberOfPlayers).doAfter(function (deck)
-            deck.shuffle()
-        end)
+    Deck.generateHagalDeck(Hagal.deckZone, settings.riseOfIx, settings.immortality, settings.numberOfPlayers).doAfter(function (deck)
+        deck.shuffle()
+    end)
 
-        if settings.difficulty == "novice" then
-            Hagal.swordmasterCountdown = 5
-        elseif settings.difficulty == "veteran" then
-            Hagal.swordmasterCountdown = 4
-        elseif settings.difficulty == "expert" or settings.difficulty == "expertPlus" then
-            Hagal.swordmasterCountdown = 3
-        end
+    Hagal.selectedDifficulty = settings.difficulty
+
+    if Hagal.getMentatSpaceCost() == 5 then
+        Hagal.mentatSpaceCostPatch.setPosition(Vector(-3.98, 0.57, 3.43))
+    else
+        Hagal.mentatSpaceCostPatch.destruct()
     end
 
     Helper.registerEventListener("phaseStart", function (phase)
@@ -80,14 +83,30 @@ function Hagal._staticSetUp(settings)
                     Hagal._setStrengthFromFirstValidCard(color)
                 end
             end
+        elseif phase == "recal" then
+            local turn = TurnControl.getCurrentRound()
+            local arrivalTurn = Hagal.difficulties[Hagal.selectedDifficulty].swordmasterArrivalTurn
+            if turn + 1 == arrivalTurn then
+                for color, rival in pairs(Rival.rivals) do
+                    rival.recruitSwordmaster(color)
+                end
+            end
         end
     end)
 end
 
 ---
 function Hagal._tearDown()
-    -- 5 solari patch.
-    getObjectFromGUID("ba730f").destruct()
+    Hagal.mentatSpaceCostPatch.destruct()
+end
+
+---
+function Hagal.getMentatSpaceCost()
+    if Helper.isElementOf(Hagal.selectedDifficulty, {"veteran", "expert"}) then
+        return 5
+    else
+        return 2
+    end
 end
 
 ---
@@ -125,7 +144,7 @@ function Hagal._lateActivate(phase, color)
     elseif phase == "combat" then
         continuation.run()
     elseif phase == "combatEnd" then
-        continuation.run()
+        Hagal._collectReward(color).doAfter(continuation.run)
     elseif phase == "endgame" then
         continuation.run()
     else
@@ -137,9 +156,22 @@ end
 
 ---
 function Hagal._activateFirstValidActionCard(color)
+    Helper.dumpFunction("Hagal._activateFirstValidActionCard", color)
     return Hagal._activateFirstValidCard(color, function (card)
         return HagalCard.activate(color, card)
     end)
+end
+
+---
+function Hagal._collectReward(color)
+    local continuation = Helper.createContinuation()
+    local rank = Combat.getRank(color)
+    Wait.frames(function ()
+        local conflictName = Combat.getCurrentConflictName()
+        ConflictCard.collectReward(color, conflictName, rank, true)
+        continuation.run()
+    end, 1)
+    return continuation
 end
 
 ---
@@ -247,12 +279,86 @@ end
 ---
 function Rival.setUp(color, settings)
     if Hagal.numberOfPlayers == 1 then
-        Action.resource(color, "water", 1)
+        Action.resources(color, "water", 1)
         if settings.difficulty ~= "novice" then
             Action.troops(color, "supply", "garrison", 3)
             Action.drawIntrigues(color, 1)
         end
     end
+end
+
+---
+function Rival.influence(color, faction, amount)
+    local finalFaction = faction
+    if not finalFaction then
+        local factions = { "emperor", "spacingGuild", "beneGesserit", "fremen" }
+        Helper.shuffle(factions)
+        table.sort(factions, function (f1, f2)
+            local i1 = InfluenceTrack.getInfluence(f1, color)
+            local i2 = InfluenceTrack.getInfluence(f2, color)
+            return i1 > i2
+        end)
+        finalFaction = factions[1]
+    end
+
+    local rival = Rival.rivals[color]
+    assert(rival, "No " .. color .. " rival?!")
+    return rival.leader.influence(color, finalFaction, amount)
+end
+
+---
+function Rival.shipments(color, amount)
+    local rival = Rival.rivals[color]
+    assert(rival, "No " .. color .. " rival?!")
+    local leader = rival.leader
+
+    for _ = 1, amount do
+        local level = CommercialTrack.getFreighterLevel(color)
+        if level < 2 then
+            leader.advanceFreighter(color, 1)
+        else
+            leader.recallFreighter(color)
+            rival.influence(nil, 1)
+            if PlayBoard.hasTech(color, "troopTransports") then
+                rival.troops(color, "supply", "combat", 3)
+            else
+                rival.troops(color, "supply", "garrison", 2)
+            end
+            rival.resources(color, "solari", 5)
+        end
+    end
+    return true
+end
+
+---
+function Rival.acquireTech(color, stackIndex, discount)
+    local rival = Rival.rivals[color]
+    assert(rival, "No " .. color .. " rival?!")
+
+    local finalStackIndex  = stackIndex
+    if not finalStackIndex then
+        local spiceBudget = PlayBoard.getResource(color, "spice"):get()
+
+        local bestTechIndex
+        local bestTech
+        for stackIndex = 1, 3 do
+            local tech = TechMarket.getTopCardDetails(stackIndex)
+            if tech.hagal and tech.cost <= spiceBudget + discount and (not bestTech or bestTech.cost < tech.cost) then
+                bestTechIndex = stackIndex
+                bestTech = tech
+            end
+        end
+
+        if bestTech then
+            rival.resources(color, "spice", -bestTech.cost)
+            finalStackIndex = bestTechIndex
+        else
+            return false
+        end
+    end
+
+    local leader = rival.leader
+    return leader.acquireTech(color, finalStackIndex, discount)
 end
 
 return Hagal

@@ -1047,6 +1047,7 @@ function Helper.forEachRecursively(elements, f)
     end
 end
 
+---
 function Helper.noPhysicsNorPlay(objects)
     for _, object in pairs(objects) do
         object.setLock(true)
@@ -1054,11 +1055,22 @@ function Helper.noPhysicsNorPlay(objects)
     end
 end
 
+---
 function Helper.noPlay(objects)
     for _, object in pairs(objects) do
         object.setLock(false)
         object.interactable = false
     end
+end
+
+--- http://lua-users.org/wiki/StringRecipes
+function Helper.startsWith(str, start)
+    return str:sub(1, #start) == start
+end
+
+--- http://lua-users.org/wiki/StringRecipes
+function Helper.endsWith(str, ending)
+    return ending == "" or str:sub(-#ending) == ending
 end
 
 return Helper
