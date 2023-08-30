@@ -67,8 +67,6 @@ Having launched `./listen.py` in another terminal will provide you with an immed
 ## TODO (by priority)
 
 - The Hagal house - Solo.
-    - Space control (erasing flag, no more VP triggered, and dreadnought).
-    - Automatic rewards for rivals.
     - Tech activation by rivals.
 - The Hagal house - 2 players.
 
@@ -97,11 +95,10 @@ Having launched `./listen.py` in another terminal will provide you with an immed
 - Check for anchor and callback leaks.
 - Gather all VP sources in ScoreBoard?
 - Some kind of hungarian notation with Array (ipairs) and Dict (pairs), a Array being a Dict?
-- Investigate weird player tech slot 1.
-- Alt click defeated by area buttons...
+- Alt mouse hover defeated by area buttons...
 
 ## Bugs
 
 - Tleilax card topping.
 - Alliance bonuses? Without the alliance?
-- Mentat intelligent recalling.
+- Mentat intelligent recall.

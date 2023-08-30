@@ -9,7 +9,7 @@ function Park.createCommonPark(tags, slots, margins, rotation)
 
     local name = Helper.stringConcat(tags)
 
-    local p = slots[1]
+    local p = slots[1]:copy()
     p:setAt("y", 1)
     Helper.createTransientAnchor(name .. "Park", p).doAfter(function (anchor)
         local snapPoints = {}
@@ -214,7 +214,7 @@ function Park._instantTidyUp(park, newObjectsInTransit)
     local freeSlots = {}
     local freeSlotCount = 0
     for _, slot in ipairs(park.slots) do
-        freeSlots[slot:copy()] = {}
+        freeSlots[slot] = {}
         freeSlotCount = freeSlotCount + 1
     end
 
@@ -297,7 +297,7 @@ function Park._takeObjectToPark(bag, slot, park)
     end
     takeParameters.position = slot + offset
     if park.rotation then
-        takeParameters.rotation = park.rotation:copy()
+        takeParameters.rotation = park.rotation
     end
     takeParameters.callback_function = function ()
         takeParameters.locked = park.locked
@@ -351,7 +351,7 @@ function Park.createBoundingZone(rotationAroundY, margins, points)
     local minBounds = nil
     local maxBounds = nil
     for i, slot in ipairs(points) do
-        local transformedSlot = (slot:copy() - barycenter):rotateOver('y', -rotationAroundY)
+        local transformedSlot = (slot - barycenter):rotateOver('y', -rotationAroundY)
         if i > 1 then
             minBounds.x = math.min(minBounds.x, transformedSlot.x)
             minBounds.y = math.min(minBounds.y, transformedSlot.y)

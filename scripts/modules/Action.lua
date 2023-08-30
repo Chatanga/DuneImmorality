@@ -348,8 +348,8 @@ function Action.acquireTech(color, stackIndex, discount)
 end
 
 ---
-function Action.control(color, space)
-    -- TODO
+function Action.choose(color, topic)
+    return false
 end
 
 --[[

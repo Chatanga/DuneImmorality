@@ -244,7 +244,14 @@ function MainBoard._staticSetUp(settings)
             MainBoard.phaseMarker.setPosition(MainBoard.phaseMarkerPositions.recall)
 
             -- Recalling Mentat.
-            MainBoard.mentat.setPosition(MainBoard.mentatZone.getPosition())
+            if MainBoard.mentat.getLock() then
+                MainBoard.mentat.setLock(false)
+            else
+                for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
+                    MainBoard.mentat.removeTag(color)
+                end
+                MainBoard.mentat.setPosition(MainBoard.mentatZone.getPosition())
+            end
 
             -- Recalling agents.
             for _, space in pairs(MainBoard.spaces) do
@@ -599,6 +606,18 @@ function MainBoard.getControllingPlayer(bannerZone)
 end
 
 ---
+function MainBoard.getControllingDreadnought(bannerZone)
+    for _, object in ipairs(bannerZone.getObjects()) do
+        for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
+            if Utils.isDreadnought(object, color) then
+                return object
+            end
+        end
+    end
+    return nil
+end
+
+---
 function MainBoard._goSwordmaster(color)
     if not PlayBoard.hasSwordmaster(color) and MainBoard._payResource(color, "solari", 8) then
         PlayBoard.getLeader(color).recruitSwordmaster(color)
@@ -944,6 +963,15 @@ end
 function MainBoard.isSpiceTradeSpace(spaceName)
     return MainBoard.isDesertSpace(spaceName)
         or MainBoard.isCHOAMSpace(spaceName)
+end
+
+---
+function MainBoard.getBannerZones()
+    return {
+        MainBoard.banners.imperialBasinBannerZone,
+        MainBoard.banners.arrakeenBannerZone,
+        MainBoard.banners.carthagBannerZone,
+    }
 end
 
 ---

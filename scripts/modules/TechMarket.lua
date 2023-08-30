@@ -6,28 +6,9 @@ local AcquireCard = require("utils.AcquireCard")
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local Deck = Module.lazyRequire("Deck")
 local Utils = Module.lazyRequire("Utils")
+local TechCard = Module.lazyRequire("TechCard")
 
 local TechMarket = {
-    techDetails = {
-        windtraps = { cost = 2, hagal = true },
-        detonationDevices = { cost = 3, hagal = true },
-        memocorders = { cost = 2, hagal = true },
-        flagship = { cost = 8, hagal = true },
-        spaceport = { cost = 5, hagal = false },
-        artillery = { cost = 1, hagal = false },
-        holoprojectors = { cost = 2, hagal = false },
-        restrictedOrdnance = { cost = 4, hagal = false },
-        shuttleFleet = { cost = 6, hagal = true },
-        spySatellites = { cost = 4, hagal = true },
-        disposalFacility = { cost = 3, hagal = false },
-        chaumurky = { cost = 4, hagal = true },
-        sonicSnoopers = { cost = 2, hagal = true },
-        trainingDrones = { cost = 3, hagal = true },
-        troopTransports = { cost = 2, hagal = true },
-        holtzmanEngine = { cost = 6, hagal = true },
-        minimicFilm = { cost = 2, hagal = false },
-        invasionShips = { cost = 5, hagal = true },
-    },
     negotiationParks = {},
     acquireTechOptions = {},
 }
@@ -113,8 +94,7 @@ function TechMarket.pruneStacksForSoloMode()
                 highestHeightIndex = stackIndex
                 highestHeight = height
             end
-            local techName = techTileStack.topCard.getDescription()
-            if TechMarket.techDetails[techName].hagal then
+            if TechCard.isHagal(techTileStack.topCard) then
                 TechMarket.frozen = false
                 return
             end
@@ -175,13 +155,11 @@ function TechMarket._doAcquireTech(stackIndex, color)
 
     local techTileStack = TechMarket._getTechTileStack(stackIndex)
     if techTileStack.topCard then
-        local techName = techTileStack.topCard.getDescription()
-
         local continuation = Helper.createContinuation()
 
         if color then
             PlayBoard.grantTechTile(color, techTileStack.topCard)
-            TechMarket._applyBuyEffect(color, techName)
+            TechCard.applyBuyEffect(color, techTileStack.topCard)
         else
             Utils.trash(techTileStack.topCard)
         end
@@ -226,8 +204,7 @@ end
 
 ---
 function TechMarket._doBuyTech(techTileStack, acquireCard, option, color)
-    local techName = techTileStack.topCard.getDescription()
-    local techCost = TechMarket.techDetails[techName].cost
+    local techCost = TechCard.getCost(techTileStack.topCard)
 
     local optionDetails = TechMarket.acquireTechOptions[option]
     local discountAmount = optionDetails.amount
@@ -262,7 +239,7 @@ function TechMarket._doBuyTech(techTileStack, acquireCard, option, color)
             end, 0.5)
         end
 
-        TechMarket._applyBuyEffect(color, techName)
+        TechCard.applyBuyEffect(color, techTileStack.topCard)
 
         return continuation
     end
@@ -274,8 +251,7 @@ end
 function TechMarket.getTopCardDetails(stackIndex)
     local techTileStack = TechMarket._getTechTileStack(stackIndex)
     if techTileStack.topCard then
-        local techName = techTileStack.topCard.getDescription()
-        return TechMarket.techDetails[techName]
+        return TechCard.getDetails(techTileStack.topCard)
     end
     return nil
 end
@@ -294,43 +270,6 @@ function TechMarket._getTechTileStack(stackIndex)
     end
 
     return techTileStack
-end
-
----
-function TechMarket._applyBuyEffect(color, techName)
-    local leader = PlayBoard.getLeader(color)
-    if techName == "windtraps" then
-        leader.resources(color, "water", 1)
-    elseif techName == "detonationDevices" then
-    elseif techName == "memocorders" then
-        -- 1 influence
-    elseif techName == "flagship" then
-        leader.gainVictoryPoint(color, "flagship")
-    elseif techName == "spaceport" then
-        leader.drawImperiumCards(color, 2)
-    elseif techName == "artillery" then
-    elseif techName == "holoprojectors" then
-    elseif techName == "restrictedOrdnance" then
-        if PlayBoard.hasACouncilSeat(color) then
-            leader.resources(color, "strength", 4)
-        end
-    elseif techName == "shuttleFleet" then
-        -- 2 influences différentes
-    elseif techName == "spySatellites" then
-    elseif techName == "disposalFacility" then
-        -- 1 trash
-    elseif techName == "chaumurky" then
-        leader.drawIntrigues(color, 2)
-    elseif techName == "sonicSnoopers" then
-        leader.drawIntrigues(color, 1)
-    elseif techName == "trainingDrones" then
-    elseif techName == "troopTransports" then
-    elseif techName == "holtzmanEngine" then
-    elseif techName == "minimicFilm" then
-        leader.resources(color, "persuasion", 1)
-    elseif techName == "invasionShips" then
-        leader.troops(color, "supply", "garrison", 4)
-    end
 end
 
 ---

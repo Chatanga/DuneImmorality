@@ -3,10 +3,14 @@ local Helper = require("utils.Helper")
 
 local Utils = Module.lazyRequire("Utils")
 local PlayBoard = Module.lazyRequire("PlayBoard")
+local MainBoard = Module.lazyRequire("MainBoard")
 
 local function vp(n)
     return function (color, conflictName)
-        return PlayBoard.getLeader(color).gainVictoryPoint(color, conflictName)
+        for _ = 1, n do
+            PlayBoard.getLeader(color).gainVictoryPoint(color, conflictName)
+        end
+        return true
     end
 end
 
@@ -54,7 +58,13 @@ end
 
 local function mentat(n)
     return function (color)
-        return PlayBoard.getLeader(color).takeMentat(color)
+        if PlayBoard.getLeader(color).takeMentat(color) then
+            -- Locked to avoid being recalled.
+            MainBoard.getMentat().setLock(true)
+            return true
+        else
+            return false
+        end
     end
 end
 
@@ -71,11 +81,13 @@ local function trash(space)
 end
 
 local function choice(n, options)
-    return function (...)
-        local shuffledOptions = Helper.shallowCopy(options)
-        Helper.shuffle(shuffledOptions)
-        for i = 1, n do
-            shuffledOptions[i](...)
+    return function (color, conflictName)
+        if not PlayBoard.getLeader(color).choose(color, conflictName) then
+            local shuffledOptions = Helper.shallowCopy(options)
+            Helper.shuffle(shuffledOptions)
+            for i = 1, n do
+                shuffledOptions[i](color, conflictName)
+            end
         end
         return true
     end
@@ -120,7 +132,6 @@ local ConflictCard = {
 }
 
 function ConflictCard.collectReward(color, conflictName, rank, collectOptionalRewards)
-    Helper.dumpFunction("ConflictCard.collectReward", color, conflictName, rank, collectOptionalRewards)
     Utils.assertIsInRange(1, 3, rank)
     local conflict = ConflictCard[conflictName]
     assert(conflict, "Unknown conflict: ", conflictName)

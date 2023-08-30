@@ -13,6 +13,7 @@ local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
 local CommercialTrack = Module.lazyRequire("CommercialTrack")
 local TechMarket = Module.lazyRequire("TechMarket")
 local ConflictCard = Module.lazyRequire("ConflictCard")
+local MainBoard = Module.lazyRequire("MainBoard")
 
 -- Enlighting clarifications: https://boardgamegeek.com/thread/2578561/summarizing-automa-2p-and-1p-similarities-and-diff
 local Hagal = {
@@ -83,7 +84,7 @@ function Hagal._staticSetUp(settings)
                     Hagal._setStrengthFromFirstValidCard(color)
                 end
             end
-        elseif phase == "recal" then
+        elseif phase == "recall" then
             local turn = TurnControl.getCurrentRound()
             local arrivalTurn = Hagal.difficulties[Hagal.selectedDifficulty].swordmasterArrivalTurn
             if turn + 1 == arrivalTurn then
@@ -156,7 +157,6 @@ end
 
 ---
 function Hagal._activateFirstValidActionCard(color)
-    Helper.dumpFunction("Hagal._activateFirstValidActionCard", color)
     return Hagal._activateFirstValidCard(color, function (card)
         return HagalCard.activate(color, card)
     end)
@@ -169,6 +169,34 @@ function Hagal._collectReward(color)
     Wait.frames(function ()
         local conflictName = Combat.getCurrentConflictName()
         ConflictCard.collectReward(color, conflictName, rank, true)
+
+        local dreadnought = Combat.getAnyDreadnoughtInConflict(color)
+        if rank == 1 and dreadnought then
+            local bestValue
+            local bestBannerZone
+            -- Already properly ordered (CCW from Imperial Basin).
+            for i, bannerZone in ipairs(MainBoard.getBannerZones()) do
+                if not MainBoard.getControllingDreadnought(bannerZone) then
+                    local owner = MainBoard.getControllingPlayer(bannerZone)
+                    local value
+                    if not owner then
+                        value = 10
+                    elseif owner ~= color then
+                        value = 20
+                    else
+                        value = 0
+                    end
+                    value = value + i
+                    if not bestValue or bestValue < value then
+                        bestValue = value
+                        bestBannerZone = bannerZone
+                    end
+                end
+            end
+            assert(bestBannerZone)
+            dreadnought.setPositionSmooth(bestBannerZone.getPosition())
+        end
+
         continuation.run()
     end, 1)
     return continuation
@@ -360,5 +388,43 @@ function Rival.acquireTech(color, stackIndex, discount)
     local leader = rival.leader
     return leader.acquireTech(color, finalStackIndex, discount)
 end
+
+---
+function Rival.choose(color, topic)
+    if topic == "shuttleFleet" then
+        local factions = { "emperor", "spacingGuild", "beneGesserit", "fremen" }
+        for _ = 1, 2 do
+            Helper.shuffle(factions)
+            table.sort(factions, function (f1, f2)
+                local i1 = InfluenceTrack.getInfluence(f1, color)
+                local i2 = InfluenceTrack.getInfluence(f2, color)
+                return i1 > i2
+            end)
+            local faction = factions[1]
+            table.remove(factions, 1)
+
+            local rival = Rival.rivals[color]
+            assert(rival, "No " .. color .. " rival?!")
+            return rival.leader.influence(color, faction, 1)
+        end
+        return true
+    else
+        return false
+    end
+end
+
+--[[
+    windtraps -> combatEnd
+    detonationDevices = combatEnd
+    flagship -> when possible and with 3 troops in supply
+    shuttleFleet -> generic
+    spySatellites -> trash for VP ASAP
+    chaumurky -> nothing
+    sonicSnoopers = immediately but without discarding any intrigue
+    trainingDrones -> when possible
+    troopTransports -> always deploy
+    invasionShips -> don’t be blocked when needed
+    holtzmanEngine -> generic
+]]--
 
 return Hagal

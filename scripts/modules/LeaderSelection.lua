@@ -328,7 +328,6 @@ end
 ---
 function LeaderSelection.destructLeader(leader)
     local name = leader.getDescription()
-    Helper.dump("destruct leader", name)
     -- No need: Leader.getLeader(name).tearDown()
     leader.destruct()
 end

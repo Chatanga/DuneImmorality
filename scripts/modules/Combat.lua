@@ -78,6 +78,13 @@ function Combat._staticSetUp(settings)
         if phase == "roundStart" then
             Combat._setUpConflict()
         elseif phase == "combatEnd" then
+            for _, bannerZone in ipairs(MainBoard.getBannerZones()) do
+                local dreadnought = MainBoard.getControllingDreadnought(bannerZone)
+                if dreadnought then
+                    -- Primarily lock controlling dreadnoughs to mark then for recall.
+                    dreadnought.setLock(true)
+                end
+            end
             local forces = Combat._calculateCombatForces()
             log(Combat._calculateRanking(forces))
             local turnSequence = Combat._calculateOutcomeTurnSequence(forces)
@@ -94,6 +101,23 @@ function Combat._staticSetUp(settings)
                         Park.putObject(object, PlayBoard.getSupplyPark(color))
                     elseif Utils.isDreadnought(object, color) then
                         Park.putObject(object, Combat.dreadnoughtParks[color])
+                    end
+                end
+            end
+        end
+    end)
+
+    Helper.registerEventListener("phaseEnd", function (phase)
+        if phase == "combatEnd" then
+            for _, bannerZone in ipairs(MainBoard.getBannerZones()) do
+                local dreadnought = MainBoard.getControllingDreadnought(bannerZone)
+                -- Only recall locked controlling dreadnoughs.
+                if dreadnought and dreadnought.getLock() then
+                    dreadnought.setLock(false)
+                    for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
+                        if dreadnought.hasTag(color) then
+                            Park.putObject(dreadnought, Combat.dreadnoughtParks[color])
+                        end
                     end
                 end
             end
@@ -425,6 +449,15 @@ function Combat.getNumberOfDreadnoughtsInConflict(color)
         end
     end
     return count
+end
+
+---
+function Combat.getAnyDreadnoughtInConflict(color)
+    for _, object in ipairs(Combat.combatCenterZone.getObjects()) do
+        if Utils.isDreadnought(object, color) then
+            return object
+        end
+    end
 end
 
 ---

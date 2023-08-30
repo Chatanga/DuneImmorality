@@ -261,7 +261,7 @@ end
 function Helper.createRelativeSnapPoint(parent, position, rotationSnap, tags)
     local p = Vector(position.x, parent.getPosition().y, position.z)
     local snapPoint = {
-        position = parent.positionToLocal(p),
+        position = parent.positionToLocal(p) + Vector(0, 0.25, 0),
         rotation_snap = rotationSnap,
         tags = tags
     }

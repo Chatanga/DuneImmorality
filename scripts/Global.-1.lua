@@ -72,6 +72,7 @@ local allModules = Module.registerModules({
     PlayBoard = require("PlayBoard"),
     Reserve = require("Reserve"),
     Resource = require("Resource"),
+    TechCard = require("TechCard"),
     TechMarket = require("TechMarket"),
     TleilaxuResearch = require("TleilaxuResearch"),
     TleilaxuRow = require("TleilaxuRow"),
@@ -339,7 +340,6 @@ function PlayerSet.switchPositions(opponent, newColor)
             if player then
                 player:changeColor("Teal")
             end
-            --Helper.dump("switchPositions:", opponent.color, "->", newColor)
             opponent:changeColor(newColor)
             if player then
                 player:changeColor(oldColor)

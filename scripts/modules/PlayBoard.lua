@@ -74,7 +74,7 @@ local PlayBoard = Helper.createClass(nil, {
             leaderPos = Helper.getHardcodedPositionFromGUID('66cdbb', -19.0, 1.25, 17.5),
             firstPlayerPosition = Helper.getHardcodedPositionFromGUID('346e0d', -14.0, 1.5, 19.7) + Vector(0, -0.4, 0),
             startEndTurnButton = "895594",
-            nukeToken = "d5ff47",
+            atomicsToken = "d5ff47",
         },
         Blue = {
             board = "77ca63",
@@ -126,7 +126,7 @@ local PlayBoard = Helper.createClass(nil, {
             leaderPos = Helper.getHardcodedPositionFromGUID('681774', -19.0, 1.25506675, -5.5),
             firstPlayerPosition = Helper.getHardcodedPositionFromGUID('1fc559', -14.0, 1.501278, -3.3) + Vector(0, -0.4, 0),
             startEndTurnButton = "9eeccd",
-            nukeToken = "700023",
+            atomicsToken = "700023",
         },
         Green = {
             board = "0bbae1",
@@ -178,7 +178,7 @@ local PlayBoard = Helper.createClass(nil, {
             leaderPos = Helper.getHardcodedPositionFromGUID('cf1486', 19.0, 1.18726385, 17.5),
             firstPlayerPosition = Helper.getHardcodedPositionFromGUID('59523d', 14.0, 1.45146358, 19.7) + Vector(0, -0.4, 0),
             startEndTurnButton = "96aa58",
-            nukeToken = "0a22ec",
+            atomicsToken = "0a22ec",
         },
         Yellow = {
             board = "fdd5f9",
@@ -230,7 +230,7 @@ local PlayBoard = Helper.createClass(nil, {
             leaderPos = Helper.getHardcodedPositionFromGUID('a677e0', 19.0, 1.17902148, -5.5),
             firstPlayerPosition = Helper.getHardcodedPositionFromGUID('e9a44c', 14.0, 1.44851, -3.3) + Vector(0, -0.4, 0),
             startEndTurnButton = "3d1b90",
-            nukeToken = "7e10a9",
+            atomicsToken = "7e10a9",
         }
     },
     playboards = {},
@@ -380,7 +380,6 @@ function PlayBoard._staticSetUp(settings)
     Helper.registerEventListener("phaseEnd", function (phase)
         if phase == "leaderSelection" then
             for color, playBoard in pairs(PlayBoard._getPlayBoards()) do
-                --Helper.dump(color, "->", playBoard.leader.name)
                 playBoard.leader.setUp(color, settings)
             end
         end
@@ -465,7 +464,12 @@ function PlayBoard:_recall()
         card.setPositionSmooth(Intrigue.discardZone.getPosition())
     end)
 
-    -- TODO Flip any used tech.
+    -- Flip any used tech.
+    for _, techTile in ipairs(Park.getObjects(self.techPark)) do
+        if techTile.is_face_down then
+            techTile.flip()
+        end
+    end
 end
 
 ---
@@ -706,8 +710,7 @@ function PlayBoard:createTechPark(centerPosition)
             table.insert(slots, slot)
         end
     end
-
-    return Park.createCommonPark({ "Tech" }, slots, Vector(3, 0.2, 2), Vector(0, 180, 0))
+    return Park.createCommonPark({ "Tech" }, slots, Vector(3, 0.5, 2), Vector(0, 180, 0))
 end
 
 ---
@@ -825,7 +828,7 @@ function PlayBoard:cleanUp(base, ix, immortality)
         Helper.addAll(toBeRemoved, content.dreadnoughts)
         table.insert(toBeRemoved, content.flagBag)
         table.insert(toBeRemoved, content.freighter)
-        -- TODO Add atomics.
+        table.insert(toBeRemoved, content.atomicsToken)
     end
 
     if immortality then
@@ -890,8 +893,8 @@ end
 
 function PlayBoard:clearButtons()
     self.content.board.clearButtons()
-    if self.content.nukeToken then
-        self.content.nukeToken.clearButtons()
+    if self.content.atomicsToken then
+        self.content.atomicsToken.clearButtons()
     end
 end
 
@@ -969,8 +972,8 @@ function PlayBoard:createButtons()
         font_color = fontColor
     })
 
-    if self.content.nukeToken then
-        self.content.nukeToken.createButton({
+    if self.content.atomicsToken then
+        self.content.atomicsToken.createButton({
             click_function = self:createExclusiveCallback("onNuke", function ()
                 self:_nukeConfirm()
             end),
@@ -1217,8 +1220,8 @@ end
 
 ---
 function PlayBoard:_nukeConfirm()
-    self.content.nukeToken.clearButtons()
-    self.content.nukeToken.createButton({
+    self.content.atomicsToken.clearButtons()
+    self.content.atomicsToken.createButton({
         click_function = Helper.registerGlobalCallback(),
         label = I18N("atomicsConfirm"),
         position = Vector(0, -0.1, 3.5),
@@ -1229,10 +1232,11 @@ function PlayBoard:_nukeConfirm()
         font_color = {1, 0, 0, 100},
         color = {0, 0, 0, 0}
     })
-    self.content.nukeToken.createButton({
+    self.content.atomicsToken.createButton({
         click_function = self:createExclusiveCallback("confirmNuke", function ()
             self.leader.atomics(self.color)
-            self.content.nukeToken.destruct()
+            self.content.atomicsToken.destruct()
+            self.content.atomicsToken = nil
         end),
         label = I18N('yes'),
         position = {-5, -0.1, 0},
@@ -1244,7 +1248,7 @@ function PlayBoard:_nukeConfirm()
         font_color = {1, 1, 1},
         color = "Green"
     })
-    self.content.nukeToken.createButton({
+    self.content.atomicsToken.createButton({
         click_function = self:createExclusiveCallback("cancelNuke", function ()
             self:createButtons()
         end),
@@ -1392,7 +1396,6 @@ end
 
 ---
 function PlayBoard.grantTechTile(color, techTile)
-    Helper.dumpFunction("PlayBoard.grantTechTile", color, techTile)
     Park.putObject(techTile, PlayBoard.getPlayBoard(color).techPark)
 end
 
