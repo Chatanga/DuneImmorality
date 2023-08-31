@@ -61,7 +61,7 @@ function Action.checkContext(attributes)
             valid = value == expectedValue
         end
         if not valid then
-            Helper.dump("Bad context key:", name, "->", value)
+            --Helper.dump("Bad context key:", name, "->", value)
             return false
         end
     end
@@ -118,6 +118,16 @@ end
 
 ---
 function Action.tearDown()
+end
+
+---
+function Action.setContext(key, value)
+    Action.context[key] = value or true
+end
+
+---
+function Action.unsetContext(key)
+    Action.context[key] = nil
 end
 
 ---

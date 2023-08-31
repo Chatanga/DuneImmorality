@@ -87,7 +87,7 @@ Leader.ilbanRichese = Helper.createClass(Leader, {
     end,
 
     --- Ruthless negotiator
-    resource = function (color, resourceName, amount)
+    resources = function (color, resourceName, amount)
         local success = Action.resources(color, resourceName, amount)
         if success and amount < 0 and Action.checkContext({ phase = "playerTurns", color = color, space = MainBoard.isLandsraadSpace }) then
             Action.drawImperiumCards(color, 1)
@@ -286,7 +286,7 @@ Leader.yunaMoritani = Helper.createClass(Leader, {
     end,
 
     --- Smuggling operation
-    resource = function (color, resourceName, amount)
+    resources = function (color, resourceName, amount)
         local finalAmount = amount
         if resourceName == "solari" and amount > 0 and Action.checkContext({ phase = "playerTurns", color = color }) then
             finalAmount = amount + 1

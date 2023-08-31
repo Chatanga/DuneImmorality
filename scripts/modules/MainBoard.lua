@@ -830,6 +830,16 @@ function MainBoard.hasAgentInSpace(spaceName, color)
     return false
 end
 
+function MainBoard.hasEnemyAgentInSpace(spaceName, color)
+    --Helper.dumpFunction("MainBoard.hasEnemyAgentInSpace", spaceName, color)
+    for _, otherColor in ipairs(PlayBoard.getPlayBoardColors()) do
+        if otherColor ~= color and MainBoard.hasAgentInSpace(spaceName, otherColor) then
+            return true
+        end
+    end
+    return false
+end
+
 function MainBoard.hasVoiceToken(spaceName)
     local space = MainBoard.spaces[spaceName]
     if space then

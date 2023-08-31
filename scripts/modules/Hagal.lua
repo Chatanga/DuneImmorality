@@ -14,6 +14,7 @@ local CommercialTrack = Module.lazyRequire("CommercialTrack")
 local TechMarket = Module.lazyRequire("TechMarket")
 local ConflictCard = Module.lazyRequire("ConflictCard")
 local MainBoard = Module.lazyRequire("MainBoard")
+local Utils = Module.lazyRequire("Utils")
 
 -- Enlighting clarifications: https://boardgamegeek.com/thread/2578561/summarizing-automa-2p-and-1p-similarities-and-diff
 local Hagal = {
@@ -169,32 +170,45 @@ function Hagal._collectReward(color)
     Wait.frames(function ()
         local conflictName = Combat.getCurrentConflictName()
         ConflictCard.collectReward(color, conflictName, rank, true)
+        if rank == 1 then
+            local leader = PlayBoard.getLeader(color)
+            if PlayBoard.hasTech(color, "windtraps") then
+                leader.resources(color, "water", 1)
+            end
 
-        local dreadnought = Combat.getAnyDreadnoughtInConflict(color)
-        if rank == 1 and dreadnought then
-            local bestValue
-            local bestBannerZone
-            -- Already properly ordered (CCW from Imperial Basin).
-            for i, bannerZone in ipairs(MainBoard.getBannerZones()) do
-                if not MainBoard.getControllingDreadnought(bannerZone) then
-                    local owner = MainBoard.getControllingPlayer(bannerZone)
-                    local value
-                    if not owner then
-                        value = 10
-                    elseif owner ~= color then
-                        value = 20
-                    else
-                        value = 0
-                    end
-                    value = value + i
-                    if not bestValue or bestValue < value then
-                        bestValue = value
-                        bestBannerZone = bannerZone
+            local dreadnoughts = Combat.getDreadnoughtsInConflict(color)
+
+            if #dreadnoughts > 0 and PlayBoard.hasTech(color, "detonationDevices") then
+                Park.putObject(dreadnoughts[1], PlayBoard.getDreadnoughtPark(color))
+                table.remove(dreadnoughts, 1)
+                leader.gainVictoryPoint(color, "detonationDevices")
+            end
+
+            if #dreadnoughts > 0 then
+                local bestValue
+                local bestBannerZone
+                -- Already properly ordered (CCW from Imperial Basin).
+                for i, bannerZone in ipairs(MainBoard.getBannerZones()) do
+                    if not MainBoard.getControllingDreadnought(bannerZone) then
+                        local owner = MainBoard.getControllingPlayer(bannerZone)
+                        local value
+                        if not owner then
+                            value = 10
+                        elseif owner ~= color then
+                            value = 20
+                        else
+                            value = 0
+                        end
+                        value = value + i
+                        if not bestValue or bestValue < value then
+                            bestValue = value
+                            bestBannerZone = bannerZone
+                        end
                     end
                 end
+                assert(bestBannerZone)
+                dreadnoughts[1].setPositionSmooth(bestBannerZone.getPosition())
             end
-            assert(bestBannerZone)
-            dreadnought.setPositionSmooth(bestBannerZone.getPosition())
         end
 
         continuation.run()
@@ -317,6 +331,8 @@ end
 
 ---
 function Rival.influence(color, faction, amount)
+    local rival = Rival.rivals[color]
+
     local finalFaction = faction
     if not finalFaction then
         local factions = { "emperor", "spacingGuild", "beneGesserit", "fremen" }
@@ -329,23 +345,19 @@ function Rival.influence(color, faction, amount)
         finalFaction = factions[1]
     end
 
-    local rival = Rival.rivals[color]
-    assert(rival, "No " .. color .. " rival?!")
     return rival.leader.influence(color, finalFaction, amount)
 end
 
 ---
 function Rival.shipments(color, amount)
     local rival = Rival.rivals[color]
-    assert(rival, "No " .. color .. " rival?!")
-    local leader = rival.leader
 
     for _ = 1, amount do
         local level = CommercialTrack.getFreighterLevel(color)
         if level < 2 then
-            leader.advanceFreighter(color, 1)
+            rival.advanceFreighter(color, 1)
         else
-            leader.recallFreighter(color)
+            rival.recallFreighter(color)
             rival.influence(nil, 1)
             if PlayBoard.hasTech(color, "troopTransports") then
                 rival.troops(color, "supply", "combat", 3)
@@ -361,7 +373,6 @@ end
 ---
 function Rival.acquireTech(color, stackIndex, discount)
     local rival = Rival.rivals[color]
-    assert(rival, "No " .. color .. " rival?!")
 
     local finalStackIndex  = stackIndex
     if not finalStackIndex then
@@ -369,10 +380,10 @@ function Rival.acquireTech(color, stackIndex, discount)
 
         local bestTechIndex
         local bestTech
-        for stackIndex = 1, 3 do
-            local tech = TechMarket.getTopCardDetails(stackIndex)
+        for otherStackIndex = 1, 3 do
+            local tech = TechMarket.getTopCardDetails(otherStackIndex)
             if tech.hagal and tech.cost <= spiceBudget + discount and (not bestTech or bestTech.cost < tech.cost) then
-                bestTechIndex = stackIndex
+                bestTechIndex = otherStackIndex
                 bestTech = tech
             end
         end
@@ -385,12 +396,22 @@ function Rival.acquireTech(color, stackIndex, discount)
         end
     end
 
-    local leader = rival.leader
-    return leader.acquireTech(color, finalStackIndex, discount)
+    local techDetails = TechMarket.getTopCardDetails(finalStackIndex)
+    if rival.leader.acquireTech(color, finalStackIndex, discount) then
+        if techDetails.name == "trainingDrones" then
+            if PlayBoard.useTech(color, "trainingDrones") then
+                rival.troops(color, "supply", "garrison", 1)
+            end
+        end
+        return true
+    else
+        return false
+    end
 end
 
 ---
 function Rival.choose(color, topic)
+    local rival = Rival.rivals[color]
     if topic == "shuttleFleet" then
         local factions = { "emperor", "spacingGuild", "beneGesserit", "fremen" }
         for _ = 1, 2 do
@@ -403,9 +424,7 @@ function Rival.choose(color, topic)
             local faction = factions[1]
             table.remove(factions, 1)
 
-            local rival = Rival.rivals[color]
-            assert(rival, "No " .. color .. " rival?!")
-            return rival.leader.influence(color, faction, 1)
+            return rival.influence(color, faction, 1)
         end
         return true
     else
@@ -413,18 +432,64 @@ function Rival.choose(color, topic)
     end
 end
 
---[[
-    windtraps -> combatEnd
-    detonationDevices = combatEnd
-    flagship -> when possible and with 3 troops in supply
-    shuttleFleet -> generic
-    spySatellites -> trash for VP ASAP
-    chaumurky -> nothing
-    sonicSnoopers = immediately but without discarding any intrigue
-    trainingDrones -> when possible
-    troopTransports -> always deploy
-    invasionShips -> don’t be blocked when needed
-    holtzmanEngine -> generic
-]]--
+---
+function Rival.resource(color, nature, amount)
+    local rival = Rival.rivals[color]
+    if rival.resource(color, nature, amount) then
+        local resource = PlayBoard.getResource(color, nature)
+        if nature == "spice" then
+            if ix then
+                local tech = PlayBoard.getTech(color, "spySatellites")
+                if tech and nature == "spice" and resource:get() >= 3 then
+                    Utils.trash(tech)
+                    rival.gainVictoryPoint(color, "spySatellites")
+                end
+            else
+                if resource:get() >= 7 then
+                    rival.gainVictoryPoint(color, "rivalSpice")
+                end
+            end
+        elseif nature == "water" then
+            if resource:get() >= 3 then
+                rival.gainVictoryPoint(color, "rivalWater")
+            end
+        elseif nature == "solari" then
+            if resource:get() >= 7 then
+                rival.gainVictoryPoint(color, "rivalSolari")
+            end
+        end
+        return true
+    else
+        return false
+    end
+end
+
+---
+function Rival.drawIntrigues(color, amount)
+    local rival = Rival.rivals[color]
+    if rival.drawIntrigues(color, amount) then
+        local intrigues = PlayBoard.getIntrigues(color)
+        if #intrigues >= 3 then
+            for _ = 1, 3 do
+                -- Utils.trash(intrigues[i]) ?
+                intrigues[i].setPositionSmooth(self.content.discardZone.getPosition())
+            end
+            rival.gainVictoryPoint(color, "rivalIntrigue")
+        end
+        return true
+    else
+        return false
+    end
+end
+
+---
+function Rival.troops(color, from, to, amount)
+    local rival = Rival.rivals[color]
+    local finalTo = to
+    if rival.checkContext({ troopTransports = true }) then
+        finalTo = "combat"
+    end
+    return rival.leader.troops(color, from, finalTo, amount)
+end
 
 return Hagal

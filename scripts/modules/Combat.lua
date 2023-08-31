@@ -26,7 +26,7 @@ local Combat = {
         Red = Vector(1.55, 0.85, -7.65),
     },
     victoryPointTokenPositions = {},
-    dreadnoughStrengths = {}
+    dreadnoughtStrengths = {}
 }
 
 function Combat.onLoad(state)
@@ -81,7 +81,7 @@ function Combat._staticSetUp(settings)
             for _, bannerZone in ipairs(MainBoard.getBannerZones()) do
                 local dreadnought = MainBoard.getControllingDreadnought(bannerZone)
                 if dreadnought then
-                    -- Primarily lock controlling dreadnoughs to mark then for recall.
+                    -- Primarily lock controlling dreadnoughts to mark then for recall.
                     dreadnought.setLock(true)
                 end
             end
@@ -111,7 +111,7 @@ function Combat._staticSetUp(settings)
         if phase == "combatEnd" then
             for _, bannerZone in ipairs(MainBoard.getBannerZones()) do
                 local dreadnought = MainBoard.getControllingDreadnought(bannerZone)
-                -- Only recall locked controlling dreadnoughs.
+                -- Only recall locked controlling dreadnoughts.
                 if dreadnought and dreadnought.getLock() then
                     dreadnought.setLock(false)
                     for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
@@ -304,7 +304,7 @@ end
 
 ---
 function Combat.setDreadnoughtStrength(color, strength)
-    Combat.dreadnoughStrengths[color] = strength
+    Combat.dreadnoughtStrengths[color] = strength
 end
 
 ---
@@ -394,7 +394,7 @@ function Combat._calculateCombatForces()
                 if Utils.isTroop(object, color) then
                     force = force + 2
                 elseif Utils.isDreadnought(object, color) then
-                    force = force + (Combat.dreadnoughStrengths[color] or 3)
+                    force = force + (Combat.dreadnoughtStrengths[color] or 3)
                 else
                     error("Unknown unit type: " .. object.getGUID())
                 end
@@ -442,22 +442,18 @@ end
 
 ---
 function Combat.getNumberOfDreadnoughtsInConflict(color)
-    local count = 0
-    for _, object in ipairs(Combat.combatCenterZone.getObjects()) do
-        if Utils.isDreadnought(object, color) then
-            count = count + 1
-        end
-    end
-    return count
+    return #Combat.getDreadnoughtsInConflict(color)
 end
 
 ---
-function Combat.getAnyDreadnoughtInConflict(color)
+function Combat.getDreadnoughtsInConflict(color)
+    local dreadnoughts = {}
     for _, object in ipairs(Combat.combatCenterZone.getObjects()) do
         if Utils.isDreadnought(object, color) then
-            return object
+            table.insert(dreadnoughts, object)
         end
     end
+    return dreadnoughts
 end
 
 ---

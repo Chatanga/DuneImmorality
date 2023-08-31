@@ -167,7 +167,9 @@ function CommercialTrack._pickTroopsAndInfluenceBonus(color)
     if PlayBoard.hasTech(color, "troopTransports") then
         troopAmount = 3
     end
+    leader.setContext("troopTransports")
     leader.troops(color, "supply", "garrison", troopAmount)
+    leader.unsetContext("troopTransports")
 end
 
 return CommercialTrack

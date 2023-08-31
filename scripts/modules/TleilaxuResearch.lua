@@ -249,7 +249,7 @@ end
 
 ---
 function TleilaxuResearch._tleilaxSpaceToWorldPosition(positionInTleilaxSpace)
-    return TleilaxuResearch.tleilaxuLevelZones[positionInTleilaxSpace].getPosition()
+    return TleilaxuResearch.tleilaxuLevelZones[math.min(7, positionInTleilaxSpace)].getPosition()
 end
 
 ---

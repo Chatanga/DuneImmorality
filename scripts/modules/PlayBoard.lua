@@ -365,9 +365,13 @@ function PlayBoard._staticSetUp(settings)
 
         if phase == "roundStart" then
             for color, playBoard in pairs(PlayBoard._getPlayBoards()) do
-                playBoard.leader.drawImperiumCards(color, 5)
+                local cardAmount = PlayBoard.hasTech(color, "holtzmanEngine") and 6 or 5
+                playBoard.leader.drawImperiumCards(color, cardAmount)
+
+                if PlayBoard.hasTech(color, "shuttleFleet") then
+                    playBoard.leader.resources(color, "solari", 2)
+                end
             end
-            -- TODO Query acquired tech tiles for round start recurring effects.
         end
 
         if phase == "recall" then
@@ -1416,13 +1420,30 @@ end
 
 ---
 function PlayBoard.hasTech(color, techName)
+    return PlayBoard.getTech(color, techName) ~= nil
+end
+
+---
+function PlayBoard.getTech(color, techName)
+    --Helper.dumpFunction("PlayBoard.getTech", color, techName)
     local techs = PlayBoard.getPlayBoard(color).techPark.zone.getObjects()
     for _, tech in ipairs(techs) do
         if tech.getDescription() == techName then
-            return true
+            return tech
         end
     end
-    return false
+    return nil
+end
+
+---
+function PlayBoard.useTech(color, techName)
+    local tech = PlayBoard.getTech(color, techName)
+    if tech and not tech.is_face_down then
+        tech.flip()
+        return true
+    else
+        return false
+    end
 end
 
 ---

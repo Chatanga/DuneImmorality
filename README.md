@@ -96,9 +96,3 @@ Having launched `./listen.py` in another terminal will provide you with an immed
 - Gather all VP sources in ScoreBoard?
 - Some kind of hungarian notation with Array (ipairs) and Dict (pairs), a Array being a Dict?
 - Alt mouse hover defeated by area buttons...
-
-## Bugs
-
-- Tleilax card topping.
-- Alliance bonuses? Without the alliance?
-- Mentat intelligent recall.
