@@ -6,7 +6,7 @@ local PlayBoard = Module.lazyRequire("PlayBoard")
 local MainBoard = Module.lazyRequire("MainBoard")
 
 local function vp(n)
-    return function (color, conflictName)
+    return function (color, conflictName, collectOptionalRewards)
         for _ = 1, n do
             PlayBoard.getLeader(color).gainVictoryPoint(color, conflictName)
         end
@@ -94,13 +94,17 @@ local function choice(n, options)
 end
 
 local function optional(options)
-    return function (...)
-        for  _, option in options do
-            if not option(...) then
-                return false
+    return function (color, conflictName, collectOptionalRewards)
+        if collectOptionalRewards then
+            for  _, option in options do
+                if not option(color, conflictName, collectOptionalRewards) then
+                    return false
+                end
             end
+            return true
+        else
+            return false
         end
-        return true
     end
 end
 

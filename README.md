@@ -66,10 +66,6 @@ Having launched `./listen.py` in another terminal will provide you with an immed
 
 ## TODO (by priority)
 
-- The Hagal house - Solo.
-    - Tech activation by rivals.
-- The Hagal house - 2 players.
-
 - Basic logging in the Action facade.
 
 - Migrate description in GMNotes.
@@ -77,8 +73,6 @@ Having launched `./listen.py` in another terminal will provide you with an immed
 
 - Blitz!
 - Arrakeen Scouts.
-
-- Restore selectable combat music.
 
 - [Fanmade leaders](https://drive.google.com/drive/folders/1-V3xcHk6078YR1fyhtJL3tdqv2zg5q3Q).
 - Replace freighters by tokens.
@@ -92,7 +86,6 @@ Having launched `./listen.py` in another terminal will provide you with an immed
 - Keep Module special, but unify everything else?
 - Move the Tleilaxu track in its own module?
 - Workaround the font_size ratio / support for the boards.
-- Check for anchor and callback leaks.
 - Gather all VP sources in ScoreBoard?
 - Some kind of hungarian notation with Array (ipairs) and Dict (pairs), a Array being a Dict?
 - Alt mouse hover defeated by area buttons...

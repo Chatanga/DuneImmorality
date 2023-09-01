@@ -709,8 +709,8 @@ function Deck._generateDeck(deckName, position, contributions, sources)
             scaleY = 1,
             scaleZ = 1
         },
-        Nickname = deckName,
-        Description = "",
+        Nickname = "",
+        Description = deckName,
         GMNotes = "",
         AltLookAngle = {
             x = 0.0,

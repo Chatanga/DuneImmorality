@@ -5,7 +5,6 @@ local Deck = Module.lazyRequire("Deck")
 local TurnControl = Module.lazyRequire("TurnControl")
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local Hagal = Module.lazyRequire("Hagal")
-local Leader = Module.lazyRequire("Leader")
 
 local LeaderSelection = {
     selectionMethods = {
@@ -77,18 +76,25 @@ end
 
 ---
 function LeaderSelection._setUpTest(opponents, leaderNames)
+    local leaders = {}
+    for _, object in ipairs(LeaderSelection.deckZone.getObjects()) do
+        if object.hasTag("Leader") then
+            leaders[object.getDescription()] = object
+        end
+    end
+
     for color, _ in pairs(opponents) do
         assert(leaderNames[color], "No leader for color " .. color)
         assert(#LeaderSelection.deckZone.getObjects(), "No leader to select")
-        for _, object in ipairs(LeaderSelection.deckZone.getObjects()) do
-            if object.hasTag("Leader") then
-                if object.getDescription() == leaderNames[color] then
-                    PlayBoard.setLeader(color, object)
-                    break
-                end
-            end
+        local leaderName = leaderNames[color]
+        if leaderName == "hagal" then
+            assert(Hagal.getRivalCount() == 1, "Only one rival (house Hagal) expected!")
+            Hagal.pickAnyCompatibleLeader(color)
+        else
+            local leader = leaders[leaderName]
+            assert(leader, "Unknown leader " .. leaderName)
+            PlayBoard.setLeader(color, leader)
         end
-        assert(PlayBoard.getLeader(color), "Unknown leader " .. leaderNames[color])
     end
 
     TurnControl.start(true)

@@ -13,7 +13,7 @@ local Leader = Helper.createClass(Action)
 ---
 function Leader.getLeader(name)
     local LeaderClass = Leader[name]
-    assert(LeaderClass, "Unknown leader. " .. tostring(name))
+    assert(LeaderClass, "Unknown leader: " .. tostring(name))
     LeaderClass.name = name
     return Helper.createClassInstance(LeaderClass)
 end

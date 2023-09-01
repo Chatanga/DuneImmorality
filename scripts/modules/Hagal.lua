@@ -17,7 +17,7 @@ local MainBoard = Module.lazyRequire("MainBoard")
 local Utils = Module.lazyRequire("Utils")
 
 -- Enlighting clarifications: https://boardgamegeek.com/thread/2578561/summarizing-automa-2p-and-1p-similarities-and-diff
-local Hagal = {
+local Hagal = Helper.createClass(Action, {
     difficulties = {
         novice = { name = "Mercenary", swordmasterArrivalTurn = 5 },
         veteran = { name = "Sardaukar", swordmasterArrivalTurn = 4 },
@@ -34,7 +34,7 @@ local Hagal = {
         rhomburVernius = 1,
         hundroMoritani = 1,
     }
-}
+})
 
 local Rival = Helper.createClass(Action, {
     rivals = {}
@@ -65,6 +65,7 @@ end
 function Hagal._staticSetUp(settings)
     Hagal.numberOfPlayers = settings.numberOfPlayers
     Hagal.difficulty = settings.difficulty
+    Hagal.riseOfIx = settings.riseOfIx
 
     Deck.generateHagalDeck(Hagal.deckZone, settings.riseOfIx, settings.immortality, settings.numberOfPlayers).doAfter(function (deck)
         deck.shuffle()
@@ -72,10 +73,14 @@ function Hagal._staticSetUp(settings)
 
     Hagal.selectedDifficulty = settings.difficulty
 
-    if Hagal.getMentatSpaceCost() == 5 then
-        Hagal.mentatSpaceCostPatch.setPosition(Vector(-3.98, 0.57, 3.43))
-    else
+    if Hagal.getRivalCount() == 1 then
         Hagal.mentatSpaceCostPatch.destruct()
+    elseif  Hagal.getRivalCount() == 2 then
+        if Hagal.getMentatSpaceCost() == 5 then
+            Hagal.mentatSpaceCostPatch.setPosition(Vector(-3.98, 0.57, 3.43))
+        else
+            Hagal.mentatSpaceCostPatch.destruct()
+        end
     end
 
     Helper.registerEventListener("phaseStart", function (phase)
@@ -86,11 +91,13 @@ function Hagal._staticSetUp(settings)
                 end
             end
         elseif phase == "recall" then
-            local turn = TurnControl.getCurrentRound()
-            local arrivalTurn = Hagal.difficulties[Hagal.selectedDifficulty].swordmasterArrivalTurn
-            if turn + 1 == arrivalTurn then
-                for color, rival in pairs(Rival.rivals) do
-                    rival.recruitSwordmaster(color)
+            if Hagal.getRivalCount() == 2 then
+                local turn = TurnControl.getCurrentRound()
+                local arrivalTurn = Hagal.difficulties[Hagal.selectedDifficulty].swordmasterArrivalTurn
+                if turn + 1 == arrivalTurn then
+                    for color, rival in pairs(Rival.rivals) do
+                        rival.recruitSwordmaster(color)
+                    end
                 end
             end
         end
@@ -104,7 +111,7 @@ end
 
 ---
 function Hagal.getMentatSpaceCost()
-    if Helper.isElementOf(Hagal.selectedDifficulty, {"veteran", "expert"}) then
+    if Helper.getRivalCount() == 2 and Helper.isElementOf(Hagal.selectedDifficulty, {"veteran", "expert"}) then
         return 5
     else
         return 2
@@ -114,8 +121,12 @@ end
 ---
 function Hagal.newRival(color, leader)
     local rival = Helper.createClassInstance(Rival, {
-        leader = leader
+        leader = leader or Hagal
     })
+    assert((Hagal.getRivalCount() == 1) == (leader == nil))
+    if not leader then
+        rival.recruitSwordmaster(color)
+    end
     Rival.rivals[color] = rival
     return rival
 end
@@ -146,7 +157,9 @@ function Hagal._lateActivate(phase, color)
     elseif phase == "combat" then
         continuation.run()
     elseif phase == "combatEnd" then
-        Hagal._collectReward(color).doAfter(continuation.run)
+        if Hagal.getRivalCount() == 2 then
+            Hagal._collectReward(color).doAfter(continuation.run)
+        end
     elseif phase == "endgame" then
         continuation.run()
     else
@@ -245,7 +258,6 @@ function Hagal._doActivateFirstValidCard(color, action, n, continuation)
     local success = Helper.moveCardFromZone(Hagal.deckZone, emptySlots[2] + Vector(0, 1 + 0.4 * n, 0), Vector(0, 180, 0))
     if success then
         success.doAfter(function (card)
-            log(card.getDescription())
             if card.getDescription() == "reshuffle" then
                 Hagal._reshuffleDeck(color, action, n, continuation)
             elseif action(card) then
@@ -303,6 +315,7 @@ function Hagal.pickAnyCompatibleLeader(color)
     local leaderOrPseudoLeader
     if Hagal.getRivalCount() == 1 then
         leaderOrPseudoLeader = Helper.getDeck(Hagal.deckZone)
+        Hagal.deckZone = PlayBoard.getContent(color).leaderZone
         assert(leaderOrPseudoLeader, "Missing Hagal deck!")
     else
         local leaders = {}
@@ -326,6 +339,10 @@ function Rival.setUp(color, settings)
             Action.troops(color, "supply", "garrison", 3)
             Action.drawIntrigues(color, 1)
         end
+    -- https://boardgamegeek.com/thread/2570879/article/36734124#36734124
+    elseif Hagal.numberOfPlayers == 2 then
+        Action.resources(color, "water", 1)
+        Action.troops(color, "supply", "garrison", 3)
     end
 end
 
@@ -435,10 +452,10 @@ end
 ---
 function Rival.resource(color, nature, amount)
     local rival = Rival.rivals[color]
-    if rival.resource(color, nature, amount) then
+    if Hagal.getRivalCount() == 2 and rival.resource(color, nature, amount) then
         local resource = PlayBoard.getResource(color, nature)
         if nature == "spice" then
-            if ix then
+            if Hagal.riseOfIx then
                 local tech = PlayBoard.getTech(color, "spySatellites")
                 if tech and nature == "spice" and resource:get() >= 3 then
                     Utils.trash(tech)

@@ -550,7 +550,11 @@ function PlayBoard.acceptTurn(phase, color)
     elseif phase == 'roundStart' then
         accepted = playBoard.lastPhase ~= phase and playBoard.leader.instruct(phase, color)
     elseif phase == 'playerTurns' then
-        accepted = PlayBoard.couldSendAgentOrReveal(color)
+        if Hagal.getRivalCount() == 1 and PlayBoard.isRival(color) then
+            accepted = not PlayBoard.playboards[TurnControl.getFirstPlayer()].revealed
+        else
+            accepted = PlayBoard.couldSendAgentOrReveal(color)
+        end
     elseif phase == 'combat' then
         if Combat.isInCombat(color) then
             accepted = PlayBoard.combatPassCountdown > 0 and #PlayBoard.getIntrigues(color) > 0
@@ -1310,7 +1314,7 @@ function PlayBoard.setLeader(color, leaderCard)
     local playBoard = PlayBoard.getPlayBoard(color)
     if playBoard.opponent == "rival" then
         if Hagal.getRivalCount() == 1 then
-            playBoard.leader = Hagal.getRival(color)
+            playBoard.leader = Hagal.newRival(color)
         else
             if not Hagal.isLeaderCompatible(leaderCard) then
                 log("Not a leader compatible with a rival: " .. leaderCard.getDescription())

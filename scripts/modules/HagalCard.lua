@@ -198,7 +198,9 @@ function HagalCard._activateHarvestSpice(color, rival)
     end
 
     if bestDesertSpace then
-        rival.resources(color, "spice", bestTotalSpice)
+        if HagalCard.getRivalCount() == 2 then
+            rival.resources(color, "spice", bestTotalSpice)
+        end
         HagalCard.sendRivalAgent(color, rival, bestDesertSpace)
         MainBoard.getSpiceBonus(bestDesertSpace):set(0)
         HagalCard.sendUpToTwoUnits(color, rival)

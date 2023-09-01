@@ -37,6 +37,24 @@ validateDefaultSetup = {
     fanMadeLeaders = false,
     variant = nil,
 }
+validateDefaultSetup = {
+    language = "en",
+    randomizePlayerPositions = false,
+    virtualHotSeat = true,
+    numberOfPlayers = 2,
+    difficulty = "novice",
+    riseOfIx = true,
+    epicMode = false,
+    immortality = true,
+    goTo11 = false,
+    leaderSelection = {
+        Green = "hagal",
+        Yellow = "letoAtreides",
+        Red = "glossuRabban",
+    },
+    fanMadeLeaders = false,
+    variant = nil,
+}
 --validateDefaultSetup = nil
 
 local Module = require("utils.Module")
@@ -268,7 +286,7 @@ function PlayerSet.findActiveOpponents(properlySeatedPlayers, numberOfPlayers)
     end
 
     local remainingCount = math.max(0, 3 - numberOfPlayers)
-    local opponentType = remainingCount == 2 and "rival" or "hagal"
+    local opponentType = "rival" -- TODO remove: remainingCount == 2 and "rival" or "hagal"
     for _, color in ipairs(colorsByPreference) do
         if remainingCount > 0 then
             if not activeOpponents[color] then
@@ -333,7 +351,8 @@ end
 
 ---
 function PlayerSet.switchPositions(opponent, newColor)
-    if opponent ~= "hagal" and opponent ~= "rival" and opponent ~= "puppet" then
+    --opponent ~= "hagal" and
+    if opponent ~= "rival" and opponent ~= "puppet" then
         local oldColor = opponent.color
         local player = Helper.findPlayer(newColor)
         if oldColor ~= newColor then
