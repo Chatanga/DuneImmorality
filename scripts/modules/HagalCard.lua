@@ -198,9 +198,7 @@ function HagalCard._activateHarvestSpice(color, rival)
     end
 
     if bestDesertSpace then
-        if HagalCard.getRivalCount() == 2 then
-            rival.resources(color, "spice", bestTotalSpice)
-        end
+        rival.resources(color, "spice", bestTotalSpice)
         HagalCard.sendRivalAgent(color, rival, bestDesertSpace)
         MainBoard.getSpiceBonus(bestDesertSpace):set(0)
         HagalCard.sendUpToTwoUnits(color, rival)
@@ -374,7 +372,6 @@ function HagalCard.sendRivalAgent(color, rival, spaceName)
 end
 
 function HagalCard.sendUpToTwoUnits(color, rival)
-    --Helper.dumpFunction("HagalCard.sendUpToTwoUnits", color, rival)
     local count = rival.dreadnought(color, "garrison", "combat", 2)
     if count < 2 then
         rival.troops(color, "garrison", "combat", 2 - count)
@@ -393,7 +390,6 @@ function HagalCard.sendUpToTwoUnits(color, rival)
 end
 
 function HagalCard.spaceIsFree(color, spaceName)
-    --Helper.dumpFunction("HagalCard.spaceIsFree", color, spaceName)
     if not MainBoard.hasVoiceToken(spaceName) and not MainBoard.hasAgentInSpace(spaceName, color) then
         if MainBoard.hasEnemyAgentInSpace(spaceName, color) then
             return PlayBoard.useTech(color, "invasionShips")

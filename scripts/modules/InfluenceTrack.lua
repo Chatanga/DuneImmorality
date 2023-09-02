@@ -214,10 +214,10 @@ function InfluenceTrack._changeInfluenceTracksRank(color, faction, change)
             InfluenceTrack._challengeAlliance(faction)
         end
         if oldRank < 2 and newRank >= 2 then
-            InfluenceTrack.gainFriendship(faction, color)
+            InfluenceTrack._gainFriendship(faction, color)
         end
         if oldRank >= 2 and newRank < 2 then
-            InfluenceTrack.loseFriendship(faction, color)
+            InfluenceTrack._loseFriendship(faction, color)
         end
         continuation.run(realChange)
     end)
@@ -226,12 +226,12 @@ function InfluenceTrack._changeInfluenceTracksRank(color, faction, change)
 end
 
 ---
-function InfluenceTrack.gainFriendship(faction, color)
-    PlayBoard.grantScoreTokenFromBag(color, InfluenceTrack.friendshipBags[faction])
+function InfluenceTrack._gainFriendship(faction, color)
+    PlayBoard.getLeader(color).gainVictoryPoint(color, InfluenceTrack.friendshipBags[faction].getDescription())
 end
 
 ---
-function InfluenceTrack.loseFriendship(faction, color)
+function InfluenceTrack._loseFriendship(faction, color)
     local friendshipTokenName = faction .. "Friendship"
     for _, scoreToken in ipairs(PlayBoard.getScoreTokens(color)) do
         if scoreToken.getDescription() == friendshipTokenName then
@@ -242,6 +242,7 @@ end
 
 ---
 function InfluenceTrack._challengeAlliance(faction)
+    Helper.dumpFunction("InfluenceTrack._challengeAlliance", faction)
     local bestRankedPlayers = {}
     local bestRank = 4
     local allianceOwner
@@ -252,22 +253,21 @@ function InfluenceTrack._challengeAlliance(faction)
         end
         local rank = InfluenceTrack._getInfluenceTracksRank(faction, color)
         if rank >= bestRank then
-            bestRank = rank
             if rank > bestRank then
-                bestRankedPlayers[color] = {}
+                bestRank = rank
+                bestRankedPlayers = {}
             end
             table.insert(bestRankedPlayers, color)
         end
     end
 
     if not Helper.tableContains(bestRankedPlayers, allianceOwner) then
-        local position = InfluenceTrack.allianceTokenInitialPositions[faction]
-        InfluenceTrack.allianceTokens[faction].setPositionSmooth(position, false, false)
+        InfluenceTrack._loseAlliance(faction, allianceOwner)
 
         if #bestRankedPlayers > 0 then
             if #bestRankedPlayers == 1 then
                 allianceOwner = bestRankedPlayers[1]
-                InfluenceTrack.gainAlliance(faction, allianceOwner)
+                InfluenceTrack._gainAlliance(faction, allianceOwner)
             else
                 log(allianceOwner .. " must grant alliance to one of " .. tostring(bestRankedPlayers))
             end
@@ -297,22 +297,46 @@ function InfluenceTrack.hasAnyAlliance(color)
 end
 
 ---
-function InfluenceTrack.gainAlliance(faction, color)
-    PlayBoard.grantScoreToken(color, InfluenceTrack.allianceTokens[faction])
+function InfluenceTrack._gainAlliance(faction, color)
+    PlayBoard.getLeader(color).gainVictoryPoint(color, InfluenceTrack.allianceTokens[faction].getDescription())
 
+    local leader = PlayBoard.getLeader(color)
     if not PlayBoard.isRival(color) then
         if faction == "emperor" then
-            Action.troops(color, "supply", "garrison", 2)
+            leader.troops(color, "supply", "garrison", 2)
         elseif faction == "spacingGuild" then
-            Action.resources(color, "solari", 3)
+            leader.resources(color, "solari", 3)
         elseif faction == "beneGesserit" then
-            Action.drawIntrigues(color, 1)
+            leader.drawIntrigues(color, 1)
         elseif faction == "fremen" then
-            Action.resources(color, "water", 1)
+            leader.resources(color, "water", 1)
         else
             assert(false)
         end
     end
+end
+
+---
+function InfluenceTrack._loseAlliance(faction, color)
+    local position = InfluenceTrack.allianceTokenInitialPositions[faction]
+    InfluenceTrack.allianceTokens[faction].setPositionSmooth(position, false, false)
+end
+
+function InfluenceTrack.gainVictoryPoint(color, name)
+    for _, friendshipTokenBag in pairs(InfluenceTrack.friendshipBags) do
+        -- FIXME No "bag" suffix?
+        if friendshipTokenBag.getDescription() == name then
+            PlayBoard.grantScoreTokenFromBag(color, friendshipTokenBag)
+            return true
+        end
+    end
+    for _, allianceToken in pairs(InfluenceTrack.allianceTokens) do
+        if allianceToken.getDescription() == name then
+            PlayBoard.grantScoreToken(color, allianceToken)
+            return true
+        end
+    end
+    return false
 end
 
 return InfluenceTrack

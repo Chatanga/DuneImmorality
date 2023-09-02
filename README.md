@@ -66,7 +66,7 @@ Having launched `./listen.py` in another terminal will provide you with an immed
 
 ## TODO (by priority)
 
-- Basic logging in the Action facade.
+- Basic logging in the Action facade (usign context to group).
 
 - Migrate description in GMNotes.
 - Restore translations (tokens included).

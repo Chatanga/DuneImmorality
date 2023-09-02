@@ -191,7 +191,6 @@ function IntrigueCard.evaluatePlot(color, playedCards)
              end
         end
     end
-    log(output)
     return output
 end
 

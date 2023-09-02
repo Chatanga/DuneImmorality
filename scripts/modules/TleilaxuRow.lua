@@ -50,7 +50,7 @@ function TleilaxuRow._staticSetUp()
     TleilaxuRow.acquireCards = {}
     for i, zone in ipairs(TleilaxuRow.slotZones) do
         local acquireCard = AcquireCard.new(zone, "Imperium", function (_, color)
-            Action.acquireTleilaxuCard(color, i)
+            PlayBoard.getLeader(color).acquireTleilaxuCard(color, i)
         end)
         table.insert(TleilaxuRow.acquireCards, acquireCard)
     end

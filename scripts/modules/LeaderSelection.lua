@@ -333,8 +333,6 @@ end
 
 ---
 function LeaderSelection.destructLeader(leader)
-    local name = leader.getDescription()
-    -- No need: Leader.getLeader(name).tearDown()
     leader.destruct()
 end
 

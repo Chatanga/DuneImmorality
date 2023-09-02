@@ -340,10 +340,15 @@ function PlayBoard.setUp(settings, activeOpponents)
             else
                 playBoard.content.researchToken.destruct()
                 playBoard.content.researchToken = nil
+                if Hagal.getRivalCount() == 1 then
+                    playBoard.content.scoreMarker.destruct()
+                    playBoard.content.scoreMarker = nil
+                end
             end
 
-            if settings.goTo11 then
+            if #activeOpponents < 4 or settings.goTo11 then
                 playBoard.content.fourPlayerVictoryToken.destruct()
+                playBoard.content.fourPlayerVictoryToken = nil
             end
 
             playBoard:updatePlayerScore()
@@ -766,10 +771,12 @@ end
 
 ---
 function PlayBoard:updatePlayerScore()
-    local cappedScore = math.min(14, self:getScore())
-    local scoreMarker = self.content.scoreMarker
-    scoreMarker.setLock(false)
-    scoreMarker.setPositionSmooth(self.scorePositions[cappedScore])
+    if self.content.scoreMarker then
+        local cappedScore = math.min(14, self:getScore())
+        local scoreMarker = self.content.scoreMarker
+        scoreMarker.setLock(false)
+        scoreMarker.setPositionSmooth(self.scorePositions[cappedScore])
+    end
 end
 
 ---
@@ -1320,10 +1327,10 @@ function PlayBoard.setLeader(color, leaderCard)
                 log("Not a leader compatible with a rival: " .. leaderCard.getDescription())
                 return false
             end
-            playBoard.leader = Hagal.newRival(color, Leader.getLeader(leaderCard.getDescription()))
+            playBoard.leader = Hagal.newRival(color, Leader.newLeader(leaderCard.getDescription()))
         end
     else
-        playBoard.leader = Leader.getLeader(leaderCard.getDescription())
+        playBoard.leader = Leader.newLeader(leaderCard.getDescription())
     end
     assert(playBoard.leader)
     local position = playBoard.content.leaderZone.getPosition()
@@ -1394,9 +1401,11 @@ end
 ---
 function PlayBoard:getScore()
     local score = 0
-    for _, object in ipairs(self.scorePark.zone.getObjects()) do
-        if Utils.isVictoryPointToken(object) then
-            score = score + 1
+    if not PlayBoard.isRival(self.color) or Hagal.getRivalCount() == 2 then
+        for _, object in ipairs(self.scorePark.zone.getObjects()) do
+            if Utils.isVictoryPointToken(object) then
+                score = score + 1
+            end
         end
     end
     return score
@@ -1429,7 +1438,6 @@ end
 
 ---
 function PlayBoard.getTech(color, techName)
-    --Helper.dumpFunction("PlayBoard.getTech", color, techName)
     local techs = PlayBoard.getPlayBoard(color).techPark.zone.getObjects()
     for _, tech in ipairs(techs) do
         if tech.getDescription() == techName then

@@ -13,8 +13,6 @@ local Resource = Helper.createClass(nil, {
 
 ---
 function Resource.new(token, color, resourceName, value)
-    --log("Resource.new(_, " .. tostring(color) .. ", " .. tostring(resourceName) .. ", " .. tostring(value) .. ", _)")
-
     token.interactable = false
 
     local resource = Helper.createClassInstance(Resource, {

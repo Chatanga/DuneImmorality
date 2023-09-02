@@ -56,6 +56,16 @@ end
 function Hagal.setUp(settings)
     if settings.numberOfPlayers < 3 then
         Hagal._staticSetUp(settings)
+
+        if Hagal.getRivalCount() == 1 then
+            Hagal.mentatSpaceCostPatch.destruct()
+        elseif  Hagal.getRivalCount() == 2 then
+            if Hagal.getMentatSpaceCost() == 5 then
+                Hagal.mentatSpaceCostPatch.setPosition(Vector(-3.98, 0.57, 3.43))
+            else
+                Hagal.mentatSpaceCostPatch.destruct()
+            end
+        end
     else
         Hagal._tearDown()
     end
@@ -72,16 +82,6 @@ function Hagal._staticSetUp(settings)
     end)
 
     Hagal.selectedDifficulty = settings.difficulty
-
-    if Hagal.getRivalCount() == 1 then
-        Hagal.mentatSpaceCostPatch.destruct()
-    elseif  Hagal.getRivalCount() == 2 then
-        if Hagal.getMentatSpaceCost() == 5 then
-            Hagal.mentatSpaceCostPatch.setPosition(Vector(-3.98, 0.57, 3.43))
-        else
-            Hagal.mentatSpaceCostPatch.destruct()
-        end
-    end
 
     Helper.registerEventListener("phaseStart", function (phase)
         if phase == "combat" then
@@ -111,7 +111,7 @@ end
 
 ---
 function Hagal.getMentatSpaceCost()
-    if Helper.getRivalCount() == 2 and Helper.isElementOf(Hagal.selectedDifficulty, {"veteran", "expert"}) then
+    if Hagal.getRivalCount() == 2 and Helper.isElementOf(Hagal.selectedDifficulty, {"veteran", "expert"}) then
         return 5
     else
         return 2
@@ -159,6 +159,8 @@ function Hagal._lateActivate(phase, color)
     elseif phase == "combatEnd" then
         if Hagal.getRivalCount() == 2 then
             Hagal._collectReward(color).doAfter(continuation.run)
+        else
+            continuation.run()
         end
     elseif phase == "endgame" then
         continuation.run()
@@ -179,9 +181,9 @@ end
 ---
 function Hagal._collectReward(color)
     local continuation = Helper.createContinuation()
-    local rank = Combat.getRank(color)
     Wait.frames(function ()
         local conflictName = Combat.getCurrentConflictName()
+        local rank = Combat.getRank(color)
         ConflictCard.collectReward(color, conflictName, rank, true)
         if rank == 1 then
             local leader = PlayBoard.getLeader(color)
@@ -507,6 +509,17 @@ function Rival.troops(color, from, to, amount)
         finalTo = "combat"
     end
     return rival.leader.troops(color, from, finalTo, amount)
+end
+
+---
+function Rival.gainVictoryPoint(color, name)
+    -- We make an exception for alliance token to make clear that the rival owns it.
+    if Hagal.getRivalCount() == 2 or Helper.endsWith(name, "Alliance") then
+        local rival = Rival.rivals[color]
+        return rival.leader.gainVictoryPoint(color, name)
+    else
+        return false
+    end
 end
 
 return Hagal

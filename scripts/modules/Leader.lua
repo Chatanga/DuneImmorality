@@ -11,8 +11,9 @@ local PlayBoard = Module.lazyRequire("PlayBoard")
 local Leader = Helper.createClass(Action)
 
 ---
-function Leader.getLeader(name)
+function Leader.newLeader(name)
     local LeaderClass = Leader[name]
+    assert(LeaderClass or name ~= "Hagal", "Active player must not choose the Green seat in test mode.")
     assert(LeaderClass, "Unknown leader: " .. tostring(name))
     LeaderClass.name = name
     return Helper.createClassInstance(LeaderClass)

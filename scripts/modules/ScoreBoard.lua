@@ -3,6 +3,7 @@ local Helper = require("utils.Helper")
 
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local Combat = Module.lazyRequire("Combat")
+local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
 
 local ScoreBoard = {
     tokens = {}
@@ -92,7 +93,15 @@ function ScoreBoard.gainVictoryPoint(color, name)
             holder.success = true
         end
     end)
-    return holder.success or Combat.gainVictoryPoint(color, name)
+    if holder.success then
+        return true
+    elseif Combat.gainVictoryPoint(color, name) then
+        return true
+    elseif InfluenceTrack.gainVictoryPoint(color, name) then
+        return true
+    else
+        return false
+    end
 end
 
 return ScoreBoard

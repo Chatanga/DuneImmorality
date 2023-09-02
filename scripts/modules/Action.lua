@@ -61,7 +61,6 @@ function Action.checkContext(attributes)
             valid = value == expectedValue
         end
         if not valid then
-            --Helper.dump("Bad context key:", name, "->", value)
             return false
         end
     end

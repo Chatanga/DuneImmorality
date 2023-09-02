@@ -831,7 +831,6 @@ function MainBoard.hasAgentInSpace(spaceName, color)
 end
 
 function MainBoard.hasEnemyAgentInSpace(spaceName, color)
-    --Helper.dumpFunction("MainBoard.hasEnemyAgentInSpace", spaceName, color)
     for _, otherColor in ipairs(PlayBoard.getPlayBoardColors()) do
         if otherColor ~= color and MainBoard.hasAgentInSpace(spaceName, otherColor) then
             return true
