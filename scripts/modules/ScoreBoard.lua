@@ -23,9 +23,9 @@ function ScoreBoard.onLoad(state)
             sayyadinaBag = "4575f3",
             opulenceBag = "67fbba",
             theSleeperMustAwaken = "946ca1",
+            choamShares = "c530e6",
             stagedIncident = "bee42f",
             endgameCardBag = "cfe0cb",
-            endgameTechBag = "1d3e4f",
             combatVictoryPointBag = "d9a457",
         },
         hagal = {
@@ -34,12 +34,13 @@ function ScoreBoard.onLoad(state)
             waterBag = "0c4ca1",
             spiceBag = "2fd6f0",
         },
-        ix = {
+        -- Not simply ix here.
+        riseOfIx = {
             detonationDevicesBag = "7b3fa2",
             ixianEngineerBag = "3371d8",
             flagship = "366237",
             spySatellites = "73a68f",
-            choamShares = "c530e6",
+            endgameTechBag = "1d3e4f",
         },
         immortality = {
             scientificBreakthrough = "d22031",

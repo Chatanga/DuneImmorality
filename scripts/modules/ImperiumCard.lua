@@ -359,7 +359,7 @@ local ImperiumCard = {
 }
 
 function ImperiumCard._resolveCard(card)
-    local cardName = card.getDescription()
+    local cardName = Helper.getID(card)
     local cardInfo = ImperiumCard[cardName]
     assert(cardInfo, "Unknown card: " .. tostring(cardName))
     cardInfo.name = cardName

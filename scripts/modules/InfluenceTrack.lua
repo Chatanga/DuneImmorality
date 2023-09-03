@@ -227,14 +227,14 @@ end
 
 ---
 function InfluenceTrack._gainFriendship(faction, color)
-    PlayBoard.getLeader(color).gainVictoryPoint(color, InfluenceTrack.friendshipBags[faction].getDescription())
+    PlayBoard.getLeader(color).gainVictoryPoint(color, Helper.getID(InfluenceTrack.friendshipBags[faction]))
 end
 
 ---
 function InfluenceTrack._loseFriendship(faction, color)
     local friendshipTokenName = faction .. "Friendship"
     for _, scoreToken in ipairs(PlayBoard.getScoreTokens(color)) do
-        if scoreToken.getDescription() == friendshipTokenName then
+        if Helper.getID(scoreToken) == friendshipTokenName then
             scoreToken.destruct()
         end
     end
@@ -298,7 +298,7 @@ end
 
 ---
 function InfluenceTrack._gainAlliance(faction, color)
-    PlayBoard.getLeader(color).gainVictoryPoint(color, InfluenceTrack.allianceTokens[faction].getDescription())
+    PlayBoard.getLeader(color).gainVictoryPoint(color, Helper.getID(InfluenceTrack.allianceTokens[faction]))
 
     local leader = PlayBoard.getLeader(color)
     if not PlayBoard.isRival(color) then
@@ -325,13 +325,13 @@ end
 function InfluenceTrack.gainVictoryPoint(color, name)
     for _, friendshipTokenBag in pairs(InfluenceTrack.friendshipBags) do
         -- FIXME No "bag" suffix?
-        if friendshipTokenBag.getDescription() == name then
+        if Helper.getID(friendshipTokenBag) == name then
             PlayBoard.grantScoreTokenFromBag(color, friendshipTokenBag)
             return true
         end
     end
     for _, allianceToken in pairs(InfluenceTrack.allianceTokens) do
-        if allianceToken.getDescription() == name then
+        if Helper.getID(allianceToken) == name then
             PlayBoard.grantScoreToken(color, allianceToken)
             return true
         end

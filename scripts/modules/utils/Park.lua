@@ -188,7 +188,7 @@ function Park.getObjects(park)
         if not Helper.tableContains(objectsInTransit, object) then
             local isOneOfThem =
                 (park.tagUnion and Helper.hasAnyTag(object, park.tags) or Helper.hasAllTags(object, park.tags)) and
-                (not park.description or park.description == object.getDescription())
+                (not Helper.getID(park) or Helper.getID(park) == Helper.getID(object))
             if isOneOfThem then
                 table.insert(objects, object)
             end

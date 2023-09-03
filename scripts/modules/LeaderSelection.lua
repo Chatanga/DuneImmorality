@@ -79,7 +79,7 @@ function LeaderSelection._setUpTest(opponents, leaderNames)
     local leaders = {}
     for _, object in ipairs(LeaderSelection.deckZone.getObjects()) do
         if object.hasTag("Leader") then
-            leaders[object.getDescription()] = object
+            leaders[Helper.getID(object)] = object
         end
     end
 
@@ -106,7 +106,7 @@ function LeaderSelection._setUpPicking(opponents, numberOfLeaders, random, hidde
 
     if hidden then
         Helper.createAbsoluteButtonWithRoundness(LeaderSelection.secondaryTable, 2, false, {
-            click_function = Helper.getNopCallback(),
+            click_function = Helper.registerGlobalCallback(),
             label = "Adjust the number of leaders who will be randomly\nselected for the players to choose among:",
             position = LeaderSelection.secondaryTable.getPosition() + Vector(0, 1.8, -28),
             width = 0,
@@ -138,7 +138,7 @@ function LeaderSelection._setUpPicking(opponents, numberOfLeaders, random, hidde
         })
 
         Helper.createAbsoluteButtonWithRoundness(LeaderSelection.secondaryTable, 1, false, {
-            click_function = Helper.getNopCallback(),
+            click_function = Helper.registerGlobalCallback(),
             label = tostring(LeaderSelection.leaderSelectionPoolSize),
             position = LeaderSelection.secondaryTable.getPosition() + Vector(0, 1.8, -29),
             width = 0,
@@ -162,7 +162,7 @@ function LeaderSelection._setUpPicking(opponents, numberOfLeaders, random, hidde
     end
 
     Helper.createAbsoluteButtonWithRoundness(LeaderSelection.secondaryTable, 2, false, {
-        click_function = Helper.getNopCallback(),
+        click_function = Helper.registerGlobalCallback(),
         label = "You can flip out (or delete) any leader you want to exclude.\nOnce satisfied, hit the 'Start' button.",
         position = LeaderSelection.secondaryTable.getPosition() + Vector(0, 1.8, -30),
         width = 0,
@@ -176,7 +176,7 @@ function LeaderSelection._setUpPicking(opponents, numberOfLeaders, random, hidde
             if #LeaderSelection._getVisibleLeaders() >= #Helper.getKeys(opponents) then
                 local visibleLeaders = LeaderSelection._prepareVisibleLeaders(hidden)
                 LeaderSelection._createDynamicLeaderSelection(visibleLeaders)
-                LeaderSelection.secondaryTable.clearButtons()
+                Helper.clearButtons(LeaderSelection.secondaryTable)
                 TurnControl.start(true)
             else
                 print("Not enough leaders left!")

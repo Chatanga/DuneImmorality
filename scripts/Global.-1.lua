@@ -22,24 +22,6 @@ validateDefaultSetup = {
 validateDefaultSetup = {
     language = "en",
     randomizePlayerPositions = false,
-    virtualHotSeat = false,
-    numberOfPlayers = 1,
-    difficulty = "novice",
-    riseOfIx = true,
-    epicMode = false,
-    immortality = true,
-    goTo11 = false,
-    leaderSelection = {
-        Green = "letoAtreides",
-        Yellow = "ilbanRichese",
-        Red = "glossuRabban",
-    },
-    fanMadeLeaders = false,
-    variant = nil,
-}
-validateDefaultSetup = {
-    language = "en",
-    randomizePlayerPositions = false,
     virtualHotSeat = true,
     numberOfPlayers = 2,
     difficulty = "novice",
@@ -55,7 +37,26 @@ validateDefaultSetup = {
     fanMadeLeaders = false,
     variant = nil,
 }
---validateDefaultSetup = nil
+validateDefaultSetup = {
+    language = "en",
+    randomizePlayerPositions = false,
+    virtualHotSeat = false,
+    numberOfPlayers = 1,
+    difficulty = "novice",
+    riseOfIx = true,
+    epicMode = false,
+    immortality = true,
+    goTo11 = false,
+    leaderSelection = {
+        Green = "letoAtreides",
+        Yellow = "ilbanRichese",
+        Red = "glossuRabban",
+    },
+    fanMadeLeaders = false,
+    variant = nil,
+    musicEnabled = true,
+}
+validateDefaultSetup = nil
 
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
@@ -185,13 +186,15 @@ function onLoad(scriptState)
     allModules.TleilaxuRow.onLoad(state)
     allModules.TurnControl.onLoad(state)
 
-    Module.registerModuleRedirections({
-        "onObjectEnterScriptingZone",
-        "onObjectLeaveScriptingZone",
-        "onObjectDrop",
-        "onPlayerChangeColor",
-        "onPlayerConnect",
-        "onPlayerDisconnect" })
+    if false then
+        Module.registerModuleRedirections({
+            "onObjectEnterScriptingZone",
+            "onObjectLeaveScriptingZone",
+            "onObjectDrop",
+            "onPlayerChangeColor",
+            "onPlayerConnect",
+            "onPlayerDisconnect" })
+    end
 
     if not state.settings then
         if validateDefaultSetup then
@@ -206,7 +209,18 @@ function onLoad(scriptState)
     end
 end
 
----
+function onObjectEnterScriptingZone(...)
+    Module.callOnAllRegisteredModules("onObjectEnterScriptingZone", ...)
+end
+
+function onObjectLeaveScriptingZone(...)
+    Module.callOnAllRegisteredModules("onObjectLeaveScriptingZone", ...)
+end
+
+function onObjectDrop(...)
+    Module.callOnAllRegisteredModules("onObjectDrop", ...)
+end
+
 function onSave()
     if constructionModeEnabled then
         return
@@ -261,17 +275,19 @@ end
 ---
 function onPlayerChangeColor(color)
     PlayerSet.updateSetupButton()
+    Module.callOnAllRegisteredModules("onPlayerChangeColor", color)
 end
 
----
-function onPlayerConnect(color)
+function onPlayerConnect(...)
     PlayerSet.updateSetupButton()
+    Module.callOnAllRegisteredModules("onPlayerConnect", ...)
 end
 
----
-function onPlayerDisconnect(color)
+function onPlayerDisconnect(...)
     PlayerSet.updateSetupButton()
+    Module.callOnAllRegisteredModules("onPlayerDisconnect", ...)
 end
+
 
 ---
 function PlayerSet.findActiveOpponents(properlySeatedPlayers, numberOfPlayers)
@@ -498,6 +514,8 @@ function PlayerSet.updateSetupButton()
         local minPlayerCount
         if type(PlayerSet.fields.numberOfPlayers) == "table" then
             minPlayerCount = 3
+        elseif PlayerSet.fields.virtualHotSeat then
+            minPlayerCount = 1
         else
             minPlayerCount = math.min(2, PlayerSet.fields.numberOfPlayers)
         end

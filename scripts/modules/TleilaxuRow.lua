@@ -69,7 +69,7 @@ function TleilaxuRow.acquireTleilaxuCard(indexInRow, color)
     local acquireCard = TleilaxuRow.acquireCards[indexInRow]
     local card = Helper.getCard(acquireCard.zone)
     local price = ImperiumCard.getTleilaxuCardCost(card)
-    local cardName = card.getDescription()
+    local cardName = Helper.getID(card)
     assert(price, "Unknown tleilaxu card: " .. cardName)
     assert((cardName == "reclaimedForces") == (indexInRow == 3))
 
@@ -93,7 +93,7 @@ function TleilaxuRow.acquireTleilaxuCard(indexInRow, color)
         else
             leader.troops(color, "tanks", "supply", price)
 
-            PlayBoard.giveCard(color, card, false)
+            PlayBoard.giveCard(color, card, true)
 
             -- Replenish the slot in the row.
             Helper.moveCardFromZone(TleilaxuRow.deckZone, acquireCard.zone.getPosition(), Vector(0, 180, 0))
@@ -109,7 +109,7 @@ function TleilaxuRow.trash(indexInRow)
     local acquireCard = TleilaxuRow.acquireCards[indexInRow]
     local card = Helper.getCard(acquireCard.zone)
     local price = ImperiumCard.getTleilaxuCardCost(card)
-    local cardName = card.getDescription()
+    local cardName = Helper.getID(card)
     assert(price, "Unknown tleilaxu card: " .. cardName)
     assert((cardName == "reclaimedForces") == (indexInRow == 3))
 

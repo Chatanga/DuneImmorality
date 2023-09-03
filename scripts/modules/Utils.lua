@@ -150,9 +150,9 @@ end
 
 ---
 function Utils.trash(object)
-    object.interactable = false
+    object.interactable = true
     object.setLock(false)
-    object.setPosition(getObjectFromGUID('ef8614').getPosition() + Vector(0, 1, 0))
+    object.setPosition(getObjectFromGUID('ef8614').getPosition() + Vector(2, 2, -2))
 end
 
 return Utils

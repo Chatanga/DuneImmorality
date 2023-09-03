@@ -102,7 +102,7 @@ function Module.registerModuleRedirections(functionNames)
         local originalGlobalFunction = Global.getVar(functionName)
         Global.setVar(functionName, function (...)
             if originalGlobalFunction then
-                originalGlobalFunction()
+                originalGlobalFunction(...)
             end
             for _, module in pairs(Module.modulesByName) do
                 if module[functionName] then
@@ -115,7 +115,7 @@ end
 
 ---
 function Module.callOnAllRegisteredModules(functionName, ...)
-    for _, module in pairs(Module.modulesByName) do
+    for moduleName, module in pairs(Module.modulesByName) do
         if module[functionName] then
             module[functionName](...)
         end

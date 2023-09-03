@@ -66,14 +66,13 @@ Having launched `./listen.py` in another terminal will provide you with an immed
 
 ## TODO (by priority)
 
+- Corrupted decks?
+- Too many chained set/get in Global?
+
 - Basic logging in the Action facade (usign context to group).
-
-- Migrate description in GMNotes.
 - Restore translations (tokens included).
-
 - Blitz!
 - Arrakeen Scouts.
-
 - [Fanmade leaders](https://drive.google.com/drive/folders/1-V3xcHk6078YR1fyhtJL3tdqv2zg5q3Q).
 - Replace freighters by tokens.
 - Change the [dreadnought model](https://www.thingiverse.com/thing:5326146).

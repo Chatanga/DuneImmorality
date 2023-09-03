@@ -37,6 +37,21 @@ I18N.locales.en = {
     spentManually = "%s spent %s %s manually.",
     receiveManually = "%s received %s %s manually.",
     confirmSolarisToBeetles = "Do you want to pay 7 Solaris to Advance Twice on the Tleilaxu Track ?",
+
+    vladimirHarkonnen = "Baron Vladimir Harkonnen",
+    glossuRabban = 'Glossu "The Beast" Rabban',
+    ilbanRichese = "Ilban Richese",
+    helenaRichese = "Helena Richese",
+    letoAtreides = "Duke Leto Atreides",
+    paulAtreides = "Paul Atreides",
+    arianaThorvald = "Countess Ariana Thorvald",
+    memnonThorvald = "Earl Memnon Thorvald",
+    armandEcaz = "Archduke Armand Ecaz",
+    ilesaEcaz = "Ilesa Ecaz",
+    rhomburVernius = "Prince Rhombur Vernius",
+    tessiaVernius = "Tessia Vernius",
+    yunaMoritani = '"Princess" Yuna Moritani',
+    hundroMoritani = "Viscount Hundro Moritani",
 }
 
 I18N.locales.fr = {
@@ -76,6 +91,21 @@ I18N.locales.fr = {
     spentManually = "%s dépense %s %s manuellement.",
     receiveManually = "%s reçoit %s %s manuellement.",
     confirmSolarisToBeetles = "Voulez-vous payer 7 Solaris pour avancer deux fois sur la Piste Tleilaxu ?",
+
+    vladimirHarkonnen = "Baron Vladimir Harkonnen",
+    glossuRabban = 'Glossu « la bête » Rabban',
+    ilbanRichese = "Ilban Richese",
+    helenaRichese = "Helena Richese",
+    letoAtreides = "Duc Leto Atreides",
+    paulAtreides = "Paul Atreides",
+    arianaThorvald = "Comtesse Ariana Thorvald",
+    memnonThorvald = "Comte Memnon Thorvald",
+    armandEcaz = "Archiduc Armand Ecaz",
+    ilesaEcaz = "Ilesa Ecaz",
+    rhomburVernius = "Prince Rhombur Vernius",
+    tessiaVernius = "Tessia Vernius",
+    yunaMoritani = '"Princesse" Yuna Moritani',
+    hundroMoritani = "Viscomte Hundro Moritani",
 }
 
 I18N.locales.jp = {

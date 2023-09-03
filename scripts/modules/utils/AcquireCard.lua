@@ -9,8 +9,7 @@ local AcquireCard = Helper.createClass(nil, {
 function AcquireCard.new(zone, snapPointTag, acquire)
     local acquireCard = Helper.createClassInstance(AcquireCard, {
         zone = zone,
-        anchor = nil,
-        _updateButtonHeight = nil
+        anchor = nil
     })
 
     local position = zone.getPosition() - Vector(0, 0.5, 0)
@@ -24,18 +23,16 @@ function AcquireCard.new(zone, snapPointTag, acquire)
             acquireCard:_createButton(acquire)
 
             Helper.registerEventListener("locale", function ()
-                anchor.clearButtons()
+                Helper.clearButtons(anchor)
                 acquireCard:_createButton(acquire)
             end)
 
-            acquireCard._updateButtonHeight = function (otherZone)
+            Helper.registerEventListener(AcquireCard.UPDATE_EVENT_NAME, function (otherZone)
                 if otherZone == zone then
-                    anchor.clearButtons()
+                    Helper.clearButtons(anchor)
                     acquireCard:_createButton(acquire)
                 end
-            end
-
-            Helper.registerEventListener(AcquireCard.UPDATE_EVENT_NAME, acquireCard._updateButtonHeight)
+            end)
         end
     end)
 
@@ -44,8 +41,7 @@ end
 
 ---
 function AcquireCard:delete()
-    Helper.unregisterEventListener(AcquireCard.UPDATE_EVENT_NAME, self._updateButtonHeight)
-    self.anchor.clearButtons()
+    Helper.clearButtons(self.anchor)
 end
 
 ---
@@ -58,17 +54,13 @@ function AcquireCard.onObjectLeaveScriptingZone(...)
     Helper.emitEvent(AcquireCard.UPDATE_EVENT_NAME, ...)
 end
 
----
+--- TODO Helper.createAreaButton -> Helper.editAreaButton?
 function AcquireCard:_createButton(acquire)
-    if self.callbackName then
-        Helper.unregisterGlobalCallback(self.callbackName)
-        self.callbackName = nil
-    end
     local cardCount = Helper.getCardCount(Helper.getDeckOrCard(self.zone))
     if cardCount > 0 then
         local height = 0.7 + 0.1 + cardCount * 0.01
         local label = I18N("acquireButton") .. " (" .. tostring(cardCount) .. ")"
-        self.callbackName = Helper.createAreaButton(self.zone, self.anchor, height, label, function (_, color)
+        Helper.createAreaButton(self.zone, self.anchor, height, label, function (_, color)
             if not self.disabled then
                 local continuation = acquire(self, color)
                 if continuation then

@@ -132,7 +132,7 @@ function Combat._setUpConflict()
         success.doAfter(function (card)
             local i = 0
             for _, object in pairs(Combat.victoryPointTokenBag.getObjects()) do
-                if card.getDescription() == object.description then
+                if Helper.getID(card) == Helper.getID(object) then
                     local origin = Combat.victoryPointTokenZone.getPosition()
                     local position = origin + Vector(0.5 - (i % 2), 0.5 + math.floor(i / 2), 0)
                     i = i + 1
@@ -462,16 +462,16 @@ function Combat.getCurrentConflictName()
     assert(deckOrCard)
     if deckOrCard.type == "Deck" then
         local objects = deckOrCard.getObjects()
-        return objects[#objects].description
+        return Helper.getID(objects[#objects])
     else
-        return deckOrCard.getDescription()
+        return Helper.getID(deckOrCard)
     end
 end
 
 ---
 function Combat.gainVictoryPoint(color, name)
     for _, object in ipairs(Combat.victoryPointTokenZone.getObjects()) do
-        if object.hasTag("victoryPointToken") and object.getDescription() == name then
+        if object.hasTag("victoryPointToken") and Helper.getID(object) == name then
             PlayBoard.grantScoreToken(color, object)
             return true
         end

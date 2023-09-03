@@ -1,4 +1,5 @@
 local Helper = require("utils.Helper")
+local I18N = require("utils.I18N")
 
 local Deck = {
     sources = {},
@@ -710,7 +711,7 @@ function Deck._generateDeck(deckName, position, contributions, sources)
             scaleZ = 1
         },
         Nickname = "",
-        Description = deckName,
+        Description = "",
         GMNotes = "",
         AltLookAngle = {
             x = 0.0,
@@ -771,8 +772,8 @@ function Deck._generateDeck(deckName, position, contributions, sources)
             table.insert(data.DeckIDs, tostring(cardId))
             local cardData = Deck._generateCardData(customDeck, customDeckId, cardId)
             cardData.Tags = { deckName }
-
-            cardData.Description = name
+            cardData.Nickname = I18N(name)
+            cardData.GMNotes = name
             table.insert(data.ContainedObjects, cardData)
         end
         ::continue::

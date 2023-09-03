@@ -193,43 +193,50 @@ end
 function TleilaxuResearch._advanceResearch(color, jump, withBenefits)
     local leader = PlayBoard.getLeader(color)
     local researchToken = PlayBoard.getContent(color).researchToken
-    local cellPosition = TleilaxuResearch._worlPositionToResearchSpace(researchToken.getPosition())
-    local newCellPosition = cellPosition + jump
 
-    local p = TleilaxuResearch._researchSpaceToWorldPosition(newCellPosition)
-    researchToken.setPositionSmooth(p + Vector(0, 1, 0.25))
+    for _ = 1, jump do
+        if TleilaxuResearch.hasReachedTwoHelices(color) then
+            PlayBoard.getLeader(color).drawImperiumCards(color, 1)
+        else
+            local cellPosition = TleilaxuResearch._worlPositionToResearchSpace(researchToken.getPosition())
+            local newCellPosition = cellPosition + 1
 
-    if withBenefits then
-        Helper.onceMotionless(researchToken).doAfter(function ()
-            local researchCellBenefits = TleilaxuResearch._findResearchCellBenefits(newCellPosition)
-            assert(researchCellBenefits, "No cell benefits at cell " .. tostring(newCellPosition))
+            local p = TleilaxuResearch._researchSpaceToWorldPosition(newCellPosition)
+            researchToken.setPositionSmooth(p + Vector(0, 1, 0.25))
 
-            for _, resource in ipairs({"spice", "solari"}) do
-                if researchCellBenefits[resource] then
-                    leader.resources(color, resource, researchCellBenefits[resource])
-                end
-            end
+            if withBenefits then
+                Helper.onceMotionless(researchToken).doAfter(function ()
+                    local researchCellBenefits = TleilaxuResearch._findResearchCellBenefits(newCellPosition)
+                    assert(researchCellBenefits, "No cell benefits at cell " .. tostring(newCellPosition))
 
-            if researchCellBenefits.specimen then
-                leader.troops(color, "supply", "tanks", 1)
-            end
+                    for _, resource in ipairs({"spice", "solari"}) do
+                        if researchCellBenefits[resource] then
+                            leader.resources(color, resource, researchCellBenefits[resource])
+                        end
+                    end
 
-            if researchCellBenefits.beetle then
-                leader.beetle(color, 1)
-            end
+                    if researchCellBenefits.specimen then
+                        leader.troops(color, "supply", "tanks", 1)
+                    end
 
-            if researchCellBenefits.research then
-                leader.research(color, Vector(1, 0, -Helper.signum(newCellPosition.z)))
-            end
+                    if researchCellBenefits.beetle then
+                        leader.beetle(color, 1)
+                    end
 
-            if researchCellBenefits.solariToBeetle then
-                Player[color].showConfirmDialog(I18N("confirmSolarisToBeetles"), function()
-                    if leader.resources(color, "solari", -7) then
-                        TleilaxuResearch.advanceTleilax(color, 1)
+                    if researchCellBenefits.research then
+                        leader.research(color, Vector(1, 0, -Helper.signum(newCellPosition.z)))
+                    end
+
+                    if researchCellBenefits.solariToBeetle then
+                        Player[color].showConfirmDialog(I18N("confirmSolarisToBeetles"), function()
+                            if leader.resources(color, "solari", -7) then
+                                TleilaxuResearch.advanceTleilax(color, 1)
+                            end
+                        end)
                     end
                 end)
             end
-        end)
+        end
     end
 end
 

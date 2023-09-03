@@ -48,6 +48,21 @@ def erase_zones(objects, center, radius):
             filtered_objects.append(object)
     return filtered_objects
 
+def migrate_description(object):
+    if 'Nickname' in object and object['Nickname'] != '' :
+        object['Nickname'] = ''
+    if 'Description' in object:
+        description = object['Description']
+    else:
+        description = None
+    if description:
+        if ' ' in description or description[0].islower():
+            print('Migrating: ' + description)
+            object['GMNotes'] = description
+        else:
+            print('Rejecting: ' + description)
+        object['Description'] = ''
+
 def patch_save(input_path, output_path):
 
     save = None
@@ -63,6 +78,11 @@ def patch_save(input_path, output_path):
         if 'States' in object:
             for _, state in object['States'].items():
                 rectify_rotation(state)
+
+        if 'ContainedObjects' in object:
+            for child in object['ContainedObjects']:
+                rectify_rotation(child)
+                migrate_description(child)
 
         guid = object['GUID']
         object_by_guid[guid] = object

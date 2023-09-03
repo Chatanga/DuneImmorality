@@ -131,7 +131,7 @@ local IntrigueCard = {
     reinforcements = {categories = {'plot'}, plot = {"-3 Solari -> +3 troops. If its your reveal you may deploy to conflict"}},
     infiltrate = {categories = {'plot'}, plot = {"Enemy agents don’t block your next agent on board spaces this turn"}},
     windfall = {categories = {'plot'}, plot = {solari(2)}},
-    choamSharess = {categories = {'plot'}, plot = {"-7 -> +1 VP"}},
+    choamShares = {categories = {'plot'}, plot = {"-7 -> +1 VP"}},
     -- ix
     bypassProtocol = {categories = {'plot'}, plot = {"Acquire 1 card worth 3 or less or -2 Spice -> card worth 5 or less and place on top of"}},
     blackmail = {categories = {'combat'}, plot = {"-1 inf ? -> +5 swords"}},
@@ -166,7 +166,7 @@ local IntrigueCard = {
 }
 
 function IntrigueCard._resolveCard(card)
-    local cardName = card.getDescription()
+    local cardName = Helper.getID(card)
     local cardInfo = IntrigueCard[cardName]
     assert(cardInfo, "Unknown card: " .. cardName)
     cardInfo.name = cardName

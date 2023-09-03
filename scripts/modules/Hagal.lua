@@ -260,7 +260,7 @@ function Hagal._doActivateFirstValidCard(color, action, n, continuation)
     local success = Helper.moveCardFromZone(Hagal.deckZone, emptySlots[2] + Vector(0, 1 + 0.4 * n, 0), Vector(0, 180, 0))
     if success then
         success.doAfter(function (card)
-            if card.getDescription() == "reshuffle" then
+            if Helper.getID(card) == "reshuffle" then
                 Hagal._reshuffleDeck(color, action, n, continuation)
             elseif action(card) then
                 continuation.run(card)
@@ -305,7 +305,7 @@ end
 ---
 function Hagal.isLeaderCompatible(leader)
     for _, compatibleLeader in ipairs(Helper.getKeys(Hagal.compatibleLeaders)) do
-        if compatibleLeader == leader.getDescription() then
+        if compatibleLeader == Helper.getID(leader) then
             return true
         end
     end
@@ -350,8 +350,6 @@ end
 
 ---
 function Rival.influence(color, faction, amount)
-    local rival = Rival.rivals[color]
-
     local finalFaction = faction
     if not finalFaction then
         local factions = { "emperor", "spacingGuild", "beneGesserit", "fremen" }
@@ -363,27 +361,24 @@ function Rival.influence(color, faction, amount)
         end)
         finalFaction = factions[1]
     end
-
-    return rival.leader.influence(color, finalFaction, amount)
+    return Action.influence(color, finalFaction, amount)
 end
 
 ---
 function Rival.shipments(color, amount)
-    local rival = Rival.rivals[color]
-
     for _ = 1, amount do
         local level = CommercialTrack.getFreighterLevel(color)
         if level < 2 then
-            rival.advanceFreighter(color, 1)
+            Rival.advanceFreighter(color, 1)
         else
-            rival.recallFreighter(color)
-            rival.influence(nil, 1)
+            Rival.recallFreighter(color)
+            Rival.influence(nil, 1)
             if PlayBoard.hasTech(color, "troopTransports") then
-                rival.troops(color, "supply", "combat", 3)
+                Rival.troops(color, "supply", "combat", 3)
             else
-                rival.troops(color, "supply", "garrison", 2)
+                Rival.troops(color, "supply", "garrison", 2)
             end
-            rival.resources(color, "solari", 5)
+            Rival.resources(color, "solari", 5)
         end
     end
     return true
@@ -391,7 +386,6 @@ end
 
 ---
 function Rival.acquireTech(color, stackIndex, discount)
-    local rival = Rival.rivals[color]
 
     local finalStackIndex  = stackIndex
     if not finalStackIndex then
@@ -408,7 +402,7 @@ function Rival.acquireTech(color, stackIndex, discount)
         end
 
         if bestTech then
-            rival.resources(color, "spice", -bestTech.cost)
+            Rival.resources(color, "spice", -bestTech.cost)
             finalStackIndex = bestTechIndex
         else
             return false
@@ -416,10 +410,10 @@ function Rival.acquireTech(color, stackIndex, discount)
     end
 
     local techDetails = TechMarket.getTopCardDetails(finalStackIndex)
-    if rival.leader.acquireTech(color, finalStackIndex, discount) then
+    if Action.acquireTech(color, finalStackIndex, discount) then
         if techDetails.name == "trainingDrones" then
             if PlayBoard.useTech(color, "trainingDrones") then
-                rival.troops(color, "supply", "garrison", 1)
+                Rival.troops(color, "supply", "garrison", 1)
             end
         end
         return true
@@ -430,7 +424,6 @@ end
 
 ---
 function Rival.choose(color, topic)
-    local rival = Rival.rivals[color]
     if topic == "shuttleFleet" then
         local factions = { "emperor", "spacingGuild", "beneGesserit", "fremen" }
         for _ = 1, 2 do
@@ -443,7 +436,7 @@ function Rival.choose(color, topic)
             local faction = factions[1]
             table.remove(factions, 1)
 
-            return rival.influence(color, faction, 1)
+            return Rival.influence(color, faction, 1)
         end
         return true
     else
@@ -453,28 +446,27 @@ end
 
 ---
 function Rival.resource(color, nature, amount)
-    local rival = Rival.rivals[color]
-    if Hagal.getRivalCount() == 2 and rival.resource(color, nature, amount) then
+    if Hagal.getRivalCount() == 2 and Rival.resource(color, nature, amount) then
         local resource = PlayBoard.getResource(color, nature)
         if nature == "spice" then
             if Hagal.riseOfIx then
                 local tech = PlayBoard.getTech(color, "spySatellites")
                 if tech and nature == "spice" and resource:get() >= 3 then
                     Utils.trash(tech)
-                    rival.gainVictoryPoint(color, "spySatellites")
+                    Rival.gainVictoryPoint(color, "spySatellites")
                 end
             else
                 if resource:get() >= 7 then
-                    rival.gainVictoryPoint(color, "rivalSpice")
+                    Rival.gainVictoryPoint(color, "rivalSpice")
                 end
             end
         elseif nature == "water" then
             if resource:get() >= 3 then
-                rival.gainVictoryPoint(color, "rivalWater")
+                Rival.gainVictoryPoint(color, "rivalWater")
             end
         elseif nature == "solari" then
             if resource:get() >= 7 then
-                rival.gainVictoryPoint(color, "rivalSolari")
+                Rival.gainVictoryPoint(color, "rivalSolari")
             end
         end
         return true
@@ -485,15 +477,14 @@ end
 
 ---
 function Rival.drawIntrigues(color, amount)
-    local rival = Rival.rivals[color]
-    if rival.drawIntrigues(color, amount) then
+    if Rival.drawIntrigues(color, amount) then
         local intrigues = PlayBoard.getIntrigues(color)
         if #intrigues >= 3 then
             for _ = 1, 3 do
                 -- Utils.trash(intrigues[i]) ?
                 intrigues[i].setPositionSmooth(self.content.discardZone.getPosition())
             end
-            rival.gainVictoryPoint(color, "rivalIntrigue")
+            Rival.gainVictoryPoint(color, "rivalIntrigue")
         end
         return true
     else
@@ -503,23 +494,28 @@ end
 
 ---
 function Rival.troops(color, from, to, amount)
-    local rival = Rival.rivals[color]
     local finalTo = to
-    if rival.checkContext({ troopTransports = true }) then
+    if Rival.checkContext({ troopTransports = true }) then
         finalTo = "combat"
     end
-    return rival.leader.troops(color, from, finalTo, amount)
+    return Action.troops(color, from, finalTo, amount)
 end
 
 ---
 function Rival.gainVictoryPoint(color, name)
     -- We make an exception for alliance token to make clear that the rival owns it.
     if Hagal.getRivalCount() == 2 or Helper.endsWith(name, "Alliance") then
-        local rival = Rival.rivals[color]
-        return rival.leader.gainVictoryPoint(color, name)
+        return Action.gainVictoryPoint(color, name)
     else
         return false
     end
+end
+
+---
+function Rival.signetRing(color)
+    -- We don't redispatch to the leader in other cases, because rivals ignore their passive abilities.
+    local leader = Rival.rivals[color].leader
+    return leader.signetRing(color)
 end
 
 return Hagal

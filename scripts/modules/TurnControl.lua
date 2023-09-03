@@ -155,7 +155,7 @@ function TurnControl._next(startPlayerLuaIndex)
     TurnControl.currentPlayerLuaIndex = TurnControl._findActivePlayer(startPlayerLuaIndex)
     if TurnControl.currentPlayerLuaIndex then
         local player = TurnControl.players[TurnControl.currentPlayerLuaIndex]
-        log("--- Turn: " .. player .. " ---")
+        log("--- Turn: " .. player .. " --- " .. tostring(TurnControl.getCurrentRound()))
         Helper.emitEvent("playerTurns", TurnControl.currentPhase, player)
     else
         if TurnControl.currentPhase then

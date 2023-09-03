@@ -140,7 +140,7 @@ function ConflictCard.collectReward(color, conflictName, rank, collectOptionalRe
     local conflict = ConflictCard[conflictName]
     assert(conflict, "Unknown conflict: ", conflictName)
     local rewards = conflict.rewards[rank]
-    for _, reward in ipairs(rewards) do
+    for i, reward in ipairs(rewards) do
         reward(color, conflictName, collectOptionalRewards)
     end
 end

@@ -128,7 +128,7 @@ Leader.helenaRichese = Helper.createClass(Leader, {
 Leader.letoAtreides = Helper.createClass(Leader, {
 
     --- Landsraad popularity
-    resource = function (color, resourceName, amount)
+    resources = function (color, resourceName, amount)
         local finalAmount = amount
         if resourceName == "solari" and amount < 0 and Action.checkContext({ phase = "playerTurns", color = color, space = MainBoard.isLandsraadSpace }) then
             finalAmount = amount + 1

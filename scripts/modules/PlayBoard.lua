@@ -393,7 +393,7 @@ function PlayBoard._staticSetUp(settings)
             end
         end
         for _, playBoard in pairs(PlayBoard._getPlayBoards()) do
-            playBoard.instructionTextAnchor.clearButtons()
+            Helper.clearButtons(playBoard.instructionTextAnchor)
         end
     end)
 
@@ -404,9 +404,9 @@ function PlayBoard._staticSetUp(settings)
             if PlayBoard.isHuman(otherColor) then
                 local instruction = (playBoard.leader or Action).instruct(phase, color == otherColor) or "-"
                 if otherPlayBoard.instructionTextAnchor then
-                    otherPlayBoard.instructionTextAnchor.clearButtons()
+                    Helper.clearButtons(otherPlayBoard.instructionTextAnchor)
                     Helper.createAbsoluteButtonWithRoundness(otherPlayBoard.instructionTextAnchor, 1, false, {
-                        click_function = "NOP",
+                        click_function = Helper.registerGlobalCallback(),
                         label = instruction,
                         position = otherPlayBoard.instructionTextAnchor.getPosition() + Vector(0, 0.5, 0),
                         width = 0,
@@ -425,7 +425,6 @@ function PlayBoard._staticSetUp(settings)
         end
 
         PlayBoard._setActivePlayer(phase, color)
-
         Music.play("turn")
     end)
 
@@ -449,7 +448,7 @@ function PlayBoard:_recall()
 
     -- Send all played cards to the discard, save those which shouldn't.
     Helper.forEach(Helper.filter(Park.getObjects(self.agentCardPark), Utils.isImperiumCard), function (_, card)
-        local cardName = card.getDescription()
+        local cardName = Helper.getID(card)
         if cardName == "foldspace" then
             card.setPositionSmooth(Reserve.foldspaceSlotZone.getPosition())
         elseif Helper.isElementOf(cardName, {"seekAllies", "powerPlay", "treachery"}) then
@@ -501,7 +500,7 @@ function PlayBoard._setActivePlayer(phase, color)
                 end
             else
                 playBoard.content.startEndTurnButton.interactable = false
-                playBoard.content.startEndTurnButton.clearButtons()
+                Helper.clearButtons(playBoard.content.startEndTurnButton)
             end
             local board = playBoard.content.board
             board.AssetBundle.playTriggerEffect(effectIndex)
@@ -528,6 +527,7 @@ end
 
 ---
 function PlayBoard:_createEndOfTurnButton()
+    Helper.clearButtons(self.content.startEndTurnButton)
     self.content.startEndTurnButton.createButton({
         click_function = self:createExclusiveCallback("onEndOfTurn", function ()
             self.content.startEndTurnButton.AssetBundle.playTriggerEffect(0)
@@ -870,16 +870,16 @@ function PlayBoard.findBoardColor(board)
 end
 
 ---
-function PlayBoard:createExclusiveCallback(name, f)
+function PlayBoard:createExclusiveCallback(name, innerCallback)
     return Helper.registerGlobalCallback(function (_, color, _)
         if self.color == color then
-            -- Inhibit the buttons for a short time.
-            self:clearButtons()
-            Wait.time(function()
-                self:createButtons()
-            end, 0.3)
-
-            f()
+            if not self.buttonsDisabled then
+                self.buttonsDisabled = true
+                Wait.time(function ()
+                    self.buttonsDisabled = false
+                end, 0.5)
+                innerCallback()
+            end
         else
             broadcastToColor(I18N('noTouch'), color, "Purple")
         end
@@ -907,9 +907,9 @@ function PlayBoard:getFontColor()
 end
 
 function PlayBoard:clearButtons()
-    self.content.board.clearButtons()
+    Helper.clearButtons(self.content.board)
     if self.content.atomicsToken then
-        self.content.atomicsToken.clearButtons()
+        Helper.clearButtons(self.content.atomicsToken)
     end
 end
 
@@ -960,8 +960,7 @@ function PlayBoard:createButtons()
         font_color = fontColor
     })
 
-    -- function PlayBoard_onDoNothing(_, _, _) end
-    board.createButton({
+     board.createButton({
         click_function = Helper.registerGlobalCallback(),
         label = I18N("agentTurn"),
         position = self:_newSymmetricBoardPosition(-14.8, 0, -1),
@@ -1025,7 +1024,7 @@ function PlayBoard:tryRevealHandEarly()
     local board = self.content.board
 
     board.createButton({
-        click_function = 'NOP',
+        click_function = self:createExclusiveCallback("onValidateReveal"),
         label = I18N("revealEarlyConfirm"),
         position = origin,
         width = 0,
@@ -1049,9 +1048,7 @@ function PlayBoard:tryRevealHandEarly()
         color = "Green"
     })
     board.createButton({
-        click_function = self:createExclusiveCallback("onCancelReveal", function ()
-            self:_resetDiscard()
-        end),
+        click_function = self:createExclusiveCallback("onCancelReveal"),
         label = I18N('no'),
         position = origin + Vector(-1, 0, 1),
         width = 1000,
@@ -1073,7 +1070,7 @@ function PlayBoard:revealHand()
             We leave the sister card in the player's hand to simplify things and
             make clear to the player that the card must be manually revealed.
         ]]--
-        return Utils.isImperiumCard(card) and card.getDescription() ~= "beneGesseritSister"
+        return Utils.isImperiumCard(card) and Helper.getID(card) ~= "beneGesseritSister"
     end
 
     local revealedCards = Helper.filter(Player[self.color].getHandObjects(), properCard)
@@ -1235,7 +1232,8 @@ end
 
 ---
 function PlayBoard:_nukeConfirm()
-    self.content.atomicsToken.clearButtons()
+    Helper.clearButtons(self.content.atomicsToken)
+
     self.content.atomicsToken.createButton({
         click_function = Helper.registerGlobalCallback(),
         label = I18N("atomicsConfirm"),
@@ -1324,13 +1322,13 @@ function PlayBoard.setLeader(color, leaderCard)
             playBoard.leader = Hagal.newRival(color)
         else
             if not Hagal.isLeaderCompatible(leaderCard) then
-                log("Not a leader compatible with a rival: " .. leaderCard.getDescription())
+                log("Not a leader compatible with a rival: " .. Helper.getID(leaderCard))
                 return false
             end
-            playBoard.leader = Hagal.newRival(color, Leader.newLeader(leaderCard.getDescription()))
+            playBoard.leader = Hagal.newRival(color, Leader.newLeader(Helper.getID(leaderCard)))
         end
     else
-        playBoard.leader = Leader.newLeader(leaderCard.getDescription())
+        playBoard.leader = Leader.newLeader(Helper.getID(leaderCard))
     end
     assert(playBoard.leader)
     local position = playBoard.content.leaderZone.getPosition()
@@ -1440,7 +1438,7 @@ end
 function PlayBoard.getTech(color, techName)
     local techs = PlayBoard.getPlayBoard(color).techPark.zone.getObjects()
     for _, tech in ipairs(techs) do
-        if tech.getDescription() == techName then
+        if Helper.getID(tech) == techName then
             return tech
         end
     end

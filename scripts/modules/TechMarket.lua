@@ -144,6 +144,8 @@ function TechMarket.acquireTech(stackIndex, color)
         TechMarket._doAcquireTech(stackIndex, color).doAfter(function ()
             if TechMarket.hagalSoloModeEnabled then
                 TechMarket.pruneStacksForSoloMode()
+            else
+                TechMarket.frozen = false
             end
         end)
     end

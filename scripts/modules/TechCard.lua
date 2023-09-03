@@ -99,7 +99,7 @@ local TechCard = {
 }
 
 function TechCard._resolveCard(card)
-    local cardName = card.getDescription()
+    local cardName = Helper.getID(card)
     local cardInfo = TechCard[cardName]
     assert(cardInfo, "Unknown card: " .. tostring(cardName))
     cardInfo.name = cardName
@@ -126,7 +126,7 @@ function TechCard.applyBuyEffect(color, techCard)
     local bonus = TechCard.getDetails(techCard).acquireBonus
     if bonus then
         for _, bonusItem in ipairs(bonus) do
-            bonusItem(color, techCard.getDescription())
+            bonusItem(color, Helper.getID(techCard))
         end
     end
 end

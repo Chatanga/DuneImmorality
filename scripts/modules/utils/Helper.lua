@@ -1,4 +1,5 @@
 local Helper = {
+    sharedTables = {},
     eventListenersByTopic = {},
     ERASE = function ()
         return "__erase__"
@@ -34,7 +35,7 @@ end
 function Helper.emitEvent(topic, ...)
     local listeners = Helper.eventListenersByTopic[topic]
     if listeners then
-        for _, eventListener in pairs(listeners) do
+        for _, eventListener in pairs(Helper.shallowCopy(listeners)) do
             eventListener(...)
         end
     end
@@ -421,12 +422,14 @@ end
 
 ---
 function Helper.setSharedTable(tableName, table)
-    Global.setTable(tableName, table)
+    --Global.setTable(tableName, table)
+    Helper.sharedTables[tableName] = table
 end
 
 ---
 function Helper.getSharedTable(tableName)
-    return Global.getTable(tableName)
+    --return Global.getTable(tableName)
+    return Helper.sharedTables[tableName]
 end
 
 ---
@@ -599,41 +602,77 @@ function Helper.getClass(instance)
 end
 
 ---
-function Helper.getNopCallback()
-    local uniqueName = "__generatedCallback0"
+function Helper._getNopCallback()
+    local uniqueName = "generatedCallback0"
     local nopCallback = Global.getVar(uniqueName)
     if not nopCallback then
-        nopCallback = Helper.registerGlobalCallback(function ()
+        Global.setVar(uniqueName, function ()
             -- NOP
         end)
     end
     return uniqueName
 end
 
+Helper.uniqueNamePool = {}
+
 ---
 function Helper.registerGlobalCallback(callback)
-    local GLOBAL_COUNTER_NAME = "__generatedCallbackNextIndex"
+    local GLOBAL_COUNTER_NAME = "generatedCallbackNextIndex"
     if callback then
-        local nextIndex = Global.getVar(GLOBAL_COUNTER_NAME) or 1
-        local uniqueName = "__generatedCallback" .. tostring(nextIndex)
-        Global.setVar(uniqueName, function (object, color, altClick)
-            if callback then
-                callback(object, color, altClick)
-            end
-        end)
-        Global.setVar(GLOBAL_COUNTER_NAME, nextIndex + 1)
+        assert(type(callback) == "function")
+        local uniqueName
+        if #Helper.uniqueNamePool > 0 then
+            uniqueName = Helper.uniqueNamePool[1]
+            table.remove(Helper.uniqueNamePool, 1)
+        else
+            local nextIndex = Global.getVar(GLOBAL_COUNTER_NAME) or 1
+            assert(nextIndex < 200, "Probably a callback leak (or are you too greedy ?).")
+            --Helper.dumpFunction("Global.setVar", GLOBAL_COUNTER_NAME, nextIndex + 1)
+            Global.setVar(GLOBAL_COUNTER_NAME, nextIndex + 1)
+            --log("Global callback count: " .. tostring(nextIndex))
+            uniqueName = "generatedCallback" .. tostring(nextIndex)
+        end
+        --Helper.dumpFunction("Global.setVar", uniqueName)
+        Global.setVar(uniqueName, callback)
         return uniqueName
     else
-        return Helper.getNopCallback()
+        return Helper._getNopCallback()
     end
 end
 
 ---
 function Helper.unregisterGlobalCallback(uniqueName)
-    local callback = Global.getVar(uniqueName)
-    assert(callback, "Unknown global callback: " .. uniqueName)
-    if uniqueName ~= "__generatedCallback0" then
-        Global.setVar(uniqueName, nil)
+    --Helper.dumpFunction("Helper.unregisterGlobalCallback", uniqueName)
+    if uniqueName ~= "generatedCallback0" then
+        local callback = Global.getVar(uniqueName)
+        assert(callback, "Unknown global callback: " .. uniqueName)
+        --Global.setVar(uniqueName, nil)
+        table.insert(Helper.uniqueNamePool, uniqueName)
+    end
+end
+
+---
+function Helper.clearButtons(object)
+    local buttons = object.getButtons()
+    if buttons then
+        for _, button in ipairs(buttons) do
+            local callback = button.click_function
+            if callback then
+                assert(Helper.startsWith(callback, "generatedCallback"), "Not a generated callback: " .. callback)
+                Helper.unregisterGlobalCallback(callback)
+            end
+        end
+        object.clearButtons()
+    end
+end
+
+---
+function Helper.getID(object)
+    assert(object)
+    if object.getGMNotes then
+        return object.getGMNotes()
+    else
+        return object.gm_notes
     end
 end
 

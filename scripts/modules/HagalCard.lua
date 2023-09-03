@@ -6,6 +6,7 @@ local MainBoard = Module.lazyRequire("MainBoard")
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
 local TleilaxuRow = Module.lazyRequire("TleilaxuRow")
+local Hagal = Module.lazyRequire("Hagal")
 
 local HagalCard = {
     strengths = {
@@ -38,7 +39,7 @@ local HagalCard = {
 
 function HagalCard.setStrength(color, card)
     local rival = PlayBoard.getLeader(color)
-    local strength = HagalCard.strengths[card.getDescription()]
+    local strength = HagalCard.strengths[Helper.getID(card)]
     if strength then
         rival.resources(color, "strength", strength)
         return true
@@ -49,7 +50,7 @@ end
 
 function HagalCard.activate(color, card)
     local rival = PlayBoard.getLeader(color)
-    local actionName = Helper.toCamelCase("_activate", card.getDescription())
+    local actionName = Helper.toCamelCase("_activate", Helper.getID(card))
     if HagalCard[actionName] then
         return HagalCard[actionName](color, rival)
     else
@@ -331,6 +332,7 @@ function HagalCard._activateCarthag1(color, rival)
         rival.troops(color, "supply", "garrison", 1)
         rival.beetle(color, 1)
         TleilaxuRow.trash(1)
+        HagalCard.sendUpToTwoUnits(color, rival)
         return true
     else
         return false
@@ -342,6 +344,7 @@ function HagalCard._activateCarthag2(color, rival)
         HagalCard.sendRivalAgent(color, rival, "carthag")
         rival.troops(color, "supply", "garrison", 1)
         rival.beetle(color, 1)
+        HagalCard.sendUpToTwoUnits(color, rival)
         return true
     else
         return false
@@ -354,6 +357,7 @@ function HagalCard._activateCarthag3(color, rival)
         rival.troops(color, "supply", "garrison", 1)
         rival.beetle(color, 1)
         TleilaxuRow.trash(2)
+        HagalCard.sendUpToTwoUnits(color, rival)
         return true
     else
         return false
@@ -372,20 +376,24 @@ function HagalCard.sendRivalAgent(color, rival, spaceName)
 end
 
 function HagalCard.sendUpToTwoUnits(color, rival)
-    local count = rival.dreadnought(color, "garrison", "combat", 2)
-    if count < 2 then
-        rival.troops(color, "garrison", "combat", 2 - count)
-    end
-
-    if PlayBoard.hasTech(color, "flagship") then
-        local solari = PlayBoard.getResource(color, "solari")
-        local supply = PlayBoard.getSupplyPark(color)
-        local leader = PlayBoard.getLeader(color)
-
-        if PlayBoard.hasTech(color, "flagship") and solari:get() >= 4 and #Park.getObjects(supply) >= 3 then
-            leader.resources(color, "solari", 4)
-            leader.troops(color, "supply", "combat", 3)
+    if Hagal.riseOfIx then
+        local count = rival.dreadnought(color, "garrison", "combat", 2)
+        if count < 2 then
+            rival.troops(color, "garrison", "combat", 2 - count)
         end
+
+        if PlayBoard.hasTech(color, "flagship") then
+            local solari = PlayBoard.getResource(color, "solari")
+            local supply = PlayBoard.getSupplyPark(color)
+            local leader = PlayBoard.getLeader(color)
+
+            if PlayBoard.hasTech(color, "flagship") and solari:get() >= 4 and #Park.getObjects(supply) >= 3 then
+                leader.resources(color, "solari", 4)
+                leader.troops(color, "supply", "combat", 3)
+            end
+        end
+    else
+        rival.troops(color, "garrison", "combat", 2)
     end
 end
 
