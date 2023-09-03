@@ -69,7 +69,7 @@ Having launched `./listen.py` in another terminal will provide you with an immed
 - Corrupted decks?
 - Too many chained set/get in Global?
 
-- Basic logging in the Action facade (usign context to group).
+- Basic logging in the Action facade (using context to group).
 - Restore translations (tokens included).
 - Blitz!
 - Arrakeen Scouts.

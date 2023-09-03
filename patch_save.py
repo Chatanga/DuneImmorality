@@ -63,6 +63,10 @@ def migrate_description(object):
             print('Rejecting: ' + description)
         object['Description'] = ''
 
+def patch_object(object):
+    rectify_rotation(object)
+    #migrate_description(object)
+
 def patch_save(input_path, output_path):
 
     save = None
@@ -77,17 +81,16 @@ def patch_save(input_path, output_path):
     for object in objects:
         if 'States' in object:
             for _, state in object['States'].items():
-                rectify_rotation(state)
+                patch_object(state)
 
         if 'ContainedObjects' in object:
             for child in object['ContainedObjects']:
-                rectify_rotation(child)
-                migrate_description(child)
+                patch_object(child)
 
         guid = object['GUID']
         object_by_guid[guid] = object
 
-        rectify_rotation(object)
+        patch_object(object)
 
         new_objects.append(object)
 

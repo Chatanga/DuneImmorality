@@ -194,48 +194,46 @@ function TleilaxuResearch._advanceResearch(color, jump, withBenefits)
     local leader = PlayBoard.getLeader(color)
     local researchToken = PlayBoard.getContent(color).researchToken
 
-    for _ = 1, jump do
-        if TleilaxuResearch.hasReachedTwoHelices(color) then
-            PlayBoard.getLeader(color).drawImperiumCards(color, 1)
-        else
-            local cellPosition = TleilaxuResearch._worlPositionToResearchSpace(researchToken.getPosition())
-            local newCellPosition = cellPosition + 1
+    if TleilaxuResearch.hasReachedTwoHelices(color) then
+        PlayBoard.getLeader(color).drawImperiumCards(color, 1)
+    else
+        local cellPosition = TleilaxuResearch._worlPositionToResearchSpace(researchToken.getPosition())
+        local newCellPosition = cellPosition + jump
 
-            local p = TleilaxuResearch._researchSpaceToWorldPosition(newCellPosition)
-            researchToken.setPositionSmooth(p + Vector(0, 1, 0.25))
+        local p = TleilaxuResearch._researchSpaceToWorldPosition(newCellPosition)
+        researchToken.setPositionSmooth(p + Vector(0, 1, 0.25))
 
-            if withBenefits then
-                Helper.onceMotionless(researchToken).doAfter(function ()
-                    local researchCellBenefits = TleilaxuResearch._findResearchCellBenefits(newCellPosition)
-                    assert(researchCellBenefits, "No cell benefits at cell " .. tostring(newCellPosition))
+        if withBenefits then
+            Helper.onceMotionless(researchToken).doAfter(function ()
+                local researchCellBenefits = TleilaxuResearch._findResearchCellBenefits(newCellPosition)
+                assert(researchCellBenefits, "No cell benefits at cell " .. tostring(newCellPosition))
 
-                    for _, resource in ipairs({"spice", "solari"}) do
-                        if researchCellBenefits[resource] then
-                            leader.resources(color, resource, researchCellBenefits[resource])
+                for _, resource in ipairs({"spice", "solari"}) do
+                    if researchCellBenefits[resource] then
+                        leader.resources(color, resource, researchCellBenefits[resource])
+                    end
+                end
+
+                if researchCellBenefits.specimen then
+                    leader.troops(color, "supply", "tanks", 1)
+                end
+
+                if researchCellBenefits.beetle then
+                    leader.beetle(color, 1)
+                end
+
+                if researchCellBenefits.research then
+                    leader.research(color, Vector(1, 0, -Helper.signum(newCellPosition.z)))
+                end
+
+                if researchCellBenefits.solariToBeetle then
+                    Player[color].showConfirmDialog(I18N("confirmSolarisToBeetles"), function()
+                        if leader.resources(color, "solari", -7) then
+                            TleilaxuResearch.advanceTleilax(color, 1)
                         end
-                    end
-
-                    if researchCellBenefits.specimen then
-                        leader.troops(color, "supply", "tanks", 1)
-                    end
-
-                    if researchCellBenefits.beetle then
-                        leader.beetle(color, 1)
-                    end
-
-                    if researchCellBenefits.research then
-                        leader.research(color, Vector(1, 0, -Helper.signum(newCellPosition.z)))
-                    end
-
-                    if researchCellBenefits.solariToBeetle then
-                        Player[color].showConfirmDialog(I18N("confirmSolarisToBeetles"), function()
-                            if leader.resources(color, "solari", -7) then
-                                TleilaxuResearch.advanceTleilax(color, 1)
-                            end
-                        end)
-                    end
-                end)
-            end
+                    end)
+                end
+            end)
         end
     end
 end
@@ -256,7 +254,7 @@ end
 
 ---
 function TleilaxuResearch._tleilaxSpaceToWorldPosition(positionInTleilaxSpace)
-    return TleilaxuResearch.tleilaxuLevelZones[math.min(7, positionInTleilaxSpace)].getPosition()
+    return TleilaxuResearch.tleilaxuLevelZones[positionInTleilaxSpace].getPosition()
 end
 
 ---
@@ -302,6 +300,11 @@ function TleilaxuResearch._advanceTleilax(color, jump, withBenefits)
     local leader = PlayBoard.getLeader(color)
     local tleilaxToken = PlayBoard.getContent(color).tleilaxToken
     local level = TleilaxuResearch._worlPositionToTleilaxSpace(tleilaxToken.getPosition())
+
+    if level >= 8 then
+        return
+    end
+
     local newLevel = level + jump
 
     local p = TleilaxuResearch._tleilaxSpaceToWorldPosition(newLevel)
