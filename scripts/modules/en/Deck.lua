@@ -29,18 +29,31 @@ local Deck = {
     conflict3 = {
         conflict = { "http://cloud-3.steamusercontent.com/ugc/1892102591130041563/F1BEAE6266E75B7A2F5DE511DB4FEB25A2CD486B/", 3, 2 },
     },
-    hagal = {
+    hagal_old = {
         hagal = { "http://cloud-3.steamusercontent.com/ugc/1701781845339075332/677B5A5C2EECAF60962F6002D7320601EB4E49AA/", 7, 2 },
         hagal_wealth = { "http://cloud-3.steamusercontent.com/ugc/1670239430231972899/4E94083423F0DD9F5B0A4E72BAC4A60328175163/", 1, 1 },
         hagal_arrakeen2p = { "http://cloud-3.steamusercontent.com/ugc/1670239430231975770/CAE72AEA7F428DB102776EBFD022458D58673955/", 1, 1 },
-        ixHagal_dreadnought1p = { "http://cloud-3.steamusercontent.com/ugc/1833531164457147776/CC2DD2C8267024F457F281E0ECCBBE97DA75C6C0/", 1, 1 },
-        ixHagal_dreadnought2p = { "http://cloud-3.steamusercontent.com/ugc/1833531164457143084/A92B5F8751A12CC7D42688E5C8B00A64D62FDDAB/", 1, 1 },
-        ixHagal_techNegogiation1p = { "http://cloud-3.steamusercontent.com/ugc/1833531164457150040/2551267D6FE07F1742E239316376FF840CD7E711/", 1, 1 },
-        ixHagal_interstellarShipping = { "http://cloud-3.steamusercontent.com/ugc/1833531164457161185/7B73BB94440A5E5F4032C692B58DAFFD759DBF98/", 1, 1 },
-        ixHagal_foldspaceAndInterstellarShipping = { "http://cloud-3.steamusercontent.com/ugc/1833531164457148228/4F6C09B50E63B47E3F40BB9B605729DC67C3E458/", 1, 1 },
-        ixHagal_smugglingAndInterstellarShipping = { "http://cloud-3.steamusercontent.com/ugc/1833531164457148962/352C9C2F86BCE0E8832CA2265D0C2A4829D11A14/", 1, 1 },
+        ixHagal_dreadnought1p = { "http://cloud-3.steamusercontent.com/ugc/1833531164457147776/CC2DD2C8267024F457F281E0ECCBBE97DA75C6C0/", 1, 1, Vector(0.88, 1, 0.83) },
+        ixHagal_dreadnought2p = { "http://cloud-3.steamusercontent.com/ugc/1833531164457143084/A92B5F8751A12CC7D42688E5C8B00A64D62FDDAB/", 1, 1, Vector(0.9, 1, 0.83) },
+        ixHagal_techNegogiation1p = { "http://cloud-3.steamusercontent.com/ugc/1833531164457150040/2551267D6FE07F1742E239316376FF840CD7E711/", 1, 1, Vector(0.9, 1, 0.83) },
+        ixHagal_interstellarShipping = { "http://cloud-3.steamusercontent.com/ugc/1833531164457161185/7B73BB94440A5E5F4032C692B58DAFFD759DBF98/", 1, 1, Vector(0.9, 1, 0.83) },
+        ixHagal_foldspaceAndInterstellarShipping = { "http://cloud-3.steamusercontent.com/ugc/1833531164457148228/4F6C09B50E63B47E3F40BB9B605729DC67C3E458/", 1, 1, Vector(0.9, 1, 0.83) },
+        ixHagal_smugglingAndInterstellarShipping = { "http://cloud-3.steamusercontent.com/ugc/1833531164457148962/352C9C2F86BCE0E8832CA2265D0C2A4829D11A14/", 1, 1, Vector(0.9, 1, 0.83) },
         imortalityHagal = { "http://cloud-3.steamusercontent.com/ugc/1974296545160677305/AA0F8C9CAE3E11C28EE4379FA045FF11DDD03C38/", 2, 2 },
         hagal_churn = { "http://cloud-3.steamusercontent.com/ugc/1759187425912025810/E59D268A3103235748A7CEE2535ED0BF97D61A9A/", 1, 1 },
+    },
+    hagal = {
+        hagal = { 'file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/resources/hagal/677B5A5C2EECAF60962F6002D7320601EB4E49AA_Hagal deck.png', 7, 2 },
+        hagal_wealth = { 'file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/resources/hagal/4E94083423F0DD9F5B0A4E72BAC4A60328175163_Wealth Updated.png', 1, 1 },
+        hagal_arrakeen2p = { 'file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/resources/hagal/CAE72AEA7F428DB102776EBFD022458D58673955_House Hagal B Updated.png', 1, 1 },
+        ixHagal_dreadnought1p = { 'file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/resources/hagal/CC2DD2C8267024F457F281E0ECCBBE97DA75C6C0_Dreadnought D v2.png', 1, 1, Vector(0.88, 1, 0.83) },
+        ixHagal_dreadnought2p = { 'file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/resources/hagal/A92B5F8751A12CC7D42688E5C8B00A64D62FDDAB_Dreadnought A v2.png', 1, 1, Vector(0.9, 1, 0.83) },
+        ixHagal_techNegogiation1p = { "file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/resources/hagal/2551267D6FE07F1742E239316376FF840CD7E711_Tech Negotiation B v2.png", 1, 1, Vector(0.9, 1, 0.83) },
+        ixHagal_interstellarShipping = { 'file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/resources/hagal/7B73BB94440A5E5F4032C692B58DAFFD759DBF98_Interstellar Shipping v2.png', 1, 1, Vector(0.9, 1, 0.83) },
+        ixHagal_foldspaceAndInterstellarShipping = { 'file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/resources/hagal/4F6C09B50E63B47E3F40BB9B605729DC67C3E458_Fold Space and Interstellar Shipping v2.png', 1, 1, Vector(0.9, 1, 0.83) },
+        ixHagal_smugglingAndInterstellarShipping = { 'file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/resources/hagal/352C9C2F86BCE0E8832CA2265D0C2A4829D11A14_Smuggling and Interstellar Shipping v2.png', 1, 1, Vector(0.9, 1, 0.83) },
+        imortalityHagal = { 'file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/resources/hagal/AA0F8C9CAE3E11C28EE4379FA045FF11DDD03C38_cartes solo.png', 2, 2 },
+        hagal_churn = { 'file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/resources/hagal/E59D268A3103235748A7CEE2535ED0BF97D61A9A_Churn.png', 1, 1 },
     },
     tech = {
         windtraps = { "http://cloud-3.steamusercontent.com/ugc/1825651231292473674/1357A12AE8B805DDA4B35054C7A042EB60ED8D93/", 1, 1 },
@@ -84,7 +97,7 @@ local Deck = {
 function Deck.load(loader, cards, category, customDeckName, startLuaIndex, cardNames)
     local desc = Deck[category][customDeckName]
     local functioName = Helper.toCamelCase("create", category, "CustomDeck")
-    local customDeck = loader[functioName](desc[1], desc[2], desc[3])
+    local customDeck = loader[functioName](desc[1], desc[2], desc[3], desc[4])
     return loader.loadCustomDeck(cards, customDeck, startLuaIndex, cardNames)
 end
 

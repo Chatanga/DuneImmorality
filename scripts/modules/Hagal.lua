@@ -78,7 +78,7 @@ function Hagal._staticSetUp(settings)
     Hagal.riseOfIx = settings.riseOfIx
 
     Deck.generateHagalDeck(Hagal.deckZone, settings.riseOfIx, settings.immortality, settings.numberOfPlayers).doAfter(function (deck)
-        deck.shuffle()
+        Helper.shuffleDeck(deck)
     end)
 
     Hagal.selectedDifficulty = settings.difficulty
@@ -136,7 +136,11 @@ function Hagal.activate(phase, color)
     -- A delay before and after the action, to let the human(s) see the progress.
     Wait.time(function ()
         Hagal._lateActivate(phase, color).doAfter(function ()
-            Wait.time(TurnControl.endOfTurn, 1)
+            if true then
+                Wait.time(TurnControl.endOfTurn, 1)
+            else
+                PlayBoard.createEndOfTurnButton(color)
+            end
         end)
     end, 1)
 end
@@ -286,7 +290,7 @@ function Hagal._reshuffleDeck(color, action, n, continuation)
     end
     Wait.time(function ()
         local deck = Helper.getDeck(Hagal.deckZone)
-        deck.shuffle()
+        Helper.shuffleDeck(deck)
         Helper.onceShuffled(deck).doAfter(function ()
             Hagal._doActivateFirstValidCard(color, action, n + 1, continuation)
         end)
@@ -445,8 +449,11 @@ function Rival.choose(color, topic)
 end
 
 ---
-function Rival.resource(color, nature, amount)
-    if Hagal.getRivalCount() == 2 and Rival.resource(color, nature, amount) then
+function Rival.resources(color, nature, amount)
+    Helper.dumpFunction("Rival.resource", color, nature, amount)
+    log(Hagal.getRivalCount() == 2)
+    if Hagal.getRivalCount() == 2 and Action.resources(color, nature, amount) then
+        log(1)
         local resource = PlayBoard.getResource(color, nature)
         if nature == "spice" then
             if Hagal.riseOfIx then
@@ -457,15 +464,20 @@ function Rival.resource(color, nature, amount)
                 end
             else
                 if resource:get() >= 7 then
+                    resource:change(-7)
                     Rival.gainVictoryPoint(color, "rivalSpice")
                 end
             end
         elseif nature == "water" then
             if resource:get() >= 3 then
+                resource:change(-3)
                 Rival.gainVictoryPoint(color, "rivalWater")
             end
         elseif nature == "solari" then
+            log(2)
             if resource:get() >= 7 then
+                log(3)
+                resource:change(-7)
                 Rival.gainVictoryPoint(color, "rivalSolari")
             end
         end
@@ -477,7 +489,7 @@ end
 
 ---
 function Rival.drawIntrigues(color, amount)
-    if Rival.drawIntrigues(color, amount) then
+    if Action.drawIntrigues(color, amount) then
         local intrigues = PlayBoard.getIntrigues(color)
         if #intrigues >= 3 then
             for _ = 1, 3 do

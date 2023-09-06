@@ -1,5 +1,6 @@
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
+local I18N = require("utils.I18N")
 
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local Combat = Module.lazyRequire("Combat")
@@ -49,6 +50,10 @@ function ScoreBoard.onLoad(state)
         }
     })
 
+    Helper.forEachRecursively(ScoreBoard.tokens, function (name, token)
+        token.setName(I18N(Helper.getID(token)))
+    end)
+
     if state.settings and state.settings.riseOfIx then
         ScoreBoard._staticSetUp(state.settings)
     end
@@ -77,10 +82,19 @@ end
 
 ---
 function ScoreBoard._staticSetUp(settings)
-
+    -- NOP
 end
 
----
+--- TODO
+--[[
+
+if token.type == "Bag" then
+    for _, realToken in ipairs(token.getObjects()) do
+        realToken.name = I18N(realToken.gm_notes)
+    end
+end
+
+]]--
 function ScoreBoard.gainVictoryPoint(color, name)
     local holder = {
         success = false

@@ -31,7 +31,7 @@ end
 ---
 function Intrigue._staticSetUp(settings)
     Deck.generateIntrigueDeck(Intrigue.deckZone, settings.riseOfx, settings.immortality).doAfter(function (deck)
-        deck.shuffle()
+        Helper.shuffleDeck(deck)
     end)
 end
 

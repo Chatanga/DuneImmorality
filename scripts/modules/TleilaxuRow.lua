@@ -39,7 +39,7 @@ end
 ---
 function TleilaxuRow._staticSetUp()
     Deck.generateTleilaxuDeck(TleilaxuRow.deckZone).doAfter(function (deck)
-        deck.shuffle()
+        Helper.shuffleDeck(deck)
         for i = 1, 2 do
             local zone = TleilaxuRow.slotZones[i]
             Helper.moveCardFromZone(TleilaxuRow.deckZone, zone.getPosition(), Vector(0, 180, 0))

@@ -334,7 +334,7 @@ function PlayBoard.setUp(settings, activeOpponents)
             playBoard.opponent = activeOpponents[color]
             if playBoard.opponent ~= "rival" then
                 Deck.generateStarterDeck(playBoard.content.drawDeckZone, settings.immortality, settings.epicMode).doAfter(function (deck)
-                    deck.shuffle()
+                    Helper.shuffleDeck(deck)
                 end)
                 Deck.generateStarterDiscard(playBoard.content.discardZone, settings.immortality, settings.epicMode)
             else
@@ -523,6 +523,10 @@ function PlayBoard._movePlayerIfNeeded(color)
         PlayBoard.getPlayBoard(color).opponent = anyOtherPlayer
         anyOtherPlayer.changeColor(color)
     end
+end
+
+function PlayBoard.createEndOfTurnButton(color)
+    PlayBoard.playboards[color]:_createEndOfTurnButton()
 end
 
 ---
@@ -872,7 +876,7 @@ end
 ---
 function PlayBoard:createExclusiveCallback(name, innerCallback)
     return Helper.registerGlobalCallback(function (_, color, _)
-        if self.color == color then
+        if self.color == color or not PlayBoard.isRival(color) then
             if not self.buttonsDisabled then
                 self.buttonsDisabled = true
                 Wait.time(function ()
@@ -1213,11 +1217,11 @@ function PlayBoard:_resetDiscard()
         discard.setRotationSmooth({0, 180, 180}, false, false)
         discard.setPositionSmooth(self.content.drawDeckZone.getPosition() + Vector(0, 1, 0), false, true)
 
-        Helper.onceMotionless(discard).doAfter(function ()
+        Helper.onceOneDeck(self.content.drawDeckZone).doAfter(function ()
             local replenishedDeckOrCard = Helper.getDeckOrCard(self.content.drawDeckZone)
             assert(replenishedDeckOrCard)
             if replenishedDeckOrCard.type == "Deck" then
-                replenishedDeckOrCard.shuffle()
+                Helper.shuffleDeck(replenishedDeckOrCard)
                 Helper.onceShuffled(replenishedDeckOrCard).doAfter(continuation.run)
             else
                 continuation.run(replenishedDeckOrCard)

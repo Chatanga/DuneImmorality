@@ -507,7 +507,8 @@ function Helper.onceMotionless(object)
             continuation.run(object)
         end, 1)
     end, function()
-        return object.resting and not object.isSmoothMoving()
+        continuation.tick()
+        return object.resting -- and not object.isSmoothMoving()
     end)
     return continuation
 end
@@ -518,6 +519,27 @@ function Helper.onceShuffled(container)
     Wait.time(function ()
         continuation.run(container)
     end, 1.5) -- TODO Search for a better way.
+    return continuation
+end
+
+---
+function Helper.onceOneDeck(zone)
+    local continuation = Helper.createContinuation()
+    Wait.condition(function()
+        continuation.run(Helper.getDeck(zone))
+    end, function()
+        local objects = Helper.filter(zone.getObjects(), function (object)
+            return object.type == "Card" or object.type == "Deck"
+        end)
+        if #objects == 1 and objects[1].type == "Deck" then
+            local deck = objects[1]
+            if deck.resting then
+                return true
+            end
+        end
+        continuation.tick()
+        return false
+    end)
     return continuation
 end
 
@@ -533,10 +555,18 @@ end
 ---
 function Helper.createContinuation()
     local continuation = {
+        start = Time.time,
         what = function ()
             return "continuation"
         end
     }
+    continuation.tick = function (toBeNotified)
+        local duration = Time.time - continuation.start
+        if toBeNotified and duration > 10 then
+            toBeNotified()
+        end
+        assert(duration < 10, "Roting continuation!")
+    end
 
     continuation.actions = {}
 
@@ -811,9 +841,18 @@ end
 function Helper.shuffle(table)
     assert(table)
     assert(#table > 0 or #Helper.getKeys(table) == 0, "Not an indexed table")
-    for i = #table, 2, -1 do
-        local j = math.random(i)
-        table[i], table[j] = table[j], table[i]
+    if true then
+        for i = #table, 2, -1 do
+            local j = math.random(i)
+            table[i], table[j] = table[j], table[i]
+        end
+    end
+end
+
+function Helper.shuffleDeck(deck)
+    assert(deck)
+    if true then
+        deck.shuffle()
     end
 end
 

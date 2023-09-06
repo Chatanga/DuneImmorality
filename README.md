@@ -66,9 +66,6 @@ Having launched `./listen.py` in another terminal will provide you with an immed
 
 ## TODO (by priority)
 
-- Corrupted decks?
-- Too many chained set/get in Global?
-
 - Basic logging in the Action facade (using context to group).
 - Restore translations (tokens included).
 - Blitz!
@@ -88,3 +85,4 @@ Having launched `./listen.py` in another terminal will provide you with an immed
 - Gather all VP sources in ScoreBoard?
 - Some kind of hungarian notation with Array (ipairs) and Dict (pairs), a Array being a Dict?
 - Alt mouse hover defeated by area buttons...
+- Redundancy GMNotes VS resolve using them?

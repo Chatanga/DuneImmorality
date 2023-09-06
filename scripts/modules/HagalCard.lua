@@ -169,7 +169,6 @@ function HagalCard._activateCarthag(color, rival)
         HagalCard.sendRivalAgent(color, rival, "carthag")
         rival.troops(color, "supply", "combat", 1)
         HagalCard.sendUpToTwoUnits(color, rival)
-        rival.beetle(color, 1)
         return true
     else
         return false
@@ -320,7 +319,7 @@ function HagalCard._activateResearchStation(color, rival)
     if HagalCard.spaceIsFree(color, "researchStation") then
         HagalCard.sendRivalAgent(color, rival, "researchStation")
         rival.beetle(color, 2)
-    return true
+        return true
     else
         return false
     end

@@ -68,13 +68,15 @@ function TurnControl.setUp(settings, players)
     elseif settings.numberOfPlayers == 2 then
         for i, player in ipairs(players) do
             if PlayBoard.isRival(player) then
-                TurnControl.firstPlayerLuaIndex = TurnControl._getNextPlayer(i, math.random() > 0)
+                --TurnControl.firstPlayerLuaIndex = TurnControl._getNextPlayer(i, math.random() > 0)
+                TurnControl.firstPlayerLuaIndex = TurnControl._getNextPlayer(i, false)
                 break
             end
         end
         assert(TurnControl.firstPlayerLuaIndex)
     else
-        TurnControl.firstPlayerLuaIndex = math.random(#TurnControl.players)
+        --TurnControl.firstPlayerLuaIndex = math.random(#TurnControl.players)
+        TurnControl.firstPlayerLuaIndex = 1
     end
 end
 

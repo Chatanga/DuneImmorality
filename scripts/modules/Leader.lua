@@ -330,7 +330,7 @@ Leader.hundroMoritani = Helper.createClass(Leader, {
     --- Couriers
     signetRing = function (color)
         return Action.resources(color, "spice", 1)
-            and Action.freighter(color, nil, 1)
+            and Action.shipments(color, 1)
     end
 })
 

@@ -320,7 +320,7 @@ local Deck = {
             core = {},
             solo = {
                 researchStation = 1,
-                cathag = Helper.ERASE,
+                carthag = Helper.ERASE,
                 carthag1 = 1,
                 carthag2 = 1,
                 carthag3 = 1,
@@ -379,7 +379,7 @@ local conflict3CardBack = "http://cloud-3.steamusercontent.com/ugc/1892102591130
 local hagalCardBack = "http://cloud-3.steamusercontent.com/ugc/1670239430231973967/ACE7BA96F9E5F8218FA434192B90234FD9ED4E38/"
 local leaderCardBack = "http://cloud-3.steamusercontent.com/ugc/2027235268872195913/005244DAC0A29EE68CFF741FC06564969563E8CF/"
 
-local customDeckBaseId = 900
+local customDeckBaseId = 100
 
 ---
 function Deck.onLoad(state)
@@ -747,36 +747,34 @@ function Deck._generateDeck(deckName, position, contributions, sources)
         ContainedObjects = {}
     }
 
-    local customDeck
-    local customDeckId
+    local knownCustomDecks = {}
 
     for name, cardinality in pairs(contributions) do
         local source = sources[name]
+        if source then
+            local customDeckId = knownCustomDecks[source.customDeck]
+            if not customDeckId then
+                customDeckId = Deck._nextCustomDeckId()
+                data.CustomDeck[tostring(customDeckId)] = source.customDeck
+                data.Transform.scaleX = source.customDeck.__scale.x
+                data.Transform.scaleY = source.customDeck.__scale.y
+                data.Transform.scaleZ = source.customDeck.__scale.z
+                knownCustomDecks[source.customDeck] = customDeckId
+            end
 
-        if not source then
+            for _ = 1, cardinality do
+                local index = source.luaIndex - 1
+                local cardId = tostring(customDeckId * 100 + index)
+                table.insert(data.DeckIDs, tostring(cardId))
+                local cardData = Deck._generateCardData(source.customDeck, customDeckId, cardId)
+                cardData.Tags = { deckName }
+                cardData.Nickname = I18N(name)
+                cardData.GMNotes = name
+                table.insert(data.ContainedObjects, cardData)
+            end
+        else
             log("No source for card '" .. name .. "'")
-            goto continue
         end
-
-        if source.customDeck ~= customDeck then
-            customDeckId = Deck._nextCustomDeckId()
-            data.CustomDeck[tostring(customDeckId)] = source.customDeck
-            data.Transform.scaleX = source.customDeck.__scale
-            data.Transform.scaleZ = source.customDeck.__scale
-            customDeck = source.customDeck
-        end
-
-        for _ = 1, cardinality do
-            local index = source.luaIndex - 1
-            local cardId = tostring(customDeckId * 100 + index)
-            table.insert(data.DeckIDs, tostring(cardId))
-            local cardData = Deck._generateCardData(customDeck, customDeckId, cardId)
-            cardData.Tags = { deckName }
-            cardData.Nickname = I18N(name)
-            cardData.GMNotes = name
-            table.insert(data.ContainedObjects, cardData)
-        end
-        ::continue::
     end
 
     local continuation = Helper.createContinuation()
@@ -792,6 +790,10 @@ function Deck._generateDeck(deckName, position, contributions, sources)
 
     spawnObjectData(spawnParameters)
 
+    if deckName == "Hagal" then
+        --log(spawnParameters.data)
+    end
+
     return continuation
 end
 
@@ -803,42 +805,42 @@ end
 
 ---
 function Deck.createImperiumCustomDeck(faceUrl, width, height)
-    return Deck._createCustomDeck(imperiumCardBack, faceUrl, width, height, 1.05)
+    return Deck._createCustomDeck(imperiumCardBack, faceUrl, width, height, Vector(1.05, 1, 1.05))
 end
 
 ---
 function Deck.createIntrigueCustomDeck(faceUrl, width, height)
-    return Deck._createCustomDeck(intrigueCardBack, faceUrl, width, height, 1)
+    return Deck._createCustomDeck(intrigueCardBack, faceUrl, width, height, Vector(1, 1, 1))
 end
 
 ---
 function Deck.createTechCustomDeck(faceUrl, width, height)
-    return Deck._createCustomDeck(techCardBack, faceUrl, width, height, 0.52)
+    return Deck._createCustomDeck(techCardBack, faceUrl, width, height, Vector(0.52, 1, 0.52))
 end
 
 ---
 function Deck.createConflict1CustomDeck(faceUrl, width, height)
-    return Deck._createCustomDeck(conflict1CardBack, faceUrl, width, height, 1)
+    return Deck._createCustomDeck(conflict1CardBack, faceUrl, width, height, Vector(1, 1, 1))
 end
 
 ---
 function Deck.createConflict2CustomDeck(faceUrl, width, height)
-    return Deck._createCustomDeck(conflict2CardBack, faceUrl, width, height, 1)
+    return Deck._createCustomDeck(conflict2CardBack, faceUrl, width, height, Vector(1, 1, 1))
 end
 
 ---
 function Deck.createConflict3CustomDeck(faceUrl, width, height)
-    return Deck._createCustomDeck(conflict3CardBack, faceUrl, width, height, 1)
+    return Deck._createCustomDeck(conflict3CardBack, faceUrl, width, height, Vector(1, 1, 1))
 end
 
 ---
-function Deck.createHagalCustomDeck(faceUrl, width, height)
-    return Deck._createCustomDeck(hagalCardBack, faceUrl, width, height, 0.83)
+function Deck.createHagalCustomDeck(faceUrl, width, height, scale)
+    return Deck._createCustomDeck(hagalCardBack, faceUrl, width, height, scale or Vector(0.83, 1, 0.83))
 end
 
 ---
 function Deck.createLeaderCustomDeck(faceUrl, width, height)
-    return Deck._createCustomDeck(leaderCardBack, faceUrl, width, height, 1.12)
+    return Deck._createCustomDeck(leaderCardBack, faceUrl, width, height, Vector(1.12, 1, 1.12))
 end
 
 ---
