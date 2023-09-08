@@ -340,6 +340,7 @@ function MainBoard._createSpaceButton(space, position, slots)
         anchor.setSnapPoints(snapPoints)
 
         local tooltip = "Send agent to " .. space.name
+        --local tooltip = I18N("Send agent to {}", space.name)
         Helper.createAreaButton(space.zone, anchor, 0.7, tooltip, function (_, color, _)
             if PlayBoard.getLeader(color) then
                 PlayBoard.getLeader(color).sendAgent(color, space.name)

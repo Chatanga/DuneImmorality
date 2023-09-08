@@ -29,7 +29,7 @@ local Deck = {
     conflict3 = {
         conflict = { "http://cloud-3.steamusercontent.com/ugc/1892102591130041563/F1BEAE6266E75B7A2F5DE511DB4FEB25A2CD486B/", 3, 2 },
     },
-    hagal_old = {
+    hagal = {
         hagal = { "http://cloud-3.steamusercontent.com/ugc/1701781845339075332/677B5A5C2EECAF60962F6002D7320601EB4E49AA/", 7, 2 },
         hagal_wealth = { "http://cloud-3.steamusercontent.com/ugc/1670239430231972899/4E94083423F0DD9F5B0A4E72BAC4A60328175163/", 1, 1 },
         hagal_arrakeen2p = { "http://cloud-3.steamusercontent.com/ugc/1670239430231975770/CAE72AEA7F428DB102776EBFD022458D58673955/", 1, 1 },
@@ -42,7 +42,7 @@ local Deck = {
         imortalityHagal = { "http://cloud-3.steamusercontent.com/ugc/1974296545160677305/AA0F8C9CAE3E11C28EE4379FA045FF11DDD03C38/", 2, 2 },
         hagal_churn = { "http://cloud-3.steamusercontent.com/ugc/1759187425912025810/E59D268A3103235748A7CEE2535ED0BF97D61A9A/", 1, 1 },
     },
-    hagal = {
+    hagal_better = {
         hagal = { 'file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/resources/hagal/677B5A5C2EECAF60962F6002D7320601EB4E49AA_Hagal deck.png', 7, 2 },
         hagal_wealth = { 'file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/resources/hagal/4E94083423F0DD9F5B0A4E72BAC4A60328175163_Wealth Updated.png', 1, 1 },
         hagal_arrakeen2p = { 'file:///home/sadalsuud/Personnel/Productions/Code/Maison/DuneImperiumTTS/resources/hagal/CAE72AEA7F428DB102776EBFD022458D58673955_House Hagal B Updated.png', 1, 1 },
@@ -96,8 +96,8 @@ local Deck = {
 ---
 function Deck.load(loader, cards, category, customDeckName, startLuaIndex, cardNames)
     local desc = Deck[category][customDeckName]
-    local functioName = Helper.toCamelCase("create", category, "CustomDeck")
-    local customDeck = loader[functioName](desc[1], desc[2], desc[3], desc[4])
+    local functionName = Helper.toCamelCase("create", category, "CustomDeck")
+    local customDeck = loader[functionName](desc[1], desc[2], desc[3], desc[4])
     return loader.loadCustomDeck(cards, customDeck, startLuaIndex, cardNames)
 end
 

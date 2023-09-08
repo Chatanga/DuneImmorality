@@ -38,7 +38,7 @@ validateDefaultSetup = {
     variant = nil,
 }
 validateDefaultSetup = {
-    language = "en",
+    language = "fr",
     randomizePlayerPositions = false,
     virtualHotSeat = false,
     numberOfPlayers = 1,
@@ -56,7 +56,7 @@ validateDefaultSetup = {
     variant = nil,
     musicEnabled = true,
 }
---validateDefaultSetup = nil
+validateDefaultSetup = nil
 
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
@@ -240,6 +240,7 @@ end
 ---
 function setUp(newSettings)
     settings = newSettings
+    I18N.setLocale(settings.language)
 
     local properlySeatedPlayers = PlayerSet.getProperlySeatedPlayers()
     if not settings.virtualHotSeat then

@@ -66,8 +66,10 @@ Having launched `./listen.py` in another terminal will provide you with an immed
 
 ## TODO (by priority)
 
+- Bugs: restricted ord. + research trach (4, -3).
+
 - Basic logging in the Action facade (using context to group).
-- Restore translations (tokens included).
+- Restore translations (tokens and books included).
 - Blitz!
 - Arrakeen Scouts.
 - [Fanmade leaders](https://drive.google.com/drive/folders/1-V3xcHk6078YR1fyhtJL3tdqv2zg5q3Q).
