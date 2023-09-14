@@ -169,7 +169,7 @@ function Hagal._lateActivate(phase, color)
     elseif phase == "endgame" then
         continuation.run()
     else
-        assert(false)
+        error("Unknown phase: " .. phase)
     end
 
     return continuation
@@ -331,8 +331,7 @@ function Hagal.pickAnyCompatibleLeader(color)
             end
         end
         assert(#leaders > 0, "No leader left for Hagal!")
-        Helper.shuffle(leaders)
-        leaderOrPseudoLeader = leaders[1]
+        leaderOrPseudoLeader = Helper.pickAny(leaders)
     end
     LeaderSelection.claimLeader(color, leaderOrPseudoLeader)
 end

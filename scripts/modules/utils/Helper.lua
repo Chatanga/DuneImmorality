@@ -174,7 +174,7 @@ function Helper.moveCardFromZone(zone, position, rotation, smooth, flipAtTheEnd)
         elseif deckOrCard.type == "Card" then
             Helper.moveObject(deckOrCard, position, rotation, smooth, flipAtTheEnd).doAfter(continuation.run)
         else
-            assert(false)
+            error("Unexpected type: " .. deckOrCard.type)
         end
 
         return continuation
@@ -849,6 +849,15 @@ function Helper.shuffle(table)
     end
 end
 
+function Helper.pickAny(table)
+    return table[math.random(#table)]
+end
+
+function Helper.pickAnyKey(set)
+    local keys = Helper.getKeys(set)
+    return keys[math.random(#keys)]
+end
+
 function Helper.shuffleDeck(deck)
     assert(deck)
     if true then
@@ -1001,7 +1010,7 @@ function Helper.deepCopy(something)
             return something
         end
     else
-        assert(false)
+        error("Unexpected type: " .. t)
     end
 end
 

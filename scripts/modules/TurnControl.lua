@@ -1,5 +1,6 @@
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
+local I18N = require("utils.I18N")
 
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local Hagal = Module.lazyRequire("Hagal")
@@ -29,6 +30,8 @@ function TurnControl.onLoad(state)
     if state.settings then
         if state.TurnControl then
             TurnControl.players = state.TurnControl.players
+            TurnControl.scoreGoal = state.TurnControl.scoreGoal
+            TurnControl.specialPhase = state.TurnControl.specialPhase
             TurnControl.firstPlayerLuaIndex = state.TurnControl.firstPlayerLuaIndex
             TurnControl.counterClockWise = state.TurnControl.counterClockWise
             TurnControl.currentRound = state.TurnControl.currentRound
@@ -43,6 +46,7 @@ function TurnControl.onSave(state)
     state.TurnControl = {
         players = TurnControl.players,
         scoreGoal = TurnControl.scoreGoal,
+        specialPhase = TurnControl.specialPhase,
         firstPlayerLuaIndex = TurnControl.firstPlayerLuaIndex,
         --
         counterClockWise = TurnControl.counterClockWise,
@@ -68,16 +72,21 @@ function TurnControl.setUp(settings, players)
     elseif settings.numberOfPlayers == 2 then
         for i, player in ipairs(players) do
             if PlayBoard.isRival(player) then
-                --TurnControl.firstPlayerLuaIndex = TurnControl._getNextPlayer(i, math.random() > 0)
-                TurnControl.firstPlayerLuaIndex = TurnControl._getNextPlayer(i, false)
+                -- TODO Random
+                TurnControl.firstPlayerLuaIndex = TurnControl._getNextPlayer(i, math.random() > 0)
                 break
             end
         end
         assert(TurnControl.firstPlayerLuaIndex)
     else
-        --TurnControl.firstPlayerLuaIndex = math.random(#TurnControl.players)
-        TurnControl.firstPlayerLuaIndex = 1
+        -- TODO Random
+        TurnControl.firstPlayerLuaIndex = math.random(#TurnControl.players)
     end
+end
+
+---
+function TurnControl.registerSpecialPhase(specialPhase)
+    TurnControl.specialPhase = specialPhase
 end
 
 ---
@@ -135,7 +144,7 @@ function TurnControl._startPhase(phase)
     log("=== Phase: " .. phase
         .. ", firstPlayer: " .. TurnControl.players[TurnControl.firstPlayerLuaIndex]
         .. ", currentPlayer: " .. TurnControl.players[TurnControl.currentPlayerLuaIndex])
-    broadcastToAll("Phase: " .. phase, Color.fromString("Pink"))
+    broadcastToAll(I18N(Helper.toCamelCase("phase", phase)), Color.fromString("Pink"))
     Helper.emitEvent("phaseStart", TurnControl.currentPhase, TurnControl.players[TurnControl.firstPlayerLuaIndex])
 
     Wait.frames(function ()
@@ -153,6 +162,24 @@ function TurnControl.endOfTurn()
 end
 
 ---
+function TurnControl.endOfPhase()
+    if TurnControl.currentPhase then
+        Helper.emitEvent("phaseEnd", TurnControl.currentPhase)
+        if TurnControl.currentPhase == "leaderSelection" then
+            TurnControl.counterClockWise = false
+        end
+    end
+    Wait.time(function ()
+        local nextPhase = TurnControl._getNextPhase(TurnControl.currentPhase)
+        if nextPhase then
+            TurnControl._startPhase(nextPhase)
+        else
+            TurnControl.currentPhase = nil
+        end
+    end, TurnControl.currentPhase == "recall" and 2 or 0)
+end
+
+---
 function TurnControl._next(startPlayerLuaIndex)
     TurnControl.currentPlayerLuaIndex = TurnControl._findActivePlayer(startPlayerLuaIndex)
     if TurnControl.currentPlayerLuaIndex then
@@ -160,20 +187,7 @@ function TurnControl._next(startPlayerLuaIndex)
         log("--- Turn: " .. player .. " --- " .. tostring(TurnControl.getCurrentRound()))
         Helper.emitEvent("playerTurns", TurnControl.currentPhase, player)
     else
-        if TurnControl.currentPhase then
-            Helper.emitEvent("phaseEnd", TurnControl.currentPhase)
-            if TurnControl.currentPhase == "leaderSelection" then
-                TurnControl.counterClockWise = false
-            end
-        end
-        Wait.time(function ()
-            local nextPhase = TurnControl._getNextPhase(TurnControl.currentPhase)
-            if nextPhase then
-                TurnControl._startPhase(nextPhase)
-            else
-                TurnControl.currentPhase = nil
-            end
-        end, TurnControl.currentPhase == "recall" and 2 or 0)
+        TurnControl.endOfPhase()
     end
 end
 
@@ -218,7 +232,7 @@ function TurnControl._getNextPhase(phase)
     elseif phase == 'gameStart' then
         return 'roundStart'
     elseif phase == 'roundStart' then
-        return 'playerTurns'
+        return TurnControl.specialPhase or 'playerTurns'
     elseif phase == 'playerTurns' then
         return 'combat'
     elseif phase == 'combat' then
@@ -231,8 +245,10 @@ function TurnControl._getNextPhase(phase)
         return TurnControl._endgameGoalReached() and 'endgame' or 'roundStart'
     elseif phase == 'endgame' then
         return nil
+    elseif phase == TurnControl.specialPhase then
+        return 'playerTurns'
     else
-        assert(false)
+        error("Unknown phase: ", phase)
     end
 end
 

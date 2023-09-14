@@ -61,7 +61,7 @@ function XmlUI:fromUI(player, value, id)
         self.fields[id] = on
         return
     end
-    assert(false)
+    error("Unknown value: " ..tostring(value))
 end
 
 function XmlUI:toUI()

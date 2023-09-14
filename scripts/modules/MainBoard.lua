@@ -652,7 +652,7 @@ end
 ---
 function MainBoard._goHighCouncil(color, leader)
     -- FIXME Interleaved conditions...
-    if not PlayBoard.hasACouncilSeat(color) and leader.resources(color, "solari", -5) then
+    if not PlayBoard.hasHighCouncilSeat(color) and leader.resources(color, "solari", -5) then
         return leader.takeHighCouncilSeat(color)
     else
         return false

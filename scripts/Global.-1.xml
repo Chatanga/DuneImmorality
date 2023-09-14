@@ -7,6 +7,7 @@
 		<InputField colors="#00000000|#6c389244|#6c3892" textColor="#efd9ff" fontStyle="bold"/>
 		<Toggle colors="#efd9ff|#ffd60b|#efd9ff|#222222" textColor="#efd9ff"/>
 		<Button colors="#6c3892|#df9730|#361441|#222222" textColor="#ffd60b"  fontSize="16" outline="#efd9ff" outlineSize="3 3"/>
+		<Image raycastTarget="true"/>
 	</Defaults>
 	<VerticalLayout>
 		<Image ignoreLayout="True" image="http://cloud-3.steamusercontent.com/ugc/2027234042549661387/D9B4C518F1CC8DB3B299B6552E439410D9346C33/"/>

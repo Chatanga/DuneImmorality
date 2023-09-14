@@ -437,7 +437,7 @@ end
 function PlayBoard:_recall()
     local minimicFilm = PlayBoard.hasTech(self.color, "minimicFilm")
     local restrictedOrdnance = PlayBoard.hasTech(self.color, "restrictedOrdnance")
-    local councilSeat = PlayBoard.hasACouncilSeat(self.color)
+    local councilSeat = PlayBoard.hasHighCouncilSeat(self.color)
 
     self.revealed = false
     self.persuasion:set((councilSeat and 2 or 0) + (minimicFilm and 1 or 0))
@@ -493,7 +493,7 @@ function PlayBoard._setActivePlayer(phase, color)
                 if playBoard.opponent == "rival" then
                     Hagal.activate(phase, color)
                 else
-                    if phase ~= "leaderSelection" then
+                    if phase ~= "leaderSelection" and phase ~= "arrakeenScouts" then
                         playBoard:_createEndOfTurnButton()
                     end
                     PlayBoard._movePlayerIfNeeded(color)
@@ -582,7 +582,7 @@ function PlayBoard.acceptTurn(phase, color)
     elseif phase == 'endgame' then
         accepted = playBoard.lastPhase ~= phase
     else
-        error("Unknown phase: " .. phase)
+        accepted = playBoard.lastPhase ~= phase
     end
 
     playBoard.lastPhase = phase
@@ -1087,7 +1087,7 @@ function PlayBoard:revealHand()
 
     local minimicFilm = PlayBoard.hasTech(self.color, "minimicFilm")
     local restrictedOrdnance = PlayBoard.hasTech(self.color, "restrictedOrdnance")
-    local councilSeat = PlayBoard.hasACouncilSeat(self.color)
+    local councilSeat = PlayBoard.hasHighCouncilSeat(self.color)
     local artillery = PlayBoard.hasTech(self.color, "artillery")
 
     local output1 = IntrigueCard.evaluatePlot(self.color, playedIntrigues, allRevealedCards, artillery)
@@ -1461,7 +1461,7 @@ function PlayBoard.useTech(color, techName)
 end
 
 ---
-function PlayBoard.hasACouncilSeat(color)
+function PlayBoard.hasHighCouncilSeat(color)
     local zone = MainBoard.getHighCouncilSeatPark().zone
     local token = PlayBoard._getCouncilToken(color)
     return Helper.contains(zone, token)
@@ -1470,7 +1470,7 @@ end
 ---
 function PlayBoard.takeHighCouncilSeat(color)
     local token = PlayBoard._getCouncilToken(color)
-    if not PlayBoard.hasACouncilSeat(color) then
+    if not PlayBoard.hasHighCouncilSeat(color) then
         if Park.putObject(token, MainBoard.getHighCouncilSeatPark()) then
             token.interactable = false
             local playBoard = PlayBoard.getPlayBoard(color)

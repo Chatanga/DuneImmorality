@@ -30,6 +30,7 @@ function TechMarket.onLoad(state)
     end
 end
 
+---
 function TechMarket.onSave(state)
     state.TechMarket = {
         hagalSoloModeEnabled = TechMarket.hagalSoloModeEnabled

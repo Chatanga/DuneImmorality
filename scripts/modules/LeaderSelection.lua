@@ -204,8 +204,7 @@ function LeaderSelection._setUpPicking(opponents, numberOfLeaders, random, hidde
                 for color, opponent in pairs(opponents) do
                     if opponent ~= "rival" then
                         local leaders = LeaderSelection.getSelectableLeaders()
-                        Helper.shuffle(leaders)
-                        LeaderSelection.claimLeader(color, leaders[1])
+                        LeaderSelection.claimLeader(color, Helper.pickAny(leaders))
                     end
                 end
             end

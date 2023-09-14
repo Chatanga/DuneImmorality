@@ -32,10 +32,10 @@ Having launched `./listen.py` in another terminal will provide you with an immed
 ## Sequencing (partial)
 
     Global.setUp
-            LeaderSelection.setUp
-                [LeaderSelection.setUpTest
-                    Playboard.setLeader(color, leader)]
-                [LeaderSelection.setUpPicking]
+        LeaderSelection.setUp
+            [LeaderSelection.setUpTest
+                Playboard.setLeader(color, leader)]
+            [LeaderSelection.setUpPicking]
 
     TurnControl.start
         TurnControl.startPhase(leaderSelection)
@@ -57,7 +57,6 @@ Having launched `./listen.py` in another terminal will provide you with an immed
                     Playboard.setActivePlayer(phase, color)
                         [Hagal.activate(phase, color, playboard)
                                 Hagal.lateActivate(phase, color, playboard) -- with leader as Rival.]
-                TurnControl.startPhase(TurnControl.getNextPhase)
 
     TurnControl.endOfTurn
         TurnControl.next
@@ -66,18 +65,18 @@ Having launched `./listen.py` in another terminal will provide you with an immed
 
 ## TODO (by priority)
 
-- Bugs: restricted ord. + research trach (4, -3).
-
-- Basic logging in the Action facade (using context to group).
-- Restore translations (tokens and books included).
-- Blitz!
 - Arrakeen Scouts.
+- Tessia and Paul support.
+- Basic logging in the Action facade (using context to group).
+- Fully restore translations (tokens and books included).
+- Blitz!
 - [Fanmade leaders](https://drive.google.com/drive/folders/1-V3xcHk6078YR1fyhtJL3tdqv2zg5q3Q).
 - Replace freighters by tokens.
 - Change the [dreadnought model](https://www.thingiverse.com/thing:5326146).
 
 ## Later (maybe)
 
+- Clock.
 - Restore tech cost (with a default buy dialog when other options are lacking).
 - Fix the 6 tech park saturation.
 - Introduce the graphic log?

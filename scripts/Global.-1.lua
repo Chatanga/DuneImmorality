@@ -56,7 +56,24 @@ validateDefaultSetup = {
     variant = nil,
     musicEnabled = true,
 }
-validateDefaultSetup = nil
+validateDefaultSetup = {
+    language = "fr",
+    randomizePlayerPositions = false,
+    virtualHotSeat = true,
+    numberOfPlayers = 3,
+    riseOfIx = true,
+    epicMode = false,
+    immortality = true,
+    goTo11 = false,
+    leaderSelection = {
+        Green = "letoAtreides",
+        Yellow = "ilbanRichese",
+        Red = "glossuRabban",
+    },
+    fanMadeLeaders = false,
+    variant = "arrakeenScouts",
+    musicEnabled = true,
+}
 
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
@@ -71,6 +88,7 @@ local I18N = require("utils.I18N")
 local allModules = Module.registerModules({
     AcquireCard, -- To take advantage of Module.registerModuleRedirections.
     Action = require("Action"),
+    ArrakeenScouts = require("ArrakeenScouts"),
     Combat = require("Combat"),
     CommercialTrack = require("CommercialTrack"),
     ConflictCard = require("ConflictCard"),
@@ -85,7 +103,7 @@ local allModules = Module.registerModules({
     IntrigueCard = require("IntrigueCard"),
     Leader = require("Leader"),
     LeaderSelection = require("LeaderSelection"),
-    Locales = require("Locales"),
+    Locale = require("Locale"),
     MainBoard = require("MainBoard"),
     Music = require("Music"),
     PlayBoard = require("PlayBoard"),
@@ -166,8 +184,10 @@ function onLoad(scriptState)
     -- Order matter, now that we reload with "staticSetUp" (for the same reason setUp is ordered too).
     -- FIXME It is too much error prone.
 
+    allModules.Locale.onLoad(state)
     allModules.Action.onLoad(state)
 
+    allModules.ArrakeenScouts.onLoad(state)
     allModules.Music.onLoad(state)
     allModules.Deck.onLoad(state)
     allModules.Hagal.onLoad(state)
@@ -186,7 +206,7 @@ function onLoad(scriptState)
     allModules.TleilaxuRow.onLoad(state)
     allModules.TurnControl.onLoad(state)
 
-    if false then
+    if true then
         Module.registerModuleRedirections({
             "onObjectEnterScriptingZone",
             "onObjectLeaveScriptingZone",
@@ -209,6 +229,7 @@ function onLoad(scriptState)
     end
 end
 
+--[[
 function onObjectEnterScriptingZone(...)
     Module.callOnAllRegisteredModules("onObjectEnterScriptingZone", ...)
 end
@@ -220,6 +241,7 @@ end
 function onObjectDrop(...)
     Module.callOnAllRegisteredModules("onObjectDrop", ...)
 end
+]]--
 
 function onSave()
     if constructionModeEnabled then
@@ -253,6 +275,7 @@ function setUp(newSettings)
     end
 
     -- TODO Explicit dependency + preserved for onLoad.
+    allModules.ArrakeenScouts.setUp(settings)
     allModules.Music.setUp(settings)
     allModules.Deck.setUp(settings)
     allModules.Hagal.setUp(settings)
@@ -276,19 +299,20 @@ end
 ---
 function onPlayerChangeColor(color)
     PlayerSet.updateSetupButton()
-    Module.callOnAllRegisteredModules("onPlayerChangeColor", color)
+    --Module.callOnAllRegisteredModules("onPlayerChangeColor", color)
 end
 
+---
 function onPlayerConnect(...)
     PlayerSet.updateSetupButton()
-    Module.callOnAllRegisteredModules("onPlayerConnect", ...)
+    --Module.callOnAllRegisteredModules("onPlayerConnect", ...)
 end
 
+---
 function onPlayerDisconnect(...)
     PlayerSet.updateSetupButton()
-    Module.callOnAllRegisteredModules("onPlayerDisconnect", ...)
+    --Module.callOnAllRegisteredModules("onPlayerDisconnect", ...)
 end
-
 
 ---
 function PlayerSet.findActiveOpponents(properlySeatedPlayers, numberOfPlayers)
@@ -434,6 +458,7 @@ function PlayerSet.applyNumberOfPlayers()
 
         PlayerSet.fields.fanMadeLeaders = false
 
+        PlayerSet.fields.variant = "none"
         PlayerSet.fields.variant_all = {
             none = "None",
             blitz = "Blitz!",
@@ -448,8 +473,9 @@ function PlayerSet.applyNumberOfPlayers()
 
         PlayerSet.fields.fanMadeLeaders = {}
 
+        PlayerSet.fields.variant = {}
         PlayerSet.fields.variant_all = {
-            none = "None"
+                none = "None"
         }
     end
     PlayerSet.updateSetupButton()
