@@ -8,15 +8,16 @@
 # Hein ?
 # http://cloud-3.steamusercontent.com/ugc/2029469358268109382/7E98B2CF99D80E27213815E475B27212574BBC76/
 
-mkdir -p resources
-python3 extract_url.py mod.json | sort -u | while read url; do
+import_dir="resources/import"
+mkdir -p "$import_dir"
+python3 extract_url.py mod.base.json | sort -u | while read url; do
     name=$(sed s/[^A-Za-z0-9]//g <<< "$url")
-    if [ ! -f "resources/$name" ]; then
+    if [ ! -f "$import_dir/$name" ]; then
         echo "Downloading $url"
-        wget -q -O "resources/${name}" "$url"
+        wget -q -O "$import_dir/${name}" "$url"
         if [ $? -ne 0 ]; then
             echo "-> unresolved"
-            rm "resources/${name}"
+            rm "$import_dir/${name}"
         fi
     fi
 done
