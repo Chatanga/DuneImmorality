@@ -372,7 +372,7 @@ local Deck = {
 
 local imperiumCardBack = "http://cloud-3.steamusercontent.com/ugc/1892102433196500461/C3DC7A02CF378129569B414967C9BE25097C6E77/"
 local intrigueCardBack = "http://cloud-3.steamusercontent.com/ugc/1892102433196339102/D63B92C616541C84A7984026D757DB03E79532DD/"
-local techCardBack = "http://cloud-3.steamusercontent.com/ugc/1825650681921337946/F576092145EF665310845108C247CAE73985C23C/"
+local techCardBack = "http://cloud-3.steamusercontent.com/ugc/2002448397950219095/1EA614EC832B16BC94811A7FE793344057850409/"
 local conflict1CardBack = "http://cloud-3.steamusercontent.com/ugc/1892102591130037191/0423ECA84C0D71CCB38EBD60DEAE641EE72D7933/"
 local conflict2CardBack = "http://cloud-3.steamusercontent.com/ugc/1892102591130039766/3B3F54DF65F76F0850D0EC683602524806A11E49/"
 local conflict3CardBack = "http://cloud-3.steamusercontent.com/ugc/1892102591130041978/9E194557E37B5C4CA74C7A77CBFB6B8A36043916/"
