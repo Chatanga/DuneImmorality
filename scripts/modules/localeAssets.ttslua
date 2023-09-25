@@ -500,8 +500,6 @@ customDecks.en = {
     teilaxResearch = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2029469358268075509/D9BD273651404E7DE7F0E22B36F2D426D82B07A8/", 4, 5),
     teilaxIntrigue = createIntrigueCustomDeck("http://cloud-3.steamusercontent.com/ugc/1892101972249341287/9FED90CD510F26618717CEB63FDA744CE916C6BA/", 6, 2),
     -- special cards
-    highCouncilCardWithoutRestrictedOrdnance = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2044114931109006909/AE55C2BB6B9BE3CF9F407EF5C610DC30B154D5CE/", 1, 1),
-    highCouncilCardWithRestrictedOrdnance = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2044114931109006257/D5C0242C3F8B78E9253EF1084F10E513AC001B4C/", 1, 1),
     seatOfPowerDeck = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2044115565050311157/E7E6E09C7D61392154D16277F3FEA3E4ADFCADAC/", 4, 1),
     thumperDeck = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2027231506426140597/EED43686A0319F3C194702074F2D2B3E893642F7/", 1, 1)
 }
@@ -582,8 +580,6 @@ localeAssets.en = {
         }}},
         cardControlTheSpice = {deck = customDecks.en.ixImperium, luaIndex = 33},
         cardsExperimentation = {{deck = customDecks.en.teilaxImperium, luaIndexes = {7, 7}}},
-        cardHighCouncilCardWithoutRestrictedOrdnance = {deck = customDecks.en.highCouncilCardWithoutRestrictedOrdnance, luaIndex = 1},
-        cardHighCouncilCardWithRestrictedOrdnance = {deck = customDecks.en.highCouncilCardWithRestrictedOrdnance, luaIndex = 1},
         cardSeatOfPower1 = {deck = customDecks.en.seatOfPowerDeck, luaIndex = 1},
         cardSeatOfPower2 = {deck = customDecks.en.seatOfPowerDeck, luaIndex = 2},
         cardSeatOfPower3 = {deck = customDecks.en.seatOfPowerDeck, luaIndex = 3},
@@ -637,8 +633,6 @@ customDecks.fr = {
     teilaxResearchReclaimedForces = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2063250888847577276/60812AEA733FF5558BA9190E47CBD474EBF38C94/", 1, 1),
     teilaxIntrigue = createIntrigueCustomDeck("http://cloud-3.steamusercontent.com/ugc/2063250888848685998/83BA634F05FC7A14933153A18B7AEF83E07E3C14/", 6, 3),
     -- special cards
-    highCouncilCardWithoutRestrictedOrdnance = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2044114931109007208/BEC43C979193F71220B89199159DFE61BCEECBB7/", 1, 1),
-    highCouncilCardWithRestrictedOrdnance = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2044114931109006596/A25FD31F949807A7779195788AAAD8AA50DDB080/", 1, 1),
     seatOfPowerDeck = createImperiumCustomDeck("http://cloud-3.steamusercontent.com/ugc/2044115565050311673/AE3985811F9E7436655ABCCC1664368BBFF7395C/", 4, 1)
 }
 
@@ -688,8 +682,6 @@ localeAssets.fr = {
         cardsBaseIntrigue = {{deck = customDecks.fr.intrigue, luaIndexes = range(1, 40)}},
         cardControlTheSpice = {deck = customDecks.fr.ixImperiumControlTheSpice, luaIndex = 1},
         cardsExperimentation = {{deck = customDecks.fr.teilaxImperiumExperimentation, luaIndexes = range(1, 2)}},
-        cardHighCouncilCardWithoutRestrictedOrdnance = {deck = customDecks.fr.highCouncilCardWithoutRestrictedOrdnance, luaIndex = 1},
-        cardHighCouncilCardWithRestrictedOrdnance = {deck = customDecks.fr.highCouncilCardWithRestrictedOrdnance, luaIndex = 1},
         cardSeatOfPower1 = {deck = customDecks.fr.seatOfPowerDeck, luaIndex = 1},
         cardSeatOfPower2 = {deck = customDecks.fr.seatOfPowerDeck, luaIndex = 2},
         cardSeatOfPower3 = {deck = customDecks.fr.seatOfPowerDeck, luaIndex = 3},
