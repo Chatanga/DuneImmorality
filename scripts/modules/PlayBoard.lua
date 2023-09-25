@@ -47,7 +47,7 @@ local PlayBoard = Helper.createClass(nil, {
             fourPlayerVictoryToken = "a6c2e0",
             fourPlayerVictoryTokenInitialPosition = Helper.getHardcodedPositionFromGUID('a6c2e0', -13.0, 1.31223142, 21.85),
             scoreMarker = "4feaca",
-            flagBag = '61453d',
+            controlMarkerBag = '61453d',
             troops = {
                 "8b2acc",
                 "6c2b85",
@@ -99,7 +99,7 @@ local PlayBoard = Helper.createClass(nil, {
             fourPlayerVictoryToken = "311255",
             fourPlayerVictoryTokenInitialPosition = Helper.getHardcodedPositionFromGUID('311255', -13.0, 1.11223137, -1.1499995),
             scoreMarker = "1b1e76",
-            flagBag = '8627e0',
+            controlMarkerBag = '8627e0',
             troops = {
                 "2a5276",
                 "f2c21f",
@@ -151,7 +151,7 @@ local PlayBoard = Helper.createClass(nil, {
             fourPlayerVictoryToken = "66444c",
             fourPlayerVictoryTokenInitialPosition = Helper.getHardcodedPositionFromGUID('66444c', 13.0, 1.31223154, 21.85),
             scoreMarker = "76039f",
-            flagBag = 'ad6b92',
+            controlMarkerBag = 'ad6b92',
             troops = {
                 "167fd4",
                 "60c92d",
@@ -203,7 +203,7 @@ local PlayBoard = Helper.createClass(nil, {
             fourPlayerVictoryToken = "4e8873",
             fourPlayerVictoryTokenInitialPosition = Helper.getHardcodedPositionFromGUID('4e8873', 13.0, 1.31223142, -1.14999938),
             scoreMarker = "20bbd1",
-            flagBag = 'b92a4c',
+            controlMarkerBag = 'b92a4c',
             troops = {
                 "fbf8d2",
                 "7c5b7b",
@@ -308,19 +308,19 @@ function PlayBoard.new(color, unresolvedContent, subState)
         playBoard.instructionTextAnchor = anchor
     end)
 
-    playBoard.agentCardPark = playBoard:createCardPark(Vector(0, 0, 4))
-    playBoard.revealCardPark = playBoard:createCardPark(Vector(0, 0, 0))
-    playBoard.agentPark = playBoard:createAgentPark(unresolvedContent.agentPositions)
-    playBoard.dreadnoughtPark = playBoard:createDreadnoughtPark(unresolvedContent.dreadnoughtPositions)
-    playBoard.supplyPark = playBoard:createSupplyPark(centerPosition)
-    playBoard.techPark = playBoard:createTechPark(centerPosition)
-    playBoard:generatePlayerScoreboardPositions()
-    playBoard.scorePark = playBoard:createPlayerScorePark()
+    playBoard.agentCardPark = playBoard:_createCardPark(Vector(0, 0, 4))
+    playBoard.revealCardPark = playBoard:_createCardPark(Vector(0, 0, 0))
+    playBoard.agentPark = playBoard:_createAgentPark(unresolvedContent.agentPositions)
+    playBoard.dreadnoughtPark = playBoard:_createDreadnoughtPark(unresolvedContent.dreadnoughtPositions)
+    playBoard.supplyPark = playBoard:_createSupplyPark(centerPosition)
+    playBoard.techPark = playBoard:_createTechPark(centerPosition)
+    playBoard:_generatePlayerScoreboardPositions()
+    playBoard.scorePark = playBoard:_createPlayerScorePark()
 
-    playBoard:createButtons()
+    playBoard:_createButtons()
 
     Helper.registerEventListener("locale", function ()
-        playBoard:createButtons()
+        playBoard:_createButtons()
     end)
 
     return playBoard
@@ -329,7 +329,7 @@ end
 ---
 function PlayBoard.setUp(settings, activeOpponents)
     for color, playBoard in pairs(PlayBoard.playboards) do
-        playBoard:cleanUp(false, not settings.riseOfIx, not settings.immortality)
+        playBoard:_cleanUp(false, not settings.riseOfIx, not settings.immortality)
         if activeOpponents[color] then
             playBoard.opponent = activeOpponents[color]
             if playBoard.opponent ~= "rival" then
@@ -353,7 +353,7 @@ function PlayBoard.setUp(settings, activeOpponents)
 
             playBoard:updatePlayerScore()
         else
-            playBoard:tearDown()
+            playBoard:_tearDown()
         end
     end
 
@@ -443,8 +443,7 @@ function PlayBoard:_recall()
     self.persuasion:set((councilSeat and 2 or 0) + (minimicFilm and 1 or 0))
     self.strength:set((restrictedOrdnance and councilSeat) and 4 or 0)
 
-    self:clearButtons()
-    self:createButtons()
+    self:_createButtons()
 
     -- Send all played cards to the discard, save those which shouldn't.
     Helper.forEach(Helper.filter(Park.getObjects(self.agentCardPark), Utils.isImperiumCard), function (_, card)
@@ -533,7 +532,7 @@ end
 function PlayBoard:_createEndOfTurnButton()
     Helper.clearButtons(self.content.startEndTurnButton)
     self.content.startEndTurnButton.createButton({
-        click_function = self:createExclusiveCallback("onEndOfTurn", function ()
+        click_function = self:_createExclusiveCallback(function ()
             self.content.startEndTurnButton.AssetBundle.playTriggerEffect(0)
             TurnControl.endOfTurn()
         end),
@@ -615,12 +614,12 @@ function PlayBoard.getPlayBoardColors(filterOutRival)
 end
 
 ---
-function PlayBoard.getBoard(color)
+function PlayBoard._getBoard(color)
     return PlayBoard.getContent(color).board
 end
 
 ---
-function PlayBoard:createCardPark(globalOffset)
+function PlayBoard:_createCardPark(globalOffset)
     local offsets = {
         Red = Vector(13, 0.69, -5),
         Blue = Vector(13, 0.69, -5),
@@ -648,7 +647,7 @@ function PlayBoard:createCardPark(globalOffset)
 end
 
 ---
-function PlayBoard:createAgentPark(agentPositions)
+function PlayBoard:_createAgentPark(agentPositions)
     -- Extrapolate two other positions (for the swordmaster and the mentat)
     -- from the positions of the two existing agents.
     assert(#agentPositions == 2)
@@ -669,7 +668,7 @@ function PlayBoard:createAgentPark(agentPositions)
 end
 
 ---
-function PlayBoard:createDreadnoughtPark(dreadnoughtPositions)
+function PlayBoard:_createDreadnoughtPark(dreadnoughtPositions)
     local park = Park.createCommonPark({ self.color, "Dreadnought" }, dreadnoughtPositions, Vector(1, 3, 0.5))
     for i, dreadnought in ipairs(self.content.dreadnoughts) do
         dreadnought.setPosition(dreadnoughtPositions[i])
@@ -678,7 +677,7 @@ function PlayBoard:createDreadnoughtPark(dreadnoughtPositions)
 end
 
 ---
-function PlayBoard:createSupplyPark(centerPosition)
+function PlayBoard:_createSupplyPark(centerPosition)
     local allSlots = {}
     local slots = {}
     for i = 1, 4 do
@@ -713,7 +712,7 @@ function PlayBoard:createSupplyPark(centerPosition)
 end
 
 ---
-function PlayBoard:createTechPark(centerPosition)
+function PlayBoard:_createTechPark(centerPosition)
     local color = self.color
     local slots = {}
     for i = 1, 2 do
@@ -731,7 +730,7 @@ function PlayBoard:createTechPark(centerPosition)
 end
 
 ---
-function PlayBoard:generatePlayerScoreboardPositions()
+function PlayBoard:_generatePlayerScoreboardPositions()
     assert(self.content.scoreMarker, self.color .. ": no score marker!")
     local origin = self.content.scoreMarker.getPosition()
 
@@ -754,7 +753,7 @@ function PlayBoard:generatePlayerScoreboardPositions()
 end
 
 ---
-function PlayBoard:createPlayerScorePark()
+function PlayBoard:_createPlayerScorePark()
     local origin = self.content.fourPlayerVictoryTokenInitialPosition
 
     local direction = 1
@@ -792,7 +791,7 @@ function PlayBoard.onObjectEnterScriptingZone(zone, object)
                     playBoard:updatePlayerScore()
                     local controlableSpace = MainBoard.findControlableSpace(object)
                     if controlableSpace then
-                        MainBoard.occupy(controlableSpace, playBoard.content.flagBag)
+                        MainBoard.occupy(controlableSpace, playBoard.content.controlMarkerBag)
                     end
                 end
             elseif zone == playBoard.agentPark.zone then
@@ -819,13 +818,13 @@ function PlayBoard.onObjectLeaveScriptingZone(zone, object)
 end
 
 ---
-function PlayBoard:tearDown()
-    self:cleanUp(true, true, true)
+function PlayBoard:_tearDown()
+    self:_cleanUp(true, true, true)
     PlayBoard.playboards[self.color] = nil
 end
 
 ---
-function PlayBoard:cleanUp(base, ix, immortality)
+function PlayBoard:_cleanUp(base, ix, immortality)
     local content = self.content
 
     local toBeRemoved = {}
@@ -835,7 +834,7 @@ function PlayBoard:cleanUp(base, ix, immortality)
             content.swordmaster,
             content.councilToken,
             content.scoreMarker,
-            content.flagBag,
+            content.controlMarkerBag,
             content.forceMarker,
             content.startEndTurnButton
         })
@@ -845,7 +844,7 @@ function PlayBoard:cleanUp(base, ix, immortality)
 
     if ix then
         Helper.addAll(toBeRemoved, content.dreadnoughts)
-        table.insert(toBeRemoved, content.flagBag)
+        table.insert(toBeRemoved, content.controlMarkerBag)
         table.insert(toBeRemoved, content.freighter)
         table.insert(toBeRemoved, content.atomicsToken)
     end
@@ -866,7 +865,7 @@ end
 ---
 function PlayBoard.findBoardColor(board)
     for color, _ in pairs(PlayBoard.playboards) do
-        if PlayBoard.getBoard(color) == board then
+        if PlayBoard._getBoard(color) == board then
             return color
         end
     end
@@ -874,9 +873,9 @@ function PlayBoard.findBoardColor(board)
 end
 
 ---
-function PlayBoard:createExclusiveCallback(name, innerCallback)
+function PlayBoard:_createExclusiveCallback(innerCallback)
     return Helper.registerGlobalCallback(function (_, color, _)
-        if self.color == color or not PlayBoard.isRival(color) then
+        if self.color == color or PlayBoard.isRival(color) then
             if not self.buttonsDisabled then
                 self.buttonsDisabled = true
                 Wait.time(function ()
@@ -884,17 +883,6 @@ function PlayBoard:createExclusiveCallback(name, innerCallback)
                 end, 0.5)
                 innerCallback()
             end
-        else
-            broadcastToColor(I18N('noTouch'), color, "Purple")
-        end
-    end)
-end
-
----
-function PlayBoard:createCallback(name, f)
-    return Helper.registerGlobalCallback(function (_, color, _)
-        if self.color == color then
-            f()
         else
             broadcastToColor(I18N('noTouch'), color, "Purple")
         end
@@ -910,7 +898,7 @@ function PlayBoard:getFontColor()
     return fontColor
 end
 
-function PlayBoard:clearButtons()
+function PlayBoard:_clearButtons()
     Helper.clearButtons(self.content.board)
     if self.content.atomicsToken then
         Helper.clearButtons(self.content.atomicsToken)
@@ -918,13 +906,15 @@ function PlayBoard:clearButtons()
 end
 
 ---
-function PlayBoard:createButtons()
+function PlayBoard:_createButtons()
+    self:_clearButtons()
+
     local fontColor = self:getFontColor()
 
     local board = self.content.board
 
     board.createButton({
-        click_function = self:createExclusiveCallback("onDrawOneCard", function ()
+        click_function = self:_createExclusiveCallback(function ()
             self:drawCards(1)
         end),
         label = I18N("drawOneCardButton"),
@@ -937,7 +927,7 @@ function PlayBoard:createButtons()
     })
 
     board.createButton({
-        click_function = self:createExclusiveCallback("onDrawFiveCards", function ()
+        click_function = self:_createExclusiveCallback(function ()
             -- Note: the Holtzman effect happens at the recall phase (drawing 5
             -- cards is not stricly done when a round starts.)
             self:_tryToDrawCards(5)
@@ -952,7 +942,7 @@ function PlayBoard:createButtons()
     })
 
     board.createButton({
-        click_function = self:createExclusiveCallback("onResetDiscard", function ()
+        click_function = self:_createExclusiveCallback(function ()
             self:_resetDiscard()
         end),
         label = I18N("resetDiscardButton"),
@@ -964,7 +954,7 @@ function PlayBoard:createButtons()
         font_color = fontColor
     })
 
-     board.createButton({
+    board.createButton({
         click_function = Helper.registerGlobalCallback(),
         label = I18N("agentTurn"),
         position = self:_newSymmetricBoardPosition(-14.8, 0, -1),
@@ -977,7 +967,7 @@ function PlayBoard:createButtons()
     })
 
     board.createButton({
-        click_function = self:createExclusiveCallback("onRevealHand", function ()
+        click_function = self:_createExclusiveCallback(function ()
             self:onRevealHand()
         end),
         label = self.revealed and "Recalculate" or I18N("revealHandButton"),
@@ -990,9 +980,14 @@ function PlayBoard:createButtons()
         font_color = fontColor
     })
 
+    self:_createNukeButton()
+end
+
+---
+function PlayBoard:_createNukeButton()
     if self.content.atomicsToken then
         self.content.atomicsToken.createButton({
-            click_function = self:createExclusiveCallback("onNuke", function ()
+            click_function = self:_createExclusiveCallback(function ()
                 self:_nukeConfirm()
             end),
             tooltip = I18N('atomics'),
@@ -1027,8 +1022,14 @@ function PlayBoard:tryRevealHandEarly()
 
     local board = self.content.board
 
-    board.createButton({
-        click_function = self:createExclusiveCallback("onValidateReveal"),
+    local indexHolder = {}
+
+    local function _cleanUp()
+        Helper.removeButtons(board, Helper.getValues(indexHolder))
+    end
+
+    indexHolder.messageButtonIndex = Helper.createButton(board, {
+        click_function = Helper.registerGlobalCallback(),
         label = I18N("revealEarlyConfirm"),
         position = origin,
         width = 0,
@@ -1038,12 +1039,14 @@ function PlayBoard:tryRevealHandEarly()
         font_color = self.color,
         color = {0, 0, 0, 1}
     })
-    board.createButton({
-        click_function = self:createExclusiveCallback("onValidateReveal", function ()
+
+    indexHolder.validateButtonIndex = Helper.createButton(board, {
+        click_function = self:_createExclusiveCallback(function ()
+            _cleanUp()
             self:revealHand()
         end),
         label = I18N('yes'),
-        position = origin + Vector(1, 0, 1),
+        position = origin + Vector(-1, 0, 1),
         width = 1000,
         height = 600,
         scale = {0.5, 0.5, 0.5},
@@ -1051,10 +1054,11 @@ function PlayBoard:tryRevealHandEarly()
         font_color = {1, 1, 1},
         color = "Green"
     })
-    board.createButton({
-        click_function = self:createExclusiveCallback("onCancelReveal"),
+
+    indexHolder.cancelButtonIndex = Helper.createButton(board, {
+        click_function = self:_createExclusiveCallback(_cleanUp),
         label = I18N('no'),
-        position = origin + Vector(-1, 0, 1),
+        position = origin + Vector(1, 0, 1),
         width = 1000,
         height = 600,
         scale = {0.5, 0.5, 0.5},
@@ -1236,12 +1240,18 @@ end
 
 ---
 function PlayBoard:_nukeConfirm()
-    Helper.clearButtons(self.content.atomicsToken)
+    local token = self.content.atomicsToken
+    Helper.clearButtons(token)
 
-    self.content.atomicsToken.createButton({
+    local function _cleanUp()
+        Helper.clearButtons(token)
+        self:_createNukeButton()
+    end
+
+    Helper.createButton(token, {
         click_function = Helper.registerGlobalCallback(),
         label = I18N("atomicsConfirm"),
-        position = Vector(0, -0.1, 3.5),
+        position = Vector(0, 0, 3.5),
         width = 0,
         height = 0,
         scale = Vector(3, 3, 3),
@@ -1249,15 +1259,16 @@ function PlayBoard:_nukeConfirm()
         font_color = {1, 0, 0, 100},
         color = {0, 0, 0, 0}
     })
-    self.content.atomicsToken.createButton({
-        click_function = self:createExclusiveCallback("confirmNuke", function ()
+
+    Helper.createButton(token, {
+        click_function = self:_createExclusiveCallback(function ()
+            _cleanUp()
             self.leader.atomics(self.color)
             self.content.atomicsToken.destruct()
             self.content.atomicsToken = nil
         end),
         label = I18N('yes'),
-        position = {-5, -0.1, 0},
-        rotation = {0, 0, 0},
+        position = Vector(-5, 0, 0),
         width = 550,
         height = 350,
         scale = Vector(3, 3, 3),
@@ -1265,12 +1276,13 @@ function PlayBoard:_nukeConfirm()
         font_color = {1, 1, 1},
         color = "Green"
     })
-    self.content.atomicsToken.createButton({
-        click_function = self:createExclusiveCallback("cancelNuke", function ()
-            self:createButtons()
+
+    Helper.createButton(token, {
+        click_function = self:_createExclusiveCallback(function ()
+            _cleanUp()
         end),
         label = I18N('no'),
-        position = Vector(5, -0.1, 0),
+        position = Vector(5, 0, 0),
         width = 550,
         height = 350,
         scale = Vector(3, 3, 3),
@@ -1549,6 +1561,25 @@ function PlayBoard.giveCardFromZone(color, zone, isTleilaxuCard)
 end
 
 ---
+function PlayBoard.getHandCards(color)
+    return Helper.filter(Player[color].getHandObjects(), Utils.isImperiumCard)
+end
+
+---
+function PlayBoard.getDiscardedCards(color)
+    local playBoard = PlayBoard.getPlayBoard(color)
+    local deckOrCard = Helper.getDeckOrCard(playBoard.content.discardZone)
+    return Helper.getCards(deckOrCard)
+end
+
+---
+function PlayBoard.getDiscardedCardCount(color)
+    local playBoard = PlayBoard.getPlayBoard(color)
+    local deckOrCard = Helper.getDeckOrCard(playBoard.content.discardZone)
+    return Helper.getCardCount(deckOrCard)
+end
+
+---
 function PlayBoard.getIntrigues(color)
     return Helper.filter(Player[color].getHandObjects(), Utils.isIntrigueCard)
 end
@@ -1557,6 +1588,13 @@ end
 function PlayBoard.getAquiredDreadnoughtCount(color)
     local park = PlayBoard.getPlayBoard(color).dreadnoughtPark
     return #Park.findEmptySlots(park)
+end
+
+---
+function PlayBoard.getControlMarkerBag(color)
+    local content = PlayBoard.getContent(color)
+    assert(content)
+    return content.controlMarkerBag
 end
 
 ---

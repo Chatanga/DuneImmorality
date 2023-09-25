@@ -93,8 +93,10 @@ local function anyAlliance(value)
 end
 
 local function winner(value)
-    -- TODO
-    return value
+    return function ()
+        error("TODO")
+        return value
+    end
 end
 
 local IntrigueCard = {

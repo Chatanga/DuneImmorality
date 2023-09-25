@@ -66,17 +66,23 @@ Having launched `./listen.py` in another terminal will provide you with an immed
 ## TODO (by priority)
 
 - Arrakeen Scouts.
-- Tessia and Paul support.
+    - simplify auctions
+    - space bonuses
+    - ensureSomething (async)
+    - pseudo content
+- Blitz!
 - Basic logging in the Action facade (using context to group).
 - Fully restore translations (tokens and books included).
-- Blitz!
+- Fix 2P mode.
+- Tessia and Paul support.
 - [Fanmade leaders](https://drive.google.com/drive/folders/1-V3xcHk6078YR1fyhtJL3tdqv2zg5q3Q).
 - Replace freighters by tokens.
 - Change the [dreadnought model](https://www.thingiverse.com/thing:5326146).
 
 ## Later (maybe)
 
-- Clock.
+- Add space-time queue for relevant locations (discards and trash).
+- Display ranking in combatEnd phase.
 - Restore tech cost (with a default buy dialog when other options are lacking).
 - Fix the 6 tech park saturation.
 - Introduce the graphic log?

@@ -237,7 +237,19 @@ end
 ---
 function Action.acquireFoldspaceCard(color)
     Utils.assertIsPlayerColor(color)
-    Reserve.acquireFoldspace(Reserve.foldspace, color)
+    return Reserve.acquireFoldspace(color)
+end
+
+---
+function Action.acquireArrakisLiaisonCard(color, toItsHand)
+    Utils.assertIsPlayerColor(color)
+    return Reserve.acquireArrakisLiaisonCard(color, toItsHand)
+end
+
+---
+function Action.acquireTheSpiceMustFlow(color)
+    Utils.assertIsPlayerColor(color)
+    return Reserve.acquireTheSpiceMustFlow(color)
 end
 
 ---
@@ -245,8 +257,11 @@ function Action.advanceFreighter(color, positiveAmount)
     Utils.assertIsPlayerColor(color)
     Utils.assertIsPositiveInteger(positiveAmount)
     for _ = 1, positiveAmount do
-        CommercialTrack.freighterUp(color)
+        if not CommercialTrack.freighterUp(color) then
+            return false
+        end
     end
+    return true
 end
 
 ---

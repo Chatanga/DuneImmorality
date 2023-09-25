@@ -153,6 +153,21 @@ function Helper.moveObject(card, position, rotation, smooth, flipAtTheEnd)
     return continuation
 end
 
+---
+function Helper.getCards(deckOrCard)
+    if deckOrCard then
+        if deckOrCard.type == "Deck" then
+            return deckOrCard.getObjects()
+        elseif deckOrCard.type == "Card" then
+            return { deckOrCard }
+        else
+            error("Unexpected type: " .. deckOrCard.type)
+        end
+    else
+        return {}
+    end
+end
+
 --- Prefer the "deal" method when possible? Would it prevent the card from being
 --- grabbed by anther player's hand zone?
 function Helper.moveCardFromZone(zone, position, rotation, smooth, flipAtTheEnd)
@@ -306,6 +321,43 @@ function Helper.createAreaButton(zone, anchor, height, tooltip, callback)
     return parameters.click_function
 end
 
+---
+function Helper.createButton(object, parameters)
+    return Helper._createWidget("Button", object, parameters)
+end
+
+---
+function Helper.createInput(object, parameters)
+    return Helper._createWidget("Input", object, parameters)
+end
+
+---
+function Helper._createWidget(name, object, parameters)
+    assert(object)
+    local createWidget = object["create" .. name]
+    assert(createWidget)
+    local getWidgets = object["get" .. name .. "s"]
+    assert(getWidgets)
+
+    local isOldIndexes = {}
+    Helper.forEach(getWidgets() or {}, function (k, v)
+        assert(v.index)
+        isOldIndexes[v.index] = true
+    end)
+
+    createWidget(parameters)
+
+    local newIndexes = {}
+    Helper.forEach(getWidgets() or {}, function (k, v)
+        if not isOldIndexes[v.index] then
+            table.insert(newIndexes, v.index)
+        end
+    end)
+
+    assert(#newIndexes == 1)
+    return newIndexes[1]
+end
+
 --[[
     Indirect call to createButton adjusting the provided parameters to
     counteract the position, scale and rotation of the parent object.
@@ -316,17 +368,17 @@ end
 ]]--
 ---
 function Helper.createAbsoluteButton(object, parameters)
-    Helper.createAbsoluteButtonWithRoundness(object, 0.25, false, parameters)
+    return Helper.createAbsoluteButtonWithRoundness(object, 0.25, false, parameters)
 end
 
 ---
 function Helper.createAbsoluteButtonWithRoundness(object, roundness, quirk, parameters)
-    object.createButton(Helper.createAbsoluteWidgetWithRoundnessParameters(object, roundness, quirk, parameters))
+    return Helper.createButton(object, Helper.createAbsoluteWidgetWithRoundnessParameters(object, roundness, quirk, parameters))
 end
 
 ---
 function Helper.createAbsoluteInputWithRoundness(object, roundness, quirk, parameters)
-    object.createInput(Helper.createAbsoluteWidgetWithRoundnessParameters(object, roundness, quirk, parameters))
+    return Helper.createInput(object, Helper.createAbsoluteWidgetWithRoundnessParameters(object, roundness, quirk, parameters))
 end
 
 ---
@@ -693,6 +745,42 @@ function Helper.clearButtons(object)
             end
         end
         object.clearButtons()
+    end
+end
+
+---
+function Helper.getButton(object, index)
+    local buttons = object.getButtons()
+    assert(buttons)
+    for _, button in ipairs(buttons) do
+        if button.index == index then
+            return button
+        end
+    end
+    return nil
+end
+
+---
+function Helper.removeButton(object, index)
+    local button = Helper.getButton(object, index)
+    assert(button, "No button with index: " .. tostring(index))
+    local callback = button.click_function
+    if callback then
+        assert(Helper.startsWith(callback, "generatedCallback"), "Not a generated callback: " .. callback)
+        Helper.unregisterGlobalCallback(callback)
+    end
+    object.removeButton(index)
+end
+
+---
+function Helper.removeButtons(object, indexes)
+    local orderedIndexes = indexes
+    table.sort(orderedIndexes, function(a, b) return a > b end)
+    local previousIndex
+    for _, index in ipairs(indexes) do
+        assert(not previousIndex or previousIndex > index)
+        Helper.removeButton(object, index)
+        previousIndex = index
     end
 end
 
@@ -1118,6 +1206,8 @@ end
 
 ---
 function Helper.forEach(elements, f)
+    assert(elements)
+    assert(f)
     for k, v in pairs(elements) do
         f(k, v)
     end
@@ -1125,6 +1215,8 @@ end
 
 ---
 function Helper.forEachRecursively(elements, f)
+    assert(elements)
+    assert(f)
     for k, v in pairs(elements) do
         if type(v) == "table" and not Helper.isSomeKindOfObject(v) then
             Helper.forEachRecursively(v, f)
@@ -1147,6 +1239,13 @@ function Helper.noPlay(objects)
     for _, object in pairs(objects) do
         object.setLock(false)
         object.interactable = false
+    end
+end
+
+---
+function Helper.negate(predicate)
+    return function (...)
+        return not predicate(...)
     end
 end
 

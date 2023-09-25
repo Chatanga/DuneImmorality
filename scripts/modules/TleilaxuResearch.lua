@@ -388,4 +388,9 @@ function TleilaxuResearch.getTankPark(color)
     return TleilaxuResearch.tanksParks[color]
 end
 
+---
+function TleilaxuResearch.addSpaceBonus(location, bonuses)
+    log("TODO TleilaxuResearch.addSpaceBonus")
+end
+
 return TleilaxuResearch

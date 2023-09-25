@@ -4,7 +4,7 @@ local AcquireCard = require("utils.AcquireCard")
 
 local Deck = Module.lazyRequire("Deck")
 local PlayBoard = Module.lazyRequire("PlayBoard")
-local ScoreBoard = Module.lazyRequire("ScoreBoard")
+local Action = Module.lazyRequire("Action")
 
 local Reserve = {}
 
@@ -31,23 +31,29 @@ end
 
 ---
 function Reserve._staticSetUp()
-    Reserve.foldspace = AcquireCard.new(Reserve.foldspaceSlotZone, "Imperium", Reserve.acquireFoldspace)
-    Reserve.arrakisLiaison = AcquireCard.new(Reserve.arrakisLiaisonSlotZone, "Imperium", Reserve.acquireArrakisLiaison)
-    Reserve.theSpiceMustFlow = AcquireCard.new(Reserve.theSpiceMustFlowSlotZone, "Imperium", Reserve.acquireTheSpiceMustFlow)
+    Reserve.foldspace = AcquireCard.new(Reserve.foldspaceSlotZone, "Imperium", Action.acquireFoldspace)
+    Reserve.arrakisLiaison = AcquireCard.new(Reserve.arrakisLiaisonSlotZone, "Imperium", Action.acquireArrakisLiaison)
+    Reserve.theSpiceMustFlow = AcquireCard.new(Reserve.theSpiceMustFlowSlotZone, "Imperium", Action.acquireTheSpiceMustFlow)
 end
 
 ---
-function Reserve.acquireFoldspace(acquireCard, color)
-    PlayBoard.giveCardFromZone(color, acquireCard.zone, false)
+function Reserve.acquireFoldspace(color)
+    PlayBoard.giveCardFromZone(color, Reserve.foldspace.zone, false)
 end
 
 ---
-function Reserve.acquireArrakisLiaison(acquireCard, color)
-    PlayBoard.giveCardFromZone(color, acquireCard.zone, false)
+function Reserve.acquireArrakisLiaison(color)
+    PlayBoard.giveCardFromZone(color, Reserve.arrakisLiaison.zone, false)
 end
 
 ---
-function Reserve.acquireTheSpiceMustFlow(acquireCard, color)
+function Reserve.acquireTheSpiceMustFlow(color, toItsHand)
+    if toItsHand then
+        local position = Player[color].getHandTransform().position
+        Helper.moveCardFromZone(Reserve.theSpiceMustFlow.zone, position, nil, false, true)
+    else
+        PlayBoard.giveCardFromZone(color, Reserve.theSpiceMustFlow.zone, false, toItsHand)
+    end
     local leader = PlayBoard.getLeader(color)
     leader.gainVictoryPoint(color, "theSpiceMustFlow")
 end

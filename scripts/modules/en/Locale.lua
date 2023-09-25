@@ -2,7 +2,7 @@ return {
     ["?"] = "?",
 
     -- Setup UI
-    prolog = "\"A setup is a very delicate time..",
+    prolog = "\"A setup is a very delicate time...\"",
     language = "language",
     players = "Players",
     randomizePlayersPositions = "Randomize players' positions",
@@ -15,6 +15,8 @@ return {
     leaderSelection = "Leader selection",
     fanmadeLeaders = "Fanmade leaders",
     variants = "Variants",
+    miscellanous = "Miscellanous",
+    soundEnabled = "Sounds enabled",
     setup = "Setup",
     notEnoughPlayers = "Not enough players",
 

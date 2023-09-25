@@ -216,17 +216,17 @@ end
 
 local ImperiumCard = {
     -- starter: base
-    duneTheDesertPlanet = {agentIcons = {'yellow'}, reveal = {persuasion(1)}},
-    seekAllies = {agentIcons = {'emperor', 'spacingGuild', 'beneGesserit', 'fremen'}},
-    signetRing = {agentIcons = {'green', 'blue','yellow'}, reveal = {persuasion(1)}},
-    diplomacy = {agentIcons = {'emperor', 'spacingGuild', 'beneGesserit', 'fremen'}, reveal = {persuasion(1)}},
-    reconnaissance = {agentIcons = {'blue'}, reveal = {persuasion(1)}},
-    convincingArgument = {reveal = {persuasion(2)}},
-    dagger = {agentIcons = {'green', 'blue'}, reveal = {sword(1)}},
+    duneTheDesertPlanet = {agentIcons = {'yellow'}, reveal = {persuasion(1), starter = true}},
+    seekAllies = {agentIcons = {'emperor', 'spacingGuild', 'beneGesserit', 'fremen', starter = true }},
+    signetRing = {agentIcons = {'green', 'blue','yellow'}, reveal = {persuasion(1), starter = true }},
+    diplomacy = {agentIcons = {'emperor', 'spacingGuild', 'beneGesserit', 'fremen'}, reveal = {persuasion(1), starter = true }},
+    reconnaissance = {agentIcons = {'blue'}, reveal = {persuasion(1), starter = true }},
+    convincingArgument = {reveal = {persuasion(2), starter = true }},
+    dagger = {agentIcons = {'green', 'blue'}, reveal = {sword(1), starter = true }},
     -- starter: ix
-    controlTheSpice = {agentIcons = {'yellow'}, reveal = {spice(1)}},
+    controlTheSpice = {agentIcons = {'yellow'}, reveal = {spice(1), starter = true}},
     -- starter: immortality
-    experimentation = {agentIcons = {'yellow'}, reveal = {persuasion(1)}},
+    experimentation = {agentIcons = {'yellow'}, reveal = {persuasion(1), starter = true}},
     -- reserve
     arrakisLiaison = {cost = 2, agentsIcons = {'blue'}, reveal = {persuasion(2)}},
     foldspace = {cost = 0, agentIcons = {'emperor', 'spacingGuild', 'beneGesserit', 'fremen', 'green', 'blue', 'yellow'}},
@@ -393,8 +393,14 @@ function ImperiumCard.evaluateReveal(color, playedCards, revealedCards, artiller
 end
 
 function ImperiumCard.getTleilaxuCardCost(card)
-    local card = ImperiumCard._resolveCard(card)
-    return card.cost
+    local cardInfo = ImperiumCard._resolveCard(card)
+    assert(cardInfo.tleilaxu)
+    return cardInfo.cost
+end
+
+function ImperiumCard.isStarterCard(card)
+    local cardInfo = ImperiumCard._resolveCard(card)
+    return cardInfo.starter or false
 end
 
 return ImperiumCard

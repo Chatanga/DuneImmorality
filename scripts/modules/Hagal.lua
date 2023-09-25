@@ -514,7 +514,7 @@ end
 
 ---
 function Rival.gainVictoryPoint(color, name)
-    -- We make an exception for alliance token to make clear that the rival owns it.
+    -- We make an exception for alliance token to make it clear that the rival owns it.
     if Hagal.getRivalCount() == 2 or Helper.endsWith(name, "Alliance") then
         return Action.gainVictoryPoint(color, name)
     else

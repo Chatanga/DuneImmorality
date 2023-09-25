@@ -307,15 +307,23 @@ function MainBoard.findControlableSpace(victoryPointToken)
 end
 
 ---
-function MainBoard.occupy(controlableSpace, flagBag)
-    local objects = controlableSpace.getObjects()
-    for _, object in ipairs(objects) do
-        if Utils.isFlag(object) then
-            object.destruct()
+function MainBoard.occupy(controlableSpace, color)
+    for _, object in ipairs(controlableSpace.getObjects()) do
+        for _, otherColor in ipairs(PlayBoard.getPlayBoardColors) do
+            if Utils.isControlMarker(object, otherColor) then
+                if otherColor ~= color then
+                    local p = PlayBoard.getControlMarkerBag(otherColor).getPosition() + Vector(0, 1, 0)
+                    object.setLock(false)
+                    object.setPosition(p)
+                else
+                    return
+                end
+            end
         end
     end
+
     local p = controlableSpace.getPosition()
-    flagBag.takeObject({
+    PlayBoard.getControlMarkerBag(color).takeObject({
         -- Position is adjusted so as to insert the token below any dreadnought.
         position = Vector(p.x, 0.78, p.z),
         rotation = Vector(0, 180, 0),
@@ -595,7 +603,7 @@ function MainBoard.getControllingPlayer(bannerZone)
     if not controllingPlayer then
         for _, object in ipairs(bannerZone.getObjects()) do
             for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
-                if Utils.isFlag(object, color) then
+                if Utils.isControlMarker(object, color) then
                     assert(not controllingPlayer, "Too many flags around")
                     controllingPlayer = color
                 end
@@ -962,6 +970,11 @@ function MainBoard.onObjectEnterScriptingZone(zone, object)
             object.setColorTint(Color.fromString("White"))
         end
     end
+end
+
+---
+function MainBoard.addSpaceBonus(spaceName, bonuses)
+    log("TODO MainBoard.addSpaceBonus")
 end
 
 return MainBoard

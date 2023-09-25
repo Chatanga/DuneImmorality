@@ -16,7 +16,7 @@ validateDefaultSetup = {
         Yellow = "ilbanRichese",
         Red = "helenaRichese",
     },
-    fanMadeLeaders = false,
+    fanmadeLeaders = false,
     variant = nil,
 }
 validateDefaultSetup = {
@@ -34,7 +34,7 @@ validateDefaultSetup = {
         Yellow = "letoAtreides",
         Red = "glossuRabban",
     },
-    fanMadeLeaders = false,
+    fanmadeLeaders = false,
     variant = nil,
 }
 validateDefaultSetup = {
@@ -52,9 +52,9 @@ validateDefaultSetup = {
         Yellow = "ilbanRichese",
         Red = "glossuRabban",
     },
-    fanMadeLeaders = false,
+    fanmadeLeaders = false,
     variant = nil,
-    musicEnabled = true,
+    soundEnabled = true,
 }
 validateDefaultSetup = {
     language = "fr",
@@ -70,10 +70,11 @@ validateDefaultSetup = {
         Yellow = "ilbanRichese",
         Red = "glossuRabban",
     },
-    fanMadeLeaders = false,
+    fanmadeLeaders = true,
     variant = "arrakeenScouts",
-    musicEnabled = true,
+    soundEnabled = true,
 }
+validateDefaultSetup = nil
 
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
@@ -134,7 +135,7 @@ local PlayerSet = {
             --it = "Italiano",
             jp = "日本語"
         },
-        language = "en",
+        language = "fr",
         randomizePlayerPositions = true,
         virtualHotSeat = false,
         numberOfPlayers_all = {
@@ -152,13 +153,14 @@ local PlayerSet = {
         goTo11 = false,
         leaderSelection_all = allModules.LeaderSelection.selectionMethods,
         leaderSelection = "reversePick",
-        fanMadeLeaders = false,
+        fanmadeLeaders = false,
         variant_all = {
             none = "None",
             blitz = "Blitz!",
             arrakeenScouts = "Arrakeen scouts"
         },
-        variant = "none"
+        variant = "none",
+        soundEnabled = true,
     }
 }
 
@@ -456,7 +458,7 @@ function PlayerSet.applyNumberOfPlayers()
     if type(PlayerSet.fields.numberOfPlayers) == "table" or PlayerSet.fields.numberOfPlayers > 2 then
         PlayerSet.fields.difficulty = {}
 
-        PlayerSet.fields.fanMadeLeaders = false
+        PlayerSet.fields.fanmadeLeaders = false
 
         PlayerSet.fields.variant = "none"
         PlayerSet.fields.variant_all = {
@@ -471,11 +473,11 @@ function PlayerSet.applyNumberOfPlayers()
             PlayerSet.fields.difficulty = {}
         end
 
-        PlayerSet.fields.fanMadeLeaders = {}
+        PlayerSet.fields.fanmadeLeaders = {}
 
         PlayerSet.fields.variant = {}
         PlayerSet.fields.variant_all = {
-                none = "None"
+            none = "None"
         }
     end
     PlayerSet.updateSetupButton()
@@ -534,6 +536,11 @@ function setVariant(player, value, id)
 end
 
 ---
+function setSoundEnabled(player, value, id)
+    PlayerSet.ui:fromUI(player, value, id)
+end
+
+---
 function PlayerSet.updateSetupButton()
     if PlayerSet.ui then
         local properlySeatedPlayers = PlayerSet.getProperlySeatedPlayers()
@@ -573,7 +580,8 @@ function setUpFromUI()
         immortality = PlayerSet.fields.immortality == true,
         goTo11 = PlayerSet.fields.goTo11 == true,
         leaderSelection = PlayerSet.fields.leaderSelection,
-        fanMadeLeaders = PlayerSet.fields.fanMadeLeaders == true,
+        fanmadeLeaders = PlayerSet.fields.fanmadeLeaders == true,
         variant = PlayerSet.fields.variant,
+        soundEnabled = PlayerSet.fields.soundEnabled,
     })
 end

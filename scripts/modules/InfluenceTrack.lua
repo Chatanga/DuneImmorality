@@ -176,7 +176,7 @@ end
 
 ---
 function InfluenceTrack.change(color, faction, change)
-    InfluenceTrack._changeInfluenceTracksRank(color, faction, change)
+    return InfluenceTrack._changeInfluenceTracksRank(color, faction, change)
 end
 
 ---

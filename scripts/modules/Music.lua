@@ -1,7 +1,6 @@
 local Music = {
     sounds = {
-        _atomics = "http://cloud-3.steamusercontent.com/ugc/2002447125408335433/56A15AA85A1C45DE92FA3FD2372F0ECE6ABA0495/",
-        atomics = "file:///home/sadalsuud/Téléchargements/atomics!-o5d.mp3",
+        atomics = "http://cloud-3.steamusercontent.com/ugc/2079029969561141342/C9F0035DAF76EE6B353F9885C2859EBB282A9988/",
         --battle = "",
         turn = "http://cloud-3.steamusercontent.com/ugc/2027235268872374937/7FE5FD8B14ED882E57E302633A16534C04C18ECE/",
     }
@@ -10,13 +9,13 @@ local Music = {
 ---
 function Music.onLoad(state)
     if state.settings then
-        Music.enabled = state.settings.musicEnabled
+        Music.enabled = state.settings.soundEnabled
     end
 end
 
 ---
 function Music.setUp(settings)
-    Music.enabled = settings.musicEnabled
+    Music.enabled = settings.soundEnabled
 end
 
 ---

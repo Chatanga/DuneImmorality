@@ -16,7 +16,7 @@ function Utils.isUnit(object, color)
 end
 
 ---
-function Utils.isFlag(object, color)
+function Utils.isControlMarker(object, color)
     return object.hasTag("Flag") and (not color or object.hasTag(color))
 end
 
@@ -150,9 +150,31 @@ end
 
 ---
 function Utils.trash(object)
+
+    local height = Utils.trashStacking
+    if Utils.trashStacking then
+        Utils.trashStacking = height + 1
+    else
+        height = 0
+        Utils.trashStacking = 1
+        Utils._reduceStack()
+    end
+
     object.interactable = true
     object.setLock(false)
-    object.setPosition(getObjectFromGUID('ef8614').getPosition() + Vector(2, 2, -2))
+    object.setPositionSmooth(getObjectFromGUID('ef8614').getPosition() + Vector(0, 1 + height, 0))
+end
+
+---
+function Utils._reduceStack()
+    Wait.frames(function ()
+        if Utils.trashStacking > 0 then
+            Utils.trashStacking = Utils.trashStacking - 1
+            Utils._reduceStack()
+        else
+            Utils.trashStacking = nil
+        end
+    end, 500)
 end
 
 return Utils

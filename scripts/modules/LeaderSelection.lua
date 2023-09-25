@@ -28,7 +28,7 @@ end
 
 ---
 function LeaderSelection.setUp(settings, opponents)
-    Deck.generateLeaderDeck(LeaderSelection.deckZone, settings.riseOfIx, settings.immortality, settings.fanMadeLeaders).doAfter(function (deck)
+    Deck.generateLeaderDeck(LeaderSelection.deckZone, settings.riseOfIx, settings.immortality, settings.fanmadeLeaders).doAfter(function (deck)
         local numberOfLeaders = #deck.getObjects()
         local continuation = Helper.createContinuation()
         continuation.count = numberOfLeaders

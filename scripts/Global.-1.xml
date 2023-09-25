@@ -1,4 +1,4 @@
-<Panel position="0 -50" width="450" height="700" color="#000000" id="setupPane" rotation="0 0 0" outline="#6c3892" outlineSize="1" active="False">
+<Panel position="0 -50" width="450" height="750" color="#000000" id="setupPane" rotation="0 0 0" outline="#6c3892" outlineSize="1" active="False">
 	<Defaults>
 		<Text class="primary" color="#8e5ab4" fontSize="16" alignment="MiddleLeft"/>
 		<Text class="secondary" color="#efd9ff" alignment="MiddleRight"/>
@@ -10,7 +10,7 @@
 		<Image raycastTarget="true"/>
 	</Defaults>
 	<VerticalLayout>
-		<Image ignoreLayout="True" image="http://cloud-3.steamusercontent.com/ugc/2027234042549661387/D9B4C518F1CC8DB3B299B6552E439410D9346C33/"/>
+		<Image ignoreLayout="True" image="http://cloud-3.steamusercontent.com/ugc/2093667512248481704/D9B4C518F1CC8DB3B299B6552E439410D9346C33/"/>
 		<VerticalLayout padding="40 40 150 50">
 			<VerticalLayout padding="0 0 0 20">
 				<Text class="epigraph" key="prolog"/>
@@ -56,7 +56,7 @@
 				</Dropdown>
 			</HorizontalLayout>
 			<VerticalLayout padding="25 0 0 0">
-				<Toggle id="fanMadeLeaders" isOn="False" onValueChanged="Global/setFanMadeLeaders" key="fanmadeLeaders"/>
+				<Toggle id="fanmadeLeaders" isOn="False" onValueChanged="Global/setFanMadeLeaders" key="fanmadeLeaders"/>
 			</VerticalLayout>
 
 			<HorizontalLayout>
@@ -66,10 +66,17 @@
 				</Dropdown>
 			</HorizontalLayout>
 
+			<HorizontalLayout>
+				<Text class="primary" key="miscellanous"/>
+			</HorizontalLayout>
+			<VerticalLayout padding="25 0 0 0">
+				<Toggle id="soundEnabled" onValueChanged="Global/setSoundEnabled" isOn="True" key="soundEnabled"/>
+			</VerticalLayout>
+
 		</VerticalLayout>
 		<HorizontalLayout padding="100 100 0 20">
 			<Button id="setUpButton" minHeight="26" onClick="Global/setUpFromUI" key="setup"/>
 		</HorizontalLayout>
 	</VerticalLayout>
-	<Image position="0 350" width="256" height="256" image="http://cloud-3.steamusercontent.com/ugc/2027234042549282632/81266F80932D7A9A8628827099C5390739D09108/"/>
+	<Image position="0 350" width="256" height="256" image="http://cloud-3.steamusercontent.com/ugc/2093667512248482699/81266F80932D7A9A8628827099C5390739D09108/"/>
 </Panel>

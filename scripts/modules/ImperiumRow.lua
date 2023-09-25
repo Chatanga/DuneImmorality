@@ -13,6 +13,7 @@ local ImperiumRow = {}
 function ImperiumRow.onLoad(state)
     Helper.append(ImperiumRow, Helper.resolveGUIDs(true, {
         deckZone = "8bd982",
+        -- FIXME Confusing "reserve" wording.
         reservationSlotZone = "473cf7",
         slotZones = {
             '3de1d0',
@@ -103,13 +104,15 @@ end
 ---
 function ImperiumRow.nuke(color)
     Music.play("atomics")
-    for i, zone in ipairs(ImperiumRow.slotZones) do
-        local card = Helper.getCard(zone)
-        if card then
-            Utils.trash(card)
-            ImperiumRow._replenish(i)
+    Wait.time(function ()
+        for i, zone in ipairs(ImperiumRow.slotZones) do
+            local card = Helper.getCard(zone)
+            if card then
+                Utils.trash(card)
+                ImperiumRow._replenish(i)
+            end
         end
-    end
+    end, 3)
 end
 
 ---

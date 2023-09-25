@@ -119,4 +119,9 @@ function TleilaxuRow.trash(indexInRow)
     Helper.moveCardFromZone(TleilaxuRow.deckZone, acquireCard.zone.getPosition(), Vector(0, 180, 0))
 end
 
+---
+function TleilaxuRow.addAcquireBonus(bonuses)
+    -- TODO
+end
+
 return TleilaxuRow

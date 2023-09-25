@@ -13,6 +13,10 @@ local Leader = Helper.createClass(Action)
 ---
 function Leader.newLeader(name)
     local LeaderClass = Leader[name]
+    if not LeaderClass then
+        -- Fanmade leader?
+        LeaderClass = Helper.createClass(Leader, {})
+    end
     assert(LeaderClass or name ~= "Hagal", "Active player must not choose the Green seat in test mode.")
     assert(LeaderClass, "Unknown leader: " .. tostring(name))
     LeaderClass.name = name
