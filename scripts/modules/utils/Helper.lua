@@ -124,6 +124,7 @@ function Helper.getHardcodedPositionFromGUID(GUID, x, y, z)
     return Vector(x, y, z)
 end
 
+---
 function Helper.moveObject(card, position, rotation, smooth, flipAtTheEnd)
     assert(card)
 
@@ -215,7 +216,9 @@ function Helper.getDeckOrCard(zone)
     assert(zone)
     assert(type(zone) ~= 'string', tostring(zone) .. ' is a GUID, not a zone')
     for _, object in ipairs(zone.getObjects()) do
-        if object.type == "Card" or object.type == "Deck" then return object end
+        if object.type == "Card" or object.type == "Deck" then
+            return object
+        end
     end
     --log(zone.getGUID() .. " contains no card nor deck!")
     return nil
@@ -1227,16 +1230,16 @@ function Helper.forEachRecursively(elements, f)
 end
 
 ---
-function Helper.noPhysicsNorPlay(objects)
-    for _, object in pairs(objects) do
+function Helper.noPhysicsNorPlay(...)
+    for _, object in pairs({...}) do
         object.setLock(true)
         object.interactable = false
     end
 end
 
 ---
-function Helper.noPlay(objects)
-    for _, object in pairs(objects) do
+function Helper.noPlay(...)
+    for _, object in pairs({...}) do
         object.setLock(false)
         object.interactable = false
     end

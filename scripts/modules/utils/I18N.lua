@@ -25,7 +25,7 @@ end
 ---
 function I18N.translate(id)
     local currentLocale = I18N.getLocale()
-    -- TODO Temporary
+    -- FIXME Temporary
     if not currentLocale then
         currentLocale = "fr"
     end

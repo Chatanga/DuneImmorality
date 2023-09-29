@@ -60,7 +60,7 @@ return {
     saphoJuice = "http://cloud-3.steamusercontent.com/ugc/2079029969561316125/94F6C934FF41366B5600EA166717E82E2DEEC2FF/",
     spaceTravelDeal = "http://cloud-3.steamusercontent.com/ugc/2079029969561304532/3B1CA18A133799F335F66899E12A21B7963E41CB/",
     armedEscort = "http://cloud-3.steamusercontent.com/ugc/2079029969561306044/E8A3B5CFCF2F1CDD30C5CB6B7145E2E358C5B608/",
-    secretHideout = "http://cloud-3.steamusercontent.com/ugc/2079029969561308593/26652FA770CB303BC0C43AC6C9FA869B681D2DBF/",
+    secretStash = "http://cloud-3.steamusercontent.com/ugc/2079029969561308593/26652FA770CB303BC0C43AC6C9FA869B681D2DBF/",
     stowaway = "http://cloud-3.steamusercontent.com/ugc/2079029969561309796/58AB8846F503BCC0F1931EA9C9CB9613BFB2EF01/",
     backstageAgreement = "http://cloud-3.steamusercontent.com/ugc/2079029969561310436/68674FFD485956CFC3A803CD854BD97AE16EB4FB/",
     coordinationWithTheEmperor = "http://cloud-3.steamusercontent.com/ugc/2079029969561307299/642A795F33F35DC662D73536A9E27D2067875B65/",

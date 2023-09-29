@@ -74,7 +74,7 @@ validateDefaultSetup = {
     variant = "arrakeenScouts",
     soundEnabled = true,
 }
-validateDefaultSetup = nil
+--validateDefaultSetup = nil
 
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
@@ -94,6 +94,7 @@ local allModules = Module.registerModules({
     CommercialTrack = require("CommercialTrack"),
     ConflictCard = require("ConflictCard"),
     Deck = require("Deck"),
+    DynamicBonus = require("DynamicBonus"),
     ScoreBoard = require("ScoreBoard"),
     Hagal = require("Hagal"),
     HagalCard = require("HagalCard"),
@@ -175,10 +176,13 @@ function onLoad(scriptState)
         return
     end
 
-    Helper.noPhysicsNorPlay(Helper.resolveGUIDs(true, {
+    local tables = Helper.resolveGUIDs(true, {
         primaryTable = "2b4b92",
         secondaryTable = "662ced",
-    }))
+    })
+    Helper.noPhysicsNorPlay(
+        tables.primaryTable,
+        tables.secondaryTable)
 
     local state = scriptState ~= "" and JSON.decode(scriptState) or {}
 

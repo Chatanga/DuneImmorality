@@ -166,7 +166,7 @@ end
 function XmlUI._setXmlInteractable(xml, interactable)
     assert(xml)
     if xml.tag == "Dropdown" then
-        -- TODO Bidouille esthétique.
+        -- FIXME Bidouille esthétique.
         xml.attributes.active = interactable and "True" or "False"
     else
         xml.attributes.interactable = interactable and "True" or "False"

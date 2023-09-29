@@ -98,7 +98,7 @@ local ArrakeenScouts = {
         ix = {
             armedEscort = true,
             musterAnArmy = Helper.ERASE,
-            secretHideout = true, -- TODO Secret Stash
+            secretStash = true,
             stowaway = true,
         },
         immortality = {
@@ -129,6 +129,9 @@ function ArrakeenScouts.onLoad(state)
     Helper.append(ArrakeenScouts, Helper.resolveGUIDs(true, {
         board = "54b5be"
     }))
+
+    Helper.noPhysicsNorPlay(ArrakeenScouts.board)
+
     if state.settings then
         ArrakeenScouts.selectedCommittees = state.selectedCommittees
         ArrakeenScouts.selectedContent = state.selectedContent
@@ -177,7 +180,7 @@ function ArrakeenScouts.setUp(settings)
 
         ArrakeenScouts.selectedContent = {}
         -- DEBUG
-        table.insert(ArrakeenScouts.selectedContent, { "desertGift" })
+        table.insert(ArrakeenScouts.selectedContent, { "geneticResearch" })
         if math.random() > 0 then
             table.insert(ArrakeenScouts.selectedContent, { selection.missions[1], selection.missions[2] })
             table.insert(ArrakeenScouts.selectedContent, { selection.missions[3] })
@@ -430,6 +433,8 @@ function ArrakeenScouts._createDialogUI(image, playerMiniUIs)
             outline = "#ffffffcc",
             outlineSize = 1,
             active = true,
+            allowDragging = true,
+            returnToOriginalPositionWhenReleased = true,
         },
         children = {
             {
@@ -1331,7 +1336,7 @@ function ArrakeenScouts._createStationedSupport(color)
     end
     local function handler(c, index, option)
         if option == "Accepter" then
-            MainBoard.addSpaceBonus("researchStation", { color = { troops[1], troops[2] } })
+            MainBoard.addSpaceBonus("researchStation", { [color] = { troops[1], troops[2] } })
         end
     end
     return ArrakeenScouts._createDefault(color, false, false, options, handler)
@@ -1345,7 +1350,7 @@ function ArrakeenScouts._createGeneticResearch(color)
     end
     local function handler(_, option)
         if option == "Accepter" then
-            MainBoard.addSpaceBonus("secrets", { color = { Park.getAnyObject(supplyPark), "solari", "solari" } })
+            MainBoard.addSpaceBonus("secrets", { [color] = { Park.getAnyObject(supplyPark), "solari", "solari" } })
         end
     end
     return ArrakeenScouts._createDefault(color, false, false, options, handler)
@@ -1362,7 +1367,7 @@ function ArrakeenScouts._createGuildManipulations(color)
     local function handler(_, option)
         if option == "Accepter" then
             Action.resources(color, "spice", -1)
-            MainBoard.addSpaceBonus("foldspace", { color = { troops[1], troops[2] } })
+            MainBoard.addSpaceBonus("foldspace", { [color] = { troops[1], troops[2] } })
         end
     end
     return ArrakeenScouts._createDefault(color, false, false, options, handler)
@@ -1383,7 +1388,7 @@ function ArrakeenScouts._createStrongarmedAlliance(color)
     end
     local function handler(_, option)
         if option == "Accepter" then
-            MainBoard.addSpaceBonus("rallyTroops", { color = { Park.getAnyObject(supplyPark) } })
+            MainBoard.addSpaceBonus("rallyTroops", { [color] = { Park.getAnyObject(supplyPark) } })
         end
     end
     return ArrakeenScouts._createDefault(color, false, false, options, handler)
@@ -1391,9 +1396,16 @@ end
 
 function ArrakeenScouts._createSaphoJuice(color)
     local function handler(_, option)
-        local controlMarkers = PlayBoard.getControlMarkerBag(color).getObjects()
-        if #controlMarkers > 0 then
-            MainBoard.addSpaceBonus("mentat", { color = { controlMarkers[1], "spice" } })
+        local controlMarkerBag = PlayBoard.getControlMarkerBag(color)
+        if #controlMarkerBag.getObjects() > 0 then
+            controlMarkerBag.takeObject({
+                position = Vector(0, 1, 0),
+                rotation = Vector(0, 180, 0),
+                smooth = false,
+                callback_function = function (controlMarker)
+                    MainBoard.addSpaceBonus("mentat", { [color] = { controlMarker, "spice" } })
+                end
+            })
         end
     end
     return ArrakeenScouts._createDefault(color, false, false, nil, handler)
@@ -1410,12 +1422,12 @@ function ArrakeenScouts._createArmedEscort(color)
     return ArrakeenScouts._createDefault(color, false, false, nil, function ()
         local dreadnoughtPark = PlayBoard.getDreadnoughtPark(color)
         if not Park.isEmpty(dreadnoughtPark) then
-            MainBoard.addSpaceBonus("dreadnought", { color = { Park.getAnyObject(dreadnoughtPark), "spice" } })
+            MainBoard.addSpaceBonus("dreadnought", { [color] = { Park.getAnyObject(dreadnoughtPark), "spice" } })
         end
     end)
 end
 
-function ArrakeenScouts._createSecretHideout(color, isFirstPlayer)
+function ArrakeenScouts._createSecretStash(color, isFirstPlayer)
     if isFirstPlayer then
         MainBoard.addSpaceBonus("smuggling", { all = { "spice", "spice" } })
     end
@@ -1433,7 +1445,7 @@ function ArrakeenScouts._createStowaway(color)
     local function handler(_, option)
         if option == "Accepter" then
             Action.resources(color, "spice", -1)
-            MainBoard.addSpaceBonus("smuggling", { color = { troops[1], troops[2] } })
+            MainBoard.addSpaceBonus("smuggling", { [color] = { troops[1], troops[2] } })
         end
     end
     return ArrakeenScouts._createDefault(color, false, false, options, handler)
@@ -1462,7 +1474,7 @@ function ArrakeenScouts._createCoordinationWithTheEmperor(color)
     end
     local function handler(_, option)
         if option == "Accepter" then
-            MainBoard.addSpaceBonus("conspire", { color = { Park.getAnyObject(tankPark), "solari", "solari" } })
+            MainBoard.addSpaceBonus("conspire", { [color] = { Park.getAnyObject(tankPark), "solari", "solari" } })
         end
     end
     return ArrakeenScouts._createDefault(color, false, false, options, handler)
@@ -1485,7 +1497,7 @@ function ArrakeenScouts._createTleilaxuOffering(color)
     local function handler(_, option)
         if option == "Accepter" then
             -- Not to be deployed, but to be added as specimen.
-            TleilaxuResearch.addSpaceBonus(3, { color = { troops[1], troops[2] } })
+            TleilaxuResearch.addSpaceBonus(3, { [color] = { troops[1], troops[2] } })
         end
     end
     return ArrakeenScouts._createDefault(color, false, false, options, handler)

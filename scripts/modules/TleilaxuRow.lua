@@ -5,7 +5,7 @@ local AcquireCard = require("utils.AcquireCard")
 local Deck = Module.lazyRequire("Deck")
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local TleilaxuResearch = Module.lazyRequire("TleilaxuResearch")
-local Action = Module.lazyRequire("Action")
+local DynamicBonus = Module.lazyRequire("DynamicBonus")
 local ImperiumCard = Module.lazyRequire("ImperiumCard")
 local Utils = Module.lazyRequire("Utils")
 
@@ -99,6 +99,10 @@ function TleilaxuRow.acquireTleilaxuCard(indexInRow, color)
             Helper.moveCardFromZone(TleilaxuRow.deckZone, acquireCard.zone.getPosition(), Vector(0, 180, 0))
             return true
         end
+
+        if acquireCard.extraBonuses then
+            DynamicBonus.collectExtraBonuses(color, leader, acquireCard.extraBonuses)
+        end
     else
         return false
     end
@@ -121,7 +125,8 @@ end
 
 ---
 function TleilaxuRow.addAcquireBonus(bonuses)
-    -- TODO
+    local position = TleilaxuRow.acquireCards.zone.getPosition()
+    TleilaxuRow.acquireCards.extraBonuses = DynamicBonus.addSpaceBonus(position, bonuses)
 end
 
 return TleilaxuRow

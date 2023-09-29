@@ -9,6 +9,7 @@ local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
 local TechMarket = Module.lazyRequire("TechMarket")
 local Combat = Module.lazyRequire("Combat")
 local Hagal = Module.lazyRequire("Hagal")
+local DynamicBonus = Module.lazyRequire("DynamicBonus")
 
 local MainBoard = {}
 
@@ -127,6 +128,8 @@ function MainBoard.onLoad(state)
         firstPlayerMarker = "1f5576",
         phaseMarker = "fb41e2",
     }))
+
+    Helper.noPhysicsNorPlay(MainBoard.board)
 
     local p = Helper.getHardcodedPositionFromGUID('fb41e2', -4.08299875, 0.721966565, -12.0102692)
     local offset = Vector(0, 0, -0.64)
@@ -328,8 +331,8 @@ function MainBoard.occupy(controlableSpace, color)
         position = Vector(p.x, 0.78, p.z),
         rotation = Vector(0, 180, 0),
         smooth = false,
-        callback_function = function (flag)
-            flag.setLock(true)
+        callback_function = function (controlMarker)
+            controlMarker.setLock(true)
         end
     })
 end
@@ -381,12 +384,14 @@ function MainBoard.sendAgent(color, spaceName)
             Helper.emitEvent("agentSent", color, spaceName)
             asyncAction(color, leader).doAfter(function (success)
                 if success then
+                    MainBoard.collectExtraBonuses(color, leader, spaceName)
                     Park.transfert(1, agentPark, parentSpace.park)
                 end
             end)
         elseif action then
             Helper.emitEvent("agentSent", color, spaceName)
             if action(color, leader) then
+                MainBoard.collectExtraBonuses(color, leader, spaceName)
                 Park.transfert(1, agentPark, parentSpace.park)
             end
         else
@@ -974,7 +979,16 @@ end
 
 ---
 function MainBoard.addSpaceBonus(spaceName, bonuses)
-    log("TODO MainBoard.addSpaceBonus")
+    local space = MainBoard.spaces[spaceName]
+    space.extraBonuses = DynamicBonus.addSpaceBonus(space.zone.getPosition() + Vector(1.2, 0, 0.75), bonuses)
+end
+
+---
+function MainBoard.collectExtraBonuses(color, leader, spaceName)
+    local space = MainBoard.spaces[spaceName]
+    if space.extraBonuses then
+        DynamicBonus.collectExtraBonuses(color, leader, space.extraBonuses)
+    end
 end
 
 return MainBoard

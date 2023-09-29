@@ -5,6 +5,7 @@ local I18N = require("utils.I18N")
 
 local Resource = Module.lazyRequire("Resource")
 local PlayBoard = Module.lazyRequire("PlayBoard")
+local DynamicBonus = Module.lazyRequire("DynamicBonus")
 
 local TleilaxuResearch = {
     --[[
@@ -65,6 +66,8 @@ function TleilaxuResearch.onLoad(state)
             "cab3eb"
         }
     }))
+
+    Helper.noPhysicsNorPlay(TleilaxuResearch.board)
 
     local value = state.MainBoard and state.TleilaxuResearch.tleilaxSpiceBonusToken or 2
     TleilaxuResearch.spiceBonus = Resource.new(TleilaxuResearch.tleilaxSpiceBonusToken, nil, "spice", value)
@@ -237,6 +240,10 @@ function TleilaxuResearch._advanceResearch(color, jump, withBenefits)
                 end
             end)
         end
+
+        if cellPosition < 4 and newCellPosition >= 4 and TleilaxuResearch.extraBonuses then
+            DynamicBonus.collectExtraBonuses(color, leader, TleilaxuResearch.extraBonuses)
+        end
     end
 end
 
@@ -390,7 +397,13 @@ end
 
 ---
 function TleilaxuResearch.addSpaceBonus(location, bonuses)
-    log("TODO TleilaxuResearch.addSpaceBonus")
+    local position
+    if location == "oneHelix" then
+        location = TleilaxuResearch.board.getPosition() + Vector(0, 0, -2)
+    else
+        error("Unknow location: " .. location)
+    end
+    TleilaxuResearch.extraBonuses = DynamicBonus.addSpaceBonus(position, bonuses)
 end
 
 return TleilaxuResearch

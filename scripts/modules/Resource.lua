@@ -40,10 +40,10 @@ function Resource.new(token, color, resourceName, value)
         strength = Vector(0.9, 1, 0.9),
     }
 
-    local offset = Vector(0, 0.1, -0.05)
-    if resourceName == "water" then
-        offset = Vector(0, 0.1, -0.25)
-    end
+    local offset = Vector(
+        0,
+        0.05 * token.getScale().y,
+        resourceName == "water" and -0.25 or -0.0)
 
     Helper.createAbsoluteButtonWithRoundness(token, 1, false, {
         label = tostring(resource.value),
@@ -56,8 +56,8 @@ function Resource.new(token, color, resourceName, value)
         end),
         tooltip = resource:_getTooltip(),
         position = token.getPosition() + offset,
-        height = 800,
-        width = 800,
+        height = color and 800 or 0,
+        width = color and 800 or 0,
         scale = scales[resourceName],
         alignment = 3,
         font_size = 600,

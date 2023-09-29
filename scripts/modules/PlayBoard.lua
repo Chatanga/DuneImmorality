@@ -282,16 +282,16 @@ function PlayBoard.new(color, unresolvedContent, subState)
     board.interactable = false
 
     if not subState then
-        Helper.noPlay({
+        Helper.noPlay(
             playBoard.content.councilToken,
             playBoard.content.freighter,
             playBoard.content.tleilaxToken,
-            playBoard.content.researchToken,
-        })
-        Helper.noPhysicsNorPlay({
+            playBoard.content.researchToken
+        )
+        Helper.noPhysicsNorPlay(
             playBoard.content.scoreMarker,
-            playBoard.content.forceMarker,
-        })
+            playBoard.content.forceMarker
+        )
     end
 
     -- FIXME Why this offset? In particular, why the Z component introduces an asymmetry?

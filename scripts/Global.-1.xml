@@ -1,4 +1,4 @@
-<Panel position="0 -50" width="450" height="750" color="#000000" id="setupPane" rotation="0 0 0" outline="#6c3892" outlineSize="1" active="False">
+<Panel position="0 -50" width="450" height="750" color="#000000" id="setupPane" rotation="0 0 0" outline="#6c3892" outlineSize="1" active="False" allowDragging="True" returnToOriginalPositionWhenReleased="False">
 	<Defaults>
 		<Text class="primary" color="#8e5ab4" fontSize="16" alignment="MiddleLeft"/>
 		<Text class="secondary" color="#efd9ff" alignment="MiddleRight"/>

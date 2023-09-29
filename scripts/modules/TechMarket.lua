@@ -25,6 +25,8 @@ function TechMarket.onLoad(state)
         },
     }))
 
+    Helper.noPhysicsNorPlay(TechMarket.board)
+
     if state.settings and state.settings.riseOfIx then
         TechMarket.hagalSoloModeEnabled = state.TechMarket.hagalSoloModeEnabled
     end
