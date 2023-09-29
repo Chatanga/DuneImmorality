@@ -42,7 +42,7 @@ function Resource.new(token, color, resourceName, value)
 
     local offset = Vector(
         0,
-        0.05 * token.getScale().y,
+        0.1 * token.getScale().y,
         resourceName == "water" and -0.25 or -0.0)
 
     Helper.createAbsoluteButtonWithRoundness(token, 1, false, {

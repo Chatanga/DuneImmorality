@@ -74,7 +74,7 @@ local ArrakeenScouts = {
         },
         immortality = {
             getBackInTheGoodGraces = true,
-            treachery_immortality = true,
+            treachery = true,
             newInnovations = true,
             offWordOperations = true,
             ceaseAndDesistRequest = true,
@@ -120,7 +120,8 @@ local ArrakeenScouts = {
             revealTheFuture = true,
             sooSooSookWaterPeddlers = true,
         },
-    }
+    },
+    pendingOperations = {}
 }
 
 ---
@@ -180,7 +181,7 @@ function ArrakeenScouts.setUp(settings)
 
         ArrakeenScouts.selectedContent = {}
         -- DEBUG
-        table.insert(ArrakeenScouts.selectedContent, { "geneticResearch" })
+        --table.insert(ArrakeenScouts.selectedContent, { "secretsInTheDesert" })
         if math.random() > 0 then
             table.insert(ArrakeenScouts.selectedContent, { selection.missions[1], selection.missions[2] })
             table.insert(ArrakeenScouts.selectedContent, { selection.missions[3] })
@@ -229,7 +230,7 @@ function ArrakeenScouts._mergeContributions(contributionSets)
     return contributions
 end
 
-local firstRound = 0
+local firstRound = 1
 
 ---
 function ArrakeenScouts._staticSetUp()
@@ -258,7 +259,7 @@ function ArrakeenScouts._nextContent()
     -- TODO Afficher aussi les missions réussies sous forme de contenu spécifique.
     local round = TurnControl.getCurrentRound()
     local contents = ArrakeenScouts.selectedContent[round - firstRound]
-    if #contents > 0 then
+    if contents and #contents > 0 then
         local content = contents[1]
         table.remove(contents, 1)
 
@@ -1243,7 +1244,7 @@ function ArrakeenScouts._createGetBackInTheGoodGraces(color)
     return ArrakeenScouts._createDefault(color, false, false, options, handler)
 end
 
-function ArrakeenScouts._createTreachery_immortality(color)
+function ArrakeenScouts._createTreachery(color)
     local options = { "Passer" }
     if InfluenceTrack.getInfluence("beneGesserit", color) > 0 then
         table.insert(options, "-1 Bene Gesserit")

@@ -398,12 +398,19 @@ end
 ---
 function TleilaxuResearch.addSpaceBonus(location, bonuses)
     local position
+    log("location: " .. type(location))
     if location == "oneHelix" then
         location = TleilaxuResearch.board.getPosition() + Vector(0, 0, -2)
+        log(location)
+    elseif type(location) == "number" then
+        location = TleilaxuResearch._tleilaxSpaceToWorldPosition(location)
+        log(location)
     else
         error("Unknow location: " .. location)
     end
+    log(1)
     TleilaxuResearch.extraBonuses = DynamicBonus.addSpaceBonus(position, bonuses)
+    log(2)
 end
 
 return TleilaxuResearch
