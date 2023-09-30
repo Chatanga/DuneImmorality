@@ -31,9 +31,18 @@ end
 
 ---
 function Reserve._staticSetUp()
-    Reserve.foldspace = AcquireCard.new(Reserve.foldspaceSlotZone, "Imperium", Action.acquireFoldspace)
-    Reserve.arrakisLiaison = AcquireCard.new(Reserve.arrakisLiaisonSlotZone, "Imperium", Action.acquireArrakisLiaison)
-    Reserve.theSpiceMustFlow = AcquireCard.new(Reserve.theSpiceMustFlowSlotZone, "Imperium", Action.acquireTheSpiceMustFlow)
+    Reserve.foldspace = AcquireCard.new(Reserve.foldspaceSlotZone, "Imperium", function (_, color)
+        local leader = PlayBoard.getLeader(color)
+        leader.acquireFoldspace(color)
+    end)
+    Reserve.arrakisLiaison = AcquireCard.new(Reserve.arrakisLiaisonSlotZone, "Imperium", function (_, color)
+        local leader = PlayBoard.getLeader(color)
+        leader.acquireArrakisLiaison(color)
+    end)
+    Reserve.theSpiceMustFlow = AcquireCard.new(Reserve.theSpiceMustFlowSlotZone, "Imperium", function (_, color)
+        local leader = PlayBoard.getLeader(color)
+        leader.acquireTheSpiceMustFlow(color)
+    end)
 end
 
 ---

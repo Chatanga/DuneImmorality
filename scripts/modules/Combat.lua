@@ -423,16 +423,20 @@ function Combat._updateCombatForces(forces)
         local majorForce = force > 0 and math.floor((force - 1) / 20) or 0
 
         occupations[minorForce] = (occupations[minorForce] or 0) + 1
-        local height = Vector(0, (occupations[minorForce] - 1) * 0.35, 0)
+        local heightOffset = Vector(
+            0,
+            (occupations[minorForce] - 1) * 0.35
+                + math.min(1, majorForce) * 0.30, -- Last part is here because the rotation center for the tokent is not the barycenter.
+            0)
 
         local forceMarker = PlayBoard.getContent(color).forceMarker
         if force > 0 then
-            forceMarker.setPositionSmooth(Combat.combatForcePositions[minorForce] + height, false, false)
+            forceMarker.setPositionSmooth(Combat.combatForcePositions[minorForce] + heightOffset, false, false)
             forceMarker.setRotationSmooth(Vector(0, 180 + 90 * math.floor(majorForce / 2), 180 * math.min(1, majorForce)))
 
             forces[color] = force
         else
-            forceMarker.setPositionSmooth(Combat.noCombatForcePositions + height, false, false)
+            forceMarker.setPositionSmooth(Combat.noCombatForcePositions + heightOffset, false, false)
             forceMarker.setRotationSmooth(Vector(0, 180, 0))
         end
     end

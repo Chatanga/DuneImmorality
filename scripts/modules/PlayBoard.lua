@@ -947,7 +947,7 @@ function PlayBoard:_createButtons()
         end),
         label = I18N("resetDiscardButton"),
         position = self:_newOffsetedBoardPosition(-3.5, 0, 2.6),
-        width = 1200,
+        width = 1400,
         height = 250,
         font_size = 150,
         color = self.color,

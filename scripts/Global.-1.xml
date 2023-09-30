@@ -78,5 +78,5 @@
 			<Button id="setUpButton" minHeight="26" onClick="Global/setUpFromUI" key="setup"/>
 		</HorizontalLayout>
 	</VerticalLayout>
-	<Image position="0 350" width="256" height="256" image="http://cloud-3.steamusercontent.com/ugc/2093667512248482699/81266F80932D7A9A8628827099C5390739D09108/"/>
+	<Image position="0 375" width="256" height="256" image="http://cloud-3.steamusercontent.com/ugc/2093668098024163004/02244A1CFA3B51ABC56CDC512A9DDF383D09CA2A/"/>
 </Panel>

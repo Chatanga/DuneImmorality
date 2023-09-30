@@ -12,6 +12,7 @@ local TleilaxuResearch = Module.lazyRequire("TleilaxuResearch")
 local Action = Module.lazyRequire("Action")
 local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
 local ImperiumCard = Module.lazyRequire("ImperiumCard")
+local Combat = Module.lazyRequire("Combat")
 
 local ArrakeenScouts = {
     committees = {
@@ -121,7 +122,7 @@ local ArrakeenScouts = {
             sooSooSookWaterPeddlers = true,
         },
     },
-    pendingOperations = {}
+    pendingOperations = {},
 }
 
 ---
@@ -181,7 +182,7 @@ function ArrakeenScouts.setUp(settings)
 
         ArrakeenScouts.selectedContent = {}
         -- DEBUG
-        --table.insert(ArrakeenScouts.selectedContent, { "secretsInTheDesert" })
+        table.insert(ArrakeenScouts.selectedContent, { "mentat1" })
         if math.random() > 0 then
             table.insert(ArrakeenScouts.selectedContent, { selection.missions[1], selection.missions[2] })
             table.insert(ArrakeenScouts.selectedContent, { selection.missions[3] })
@@ -230,7 +231,7 @@ function ArrakeenScouts._mergeContributions(contributionSets)
     return contributions
 end
 
-local firstRound = 1
+local firstRound = 0
 
 ---
 function ArrakeenScouts._staticSetUp()
@@ -265,7 +266,8 @@ function ArrakeenScouts._nextContent()
 
         ArrakeenScouts.turnSequence = TurnControl.getPhaseTurnSequence()
 
-        ArrakeenScouts.auctions = {}
+        ArrakeenScouts.bids = {}
+        ArrakeenScouts.solvers = {}
         ArrakeenScouts.choices = {}
         ArrakeenScouts.handlers = {}
         ArrakeenScouts.widgets = {}
@@ -508,7 +510,7 @@ function ArrakeenScouts._createDefault(color, sequential, secret, options, handl
     if not sequential or color == ArrakeenScouts.turnSequence[1] then
         ArrakeenScouts._mutateAsButton(widget, sequential, color)
     else
-        ArrakeenScouts._mutateAsText(widget, "✗")
+        ArrakeenScouts._mutateAsText(widget, "…") -- "✗"
     end
 
     ArrakeenScouts.widgets[color] = widget
@@ -658,8 +660,32 @@ end
 
 ---
 function ArrakeenScouts._done()
-    if #ArrakeenScouts.auctions > 0 then
-        log("TODO auctions")
+    if #Helper.getKeys(ArrakeenScouts.bids) > 0 then
+        local ranking = {}
+        while true do
+            local bestValue
+            local colors = {}
+            for color, value in pairs(ArrakeenScouts.bids) do
+                if not bestValue or value > bestValue then
+                    colors = { color }
+                    bestValue = value
+                elseif value == bestValue then
+                    table.insert(colors, color)
+                end
+            end
+            if #colors > 0 then
+                for _, color in ipairs(colors) do
+                    ArrakeenScouts.bids[color] = nil
+                end
+                table.insert(ranking, colors)
+            else
+                break
+            end
+        end
+        log(ranking)
+        for _, solver in pairs(ArrakeenScouts.solvers) do
+            solver(ranking)
+        end
     end
 
     Wait.time(function ()
@@ -671,60 +697,56 @@ end
 --- Auctions ---
 
 function ArrakeenScouts._createMentat1(color)
-    local maxAuction = 0
-    for _, auction in ipairs(ArrakeenScouts.auctions) do
-        maxAuction = math.max(maxAuction, auction.value)
+    local maxBid = 0
+    for _, bid in pairs(ArrakeenScouts.bids) do
+        maxBid = math.max(maxBid, bid.value)
     end
     local options = { "Passer" }
     local solari = PlayBoard.getResource(color, "solari")
     local amounts = { 0 }
-    for i = maxAuction + 1, solari:get() do
+    for i = maxBid + 1, solari:get() do
         table.insert(amounts, i)
         table.insert(options, tostring(i) .. " solari")
     end
     local function handler(_, option)
         local index = Helper.indexOf(options, option)
         local amount = amounts[index]
-        ArrakeenScouts.auctions[color] = {
-            value = amount,
-            solver = function (ranking)
-                if Helper.tableContains(ranking[1], color) then
-                    Action.resources(color, "solari", -amount)
-                    if not Action.takeMentat(color) then
-                        -- TODO Choix influence
-                    end
+        ArrakeenScouts.bids[color] = amount
+        ArrakeenScouts.solvers[color] = function (ranking)
+            if Helper.tableContains(ranking[1], color) then
+                Action.resources(color, "solari", -amount)
+                if not Action.takeMentat(color) then
+                    log("TODO Choix influence")
                 end
             end
-        }
+        end
     end
     return ArrakeenScouts._createDefault(color, true, false, options, handler)
 end
 
 function ArrakeenScouts._createMentat2(color)
-    local maxAuction = 0
-    for _, auction in ipairs(ArrakeenScouts.auctions) do
-        maxAuction = math.max(maxAuction, auction.value)
+    local maxBid = 0
+    for _, bid in pairs(ArrakeenScouts.bids) do
+        maxBid = math.max(maxBid, bid.value)
     end
     local options = { "Passer" }
     local spice = PlayBoard.getResource(color, "spice")
     local amounts = { 0 }
-    for i = maxAuction + 1, spice:get() do
+    for i = maxBid + 1, spice:get() do
         table.insert(amounts, i)
         table.insert(options, tostring(i) .. " spice")
     end
     local function handler(_, option)
         local index = Helper.indexOf(options, option)
         local amount = amounts[index]
-        ArrakeenScouts.auctions[color] = {
-            value = amount,
-            solver = function (ranking)
-                if Helper.tableContains(ranking[1], color) then
-                    Action.resources(color, "spice", -amount)
-                    Action.takeMentat(color)
-                    Action.drawImperiumCards(color, 1)
-                end
+        ArrakeenScouts.bids[color] = amount
+        ArrakeenScouts.solvers[color] = function (ranking)
+            if Helper.tableContains(ranking[1], color) then
+                Action.resources(color, "spice", -amount)
+                Action.takeMentat(color)
+                Action.drawImperiumCards(color, 1)
             end
-        }
+        end
     end
     return ArrakeenScouts._createDefault(color, true, false, options, handler)
 end
@@ -753,14 +775,12 @@ function ArrakeenScouts._createMercenaries(color)
         local amount = amounts[index]
         Action.resources(color, "spice", -amount)
         Action.troops(color, "supply", "combat", amount)
-        ArrakeenScouts.auctions[color] = {
-            value = amount,
-            solver = function (ranking)
-                if Helper.tableContains(ranking[#ranking], color) then
-                    -- TODO Can retreat up to amount troops.
-                end
+        ArrakeenScouts.bids[color] = amount
+        ArrakeenScouts.solvers[color] = function (ranking)
+            if Helper.tableContains(ranking[#ranking], color) then
+                log("TODO Can retreat up to amount troops")
             end
-        }
+        end
     end
     return ArrakeenScouts._createDefault(color, false, true, options, handler)
 end
@@ -779,15 +799,13 @@ function ArrakeenScouts._createTreachery1(color)
     local function handler(_, option)
         local index = Helper.indexOf(options, option)
         local amount = amounts[index]
-        ArrakeenScouts.auctions[color] = {
-            value = amount,
-            solver = function (ranking)
-                if Helper.tableContains(ranking[1], color) then
-                    Action.resources(color, "spice", -amount)
-                    Action.drawIntrigues(color, 1)
-                end
+        ArrakeenScouts.bids[color] = amount
+        ArrakeenScouts.solvers[color] = function (ranking)
+            if Helper.tableContains(ranking[1], color) then
+                Action.resources(color, "spice", -amount)
+                Action.drawIntrigues(color, 1)
             end
-        }
+        end
     end
     return ArrakeenScouts._createDefault(color, false, true, options, handler)
 end
@@ -806,18 +824,16 @@ function ArrakeenScouts._createTreachery2(color)
     local function handler(_, option)
         local index = Helper.indexOf(options, option)
         local amount = amounts[index]
-        ArrakeenScouts.auctions[color] = {
-            value = amount,
-            solver = function (ranking)
-                if Helper.tableContains(ranking[1], color) then
-                    Action.resources(color, "spice", -amount)
-                    Action.drawIntrigues(color, 2)
-                elseif Helper.tableContains(ranking[2], color) and #ranking[1] == 1 then
-                    Action.resources(color, "solari", -amount)
-                    Action.drawIntrigues(color, 1)
-                end
+        ArrakeenScouts.bids[color] = amount
+        ArrakeenScouts.solvers[color] = function (ranking)
+            if Helper.tableContains(ranking[1], color) then
+                Action.resources(color, "spice", -amount)
+                Action.drawIntrigues(color, 2)
+            elseif Helper.tableContains(ranking[2], color) and #ranking[1] == 1 then
+                Action.resources(color, "solari", -amount)
+                Action.drawIntrigues(color, 1)
             end
-        }
+        end
     end
     return ArrakeenScouts._createDefault(color, false, true, options, handler)
 end
@@ -836,15 +852,13 @@ function ArrakeenScouts._createToTheHighestBidder1(color)
     local function handler(_, option)
         local index = Helper.indexOf(options, option)
         local amount = amounts[index]
-        ArrakeenScouts.auctions[color] = {
-            value = amount,
-            solver = function (ranking)
-                if Helper.tableContains(ranking[1], color) then
-                    Action.resources(color, "solari", -amount)
-                    Action.drawImperiumCards(color, 1)
-                end
+        ArrakeenScouts.bids[color] = amount
+        ArrakeenScouts.solvers[color] = function (ranking)
+            if Helper.tableContains(ranking[1], color) then
+                Action.resources(color, "solari", -amount)
+                Action.drawImperiumCards(color, 1)
             end
-        }
+        end
     end
     return ArrakeenScouts._createDefault(color, false, true, options, handler)
 end
@@ -863,18 +877,16 @@ function ArrakeenScouts._createToTheHighestBidder2(color)
     local function handler(_, option)
         local index = Helper.indexOf(options, option)
         local amount = amounts[index]
-        ArrakeenScouts.auctions[color] = {
-            value = amount,
-            solver = function (ranking)
-                if Helper.tableContains(ranking[1], color) then
-                    Action.resources(color, "solari", -amount)
-                    Action.drawImperiumCards(color, 2)
-                elseif Helper.tableContains(ranking[2], color) and #ranking[1] == 1 then
-                    Action.resources(color, "solari", -amount)
-                    Action.drawImperiumCards(color, 1)
-                end
+        ArrakeenScouts.bids[color] = amount
+        ArrakeenScouts.solvers[color] = function (ranking)
+            if Helper.tableContains(ranking[1], color) then
+                Action.resources(color, "solari", -amount)
+                Action.drawImperiumCards(color, 2)
+            elseif Helper.tableContains(ranking[2], color) and #ranking[1] == 1 then
+                Action.resources(color, "solari", -amount)
+                Action.drawImperiumCards(color, 1)
             end
-        }
+        end
     end
     return ArrakeenScouts._createDefault(color, false, true, options, handler)
 end
@@ -901,19 +913,17 @@ function ArrakeenScouts._createCompetitiveStudy(color, level)
     local function handler(_, option)
         local index = Helper.indexOf(options, option)
         local amount = amounts[index]
-        ArrakeenScouts.auctions[color] = {
-            value = amount,
-            solver = function (ranking)
-                if Helper.tableContains(ranking[1], color) then
-                    Action.resources(color, "solari", -amount)
-                    Action.troops(color, "supply", "specimen", 1)
-                    return ArrakeenScouts._ensureResearch(color)
-                elseif #ranking[1] == 1 and Helper.tableContains(ranking[2], color) and level == 2 then
-                    Action.resources(color, "solari", -amount)
-                    return ArrakeenScouts._ensureResearch(color)
-                end
+        ArrakeenScouts.bids[color] = amount
+        ArrakeenScouts.solvers[color] = function (ranking)
+            if Helper.tableContains(ranking[1], color) then
+                Action.resources(color, "solari", -amount)
+                Action.troops(color, "supply", "specimen", 1)
+                return ArrakeenScouts._ensureResearch(color)
+            elseif #ranking[1] == 1 and Helper.tableContains(ranking[2], color) and level == 2 then
+                Action.resources(color, "solari", -amount)
+                return ArrakeenScouts._ensureResearch(color)
             end
-        }
+        end
     end
     return ArrakeenScouts._createDefault(color, false, true, options, handler)
 end
@@ -971,7 +981,7 @@ function ArrakeenScouts._createGiftOfWater(color)
     local function handler(_, option)
         local index = Helper.indexOf(options, option)
         if index == 2 then
-            Action.acquireArrakisLiaisonCard(color)
+            Action.acquireArrakisLiaison(color)
         end
     end
     return ArrakeenScouts._createDefault(color, false, false, options, handler)
@@ -1034,7 +1044,7 @@ end
 
 function ArrakeenScouts._createTestOfLoyalty(color)
     local options = { "Passer" }
-    local garissonPark = MainBoard.getGarrisonPark(color)
+    local garissonPark = Combat.getGarrisonPark(color)
     if not Park.isEmpty(garissonPark) then
         table.insert(options, "Accepter")
     end
@@ -1086,7 +1096,7 @@ end
 
 function ArrakeenScouts._createFremenExchange(color)
     local options = {}
-    local garrisonPark = MainBoard.getGarrisonPark(color)
+    local garrisonPark = Combat.getGarrisonPark(color)
     if not Park.isEmpty(garrisonPark) then
         table.insert(options, "-1 troop")
     end
@@ -1323,7 +1333,7 @@ end
 
 function ArrakeenScouts._createSecretsInTheDesert(color, isFirstPlayer)
     if isFirstPlayer then
-        MainBoard.addSpaceBonus("researchStation", { all = { "intrigue", "intrigue" } })
+        MainBoard.addSpaceBonus("researchStation", { all = { intrigue = 2 } })
     end
     return ArrakeenScouts._createDefault(color)
 end
@@ -1337,7 +1347,7 @@ function ArrakeenScouts._createStationedSupport(color)
     end
     local function handler(c, index, option)
         if option == "Accepter" then
-            MainBoard.addSpaceBonus("researchStation", { [color] = { troops[1], troops[2] } })
+            MainBoard.addSpaceBonus("researchStation", { [color] = { combatTroop = { troops[1], troops[2] } } })
         end
     end
     return ArrakeenScouts._createDefault(color, false, false, options, handler)
@@ -1351,7 +1361,7 @@ function ArrakeenScouts._createGeneticResearch(color)
     end
     local function handler(_, option)
         if option == "Accepter" then
-            MainBoard.addSpaceBonus("secrets", { [color] = { Park.getAnyObject(supplyPark), "solari", "solari" } })
+            MainBoard.addSpaceBonus("secrets", { [color] = { combatTroop = { Park.getAnyObject(supplyPark) }, solari = 2 } })
         end
     end
     return ArrakeenScouts._createDefault(color, false, false, options, handler)
@@ -1368,7 +1378,7 @@ function ArrakeenScouts._createGuildManipulations(color)
     local function handler(_, option)
         if option == "Accepter" then
             Action.resources(color, "spice", -1)
-            MainBoard.addSpaceBonus("foldspace", { [color] = { troops[1], troops[2] } })
+            MainBoard.addSpaceBonus("foldspace", { [color] = { combatTroop = { troops[1], troops[2] } } })
         end
     end
     return ArrakeenScouts._createDefault(color, false, false, options, handler)
@@ -1376,7 +1386,7 @@ end
 
 function ArrakeenScouts._createSpiceIncentive(color, isFirstPlayer)
     if isFirstPlayer then
-        MainBoard.addSpaceBonus("rallyTroops", { all = { "solari", "solari" } })
+        MainBoard.addSpaceBonus("rallyTroops", { all = { solari = 2 } })
     end
     return ArrakeenScouts._createDefault(color)
 end
@@ -1389,7 +1399,7 @@ function ArrakeenScouts._createStrongarmedAlliance(color)
     end
     local function handler(_, option)
         if option == "Accepter" then
-            MainBoard.addSpaceBonus("rallyTroops", { [color] = { Park.getAnyObject(supplyPark) } })
+            MainBoard.addSpaceBonus("rallyTroops", { [color] = { combatTroop = { Park.getAnyObject(supplyPark) } } })
         end
     end
     return ArrakeenScouts._createDefault(color, false, false, options, handler)
@@ -1404,7 +1414,7 @@ function ArrakeenScouts._createSaphoJuice(color)
                 rotation = Vector(0, 180, 0),
                 smooth = false,
                 callback_function = function (controlMarker)
-                    MainBoard.addSpaceBonus("mentat", { [color] = { controlMarker, "spice" } })
+                    MainBoard.addSpaceBonus("mentat", { [color] = { controlMarker = { controlMarker }, spice = 1 } })
                 end
             })
         end
@@ -1420,17 +1430,22 @@ function ArrakeenScouts._createSpaceTravelDeal(color, isFirstPlayer)
 end
 
 function ArrakeenScouts._createArmedEscort(color)
-    return ArrakeenScouts._createDefault(color, false, false, nil, function ()
-        local dreadnoughtPark = PlayBoard.getDreadnoughtPark(color)
-        if not Park.isEmpty(dreadnoughtPark) then
-            MainBoard.addSpaceBonus("dreadnought", { [color] = { Park.getAnyObject(dreadnoughtPark), "spice" } })
+    local options = { "Refuser" }
+    local dreadnoughtPark = PlayBoard.getDreadnoughtPark(color)
+    if not Park.isEmpty(dreadnoughtPark) then
+        table.insert(options, "Accepter")
+    end
+    local function handler(_, option)
+        if option == "Accepter" then
+            MainBoard.addSpaceBonus("dreadnought", { [color] = { combatDreadnought = { Park.getAnyObject(dreadnoughtPark) }, spice = 1 } })
         end
-    end)
+    end
+    return ArrakeenScouts._createDefault(color, false, false, options, handler)
 end
 
 function ArrakeenScouts._createSecretStash(color, isFirstPlayer)
     if isFirstPlayer then
-        MainBoard.addSpaceBonus("smuggling", { all = { "spice", "spice" } })
+        MainBoard.addSpaceBonus("smuggling", { all = { spice = 2 } })
     end
     return ArrakeenScouts._createDefault(color)
 end
@@ -1446,7 +1461,7 @@ function ArrakeenScouts._createStowaway(color)
     local function handler(_, option)
         if option == "Accepter" then
             Action.resources(color, "spice", -1)
-            MainBoard.addSpaceBonus("smuggling", { [color] = { troops[1], troops[2] } })
+            MainBoard.addSpaceBonus("smuggling", { [color] = { combatTroop = { troops[1], troops[2] } } })
         end
     end
     return ArrakeenScouts._createDefault(color, false, false, options, handler)
@@ -1454,7 +1469,7 @@ end
 
 function ArrakeenScouts._createBackstageAgreement(color, isFirstPlayer)
     if isFirstPlayer then
-        TleilaxuRow.addAcquireBonus({ all = { "solari", "solari" } })
+        TleilaxuRow.addAcquireBonus({ all = { solari = 2 } })
     end
     return ArrakeenScouts._createDefault(color)
 end
@@ -1475,7 +1490,7 @@ function ArrakeenScouts._createCoordinationWithTheEmperor(color)
     end
     local function handler(_, option)
         if option == "Accepter" then
-            MainBoard.addSpaceBonus("conspire", { [color] = { Park.getAnyObject(tankPark), "solari", "solari" } })
+            MainBoard.addSpaceBonus("conspire", { [color] = { garrisonTroop = { Park.getAnyObject(tankPark) }, solari = 2 } })
         end
     end
     return ArrakeenScouts._createDefault(color, false, false, options, handler)
@@ -1483,7 +1498,7 @@ end
 
 function ArrakeenScouts._createSponsoredResearch(color, isFirstPlayer)
     if isFirstPlayer then
-        TleilaxuResearch.addSpaceBonus("oneHelix", { all = { "solari", "solari" } })
+        TleilaxuResearch.addSpaceBonus("oneHelix", { all = { solari = 2 } })
     end
     return ArrakeenScouts._createDefault(color)
 end
@@ -1498,7 +1513,7 @@ function ArrakeenScouts._createTleilaxuOffering(color)
     local function handler(_, option)
         if option == "Accepter" then
             -- Not to be deployed, but to be added as specimen.
-            TleilaxuResearch.addSpaceBonus(3, { [color] = { troops[1], troops[2] } })
+            TleilaxuResearch.addSpaceBonus(3, { [color] = { tankTroop = { troops[1], troops[2] } } })
         end
     end
     return ArrakeenScouts._createDefault(color, false, false, options, handler)

@@ -1246,6 +1246,14 @@ function Helper.noPlay(...)
 end
 
 ---
+function Helper.physicsAndPlay(...)
+    for _, object in pairs({...}) do
+        object.setLock(false)
+        object.interactable = true
+    end
+end
+
+---
 function Helper.negate(predicate)
     return function (...)
         return not predicate(...)

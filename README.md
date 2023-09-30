@@ -66,10 +66,6 @@ Having launched `./listen.py` in another terminal will provide you with an immed
 ## TODO (by priority)
 
 - Arrakeen Scouts.
-    - simplify auctions
-    - space bonuses
-    - ensureSomething (async)
-    - pseudo content
 - Blitz!
 - Basic logging in the Action facade (using context to group).
 - Fully restore translations (tokens and books included).
@@ -93,3 +89,8 @@ Having launched `./listen.py` in another terminal will provide you with an immed
 - Some kind of hungarian notation with Array (ipairs) and Dict (pairs), a Array being a Dict?
 - Alt mouse hover defeated by area buttons...
 - Redundancy GMNotes VS resolve using them?
+
+# Links :
+
+- Steam: https://steamcommunity.com/sharedfiles/filedetails/?id=3043517751
+- Mod: 3043517751

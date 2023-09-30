@@ -106,6 +106,10 @@ end
 
 ---
 function Action.setUp(color, settings)
+
+    Action.resources(color, "solari", 10)
+    Action.resources(color, "spice", 10)
+
     Action.resources(color, "water", 1)
     if settings.epicMode then
         Action.troops(color, "supply", "garrison", 5)
@@ -235,15 +239,15 @@ function Action.acquireImperiumCard(color, indexInRow)
 end
 
 ---
-function Action.acquireFoldspaceCard(color)
+function Action.acquireFoldspace(color)
     Utils.assertIsPlayerColor(color)
     return Reserve.acquireFoldspace(color)
 end
 
 ---
-function Action.acquireArrakisLiaisonCard(color, toItsHand)
+function Action.acquireArrakisLiaison(color, toItsHand)
     Utils.assertIsPlayerColor(color)
-    return Reserve.acquireArrakisLiaisonCard(color, toItsHand)
+    return Reserve.acquireArrakisLiaison(color, toItsHand)
 end
 
 ---

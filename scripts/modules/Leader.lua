@@ -204,7 +204,7 @@ Leader.ilesaEcaz = Helper.createClass(Leader, {
 
     --- Guild contacts
     signetRing = function (color)
-        return Action.resources(color, "solari", -1) and Action.acquireFoldspaceCard(color)
+        return Action.resources(color, "solari", -1) and Action.acquireFoldspace(color)
     end,
 
     --- One step ahead

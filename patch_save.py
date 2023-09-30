@@ -73,6 +73,8 @@ def patch_save(input_path, output_path):
     with open(input_path, 'r') as save_file:
         save = json.load(save_file)
 
+    save['SaveName'] = "Dune Immorality - Alpha Test"
+
     objects = save['ObjectStates']
     new_objects = []
     object_by_guid = {}

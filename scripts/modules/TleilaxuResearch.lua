@@ -46,7 +46,8 @@ local TleilaxuResearch = {
         { intrigue = true },
         { victoryToken = true }
     },
-    tanksParks = {}
+    tanksParks = {},
+    extraBonuses = {},
 }
 
 ---
@@ -241,8 +242,11 @@ function TleilaxuResearch._advanceResearch(color, jump, withBenefits)
             end)
         end
 
-        if cellPosition < 4 and newCellPosition >= 4 and TleilaxuResearch.extraBonuses then
-            DynamicBonus.collectExtraBonuses(color, leader, TleilaxuResearch.extraBonuses)
+        local bonuses = TleilaxuResearch.extraBonuses["oneHelix"]
+        if bonuses then
+            if cellPosition.x < 4 and newCellPosition.x >= 4 and TleilaxuResearch.extraBonuses then
+                DynamicBonus.collectExtraBonuses(color, leader, TleilaxuResearch.extraBonuses)
+            end
         end
     end
 end
@@ -339,6 +343,13 @@ function TleilaxuResearch._advanceTleilax(color, jump, withBenefits)
             end
         end)
     end
+
+    for i = level + 1, newLevel do
+        local bonuses = TleilaxuResearch.extraBonuses[i]
+        if bonuses then
+            DynamicBonus.collectExtraBonuses(color, leader, bonuses)
+        end
+    end
 end
 
 ---
@@ -398,19 +409,17 @@ end
 ---
 function TleilaxuResearch.addSpaceBonus(location, bonuses)
     local position
-    log("location: " .. type(location))
     if location == "oneHelix" then
-        location = TleilaxuResearch.board.getPosition() + Vector(0, 0, -2)
-        log(location)
+        position = TleilaxuResearch.board.getPosition() + Vector(0, 0, -1)
     elseif type(location) == "number" then
-        location = TleilaxuResearch._tleilaxSpaceToWorldPosition(location)
-        log(location)
+        position = TleilaxuResearch._tleilaxSpaceToWorldPosition(location) + Vector(0, 0, -0.5)
     else
         error("Unknow location: " .. location)
     end
-    log(1)
-    TleilaxuResearch.extraBonuses = DynamicBonus.addSpaceBonus(position, bonuses)
-    log(2)
+    if not TleilaxuResearch.extraBonuses[location] then
+        TleilaxuResearch.extraBonuses[location] = {}
+    end
+    DynamicBonus.createSpaceBonus(position, bonuses, TleilaxuResearch.extraBonuses[location])
 end
 
 return TleilaxuResearch

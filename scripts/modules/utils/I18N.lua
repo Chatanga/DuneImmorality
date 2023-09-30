@@ -1,3 +1,5 @@
+local Helper = require("utils.Helper")
+
 local I18N = {
     locales = {}
 }
@@ -11,6 +13,7 @@ end
 function I18N.setLocale(newLocale)
     assert(I18N.locales[newLocale], ("The locale '%q' is unknown"):format(newLocale))
     Global.setVar("Locale", newLocale)
+    Helper.emitEvent("locale", newLocale)
 end
 
 ---

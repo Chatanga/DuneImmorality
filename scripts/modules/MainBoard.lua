@@ -312,7 +312,7 @@ end
 ---
 function MainBoard.occupy(controlableSpace, color)
     for _, object in ipairs(controlableSpace.getObjects()) do
-        for _, otherColor in ipairs(PlayBoard.getPlayBoardColors) do
+        for _, otherColor in ipairs(PlayBoard.getPlayBoardColors()) do
             if Utils.isControlMarker(object, otherColor) then
                 if otherColor ~= color then
                     local p = PlayBoard.getControlMarkerBag(otherColor).getPosition() + Vector(0, 1, 0)
@@ -447,7 +447,7 @@ end
 
 ---
 function MainBoard._goFoldspace(color, leader)
-    leader.acquireFoldspaceCard(color)
+    leader.acquireFoldspace(color)
     leader.influence(color, "spacingGuild", 1)
     return true
 end
@@ -980,11 +980,15 @@ end
 ---
 function MainBoard.addSpaceBonus(spaceName, bonuses)
     local space = MainBoard.spaces[spaceName]
-    space.extraBonuses = DynamicBonus.addSpaceBonus(space.zone.getPosition() + Vector(1.2, 0, 0.75), bonuses)
+    if not space.extraBonuses then
+        space.extraBonuses = {}
+    end
+    DynamicBonus.createSpaceBonus(space.zone.getPosition() + Vector(1.2, 0, 0.75), bonuses, space.extraBonuses)
 end
 
 ---
 function MainBoard.collectExtraBonuses(color, leader, spaceName)
+    Helper.dumpFunction("collectExtraBonuses", color, leader, spaceName)
     local space = MainBoard.spaces[spaceName]
     if space.extraBonuses then
         DynamicBonus.collectExtraBonuses(color, leader, space.extraBonuses)

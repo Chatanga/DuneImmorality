@@ -4,112 +4,121 @@ local Park = require("utils.Park")
 
 local Intrigue = Module.lazyRequire("Intrigue")
 local Resource = Module.lazyRequire("Resource")
-local PlayBoard = Module.lazyRequire("PlayBoard")
-local Utils = require("Utils")
+local Utils = Module.lazyRequire("Utils")
+local Combat = Module.lazyRequire("Combat")
+local TleilaxuResearch = Module.lazyRequire("TleilaxuResearch")
+local Playboard = Module.lazyRequire("Playboard")
 
 local DynamicBonus = {}
 
 ---
-function DynamicBonus.collectExtraBonuses(color, leader, extraBonuses)
-    -- TODO
-end
-
-function DynamicBonus.addSpaceBonus(origin, bonuses)
-    --[[
-    local troops = Park.getObjects(PlayBoard.getSupplyPark("Yellow"))
-    local controlMarkers = PlayBoard.getControlMarkerBag("Red").getObjects()
-    local dreadnoughts = Park.getObjects(PlayBoard.getDreadnoughtPark("Green"))
-    bonuses2 = {
-        all = {
-            "spice",
-            "spice",
-            "solari",
-            "solari",
-        },
-        Yellow = {
-            "solari",
-            troops[1],
-            troops[2],
-        },
-        Red = {
-            "intrigue",
-            --controlMarkers[1],
-        },
-        Green = {
-            dreadnoughts[1],
-        }
-    }
-    ]]--
-
-    local realBonuses = {}
-
-    local bonusContinuations = {}
+function DynamicBonus.createSpaceBonus(origin, bonuses, extraBonuses)
     local i = 0
     for target, targetBonuses in pairs(bonuses) do
-        realBonuses[target] = {}
-        for _, targetBonus in ipairs(targetBonuses) do
-            assert(targetBonus)
-            local position = origin + Vector(i * 0.4, 0, 0)
-            if Helper.isElementOf(targetBonus, { "spice", "solari" }) then
-                if not bonusContinuations[targetBonus] then
-                    bonusContinuations[targetBonus] = Helper.createContinuation()
-                    local constructorName = Helper.toCamelCase("create",  targetBonus, "token")
-                    DynamicBonus[constructorName](position).doAfter(function (bonusToken)
-                        table.insert(realBonuses[target], bonusToken)
-                        Helper.noPlay(bonusToken)
-                        local bonus = Resource.new(bonusToken, nil, targetBonus, 1)
-                        bonusContinuations[targetBonus].run(bonus)
-                    end)
-                    i = i + 1
-                else
-                    bonusContinuations[targetBonus].doAfter(function (bonus)
-                        bonus:change(1)
-                    end)
-                end
-            elseif targetBonus == "intrigue" then
-                local spawnIntrigue = function (continuation)
-                    Helper.moveCardFromZone(Intrigue.deckZone, position, nil, false, true).doAfter(function (card)
-                        table.insert(realBonuses[target], card)
-                        card.flip()
-                        local scale = card.getScale()
-                        scale:scale(0.2)
-                        card.setScale(scale)
-                        card.setPosition(position)
-                        Helper.noPlay(card)
-                        continuation.run()
-                    end)
-                end
-                if bonusContinuations[targetBonus] then
-                    bonusContinuations[targetBonus].doAfter(function ()
-                        bonusContinuations[targetBonus] = Helper.createContinuation()
-                        spawnIntrigue(bonusContinuations[targetBonus])
-                    end)
-                else
-                    bonusContinuations[targetBonus] = Helper.createContinuation()
-                    spawnIntrigue(bonusContinuations[targetBonus])
-                end
-                i = i + 1
-            elseif type(targetBonus) == "string" then
-                error("Unknown bonus type: " .. tostring(targetBonus))
-            else
-                table.insert(realBonuses[target], targetBonus)
-                local scale = targetBonus.getScale()
-                scale:scale(0.5)
-                targetBonus.setScale(scale)
-                targetBonus.setPosition(position)
-                Helper.onceMotionless(targetBonus).doAfter(function ()
-                    Helper.noPlay(targetBonus)
+        extraBonuses[target] = {}
+        for category, description in pairs(targetBonuses) do
+            extraBonuses[target][category] = {}
+            local position = origin + Vector(i * 0.4, 0.2, 0)
+
+            if Helper.isElementOf(category, { "spice", "solari" }) then
+                Utils.assertIsPositiveInteger(description)
+                local constructorName = Helper.toCamelCase("_create",  category, "token")
+                DynamicBonus[constructorName](position).doAfter(function (bonusToken)
+                    Helper.noPlay(bonusToken)
+                    local bonus = Resource.new(bonusToken, nil, category, description)
+                    table.insert(extraBonuses[target][category], bonus)
                 end)
                 i = i + 1
+
+            elseif category == "intrigue" then
+                Utils.assertIsPositiveInteger(description)
+                for _ = 1, description do
+                    Helper.moveCardFromZone(Intrigue.deckZone, position, nil, false, true).doAfter(function (card)
+                        table.insert(extraBonuses[target][category], card)
+                        card.flip()
+                        card.setScale(card.getScale():scale(0.2))
+                        card.setPosition(position)
+                        Helper.noPlay(card)
+                    end)
+                    i = i + 1
+                end
+
+            elseif Helper.isElementOf(category, { "combatTroop", "garrisonTroop", "tankTroop", "combatDreadnought", "controlMarker" })  then
+                for _, item in ipairs(description) do
+                    table.insert(extraBonuses[target][category], item)
+                    item.setScale(item.getScale():scale(0.5))
+                    item.setPosition(position)
+                    Helper.onceMotionless(item).doAfter(function ()
+                        Helper.noPlay(item)
+                    end)
+                    i = i + 1
+                end
+
+            else
+                error("Unknown bonus type: " .. tostring(category))
             end
         end
     end
 
-    return realBonuses
+    return extraBonuses
 end
 
 ---
-function DynamicBonus.createSpiceToken(position)
+function DynamicBonus.collectExtraBonuses(color, leader, extraBonuses)
+    for _, target in ipairs({ "all", color }) do
+        local targetBonuses = extraBonuses[target]
+        if targetBonuses then
+            log("Bonus: " .. target)
+            DynamicBonus._collectTargetBonuses(color, leader, targetBonuses)
+        else
+            log("No bonus: " .. target)
+        end
+        extraBonuses[target] = nil
+    end
+end
+
+---
+function DynamicBonus._collectTargetBonuses(color, leader, targetBonuses)
+    for category, items in pairs(targetBonuses) do
+        for _, item in ipairs(items) do
+            if Helper.isElementOf(category, { "spice", "solari" }) then
+                leader.resources(color, category, item:get())
+                item.token.destruct()
+
+            elseif category == "intrigue" then
+                Helper.physicsAndPlay(item)
+                -- Add an offset to put the card on the left side of the player's hand.
+                local position = Player[color].getHandTransform().position + Vector(-7.5, 0, 0)
+                item.setPosition(position)
+                item.setScale(item.getScale():scale(5))
+
+            elseif Helper.isElementOf(category, { "combatTroop", "garrisonTroop", "tankTroop", "combatDreadnought" })  then
+                Helper.physicsAndPlay(item)
+                local toPark
+                if category == "combatTroop" or category == "combatDreadnought" then
+                    toPark = Combat.getBattlegroundPark(color)
+                elseif category == "garrisonTroop" then
+                    toPark = Combat.getGarrisonPark(color)
+                elseif category == "tankTroop" then
+                    toPark = TleilaxuResearch.getTankPark(color)
+                end
+                Park.putObject(item, toPark)
+                item.setScale(item.getScale():scale(2))
+
+            elseif category == "controlMarker"  then
+                Helper.physicsAndPlay(item)
+                item.setPosition(Playboard.getControlMarkerBag(color).getPosition())
+                item.setScale(item.getScale():scale(2))
+
+            else
+                error("Unknown bonus type: " .. tostring(category))
+            end
+        end
+    end
+end
+
+---
+function DynamicBonus._createSpiceToken(position)
     local data = {
         Name = "Custom_Token",
         Transform = {
@@ -168,13 +177,13 @@ function DynamicBonus.createSpiceToken(position)
 end
 
 ---
-function DynamicBonus.createSolariToken(position)
+function DynamicBonus._createSolariToken(position)
     local data = {
         Name = "Custom_Token",
         Transform = {
-            posX = -17.0,
-            posY = 1.16176772,
-            posZ = 14.5,
+            posX = 0,
+            posY = 0,
+            posZ = 0,
             rotX = 0.0,
             rotY = 180.0,
             rotZ = 0.0,

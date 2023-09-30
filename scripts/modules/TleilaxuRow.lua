@@ -127,7 +127,10 @@ end
 function TleilaxuRow.addAcquireBonus(bonuses)
     local acquireCard = TleilaxuRow.acquireCards[3]
     local position = acquireCard.zone.getPosition()
-    acquireCard.extraBonuses = DynamicBonus.addSpaceBonus(position, bonuses)
+    if not acquireCard.extraBonuses then
+        acquireCard.extraBonuses = {}
+    end
+    DynamicBonus.createSpaceBonus(position, bonuses, acquireCard.extraBonuses)
 end
 
 return TleilaxuRow
