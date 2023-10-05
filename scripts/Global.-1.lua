@@ -267,39 +267,47 @@ end
 
 ---
 function setUp(newSettings)
-    settings = newSettings
-    I18N.setLocale(settings.language)
+    assert(newSettings)
+    I18N.setLocale(newSettings.language)
 
     local properlySeatedPlayers = PlayerSet.getProperlySeatedPlayers()
-    if not settings.virtualHotSeat then
-        settings.numberOfPlayers = math.min(4, #properlySeatedPlayers)
+    if not newSettings.virtualHotSeat then
+        newSettings.numberOfPlayers = math.min(4, #properlySeatedPlayers)
     end
 
-    local activeOpponents = PlayerSet.findActiveOpponents(properlySeatedPlayers, settings.numberOfPlayers)
-    if settings.randomizePlayerPositions then
-        PlayerSet.randomizePlayerPositions(activeOpponents)
+    local continuation = Helper.createContinuation()
+    local activeOpponents = PlayerSet.findActiveOpponents(properlySeatedPlayers, newSettings.numberOfPlayers)
+    if newSettings.randomizePlayerPositions then
+        PlayerSet.randomizePlayerPositions(activeOpponents, continuation)
+    else
+        continuation.run()
     end
 
-    -- TODO Explicit dependency + preserved for onLoad.
-    allModules.ArrakeenScouts.setUp(settings)
-    allModules.Music.setUp(settings)
-    allModules.Deck.setUp(settings)
-    allModules.Hagal.setUp(settings)
-    allModules.ScoreBoard.setUp(settings)
-    allModules.PlayBoard.setUp(settings, activeOpponents)
-    allModules.Combat.setUp(settings)
-    allModules.LeaderSelection.setUp(settings, activeOpponents)
-    allModules.MainBoard.setUp(settings)
-    allModules.CommercialTrack.setUp(settings)
-    allModules.TechMarket.setUp(settings)
-    allModules.Intrigue.setUp(settings)
-    allModules.ImperiumRow.setUp(settings)
-    allModules.Reserve.setUp()
-    allModules.TleilaxuResearch.setUp(settings)
-    allModules.TleilaxuRow.setUp(settings)
-    allModules.TurnControl.setUp(settings, PlayerSet.toOrderedPlayerList(activeOpponents))
+    continuation.doAfter(function ()
+        -- Not assigned before in order to avoid saving anything.
+        settings = newSettings
 
-    -- TurnControl.start() is called by "LeaderSelection" asynchronously. (FIXME: use a continuation for readiness?)
+        -- TODO Explicit dependency + preserved for onLoad.
+        allModules.ArrakeenScouts.setUp(settings)
+        allModules.Music.setUp(settings)
+        allModules.Deck.setUp(settings)
+        allModules.Hagal.setUp(settings)
+        allModules.ScoreBoard.setUp(settings)
+        allModules.PlayBoard.setUp(settings, activeOpponents)
+        allModules.Combat.setUp(settings)
+        allModules.LeaderSelection.setUp(settings, activeOpponents)
+        allModules.MainBoard.setUp(settings)
+        allModules.CommercialTrack.setUp(settings)
+        allModules.TechMarket.setUp(settings)
+        allModules.Intrigue.setUp(settings)
+        allModules.ImperiumRow.setUp(settings)
+        allModules.Reserve.setUp()
+        allModules.TleilaxuResearch.setUp(settings)
+        allModules.TleilaxuRow.setUp(settings)
+        allModules.TurnControl.setUp(settings, PlayerSet.toOrderedPlayerList(activeOpponents))
+
+        -- TurnControl.start() is called by "LeaderSelection" asynchronously. (FIXME: use a continuation for readiness?)
+    end)
 end
 
 ---
@@ -376,40 +384,58 @@ function PlayerSet.toOrderedPlayerList(activeOpponents)
 end
 
 ---
-function PlayerSet.randomizePlayerPositions(activeOpponents)
-    local colors = {}
-    local opponents = {}
-    local newColors = {}
+function PlayerSet.randomizePlayerPositions(activeOpponents, continuation)
+    PlayerSet.registeredCallback = Helper.registerGlobalCallback(function ()
+        local colors = {}
+        local opponents = {}
+        local newColors = {}
 
-    for color, opponent in pairs(activeOpponents) do
-        table.insert(colors, color)
-        table.insert(opponents, opponent)
-        table.insert(newColors, color)
-    end
+        for color, opponent in pairs(activeOpponents) do
+            table.insert(colors, color)
+            table.insert(opponents, opponent)
+            table.insert(newColors, color)
+        end
 
-    Helper.shuffle(newColors)
+        Helper.shuffle(newColors)
 
-    for i = 1, #opponents do
-        local opponent = opponents[i]
-        local newColor = newColors[i]
-        PlayerSet.switchPositions(opponent, newColor)
-        activeOpponents[newColor] = opponent
-    end
+        for i = 1, #opponents do
+            local opponent = opponents[i]
+            local newColor = newColors[i]
+            PlayerSet.switchPositions(opponent, newColor)
+            activeOpponents[newColor] = opponent
+        end
+
+        Helper.unregisterGlobalCallback(PlayerSet.registeredCallback)
+        PlayerSet.registeredCallback = nil
+
+        continuation.run()
+        return 1
+    end)
+    startLuaCoroutine(Global, PlayerSet.registeredCallback)
 end
 
 ---
 function PlayerSet.switchPositions(opponent, newColor)
-    --opponent ~= "hagal" and
+    --Helper.dumpFunction("switchPositions", opponent, newColor)
     if opponent ~= "rival" and opponent ~= "puppet" then
         local oldColor = opponent.color
         local player = Helper.findPlayer(newColor)
         if oldColor ~= newColor then
             if player then
-                player:changeColor("Teal")
+                log("player:changeColor(Grey)")
+                player:changeColor("Grey")
+                while player.seated do
+                    coroutine.yield()
+                end
             end
+            log("opponent:changeColor(" .. newColor .. ")")
             opponent:changeColor(newColor)
             if player then
+                log("player:changeColor(" .. oldColor .. ")")
                 player:changeColor(oldColor)
+                while not player.seated do
+                    coroutine.yield()
+                end
             end
         end
     end

@@ -2,11 +2,21 @@ local Helper = require("utils.Helper")
 
 local Set = Helper.createClass()
 
-function Set.newFromList(...)
+function Set.newFromItems(...)
     local data = {
         elements = {}
     }
     for _, element in ipairs({...}) do
+        data.elements[element] = true
+    end
+    return Helper.createClassInstance(Set, data)
+end
+
+function Set.newFromList(elements)
+    local data = {
+        elements = {}
+    }
+    for _, element in ipairs(elements) do
         data.elements[element] = true
     end
     return Helper.createClassInstance(Set, data)

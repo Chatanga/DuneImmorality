@@ -278,8 +278,8 @@ function PlayBoard.new(color, unresolvedContent, subState)
     })
     playBoard.content = Helper.resolveGUIDs(true, unresolvedContent)
 
-    local board = playBoard.content.board
-    board.interactable = false
+    playBoard.content.board.interactable = false
+    playBoard.content.startEndTurnButton.interactable = false
 
     if not subState then
         Helper.noPlay(
@@ -296,7 +296,7 @@ function PlayBoard.new(color, unresolvedContent, subState)
 
     -- FIXME Why this offset? In particular, why the Z component introduces an asymmetry?
     local offset = Vector(0, 0.55, 5.1)
-    local centerPosition = board.getPosition() + offset
+    local centerPosition = playBoard.content.board.getPosition() + offset
 
     for _, resourceName in ipairs(PlayBoard.ALL_RESOURCE_NAMES) do
         local token = playBoard.content[resourceName]
@@ -304,7 +304,7 @@ function PlayBoard.new(color, unresolvedContent, subState)
         playBoard[resourceName] = Resource.new(token, color, resourceName, value)
     end
 
-    Helper.createTransientAnchor("InstructionTextAnchor", board.getPosition() + playBoard:_newSymmetricBoardPosition(12, -0.5, -8)).doAfter(function (anchor)
+    Helper.createTransientAnchor("InstructionTextAnchor", playBoard.content.board.getPosition() + playBoard:_newSymmetricBoardPosition(12, -0.5, -8)).doAfter(function (anchor)
         playBoard.instructionTextAnchor = anchor
     end)
 
@@ -488,7 +488,6 @@ function PlayBoard._setActivePlayer(phase, color)
             local effectIndex = 0 -- black index (no color actually)
             if otherColor == color then
                 effectIndex = i
-                playBoard.content.startEndTurnButton.interactable = true
                 if playBoard.opponent == "rival" then
                     Hagal.activate(phase, color)
                 else
@@ -498,7 +497,6 @@ function PlayBoard._setActivePlayer(phase, color)
                     PlayBoard._movePlayerIfNeeded(color)
                 end
             else
-                playBoard.content.startEndTurnButton.interactable = false
                 Helper.clearButtons(playBoard.content.startEndTurnButton)
             end
             local board = playBoard.content.board
@@ -509,18 +507,20 @@ end
 
 --- Hotseat
 function PlayBoard._movePlayerIfNeeded(color)
-    local anyOtherPlayer = nil
+    local hostPlayer = nil
     for _, player in ipairs(Player.getPlayers()) do
         if player.color == color then
             return
-        else
-            anyOtherPlayer = player
+        elseif player.host then
+            hostPlayer = player
         end
     end
-    if anyOtherPlayer then
-        PlayBoard.getPlayBoard(anyOtherPlayer.color).opponent = "puppet"
-        PlayBoard.getPlayBoard(color).opponent = anyOtherPlayer
-        anyOtherPlayer.changeColor(color)
+    if hostPlayer then
+        PlayBoard.getPlayBoard(hostPlayer.color).opponent = "puppet"
+        PlayBoard.getPlayBoard(color).opponent = hostPlayer
+        Wait.frames(function ()
+            hostPlayer.changeColor(color)
+        end, 1)
     end
 end
 
@@ -548,6 +548,7 @@ end
 
 ---
 function PlayBoard.acceptTurn(phase, color)
+    assert(color)
     local playBoard = PlayBoard.getPlayBoard(color)
     local accepted = false
 
@@ -1145,7 +1146,7 @@ function PlayBoard.getCardsPlayedThisTurn(color)
         return Utils.isImperiumCard(card) or Utils.isIntrigueCard(card)
     end)
 
-    return Set.newFromSet(playedCards) - Set.newFromSet(playBoard.alreadyPlayedCards)
+    return Set.newFromList(playedCards) - Set.newFromList(playBoard.alreadyPlayedCards)
 end
 
 ---

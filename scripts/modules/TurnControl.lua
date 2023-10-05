@@ -193,6 +193,7 @@ end
 
 ---
 function TurnControl._findActivePlayer(startPlayerLuaIndex)
+    assert(startPlayerLuaIndex)
     local playerLuaIndex = startPlayerLuaIndex
     local n = TurnControl.getPlayerCount()
     for _ = 1, n do
@@ -206,6 +207,7 @@ end
 
 ---
 function TurnControl._getNextPlayer(playerLuaIndex, counterClockWise)
+    assert(playerLuaIndex)
     if TurnControl.customTurnSequence then
         for i, otherPlayerLuaIndex in ipairs(TurnControl.customTurnSequence) do
             if otherPlayerLuaIndex == playerLuaIndex then
@@ -221,6 +223,7 @@ function TurnControl._getNextPlayer(playerLuaIndex, counterClockWise)
         else
             nextPlayerLuaIndex = (playerLuaIndex % n) + 1
         end
+        assert(nextPlayerLuaIndex)
         return nextPlayerLuaIndex
     end
 end
@@ -267,6 +270,7 @@ end
 
 ---
 function TurnControl._isPlayerActive(playerLuaIndex)
+    assert(playerLuaIndex)
     local phase = TurnControl.currentPhase
     local color = TurnControl.players[playerLuaIndex]
     return PlayBoard.acceptTurn(phase, color)

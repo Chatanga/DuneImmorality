@@ -66,4 +66,10 @@ function Intrigue.stealIntrigue(color, otherColor, amount)
     end, 0.25, realAmount)
 end
 
+---
+function Intrigue.getDiscardedIntrigues()
+    local deckOrCard = Helper.getDeckOrCard(Intrigue.discardZone)
+    return Helper.getCards(deckOrCard)
+end
+
 return Intrigue

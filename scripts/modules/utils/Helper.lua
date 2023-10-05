@@ -216,7 +216,7 @@ function Helper.getDeckOrCard(zone)
     assert(zone)
     assert(type(zone) ~= 'string', tostring(zone) .. ' is a GUID, not a zone')
     for _, object in ipairs(zone.getObjects()) do
-        if object.type == "Card" or object.type == "Deck" then
+        if not object.held_by_color and (object.type == "Card" or object.type == "Deck") then
             return object
         end
     end
@@ -357,7 +357,8 @@ function Helper._createWidget(name, object, parameters)
         end
     end)
 
-    assert(#newIndexes == 1)
+    --assert(#newIndexes == 1)
+    assert(#newIndexes <= 1)
     return newIndexes[1]
 end
 
@@ -600,8 +601,8 @@ end
 
 -- Intended to be used in a coroutine.
 ---
-function Helper.sleep(duration)
-    local Time = os.clock() + duration
+function Helper.sleep(durationInSeconds)
+    local Time = os.clock() + durationInSeconds
     while os.clock() < Time do
         coroutine.yield()
     end
@@ -1226,6 +1227,21 @@ function Helper.forEachRecursively(elements, f)
         else
             f(k, v)
         end
+    end
+end
+
+---
+function Helper.clearTable(table)
+    for k, _ in pairs(table) do
+        table[k] = nil
+    end
+end
+
+---
+function Helper.mutateTable(table, newTable)
+    Helper.clearTable(table)
+    for k, v in pairs(newTable) do
+        table[k] = v
     end
 end
 

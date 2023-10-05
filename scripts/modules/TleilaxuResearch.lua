@@ -154,6 +154,13 @@ function TleilaxuResearch._getAveragePosition(positionField)
 end
 
 ---
+function TleilaxuResearch.getTokenCellPosition(color)
+    local token = PlayBoard.getContent(color).researchToken
+    local tokenCellPosition = TleilaxuResearch._worlPositionToResearchSpace(token.getPosition())
+    return tokenCellPosition
+end
+
+---
 function TleilaxuResearch._generateResearchButtons()
     for cellPosition, _ in pairs(TleilaxuResearch.researchCellBenefits) do
         local p = TleilaxuResearch._researchSpaceToWorldPosition(cellPosition)
@@ -253,16 +260,12 @@ end
 
 ---
 function TleilaxuResearch.hasReachedOneHelix(color)
-    local researchToken = PlayBoard.getContent(color).researchToken
-    local cellPosition = TleilaxuResearch._worlPositionToResearchSpace(researchToken.getPosition())
-    return cellPosition.x >= 4
+    return TleilaxuResearch.getTokenCellPosition(color).x >= 4
 end
 
 ---
 function TleilaxuResearch.hasReachedTwoHelices(color)
-    local researchToken = PlayBoard.getContent(color).researchToken
-    local cellPosition = TleilaxuResearch._worlPositionToResearchSpace(researchToken.getPosition())
-    return cellPosition.x == 8
+    return TleilaxuResearch.getTokenCellPosition(color).x == 8
 end
 
 ---
