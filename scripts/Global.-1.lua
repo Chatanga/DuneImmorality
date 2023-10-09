@@ -74,7 +74,7 @@ validateDefaultSetup = {
     variant = "arrakeenScouts",
     soundEnabled = true,
 }
-validateDefaultSetup = nil
+--validateDefaultSetup = nil
 
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")

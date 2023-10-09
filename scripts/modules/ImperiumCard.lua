@@ -216,17 +216,17 @@ end
 
 local ImperiumCard = {
     -- starter: base
-    duneTheDesertPlanet = {agentIcons = {'yellow'}, reveal = {persuasion(1), starter = true}},
-    seekAllies = {agentIcons = {'emperor', 'spacingGuild', 'beneGesserit', 'fremen', starter = true }},
-    signetRing = {agentIcons = {'green', 'blue','yellow'}, reveal = {persuasion(1), starter = true }},
-    diplomacy = {agentIcons = {'emperor', 'spacingGuild', 'beneGesserit', 'fremen'}, reveal = {persuasion(1), starter = true }},
-    reconnaissance = {agentIcons = {'blue'}, reveal = {persuasion(1), starter = true }},
-    convincingArgument = {reveal = {persuasion(2), starter = true }},
-    dagger = {agentIcons = {'green', 'blue'}, reveal = {sword(1), starter = true }},
+    duneTheDesertPlanet = {agentIcons = {'yellow'}, reveal = {persuasion(1)}, starter = true },
+    seekAllies = {agentIcons = {'emperor', 'spacingGuild', 'beneGesserit', 'fremen'}, starter = true },
+    signetRing = {agentIcons = {'green', 'blue','yellow'}, reveal = {persuasion(1)}, starter = true },
+    diplomacy = {agentIcons = {'emperor', 'spacingGuild', 'beneGesserit', 'fremen'}, reveal = {persuasion(1)}, starter = true },
+    reconnaissance = {agentIcons = {'blue'}, reveal = {persuasion(1)}, starter = true },
+    convincingArgument = {reveal = {persuasion(2)}, starter = true },
+    dagger = {agentIcons = {'green', 'blue'}, reveal = {sword(1)}, starter = true},
     -- starter: ix
-    controlTheSpice = {agentIcons = {'yellow'}, reveal = {spice(1), starter = true}},
+    controlTheSpice = {agentIcons = {'yellow'}, reveal = {spice(1)}, starter = true},
     -- starter: immortality
-    experimentation = {agentIcons = {'yellow'}, reveal = {persuasion(1), starter = true}},
+    experimentation = {agentIcons = {'yellow'}, reveal = {persuasion(1)}, starter = true},
     -- reserve
     arrakisLiaison = {cost = 2, agentsIcons = {'blue'}, reveal = {persuasion(2)}},
     foldspace = {cost = 0, agentIcons = {'emperor', 'spacingGuild', 'beneGesserit', 'fremen', 'green', 'blue', 'yellow'}},
@@ -359,6 +359,7 @@ local ImperiumCard = {
 }
 
 function ImperiumCard._resolveCard(card)
+    assert(card)
     local cardName = Helper.getID(card)
     local cardInfo = ImperiumCard[cardName]
     assert(cardInfo, "Unknown card: " .. tostring(cardName))

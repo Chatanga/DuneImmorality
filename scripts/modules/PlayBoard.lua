@@ -480,6 +480,11 @@ function PlayBoard:_recall()
 end
 
 ---
+function PlayBoard.experimental_hideTurn()
+    PlayBoard._setActivePlayer(nil, nil)
+end
+
+---
 function PlayBoard._setActivePlayer(phase, color)
     local indexedColors = {"Green", "Yellow", "Blue", "Red"}
     for i, otherColor in ipairs(indexedColors) do
@@ -558,6 +563,9 @@ function PlayBoard.acceptTurn(phase, color)
         accepted = playBoard.lastPhase ~= phase and playBoard.leader.instruct(phase, color)
     elseif phase == 'roundStart' then
         accepted = playBoard.lastPhase ~= phase and playBoard.leader.instruct(phase, color)
+    elseif phase == 'arrakeenScouts' then
+        -- TODO We need something more elaborate.
+        accepted = true
     elseif phase == 'playerTurns' then
         if Hagal.getRivalCount() == 1 and PlayBoard.isRival(color) then
             accepted = not PlayBoard.playboards[TurnControl.getFirstPlayer()].revealed
@@ -792,7 +800,7 @@ function PlayBoard.onObjectEnterScriptingZone(zone, object)
                     playBoard:updatePlayerScore()
                     local controlableSpace = MainBoard.findControlableSpace(object)
                     if controlableSpace then
-                        MainBoard.occupy(controlableSpace, playBoard.content.controlMarkerBag)
+                        MainBoard.occupy(controlableSpace, color)
                     end
                 end
             elseif zone == playBoard.agentPark.zone then
@@ -1476,13 +1484,13 @@ end
 ---
 function PlayBoard.hasHighCouncilSeat(color)
     local zone = MainBoard.getHighCouncilSeatPark().zone
-    local token = PlayBoard._getCouncilToken(color)
+    local token = PlayBoard.getCouncilToken(color)
     return Helper.contains(zone, token)
 end
 
 ---
 function PlayBoard.takeHighCouncilSeat(color)
-    local token = PlayBoard._getCouncilToken(color)
+    local token = PlayBoard.getCouncilToken(color)
     if not PlayBoard.hasHighCouncilSeat(color) then
         if Park.putObject(token, MainBoard.getHighCouncilSeatPark()) then
             token.interactable = false
@@ -1491,6 +1499,7 @@ function PlayBoard.takeHighCouncilSeat(color)
             if PlayBoard.hasTech(color, "restrictedOrdnance") then
                 playBoard.strength:change(4)
             end
+            Helper.emitEvent("highCouncilSeatTaken", color)
             return true
         end
     end
@@ -1514,7 +1523,7 @@ function PlayBoard.getSwordmaster(color)
 end
 
 ---
-function PlayBoard._getCouncilToken(color)
+function PlayBoard.getCouncilToken(color)
     local content = PlayBoard.getContent(color)
     return content.councilToken
 end
@@ -1562,7 +1571,7 @@ function PlayBoard.giveCardFromZone(color, zone, isTleilaxuCard)
 end
 
 ---
-function PlayBoard.getHandCards(color)
+function PlayBoard.getHandedCards(color)
     return Helper.filter(Player[color].getHandObjects(), Utils.isImperiumCard)
 end
 
@@ -1578,6 +1587,12 @@ function PlayBoard.getDiscardedCardCount(color)
     local playBoard = PlayBoard.getPlayBoard(color)
     local deckOrCard = Helper.getDeckOrCard(playBoard.content.discardZone)
     return Helper.getCardCount(deckOrCard)
+end
+
+--- Anything trashed (and filtering is hard considering the content is not spawn).
+function PlayBoard.getTrashedCards(color)
+    local playBoard = PlayBoard.getPlayBoard(color)
+    return playBoard.content.trash.getObjects()
 end
 
 ---

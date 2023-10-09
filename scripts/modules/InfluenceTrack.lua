@@ -128,22 +128,15 @@ function InfluenceTrack._initInfluenceTracksLevels()
             levelPosition:setAt('y', 0.5)
             Helper.createTransientAnchor(faction .. "Rank" .. tostring(i), levelPosition).doAfter(function (anchor)
                 local actionName = "Progress on the " .. faction .. " influence track"
-                Helper.createAbsoluteButtonWithRoundness(anchor, 1, false, {
-                    click_function = Helper.registerGlobalCallback(function (_, color, _)
-                        if not InfluenceTrack.actionsLocked[faction][color] then
-                            local rank = InfluenceTrack._getInfluenceTracksRank(faction, color)
-                            InfluenceTrack.actionsLocked[faction][color] = true
-                            InfluenceTrack._changeInfluenceTracksRank(color, faction, i - rank).doAfter(function ()
-                                InfluenceTrack.actionsLocked[faction][color] = false
-                            end)
-                        end
-                    end),
-                    position = Vector(levelPosition.x, 0.7, levelPosition.z),
-                    width = 1000,
-                    height = 400,
-                    color = { 0, 0, 0, 0 },
-                    tooltip = actionName
-                })
+                Helper.createSizedAreaButton(1000, 400, anchor, 0.7, actionName, function (_, color, _)
+                    if not InfluenceTrack.actionsLocked[faction][color] then
+                        local rank = InfluenceTrack._getInfluenceTracksRank(faction, color)
+                        InfluenceTrack.actionsLocked[faction][color] = true
+                        InfluenceTrack._changeInfluenceTracksRank(color, faction, i - rank).doAfter(function ()
+                            InfluenceTrack.actionsLocked[faction][color] = false
+                        end)
+                    end
+                end)
             end)
         end
         influenceLevels[faction] = factionLevels
@@ -181,13 +174,11 @@ end
 
 ---
 function InfluenceTrack._changeInfluenceTracksRank(color, faction, change)
+    Helper.dumpFunction("InfluenceTrack._changeInfluenceTracksRank", color, faction, change)
     Utils.assertIsPlayerColor(color)
     Utils.assertIsFaction(faction)
     Utils.assertIsInteger(change)
 
-    assert(InfluenceTrack.influenceLevels)
-    assert(InfluenceTrack.influenceLevels[faction], tostring(faction))
-    assert(InfluenceTrack.influenceLevels[faction], tostring(faction) .. "/" .. tostring(color))
     local levels = InfluenceTrack.influenceLevels[faction][color]
     local token = InfluenceTrack.influenceTokens[faction][color]
 

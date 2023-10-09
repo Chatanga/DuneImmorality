@@ -1,6 +1,8 @@
 local Helper = {
     sharedTables = {},
     eventListenersByTopic = {},
+    --areaButtonColor = { 1, 0, 0, 0.5 },
+    areaButtonColor = { 0, 0, 0, 0 },
     ERASE = function ()
         return "__erase__"
     end
@@ -299,23 +301,35 @@ function Helper.createAnchoredAreaButton(zone, ground, aboveGround, tooltip, cal
 end
 
 ---
-function Helper.createAreaButton(zone, anchor, height, tooltip, callback)
+function Helper.createAreaButton(zone, anchor, altitude, tooltip, callback)
     assert(zone)
     assert(anchor)
-    assert(height)
+    assert(altitude)
 
-    local anchorPosition = anchor.getPosition()
     local zoneScale = zone.getScale()
     local sizeFactor = 500 -- 350
 
+    local width = zoneScale.x * sizeFactor
+    local height = zoneScale.z * sizeFactor
+
+    return Helper.createSizedAreaButton(width, height, anchor, altitude, tooltip, callback)
+end
+
+---
+function Helper.createSizedAreaButton(width, height, anchor, altitude, tooltip, callback)
+    assert(anchor)
+
+    local anchorPosition = anchor.getPosition()
+
     local parameters = {
         click_function = Helper.registerGlobalCallback(callback),
-        position = Vector(anchorPosition.x, height, anchorPosition.z),
-        width = zoneScale.x * sizeFactor,
-        height = zoneScale.z * sizeFactor,
-        color = { 0, 0, 0, 0 },
+        position = Vector(anchorPosition.x, altitude, anchorPosition.z),
+        width = width,
+        height = height,
+        color = Helper.areaButtonColor,
+        press_color = { 0.5, 1, 0.5, 0.4 },
         font_color = { 1, 1, 1, 100 },
-        tooltip = tooltip
+        tooltip = tooltip,
     }
 
     -- 0.75 | 10 ?
@@ -490,9 +504,8 @@ end
 
 ---
 function Helper.toCamelCase(...)
-    local arg = {...}
     local chameauString = ""
-    for i, str in ipairs(arg) do
+    for i, str in ipairs({...}) do
         if i > 1 then
             chameauString = chameauString .. str:gsub("^%l", string.upper)
         else
@@ -504,9 +517,8 @@ end
 
 ---
 function Helper.createTable(root, ...)
-    local arg = {...}
     local parent = root
-    for _, str in ipairs(arg) do
+    for _, str in ipairs({...}) do
         if not parent[str] then
             parent[str] = {}
         end
@@ -558,14 +570,17 @@ end
 ---
 function Helper.onceMotionless(object)
     local continuation = Helper.createContinuation()
-    Wait.condition(function()
-        Wait.frames(function ()
-            continuation.run(object)
-        end, 1)
-    end, function()
-        continuation.tick()
-        return object.resting -- and not object.isSmoothMoving()
-    end)
+    -- Wait 1 frame for the movement to start.
+    Wait.frames(function ()
+        Wait.condition(function()
+            Wait.frames(function ()
+                continuation.run(object)
+            end, 1)
+        end, function()
+            continuation.tick()
+            return object.resting
+        end)
+    end, 1)
     return continuation
 end
 
@@ -647,6 +662,13 @@ function Helper.createContinuation()
 end
 
 ---
+function Helper.createTermination()
+    local continuation = Helper.createContinuation()
+    continuation.run()
+    return continuation
+end
+
+---
 function Helper.trace(name, data)
     log(name .. ": " .. tostring(data))
     return data
@@ -705,7 +727,7 @@ Helper.uniqueNamePool = {}
 function Helper.registerGlobalCallback(callback)
     local GLOBAL_COUNTER_NAME = "generatedCallbackNextIndex"
     if callback then
-        assert(type(callback) == "function")
+        assert(type(callback) == "function", "Expected a function, got a " .. type(callback))
         local uniqueName
         if #Helper.uniqueNamePool > 0 then
             uniqueName = Helper.uniqueNamePool[1]
@@ -805,28 +827,28 @@ function Helper.createTransientAnchor(nickname, position)
     local data = {
         Name = "Custom_Model",
         Transform = {
-          posX = 0,
-          posY = 0,
-          posZ = 0,
-          rotX = 0.0,
-          rotY = 180.0,
-          rotZ = 0.0,
-          scaleX = 1.0,
-          scaleY = 1.0,
-          scaleZ = 1.0
+            posX = 0,
+            posY = 0,
+            posZ = 0,
+            rotX = 0,
+            rotY = 180,
+            rotZ = 0,
+            scaleX = 1,
+            scaleY = 1,
+            scaleZ = 1
         },
         Nickname = nickname,
         Description = "Generated transient anchor.",
         GMNotes = "",
         AltLookAngle = {
-          x = 0.0,
-          y = 0.0,
-          z = 0.0
+            x = 0,
+            y = 0,
+            z = 0
         },
         ColorDiffuse = {
-          r = 1.0,
-          g = 0.0,
-          b = 1.0
+            r = 1.0,
+            g = 0.0,
+            b = 1.0
         },
         LayoutGroupSortIndex = 0,
         Value = 0,
@@ -843,24 +865,24 @@ function Helper.createTransientAnchor(nickname, position)
         HideWhenFaceDown = false,
         Hands = false,
         CustomMesh = {
-          MeshURL = "http://cloud-3.steamusercontent.com/ugc/2042984592862608679/0383C231514AACEB52B88A2E503A90945A4E8143/",
-          DiffuseURL = "",
-          NormalURL = "",
-          ColliderURL = "",
-          Convex = true,
-          MaterialIndex = 0,
-          TypeIndex = 4,
-          CustomShader = {
+            MeshURL = "http://cloud-3.steamusercontent.com/ugc/2042984592862608679/0383C231514AACEB52B88A2E503A90945A4E8143/",
+            DiffuseURL = "",
+            NormalURL = "",
+            ColliderURL = "",
+            Convex = true,
+            MaterialIndex = 0,
+            TypeIndex = 4,
+            CustomShader = {
             SpecularColor = {
-              r = 0.0,
-              g = 0.0,
-              b = 0.0
+                    r = 0,
+                    g = 0,
+                    b = 0
+                },
+                SpecularIntensity = 0.0,
+                SpecularSharpness = 7.0,
+                FresnelStrength = 0.4
             },
-            SpecularIntensity = 0.0,
-            SpecularSharpness = 7.0,
-            FresnelStrength = 0.4
-          },
-          CastShadows = false
+            CastShadows = false
         },
         LuaScript = "",
         LuaScriptState = "",
@@ -1026,9 +1048,8 @@ end
 
 ---
 function Helper.dump(...)
-    local arg = {...}
     local str = ""
-    for i, element in ipairs(arg) do
+    for i, element in ipairs({...}) do
         if i > 1 then
             str = str .. " "
         end
@@ -1039,10 +1060,17 @@ end
 
 ---
 function Helper.dumpFunction(...)
-    local arg = {...}
+    local args = {...}
     local str
-    local argCount = #arg
-    for i, element in ipairs(arg) do
+    local notNilArgCount = #Helper.getKeys(args)
+    local argCount = notNilArgCount
+    local i = 1
+    while i <= argCount do
+        local element = args[i]
+        if element == nil and i < argCount then
+            argCount = argCount + 1
+        end
+
         if i == 1 then
             assert(type(element) == "string")
             str = element .. "("
@@ -1063,15 +1091,16 @@ function Helper.dumpFunction(...)
         elseif i > 1 then
             str = str .. ", "
         end
+
+        i = i + 1
     end
     log(str)
 end
 
 ---
 function Helper.concatTables(...)
-    local arg = {...}
     local result = {}
-    for _, t in ipairs(arg) do
+    for _, t in ipairs({...}) do
         for _, element in ipairs(t) do
             table.insert(result, element)
         end
@@ -1242,6 +1271,18 @@ function Helper.mutateTable(table, newTable)
     Helper.clearTable(table)
     for k, v in pairs(newTable) do
         table[k] = v
+    end
+end
+
+---
+function Helper.partialApply(f, ...)
+    assert(f)
+    local args = {...}
+    return function (...)
+        for _, arg in ipairs({...}) do
+            table.insert(args, arg)
+        end
+        return f(table.unpack(args))
     end
 end
 

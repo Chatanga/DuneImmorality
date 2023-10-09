@@ -2,7 +2,7 @@
 
 import sys
 
-def extract_url(filePath, inPlace):
+def patch_url(filePath, inPlace):
     mappings = [
 #        ('AE55C2BB6B9BE3CF9F407EF5C610DC30B154D5CE', 'none!'),
 #        ('C2F6C0AD18C7299941F719D13B12A936C58EB20B', 'http://cloud-3.steamusercontent.com/ugc/2093667512238521846/D63B92C616541C84A7984026D757DB03E79532DD/'),
@@ -52,6 +52,6 @@ def extract_url(filePath, inPlace):
 argc = len(sys.argv)
 if argc == 3:
     assert sys.argv[1] == "-i"
-    extract_url(sys.argv[2], True)
+    patch_url(sys.argv[2], True)
 else:
-    extract_url(sys.argv[1], False)
+    patch_url(sys.argv[1], False)

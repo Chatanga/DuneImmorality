@@ -405,9 +405,9 @@ local techCardBack = "http://cloud-3.steamusercontent.com/ugc/209366751223853182
 local conflict1CardBack = "http://cloud-3.steamusercontent.com/ugc/2093667512238537179/0423ECA84C0D71CCB38EBD60DEAE641EE72D7933/"
 local conflict2CardBack = "http://cloud-3.steamusercontent.com/ugc/2093667512238537448/3B3F54DF65F76F0850D0EC683602524806A11E49/"
 local conflict3CardBack = "http://cloud-3.steamusercontent.com/ugc/2093667512238537046/9E194557E37B5C4CA74C7A77CBFB6B8A36043916/"
-local hagalCardBack = "http://cloud-3.steamusercontent.com/ugc/2093667512242246148/26E28590801800D852F4BCA53E959AAFAAFC8FF3/"
-local leaderCardBack = "http://cloud-3.steamusercontent.com/ugc/2027235268872195913/005244DAC0A29EE68CFF741FC06564969563E8CF/"
-local fanmadeLeaderCardBack = "http://cloud-3.steamusercontent.com/ugc/2093667512248586983/4C75C9A8CA6B890A6178B4B22B0F994B2F663D33/"
+local hagalCardBack = "http://cloud-3.steamusercontent.com/ugc/2093668799785646965/26E28590801800D852F4BCA53E959AAFAAFC8FF3/"
+local leaderCardBack = "http://cloud-3.steamusercontent.com/ugc/2093668799785645356/005244DAC0A29EE68CFF741FC06564969563E8CF/"
+local fanmadeLeaderCardBack = "http://cloud-3.steamusercontent.com/ugc/2093668799785649802/4C75C9A8CA6B890A6178B4B22B0F994B2F663D33/"
 
 local customDeckBaseId = 100
 

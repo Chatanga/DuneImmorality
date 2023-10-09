@@ -66,11 +66,11 @@ Having launched `./listen.py` in another terminal will provide you with an immed
 ## TODO (by priority)
 
 - Arrakeen Scouts.
-- Blitz!
 - Basic logging in the Action facade (using context to group).
+- Blitz!
 - Fully restore translations (tokens and books included).
-- Fix 2P mode.
 - Tessia and Paul support.
+
 - [Fanmade leaders](https://drive.google.com/drive/folders/1-V3xcHk6078YR1fyhtJL3tdqv2zg5q3Q).
 - Replace freighters by tokens.
 - Change the [dreadnought model](https://www.thingiverse.com/thing:5326146).
@@ -81,6 +81,7 @@ Having launched `./listen.py` in another terminal will provide you with an immed
 - Display ranking in combatEnd phase.
 - Restore tech cost (with a default buy dialog when other options are lacking).
 - Fix the 6 tech park saturation.
+
 - Introduce the graphic log?
 - Keep Module special, but unify everything else?
 - Move the Tleilaxu track in its own module?

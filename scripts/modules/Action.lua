@@ -188,7 +188,7 @@ function Action.influence(color, faction, amount)
     if faction then
         return InfluenceTrack.change(color, faction, amount)
     else
-        return false
+        return Helper.createTermination()
     end
 end
 

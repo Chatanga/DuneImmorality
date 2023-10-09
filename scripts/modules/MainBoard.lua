@@ -980,6 +980,7 @@ end
 ---
 function MainBoard.addSpaceBonus(spaceName, bonuses)
     local space = MainBoard.spaces[spaceName]
+    assert(space, "Unknow space: " .. spaceName)
     if not space.extraBonuses then
         space.extraBonuses = {}
     end
