@@ -106,6 +106,10 @@ function MainBoard.onLoad(state)
             techNegotiation_2 = { zone = "479378" },
             dreadnought = { zone = "83ea90" },
         },
+        immortalitySpaces = {
+            researchStation = Helper.ERASE,
+            researchStationImmortality = { zone = "af11aa" },
+        },
         banners = {
             arrakeenBannerZone = "f1f53d",
             carthagBannerZone = "9fc2e1",
@@ -180,28 +184,37 @@ function MainBoard.setUp(settings)
         MainBoard.highCouncilZone = MainBoard.highCouncilZones.ix
         MainBoard.mentatZones.base.destruct()
         MainBoard.mentatZone = MainBoard.mentatZones.ix
-
-        for spaceName, ixSpace in pairs(MainBoard.ixSpaces) do
-            local baseSpace = MainBoard.spaces[spaceName]
-            if baseSpace then
-                baseSpace.zone.destruct()
-            end
-            MainBoard.spaces[spaceName] = (ixSpace ~= Helper.ERASE and ixSpace or nil)
-        end
+        --MainBoard.board.setState(1)
     else
         MainBoard.highCouncilZones.ix.destruct()
         MainBoard.highCouncilZone = MainBoard.highCouncilZones.base
         MainBoard.mentatZones.ix.destruct()
         MainBoard.mentatZone = MainBoard.mentatZones.base
         MainBoard.board.setState(2)
+    end
 
-        for _, ixSpace in pairs(MainBoard.ixSpaces) do
-            if ixSpace ~= Helper.ERASE then
-                ixSpace.zone.destruct()
+    local enabledExtensions = {
+        ix = settings.riseOfIx,
+        immortality = settings.immortality
+    }
+
+    for _, extension in ipairs({ "ix", "immortality" }) do
+        for spaceName, extSpace in pairs(MainBoard[extension .. "Spaces"]) do
+            if enabledExtensions[extension] then
+                local baseSpace = MainBoard.spaces[spaceName]
+                -- Immortality reuses the research station zone, so we skip its destruction.
+                if baseSpace and spaceName ~= "researchStation" then
+                    baseSpace.zone.destruct()
+                end
+                MainBoard.spaces[spaceName] = (extSpace ~= Helper.ERASE and extSpace or nil)
+            else
+                if extSpace == Helper.ERASE then
+                    extSpace.zone.destruct()
+                end
             end
         end
+        MainBoard[extension .. "Spaces"] = nil
     end
-    MainBoard.ixSpaces = nil
 
     MainBoard._staticSetUp(settings)
 end
@@ -553,12 +566,18 @@ end
 ---
 function MainBoard._goResearchStation(color, leader)
     if leader.resources(color, "water", -2) then
-        if true then
-            leader.drawImperiumCards(color, 3)
-        else
-            leader.drawImperiumCards(color, 2)
-            leader.research()
-        end
+        leader.drawImperiumCards(color, 3)
+        return true
+    else
+        return false
+    end
+end
+
+---
+function MainBoard._goResearchStationImmortality(color, leader)
+    if leader.resources(color, "water", -2) then
+        leader.drawImperiumCards(color, 2)
+        --leader.research(color, ...)
         return true
     else
         return false
@@ -933,6 +952,7 @@ function MainBoard.getCitySpaces()
         "arrakeen",
         "carthag",
         "researchStation",
+        "researchStationImmortality",
         "sietchTabr" }
 end
 
@@ -989,7 +1009,6 @@ end
 
 ---
 function MainBoard.collectExtraBonuses(color, leader, spaceName)
-    Helper.dumpFunction("collectExtraBonuses", color, leader, spaceName)
     local space = MainBoard.spaces[spaceName]
     if space.extraBonuses then
         DynamicBonus.collectExtraBonuses(color, leader, space.extraBonuses)

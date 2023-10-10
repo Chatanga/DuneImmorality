@@ -316,8 +316,8 @@ function HagalCard._activateDreadnought2p(color, rival)
 end
 
 function HagalCard._activateResearchStation(color, rival)
-    if HagalCard.spaceIsFree(color, "researchStation") then
-        HagalCard.sendRivalAgent(color, rival, "researchStation")
+    if HagalCard.spaceIsFree(color, "researchStationImmortality") then
+        HagalCard.sendRivalAgent(color, rival, "researchStationImmortality")
         rival.beetle(color, 2)
         return true
     else

@@ -126,7 +126,7 @@ local ArrakeenScouts = {
     pendingOperations = {},
 }
 
-ArrakeenScouts._debug = { "ceaseAndDesistRequest" }
+--ArrakeenScouts._debug = { "revealTheFuture" }
 
 ---
 function ArrakeenScouts.onLoad(state)
@@ -147,6 +147,7 @@ function ArrakeenScouts.onLoad(state)
     if state.settings then
         ArrakeenScouts.selectedCommittees = state.selectedCommittees
         ArrakeenScouts.selectedContent = state.selectedContent
+        ArrakeenScouts.numberOfPlayers = state.numberOfPlayers
         ArrakeenScouts._staticSetUp()
     end
 end
@@ -156,12 +157,14 @@ function ArrakeenScouts.onSave(state)
     state.ArrakeenScouts = {
         selectedCommittees = ArrakeenScouts.selectedCommittees,
         selectedContent = ArrakeenScouts.selectedContent,
+        numberOfPlayers = ArrakeenScouts.numberOfPlayers,
     }
 end
 
 ---
 function ArrakeenScouts.setUp(settings)
     if settings.variant == "arrakeenScouts" then
+        ArrakeenScouts.numberOfPlayers = settings.numberOfPlayers
 
         local selection = {}
         for _, category in ipairs({ "committees", "auctions", "events", "missions", "sales" }) do
@@ -253,15 +256,19 @@ function ArrakeenScouts._staticSetUp()
                 ArrakeenScouts.committeeAnchors = {}
                 for i, committee in ipairs(ArrakeenScouts.selectedCommittees) do
                     local zone = ArrakeenScouts.committeeZones[i]
-                    ArrakeenScouts._createCommitteeTile(committee, zone).doAfter(function (tile)
-                        tile.interactable = false
-                        ArrakeenScouts.committeeTiles[i] = tile
-                        local tooltip = "Join " .. committee .. " committee"
-                        ArrakeenScouts.committeeAnchors[i] = tile
-                        Helper.createAreaButton(zone, tile, 0.85, tooltip, function (_, color, _)
-                            ArrakeenScouts.joinCommitee(color, i)
+                    if i <= ArrakeenScouts.numberOfPlayers + 1 then
+                        ArrakeenScouts._createCommitteeTile(committee, zone).doAfter(function (tile)
+                            tile.interactable = false
+                            ArrakeenScouts.committeeTiles[i] = tile
+                            local tooltip = "Join " .. committee .. " committee"
+                            ArrakeenScouts.committeeAnchors[i] = tile
+                            Helper.createAreaButton(zone, tile, 0.85, tooltip, function (_, color, _)
+                                ArrakeenScouts.joinCommitee(color, i)
+                            end)
                         end)
-                    end)
+                    else
+                        zone.destruct()
+                    end
                 end
                 Wait.frames(TurnControl.endOfPhase, 1)
             else
@@ -625,7 +632,7 @@ function ArrakeenScouts._setAsValidationPane(color, playerPane, secret, label, c
     }
 
     button.attributes.onClick = Helper.registerGlobalCallback(function (player)
-        if player.color == color or true then
+        if player.color == color or ArrakeenScouts._debug then
             Helper.unregisterGlobalCallback(button.attributes.onClick)
             controller.validate(color)
         end
@@ -1676,12 +1683,13 @@ end
 
 --- Missions ---
 
-function ArrakeenScouts._createSecretsInTheDesertController(playerPanes)
-    MainBoard.addSpaceBonus("researchStation", { all = { intrigue = 2 } })
+function ArrakeenScouts._createSecretsInTheDesertController(playerPanes, immortality)
+    local spaceName = immortality and "researchStationImmortality" or "researchStation"
+    MainBoard.addSpaceBonus(spaceName, { all = { intrigue = 2 } })
     ArrakeenScouts._createRandomValidationController(playerPanes, false, nil, nil)
 end
 
-function ArrakeenScouts._createStationedSupportController(playerPanes)
+function ArrakeenScouts._createStationedSupportController(playerPanes, immortality)
     local troops = {}
     local predicate = function (color)
         local supplyPark = PlayBoard.getSupplyPark(color)
@@ -1689,7 +1697,8 @@ function ArrakeenScouts._createStationedSupportController(playerPanes)
         return #troops[color] >= 2
     end
     local resolve = function (color, _)
-        MainBoard.addSpaceBonus("researchStation", { [color] = { combatTroop = { troops[color][1], troops[color][2] } } })
+        local spaceName = immortality and "researchStationImmortality" or "researchStation"
+        MainBoard.addSpaceBonus(spaceName, { [color] = { combatTroop = { troops[color][1], troops[color][2] } } })
     end
     ArrakeenScouts._createSequentialBinaryChoiceController(playerPanes, predicate, resolve)
 end
@@ -1759,7 +1768,7 @@ function ArrakeenScouts._createSaphoJuiceController(playerPanes)
 end
 
 function ArrakeenScouts._createSpaceTravelDealController(playerPanes)
-    MainBoard.addSpaceBonus("heighliner", { all = { "solari", "solari", "solari" } })
+    MainBoard.addSpaceBonus("heighliner", { all = { solari = 3 } })
     ArrakeenScouts._createRandomValidationController(playerPanes, false, nil, nil)
 end
 
@@ -1801,11 +1810,11 @@ function ArrakeenScouts._createBackstageAgreementController(playerPanes)
 end
 
 function ArrakeenScouts._createSecretsInTheDesert_immortalityController(playerPanes)
-    return ArrakeenScouts._createSecretsInTheDesertController(playerPanes)
+    return ArrakeenScouts._createSecretsInTheDesertController(playerPanes, true)
 end
 
 function ArrakeenScouts._createStationedSupport_immortalityController(playerPanes)
-    return ArrakeenScouts._createStationedSupportController(playerPanes)
+    return ArrakeenScouts._createStationedSupportController(playerPanes, true)
 end
 
 function ArrakeenScouts._createCoordinationWithTheEmperorController(playerPanes)
@@ -1821,7 +1830,7 @@ function ArrakeenScouts._createCoordinationWithTheEmperorController(playerPanes)
 end
 
 function ArrakeenScouts._createSponsoredResearchController(playerPanes)
-    TleilaxuResearch.addSpaceBonus("oneHelix", { all = { solari = 2 } })
+    TleilaxuResearch.addSpaceBonus("oneHelix", { all = { spice = 2 } })
     ArrakeenScouts._createRandomValidationController(playerPanes, false, nil, nil)
 end
 

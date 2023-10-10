@@ -1327,4 +1327,33 @@ function Helper.endsWith(str, ending)
     return ending == "" or str:sub(-#ending) == ending
 end
 
+---
+function Helper.createTemporalQueue(delay)
+    local tq = {
+        delay = delay or 0.25,
+        actions = {}
+    }
+
+    function tq.submit(action)
+        assert(action)
+        table.insert(tq.actions, action)
+        if #tq.actions == 1 then
+            tq.activateLater()
+        end
+    end
+
+    function tq.activateLater()
+        Wait.time(function ()
+            local action = tq.actions[1]
+            table.remove(tq.actions, 1)
+            if #tq.actions > 0 then
+                tq.activateLater()
+            end
+            action()
+        end, tq.delay)
+    end
+
+    return tq
+end
+
 return Helper

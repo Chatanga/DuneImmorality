@@ -13,43 +13,76 @@ local DynamicBonus = {}
 
 ---
 function DynamicBonus.createSpaceBonus(origin, bonuses, extraBonuses)
-    local i = 0
+    if not DynamicBonus.tq then
+        DynamicBonus.tq = Helper.createTemporalQueue()
+    end
+
+    local total = 0
+    for _, targetBonuses in pairs(bonuses) do
+        for category, description in pairs(targetBonuses) do
+            if Helper.isElementOf(category, { "spice", "solari" }) then
+                total = total + 1
+            elseif category == "intrigue" then
+                Utils.assertIsPositiveInteger(description)
+                total = total + description
+            elseif Helper.isElementOf(category, { "combatTroop", "garrisonTroop", "tankTroop", "combatDreadnought", "controlMarker" })  then
+                total = total + #description
+            else
+                error("Unknown bonus type: " .. tostring(category))
+            end
+        end
+    end
+
+    local function toPosition(i)
+        return origin + Vector((i - total / 2) * 0.5, 1, 0)
+    end
+
+    local i = 1
     for target, targetBonuses in pairs(bonuses) do
         extraBonuses[target] = {}
         for category, description in pairs(targetBonuses) do
             extraBonuses[target][category] = {}
-            local position = origin + Vector(i * 0.4, 0.2, 0)
 
             if Helper.isElementOf(category, { "spice", "solari" }) then
                 Utils.assertIsPositiveInteger(description)
-                local constructorName = Helper.toCamelCase("_create",  category, "token")
-                DynamicBonus[constructorName](position).doAfter(function (bonusToken)
-                    Helper.noPlay(bonusToken)
-                    local bonus = Resource.new(bonusToken, nil, category, description)
-                    table.insert(extraBonuses[target][category], bonus)
+                local position = toPosition(i)
+                DynamicBonus.tq.submit(function ()
+                    local constructorName = Helper.toCamelCase("_create",  category, "token")
+                    DynamicBonus[constructorName](position).doAfter(function (bonusToken)
+                        Helper.onceMotionless(bonusToken).doAfter(function ()
+                            Helper.noPlay(bonusToken)
+                            local bonus = Resource.new(bonusToken, nil, category, description)
+                            table.insert(extraBonuses[target][category], bonus)
+                        end)
+                    end)
                 end)
                 i = i + 1
 
             elseif category == "intrigue" then
                 Utils.assertIsPositiveInteger(description)
                 for _ = 1, description do
-                    Helper.moveCardFromZone(Intrigue.deckZone, position, nil, false, true).doAfter(function (card)
-                        table.insert(extraBonuses[target][category], card)
-                        card.flip()
-                        card.setScale(card.getScale():scale(0.2))
-                        card.setPosition(position)
-                        Helper.noPlay(card)
+                    local position = toPosition(i)
+                    DynamicBonus.tq.submit(function ()
+                        Helper.moveCardFromZone(Intrigue.deckZone, position, nil, false, true).doAfter(function (card)
+                            table.insert(extraBonuses[target][category], card)
+                            card.flip()
+                            card.setScale(card.getScale():scale(0.2))
+                            Helper.noPlay(card)
+                        end)
                     end)
                     i = i + 1
                 end
 
             elseif Helper.isElementOf(category, { "combatTroop", "garrisonTroop", "tankTroop", "combatDreadnought", "controlMarker" })  then
                 for _, item in ipairs(description) do
-                    table.insert(extraBonuses[target][category], item)
-                    item.setScale(item.getScale():scale(0.5))
-                    item.setPosition(position)
-                    Helper.onceMotionless(item).doAfter(function ()
-                        Helper.noPlay(item)
+                    local position = toPosition(i)
+                    DynamicBonus.tq.submit(function ()
+                        table.insert(extraBonuses[target][category], item)
+                        item.setScale(item.getScale():scale(0.5))
+                        item.setPosition(position)
+                        Helper.onceMotionless(item).doAfter(function ()
+                            Helper.noPlay(item)
+                        end)
                     end)
                     i = i + 1
                 end
@@ -69,28 +102,38 @@ function DynamicBonus.collectExtraBonuses(color, leader, extraBonuses)
         local targetBonuses = extraBonuses[target]
         if targetBonuses then
             log("Bonus: " .. target)
-            DynamicBonus._collectTargetBonuses(color, leader, targetBonuses)
+            local newTargetBonuses = DynamicBonus._collectTargetBonuses(color, leader, targetBonuses)
+            extraBonuses[target] = newTargetBonuses
         else
             log("No bonus: " .. target)
         end
-        extraBonuses[target] = nil
     end
 end
 
 ---
 function DynamicBonus._collectTargetBonuses(color, leader, targetBonuses)
+    local intrigueAlreadyTaken = false
+    local remainingTargetBonuses = {}
     for category, items in pairs(targetBonuses) do
+        local remainingItems = {}
         for _, item in ipairs(items) do
             if Helper.isElementOf(category, { "spice", "solari" }) then
                 leader.resources(color, category, item:get())
                 item.token.destruct()
 
             elseif category == "intrigue" then
-                Helper.physicsAndPlay(item)
-                -- Add an offset to put the card on the left side of the player's hand.
-                local position = Player[color].getHandTransform().position + Vector(-7.5, 0, 0)
-                item.setPosition(position)
-                item.setScale(item.getScale():scale(5))
+                if not intrigueAlreadyTaken then
+                    Helper.physicsAndPlay(item)
+                    -- Add an offset to put the card on the left side of the player's hand.
+                    local position = Player[color].getHandTransform().position + Vector(-7.5, 0, 0)
+                    item.setPosition(position)
+                    item.setScale(item.getScale():scale(5))
+                    item.flip()
+                    intrigueAlreadyTaken = true
+                else
+                    table.insert(remainingItems, item)
+                    break
+                end
 
             elseif Helper.isElementOf(category, { "combatTroop", "garrisonTroop", "tankTroop", "combatDreadnought" })  then
                 Helper.physicsAndPlay(item)
@@ -107,14 +150,18 @@ function DynamicBonus._collectTargetBonuses(color, leader, targetBonuses)
 
             elseif category == "controlMarker"  then
                 Helper.physicsAndPlay(item)
-                item.setPosition(PlayBoard.getControlMarkerBag(color).getPosition())
+                item.setPosition(PlayBoard.getControlMarkerBag(color).getPosition() + Vector(0, 1, 0))
                 item.setScale(item.getScale():scale(2))
 
             else
                 error("Unknown bonus type: " .. tostring(category))
             end
         end
+        if #remainingItems > 0 then
+            remainingTargetBonuses[category] = remainingItems
+        end
     end
+    return #Helper.getKeys(remainingTargetBonuses) > 0 and remainingTargetBonuses or nil
 end
 
 ---
@@ -125,9 +172,9 @@ function DynamicBonus._createSpiceToken(position)
             posX = 0,
             posY = 0,
             posZ = 0,
-            rotX = 0.0,
-            rotY = 180.0,
-            rotZ = 0.0,
+            rotX = 0,
+            rotY = 180,
+            rotZ = 0,
             scaleX = 0.5,
             scaleY = 1.0,
             scaleZ = 0.5
@@ -139,7 +186,7 @@ function DynamicBonus._createSpiceToken(position)
         },
         LayoutGroupSortIndex = 0,
         Value = 0,
-        Locked = true,
+        Locked = false,
         Grid = true,
         Snap = true,
         IgnoreFoW = false,
@@ -184,9 +231,9 @@ function DynamicBonus._createSolariToken(position)
             posX = 0,
             posY = 0,
             posZ = 0,
-            rotX = 0.0,
-            rotY = 180.0,
-            rotZ = 0.0,
+            rotX = 0,
+            rotY = 180,
+            rotZ = 0,
             scaleX = 0.5,
             scaleY = 1.0,
             scaleZ = 0.5
@@ -198,7 +245,7 @@ function DynamicBonus._createSolariToken(position)
         },
         LayoutGroupSortIndex = 0,
         Value = 0,
-        Locked = true,
+        Locked = false,
         Grid = true,
         Snap = true,
         IgnoreFoW = false,

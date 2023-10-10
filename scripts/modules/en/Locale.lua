@@ -99,6 +99,7 @@ return {
     arrakeen = "arrakeen",
     carthag = "carthag",
     researchStation = "researchStation",
+    researchStationImmortality = "researchStation",
     sietchTabr = "sietchTabr",
     imperialBasin = "imperialBasin",
     haggaBasin = "haggaBasin",

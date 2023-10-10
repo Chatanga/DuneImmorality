@@ -251,8 +251,8 @@ function TleilaxuResearch._advanceResearch(color, jump, withBenefits)
 
         local bonuses = TleilaxuResearch.extraBonuses["oneHelix"]
         if bonuses then
-            if cellPosition.x < 4 and newCellPosition.x >= 4 and TleilaxuResearch.extraBonuses then
-                DynamicBonus.collectExtraBonuses(color, leader, TleilaxuResearch.extraBonuses)
+            if cellPosition.x < 4 and newCellPosition.x >= 4 then
+                DynamicBonus.collectExtraBonuses(color, leader, bonuses)
             end
         end
     end
@@ -413,7 +413,7 @@ end
 function TleilaxuResearch.addSpaceBonus(location, bonuses)
     local position
     if location == "oneHelix" then
-        position = TleilaxuResearch.board.getPosition() + Vector(0, 0, -1)
+        position = TleilaxuResearch.board.getPosition() + Vector(-0.55, 0, -3)
     elseif type(location) == "number" then
         position = TleilaxuResearch._tleilaxSpaceToWorldPosition(location) + Vector(0, 0, -0.5)
     else

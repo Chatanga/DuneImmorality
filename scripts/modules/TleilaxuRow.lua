@@ -89,7 +89,6 @@ function TleilaxuRow.acquireTleilaxuCard(indexInRow, color)
                     leader.beetle(color, 1)
                 end
             end)
-            return true
         else
             leader.troops(color, "tanks", "supply", price)
 
@@ -97,12 +96,13 @@ function TleilaxuRow.acquireTleilaxuCard(indexInRow, color)
 
             -- Replenish the slot in the row.
             Helper.moveCardFromZone(TleilaxuRow.deckZone, acquireCard.zone.getPosition(), Vector(0, 180, 0))
-            return true
         end
 
         if acquireCard.extraBonuses then
             DynamicBonus.collectExtraBonuses(color, leader, acquireCard.extraBonuses)
         end
+
+        return true
     else
         return false
     end

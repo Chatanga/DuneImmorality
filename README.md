@@ -65,7 +65,6 @@ Having launched `./listen.py` in another terminal will provide you with an immed
 
 ## TODO (by priority)
 
-- Arrakeen Scouts.
 - Basic logging in the Action facade (using context to group).
 - Blitz!
 - Fully restore translations (tokens and books included).
