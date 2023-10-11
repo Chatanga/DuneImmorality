@@ -174,7 +174,6 @@ end
 
 ---
 function InfluenceTrack._changeInfluenceTracksRank(color, faction, change)
-    Helper.dumpFunction("InfluenceTrack._changeInfluenceTracksRank", color, faction, change)
     Utils.assertIsPlayerColor(color)
     Utils.assertIsFaction(faction)
     Utils.assertIsInteger(change)
@@ -233,7 +232,6 @@ end
 
 ---
 function InfluenceTrack._challengeAlliance(faction)
-    Helper.dumpFunction("InfluenceTrack._challengeAlliance", faction)
     local bestRankedPlayers = {}
     local bestRank = 4
     local allianceOwner
@@ -260,7 +258,7 @@ function InfluenceTrack._challengeAlliance(faction)
                 allianceOwner = bestRankedPlayers[1]
                 InfluenceTrack._gainAlliance(faction, allianceOwner)
             else
-                log(allianceOwner .. " must grant alliance to one of " .. tostring(bestRankedPlayers))
+                broadcastToAll(allianceOwner .. " must grant alliance to one of " .. tostring(bestRankedPlayers), "Pink")
             end
         end
     end

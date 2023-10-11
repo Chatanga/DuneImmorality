@@ -101,11 +101,8 @@ function DynamicBonus.collectExtraBonuses(color, leader, extraBonuses)
     for _, target in ipairs({ "all", color }) do
         local targetBonuses = extraBonuses[target]
         if targetBonuses then
-            log("Bonus: " .. target)
             local newTargetBonuses = DynamicBonus._collectTargetBonuses(color, leader, targetBonuses)
             extraBonuses[target] = newTargetBonuses
-        else
-            log("No bonus: " .. target)
         end
     end
 end

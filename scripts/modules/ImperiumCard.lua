@@ -120,7 +120,7 @@ local function fremenBond(value)
             if card ~= input.card and card.factions and Helper.isElementOf("fremen", card.factions) then
                 return _evaluate(input, value)
             else
-                log("card " .. card.name .. " is not fremen")
+                --log("card " .. card.name .. " is not fremen")
             end
         end
         return 0
@@ -134,7 +134,7 @@ local function perFremen(value)
             if card.factions and Helper.isElementOf("fremen", card.factions) then
                 count = count + 1
             else
-                log("card " .. card.name .. " is not fremen")
+                --log("card " .. card.name .. " is not fremen")
             end
         end
         return _evaluate(input, value) * count
@@ -157,7 +157,7 @@ local function _alliance(faction, value)
         if InfluenceTrack.hasAlliance(input.color, faction) then
             return _evaluate(input, value)
         else
-            log("No alliance with the fremens.")
+            --log("No alliance with the fremens.")
             return 0
         end
     end
@@ -168,7 +168,7 @@ local function _friendShip(faction, value)
         if InfluenceTrack.hasFriendship(input.color, faction) then
             return _evaluate(input, value)
         else
-            log("No friendship with the fremens.")
+            --log("No friendship with the fremens.")
             return 0
         end
     end

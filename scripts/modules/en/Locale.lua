@@ -53,7 +53,6 @@ return {
     dialogCardAbove = "Do you want to put the card on top of your deck ? (Ok = yes, Cancel = No)",
 
     -- Resource
-    playerActing = " (action done by %s Player)",
     spentManually = "%s spent %s %s manually.",
     receiveManually = "%s received %s %s manually.",
 

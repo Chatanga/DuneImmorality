@@ -281,7 +281,7 @@ function PlayBoard.new(color, unresolvedContent, subState)
     playBoard.content.board.interactable = false
     playBoard.content.startEndTurnButton.interactable = false
 
-    if not subState then
+    --if not subState then
         Helper.noPlay(
             playBoard.content.councilToken,
             playBoard.content.freighter,
@@ -292,7 +292,7 @@ function PlayBoard.new(color, unresolvedContent, subState)
             playBoard.content.scoreMarker,
             playBoard.content.forceMarker
         )
-    end
+    --end
 
     -- FIXME Why this offset? In particular, why the Z component introduces an asymmetry?
     local offset = Vector(0, 0.55, 5.1)
@@ -939,7 +939,7 @@ function PlayBoard:_createButtons()
         click_function = self:_createExclusiveCallback(function ()
             -- Note: the Holtzman effect happens at the recall phase (drawing 5
             -- cards is not stricly done when a round starts.)
-            self:_tryToDrawCards(5)
+            self:drawCards(5)
         end),
         label = I18N("drawFiveCardsButton"),
         position = self:_newOffsetedBoardPosition(-13.5, 0, 2.6),
@@ -979,7 +979,7 @@ function PlayBoard:_createButtons()
         click_function = self:_createExclusiveCallback(function ()
             self:onRevealHand()
         end),
-        label = self.revealed and "Recalculate" or I18N("revealHandButton"),
+        label = I18N("revealHandButton"),
         position = self:_newSymmetricBoardPosition(-14.8, 0, -5),
         rotation = self:_newSymmetricBoardRotation(0, -90, 0),
         width = 1600,
@@ -1168,7 +1168,7 @@ function PlayBoard.couldSendAgentOrReveal(color)
 end
 
 ---
-function PlayBoard:_tryToDrawCards(count, message)
+function PlayBoard:tryToDrawCards(count, message)
     local content = self.content
     local deck = Helper.getDeckOrCard(content.drawDeckZone)
     local discard = Helper.getDeckOrCard(content.discardZone)
@@ -1179,12 +1179,10 @@ function PlayBoard:_tryToDrawCards(count, message)
 
     if needDiscardReset or notEnoughCards then
         local leaderName = PlayBoard.getLeaderName(self.color)
-        broadcastToAll(I18N("isDecidingToDraw"):format(leaderName), "Pink")
-        local counter = I18N.translateCountable(count, "card", "cards")
+        broadcastToAll(I18N("isDecidingToDraw", { leader = leaderName }), "Pink")
         local maxCount = math.min(count, availableCardCount)
-        local maxCountCounter = I18N.translateCountable(maxCount, "card", "cards")
         Player[self.color].showConfirmDialog(
-            I18N("warningBeforeDraw"):format(count, counter, maxCount, maxCountCounter),
+            I18N("warningBeforeDraw", { count = count, maxCount = maxCount }),
             function(_)
                 if message then
                     broadcastToAll(message, self.color)
@@ -1375,7 +1373,11 @@ end
 
 ---
 function PlayBoard.getLeader(color)
-    return PlayBoard.getPlayBoard(color).leader
+    local leader = PlayBoard.getPlayBoard(color).leader
+    if not leader then
+        log(color .. " has no leader.")
+    end
+    return leader
 end
 
 ---

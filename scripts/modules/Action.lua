@@ -107,8 +107,8 @@ end
 ---
 function Action.setUp(color, settings)
 
-    Action.resources(color, "solari", 10)
-    Action.resources(color, "spice", 10)
+    Action.resources(color, "solari", 0)
+    Action.resources(color, "spice", 0)
 
     Action.resources(color, "water", 1)
     if settings.epicMode then
@@ -177,7 +177,7 @@ end
 ---
 function Action.drawImperiumCards(color, amount)
     Utils.assertIsPlayerColor(color)
-    PlayBoard.getPlayBoard(color):drawCards(amount)
+    PlayBoard.getPlayBoard(color):tryToDrawCards(amount)
     return true
 end
 

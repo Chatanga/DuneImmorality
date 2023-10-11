@@ -386,8 +386,6 @@ end
 
 ---
 function ArrakeenScouts._createDialog(content)
-    Helper.dump("Content:", content)
-
     local createController = ArrakeenScouts[Helper.toCamelCase("_create", content, "controller")]
     assert(createController, "No create controller function for content: " .. content)
 
@@ -2046,7 +2044,6 @@ function ArrakeenScouts._createPendingController(playerPanes, operation)
     }
 
     function controller.setUpPlayerPane(color)
-        Helper.dumpFunction("controller.setUpPlayerPane", color)
         local round = TurnControl.getCurrentRound()
         for i, pendingOperation in ipairs(ArrakeenScouts.pendingOperations) do
             if pendingOperation.round == round

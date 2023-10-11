@@ -123,7 +123,6 @@ end
 
 ---
 function TechCard.applyBuyEffect(color, techCard)
-    Helper.dumpFunction("TechCard.applyBuyEffect", color, Helper.getID(techCard))
     local bonus = TechCard.getDetails(techCard).acquireBonus
     if bonus then
         for _, bonusItem in ipairs(bonus) do

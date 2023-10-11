@@ -279,7 +279,7 @@ end
 
 ---
 function Hagal._reshuffleDeck(color, action, n, continuation)
-    log("Reshuffling Hagal deck.")
+    --log("Reshuffling Hagal deck.")
     for _, object in ipairs(getObjects()) do
         if object.hasTag("Hagal") and (object.type == "Deck" or object.type == "Card") then
             if not object.is_face_down then
@@ -449,10 +449,7 @@ end
 
 ---
 function Rival.resources(color, nature, amount)
-    Helper.dumpFunction("Rival.resource", color, nature, amount)
-    log(Hagal.getRivalCount() == 2)
     if Hagal.getRivalCount() == 2 and Action.resources(color, nature, amount) then
-        log(1)
         local resource = PlayBoard.getResource(color, nature)
         if nature == "spice" then
             if Hagal.riseOfIx then
@@ -473,9 +470,7 @@ function Rival.resources(color, nature, amount)
                 Rival.gainVictoryPoint(color, "rivalWater")
             end
         elseif nature == "solari" then
-            log(2)
             if resource:get() >= 7 then
-                log(3)
                 resource:change(-7)
                 Rival.gainVictoryPoint(color, "rivalSolari")
             end

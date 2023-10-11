@@ -803,7 +803,7 @@ function Deck._generateDeck(deckName, position, contributions, sources)
                 table.insert(data.ContainedObjects, cardData)
             end
         else
-            log("No source for card '" .. name .. "'")
+            error("No source for card '" .. name .. "'")
         end
     end
 

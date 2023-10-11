@@ -2,7 +2,6 @@ local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local I18N = require("utils.I18N")
 
-local TurnControl = Module.lazyRequire("TurnControl")
 local PlayBoard = Module.lazyRequire("PlayBoard")
 
 local Resource = Helper.createClass(nil, {
@@ -83,7 +82,7 @@ end
 
 ---
 function Resource:_getTooltip()
-    return self.value .. " " .. I18N.translateCountable(self.value, self.resourceName, self.resourceName .. "s")
+    return I18N(self.resourceName .. "Amount", self.value)
 end
 
 ---
@@ -119,17 +118,7 @@ end
 
 ---
 function Resource:_changeValue(color, altClick)
-    local playerActingStr = ""
-    local msgColor = color
-
-    local playerCount = TurnControl.getPlayerCount()
-
-    if color ~= self.color and playerCount < 3 then
-        playerActingStr = I18N("playerActing"):format(I18N(color:lower()))
-        msgColor = "Pink"
-    end
-
-    if color ~= self.color and playerCount > 2 then
+    if color ~= self.color then
         broadcastToColor(I18N("noTouch"), color, color)
         return
     end
@@ -146,17 +135,16 @@ function Resource:_changeValue(color, altClick)
         end
 
         self.laggingUpdate = Wait.time(function()
-            local delta = math.abs(self.value - self.laggingValue)
-            local label = I18N.translateCountable(delta, self.resourceName, self.resourceName .. "s")
+            local delta = self.value - self.laggingValue
 
             if self.color then
                 local leaderName = PlayBoard.getLeaderName(self.color)
                 if delta < 0 then
-                    local text = I18N("spentManually"):format(leaderName, math.abs(delta), label)
-                    broadcastToAll(text .. playerActingStr, msgColor)
+                    local text = I18N("spentManually", { leader = leaderName, amount = -delta, resource = I18N.agree(delta, self.resourceName) })
+                    broadcastToAll(text, color)
                 elseif delta > 0 then
-                    local text = I18N("receiveManually"):format(leaderName, math.abs(delta), label)
-                    broadcastToAll(text .. playerActingStr, msgColor)
+                    local text = I18N("receiveManually", { leader = leaderName, amount = delta, resource = I18N.agree(delta, self.resourceName) })
+                    broadcastToAll(text, color)
                 end
             end
 

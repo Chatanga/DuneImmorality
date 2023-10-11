@@ -203,7 +203,7 @@ function TechMarket._buyTech(stackIndex, acquireCard, color)
             end
         end
     else
-        log("No tiles!")
+        error("No tiles!")
     end
 end
 

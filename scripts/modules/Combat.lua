@@ -86,7 +86,7 @@ function Combat._staticSetUp(settings)
                 end
             end
             local forces = Combat._calculateCombatForces()
-            log(Combat._calculateRanking(forces))
+            --log(Combat._calculateRanking(forces))
             local turnSequence = Combat._calculateOutcomeTurnSequence(forces)
             TurnControl.setPhaseTurnSequence(turnSequence)
         elseif phase == "recall" then
