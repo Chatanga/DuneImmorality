@@ -1,6 +1,7 @@
 local constructionModeEnabled = false
 
 local validateDefaultSetup
+--[[
 validateDefaultSetup = {
     language = "en",
     randomizePlayerPositions = false,
@@ -68,13 +69,14 @@ validateDefaultSetup = {
     leaderSelection = {
         Green = "letoAtreides",
         Yellow = "ilbanRichese",
-        Red = "glossuRabban",
+        Red = "yunaMoritani",
     },
     fanmadeLeaders = true,
     variant = "arrakeenScouts",
     soundEnabled = true,
 }
-validateDefaultSetup = nil
+]]--
+--validateDefaultSetup = nil
 
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
@@ -311,21 +313,18 @@ function setUp(newSettings)
 end
 
 ---
-function onPlayerChangeColor(color)
+function onPlayerChangeColor()
     PlayerSet.updateSetupButton()
-    --Module.callOnAllRegisteredModules("onPlayerChangeColor", color)
 end
 
 ---
-function onPlayerConnect(...)
+function onPlayerConnect()
     PlayerSet.updateSetupButton()
-    --Module.callOnAllRegisteredModules("onPlayerConnect", ...)
 end
 
 ---
-function onPlayerDisconnect(...)
+function onPlayerDisconnect()
     PlayerSet.updateSetupButton()
-    --Module.callOnAllRegisteredModules("onPlayerDisconnect", ...)
 end
 
 ---
@@ -335,7 +334,7 @@ function PlayerSet.findActiveOpponents(properlySeatedPlayers, numberOfPlayers)
     local activeOpponents = {}
     for i, color in ipairs(properlySeatedPlayers) do
         if i <= numberOfPlayers then
-            activeOpponents[color] = Helper.findPlayer(color)
+            activeOpponents[color] = Helper.findPlayerByColor(color)
         else
             break
         end
@@ -401,7 +400,9 @@ function PlayerSet.randomizePlayerPositions(activeOpponents, continuation)
         for i = 1, #opponents do
             local opponent = opponents[i]
             local newColor = newColors[i]
-            PlayerSet.switchPositions(opponent, newColor)
+            if opponent ~= "rival" and opponent ~= "puppet" then
+                Helper.changePlayerColorInCoroutine(opponent, newColor)
+            end
             activeOpponents[newColor] = opponent
         end
 
@@ -412,33 +413,6 @@ function PlayerSet.randomizePlayerPositions(activeOpponents, continuation)
         return 1
     end)
     startLuaCoroutine(Global, PlayerSet.registeredCallback)
-end
-
----
-function PlayerSet.switchPositions(opponent, newColor)
-    --Helper.dumpFunction("switchPositions", opponent, newColor)
-    if opponent ~= "rival" and opponent ~= "puppet" then
-        local oldColor = opponent.color
-        local player = Helper.findPlayer(newColor)
-        if oldColor ~= newColor then
-            if player then
-                log("player:changeColor(Grey)")
-                player:changeColor("Grey")
-                while player.seated do
-                    coroutine.yield()
-                end
-            end
-            log("opponent:changeColor(" .. newColor .. ")")
-            opponent:changeColor(newColor)
-            if player then
-                log("player:changeColor(" .. oldColor .. ")")
-                player:changeColor(oldColor)
-                while not player.seated do
-                    coroutine.yield()
-                end
-            end
-        end
-    end
 end
 
 ---

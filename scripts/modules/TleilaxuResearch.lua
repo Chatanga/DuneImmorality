@@ -65,7 +65,9 @@ function TleilaxuResearch.onLoad(state)
             "2bfdb0",
             "33c0fd",
             "cab3eb"
-        }
+        },
+        oneHelixZone = "53e9ac",
+        twoHelicesZone = "03e529"
     }))
 
     Helper.noPhysicsNorPlay(TleilaxuResearch.board)
@@ -171,18 +173,19 @@ function TleilaxuResearch._generateResearchButtons()
         })
         Helper.markAsTransient(cellZone)
         Helper.createAnchoredAreaButton(cellZone, 0.6, 0.1, "Progress on the research track", function (_, color, _)
+            local leader = PlayBoard.getLeader(color)
             local token = PlayBoard.getContent(color).researchToken
             local tokenCellPosition = TleilaxuResearch._worlPositionToResearchSpace(token.getPosition())
             local jump = cellPosition - tokenCellPosition
-            if jump.x == 1 and math.abs(jump.z) <= 1 then
-                TleilaxuResearch._advanceResearch(color, jump, true)
-            else
-                Player[color].showConfirmDialog("Forbidden move. Do you confirm it neverless?", function()
-                    TleilaxuResearch._advanceResearch(color, jump, false)
-                end)
-            end
+            leader.research(color, jump)
         end)
     end
+
+    Helper.createAnchoredAreaButton(TleilaxuResearch.twoHelicesZone, 0.6, 0.1, "Progress after the research track", function (_, color, _)
+        local leader = PlayBoard.getLeader(color)
+        local specialJump = Vector(1, 0, 0)
+        leader.research(color, specialJump)
+    end)
 end
 
 ---
@@ -197,7 +200,17 @@ end
 
 ---
 function TleilaxuResearch.advanceResearch(color, jump)
-    TleilaxuResearch._advanceResearch(color, jump, true)
+    local continuation = Helper.createContinuation()
+    if jump.x == 1 and math.abs(jump.z) <= 1 then
+        TleilaxuResearch._advanceResearch(color, jump, true)
+        continuation.run(jump)
+    else
+        Player[color].showConfirmDialog("Forbidden move. Do you confirm it neverless?", function()
+            TleilaxuResearch._advanceResearch(color, jump, false)
+            continuation.run(jump)
+        end)
+    end
+    return continuation
 end
 
 ---
@@ -205,8 +218,11 @@ function TleilaxuResearch._advanceResearch(color, jump, withBenefits)
     local leader = PlayBoard.getLeader(color)
     local researchToken = PlayBoard.getContent(color).researchToken
 
-    if TleilaxuResearch.hasReachedTwoHelices(color) then
-        PlayBoard.getLeader(color).drawImperiumCards(color, 1)
+    if TleilaxuResearch.hasReachedTwoHelices(color) and jump.x > 0 then
+        if withBenefits then
+            PlayBoard.getLeader(color).drawImperiumCards(color, 1)
+            Helper.emitEvent("researchProgress", color)
+        end
     else
         local cellPosition = TleilaxuResearch._worlPositionToResearchSpace(researchToken.getPosition())
         local newCellPosition = cellPosition + jump
@@ -247,13 +263,15 @@ function TleilaxuResearch._advanceResearch(color, jump, withBenefits)
                     end)
                 end
             end)
-        end
 
-        local bonuses = TleilaxuResearch.extraBonuses["oneHelix"]
-        if bonuses then
-            if cellPosition.x < 4 and newCellPosition.x >= 4 then
-                DynamicBonus.collectExtraBonuses(color, leader, bonuses)
+            local bonuses = TleilaxuResearch.extraBonuses["oneHelix"]
+            if bonuses then
+                if cellPosition.x < 4 and newCellPosition.x >= 4 then
+                    DynamicBonus.collectExtraBonuses(color, leader, bonuses)
+                end
             end
+
+            Helper.emitEvent("researchProgress", color)
         end
     end
 end
@@ -292,23 +310,28 @@ function TleilaxuResearch._generateTleilaxButtons()
     for level, _ in pairs(TleilaxuResearch.tleilaxLevelBenefits) do
         local levelZone = TleilaxuResearch.tleilaxuLevelZones[level]
         Helper.createAnchoredAreaButton(levelZone, 0.6, 0.1, "Progress on the Tleilax track", function (_, color, _)
+            local leader = PlayBoard.getLeader(color)
             local token = PlayBoard.getContent(color).tleilaxToken
             local tokenLevel = TleilaxuResearch._worlPositionToTleilaxSpace(token.getPosition())
             local jump = level - tokenLevel
-            if jump == 1 then
-                TleilaxuResearch._advanceTleilax(color, jump, true)
-            else
-                Player[color].showConfirmDialog("Forbidden move. Do you confirm it neverless?", function()
-                    TleilaxuResearch._advanceTleilax(color, jump, false)
-                end)
-            end
+            leader.beetle(color, jump)
         end)
     end
 end
 
 ---
 function TleilaxuResearch.advanceTleilax(color, jump)
-    TleilaxuResearch._advanceTleilax(color, jump, true)
+    local continuation = Helper.createContinuation()
+    if jump == 1 then
+        TleilaxuResearch._advanceTleilax(color, jump, true)
+        continuation.run(jump)
+    else
+        Player[color].showConfirmDialog("Forbidden move. Do you confirm it neverless?", function()
+            TleilaxuResearch._advanceTleilax(color, jump, false)
+            continuation.run(jump)
+        end)
+    end
+    return continuation
 end
 
 ---
@@ -345,13 +368,15 @@ function TleilaxuResearch._advanceTleilax(color, jump, withBenefits)
                 TleilaxuResearch.spiceBonus:set(0)
             end
         end)
-    end
 
-    for i = level + 1, newLevel do
-        local bonuses = TleilaxuResearch.extraBonuses[i]
-        if bonuses then
-            DynamicBonus.collectExtraBonuses(color, leader, bonuses)
+        for i = level + 1, newLevel do
+            local bonuses = TleilaxuResearch.extraBonuses[i]
+            if bonuses then
+                DynamicBonus.collectExtraBonuses(color, leader, bonuses)
+            end
         end
+
+        Helper.emitEvent("tleilaxProgress", color)
     end
 end
 

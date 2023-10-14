@@ -84,8 +84,7 @@ function Utils.assertIsTroopLocation(location)
         or location == "garrison" -- when recruited
         or location == "combat" -- when deployed
         or location == "negotiation" -- when sent as negotiator
-        or location == "tanks" -- when sent as specimen
-        or location == "combat", -- when deployed
+        or location == "tanks", -- when sent as specimen
         "No a troop location: " .. tostring(location))
 end
 

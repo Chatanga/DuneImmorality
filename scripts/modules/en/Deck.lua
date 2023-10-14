@@ -39,7 +39,7 @@ local Deck = {
         ixHagal_interstellarShipping = { "http://cloud-3.steamusercontent.com/ugc/2093668799785646691/E595B3E111F6E8A0C057C99FF03BB18FFA1327B7/", 1, 1, Vector(0.9, 1, 0.83) },
         ixHagal_foldspaceAndInterstellarShipping = { "http://cloud-3.steamusercontent.com/ugc/2093668799785647605/D7FAA1F3EB842A0EB4A2966F134EB58ACD966AFC/", 1, 1, Vector(0.9, 1, 0.83) },
         ixHagal_smugglingAndInterstellarShipping = { "http://cloud-3.steamusercontent.com/ugc/2093668799785646429/978923957A87E0CB3DFAA25DF543FD863DA1EC95/", 1, 1, Vector(0.9, 1, 0.83) },
-        imortalityHagal = { "http://cloud-3.steamusercontent.com/ugc/2093668799785647327/36ABA3AD7A540FF6960527C1E77565F10BB2C6CB/", 2, 2 },
+        imortalityHagal = { "http://cloud-3.steamusercontent.com/ugc/2093668799785669999/AA0F8C9CAE3E11C28EE4379FA045FF11DDD03C38/", 2, 2 },
         hagal_churn = { "http://cloud-3.steamusercontent.com/ugc/2093668799785647209/43CA7B78F12F01CED26D1B57D3E62CAC912D846C/", 1, 1 },
     },
     tech = {

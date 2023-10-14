@@ -208,7 +208,7 @@ function MainBoard.setUp(settings)
                 end
                 MainBoard.spaces[spaceName] = (extSpace ~= Helper.ERASE and extSpace or nil)
             else
-                if extSpace == Helper.ERASE then
+                if extSpace ~= Helper.ERASE then
                     extSpace.zone.destruct()
                 end
             end
@@ -308,6 +308,7 @@ end
 function MainBoard.getHighCouncilSeatPark()
     return MainBoard.highCouncilPark
 end
+
 ---
 function MainBoard.findControlableSpace(victoryPointToken)
     local description = Helper.getID(victoryPointToken)
@@ -374,6 +375,8 @@ end
 
 ---
 function MainBoard.sendAgent(color, spaceName)
+    local continuation = Helper.createContinuation()
+
     local space = MainBoard.spaces[spaceName]
 
     local parentSpace = space
@@ -398,6 +401,9 @@ function MainBoard.sendAgent(color, spaceName)
                 if success then
                     MainBoard.collectExtraBonuses(color, leader, spaceName)
                     Park.transfert(1, agentPark, parentSpace.park)
+                    continuation.run(true)
+                else
+                    continuation.run(false)
                 end
             end)
         elseif action then
@@ -405,11 +411,18 @@ function MainBoard.sendAgent(color, spaceName)
             if action(color, leader) then
                 MainBoard.collectExtraBonuses(color, leader, spaceName)
                 Park.transfert(1, agentPark, parentSpace.park)
+                continuation.run(true)
+            else
+                continuation.run(false)
             end
         else
             error("Unknow space action: " .. actionName)
         end
+    else
+        continuation.run(false)
     end
+
+    return continuation
 end
 
 ---

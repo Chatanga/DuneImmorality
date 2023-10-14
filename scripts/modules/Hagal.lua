@@ -337,7 +337,7 @@ function Hagal.pickAnyCompatibleLeader(color)
 end
 
 ---
-function Rival.setUp(color, settings)
+function Rival.prepare(color, settings)
     if Hagal.numberOfPlayers == 1 then
         Action.resources(color, "water", 1)
         if settings.difficulty ~= "novice" then
@@ -449,36 +449,39 @@ end
 
 ---
 function Rival.resources(color, nature, amount)
-    if Hagal.getRivalCount() == 2 and Action.resources(color, nature, amount) then
-        local resource = PlayBoard.getResource(color, nature)
-        if nature == "spice" then
-            if Hagal.riseOfIx then
-                local tech = PlayBoard.getTech(color, "spySatellites")
-                if tech and nature == "spice" and resource:get() >= 3 then
-                    Utils.trash(tech)
-                    Rival.gainVictoryPoint(color, "spySatellites")
+    if Hagal.getRivalCount() == 2 then
+        if Action.resources(color, nature, amount) then
+            local resource = PlayBoard.getResource(color, nature)
+            if nature == "spice" then
+                if Hagal.riseOfIx then
+                    local tech = PlayBoard.getTech(color, "spySatellites")
+                    if tech and nature == "spice" and resource:get() >= 3 then
+                        Utils.trash(tech)
+                        Rival.gainVictoryPoint(color, "spySatellites")
+                    end
+                else
+                    if resource:get() >= 7 then
+                        resource:change(-7)
+                        Rival.gainVictoryPoint(color, "rivalSpice")
+                    end
                 end
-            else
+            elseif nature == "water" then
+                if resource:get() >= 3 then
+                    resource:change(-3)
+                    Rival.gainVictoryPoint(color, "rivalWater")
+                end
+            elseif nature == "solari" then
                 if resource:get() >= 7 then
                     resource:change(-7)
-                    Rival.gainVictoryPoint(color, "rivalSpice")
+                    Rival.gainVictoryPoint(color, "rivalSolari")
                 end
             end
-        elseif nature == "water" then
-            if resource:get() >= 3 then
-                resource:change(-3)
-                Rival.gainVictoryPoint(color, "rivalWater")
-            end
-        elseif nature == "solari" then
-            if resource:get() >= 7 then
-                resource:change(-7)
-                Rival.gainVictoryPoint(color, "rivalSolari")
-            end
+            return true
         end
-        return true
-    else
-        return false
+    elseif Hagal.getRivalCount() == 1 and nature == "strength"  then
+        return Action.resources(color, nature, amount)
     end
+    return false
 end
 
 ---

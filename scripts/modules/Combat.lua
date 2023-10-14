@@ -8,6 +8,7 @@ local Deck = Module.lazyRequire("Deck")
 local Utils = Module.lazyRequire("Utils")
 local TurnControl = Module.lazyRequire("TurnControl")
 local MainBoard = Module.lazyRequire("MainBoard")
+local Music = Module.lazyRequire("Music")
 
 local Combat = {
     -- Temporary structure (set to nil *after* loading).
@@ -77,6 +78,11 @@ function Combat._staticSetUp(settings)
     Helper.registerEventListener("phaseStart", function (phase)
         if phase == "roundStart" then
             Combat._setUpConflict()
+        elseif phase == "combat" then
+            -- A small delay to avoid being erased by the player turn sound.
+            Wait.time(function ()
+                Music.play("battle")
+            end, 1)
         elseif phase == "combatEnd" then
             for _, bannerZone in ipairs(MainBoard.getBannerZones()) do
                 local dreadnought = MainBoard.getControllingDreadnought(bannerZone)

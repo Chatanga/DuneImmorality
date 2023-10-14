@@ -56,6 +56,14 @@ return {
     spentManually = "%s spent %s %s manually.",
     receiveManually = "%s received %s %s manually.",
 
+    -- Actions
+    actionSendTroops = "{leader(color)} transfered {count} troop{number_agreement(count,'s')} from {from} to {to}.",
+    supplyPark = "{possessive(leader(color))} reserve",
+    garrisonPark = "{possessive(leader(color))} garrison",
+    combatPark = "the battlefield",
+    negotiationPark = "tech negotiation",
+    tanksPark = "the Axolotl tanks",
+
     -- Tleilax board
     confirmSolarisToBeetles = "Do you want to pay 7 Solaris to Advance Twice on the Tleilaxu Track ?",
 

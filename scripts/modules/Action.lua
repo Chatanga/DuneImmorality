@@ -1,6 +1,7 @@
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local Park = require("utils.Park")
+local I18N = require("utils.I18N")
 
 local Utils = Module.lazyRequire("Utils")
 local PlayBoard = Module.lazyRequire("PlayBoard")
@@ -105,7 +106,7 @@ function Action.instruct(phase, isActivePlayer)
 end
 
 ---
-function Action.setUp(color, settings)
+function Action.prepare(color, settings)
 
     Action.resources(color, "solari", 0)
     Action.resources(color, "spice", 0)
@@ -136,7 +137,7 @@ end
 ---
 function Action.sendAgent(color, spaceName)
     Action.context.space = spaceName
-    MainBoard.sendAgent(color, spaceName)
+    return MainBoard.sendAgent(color, spaceName)
 end
 
 ---
@@ -168,6 +169,17 @@ function Action.resources(color, resourceName, amount)
     local resource = PlayBoard.getResource(color, resourceName)
     if resource:get() >= -amount then
         resource:change(amount)
+        if amount > 0 then
+            printToAll(I18N("credit", {
+                what = I18N.agree(amount, resourceName),
+                amount = amount,
+            }), color)
+        elseif amount < 0 then
+            printToAll(I18N("debit", {
+                what = I18N.agree(-amount, resourceName),
+                amount = -amount,
+            }), color)
+        end
         return true
     else
         return false
@@ -193,12 +205,60 @@ function Action.influence(color, faction, amount)
 end
 
 ---
-function Action.troops(color, from, to, amount)
+function Action.troops(color, from, to, baseCount)
     Utils.assertIsPlayerColor(color)
     Utils.assertIsTroopLocation(from)
     Utils.assertIsTroopLocation(to)
-    Utils.assertIsInteger(amount)
-    return Park.transfert(amount, Action._getTroopPark(color, from), Action._getTroopPark(color, to))
+    Utils.assertIsInteger(baseCount)
+    local count = Park.transfert(baseCount, Action._getTroopPark(color, from), Action._getTroopPark(color, to))
+
+    if not Action.transfetCoalescentQueue then
+
+        local function coalesce(t1, t2)
+            if t1.color == t2.color then
+                local t
+                if t1.from == t2.from and t1.to == t2.to then
+                    t1.count = t1.count + t2.count
+                    t = t1
+                elseif t1.from == t2.to and t1.to == t2.from then
+                    t1.count = t1.count - t2.count
+                    t = t1
+                end
+                if t then
+                    if t1.count < 0 then
+                        t1.count = -t1.count
+                        local tmp = t1.to
+                        t1.to = t1.from
+                        t1.from = tmp
+                    end
+                    return t
+                end
+            end
+            return nil
+        end
+
+        local function handle(t)
+            if t.count ~= 0 then
+                printToAll(I18N("transfer", {
+                    count = t.count,
+                    what = I18N.agree(t.count, "troop"),
+                    from = I18N(t.from .. "Park"),
+                    to = I18N(t.to .. "Park"),
+                }), t.color)
+            end
+        end
+
+        Action.transfetCoalescentQueue = Helper.createCoalescentQueue(1, coalesce, handle)
+    end
+
+    Action.transfetCoalescentQueue.submit({
+        color = color,
+        count = count,
+        from = from,
+        to = to,
+    })
+
+    return count
 end
 
 ---
@@ -263,6 +323,8 @@ function Action.advanceFreighter(color, positiveAmount)
     for _ = 1, positiveAmount do
         if not CommercialTrack.freighterUp(color) then
             return false
+        else
+            printToAll(I18N("advanceFreighter"), color)
         end
     end
     return true
@@ -271,7 +333,12 @@ end
 ---
 function Action.recallFreighter(color)
     Utils.assertIsPlayerColor(color)
-    return CommercialTrack.freighterReset(color)
+    if CommercialTrack.freighterReset(color) then
+        printToAll(I18N("recallFreighter"), color)
+        return true
+    else
+        return false
+    end
 end
 
 ---
@@ -318,7 +385,13 @@ end
 ---
 function Action.research(color, jump)
     Utils.assertIsPlayerColor(color)
-    TleilaxuResearch.advanceResearch(color, jump)
+    TleilaxuResearch.advanceResearch(color, jump).doAfter(function ()
+        if jump.x > 0 then
+            printToAll(I18N("researchAdvance"), color)
+        elseif jump.x < 0 then
+            printToAll(I18N("researchRollback"), color)
+        end
+    end)
     return true
 end
 
@@ -326,7 +399,13 @@ end
 function Action.beetle(color, jump)
     Utils.assertIsPlayerColor(color)
     Utils.assertIsInteger(jump)
-    TleilaxuResearch.advanceTleilax(color, jump)
+    TleilaxuResearch.advanceTleilax(color, jump).doAfter(function ()
+        if jump > 0 then
+            printToAll(I18N("beetleAdvance", { jump = jump }), color)
+        elseif jump < 0 then
+            printToAll(I18N("beetleRollback", { jump = jump }), color)
+        end
+    end)
     return true
 end
 
@@ -341,7 +420,9 @@ end
 function Action.drawIntrigues(color, amount)
     Utils.assertIsPlayerColor(color)
     Utils.assertIsInteger(amount)
-    return Intrigue.drawIntrigue(color, amount)
+    Intrigue.drawIntrigue(color, amount)
+    printToAll(I18N("drawObjects", { amount = amount, object = I18N.agree(amount, "intrigueCard") }), color)
+    return true
 end
 
 ---
@@ -349,7 +430,8 @@ function Action.stealIntrigue(color, otherColor, amount)
     Utils.assertIsPlayerColor(color)
     Utils.assertIsPlayerColor(otherColor)
     Utils.assertIsInteger(amount)
-    return Intrigue.stealIntrigue(color, otherColor, amount)
+    Intrigue.stealIntrigue(color, otherColor, amount)
+    return true
 end
 
 ---
@@ -421,13 +503,5 @@ end
 function Action.discardIntrigueCard(name)
 end
 ]]--
-
-function Action._positive(message)
-    return true
-end
-
-function Action._negative(message)
-    return false
-end
 
 return Action

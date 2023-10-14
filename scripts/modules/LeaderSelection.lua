@@ -179,7 +179,7 @@ function LeaderSelection._setUpPicking(opponents, numberOfLeaders, random, hidde
                 Helper.clearButtons(LeaderSelection.secondaryTable)
                 TurnControl.start(true)
             else
-                print("Not enough leaders left!")
+                error("Not enough leaders left!")
             end
         end),
         label = "Start",

@@ -3,6 +3,7 @@ local Helper = require("utils.Helper")
 
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local TechMarket = Module.lazyRequire("TechMarket")
+local Action = Module.lazyRequire("Action")
 
 local CommercialTrack = {
     initialFreighterPositions = {
@@ -77,11 +78,12 @@ function CommercialTrack._createLevelButton(level, levelSlot)
     local tooltip = level == 0 and "Recall your freighter" or "Progress on the commercial track"
     local ground = levelSlot.getPosition().y - 0.5
     Helper.createAnchoredAreaButton(levelSlot, ground, 0.2, tooltip, function (_, color, _)
+        local leader = PlayBoard.getLeader(color)
         local freighterLevel = CommercialTrack.getFreighterLevel(color)
         if freighterLevel < level then
-            CommercialTrack._freighterGoUp(color, level - freighterLevel)
+            leader.advanceFreighter(color, level - freighterLevel)
         elseif level == 0 then
-            CommercialTrack.freighterReset(color)
+            leader.recallFreighter(color)
         end
     end)
 end
@@ -119,10 +121,11 @@ function CommercialTrack._freighterGoUp(color, count)
 end
 
 ---
-function CommercialTrack.freighterUp(color)
+function CommercialTrack.freighterUp(color, baseCount)
     local level = CommercialTrack.getFreighterLevel(color)
-    if level < 3 then
-        CommercialTrack._setFreighterPositionSmooth(color, level + 1)
+    local count = math.min(baseCount or 1, 3 - level)
+    if count > 0 then
+        CommercialTrack._setFreighterPositionSmooth(color, level + count)
         return true
     else
         return false
@@ -149,7 +152,8 @@ function CommercialTrack._pickSolariBonus(color)
     leader.resources(color, "solari", 5)
     for _, otherColor in ipairs(PlayBoard.getPlayBoardColors()) do
         if otherColor ~= color then
-            leader.resources(otherColor, "solari", 1)
+            local otherLeader = PlayBoard.getLeader(otherColor)
+            otherLeader.resources(otherColor, "solari", 1)
         end
     end
 end

@@ -13,7 +13,7 @@ local ScoreBoard = {
 ---
 function ScoreBoard.onLoad(state)
     --[[
-        4 players tokens -> PlayerBoard
+        4 players tokens -> PlayBoard
         alliance / friendship -> InfluenceTrack
         others -> here
     ]]--
@@ -35,7 +35,7 @@ function ScoreBoard.onLoad(state)
             waterBag = "0c4ca1",
             spiceBag = "2fd6f0",
         },
-        -- Not simply ix here.
+        -- Not simply "ix" here.
         riseOfIx = {
             detonationDevicesBag = "7b3fa2",
             ixianEngineerBag = "3371d8",
@@ -52,6 +52,19 @@ function ScoreBoard.onLoad(state)
 
     Helper.forEachRecursively(ScoreBoard.tokens, function (name, token)
         token.setName(I18N(Helper.getID(token)))
+
+        -- Clumsy workaround to name items in a bag.
+        if token.type == "Bag" then
+            local count = #token.getObjects()
+            for i = 1, count do
+                local innerToken = token.takeObject({ position = token.getPosition() + Vector(0, i * 0.5, 0) })
+                innerToken.setLock(true)
+                Wait.time(function ()
+                    innerToken.setName(I18N(Helper.getID(innerToken)))
+                    innerToken.setLock(false)
+                end, 0.5)
+            end
+        end
     end)
 
     if state.settings and state.settings.riseOfIx then
@@ -61,7 +74,7 @@ end
 
 ---
 function ScoreBoard.setUp(settings)
-    for _, extension in ipairs({"riseOfIx", "immortality"}) do
+    for _, extension in ipairs({ "riseOfIx", "immortality" }) do
         if not settings[extension] then
             Helper.forEach(ScoreBoard.tokens[extension], function (_, token)
                 token.destruct()
@@ -85,16 +98,6 @@ function ScoreBoard._staticSetUp(settings)
     -- NOP
 end
 
---- TODO
---[[
-
-if token.type == "Bag" then
-    for _, realToken in ipairs(token.getObjects()) do
-        realToken.name = I18N(realToken.gm_notes)
-    end
-end
-
-]]--
 function ScoreBoard.gainVictoryPoint(color, name)
     local holder = {
         success = false

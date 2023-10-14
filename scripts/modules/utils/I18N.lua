@@ -37,30 +37,35 @@ function I18N.translate(key, args)
         error("Missing locale: " .. currentLocale)
     end
 
-    local value = locale[key]
-    local text
-    if value then
-        text = ""
-        local s = 1
-        repeat
-            local done = true
-            local i = string.find(value, "{", s, true)
-            if i then
-                local e = string.find(value, "}", i, true)
-                if e then
-                    local argName = string.sub(value, i + 1, e - 1)
-                    text = text .. string.sub(value, s, i - 1) .. tostring(args[argName] or ("{" .. argName .. "}"))
-                    s = e + 1
-                    done = false
-                end
+    local content = locale[key]
+    return content and I18N._parse(content, args) or "{" .. key .. "}"
+end
+
+function I18N._parse(content, args)
+    local text = ""
+    local s = 1
+    repeat
+        local done = true
+        local i = string.find(content, "{", s, true)
+        if i then
+            local e = string.find(content, "}", i, true)
+            if e then
+                local expression = string.sub(content, i + 1, e - 1)
+                local v = I18N._evaluate(expression, args)
+                text = text .. string.sub(content, s, i - 1) .. tostring(v or ("{" .. expression .. "}"))
+                s = e + 1
+                done = false
             end
-        until done
-        text = text .. string.sub(value, s)
-    else
-        text = "{" .. key .. "}"
-    end
+        end
+    until done
+    text = text .. string.sub(content, s)
     return text
 end
+
+function I18N._evaluate(expression, args)
+    return args[expression]
+end
+
 
 setmetatable(I18N, { __call = function(_, ...) return I18N.translate(...) end })
 

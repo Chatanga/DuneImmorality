@@ -346,7 +346,7 @@ function PlayBoard.setUp(settings, activeOpponents)
                 end
             end
 
-            if #activeOpponents < 4 or settings.goTo11 then
+            if settings.numberOfPlayers < 4 then
                 playBoard.content.fourPlayerVictoryToken.destruct()
                 playBoard.content.fourPlayerVictoryToken = nil
             end
@@ -370,11 +370,13 @@ function PlayBoard._staticSetUp(settings)
 
         if phase == "roundStart" then
             for color, playBoard in pairs(PlayBoard._getPlayBoards()) do
-                local cardAmount = PlayBoard.hasTech(color, "holtzmanEngine") and 6 or 5
-                playBoard.leader.drawImperiumCards(color, cardAmount)
+                if playBoard.opponent ~= "rival" then
+                    local cardAmount = PlayBoard.hasTech(color, "holtzmanEngine") and 6 or 5
+                    playBoard:drawCards(cardAmount)
 
-                if PlayBoard.hasTech(color, "shuttleFleet") then
-                    playBoard.leader.resources(color, "solari", 2)
+                    if PlayBoard.hasTech(color, "shuttleFleet") then
+                        playBoard.leader.resources(color, "solari", 2)
+                    end
                 end
             end
         end
@@ -389,7 +391,7 @@ function PlayBoard._staticSetUp(settings)
     Helper.registerEventListener("phaseEnd", function (phase)
         if phase == "leaderSelection" then
             for color, playBoard in pairs(PlayBoard._getPlayBoards()) do
-                playBoard.leader.setUp(color, settings)
+                playBoard.leader.prepare(color, settings)
             end
         end
         for _, playBoard in pairs(PlayBoard._getPlayBoards()) do
@@ -510,7 +512,7 @@ function PlayBoard._setActivePlayer(phase, color)
     end
 end
 
---- Hotseat
+--- Hotseat (FIXME Unreliable with randomization?)
 function PlayBoard._movePlayerIfNeeded(color)
     local hostPlayer = nil
     for _, player in ipairs(Player.getPlayers()) do
@@ -574,10 +576,8 @@ function PlayBoard.acceptTurn(phase, color)
         end
     elseif phase == 'combat' then
         if Combat.isInCombat(color) then
-            accepted = PlayBoard.combatPassCountdown > 0 and #PlayBoard.getIntrigues(color) > 0
             PlayBoard.combatPassCountdown = PlayBoard.combatPassCountdown - 1
-        else
-            accepted = false
+            accepted = PlayBoard.combatPassCountdown > 0 and #PlayBoard.getIntrigues(color) > 0
         end
     elseif phase == 'combatEnd' then
         -- TODO Player is victorious and the combat provied a reward (auto?) or
@@ -845,7 +845,8 @@ function PlayBoard:_cleanUp(base, ix, immortality)
             content.scoreMarker,
             content.controlMarkerBag,
             content.forceMarker,
-            content.startEndTurnButton
+            content.startEndTurnButton,
+            content.fourPlayerVictoryToken
         })
         Helper.addAll(toBeRemoved, content.agents)
         Helper.addAll(toBeRemoved, content.troops)
@@ -1205,6 +1206,8 @@ function PlayBoard:drawCards(count)
     local dealCardCount = math.min(remainingCardToDrawCount, drawableCardCount)
     if dealCardCount > 0 then
         deckOrCard.deal(dealCardCount, self.color)
+        -- FIXME Should be in Action.
+        printToAll(I18N("drawObjects", { amount = dealCardCount, object = I18N.agree(dealCardCount, "imperiumCard") }), self.color)
     end
 
     remainingCardToDrawCount = remainingCardToDrawCount - dealCardCount

@@ -126,7 +126,7 @@ local ArrakeenScouts = {
     pendingOperations = {},
 }
 
---ArrakeenScouts._debug = { "revealTheFuture" }
+ArrakeenScouts._debug = { "saphoJuice" }
 
 ---
 function ArrakeenScouts.onLoad(state)
@@ -286,6 +286,7 @@ function ArrakeenScouts._staticSetUp()
 
     Helper.registerEventListener("highCouncilSeatTaken", function (color)
         ArrakeenScouts.committeeAccess[color] = true
+        Player[color].showInfoDialog("Vous avez maintenant la possibilité de joindre un comité ce tour-ci.")
     end)
 end
 
@@ -589,7 +590,7 @@ function ArrakeenScouts._setAsOptionPane(color, playerPane, secret, options, con
     }
 
     button.attributes.onClick = Helper.registerGlobalCallback(function (player)
-        if player.color == color then
+        if Helper.getPlayerColor(player) == color then
             Helper.unregisterGlobalCallback(dropdown.attributes.onValueChanged)
             Helper.unregisterGlobalCallback(button.attributes.onClick)
             controller.validate(color, holder.selectedOption)
@@ -630,7 +631,7 @@ function ArrakeenScouts._setAsValidationPane(color, playerPane, secret, label, c
     }
 
     button.attributes.onClick = Helper.registerGlobalCallback(function (player)
-        if player.color == color or ArrakeenScouts._debug then
+        if Helper.getPlayerColor(player) == color or ArrakeenScouts._debug then
             Helper.unregisterGlobalCallback(button.attributes.onClick)
             controller.validate(color)
         end
@@ -1103,7 +1104,7 @@ function ArrakeenScouts._createSequentialAuctionController(playerPanes, resource
         if color == currentColor then
             controller.setAsOptionPane(color, playerPane)
         else
-            ArrakeenScouts._setAsPassivePane(color, playerPane, false, nil, "…")
+            ArrakeenScouts._setAsPassivePane(color, playerPane, false, "Wait", "…")
         end
     end
 end
@@ -1224,8 +1225,8 @@ function ArrakeenScouts._createDesertGiftController(playerPanes)
         return options
     end
     local resolve = function (color, option, continuation)
-        ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, nil, option.status and "…" or "✗")
         if option.status then
+            ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, "Discard a non starter card", "…")
             ArrakeenScouts._ensureDiscard(color, notAStarterCard).doAfter(function (card)
                 local cardName = Helper.getID(card)
                 ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, cardName, "✓")
@@ -1234,6 +1235,7 @@ function ArrakeenScouts._createDesertGiftController(playerPanes)
                 continuation.run()
             end)
         else
+            ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, nil, "✗")
             continuation.run()
         end
     end
@@ -1271,8 +1273,8 @@ function ArrakeenScouts._createIntriguingGiftController(playerPanes)
         return options
     end
     local resolve = function (color, option, continuation)
-        ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, nil, option.status and "…" or "✗")
         if option.status then
+            ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, "Discard an intrigue", "…")
             ArrakeenScouts._ensureDiscardIntrigue(color).doAfter(function (card)
                 local cardName = Helper.getID(card)
                 ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, cardName, "✓")
@@ -1281,6 +1283,7 @@ function ArrakeenScouts._createIntriguingGiftController(playerPanes)
                 continuation.run()
             end)
         else
+            ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, nil, "✗")
             continuation.run()
         end
     end
@@ -1317,14 +1320,15 @@ function ArrakeenScouts._createBeneGesseritTreacheryController(playerPanes)
         return options
     end
     local resolve = function (color, option, continuation)
-        ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, nil, option.status and "…" or "✗")
         if option.status then
+            ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, "Discard a card", "…")
             ArrakeenScouts._ensureDiscard(color).doAfter(function (card)
                 local cardName = Helper.getID(card)
                 ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, cardName, "✓")
                 continuation.run()
             end)
         else
+            ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, nil, "✗")
             local leader = PlayBoard.getLeader(color)
             leader.influence(color, "beneGesserit", -1)
             continuation.run()
@@ -1457,8 +1461,8 @@ function ArrakeenScouts._createRotationgDoorsController(playerPanes)
         return options
     end
     local resolve = function (color, option, continuation)
-        ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, nil, option.status and "…" or "✗")
         if option.status then
+            ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, "Discard an intrigue", "…")
             ArrakeenScouts._ensureDiscardIntrigue(color).doAfter(function (card)
                 local cardName = Helper.getID(card)
                 ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, cardName, "✓")
@@ -1467,6 +1471,7 @@ function ArrakeenScouts._createRotationgDoorsController(playerPanes)
                 continuation.run()
             end)
         else
+            ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, nil, "✗")
             continuation.run()
         end
     end
@@ -1510,8 +1515,8 @@ function ArrakeenScouts._createNoComingBackController(playerPanes)
         }
     end
     local resolve = function (color, option, continuation)
-        ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, nil, option.faction and "…" or "✗")
         if option.faction then
+            ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, "Trash a card", "…")
             ArrakeenScouts._ensureTrashFromHand(color).doAfter(function (card)
                 local cardName = Helper.getID(card)
                 ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, cardName, "✓")
@@ -1525,6 +1530,7 @@ function ArrakeenScouts._createNoComingBackController(playerPanes)
                 continuation.run()
             end)
         else
+            ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, nil, "✗")
             continuation.run()
         end
     end
@@ -1598,8 +1604,8 @@ function ArrakeenScouts._createNewInnovationsController(playerPanes)
         return options
     end
     local resolve = function (color, option, continuation)
-        ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, nil, option.resource and "…" or "✗")
         if option.resource then
+            ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, "Do a research", "…")
             local leader = PlayBoard.getLeader(color)
             leader.resources(color, option.resource, -1)
             return ArrakeenScouts._ensureResearch(color).doAfter(function ()
@@ -1607,6 +1613,7 @@ function ArrakeenScouts._createNewInnovationsController(playerPanes)
                 continuation.run()
             end)
         else
+            ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, nil, "✗")
             continuation.run()
         end
     end
@@ -1663,8 +1670,8 @@ function ArrakeenScouts._createCeaseAndDesistRequestController(playerPanes)
         return options
     end
     local resolve = function (color, option, continuation)
-        ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, nil, option.status and "…" or "✗")
         if option.status then
+            ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, "Trash a card", "…")
             return ArrakeenScouts._ensureTrashFromHand(color).doAfter(function (card)
                 local cardName = Helper.getID(card)
                 ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, cardName, "✓")
@@ -1673,6 +1680,7 @@ function ArrakeenScouts._createCeaseAndDesistRequestController(playerPanes)
                 continuation.run()
             end)
         else
+            ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, nil, "✗")
             continuation.run()
         end
     end
@@ -2009,7 +2017,7 @@ function ArrakeenScouts._createSequentialChoiceController(playerPanes, getOption
         if color == currentColor then
             controller.setAsActivePlayer(color)
         else
-            ArrakeenScouts._setAsPassivePane(color, playerPane, false, nil, "…")
+            ArrakeenScouts._setAsPassivePane(color, playerPane, false, "Wait", "…")
         end
     end
 end
@@ -2083,7 +2091,7 @@ function ArrakeenScouts._createPendingController(playerPanes, operation)
     end
 
     for color, playerPane in pairs(playerPanes) do
-        ArrakeenScouts._setAsPassivePane(color, playerPane, false, nil, "…")
+        ArrakeenScouts._setAsPassivePane(color, playerPane, false, "Wait", "…")
     end
 
     controller.nextReward()
@@ -2169,16 +2177,14 @@ end
 function ArrakeenScouts._ensureResearch(color)
     local continuation = Helper.createContinuation()
 
-    local oldCellPosition = TleilaxuResearch.getTokenCellPosition(color)
-
-    Wait.condition(function()
-        Wait.time(function ()
+    local holder = {}
+    holder.listener = function (otherColor)
+        if otherColor == color then
+            Helper.unregisterEventListener("researchProgress", holder.listener)
             continuation.run()
-        end, 0.5)
-    end, function()
-        local newCellPosition = TleilaxuResearch.getTokenCellPosition(color)
-        return newCellPosition ~= oldCellPosition
-    end)
+        end
+    end
+    Helper.registerEventListener("researchProgress", holder.listener)
 
     return continuation
 end

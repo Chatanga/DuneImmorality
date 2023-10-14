@@ -7,7 +7,7 @@ local Resource = Module.lazyRequire("Resource")
 local Utils = Module.lazyRequire("Utils")
 local Combat = Module.lazyRequire("Combat")
 local TleilaxuResearch = Module.lazyRequire("TleilaxuResearch")
-local PlayBoard = Module.lazyRequire("PlayBoard")
+local MainBoard = Module.lazyRequire("MainBoard")
 
 local DynamicBonus = {}
 
@@ -147,9 +147,14 @@ function DynamicBonus._collectTargetBonuses(color, leader, targetBonuses)
 
             elseif category == "controlMarker"  then
                 Helper.physicsAndPlay(item)
-                item.setPosition(PlayBoard.getControlMarkerBag(color).getPosition() + Vector(0, 1, 0))
-                item.setScale(item.getScale():scale(2))
 
+                local p = Vector(0, 0, 0)
+                for _, zoneName in ipairs({ "imperialBasinBannerZone", "arrakeenBannerZone", "carthagBannerZone" }) do
+                    p = p + MainBoard.banners[zoneName].getPosition()
+                end
+                p:scale(1/3)
+                item.setPosition(p)
+                item.setScale(item.getScale():scale(2))
             else
                 error("Unknown bonus type: " .. tostring(category))
             end

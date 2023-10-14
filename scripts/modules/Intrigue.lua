@@ -15,7 +15,7 @@ function Intrigue.onLoad(state)
         discardZone = '80642b'
     }))
 
-    AcquireCard.new(Intrigue.deckZone, "Intrigue", Intrigue.acquireIntrigueCard)
+    AcquireCard.new(Intrigue.deckZone, "Intrigue", Intrigue._acquireIntrigueCard)
     AcquireCard.new(Intrigue.discardZone, "Intrigue", nil)
 
     if state.settings then
@@ -36,8 +36,9 @@ function Intrigue._staticSetUp(settings)
 end
 
 ---
-function Intrigue.acquireIntrigueCard(acquireCard, color)
-    Intrigue.drawIntrigue(color, 1)
+function Intrigue._acquireIntrigueCard(acquireCard, color)
+    local leader = PlayBoard.getLeader(color)
+    leader.drawIntrigues(color, 1)
 end
 
 ---

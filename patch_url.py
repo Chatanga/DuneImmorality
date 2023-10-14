@@ -1,5 +1,13 @@
 #! /usr/bin/python3
 
+# Enable construction mode.
+# $ find scripts/ -name \*.lua -exec ./patch_url.py -i {} \;
+# $ ./build.sh
+# $ ./patch_url.py -i tmp/mod.patched.json
+# $ ./export.sh
+# Load save 99 and overwrite save 122 in TTS.
+# $ ./import.sh
+
 import sys
 
 def patch_url(filePath, inPlace):

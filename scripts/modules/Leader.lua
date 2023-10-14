@@ -26,8 +26,8 @@ end
 Leader.vladimirHarkonnen = Helper.createClass(Leader, {
 
     --- Masterstroke
-    setUp = function (color, settings)
-        Action.setUp(color, settings)
+    prepare = function (color, settings)
+        Action.prepare(color, settings)
 
         local position = Player[color].getHandTransform().position
         local tokenBag = getObjectFromGUID('f89231')
@@ -72,8 +72,8 @@ Leader.vladimirHarkonnen = Helper.createClass(Leader, {
 Leader.glossuRabban = Helper.createClass(Leader, {
 
     --- Arrakis fiefdom
-    setUp = function (color, settings)
-        Action.setUp(color, settings)
+    prepare = function (color, settings)
+        Action.prepare(color, settings)
         Action.resources(color, "spice", 1)
         Action.resources(color, "solari", 1)
     end,
@@ -94,6 +94,9 @@ Leader.ilbanRichese = Helper.createClass(Leader, {
     --- Ruthless negotiator
     resources = function (color, resourceName, amount)
         local success = Action.resources(color, resourceName, amount)
+        log(success)
+        log(Action.context)
+        log(Action.checkContext({ phase = "playerTurns", color = color, space = MainBoard.isLandsraadSpace }))
         if success and amount < 0 and Action.checkContext({ phase = "playerTurns", color = color, space = MainBoard.isLandsraadSpace }) then
             Action.drawImperiumCards(color, 1)
         end
@@ -145,8 +148,8 @@ Leader.letoAtreides = Helper.createClass(Leader, {
 Leader.paulAtreides = Helper.createClass(Leader, {
 
     --- Prescience
-    setUp = function (color, settings)
-        Action.setUp(color, settings)
+    prepare = function (color, settings)
+        Action.prepare(color, settings)
         -- TODO Add prescience button
     end,
 
@@ -165,15 +168,15 @@ Leader.arianaThorvald = Helper.createClass(Leader, {
 
     --- Spice addict
     sendAgent = function (color, spaceName)
-        if Action.sendAgent(color, spaceName) then
-            if MainBoard.isDesertSpace(spaceName) then
+        local continuation = Helper.createContinuation()
+        Action.sendAgent(color, spaceName).doAfter(function (success)
+            if success and MainBoard.isDesertSpace(spaceName) then
                 Action.resources(color, "spice", -1)
                 Action.drawImperiumCards(color, 1)
             end
-            return true
-        else
-            return false
-        end
+            continuation.run(success)
+        end)
+        return continuation
     end,
 })
 
@@ -181,14 +184,14 @@ Leader.memnonThorvald = Helper.createClass(Leader, {
 
     --- Connections
     sendAgent = function (color, spaceName)
-        if Action.sendAgent(color, spaceName) then
-            if spaceName == "highCouncil" then
+        local continuation = Helper.createContinuation()
+        Action.sendAgent(color, spaceName).doAfter(function (success)
+            if success and spaceName == "highCouncil" then
                 Action.influence(color, nil, 1)
             end
-            return true
-        else
-            return false
-        end
+            continuation.run(success)
+        end)
+        return continuation
     end,
 
     --- Spice hoard
@@ -224,8 +227,8 @@ Leader.ilesaEcaz = Helper.createClass(Leader, {
 Leader.rhomburVernius = Helper.createClass(Leader, {
 
     --- Heavy lasgun cannons
-    setUp = function (color, settings)
-        Action.setUp(color, settings)
+    prepare = function (color, settings)
+        Action.prepare(color, settings)
         Combat.setDreadnoughtStrength(color, 4)
     end
 })
@@ -234,8 +237,8 @@ Leader.rhomburVernius = Helper.createClass(Leader, {
 Leader.tessiaVernius = Helper.createClass(Leader, {
 
     --- Careful observation
-    setUp = function (color, settings)
-        Action.setUp(color, settings)
+    prepare = function (color, settings)
+        Action.prepare(color, settings)
 
         local getAveragePosition = function (spaceNames)
             local p = Vector(0, 0, 0)
@@ -285,8 +288,8 @@ Leader.tessiaVernius = Helper.createClass(Leader, {
 Leader.yunaMoritani = Helper.createClass(Leader, {
 
     --- Smuggling operation
-    setUp = function (color, settings)
-        Action.setUp(color, settings)
+    prepare = function (color, settings)
+        Action.prepare(color, settings)
         Action.resources(color, "water", -1)
     end,
 
@@ -311,8 +314,8 @@ Leader.yunaMoritani = Helper.createClass(Leader, {
 Leader.hundroMoritani = Helper.createClass(Leader, {
 
     --- Intelligence
-    setUp = function (color, settings)
-        Action.setUp(color, settings)
+    prepare = function (color, settings)
+        Action.prepare(color, settings)
         Wait.frames(function ()
             Action.drawIntrigues(color, 2)
         end, 1)

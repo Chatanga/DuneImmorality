@@ -75,6 +75,12 @@ def patch_save(input_path, output_path):
 
     save['SaveName'] = "Dune Immorality - Alpha Test"
 
+    save['DecalPallet'].append({
+        "Name": "Intrigium",
+        "ImageURL": "http://cloud-3.steamusercontent.com/ugc/2120690798716490121/DB0A29253195530F3A39D5AC737922A5B2338795/",
+        "Size": 2.0
+    })
+
     objects = save['ObjectStates']
     new_objects = []
     object_by_guid = {}
@@ -95,6 +101,41 @@ def patch_save(input_path, output_path):
         patch_object(object)
 
         new_objects.append(object)
+
+    decals = []
+    for decal in save["Decals"]:
+        if decal["CustomDecal"]["Name"] != "Intrigium":
+            decals.append(decal)
+    save["Decals"] = decals
+
+    for guid in ["adcd28", "77ca63", "0bbae1", "fdd5f9"]:
+        (xOrigin, yOrigin, zOrigin) = get_position(object_by_guid[guid])
+        for i in range(12):
+            if guid in ["adcd28", "77ca63"]:
+                dir = -1
+            else:
+                dir = 1
+            x = xOrigin + (i * 2.5 - 13) * dir
+            y = yOrigin + 0.68
+            z = zOrigin - 1
+            save["Decals"].append({
+                "Transform": {
+                    "posX": x,
+                    "posY": y,
+                    "posZ": z,
+                    "rotX": 90.0,
+                    "rotY": 0.0,
+                    "rotZ": 0.0,
+                    "scaleX": 2.0,
+                    "scaleY": 2.0,
+                    "scaleZ": 2.0
+                },
+                "CustomDecal": {
+                    "Name": "Intrigium",
+                    "ImageURL": "http://cloud-3.steamusercontent.com/ugc/2120690798716490121/DB0A29253195530F3A39D5AC737922A5B2338795/",
+                    "Size": 2.0
+                }
+            })
 
     save['ObjectStates'] = new_objects
 

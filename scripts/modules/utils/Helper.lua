@@ -1190,13 +1190,51 @@ function Helper.indexOf(table, element)
 end
 
 ---
-function Helper.findPlayer(color)
+function Helper.getPlayerColor(player)
+    --Helper.dumpFunction("Helper.getPlayerColor", player)
+    local color = Helper.cachedPlayers and Helper.cachedPlayers[player.steam_id] or nil
+    if not color then
+        color = player.color
+        assert(Player[player.color].steam_id == player.steam_id)
+    end
+    return color
+end
+
+---
+function Helper.findPlayerByColor(color)
+    --Helper.dumpFunction("Helper.findPlayerByColor", color)
     for _, player in ipairs(Player.getPlayers()) do
-        if player.color == color then
+        if Helper.getPlayerColor(player) == color then
             return player
         end
     end
     return nil
+end
+
+---
+function Helper.changePlayerColorInCoroutine(player, newColor)
+    --Helper.dumpFunction("Helper.changePlayerColorInCoroutine", player, newColor)
+
+    local function seatPlayer(p, color)
+        p:changeColor(color)
+        if not Helper.cachedPlayers then
+            Helper.cachedPlayers = {}
+        end
+        Helper.cachedPlayers[p.steam_id] = color
+        Helper.sleep(0.5)
+    end
+
+    local oldColor = Helper.getPlayerColor(player)
+    local otherPlayer = Helper.findPlayerByColor(newColor)
+    if oldColor ~= newColor then
+        if otherPlayer then
+            seatPlayer(otherPlayer, "Grey")
+        end
+        seatPlayer(player, newColor)
+        if otherPlayer then
+            seatPlayer(otherPlayer, oldColor)
+        end
+    end
 end
 
 ---
@@ -1331,7 +1369,7 @@ end
 function Helper.createTemporalQueue(delay)
     local tq = {
         delay = delay or 0.25,
-        actions = {}
+        actions = {},
     }
 
     function tq.submit(action)
@@ -1354,6 +1392,42 @@ function Helper.createTemporalQueue(delay)
     end
 
     return tq
+end
+
+---
+function Helper.createCoalescentQueue(separationDelay, coalesce, handle)
+    local cq = {
+        separationDelay = separationDelay,
+    }
+
+    function cq.handleLater()
+        if cq.delayedHandler then
+            Wait.stop(cq.delayedHandler)
+        end
+        cq.delayedHandler = Wait.time(function()
+            local event = cq.lastEvent
+            cq.lastEvent = nil
+            handle(event)
+        end, 1)
+    end
+
+    function cq.submit(event)
+        assert(event)
+        if cq.lastEvent then
+            local newEvent = coalesce(event, cq.lastEvent)
+            if newEvent then
+                cq.lastEvent = event
+            else
+                handle(cq.lastEvent)
+                cq.lastEvent = event
+            end
+        else
+            cq.lastEvent = event
+        end
+        cq.handleLater()
+    end
+
+    return cq
 end
 
 return Helper
