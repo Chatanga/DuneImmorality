@@ -3,15 +3,23 @@ local Helper = require("utils.Helper")
 
 local PlayBoard = Module.lazyRequire("PlayBoard")
 
+local function _evaluate(color, value)
+    if type(value) == 'function' then
+        return value(color)
+    else
+        return value
+    end
+end
+
 local function water(n)
     return function (color)
-        return PlayBoard.getLeader(color).resources(color, "water", n)
+        return PlayBoard.getLeader(color).resources(color, "water", _evaluate(color, n))
     end
 end
 
 local function influence(n, faction)
     return function (color)
-        return PlayBoard.getLeader(color).influence(color, faction, n)
+        return PlayBoard.getLeader(color).influence(color, faction, _evaluate(color, n))
     end
 end
 
@@ -26,25 +34,25 @@ end
 
 local function draw(n)
     return function (color)
-        return PlayBoard.getLeader(color).drawImperiumCards(color, n)
+        return PlayBoard.getLeader(color).drawImperiumCards(color, _evaluate(color, n))
     end
 end
 
 local function persuasion(n)
     return function (color)
-        return PlayBoard.getLeader(color).resources(color, "persuasion", n)
+        return PlayBoard.getLeader(color).resources(color, "persuasion", _evaluate(color, n))
     end
 end
 
 local function intrigue(n)
     return function (color)
-        return PlayBoard.getLeader(color).drawIntrigues(color, n)
+        return PlayBoard.getLeader(color).drawIntrigues(color, _evaluate(color, n))
     end
 end
 
 local function troop(n)
     return function (color)
-        return PlayBoard.getLeader(color).troops(color, "supply", "garrison", n)
+        return PlayBoard.getLeader(color).troops(color, "supply", "garrison", _evaluate(color, n))
     end
 end
 

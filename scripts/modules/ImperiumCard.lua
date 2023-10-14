@@ -6,6 +6,18 @@ local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
 local MainBoard = Module.lazyRequire("MainBoard")
 local TleilaxuResearch = Module.lazyRequire("TleilaxuResearch")
 
+
+local function _evaluateEffects(card, input, output)
+    for _, effect in ipairs(card.reveal) do
+        if type(effect) == 'function' then
+            input.card = card
+            effect(input, output)
+        else
+            log('Ignoring manual effect: "' .. tostring(effect) .. '"')
+        end
+    end
+end
+
 local function _evaluate(input, value)
     if type(value) == 'function' then
         return value(input)
@@ -91,20 +103,23 @@ local function perDreadnoughtInConflict(value)
     end
 end
 
-local function perSwordCard(value)
+local function perSwordCard(value, cardExcluded)
     return function (input)
+        if input.fake then
+            return 0
+        end
         local count = 0
         for _, card in ipairs(input.revealedCards) do
-            if card.reveal then
+            if card.reveal and (not cardExcluded or card ~= input.card) then
                 local pseudoInput = {
+                    fake = true,
+                    card = card,
                     color = input.color,
                     playedCards = {},
-                    revealedCards = {card}
+                    revealedCards = {card},
                 }
                 local output = {}
-                for _, effect in ipairs(card.reveal) do
-                    effect(pseudoInput, output)
-                end
+                _evaluateEffects(card, pseudoInput, output)
                 if output.sword and output.sword > 0 then
                     count = count + 1
                 end
@@ -143,7 +158,7 @@ end
 
 local function agentInEmperorSpace(value)
     return function (input)
-        for _, spaceName in ipairs(MainBoard.getImperorSpaces()) do
+        for _, spaceName in ipairs(MainBoard.getEmperorSpaces()) do
             if MainBoard.hasAgentInSpace(spaceName, input.color) then
                 return _evaluate(input, value)
             end
@@ -228,7 +243,7 @@ local ImperiumCard = {
     -- starter: immortality
     experimentation = {agentIcons = {'yellow'}, reveal = {persuasion(1)}, starter = true},
     -- reserve
-    arrakisLiaison = {cost = 2, agentsIcons = {'blue'}, reveal = {persuasion(2)}},
+    arrakisLiaison = {factions = {'fremen'}, cost = 2, agentsIcons = {'blue'}, reveal = {persuasion(2)}},
     foldspace = {cost = 0, agentIcons = {'emperor', 'spacingGuild', 'beneGesserit', 'fremen', 'green', 'blue', 'yellow'}},
     theSpiceMustFlow = {cost = 9, acquireBonus = {'+1 VP'}, reveal = {spice(1)}},
     -- base
@@ -286,7 +301,7 @@ local ImperiumCard = {
     fullScaleAssault = {factions = {'emperor'}, cost = 8, acquireBonus = {dreadnought(1)}, agentIcons = {'emperor', 'blue'}, reveal = {persuasion(2), sword(perDreadnoughtInConflict(3))}},
     guildAccord = {factions = {'spacingGuild'}, cost = 6, agentIcons = {'spacingGuild'}, infiltrate = true, reveal = {water(1), spice(spacingGuildAlliance(3))}},
     guildChiefAdministrator = {factions = {'spacingGuild'}, cost = 4, agentIcons = {'spacingGuild', 'blue', 'yellow'}, reveal = {persuasion(1), shipments(1)}},
-    imperialBashar = {factions = {'emperor'}, cost = 4, agentIcons = {'blue'}, reveal = {persuasion(1), sword(2), sword(perSwordCard(1))}},
+    imperialBashar = {factions = {'emperor'}, cost = 4, agentIcons = {'blue'}, reveal = {persuasion(1), sword(2), sword(perSwordCard(1, true))}},
     imperialShockTrooper = {factions = {'emperor'}, cost = 3, reveal = {persuasion(1), sword(2), sword(agentInEmperorSpace(3))}},
     inTheShadows = {factions = {'beneGesserit'}, cost = 2, agentIcons = {'green', 'blue'}, reveal = {influence('spacingGuild', 1)}},
     ixGuildCompact = {factions = {'spacingGuild'}, cost = 3, agentIcons = {'spacingGuild'}, reveal = {negotiator(2)}},
@@ -376,14 +391,8 @@ function ImperiumCard.evaluateReveal(color, playedCards, revealedCards, artiller
     local output = {}
     for _, card in ipairs(input.revealedCards) do
         if card.reveal then
-            for _, effect in ipairs(card.reveal) do
-                if type(effect) == 'function' then
-                    input.card = card
-                    effect(input, output)
-                else
-                    log('Ignoring manual effect: "' .. tostring(effect) .. '"')
-                end
-             end
+            input.card = card
+            _evaluateEffects(card, input, output)
         end
     end
     if artillery then

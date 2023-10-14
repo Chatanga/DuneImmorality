@@ -2,7 +2,23 @@
 
 ![Capture](resources/capture.jpg)
 
-ID: 2956104551
+Feat	ures:
+- Base game
+- Rise of Ix extension
+- Immortality extension
+- Hagal House
+- (Blitz!)
+- Arrakeen Scouts
+- (Fanmade leaders)
+
+Supported langages:
+- French
+- English
+
+## Links :
+
+- Steam: https://steamcommunity.com/sharedfiles/filedetails/?id=3043517751
+- Mod: 3043517751
 
 ## Build Process
 
@@ -65,7 +81,6 @@ Having launched `./listen.py` in another terminal will provide you with an immed
 
 ## TODO (by priority)
 
-- Basic logging in the Action facade (using context to group).
 - Blitz!
 - Fully restore translations (tokens and books included).
 - Tessia and Paul support.
@@ -74,12 +89,18 @@ Having launched `./listen.py` in another terminal will provide you with an immed
 - Replace freighters by tokens.
 - Change the [dreadnought model](https://www.thingiverse.com/thing:5326146).
 
-## Later (maybe)
-
-- Add space-time queue for relevant locations (discards and trash).
-- Display ranking in combatEnd phase.
-- Restore tech cost (with a default buy dialog when other options are lacking).
+- Add space-time queue for relevant player discards.
+- Display ranking in combatEnd phase (with an optional bonus acquisition).
+- Card acquisition bonus.
+- Tech acquisition cost (multiple options).
 - Fix the 6 tech park saturation.
+- Intelligent mentat + dreadnought recall.
+- Notify agent action failures.
+- Handle all space access options.
+- Clean reservation slot on recall.
+- Custom hidden pick.
+
+## Later (maybe)
 
 - Introduce the graphic log?
 - Keep Module special, but unify everything else?
@@ -89,8 +110,3 @@ Having launched `./listen.py` in another terminal will provide you with an immed
 - Some kind of hungarian notation with Array (ipairs) and Dict (pairs), a Array being a Dict?
 - Alt mouse hover defeated by area buttons...
 - Redundancy GMNotes VS resolve using them?
-
-# Links :
-
-- Steam: https://steamcommunity.com/sharedfiles/filedetails/?id=3043517751
-- Mod: 3043517751

@@ -284,7 +284,7 @@ return {
     tleilaxuMaster = "Maître tleilaxu",
     tleilaxuSurgeon = "Chirurgien tleilaxu",
     --foldspace = "Espace plissé",
-    arrakisLiaison = "Liaison d’Arrakis",
+    arrakisLiaison = "Contact d’Arrakis",
     theSpiceMustFlow = "L’épice doit couler",
     reclaimedForces = "Forces reconquises",
     piterGeniusAdvisor = "Piter, conseiller de génie",
