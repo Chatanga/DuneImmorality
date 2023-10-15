@@ -988,6 +988,29 @@ function MainBoard.isSpiceTradeSpace(spaceName)
 end
 
 ---
+function MainBoard.getCombatSpaces()
+    return {
+        "heighliner",
+        "hardyWarriors",
+        "stillsuits",
+        "arrakeen",
+        "carthag",
+        "researchStation",
+        "researchStationImmortality",
+        "sietchTabr",
+        "imperialBasin",
+        "haggaBasin",
+        "theGreatFlat" }
+end
+
+---
+function MainBoard.isCombatSpace(spaceName)
+    local result = Helper.isElementOf(spaceName, MainBoard.getCombatSpaces())
+    Helper.dump(spaceName, "is a combat space ->", result)
+    return result
+end
+
+---
 function MainBoard.getBannerZones()
     return {
         MainBoard.banners.imperialBasinBannerZone,

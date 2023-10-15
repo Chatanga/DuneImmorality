@@ -14,6 +14,7 @@ local CommercialTrack = Module.lazyRequire("CommercialTrack")
 local TechMarket = Module.lazyRequire("TechMarket")
 local ConflictCard = Module.lazyRequire("ConflictCard")
 local MainBoard = Module.lazyRequire("MainBoard")
+local Intrigue = Module.lazyRequire("Intrigue")
 local Utils = Module.lazyRequire("Utils")
 
 -- Enlighting clarifications: https://boardgamegeek.com/thread/2578561/summarizing-automa-2p-and-1p-similarities-and-diff
@@ -61,6 +62,7 @@ function Hagal.setUp(settings)
             Hagal.mentatSpaceCostPatch.destruct()
         elseif  Hagal.getRivalCount() == 2 then
             if Hagal.getMentatSpaceCost() == 5 then
+                Hagal.mentatSpaceCostPatch.setLock(true)
                 Hagal.mentatSpaceCostPatch.setPosition(Vector(-3.98, 0.57, 3.43))
             else
                 Hagal.mentatSpaceCostPatch.destruct()
@@ -136,7 +138,8 @@ function Hagal.activate(phase, color)
     -- A delay before and after the action, to let the human(s) see the progress.
     Wait.time(function ()
         Hagal._lateActivate(phase, color).doAfter(function ()
-            if true then
+            -- TODO Add a dedicated entry in the settings?
+            if false then
                 Wait.time(TurnControl.endOfTurn, 1)
             else
                 PlayBoard.createEndOfTurnButton(color)
@@ -256,7 +259,7 @@ end
 
 ---
 function Hagal._doActivateFirstValidCard(color, action, n, continuation)
-    local emptySlots = Park.findEmptySlots(PlayBoard.getAgentCardPark(color))
+    local emptySlots = Park.findEmptySlots(PlayBoard.getRevealCardPark(color))
     assert(emptySlots and #emptySlots > 0)
 
     assert(n < 10, "Something is not right!")
@@ -330,9 +333,11 @@ function Hagal.pickAnyCompatibleLeader(color)
                 table.insert(leaders , leader)
             end
         end
+        Helper.dump("#leaders =", #leaders)
         assert(#leaders > 0, "No leader left for Hagal!")
         leaderOrPseudoLeader = Helper.pickAny(leaders)
     end
+    Helper.dumpFunction("'LeaderSelection.claimLeader", color, leaderOrPseudoLeader)
     LeaderSelection.claimLeader(color, leaderOrPseudoLeader)
 end
 
@@ -427,7 +432,9 @@ end
 
 ---
 function Rival.choose(color, topic)
-    if topic == "shuttleFleet" then
+    Helper.dumpFunction("Rival.choose", color, topic)
+
+    local function pickTwoBestFactions()
         local factions = { "emperor", "spacingGuild", "beneGesserit", "fremen" }
         for _ = 1, 2 do
             Helper.shuffle(factions)
@@ -441,7 +448,14 @@ function Rival.choose(color, topic)
 
             return Rival.influence(color, faction, 1)
         end
+    end
+
+    if topic == "shuttleFleet" then
+        pickTwoBestFactions()
         return true
+    elseif topic == "machinations" then
+        pickTwoBestFactions()
+        return false
     else
         return false
     end
@@ -462,18 +476,18 @@ function Rival.resources(color, nature, amount)
                 else
                     if resource:get() >= 7 then
                         resource:change(-7)
-                        Rival.gainVictoryPoint(color, "rivalSpice")
+                        Rival.gainVictoryPoint(color, "spice")
                     end
                 end
             elseif nature == "water" then
                 if resource:get() >= 3 then
                     resource:change(-3)
-                    Rival.gainVictoryPoint(color, "rivalWater")
+                    Rival.gainVictoryPoint(color, "water")
                 end
             elseif nature == "solari" then
                 if resource:get() >= 7 then
                     resource:change(-7)
-                    Rival.gainVictoryPoint(color, "rivalSolari")
+                    Rival.gainVictoryPoint(color, "solari")
                 end
             end
             return true
@@ -485,16 +499,29 @@ function Rival.resources(color, nature, amount)
 end
 
 ---
+function Rival.beetle(color, jump)
+    Utils.assertIsPlayerColor(color)
+    Utils.assertIsInteger(jump)
+    if Hagal.getRivalCount() == 2 then
+        return Action.beetle(color, jump)
+    else
+        return false
+    end
+end
+
+---
 function Rival.drawIntrigues(color, amount)
     if Action.drawIntrigues(color, amount) then
-        local intrigues = PlayBoard.getIntrigues(color)
-        if #intrigues >= 3 then
-            for _ = 1, 3 do
-                -- Utils.trash(intrigues[i]) ?
-                intrigues[i].setPositionSmooth(self.content.discardZone.getPosition())
+        Wait.time(function ()
+            local intrigues = PlayBoard.getIntrigues(color)
+            if #intrigues >= 3 then
+                for i = 1, 3 do
+                    -- Not smooth to avoid being recaptured by the hand zone.
+                    intrigues[i].setPosition(Intrigue.discardZone.getPosition() + Vector(0, 1, 0))
+                end
+                Rival.gainVictoryPoint(color, "intrigue")
             end
-            Rival.gainVictoryPoint(color, "rivalIntrigue")
-        end
+        end, 1)
         return true
     else
         return false
@@ -504,7 +531,7 @@ end
 ---
 function Rival.troops(color, from, to, amount)
     local finalTo = to
-    if Rival.checkContext({ troopTransports = true }) then
+    if to == "garrison" and (Action.checkContext({ troopTransports = true }) or Action.checkContext({ hagalCard = HagalCard.isCombatCard })) then
         finalTo = "combat"
     end
     return Action.troops(color, from, finalTo, amount)
@@ -522,9 +549,12 @@ end
 
 ---
 function Rival.signetRing(color)
-    -- We don't redispatch to the leader in other cases, because rivals ignore their passive abilities.
-    local leader = Rival.rivals[color].leader
-    return leader.signetRing(color)
+    -- FIXME Fix Park instead!
+    Wait.time(function ()
+        -- We don't redispatch to the leader in other cases, because rivals ignore their passive abilities.
+        local leader = Rival.rivals[color].leader
+        return leader.signetRing(color)
+    end, 0.25)
 end
 
 return Hagal

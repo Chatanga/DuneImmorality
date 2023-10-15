@@ -65,7 +65,8 @@ Leader.vladimirHarkonnen = Helper.createClass(Leader, {
 
     --- Scheme
     signetRing = function (color)
-        return Action.resources(color, "solari", -1) and Action.drawIntrigues(color, 1)
+        local leader = PlayBoard.getLeader(color)
+        return leader.resources(color, "solari", -1) and Action.drawIntrigues(color, 1)
     end,
 })
 
@@ -74,13 +75,15 @@ Leader.glossuRabban = Helper.createClass(Leader, {
     --- Arrakis fiefdom
     prepare = function (color, settings)
         Action.prepare(color, settings)
-        Action.resources(color, "spice", 1)
-        Action.resources(color, "solari", 1)
+        local leader = PlayBoard.getLeader(color)
+        leader.resources(color, "spice", 1)
+        leader.resources(color, "solari", 1)
     end,
 
     --- Brutality
     signetRing = function (color)
-        return Action.troops(color, "supply", "garrison", InfluenceTrack.hasAnyAlliance(color) and 2 or 1)
+        local leader = PlayBoard.getLeader(color)
+        return leader.troops(color, "supply", "garrison", InfluenceTrack.hasAnyAlliance(color) and 2 or 1)
     end
 })
 
@@ -88,7 +91,8 @@ Leader.ilbanRichese = Helper.createClass(Leader, {
 
     --- Manufacturing
     signetRing = function (color)
-        Action.resources(color, "solari", 1)
+        local leader = PlayBoard.getLeader(color)
+        leader.resources(color, "solari", 1)
     end,
 
     --- Ruthless negotiator
@@ -98,7 +102,8 @@ Leader.ilbanRichese = Helper.createClass(Leader, {
         log(Action.context)
         log(Action.checkContext({ phase = "playerTurns", color = color, space = MainBoard.isLandsraadSpace }))
         if success and amount < 0 and Action.checkContext({ phase = "playerTurns", color = color, space = MainBoard.isLandsraadSpace }) then
-            Action.drawImperiumCards(color, 1)
+            local leader = PlayBoard.getLeader(color)
+            leader.drawImperiumCards(color, 1)
         end
         return success
     end,
@@ -115,10 +120,11 @@ Leader.helenaRichese = Helper.createClass(Leader, {
 
     --- Manipulate
     acquireImperiumCard = function (color, indexInRow)
+        local leader = PlayBoard.getLeader(color)
         if Action.checkContext({ phase = "playerTurns", color = color }) and PlayBoard.couldSendAgentOrReveal(color) then
-            return Action.reserveImperiumCard(color, indexInRow)
+            return leader.reserveImperiumCard(color, indexInRow)
         else
-            return Action.acquireImperiumCard(color, indexInRow)
+            return leader.acquireImperiumCard(color, indexInRow)
         end
     end,
 
@@ -127,7 +133,8 @@ Leader.helenaRichese = Helper.createClass(Leader, {
         if Action.checkContext({ phase = "playerTurns", color = color }) and not PlayBoard.couldSendAgentOrReveal(color) then
             return ImperiumRow.acquireReservedImperiumCard(color)
         else
-            return Action.acquireReservedImperiumCard(color)
+            local leader = PlayBoard.getLeader(color)
+            return leader.acquireReservedImperiumCard(color)
         end
     end
 })
@@ -140,7 +147,8 @@ Leader.letoAtreides = Helper.createClass(Leader, {
         if resourceName == "solari" and amount < 0 and Action.checkContext({ phase = "playerTurns", color = color, space = MainBoard.isLandsraadSpace }) then
             finalAmount = amount + 1
         end
-        return Action.resources(color, resourceName, finalAmount)
+        local leader = PlayBoard.getLeader(color)
+        return leader.resources(color, resourceName, finalAmount)
     end,
 })
 
@@ -155,7 +163,8 @@ Leader.paulAtreides = Helper.createClass(Leader, {
 
     --- Discipline
     signetRing = function (color)
-        return Action.drawImperiumCards(color, 1)
+        local leader = PlayBoard.getLeader(color)
+        return leader.drawImperiumCards(color, 1)
     end,
 })
 
@@ -163,7 +172,8 @@ Leader.arianaThorvald = Helper.createClass(Leader, {
 
     --- Hidden reservoir
     signetRing = function (color)
-        return Action.resources(color, "water", 1)
+        local leader = PlayBoard.getLeader(color)
+        return leader.resources(color, "water", 1)
     end,
 
     --- Spice addict
@@ -171,8 +181,9 @@ Leader.arianaThorvald = Helper.createClass(Leader, {
         local continuation = Helper.createContinuation()
         Action.sendAgent(color, spaceName).doAfter(function (success)
             if success and MainBoard.isDesertSpace(spaceName) then
-                Action.resources(color, "spice", -1)
-                Action.drawImperiumCards(color, 1)
+                local leader = PlayBoard.getLeader(color)
+                leader.resources(color, "spice", -1)
+                leader.drawImperiumCards(color, 1)
             end
             continuation.run(success)
         end)
@@ -187,7 +198,8 @@ Leader.memnonThorvald = Helper.createClass(Leader, {
         local continuation = Helper.createContinuation()
         Action.sendAgent(color, spaceName).doAfter(function (success)
             if success and spaceName == "highCouncil" then
-                Action.influence(color, nil, 1)
+                local leader = PlayBoard.getLeader(color)
+                leader.influence(color, nil, 1)
             end
             continuation.run(success)
         end)
@@ -196,7 +208,8 @@ Leader.memnonThorvald = Helper.createClass(Leader, {
 
     --- Spice hoard
     signetRing = function (color, spaceName)
-        return Action.resources(color, "spice", 1)
+        local leader = PlayBoard.getLeader(color)
+        return leader.resources(color, "spice", 1)
     end,
 })
 
@@ -207,7 +220,8 @@ Leader.ilesaEcaz = Helper.createClass(Leader, {
 
     --- Guild contacts
     signetRing = function (color)
-        return Action.resources(color, "solari", -1) and Action.acquireFoldspace(color)
+        local leader = PlayBoard.getLeader(color)
+        return leader.resources(color, "solari", -1) and Action.acquireFoldspace(color)
     end,
 
     --- One step ahead
@@ -280,8 +294,9 @@ Leader.tessiaVernius = Helper.createClass(Leader, {
 
     --- Duplicity
     signetRing = function (color)
-        Action.influence(color, nil, -1)
-        Action.influence(color, nil, 1)
+        local leader = PlayBoard.getLeader(color)
+        leader.influence(color, nil, -1)
+        leader.influence(color, nil, 1)
     end,
 })
 
@@ -290,7 +305,8 @@ Leader.yunaMoritani = Helper.createClass(Leader, {
     --- Smuggling operation
     prepare = function (color, settings)
         Action.prepare(color, settings)
-        Action.resources(color, "water", -1)
+        local leader = PlayBoard.getLeader(color)
+        leader.resources(color, "water", -1)
     end,
 
     --- Smuggling operation
@@ -299,15 +315,17 @@ Leader.yunaMoritani = Helper.createClass(Leader, {
         if resourceName == "solari" and amount > 0 and Action.checkContext({ phase = "playerTurns", color = color }) then
             finalAmount = amount + 1
         end
-        return Action.resources(color, resourceName, finalAmount)
+        local leader = PlayBoard.getLeader(color)
+        return leader.resources(color, resourceName, finalAmount)
     end,
 
     --- Final delivery
     signetRing = function (color)
-        return Action.resources(color, "solari", -7)
-            and Action.influence(color, nil, 1)
-            and Action.troop(color, "supply", "garrison", 1)
-            and Action.resources(color, "spice", 1)
+        local leader = PlayBoard.getLeader(color)
+        return leader.resources(color, "solari", -7)
+            and leader.influence(color, nil, 1)
+            and leader.troop(color, "supply", "garrison", 1)
+            and leader.resources(color, "spice", 1)
     end,
 })
 
@@ -317,7 +335,8 @@ Leader.hundroMoritani = Helper.createClass(Leader, {
     prepare = function (color, settings)
         Action.prepare(color, settings)
         Wait.frames(function ()
-            Action.drawIntrigues(color, 2)
+            local leader = PlayBoard.getLeader(color)
+            leader.drawIntrigues(color, 2)
         end, 1)
     end,
 
@@ -336,8 +355,9 @@ Leader.hundroMoritani = Helper.createClass(Leader, {
 
     --- Couriers
     signetRing = function (color)
-        return Action.resources(color, "spice", 1)
-            and Action.shipments(color, 1)
+        local leader = PlayBoard.getLeader(color)
+        return leader.resources(color, "spice", -1)
+            and leader.shipments(color, 1)
     end
 })
 

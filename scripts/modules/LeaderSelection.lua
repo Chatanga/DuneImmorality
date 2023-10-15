@@ -195,16 +195,26 @@ function LeaderSelection._setUpPicking(opponents, numberOfLeaders, random, hidde
         Helper.registerEventListener("phaseStart", function (phase, _)
             if phase == 'leaderSelection' then
                 -- Rivals
+                log("Rivals...")
                 for color, opponent in pairs(opponents) do
                     if opponent == "rival" then
+                        Helper.dumpFunction("Hagal.pickAnyCompatibleLeader", color)
                         Hagal.pickAnyCompatibleLeader(color)
                     end
                 end
                 -- Then players
+                log("Players...")
+                local i = 0
                 for color, opponent in pairs(opponents) do
+                    Helper.dump(i, opponent)
                     if opponent ~= "rival" then
+                        log(1)
                         local leaders = LeaderSelection.getSelectableLeaders()
-                        LeaderSelection.claimLeader(color, Helper.pickAny(leaders))
+                        log(2)
+                        local leader = Helper.pickAny(leaders)
+                        log(3)
+                        Helper.dumpFunction("LeaderSelection.claimLeader", color, leader)
+                        LeaderSelection.claimLeader(color, leader)
                     end
                 end
             end
@@ -298,7 +308,7 @@ function LeaderSelection._createDynamicLeaderSelection(leaders)
                 end),
                 position = Vector(position.x, 0.9, position.z),
                 width = 1100,
-                height = 1700, -- FIXME Cadded size and weird ratio...
+                height = 1700, -- FIXME Capped size and weird ratio...
                 color = { 0, 0, 0, 0 },
                 tooltip = "Claim"
             })

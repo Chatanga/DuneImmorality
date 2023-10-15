@@ -156,11 +156,11 @@ end
 
 ---
 function TechMarket._doAcquireTech(stackIndex, color)
+    local continuation = Helper.createContinuation()
     local acquireCard = TechMarket.acquireCards[stackIndex]
 
     local techTileStack = TechMarket._getTechTileStack(stackIndex)
     if techTileStack.topCard then
-        local continuation = Helper.createContinuation()
 
         if color then
             PlayBoard.grantTechTile(color, techTileStack.topCard)
@@ -182,8 +182,8 @@ function TechMarket._doAcquireTech(stackIndex, color)
             end
         end, 0.5)
 
-        return continuation
     end
+    return continuation
 end
 
 ---

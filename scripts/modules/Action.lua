@@ -33,6 +33,8 @@ function Action.onLoad()
             phase = phase,
             color = color
         }
+        log(Action.context)
+        printToAll(I18N("playerTurn", { leader = PlayBoard.getLeaderName(color) }), color)
     end)
 end
 
@@ -55,6 +57,7 @@ end
 function Action.checkContext(attributes)
     for name, expectedValue in pairs(attributes) do
         local value = Action.context and Action.context[name] or nil
+        Helper.dump("Checking", name, "with value", value or "nil")
         local valid
         if type(expectedValue) == "function" then
             valid = expectedValue(value)
@@ -107,10 +110,6 @@ end
 
 ---
 function Action.prepare(color, settings)
-
-    Action.resources(color, "solari", 0)
-    Action.resources(color, "spice", 0)
-
     Action.resources(color, "water", 1)
     if settings.epicMode then
         Action.troops(color, "supply", "garrison", 5)
@@ -144,6 +143,7 @@ end
 function Action.takeMentat(color)
     local mentat = MainBoard.getMentat()
     if mentat then
+        printToAll(I18N("takeMentat"), color)
         return Park.putObject(mentat, PlayBoard.getAgentPark(color))
     else
         return false
@@ -152,12 +152,22 @@ end
 
 ---
 function Action.recruitSwordmaster(color)
-    return PlayBoard.recruitSwordmaster(color)
+    if PlayBoard.recruitSwordmaster(color) then
+        printToAll(I18N("recruitSwordmaster"), color)
+        return true
+    else
+        return false
+    end
 end
 
 ---
 function Action.takeHighCouncilSeat(color)
-    return PlayBoard.takeHighCouncilSeat(color)
+    if PlayBoard.takeHighCouncilSeat(color) then
+        printToAll(I18N("takeHighCouncilSeat"), color)
+        return true
+    else
+        return false
+    end
 end
 
 ---
@@ -168,16 +178,11 @@ function Action.resources(color, resourceName, amount)
 
     local resource = PlayBoard.getResource(color, resourceName)
     if resource:get() >= -amount then
-        resource:change(amount)
-        if amount > 0 then
-            printToAll(I18N("credit", {
-                what = I18N.agree(amount, resourceName),
-                amount = amount,
-            }), color)
-        elseif amount < 0 then
-            printToAll(I18N("debit", {
-                what = I18N.agree(-amount, resourceName),
-                amount = -amount,
+        if amount ~= 0 then
+            resource:change(amount)
+            printToAll(I18N(amount > 0 and "credit" or "debit", {
+                what = I18N.agree(math.abs(amount), resourceName),
+                amount = math.abs(amount),
             }), color)
         end
         return true
@@ -197,11 +202,19 @@ end
 function Action.influence(color, faction, amount)
     Utils.assertIsPlayerColor(color)
     Utils.assertIsInteger(amount)
+    local continuation = Helper.createContinuation()
     if faction then
-        return InfluenceTrack.change(color, faction, amount)
+        InfluenceTrack.change(color, faction, amount).doAfter(function (realAmount)
+            printToAll(I18N(amount > 0 and "gainInfluence" or "loseInfluence", {
+                withFaction = I18N(Helper.toCamelCase("with", faction)),
+                amount = math.abs(amount),
+            }), color)
+            continuation.run(realAmount)
+        end)
     else
-        return Helper.createTermination()
+        continuation.run(0)
     end
+    return continuation
 end
 
 ---
@@ -353,7 +366,19 @@ function Action.dreadnought(color, from, to, amount)
     Utils.assertIsDreadnoughtLocation(from)
     Utils.assertIsDreadnoughtLocation(to)
     Utils.assertIsInteger(amount)
-    return Park.transfert(amount, Action._getDreadnoughtPark(color, from), Action._getDreadnoughtPark(color, to))
+
+    local count = Park.transfert(amount, Action._getDreadnoughtPark(color, from), Action._getDreadnoughtPark(color, to))
+
+    if count > 0 then
+        printToAll(I18N("transfer", {
+            count = count,
+            what = I18N.agree(count, "dreadnought"),
+            from = I18N(from .. "Park"),
+            to = I18N(to .. "Park"),
+        }), color)
+    end
+
+    return count
 end
 
 ---
@@ -397,6 +422,7 @@ end
 
 ---
 function Action.beetle(color, jump)
+    Helper.dumpFunction("Action.beetle", color, jump)
     Utils.assertIsPlayerColor(color)
     Utils.assertIsInteger(jump)
     TleilaxuResearch.advanceTleilax(color, jump).doAfter(function ()
@@ -413,6 +439,7 @@ end
 function Action.atomics(color)
     Utils.assertIsPlayerColor(color)
     ImperiumRow.nuke(color)
+    printToAll(I18N("atomics"), color)
     return true
 end
 

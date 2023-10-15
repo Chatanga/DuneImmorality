@@ -92,7 +92,7 @@ function Combat._staticSetUp(settings)
                 end
             end
             local forces = Combat._calculateCombatForces()
-            --log(Combat._calculateRanking(forces))
+            --Combat._showRanking(forces)
             local turnSequence = Combat._calculateOutcomeTurnSequence(forces)
             TurnControl.setPhaseTurnSequence(turnSequence)
         elseif phase == "recall" then
@@ -137,8 +137,9 @@ function Combat._setUpConflict()
     if success then
         success.doAfter(function (card)
             local i = 0
-            for _, object in pairs(Combat.victoryPointTokenBag.getObjects()) do
-                if Helper.getID(card) == Helper.getID(object) then
+            local tokens = Combat.victoryPointTokenBag.getObjects()
+            for _, token in pairs(tokens) do
+                if Helper.getID(card) == Helper.getID(token) then
                     local origin = Combat.victoryPointTokenZone.getPosition()
                     local position = origin + Vector(0.5 - (i % 2), 0.5 + math.floor(i / 2), 0)
                     i = i + 1
@@ -146,7 +147,7 @@ function Combat._setUpConflict()
                         position = position,
                         rotation = Vector(0, 180, 0),
                         smooth = true,
-                        guid = object.guid,
+                        guid = token.guid,
                     })
 
                     local controlableSpace = MainBoard.findControlableSpace(victoryPointToken)
@@ -159,8 +160,11 @@ function Combat._setUpConflict()
                             end
                         end
                     end
+                else
+                    Helper.dump(Helper.getID(card), "~=", Helper.getID(token))
                 end
             end
+            Helper.dump("Found", i, "matching VP for conflict:", Helper.getID(card))
         end)
     end
 end
@@ -480,13 +484,82 @@ end
 
 ---
 function Combat.gainVictoryPoint(color, name)
+
+    -- We memoize the tokens granted in fast succession to avoid returning the same twice or more.
+    if not Combat.grantedTokens then
+        Combat.grantedTokens = {}
+        Wait.time(function ()
+            Combat.grantedTokens = nil
+        end, 0.25)
+    end
+
     for _, object in ipairs(Combat.victoryPointTokenZone.getObjects()) do
-        if object.hasTag("victoryPointToken") and Helper.getID(object) == name then
+        if object.hasTag("victoryPointToken") and Helper.getID(object) == name and not Combat.grantedTokens[object] then
+            Combat.grantedTokens[object] = true
             PlayBoard.grantScoreToken(color, object)
             return true
         end
     end
     return false
+end
+
+---
+function Combat._showRanking(forces)
+    -- log(Combat._calculateRanking(forces))
+
+    --[[
+    local rankingUI = {
+        tag = "Panel",
+        attributes = {
+            position = 0,
+            width = 780,
+            height = 297 + 200,
+            color = "#000000",
+            id = "rankingPane",
+            outline = "#ffffffcc",
+            outlineSize = 1,
+            active = true,
+            allowDragging = true,
+            returnToOriginalPositionWhenReleased = true,
+        },
+        children = {
+            {
+                tag = "Image",
+                attributes = {
+                    ignoreLayout = true,
+                    raycastTarget = true,
+                    color = "#000000",
+                },
+            },
+            {
+                tag = "VerticalLayout",
+                children = {
+                    {
+                        tag = "Image",
+                        attributes = {
+                            width = "780",
+                            height = "297",
+                            image = image,
+                            preserveAspect = true,
+                            raycastTarget = true,
+                        },
+                    },
+                    {
+                        tag = "GridLayout",
+                        attributes = {
+                            cellSize = "389 94",
+                            childAlignment = "MiddleCenter",
+                            spacing = "1 1",
+                        },
+                        children = playerUIs
+                    }
+                }
+            }
+        }
+    }
+
+    UI.setXmlTable({ rankingUI })
+    ]]--
 end
 
 return Combat

@@ -2,7 +2,7 @@
 
 ![Capture](resources/capture.jpg)
 
-Feat	ures:
+Features:
 - Base game
 - Rise of Ix extension
 - Immortality extension
@@ -81,11 +81,12 @@ Having launched `./listen.py` in another terminal will provide you with an immed
 
 ## TODO (by priority)
 
-- Blitz!
-- Fully restore translations (tokens and books included).
+- Safety phase / turn selector.
 - Tessia and Paul support.
-
+- Fully restore translations (tokens and books included).
+- Blitz!
 - [Fanmade leaders](https://drive.google.com/drive/folders/1-V3xcHk6078YR1fyhtJL3tdqv2zg5q3Q).
+
 - Replace freighters by tokens.
 - Change the [dreadnought model](https://www.thingiverse.com/thing:5326146).
 
@@ -110,3 +111,4 @@ Having launched `./listen.py` in another terminal will provide you with an immed
 - Some kind of hungarian notation with Array (ipairs) and Dict (pairs), a Array being a Dict?
 - Alt mouse hover defeated by area buttons...
 - Redundancy GMNotes VS resolve using them?
+- Better support for chained transferts in Parks.

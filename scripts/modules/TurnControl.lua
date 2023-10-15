@@ -169,6 +169,7 @@ function TurnControl.endOfPhase()
             TurnControl.counterClockWise = false
         end
     end
+    local heavyPhases = { "leaderSelection", "recall" }
     Wait.time(function ()
         local nextPhase = TurnControl._getNextPhase(TurnControl.currentPhase)
         if nextPhase then
@@ -176,7 +177,7 @@ function TurnControl.endOfPhase()
         else
             TurnControl.currentPhase = nil
         end
-    end, TurnControl.currentPhase == "recall" and 2 or 0)
+    end, Helper.isElementOf(TurnControl.currentPhase, heavyPhases) and 2 or 0)
 end
 
 ---

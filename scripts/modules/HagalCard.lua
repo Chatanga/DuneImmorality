@@ -7,39 +7,40 @@ local PlayBoard = Module.lazyRequire("PlayBoard")
 local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
 local TleilaxuRow = Module.lazyRequire("TleilaxuRow")
 local Hagal = Module.lazyRequire("Hagal")
+local Action = Module.lazyRequire("Action")
 
 local HagalCard = {
-    strengths = {
-        conspire = 4,
-        wealth = 3,
-        heighliner = 6,
-        foldspace = 1,
-        selectiveBreeding = 2,
-        secrets = 1,
-        hardyWarriors = 5,
-        stillsuits = 4,
-        rallyTroops = 3,
-        hallOfOratory = 0,
-        carthag = 0,
-        harvestSpice = 2,
-        arrakeen1p = 1,
-        arrakeen2p = 1,
-        interstellarShipping = 3,
-        foldspaceAndInterstellarShipping = 2,
-        smugglingAndInterstellarShipping = 2,
-        techNegotiation = 0,
-        dreadnought1p = 3,
-        dreadnought2p = 3,
-        researchStation = 0,
-        carthag1 = 0,
-        carthag2 = 0,
-        carthag3 = 0,
+    cards = {
+        conspire = { strength = 4 },
+        wealth = { strength = 3 },
+        heighliner = { combat = true, strength = 6 },
+        foldspace = { strength = 1 },
+        selectiveBreeding = { strength = 2 },
+        secrets = { strength = 1 },
+        hardyWarriors = { combat = true, strength = 5 },
+        stillsuits = { combat = true, strength = 4 },
+        rallyTroops = { strength = 3 },
+        hallOfOratory = { strength = 0 },
+        carthag = { combat = true, strength = 0 },
+        harvestSpice = { combat = true, strength = 2 },
+        arrakeen1p = { combat = true, strength = 1 },
+        arrakeen2p = { combat = true, strength = 1 },
+        interstellarShipping = { strength = 3 },
+        foldspaceAndInterstellarShipping = { strength = 2 },
+        smugglingAndInterstellarShipping = { strength = 2 },
+        techNegotiation = { strength = 0 },
+        dreadnought1p = { strength = 3 },
+        dreadnought2p = { strength = 3 },
+        researchStation = { combat = true, strength = 0 },
+        carthag1 = { combat = true, strength = 0 },
+        carthag2 = { combat = true, strength = 0 },
+        carthag3 = { combat = true, strength = 0 },
     }
 }
 
 function HagalCard.setStrength(color, card)
     local rival = PlayBoard.getLeader(color)
-    local strength = HagalCard.strengths[Helper.getID(card)]
+    local strength = HagalCard.cards[Helper.getID(card)].strength
     if strength then
         rival.resources(color, "strength", strength)
         return true
@@ -49,6 +50,7 @@ function HagalCard.setStrength(color, card)
 end
 
 function HagalCard.activate(color, card)
+    Action.setContext("hagalCard", card)
     local rival = PlayBoard.getLeader(color)
     local actionName = Helper.toCamelCase("_activate", Helper.getID(card))
     if HagalCard[actionName] then
@@ -212,8 +214,8 @@ function HagalCard._activateArrakeen1p(color, rival)
     if HagalCard.spaceIsFree(color, "arrakeen") then
         HagalCard.sendRivalAgent(color, rival, "arrakeen")
         rival.troops(color, "supply", "combat", 1)
-        HagalCard.sendUpToTwoUnits(color, rival)
         rival.signetRing(color)
+        HagalCard.sendUpToTwoUnits(color, rival)
         return true
     else
         return false
@@ -319,6 +321,7 @@ function HagalCard._activateResearchStation(color, rival)
     if HagalCard.spaceIsFree(color, "researchStationImmortality") then
         HagalCard.sendRivalAgent(color, rival, "researchStationImmortality")
         rival.beetle(color, 2)
+        HagalCard.sendUpToTwoUnits(color, rival)
         return true
     else
         return false
@@ -328,7 +331,7 @@ end
 function HagalCard._activateCarthag1(color, rival)
     if HagalCard.spaceIsFree(color, "carthag") then
         HagalCard.sendRivalAgent(color, rival, "carthag")
-        rival.troops(color, "supply", "garrison", 1)
+        rival.troops(color, "supply", "combat", 1)
         rival.beetle(color, 1)
         TleilaxuRow.trash(1)
         HagalCard.sendUpToTwoUnits(color, rival)
@@ -341,7 +344,7 @@ end
 function HagalCard._activateCarthag2(color, rival)
     if HagalCard.spaceIsFree(color, "carthag") then
         HagalCard.sendRivalAgent(color, rival, "carthag")
-        rival.troops(color, "supply", "garrison", 1)
+        rival.troops(color, "supply", "combat", 1)
         rival.beetle(color, 1)
         HagalCard.sendUpToTwoUnits(color, rival)
         return true
@@ -353,7 +356,7 @@ end
 function HagalCard._activateCarthag3(color, rival)
     if HagalCard.spaceIsFree(color, "carthag") then
         HagalCard.sendRivalAgent(color, rival, "carthag")
-        rival.troops(color, "supply", "garrison", 1)
+        rival.troops(color, "supply", "combat", 1)
         rival.beetle(color, 1)
         TleilaxuRow.trash(2)
         HagalCard.sendUpToTwoUnits(color, rival)
@@ -406,6 +409,13 @@ function HagalCard.spaceIsFree(color, spaceName)
     else
         return false
     end
+end
+
+function HagalCard.isCombatCard(card)
+    log(Helper.getID(card))
+    local cardData = HagalCard.cards[Helper.getID(card)]
+    log(cardData)
+    return cardData and cardData.combat
 end
 
 return HagalCard

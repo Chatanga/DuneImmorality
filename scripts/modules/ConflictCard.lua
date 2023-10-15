@@ -96,7 +96,7 @@ end
 local function optional(options)
     return function (color, conflictName, collectOptionalRewards)
         if collectOptionalRewards then
-            for  _, option in options do
+            for  _, option in ipairs(options) do
                 if not option(color, conflictName, collectOptionalRewards) then
                     return false
                 end
@@ -132,7 +132,7 @@ local ConflictCard = {
     grandVision = {level = 3, base = true, rewards = {{influence(2), intrigue(1)}, {intrigue(1), spice(3)}, {spice(3)}}},
     battleForCarthag = {level = 3, base = true, rewards = {{vp(2), control("carthag")}, {intrigue(1), spice(3)}, {spice(3)}}},
     battleForArrakeen = {level = 3, base = true, rewards = {{vp(2), control("arrakeen")}, {choice(2, {intrigue(1), spice(2), solari(3)})}, {intrigue(1), solari(2)}}},
-    onomicSupremacy = {level = 3, ix = true, rewards = {{vp(1), optional({solari(-6), vp(1)}), optional({spice(-4), vp(1)})}, {vp(1)}, {spice(2), solari(2)}}},
+    economicSupremacy = {level = 3, ix = true, rewards = {{vp(1), optional({solari(-6), vp(1)}), optional({spice(-4), vp(1)})}, {vp(1)}, {spice(2), solari(2)}}},
 }
 
 function ConflictCard.collectReward(color, conflictName, rank, collectOptionalRewards)
@@ -140,7 +140,7 @@ function ConflictCard.collectReward(color, conflictName, rank, collectOptionalRe
     local conflict = ConflictCard[conflictName]
     assert(conflict, "Unknown conflict: ", conflictName)
     local rewards = conflict.rewards[rank]
-    for i, reward in ipairs(rewards) do
+    for _, reward in ipairs(rewards) do
         reward(color, conflictName, collectOptionalRewards)
     end
 end

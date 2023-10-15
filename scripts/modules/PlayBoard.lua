@@ -577,7 +577,7 @@ function PlayBoard.acceptTurn(phase, color)
     elseif phase == 'combat' then
         if Combat.isInCombat(color) then
             PlayBoard.combatPassCountdown = PlayBoard.combatPassCountdown - 1
-            accepted = PlayBoard.combatPassCountdown > 0 and #PlayBoard.getIntrigues(color) > 0
+            accepted = PlayBoard.combatPassCountdown > 0 and not PlayBoard.isRival(color) and #PlayBoard.getIntrigues(color) > 0
         end
     elseif phase == 'combatEnd' then
         -- TODO Player is victorious and the combat provied a reward (auto?) or
@@ -885,7 +885,7 @@ end
 ---
 function PlayBoard:_createExclusiveCallback(innerCallback)
     return Helper.registerGlobalCallback(function (_, color, _)
-        if self.color == color or PlayBoard.isRival(color) then
+        if self.color == color or PlayBoard.isRival(self.color) then
             if not self.buttonsDisabled then
                 self.buttonsDisabled = true
                 Wait.time(function ()
@@ -1124,25 +1124,6 @@ function PlayBoard:revealHand()
 end
 
 ---
-function PlayBoard:getRevealCardPosition(i)
-    local offsets = {
-        Red = Vector(13, 0.69, -5),
-        Blue = Vector(13, 0.69, -5),
-        Green = Vector(-13, 0.69, -5),
-        Yellow = Vector(-13, 0.69, -5)
-    }
-    local step = 0
-    if self.color == "Yellow" or self.color == "Green" then
-        step = 2.5
-    end
-    if self.color == "Red" or self.color == "Blue" then
-        step = -2.5
-    end
-    local p = self.content.board.getPosition() + offsets[self.color]
-    return p + Vector(i * step, 0, 0)
-end
-
----
 function PlayBoard:stillHavePlayableAgents()
     return #Park.getObjects(self.agentPark) > 0
 end
@@ -1330,14 +1311,14 @@ end
 
 ---
 function PlayBoard.isRival(color)
-    local playerboard = PlayBoard.getPlayBoard(color)
-    return playerboard.opponent == "rival"
+    local playerBoard = PlayBoard.getPlayBoard(color)
+    return playerBoard.opponent == "rival"
 end
 
 ---
 function PlayBoard.isHuman(color)
-    local playerboard = PlayBoard.getPlayBoard(color)
-    return playerboard.opponent ~= "rival"
+    local playerBoard = PlayBoard.getPlayBoard(color)
+    return playerBoard.opponent ~= "rival"
 end
 
 ---
@@ -1399,6 +1380,11 @@ end
 ---
 function PlayBoard.getAgentCardPark(color)
     return PlayBoard.getPlayBoard(color).agentCardPark
+end
+
+---
+function PlayBoard.getRevealCardPark(color)
+    return PlayBoard.getPlayBoard(color).revealCardPark
 end
 
 ---

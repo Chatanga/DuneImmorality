@@ -12,33 +12,63 @@ math.randomseed(os.time())
 
 ---
 function Helper.registerEventListener(topic, listener)
+    return Helper.registerEventListenerWithPriority(topic, 0, listener)
+end
+
+---
+function Helper.registerEventListenerWithPriority(topic, priority, listener)
+    assert(priority)
     assert(listener)
-    local listeners = Helper.eventListenersByTopic[topic]
-    if not listeners then
-        listeners = {}
-        Helper.eventListenersByTopic[topic] = listeners
+
+    local listenersWithPriority = Helper.eventListenersByTopic[topic]
+    if not listenersWithPriority then
+        listenersWithPriority = {}
+        Helper.eventListenersByTopic[topic] = listenersWithPriority
     end
-    listeners[listener] = listener
+
+    local index
+    for i, listenerWithPriority in ipairs(listenersWithPriority) do
+        if listenerWithPriority.priority < priority then
+            index = i
+            break
+        end
+    end
+    index = index or #listenersWithPriority + 1
+
+    table.insert(listenersWithPriority, index, {
+        listener = listener,
+        priority = priority,
+    })
+
     return listener
 end
 
 ---
 function Helper.unregisterEventListener(topic, listener)
     assert(listener)
-    local listeners = Helper.eventListenersByTopic[topic]
-    assert(listeners and listeners[listener])
-    listeners[listener] = nil
-    if #Helper.getKeys(listeners) == 0 then
+    local listenersWithPriority = Helper.eventListenersByTopic[topic]
+
+    local found = false
+    for i, listenerWithPriority in ipairs(listenersWithPriority) do
+        if listenerWithPriority.listener == listener then
+            table.remove(listenersWithPriority, i)
+            found = true
+            break
+        end
+    end
+    assert(found)
+
+    if #Helper.getKeys(listenersWithPriority) == 0 then
         Helper.eventListenersByTopic[topic] = nil
     end
 end
 
 ---
 function Helper.emitEvent(topic, ...)
-    local listeners = Helper.eventListenersByTopic[topic]
-    if listeners then
-        for _, eventListener in pairs(Helper.shallowCopy(listeners)) do
-            eventListener(...)
+    local listenersWithPriority = Helper.eventListenersByTopic[topic]
+    if listenersWithPriority then
+        for _, listenerWithPriority in ipairs(Helper.shallowCopy(listenersWithPriority)) do
+            listenerWithPriority.listener(...)
         end
     end
 end
@@ -547,6 +577,21 @@ function Helper.addAll(objects, otherObjects)
     for _, object in ipairs(otherObjects) do
         table.insert(objects, object)
     end
+end
+
+---
+function Helper.repeatChainedAction(count, action)
+    local continuation = Helper.createContinuation()
+    if count > 0 then
+        local innerContinuation = action()
+        assert(innerContinuation and innerContinuation.doAfter, "Provided action must return a continuation!")
+        innerContinuation.doAfter(function ()
+            Helper.repeatChainedAction(count - 1, action)
+        end)
+    else
+        continuation.run()
+    end
+    return continuation
 end
 
 ---

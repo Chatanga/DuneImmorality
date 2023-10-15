@@ -321,14 +321,15 @@ end
 
 ---
 function TleilaxuResearch.advanceTleilax(color, jump)
+    Helper.dumpFunction("TleilaxuResearch.advanceTleilax", color, jump)
     local continuation = Helper.createContinuation()
-    if jump == 1 then
-        TleilaxuResearch._advanceTleilax(color, jump, true)
-        continuation.run(jump)
+    if jump >= 0 then
+        return Helper.repeatChainedAction(jump, function ()
+            return TleilaxuResearch._advanceTleilax(color, 1, true)
+        end)
     else
         Player[color].showConfirmDialog("Forbidden move. Do you confirm it neverless?", function()
-            TleilaxuResearch._advanceTleilax(color, jump, false)
-            continuation.run(jump)
+            TleilaxuResearch._advanceTleilax(color, jump, false).doAfter(continuation.run)
         end)
     end
     return continuation
@@ -336,6 +337,8 @@ end
 
 ---
 function TleilaxuResearch._advanceTleilax(color, jump, withBenefits)
+    local continuation = Helper.createContinuation()
+
     local leader = PlayBoard.getLeader(color)
     local tleilaxToken = PlayBoard.getContent(color).tleilaxToken
     local level = TleilaxuResearch._worlPositionToTleilaxSpace(tleilaxToken.getPosition())
@@ -367,17 +370,23 @@ function TleilaxuResearch._advanceTleilax(color, jump, withBenefits)
                 leader.resources(color, "spice", amount)
                 TleilaxuResearch.spiceBonus:set(0)
             end
-        end)
 
-        for i = level + 1, newLevel do
-            local bonuses = TleilaxuResearch.extraBonuses[i]
-            if bonuses then
-                DynamicBonus.collectExtraBonuses(color, leader, bonuses)
+            for i = level + 1, newLevel do
+                local bonuses = TleilaxuResearch.extraBonuses[i]
+                if bonuses then
+                    DynamicBonus.collectExtraBonuses(color, leader, bonuses)
+                end
             end
-        end
 
-        Helper.emitEvent("tleilaxProgress", color)
+            Helper.emitEvent("tleilaxProgress", color)
+
+            continuation.run(jump)
+        end)
+    else
+        continuation.run(jump)
     end
+
+    return continuation
 end
 
 ---
