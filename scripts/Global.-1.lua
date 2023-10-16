@@ -75,8 +75,26 @@ validateDefaultSetup = {
     variant = "arrakeenScouts",
     soundEnabled = true,
 }
-]]--
+validateDefaultSetup = {
+    language = "fr",
+    randomizePlayerPositions = false,
+    virtualHotSeat = true,
+    numberOfPlayers = 4,
+    riseOfIx = true,
+    epicMode = false,
+    immortality = true,
+    goTo11 = false,
+    leaderSelection = {
+        Green = "letoAtreides",
+        Yellow = "ilbanRichese",
+        Red = "tessiaVernius",
+        Blue = "paulAtreides"
+    },
+    fanmadeLeaders = false,
+    soundEnabled = true,
+}
 --validateDefaultSetup = nil
+]]--
 
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")

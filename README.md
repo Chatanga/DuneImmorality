@@ -39,6 +39,7 @@ When using this path, the `bundle + pack + export` sequence above becomes `bundl
     ./bundle.sh && ./upload.py
 
 Having launched `./listen.py` in another terminal will provide you with an immediate feedback from TTS.
+Unfortunately, it seems to induce some kind of latency, leading to board corruptions on the remote guests.
 
 ## Principles
 
@@ -81,9 +82,9 @@ Having launched `./listen.py` in another terminal will provide you with an immed
 
 ## TODO (by priority)
 
-- Safety phase / turn selector.
-- Tessia and Paul support.
+- Safety phase/turn selector.
 - Fully restore translations (tokens and books included).
+- Fix the whole save/reload behavior.
 - Blitz!
 - [Fanmade leaders](https://drive.google.com/drive/folders/1-V3xcHk6078YR1fyhtJL3tdqv2zg5q3Q).
 

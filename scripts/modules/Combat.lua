@@ -1,6 +1,7 @@
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local Park = require("utils.Park")
+local I18N = require("utils.I18N")
 
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local Action = Module.lazyRequire("Action")
@@ -92,9 +93,10 @@ function Combat._staticSetUp(settings)
                 end
             end
             local forces = Combat._calculateCombatForces()
-            --Combat._showRanking(forces)
-            local turnSequence = Combat._calculateOutcomeTurnSequence(forces)
+            local ranking = Combat._calculateRanking(forces)
+            local turnSequence = Combat._calculateOutcomeTurnSequence(ranking)
             TurnControl.setPhaseTurnSequence(turnSequence)
+            Combat.showRanking(turnSequence, ranking)
         elseif phase == "recall" then
             for _, object in ipairs(Combat.victoryPointTokenZone.getObjects()) do
                 if Utils.isVictoryPointToken(object) then
@@ -328,21 +330,20 @@ function Combat.isInCombat(color)
 end
 
 ---
-function Combat._calculateOutcomeTurnSequence(forces)
-    local distinctForces = {}
+function Combat._calculateOutcomeTurnSequence(ranking)
+    local distinctRanking = {}
     for i, color in ipairs(TurnControl.getPhaseTurnSequence()) do
-        distinctForces[color] = forces[color] - i * 0.1
+        local rank = ranking[color]
+        Helper.dump("ranking[",color,"]",rank)
+        if rank then
+            distinctRanking[color] = rank.value + i * 0.1
+        end
     end
 
-    local combatEndTurnSequence = Helper.getKeys(forces)
+    local combatEndTurnSequence = Helper.getKeys(ranking)
     table.sort(combatEndTurnSequence, function(c1, c2)
-        return distinctForces[c1] > distinctForces[c2]
+        return distinctRanking[c1] < distinctRanking[c2]
     end)
-
-    -- No Nth winner in a N players game.
-    if #combatEndTurnSequence == #PlayBoard.getPlayBoardColors() then
-        table.remove(combatEndTurnSequence, #combatEndTurnSequence)
-    end
 
     return combatEndTurnSequence
 end
@@ -382,7 +383,7 @@ function Combat._calculateRanking(forces)
         end
 
         for _, color in ipairs(rankWinners) do
-            ranking[color] = rank
+            ranking[color] = { value = rank, exAequo = #rankWinners }
             potentialWinnerCount = potentialWinnerCount - 1
             remainingForces[color] = nil
         end
@@ -504,62 +505,13 @@ function Combat.gainVictoryPoint(color, name)
 end
 
 ---
-function Combat._showRanking(forces)
-    -- log(Combat._calculateRanking(forces))
-
-    --[[
-    local rankingUI = {
-        tag = "Panel",
-        attributes = {
-            position = 0,
-            width = 780,
-            height = 297 + 200,
-            color = "#000000",
-            id = "rankingPane",
-            outline = "#ffffffcc",
-            outlineSize = 1,
-            active = true,
-            allowDragging = true,
-            returnToOriginalPositionWhenReleased = true,
-        },
-        children = {
-            {
-                tag = "Image",
-                attributes = {
-                    ignoreLayout = true,
-                    raycastTarget = true,
-                    color = "#000000",
-                },
-            },
-            {
-                tag = "VerticalLayout",
-                children = {
-                    {
-                        tag = "Image",
-                        attributes = {
-                            width = "780",
-                            height = "297",
-                            image = image,
-                            preserveAspect = true,
-                            raycastTarget = true,
-                        },
-                    },
-                    {
-                        tag = "GridLayout",
-                        attributes = {
-                            cellSize = "389 94",
-                            childAlignment = "MiddleCenter",
-                            spacing = "1 1",
-                        },
-                        children = playerUIs
-                    }
-                }
-            }
-        }
-    }
-
-    UI.setXmlTable({ rankingUI })
-    ]]--
+function Combat.showRanking(turnSequence, ranking)
+    local rankNames = { "first", "second", "third", "fourth" }
+    for _, color in ipairs(turnSequence) do
+        local rank = ranking[color]
+        local key = rankNames[rank.value] .. (rank.exAequo > 1 and "ExAequo" or "") .. "InCombat"
+        printToAll(I18N(key, { leader = PlayBoard.getLeaderName(color) }), color)
+    end
 end
 
 return Combat

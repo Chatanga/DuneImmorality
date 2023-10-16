@@ -1341,11 +1341,13 @@ function PlayBoard.setLeader(color, leaderCard)
     local position = playBoard.content.leaderZone.getPosition()
     leaderCard.setPosition(position)
     playBoard.leaderCard = leaderCard
+    Helper.noPlay(leaderCard)
+    log(position)
     return true
 end
 
 ---
-function PlayBoard._findLeaderCard(color)
+function PlayBoard.findLeaderCard(color)
     local leaderZone = PlayBoard.getContent(color).leaderZone
     for _, object in ipairs(leaderZone.getObjects()) do
         if object.hasTag("Leader") or object.hasTag("Hagal") then
@@ -1366,7 +1368,7 @@ end
 
 ---
 function PlayBoard.getLeaderName(color)
-    local leader = PlayBoard._findLeaderCard(color)
+    local leader = PlayBoard.findLeaderCard(color)
     return leader and leader.getName() or "?"
 end
 
@@ -1530,6 +1532,8 @@ function PlayBoard.giveCard(color, card, isTleilaxuCard)
     local content = PlayBoard.getContent(color)
     assert(content)
 
+    printToAll(I18N(isTleilaxuCard and "acquireTleilaxuCard" or "acquireImperiumCard", { card = I18N(Helper.getID(card)) }), color)
+
     -- Acquire the card (not smoothly to avoid being grabbed by a player hand zone).
     card.setPosition(content.discardZone.getPosition())
 
@@ -1549,7 +1553,9 @@ function PlayBoard.giveCardFromZone(color, zone, isTleilaxuCard)
     assert(content)
 
     -- Acquire the card (not smoothly to avoid being grabbed by a player hand zone).
-    Helper.moveCardFromZone(zone, content.discardZone.getPosition())
+    Helper.moveCardFromZone(zone, content.discardZone.getPosition()).doAfter(function (card)
+        printToAll(I18N(isTleilaxuCard and "acquireTleilaxuCard" or "acquireImperiumCard", { card = I18N(Helper.getID(card)) }), color)
+    end)
 
     -- Move it on the top of the player deck if possible and wanted.
     if (isTleilaxuCard and TleilaxuResearch.hasReachedOneHelix(color)) or PlayBoard.hasTech(color, "Spaceport") then
@@ -1559,6 +1565,13 @@ function PlayBoard.giveCardFromZone(color, zone, isTleilaxuCard)
                 Helper.moveCardFromZone(content.discardZone, content.drawDeckZone.getPosition(), Vector(0, 180, 180))
             end)
     end
+end
+
+---
+function PlayBoard.getDrawDeck(color)
+    local playBoard = PlayBoard.getPlayBoard(color)
+    local deckOrCard = Helper.getDeckOrCard(playBoard.content.drawDeckZone)
+    return deckOrCard
 end
 
 ---

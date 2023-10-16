@@ -5,6 +5,7 @@ local I18N = require("utils.I18N")
 local Utils = Module.lazyRequire("Utils")
 local Action = Module.lazyRequire("Action")
 local PlayBoard = Module.lazyRequire("PlayBoard")
+local MainBoard = Module.lazyRequire("MainBoard")
 
 local InfluenceTrack = {
     influenceTokenInitialPositions = {
@@ -51,6 +52,12 @@ local InfluenceTrack = {
 ---
 function InfluenceTrack.onLoad()
     Helper.append(InfluenceTrack, Helper.resolveGUIDs(true, {
+        snoopers = {
+            emperor = "a58ce8",
+            spacingGuild = "857f74",
+            beneGesserit = "bed196",
+            fremen = "b10897",
+        },
         influenceTokens = {
             emperor = {
                 Red = 'acfcef',
@@ -142,6 +149,93 @@ function InfluenceTrack._initInfluenceTracksLevels()
         influenceLevels[faction] = factionLevels
     end
     return influenceLevels
+end
+
+---
+function InfluenceTrack.setUpSnoopers()
+    for faction, snooper in pairs(InfluenceTrack.snoopers) do
+        local position = InfluenceTrack._getSnooperTrackPosition(faction)
+        snooper.setPositionSmooth(position, false, false)
+        snooper.setRotationSmooth(Vector(0, 90, 0))
+        Wait.time(function ()
+            snooper.setLock(true)
+        end, 3)
+    end
+end
+
+---
+function InfluenceTrack._getSnooperTrackPosition(faction)
+
+    local getAveragePosition = function (spaceNames)
+        local p = Vector(0, 0, 0)
+        local count = 0
+        for _, spaceName in ipairs(spaceNames) do
+            p = p + MainBoard.spaces[spaceName].zone.getPosition()
+            count = count + 1
+        end
+        return p * (1 / count)
+    end
+
+    local positions = {
+        emperor = getAveragePosition({ "conspire", "wealth" }),
+        spacingGuild = getAveragePosition({ "heighliner", "foldspace" }),
+        beneGesserit = getAveragePosition({ "selectiveBreeding", "secrets" }),
+        fremen = getAveragePosition({ "hardyWarriors", "stillsuits" }),
+    }
+
+    return positions[faction]
+end
+
+---
+function InfluenceTrack.tearDownSnoopers()
+    for _, snooper in pairs(InfluenceTrack.snoopers) do
+        snooper.destruct()
+    end
+end
+
+---
+function InfluenceTrack.recallSnooper(faction, color)
+
+    local foundSnooper
+    local snooperRank = 4
+    for otherFaction, snooper in pairs(InfluenceTrack.snoopers) do
+        local position = InfluenceTrack._getSnooperTrackPosition(otherFaction)
+        local distance = (snooper.getPosition() - position):magnitude()
+        if distance < 1 then
+            if otherFaction == faction then
+                foundSnooper = snooper
+            else
+                snooperRank = snooperRank - 1
+            end
+        end
+    end
+
+    if foundSnooper then
+        local p = PlayBoard.findLeaderCard(color).getPosition() + Vector(snooperRank / 4 - 2, 0.5, 1.4 - snooperRank / 2)
+        Helper.noPlay(foundSnooper)
+        foundSnooper.setPositionSmooth(p)
+
+        Wait.time(function()
+            local parameters = { withFaction = I18N(Helper.toCamelCase("with", faction)) }
+            local leader = PlayBoard.getLeader(color)
+            if snooperRank == 1 then
+                broadcastToAll(I18N("firstSnooperRecall", parameters), color)
+                Player[color].showInfoDialog(I18N("firstSnooperRecallEffectInfo"))
+            elseif snooperRank == 2 then
+                broadcastToAll(I18N("secondSnooperRecall", parameters), color)
+                InfluenceTrack._gainAllianceBonus(faction, color)
+            elseif snooperRank == 3 then
+                broadcastToAll(I18N("thirdSnooperRecall", parameters), color)
+                leader.influence(color, faction, 1)
+            elseif snooperRank == 4 then
+                broadcastToAll(I18N("fourthSnooperRecall", parameters), color)
+                InfluenceTrack._gainAllianceBonus(faction, color)
+                leader.influence(color, faction, 1)
+            else
+                assert(false)
+            end
+        end, 1)
+    end
 end
 
 ---
@@ -288,7 +382,13 @@ end
 ---
 function InfluenceTrack._gainAlliance(faction, color)
     PlayBoard.getLeader(color).gainVictoryPoint(color, Helper.getID(InfluenceTrack.allianceTokens[faction]))
+    if not PlayBoard.isRival(color) then
+        InfluenceTrack._gainAllianceBonus(faction, color)
+    end
+end
 
+---
+function InfluenceTrack._gainAllianceBonus(faction, color)
     local leader = PlayBoard.getLeader(color)
     if not PlayBoard.isRival(color) then
         if faction == "emperor" then

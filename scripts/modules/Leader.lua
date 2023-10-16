@@ -1,5 +1,6 @@
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
+local I18N = require("utils.I18N")
 
 local Action = Module.lazyRequire("Action")
 local MainBoard = Module.lazyRequire("MainBoard")
@@ -152,14 +153,47 @@ Leader.letoAtreides = Helper.createClass(Leader, {
     end,
 })
 
--- TODO Add a prescience button.
 Leader.paulAtreides = Helper.createClass(Leader, {
 
     --- Prescience
     prepare = function (color, settings)
         Action.prepare(color, settings)
-        -- TODO Add prescience button
-    end,
+
+        local prescience = function (_, otherColor)
+            if otherColor == color then
+                local cardOrDeck = PlayBoard.getDrawDeck(color)
+                if cardOrDeck == nil then
+                    broadcastToColor(I18N("prescienceVoid"), color, "Purple")
+                elseif cardOrDeck.type == "Card" then
+                    --broadcastToAll(I18N("prescienceUsed"), color)
+                    broadcastToColor(I18N("prescienceManual"), color, "Purple")
+                else
+                    cardOrDeck.Container.search(color, 1)
+                    --broadcastToAll(I18N("prescienceUsed"), color)
+                end
+            else
+                broadcastToColor(I18N("noTouch"), otherColor, otherColor)
+            end
+        end
+
+        local leaderCard = PlayBoard.findLeaderCard(color)
+
+        -- FIXME The leader card position is a bit weird.
+        Helper.createTransientAnchor("PrescienceAnchor", leaderCard.getPosition() + Vector(0, -0.5, 0)).doAfter(function (anchor)
+            Helper.createAbsoluteButtonWithRoundness(anchor, 1, false, {
+                click_function = Helper.registerGlobalCallback(prescience),
+                label = I18N("prescienceButton"),
+                position = anchor.getPosition() + Vector(0, 0.55, -1.75),
+                width = 1200,
+                height = 280,
+                font_size = 200,
+                scale = Vector(1, 1, 1),
+                color = { 0, 0, 0, 1 },
+                font_color = Color.fromString("White"),
+                tooltip = I18N("prescienceTooltip"),
+            })
+        end)
+   end,
 
     --- Discipline
     signetRing = function (color)
@@ -247,49 +281,41 @@ Leader.rhomburVernius = Helper.createClass(Leader, {
     end
 })
 
--- TODO Add automatic snooper recall.
 Leader.tessiaVernius = Helper.createClass(Leader, {
 
     --- Careful observation
     prepare = function (color, settings)
         Action.prepare(color, settings)
 
-        local getAveragePosition = function (spaceNames)
-            local p = Vector(0, 0, 0)
-            local count = 0
-            for _, spaceName in ipairs(spaceNames) do
-                p = p + MainBoard.spaces[spaceName].zone.getPosition()
-                count = count + 1
-            end
-            return p * (1 / count)
-        end
+        InfluenceTrack.setUpSnoopers()
 
-        local snoopers = {
-            { guid = "a58ce8", position = getAveragePosition({ "conspire", "wealth" })},
-            { guid = "857f74", position = getAveragePosition({ "heighliner", "foldspace" })},
-            { guid = "bed196", position = getAveragePosition({ "selectiveBreeding", "secrets" })},
-            { guid = "b10897", position = getAveragePosition({ "hardyWarriors", "stillsuits" })},
-        }
-
-        for _, snooper in ipairs(snoopers) do
-            local object = getObjectFromGUID(snooper.guid)
-            object.setPositionSmooth(snooper.position, false, false)
-            object.setRotationSmooth(Vector(0, 90, 0))
+        local leaderCard = PlayBoard.findLeaderCard(color)
+        local snapPoints = {}
+        for i = 1, 4 do
+            local p = leaderCard.getPosition() + Vector(i / 4 - 2, 0, 1.4 - i / 2)
+            table.insert(snapPoints, {
+                position = leaderCard.positionToLocal(p),
+                tags = { "Snooper" }
+            })
         end
+        leaderCard.setSnapPoints(snapPoints)
     end,
 
     tearDown = function ()
-        local snoopers = {
-            "a58ce8",
-            "857f74",
-            "bed196",
-            "b10897",
-        }
+        InfluenceTrack.tearDownSnoopers()
+    end,
 
-        for _, guid in ipairs(snoopers) do
-            local object = getObjectFromGUID(guid)
-            object.destruct()
-        end
+    --- Careful observation
+    influence = function (color, faction, amount)
+        local noFriendshipBefore = not InfluenceTrack.hasFriendship(color, faction)
+        local continuation = Helper.createContinuation()
+        Action.influence(color, faction, amount).doAfter(function ()
+            local friendshipAfter = InfluenceTrack.hasFriendship(color, faction)
+            if noFriendshipBefore and friendshipAfter then
+                InfluenceTrack.recallSnooper(faction, color)
+            end
+        end)
+        return continuation
     end,
 
     --- Duplicity
@@ -298,6 +324,7 @@ Leader.tessiaVernius = Helper.createClass(Leader, {
         leader.influence(color, nil, -1)
         leader.influence(color, nil, 1)
     end,
+
 })
 
 Leader.yunaMoritani = Helper.createClass(Leader, {

@@ -101,6 +101,18 @@ return {
     takeHighCouncilSeat = "■ Prise de siège au Haut-Conseil.",
     gainInfluence = "■ +{amount} influence auprès {withFaction}",
     loseInfluence = "■ -{amount} influence auprès {withFaction}",
+    acquireTleilaxuCard = "■ Acquisition carte tleilaxu : « {card} »",
+    acquireImperiumCard = "■ Acquisition carte Imperium : « {card} »",
+
+    -- Ranking
+    firstInCombat = "★ 1er : {leader}",
+    firstExAequoInCombat = "★ 1er ex aequo : {leader}",
+    secondInCombat = "★ 2nd : {leader}",
+    secondExAequoInCombat = "★ 2nd ex aequo : {leader}",
+    thirdInCombat = "★ 3éme : {leader}",
+    thirdExAequoInCombat = "★ 3éme ex aequo : {leader}",
+    fourthInCombat = "★ 4éme : {leader}",
+    fourthExAequoInCombat = "★ 4éme ex aequo : {leader}",
 
     -- Tleilax board
     confirmSolarisToBeetles = "Voulez-vous payer 7 solaris pour avancer deux fois sur la piste Tleilaxu ?",
@@ -126,6 +138,18 @@ return {
     tessiaVernius = "Tessia Vernius",
     yunaMoritani = '"Princesse" Yuna Moritani',
     hundroMoritani = "Vicomte Hundro Moritani",
+
+    prescienceButton = "Prescience",
+    prescienceTooltip = "Inspecter facilement la prochaine carte de votre pioche.",
+    prescienceUsed = "Paul Atreides utilise sa prescience used his prescience pour entrevoir l’avenir.",
+    prescienceVoid = "Difficile d’entrevoir l’avenir quand on n’est pas vraiment une lumière soi-même…",
+    prescienceManual = "Vous devez inspecter manuellement votre pioche (ALT + SHIFT), car elle se résume à une unique carte.",
+
+    firstSnooperRecall = "Tessia Vernius a rappelé son premier fouineur {withFaction}.",
+    secondSnooperRecall = "Tessia Vernius a rappelé son second fouineur {withFaction}.",
+    thirdSnooperRecall = "Tessia Vernius a rappelé son troisième fouineur {withFaction}.",
+    fourthSnooperRecall = "Tessia Vernius a rappelé son quatrième fouineur {withFaction}.",
+    firstSnooperRecallEffectInfo = "Ayant rappelé votre premier fouineur, vous pouvez défausser une carte pour gagne 1 mesure d’épice.",
 
     -- Fanmade leaders
     abulurdHarkonnen = "Abulurd Harkonnen",
@@ -218,7 +242,7 @@ return {
     chani = "Chani",
     spaceTravel = "Voyage spatial",
     duncanIdaho = "Duncan Idaho",
-    shiftingAllegiances = "All«giances changeantes",
+    shiftingAllegiances = "Allégiances changeantes",
     kwisatzHaderach = "Kwisatz Haderach",
     sietchReverendMother = "Révérende mère de sietch",
     arrakisRecruiter = "Recruteur d’Arrakis",

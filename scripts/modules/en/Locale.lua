@@ -67,6 +67,12 @@ return {
     -- Tleilax board
     confirmSolarisToBeetles = "Do you want to pay 7 Solaris to Advance Twice on the Tleilaxu Track ?",
 
+    prescienceButton = "Prescience",
+    prescienceTooltip = "Look at top card of your deck easily with this.",
+    prescienceUsed = "Paul Atreides used his prescience to look into the future.",
+    prescienceVoid = "All you see is the void ! (Your deck it empty actually…)",
+    prescienceManual = "You need to peek manually (ALT + SHIFT) because there is only one card in your deck.",
+
     -- Leaders
     vladimirHarkonnen = "Baron Vladimir Harkonnen",
     glossuRabban = 'Glossu "The Beast" Rabban',

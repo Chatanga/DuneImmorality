@@ -190,7 +190,7 @@ function Hagal._collectReward(color)
     local continuation = Helper.createContinuation()
     Wait.frames(function ()
         local conflictName = Combat.getCurrentConflictName()
-        local rank = Combat.getRank(color)
+        local rank = Combat.getRank(color).value
         ConflictCard.collectReward(color, conflictName, rank, true)
         if rank == 1 then
             local leader = PlayBoard.getLeader(color)
