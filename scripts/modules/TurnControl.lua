@@ -27,6 +27,14 @@ local TurnControl = {
 }
 
 function TurnControl.onLoad(state)
+    Helper.append(TurnControl, Helper.resolveGUIDs(true, {
+        forceEndOfTurnButton = "2d3ce4",
+        forceEndOfPhaseButton = "26b41d"
+    }))
+
+    Helper.noPlay(TurnControl.forceEndOfTurnButton)
+    Helper.noPlay(TurnControl.forceEndOfPhaseButton)
+
     if state.settings then
         if state.TurnControl then
             TurnControl.players = state.TurnControl.players
@@ -82,6 +90,43 @@ function TurnControl.setUp(settings, players)
         -- TODO Random
         TurnControl.firstPlayerLuaIndex = math.random(#TurnControl.players)
     end
+
+    TurnControl._bindButton("Force\nend of\nTurn", TurnControl.forceEndOfTurnButton, TurnControl.endOfTurn)
+    TurnControl._bindButton("Force\nend of\nPhase", TurnControl.forceEndOfPhaseButton, TurnControl.endOfPhase)
+end
+
+---
+function TurnControl._bindButton(label, button, callback)
+    button.createButton({
+        click_function = TurnControl._createExclusiveCallback(function (...)
+            button.AssetBundle.playTriggerEffect(0)
+            callback(...)
+        end),
+        position = Vector(0, 0.6, 0),
+        label = label,
+        width = 1500,
+        height = 1500,
+        color = { 0, 0, 0, 0 },
+        font_size = 350,
+        font_color = { 1, 1, 1, 100 }
+    })
+end
+
+---
+function TurnControl._createExclusiveCallback(innerCallback)
+    return Helper.registerGlobalCallback(function (_, color, _)
+        if color == "Black" then
+            if not TurnControl.buttonsDisabled then
+                TurnControl.buttonsDisabled = true
+                Wait.time(function ()
+                    TurnControl.buttonsDisabled = false
+                end, 0.5)
+                innerCallback()
+            end
+        else
+            broadcastToColor(I18N('noTouch'), color, "Purple")
+        end
+    end)
 end
 
 ---
@@ -141,15 +186,18 @@ function TurnControl._startPhase(phase)
         TurnControl.currentPlayerLuaIndex = TurnControl.firstPlayerLuaIndex
     end
 
-    log("=== Phase: " .. phase
-        .. ", firstPlayer: " .. TurnControl.players[TurnControl.firstPlayerLuaIndex]
-        .. ", currentPlayer: " .. TurnControl.players[TurnControl.currentPlayerLuaIndex])
+    local firstPlayer = TurnControl.players[TurnControl.firstPlayerLuaIndex]
+    Helper.dump("> Round:", TurnControl.getCurrentRound(), "- Phase:", phase, "- first player:", firstPlayer)
     broadcastToAll(I18N(Helper.toCamelCase("phase", phase)), Color.fromString("Pink"))
-    Helper.emitEvent("phaseStart", TurnControl.currentPhase, TurnControl.players[TurnControl.firstPlayerLuaIndex])
+    Helper.emitEvent("phaseStart", TurnControl.currentPhase, firstPlayer)
 
     Wait.frames(function ()
         if TurnControl.customTurnSequence then
-            TurnControl._next(TurnControl.customTurnSequence[1])
+            if #TurnControl.customTurnSequence > 0 then
+                TurnControl._next(TurnControl.customTurnSequence[1])
+            else
+                TurnControl.endOfPhase()
+            end
         else
             TurnControl._next(TurnControl.currentPlayerLuaIndex)
         end
@@ -185,7 +233,7 @@ function TurnControl._next(startPlayerLuaIndex)
     TurnControl.currentPlayerLuaIndex = TurnControl._findActivePlayer(startPlayerLuaIndex)
     if TurnControl.currentPlayerLuaIndex then
         local player = TurnControl.players[TurnControl.currentPlayerLuaIndex]
-        log("--- Turn: " .. player .. " --- " .. tostring(TurnControl.getCurrentRound()))
+        Helper.dump(">> Turn:", player)
         Helper.emitEvent("playerTurns", TurnControl.currentPhase, player)
     else
         TurnControl.endOfPhase()

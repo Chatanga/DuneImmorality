@@ -154,36 +154,13 @@ end
 ---
 function InfluenceTrack.setUpSnoopers()
     for faction, snooper in pairs(InfluenceTrack.snoopers) do
-        local position = InfluenceTrack._getSnooperTrackPosition(faction)
+        local position = MainBoard.getSnooperTrackPosition(faction)
         snooper.setPositionSmooth(position, false, false)
         snooper.setRotationSmooth(Vector(0, 90, 0))
         Wait.time(function ()
             snooper.setLock(true)
         end, 3)
     end
-end
-
----
-function InfluenceTrack._getSnooperTrackPosition(faction)
-
-    local getAveragePosition = function (spaceNames)
-        local p = Vector(0, 0, 0)
-        local count = 0
-        for _, spaceName in ipairs(spaceNames) do
-            p = p + MainBoard.spaces[spaceName].zone.getPosition()
-            count = count + 1
-        end
-        return p * (1 / count)
-    end
-
-    local positions = {
-        emperor = getAveragePosition({ "conspire", "wealth" }),
-        spacingGuild = getAveragePosition({ "heighliner", "foldspace" }),
-        beneGesserit = getAveragePosition({ "selectiveBreeding", "secrets" }),
-        fremen = getAveragePosition({ "hardyWarriors", "stillsuits" }),
-    }
-
-    return positions[faction]
 end
 
 ---
@@ -199,7 +176,7 @@ function InfluenceTrack.recallSnooper(faction, color)
     local foundSnooper
     local snooperRank = 4
     for otherFaction, snooper in pairs(InfluenceTrack.snoopers) do
-        local position = InfluenceTrack._getSnooperTrackPosition(otherFaction)
+        local position = MainBoard.getSnooperTrackPosition(otherFaction)
         local distance = (snooper.getPosition() - position):magnitude()
         if distance < 1 then
             if otherFaction == faction then

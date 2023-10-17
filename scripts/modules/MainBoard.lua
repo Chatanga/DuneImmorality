@@ -1006,7 +1006,7 @@ end
 ---
 function MainBoard.isCombatSpace(spaceName)
     local result = Helper.isElementOf(spaceName, MainBoard.getCombatSpaces())
-    Helper.dump(spaceName, "is a combat space ->", result)
+    --Helper.dump(spaceName, "is a combat space ->", result)
     return result
 end
 
@@ -1048,6 +1048,34 @@ function MainBoard.collectExtraBonuses(color, leader, spaceName)
     if space.extraBonuses then
         DynamicBonus.collectExtraBonuses(color, leader, space.extraBonuses)
     end
+end
+
+---
+function MainBoard.getSnooperTrackPosition(faction)
+
+    local getAveragePosition = function (spaceNames)
+        local p = Vector(0, 0, 0)
+        local count = 0
+        for _, spaceName in ipairs(spaceNames) do
+            p = p + MainBoard.spaces[spaceName].zone.getPosition()
+            count = count + 1
+        end
+        return p * (1 / count)
+    end
+
+    local positions = {
+        emperor = getAveragePosition({ "conspire", "wealth" }),
+        spacingGuild = getAveragePosition({ "heighliner", "foldspace" }),
+        beneGesserit = getAveragePosition({ "selectiveBreeding", "secrets" }),
+        fremen = getAveragePosition({ "hardyWarriors", "stillsuits" }),
+    }
+
+    return positions[faction]
+end
+
+---
+function MainBoard.getFirstPlayerMarker()
+    return MainBoard.firstPlayerMarker
 end
 
 return MainBoard

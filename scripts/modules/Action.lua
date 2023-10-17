@@ -33,7 +33,6 @@ function Action.onLoad()
             phase = phase,
             color = color
         }
-        log(Action.context)
         printToAll(I18N("playerTurn", { leader = PlayBoard.getLeaderName(color) }), color)
     end)
 end
@@ -57,7 +56,7 @@ end
 function Action.checkContext(attributes)
     for name, expectedValue in pairs(attributes) do
         local value = Action.context and Action.context[name] or nil
-        Helper.dump("Checking", name, "with value", value or "nil")
+        --Helper.dump("Checking", name, "with value", value or "nil")
         local valid
         if type(expectedValue) == "function" then
             valid = expectedValue(value)

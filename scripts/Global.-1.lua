@@ -166,13 +166,13 @@ local PlayerSet = {
             "4 (hotseat)"
         },
         numberOfPlayers = {},
-        difficulty_all = Helper.map(allModules.Hagal.difficulties, function (_, v) return v.name end),
+        difficulty_all = Helper.map(allModules.Hagal.getDifficulties(), function (_, v) return v.name end),
         difficulty = {},
         riseOfIx = true,
         epicMode = false,
         immortality = true,
         goTo11 = false,
-        leaderSelection_all = allModules.LeaderSelection.selectionMethods,
+        leaderSelection_all = allModules.LeaderSelection.getSelectionMethods(),
         leaderSelection = "reversePick",
         fanmadeLeaders = false,
         variant_all = {

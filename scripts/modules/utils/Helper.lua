@@ -670,12 +670,18 @@ end
 
 ---
 function Helper.createContinuation()
+
+    if not Helper.allContinuations then
+        Helper.allContinuations = {}
+    end
+
     local continuation = {
         start = Time.time,
         what = function ()
             return "continuation"
         end
     }
+
     continuation.tick = function (toBeNotified)
         local duration = Time.time - continuation.start
         if toBeNotified and duration > 10 then
@@ -696,6 +702,7 @@ function Helper.createContinuation()
     end
 
     continuation.run = function (parameters)
+        Helper.allContinuations[continuation] = nil
         continuation.done = true
         continuation.parameters = parameters
         for _, action in ipairs(continuation.actions) do
@@ -703,13 +710,29 @@ function Helper.createContinuation()
         end
     end
 
+    continuation.cancel = function ()
+        Helper.allContinuations[continuation] = nil
+        continuation.done = true
+    end
+
+    Helper.allContinuations[continuation] = true
+
     return continuation
 end
 
 ---
-function Helper.createTermination()
+function Helper.onceStabilized(timeout)
     local continuation = Helper.createContinuation()
-    continuation.run()
+
+    local start = os.time()
+
+    Wait.condition(function ()
+        continuation.run(continuation.success)
+    end, function ()
+        continuation.success = #Helper.allContinuations == 1
+        return continuation.success or (os.time() - start > (timeout or 10))
+    end)
+
     return continuation
 end
 
@@ -1236,12 +1259,18 @@ end
 
 ---
 function Helper.getPlayerColor(player)
-    --Helper.dumpFunction("Helper.getPlayerColor", player)
+    return player.color
+end
+
+---
+function Helper._getPlayerColor(player)
+    --Helper.dumpFunction("Helper._getPlayerColor", player)
     local color = Helper.cachedPlayers and Helper.cachedPlayers[player.steam_id] or nil
     if not color then
         color = player.color
         assert(Player[player.color].steam_id == player.steam_id)
     end
+    --Helper.dump(player, "color is", color, "and", player.color)
     return color
 end
 
@@ -1249,7 +1278,7 @@ end
 function Helper.findPlayerByColor(color)
     --Helper.dumpFunction("Helper.findPlayerByColor", color)
     for _, player in ipairs(Player.getPlayers()) do
-        if Helper.getPlayerColor(player) == color then
+        if Helper._getPlayerColor(player) == color then
             return player
         end
     end
@@ -1269,7 +1298,7 @@ function Helper.changePlayerColorInCoroutine(player, newColor)
         Helper.sleep(0.5)
     end
 
-    local oldColor = Helper.getPlayerColor(player)
+    local oldColor = Helper._getPlayerColor(player)
     local otherPlayer = Helper.findPlayerByColor(newColor)
     if oldColor ~= newColor then
         if otherPlayer then

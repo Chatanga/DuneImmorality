@@ -49,8 +49,9 @@ function HagalCard.setStrength(color, card)
     end
 end
 
-function HagalCard.activate(color, card)
+function HagalCard.activate(color, card, riseOfIx)
     Action.setContext("hagalCard", card)
+    HagalCard.riseOfIx = riseOfIx
     local rival = PlayBoard.getLeader(color)
     local actionName = Helper.toCamelCase("_activate", Helper.getID(card))
     if HagalCard[actionName] then
@@ -378,7 +379,7 @@ function HagalCard.sendRivalAgent(color, rival, spaceName)
 end
 
 function HagalCard.sendUpToTwoUnits(color, rival)
-    if Hagal.riseOfIx then
+    if HagalCard.riseOfIx then
         local count = rival.dreadnought(color, "garrison", "combat", 2)
         if count < 2 then
             rival.troops(color, "garrison", "combat", 2 - count)
@@ -412,9 +413,7 @@ function HagalCard.spaceIsFree(color, spaceName)
 end
 
 function HagalCard.isCombatCard(card)
-    log(Helper.getID(card))
     local cardData = HagalCard.cards[Helper.getID(card)]
-    log(cardData)
     return cardData and cardData.combat
 end
 

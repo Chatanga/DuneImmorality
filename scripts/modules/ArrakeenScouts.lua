@@ -126,7 +126,7 @@ local ArrakeenScouts = {
     pendingOperations = {},
 }
 
-ArrakeenScouts._debug = { "saphoJuice" }
+--ArrakeenScouts._debug = { "saphoJuice" }
 
 ---
 function ArrakeenScouts.onLoad(state)
@@ -172,6 +172,7 @@ function ArrakeenScouts.setUp(settings)
                 ArrakeenScouts[category].base,
                 settings.ix and ArrakeenScouts[category].ix or {},
                 settings.immortality and ArrakeenScouts[category].immortality or {}})
+
             selection[category] = {}
             for key, value in pairs(contributions) do
                 local item
@@ -232,14 +233,22 @@ end
 function ArrakeenScouts._mergeContributions(contributionSets)
     local contributions = {}
     for _, contributionSet in ipairs(contributionSets) do
-        for name, widget in pairs(contributionSet) do
-            local value
-            if widget == Helper.ERASE then
-                value = nil
+        for name, element in pairs(contributionSet) do
+            if type(element) == "table" then
+                local subContributionSets = {
+                    contributions[name] or {},
+                    element,
+                }
+                contributions[name] = ArrakeenScouts._mergeContributions(subContributionSets)
             else
-                value = widget
+                local value
+                if element == Helper.ERASE then
+                    value = nil
+                else
+                    value = element
+                end
+                contributions[name] = value
             end
-            contributions[name] = value
         end
     end
     return contributions
@@ -595,6 +604,8 @@ function ArrakeenScouts._setAsOptionPane(color, playerPane, secret, options, con
             Helper.unregisterGlobalCallback(button.attributes.onClick)
             controller.validate(color, holder.selectedOption)
         else
+            Helper.dump("color =", color)
+            Helper.dump("Helper.getPlayerColor(player) = ", Helper.getPlayerColor(player))
             broadcastToColor(I18N('noTouch'), color, "Purple")
         end
     end)
@@ -828,6 +839,8 @@ function ArrakeenScouts.joinCommitee(color, luaIndex)
             effector(color, leader)
         end
     else
+        Helper.dump("color =", color)
+        Helper.dump("Helper.getPlayerColor(player) = ", Helper.getPlayerColor(player))
         broadcastToColor(I18N('noTouch'), color, "Purple")
     end
 end

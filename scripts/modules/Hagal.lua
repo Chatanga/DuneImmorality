@@ -54,6 +54,11 @@ function Hagal.onLoad(state)
 end
 
 ---
+function Hagal.getDifficulties()
+    return Hagal.difficulties
+end
+
+---
 function Hagal.setUp(settings)
     if settings.numberOfPlayers < 3 then
         Hagal._staticSetUp(settings)
@@ -181,7 +186,7 @@ end
 ---
 function Hagal._activateFirstValidActionCard(color)
     return Hagal._activateFirstValidCard(color, function (card)
-        return HagalCard.activate(color, card)
+        return HagalCard.activate(color, card, Hagal.riseOfIx)
     end)
 end
 
@@ -333,11 +338,11 @@ function Hagal.pickAnyCompatibleLeader(color)
                 table.insert(leaders , leader)
             end
         end
-        Helper.dump("#leaders =", #leaders)
+        --Helper.dump("#leaders =", #leaders)
         assert(#leaders > 0, "No leader left for Hagal!")
         leaderOrPseudoLeader = Helper.pickAny(leaders)
     end
-    Helper.dumpFunction("'LeaderSelection.claimLeader", color, leaderOrPseudoLeader)
+    --Helper.dumpFunction("'LeaderSelection.claimLeader", color, leaderOrPseudoLeader)
     LeaderSelection.claimLeader(color, leaderOrPseudoLeader)
 end
 

@@ -27,6 +27,11 @@ function LeaderSelection.onLoad()
 end
 
 ---
+function LeaderSelection.getSelectionMethods()
+    return LeaderSelection.selectionMethods
+end
+
+---
 function LeaderSelection.setUp(settings, opponents)
     Deck.generateLeaderDeck(LeaderSelection.deckZone, settings.riseOfIx, settings.immortality, settings.fanmadeLeaders).doAfter(function (deck)
         local numberOfLeaders = #deck.getObjects()
@@ -195,25 +200,20 @@ function LeaderSelection._setUpPicking(opponents, numberOfLeaders, random, hidde
         Helper.registerEventListener("phaseStart", function (phase, _)
             if phase == 'leaderSelection' then
                 -- Rivals
-                log("Rivals...")
                 for color, opponent in pairs(opponents) do
                     if opponent == "rival" then
-                        Helper.dumpFunction("Hagal.pickAnyCompatibleLeader", color)
+                        --Helper.dumpFunction("Hagal.pickAnyCompatibleLeader", color)
                         Hagal.pickAnyCompatibleLeader(color)
                     end
                 end
                 -- Then players
-                log("Players...")
                 local i = 0
                 for color, opponent in pairs(opponents) do
-                    Helper.dump(i, opponent)
+                    --Helper.dump(i, opponent)
                     if opponent ~= "rival" then
-                        log(1)
                         local leaders = LeaderSelection.getSelectableLeaders()
-                        log(2)
                         local leader = Helper.pickAny(leaders)
-                        log(3)
-                        Helper.dumpFunction("LeaderSelection.claimLeader", color, leader)
+                        --Helper.dumpFunction("LeaderSelection.claimLeader", color, leader)
                         LeaderSelection.claimLeader(color, leader)
                     end
                 end

@@ -163,10 +163,10 @@ function Combat._setUpConflict()
                         end
                     end
                 else
-                    Helper.dump(Helper.getID(card), "~=", Helper.getID(token))
+                    --Helper.dump(Helper.getID(card), "~=", Helper.getID(token))
                 end
             end
-            Helper.dump("Found", i, "matching VP for conflict:", Helper.getID(card))
+            --Helper.dump("Found", i, "matching VP for conflict:", Helper.getID(card))
         end)
     end
 end
@@ -334,7 +334,7 @@ function Combat._calculateOutcomeTurnSequence(ranking)
     local distinctRanking = {}
     for i, color in ipairs(TurnControl.getPhaseTurnSequence()) do
         local rank = ranking[color]
-        Helper.dump("ranking[",color,"]",rank)
+        --Helper.dump("ranking[",color,"]",rank)
         if rank then
             distinctRanking[color] = rank.value + i * 0.1
         end

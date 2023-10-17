@@ -82,7 +82,6 @@ Unfortunately, it seems to induce some kind of latency, leading to board corrupt
 
 ## TODO (by priority)
 
-- Safety phase/turn selector.
 - Fully restore translations (tokens and books included).
 - Fix the whole save/reload behavior.
 - Blitz!
@@ -92,8 +91,7 @@ Unfortunately, it seems to induce some kind of latency, leading to board corrupt
 - Change the [dreadnought model](https://www.thingiverse.com/thing:5326146).
 
 - Add space-time queue for relevant player discards.
-- Display ranking in combatEnd phase (with an optional bonus acquisition).
-- Card acquisition bonus.
+- Card acquisition bonus (unify card effect framework).
 - Tech acquisition cost (multiple options).
 - Fix the 6 tech park saturation.
 - Intelligent mentat + dreadnought recall.

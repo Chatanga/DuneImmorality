@@ -365,7 +365,7 @@ function PlayBoard._staticSetUp(settings)
     Helper.registerEventListener("phaseStart", function (phase, firstPlayer)
         if phase == "leaderSelection" or phase == "roundStart" then
             local playBoard = PlayBoard.getPlayBoard(firstPlayer)
-            MainBoard.firstPlayerMarker.setPositionSmooth(playBoard.content.firstPlayerPosition, false, false)
+            MainBoard.getFirstPlayerMarker().setPositionSmooth(playBoard.content.firstPlayerPosition, false, false)
         end
 
         if phase == "roundStart" then
@@ -400,6 +400,7 @@ function PlayBoard._staticSetUp(settings)
     end)
 
     Helper.registerEventListener("playerTurns", function (phase, color)
+        --Helper.dumpFunction("PlayBoard.turnCallback", phase, color)
         local playBoard = PlayBoard.getPlayBoard(color)
 
         for otherColor, otherPlayBoard in pairs(PlayBoard._getPlayBoards()) do
@@ -1342,7 +1343,6 @@ function PlayBoard.setLeader(color, leaderCard)
     leaderCard.setPosition(position)
     playBoard.leaderCard = leaderCard
     Helper.noPlay(leaderCard)
-    log(position)
     return true
 end
 
