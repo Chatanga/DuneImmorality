@@ -54,7 +54,6 @@ function AcquireCard.onObjectLeaveScriptingZone(...)
     Helper.emitEvent(AcquireCard.UPDATE_EVENT_NAME, ...)
 end
 
---- TODO Helper.createAreaButton -> Helper.editAreaButton?
 function AcquireCard:_createButton(acquire)
     local cardCount = Helper.getCardCount(Helper.getDeckOrCard(self.zone))
     if cardCount > 0 then

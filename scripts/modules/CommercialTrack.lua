@@ -7,10 +7,10 @@ local Action = Module.lazyRequire("Action")
 
 local CommercialTrack = {
     initialFreighterPositions = {
-        Yellow = Helper.getHardcodedPositionFromGUID('8fa76f', 8.999577, 0.680369258, 2.85036778),
-        Green = Helper.getHardcodedPositionFromGUID('34281d', 8.44957352, 0.680363059, 2.850372),
-        Blue = Helper.getHardcodedPositionFromGUID('68e424', 7.34955072, 0.680377, 2.8544054),
-        Red = Helper.getHardcodedPositionFromGUID('e9096d', 7.89962, 0.6803636, 2.8532238)
+        Yellow = Helper.getHardcodedPositionFromGUID('8fa76f', 8.999577, 0.664093435, 2.85036969),
+        Green = Helper.getHardcodedPositionFromGUID('34281d', 8.449565, 0.6641097, 2.85037446),
+        Blue = Helper.getHardcodedPositionFromGUID('68e424', 7.34955263, 0.6641073, 2.854408),
+        Red = Helper.getHardcodedPositionFromGUID('e9096d', 7.89962149, 0.6641103, 2.853226)
     }
 }
 

@@ -3,7 +3,6 @@ local Helper = require("utils.Helper")
 local I18N = require("utils.I18N")
 
 local Utils = Module.lazyRequire("Utils")
-local Action = Module.lazyRequire("Action")
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local MainBoard = Module.lazyRequire("MainBoard")
 
@@ -103,6 +102,11 @@ function InfluenceTrack.onLoad()
     for _, bag in pairs(InfluenceTrack.friendshipBags) do
         bag.interactable = false
     end
+end
+
+---
+function InfluenceTrack.setUp()
+    -- NOP
 end
 
 ---
@@ -270,7 +274,7 @@ function InfluenceTrack._changeInfluenceTracksRank(color, faction, change)
             from a bag which induces a invisible transit with parks, ending in
             2 stacked tokens in the case a player gain 3+ influences on the
             track in a single move).
-        ]]--
+        --]]
         if oldRank >= 4 or newRank >= 4 then
             InfluenceTrack._challengeAlliance(faction)
         end

@@ -21,6 +21,11 @@
         "UI",
         "Color",
         "getObjects",
-        "printToAll"
+        "printToAll",
+        "onLoad",
+        "onSave",
+        "onPlayerChangeColor",
+        "onPlayerConnect",
+        "onPlayerDisconnect"
     ]
 }

@@ -1,8 +1,14 @@
+local BUILD = 'Wed Oct 18 20:58:10 CEST 2023'
+
+-- Do not load anything. Appropriate to work on the mod content without
+-- interference.
 local constructionModeEnabled = false
 
-local validateDefaultSetup
+-- For test purposes.
+local autoLoadedSettings
+
 --[[
-validateDefaultSetup = {
+autoLoadedSettings = {
     language = "en",
     randomizePlayerPositions = false,
     virtualHotSeat = true,
@@ -20,7 +26,7 @@ validateDefaultSetup = {
     fanmadeLeaders = false,
     variant = nil,
 }
-validateDefaultSetup = {
+autoLoadedSettings = {
     language = "en",
     randomizePlayerPositions = false,
     virtualHotSeat = true,
@@ -38,7 +44,7 @@ validateDefaultSetup = {
     fanmadeLeaders = false,
     variant = nil,
 }
-validateDefaultSetup = {
+autoLoadedSettings = {
     language = "fr",
     randomizePlayerPositions = false,
     virtualHotSeat = false,
@@ -57,7 +63,7 @@ validateDefaultSetup = {
     variant = nil,
     soundEnabled = true,
 }
-validateDefaultSetup = {
+autoLoadedSettings = {
     language = "fr",
     randomizePlayerPositions = false,
     virtualHotSeat = true,
@@ -75,7 +81,7 @@ validateDefaultSetup = {
     variant = "arrakeenScouts",
     soundEnabled = true,
 }
-validateDefaultSetup = {
+autoLoadedSettings = {
     language = "fr",
     randomizePlayerPositions = false,
     virtualHotSeat = true,
@@ -93,8 +99,7 @@ validateDefaultSetup = {
     fanmadeLeaders = false,
     soundEnabled = true,
 }
---validateDefaultSetup = nil
-]]--
+--]]
 
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
@@ -105,7 +110,7 @@ local I18N = require("utils.I18N")
 --[[
     Remember that 'require' must have a literal parameter, since it is not a
     real function, but simply a macro for 'luabundler'.
-]]--
+--]]
 local allModules = Module.registerModules({
     AcquireCard, -- To take advantage of Module.registerModuleRedirections.
     Action = require("Action"),
@@ -139,6 +144,7 @@ local allModules = Module.registerModules({
     Utils = require("Utils"),
 })
 
+-- A 'xxx_all' member is not UI field, but define the options for the 'xxx' field.
 local PlayerSet = {
     fields = {
         color_all = {
@@ -148,13 +154,14 @@ local PlayerSet = {
             Red = true
         },
         language_all = {
-            --de = "Deutsch",
+            --de = "Deutsche",
             en = "English",
             --ep = "Español",
             --eo = "Esperanto",
             fr = "Français",
             --it = "Italiano",
-            jp = "日本語"
+            jp = "日本語",
+            --zh = "中文",
         },
         language = "fr",
         randomizePlayerPositions = true,
@@ -189,7 +196,7 @@ local settings
 
 ---
 function onLoad(scriptState)
-    log("--------< Dune Immorality >--------")
+    log("--------< Dune Immorality - " .. BUILD .. " >--------")
     Helper.destroyTransientObjects()
 
     if constructionModeEnabled then
@@ -206,46 +213,51 @@ function onLoad(scriptState)
 
     local state = scriptState ~= "" and JSON.decode(scriptState) or {}
 
-    --Module.callOnAllRegisteredModules("onLoad", state)
-    -- Order matter, now that we reload with "staticSetUp" (for the same reason setUp is ordered too).
-    -- FIXME It is too much error prone.
-
     allModules.Locale.onLoad(state)
     allModules.Action.onLoad(state)
 
-    allModules.ArrakeenScouts.onLoad(state)
-    allModules.Music.onLoad(state)
-    allModules.Deck.onLoad(state)
-    allModules.Hagal.onLoad(state)
-    allModules.ScoreBoard.onLoad(state)
-    allModules.PlayBoard.onLoad(state)
-    allModules.Combat.onLoad(state)
-    allModules.LeaderSelection.onLoad(state)
-    allModules.MainBoard.onLoad(state)
-    allModules.CommercialTrack.onLoad(state)
-    allModules.TechMarket.onLoad(state)
-    allModules.Intrigue.onLoad(state)
-    allModules.InfluenceTrack.onLoad(state)
-    allModules.ImperiumRow.onLoad(state)
-    allModules.Reserve.onLoad(state)
-    allModules.TleilaxuResearch.onLoad(state)
-    allModules.TleilaxuRow.onLoad(state)
-    allModules.TurnControl.onLoad(state)
+    allModules.ordered = {
+        allModules.ArrakeenScouts,
+        allModules.Music,
+        allModules.Deck,
+        allModules.Hagal,
+        allModules.ScoreBoard,
+        allModules.PlayBoard,
+        allModules.Combat,
+        allModules.LeaderSelection,
+        allModules.MainBoard,
+        allModules.CommercialTrack,
+        allModules.TechMarket,
+        allModules.Intrigue,
+        allModules.InfluenceTrack,
+        allModules.ImperiumRow,
+        allModules.Reserve,
+        allModules.TleilaxuResearch,
+        allModules.TleilaxuRow,
+        allModules.TurnControl,
+    }
+    assert(#allModules.ordered == 18)
 
-    if true then
-        Module.registerModuleRedirections({
-            "onObjectEnterScriptingZone",
-            "onObjectLeaveScriptingZone",
-            "onObjectDrop",
-            "onPlayerChangeColor",
-            "onPlayerConnect",
-            "onPlayerDisconnect" })
+    -- We cannot use Module.callOnAllRegisteredModules("onLoad", state),
+    -- because the order matter, now that we reload with "staticSetUp" (for the
+    -- same reason setUp is ordered too).
+    for _, module in ipairs(allModules.ordered) do
+        module.onLoad(state)
     end
 
+    -- List the TTS events we want to make available in the modules.
+    Module.registerModuleRedirections({
+        "onObjectEnterScriptingZone",
+        "onObjectLeaveScriptingZone",
+        "onObjectDrop",
+        "onPlayerChangeColor",
+        "onPlayerConnect",
+        "onPlayerDisconnect" })
+
     if not state.settings then
-        if validateDefaultSetup then
+        if autoLoadedSettings then
             Wait.frames(function ()
-                setUp(validateDefaultSetup)
+                setUp(autoLoadedSettings)
             end, 1)
         else
             PlayerSet.ui = XmlUI.new(Global, "setupPane", PlayerSet.fields)
@@ -255,20 +267,7 @@ function onLoad(scriptState)
     end
 end
 
---[[
-function onObjectEnterScriptingZone(...)
-    Module.callOnAllRegisteredModules("onObjectEnterScriptingZone", ...)
-end
-
-function onObjectLeaveScriptingZone(...)
-    Module.callOnAllRegisteredModules("onObjectLeaveScriptingZone", ...)
-end
-
-function onObjectDrop(...)
-    Module.callOnAllRegisteredModules("onObjectDrop", ...)
-end
-]]--
-
+---
 function onSave()
     if constructionModeEnabled then
         return
@@ -307,26 +306,12 @@ function setUp(newSettings)
         -- Not assigned before in order to avoid saving anything.
         settings = newSettings
 
-        -- TODO Explicit dependency + preserved for onLoad.
-        allModules.ArrakeenScouts.setUp(settings)
-        allModules.Music.setUp(settings)
-        allModules.Deck.setUp(settings)
-        allModules.Hagal.setUp(settings)
-        allModules.ScoreBoard.setUp(settings)
-        allModules.PlayBoard.setUp(settings, activeOpponents)
-        allModules.Combat.setUp(settings)
-        allModules.LeaderSelection.setUp(settings, activeOpponents)
-        allModules.MainBoard.setUp(settings)
-        allModules.CommercialTrack.setUp(settings)
-        allModules.TechMarket.setUp(settings)
-        allModules.Intrigue.setUp(settings)
-        allModules.ImperiumRow.setUp(settings)
-        allModules.Reserve.setUp()
-        allModules.TleilaxuResearch.setUp(settings)
-        allModules.TleilaxuRow.setUp(settings)
-        allModules.TurnControl.setUp(settings, PlayerSet.toOrderedPlayerList(activeOpponents))
+        for _, module in ipairs(allModules.ordered) do
+            module.setUp(settings, activeOpponents, PlayerSet.toOrderedPlayerList(activeOpponents))
+        end
 
-        -- TurnControl.start() is called by "LeaderSelection" asynchronously. (FIXME: use a continuation for readiness?)
+        -- TurnControl.start() is called by "LeaderSelection" asynchronously,
+        -- effectively starting the game.
     end)
 end
 
@@ -359,7 +344,7 @@ function PlayerSet.findActiveOpponents(properlySeatedPlayers, numberOfPlayers)
     end
 
     local remainingCount = math.max(0, 3 - numberOfPlayers)
-    local opponentType = "rival" -- TODO remove: remainingCount == 2 and "rival" or "hagal"
+    local opponentType = "rival"
     for _, color in ipairs(colorsByPreference) do
         if remainingCount > 0 then
             if not activeOpponents[color] then

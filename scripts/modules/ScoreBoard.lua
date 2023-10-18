@@ -16,7 +16,7 @@ function ScoreBoard.onLoad(state)
         4 players tokens -> PlayBoard
         alliance / friendship -> InfluenceTrack
         others -> here
-    ]]--
+    --]]
     ScoreBoard.tokens = Helper.resolveGUIDs(true, {
         base = {
             theSpiceMustFlowBag = "43c7b5",

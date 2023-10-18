@@ -43,7 +43,7 @@ end
     tags: restriction on the park content.
     description: an optional restriction on the park content.
     locked: should the park content be locked?
-]]--
+--]]
 ---
 function Park.createPark(name, slots, rotation, zone, tags, description, locked, smooth)
     assert(#slots > 0, "No slot provided for new park.")
@@ -74,7 +74,7 @@ end
     n: the number of objects to be transfered.
     fromParkName: the source park.
     toParkName: the destination park.
-]]--
+--]]
 ---
 function Park.transfert(n, fromPark, toPark)
     assert(n >= 0, "Negative count.")
@@ -98,7 +98,7 @@ end
     Put an external object into a park, provided it remains a free slot.
     object: the object to put in the park.
     toParkName: the name of the destination park.
-]]--
+--]]
 ---
 function Park.putObject(object, toPark)
     assert(object, "No object provided.")
@@ -130,7 +130,7 @@ function Park._putHolders(holders, toPark)
         Park objects usually come from other objects (one of them at least). As
         such, it shall not be assigned (it is treated as a pure right value).
         Copies must be made when needed (even for temporarily storing it).
-    ]]--
+    --]]
 
     local now = Time.time
 

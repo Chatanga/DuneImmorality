@@ -19,8 +19,8 @@ local LeaderSelection = {
 ---
 function LeaderSelection.onLoad()
     Helper.append(LeaderSelection, Helper.resolveGUIDs(true, {
-        deckZone = getObjectFromGUID("23f2b5"),
-        secondaryTable = getObjectFromGUID("662ced"),
+        deckZone = "23f2b5",
+        secondaryTable = "662ced",
     }))
 
     -- We don't event try to save the leader selection state.

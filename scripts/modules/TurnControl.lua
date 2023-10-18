@@ -66,7 +66,7 @@ function TurnControl.onSave(state)
 end
 
 --- Initialize the turn system with the provided players (or all the seated players) and start a new round.
-function TurnControl.setUp(settings, players)
+function TurnControl.setUp(settings, _, players)
     TurnControl.players = players
     TurnControl.scoreGoal = settings.epicMode and 12 or 10
 

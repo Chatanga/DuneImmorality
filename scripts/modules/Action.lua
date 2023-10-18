@@ -51,7 +51,7 @@ end
     tech_tile_effect(tech)
     conflict_reward(conflict, position)
     flag_control(space)
-]]--
+--]]
 ---
 function Action.checkContext(attributes)
     for name, expectedValue in pairs(attributes) do
@@ -169,7 +169,10 @@ function Action.takeHighCouncilSeat(color)
     end
 end
 
----
+---@param color PlayerColor
+---@param resourceName ResourceName
+---@param amount integer
+---@return boolean
 function Action.resources(color, resourceName, amount)
     Utils.assertIsPlayerColor(color)
     Utils.assertIsResourceName(resourceName)
@@ -197,7 +200,10 @@ function Action.drawImperiumCards(color, amount)
     return true
 end
 
----
+---@param color PlayerColor
+---@param faction Faction
+---@param amount integer
+---@return Continuation
 function Action.influence(color, faction, amount)
     Utils.assertIsPlayerColor(color)
     Utils.assertIsInteger(amount)
@@ -216,7 +222,11 @@ function Action.influence(color, faction, amount)
     return continuation
 end
 
----
+---@param color PlayerColor
+---@param from TroopLocation
+---@param to TroopLocation
+---@param baseCount integer
+---@return integer
 function Action.troops(color, from, to, baseCount)
     Utils.assertIsPlayerColor(color)
     Utils.assertIsTroopLocation(from)
@@ -528,6 +538,6 @@ end
 ---
 function Action.discardIntrigueCard(name)
 end
-]]--
+--]]
 
 return Action

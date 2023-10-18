@@ -1,3 +1,37 @@
+---@alias PlayerColor
+---| 'Green'
+---| 'Yellow'
+---| 'Blue'
+---| 'Red'
+
+---@alias Faction
+---| 'emperor'
+---| 'spacingGuild'
+---| 'beneGesserit'
+---| 'fremen'
+
+---@alias TroopLocation
+---| 'supply'
+---| 'garrison'
+---| 'combat'
+---| 'negotiation'
+---| 'tanks'
+
+---@alias DreadnoughtLocation
+---| 'supply'
+---| 'garrison'
+---| 'combat'
+---| 'carthag'
+---| 'arrakeen'
+---| 'imperialBassin'
+
+---@alias ResourceName
+---| 'spice'
+---| 'water'
+---| 'solari'
+---| 'persuasion'
+---| 'strength'
+
 local Utils = {}
 
 ---

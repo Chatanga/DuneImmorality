@@ -1,8 +1,13 @@
+---@class Vector
+---@field x number
+---@field y number
+---@field z number
+
 local Helper = {
     sharedTables = {},
     eventListenersByTopic = {},
-    --areaButtonColor = { 1, 0, 0, 0.5 },
     areaButtonColor = { 0, 0, 0, 0 },
+    uniqueNamePool = {},
     ERASE = function ()
         return "__erase__"
     end
@@ -10,13 +15,25 @@ local Helper = {
 
 math.randomseed(os.time())
 
----
+-- *** Event listeners ***
+
 function Helper.registerEventListener(topic, listener)
     return Helper.registerEventListenerWithPriority(topic, 0, listener)
 end
 
----
+--[[
+    Register a callback to be synchronously called each time an event of the
+    corresponding topic is emitted. Each callback will be called with the same
+    parameters used for emitting the event. The provided priority specifies in
+    which order a callback is called (higher priority callbacks are called
+    first). Note that it is best to rely as little as possible on priorities.
+--]]
+---@param topic string
+---@param priority integer
+---@param listener function
+---@return function the provided callback (to register and store it in the same line).
 function Helper.registerEventListenerWithPriority(topic, priority, listener)
+    assert(topic)
     assert(priority)
     assert(listener)
 
@@ -43,7 +60,11 @@ function Helper.registerEventListenerWithPriority(topic, priority, listener)
     return listener
 end
 
----
+--[[
+    Unregister a previously registered callback for a given topic.
+--]]
+---@param topic string
+---@param listener function
 function Helper.unregisterEventListener(topic, listener)
     assert(listener)
     local listenersWithPriority = Helper.eventListenersByTopic[topic]
@@ -63,7 +84,12 @@ function Helper.unregisterEventListener(topic, listener)
     end
 end
 
----
+--[[
+    Emit an event: all listeners registered for the specified topic will
+    be called with the following parameters.
+--]]
+---@param topic any
+---@param ... unknown
 function Helper.emitEvent(topic, ...)
     local listenersWithPriority = Helper.eventListenersByTopic[topic]
     if listenersWithPriority then
@@ -73,46 +99,41 @@ function Helper.emitEvent(topic, ...)
     end
 end
 
----
-function Helper.getIdentity()
-    if self then
-        if self.guid == "-1" then
-            return "Global"
-        else
-            return self.getGUID() .. " - " .. self.getName()
-        end
-    else
-        return "?"
-    end
-end
+-- *** GUID helper functions ***
 
----
-function Helper.isSomeKindOfObject(data)
+---@param data any
+---@return boolean
+function Helper._isSomeKindOfObject(data)
     return getmetatable(data) ~= nil
 end
 
----
-function Helper.stillExist(object)
-    return object and getObjectFromGUID(object.getGUID())
-end
-
----
+--[[
+    Return a copy of the provided data where every leaf identified as a
+    GUID is replaced by the corresponding object (or nil if it can't be
+    resolved).
+--]]
+---@param reportUnresolvedGUIDs boolean
+---@param data any
+---@return any
 function Helper.resolveGUIDs(reportUnresolvedGUIDs, data)
     local newData = data
-    if data then
+    if data == Helper.ERASE then
+        -- NOP
+    elseif data then
         local t = type(data)
         if t == "string" then
+            -- FIXME Doesn't Lua support more elaborate regex?
             if string.match(data, "[a-z0-9][a-z0-9][a-z0-9][a-z0-9][a-z0-9][a-z0-9]") then
                 newData = getObjectFromGUID(data)
                 if not newData and reportUnresolvedGUIDs then
                     log("[resolveGUIDs] Unknow GUID: '" .. data .. "'")
                 end
             else
-                --log("[resolveGUIDs] Not a GUID: " .. data)
-                -- NOP
+                log("[resolveGUIDs] Not a GUID: '" .. data .. "'")
             end
         elseif t == "table" then
-            if not Helper.isSomeKindOfObject(data) then
+            -- Avoid digging inside complex object.
+            if not Helper._isSomeKindOfObject(data) then
                 newData = {}
                 for i, v in ipairs(data) do
                     newData[i] = Helper.resolveGUIDs(reportUnresolvedGUIDs, v)
@@ -124,7 +145,8 @@ function Helper.resolveGUIDs(reportUnresolvedGUIDs, data)
         elseif t == "number" then
             -- NOP
         else
-            --log("[resolveGUIDs] Unknown type: " .. t)
+            -- Not a problem per se, but still unexpected in our use cases.
+            log("[resolveGUIDs] Unknown type: " .. t)
             -- NOP
         end
     end
@@ -150,59 +172,62 @@ end
     fail, and one shall rely on hardcoded positions or using some kind of anchor
     objects. This function and its small update utility is simply a way to get
     around this problem when developing by recovering a truly stable information.
-]]--
----
+--]]
+---@param GUID string
+---@param x number
+---@param y number
+---@param z number
+---@return Vector
 function Helper.getHardcodedPositionFromGUID(GUID, x, y, z)
     return Vector(x, y, z)
 end
 
----
-function Helper.moveObject(card, position, rotation, smooth, flipAtTheEnd)
-    assert(card)
+-- *** Deck manipulations ***
+
+--- A synthetic move of an object, combining multiple operations.
+---@param object table
+---@param position Vector
+---@param rotation Vector
+---@param smooth boolean
+---@param flipAtTheEnd boolean
+---@return Continuation A continuation run once the object is motionless.
+function Helper._moveObject(object, position, rotation, smooth, flipAtTheEnd)
+    assert(object)
 
     local continuation = Helper.createContinuation()
 
     if smooth then
-        card.setPositionSmooth(position)
+        object.setPositionSmooth(position)
     else
-        card.setPosition(position)
+        object.setPosition(position)
     end
 
     if rotation then
         if smooth then
-            card.setRotationSmooth(rotation)
+            object.setRotationSmooth(rotation)
         else
-            card.setRotation(rotation)
+            object.setRotation(rotation)
         end
     end
 
-    Helper.onceMotionless(card).doAfter(function ()
+    Helper.onceMotionless(object).doAfter(function ()
         if flipAtTheEnd then
-            card.flip()
+            object.flip()
         end
-        continuation.run(card)
+        continuation.run(object)
     end)
 
     return continuation
 end
 
----
-function Helper.getCards(deckOrCard)
-    if deckOrCard then
-        if deckOrCard.type == "Deck" then
-            return deckOrCard.getObjects()
-        elseif deckOrCard.type == "Card" then
-            return { deckOrCard }
-        else
-            error("Unexpected type: " .. deckOrCard.type)
-        end
-    else
-        return {}
-    end
-end
-
 --- Prefer the "deal" method when possible? Would it prevent the card from being
 --- grabbed by anther player's hand zone?
+---@param zone table
+---@param position Vector
+---@param rotation Vector
+---@param smooth boolean
+---@param flipAtTheEnd boolean
+---@return Vector? A continuation run once the object is spawned.
 function Helper.moveCardFromZone(zone, position, rotation, smooth, flipAtTheEnd)
     local deckOrCard = Helper.getDeckOrCard(zone)
     if deckOrCard then
@@ -220,7 +245,7 @@ function Helper.moveCardFromZone(zone, position, rotation, smooth, flipAtTheEnd)
             end
             deckOrCard.takeObject(parameters)
         elseif deckOrCard.type == "Card" then
-            Helper.moveObject(deckOrCard, position, rotation, smooth, flipAtTheEnd).doAfter(continuation.run)
+            Helper._moveObject(deckOrCard, position, rotation, smooth, flipAtTheEnd).doAfter(continuation.run)
         else
             error("Unexpected type: " .. deckOrCard.type)
         end
@@ -230,7 +255,32 @@ function Helper.moveCardFromZone(zone, position, rotation, smooth, flipAtTheEnd)
     return nil
 end
 
----
+--[[
+    Return a list of cards (not spawned in general) from the returned value of
+    'Helper.getDeckOrCard(zone)'. If there is none, an empty list is returned.
+--]]
+---@param deckOrCard table?
+---@return table
+function Helper.getCards(deckOrCard)
+    if deckOrCard then
+        if deckOrCard.type == "Deck" then
+            return deckOrCard.getObjects()
+        elseif deckOrCard.type == "Card" then
+            return { deckOrCard }
+        else
+            error("Unexpected type: " .. deckOrCard.type)
+        end
+    else
+        return {}
+    end
+end
+
+
+--[[
+    Return the number of cards from the returned value of 'Helper.getDeckOrCard(zone)'.
+--]]
+---@param deckOrCard table?
+---@return integer
 function Helper.getCardCount(deckOrCard)
     if not deckOrCard then
         return 0
@@ -243,67 +293,162 @@ function Helper.getCardCount(deckOrCard)
     end
 end
 
----
+--[[
+    Return the first deck or card found in the provide zone. Deck and card hold
+    by a player are ignored.
+--]]
+---@param zone table
+---@return table?
 function Helper.getDeckOrCard(zone)
     assert(zone)
-    assert(type(zone) ~= 'string', tostring(zone) .. ' is a GUID, not a zone')
+    assert(type(zone) ~= 'string', tostring(zone) .. ' looks like a GUID, not a zone')
     for _, object in ipairs(zone.getObjects()) do
         if not object.held_by_color and (object.type == "Card" or object.type == "Deck") then
             return object
         end
     end
-    --log(zone.getGUID() .. " contains no card nor deck!")
     return nil
 end
 
----
+---@deprecated Use Helper.getDeckOrCard and deal with real life.
 function Helper.getDeck(zone)
     assert(zone)
-    assert(type(zone) ~= 'string', tostring(zone) .. ' is a GUID, not a zone')
+    assert(type(zone) ~= 'string', tostring(zone) .. ' looks like a GUID, not a zone')
     for _, object in ipairs(zone.getObjects()) do
-        if object.type == "Deck" then return object end
+        if not object.held_by_color and object.type == "Deck" then return object end
     end
     return nil
 end
 
----
+---@deprecated Use Helper.getDeckOrCard and deal with real life.
 function Helper.getCard(zone)
     assert(zone)
-    assert(type(zone) ~= 'string', tostring(zone) .. ' is a GUID, not a zone')
+    assert(type(zone) ~= 'string', tostring(zone) .. ' looks like a GUID, not a zone')
     for _, object in ipairs(zone.getObjects()) do
-        if object.type == "Card" then return object end
+        if not object.held_by_color and object.type == "Card" then return object end
     end
     return nil
 end
 
----
-function Helper.getDeckOrCardFromGUID(zoneGUID)
-    assert(type(zoneGUID) == 'string', tostring(zoneGUID) .. ' is not a GUID')
-    local zone = getObjectFromGUID(zoneGUID)
-    assert(zone, "Failed to resolve GUID: " .. tostring(zoneGUID))
-    return Helper.getDeckOrCard(zone)
-end
-
----
-function Helper.getDeckFromGUID(zoneGUID)
-    assert(type(zoneGUID) == 'string', tostring(zoneGUID) .. ' is not a GUID')
-    local zone = getObjectFromGUID(zoneGUID)
-    assert(zone, "Failed to resolve GUID: " .. tostring(zoneGUID))
-    return Helper.getDeck(zone)
-end
-
----
-function Helper.getCardFromGUID(zoneGUID)
-    assert(type(zoneGUID) == 'string', tostring(zoneGUID) .. ' is not a GUID')
-    local zone = getObjectFromGUID(zoneGUID)
-    assert(zone, "Failed to resolve GUID: " .. tostring(zoneGUID))
-    return Helper.getCard(zone)
-end
+-- *** Anchors ***
 
 --[[
-    Create a snapPoint relative to a parent centered on the provided zone but at the
-    height of the parent.
-]]--
+    The created anchor will be saved but could be automatically destroyed at
+    reload using Helper.destroyTransientObjects().
+--]]
+---@param nickname string?
+---@param position Vector
+---@return Continuation A continuation run once the anchor is spawned.
+function Helper.createTransientAnchor(nickname, position)
+    local continuation = Helper.createContinuation()
+
+    local data = {
+        Name = "Custom_Model",
+        Transform = {
+            posX = 0,
+            posY = 0,
+            posZ = 0,
+            rotX = 0,
+            rotY = 180,
+            rotZ = 0,
+            scaleX = 1,
+            scaleY = 1,
+            scaleZ = 1
+        },
+        Nickname = nickname,
+        Description = "Generated transient anchor.",
+        GMNotes = "",
+        AltLookAngle = {
+            x = 0,
+            y = 0,
+            z = 0
+        },
+        ColorDiffuse = {
+            r = 1.0,
+            g = 0.0,
+            b = 1.0
+        },
+        LayoutGroupSortIndex = 0,
+        Value = 0,
+        Locked = true,
+        Grid = false,
+        Snap = false,
+        IgnoreFoW = false,
+        MeasureMovement = false,
+        DragSelectable = true,
+        Autoraise = true,
+        Sticky = false,
+        Tooltip = true,
+        GridProjection = false,
+        HideWhenFaceDown = false,
+        Hands = false,
+        CustomMesh = {
+            MeshURL = "http://cloud-3.steamusercontent.com/ugc/2042984592862608679/0383C231514AACEB52B88A2E503A90945A4E8143/",
+            DiffuseURL = "",
+            NormalURL = "",
+            ColliderURL = "",
+            Convex = true,
+            MaterialIndex = 0,
+            TypeIndex = 4,
+            CustomShader = {
+            SpecularColor = {
+                    r = 0,
+                    g = 0,
+                    b = 0
+                },
+                SpecularIntensity = 0.0,
+                SpecularSharpness = 7.0,
+                FresnelStrength = 0.4
+            },
+            CastShadows = false
+        },
+        LuaScript = "",
+        LuaScriptState = "",
+        XmlUI = ""
+      }
+
+    spawnObjectData({
+        data = data,
+        position = position,
+        callback_function = function (anchor)
+            Helper.markAsTransient(anchor)
+            anchor.interactable = false
+            continuation.run(anchor)
+        end})
+
+    return continuation
+end
+
+---
+function Helper.markAsTransient(object)
+    -- Tagging is not usable on a zone without filtering its content.
+    object.setGMNotes("Transient")
+end
+
+---
+function Helper._isTransient(object)
+    return object.getGMNotes() == "Transient"
+end
+
+---
+function Helper.destroyTransientObjects()
+    local count = 0
+    for _, object in ipairs(Global.getObjects()) do
+        if Helper._isTransient(object) then
+            --log("Destroy " .. object.getName())
+            object.destruct()
+            count = count + 1
+        end
+    end
+    -- log("Destroyed " .. tostring(count) .. " anchors.")
+end
+
+-- *** Snapoints and anchored buttons ***
+
+--[[
+    Create a snapPoint relative to a parent centered on the provided zone, but
+    at the height of the parent.
+--]]
 ---
 function Helper.createRelativeSnapPointFromZone(parent, zone, rotationSnap, tags)
     return Helper.createRelativeSnapPoint(parent, zone.getPosition(), rotationSnap, tags)
@@ -413,24 +558,24 @@ end
     the position and (partly to the) scale, not the rotation. The
     convention for the world coordinates is a bit twisted here since the
     X coordinate is inverted.
-]]--
+--]]
 ---
-function Helper.createAbsoluteButton(object, parameters)
+function Helper._createAbsoluteButton(object, parameters)
     return Helper.createAbsoluteButtonWithRoundness(object, 0.25, false, parameters)
 end
 
 ---
 function Helper.createAbsoluteButtonWithRoundness(object, roundness, quirk, parameters)
-    return Helper.createButton(object, Helper.createAbsoluteWidgetWithRoundnessParameters(object, roundness, quirk, parameters))
+    return Helper.createButton(object, Helper._createAbsoluteWidgetWithRoundnessParameters(object, roundness, quirk, parameters))
 end
 
 ---
-function Helper.createAbsoluteInputWithRoundness(object, roundness, quirk, parameters)
-    return Helper.createInput(object, Helper.createAbsoluteWidgetWithRoundnessParameters(object, roundness, quirk, parameters))
+function Helper._createAbsoluteInputWithRoundness(object, roundness, quirk, parameters)
+    return Helper.createInput(object, Helper._createAbsoluteWidgetWithRoundnessParameters(object, roundness, quirk, parameters))
 end
 
 ---
-function Helper.createAbsoluteWidgetWithRoundnessParameters(object, roundness, quirk, parameters)
+function Helper._createAbsoluteWidgetWithRoundnessParameters(object, roundness, quirk, parameters)
     assert(object)
     assert(roundness >= 0, "Zero or negative roundness won't work as intended.")
     assert(roundness <= 10, "Roundness beyond 10 won't work as intended.")
@@ -440,7 +585,7 @@ function Helper.createAbsoluteWidgetWithRoundnessParameters(object, roundness, q
             Thus, to achieve a transparent button with a visible lablel, the alpha of the
             "font_color" needs to be pushed beyond 1. In fact, in this situation, the
             alpha seems to be interpreted as a percentage (100% being full opaque).
-        ]]--
+        --]]
         assert(parameters.color[4] > 0 or parameters.font_color[4] > 1, "Unproper label opacity!")
     end
 
@@ -448,7 +593,7 @@ function Helper.createAbsoluteWidgetWithRoundnessParameters(object, roundness, q
         Scale is a problem here. We change it to artificially adjust the roundness, but
         we also needs to ajust the font height, which is capped and more or less blurry
         depending on it...
-    ]]--
+    --]]
 
     local scale = object.getScale()
     local invScale = Vector(1 / scale.x, 1 / scale.y, 1 / scale.z)
@@ -520,276 +665,7 @@ function Helper.createAbsoluteWidgetWithRoundnessParameters(object, roundness, q
     return parameters
 end
 
----
-function Helper.setSharedTable(tableName, table)
-    --Global.setTable(tableName, table)
-    Helper.sharedTables[tableName] = table
-end
-
----
-function Helper.getSharedTable(tableName)
-    --return Global.getTable(tableName)
-    return Helper.sharedTables[tableName]
-end
-
----
-function Helper.toCamelCase(...)
-    local chameauString = ""
-    for i, str in ipairs({...}) do
-        if i > 1 then
-            chameauString = chameauString .. str:gsub("^%l", string.upper)
-        else
-            chameauString = chameauString .. str
-        end
-    end
-    return chameauString
-end
-
----
-function Helper.createTable(root, ...)
-    local parent = root
-    for _, str in ipairs({...}) do
-        if not parent[str] then
-            parent[str] = {}
-        end
-        parent = parent[str]
-        assert(type(parent) == "table")
-    end
-    return parent
-end
-
----
-function Helper.toVector(data)
-    if not data then
-        log("nothing to vectorize")
-        return Vector(0, 0, 0)
-    elseif Helper.isSomeKindOfObject(data) then
-        return data
-    else
-        return Vector(data[1], data[2], data[3])
-    end
-end
-
----
-function Helper.addAll(objects, otherObjects)
-    assert(objects)
-    assert(otherObjects)
-    for _, object in ipairs(otherObjects) do
-        table.insert(objects, object)
-    end
-end
-
----
-function Helper.repeatChainedAction(count, action)
-    local continuation = Helper.createContinuation()
-    if count > 0 then
-        local innerContinuation = action()
-        assert(innerContinuation and innerContinuation.doAfter, "Provided action must return a continuation!")
-        innerContinuation.doAfter(function ()
-            Helper.repeatChainedAction(count - 1, action)
-        end)
-    else
-        continuation.run()
-    end
-    return continuation
-end
-
----
-function Helper.repeatMovingAction(object, count, action)
-    local continuation = Helper.createContinuation()
-    if count > 0 then
-        action()
-        Helper.onceMotionless(object).doAfter(function ()
-            Helper.repeatMovingAction(object, count - 1, action).doAfter(function (_)
-                continuation.run(object)
-            end)
-        end)
-    else
-        Helper.onceMotionless(object).doAfter(function ()
-            continuation.run(object)
-        end)
-    end
-    return continuation
-end
-
----
-function Helper.onceMotionless(object)
-    local continuation = Helper.createContinuation()
-    -- Wait 1 frame for the movement to start.
-    Wait.frames(function ()
-        Wait.condition(function()
-            Wait.frames(function ()
-                continuation.run(object)
-            end, 1)
-        end, function()
-            continuation.tick()
-            return object.resting
-        end)
-    end, 1)
-    return continuation
-end
-
----
-function Helper.onceShuffled(container)
-    local continuation = Helper.createContinuation()
-    Wait.time(function ()
-        continuation.run(container)
-    end, 1.5) -- TODO Search for a better way.
-    return continuation
-end
-
----
-function Helper.onceOneDeck(zone)
-    local continuation = Helper.createContinuation()
-    Wait.condition(function()
-        continuation.run(Helper.getDeck(zone))
-    end, function()
-        local objects = Helper.filter(zone.getObjects(), function (object)
-            return object.type == "Card" or object.type == "Deck"
-        end)
-        if #objects == 1 and objects[1].type == "Deck" then
-            local deck = objects[1]
-            if deck.resting then
-                return true
-            end
-        end
-        continuation.tick()
-        return false
-    end)
-    return continuation
-end
-
--- Intended to be used in a coroutine.
----
-function Helper.sleep(durationInSeconds)
-    local Time = os.clock() + durationInSeconds
-    while os.clock() < Time do
-        coroutine.yield()
-    end
-end
-
----
-function Helper.createContinuation()
-
-    if not Helper.allContinuations then
-        Helper.allContinuations = {}
-    end
-
-    local continuation = {
-        start = Time.time,
-        what = function ()
-            return "continuation"
-        end
-    }
-
-    continuation.tick = function (toBeNotified)
-        local duration = Time.time - continuation.start
-        if toBeNotified and duration > 10 then
-            toBeNotified()
-        end
-        assert(duration < 10, "Roting continuation!")
-    end
-
-    continuation.actions = {}
-
-    continuation.doAfter = function (action)
-        assert(type(action) == 'function')
-        if continuation.done then
-            action(continuation.parameters)
-        else
-            table.insert(continuation.actions, action)
-        end
-    end
-
-    continuation.run = function (parameters)
-        Helper.allContinuations[continuation] = nil
-        continuation.done = true
-        continuation.parameters = parameters
-        for _, action in ipairs(continuation.actions) do
-            action(parameters)
-        end
-    end
-
-    continuation.cancel = function ()
-        Helper.allContinuations[continuation] = nil
-        continuation.done = true
-    end
-
-    Helper.allContinuations[continuation] = true
-
-    return continuation
-end
-
----
-function Helper.onceStabilized(timeout)
-    local continuation = Helper.createContinuation()
-
-    local start = os.time()
-
-    Wait.condition(function ()
-        continuation.run(continuation.success)
-    end, function ()
-        continuation.success = #Helper.allContinuations == 1
-        return continuation.success or (os.time() - start > (timeout or 10))
-    end)
-
-    return continuation
-end
-
----
-function Helper.trace(name, data)
-    log(name .. ": " .. tostring(data))
-    return data
-end
-
----
-function Helper.createClass(superclass, data)
-    --  We can't make this test unfortunately, since it superclasses typically come through lazyRequire.
-    --assert(not superclass or superclass.__index, "Superclass doesn't look like a class itself.")
-    local class = data or {}
-    class.__index = class
-    class.what = function ()
-        return "class"
-    end
-    if superclass then
-        setmetatable(class, superclass)
-    end
-    return class
-end
-
----
-function Helper.createClassInstance(class, data)
-    assert(class)
-    assert(class.__index, "Provided class doesn't look like a class actually.")
-    local instance = data or {}
-    instance.what = function ()
-        return "instance"
-    end
-    setmetatable(instance, class)
-    return instance
-end
-
----
-function Helper.getClass(instance)
-    assert(instance.what() == "instance")
-    local class = getmetatable(instance)
-    assert(class and class.what() == "class")
-    return class
-end
-
----
-function Helper._getNopCallback()
-    local uniqueName = "generatedCallback0"
-    local nopCallback = Global.getVar(uniqueName)
-    if not nopCallback then
-        Global.setVar(uniqueName, function ()
-            -- NOP
-        end)
-    end
-    return uniqueName
-end
-
-Helper.uniqueNamePool = {}
+-- *** Dynamic (button) callbacks ***
 
 ---
 function Helper.registerGlobalCallback(callback)
@@ -843,7 +719,7 @@ function Helper.clearButtons(object)
 end
 
 ---
-function Helper.getButton(object, index)
+function Helper._getButton(object, index)
     local buttons = object.getButtons()
     assert(buttons)
     for _, button in ipairs(buttons) do
@@ -855,8 +731,8 @@ function Helper.getButton(object, index)
 end
 
 ---
-function Helper.removeButton(object, index)
-    local button = Helper.getButton(object, index)
+function Helper._removeButton(object, index)
+    local button = Helper._getButton(object, index)
     assert(button, "No button with index: " .. tostring(index))
     local callback = button.click_function
     if callback then
@@ -873,8 +749,360 @@ function Helper.removeButtons(object, indexes)
     local previousIndex
     for _, index in ipairs(indexes) do
         assert(not previousIndex or previousIndex > index)
-        Helper.removeButton(object, index)
+        Helper._removeButton(object, index)
         previousIndex = index
+    end
+end
+
+-- *** Continuations ***
+
+---@return Continuation
+function Helper.createContinuation()
+
+    if not Helper.allContinuations then
+        Helper.allContinuations = {}
+    end
+
+    ---@class Continuation
+    ---@field what function
+    ---@field tick function
+    ---@field doAfter function
+    ---@field run function
+    ---@field cancel function
+
+    local continuation = {
+        start = Time.time,
+        what = function ()
+            return "continuation"
+        end
+    }
+
+    continuation.tick = function (toBeNotified)
+        local duration = Time.time - continuation.start
+        if toBeNotified and duration > 10 then
+            toBeNotified()
+        end
+        assert(duration < 10, "Roting continuation!")
+    end
+
+    continuation.actions = {}
+
+    continuation.doAfter = function (action)
+        assert(type(action) == 'function')
+        if continuation.done then
+            action(continuation.parameters)
+        else
+            table.insert(continuation.actions, action)
+        end
+    end
+
+    continuation.run = function (parameters)
+        Helper.allContinuations[continuation] = nil
+        continuation.done = true
+        continuation.parameters = parameters
+        for _, action in ipairs(continuation.actions) do
+            action(parameters)
+        end
+    end
+
+    continuation.cancel = function ()
+        Helper.allContinuations[continuation] = nil
+        continuation.done = true
+    end
+
+    Helper.allContinuations[continuation] = true
+
+    return continuation
+end
+
+---@return Continuation
+function Helper.onceStabilized(timeout)
+    local continuation = Helper.createContinuation()
+
+    local start = os.time()
+    local holder = {}
+
+    Wait.condition(function ()
+        continuation.run(holder.success)
+    end, function ()
+        holder.success = #Helper.allContinuations == 1
+        return holder.success or (os.time() - start > (timeout or 10))
+    end)
+
+    return continuation
+end
+
+---@return Continuation
+function Helper.onceMotionless(object)
+    local continuation = Helper.createContinuation()
+    -- Wait 1 frame for the movement to start.
+    Wait.frames(function ()
+        Wait.condition(function()
+            Wait.frames(function ()
+                continuation.run(object)
+            end, 1)
+        end, function()
+            continuation.tick()
+            return object.resting
+        end)
+    end, 1)
+    return continuation
+end
+
+---@return Continuation
+function Helper.onceShuffled(container)
+    local continuation = Helper.createContinuation()
+    Wait.time(function ()
+        continuation.run(container)
+    end, 1.5) -- TODO Search for a better way.
+    return continuation
+end
+
+---@return Continuation
+function Helper.onceOneDeck(zone)
+    local continuation = Helper.createContinuation()
+    Wait.condition(function()
+        continuation.run(Helper.getDeck(zone))
+    end, function()
+        local objects = Helper.filter(zone.getObjects(), function (object)
+            return object.type == "Card" or object.type == "Deck"
+        end)
+        if #objects == 1 and objects[1].type == "Deck" then
+            local deck = objects[1]
+            if deck.resting then
+                return true
+            end
+        end
+        continuation.tick()
+        return false
+    end)
+    return continuation
+end
+
+---@return Continuation
+function Helper.repeatChainedAction(count, action)
+    local continuation = Helper.createContinuation()
+    if count > 0 then
+        local innerContinuation = action()
+        assert(innerContinuation and innerContinuation.doAfter, "Provided action must return a continuation!")
+        innerContinuation.doAfter(function ()
+            Helper.repeatChainedAction(count - 1, action)
+        end)
+    else
+        continuation.run()
+    end
+    return continuation
+end
+
+---@return Continuation
+function Helper.repeatMovingAction(object, count, action)
+    local continuation = Helper.createContinuation()
+    if count > 0 then
+        action()
+        Helper.onceMotionless(object).doAfter(function ()
+            Helper.repeatMovingAction(object, count - 1, action).doAfter(function (_)
+                continuation.run(object)
+            end)
+        end)
+    else
+        Helper.onceMotionless(object).doAfter(function ()
+            continuation.run(object)
+        end)
+    end
+    return continuation
+end
+
+-- *** Basic OOP ***
+
+---
+function Helper.createClass(superclass, data)
+    --  We can't make this test unfortunately, since it superclasses typically come through lazyRequire.
+    --assert(not superclass or superclass.__index, "Superclass doesn't look like a class itself.")
+    local class = data or {}
+    class.__index = class
+    class.what = function ()
+        return "class"
+    end
+    if superclass then
+        setmetatable(class, superclass)
+    end
+    return class
+end
+
+---
+function Helper.createClassInstance(class, data)
+    assert(class)
+    assert(class.__index, "Provided class doesn't look like a class actually.")
+    local instance = data or {}
+    instance.what = function ()
+        return "instance"
+    end
+    setmetatable(instance, class)
+    return instance
+end
+
+---
+function Helper.getClass(instance)
+    assert(instance.what() == "instance")
+    local class = getmetatable(instance)
+    assert(class and class.what() == "class")
+    return class
+end
+
+---
+function Helper._getNopCallback()
+    local uniqueName = "generatedCallback0"
+    local nopCallback = Global.getVar(uniqueName)
+    if not nopCallback then
+        Global.setVar(uniqueName, function ()
+            -- NOP
+        end)
+    end
+    return uniqueName
+end
+
+-- *** Experimental player color suppor ***
+
+---
+function Helper.getPlayerColor(player)
+    return player.color
+end
+
+---
+function Helper._getPlayerColor(player)
+    --Helper.dumpFunction("Helper._getPlayerColor", player)
+    local color = Helper.cachedPlayers and Helper.cachedPlayers[player.steam_id] or nil
+    if not color then
+        color = player.color
+        assert(Player[player.color].steam_id == player.steam_id)
+    end
+    --Helper.dump(player, "color is", color, "and", player.color)
+    return color
+end
+
+---
+function Helper.findPlayerByColor(color)
+    --Helper.dumpFunction("Helper.findPlayerByColor", color)
+    for _, player in ipairs(Player.getPlayers()) do
+        if Helper._getPlayerColor(player) == color then
+            return player
+        end
+    end
+    return nil
+end
+
+---
+function Helper.changePlayerColorInCoroutine(player, newColor)
+    --Helper.dumpFunction("Helper.changePlayerColorInCoroutine", player, newColor)
+
+    local function seatPlayer(p, color)
+        p:changeColor(color)
+        if not Helper.cachedPlayers then
+            Helper.cachedPlayers = {}
+        end
+        Helper.cachedPlayers[p.steam_id] = color
+        Helper._sleep(0.5)
+    end
+
+    local oldColor = Helper._getPlayerColor(player)
+    local otherPlayer = Helper.findPlayerByColor(newColor)
+    if oldColor ~= newColor then
+        if otherPlayer then
+            seatPlayer(otherPlayer, "Grey")
+        end
+        seatPlayer(player, newColor)
+        if otherPlayer then
+            seatPlayer(otherPlayer, oldColor)
+        end
+    end
+end
+
+-- *** Specialized queues ***
+
+---
+function Helper.createTemporalQueue(delay)
+    local tq = {
+        delay = delay or 0.25,
+        actions = {},
+    }
+
+    function tq.submit(action)
+        assert(action)
+        table.insert(tq.actions, action)
+        if #tq.actions == 1 then
+            tq.activateLater()
+        end
+    end
+
+    function tq.activateLater()
+        Wait.time(function ()
+            local action = tq.actions[1]
+            table.remove(tq.actions, 1)
+            if #tq.actions > 0 then
+                tq.activateLater()
+            end
+            action()
+        end, tq.delay)
+    end
+
+    return tq
+end
+
+---
+function Helper.createCoalescentQueue(separationDelay, coalesce, handle)
+    local cq = {
+        separationDelay = separationDelay,
+    }
+
+    function cq.handleLater()
+        if cq.delayedHandler then
+            Wait.stop(cq.delayedHandler)
+        end
+        cq.delayedHandler = Wait.time(function()
+            local event = cq.lastEvent
+            cq.lastEvent = nil
+            handle(event)
+        end, 1)
+    end
+
+    function cq.submit(event)
+        assert(event)
+        if cq.lastEvent then
+            local newEvent = coalesce(event, cq.lastEvent)
+            if newEvent then
+                cq.lastEvent = event
+            else
+                handle(cq.lastEvent)
+                cq.lastEvent = event
+            end
+        else
+            cq.lastEvent = event
+        end
+        cq.handleLater()
+    end
+
+    return cq
+end
+
+-- *** TTS miscellaneous ***
+
+---@deprecated Relic of an old age.
+function Helper.setSharedTable(tableName, table)
+    --Global.setTable(tableName, table)
+    Helper.sharedTables[tableName] = table
+end
+
+---@deprecated Relic of an old age.
+function Helper.getSharedTable(tableName)
+    --return Global.getTable(tableName)
+    return Helper.sharedTables[tableName]
+end
+
+--- Intended to be called from a coroutine.
+function Helper._sleep(durationInSeconds)
+    local Time = os.clock() + durationInSeconds
+    while os.clock() < Time do
+        coroutine.yield()
     end
 end
 
@@ -888,109 +1116,110 @@ function Helper.getID(object)
     end
 end
 
---- The created anchor will be saved but could be automatically destroyed at reload using Helper.destroyTransientObjects().
-function Helper.createTransientAnchor(nickname, position)
-    local continuation = Helper.createContinuation()
-
-    local data = {
-        Name = "Custom_Model",
-        Transform = {
-            posX = 0,
-            posY = 0,
-            posZ = 0,
-            rotX = 0,
-            rotY = 180,
-            rotZ = 0,
-            scaleX = 1,
-            scaleY = 1,
-            scaleZ = 1
-        },
-        Nickname = nickname,
-        Description = "Generated transient anchor.",
-        GMNotes = "",
-        AltLookAngle = {
-            x = 0,
-            y = 0,
-            z = 0
-        },
-        ColorDiffuse = {
-            r = 1.0,
-            g = 0.0,
-            b = 1.0
-        },
-        LayoutGroupSortIndex = 0,
-        Value = 0,
-        Locked = true,
-        Grid = false,
-        Snap = false,
-        IgnoreFoW = false,
-        MeasureMovement = false,
-        DragSelectable = true,
-        Autoraise = true,
-        Sticky = false,
-        Tooltip = true,
-        GridProjection = false,
-        HideWhenFaceDown = false,
-        Hands = false,
-        CustomMesh = {
-            MeshURL = "http://cloud-3.steamusercontent.com/ugc/2042984592862608679/0383C231514AACEB52B88A2E503A90945A4E8143/",
-            DiffuseURL = "",
-            NormalURL = "",
-            ColliderURL = "",
-            Convex = true,
-            MaterialIndex = 0,
-            TypeIndex = 4,
-            CustomShader = {
-            SpecularColor = {
-                    r = 0,
-                    g = 0,
-                    b = 0
-                },
-                SpecularIntensity = 0.0,
-                SpecularSharpness = 7.0,
-                FresnelStrength = 0.4
-            },
-            CastShadows = false
-        },
-        LuaScript = "",
-        LuaScriptState = "",
-        XmlUI = ""
-      }
-
-    spawnObjectData({
-        data = data,
-        position = position,
-        callback_function = function (anchor)
-            Helper.markAsTransient(anchor)
-            anchor.interactable = false
-            continuation.run(anchor)
-        end})
-
-    return continuation
+function Helper.shuffleDeck(deck)
+    assert(deck)
+    if true then
+        deck.shuffle()
+    end
 end
 
 ---
-function Helper.markAsTransient(object)
-    -- Tagging is not usable on a zone without filtering its content.
-    object.setGMNotes("Transient")
-end
-
----
-function Helper.isTransient(object)
-    return object.getGMNotes() == "Transient"
-end
-
----
-function Helper.destroyTransientObjects()
-    local count = 0
-    for _, object in ipairs(Global.getObjects()) do
-        if Helper.isTransient(object) then
-            --log("Destroy " .. object.getName())
-            object.destruct()
-            count = count + 1
+function Helper.hasAllTags(object, tags)
+    for _, tag in ipairs(tags) do
+        if not object.hasTag(tag) then
+            return false
         end
     end
-    -- log("Destroyed " .. tostring(count) .. " anchors.")
+    return true
+end
+
+---
+function Helper.hasAnyTag(object, tags)
+    for _, tag in ipairs(tags) do
+        if object.hasTag(tag) then
+            return true
+        end
+    end
+    return false
+end
+
+---
+function Helper.noPhysicsNorPlay(...)
+    for _, object in pairs({...}) do
+        object.setLock(true)
+        object.interactable = false
+    end
+end
+
+---
+function Helper.noPlay(...)
+    for _, object in pairs({...}) do
+        object.setLock(false)
+        object.interactable = false
+    end
+end
+
+---
+function Helper.physicsAndPlay(...)
+    for _, object in pairs({...}) do
+        object.setLock(false)
+        object.interactable = true
+    end
+end
+
+-- *** Lua miscellaneous ***
+
+---
+function Helper.toCamelCase(...)
+    local chameauString = ""
+    for i, str in ipairs({...}) do
+        if i > 1 then
+            chameauString = chameauString .. str:gsub("^%l", string.upper)
+        else
+            chameauString = chameauString .. str
+        end
+    end
+    return chameauString
+end
+
+---
+function Helper._createTable(root, ...)
+    local parent = root
+    for _, str in ipairs({...}) do
+        if not parent[str] then
+            parent[str] = {}
+        end
+        parent = parent[str]
+        assert(type(parent) == "table")
+    end
+    return parent
+end
+
+---
+function Helper.toVector(data)
+    if not data then
+        log("nothing to vectorize")
+        return Vector(0, 0, 0)
+    elseif Helper._isSomeKindOfObject(data) then
+        return data
+    else
+        return Vector(data[1], data[2], data[3])
+    end
+end
+
+---
+function Helper.addAll(objects, otherObjects)
+    assert(objects)
+    assert(otherObjects)
+    for _, object in ipairs(otherObjects) do
+        table.insert(objects, object)
+    end
+end
+
+---
+function Helper.trace(name, data)
+    log(name .. ": " .. tostring(data))
+    return data
 end
 
 ---
@@ -999,12 +1228,6 @@ function Helper.append(parent, set)
         parent[name] = value
     end
     return parent
-end
-
----
-function Helper.mandatory(message, object)
-    assert(object, "Cyclic failure: " .. tostring(message))
-    return object
 end
 
 ---
@@ -1031,20 +1254,15 @@ function Helper.shuffle(table)
     end
 end
 
+---
 function Helper.pickAny(table)
     return table[math.random(#table)]
 end
 
+---
 function Helper.pickAnyKey(set)
     local keys = Helper.getKeys(set)
     return keys[math.random(#keys)]
-end
-
-function Helper.shuffleDeck(deck)
-    assert(deck)
-    if true then
-        deck.shuffle()
-    end
 end
 
 ---
@@ -1083,26 +1301,6 @@ end
 ---
 function Helper.isElementOf(element, elements)
     return Helper.tableContains(elements, element)
-end
-
----
-function Helper.hasAllTags(object, tags)
-    for _, tag in ipairs(tags) do
-        if not object.hasTag(tag) then
-            return false
-        end
-    end
-    return true
-end
-
----
-function Helper.hasAnyTag(object, tags)
-    for _, tag in ipairs(tags) do
-        if object.hasTag(tag) then
-            return true
-        end
-    end
-    return false
 end
 
 ---
@@ -1188,7 +1386,7 @@ end
 ---
 function Helper.deepCopy(something)
     local t = type(something)
-    if Helper.isBasicType(t) then
+    if Helper._isBasicType(t) then
         if t == "table" then
             local copy = {}
             for k, v in pairs(something) do
@@ -1204,7 +1402,7 @@ function Helper.deepCopy(something)
 end
 
 ---
-function Helper.isBasicType(t)
+function Helper._isBasicType(t)
     return t == "nil"
         or t == "boolean"
         or t == "number"
@@ -1234,7 +1432,7 @@ function Helper.getValues(elements)
 end
 
 ---
-function Helper.getSubSet(set, keys)
+function Helper._getSubSet(set, keys)
     local subSet = {}
     for _, k in ipairs(keys) do
         local value = set[k]
@@ -1248,7 +1446,7 @@ function Helper.getSubSet(set, keys)
 end
 
 ---
-function Helper.indexOf(table, element)
+function Helper._indexOf(table, element)
     for i, existingElement in ipairs(table) do
         if existingElement == element then
             return i
@@ -1258,61 +1456,7 @@ function Helper.indexOf(table, element)
 end
 
 ---
-function Helper.getPlayerColor(player)
-    return player.color
-end
-
----
-function Helper._getPlayerColor(player)
-    --Helper.dumpFunction("Helper._getPlayerColor", player)
-    local color = Helper.cachedPlayers and Helper.cachedPlayers[player.steam_id] or nil
-    if not color then
-        color = player.color
-        assert(Player[player.color].steam_id == player.steam_id)
-    end
-    --Helper.dump(player, "color is", color, "and", player.color)
-    return color
-end
-
----
-function Helper.findPlayerByColor(color)
-    --Helper.dumpFunction("Helper.findPlayerByColor", color)
-    for _, player in ipairs(Player.getPlayers()) do
-        if Helper._getPlayerColor(player) == color then
-            return player
-        end
-    end
-    return nil
-end
-
----
-function Helper.changePlayerColorInCoroutine(player, newColor)
-    --Helper.dumpFunction("Helper.changePlayerColorInCoroutine", player, newColor)
-
-    local function seatPlayer(p, color)
-        p:changeColor(color)
-        if not Helper.cachedPlayers then
-            Helper.cachedPlayers = {}
-        end
-        Helper.cachedPlayers[p.steam_id] = color
-        Helper.sleep(0.5)
-    end
-
-    local oldColor = Helper._getPlayerColor(player)
-    local otherPlayer = Helper.findPlayerByColor(newColor)
-    if oldColor ~= newColor then
-        if otherPlayer then
-            seatPlayer(otherPlayer, "Grey")
-        end
-        seatPlayer(player, newColor)
-        if otherPlayer then
-            seatPlayer(otherPlayer, oldColor)
-        end
-    end
-end
-
----
-function Helper.cons(head, tail)
+function Helper._cons(head, tail)
     local list = { head }
     for _, element in pairs(tail) do
         table.insert(list, element)
@@ -1363,7 +1507,7 @@ function Helper.forEachRecursively(elements, f)
     assert(elements)
     assert(f)
     for k, v in pairs(elements) do
-        if type(v) == "table" and not Helper.isSomeKindOfObject(v) then
+        if type(v) == "table" and not Helper._isSomeKindOfObject(v) then
             Helper.forEachRecursively(v, f)
         else
             f(k, v)
@@ -1372,7 +1516,7 @@ function Helper.forEachRecursively(elements, f)
 end
 
 ---
-function Helper.clearTable(table)
+function Helper._clearTable(table)
     for k, _ in pairs(table) do
         table[k] = nil
     end
@@ -1380,7 +1524,7 @@ end
 
 ---
 function Helper.mutateTable(table, newTable)
-    Helper.clearTable(table)
+    Helper._clearTable(table)
     for k, v in pairs(newTable) do
         table[k] = v
     end
@@ -1399,30 +1543,6 @@ function Helper.partialApply(f, ...)
 end
 
 ---
-function Helper.noPhysicsNorPlay(...)
-    for _, object in pairs({...}) do
-        object.setLock(true)
-        object.interactable = false
-    end
-end
-
----
-function Helper.noPlay(...)
-    for _, object in pairs({...}) do
-        object.setLock(false)
-        object.interactable = false
-    end
-end
-
----
-function Helper.physicsAndPlay(...)
-    for _, object in pairs({...}) do
-        object.setLock(false)
-        object.interactable = true
-    end
-end
-
----
 function Helper.negate(predicate)
     return function (...)
         return not predicate(...)
@@ -1437,71 +1557,6 @@ end
 --- http://lua-users.org/wiki/StringRecipes
 function Helper.endsWith(str, ending)
     return ending == "" or str:sub(-#ending) == ending
-end
-
----
-function Helper.createTemporalQueue(delay)
-    local tq = {
-        delay = delay or 0.25,
-        actions = {},
-    }
-
-    function tq.submit(action)
-        assert(action)
-        table.insert(tq.actions, action)
-        if #tq.actions == 1 then
-            tq.activateLater()
-        end
-    end
-
-    function tq.activateLater()
-        Wait.time(function ()
-            local action = tq.actions[1]
-            table.remove(tq.actions, 1)
-            if #tq.actions > 0 then
-                tq.activateLater()
-            end
-            action()
-        end, tq.delay)
-    end
-
-    return tq
-end
-
----
-function Helper.createCoalescentQueue(separationDelay, coalesce, handle)
-    local cq = {
-        separationDelay = separationDelay,
-    }
-
-    function cq.handleLater()
-        if cq.delayedHandler then
-            Wait.stop(cq.delayedHandler)
-        end
-        cq.delayedHandler = Wait.time(function()
-            local event = cq.lastEvent
-            cq.lastEvent = nil
-            handle(event)
-        end, 1)
-    end
-
-    function cq.submit(event)
-        assert(event)
-        if cq.lastEvent then
-            local newEvent = coalesce(event, cq.lastEvent)
-            if newEvent then
-                cq.lastEvent = event
-            else
-                handle(cq.lastEvent)
-                cq.lastEvent = event
-            end
-        else
-            cq.lastEvent = event
-        end
-        cq.handleLater()
-    end
-
-    return cq
 end
 
 return Helper

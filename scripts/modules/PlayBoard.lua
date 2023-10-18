@@ -34,18 +34,18 @@ local PlayBoard = Helper.createClass(nil, {
             leaderZone = "66cdbb",
             dreadnoughts = {"1a3c82", "a8f306"},
             dreadnoughtPositions = {
-                Helper.getHardcodedPositionFromGUID('1a3c82', -26.3000431, 1.112601, 18.6999626),
-                Helper.getHardcodedPositionFromGUID('a8f306', -28.7000542, 1.1126014, 18.6999741)
+                Helper.getHardcodedPositionFromGUID('1a3c82', -26.3000584, 1.11260116, 18.6999588),
+                Helper.getHardcodedPositionFromGUID('a8f306', -28.7000713, 1.112601, 18.6999741)
             },
             agents = {"7751c8", "afa978"},
             agentPositions = {
-                Helper.getHardcodedPositionFromGUID('7751c8', -17.0, 1.11060047, 20.3),
-                Helper.getHardcodedPositionFromGUID('afa978', -18.3, 1.11060047, 20.3)
+                Helper.getHardcodedPositionFromGUID('7751c8', -17.0, 1.11060035, 20.3),
+                Helper.getHardcodedPositionFromGUID('afa978', -18.3, 1.11060059, 20.3)
             },
             swordmaster = "ed3490",
             councilToken = "f19a48",
             fourPlayerVictoryToken = "a6c2e0",
-            fourPlayerVictoryTokenInitialPosition = Helper.getHardcodedPositionFromGUID('a6c2e0', -13.0, 1.31223142, 21.85),
+            fourPlayerVictoryTokenInitialPosition = Helper.getHardcodedPositionFromGUID('a6c2e0', -13.0, 1.3122313, 21.85),
             scoreMarker = "4feaca",
             controlMarkerBag = '61453d',
             troops = {
@@ -67,9 +67,9 @@ local PlayBoard = Helper.createClass(nil, {
             discardZone = "e07493",
             trash = "ea3fe1",
             tleilaxToken = "2bfc39",
-            tleilaxTokenInitalPosition = Helper.getHardcodedPositionFromGUID('2bfc39', 0.5446165, 0.877500236, 22.0549927),
+            tleilaxTokenInitalPosition = Helper.getHardcodedPositionFromGUID('2bfc39', 0.54461664, 0.877500236, 22.0549927),
             researchToken = "39e0f3",
-            researchTokenInitalPosition = Helper.getHardcodedPositionFromGUID('39e0f3', 0.37, 0.88, 18.2351761),
+            researchTokenInitalPosition = Helper.getHardcodedPositionFromGUID('39e0f3', 0.37, 0.880000353, 18.2351761),
             freighter = "e9096d",
             leaderPos = Helper.getHardcodedPositionFromGUID('66cdbb', -19.0, 1.25, 17.5),
             firstPlayerPosition = Helper.getHardcodedPositionFromGUID('346e0d', -14.0, 1.5, 19.7) + Vector(0, -0.4, 0),
@@ -86,8 +86,8 @@ local PlayBoard = Helper.createClass(nil, {
             leaderZone = "681774",
             dreadnoughts = {"82789e", "60f208"},
             dreadnoughtPositions = {
-                Helper.getHardcodedPositionFromGUID('82789e', -26.30006, 1.11260116, -4.30004025),
-                Helper.getHardcodedPositionFromGUID('60f208', -28.7000713, 1.11260128, -4.30005264)
+                Helper.getHardcodedPositionFromGUID('82789e', -26.3000774, 1.11260116, -4.300044),
+                Helper.getHardcodedPositionFromGUID('60f208', -28.7000885, 1.11260128, -4.30005646)
             },
             agents = {"64d013", "106d8b"},
             agentPositions = {
@@ -119,7 +119,7 @@ local PlayBoard = Helper.createClass(nil, {
             discardZone = "26bf8b",
             trash = "52a539",
             tleilaxToken = "96607f",
-            tleilaxTokenInitalPosition = Helper.getHardcodedPositionFromGUID('96607f', 0.544616759, 0.8800002, 22.75),
+            tleilaxTokenInitalPosition = Helper.getHardcodedPositionFromGUID('96607f', 0.5446168, 0.8800002, 22.75),
             researchToken = "292658",
             researchTokenInitalPosition = Helper.getHardcodedPositionFromGUID('292658', 0.37, 0.8775002, 18.9369965),
             freighter = "68e424",
@@ -138,12 +138,12 @@ local PlayBoard = Helper.createClass(nil, {
             leaderZone = "cf1486",
             dreadnoughts = {"a15087", "734250"},
             dreadnoughtPositions = {
-                Helper.getHardcodedPositionFromGUID('a15087', 26.2999687, 1.11260116, 18.6999722),
-                Helper.getHardcodedPositionFromGUID('734250', 28.6999531, 1.11260128, 18.6999645)
+                Helper.getHardcodedPositionFromGUID('a15087', 26.2999535, 1.112601, 18.6999741),
+                Helper.getHardcodedPositionFromGUID('734250', 28.69994, 1.112601, 18.69996)
             },
             agents = {"66ae45", "bceb0e"},
             agentPositions = {
-                Helper.getHardcodedPositionFromGUID('66ae45', 17.0, 1.11060035, 20.2999935),
+                Helper.getHardcodedPositionFromGUID('66ae45', 17.0, 1.11060059, 20.2999935),
                 Helper.getHardcodedPositionFromGUID('bceb0e', 18.3, 1.11060047, 20.3)
             },
             swordmaster = "fb1629",
@@ -173,7 +173,7 @@ local PlayBoard = Helper.createClass(nil, {
             tleilaxToken = "63d39f",
             tleilaxTokenInitalPosition = Helper.getHardcodedPositionFromGUID('63d39f', 1.24461639, 0.8800001, 22.05),
             researchToken = "658b17",
-            researchTokenInitalPosition = Helper.getHardcodedPositionFromGUID('658b17', 0.37, 0.877500236, 20.34),
+            researchTokenInitalPosition = Helper.getHardcodedPositionFromGUID('658b17', 0.369999945, 0.877500236, 20.34),
             freighter = "34281d",
             leaderPos = Helper.getHardcodedPositionFromGUID('cf1486', 19.0, 1.18726385, 17.5),
             firstPlayerPosition = Helper.getHardcodedPositionFromGUID('59523d', 14.0, 1.45146358, 19.7) + Vector(0, -0.4, 0),
@@ -190,8 +190,8 @@ local PlayBoard = Helper.createClass(nil, {
             leaderZone = "a677e0",
             dreadnoughts = {"5469fb", "71a414"},
             dreadnoughtPositions = {
-                Helper.getHardcodedPositionFromGUID('5469fb', 26.2999344, 1.11260128, -4.300015),
-                Helper.getHardcodedPositionFromGUID('71a414', 28.6999378, 1.11260116, -4.30003929)
+                Helper.getHardcodedPositionFromGUID('5469fb', 26.2999172, 1.11260128, -4.300019),
+                Helper.getHardcodedPositionFromGUID('71a414', 28.69992, 1.11260116, -4.300043)
             },
             agents = {"5068c8", "67b476"},
             agentPositions = {
@@ -201,7 +201,7 @@ local PlayBoard = Helper.createClass(nil, {
             swordmaster = "635c49",
             councilToken = "1be491",
             fourPlayerVictoryToken = "4e8873",
-            fourPlayerVictoryTokenInitialPosition = Helper.getHardcodedPositionFromGUID('4e8873', 13.0, 1.31223142, -1.14999938),
+            fourPlayerVictoryTokenInitialPosition = Helper.getHardcodedPositionFromGUID('4e8873', 13.0, 1.3122313, -1.14999926),
             scoreMarker = "20bbd1",
             controlMarkerBag = 'b92a4c',
             troops = {
@@ -225,7 +225,7 @@ local PlayBoard = Helper.createClass(nil, {
             tleilaxToken = "d20bcf",
             tleilaxTokenInitalPosition = Helper.getHardcodedPositionFromGUID('d20bcf', 1.24461651, 0.880000234, 22.75),
             researchToken = "8988cf",
-            researchTokenInitalPosition = Helper.getHardcodedPositionFromGUID('8988cf', 0.37, 0.88, 19.6394081),
+            researchTokenInitalPosition = Helper.getHardcodedPositionFromGUID('8988cf', 0.369999975, 0.877500236, 19.6394081),
             freighter = "8fa76f",
             leaderPos = Helper.getHardcodedPositionFromGUID('a677e0', 19.0, 1.17902148, -5.5),
             firstPlayerPosition = Helper.getHardcodedPositionFromGUID('e9a44c', 14.0, 1.44851, -3.3) + Vector(0, -0.4, 0),
@@ -1088,7 +1088,7 @@ function PlayBoard:revealHand()
         --[[
             We leave the sister card in the player's hand to simplify things and
             make clear to the player that the card must be manually revealed.
-        ]]--
+        --]]
         return Utils.isImperiumCard(card) and Helper.getID(card) ~= "beneGesseritSister"
     end
 
@@ -1593,7 +1593,7 @@ function PlayBoard.getDiscardedCardCount(color)
     return Helper.getCardCount(deckOrCard)
 end
 
---- Anything trashed (and filtering is hard considering the content is not spawn).
+--- Anything trashed (and filtering is hard considering the content is not spawned).
 function PlayBoard.getTrashedCards(color)
     local playBoard = PlayBoard.getPlayBoard(color)
     return playBoard.content.trash.getObjects()
