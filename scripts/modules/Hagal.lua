@@ -141,16 +141,16 @@ end
 ---
 function Hagal.activate(phase, color)
     -- A delay before and after the action, to let the human(s) see the progress.
-    Wait.time(function ()
+    Helper.onceTimeElapsed(1).doAfter(function ()
         Hagal._lateActivate(phase, color).doAfter(function ()
             -- TODO Add a dedicated entry in the settings?
             if false then
-                Wait.time(TurnControl.endOfTurn, 1)
+                Helper.onceTimeElapsed(1).doAfter(TurnControl.endOfTurn)
             else
                 PlayBoard.createEndOfTurnButton(color)
             end
         end)
-    end, 1)
+    end)
 end
 
 ---
@@ -237,7 +237,6 @@ function Hagal._collectReward(color)
                 dreadnoughts[1].setPositionSmooth(bestBannerZone.getPosition())
             end
         end
-
         continuation.run()
     end, 1)
     return continuation
@@ -296,13 +295,13 @@ function Hagal._reshuffleDeck(color, action, n, continuation)
             object.setPosition(Hagal.deckZone.getPosition())
         end
     end
-    Wait.time(function ()
+    Helper.onceTimeElapsed(2).doAfter(function ()
         local deck = Helper.getDeck(Hagal.deckZone)
         Helper.shuffleDeck(deck)
         Helper.onceShuffled(deck).doAfter(function ()
             Hagal._doActivateFirstValidCard(color, action, n + 1, continuation)
         end)
-    end, 2)
+    end)
 end
 
 ---
@@ -517,7 +516,7 @@ end
 ---
 function Rival.drawIntrigues(color, amount)
     if Action.drawIntrigues(color, amount) then
-        Wait.time(function ()
+        Helper.onceTimeElapsed(1).doAfter(function ()
             local intrigues = PlayBoard.getIntrigues(color)
             if #intrigues >= 3 then
                 for i = 1, 3 do
@@ -526,7 +525,7 @@ function Rival.drawIntrigues(color, amount)
                 end
                 Rival.gainVictoryPoint(color, "intrigue")
             end
-        end, 1)
+        end)
         return true
     else
         return false
@@ -555,11 +554,11 @@ end
 ---
 function Rival.signetRing(color)
     -- FIXME Fix Park instead!
-    Wait.time(function ()
+    Helper.onceTimeElapsed(0.25).doAfter(function ()
         -- We don't redispatch to the leader in other cases, because rivals ignore their passive abilities.
         local leader = Rival.rivals[color].leader
         return leader.signetRing(color)
-    end, 0.25)
+    end)
 end
 
 return Hagal

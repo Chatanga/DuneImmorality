@@ -279,12 +279,10 @@ function ArrakeenScouts._staticSetUp()
                         zone.destruct()
                     end
                 end
-                Wait.frames(TurnControl.endOfPhase, 1)
+                Helper.onceFramesPassed(1).doAfter(TurnControl.endOfPhase)
             else
                 -- Give some time to setup / recall to stabilize.
-                Wait.time(function ()
-                    ArrakeenScouts._nextContent()
-                end, 2)
+                Helper.onceTimeElapsed(2).doAfter(ArrakeenScouts._nextContent)
             end
         end
     end)
@@ -765,10 +763,10 @@ end
 
 ---
 function ArrakeenScouts._endContent()
-    Wait.time(function ()
+    Helper.onceTimeElapsed(2).doAfter(function ()
         UI.setXmlTable({{}})
         ArrakeenScouts._nextContent()
-    end, 2)
+    end)
 end
 
 ---

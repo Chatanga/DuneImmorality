@@ -104,6 +104,9 @@ return {
     acquireTleilaxuCard = "■ Acquisition carte tleilaxu : « {card} »",
     acquireImperiumCard = "■ Acquisition carte Imperium : « {card} »",
 
+    -- Combat
+    dreadnoughtMandatoryOccupation = "Rappel : vous devez envoyer un cuirassé occuper une zone.",
+
     -- Ranking
     firstInCombat = "★ 1er : {leader}",
     firstExAequoInCombat = "★ 1er ex aequo : {leader}",

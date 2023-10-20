@@ -67,7 +67,7 @@ function TechMarket._staticSetUp()
         end
 
         if TechMarket.hagalSoloModeEnabled then
-            Wait.time(TechMarket.pruneStacksForSoloMode, 1)
+            Helper.onceTimeElapsed(1).doAfter(TechMarket.pruneStacksForSoloMode)
         end
     end)
 
@@ -105,7 +105,7 @@ function TechMarket.pruneStacksForSoloMode()
     end
     if highestHeightIndex then
         TechMarket._doAcquireTech(highestHeightIndex).doAfter(function (card)
-            Wait.time(TechMarket.pruneStacksForSoloMode, 1)
+            Helper.onceTimeElapsed(1).doAfter(TechMarket.pruneStacksForSoloMode)
         end)
     else
         TechMarket.frozen = false
@@ -169,7 +169,7 @@ function TechMarket._doAcquireTech(stackIndex, color)
             Utils.trash(techTileStack.topCard)
         end
 
-        Wait.time(function ()
+        Helper.onceTimeElapsed(0.5).doAfter(function ()
             if techTileStack.otherCards then
                 local above = acquireCard.zone.getPosition() + Vector(0, 1, 0)
                 Helper.moveCardFromZone(acquireCard.zone, above, Vector(0, 180, 0), true).doAfter(function (card)
@@ -180,7 +180,7 @@ function TechMarket._doAcquireTech(stackIndex, color)
             else
                 continuation.run(techTileStack.topCard)
             end
-        end, 0.5)
+        end)
 
     end
     return continuation
@@ -238,10 +238,10 @@ function TechMarket._doBuyTech(techTileStack, acquireCard, option, color)
 
         PlayBoard.grantTechTile(color, techTileStack.topCard)
         if techTileStack.otherCards then
-            Wait.time(function ()
+            Helper.onceTimeElapsed(0.5).doAfter(function ()
                 local above = acquireCard.zone.getPosition() + Vector(0, 1, 0)
                 Helper.moveCardFromZone(acquireCard.zone, above, Vector(0, 180, 0), true).doAfter(continuation.run)
-            end, 0.5)
+            end)
         end
 
         TechCard.applyBuyEffect(color, techTileStack.topCard)

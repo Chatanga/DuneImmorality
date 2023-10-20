@@ -1,4 +1,4 @@
-local BUILD = 'Wed Oct 18 20:58:10 CEST 2023'
+local BUILD = 'Fri Oct 20 20:17:27 CEST 2023'
 
 -- Do not load anything. Appropriate to work on the mod content without
 -- interference.
@@ -99,7 +99,7 @@ autoLoadedSettings = {
     fanmadeLeaders = false,
     soundEnabled = true,
 }
---]]
+]]
 
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
@@ -110,7 +110,7 @@ local I18N = require("utils.I18N")
 --[[
     Remember that 'require' must have a literal parameter, since it is not a
     real function, but simply a macro for 'luabundler'.
---]]
+]]
 local allModules = Module.registerModules({
     AcquireCard, -- To take advantage of Module.registerModuleRedirections.
     Action = require("Action"),
@@ -256,9 +256,9 @@ function onLoad(scriptState)
 
     if not state.settings then
         if autoLoadedSettings then
-            Wait.frames(function ()
+            Helper.onceFramesPassed(1).doAfter(function ()
                 setUp(autoLoadedSettings)
-            end, 1)
+            end)
         else
             PlayerSet.ui = XmlUI.new(Global, "setupPane", PlayerSet.fields)
             PlayerSet.ui:show()
@@ -271,6 +271,10 @@ end
 function onSave()
     if constructionModeEnabled then
         return
+    end
+
+    if not Helper.isStabilized() then
+        Helper.dump("Unstable save!")
     end
 
     local savedState = {

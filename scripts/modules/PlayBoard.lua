@@ -19,6 +19,7 @@ local Intrigue = Module.lazyRequire("Intrigue")
 local Reserve = Module.lazyRequire("Reserve")
 local Action = Module.lazyRequire("Action")
 local Music = Module.lazyRequire("Music")
+local ConflictCard = Module.lazyRequire("ConflictCard")
 
 local PlayBoard = Helper.createClass(nil, {
     ALL_RESOURCE_NAMES = { "spice", "water", "solari", "persuasion", "strength" },
@@ -427,6 +428,10 @@ function PlayBoard._staticSetUp(settings)
             end
         end
 
+        if phase == "combatEnd" then
+            PlayBoard.collectReward(color)
+        end
+
         PlayBoard._setActivePlayer(phase, color)
         Music.play("turn")
     end)
@@ -526,9 +531,9 @@ function PlayBoard._movePlayerIfNeeded(color)
     if hostPlayer then
         PlayBoard.getPlayBoard(hostPlayer.color).opponent = "puppet"
         PlayBoard.getPlayBoard(color).opponent = hostPlayer
-        Wait.frames(function ()
+        Helper.onceFramesPassed(1).doAfter(function ()
             hostPlayer.changeColor(color)
-        end, 1)
+        end)
     end
 end
 
@@ -583,7 +588,7 @@ function PlayBoard.acceptTurn(phase, color)
     elseif phase == 'combatEnd' then
         -- TODO Player is victorious and the combat provied a reward (auto?) or
         -- a dreadnought needs to be placed or a combat card remains to be played.
-        accepted = playBoard.lastPhase ~= phase and Combat.isInCombat(color)
+        accepted = playBoard.lastPhase ~= phase and Combat.getRank(color) ~= nil
     elseif phase == 'makers' then
         accepted = false
     elseif phase == 'recall' then
@@ -596,6 +601,26 @@ function PlayBoard.acceptTurn(phase, color)
 
     playBoard.lastPhase = phase
     return accepted
+end
+
+---
+function PlayBoard.collectReward(color)
+    local conflictName = Combat.getCurrentConflictName()
+    local rank = Combat.getRank(color).value
+    ConflictCard.collectReward(color, conflictName, rank, true)
+    if rank == 1 then
+        local leader = PlayBoard.getLeader(color)
+        if PlayBoard.hasTech(color, "windtraps") then
+            leader.resources(color, "water", 1)
+        end
+
+        local dreadnoughts = Combat.getDreadnoughtsInConflict(color)
+
+        Helper.dump(color, "has", #dreadnoughts, "dreadnought(s)")
+        if #dreadnoughts > 0 then
+            Player[color].showInfoDialog(I18N("dreadnoughtMandatoryOccupation"))
+        end
+    end
 end
 
 ---
@@ -889,9 +914,9 @@ function PlayBoard:_createExclusiveCallback(innerCallback)
         if self.color == color or PlayBoard.isRival(self.color) then
             if not self.buttonsDisabled then
                 self.buttonsDisabled = true
-                Wait.time(function ()
+                Helper.onceTimeElapsed(0.5).doAfter(function ()
                     self.buttonsDisabled = false
-                end, 0.5)
+                end)
                 innerCallback()
             end
         else
@@ -1088,7 +1113,7 @@ function PlayBoard:revealHand()
         --[[
             We leave the sister card in the player's hand to simplify things and
             make clear to the player that the card must be manually revealed.
-        --]]
+        ]]
         return Utils.isImperiumCard(card) and Helper.getID(card) ~= "beneGesseritSister"
     end
 

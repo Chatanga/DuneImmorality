@@ -59,8 +59,7 @@ end
 local function mentat(n)
     return function (color)
         if PlayBoard.getLeader(color).takeMentat(color) then
-            -- Locked to avoid being recalled.
-            MainBoard.getMentat().setLock(true)
+            MainBoard.getMentat().addTag("notToBeRecalled")
             return true
         else
             return false
@@ -70,7 +69,8 @@ end
 
 local function control(space)
     return function (color)
-        return PlayBoard.getLeader(color).takeMentat(color, space)
+        -- TODO Clarify
+        return false
     end
 end
 

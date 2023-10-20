@@ -16,7 +16,7 @@ function ScoreBoard.onLoad(state)
         4 players tokens -> PlayBoard
         alliance / friendship -> InfluenceTrack
         others -> here
-    --]]
+    ]]
     ScoreBoard.tokens = Helper.resolveGUIDs(true, {
         base = {
             theSpiceMustFlowBag = "43c7b5",
@@ -59,10 +59,10 @@ function ScoreBoard.onLoad(state)
             for i = 1, count do
                 local innerToken = token.takeObject({ position = token.getPosition() + Vector(0, i * 0.5, 0) })
                 innerToken.setLock(true)
-                Wait.time(function ()
+                Helper.onceTimeElapsed(0.5).doAfter(function ()
                     innerToken.setName(I18N(Helper.getID(innerToken)))
                     innerToken.setLock(false)
-                end, 0.5)
+                end)
             end
         end
     end)

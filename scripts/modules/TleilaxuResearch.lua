@@ -250,9 +250,9 @@ function TleilaxuResearch._advanceResearch(color, jump, withBenefits)
                 end
 
                 if researchCellBenefits.research then
-                    Wait.time(function ()
+                    Helper.onceTimeElapsed(0.5).doAfter(function ()
                         leader.research(color, Vector(1, 0, -Helper.signum(newCellPosition.z)))
-                    end, 0.5)
+                    end)
                 end
 
                 if researchCellBenefits.solariToBeetle then

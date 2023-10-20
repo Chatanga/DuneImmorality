@@ -161,7 +161,7 @@ function InfluenceTrack.setUpSnoopers()
         local position = MainBoard.getSnooperTrackPosition(faction)
         snooper.setPositionSmooth(position, false, false)
         snooper.setRotationSmooth(Vector(0, 90, 0))
-        Wait.time(function ()
+        Helper.onceTimeElapsed(3).doAfter(function ()
             snooper.setLock(true)
         end, 3)
     end
@@ -196,7 +196,7 @@ function InfluenceTrack.recallSnooper(faction, color)
         Helper.noPlay(foundSnooper)
         foundSnooper.setPositionSmooth(p)
 
-        Wait.time(function()
+        Helper.onceTimeElapsed(1).doAfter(function()
             local parameters = { withFaction = I18N(Helper.toCamelCase("with", faction)) }
             local leader = PlayBoard.getLeader(color)
             if snooperRank == 1 then
@@ -215,7 +215,7 @@ function InfluenceTrack.recallSnooper(faction, color)
             else
                 assert(false)
             end
-        end, 1)
+        end)
     end
 end
 
@@ -274,7 +274,7 @@ function InfluenceTrack._changeInfluenceTracksRank(color, faction, change)
             from a bag which induces a invisible transit with parks, ending in
             2 stacked tokens in the case a player gain 3+ influences on the
             track in a single move).
-        --]]
+        ]]
         if oldRank >= 4 or newRank >= 4 then
             InfluenceTrack._challengeAlliance(faction)
         end

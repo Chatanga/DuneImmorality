@@ -36,16 +36,16 @@ function LeaderSelection.setUp(settings, opponents)
     Deck.generateLeaderDeck(LeaderSelection.deckZone, settings.riseOfIx, settings.immortality, settings.fanmadeLeaders).doAfter(function (deck)
         local numberOfLeaders = #deck.getObjects()
         local continuation = Helper.createContinuation()
-        continuation.count = numberOfLeaders
+        local count = numberOfLeaders
 
         LeaderSelection._layoutLeaders(numberOfLeaders, function (_, position)
             deck.takeObject({
                 position = position,
                 flip = true,
                 callback_function = function (card)
-                    continuation.count = continuation.count - 1
-                    if continuation.count == 0 then
-                        Wait.time(continuation.run, 1)
+                    count = count - 1
+                    if count == 0 then
+                        Helper.onceTimeElapsed(1).doAfter(continuation.run)
                     end
                 end
             })
@@ -303,7 +303,7 @@ function LeaderSelection._createDynamicLeaderSelection(leaders)
                 click_function = Helper.registerGlobalCallback(function (_, color, _)
                     if color == TurnControl.getCurrentPlayer() then
                         LeaderSelection.claimLeader(color, leader)
-                        Wait.time(TurnControl.endOfTurn, 1)
+                        Helper.onceTimeElapsed(1).doAfter(TurnControl.endOfTurn)
                     end
                 end),
                 position = Vector(position.x, 0.9, position.z),

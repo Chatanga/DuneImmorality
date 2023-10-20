@@ -51,7 +51,7 @@ end
     tech_tile_effect(tech)
     conflict_reward(conflict, position)
     flag_control(space)
---]]
+]]
 ---
 function Action.checkContext(attributes)
     for name, expectedValue in pairs(attributes) do
@@ -538,6 +538,6 @@ end
 ---
 function Action.discardIntrigueCard(name)
 end
---]]
+]]
 
 return Action

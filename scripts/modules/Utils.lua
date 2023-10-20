@@ -1,3 +1,5 @@
+local Helper = require("utils.Helper")
+
 ---@alias PlayerColor
 ---| 'Green'
 ---| 'Yellow'
@@ -200,14 +202,14 @@ end
 
 ---
 function Utils._reduceStack()
-    Wait.frames(function ()
+    Helper.onceFramesPassed(500).doAfter(function ()
         if Utils.trashStacking > 0 then
             Utils.trashStacking = Utils.trashStacking - 1
             Utils._reduceStack()
         else
             Utils.trashStacking = nil
         end
-    end, 500)
+    end)
 end
 
 return Utils

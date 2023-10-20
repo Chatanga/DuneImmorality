@@ -80,18 +80,12 @@ function Combat._staticSetUp(settings)
         if phase == "roundStart" then
             Combat._setUpConflict()
         elseif phase == "combat" then
+            Action.setContext("combat", Combat.getCurrentConflictName())
             -- A small delay to avoid being erased by the player turn sound.
-            Wait.time(function ()
+            Helper.onceTimeElapsed(1).doAfter(function ()
                 Music.play("battle")
             end, 1)
         elseif phase == "combatEnd" then
-            for _, bannerZone in ipairs(MainBoard.getBannerZones()) do
-                local dreadnought = MainBoard.getControllingDreadnought(bannerZone)
-                if dreadnought then
-                    -- Primarily lock controlling dreadnoughts to mark then for recall.
-                    dreadnought.setLock(true)
-                end
-            end
             local forces = Combat._calculateCombatForces()
             local ranking = Combat._calculateRanking(forces)
             local turnSequence = Combat._calculateOutcomeTurnSequence(ranking)
@@ -103,11 +97,13 @@ function Combat._staticSetUp(settings)
                     Utils.trash(object)
                 end
             end
+            -- Recalling units (troops and dreadnoughts) in the combat (not in a controlable space).
             for _, object in ipairs(Combat.combatCenterZone.getObjects()) do
                 for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
                     if Utils.isTroop(object, color) then
                         Park.putObject(object, PlayBoard.getSupplyPark(color))
                     elseif Utils.isDreadnought(object, color) then
+                        Helper.dump("Recalling", color, "dreadnought")
                         Park.putObject(object, Combat.dreadnoughtParks[color])
                     end
                 end
@@ -129,6 +125,7 @@ function Combat._staticSetUp(settings)
                     end
                 end
             end
+            Action.setContext("combat", nil)
         end
     end)
 end
@@ -489,9 +486,9 @@ function Combat.gainVictoryPoint(color, name)
     -- We memoize the tokens granted in fast succession to avoid returning the same twice or more.
     if not Combat.grantedTokens then
         Combat.grantedTokens = {}
-        Wait.time(function ()
+        Helper.onceTimeElapsed(0.25).doAfter(function ()
             Combat.grantedTokens = nil
-        end, 0.25)
+        end)
     end
 
     for _, object in ipairs(Combat.victoryPointTokenZone.getObjects()) do

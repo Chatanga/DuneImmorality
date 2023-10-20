@@ -258,14 +258,30 @@ function MainBoard._staticSetUp(settings)
         elseif phase == "recall" then
             MainBoard.phaseMarker.setPosition(MainBoard.phaseMarkerPositions.recall)
 
-            -- Recalling Mentat.
-            if MainBoard.mentat.getLock() then
-                MainBoard.mentat.setLock(false)
+            -- Recalling mentat.
+            if MainBoard.mentat.hasTag("notToBeRecalled") then
+                MainBoard.mentat.removeTag("notToBeRecalled")
             else
                 for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
                     MainBoard.mentat.removeTag(color)
                 end
                 MainBoard.mentat.setPosition(MainBoard.mentatZone.getPosition())
+            end
+
+            -- Recalling dreadnoughts in controlable spaces.
+            for _, bannerZone in pairs(MainBoard.banners) do
+                for _, dreadnought in ipairs(Helper.filter(bannerZone.getObjects(), Utils.isDreadnought)) do
+                    for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
+                        if dreadnought.hasTag(color) then
+                            if dreadnought.hasTag("toBeRecalled") then
+                                dreadnought.removeTag("toBeRecalled")
+                                Park.putObject(dreadnought, Combat.getDreadnoughtPark(color))
+                            else
+                                dreadnought.addTag("toBeRecalled")
+                            end
+                        end
+                    end
+                end
             end
 
             -- Recalling agents.
@@ -675,7 +691,6 @@ end
 ---
 function MainBoard._goMentat(color, leader)
     if leader.resources(color, "solari", -Hagal.getMentatSpaceCost()) then
-        local leader = leader
         leader.takeMentat(color)
         leader.drawImperiumCards(color, 1)
         return true

@@ -27,7 +27,7 @@ end
     parameters used for emitting the event. The provided priority specifies in
     which order a callback is called (higher priority callbacks are called
     first). Note that it is best to rely as little as possible on priorities.
---]]
+]]
 ---@param topic string
 ---@param priority integer
 ---@param listener function
@@ -62,7 +62,7 @@ end
 
 --[[
     Unregister a previously registered callback for a given topic.
---]]
+]]
 ---@param topic string
 ---@param listener function
 function Helper.unregisterEventListener(topic, listener)
@@ -87,7 +87,7 @@ end
 --[[
     Emit an event: all listeners registered for the specified topic will
     be called with the following parameters.
---]]
+]]
 ---@param topic any
 ---@param ... unknown
 function Helper.emitEvent(topic, ...)
@@ -111,7 +111,7 @@ end
     Return a copy of the provided data where every leaf identified as a
     GUID is replaced by the corresponding object (or nil if it can't be
     resolved).
---]]
+]]
 ---@param reportUnresolvedGUIDs boolean
 ---@param data any
 ---@return any
@@ -172,7 +172,7 @@ end
     fail, and one shall rely on hardcoded positions or using some kind of anchor
     objects. This function and its small update utility is simply a way to get
     around this problem when developing by recovering a truly stable information.
---]]
+]]
 ---@param GUID string
 ---@param x number
 ---@param y number
@@ -186,10 +186,10 @@ end
 
 --- A synthetic move of an object, combining multiple operations.
 ---@param object table
----@param position Vector
----@param rotation Vector
----@param smooth boolean
----@param flipAtTheEnd boolean
+---@param position? Vector
+---@param rotation? Vector
+---@param smooth? boolean
+---@param flipAtTheEnd? boolean
 ---@return Continuation A continuation run once the object is motionless.
 function Helper._moveObject(object, position, rotation, smooth, flipAtTheEnd)
     assert(object)
@@ -223,11 +223,11 @@ end
 --- Prefer the "deal" method when possible? Would it prevent the card from being
 --- grabbed by anther player's hand zone?
 ---@param zone table
----@param position Vector
----@param rotation Vector
----@param smooth boolean
----@param flipAtTheEnd boolean
----@return Vector? A continuation run once the object is spawned.
+---@param position Vector?
+---@param rotation Vector?
+---@param smooth boolean?
+---@param flipAtTheEnd boolean?
+---@return Continuation? A continuation run once the object is spawned.
 function Helper.moveCardFromZone(zone, position, rotation, smooth, flipAtTheEnd)
     local deckOrCard = Helper.getDeckOrCard(zone)
     if deckOrCard then
@@ -258,7 +258,7 @@ end
 --[[
     Return a list of cards (not spawned in general) from the returned value of
     'Helper.getDeckOrCard(zone)'. If there is none, an empty list is returned.
---]]
+]]
 ---@param deckOrCard table?
 ---@return table
 function Helper.getCards(deckOrCard)
@@ -278,7 +278,7 @@ end
 
 --[[
     Return the number of cards from the returned value of 'Helper.getDeckOrCard(zone)'.
---]]
+]]
 ---@param deckOrCard table?
 ---@return integer
 function Helper.getCardCount(deckOrCard)
@@ -296,7 +296,7 @@ end
 --[[
     Return the first deck or card found in the provide zone. Deck and card hold
     by a player are ignored.
---]]
+]]
 ---@param zone table
 ---@return table?
 function Helper.getDeckOrCard(zone)
@@ -335,7 +335,7 @@ end
 --[[
     The created anchor will be saved but could be automatically destroyed at
     reload using Helper.destroyTransientObjects().
---]]
+]]
 ---@param nickname string?
 ---@param position Vector
 ---@return Continuation A continuation run once the anchor is spawned.
@@ -448,7 +448,7 @@ end
 --[[
     Create a snapPoint relative to a parent centered on the provided zone, but
     at the height of the parent.
---]]
+]]
 ---
 function Helper.createRelativeSnapPointFromZone(parent, zone, rotationSnap, tags)
     return Helper.createRelativeSnapPoint(parent, zone.getPosition(), rotationSnap, tags)
@@ -558,7 +558,7 @@ end
     the position and (partly to the) scale, not the rotation. The
     convention for the world coordinates is a bit twisted here since the
     X coordinate is inverted.
---]]
+]]
 ---
 function Helper._createAbsoluteButton(object, parameters)
     return Helper.createAbsoluteButtonWithRoundness(object, 0.25, false, parameters)
@@ -585,7 +585,7 @@ function Helper._createAbsoluteWidgetWithRoundnessParameters(object, roundness, 
             Thus, to achieve a transparent button with a visible lablel, the alpha of the
             "font_color" needs to be pushed beyond 1. In fact, in this situation, the
             alpha seems to be interpreted as a percentage (100% being full opaque).
-        --]]
+        ]]
         assert(parameters.color[4] > 0 or parameters.font_color[4] > 1, "Unproper label opacity!")
     end
 
@@ -593,7 +593,7 @@ function Helper._createAbsoluteWidgetWithRoundnessParameters(object, roundness, 
         Scale is a problem here. We change it to artificially adjust the roundness, but
         we also needs to ajust the font height, which is capped and more or less blurry
         depending on it...
-    --]]
+    ]]
 
     local scale = object.getScale()
     local invScale = Vector(1 / scale.x, 1 / scale.y, 1 / scale.z)
@@ -767,6 +767,8 @@ function Helper.createContinuation()
     ---@field what function
     ---@field tick function
     ---@field doAfter function
+    ---@field next function
+    ---@field finish function
     ---@field run function
     ---@field cancel function
 
@@ -796,18 +798,25 @@ function Helper.createContinuation()
         end
     end
 
-    continuation.run = function (parameters)
-        Helper.allContinuations[continuation] = nil
-        continuation.done = true
+    continuation.next = function (parameters)
         continuation.parameters = parameters
         for _, action in ipairs(continuation.actions) do
             action(parameters)
         end
     end
 
-    continuation.cancel = function ()
+    continuation.finish = function ()
         Helper.allContinuations[continuation] = nil
         continuation.done = true
+    end
+
+    continuation.run = function (parameters)
+        continuation.next(parameters)
+        continuation.finish()
+    end
+
+    continuation.cancel = function ()
+        continuation.finish()
     end
 
     Helper.allContinuations[continuation] = true
@@ -825,11 +834,16 @@ function Helper.onceStabilized(timeout)
     Wait.condition(function ()
         continuation.run(holder.success)
     end, function ()
-        holder.success = #Helper.allContinuations == 1
+        holder.success = Helper.isStabilized()
         return holder.success or (os.time() - start > (timeout or 10))
     end)
 
     return continuation
+end
+
+---@return boolean
+function Helper.isStabilized()
+    return #Helper.allContinuations == 0
 end
 
 ---@return Continuation
@@ -855,6 +869,32 @@ function Helper.onceShuffled(container)
     Wait.time(function ()
         continuation.run(container)
     end, 1.5) -- TODO Search for a better way.
+    return continuation
+end
+
+---@param delay number
+---@param count integer?
+---@return Continuation
+function Helper.onceTimeElapsed(delay, count)
+    local continuation = Helper.createContinuation()
+    local countdown = count or 1
+    Wait.time(function ()
+        countdown = countdown - 1
+        continuation.next()
+        if countdown == 0 then
+            continuation.finish()
+        end
+    end, delay, count)
+    return continuation
+end
+
+---@param count integer
+---@return Continuation
+function Helper.onceFramesPassed(count)
+    local continuation = Helper.createContinuation()
+    Wait.frames(function ()
+        continuation.run()
+    end, count)
     return continuation
 end
 
@@ -1035,14 +1075,14 @@ function Helper.createTemporalQueue(delay)
     end
 
     function tq.activateLater()
-        Wait.time(function ()
+        Helper.onceTimeElapsed(tq.delay).doAfter(function ()
             local action = tq.actions[1]
             table.remove(tq.actions, 1)
             if #tq.actions > 0 then
                 tq.activateLater()
             end
             action()
-        end, tq.delay)
+        end)
     end
 
     return tq
@@ -1052,17 +1092,22 @@ end
 function Helper.createCoalescentQueue(separationDelay, coalesce, handle)
     local cq = {
         separationDelay = separationDelay,
+        continuation = nil
     }
 
     function cq.handleLater()
         if cq.delayedHandler then
             Wait.stop(cq.delayedHandler)
+            cq.continuation.cancel()
         end
-        cq.delayedHandler = Wait.time(function()
+        cq.continuation = Helper.createContinuation()
+        cq.delayedHandler = Wait.time(cq.continuation.run, 1)
+        cq.continuation.doAfter(function()
+            assert(cq.lastEvent)
             local event = cq.lastEvent
             cq.lastEvent = nil
             handle(event)
-        end, 1)
+        end)
     end
 
     function cq.submit(event)
@@ -1070,7 +1115,7 @@ function Helper.createCoalescentQueue(separationDelay, coalesce, handle)
         if cq.lastEvent then
             local newEvent = coalesce(event, cq.lastEvent)
             if newEvent then
-                cq.lastEvent = event
+                cq.lastEvent = newEvent
             else
                 handle(cq.lastEvent)
                 cq.lastEvent = event

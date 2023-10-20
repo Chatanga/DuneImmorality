@@ -41,9 +41,9 @@ Leader.vladimirHarkonnen = Helper.createClass(Leader, {
                 end
             })
         end
-        Wait.frames(function ()
+        Helper.onceFramesPassed(1).doAfter(function ()
             tokenBag.destruct()
-        end, 1)
+        end)
     end,
 
     tearDown = function()
@@ -358,10 +358,10 @@ Leader.hundroMoritani = Helper.createClass(Leader, {
     --- Intelligence
     prepare = function (color, settings)
         Action.prepare(color, settings)
-        Wait.frames(function ()
+        Helper.onceFramesPassed(1).doAfter(function ()
             local leader = PlayBoard.getLeader(color)
             leader.drawIntrigues(color, 2)
-        end, 1)
+        end)
     end,
 
     --- Intelligence

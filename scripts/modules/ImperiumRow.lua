@@ -104,7 +104,7 @@ end
 ---
 function ImperiumRow.nuke(color)
     Music.play("atomics")
-    Wait.time(function ()
+    Helper.onceTimeElapsed(3).doAfter(function ()
         for i, zone in ipairs(ImperiumRow.slotZones) do
             local card = Helper.getCard(zone)
             if card then
@@ -112,7 +112,7 @@ function ImperiumRow.nuke(color)
                 ImperiumRow._replenish(i)
             end
         end
-    end, 3)
+    end)
 end
 
 ---

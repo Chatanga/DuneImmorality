@@ -118,9 +118,9 @@ function TurnControl._createExclusiveCallback(innerCallback)
         if color == "Black" then
             if not TurnControl.buttonsDisabled then
                 TurnControl.buttonsDisabled = true
-                Wait.time(function ()
+                Helper.onceTimeElapsed(0.5).doAfter(function ()
                     TurnControl.buttonsDisabled = false
-                end, 0.5)
+                end)
                 innerCallback()
             end
         else
@@ -191,7 +191,7 @@ function TurnControl._startPhase(phase)
     broadcastToAll(I18N(Helper.toCamelCase("phase", phase)), Color.fromString("Pink"))
     Helper.emitEvent("phaseStart", TurnControl.currentPhase, firstPlayer)
 
-    Wait.frames(function ()
+    Helper.onceFramesPassed(1).doAfter(function ()
         if TurnControl.customTurnSequence then
             if #TurnControl.customTurnSequence > 0 then
                 TurnControl._next(TurnControl.customTurnSequence[1])
@@ -201,7 +201,7 @@ function TurnControl._startPhase(phase)
         else
             TurnControl._next(TurnControl.currentPlayerLuaIndex)
         end
-    end, 1)
+    end)
 end
 
 ---
@@ -218,14 +218,15 @@ function TurnControl.endOfPhase()
         end
     end
     local heavyPhases = { "leaderSelection", "recall" }
-    Wait.time(function ()
+    local delay = Helper.isElementOf(TurnControl.currentPhase, heavyPhases) and 2 or 0
+    Helper.onceTimeElapsed(delay).doAfter(function ()
         local nextPhase = TurnControl._getNextPhase(TurnControl.currentPhase)
         if nextPhase then
             TurnControl._startPhase(nextPhase)
         else
             TurnControl.currentPhase = nil
         end
-    end, Helper.isElementOf(TurnControl.currentPhase, heavyPhases) and 2 or 0)
+    end)
 end
 
 ---
