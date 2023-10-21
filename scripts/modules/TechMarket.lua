@@ -156,7 +156,7 @@ end
 
 ---
 function TechMarket._doAcquireTech(stackIndex, color)
-    local continuation = Helper.createContinuation()
+    local continuation = Helper.createContinuation("TechMarket._doAcquireTech")
     local acquireCard = TechMarket.acquireCards[stackIndex]
 
     local techTileStack = TechMarket._getTechTileStack(stackIndex)
@@ -229,7 +229,7 @@ function TechMarket._doBuyTech(techTileStack, acquireCard, option, color)
 
     local leader = PlayBoard.getLeader(color)
     if leader.resources(color, optionDetails.resourceType, -adjustedTechCost) then
-        local continuation = Helper.createContinuation()
+        local continuation = Helper.createContinuation("TechMarket._doBuyTech")
 
         local supply = PlayBoard.getSupplyPark(color)
         Park.transfert(recalledNegociatorCount, negotiation, supply)

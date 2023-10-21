@@ -394,6 +394,9 @@ function PlayBoard._staticSetUp(settings)
             for color, playBoard in pairs(PlayBoard._getPlayBoards()) do
                 playBoard.leader.prepare(color, settings)
             end
+        elseif phase == "endgame" then
+            PlayBoard._setActivePlayer(nil, nil)
+            MainBoard.getFirstPlayerMarker().destruct()
         end
         for _, playBoard in pairs(PlayBoard._getPlayBoards()) do
             Helper.clearButtons(playBoard.instructionTextAnchor)
@@ -466,8 +469,8 @@ function PlayBoard:_recall()
     end)
 
     -- Send all revealed cards to the discard.
-    Helper.forEach(Helper.filter(Park.getObjects(self.revealCardPark), Utils.isImperiumCard), function (_, card)
-        card.setPositionSmooth(self.content.discardZone.getPosition())
+    Helper.forEach(Helper.filter(Park.getObjects(self.revealCardPark), Utils.isImperiumCard), function (i, card)
+        card.setPositionSmooth(self.content.discardZone.getPosition() + Vector(0, i * 0.5, 0))
     end)
 
     -- Send all played intrigues to their discard.
@@ -475,7 +478,7 @@ function PlayBoard:_recall()
         Helper.filter(Park.getObjects(self.agentCardPark), Utils.isIntrigueCard),
         Helper.filter(Park.getObjects(self.revealCardPark), Utils.isIntrigueCard)
     )
-    Helper.forEach(playedIntrigueCards, function (_, card)
+    Helper.forEach(playedIntrigueCards, function (i, card)
         card.setPositionSmooth(Intrigue.discardZone.getPosition())
     end)
 
@@ -485,11 +488,6 @@ function PlayBoard:_recall()
             techTile.flip()
         end
     end
-end
-
----
-function PlayBoard.experimental_hideTurn()
-    PlayBoard._setActivePlayer(nil, nil)
 end
 
 ---
@@ -778,7 +776,7 @@ function PlayBoard:_generatePlayerScoreboardPositions()
     }
 
     self.scorePositions = {}
-    for i = 0, 12 do
+    for i = 0, 14 do
         self.scorePositions[i] = {
             origin.x,
             1 + heights[self.color],
@@ -810,10 +808,12 @@ end
 ---
 function PlayBoard:updatePlayerScore()
     if self.content.scoreMarker then
-        local cappedScore = math.min(14, self:getScore())
+        --local cappedScore = math.min(13, self:getScore())
+        local rectifiedScore = self:getScore()
+        rectifiedScore = rectifiedScore > 13 and rectifiedScore - 10 or rectifiedScore
         local scoreMarker = self.content.scoreMarker
         scoreMarker.setLock(false)
-        scoreMarker.setPositionSmooth(self.scorePositions[cappedScore])
+        scoreMarker.setPositionSmooth(self.scorePositions[rectifiedScore])
     end
 end
 
@@ -1233,7 +1233,7 @@ end
 function PlayBoard:_resetDiscard()
     local discard = Helper.getDeckOrCard(self.content.discardZone)
     if discard then
-        local continuation = Helper.createContinuation()
+        local continuation = Helper.createContinuation("PlayBoard:_resetDiscard")
 
         discard.setRotationSmooth({0, 180, 180}, false, false)
         discard.setPositionSmooth(self.content.drawDeckZone.getPosition() + Vector(0, 1, 0), false, true)
@@ -1579,7 +1579,8 @@ function PlayBoard.giveCardFromZone(color, zone, isTleilaxuCard)
 
     -- Acquire the card (not smoothly to avoid being grabbed by a player hand zone).
     Helper.moveCardFromZone(zone, content.discardZone.getPosition()).doAfter(function (card)
-        printToAll(I18N(isTleilaxuCard and "acquireTleilaxuCard" or "acquireImperiumCard", { card = I18N(Helper.getID(card)) }), color)
+        local cardName = I18N(Helper.getID(card))
+        printToAll(I18N(isTleilaxuCard and "acquireTleilaxuCard" or "acquireImperiumCard", { card = cardName }), color)
     end)
 
     -- Move it on the top of the player deck if possible and wanted.

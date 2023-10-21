@@ -261,7 +261,7 @@ function InfluenceTrack._changeInfluenceTracksRank(color, faction, change)
 
     local realChange = math.min(math.max(oldRank + change, 0), 6) - oldRank
 
-    local continuation = Helper.createContinuation()
+    local continuation = Helper.createContinuation("InfluenceTrack._changeInfluenceTracksRank")
 
     Helper.repeatMovingAction(token, math.abs(realChange), function (_)
         local position = token.getPosition()

@@ -295,7 +295,10 @@ function TurnControl._getNextPhase(phase)
     elseif phase == 'makers' then
         return 'recall'
     elseif phase == 'recall' then
-        return TurnControl._endgameGoalReached() and 'endgame' or 'roundStart'
+        if TurnControl._endgameGoalReached() then
+            broadcastToAll(I18N("endgameReached"), Color.fromString("Pink"))
+        end
+        return TurnControl._endgameGoalReached(true) and 'endgame' or 'roundStart'
     elseif phase == 'endgame' then
         return nil
     elseif phase == TurnControl.specialPhase then
@@ -305,10 +308,13 @@ function TurnControl._getNextPhase(phase)
     end
 end
 
----
-function TurnControl._endgameGoalReached()
+---@param hardLimit boolean?
+---@return boolean
+function TurnControl._endgameGoalReached(hardLimit)
     if TurnControl.currentRound == 10 then
         return true
+    elseif hardLimit then
+        return false
     end
 
     local bestScore = 0

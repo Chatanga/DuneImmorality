@@ -207,7 +207,7 @@ end
 function Action.influence(color, faction, amount)
     Utils.assertIsPlayerColor(color)
     Utils.assertIsInteger(amount)
-    local continuation = Helper.createContinuation()
+    local continuation = Helper.createContinuation("Action.influence")
     if faction then
         InfluenceTrack.change(color, faction, amount).doAfter(function (realAmount)
             printToAll(I18N(amount > 0 and "gainInfluence" or "loseInfluence", {
@@ -419,10 +419,10 @@ end
 ---
 function Action.research(color, jump)
     Utils.assertIsPlayerColor(color)
-    TleilaxuResearch.advanceResearch(color, jump).doAfter(function ()
-        if jump.x > 0 then
+    TleilaxuResearch.advanceResearch(color, jump).doAfter(function (finalJump)
+        if finalJump.x > 0 then
             printToAll(I18N("researchAdvance"), color)
-        elseif jump.x < 0 then
+        elseif finalJump.x < 0 then
             printToAll(I18N("researchRollback"), color)
         end
     end)
@@ -434,10 +434,10 @@ function Action.beetle(color, jump)
     Helper.dumpFunction("Action.beetle", color, jump)
     Utils.assertIsPlayerColor(color)
     Utils.assertIsInteger(jump)
-    TleilaxuResearch.advanceTleilax(color, jump).doAfter(function ()
-        if jump > 0 then
+    TleilaxuResearch.advanceTleilax(color, jump).doAfter(function (finalJump)
+        if finalJump > 0 then
             printToAll(I18N("beetleAdvance", { jump = jump }), color)
-        elseif jump < 0 then
+        elseif finalJump < 0 then
             printToAll(I18N("beetleRollback", { jump = jump }), color)
         end
     end)

@@ -198,9 +198,10 @@ function TleilaxuResearch._findResearchCellBenefits(cellPosition)
     return nil
 end
 
----
+---@param color PlayerColor
+---@param jump Vector
 function TleilaxuResearch.advanceResearch(color, jump)
-    local continuation = Helper.createContinuation()
+    local continuation = Helper.createContinuation("TleilaxuResearch.advanceResearch")
     if jump.x == 1 and math.abs(jump.z) <= 1 then
         TleilaxuResearch._advanceResearch(color, jump, true)
         continuation.run(jump)
@@ -213,7 +214,9 @@ function TleilaxuResearch.advanceResearch(color, jump)
     return continuation
 end
 
----
+---@param color PlayerColor
+---@param jump Vector
+---@param withBenefits boolean
 function TleilaxuResearch._advanceResearch(color, jump, withBenefits)
     local leader = PlayBoard.getLeader(color)
     local researchToken = PlayBoard.getContent(color).researchToken
@@ -314,76 +317,89 @@ function TleilaxuResearch._generateTleilaxButtons()
             local token = PlayBoard.getContent(color).tleilaxToken
             local tokenLevel = TleilaxuResearch._worlPositionToTleilaxSpace(token.getPosition())
             local jump = level - tokenLevel
+            log("Call: leader.beetle(" .. color .. ", " .. tostring(jump) .. ")")
             leader.beetle(color, jump)
         end)
     end
 end
 
----
+---@param color PlayerColor
+---@param jump integer
+---@return Continuation
 function TleilaxuResearch.advanceTleilax(color, jump)
     Helper.dumpFunction("TleilaxuResearch.advanceTleilax", color, jump)
-    local continuation = Helper.createContinuation()
-    if jump >= 0 then
-        return Helper.repeatChainedAction(jump, function ()
+    if jump >= 1 then
+        -- Human players are required to advance step by step.
+        local finalJump = PlayBoard.isHuman(color) and 1 or jump
+        return Helper.repeatChainedAction(finalJump, function ()
             return TleilaxuResearch._advanceTleilax(color, 1, true)
         end)
     else
+        local continuation = Helper.createContinuation("TleilaxuResearch.advanceTleilax")
         Player[color].showConfirmDialog("Forbidden move. Do you confirm it neverless?", function()
             TleilaxuResearch._advanceTleilax(color, jump, false).doAfter(continuation.run)
         end)
+        return continuation
     end
-    return continuation
 end
 
----
+---@param color PlayerColor
+---@param jump integer
+---@param withBenefits boolean
+---@return Continuation
 function TleilaxuResearch._advanceTleilax(color, jump, withBenefits)
-    local continuation = Helper.createContinuation()
+    local continuation = Helper.createContinuation("TleilaxuResearch._advanceTleilax")
 
     local leader = PlayBoard.getLeader(color)
     local tleilaxToken = PlayBoard.getContent(color).tleilaxToken
     local level = TleilaxuResearch._worlPositionToTleilaxSpace(tleilaxToken.getPosition())
 
-    if level >= 8 then
-        return
-    end
 
-    local newLevel = level + jump
+    local finalJump = jump
+    finalJump = math.min(8, level + jump) - level
+    finalJump = math.max(0, level + jump) - level
 
-    local p = TleilaxuResearch._tleilaxSpaceToWorldPosition(newLevel)
-    tleilaxToken.setPositionSmooth(p + Vector(0, 1, 0.25))
+    if finalJump ~= 0 then
+        local newLevel = level + finalJump
 
-    if withBenefits then
-        Helper.onceMotionless(tleilaxToken).doAfter(function ()
-            local researchLevelBenefits = TleilaxuResearch.tleilaxLevelBenefits[newLevel] or {}
-            assert(researchLevelBenefits, "No level benefits at level " .. tostring(newLevel))
+        local p = TleilaxuResearch._tleilaxSpaceToWorldPosition(newLevel)
+        tleilaxToken.setPositionSmooth(p + Vector(0, 1, 0.25))
 
-            if researchLevelBenefits.intrigue then
-                leader.drawIntrigues(color, 1)
-            end
+        if withBenefits then
+            Helper.onceMotionless(tleilaxToken).doAfter(function ()
+                local researchLevelBenefits = TleilaxuResearch.tleilaxLevelBenefits[newLevel] or {}
+                assert(researchLevelBenefits, "No level benefits at level " .. tostring(newLevel))
 
-            if researchLevelBenefits.victoryToken then
-                leader.gainVictoryPoint(color, "tleilax")
-            end
-
-            if researchLevelBenefits.spiceBonus then
-                local amount = TleilaxuResearch.spiceBonus:get()
-                leader.resources(color, "spice", amount)
-                TleilaxuResearch.spiceBonus:set(0)
-            end
-
-            for i = level + 1, newLevel do
-                local bonuses = TleilaxuResearch.extraBonuses[i]
-                if bonuses then
-                    DynamicBonus.collectExtraBonuses(color, leader, bonuses)
+                if researchLevelBenefits.intrigue then
+                    leader.drawIntrigues(color, 1)
                 end
-            end
 
-            Helper.emitEvent("tleilaxProgress", color)
+                if researchLevelBenefits.victoryToken then
+                    leader.gainVictoryPoint(color, "tleilax")
+                end
 
-            continuation.run(jump)
-        end)
+                if researchLevelBenefits.spiceBonus then
+                    local amount = TleilaxuResearch.spiceBonus:get()
+                    leader.resources(color, "spice", amount)
+                    TleilaxuResearch.spiceBonus:set(0)
+                end
+
+                for i = level + 1, newLevel do
+                    local bonuses = TleilaxuResearch.extraBonuses[i]
+                    if bonuses then
+                        DynamicBonus.collectExtraBonuses(color, leader, bonuses)
+                    end
+                end
+
+                Helper.emitEvent("tleilaxProgress", color)
+
+                continuation.run(finalJump)
+            end)
+        else
+            continuation.run(finalJump)
+        end
     else
-        continuation.run(jump)
+        continuation.run(finalJump)
     end
 
     return continuation

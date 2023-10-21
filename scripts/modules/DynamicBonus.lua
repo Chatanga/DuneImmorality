@@ -214,7 +214,7 @@ function DynamicBonus._createSpiceToken(position)
         }
     }
 
-    local continuation = Helper.createContinuation()
+    local continuation = Helper.createContinuation("DynamicBonus._createSpiceToken")
     spawnObjectData({
         data = data,
         position = position,
@@ -273,7 +273,7 @@ function DynamicBonus._createSolariToken(position)
         }
     }
 
-    local continuation = Helper.createContinuation()
+    local continuation = Helper.createContinuation("DynamicBonus._createSolariToken")
     spawnObjectData({
         data = data,
         position = position,

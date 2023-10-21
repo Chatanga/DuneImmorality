@@ -186,30 +186,31 @@ end
 ---
 function Utils.trash(object)
 
+    local holder = {}
+
+    holder.reduceStack = function ()
+        Helper.onceFramesPassed(500).doAfter(function ()
+            if Utils.trashStacking > 0 then
+                Utils.trashStacking = Utils.trashStacking - 1
+                holder.reduceStack()
+            else
+                Utils.trashStacking = nil
+            end
+        end)
+    end
+
     local height = Utils.trashStacking
     if Utils.trashStacking then
         Utils.trashStacking = height + 1
     else
         height = 0
         Utils.trashStacking = 1
-        Utils._reduceStack()
+        holder.reduceStack()
     end
 
     object.interactable = true
     object.setLock(false)
     object.setPositionSmooth(getObjectFromGUID('ef8614').getPosition() + Vector(0, 1 + height, 0))
-end
-
----
-function Utils._reduceStack()
-    Helper.onceFramesPassed(500).doAfter(function ()
-        if Utils.trashStacking > 0 then
-            Utils.trashStacking = Utils.trashStacking - 1
-            Utils._reduceStack()
-        else
-            Utils.trashStacking = nil
-        end
-    end)
 end
 
 return Utils

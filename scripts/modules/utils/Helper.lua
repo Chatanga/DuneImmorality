@@ -194,7 +194,7 @@ end
 function Helper._moveObject(object, position, rotation, smooth, flipAtTheEnd)
     assert(object)
 
-    local continuation = Helper.createContinuation()
+    local continuation = Helper.createContinuation("Helper._moveObject")
 
     if smooth then
         object.setPositionSmooth(position)
@@ -229,10 +229,9 @@ end
 ---@param flipAtTheEnd boolean?
 ---@return Continuation? A continuation run once the object is spawned.
 function Helper.moveCardFromZone(zone, position, rotation, smooth, flipAtTheEnd)
+    local continuation = Helper.createContinuation("Helper.moveCardFromZone")
     local deckOrCard = Helper.getDeckOrCard(zone)
     if deckOrCard then
-        local continuation = Helper.createContinuation()
-
         if deckOrCard.type == "Deck" then
             local parameters = {
                 position = position,
@@ -245,14 +244,18 @@ function Helper.moveCardFromZone(zone, position, rotation, smooth, flipAtTheEnd)
             end
             deckOrCard.takeObject(parameters)
         elseif deckOrCard.type == "Card" then
-            Helper._moveObject(deckOrCard, position, rotation, smooth, flipAtTheEnd).doAfter(continuation.run)
+            -- FIXME Moving a single card to another or a deck will raise an "Unknown Error" (at least for the reserve decks). Why?
+            local safePosition = position + Vector(0, 1, 0)
+            Helper._moveObject(deckOrCard, safePosition, rotation, smooth, flipAtTheEnd).doAfter(function (card)
+                continuation.run(card)
+            end)
         else
             error("Unexpected type: " .. deckOrCard.type)
         end
-
-        return continuation
+    else
+        continuation.cancel()
     end
-    return nil
+    return continuation
 end
 
 --[[
@@ -340,7 +343,7 @@ end
 ---@param position Vector
 ---@return Continuation A continuation run once the anchor is spawned.
 function Helper.createTransientAnchor(nickname, position)
-    local continuation = Helper.createContinuation()
+    local continuation = Helper.createContinuation("Helper.createTransientAnchor")
 
     local data = {
         Name = "Custom_Model",
@@ -502,6 +505,7 @@ function Helper.createSizedAreaButton(width, height, anchor, altitude, tooltip, 
         width = width,
         height = height,
         color = Helper.areaButtonColor,
+        hover_color = { 0.7, 0.7, 0.7, 0.7 },
         press_color = { 0.5, 1, 0.5, 0.4 },
         font_color = { 1, 1, 1, 100 },
         tooltip = tooltip,
@@ -756,14 +760,16 @@ end
 
 -- *** Continuations ***
 
+---@param name string?
 ---@return Continuation
-function Helper.createContinuation()
+function Helper.createContinuation(name)
 
-    if not Helper.allContinuations then
-        Helper.allContinuations = {}
+    if not Helper.pendingContinuations then
+        Helper.pendingContinuations = {}
     end
 
     ---@class Continuation
+    ---@field name string
     ---@field what function
     ---@field tick function
     ---@field doAfter function
@@ -773,6 +779,7 @@ function Helper.createContinuation()
     ---@field cancel function
 
     local continuation = {
+        name = name,
         start = Time.time,
         what = function ()
             return "continuation"
@@ -806,7 +813,7 @@ function Helper.createContinuation()
     end
 
     continuation.finish = function ()
-        Helper.allContinuations[continuation] = nil
+        Helper.pendingContinuations[continuation] = nil
         continuation.done = true
     end
 
@@ -819,14 +826,14 @@ function Helper.createContinuation()
         continuation.finish()
     end
 
-    Helper.allContinuations[continuation] = true
+    Helper.pendingContinuations[continuation] = true
 
     return continuation
 end
 
 ---@return Continuation
 function Helper.onceStabilized(timeout)
-    local continuation = Helper.createContinuation()
+    local continuation = Helper.createContinuation("Helper.onceStabilized")
 
     local start = os.time()
     local holder = {}
@@ -843,12 +850,19 @@ end
 
 ---@return boolean
 function Helper.isStabilized()
-    return #Helper.allContinuations == 0
+    local count = 0
+    for continuation, _ in pairs(Helper.pendingContinuations) do
+        if continuation then
+            log("Pending continuation: " .. continuation.name)
+            count = count + 1
+        end
+    end
+    return count == 0
 end
 
 ---@return Continuation
 function Helper.onceMotionless(object)
-    local continuation = Helper.createContinuation()
+    local continuation = Helper.createContinuation("Helper.onceMotionless")
     -- Wait 1 frame for the movement to start.
     Wait.frames(function ()
         Wait.condition(function()
@@ -876,7 +890,7 @@ end
 ---@param count integer?
 ---@return Continuation
 function Helper.onceTimeElapsed(delay, count)
-    local continuation = Helper.createContinuation()
+    local continuation = Helper.createContinuation("Helper.onceTimeElapsed")
     local countdown = count or 1
     Wait.time(function ()
         countdown = countdown - 1
@@ -891,7 +905,7 @@ end
 ---@param count integer
 ---@return Continuation
 function Helper.onceFramesPassed(count)
-    local continuation = Helper.createContinuation()
+    local continuation = Helper.createContinuation("Helper.onceFramesPassed")
     Wait.frames(function ()
         continuation.run()
     end, count)
@@ -900,7 +914,7 @@ end
 
 ---@return Continuation
 function Helper.onceOneDeck(zone)
-    local continuation = Helper.createContinuation()
+    local continuation = Helper.createContinuation("Helper.onceOneDeck")
     Wait.condition(function()
         continuation.run(Helper.getDeck(zone))
     end, function()
@@ -921,7 +935,7 @@ end
 
 ---@return Continuation
 function Helper.repeatChainedAction(count, action)
-    local continuation = Helper.createContinuation()
+    local continuation = Helper.createContinuation("Helper.repeatChainedAction")
     if count > 0 then
         local innerContinuation = action()
         assert(innerContinuation and innerContinuation.doAfter, "Provided action must return a continuation!")
@@ -936,7 +950,7 @@ end
 
 ---@return Continuation
 function Helper.repeatMovingAction(object, count, action)
-    local continuation = Helper.createContinuation()
+    local continuation = Helper.createContinuation("Helper.repeatMovingAction")
     if count > 0 then
         action()
         Helper.onceMotionless(object).doAfter(function ()
@@ -1100,7 +1114,7 @@ function Helper.createCoalescentQueue(separationDelay, coalesce, handle)
             Wait.stop(cq.delayedHandler)
             cq.continuation.cancel()
         end
-        cq.continuation = Helper.createContinuation()
+        cq.continuation = Helper.createContinuation("Helper.createCoalescentQueue")
         cq.delayedHandler = Wait.time(cq.continuation.run, 1)
         cq.continuation.doAfter(function()
             assert(cq.lastEvent)
@@ -1161,6 +1175,7 @@ function Helper.getID(object)
     end
 end
 
+---@param deck any
 function Helper.shuffleDeck(deck)
     assert(deck)
     if true then

@@ -145,7 +145,7 @@ end
 local function perFremen(value)
     return function (input)
         local count = 0
-        for _, card in ipairs(input.revealedCards) do
+        for _, card in ipairs(Helper.concatTables(input.playedCards, input.revealedCards)) do
             if card.factions and Helper.isElementOf("fremen", card.factions) then
                 count = count + 1
             else

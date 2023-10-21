@@ -391,7 +391,7 @@ end
 
 ---
 function MainBoard.sendAgent(color, spaceName)
-    local continuation = Helper.createContinuation()
+    local continuation = Helper.createContinuation("MainBoard.sendAgent")
 
     local space = MainBoard.spaces[spaceName]
 
@@ -725,7 +725,7 @@ function MainBoard._goSecureContract(color, leader)
 end
 
 function MainBoard._asyncGoSellMelange(color, leader)
-    local continuation = Helper.createContinuation()
+    local continuation = Helper.createContinuation("MainBoard._asyncGoSellMelange")
     local options = {
         "2 -> 4",
         "3 -> 8",
@@ -800,7 +800,7 @@ function MainBoard._goInterstellarShipping(color, leader)
 end
 
 function MainBoard._asyncGoTechNegotiation(color, leader)
-    local continuation = Helper.createContinuation()
+    local continuation = Helper.createContinuation("MainBoard._asyncGoTechNegotiation")
     local options = {
         "Send a negotiator",
         "Buy tech. with -1 discount"

@@ -376,7 +376,7 @@ function ArrakeenScouts._createCommitteeTile(committee, zone)
         }
     }
 
-    local continuation = Helper.createContinuation()
+    local continuation = Helper.createContinuation("ArrakeenScouts._createCommitteeTile")
 
     local spawnParameters = {
         data = data,
@@ -1948,7 +1948,7 @@ function ArrakeenScouts._createRandomValidationController(playerPanes, secret, g
 
     function controller.validate(color)
         ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, controller.labels[color], "…")
-        local continuation = Helper.createContinuation()
+        local continuation = Helper.createContinuation("ArrakeenScouts._createRandomValidationController")
         if resolve then
             resolve(color, continuation)
         else
@@ -2005,7 +2005,7 @@ function ArrakeenScouts._createSequentialChoiceController(playerPanes, getOption
                     otherOptionValue = controller.options[otherColor].value
                 end
                 ArrakeenScouts._setAsPassivePane(otherColor, otherPlayerPane, false, otherOptionValue, "…")
-                local continuation = Helper.createContinuation()
+                local continuation = Helper.createContinuation("ArrakeenScouts._createSequentialChoiceController")
                 if resolve then
                     resolve(otherColor, controller.options[otherColor], continuation)
                 else
@@ -2132,7 +2132,7 @@ end
 
 ---
 function ArrakeenScouts._ensureCardOperation(getSourceCards, getDestinationCards, predicate)
-    local continuation = Helper.createContinuation()
+    local continuation = Helper.createContinuation("ArrakeenScouts._ensureCardOperation")
 
     local cardCache = {}
 
@@ -2186,7 +2186,7 @@ end
 
 ---
 function ArrakeenScouts._ensureResearch(color)
-    local continuation = Helper.createContinuation()
+    local continuation = Helper.createContinuation("ArrakeenScouts._ensureResearch")
 
     local holder = {}
     holder.listener = function (otherColor)

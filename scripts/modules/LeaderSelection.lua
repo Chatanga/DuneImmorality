@@ -35,7 +35,7 @@ end
 function LeaderSelection.setUp(settings, opponents)
     Deck.generateLeaderDeck(LeaderSelection.deckZone, settings.riseOfIx, settings.immortality, settings.fanmadeLeaders).doAfter(function (deck)
         local numberOfLeaders = #deck.getObjects()
-        local continuation = Helper.createContinuation()
+        local continuation = Helper.createContinuation("LeaderSelection.setUp")
         local count = numberOfLeaders
 
         LeaderSelection._layoutLeaders(numberOfLeaders, function (_, position)
@@ -202,18 +202,14 @@ function LeaderSelection._setUpPicking(opponents, numberOfLeaders, random, hidde
                 -- Rivals
                 for color, opponent in pairs(opponents) do
                     if opponent == "rival" then
-                        --Helper.dumpFunction("Hagal.pickAnyCompatibleLeader", color)
                         Hagal.pickAnyCompatibleLeader(color)
                     end
                 end
                 -- Then players
-                local i = 0
                 for color, opponent in pairs(opponents) do
-                    --Helper.dump(i, opponent)
                     if opponent ~= "rival" then
                         local leaders = LeaderSelection.getSelectableLeaders()
                         local leader = Helper.pickAny(leaders)
-                        --Helper.dumpFunction("LeaderSelection.claimLeader", color, leader)
                         LeaderSelection.claimLeader(color, leader)
                     end
                 end
@@ -332,12 +328,7 @@ end
 ---
 function LeaderSelection.claimLeader(color, leader)
     LeaderSelection.dynamicLeaderSelection[leader] = true
-    if PlayBoard.setLeader(color, leader) then
-        leader.clearButtons()
-        return true
-    else
-        return false
-    end
+    return PlayBoard.setLeader(color, leader)
 end
 
 ---

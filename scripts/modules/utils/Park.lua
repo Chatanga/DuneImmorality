@@ -173,7 +173,7 @@ end
 
 ---
 function Park.waitStabilisation(park)
-    local continuation = Helper.createContinuation()
+    local continuation = Helper.createContinuation("Park.waitStabilisation")
     Wait.condition(continuation.run, function()
         continuation.tick()
         local objectsInTransit = Helper.getSharedTable(park.name)

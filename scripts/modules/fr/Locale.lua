@@ -31,6 +31,7 @@ return {
     phaseRecall = "Phase : rappel",
     phaseEndgame = "Phase : fin de jeu",
     phaseArrakeenScouts = "Phase : éclaireurs d’Arrakeen",
+    endgameReached = "Fin de jeu théorique atteinte",
 
     -- Card
     acquireButton = "Acquérir",

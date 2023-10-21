@@ -209,7 +209,7 @@ Leader.arianaThorvald = Helper.createClass(Leader, {
 
     --- Spice addict
     sendAgent = function (color, spaceName)
-        local continuation = Helper.createContinuation()
+        local continuation = Helper.createContinuation("Leader.arianaThorvald.sendAgent")
         Action.sendAgent(color, spaceName).doAfter(function (success)
             if success and MainBoard.isDesertSpace(spaceName) then
                 local leader = PlayBoard.getLeader(color)
@@ -226,7 +226,7 @@ Leader.memnonThorvald = Helper.createClass(Leader, {
 
     --- Connections
     sendAgent = function (color, spaceName)
-        local continuation = Helper.createContinuation()
+        local continuation = Helper.createContinuation("Leader.memnonThorvald.sendAgent")
         Action.sendAgent(color, spaceName).doAfter(function (success)
             if success and spaceName == "highCouncil" then
                 local leader = PlayBoard.getLeader(color)
@@ -305,7 +305,7 @@ Leader.tessiaVernius = Helper.createClass(Leader, {
     --- Careful observation
     influence = function (color, faction, amount)
         local noFriendshipBefore = not InfluenceTrack.hasFriendship(color, faction)
-        local continuation = Helper.createContinuation()
+        local continuation = Helper.createContinuation("Leader.tessiaVernius.influence")
         Action.influence(color, faction, amount).doAfter(function ()
             local friendshipAfter = InfluenceTrack.hasFriendship(color, faction)
             if noFriendshipBefore and friendshipAfter then
@@ -339,8 +339,7 @@ Leader.yunaMoritani = Helper.createClass(Leader, {
         if resourceName == "solari" and amount > 0 and Action.checkContext({ phase = "playerTurns", color = color }) then
             finalAmount = amount + 1
         end
-        local leader = PlayBoard.getLeader(color)
-        return leader.resources(color, resourceName, finalAmount)
+        return Action.resources(color, resourceName, finalAmount)
     end,
 
     --- Final delivery

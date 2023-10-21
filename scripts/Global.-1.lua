@@ -1,4 +1,4 @@
-local BUILD = 'Fri Oct 20 20:17:27 CEST 2023'
+local BUILD = 'Sat Oct 21 14:28:23 CEST 2023'
 
 -- Do not load anything. Appropriate to work on the mod content without
 -- interference.
@@ -94,7 +94,7 @@ autoLoadedSettings = {
         Green = "letoAtreides",
         Yellow = "ilbanRichese",
         Red = "tessiaVernius",
-        Blue = "paulAtreides"
+        Blue = "yunaMoritani"
     },
     fanmadeLeaders = false,
     soundEnabled = true,
@@ -178,7 +178,7 @@ local PlayerSet = {
         riseOfIx = true,
         epicMode = false,
         immortality = true,
-        goTo11 = false,
+        goTo11 = true,
         leaderSelection_all = allModules.LeaderSelection.getSelectionMethods(),
         leaderSelection = "reversePick",
         fanmadeLeaders = false,
@@ -298,7 +298,7 @@ function setUp(newSettings)
         newSettings.numberOfPlayers = math.min(4, #properlySeatedPlayers)
     end
 
-    local continuation = Helper.createContinuation()
+    local continuation = Helper.createContinuation("setUp")
     local activeOpponents = PlayerSet.findActiveOpponents(properlySeatedPlayers, newSettings.numberOfPlayers)
     if newSettings.randomizePlayerPositions then
         PlayerSet.randomizePlayerPositions(activeOpponents, continuation)
@@ -307,11 +307,17 @@ function setUp(newSettings)
     end
 
     continuation.doAfter(function ()
+        log("Active opponents:")
+        for color, oppenent in pairs(activeOpponents) do
+            Helper.dump("\t", color, "-", oppenent)
+        end
+
         -- Not assigned before in order to avoid saving anything.
         settings = newSettings
 
+        local orderedPlayers = PlayerSet.toCanonicallyOrderedPlayerList(activeOpponents)
         for _, module in ipairs(allModules.ordered) do
-            module.setUp(settings, activeOpponents, PlayerSet.toOrderedPlayerList(activeOpponents))
+            module.setUp(settings, activeOpponents, orderedPlayers)
         end
 
         -- TurnControl.start() is called by "LeaderSelection" asynchronously,
@@ -376,7 +382,7 @@ function PlayerSet.findActiveOpponents(properlySeatedPlayers, numberOfPlayers)
 end
 
 ---
-function PlayerSet.toOrderedPlayerList(activeOpponents)
+function PlayerSet.toCanonicallyOrderedPlayerList(activeOpponents)
     local orderedColors = { "Green", "Yellow", "Blue", "Red" }
 
     local players = {}

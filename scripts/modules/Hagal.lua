@@ -155,7 +155,7 @@ end
 
 ---
 function Hagal._lateActivate(phase, color)
-    local continuation = Helper.createContinuation()
+    local continuation = Helper.createContinuation("Hagal._lateActivate")
 
     if phase == "leaderSelection" then
         Hagal.pickAnyCompatibleLeader(color)
@@ -192,7 +192,7 @@ end
 
 ---
 function Hagal._collectReward(color)
-    local continuation = Helper.createContinuation()
+    local continuation = Helper.createContinuation("Hagal._collectReward")
     Wait.frames(function ()
         local conflictName = Combat.getCurrentConflictName()
         local rank = Combat.getRank(color).value
@@ -251,7 +251,7 @@ end
 
 ---
 function Hagal._activateFirstValidCard(color, action)
-    local continuation = Helper.createContinuation()
+    local continuation = Helper.createContinuation("Hagal._activateFirstValidCard")
 
     local emptySlots = Park.findEmptySlots(PlayBoard.getAgentCardPark(color))
     assert(emptySlots and #emptySlots > 0)

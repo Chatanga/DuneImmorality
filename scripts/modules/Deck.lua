@@ -441,7 +441,7 @@ end
 ---
 function Deck.generateStarterDeck(deckZone, immortality, epic)
     assert(deckZone)
-    local continuation = Helper.createContinuation()
+    local continuation = Helper.createContinuation("Deck.generateStarterDeck")
     local contributionSets = { Deck.starter.base }
     if immortality then
         table.insert(contributionSets, Deck.starter.immortality)
@@ -458,12 +458,14 @@ end
 ---
 function Deck.generateStarterDiscard(discardZone, immortality, epic)
     assert(discardZone)
-    local continuation = Helper.createContinuation()
+    local continuation = Helper.createContinuation("Deck.generateStarterDiscard")
     if immortality and epic then
         Deck._generateDeck("Imperium", discardZone.getPosition(), Deck.starter.epic, Deck.sources.imperium).doAfter(function (deck)
             deck.flip()
             continuation.run(deck)
         end)
+    else
+        continuation.cancel()
     end
     return continuation
 end
@@ -471,7 +473,7 @@ end
 ---
 function Deck.generateImperiumDeck(deckZone, ix, immortality)
     assert(deckZone)
-    local continuation = Helper.createContinuation()
+    local continuation = Helper.createContinuation("Deck.generateImperiumDeck")
     local contributions = Deck._mergeStandardContributionSets(Deck.imperium, ix, immortality)
     Deck._generateDeck("Imperium", deckZone.getPosition(), contributions, Deck.sources.imperium).doAfter(continuation.run)
     return continuation
@@ -480,7 +482,7 @@ end
 ---
 function Deck.generateSpecialDeck(name, deckZone)
     assert(deckZone)
-    local continuation = Helper.createContinuation()
+    local continuation = Helper.createContinuation("Deck.generateSpecialDeck")
     assert(name)
     assert(Deck.special[name])
     local contributions = { [name] = Deck.special[name] }
@@ -494,7 +496,7 @@ end
 ---
 function Deck.generateTleilaxuDeck(deckZone)
     assert(deckZone)
-    local continuation = Helper.createContinuation()
+    local continuation = Helper.createContinuation("Deck.generateTleilaxuDeck")
     Deck._generateDeck("Imperium", deckZone.getPosition(), Deck.tleilaxu, Deck.sources.tleilaxu).doAfter(continuation.run)
     return continuation
 end
@@ -502,7 +504,7 @@ end
 ---
 function Deck.generateIntrigueDeck(deckZone, ix, immortality)
     assert(deckZone)
-    local continuation = Helper.createContinuation()
+    local continuation = Helper.createContinuation("Deck.generateIntrigueDeck")
     local contributions = Deck._mergeStandardContributionSets(Deck.intrigue, ix, immortality)
     Deck._generateDeck("Intrigue", deckZone.getPosition(), contributions, Deck.sources.intrigue).doAfter(continuation.run)
     return continuation
@@ -512,7 +514,7 @@ end
 function Deck.generateTechDeck(deckZones)
     assert(deckZones)
     assert(#deckZones == 3)
-    local continuation = Helper.createContinuation()
+    local continuation = Helper.createContinuation("Deck.generateTechDeck")
 
     local keys = Helper.getKeys(Deck.tech)
     Helper.shuffle(keys)
@@ -544,7 +546,7 @@ end
 --
 function Deck.generateConflictDeck(deckZone, ix, epic)
     assert(deckZone)
-    local continuation = Helper.createContinuation()
+    local continuation = Helper.createContinuation("Deck.generateConflictDeck")
 
     local cardCounts = epic and { 0, 5, 5 } or { 1, 5, 4 }
 
@@ -571,7 +573,7 @@ end
 function Deck.generateHagalDeck(deckZone, ix, immortality, playerCount)
     assert(deckZone)
     assert(playerCount == 1 or playerCount == 2)
-    local continuation = Helper.createContinuation()
+    local continuation = Helper.createContinuation("Deck.generateHagalDeck")
 
     local contributionSetNames = { "base" }
     if ix then
@@ -600,7 +602,7 @@ end
 ---
 function Deck.generateLeaderDeck(deckZone, ix, immortality, fanmadeLeaders)
     assert(deckZone)
-    local continuation = Helper.createContinuation()
+    local continuation = Helper.createContinuation("Deck.generateLeaderDeck")
     local contributions = Deck._mergeStandardContributionSets(Deck.leaders, ix, immortality)
     if fanmadeLeaders then
         contributions = Deck._mergeContributionSets({ contributions, Deck._mergeStandardContributionSets(Deck.leaders.fanmade.arkhane, ix, immortality) })
@@ -807,15 +809,13 @@ function Deck._generateDeck(deckName, position, contributions, sources)
         end
     end
 
-    local continuation = Helper.createContinuation()
+    local continuation = Helper.createContinuation("Deck._generateDeck")
 
     local spawnParameters = {
         data = #data.ContainedObjects == 1 and data.ContainedObjects[1] or data,
         position = position,
         rotation = Vector(0, 180, 180),
-        callback_function = function (newDeck)
-            continuation.run(newDeck)
-        end
+        callback_function = continuation.run
     }
 
     spawnObjectData(spawnParameters)
