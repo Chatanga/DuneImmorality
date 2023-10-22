@@ -5,8 +5,8 @@ local AcquireCard = require("utils.AcquireCard")
 
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local Deck = Module.lazyRequire("Deck")
-local Utils = Module.lazyRequire("Utils")
 local TechCard = Module.lazyRequire("TechCard")
+local MainBoard = Module.lazyRequire("MainBoard")
 
 local TechMarket = {
     negotiationParks = {},
@@ -166,7 +166,7 @@ function TechMarket._doAcquireTech(stackIndex, color)
             PlayBoard.grantTechTile(color, techTileStack.topCard)
             TechCard.applyBuyEffect(color, techTileStack.topCard)
         else
-            Utils.trash(techTileStack.topCard)
+            MainBoard.trash(techTileStack.topCard)
         end
 
         Helper.onceTimeElapsed(0.5).doAfter(function ()

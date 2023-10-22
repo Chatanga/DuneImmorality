@@ -7,7 +7,7 @@ local PlayBoard = Module.lazyRequire("PlayBoard")
 local TleilaxuResearch = Module.lazyRequire("TleilaxuResearch")
 local DynamicBonus = Module.lazyRequire("DynamicBonus")
 local ImperiumCard = Module.lazyRequire("ImperiumCard")
-local Utils = Module.lazyRequire("Utils")
+local MainBoard = Module.lazyRequire("MainBoard")
 
 local TleilaxuRow = {}
 
@@ -117,7 +117,7 @@ function TleilaxuRow.trash(indexInRow)
     assert(price, "Unknown tleilaxu card: " .. cardName)
     assert((cardName == "reclaimedForces") == (indexInRow == 3))
 
-    Utils.trash(card)
+    MainBoard.trash(card)
 
     -- Replenish the slot in the row.
     Helper.moveCardFromZone(TleilaxuRow.deckZone, acquireCard.zone.getPosition(), Vector(0, 180, 0))

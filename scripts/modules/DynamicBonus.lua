@@ -4,7 +4,7 @@ local Park = require("utils.Park")
 
 local Intrigue = Module.lazyRequire("Intrigue")
 local Resource = Module.lazyRequire("Resource")
-local Utils = Module.lazyRequire("Utils")
+local Types = Module.lazyRequire("Types")
 local Combat = Module.lazyRequire("Combat")
 local TleilaxuResearch = Module.lazyRequire("TleilaxuResearch")
 local MainBoard = Module.lazyRequire("MainBoard")
@@ -23,7 +23,7 @@ function DynamicBonus.createSpaceBonus(origin, bonuses, extraBonuses)
             if Helper.isElementOf(category, { "spice", "solari" }) then
                 total = total + 1
             elseif category == "intrigue" then
-                Utils.assertIsPositiveInteger(description)
+                Types.assertIsPositiveInteger(description)
                 total = total + description
             elseif Helper.isElementOf(category, { "combatTroop", "garrisonTroop", "tankTroop", "combatDreadnought", "controlMarker" })  then
                 total = total + #description
@@ -44,7 +44,7 @@ function DynamicBonus.createSpaceBonus(origin, bonuses, extraBonuses)
             extraBonuses[target][category] = {}
 
             if Helper.isElementOf(category, { "spice", "solari" }) then
-                Utils.assertIsPositiveInteger(description)
+                Types.assertIsPositiveInteger(description)
                 local position = toPosition(i)
                 DynamicBonus.tq.submit(function ()
                     local constructorName = Helper.toCamelCase("_create",  category, "token")
@@ -59,7 +59,7 @@ function DynamicBonus.createSpaceBonus(origin, bonuses, extraBonuses)
                 i = i + 1
 
             elseif category == "intrigue" then
-                Utils.assertIsPositiveInteger(description)
+                Types.assertIsPositiveInteger(description)
                 for _ = 1, description do
                     local position = toPosition(i)
                     DynamicBonus.tq.submit(function ()

@@ -408,7 +408,7 @@ return {
     gruesomeSacrifice = "Sacrifice gerbant",
     harvestCells = "Prélèvement de cellules",
     illicitDealings = "Transactions illicites",
-    shadowyBargain = "leboncoin.fr",
+    shadowyBargain = "Combine foireuse",
     studyMelange = "Étudier le mélange",
     tleilaxuPuppet = "Marionnette tleilaxu",
     viciousTalents = "Talents vicieux",

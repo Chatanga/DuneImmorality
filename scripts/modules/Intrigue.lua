@@ -4,7 +4,7 @@ local AcquireCard = require("utils.AcquireCard")
 
 local Deck = Module.lazyRequire("Deck")
 local PlayBoard = Module.lazyRequire("PlayBoard")
-local Utils = Module.lazyRequire("Utils")
+local Types = Module.lazyRequire("Types")
 
 local Intrigue = {}
 
@@ -43,7 +43,7 @@ end
 
 ---
 function Intrigue.drawIntrigue(color, amount)
-    Utils.assertIsPositiveInteger(amount)
+    Types.assertIsPositiveInteger(amount)
     -- Add an offset to put the card on the left side of the player's hand.
     local position = Player[color].getHandTransform().position + Vector(-7.5, 0, 0)
     Helper.onceTimeElapsed(0.25, amount).doAfter(function()
@@ -53,7 +53,7 @@ end
 
 ---
 function Intrigue.stealIntrigue(color, otherColor, amount)
-    Utils.assertIsPositiveInteger(amount)
+    Types.assertIsPositiveInteger(amount)
 
     local intrigues = PlayBoard.getIntrigues(otherColor)
     local realAmount = math.min(amount, #intrigues)

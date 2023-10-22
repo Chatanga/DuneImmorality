@@ -122,7 +122,7 @@ Leader.helenaRichese = Helper.createClass(Leader, {
         if Action.checkContext({ phase = "playerTurns", color = color }) and PlayBoard.couldSendAgentOrReveal(color) then
             return leader.reserveImperiumCard(color, indexInRow)
         else
-            return leader.acquireImperiumCard(color, indexInRow)
+            return Action.acquireImperiumCard(color, indexInRow)
         end
     end,
 
@@ -131,8 +131,7 @@ Leader.helenaRichese = Helper.createClass(Leader, {
         if Action.checkContext({ phase = "playerTurns", color = color }) and not PlayBoard.couldSendAgentOrReveal(color) then
             return ImperiumRow.acquireReservedImperiumCard(color)
         else
-            local leader = PlayBoard.getLeader(color)
-            return leader.acquireReservedImperiumCard(color)
+            return Action.acquireReservedImperiumCard(color)
         end
     end
 })

@@ -10,10 +10,11 @@ Features:
 - (Blitz!)
 - Arrakeen Scouts
 - (Fanmade leaders)
+- (Reload support)
 
 Supported langages:
 - French
-- English
+- (English)
 
 ## Links :
 
@@ -80,24 +81,26 @@ Unfortunately, it seems to induce some kind of latency, leading to board corrupt
             TurnControl.findActivePlayer
                 TurnControl.startPhase(nextPhase)
 
+## FIXME
+
+- Investigate missing trigger effects on guests after a reload.
+- Fix the whole save/reload behavior in a minimal way.
+
 ## TODO (by priority)
 
 - Fully restore translations (tokens and books included).
-- Fix the whole save/reload behavior.
-- Blitz!
-- [Fanmade leaders](https://drive.google.com/drive/folders/1-V3xcHk6078YR1fyhtJL3tdqv2zg5q3Q).
 
+- Blitz!
+- Rival combat optimization.
+- [Fanmade leaders](https://drive.google.com/drive/folders/1-V3xcHk6078YR1fyhtJL3tdqv2zg5q3Q).
 - Replace freighters by tokens.
 - Change the [dreadnought model](https://www.thingiverse.com/thing:5326146).
 
-- Add space-time queue for relevant player discards.
 - Card acquisition bonus (unify card effect framework).
 - Tech acquisition cost (multiple options).
 - Fix the 6 tech park saturation.
-- Intelligent mentat + dreadnought recall.
-- Notify agent action failures.
-- Handle all space access options.
-- Clean reservation slot on recall.
+- Handle all space access options and notify agent action failures.
+- Reservation slot cleaned on recall.
 - Custom hidden pick.
 
 ## Later (maybe)

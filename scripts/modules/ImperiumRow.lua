@@ -4,8 +4,8 @@ local AcquireCard = require("utils.AcquireCard")
 
 local Deck = Module.lazyRequire("Deck")
 local PlayBoard = Module.lazyRequire("PlayBoard")
-local Utils = Module.lazyRequire("Utils")
 local Music = Module.lazyRequire("Music")
+local MainBoard = Module.lazyRequire("MainBoard")
 
 local ImperiumRow = {}
 
@@ -58,7 +58,7 @@ function ImperiumRow._staticSetUp()
         if phase == "recall" then
             local cardOrDeck = Helper.getDeckOrCard(ImperiumRow.reservationSlotZone)
             if cardOrDeck then
-                Utils.trash(cardOrDeck)
+                MainBoard.trash(cardOrDeck)
             end
         end
     end)
@@ -80,6 +80,10 @@ function ImperiumRow.reserveImperiumCard(indexInRow)
     local zone = ImperiumRow.slotZones[indexInRow]
     local card = Helper.getCard(zone)
     if card then
+        local oldCard = Helper.getCard(ImperiumRow.reservationSlotZone)
+        if oldCard  then
+            MainBoard.trash(oldCard)
+        end
         card.setPosition(ImperiumRow.reservationSlotZone.getPosition())
         ImperiumRow._replenish(indexInRow)
         return true
@@ -108,7 +112,7 @@ function ImperiumRow.nuke(color)
         for i, zone in ipairs(ImperiumRow.slotZones) do
             local card = Helper.getCard(zone)
             if card then
-                Utils.trash(card)
+                MainBoard.trash(card)
                 ImperiumRow._replenish(i)
             end
         end

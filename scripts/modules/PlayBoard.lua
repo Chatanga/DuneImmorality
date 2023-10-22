@@ -7,7 +7,7 @@ local Set = require("utils.Set")
 local Resource = Module.lazyRequire("Resource")
 local TleilaxuResearch = Module.lazyRequire("TleilaxuResearch")
 local TurnControl = Module.lazyRequire("TurnControl")
-local Utils = Module.lazyRequire("Utils")
+local Types = Module.lazyRequire("Types")
 local Deck = Module.lazyRequire("Deck")
 local MainBoard = Module.lazyRequire("MainBoard")
 local Hagal = Module.lazyRequire("Hagal")
@@ -426,7 +426,7 @@ function PlayBoard._staticSetUp(settings)
                 end
 
                 playBoard.alreadyPlayedCards = Helper.filter(Park.getObjects(playBoard.agentCardPark), function (card)
-                    return Utils.isImperiumCard(card) or Utils.isIntrigueCard(card)
+                    return Types.isImperiumCard(card) or Types.isIntrigueCard(card)
                 end)
             end
         end
@@ -457,7 +457,7 @@ function PlayBoard:_recall()
     self:_createButtons()
 
     -- Send all played cards to the discard, save those which shouldn't.
-    Helper.forEach(Helper.filter(Park.getObjects(self.agentCardPark), Utils.isImperiumCard), function (_, card)
+    Helper.forEach(Helper.filter(Park.getObjects(self.agentCardPark), Types.isImperiumCard), function (_, card)
         local cardName = Helper.getID(card)
         if cardName == "foldspace" then
             card.setPositionSmooth(Reserve.foldspaceSlotZone.getPosition())
@@ -469,14 +469,14 @@ function PlayBoard:_recall()
     end)
 
     -- Send all revealed cards to the discard.
-    Helper.forEach(Helper.filter(Park.getObjects(self.revealCardPark), Utils.isImperiumCard), function (i, card)
+    Helper.forEach(Helper.filter(Park.getObjects(self.revealCardPark), Types.isImperiumCard), function (i, card)
         card.setPositionSmooth(self.content.discardZone.getPosition() + Vector(0, i * 0.5, 0))
     end)
 
     -- Send all played intrigues to their discard.
     local playedIntrigueCards = Helper.concatTables(
-        Helper.filter(Park.getObjects(self.agentCardPark), Utils.isIntrigueCard),
-        Helper.filter(Park.getObjects(self.revealCardPark), Utils.isIntrigueCard)
+        Helper.filter(Park.getObjects(self.agentCardPark), Types.isIntrigueCard),
+        Helper.filter(Park.getObjects(self.revealCardPark), Types.isIntrigueCard)
     )
     Helper.forEach(playedIntrigueCards, function (i, card)
         card.setPositionSmooth(Intrigue.discardZone.getPosition())
@@ -605,7 +605,9 @@ end
 function PlayBoard.collectReward(color)
     local conflictName = Combat.getCurrentConflictName()
     local rank = Combat.getRank(color).value
-    ConflictCard.collectReward(color, conflictName, rank, true)
+    -- Any reason to disable this, since optional rewards are always desirable VPs?
+    local collectOptionalRewards = true
+    ConflictCard.collectReward(color, conflictName, rank, collectOptionalRewards)
     if rank == 1 then
         local leader = PlayBoard.getLeader(color)
         if PlayBoard.hasTech(color, "windtraps") then
@@ -822,7 +824,7 @@ function PlayBoard.onObjectEnterScriptingZone(zone, object)
     for color, playBoard in pairs(PlayBoard.playboards) do
         if playBoard.opponent then
             if zone == playBoard.scorePark.zone then
-                if Utils.isVictoryPointToken(object) then
+                if Types.isVictoryPointToken(object) then
                     playBoard:updatePlayerScore()
                     local controlableSpace = MainBoard.findControlableSpace(object)
                     if controlableSpace then
@@ -830,7 +832,7 @@ function PlayBoard.onObjectEnterScriptingZone(zone, object)
                     end
                 end
             elseif zone == playBoard.agentPark.zone then
-                if Utils.isMentat(object) then
+                if Types.isMentat(object) then
                     object.addTag(color)
                     object.setColorTint(playBoard.content.swordmaster.getColorTint())
                 end
@@ -844,7 +846,7 @@ function PlayBoard.onObjectLeaveScriptingZone(zone, object)
     for _, playBoard in pairs(PlayBoard.playboards) do
         if playBoard.opponent then
             if zone == playBoard.scorePark.zone then
-                if Utils.isVictoryPointToken(object) then
+                if Types.isVictoryPointToken(object) then
                     playBoard:updatePlayerScore()
                 end
             end
@@ -1106,15 +1108,15 @@ end
 
 ---
 function PlayBoard:revealHand()
-    local playedIntrigues = Helper.filter(Park.getObjects(self.agentCardPark), Utils.isIntrigueCard)
-    local playedCards = Helper.filter(Park.getObjects(self.agentCardPark), Utils.isImperiumCard)
+    local playedIntrigues = Helper.filter(Park.getObjects(self.agentCardPark), Types.isIntrigueCard)
+    local playedCards = Helper.filter(Park.getObjects(self.agentCardPark), Types.isImperiumCard)
 
     local properCard = function (card)
         --[[
             We leave the sister card in the player's hand to simplify things and
             make clear to the player that the card must be manually revealed.
         ]]
-        return Utils.isImperiumCard(card) and Helper.getID(card) ~= "beneGesseritSister"
+        return Types.isImperiumCard(card) and Helper.getID(card) ~= "beneGesseritSister"
     end
 
     local revealedCards = Helper.filter(Player[self.color].getHandObjects(), properCard)
@@ -1159,7 +1161,7 @@ function PlayBoard.getCardsPlayedThisTurn(color)
     local playBoard = PlayBoard.getPlayBoard(color)
 
     local playedCards = Helper.filter(Park.getObjects(playBoard.agentCardPark), function (card)
-        return Utils.isImperiumCard(card) or Utils.isIntrigueCard(card)
+        return Types.isImperiumCard(card) or Types.isIntrigueCard(card)
     end)
 
     return Set.newFromList(playedCards) - Set.newFromList(playBoard.alreadyPlayedCards)
@@ -1204,7 +1206,7 @@ end
 
 ---
 function PlayBoard:drawCards(count)
-    Utils.assertIsInteger(count)
+    Types.assertIsInteger(count)
     local remainingCardToDrawCount = count
 
     local deckOrCard = Helper.getDeckOrCard(self.content.drawDeckZone)
@@ -1444,7 +1446,7 @@ function PlayBoard:getScore()
     local score = 0
     if not PlayBoard.isRival(self.color) or Hagal.getRivalCount() == 2 then
         for _, object in ipairs(self.scorePark.zone.getObjects()) do
-            if Utils.isVictoryPointToken(object) then
+            if Types.isVictoryPointToken(object) then
                 score = score + 1
             end
         end
@@ -1548,7 +1550,7 @@ end
 
 ---
 function PlayBoard.getResource(color, resourceName)
-    Utils.assertIsResourceName(resourceName)
+    Types.assertIsResourceName(resourceName)
     return PlayBoard.getPlayBoard(color)[resourceName]
 end
 
@@ -1602,7 +1604,7 @@ end
 
 ---
 function PlayBoard.getHandedCards(color)
-    return Helper.filter(Player[color].getHandObjects(), Utils.isImperiumCard)
+    return Helper.filter(Player[color].getHandObjects(), Types.isImperiumCard)
 end
 
 ---
@@ -1627,7 +1629,7 @@ end
 
 ---
 function PlayBoard.getIntrigues(color)
-    return Helper.filter(Player[color].getHandObjects(), Utils.isIntrigueCard)
+    return Helper.filter(Player[color].getHandObjects(), Types.isIntrigueCard)
 end
 
 ---

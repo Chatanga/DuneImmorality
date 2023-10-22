@@ -1,4 +1,4 @@
-local BUILD = 'Sat Oct 21 14:28:23 CEST 2023'
+local BUILD = 'Sun Oct 22 13:59:30 CEST 2023'
 
 -- Do not load anything. Appropriate to work on the mod content without
 -- interference.
@@ -141,7 +141,7 @@ local allModules = Module.registerModules({
     TleilaxuResearch = require("TleilaxuResearch"),
     TleilaxuRow = require("TleilaxuRow"),
     TurnControl = require("TurnControl"),
-    Utils = require("Utils"),
+    Types = require("Types"),
 })
 
 -- A 'xxx_all' member is not UI field, but define the options for the 'xxx' field.

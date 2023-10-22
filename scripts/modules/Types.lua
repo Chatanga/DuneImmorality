@@ -34,70 +34,70 @@ local Helper = require("utils.Helper")
 ---| 'persuasion'
 ---| 'strength'
 
-local Utils = {}
+local Types = {}
 
 ---
-function Utils.isTroop(object, color)
+function Types.isTroop(object, color)
     return object.hasTag("Troop") and (not color or object.hasTag(color))
 end
 
 ---
-function Utils.isDreadnought(object, color)
+function Types.isDreadnought(object, color)
     return object.hasTag("Dreadnought") and (not color or object.hasTag(color))
 end
 
 ---
-function Utils.isUnit(object, color)
-    return Utils.isTroop(object, color) or Utils.isDreadnought(object, color)
+function Types.isUnit(object, color)
+    return Types.isTroop(object, color) or Types.isDreadnought(object, color)
 end
 
 ---
-function Utils.isControlMarker(object, color)
+function Types.isControlMarker(object, color)
     return object.hasTag("Flag") and (not color or object.hasTag(color))
 end
 
 ---
-function Utils.isAgent(object, color)
+function Types.isAgent(object, color)
     return object.hasTag("Agent") and (not color or object.hasTag(color))
 end
 
 ---
-function Utils.isMentat(object, color)
+function Types.isMentat(object, color)
     return object.hasTag("Mentat") and (not color or object.hasTag(color))
 end
 
 ---
-function Utils.isVoiceToken(object)
+function Types.isVoiceToken(object)
     return object.hasTag("VoiceToken")
 end
 
 ---
-function Utils.isVictoryPointToken(object)
+function Types.isVictoryPointToken(object)
     return object.hasTag("VictoryPointToken")
 end
 
 ---
-function Utils.isLeader(object)
+function Types.isLeader(object)
     return object.hasTag("Leader")
 end
 
 ---
-function Utils.isImperiumCard(object)
+function Types.isImperiumCard(object)
     return object.hasTag("Imperium")
 end
 
 ---
-function Utils.isIntrigueCard(object)
+function Types.isIntrigueCard(object)
     return object.hasTag("Intrigue")
 end
 
 ---
-function Utils.isTech(object)
+function Types.isTech(object)
     return object.hasTag("Tech")
 end
 
 ---
-function Utils.assertIsPlayerColor(color)
+function Types.assertIsPlayerColor(color)
     assert(color == "Green"
         or color == "Yellow"
         or color == "Blue"
@@ -106,7 +106,7 @@ function Utils.assertIsPlayerColor(color)
 end
 
 ---
-function Utils.assertIsFaction(faction)
+function Types.assertIsFaction(faction)
     assert(faction == "emperor"
         or faction == "spacingGuild"
         or faction == "beneGesserit"
@@ -115,7 +115,7 @@ function Utils.assertIsFaction(faction)
 end
 
 ---
-function Utils.assertIsTroopLocation(location)
+function Types.assertIsTroopLocation(location)
     assert(location == "supply" -- when lost or recalled
         or location == "garrison" -- when recruited
         or location == "combat" -- when deployed
@@ -125,7 +125,7 @@ function Utils.assertIsTroopLocation(location)
 end
 
 ---
-function Utils.assertIsDreadnoughtLocation(location)
+function Types.assertIsDreadnoughtLocation(location)
     assert(location == "supply" -- when lost or recalled
         or location == "garrison" -- when recruited
         or location == "combat" -- when deployed
@@ -136,7 +136,7 @@ function Utils.assertIsDreadnoughtLocation(location)
 end
 
 ---
-function Utils.assertIsResourceName(resourceName)
+function Types.assertIsResourceName(resourceName)
     assert(resourceName == "spice"
         or resourceName == "water"
         or resourceName == "solari"
@@ -146,71 +146,41 @@ function Utils.assertIsResourceName(resourceName)
 end
 
 ---
-function Utils.assertIsString(str)
+function Types.assertIsString(str)
     assert(type(str) == "string", "Not a string: " .. tostring(str))
 end
 
 ---
-function Utils.assertIsBoolean(b)
+function Types.assertIsBoolean(b)
     assert(type(b) == "boolean", "Not a boolean: " .. tostring(b))
 end
 
 ---
-function Utils.isInteger(n)
+function Types.isInteger(n)
     return type(n) == "number" and math.floor(n) == n
 end
 
 ---
-function Utils.assertIsInteger(n)
-    assert(Utils.isInteger(n), "Not an integer: " .. tostring(n))
+function Types.assertIsInteger(n)
+    assert(Types.isInteger(n), "Not an integer: " .. tostring(n))
 end
 
 ---
-function Utils.assertIsPositiveInteger(n)
-    assert(Utils.isInteger(n) and n >= 0, "Not a positive integer: " .. tostring(n))
+function Types.assertIsPositiveInteger(n)
+    assert(Types.isInteger(n) and n >= 0, "Not a positive integer: " .. tostring(n))
 end
 
 ---
-function Utils.assertIsStrictlyPositive(n)
-    assert(Utils.isInteger(n) and n > 0, "Not a strictly positive integer: " .. tostring(n))
+function Types.assertIsStrictlyPositive(n)
+    assert(Types.isInteger(n) and n > 0, "Not a strictly positive integer: " .. tostring(n))
 end
 
 ---
-function Utils.assertIsInRange(min, max, n)
-    assert(Utils.isInteger(min))
-    assert(Utils.isInteger(max))
-    assert(Utils.isInteger(n), "Not an integer: " .. tostring(n))
+function Types.assertIsInRange(min, max, n)
+    assert(Types.isInteger(min))
+    assert(Types.isInteger(max))
+    assert(Types.isInteger(n), "Not an integer: " .. tostring(n))
     assert(min <= n and n <= max, "Not in range [" .. tostring(min) .. ", " .. tostring(max) .. "]: " .. tostring(n))
 end
 
----
-function Utils.trash(object)
-
-    local holder = {}
-
-    holder.reduceStack = function ()
-        Helper.onceFramesPassed(500).doAfter(function ()
-            if Utils.trashStacking > 0 then
-                Utils.trashStacking = Utils.trashStacking - 1
-                holder.reduceStack()
-            else
-                Utils.trashStacking = nil
-            end
-        end)
-    end
-
-    local height = Utils.trashStacking
-    if Utils.trashStacking then
-        Utils.trashStacking = height + 1
-    else
-        height = 0
-        Utils.trashStacking = 1
-        holder.reduceStack()
-    end
-
-    object.interactable = true
-    object.setLock(false)
-    object.setPositionSmooth(getObjectFromGUID('ef8614').getPosition() + Vector(0, 1 + height, 0))
-end
-
-return Utils
+return Types

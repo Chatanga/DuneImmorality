@@ -13,7 +13,7 @@ local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
 local ImperiumCard = Module.lazyRequire("ImperiumCard")
 local Combat = Module.lazyRequire("Combat")
 local Intrigue = Module.lazyRequire("Intrigue")
-local Utils = Module.lazyRequire("Utils")
+local Types = Module.lazyRequire("Types")
 
 local ArrakeenScouts = {
     committees = {
@@ -539,7 +539,7 @@ end
 
 ---
 function ArrakeenScouts._setAsOptionPane(color, playerPane, secret, options, controller)
-    Utils.assertIsPlayerColor(color)
+    Types.assertIsPlayerColor(color)
     assert(playerPane)
     assert(secret ~= nil)
     assert(options)
@@ -1054,7 +1054,7 @@ end
 
 function ArrakeenScouts._createSequentialAuctionController(playerPanes, resourceName, maxValue, secret, resolveAll)
     assert(playerPanes)
-    Utils.assertIsResourceName(resourceName)
+    Types.assertIsResourceName(resourceName)
     assert(secret ~= nil)
     assert(resolveAll)
 

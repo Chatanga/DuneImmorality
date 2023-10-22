@@ -15,7 +15,7 @@ local TechMarket = Module.lazyRequire("TechMarket")
 local ConflictCard = Module.lazyRequire("ConflictCard")
 local MainBoard = Module.lazyRequire("MainBoard")
 local Intrigue = Module.lazyRequire("Intrigue")
-local Utils = Module.lazyRequire("Utils")
+local Types = Module.lazyRequire("Types")
 
 -- Enlighting clarifications: https://boardgamegeek.com/thread/2578561/summarizing-automa-2p-and-1p-similarities-and-diff
 local Hagal = Helper.createClass(Action, {
@@ -474,7 +474,7 @@ function Rival.resources(color, nature, amount)
                 if Hagal.riseOfIx then
                     local tech = PlayBoard.getTech(color, "spySatellites")
                     if tech and nature == "spice" and resource:get() >= 3 then
-                        Utils.trash(tech)
+                        MainBoard.trash(tech)
                         Rival.gainVictoryPoint(color, "spySatellites")
                     end
                 else
@@ -504,8 +504,8 @@ end
 
 ---
 function Rival.beetle(color, jump)
-    Utils.assertIsPlayerColor(color)
-    Utils.assertIsInteger(jump)
+    Types.assertIsPlayerColor(color)
+    Types.assertIsInteger(jump)
     if Hagal.getRivalCount() == 2 then
         return Action.beetle(color, jump)
     else

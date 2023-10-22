@@ -1,7 +1,7 @@
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 
-local Utils = Module.lazyRequire("Utils")
+local Types = Module.lazyRequire("Types")
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local MainBoard = Module.lazyRequire("MainBoard")
 
@@ -136,7 +136,7 @@ local ConflictCard = {
 }
 
 function ConflictCard.collectReward(color, conflictName, rank, collectOptionalRewards)
-    Utils.assertIsInRange(1, 3, rank)
+    Types.assertIsInRange(1, 3, rank)
     local conflict = ConflictCard[conflictName]
     assert(conflict, "Unknown conflict: ", conflictName)
     local rewards = conflict.rewards[rank]

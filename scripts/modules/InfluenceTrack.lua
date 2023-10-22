@@ -2,7 +2,7 @@ local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local I18N = require("utils.I18N")
 
-local Utils = Module.lazyRequire("Utils")
+local Types = Module.lazyRequire("Types")
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local MainBoard = Module.lazyRequire("MainBoard")
 
@@ -221,8 +221,8 @@ end
 
 ---
 function InfluenceTrack.hasFriendship(color, faction)
-    Utils.assertIsPlayerColor(color)
-    Utils.assertIsFaction(faction)
+    Types.assertIsPlayerColor(color)
+    Types.assertIsFaction(faction)
 
     local influenceLevels = InfluenceTrack.influenceLevels[faction][color]
     if InfluenceTrack.influenceTokens[faction][color].getPosition().z > influenceLevels.friendship then
@@ -249,9 +249,9 @@ end
 
 ---
 function InfluenceTrack._changeInfluenceTracksRank(color, faction, change)
-    Utils.assertIsPlayerColor(color)
-    Utils.assertIsFaction(faction)
-    Utils.assertIsInteger(change)
+    Types.assertIsPlayerColor(color)
+    Types.assertIsFaction(faction)
+    Types.assertIsInteger(change)
 
     local levels = InfluenceTrack.influenceLevels[faction][color]
     local token = InfluenceTrack.influenceTokens[faction][color]

@@ -6,7 +6,6 @@ local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
 local MainBoard = Module.lazyRequire("MainBoard")
 local TleilaxuResearch = Module.lazyRequire("TleilaxuResearch")
 
-
 local function _evaluateEffects(card, input, output)
     for _, effect in ipairs(card.reveal) do
         if type(effect) == 'function' then

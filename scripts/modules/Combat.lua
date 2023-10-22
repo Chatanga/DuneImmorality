@@ -6,7 +6,7 @@ local I18N = require("utils.I18N")
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local Action = Module.lazyRequire("Action")
 local Deck = Module.lazyRequire("Deck")
-local Utils = Module.lazyRequire("Utils")
+local Types = Module.lazyRequire("Types")
 local TurnControl = Module.lazyRequire("TurnControl")
 local MainBoard = Module.lazyRequire("MainBoard")
 local Music = Module.lazyRequire("Music")
@@ -93,16 +93,16 @@ function Combat._staticSetUp(settings)
             Combat.showRanking(turnSequence, ranking)
         elseif phase == "recall" then
             for _, object in ipairs(Combat.victoryPointTokenZone.getObjects()) do
-                if Utils.isVictoryPointToken(object) then
-                    Utils.trash(object)
+                if Types.isVictoryPointToken(object) then
+                    MainBoard.trash(object)
                 end
             end
             -- Recalling units (troops and dreadnoughts) in the combat (not in a controlable space).
             for _, object in ipairs(Combat.combatCenterZone.getObjects()) do
                 for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
-                    if Utils.isTroop(object, color) then
+                    if Types.isTroop(object, color) then
                         Park.putObject(object, PlayBoard.getSupplyPark(color))
-                    elseif Utils.isDreadnought(object, color) then
+                    elseif Types.isDreadnought(object, color) then
                         Helper.dump("Recalling", color, "dreadnought")
                         Park.putObject(object, Combat.dreadnoughtParks[color])
                     end
@@ -170,14 +170,14 @@ end
 
 ---
 function Combat.onObjectEnterScriptingZone(zone, object)
-    if zone == Combat.combatCenterZone and Utils.isUnit(object) then
+    if zone == Combat.combatCenterZone and Types.isUnit(object) then
         Combat._updateCombatForces(Combat._calculateCombatForces())
     end
 end
 
 ---
 function Combat.onObjectLeaveScriptingZone(zone, object)
-    if zone == Combat.combatCenterZone and Utils.isUnit(object) then
+    if zone == Combat.combatCenterZone and Types.isUnit(object) then
         Combat._updateCombatForces(Combat._calculateCombatForces())
     end
 end
@@ -319,7 +319,7 @@ end
 ---
 function Combat.isInCombat(color)
     for _, object in ipairs(Combat.combatCenterZone.getObjects()) do
-        if Utils.isUnit(object, color) then
+        if Types.isUnit(object, color) then
             return true
         end
     end
@@ -398,10 +398,10 @@ function Combat._calculateCombatForces()
     for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
         local force = 0
         for _, object in ipairs(Combat.combatCenterZone.getObjects()) do
-            if Utils.isUnit(object, color) then
-                if Utils.isTroop(object, color) then
+            if Types.isUnit(object, color) then
+                if Types.isTroop(object, color) then
                     force = force + 2
-                elseif Utils.isDreadnought(object, color) then
+                elseif Types.isDreadnought(object, color) then
                     force = force + (Combat.dreadnoughtStrengths[color] or 3)
                 else
                     error("Unknown unit type: " .. object.getGUID())
@@ -461,7 +461,7 @@ end
 function Combat.getDreadnoughtsInConflict(color)
     local dreadnoughts = {}
     for _, object in ipairs(Combat.combatCenterZone.getObjects()) do
-        if Utils.isDreadnought(object, color) then
+        if Types.isDreadnought(object, color) then
             table.insert(dreadnoughts, object)
         end
     end

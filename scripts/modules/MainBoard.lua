@@ -3,7 +3,7 @@ local Helper = require("utils.Helper")
 local Park = require("utils.Park")
 
 local Resource = Module.lazyRequire("Resource")
-local Utils = Module.lazyRequire("Utils")
+local Types = Module.lazyRequire("Types")
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
 local TechMarket = Module.lazyRequire("TechMarket")
@@ -270,7 +270,7 @@ function MainBoard._staticSetUp(settings)
 
             -- Recalling dreadnoughts in controlable spaces.
             for _, bannerZone in pairs(MainBoard.banners) do
-                for _, dreadnought in ipairs(Helper.filter(bannerZone.getObjects(), Utils.isDreadnought)) do
+                for _, dreadnought in ipairs(Helper.filter(bannerZone.getObjects(), Types.isDreadnought)) do
                     for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
                         if dreadnought.hasTag(color) then
                             if dreadnought.hasTag("toBeRecalled") then
@@ -343,7 +343,7 @@ end
 function MainBoard.occupy(controlableSpace, color)
     for _, object in ipairs(controlableSpace.getObjects()) do
         for _, otherColor in ipairs(PlayBoard.getPlayBoardColors()) do
-            if Utils.isControlMarker(object, otherColor) then
+            if Types.isControlMarker(object, otherColor) then
                 if otherColor ~= color then
                     local p = PlayBoard.getControlMarkerBag(otherColor).getPosition() + Vector(0, 1, 0)
                     object.setLock(false)
@@ -644,7 +644,7 @@ function MainBoard.getControllingPlayer(bannerZone)
     -- Check player dreadnoughts first since they supersede flags.
     for _, object in ipairs(bannerZone.getObjects()) do
         for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
-            if Utils.isDreadnought(object, color) then
+            if Types.isDreadnought(object, color) then
                 assert(not controllingPlayer, "Too many dreadnoughts")
                 controllingPlayer = color
             end
@@ -655,7 +655,7 @@ function MainBoard.getControllingPlayer(bannerZone)
     if not controllingPlayer then
         for _, object in ipairs(bannerZone.getObjects()) do
             for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
-                if Utils.isControlMarker(object, color) then
+                if Types.isControlMarker(object, color) then
                     assert(not controllingPlayer, "Too many flags around")
                     controllingPlayer = color
                 end
@@ -670,7 +670,7 @@ end
 function MainBoard.getControllingDreadnought(bannerZone)
     for _, object in ipairs(bannerZone.getObjects()) do
         for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
-            if Utils.isDreadnought(object, color) then
+            if Types.isDreadnought(object, color) then
                 return object
             end
         end
@@ -842,14 +842,14 @@ function MainBoard._goDreadnought(color, leader)
     end
 end
 
---- The color could be nil (the same way it could be nil with Utils.isAgent)
+--- The color could be nil (the same way it could be nil with Types.isAgent)
 function MainBoard.hasAgentInSpace(spaceName, color)
     local space = MainBoard.spaces[spaceName]
     -- Avoid since it depends on the active extensions.
     --assert(space, "Unknow space: " .. spaceName)
     if space then
         for _, object in ipairs(space.zone.getObjects()) do
-            if Utils.isAgent(object, color) then
+            if Types.isAgent(object, color) then
                 return true
             end
         end
@@ -869,7 +869,7 @@ end
 function MainBoard.hasVoiceToken(spaceName)
     local space = MainBoard.spaces[spaceName]
     if space then
-        return #Helper.filter(space.zone.getObjects(), Utils.isVoiceToken) > 0
+        return #Helper.filter(space.zone.getObjects(), Types.isVoiceToken) > 0
     end
     return false
 end
@@ -1037,7 +1037,7 @@ end
 ---
 function MainBoard.onObjectEnterScriptingZone(zone, object)
     if zone == MainBoard.mentatZone then
-        if Utils.isMentat(object) then
+        if Types.isMentat(object) then
             for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
                 object.removeTag(color)
             end
@@ -1091,6 +1091,36 @@ end
 ---
 function MainBoard.getFirstPlayerMarker()
     return MainBoard.firstPlayerMarker
+end
+
+---
+function MainBoard.trash(object)
+
+    local holder = {}
+
+    holder.reduceStack = function ()
+        Helper.onceFramesPassed(500).doAfter(function ()
+            if Types.trashStacking > 0 then
+                Types.trashStacking = Types.trashStacking - 1
+                holder.reduceStack()
+            else
+                Types.trashStacking = nil
+            end
+        end)
+    end
+
+    local height = Types.trashStacking
+    if Types.trashStacking then
+        Types.trashStacking = height + 1
+    else
+        height = 0
+        Types.trashStacking = 1
+        holder.reduceStack()
+    end
+
+    object.interactable = true
+    object.setLock(false)
+    object.setPositionSmooth(getObjectFromGUID('ef8614').getPosition() + Vector(0, 1 + height, 0))
 end
 
 return MainBoard

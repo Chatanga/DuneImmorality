@@ -3,7 +3,7 @@ local Helper = require("utils.Helper")
 local Park = require("utils.Park")
 local I18N = require("utils.I18N")
 
-local Utils = Module.lazyRequire("Utils")
+local Types = Module.lazyRequire("Types")
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
 local Combat = Module.lazyRequire("Combat")
@@ -174,9 +174,9 @@ end
 ---@param amount integer
 ---@return boolean
 function Action.resources(color, resourceName, amount)
-    Utils.assertIsPlayerColor(color)
-    Utils.assertIsResourceName(resourceName)
-    Utils.assertIsInteger(amount)
+    Types.assertIsPlayerColor(color)
+    Types.assertIsResourceName(resourceName)
+    Types.assertIsInteger(amount)
 
     local resource = PlayBoard.getResource(color, resourceName)
     if resource:get() >= -amount then
@@ -195,7 +195,7 @@ end
 
 ---
 function Action.drawImperiumCards(color, amount)
-    Utils.assertIsPlayerColor(color)
+    Types.assertIsPlayerColor(color)
     PlayBoard.getPlayBoard(color):tryToDrawCards(amount)
     return true
 end
@@ -205,8 +205,8 @@ end
 ---@param amount integer
 ---@return Continuation
 function Action.influence(color, faction, amount)
-    Utils.assertIsPlayerColor(color)
-    Utils.assertIsInteger(amount)
+    Types.assertIsPlayerColor(color)
+    Types.assertIsInteger(amount)
     local continuation = Helper.createContinuation("Action.influence")
     if faction then
         InfluenceTrack.change(color, faction, amount).doAfter(function (realAmount)
@@ -228,10 +228,10 @@ end
 ---@param baseCount integer
 ---@return integer
 function Action.troops(color, from, to, baseCount)
-    Utils.assertIsPlayerColor(color)
-    Utils.assertIsTroopLocation(from)
-    Utils.assertIsTroopLocation(to)
-    Utils.assertIsInteger(baseCount)
+    Types.assertIsPlayerColor(color)
+    Types.assertIsTroopLocation(from)
+    Types.assertIsTroopLocation(to)
+    Types.assertIsInteger(baseCount)
     local count = Park.transfert(baseCount, Action._getTroopPark(color, from), Action._getTroopPark(color, to))
 
     if not Action.transfetCoalescentQueue then
@@ -302,46 +302,46 @@ end
 
 ---
 function Action.reserveImperiumCard(color, indexInRow)
-    Utils.assertIsPlayerColor(color)
-    Utils.assertIsInRange(1, 5, indexInRow)
+    Types.assertIsPlayerColor(color)
+    Types.assertIsInRange(1, 5, indexInRow)
     return ImperiumRow.reserveImperiumCard(indexInRow, color)
 end
 
 ---
 function Action.acquireReservedImperiumCard(color)
-    Utils.assertIsPlayerColor(color)
+    Types.assertIsPlayerColor(color)
     return false
 end
 
 ---
 function Action.acquireImperiumCard(color, indexInRow)
-    Utils.assertIsPlayerColor(color)
-    Utils.assertIsInRange(1, 5, indexInRow)
+    Types.assertIsPlayerColor(color)
+    Types.assertIsInRange(1, 5, indexInRow)
     return ImperiumRow.acquireImperiumCard(indexInRow, color)
 end
 
 ---
 function Action.acquireFoldspace(color)
-    Utils.assertIsPlayerColor(color)
+    Types.assertIsPlayerColor(color)
     return Reserve.acquireFoldspace(color)
 end
 
 ---
 function Action.acquireArrakisLiaison(color, toItsHand)
-    Utils.assertIsPlayerColor(color)
+    Types.assertIsPlayerColor(color)
     return Reserve.acquireArrakisLiaison(color, toItsHand)
 end
 
 ---
 function Action.acquireTheSpiceMustFlow(color)
-    Utils.assertIsPlayerColor(color)
+    Types.assertIsPlayerColor(color)
     return Reserve.acquireTheSpiceMustFlow(color)
 end
 
 ---
 function Action.advanceFreighter(color, positiveAmount)
-    Utils.assertIsPlayerColor(color)
-    Utils.assertIsPositiveInteger(positiveAmount)
+    Types.assertIsPlayerColor(color)
+    Types.assertIsPositiveInteger(positiveAmount)
     for _ = 1, positiveAmount do
         if not CommercialTrack.freighterUp(color) then
             return false
@@ -354,7 +354,7 @@ end
 
 ---
 function Action.recallFreighter(color)
-    Utils.assertIsPlayerColor(color)
+    Types.assertIsPlayerColor(color)
     if CommercialTrack.freighterReset(color) then
         printToAll(I18N("recallFreighter"), color)
         return true
@@ -365,16 +365,16 @@ end
 
 ---
 function Action.shipments(color, amount)
-    Utils.assertIsPlayerColor(color)
+    Types.assertIsPlayerColor(color)
     return false
 end
 
 ---
 function Action.dreadnought(color, from, to, amount)
-    Utils.assertIsPlayerColor(color)
-    Utils.assertIsDreadnoughtLocation(from)
-    Utils.assertIsDreadnoughtLocation(to)
-    Utils.assertIsInteger(amount)
+    Types.assertIsPlayerColor(color)
+    Types.assertIsDreadnoughtLocation(from)
+    Types.assertIsDreadnoughtLocation(to)
+    Types.assertIsInteger(amount)
 
     local count = Park.transfert(amount, Action._getDreadnoughtPark(color, from), Action._getDreadnoughtPark(color, to))
 
@@ -411,14 +411,14 @@ end
 
 ---
 function Action.acquireTleilaxuCard(color, indexInRow)
-    Utils.assertIsPlayerColor(color)
-    Utils.assertIsInRange(1, 3, indexInRow)
+    Types.assertIsPlayerColor(color)
+    Types.assertIsInRange(1, 3, indexInRow)
     return TleilaxuRow.acquireTleilaxuCard(indexInRow, color)
 end
 
 ---
 function Action.research(color, jump)
-    Utils.assertIsPlayerColor(color)
+    Types.assertIsPlayerColor(color)
     TleilaxuResearch.advanceResearch(color, jump).doAfter(function (finalJump)
         if finalJump.x > 0 then
             printToAll(I18N("researchAdvance"), color)
@@ -432,8 +432,8 @@ end
 ---
 function Action.beetle(color, jump)
     Helper.dumpFunction("Action.beetle", color, jump)
-    Utils.assertIsPlayerColor(color)
-    Utils.assertIsInteger(jump)
+    Types.assertIsPlayerColor(color)
+    Types.assertIsInteger(jump)
     TleilaxuResearch.advanceTleilax(color, jump).doAfter(function (finalJump)
         if finalJump > 0 then
             printToAll(I18N("beetleAdvance", { jump = jump }), color)
@@ -446,7 +446,7 @@ end
 
 ---
 function Action.atomics(color)
-    Utils.assertIsPlayerColor(color)
+    Types.assertIsPlayerColor(color)
     ImperiumRow.nuke(color)
     printToAll(I18N("atomics"), color)
     return true
@@ -454,8 +454,8 @@ end
 
 ---
 function Action.drawIntrigues(color, amount)
-    Utils.assertIsPlayerColor(color)
-    Utils.assertIsInteger(amount)
+    Types.assertIsPlayerColor(color)
+    Types.assertIsInteger(amount)
     Intrigue.drawIntrigue(color, amount)
     printToAll(I18N("drawObjects", { amount = amount, object = I18N.agree(amount, "intrigueCard") }), color)
     return true
@@ -463,28 +463,28 @@ end
 
 ---
 function Action.stealIntrigue(color, otherColor, amount)
-    Utils.assertIsPlayerColor(color)
-    Utils.assertIsPlayerColor(otherColor)
-    Utils.assertIsInteger(amount)
+    Types.assertIsPlayerColor(color)
+    Types.assertIsPlayerColor(otherColor)
+    Types.assertIsInteger(amount)
     Intrigue.stealIntrigue(color, otherColor, amount)
     return true
 end
 
 ---
 function Action.signetRing(color)
-    Utils.assertIsPlayerColor(color)
+    Types.assertIsPlayerColor(color)
     return false
 end
 
 ---
 function Action.gainVictoryPoint(color, name)
-    Utils.assertIsPlayerColor(color)
+    Types.assertIsPlayerColor(color)
     return ScoreBoard.gainVictoryPoint(color, name)
 end
 
 ---
 function Action.acquireTech(color, stackIndex, discount)
-    Utils.assertIsPlayerColor(color)
+    Types.assertIsPlayerColor(color)
     if stackIndex then
         TechMarket.acquireTech(stackIndex, color)
         return true
