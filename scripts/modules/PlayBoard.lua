@@ -605,9 +605,7 @@ end
 function PlayBoard.collectReward(color)
     local conflictName = Combat.getCurrentConflictName()
     local rank = Combat.getRank(color).value
-    -- Any reason to disable this, since optional rewards are always desirable VPs?
-    local collectOptionalRewards = true
-    ConflictCard.collectReward(color, conflictName, rank, collectOptionalRewards)
+    ConflictCard.collectReward(color, conflictName, rank)
     if rank == 1 then
         local leader = PlayBoard.getLeader(color)
         if PlayBoard.hasTech(color, "windtraps") then
@@ -1132,18 +1130,18 @@ function PlayBoard:revealHand()
     local councilSeat = PlayBoard.hasHighCouncilSeat(self.color)
     local artillery = PlayBoard.hasTech(self.color, "artillery")
 
-    local output1 = IntrigueCard.evaluatePlot(self.color, playedIntrigues, allRevealedCards, artillery)
-    local output2 = ImperiumCard.evaluateReveal(self.color, playedCards, allRevealedCards, artillery)
+    local intrigueCardContributions = IntrigueCard.evaluatePlot(self.color, playedIntrigues, allRevealedCards, artillery)
+    local imperiumCardContributions = ImperiumCard.evaluateReveal(self.color, playedCards, allRevealedCards, artillery)
 
     self.persuasion:set(
-        (output1.persuasion or 0) +
-        (output2.persuasion or 0) +
+        (intrigueCardContributions.persuasion or 0) +
+        (imperiumCardContributions.persuasion or 0) +
         (techNegotiation and 1 or 0) +
         (hallOfOratory and 1 or 0) +
         (councilSeat and 2 or 0) +
         (minimicFilm and 1 or 0))
     self.strength:set(
-        (output2.sword or 0) +
+        (imperiumCardContributions.strength or 0) +
         ((restrictedOrdnance and councilSeat) and 4 or 0))
 
     Park.putObjects(revealedCards, self.revealCardPark)
@@ -1503,6 +1501,7 @@ end
 
 ---
 function PlayBoard.hasHighCouncilSeat(color)
+    Helper.dumpFunction("PlayBoard.hasHighCouncilSeat", color)
     local zone = MainBoard.getHighCouncilSeatPark().zone
     local token = PlayBoard.getCouncilToken(color)
     return Helper.contains(zone, token)

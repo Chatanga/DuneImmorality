@@ -763,6 +763,7 @@ end
 ---@param name string?
 ---@return Continuation
 function Helper.createContinuation(name)
+    assert(name)
 
     if not Helper.pendingContinuations then
         Helper.pendingContinuations = {}
@@ -879,7 +880,7 @@ end
 
 ---@return Continuation
 function Helper.onceShuffled(container)
-    local continuation = Helper.createContinuation()
+    local continuation = Helper.createContinuation("Helper.onceShuffled")
     Wait.time(function ()
         continuation.run(container)
     end, 1.5) -- TODO Search for a better way.

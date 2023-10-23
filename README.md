@@ -1,6 +1,6 @@
 # Dune Immorality TTS Mod
 
-![Capture](resources/capture.jpg)
+![Capture](resources/capture-1.jpg)
 
 Features:
 - Base game
@@ -89,13 +89,12 @@ Unfortunately, it seems to induce some kind of latency, leading to board corrupt
 ## TODO (by priority)
 
 - Fully restore translations (tokens and books included).
-
-- Blitz!
 - Rival combat optimization.
+- Blitz!
 - [Fanmade leaders](https://drive.google.com/drive/folders/1-V3xcHk6078YR1fyhtJL3tdqv2zg5q3Q).
 - Replace freighters by tokens.
 - Change the [dreadnought model](https://www.thingiverse.com/thing:5326146).
-
+- Rise of Ix board without Immortality.
 - Card acquisition bonus (unify card effect framework).
 - Tech acquisition cost (multiple options).
 - Fix the 6 tech park saturation.

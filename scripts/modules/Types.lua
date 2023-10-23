@@ -111,7 +111,7 @@ function Types.assertIsFaction(faction)
         or faction == "spacingGuild"
         or faction == "beneGesserit"
         or faction == "fremen",
-        "No a faction: " .. tostring(faction))
+        "Not a faction: " .. tostring(faction))
 end
 
 ---

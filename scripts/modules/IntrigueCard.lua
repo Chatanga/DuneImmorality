@@ -1,103 +1,45 @@
-local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 
-local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
+-- Exceptional Immediate require for the sake of aliasing.
+local CardEffect = require("CardEffect")
 
-local function _evaluate(input, value)
-    if type(value) == 'function' then
-        return value(input)
-    else
-        return value
-    end
-end
-
-local function _resource(nature, value)
-    return function (input, output)
-        output[nature] = (output[nature] or 0) + _evaluate(input, value)
-    end
-end
-
-local function persuasion(value)
-    return _resource('persuasion', value)
-end
-
-local function sword(value)
-    return _resource('sword', value)
-end
-
-local function spice(value)
-    return _resource('spice', value)
-end
-
-local function water(value)
-    return _resource('water', value)
-end
-
-local function solari(value)
-    return _resource('solari', value)
-end
-
-local function specimen(value)
-    return _resource('specimen', value)
-end
-
-local function research(value)
-    return _resource('research', value)
-end
-
-local function beetle(value)
-    return _resource('beetle', value)
-end
-
-local function influence(faction, value)
-    return function (input, output)
-        if not faction then
-            faction = "?"
-        end
-        output[faction] = (output[faction] or 0) + _evaluate(input, value)
-    end
-end
-
-local function _alliance(faction, value)
-    return function (input)
-        if InfluenceTrack.hasAlliance(input.color, faction) then
-            return _evaluate(input, value)
-        else
-            --log("No alliance with the fremens.")
-            return 0
-        end
-    end
-end
-
-local function emperorAlliance(value)
-    return _alliance("emperor", value)
-end
-
-local function spacingGuildAlliance(value)
-    return _alliance("spacingGuild", value)
-end
-
-local function beneGesseritAlliance(value)
-    return _alliance("beneGesserit", value)
-end
-
-local function fremenAlliance(value)
-    return _alliance("fremen", value)
-end
-
-local function anyAlliance(value)
-    return emperorAlliance(value)
-        or spacingGuildAlliance(value)
-        or beneGesseritAlliance(value)
-        or fremenAlliance(value)
-end
-
-local function winner(value)
-    return function ()
-        error("TODO")
-        return value
-    end
-end
+-- Function aliasing for a more readable code.
+local persuasion = CardEffect.persuasion
+local sword = CardEffect.sword
+local spice = CardEffect.spice
+local water = CardEffect.water
+local solari = CardEffect.solari
+local troop = CardEffect.troop
+local dreadnought = CardEffect.dreadnought
+local negotiator = CardEffect.negotiator
+local specimen = CardEffect.specimen
+local intrigue = CardEffect.intrigue
+local trash = CardEffect.trash
+local shipments = CardEffect.shipments
+local research = CardEffect.research
+local beetle = CardEffect.beetle
+local influence = CardEffect.influence
+local vp = CardEffect.vp
+local draw = CardEffect.draw
+local shipment = CardEffect.shipment
+local mentat = CardEffect.mentat
+local perDreadnoughtInConflict = CardEffect.perDreadnoughtInConflict
+local perSwordCard = CardEffect.perSwordCard
+local perFremen = CardEffect.perFremen
+local choice = CardEffect.choice
+local optional = CardEffect.optional
+local seat = CardEffect.seat
+local fremenBond = CardEffect.fremenBond
+local agentInEmperorSpace = CardEffect.agentInEmperorSpace
+local emperorAlliance = CardEffect.emperorAlliance
+local spacingGuildAlliance = CardEffect.spacingGuildAlliance
+local beneGesseritAlliance = CardEffect.beneGesseritAlliance
+local fremenAlliance = CardEffect.fremenAlliance
+local fremenFriendship = CardEffect.fremenFriendship
+local anyAlliance = CardEffect.anyAlliance
+local oneHelix = CardEffect.oneHelix
+local twoHelices = CardEffect.twoHelices
+local winner = CardEffect.winner
 
 local IntrigueCard = {
     -- base
@@ -108,7 +50,7 @@ local IntrigueCard = {
     alliedArmada = {categories = {'combat'}, combat = {sword(anyAlliance("-2 Sp -> +7 sword"))}},
     tiebreaker = {categories = {'combat', 'endgame'}, combat = {sword(2)},  endgame = {spice(10)}},
     toTheVictor = {categories = {'outcome'}, outcome = {spice(winner(3))}},
-    demandRespect = {categories = {'outcome'}, outcome = {influence(nil, winner("+1 inf ? Or -2 Sp -> +2 inf ?"))}},
+    demandRespect = {categories = {'outcome'}, outcome = {influence(winner("+1 inf ? Or -2 Sp -> +2 inf ?"))}},
     cornerTheMarket = {categories = {'endgame'}, endgame = {"If you have 2 SMF: +1 VP, if you have more SMF than all opps: +2 VP"}},
     plansWithinPlans = {categories = {'endgame'}, endgame = {"3 inf on 3 tracks: +1 VP or 3 inf on all 4 tracks: +2 VP"}},
     poisonSnooper = {categories = {'plot'}, plot = {"Look at the top card of your, draw or trash it"}},
@@ -117,16 +59,16 @@ local IntrigueCard = {
     rapidMobilization = {categories = {'plot'}, plot = {"Deploy any # of garrisoned troops to conflict"}},
     recruitmentMission = {categories = {'plot'}, plot = {persuasion(1), "you may hadd acquired card to top of"}},
     calculatedHire = {categories = {'plot'}, plot = {"-1 Spice -> Take the mentat from Mentat space on board"}},
-    favoredSubject = {categories = {'plot'}, plot = {influence('emperor', 1)}},
+    favoredSubject = {categories = {'plot'}, plot = {influence(1, 'emperor')}},
     theSleeperMustAwaken = {categories = {'plot'}, plot = {"-4 Sp -> +1 VP"}},
     councilorsDispensation = {categories = {'plot'}, plot = {"+2 Spice if you have a seat on the high council"}},
     waterOfLife = {categories = {'plot'}, plot = {"-1 Water and -1 Spice -> 3x draw"}},
     charisma = {categories = {'plot'}, plot = {persuasion(2)}},
     waterPeddlersUnion = {categories = {'plot'}, plot = {water(1)}},
     refocus = {categories = {'plot'}, plot = {"Shuffle your discard into, then 1x draw"}},
-    knowTheirWays = {categories = {'plot'}, plot = {influence('fremen', 1)}},
-    secretOfTheSisterhood = {categories = {'plot'}, plot = {influence('beneGesserit', 1)}},
-    guildAuthorization = {categories = {'plot'}, plot = {influence('spacingGuild', 1)}},
+    knowTheirWays = {categories = {'plot'}, plot = {influence(1, 'fremen')}},
+    secretOfTheSisterhood = {categories = {'plot'}, plot = {influence(1, 'beneGesserit')}},
+    guildAuthorization = {categories = {'plot'}, plot = {influence(1, 'spacingGuild')}},
     bribery = {categories = {'plot'}, plot = {"-2 Solari -> +1 Influence ?"}},
     binduSuspension = {categories = {'plot'}, plot = {"At start of turn: draw 1 card and you may pass your turn"}},
     doubleCross = {categories = {'plot'}, plot = {"-1 Solari - > An opp of your choice loses one deployed troop, you add one troop from supply to conflict"}},
@@ -163,7 +105,7 @@ local IntrigueCard = {
     shadowyBargain = {categories = {'plot', 'endgame'}, plot = {specimen(1)}, endgame = {beetle(1)}},
     tleilaxuPuppet = {categories = {'plot', 'endgame'}, plot = {persuasion(1)}, engame = {"If you have high council and research lvl 2: +1 VP"}},
     studyMelange = {categories = {'plot', 'endgame'}, plot = {spice(1)}, endgame = {"If you have 3 spice and research lvl 2: +1 VP"}},
-    counterAttack = {categories = {'combat', 'plot'}, plot = {"Deploy up to 2 troops from garrison."}, combat = {"If Opp played combat intrigue: +4 swords"}},
+    counterattack = {categories = {'combat', 'plot'}, plot = {"Deploy up to 2 troops from garrison."}, combat = {"If Opp played combat intrigue: +4 swords"}},
     economicPositioning = {categories = {'combat', 'endgame'}, plot = {"retreat two troops --> +3 solari."}, endgame = {"if you have 10 solari: +1 VP"}},
 }
 
@@ -176,24 +118,29 @@ function IntrigueCard._resolveCard(card)
 end
 
 function IntrigueCard.evaluatePlot(color, playedCards)
-    local input = {
+    local result = {}
+
+    local context = {
         color = color,
-        playedCards = Helper.mapValues(playedCards, IntrigueCard._resolveCard),
+        player = {
+            resources = function (_, resourceName, amount)
+                result[resourceName] = (result[resourceName] or 0) + amount
+            end
+        },
+        playedCards = Helper.mapValues(playedCards, IntrigueCard._resolveCard)
     }
-    local output = {}
-    for _, card in ipairs(input.playedCards) do
+
+    for cardName, card in ipairs(context.playedCards) do
         if card.plot then
+            context.cardName = cardName
+            context.card = card
             for _, effect in ipairs(card.plot) do
-                if type(effect) == 'function' then
-                    input.card = card
-                    effect(input, output)
-                else
-                    log('Ignoring manual effect: "' .. tostring(effect) .. '"')
-                end
+                CardEffect.evaluate(context, effect)
              end
         end
     end
-    return output
+
+    return result
 end
 
 return IntrigueCard

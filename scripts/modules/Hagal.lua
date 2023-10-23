@@ -196,7 +196,7 @@ function Hagal._collectReward(color)
     Wait.frames(function ()
         local conflictName = Combat.getCurrentConflictName()
         local rank = Combat.getRank(color).value
-        ConflictCard.collectReward(color, conflictName, rank, true)
+        ConflictCard.collectReward(color, conflictName, rank)
         if rank == 1 then
             local leader = PlayBoard.getLeader(color)
             if PlayBoard.hasTech(color, "windtraps") then
@@ -459,7 +459,7 @@ function Rival.choose(color, topic)
         return true
     elseif topic == "machinations" then
         pickTwoBestFactions()
-        return false
+        return true
     else
         return false
     end

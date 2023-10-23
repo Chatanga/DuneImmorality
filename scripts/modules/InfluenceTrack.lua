@@ -221,6 +221,7 @@ end
 
 ---
 function InfluenceTrack.hasFriendship(color, faction)
+    Helper.dumpFunction("InfluenceTrack.hasFriendship", color, faction)
     Types.assertIsPlayerColor(color)
     Types.assertIsFaction(faction)
 

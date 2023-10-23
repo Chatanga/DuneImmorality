@@ -495,7 +495,14 @@ end
 
 ---
 function Action.choose(color, topic)
-    return false
+    return true
+end
+
+---
+function Action.decide(color, topic)
+    -- Any reason to disable this for human players,
+    -- since optional rewards are always desirable VPs?
+    return true
 end
 
 --[[

@@ -1,232 +1,46 @@
-local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 
-local Combat = Module.lazyRequire("Combat")
-local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
-local MainBoard = Module.lazyRequire("MainBoard")
-local TleilaxuResearch = Module.lazyRequire("TleilaxuResearch")
+-- Exceptional Immediate require for the sake of aliasing.
+local CardEffect = require("CardEffect")
 
-local function _evaluateEffects(card, input, output)
-    for _, effect in ipairs(card.reveal) do
-        if type(effect) == 'function' then
-            input.card = card
-            effect(input, output)
-        else
-            log('Ignoring manual effect: "' .. tostring(effect) .. '"')
-        end
-    end
-end
-
-local function _evaluate(input, value)
-    if type(value) == 'function' then
-        return value(input)
-    else
-        return value
-    end
-end
-
-local function _resource(nature, value)
-    return function (input, output)
-        output[nature] = (output[nature] or 0) + _evaluate(input, value)
-    end
-end
-
-local function persuasion(value)
-    return _resource('persuasion', value)
-end
-
-local function sword(value)
-    return _resource('sword', value)
-end
-
-local function spice(value)
-    return _resource('spice', value)
-end
-
-local function water(value)
-    return _resource('water', value)
-end
-
-local function solari(value)
-    return _resource('solari', value)
-end
-
-local function troop(value)
-    return _resource('troop', value)
-end
-
-local function dreadnought(value)
-    return _resource('dreadnought', value)
-end
-
-local function negotiator(value)
-    return _resource('negotiator', value)
-end
-
-local function specimen(value)
-    return _resource('specimen', value)
-end
-
-local function intrigue(value)
-    return _resource('intrigue', value)
-end
-
-local function trash(value)
-    return _resource('trash', value)
-end
-
-local function shipments(value)
-    return _resource('shipments', value)
-end
-
-local function research(value)
-    return _resource('research', value)
-end
-
-local function beetle(value)
-    return _resource('beetle', value)
-end
-
-local function influence(faction, value)
-    return function (input, output)
-        if not faction then
-            faction = "?"
-        end
-        output[faction] = (output[faction] or 0) + _evaluate(input, value)
-    end
-end
-
-local function perDreadnoughtInConflict(value)
-    return function (input)
-        return _evaluate(input, value) * Combat.getNumberOfDreadnoughtsInConflict(input.color)
-    end
-end
-
-local function perSwordCard(value, cardExcluded)
-    return function (input)
-        if input.fake then
-            return 0
-        end
-        local count = 0
-        for _, card in ipairs(input.revealedCards) do
-            if card.reveal and (not cardExcluded or card ~= input.card) then
-                local pseudoInput = {
-                    fake = true,
-                    card = card,
-                    color = input.color,
-                    playedCards = {},
-                    revealedCards = {card},
-                }
-                local output = {}
-                _evaluateEffects(card, pseudoInput, output)
-                if output.sword and output.sword > 0 then
-                    count = count + 1
-                end
-            end
-        end
-        return _evaluate(input, value) * count
-    end
-end
-
-local function fremenBond(value)
-    return function (input)
-        for _, card in ipairs(Helper.concatTables(input.playedCards, input.revealedCards)) do
-            if card ~= input.card and card.factions and Helper.isElementOf("fremen", card.factions) then
-                return _evaluate(input, value)
-            else
-                --log("card " .. card.name .. " is not fremen")
-            end
-        end
-        return 0
-    end
-end
-
-local function perFremen(value)
-    return function (input)
-        local count = 0
-        for _, card in ipairs(Helper.concatTables(input.playedCards, input.revealedCards)) do
-            if card.factions and Helper.isElementOf("fremen", card.factions) then
-                count = count + 1
-            else
-                --log("card " .. card.name .. " is not fremen")
-            end
-        end
-        return _evaluate(input, value) * count
-    end
-end
-
-local function agentInEmperorSpace(value)
-    return function (input)
-        for _, spaceName in ipairs(MainBoard.getEmperorSpaces()) do
-            if MainBoard.hasAgentInSpace(spaceName, input.color) then
-                return _evaluate(input, value)
-            end
-        end
-        return 0
-    end
-end
-
-local function _alliance(faction, value)
-    return function (input)
-        if InfluenceTrack.hasAlliance(input.color, faction) then
-            return _evaluate(input, value)
-        else
-            --log("No alliance with the fremens.")
-            return 0
-        end
-    end
-end
-
-local function _friendShip(faction, value)
-    return function (input)
-        if InfluenceTrack.hasFriendship(input.color, faction) then
-            return _evaluate(input, value)
-        else
-            --log("No friendship with the fremens.")
-            return 0
-        end
-    end
-end
-
-local function emperorAlliance(value)
-    return _alliance("emperor", value)
-end
-
-local function spacingGuildAlliance(value)
-    return _alliance("spacingGuild", value)
-end
-
-local function beneGesseritAlliance(value)
-    return _alliance("beneGesserit", value)
-end
-
-local function fremenAlliance(value)
-    return _alliance("fremen", value)
-end
-
-local function fremenFriendship(value)
-    return _friendShip("fremen", value)
-end
-
-local function oneHelix(value)
-    return function (input)
-        if TleilaxuResearch.hasReachedOneHelix(input.color) then
-            return _evaluate(input, value)
-        else
-            return 0
-        end
-    end
-end
-
-local function twoHelices(value)
-    return function (input)
-        if TleilaxuResearch.hasReachedTwoHelices(input.color) then
-            return _evaluate(input, value)
-        else
-            return 0
-        end
-    end
-end
+-- Function aliasing for a more readable code.
+local persuasion = CardEffect.persuasion
+local sword = CardEffect.sword
+local spice = CardEffect.spice
+local water = CardEffect.water
+local solari = CardEffect.solari
+local troop = CardEffect.troop
+local dreadnought = CardEffect.dreadnought
+local negotiator = CardEffect.negotiator
+local specimen = CardEffect.specimen
+local intrigue = CardEffect.intrigue
+local trash = CardEffect.trash
+local shipments = CardEffect.shipments
+local research = CardEffect.research
+local beetle = CardEffect.beetle
+local influence = CardEffect.influence
+local vp = CardEffect.vp
+local draw = CardEffect.draw
+local shipment = CardEffect.shipment
+local mentat = CardEffect.mentat
+local control = CardEffect.control
+local perDreadnoughtInConflict = CardEffect.perDreadnoughtInConflict
+local perSwordCard = CardEffect.perSwordCard
+local perFremen = CardEffect.perFremen
+local choice = CardEffect.choice
+local optional = CardEffect.optional
+local seat = CardEffect.seat
+local fremenBond = CardEffect.fremenBond
+local agentInEmperorSpace = CardEffect.agentInEmperorSpace
+local emperorAlliance = CardEffect.emperorAlliance
+local spacingGuildAlliance = CardEffect.spacingGuildAlliance
+local beneGesseritAlliance = CardEffect.beneGesseritAlliance
+local fremenAlliance = CardEffect.fremenAlliance
+local fremenFriendship = CardEffect.fremenFriendship
+local anyAlliance = CardEffect.anyAlliance
+local oneHelix = CardEffect.oneHelix
+local twoHelices = CardEffect.twoHelices
+local winner = CardEffect.winner
 
 local ImperiumCard = {
     -- starter: base
@@ -253,7 +67,7 @@ local ImperiumCard = {
     carryall = {cost = 5, agentIcons = {'yellow'}, reveal = {persuasion(1), spice(1)}},
     chani = {factions = {'fremen'}, cost = 5, acquireBonus = {water(1)}, agentIcons = {'fremen', 'blue', 'yellow'}, reveal = {persuasion(2), 'Retreat any # of troops'}},
     choamDirectorship = {cost = 8, acquireBonus = {'4x inf all'}, reveal = {solari(1)}},
-    crysknife = {factions = {'fremen'}, cost = 3, agentIcons = {'fremen', 'yellow'}, reveal = {sword(1), influence('fremen', fremenBond(1))}},
+    crysknife = {factions = {'fremen'}, cost = 3, agentIcons = {'fremen', 'yellow'}, reveal = {sword(1), influence(fremenBond(1), 'fremen')}},
     drYueh = {cost = 1, agentIcons = {'blue'}, reveal = {persuasion(1)}},
     duncanIdaho = {cost = 4, agentIcons = {'blue'}, reveal = {sword(2), water(1)}},
     feydakinDeathCommando = {factions = {'fremen'}, cost = 3, agentIcons = {'blue', 'yellow'}, reveal = {persuasion(1), sword(fremenBond(3))}},
@@ -267,8 +81,8 @@ local ImperiumCard = {
     gurneyHalleck = {cost = 6, agentIcons = {'blue'}, reveal = {persuasion(2), '-3 Sol -> +2 troops may deploy to conflict'}},
     imperialSpy = {factions = {'emperor'}, cost = 2, agentIcons = {'emperor'}, reveal = {persuasion(1), sword(1)}},
     kwisatzHaderach = {factions = {'beneGesserit'}, cost = 8, agentIcons = {'any'}, infiltrate = true},
-    ladyJessica = {factions = {'beneGesserit'}, cost = 7, acquireBonus = {influence(nil, 1)}, agentIcons = {'beneGesserit', 'green', 'blue', 'yellow'}, reveal = {persuasion(3), sword(1)}},
-    lietKynes = {factions = {'emperor', 'fremen'}, cost = 5, acquireBonus = {influence('emperor', 1)}, agentIcons = {'fremen', 'blue'}, reveal = {persuasion(perFremen(2))}},
+    ladyJessica = {factions = {'beneGesserit'}, cost = 7, acquireBonus = {influence(1)}, agentIcons = {'beneGesserit', 'green', 'blue', 'yellow'}, reveal = {persuasion(3), sword(1)}},
+    lietKynes = {factions = {'emperor', 'fremen'}, cost = 5, acquireBonus = {influence(1, 'emperor')}, agentIcons = {'fremen', 'blue'}, reveal = {persuasion(perFremen(2))}},
     missionariaProtectiva = {factions = {'beneGesserit'}, cost = 1, agentIcons = {'blue'}, reveal = {persuasion(1)}},
     otherMemory = {factions = {'beneGesserit'}, cost = 4, agentIcons = {'blue', 'yellow'}, reveal = {persuasion(2)}},
     piterDeVries = {cost = 5, agentIcons = {'green', 'blue'}, reveal = {persuasion(3), sword(1)}},
@@ -302,7 +116,7 @@ local ImperiumCard = {
     guildChiefAdministrator = {factions = {'spacingGuild'}, cost = 4, agentIcons = {'spacingGuild', 'blue', 'yellow'}, reveal = {persuasion(1), shipments(1)}},
     imperialBashar = {factions = {'emperor'}, cost = 4, agentIcons = {'blue'}, reveal = {persuasion(1), sword(2), sword(perSwordCard(1, true))}},
     imperialShockTrooper = {factions = {'emperor'}, cost = 3, reveal = {persuasion(1), sword(2), sword(agentInEmperorSpace(3))}},
-    inTheShadows = {factions = {'beneGesserit'}, cost = 2, agentIcons = {'green', 'blue'}, reveal = {influence('spacingGuild', 1)}},
+    inTheShadows = {factions = {'beneGesserit'}, cost = 2, agentIcons = {'green', 'blue'}, reveal = {influence(1, 'spacingGuild')}},
     ixGuildCompact = {factions = {'spacingGuild'}, cost = 3, agentIcons = {'spacingGuild'}, reveal = {negotiator(2)}},
     ixianEngineer = {cost = 5, agentIcons = {'yellow'}, reveal = {'If 3 Tech: Trash this card -> +1 VP'}},
     jamis = {factions = {'fremen'}, cost = 2, agentIcons = {'fremen'}, infiltrate = true, reveal = {persuasion(1), sword(2)}},
@@ -316,7 +130,7 @@ local ImperiumCard = {
     treachery = {cost = 6, agentIcons = {'emperor', 'spacingGuild', 'beneGesserit', 'fremen'}, reveal = {'+2 troops and deploy them to conflict'}},
     truthsayer = {factions = {'emperor', 'beneGesserit'}, cost = 3, agentIcons = {'emperor', 'beneGesserit', 'green'}, reveal = {persuasion(1), sword(1)}},
     waterPeddlersUnion = {cost = 1, acquireBonus = {water(1)}, reveal = {water(1)}},
-    webOfPower = {factions = {'beneGesserit'}, cost = 4, agentIcons = {'beneGesserit'}, infiltrate = true, reveal = {persuasion(1), influence(nil, 1)}},
+    webOfPower = {factions = {'beneGesserit'}, cost = 4, agentIcons = {'beneGesserit'}, infiltrate = true, reveal = {persuasion(1), influence(1)}},
     weirdingWay = {factions = {'beneGesserit'}, cost = 3, agentIcons = {'blue', 'yellow'}, reveal = {persuasion(1), sword(2)}},
     -- immortality
     beneTleilaxLab = {cost = 2, agentIcons = {'blue', 'yellow'}, reveal = {persuasion(1), spice(oneHelix(1))}},
@@ -341,7 +155,7 @@ local ImperiumCard = {
     showOfStrength = {factions = {'emperor', 'fremen'}, cost = 3, reveal = {persuasion(1), sword(2)}},
     spiritualFervor = {cost = 3, acquireBonus = {research(1)}, agentIcons = {'yellow'}, reveal = {persuasion(1), specimen(1)}},
     stillsuitManufacturer = {factions = {'fremen'}, cost = 5, agentIcons = {'fremen', 'blue'}, reveal = {persuasion(1), spice(fremenBond(2))}},
-    throneRoomPolitics = {factions = {'emperor', 'beneGesserit'}, cost = 4, agentIcons = {'emperor'}, reveal = {persuasion(1), influence('beneGesserit', 1)}},
+    throneRoomPolitics = {factions = {'emperor', 'beneGesserit'}, cost = 4, agentIcons = {'emperor'}, reveal = {persuasion(1), influence(1, 'beneGesserit')}},
     tleilaxuMaster = {cost = 5, agentIcons = {'green', 'yellow'}, reveal = {persuasion(1), research(2)}},
     tleilaxuSurgeon = {cost = 3, agentIcons = {'emperor', 'blue'}, reveal = {persuasion(2), 'Lose 2 Troops--> +2 Specimen'}},
     -- tleilaxu
@@ -375,30 +189,49 @@ local ImperiumCard = {
 function ImperiumCard._resolveCard(card)
     assert(card)
     local cardName = Helper.getID(card)
-    local cardInfo = ImperiumCard[cardName]
-    assert(cardInfo, "Unknown card: " .. tostring(cardName))
-    cardInfo.name = cardName
-    return cardInfo
+    if cardName then
+        local cardInfo = ImperiumCard[cardName]
+        assert(cardInfo, "Unknown card: " .. tostring(cardName))
+        cardInfo.name = cardName
+        return cardInfo
+    else
+        error("No card info!")
+        log(card)
+    end
 end
 
 function ImperiumCard.evaluateReveal(color, playedCards, revealedCards, artillery)
-    local input = {
+    local result = {}
+
+    local context = {
         color = color,
         playedCards = Helper.mapValues(playedCards, ImperiumCard._resolveCard),
-        revealedCards = Helper.mapValues(revealedCards, ImperiumCard._resolveCard)
+        revealedCards = Helper.mapValues(revealedCards, ImperiumCard._resolveCard),
+        -- This mock up is enough since reveal effects only cover persuasion and strength (or other resources).
+        player = {
+            resources = function (_, resourceName, amount)
+                result[resourceName] = (result[resourceName] or 0) + amount
+            end
+        }
     }
-    local output = {}
-    for _, card in ipairs(input.revealedCards) do
+
+    for cardName, card in ipairs(context.revealedCards) do
         if card.reveal then
-            input.card = card
-            _evaluateEffects(card, input, output)
+            context.card = card
+            context.cardName = cardName
+            for _, effect in ipairs(card.reveal) do
+                CardEffect.evaluate(context, effect)
+            end
         end
     end
+
     if artillery then
-        input.card = nil
-        sword(perSwordCard(1))(input, output)
+        context.card = nil
+        sword(perSwordCard(1))(context)
     end
-    return output
+
+    log(result)
+    return result
 end
 
 function ImperiumCard.getTleilaxuCardCost(card)

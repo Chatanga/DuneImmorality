@@ -1,4 +1,4 @@
-local BUILD = 'Sun Oct 22 13:59:30 CEST 2023'
+local BUILD = 'Mon Oct 23 21:08:03 CEST 2023'
 
 -- Do not load anything. Appropriate to work on the mod content without
 -- interference.
@@ -81,6 +81,7 @@ autoLoadedSettings = {
     variant = "arrakeenScouts",
     soundEnabled = true,
 }
+]]
 autoLoadedSettings = {
     language = "fr",
     randomizePlayerPositions = false,
@@ -99,7 +100,6 @@ autoLoadedSettings = {
     fanmadeLeaders = false,
     soundEnabled = true,
 }
-]]
 
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
@@ -110,6 +110,9 @@ local I18N = require("utils.I18N")
 --[[
     Remember that 'require' must have a literal parameter, since it is not a
     real function, but simply a macro for 'luabundler'.
+
+    Note that "CardEffect" is not here since it is always hard required by the
+    other modules.
 ]]
 local allModules = Module.registerModules({
     AcquireCard, -- To take advantage of Module.registerModuleRedirections.

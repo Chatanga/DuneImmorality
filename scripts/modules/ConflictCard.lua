@@ -1,112 +1,49 @@
 local Module = require("utils.Module")
-local Helper = require("utils.Helper")
+
+-- Exceptional Immediate require for the sake of aliasing.
+local CardEffect = require("CardEffect")
 
 local Types = Module.lazyRequire("Types")
 local PlayBoard = Module.lazyRequire("PlayBoard")
-local MainBoard = Module.lazyRequire("MainBoard")
 
-local function vp(n)
-    return function (color, conflictName, collectOptionalRewards)
-        for _ = 1, n do
-            PlayBoard.getLeader(color).gainVictoryPoint(color, conflictName)
-        end
-        return true
-    end
-end
-
-local function intrigue(n)
-    return function (color)
-        return PlayBoard.getLeader(color).drawIntrigues(color, n)
-    end
-end
-
-local function water(n)
-    return function (color)
-        return PlayBoard.getLeader(color).resources(color, "water", n)
-    end
-end
-
-local function spice(n)
-    return function (color)
-        return PlayBoard.getLeader(color).resources(color, "spice", n)
-    end
-end
-
-local function solari(n)
-    return function (color)
-        return PlayBoard.getLeader(color).resources(color, "solari", n)
-    end
-end
-
-local function influence(n, faction)
-    return function (color)
-        return PlayBoard.getLeader(color).influence(color, faction, n)
-    end
-end
-
-local function shipment(n)
-    return function (color)
-        return PlayBoard.getLeader(color).shipments(color, n)
-    end
-end
-
-local function troop(n)
-    return function (color)
-        return PlayBoard.getLeader(color).troops(color, "supply", "garrison", n)
-    end
-end
-
-local function mentat(n)
-    return function (color)
-        if PlayBoard.getLeader(color).takeMentat(color) then
-            MainBoard.getMentat().addTag("notToBeRecalled")
-            return true
-        else
-            return false
-        end
-    end
-end
-
-local function control(space)
-    return function (color)
-        -- TODO Clarify
-        return false
-    end
-end
-
-local function trash(space)
-    return function (color)
-        return false
-    end
-end
-
-local function choice(n, options)
-    return function (color, conflictName)
-        if not PlayBoard.getLeader(color).choose(color, conflictName) then
-            local shuffledOptions = Helper.shallowCopy(options)
-            Helper.shuffle(shuffledOptions)
-            for i = 1, n do
-                shuffledOptions[i](color, conflictName)
-            end
-        end
-        return true
-    end
-end
-
-local function optional(options)
-    return function (color, conflictName, collectOptionalRewards)
-        if collectOptionalRewards then
-            for  _, option in ipairs(options) do
-                if not option(color, conflictName, collectOptionalRewards) then
-                    return false
-                end
-            end
-            return true
-        else
-            return false
-        end
-    end
-end
+-- Function aliasing for a more readable code.
+local persuasion = CardEffect.persuasion
+local sword = CardEffect.sword
+local spice = CardEffect.spice
+local water = CardEffect.water
+local solari = CardEffect.solari
+local troop = CardEffect.troop
+local dreadnought = CardEffect.dreadnought
+local negotiator = CardEffect.negotiator
+local specimen = CardEffect.specimen
+local intrigue = CardEffect.intrigue
+local trash = CardEffect.trash
+local shipments = CardEffect.shipments
+local research = CardEffect.research
+local beetle = CardEffect.beetle
+local influence = CardEffect.influence
+local vp = CardEffect.vp
+local draw = CardEffect.draw
+local shipment = CardEffect.shipment
+local mentat = CardEffect.mentat
+local control = CardEffect.control
+local perDreadnoughtInConflict = CardEffect.perDreadnoughtInConflict
+local perSwordCard = CardEffect.perSwordCard
+local perFremen = CardEffect.perFremen
+local choice = CardEffect.choice
+local optional = CardEffect.optional
+local seat = CardEffect.seat
+local fremenBond = CardEffect.fremenBond
+local agentInEmperorSpace = CardEffect.agentInEmperorSpace
+local emperorAlliance = CardEffect.emperorAlliance
+local spacingGuildAlliance = CardEffect.spacingGuildAlliance
+local beneGesseritAlliance = CardEffect.beneGesseritAlliance
+local fremenAlliance = CardEffect.fremenAlliance
+local fremenFriendship = CardEffect.fremenFriendship
+local anyAlliance = CardEffect.anyAlliance
+local oneHelix = CardEffect.oneHelix
+local twoHelices = CardEffect.twoHelices
+local winner = CardEffect.winner
 
 local ConflictCard = {
     skirmishA = {level = 1, base = true, rewards = {{vp(1)}, {intrigue(1), solari(2)}, {solari(2)}}},
@@ -135,13 +72,20 @@ local ConflictCard = {
     economicSupremacy = {level = 3, ix = true, rewards = {{vp(1), optional({solari(-6), vp(1)}), optional({spice(-4), vp(1)})}, {vp(1)}, {spice(2), solari(2)}}},
 }
 
-function ConflictCard.collectReward(color, conflictName, rank, collectOptionalRewards)
+function ConflictCard.collectReward(color, conflictName, rank)
     Types.assertIsInRange(1, 3, rank)
     local conflict = ConflictCard[conflictName]
     assert(conflict, "Unknown conflict: ", conflictName)
     local rewards = conflict.rewards[rank]
+
+    local context = {
+        color = color,
+        player = PlayBoard.getLeader(color),
+        cardName = conflictName,
+    }
+
     for _, reward in ipairs(rewards) do
-        reward(color, conflictName, collectOptionalRewards)
+        CardEffect.evaluate(context, reward)
     end
 end
 

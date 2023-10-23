@@ -159,21 +159,29 @@ function TechMarket._doAcquireTech(stackIndex, color)
     local continuation = Helper.createContinuation("TechMarket._doAcquireTech")
     local acquireCard = TechMarket.acquireCards[stackIndex]
 
+    log(1)
     local techTileStack = TechMarket._getTechTileStack(stackIndex)
+    log(2)
     if techTileStack.topCard then
 
         if color then
+            log(3)
             PlayBoard.grantTechTile(color, techTileStack.topCard)
+            log(4)
             TechCard.applyBuyEffect(color, techTileStack.topCard)
         else
+            log(5)
             MainBoard.trash(techTileStack.topCard)
         end
 
+        log(6)
         Helper.onceTimeElapsed(0.5).doAfter(function ()
             if techTileStack.otherCards then
                 local above = acquireCard.zone.getPosition() + Vector(0, 1, 0)
+                log(7)
                 Helper.moveCardFromZone(acquireCard.zone, above, Vector(0, 180, 0), true).doAfter(function (card)
                     Helper.onceMotionless(card).doAfter(function ()
+                        log(8)
                         continuation.run(techTileStack.topCard)
                     end)
                 end)
@@ -181,8 +189,10 @@ function TechMarket._doAcquireTech(stackIndex, color)
                 continuation.run(techTileStack.topCard)
             end
         end)
-
+    else
+        continuation.cancel()
     end
+
     return continuation
 end
 

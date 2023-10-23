@@ -1,89 +1,49 @@
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 
+-- Exceptional Immediate require for the sake of aliasing.
+local CardEffect = require("CardEffect")
+
 local PlayBoard = Module.lazyRequire("PlayBoard")
 
-local function _evaluate(color, value)
-    if type(value) == 'function' then
-        return value(color)
-    else
-        return value
-    end
-end
-
-local function water(n)
-    return function (color)
-        return PlayBoard.getLeader(color).resources(color, "water", _evaluate(color, n))
-    end
-end
-
-local function influence(n, faction)
-    return function (color)
-        return PlayBoard.getLeader(color).influence(color, faction, _evaluate(color, n))
-    end
-end
-
-local function vp(n)
-    return function (color, techName)
-        for _ = 1, n do
-            return PlayBoard.getLeader(color).gainVictoryPoint(color, techName)
-        end
-        return true
-    end
-end
-
-local function draw(n)
-    return function (color)
-        return PlayBoard.getLeader(color).drawImperiumCards(color, _evaluate(color, n))
-    end
-end
-
-local function persuasion(n)
-    return function (color)
-        return PlayBoard.getLeader(color).resources(color, "persuasion", _evaluate(color, n))
-    end
-end
-
-local function intrigue(n)
-    return function (color)
-        return PlayBoard.getLeader(color).drawIntrigues(color, _evaluate(color, n))
-    end
-end
-
-local function troop(n)
-    return function (color)
-        return PlayBoard.getLeader(color).troops(color, "supply", "garrison", _evaluate(color, n))
-    end
-end
-
-local function seat(n)
-    return function (color)
-        if PlayBoard.hasHighCouncilSeat(color) then
-            return n
-        else
-            return 0
-        end
-    end
-end
-
-local function trash(n)
-    return function (color)
-        return false
-    end
-end
-
-local function choice(n, options)
-    return function (color, techName)
-        if not PlayBoard.getLeader(color).choose(color, techName) then
-            local shuffledOptions = Helper.shallowCopy(options)
-            Helper.shuffle(shuffledOptions)
-            for i = 1, n do
-                shuffledOptions[i](color, techName)
-            end
-        end
-        return true
-    end
-end
+-- Function aliasing for a more readable code.
+local persuasion = CardEffect.persuasion
+local sword = CardEffect.sword
+local spice = CardEffect.spice
+local water = CardEffect.water
+local solari = CardEffect.solari
+local troop = CardEffect.troop
+local dreadnought = CardEffect.dreadnought
+local negotiator = CardEffect.negotiator
+local specimen = CardEffect.specimen
+local intrigue = CardEffect.intrigue
+local trash = CardEffect.trash
+local shipments = CardEffect.shipments
+local research = CardEffect.research
+local beetle = CardEffect.beetle
+local influence = CardEffect.influence
+local vp = CardEffect.vp
+local draw = CardEffect.draw
+local shipment = CardEffect.shipment
+local mentat = CardEffect.mentat
+local control = CardEffect.control
+local perDreadnoughtInConflict = CardEffect.perDreadnoughtInConflict
+local perSwordCard = CardEffect.perSwordCard
+local perFremen = CardEffect.perFremen
+local choice = CardEffect.choice
+local optional = CardEffect.optional
+local seat = CardEffect.seat
+local fremenBond = CardEffect.fremenBond
+local agentInEmperorSpace = CardEffect.agentInEmperorSpace
+local emperorAlliance = CardEffect.emperorAlliance
+local spacingGuildAlliance = CardEffect.spacingGuildAlliance
+local beneGesseritAlliance = CardEffect.beneGesseritAlliance
+local fremenAlliance = CardEffect.fremenAlliance
+local fremenFriendship = CardEffect.fremenFriendship
+local anyAlliance = CardEffect.anyAlliance
+local oneHelix = CardEffect.oneHelix
+local twoHelices = CardEffect.twoHelices
+local winner = CardEffect.winner
 
 local TechCard = {
     windtraps = {cost = 2, hagal = true, acquireBonus = {water(1)}},
@@ -133,8 +93,15 @@ end
 function TechCard.applyBuyEffect(color, techCard)
     local bonus = TechCard.getDetails(techCard).acquireBonus
     if bonus then
+        local context = {
+            color = color,
+            player = PlayBoard.getLeader(color),
+            cardName = Helper.getID(techCard),
+            card = techCard,
+        }
+
         for _, bonusItem in ipairs(bonus) do
-            bonusItem(color, Helper.getID(techCard))
+            CardEffect.evaluate(context, bonusItem)
         end
     end
 end
