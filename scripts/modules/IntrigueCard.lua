@@ -15,7 +15,6 @@ local negotiator = CardEffect.negotiator
 local specimen = CardEffect.specimen
 local intrigue = CardEffect.intrigue
 local trash = CardEffect.trash
-local shipments = CardEffect.shipments
 local research = CardEffect.research
 local beetle = CardEffect.beetle
 local influence = CardEffect.influence

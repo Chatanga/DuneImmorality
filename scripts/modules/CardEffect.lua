@@ -35,7 +35,6 @@ local negotiator = CardEffect.negotiator
 local specimen = CardEffect.specimen
 local intrigue = CardEffect.intrigue
 local trash = CardEffect.trash
-local shipments = CardEffect.shipments
 local research = CardEffect.research
 local beetle = CardEffect.beetle
 local influence = CardEffect.influence
@@ -88,6 +87,8 @@ function CardEffect._dispatch(selector, expression)
 
         if selector == "troop" then
             return call("troops", color, "supply", "garrison", value)
+        elseif selector == "dreadnought" then
+            return call("dreadnought", color, "supply", "garrison", value)
         elseif Helper.isElementOf(selector, { "spice", "water", "solari" }) then
             return call("resources", color, selector, value)
         elseif Helper.isElementOf(selector, { "persuasion", "strength" }) then
@@ -111,6 +112,11 @@ function CardEffect._dispatch(selector, expression)
             return call("drawImperiumCards", color, value)
         elseif selector == "shipment" then
             return call("shipments", color, value)
+        elseif selector == "research" then
+            --return call("research", color, value)
+            return false
+        elseif selector == "beetle" then
+            return call("beetle", color, value)
         elseif selector == "mentat" then
             if call("takeMentat", color) then
                 -- FIXME Do it elsewhere.
@@ -169,10 +175,6 @@ end
 
 function CardEffect.trash(expression)
     return CardEffect._dispatch('trash', expression)
-end
-
-function CardEffect.shipments(expression)
-    return CardEffect._dispatch('shipments', expression)
 end
 
 function CardEffect.research(expression)

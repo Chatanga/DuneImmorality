@@ -1,6 +1,7 @@
 local Helper = require("utils.Helper")
 
 -- Exceptional Immediate require for the sake of aliasing.
+local PlayBoard = require("PlayBoard")
 local CardEffect = require("CardEffect")
 
 -- Function aliasing for a more readable code.
@@ -15,7 +16,6 @@ local negotiator = CardEffect.negotiator
 local specimen = CardEffect.specimen
 local intrigue = CardEffect.intrigue
 local trash = CardEffect.trash
-local shipments = CardEffect.shipments
 local research = CardEffect.research
 local beetle = CardEffect.beetle
 local influence = CardEffect.influence
@@ -58,7 +58,7 @@ local ImperiumCard = {
     -- reserve
     arrakisLiaison = {factions = {'fremen'}, cost = 2, agentsIcons = {'blue'}, reveal = {persuasion(2)}},
     foldspace = {cost = 0, agentIcons = {'emperor', 'spacingGuild', 'beneGesserit', 'fremen', 'green', 'blue', 'yellow'}},
-    theSpiceMustFlow = {cost = 9, acquireBonus = {'+1 VP'}, reveal = {spice(1)}},
+    theSpiceMustFlow = {cost = 9, acquireBonus = {vp(1)}, reveal = {spice(1)}},
     -- base
     arrakisRecruiter = {cost = 2, agentIcons = {'blue'}, reveal = {persuasion(1), sword(1)}},
     assassinationMission = {cost = 1, reveal = {sword(1), solari(1)}},
@@ -102,18 +102,19 @@ local ImperiumCard = {
     theVoice = {factions = {'beneGesserit'}, cost = 2, agentIcons = {'blue', 'yellow'}, reveal = {persuasion(2)}},
     thufirHawat = {cost = 5, agentIcons = {'emperor', 'spacingGuild', 'beneGesserit', 'fremen', 'blue', 'yellow'}, reveal = {persuasion(1), intrigue(1)}},
     wormRiders = {factions = {'fremen'}, cost = 6, agentIcons = {'blue', 'yellow'}, reveal = {sword(fremenFriendship(4)), sword(fremenAlliance(2))}},
+    opulence = {factions = {'emperor'}, cost = 6, agentIcons = {'emperor'}, reveal = {persuasion(1), optional({solari(-6), vp(1)})}},
     -- ix
-    appropriate = {factions = {'emperor'}, cost = 5, acquireBonus = {shipments(1)}, agentIcons = {'green', 'yellow'}, reveal = {persuasion(2)}},
+    appropriate = {factions = {'emperor'}, cost = 5, acquireBonus = {shipment(1)}, agentIcons = {'green', 'yellow'}, reveal = {persuasion(2)}},
     bountyHunter = {cost = 1, agentIcons = {'blue'}, infiltrate = true, reveal = {persuasion(1), sword(1)}},
     choamDelegate = {cost = 1, agentIcons = {'yellow'}, infiltrate = true, reveal = {solari(1)}},
     courtIntrigue = {factions = {'emperor'}, cost = 2, agentIcons = {'emperor'}, infiltrate = true, reveal = {persuasion(1), sword(1)}},
     desertAmbush = {factions = {'fremen'}, cost = 3, agentIcons = {'yellow'}, reveal = {persuasion(1), sword(1)}},
     embeddedAgent = {factions = {'beneGesserit'}, cost = 5, agentIcons = {'green'}, infiltrate = true, reveal = {persuasion(1), intrigue(1)}},
     esmarTuek = {factions = {'spacingGuild'}, cost = 5, agentIcons = {'blue', 'yellow'}, reveal = {spice(2), solari(2)}},
-    freighterFleet = {cost = 2, agentIcons = {'yellow'}, reveal = {shipments(1)}},
+    freighterFleet = {cost = 2, agentIcons = {'yellow'}, reveal = {shipment(1)}},
     fullScaleAssault = {factions = {'emperor'}, cost = 8, acquireBonus = {dreadnought(1)}, agentIcons = {'emperor', 'blue'}, reveal = {persuasion(2), sword(perDreadnoughtInConflict(3))}},
     guildAccord = {factions = {'spacingGuild'}, cost = 6, agentIcons = {'spacingGuild'}, infiltrate = true, reveal = {water(1), spice(spacingGuildAlliance(3))}},
-    guildChiefAdministrator = {factions = {'spacingGuild'}, cost = 4, agentIcons = {'spacingGuild', 'blue', 'yellow'}, reveal = {persuasion(1), shipments(1)}},
+    guildChiefAdministrator = {factions = {'spacingGuild'}, cost = 4, agentIcons = {'spacingGuild', 'blue', 'yellow'}, reveal = {persuasion(1), shipment(1)}},
     imperialBashar = {factions = {'emperor'}, cost = 4, agentIcons = {'blue'}, reveal = {persuasion(1), sword(2), sword(perSwordCard(1, true))}},
     imperialShockTrooper = {factions = {'emperor'}, cost = 3, reveal = {persuasion(1), sword(2), sword(agentInEmperorSpace(3))}},
     inTheShadows = {factions = {'beneGesserit'}, cost = 2, agentIcons = {'green', 'blue'}, reveal = {influence(1, 'spacingGuild')}},
@@ -232,6 +233,22 @@ function ImperiumCard.evaluateReveal(color, playedCards, revealedCards, artiller
 
     log(result)
     return result
+end
+
+function ImperiumCard.applyAcquireEffect(color, card)
+    local bonus = ImperiumCard._resolveCard(card).acquireBonus
+    if bonus then
+        local context = {
+            color = color,
+            player = PlayBoard.getLeader(color),
+            cardName = Helper.getID(card),
+            card = card,
+        }
+
+        for _, bonusItem in ipairs(bonus) do
+            CardEffect.evaluate(context, bonusItem)
+        end
+    end
 end
 
 function ImperiumCard.getTleilaxuCardCost(card)

@@ -85,6 +85,7 @@ Unfortunately, it seems to induce some kind of latency, leading to board corrupt
 
 - Investigate missing trigger effects on guests after a reload.
 - Fix the whole save/reload behavior in a minimal way.
+- Freeze when buying a tech (5 or 6).
 
 ## TODO (by priority)
 
@@ -95,11 +96,9 @@ Unfortunately, it seems to induce some kind of latency, leading to board corrupt
 - Replace freighters by tokens.
 - Change the [dreadnought model](https://www.thingiverse.com/thing:5326146).
 - Rise of Ix board without Immortality.
-- Card acquisition bonus (unify card effect framework).
 - Tech acquisition cost (multiple options).
 - Fix the 6 tech park saturation.
-- Handle all space access options and notify agent action failures.
-- Reservation slot cleaned on recall.
+- Handle all space access options and explain agent action failures.
 - Custom hidden pick.
 
 ## Later (maybe)

@@ -1558,10 +1558,10 @@ function PlayBoard.giveCard(color, card, isTleilaxuCard)
     local content = PlayBoard.getContent(color)
     assert(content)
 
-    printToAll(I18N(isTleilaxuCard and "acquireTleilaxuCard" or "acquireImperiumCard", { card = I18N(Helper.getID(card)) }), color)
-
     -- Acquire the card (not smoothly to avoid being grabbed by a player hand zone).
     card.setPosition(content.discardZone.getPosition())
+    printToAll(I18N(isTleilaxuCard and "acquireTleilaxuCard" or "acquireImperiumCard", { card = I18N(Helper.getID(card)) }), color)
+    ImperiumCard.applyAcquireEffect(color, card)
 
     -- Move it on the top of the content deck if possible and wanted.
     if (isTleilaxuCard and TleilaxuResearch.hasReachedOneHelix(color)) or PlayBoard.hasTech(color, "Spaceport") then
@@ -1582,6 +1582,7 @@ function PlayBoard.giveCardFromZone(color, zone, isTleilaxuCard)
     Helper.moveCardFromZone(zone, content.discardZone.getPosition()).doAfter(function (card)
         local cardName = I18N(Helper.getID(card))
         printToAll(I18N(isTleilaxuCard and "acquireTleilaxuCard" or "acquireImperiumCard", { card = cardName }), color)
+        ImperiumCard.applyAcquireEffect(color, card)
     end)
 
     -- Move it on the top of the player deck if possible and wanted.
