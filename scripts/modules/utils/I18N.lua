@@ -38,6 +38,7 @@ function I18N.translate(key, args)
     end
 
     local content = locale[key]
+    --Helper.dump(key, "->", content)
     return content and I18N._parse(content, args) or "{" .. key .. "}"
 end
 
@@ -65,7 +66,6 @@ end
 function I18N._evaluate(expression, args)
     return args[expression]
 end
-
 
 setmetatable(I18N, { __call = function(_, ...) return I18N.translate(...) end })
 

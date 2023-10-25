@@ -55,9 +55,9 @@ Leader.vladimirHarkonnen = Helper.createClass(Leader, {
     instruct = function (phase, isActivePlayer)
         if phase == "gameStart" then
             if isActivePlayer then
-                return "Secretly choose 2 Factions."
+                return I18N("gameStartActiveInstructionForVladimirHarkonnen")
             else
-                return "Wait for vladimir Harkonnen\nto secretly choose\nits two factions."
+                return I18N("gameStartInactiveInstructionForVladimirHarkonnen")
             end
         else
             return Leader.instruct(phase, isActivePlayer)
@@ -258,9 +258,9 @@ Leader.ilesaEcaz = Helper.createClass(Leader, {
     instruct = function (phase, isActivePlayer)
         if phase == "roundStart" then
             if isActivePlayer then
-                return "Set aside a card\nfrom your hand."
+                return I18N("gameStartActiveInstructionForIlesaEcaz")
             else
-                return "Wait for Ilesa Ecaz\nto set aside a card\nfrom her hand."
+                return I18N("gameStartInactiveInstructionForIlesaEcaz")
             end
         else
             return Leader.instruct(phase, isActivePlayer)
@@ -366,9 +366,9 @@ Leader.hundroMoritani = Helper.createClass(Leader, {
     instruct = function (phase, isActivePlayer)
         if phase == "gameStart" then
             if isActivePlayer then
-                return "Keep one intrigue\nand put the other\non top of the intrigue deck."
+                return I18N("gameStartActiveInstructionForHundroMoritani")
             else
-                return "Wait for Hundro Moritani\nto choose between\nits two intrigues."
+                return I18N("gameStartInactiveInstructionForHundroMoritani")
             end
         else
             return Leader.instruct(phase, isActivePlayer)

@@ -2,8 +2,8 @@ return {
     ["?"] = "?",
 
     -- Setup UI
-    language = "Langue",
     prolog = "« Une configuration est toujours un moment très délicat. »",
+    language = "Langue",
     players = "Joueurs",
     randomizePlayersPositions = "Mélanger les positions des joueurs",
     virtualHotSeat = "1 ou 2 joueurs",
@@ -46,12 +46,32 @@ return {
     atomics = "Atomiser",
     revealNotTurn = "Vous ne pouvez pas révéler en dehors de votre tour.",
     revealEarlyConfirm = "Révéler votre main ?",
-    yes = "Oui",
-    no = "Non",
     isDecidingToDraw = "{leader} est en train de décider de piocher des cartes tout de suite ou non car sa défausse va être remélangée.",
     warningBeforeDraw = "Attention : votre défausse va être remélangée et/ou vous avez moins de {count} carte(s). Voulez-vous piocher {maxCount} carte(s) tout de suite ? (Vous devrez piocher manuellement si vous annulez)",
     atomicsConfirm = "Confirmer",
+    yes = "Oui",
+    no = "Non",
     dialogCardAbove = "Voulez-vous mettre la carte sur le dessus de votre paquet ? (Ok = oui, Cancel = non)",
+    endOfTurn = "Fin\nde\ntour",
+
+    -- Instructions
+    leaderSelectionActiveInstruction = "Sélectionnez un dirigeant\nsur le plateau supérieur.",
+    leaderSelectionInactiveInstruction = "Attendez que vos adversaires\naient sélectionné leurs dirigeants.",
+    playerTurnsActiveInstruction = "Envoyez un agent\nou révélez votre main,\npuis appuyez sur Fin de tour.",
+    playerTurnsInactiveInstruction = "Attendez que vos adversaires\naient joué leurs tours\nd’agent / révélation.",
+    combatActiveInstruction = "Jouez une intrigue et\nappuyez sur Fin de tour\nou appuyez directement\nsur Fin de tour pour passer.",
+    combatInactiveInstruction = "Attendez que vos adversaires en combat\naient joué une intrigue\nou passé leur tour.",
+    combatEndActiveInstruction = "Prenez votre butin et\njouez des cartes d’intrigue le cas échéant,\npuis appuyez sur Fin de tour.",
+    combatEndInactiveInstruction = "Attendez que vos adversaires\naient récolté leur butin\net joué des intrigues.",
+    endgameActiveInstruction = "Jouez vos cartes de fin de jeu et\ntuiles tech que vous possédez\nafin de gagner des PV finaux.",
+    endgameInactiveInstruction = "Attendez que vos adversaires aient\njoué leurs cartes de fin de jeu\net tuiles tech qu’ils possèdent.",
+    -- Special instructions
+    gameStartActiveInstructionForVladimirHarkonnen = "Choisissez secrètement\ndeux factions.",
+    gameStartInactiveInstructionForVladimirHarkonnen = "Attendez que Vladimir Harkonnen\nait secrétement choisi\nses deux factions.",
+    gameStartActiveInstructionForIlesaEcaz = "Mettez de côté une carte\nde votre main.",
+    gameStartInactiveInstructionForIlesaEcaz = "Attendez que Ilesa Ecaz\nait mis de côté une carte\nde sa main.",
+    gameStartActiveInstructionForHundroMoritani = "Gardez une intrigue\net reposez l’autre\nau dessus du paquet d’intrigues.",
+    gameStartInactiveInstructionForHundroMoritani = "Attendez que Hundro Moritani\nait choisi entre\nses deux intrigues.",
 
     -- Resource
     spiceAmount = "Épice",
@@ -106,7 +126,7 @@ return {
     acquireImperiumCard = "■ Acquisition carte Imperium : « {card} »",
 
     -- Combat
-    dreadnoughtMandatoryOccupation = "Rappel : vous devez envoyer un cuirassé occuper une zone.",
+    dreadnoughtMandatoryOccupation = "Rappel : vous devez envoyer un cuirassé occuper un espace.",
 
     -- Ranking
     firstInCombat = "★ 1er : {leader}",
@@ -347,7 +367,7 @@ return {
     tleilaxuInfiltrator = "Infiltrateur tleilaxu",
     twistedMentat = "Mentat « tordu »",
     unnaturalReflexes = "Réflexes anormaux",
-    usurp = "usurp",
+    usurp = "Usurper",
 
     -- Intrigue
     bribery = "Pot-de-vin",
@@ -365,7 +385,7 @@ return {
     plansWithinPlans = "Des plans dans des plans",
     privateArmy = "Armée privée",
     doubleCross = "Coup de poignard dans le dos",
-    councilorsDispensation = "councilorsDispensation",
+    councilorsDispensation = "Dispense des conseillers",
     cornerTheMarket = "Accaparer le marché",
     charisma = "Charisme",
     calculatedHire = "Recrutement calculé",

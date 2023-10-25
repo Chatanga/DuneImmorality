@@ -548,7 +548,7 @@ function PlayBoard:_createEndOfTurnButton()
             TurnControl.endOfTurn()
         end),
         position = Vector(0, 0.6, 0),
-        label = "End\nof\nTurn",
+        label = I18N("endOfTurn"),
         width = 1500,
         height = 1500,
         color = { 0, 0, 0, 0 },

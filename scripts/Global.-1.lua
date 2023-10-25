@@ -1,4 +1,4 @@
-local BUILD = 'Tue Oct 24 19:13:09 CEST 2023'
+local BUILD = 'Wed Oct 25 19:59:23 CEST 2023'
 
 -- Do not load anything. Appropriate to work on the mod content without
 -- interference.
@@ -81,7 +81,6 @@ autoLoadedSettings = {
     variant = "arrakeenScouts",
     soundEnabled = true,
 }
-]]
 autoLoadedSettings = {
     language = "fr",
     randomizePlayerPositions = false,
@@ -100,6 +99,7 @@ autoLoadedSettings = {
     fanmadeLeaders = false,
     soundEnabled = true,
 }
+]]
 
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")

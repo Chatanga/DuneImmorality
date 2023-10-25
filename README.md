@@ -14,7 +14,7 @@ Features:
 
 Supported langages:
 - French
-- (English)
+- English
 
 ## Links :
 

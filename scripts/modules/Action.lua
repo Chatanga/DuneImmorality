@@ -72,35 +72,19 @@ end
 
 ---
 function Action.instruct(phase, isActivePlayer)
-    local instructions = {
-        leaderSelection = {
-            "Select a leader\non the upper board",
-            "Wait for your opponent\nto select their leaders."
-        },
-        playerTurns = {
-            "Send an agent\nor reveal your hand,\nthen press End of Turn.",
-            "Wait for your opponent\nto play their\nagent / reveal turn."
-        },
-        combat = {
-            "Play an intrigue and\npress End of Turn or simply\npress End of Turn to pass.",
-            "Wait for your opponent\nin combat to play an\nintrigue or pass their turn."
-        },
-        combatEnd = {
-            "Take your reward and play\nintrigue cards if you may,\nthen press End of Turn.",
-            "Wait for your opponent\nto collect their reward\nand play any intrigue."
-        },
-        endgame = {
-            "Play any Endgame card and\nTech tile you possess\nto gain final victory points.",
-            "Wait for your oppenent\nto play any Endgame card\nor Tech tiles they possess."
-        },
+    local availablePhaseInstructions = {
+        leaderSelection = true,
+        playerTurns = true,
+        combat = true,
+        combatEnd = true,
+        endgame = true,
     }
 
-    local instruction = instructions[phase]
-    if instruction then
+    if availablePhaseInstructions[phase] then
         if isActivePlayer then
-            return instruction[1]
+            return I18N(phase .. "ActiveInstruction")
         else
-            return instruction[2]
+            return I18N(phase .. "InactiveInstruction")
         end
     else
         return nil
