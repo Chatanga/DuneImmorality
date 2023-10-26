@@ -1507,13 +1507,44 @@ function Helper._getSubSet(set, keys)
 end
 
 ---
-function Helper._indexOf(table, element)
+function Helper.indexOf(table, element)
     for i, existingElement in ipairs(table) do
         if existingElement == element then
             return i
         end
     end
     return 0
+end
+
+---
+function Helper.swap(elements, i, j)
+    if i ~= j then
+        local tmp = elements[i]
+        elements[i] = elements[j]
+        elements[j] = tmp
+    end
+end
+
+---
+function Helper.reverse(elements)
+    local count = #elements
+    for i = 1, count do
+        local j = count + 1 - i
+        if i < j then
+            Helper.swap(elements, i, j)
+        else
+            break
+        end
+    end
+end
+
+---
+function Helper.cycle(elements)
+    local count = #elements
+    local first = elements[1]
+    for i = 1, count do
+        elements[i] = i < count and elements[i + 1] or first
+    end
 end
 
 ---

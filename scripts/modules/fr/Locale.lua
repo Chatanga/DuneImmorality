@@ -54,6 +54,11 @@ return {
     dialogCardAbove = "Voulez-vous mettre la carte sur le dessus de votre paquet ? (Ok = oui, Cancel = non)",
     endOfTurn = "Fin\nde\ntour",
 
+    -- Leader selection
+    leaderSelectionAdjust = "Ajustez le nombre de dirigeants sélectionnés au hasard\nparmi lesquels les joueurs devront choisir :",
+    leaderSelectionExclude = "Vous pouvez retourner (ou détruire) n’importe quel dirigeant pour l’exclure.\nUne fois satisfait, appuyez sur le bouton 'Démarrer'.",
+    start = "Démarrer",
+
     -- Instructions
     leaderSelectionActiveInstruction = "Sélectionnez un dirigeant\nsur le plateau supérieur.",
     leaderSelectionInactiveInstruction = "Attendez que vos adversaires\naient sélectionné leurs dirigeants.",

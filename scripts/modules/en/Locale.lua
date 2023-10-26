@@ -54,6 +54,11 @@ return {
     dialogCardAbove = "Do you want to put the card on top of your deck ? (Ok = yes, Cancel = No)",
     endOfTurn = "End\nof\nTurn",
 
+    -- Leader selection
+    leaderSelectionAdjust = "Adjust the number of leaders who will be randomly\nselected for the players to choose among:",
+    leaderSelectionExclude = "You can flip out (or delete) any leader you want to exclude.\nOnce satisfied, hit the 'Start' button.",
+    start = "Start",
+
     -- Instructions
     leaderSelectionActiveInstruction = "Select a leader\non the upper board",
     leaderSelectionInactiveInstruction = "Wait for your opponents\nto select their leader.",

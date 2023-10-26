@@ -1,4 +1,4 @@
-local BUILD = 'Wed Oct 25 19:59:23 CEST 2023'
+local BUILD = 'Thu Oct 26 20:27:53 CEST 2023'
 
 -- Do not load anything. Appropriate to work on the mod content without
 -- interference.
@@ -310,11 +310,6 @@ function setUp(newSettings)
     end
 
     continuation.doAfter(function ()
-        log("Active opponents:")
-        for color, oppenent in pairs(activeOpponents) do
-            Helper.dump("\t", color, "-", oppenent)
-        end
-
         -- Not assigned before in order to avoid saving anything.
         settings = newSettings
 

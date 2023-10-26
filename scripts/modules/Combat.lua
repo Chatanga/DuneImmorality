@@ -89,7 +89,7 @@ function Combat._staticSetUp(settings)
             local forces = Combat._calculateCombatForces()
             local ranking = Combat._calculateRanking(forces)
             local turnSequence = Combat._calculateOutcomeTurnSequence(ranking)
-            TurnControl.setPhaseTurnSequence(turnSequence)
+            TurnControl.overridePhaseTurnSequence(turnSequence)
             Combat.showRanking(turnSequence, ranking)
         elseif phase == "recall" then
             for _, object in ipairs(Combat.victoryPointTokenZone.getObjects()) do

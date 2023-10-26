@@ -1,5 +1,6 @@
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
+local I18N = require("utils.I18N")
 
 local Deck = Module.lazyRequire("Deck")
 local TurnControl = Module.lazyRequire("TurnControl")
@@ -10,10 +11,12 @@ local LeaderSelection = {
     selectionMethods = {
         random = "Random",
         reversePick = "Reverse pick",
-        hiddenPick = "Reverse hidden pick"
+        reverseHiddenPick = "Reverse hidden pick",
+        altHiddenPick = "4·3·1·2 hidden pick"
     },
-    leaderSelectionPoolSize = 6,
     dynamicLeaderSelection = {},
+    leaderSelectionPoolSize = 8,
+    turnSequence = {},
 }
 
 ---
@@ -32,7 +35,7 @@ function LeaderSelection.getSelectionMethods()
 end
 
 ---
-function LeaderSelection.setUp(settings, opponents)
+function LeaderSelection.setUp(settings, opponents, orderedPlayers)
     Deck.generateLeaderDeck(LeaderSelection.deckZone, settings.riseOfIx, settings.immortality, settings.fanmadeLeaders).doAfter(function (deck)
         local numberOfLeaders = #deck.getObjects()
         local continuation = Helper.createContinuation("LeaderSelection.setUp")
@@ -58,12 +61,38 @@ function LeaderSelection.setUp(settings, opponents)
                 LeaderSelection._setUpPicking(opponents, numberOfLeaders, true, false)
             elseif settings.leaderSelection == "reversePick" then
                 LeaderSelection._setUpPicking(opponents, numberOfLeaders, false, false)
-            elseif settings.leaderSelection == "hiddenPick" then
+            elseif settings.leaderSelection == "reverseHiddenPick" then
+                LeaderSelection._setUpPicking(opponents, numberOfLeaders, false, true)
+            elseif settings.leaderSelection == "altHiddenPick" then
                 LeaderSelection._setUpPicking(opponents, numberOfLeaders, false, true)
             else
                 error(settings.leaderSelection)
             end
         end)
+    end)
+
+    Helper.registerEventListener("phaseStart", function (phase, firstPlayer)
+        if phase == "leaderSelection" then
+            local turnSequence = Helper.shallowCopy(orderedPlayers)
+            while turnSequence[1] ~= firstPlayer do
+                Helper.cycle(turnSequence)
+            end
+
+            if settings.leaderSelection == "reversePick" then
+                Helper.reverse(turnSequence)
+            elseif settings.leaderSelection == "reverseHiddenPick" then
+                Helper.reverse(turnSequence)
+            elseif settings.leaderSelection == "altHiddenPick" then
+                Helper.reverse(turnSequence)
+                if #turnSequence == 4 then
+                    Helper.swap(turnSequence, 4, 3)
+                else
+                    log("Skipping 4 <-> 3 for less than 4 players.")
+                end
+            end
+
+            TurnControl.overridePhaseTurnSequence(turnSequence)
+        end
     end)
 end
 
@@ -102,7 +131,7 @@ function LeaderSelection._setUpTest(opponents, leaderNames)
         end
     end
 
-    TurnControl.start(true)
+    TurnControl.start()
 end
 
 ---
@@ -112,7 +141,7 @@ function LeaderSelection._setUpPicking(opponents, numberOfLeaders, random, hidde
     if hidden then
         Helper.createAbsoluteButtonWithRoundness(LeaderSelection.secondaryTable, 2, false, {
             click_function = Helper.registerGlobalCallback(),
-            label = "Adjust the number of leaders who will be randomly\nselected for the players to choose among:",
+            label = I18N("leaderSelectionAdjust"),
             position = LeaderSelection.secondaryTable.getPosition() + Vector(0, 1.8, -28),
             width = 0,
             height = 0,
@@ -126,8 +155,6 @@ function LeaderSelection._setUpPicking(opponents, numberOfLeaders, random, hidde
             LeaderSelection.leaderSelectionPoolSize = math.max(minValue, math.min(maxValue, value))
             LeaderSelection.secondaryTable.editButton({ index = 2, label = tostring(LeaderSelection.leaderSelectionPoolSize) })
         end
-
-        -- TTS input widgets are shitty. Let's forget them.
 
         Helper.createAbsoluteButtonWithRoundness(LeaderSelection.secondaryTable, 2, false, {
             click_function = Helper.registerGlobalCallback(function ()
@@ -168,7 +195,7 @@ function LeaderSelection._setUpPicking(opponents, numberOfLeaders, random, hidde
 
     Helper.createAbsoluteButtonWithRoundness(LeaderSelection.secondaryTable, 2, false, {
         click_function = Helper.registerGlobalCallback(),
-        label = "You can flip out (or delete) any leader you want to exclude.\nOnce satisfied, hit the 'Start' button.",
+        label = I18N("leaderSelectionExclude"),
         position = LeaderSelection.secondaryTable.getPosition() + Vector(0, 1.8, -30),
         width = 0,
         height = 0,
@@ -180,16 +207,16 @@ function LeaderSelection._setUpPicking(opponents, numberOfLeaders, random, hidde
         click_function = Helper.registerGlobalCallback(function ()
             if #LeaderSelection._getVisibleLeaders() >= #Helper.getKeys(opponents) then
                 local visibleLeaders = LeaderSelection._prepareVisibleLeaders(hidden)
-                LeaderSelection._createDynamicLeaderSelection(visibleLeaders)
+                LeaderSelection._createDynamicLeaderSelection(visibleLeaders, hidden)
                 Helper.clearButtons(LeaderSelection.secondaryTable)
-                TurnControl.start(true)
+                TurnControl.start()
             else
                 error("Not enough leaders left!")
             end
         end),
-        label = "Start",
+        label = I18N("start"),
         position = LeaderSelection.secondaryTable.getPosition() + Vector(0, 1.8, -32),
-        width = 1600,
+        width = 2200,
         height = 600,
         font_size = 500,
         color = fontColor,
@@ -288,11 +315,13 @@ function LeaderSelection._prepareVisibleLeaders(hidden)
     return leaders
 end
 
-function LeaderSelection._createDynamicLeaderSelection(leaders)
-    Helper.shuffle(leaders)
+function LeaderSelection._createDynamicLeaderSelection(leaders, hidden)
+    if hidden then
+        Helper.shuffle(leaders)
+    end
 
     for i, leader in ipairs(leaders) do
-        if i <= LeaderSelection.leaderSelectionPoolSize then
+        if i <= LeaderSelection.leaderSelectionPoolSize or not hidden then
             LeaderSelection.dynamicLeaderSelection[leader] = false
             local position = leader.getPosition()
             Helper.createAbsoluteButtonWithRoundness(leader, 1, false, {
