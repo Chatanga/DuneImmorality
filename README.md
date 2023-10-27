@@ -89,7 +89,6 @@ Unfortunately, it seems to induce some kind of latency, leading to board corrupt
 
 ## TODO (by priority)
 
-- Fully restore translations (tokens and books included).
 - Rival combat optimization.
 - Blitz!
 - [Fanmade leaders](https://drive.google.com/drive/folders/1-V3xcHk6078YR1fyhtJL3tdqv2zg5q3Q).

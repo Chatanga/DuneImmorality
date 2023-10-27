@@ -165,7 +165,7 @@ return {
     ilesaEcaz = "Ilesa Ecaz",
     rhomburVernius = "Prince Rhombur Vernius",
     tessiaVernius = "Tessia Vernius",
-    yunaMoritani = '"Princesse" Yuna Moritani',
+    yunaMoritani = '« Princesse » Yuna Moritani',
     hundroMoritani = "Vicomte Hundro Moritani",
 
     prescienceButton = "Prescience",

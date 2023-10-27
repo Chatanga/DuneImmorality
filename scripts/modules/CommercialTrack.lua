@@ -3,7 +3,6 @@ local Helper = require("utils.Helper")
 
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local TechMarket = Module.lazyRequire("TechMarket")
-local Action = Module.lazyRequire("Action")
 
 local CommercialTrack = {
     initialFreighterPositions = {

@@ -1,4 +1,4 @@
-local BUILD = 'Thu Oct 26 20:27:53 CEST 2023'
+local BUILD = 'Fri Oct 27 19:21:16 CEST 2023'
 
 -- Do not load anything. Appropriate to work on the mod content without
 -- interference.
@@ -136,6 +136,7 @@ local allModules = Module.registerModules({
     Locale = require("Locale"),
     MainBoard = require("MainBoard"),
     Music = require("Music"),
+    Pdf = require("Pdf"),
     PlayBoard = require("PlayBoard"),
     Reserve = require("Reserve"),
     Resource = require("Resource"),
@@ -163,7 +164,7 @@ local PlayerSet = {
             --eo = "Esperanto",
             fr = "Français",
             --it = "Italiano",
-            jp = "日本語",
+            --jp = "日本語",
             --zh = "中文",
         },
         language = "fr",
@@ -220,6 +221,7 @@ function onLoad(scriptState)
     allModules.Action.onLoad(state)
 
     allModules.ordered = {
+        allModules.Pdf,
         allModules.ArrakeenScouts,
         allModules.Music,
         allModules.Deck,
@@ -239,7 +241,7 @@ function onLoad(scriptState)
         allModules.TleilaxuRow,
         allModules.TurnControl,
     }
-    assert(#allModules.ordered == 18)
+    assert(#allModules.ordered == 19)
 
     -- We cannot use Module.callOnAllRegisteredModules("onLoad", state),
     -- because the order matter, now that we reload with "staticSetUp" (for the

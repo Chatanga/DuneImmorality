@@ -131,6 +131,7 @@ local ArrakeenScouts = {
 ---
 function ArrakeenScouts.onLoad(state)
     ArrakeenScouts.fr = require("fr.ArrakeenScouts")
+    ArrakeenScouts.en = require("en.ArrakeenScouts")
     Helper.append(ArrakeenScouts, Helper.resolveGUIDs(true, {
         board = "54b5be",
         committeeZones = {
