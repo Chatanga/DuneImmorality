@@ -845,7 +845,7 @@ end
 
 ---
 function Deck.createTechCustomDeck(faceUrl, width, height)
-    return Deck._createCustomDeck(techCardBack, faceUrl, width, height, Vector(0.52, 1, 0.52))
+    return Deck._createCustomDeck(techCardBack, faceUrl, width, height, Vector(0.55, 1, 0.55))
 end
 
 ---

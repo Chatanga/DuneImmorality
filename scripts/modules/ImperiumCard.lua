@@ -231,7 +231,6 @@ function ImperiumCard.evaluateReveal(color, playedCards, revealedCards, artiller
         sword(perSwordCard(1))(context)
     end
 
-    log(result)
     return result
 end
 

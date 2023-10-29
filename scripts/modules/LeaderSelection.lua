@@ -224,22 +224,16 @@ function LeaderSelection._setUpPicking(opponents, numberOfLeaders, random, hidde
     })
 
     if random then
-        Helper.registerEventListener("phaseStart", function (phase, _)
+        Helper.registerEventListener("playerTurns", function (phase, color)
             if phase == 'leaderSelection' then
-                -- Rivals
-                for color, opponent in pairs(opponents) do
-                    if opponent == "rival" then
-                        Hagal.pickAnyCompatibleLeader(color)
-                    end
+                local leader
+                if PlayBoard.isRival(color) then
+                    leader = Hagal.pickAnyCompatibleLeader(color)
+                elseif PlayBoard.isHuman(color) then
+                    local leaders = LeaderSelection.getSelectableLeaders()
+                    leader = Helper.pickAny(leaders)
                 end
-                -- Then players
-                for color, opponent in pairs(opponents) do
-                    if opponent ~= "rival" then
-                        local leaders = LeaderSelection.getSelectableLeaders()
-                        local leader = Helper.pickAny(leaders)
-                        LeaderSelection.claimLeader(color, leader)
-                    end
-                end
+                LeaderSelection.claimLeader(color, leader)
             end
         end)
     end
@@ -268,7 +262,7 @@ function LeaderSelection._setUpPicking(opponents, numberOfLeaders, random, hidde
                 if selected then
                     leader.setInvisibleTo({})
                 else
-                    LeaderSelection.destructLeader(leader)
+                    LeaderSelection._destructLeader(leader)
                 end
             end
             LeaderSelection.secondaryTable.destruct()
@@ -303,7 +297,7 @@ function LeaderSelection._prepareVisibleLeaders(hidden)
     for _, object in ipairs(LeaderSelection.deckZone.getObjects()) do
         if object.hasTag("Leader") then
             if object.is_face_down then
-                LeaderSelection.destructLeader(object)
+                LeaderSelection._destructLeader(object)
             else
                 table.insert(leaders, object)
                 if hidden then
@@ -328,7 +322,6 @@ function LeaderSelection._createDynamicLeaderSelection(leaders, hidden)
                 click_function = Helper.registerGlobalCallback(function (_, color, _)
                     if color == TurnControl.getCurrentPlayer() then
                         LeaderSelection.claimLeader(color, leader)
-                        Helper.onceTimeElapsed(1).doAfter(TurnControl.endOfTurn)
                     end
                 end),
                 position = Vector(position.x, 0.9, position.z),
@@ -338,7 +331,7 @@ function LeaderSelection._createDynamicLeaderSelection(leaders, hidden)
                 tooltip = "Claim"
             })
         else
-            LeaderSelection.destructLeader(leader)
+            LeaderSelection._destructLeader(leader)
         end
     end
 end
@@ -356,12 +349,15 @@ end
 
 ---
 function LeaderSelection.claimLeader(color, leader)
+    Helper.clearButtons(leader)
     LeaderSelection.dynamicLeaderSelection[leader] = true
-    return PlayBoard.setLeader(color, leader)
+    if PlayBoard.setLeader(color, leader) then
+        TurnControl.endOfTurn()
+    end
 end
 
 ---
-function LeaderSelection.destructLeader(leader)
+function LeaderSelection._destructLeader(leader)
     leader.destruct()
 end
 

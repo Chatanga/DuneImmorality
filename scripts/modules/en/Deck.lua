@@ -77,6 +77,31 @@ local Deck = {
         tessiaVernius = { "http://cloud-3.steamusercontent.com/ugc/2093667512238497590/29817122A32B50C285EE07E0DAC32FDE9A237CEC/", 1, 1 },
         yunaMoritani = { "http://cloud-3.steamusercontent.com/ugc/2093667512238499982/FA54B129B168169E3D58BA61536FCC0BB5AB7D34/", 1, 1 },
         hundroMoritani = { "http://cloud-3.steamusercontent.com/ugc/2093667512238498857/6A89778D9C4BB8AC07FE503D48A4483D13DF6E5B/", 1, 1 },
+    },
+    fanmadeLeader = {
+        abulurdHarkonnen = { "http://cloud-3.steamusercontent.com/ugc/2093668799785647987/40B8A2B4F6F5DA9A0C2D7738A3F5BFD925167438/", 1, 1 },
+        xavierHarkonnen = { "http://cloud-3.steamusercontent.com/ugc/2093668799785648901/43E90624D39B5A904FF112BD5A0B7C3D8AA21502/", 1, 1 },
+        feydRauthaHarkonnen = { "http://cloud-3.steamusercontent.com/ugc/2093668799785648769/D80761B2286A313A11939E3D45DEBCF24F7D30CC/", 1, 1 },
+        hasimirFenring = { "http://cloud-3.steamusercontent.com/ugc/2093668799785651246/3657671646912D7026E790B8DE187B49975CBD0E/", 1, 1 },
+        margotFenring = { "http://cloud-3.steamusercontent.com/ugc/2093668799785649044/1964022795283817F32D219C1C38050A9B5303AD/", 1, 1 },
+        lietKynes = { "http://cloud-3.steamusercontent.com/ugc/2093668799785651664/DC956CB7ACBD2370DC3D86484765E413F36DBBFF/", 1, 1 },
+        hwiNoree = { "http://cloud-3.steamusercontent.com/ugc/2093668799785651374/D3BB757794FCB5B9CF5D58798A697B354BD34EEA/", 1, 1 },
+        metulli = { "http://cloud-3.steamusercontent.com/ugc/2093668799785648115/09663A73D24AF2DB6A9315D87C5953614C0B0F32/", 1, 1 },
+        milesTeg = { "http://cloud-3.steamusercontent.com/ugc/2093668799785648620/299ECFBED3CD8F16774C5C69F8A957768CBBB66D/", 1, 1 },
+        normaCenvas = { "http://cloud-3.steamusercontent.com/ugc/2093668799785650099/4E8FC979A8689926A3A02EA748F402E7D76570BA/", 1, 1 },
+        irulanCorrino = { "http://cloud-3.steamusercontent.com/ugc/2093668799785648228/4C33FE97C3EFCABF776DF966B59D2AF15401D07E/", 1, 1 },
+        wencisiaCorrino = { "http://cloud-3.steamusercontent.com/ugc/2093668799785649921/C3D5184AD0F809A3F1F38BB16096AF5DD4437FA5/", 1, 1 },
+        vorianAtreides = { "http://cloud-3.steamusercontent.com/ugc/2093668799785650977/DFDB8318608D8F7B39273B40EBB4120FCEE56B3E/", 1, 1 },
+        serenaButler = { "http://cloud-3.steamusercontent.com/ugc/2093668799785648387/C4934E0587D33E2F1BB051D746A7EB30D2A6DEA7/", 1, 1 },
+        whitmoreBluud = { "http://cloud-3.steamusercontent.com/ugc/2093668799785649622/FEB8F943C50DFB711640347C6397243D71F9780A/", 1, 1 },
+        executrixOrdos = { "http://cloud-3.steamusercontent.com/ugc/2093668799785651526/69C591C92ED7FBA903ECDAD9C2CCC2B99EBBC5B0/", 1, 1 },
+        torgTheYoung = { "http://cloud-3.steamusercontent.com/ugc/2093668799785649467/66DCBBE36459C57FD8F631D8576F2CF01DFDC092/", 1, 1 },
+        twylwythWaff = { "http://cloud-3.steamusercontent.com/ugc/2093668799785648508/A7741DFFE841114BDDB8B6F8A2A57D2C59CDDEEB/", 1, 1 },
+        scytale = { "http://cloud-3.steamusercontent.com/ugc/2093668799785650538/BFA284BBABA15A609401208F4D834FE916EA960E/", 1, 1 },
+        stabanTuek = { "http://cloud-3.steamusercontent.com/ugc/2093668799785650746/1FCB42B17A8F7F711758BF5869CD3B7328E4542F/", 1, 1 },
+        esmarTuek = { "http://cloud-3.steamusercontent.com/ugc/2093668799785650381/EDAF5084889AA22C19B915DFADDFEADAB97F440F/", 1, 1 },
+        drisk = { "http://cloud-3.steamusercontent.com/ugc/2093668799785651117/2F2F3CF34B2737B7CAEF26433B3ECEE9FE41B3AF/", 1, 1 },
+        arkhane = { "http://cloud-3.steamusercontent.com/ugc/2093668799785649294/43F98BF29B58C81D6C1FABDC6D166BC0ED122953/", 1, 1 },
     }
 }
 
@@ -412,6 +437,11 @@ function Deck.loadCustomDecks(loader)
     -- One leader per custom deck.
     for leaderName, _ in pairs(Deck.leader) do
         Deck.load(loader, cards.leaders, "leader", leaderName, 1, { leaderName })
+    end
+
+    -- One leader per custom deck.
+    for leaderName, _ in pairs(Deck.fanmadeLeader) do
+        Deck.load(loader, cards.leaders, "fanmadeLeader", leaderName, 1, { leaderName })
     end
 
     return cards

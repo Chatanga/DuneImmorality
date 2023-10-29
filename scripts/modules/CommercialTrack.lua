@@ -1,5 +1,6 @@
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
+local I18N = require("utils.I18N")
 
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local TechMarket = Module.lazyRequire("TechMarket")
@@ -74,9 +75,11 @@ end
 
 ---
 function CommercialTrack._createLevelButton(level, levelSlot)
-    local tooltip = level == 0 and "Recall your freighter" or "Progress on the commercial track"
+    local tooltip = level == 0
+        and I18N("recallYourFreighter")
+        or I18N("progressOnCommercialTrack")
     local ground = levelSlot.getPosition().y - 0.5
-    Helper.createAnchoredAreaButton(levelSlot, ground, 0.2, tooltip, function (_, color, _)
+    Helper.createAnchoredAreaButton(levelSlot, ground, 0.2, tooltip, PlayBoard.withLeader(function (_, color, _)
         local leader = PlayBoard.getLeader(color)
         local freighterLevel = CommercialTrack.getFreighterLevel(color)
         if freighterLevel < level then
@@ -84,19 +87,19 @@ function CommercialTrack._createLevelButton(level, levelSlot)
         elseif level == 0 then
             leader.recallFreighter(color)
         end
-    end)
+    end))
 end
 
 ---
 function CommercialTrack._createBonusButton(bonusName, bonusSlot)
-    local tooltip = "Pick your " .. bonusName .. " bonus"
+    local tooltip = I18N("pickBonus", { bonus = I18N(bonusName) })
     local ground = bonusSlot.getPosition().y - 0.5
     local callbackName = Helper.toCamelCase("_pick", bonusName, "bonus")
     local callback = CommercialTrack[callbackName]
     assert(callback, "No callback named " .. callbackName)
-    Helper.createAnchoredAreaButton(bonusSlot, ground, 0.2, tooltip, function (_, color, _)
+    Helper.createAnchoredAreaButton(bonusSlot, ground, 0.2, tooltip, PlayBoard.withLeader(function (_, color, _)
         callback(color)
-    end)
+    end))
 end
 
 ---
@@ -137,7 +140,7 @@ function CommercialTrack.freighterReset(color)
     if level > 0 then
         CommercialTrack._setFreighterPositionSmooth(color, 0)
         if level >= 3 then
-            TechMarket.registerAcquireTechOption(color, "freighter", "spice", 2)
+            TechMarket.registerAcquireTechOption(color, "freighterTechBuyOption", "spice", 2)
         end
         return true
     else

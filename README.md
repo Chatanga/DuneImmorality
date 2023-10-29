@@ -85,20 +85,18 @@ Unfortunately, it seems to induce some kind of latency, leading to board corrupt
 
 - Investigate missing trigger effects on guests after a reload.
 - Fix the whole save/reload behavior in a minimal way.
-- Freeze when buying a tech (5 or 6).
+- Random freeze when buying a tech (5 or 6).
+- Missing Rise of Ix board without Immortality.
+- 6 tech park saturation.
 
 ## TODO (by priority)
 
-- Rival combat optimization.
 - Blitz!
-- [Fanmade leaders](https://drive.google.com/drive/folders/1-V3xcHk6078YR1fyhtJL3tdqv2zg5q3Q).
+- Rival combat optimization.
+- [Fanmade leaders](https://drive.google.com/drive/folders/1-V3xcHk6078YR1fyhtJL3tdqv2zg5q3Q)?
 - Replace freighters by tokens.
 - Change the [dreadnought model](https://www.thingiverse.com/thing:5326146).
-- Rise of Ix board without Immortality.
-- Tech acquisition cost (multiple options).
-- Fix the 6 tech park saturation.
 - Handle all space access options and explain agent action failures.
-- Custom hidden pick.
 
 ## Later (maybe)
 

@@ -1,6 +1,7 @@
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local Park = require("utils.Park")
+local I18N = require("utils.I18N")
 
 local Resource = Module.lazyRequire("Resource")
 local Types = Module.lazyRequire("Types")
@@ -208,7 +209,8 @@ function MainBoard.setUp(settings)
                 end
                 MainBoard.spaces[spaceName] = (extSpace ~= Helper.ERASE and extSpace or nil)
             else
-                if extSpace ~= Helper.ERASE then
+                -- Same reason as above, the other way.
+                if extSpace ~= Helper.ERASE and spaceName ~= "researchStationImmortality" then
                     extSpace.zone.destruct()
                 end
             end
@@ -369,24 +371,39 @@ end
 
 ---
 function MainBoard._createSpaceButton(space, position, slots)
-    local zone = space.zone -- Park.createBoundingZone(0, Vector(1, 3, 0.5), slots)
-    local tags = { "Agent" }
-    space.park = Park.createPark("AgentPark", slots, Vector(0, 0, 0), zone, tags, nil, false, true)
-
     Helper.createTransientAnchor("AgentPark", position - Vector(0, 0.5, 0)).doAfter(function (anchor)
-        local snapPoints = {}
-        for _, slot in ipairs(slots) do
-            table.insert(snapPoints, Helper.createRelativeSnapPoint(anchor, slot, false, tags))
-        end
-        anchor.setSnapPoints(snapPoints)
 
-        local tooltip = "Send agent to " .. space.name
-        Helper.createAreaButton(space.zone, anchor, 0.7, tooltip, function (_, color, _)
+        if MainBoard._findParentSpace(space) == space then
+            local zone = space.zone
+            local tags = { "Agent" }
+            space.park = Park.createPark("AgentPark", slots, Vector(0, 0, 0), zone, tags, nil, false, true)
+
+            local snapPoints = {}
+            for _, slot in ipairs(slots) do
+                table.insert(snapPoints, Helper.createRelativeSnapPoint(anchor, slot, false, tags))
+            end
+            anchor.setSnapPoints(snapPoints)
+        end
+
+        local tooltip = I18N("sendAgentTo", { space = I18N(space.name)})
+        Helper.createAreaButton(space.zone, anchor, 0.7, tooltip, PlayBoard.withLeader(function (_, color, _)
             if PlayBoard.getLeader(color) then
                 PlayBoard.getLeader(color).sendAgent(color, space.name)
             end
-        end)
+        end))
     end)
+end
+
+---
+function MainBoard._findParentSpace(space)
+    local parentSpace = space
+    local underscoreIndex = string.find(space.name, "_")
+    if underscoreIndex then
+        local parentSpaceName = string.sub(space.name, 1, underscoreIndex - 1)
+        parentSpace = MainBoard.spaces[parentSpaceName]
+        assert(parentSpace, "No parent space name named: " .. parentSpaceName)
+    end
+    return parentSpace
 end
 
 ---
@@ -394,14 +411,7 @@ function MainBoard.sendAgent(color, spaceName)
     local continuation = Helper.createContinuation("MainBoard.sendAgent")
 
     local space = MainBoard.spaces[spaceName]
-
-    local parentSpace = space
-    local underscoreIndex = string.find(spaceName, "_")
-    if underscoreIndex then
-        local parentSpaceName = string.sub(spaceName, 1, underscoreIndex - 1)
-        parentSpace = MainBoard.spaces[parentSpaceName]
-        assert(parentSpace, "No parent space name named: " .. parentSpaceName)
-    end
+    local parentSpace = MainBoard._findParentSpace(space)
 
     local asyncActionName = Helper.toCamelCase("_asyncGo", space.name)
     local actionName = Helper.toCamelCase("_go", space.name)
@@ -426,6 +436,7 @@ function MainBoard.sendAgent(color, spaceName)
             Helper.emitEvent("agentSent", color, spaceName)
             if action(color, leader) then
                 MainBoard.collectExtraBonuses(color, leader, spaceName)
+                --log("Park.transfert(1, agentPark, parentSpace.park)")
                 Park.transfert(1, agentPark, parentSpace.park)
                 continuation.run(true)
             else
@@ -732,7 +743,8 @@ function MainBoard._asyncGoSellMelange(color, leader)
         "4 -> 10",
         "5 -> 12",
     }
-    Player[color].showOptionsDialog("Select spice amount to be converted into solari.", options, 1, function (_, index, _)
+    -- FIXME Pending continuation if the dialog is canceled.
+    Player[color].showOptionsDialog(I18N("goSellMelange"), options, 1, function (_, index, _)
         continuation.run(MainBoard._sellMelange(color, leader, index))
     end)
     return continuation
@@ -802,10 +814,11 @@ end
 function MainBoard._asyncGoTechNegotiation(color, leader)
     local continuation = Helper.createContinuation("MainBoard._asyncGoTechNegotiation")
     local options = {
-        "Send a negotiator",
-        "Buy tech. with -1 discount"
+        I18N("sendNegotiatorOption"),
+        I18N("buyTechWithDiscont1Option"),
     }
-    Player[color].showOptionsDialog("Select option.", options, 1, function (_, index, _)
+    -- FIXME Pending continuation if the dialog is canceled.
+    Player[color].showOptionsDialog(I18N("goTechNegotiation"), options, 1, function (_, index, _)
         local success = true
         if index == 1 then
             MainBoard._goTechNegotiation_1(color, leader)
@@ -827,14 +840,14 @@ end
 
 function MainBoard._goTechNegotiation_2(color, leader)
     leader.resources(color, "persuasion", 1)
-    TechMarket.registerAcquireTechOption(color, "tech_negotiation", "spice", 1)
+    TechMarket.registerAcquireTechOption(color, "techNegotiationTechBuyOption", "spice", 1)
     return true
 end
 
 ---
 function MainBoard._goDreadnought(color, leader)
     if leader.resources(color, "solari", -3) then
-        TechMarket.registerAcquireTechOption(color, "dreadnought", "spice", 0)
+        TechMarket.registerAcquireTechOption(color, "dreadnoughtTechBuyOption", "spice", 0)
         Park.transfert(1, PlayBoard.getDreadnoughtPark(color), Combat.getDreadnoughtPark(color))
         return true
     else

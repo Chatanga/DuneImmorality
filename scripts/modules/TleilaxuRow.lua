@@ -1,6 +1,7 @@
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local AcquireCard = require("utils.AcquireCard")
+local I18N = require("utils.I18N")
 
 local Deck = Module.lazyRequire("Deck")
 local PlayBoard = Module.lazyRequire("PlayBoard")
@@ -49,9 +50,9 @@ function TleilaxuRow._staticSetUp()
 
     TleilaxuRow.acquireCards = {}
     for i, zone in ipairs(TleilaxuRow.slotZones) do
-        local acquireCard = AcquireCard.new(zone, "Imperium", function (_, color)
+        local acquireCard = AcquireCard.new(zone, "Imperium", PlayBoard.withLeader(function (_, color)
             PlayBoard.getLeader(color).acquireTleilaxuCard(color, i)
-        end)
+        end))
         table.insert(TleilaxuRow.acquireCards, acquireCard)
     end
 end
@@ -77,10 +78,10 @@ function TleilaxuRow.acquireTleilaxuCard(indexInRow, color)
         local leader = PlayBoard.getLeader(color)
         if cardName == "reclaimedForces" then
             local options = {
-                "Troops",
-                "Beetle"
+                I18N("troops"),
+                I18N("beetle"),
             }
-            Player[color].showOptionsDialog("Reclaimed forces", options, 1, function (_, index, _)
+            Player[color].showOptionsDialog(I18N("reclaimedForces"), options, 1, function (_, index, _)
                 if index == 1 then
                     leader.troops(color, "tanks", "supply", price)
                     leader.troops(color, "supply", "garrison", 2)

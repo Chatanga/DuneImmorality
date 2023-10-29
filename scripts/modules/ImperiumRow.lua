@@ -43,16 +43,16 @@ end
 ---
 function ImperiumRow._staticSetUp()
     for i, zone in ipairs(ImperiumRow.slotZones) do
-        AcquireCard.new(zone, "Imperium", function (_, color)
+        AcquireCard.new(zone, "Imperium", PlayBoard.withLeader(function (_, color)
             local leader = PlayBoard.getLeader(color)
             leader.acquireImperiumCard(color, i)
-        end)
+        end))
     end
 
-    AcquireCard.new(ImperiumRow.reservationSlotZone, "Imperium", function (_, color)
+    AcquireCard.new(ImperiumRow.reservationSlotZone, "Imperium", PlayBoard.withLeader(function (_, color)
         local leader = PlayBoard.getLeader(color)
         leader.acquireReservedImperiumCard(color)
-    end)
+    end))
 
     Helper.registerEventListener("phaseStart", function (phase)
         if phase == "recall" then

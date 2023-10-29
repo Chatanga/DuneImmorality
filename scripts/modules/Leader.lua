@@ -168,7 +168,7 @@ Leader.paulAtreides = Helper.createClass(Leader, {
                     --broadcastToAll(I18N("prescienceUsed"), color)
                 end
             else
-                broadcastToColor(I18N("noTouch"), otherColor, otherColor)
+                broadcastToColor(I18N("noTouch"), otherColor, "Purple")
             end
         end
 

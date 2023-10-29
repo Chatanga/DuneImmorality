@@ -682,7 +682,10 @@ function Helper.registerGlobalCallback(callback)
             table.remove(Helper.uniqueNamePool, 1)
         else
             local nextIndex = Global.getVar(GLOBAL_COUNTER_NAME) or 1
-            assert(nextIndex < 200, "Probably a callback leak (or are you too greedy ?).")
+            --assert(nextIndex < 200, "Probably a callback leak (or are you too greedy ?).")
+            if nextIndex >= 200 then
+                Helper.dump("Alarming dynamic global callback count:", nextIndex)
+            end
             --Helper.dumpFunction("Global.setVar", GLOBAL_COUNTER_NAME, nextIndex + 1)
             Global.setVar(GLOBAL_COUNTER_NAME, nextIndex + 1)
             --log("Global callback count: " .. tostring(nextIndex))
@@ -791,8 +794,9 @@ function Helper.createContinuation(name)
         local duration = Time.time - continuation.start
         if toBeNotified and duration > 10 then
             toBeNotified()
+        else
+            assert(duration < 10, "Roting continuation!")
         end
-        assert(duration < 10, "Roting continuation!")
     end
 
     continuation.actions = {}
@@ -832,9 +836,11 @@ function Helper.createContinuation(name)
     return continuation
 end
 
+---@param timeout number?
 ---@return Continuation
 function Helper.onceStabilized(timeout)
     local continuation = Helper.createContinuation("Helper.onceStabilized")
+    Helper.pendingContinuations[continuation] = nil
 
     local start = os.time()
     local holder = {}
@@ -842,7 +848,7 @@ function Helper.onceStabilized(timeout)
     Wait.condition(function ()
         continuation.run(holder.success)
     end, function ()
-        holder.success = Helper.isStabilized()
+        holder.success = Helper.isStabilized(true)
         return holder.success or (os.time() - start > (timeout or 10))
     end)
 
@@ -850,11 +856,17 @@ function Helper.onceStabilized(timeout)
 end
 
 ---@return boolean
-function Helper.isStabilized()
+function Helper.isStabilized(beQuiet)
     local count = 0
     for continuation, _ in pairs(Helper.pendingContinuations) do
         if continuation then
-            log("Pending continuation: " .. continuation.name)
+            if not beQuiet then
+                log("Pending continuation: " .. continuation.name)
+                continuation.tick(function ()
+                    log("Forgetting the pending continuation on timeout")
+                    Helper.pendingContinuations[continuation] = nil
+                end)
+            end
             count = count + 1
         end
     end
@@ -941,10 +953,12 @@ function Helper.repeatChainedAction(count, action)
         local innerContinuation = action()
         assert(innerContinuation and innerContinuation.doAfter, "Provided action must return a continuation!")
         innerContinuation.doAfter(function ()
-            Helper.repeatChainedAction(count - 1, action)
+            Helper.repeatChainedAction(count - 1, action).doAfter(function ()
+                continuation.run(count)
+            end)
         end)
     else
-        continuation.run()
+        continuation.run(count)
     end
     return continuation
 end
@@ -1205,10 +1219,10 @@ function Helper.hasAnyTag(object, tags)
 end
 
 ---
-function Helper.noPhysicsNorPlay(...)
+function Helper.noPhysics(...)
     for _, object in pairs({...}) do
         object.setLock(true)
-        object.interactable = false
+        object.interactable = true
     end
 end
 
@@ -1216,6 +1230,14 @@ end
 function Helper.noPlay(...)
     for _, object in pairs({...}) do
         object.setLock(false)
+        object.interactable = false
+    end
+end
+
+---
+function Helper.noPhysicsNorPlay(...)
+    for _, object in pairs({...}) do
+        object.setLock(true)
         object.interactable = false
     end
 end
@@ -1565,6 +1587,17 @@ function Helper.filter(elements, p)
         end
     end
     return filteredElements
+end
+
+---
+function Helper.count(elements, p)
+    local count = 0
+    for k, v in pairs(elements) do
+        if p(k, v) then
+            count = count + 1
+        end
+    end
+    return count
 end
 
 ---

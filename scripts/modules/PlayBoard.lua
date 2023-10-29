@@ -20,6 +20,8 @@ local Reserve = Module.lazyRequire("Reserve")
 local Action = Module.lazyRequire("Action")
 local Music = Module.lazyRequire("Music")
 local ConflictCard = Module.lazyRequire("ConflictCard")
+local TechMarket = Module.lazyRequire("TechMarket")
+local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
 
 local PlayBoard = Helper.createClass(nil, {
     ALL_RESOURCE_NAMES = { "spice", "water", "solari", "persuasion", "strength" },
@@ -425,6 +427,7 @@ function PlayBoard._staticSetUp(settings)
                     })
                 end
 
+                -- FIXME To naive, won't work for multiple agents in a single turn (weirding way).
                 playBoard.alreadyPlayedCards = Helper.filter(Park.getObjects(playBoard.agentCardPark), function (card)
                     return Types.isImperiumCard(card) or Types.isIntrigueCard(card)
                 end)
@@ -432,7 +435,10 @@ function PlayBoard._staticSetUp(settings)
         end
 
         if phase == "combatEnd" then
-            PlayBoard.collectReward(color)
+            -- Hagal has it own listener to do more things.
+            if PlayBoard.isHuman(color) then
+                PlayBoard.collectReward(color)
+            end
         end
 
         PlayBoard._setActivePlayer(phase, color)
@@ -440,7 +446,47 @@ function PlayBoard._staticSetUp(settings)
     end)
 
     Helper.registerEventListener("combatUpdate", function (forces)
-        PlayBoard.combatPassCountdown = #Helper.getKeys(forces)
+        PlayBoard.combatPassCountdown = Helper.count(forces, function (_, v)
+            return v > 0
+        end)
+    end)
+
+    Helper.registerEventListener("agentSent", function (color, spaceName)
+        if PlayBoard.isHuman(color) then
+            -- Do it after the clean up done in TechMarket.
+            Helper.onceFramesPassed(1).doAfter(function ()
+                local cards = PlayBoard._getCardsPlayedThisTurn(color)
+                for _, card in ipairs(cards) do
+                    local cardName = Helper.getID(card)
+                    if cardName == "appropriate" then
+                        if InfluenceTrack.hasFriendship(color, "emperor") then
+                            TechMarket.registerAcquireTechOption(color, cardName .. "TechBuyOption", "solari", 0)
+                        end
+                    elseif cardName == "ixianEngineer" then
+                        TechMarket.registerAcquireTechOption(color, cardName .. "TechBuyOption", "spice", 0)
+                    elseif cardName == "machineCulture" then
+                        TechMarket.registerAcquireTechOption(color, cardName .. "TechBuyOption", "spice", 0)
+                    -- FIXME Find some way to push this into Leader.
+                    elseif cardName == "signetRing" and PlayBoard.getLeader(color).name == "rhomburVernius" then
+                        TechMarket.registerAcquireTechOption(color, "rhomburVerniusTechBuyOption", "spice", 0)
+                    end
+                end
+            end)
+        end
+    end)
+
+    Helper.registerEventListener("influence", function (faction, color, newRank)
+        if PlayBoard.isHuman(color) then
+            local cards = PlayBoard._getCardsPlayedThisTurn(color)
+            for _, card in ipairs(cards) do
+                local cardName = Helper.getID(card)
+                if cardName == "appropriate" then
+                    if InfluenceTrack.hasFriendship(color, "emperor") then
+                        TechMarket.registerAcquireTechOption(color, cardName .. "TechBuyOption", "solari", 0)
+                    end
+                end
+            end
+        end
     end)
 end
 
@@ -580,8 +626,8 @@ function PlayBoard.acceptTurn(phase, color)
         end
     elseif phase == 'combat' then
         if Combat.isInCombat(color) then
-            PlayBoard.combatPassCountdown = PlayBoard.combatPassCountdown - 1
             accepted = PlayBoard.combatPassCountdown > 0 and not PlayBoard.isRival(color) and #PlayBoard.getIntrigues(color) > 0
+            PlayBoard.combatPassCountdown = PlayBoard.combatPassCountdown - 1
         end
     elseif phase == 'combatEnd' then
         -- TODO Player is victorious and the combat provied a reward (auto?) or
@@ -602,6 +648,17 @@ function PlayBoard.acceptTurn(phase, color)
 end
 
 ---
+function PlayBoard.withLeader(action)
+    return function (source, color, ...)
+        if PlayBoard.getLeader(color) then
+            action(source, color, ...)
+        else
+            broadcastToColor(I18N('noLeader'), color, "Purple")
+        end
+    end
+end
+
+---
 function PlayBoard.collectReward(color)
     local conflictName = Combat.getCurrentConflictName()
     local rank = Combat.getRank(color).value
@@ -614,7 +671,7 @@ function PlayBoard.collectReward(color)
 
         local dreadnoughts = Combat.getDreadnoughtsInConflict(color)
 
-        Helper.dump(color, "has", #dreadnoughts, "dreadnought(s)")
+        --Helper.dump(color, "has", #dreadnoughts, "dreadnought(s)")
         if #dreadnoughts > 0 then
             Player[color].showInfoDialog(I18N("dreadnoughtMandatoryOccupation"))
         end
@@ -1155,14 +1212,14 @@ function PlayBoard:stillHavePlayableAgents()
 end
 
 ---
-function PlayBoard.getCardsPlayedThisTurn(color)
+function PlayBoard._getCardsPlayedThisTurn(color)
     local playBoard = PlayBoard.getPlayBoard(color)
 
     local playedCards = Helper.filter(Park.getObjects(playBoard.agentCardPark), function (card)
         return Types.isImperiumCard(card) or Types.isIntrigueCard(card)
     end)
 
-    return Set.newFromList(playedCards) - Set.newFromList(playBoard.alreadyPlayedCards)
+    return (Set.newFromList(playedCards) - Set.newFromList(playBoard.alreadyPlayedCards)):toList()
 end
 
 ---
@@ -1367,7 +1424,9 @@ function PlayBoard.setLeader(color, leaderCard)
     local position = playBoard.content.leaderZone.getPosition()
     leaderCard.setPosition(position)
     playBoard.leaderCard = leaderCard
-    Helper.noPlay(leaderCard)
+    Helper.onceMotionless(leaderCard).doAfter(function ()
+        Helper.noPhysics(leaderCard)
+    end)
     return true
 end
 
@@ -1384,11 +1443,7 @@ end
 
 ---
 function PlayBoard.getLeader(color)
-    local leader = PlayBoard.getPlayBoard(color).leader
-    if not leader then
-        log(color .. " has no leader.")
-    end
-    return leader
+    return PlayBoard.getPlayBoard(color).leader
 end
 
 ---
@@ -1501,7 +1556,6 @@ end
 
 ---
 function PlayBoard.hasHighCouncilSeat(color)
-    Helper.dumpFunction("PlayBoard.hasHighCouncilSeat", color)
     local zone = MainBoard.getHighCouncilSeatPark().zone
     local token = PlayBoard.getCouncilToken(color)
     return Helper.contains(zone, token)

@@ -114,6 +114,7 @@ end
 ---
 function Hagal._tearDown()
     Hagal.mentatSpaceCostPatch.destruct()
+    Hagal.deckZone.destruct()
 end
 
 ---
@@ -337,12 +338,10 @@ function Hagal.pickAnyCompatibleLeader(color)
                 table.insert(leaders , leader)
             end
         end
-        --Helper.dump("#leaders =", #leaders)
         assert(#leaders > 0, "No leader left for Hagal!")
         leaderOrPseudoLeader = Helper.pickAny(leaders)
     end
-    --Helper.dumpFunction("'LeaderSelection.claimLeader", color, leaderOrPseudoLeader)
-    LeaderSelection.claimLeader(color, leaderOrPseudoLeader)
+    return leaderOrPseudoLeader
 end
 
 ---
@@ -436,7 +435,7 @@ end
 
 ---
 function Rival.choose(color, topic)
-    Helper.dumpFunction("Rival.choose", color, topic)
+    --Helper.dumpFunction("Rival.choose", color, topic)
 
     local function pickTwoBestFactions()
         local factions = { "emperor", "spacingGuild", "beneGesserit", "fremen" }

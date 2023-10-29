@@ -49,7 +49,7 @@ local InfluenceTrack = {
 }
 
 ---
-function InfluenceTrack.onLoad()
+function InfluenceTrack.onLoad(state)
     Helper.append(InfluenceTrack, Helper.resolveGUIDs(true, {
         snoopers = {
             emperor = "a58ce8",
@@ -97,21 +97,23 @@ function InfluenceTrack.onLoad()
         }
     }))
 
-    InfluenceTrack.influenceLevels = InfluenceTrack._initInfluenceTracksLevels()
-
     for _, bag in pairs(InfluenceTrack.friendshipBags) do
         bag.interactable = false
+    end
+
+    if state.settings then
+        InfluenceTrack._staticSetUp()
     end
 end
 
 ---
-function InfluenceTrack.setUp()
-    -- NOP
+function InfluenceTrack.setUp(settings)
+    InfluenceTrack._staticSetUp()
 end
 
 ---
-function InfluenceTrack._initInfluenceTracksLevels()
-    local influenceLevels = {}
+function InfluenceTrack._staticSetUp()
+    InfluenceTrack.influenceLevels = {}
     for faction, initialPositions in pairs(InfluenceTrack.influenceTokenInitialPositions) do
         local factionLevels = {}
         local meanStartPosition = Vector(0, 0, 0)
@@ -138,8 +140,8 @@ function InfluenceTrack._initInfluenceTracksLevels()
             local levelPosition = meanStartPosition + Vector(0, 0, meanStep * i)
             levelPosition:setAt('y', 0.5)
             Helper.createTransientAnchor(faction .. "Rank" .. tostring(i), levelPosition).doAfter(function (anchor)
-                local actionName = "Progress on the " .. faction .. " influence track"
-                Helper.createSizedAreaButton(1000, 400, anchor, 0.7, actionName, function (_, color, _)
+                local actionName = I18N("progressOnInfluenceTrack", { withFaction = I18N(Helper.toCamelCase("with", faction)) })
+                Helper.createSizedAreaButton(1000, 400, anchor, 0.7, actionName, PlayBoard.withLeader(function (_, color, _)
                     if not InfluenceTrack.actionsLocked[faction][color] then
                         local rank = InfluenceTrack._getInfluenceTracksRank(faction, color)
                         InfluenceTrack.actionsLocked[faction][color] = true
@@ -147,12 +149,11 @@ function InfluenceTrack._initInfluenceTracksLevels()
                             InfluenceTrack.actionsLocked[faction][color] = false
                         end)
                     end
-                end)
+                end))
             end)
         end
-        influenceLevels[faction] = factionLevels
+        InfluenceTrack.influenceLevels[faction] = factionLevels
     end
-    return influenceLevels
 end
 
 ---
@@ -221,7 +222,6 @@ end
 
 ---
 function InfluenceTrack.hasFriendship(color, faction)
-    Helper.dumpFunction("InfluenceTrack.hasFriendship", color, faction)
     Types.assertIsPlayerColor(color)
     Types.assertIsFaction(faction)
 
@@ -286,6 +286,7 @@ function InfluenceTrack._changeInfluenceTracksRank(color, faction, change)
             InfluenceTrack._loseFriendship(faction, color)
         end
         continuation.run(realChange)
+        Helper.emitEvent("influence", faction, color, newRank)
     end)
 
     return continuation

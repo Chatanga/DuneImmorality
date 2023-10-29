@@ -118,6 +118,8 @@ function TleilaxuResearch._tearDown()
     for _, zone in ipairs(TleilaxuResearch.tleilaxuLevelZones) do
         zone.destruct()
     end
+    TleilaxuResearch.oneHelixZone.destruct()
+    TleilaxuResearch.twoHelicesZone.destruct()
 end
 
 ---
@@ -172,20 +174,31 @@ function TleilaxuResearch._generateResearchButtons()
             scale = Vector(1.2, 1, 1.35)
         })
         Helper.markAsTransient(cellZone)
-        Helper.createAnchoredAreaButton(cellZone, 0.6, 0.1, "Progress on the research track", function (_, color, _)
+        Helper.createAnchoredAreaButton(cellZone, 0.6, 0.1, I18N("progressOnResearchTrack"), PlayBoard.withLeader(function (_, color, _)
             local leader = PlayBoard.getLeader(color)
             local token = PlayBoard.getContent(color).researchToken
             local tokenCellPosition = TleilaxuResearch._worlPositionToResearchSpace(token.getPosition())
             local jump = cellPosition - tokenCellPosition
-            leader.research(color, jump)
-        end)
+
+            if jump.x == 1 and math.abs(jump.z) <= 1 then
+                leader.research(color, jump)
+            else
+                Player[color].showConfirmDialog(I18N("forbiddenMove"), function()
+                    leader.research(color, jump)
+                end)
+            end
+        end))
     end
 
-    Helper.createAnchoredAreaButton(TleilaxuResearch.twoHelicesZone, 0.6, 0.1, "Progress after the research track", function (_, color, _)
-        local leader = PlayBoard.getLeader(color)
-        local specialJump = Vector(1, 0, 0)
-        leader.research(color, specialJump)
-    end)
+    Helper.createAnchoredAreaButton(TleilaxuResearch.twoHelicesZone, 0.6, 0.1, I18N("progressAfterResearchTrack"), PlayBoard.withLeader(function (_, color, _)
+        if TleilaxuResearch.hasReachedOneHelix(color) then
+            local leader = PlayBoard.getLeader(color)
+            local specialJump = Vector(1, 0, 0)
+            leader.research(color, specialJump)
+        else
+            broadcastToColor(I18N('noTouch'), color, "Purple")
+        end
+    end))
 end
 
 ---
@@ -202,15 +215,9 @@ end
 ---@param jump Vector
 function TleilaxuResearch.advanceResearch(color, jump)
     local continuation = Helper.createContinuation("TleilaxuResearch.advanceResearch")
-    if jump.x == 1 and math.abs(jump.z) <= 1 then
-        TleilaxuResearch._advanceResearch(color, jump, true)
-        continuation.run(jump)
-    else
-        Player[color].showConfirmDialog("Forbidden move. Do you confirm it neverless?", function()
-            TleilaxuResearch._advanceResearch(color, jump, false)
-            continuation.run(jump)
-        end)
-    end
+    local legit = jump.x == 1 and math.abs(jump.z) <= 1
+    TleilaxuResearch._advanceResearch(color, jump, legit)
+    continuation.run(jump)
     return continuation
 end
 
@@ -261,7 +268,7 @@ function TleilaxuResearch._advanceResearch(color, jump, withBenefits)
                 if researchCellBenefits.solariToBeetle then
                     Player[color].showConfirmDialog(I18N("confirmSolarisToBeetles"), function()
                         if leader.resources(color, "solari", -7) then
-                            TleilaxuResearch.advanceTleilax(color, 1)
+                            leader.beetle(color, 2)
                         end
                     end)
                 end
@@ -312,14 +319,23 @@ end
 function TleilaxuResearch._generateTleilaxButtons()
     for level, _ in pairs(TleilaxuResearch.tleilaxLevelBenefits) do
         local levelZone = TleilaxuResearch.tleilaxuLevelZones[level]
-        Helper.createAnchoredAreaButton(levelZone, 0.6, 0.1, "Progress on the Tleilax track", function (_, color, _)
+        Helper.createAnchoredAreaButton(levelZone, 0.6, 0.1, I18N("progressOnTleilaxTrack"), PlayBoard.withLeader(function (_, color, _)
             local leader = PlayBoard.getLeader(color)
             local token = PlayBoard.getContent(color).tleilaxToken
             local tokenLevel = TleilaxuResearch._worlPositionToTleilaxSpace(token.getPosition())
-            local jump = level - tokenLevel
-            log("Call: leader.beetle(" .. color .. ", " .. tostring(jump) .. ")")
-            leader.beetle(color, jump)
-        end)
+            -- Human players are required to advance step by step.
+            local jump = math.min(1, level - tokenLevel)
+
+            if jump < 0 then
+                Player[color].showConfirmDialog(I18N("forbiddenMove"), function()
+                    TleilaxuResearch._advanceTleilax(color, jump, false).doAfter(function ()
+                        leader.beetle(color, jump)
+                    end)
+                end)
+            else
+                leader.beetle(color, jump)
+            end
+        end))
     end
 end
 
@@ -327,19 +343,13 @@ end
 ---@param jump integer
 ---@return Continuation
 function TleilaxuResearch.advanceTleilax(color, jump)
-    Helper.dumpFunction("TleilaxuResearch.advanceTleilax", color, jump)
+    --Helper.dumpFunction("TleilaxuResearch.advanceTleilax", color, jump)
     if jump >= 1 then
-        -- Human players are required to advance step by step.
-        local finalJump = PlayBoard.isHuman(color) and 1 or jump
-        return Helper.repeatChainedAction(finalJump, function ()
+        return Helper.repeatChainedAction(jump, function ()
             return TleilaxuResearch._advanceTleilax(color, 1, true)
         end)
     else
-        local continuation = Helper.createContinuation("TleilaxuResearch.advanceTleilax")
-        Player[color].showConfirmDialog("Forbidden move. Do you confirm it neverless?", function()
-            TleilaxuResearch._advanceTleilax(color, jump, false).doAfter(continuation.run)
-        end)
-        return continuation
+        return TleilaxuResearch._advanceTleilax(color, jump, false)
     end
 end
 
@@ -407,14 +417,14 @@ end
 
 ---
 function TleilaxuResearch._createTanksButton()
-    Helper.createAnchoredAreaButton(TleilaxuResearch.TanksZone, 0.6, 0.1, "Specimen: ±1", function (_, color, altClick)
+    Helper.createAnchoredAreaButton(TleilaxuResearch.TanksZone, 0.6, 0.1, I18N("specimenEdit"), PlayBoard.withLeader(function (_, color, altClick)
         local leader = PlayBoard.getLeader(color)
         if altClick then
             leader.troops(color, "tanks", "supply", 1)
         else
             leader.troops(color, "supply", "tanks", 1)
         end
-    end)
+    end))
 end
 
 ---

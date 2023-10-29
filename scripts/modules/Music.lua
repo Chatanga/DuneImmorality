@@ -1,3 +1,5 @@
+local Helper = require("utils.Helper")
+
 local Music = {
     sounds = {
         atomics = "http://cloud-3.steamusercontent.com/ugc/2093668799785645931/C9F0035DAF76EE6B353F9885C2859EBB282A9988/",
@@ -26,6 +28,8 @@ function Music.play(sound)
             title = sound
         })
     end
+    -- Do nothing, but introduces a pause in sync with the music which highlights a noticable event.
+    Helper.onceTimeElapsed(1)
 end
 
 return Music

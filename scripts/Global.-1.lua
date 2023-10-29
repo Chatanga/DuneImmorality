@@ -1,4 +1,4 @@
-local BUILD = 'Fri Oct 27 19:21:16 CEST 2023'
+local BUILD = 'Sun Oct 29 12:40:16 CET 2023'
 
 -- Do not load anything. Appropriate to work on the mod content without
 -- interference.
@@ -100,6 +100,24 @@ autoLoadedSettings = {
     soundEnabled = true,
 }
 ]]
+autoLoadedSettings = {
+    language = "fr",
+    randomizePlayerPositions = false,
+    virtualHotSeat = true,
+    numberOfPlayers = 4,
+    riseOfIx = true,
+    epicMode = false,
+    immortality = true,
+    goTo11 = false,
+    leaderSelection = {
+        Green = "rhomburVernius",
+        Yellow = "ilbanRichese",
+        Red = "tessiaVernius",
+        Blue = "yunaMoritani"
+    },
+    fanmadeLeaders = false,
+    soundEnabled = true,
+}
 
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
@@ -188,7 +206,7 @@ local PlayerSet = {
         fanmadeLeaders = false,
         variant_all = {
             none = "None",
-            blitz = "Blitz!",
+            blitz = "(Blitz!)",
             arrakeenScouts = "Arrakeen scouts"
         },
         variant = "none",

@@ -103,7 +103,7 @@ function Combat._staticSetUp(settings)
                     if Types.isTroop(object, color) then
                         Park.putObject(object, PlayBoard.getSupplyPark(color))
                     elseif Types.isDreadnought(object, color) then
-                        Helper.dump("Recalling", color, "dreadnought")
+                        --Helper.dump("Recalling", color, "dreadnought")
                         Park.putObject(object, Combat.dreadnoughtParks[color])
                     end
                 end
@@ -292,7 +292,7 @@ function Combat._createButton(color, park)
         width = 1200,
         height = 1200,
         color = areaColor,
-        tooltip = "Troop: ±1"
+        tooltip = I18N("troopEdit")
     })
 end
 

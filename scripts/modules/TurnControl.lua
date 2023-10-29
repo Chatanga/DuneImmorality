@@ -162,6 +162,7 @@ end
 ---
 function TurnControl._startPhase(phase)
     assert(phase)
+    TurnControl.lastTransition = os.time()
 
     if phase == "roundStart" then
         TurnControl.currentRound = TurnControl.currentRound + 1
@@ -197,17 +198,18 @@ end
 
 ---
 function TurnControl.endOfTurn()
-    TurnControl._next(TurnControl._getNextPlayer(TurnControl.currentPlayerLuaIndex))
+    Helper.onceStabilized().doAfter(function ()
+        TurnControl._next(TurnControl._getNextPlayer(TurnControl.currentPlayerLuaIndex))
+    end)
 end
 
 ---
 function TurnControl.endOfPhase()
-    if TurnControl.currentPhase then
-        Helper.emitEvent("phaseEnd", TurnControl.currentPhase)
-    end
-    local heavyPhases = { "leaderSelection", "recall" }
-    local delay = Helper.isElementOf(TurnControl.currentPhase, heavyPhases) and 2 or 0
-    Helper.onceTimeElapsed(delay).doAfter(function ()
+    Helper.onceStabilized().doAfter(function ()
+        if TurnControl.currentPhase then
+            Helper.emitEvent("phaseEnd", TurnControl.currentPhase)
+        end
+
         local nextPhase = TurnControl._getNextPhase(TurnControl.currentPhase)
         if nextPhase then
             TurnControl._startPhase(nextPhase)
@@ -219,6 +221,7 @@ end
 
 ---
 function TurnControl._next(startPlayerLuaIndex)
+    --Helper.dumpFunction("TurnControl._next", startPlayerLuaIndex)
     TurnControl.currentPlayerLuaIndex = TurnControl._findActivePlayer(startPlayerLuaIndex)
     if TurnControl.currentPlayerLuaIndex then
         local player = TurnControl.players[TurnControl.currentPlayerLuaIndex]
@@ -231,6 +234,7 @@ end
 
 ---
 function TurnControl._findActivePlayer(startPlayerLuaIndex)
+    --Helper.dumpFunction("TurnControl._findActivePlayer", startPlayerLuaIndex)
     assert(startPlayerLuaIndex)
     local playerLuaIndex = startPlayerLuaIndex
     local n = TurnControl.getPlayerCount()
@@ -245,6 +249,7 @@ end
 
 ---
 function TurnControl._getNextPlayer(playerLuaIndex)
+    --Helper.dumpFunction("TurnControl._getNextPlayer", playerLuaIndex)
     assert(playerLuaIndex)
     if TurnControl.customTurnSequence then
         for i, otherPlayerLuaIndex in ipairs(TurnControl.customTurnSequence) do

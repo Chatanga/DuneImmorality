@@ -99,7 +99,6 @@ function ScoreBoard._staticSetUp(settings)
 end
 
 function ScoreBoard.gainVictoryPoint(color, name)
-    Helper.dumpFunction("ScoreBoard.gainVictoryPoint", color, name)
     local holder = {
         success = false
     }

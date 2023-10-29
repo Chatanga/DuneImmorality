@@ -2,11 +2,13 @@ local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local Park = require("utils.Park")
 local AcquireCard = require("utils.AcquireCard")
+local I18N = require("utils.I18N")
 
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local Deck = Module.lazyRequire("Deck")
 local TechCard = Module.lazyRequire("TechCard")
 local MainBoard = Module.lazyRequire("MainBoard")
+local Types = Module.lazyRequire("Types")
 
 local TechMarket = {
     negotiationParks = {},
@@ -58,7 +60,7 @@ function TechMarket._staticSetUp()
 
     TechMarket.acquireCards = {}
     for i, zone in ipairs(TechMarket.techSlots) do
-        table.insert(TechMarket.acquireCards, AcquireCard.new(zone, "Tech", TechMarket["_acquireTech" .. tostring(i)]))
+        table.insert(TechMarket.acquireCards, AcquireCard.new(zone, "Tech", PlayBoard.withLeader(TechMarket["_acquireTech" .. tostring(i)])))
     end
 
     Deck.generateTechDeck(TechMarket.techSlots).doAfter(function (decks)
@@ -115,14 +117,14 @@ end
 
 ---
 function TechMarket._createNegotiationButton()
-    Helper.createAnchoredAreaButton(TechMarket.negotiationZone, 0.6, 0.1, "Negotiator: ±1", function (_, color, altClick)
+    Helper.createAnchoredAreaButton(TechMarket.negotiationZone, 0.6, 0.1, I18N("negotiatorEdit"), PlayBoard.withLeader(function (_, color, altClick)
         local leader = PlayBoard.getLeader(color)
         if altClick then
             leader.troops(color, "negotiation", "supply", 1)
         else
             leader.troops(color, "supply", "negotiation", 1)
         end
-    end)
+    end))
 end
 
 ---
@@ -144,51 +146,67 @@ end
 function TechMarket.acquireTech(stackIndex, color)
     if not TechMarket.frozen then
         TechMarket.frozen = true
-        TechMarket._doAcquireTech(stackIndex, color).doAfter(function ()
-            if TechMarket.hagalSoloModeEnabled then
+        -- Pending continuaton force us to this kind of simplification.
+        Helper.onceTimeElapsed(2).doAfter(function ()
+            TechMarket.frozen = false
+        end)
+        TechMarket._doAcquireTech(stackIndex, color).doAfter(function (success)
+            if success and TechMarket.hagalSoloModeEnabled then
                 TechMarket.pruneStacksForSoloMode()
             else
                 TechMarket.frozen = false
             end
+            if not success then
+                broadcastToColor(I18N('notAffordableOption'), color, "Purple")
+            end
         end)
+    else
+        log("Still frozen...")
     end
 end
 
 ---
 function TechMarket._doAcquireTech(stackIndex, color)
+    Helper.dumpFunction("TechMarket._doAcquireTech", stackIndex, color)
     local continuation = Helper.createContinuation("TechMarket._doAcquireTech")
     local acquireCard = TechMarket.acquireCards[stackIndex]
 
-    log(1)
     local techTileStack = TechMarket._getTechTileStack(stackIndex)
-    log(2)
     if techTileStack.topCard then
 
-        if color then
-            log(3)
-            PlayBoard.grantTechTile(color, techTileStack.topCard)
-            log(4)
-            TechCard.applyBuyEffect(color, techTileStack.topCard)
-        else
-            log(5)
-            MainBoard.trash(techTileStack.topCard)
-        end
+        local innerContinuation = Helper.createContinuation("TechMarket._doAcquireTech#inner")
+        innerContinuation.doAfter(function (success)
+            if success then
+                PlayBoard.grantTechTile(color, techTileStack.topCard)
+                TechCard.applyBuyEffect(color, techTileStack.topCard)
 
-        log(6)
-        Helper.onceTimeElapsed(0.5).doAfter(function ()
-            if techTileStack.otherCards then
-                local above = acquireCard.zone.getPosition() + Vector(0, 1, 0)
-                log(7)
-                Helper.moveCardFromZone(acquireCard.zone, above, Vector(0, 180, 0), true).doAfter(function (card)
-                    Helper.onceMotionless(card).doAfter(function ()
-                        log(8)
+                Helper.onceTimeElapsed(0.5).doAfter(function ()
+                    if techTileStack.otherCards then
+                        local above = acquireCard.zone.getPosition() + Vector(0, 1, 0)
+                        Helper.moveCardFromZone(acquireCard.zone, above, Vector(0, 180, 0), true).doAfter(function (card)
+                            Helper.onceMotionless(card).doAfter(function ()
+                                continuation.run(techTileStack.topCard)
+                            end)
+                        end)
+                    else
                         continuation.run(techTileStack.topCard)
-                    end)
+                    end
                 end)
             else
-                continuation.run(techTileStack.topCard)
+                continuation.cancel()
             end
         end)
+
+        if color then
+            if PlayBoard.isHuman(color) then
+                TechMarket._buyTech(stackIndex, color).doAfter(innerContinuation.run)
+            else
+                innerContinuation.run(true)
+            end
+        else
+            MainBoard.trash(techTileStack.topCard)
+            innerContinuation.run(false)
+        end
     else
         continuation.cancel()
     end
@@ -197,28 +215,36 @@ function TechMarket._doAcquireTech(stackIndex, color)
 end
 
 ---
-function TechMarket._buyTech(stackIndex, acquireCard, color)
+function TechMarket._buyTech(stackIndex, color)
+    Helper.dumpFunction("TechMarket._buyTech", stackIndex, color)
+    local continuation = Helper.createContinuation("TechMarket._buyTech")
     local techTileStack = TechMarket._getTechTileStack(stackIndex)
     if techTileStack.topCard then
         local options = Helper.getKeys(TechMarket.acquireTechOptions)
         if #options > 0 then
             if #options > 1 then
-                Player[color].showOptionsDialog("Select which tech acquisition option you want to use.", options, 1, function (_, index, _)
-                    if index then
-                        TechMarket._doBuyTech(techTileStack, acquireCard, options[index], color)
-                    end
+                -- FIXME Pending continuation if the dialog is canceled.
+                Player[color].showOptionsDialog(I18N("buyTechSelection"), Helper.mapValues(options, I18N), 1, function (_, index, _)
+                    continuation.run(index and TechMarket._doBuyTech(techTileStack, options[index], color))
                 end)
             else
-                TechMarket._doBuyTech(techTileStack, acquireCard, options[1], color)
+                continuation.run(TechMarket._doBuyTech(techTileStack, options[1], color))
             end
+        else
+            -- FIXME Pending continuation if the dialog is canceled.
+            Player[color].showConfirmDialog(I18N("manuallyBuyTech"), function ()
+                continuation.run(true)
+            end)
         end
     else
-        error("No tiles!")
+        continuation.run(false)
     end
+    return continuation
 end
 
 ---
-function TechMarket._doBuyTech(techTileStack, acquireCard, option, color)
+function TechMarket._doBuyTech(techTileStack, option, color)
+    Helper.dumpFunction("TechMarket._doBuyTech", techTileStack, option, color)
     local techCost = TechCard.getCost(techTileStack.topCard)
 
     local optionDetails = TechMarket.acquireTechOptions[option]
@@ -237,33 +263,26 @@ function TechMarket._doBuyTech(techTileStack, acquireCard, option, color)
         recalledNegociatorCount = 0
     end
 
+    Helper.dump("adjustedTechCost:", adjustedTechCost)
+    Helper.dump("recalledNegociatorCount:", recalledNegociatorCount)
+
     local leader = PlayBoard.getLeader(color)
     if leader.resources(color, optionDetails.resourceType, -adjustedTechCost) then
-        local continuation = Helper.createContinuation("TechMarket._doBuyTech")
 
         local supply = PlayBoard.getSupplyPark(color)
         Park.transfert(recalledNegociatorCount, negotiation, supply)
 
         TechMarket.acquireTechOptions[option] = nil
 
-        PlayBoard.grantTechTile(color, techTileStack.topCard)
-        if techTileStack.otherCards then
-            Helper.onceTimeElapsed(0.5).doAfter(function ()
-                local above = acquireCard.zone.getPosition() + Vector(0, 1, 0)
-                Helper.moveCardFromZone(acquireCard.zone, above, Vector(0, 180, 0), true).doAfter(continuation.run)
-            end)
-        end
-
-        TechCard.applyBuyEffect(color, techTileStack.topCard)
-
-        return continuation
+        return true
+    else
+        return false
     end
-
-    return nil
 end
 
 ---
 function TechMarket.getTopCardDetails(stackIndex)
+    Helper.dumpFunction("TechMarket.getTopCardDetails", stackIndex)
     local techTileStack = TechMarket._getTechTileStack(stackIndex)
     if techTileStack.topCard then
         return TechCard.getDetails(techTileStack.topCard)
@@ -271,8 +290,11 @@ function TechMarket.getTopCardDetails(stackIndex)
     return nil
 end
 
----
 function TechMarket._getTechTileStack(stackIndex)
+    Helper.dumpFunction("TechMarket._getTechTileStack", stackIndex)
+    Types.assertIsInteger(stackIndex)
+    Types.assertIsInRange(1, 3, stackIndex)
+
     local techTileStack = {}
 
     local zone = TechMarket.techSlots[stackIndex]
@@ -287,8 +309,17 @@ function TechMarket._getTechTileStack(stackIndex)
     return techTileStack
 end
 
----
+---@param color PlayerColor
+---@param source any
+---@param resourceType ResourceName
+---@param amount integer
 function TechMarket.registerAcquireTechOption(color, source, resourceType, amount)
+    Helper.dumpFunction("TechMarket.registerAcquireTechOption", color, source, resourceType, amount)
+    Types.assertIsPlayerColor(color)
+    assert(color)
+    Types.assertIsResourceName(resourceType)
+    Types.assertIsInteger(amount)
+
     TechMarket.acquireTechOptions[source] = {
         resourceType = resourceType,
         amount = amount

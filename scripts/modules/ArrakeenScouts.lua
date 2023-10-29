@@ -171,7 +171,7 @@ function ArrakeenScouts.setUp(settings)
         for _, category in ipairs({ "committees", "auctions", "events", "missions", "sales" }) do
             local contributions = ArrakeenScouts._mergeContributions({
                 ArrakeenScouts[category].base,
-                settings.ix and ArrakeenScouts[category].ix or {},
+                settings.riseOfIx and ArrakeenScouts[category].ix or {},
                 settings.immortality and ArrakeenScouts[category].immortality or {}})
 
             selection[category] = {}
@@ -270,11 +270,11 @@ function ArrakeenScouts._staticSetUp()
                         ArrakeenScouts._createCommitteeTile(committee, zone).doAfter(function (tile)
                             tile.interactable = false
                             ArrakeenScouts.committeeTiles[i] = tile
-                            local tooltip = "Join " .. committee .. " committee"
+                            local tooltip = I18N("joinCommittee", { committee = I18N(committee) })
                             ArrakeenScouts.committeeAnchors[i] = tile
-                            Helper.createAreaButton(zone, tile, 0.85, tooltip, function (_, color, _)
+                            Helper.createAreaButton(zone, tile, 0.85, tooltip, PlayBoard.withLeader(function (_, color, _)
                                 ArrakeenScouts.joinCommitee(color, i)
-                            end)
+                            end))
                         end)
                     else
                         zone.destruct()
@@ -294,13 +294,16 @@ function ArrakeenScouts._staticSetUp()
 
     Helper.registerEventListener("highCouncilSeatTaken", function (color)
         ArrakeenScouts.committeeAccess[color] = true
-        Player[color].showInfoDialog("Vous avez maintenant la possibilité de joindre un comité ce tour-ci.")
+        Player[color].showInfoDialog(I18N("committeeReminder"))
     end)
 end
 
 ---
 function ArrakeenScouts._tearDown()
     ArrakeenScouts.board.destruct()
+    for _, zone in ipairs(ArrakeenScouts.committeeZones) do
+        zone.destruct()
+    end
 end
 
 ---
@@ -322,8 +325,10 @@ function ArrakeenScouts._nextContent()
     if contents and #contents > 0 then
         local content = contents[1]
         table.remove(contents, 1)
+        --Helper.dump("content = ", content)
         ArrakeenScouts._createDialog(content)
     else
+        --Helper.dump("TurnControl.endOfPhase()")
         TurnControl.endOfPhase()
     end
 end
@@ -603,8 +608,8 @@ function ArrakeenScouts._setAsOptionPane(color, playerPane, secret, options, con
             Helper.unregisterGlobalCallback(button.attributes.onClick)
             controller.validate(color, holder.selectedOption)
         else
-            Helper.dump("color =", color)
-            Helper.dump("Helper.getPlayerColor(player) = ", Helper.getPlayerColor(player))
+            --Helper.dump("color =", color)
+            --Helper.dump("Helper.getPlayerColor(player) = ", Helper.getPlayerColor(player))
             broadcastToColor(I18N('noTouch'), color, "Purple")
         end
     end)
@@ -838,8 +843,6 @@ function ArrakeenScouts.joinCommitee(color, luaIndex)
             effector(color, leader)
         end
     else
-        Helper.dump("color =", color)
-        Helper.dump("Helper.getPlayerColor(player) = ", Helper.getPlayerColor(player))
         broadcastToColor(I18N('noTouch'), color, "Purple")
     end
 end
@@ -1026,18 +1029,15 @@ function ArrakeenScouts._createBetterSequentialAuctionController(playerPanes, re
     ArrakeenScouts._createSequentialAuctionController(playerPanes, resourceName, maxValue, secret, function (bids)
         local ranking = ArrakeenScouts._rankPlayers(bids)
 
-        local rankSuffixes = { "er", "nd", "éme", "éme" }
+        local rankName = { "first", "second", "third", "fourth" }
 
         local getLabel = function (color)
-            local label = tostring(bids[color]) .. " " .. resourceName .. " ➤ "
+            local label = tostring(bids[color]) .. I18N.agree(bids[color], resourceName) .. " ➤ "
             local rank = ArrakeenScouts._getRank(color, ranking, level)
             if rank and rank.level <= level then
-                label = label .. tostring(rank.level) .. rankSuffixes[rank.level]
-                if rank.exAequo then
-                    label = label .. " (ex aequo)"
-                end
+                label = label .. I18N(rankName[rank.level] .. (rank.exAequo and "ExAequo" or ""))
             else
-                label = label .. "perdu"
+                label = label .. I18N("lose")
             end
             return label
         end
@@ -1066,7 +1066,7 @@ function ArrakeenScouts._createSequentialAuctionController(playerPanes, resource
     }
 
     function controller.setAsOptionPane(color, playerPane)
-        local options = { { amount = 0, value = "Passer" } }
+        local options = { { amount = 0, value = I18N("passOption") } }
         local resource = PlayBoard.getResource(color, resourceName)
         local finalMaxValue = resource:get()
         finalMaxValue = maxValue and math.min(maxValue, finalMaxValue) or finalMaxValue
@@ -1116,7 +1116,7 @@ function ArrakeenScouts._createSequentialAuctionController(playerPanes, resource
         if color == currentColor then
             controller.setAsOptionPane(color, playerPane)
         else
-            ArrakeenScouts._setAsPassivePane(color, playerPane, false, "Wait", "…")
+            ArrakeenScouts._setAsPassivePane(color, playerPane, false, I18N("waitOption"), "…")
         end
     end
 end
@@ -1126,8 +1126,8 @@ end
 function ArrakeenScouts._createChangeOfPlansController(playerPanes)
     local getOptions = function (_)
         return {
-            { status = false, value = "Refuser" },
-            { status = true, value = "Accepter" }
+            { status = false, value = I18N("refuseOption") },
+            { status = true, value = I18N("acceptOption") }
         }
     end
     local resolve = function (color, option, continuation)
@@ -1150,6 +1150,7 @@ end
 function ArrakeenScouts._createCovertOperationController(playerPanes)
     local getOptions = function (_)
         return {
+            --TODO I18N
             { index = 1, roundCount = 1, reward = "+2 solari", value = "+2 solari dans 1 manche" },
             { index = 2, roundCount = 1, reward = "+1 Empereur", value = "+1 Empereur dans 1 manche" },
             { index = 3, roundCount = 1, reward = "+1 Guilde Spatiale", value = "+1 Guilde Spatiale dans 1 manche" },
@@ -1207,10 +1208,10 @@ end
 
 function ArrakeenScouts._createGiftOfWaterController(playerPanes)
     local getOptions = function (color)
-        local options = { { status = false, value = "Refuser" } }
+        local options = { { status = false, value = I18N("refuseOption") } }
         local water = PlayBoard.getResource(color, "water")
         if water:get() >= 1 then
-            table.insert(options, { status = true, value = "Accepter" })
+            table.insert(options, { status = true, value = I18N("acceptOption") })
         end
         return options
     end
@@ -1229,16 +1230,16 @@ end
 function ArrakeenScouts._createDesertGiftController(playerPanes)
     local notAStarterCard = Helper.negate(ImperiumCard.isStarterCard)
     local getOptions = function (color)
-        local options = { { status = false, value = "Passer" } }
+        local options = { { status = false, value = I18N("passOption") } }
         local notStarterCards = Helper.filter(PlayBoard.getHandedCards(color), notAStarterCard)
         if #notStarterCards > 0 then
-            table.insert(options, { status = true, value = "Défausser" })
+            table.insert(options, { status = true, value = I18N("discardOption") })
         end
         return options
     end
     local resolve = function (color, option, continuation)
         if option.status then
-            ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, "Discard a non starter card", "…")
+            ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, I18N("discardNonStarterCard"), "…")
             ArrakeenScouts._ensureDiscard(color, notAStarterCard).doAfter(function (card)
                 local cardName = Helper.getID(card)
                 ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, cardName, "✓")
@@ -1256,10 +1257,10 @@ end
 
 function ArrakeenScouts._createGuildNegotiationController(playerPanes)
     local getOptions = function (color)
-        local options = { { status = false, value = "Passer" } }
+        local options = { { status = false, value = I18N("passOption") } }
         local solari = PlayBoard.getResource(color, "solari")
         if solari:get() >= 2 then
-            table.insert(options, { status = true, value = "Accepter" })
+            table.insert(options, { status = true, value = I18N("acceptOption") })
         end
         return options
     end
@@ -1277,16 +1278,16 @@ end
 
 function ArrakeenScouts._createIntriguingGiftController(playerPanes)
     local getOptions = function (color)
-        local options = { { status = false, value = "Passer" } }
+        local options = { { status = false, value = I18N("passOption") } }
         local intrigues = PlayBoard.getIntrigues(color)
         if #intrigues > 0 then
-            table.insert(options, { status = true, value = "Accepter" })
+            table.insert(options, { status = true, value = I18N("acceptOption") })
         end
         return options
     end
     local resolve = function (color, option, continuation)
         if option.status then
-            ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, "Discard an intrigue", "…")
+            ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, I18N("discardAnIntrigue"), "…")
             ArrakeenScouts._ensureDiscardIntrigue(color).doAfter(function (card)
                 local cardName = Helper.getID(card)
                 ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, cardName, "✓")
@@ -1304,10 +1305,10 @@ end
 
 function ArrakeenScouts._createTestOfLoyaltyController(playerPanes)
     local getOptions = function (color)
-        local options = { { status = false, value = "Passer" } }
+        local options = { { status = false, value = I18N("passOption") } }
         local garrisonPark = Combat.getGarrisonPark(color)
         if not Park.isEmpty(garrisonPark) then
-            table.insert(options, { status = true, value = "Accepter" })
+            table.insert(options, { status = true, value = I18N("acceptOption") })
         end
         return options
     end
@@ -1325,7 +1326,7 @@ end
 
 function ArrakeenScouts._createBeneGesseritTreacheryController(playerPanes)
     local getOptions = function (color)
-        local options = { { status = true, value = "Défausser" } }
+        local options = { { status = true, value = I18N("discardOption") } }
         if InfluenceTrack.getInfluence("beneGesserit", color) > 0 then
             table.insert(options, { status = false, value = "-1 Bene Gesserit" })
         end
@@ -1333,7 +1334,7 @@ function ArrakeenScouts._createBeneGesseritTreacheryController(playerPanes)
     end
     local resolve = function (color, option, continuation)
         if option.status then
-            ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, "Discard a card", "…")
+            ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, I18N("discardACard"), "…")
             ArrakeenScouts._ensureDiscard(color).doAfter(function (card)
                 local cardName = Helper.getID(card)
                 ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, cardName, "✓")
@@ -1353,6 +1354,7 @@ function ArrakeenScouts._createEmperorsTaxController(playerPanes)
     local getOptions = function (color)
         local options = {}
         local spice = PlayBoard.getResource(color, "spice")
+        -- TODO I18N
         if spice:get() >= 1 then
             table.insert(options, { status = true, value = "-1 épice" })
         end
@@ -1378,6 +1380,7 @@ function ArrakeenScouts._createFremenExchangeController(playerPanes)
     local getOptions = function (color)
         local options = {}
         local garrisonPark = Combat.getGarrisonPark(color)
+        -- TODO I18N
         if not Park.isEmpty(garrisonPark) then
             table.insert(options, { status = true, value = "-1 troop" })
         end
@@ -1419,7 +1422,7 @@ function ArrakeenScouts._createPoliticalEquilibriumController(playerPanes)
                     table.insert(options, { faction = highestFaction, value = "-1 " .. highestFaction })
                 end
             else
-                table.insert(options, { value = "Passer" })
+                table.insert(options, { value = I18N("passOption") })
             end
         else
             table.insert(options, { faction = highestFactions[1], value = "-1 " .. highestFactions[1] })
@@ -1441,6 +1444,7 @@ function ArrakeenScouts._createWaterForSpiceSmugglersController(playerPanes)
     local getOptions = function (color)
         local options = {}
         local water = PlayBoard.getResource(color, "water")
+        -- TODO I18N
         if water:get() >= 1 then
             table.insert(options, { status = true, value = "-1 water" })
         end
@@ -1465,16 +1469,16 @@ end
 
 function ArrakeenScouts._createRotationgDoorsController(playerPanes)
     local getOptions = function (color)
-        local options = { { status = false, value = "Refuser" } }
+        local options = { { status = false, value = I18N("refuseOption") } }
         local intrigues = PlayBoard.getIntrigues(color)
         if #intrigues > 0 then
-            table.insert(options, { status = true, value = "Accepter" })
+            table.insert(options, { status = true, value = I18N("acceptOption") })
         end
         return options
     end
     local resolve = function (color, option, continuation)
         if option.status then
-            ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, "Discard an intrigue", "…")
+            ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, I18N("discardAnIntrigue"), "…")
             ArrakeenScouts._ensureDiscardIntrigue(color).doAfter(function (card)
                 local cardName = Helper.getID(card)
                 ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, cardName, "✓")
@@ -1492,8 +1496,9 @@ end
 
 function ArrakeenScouts._createSecretsForSaleController(playerPanes)
     local getOptions = function (color)
-        local options = { { value = "Refuser" } }
+        local options = { { value = I18N("refuseOption") } }
         local solari = PlayBoard.getResource(color, "solari")
+        -- TODO I18N
         if solari:get() >= 1 then
             table.insert(options, { resource = "solari", value = "-1 solari" })
         end
@@ -1518,8 +1523,9 @@ end
 function ArrakeenScouts._createNoComingBackController(playerPanes)
     local getOptions = function (_)
         local factions = { "emperor", "spacingGuild", "beneGesserit", "fremen" }
+        -- TODO I18N
         return {
-            { value = "Refuser" },
+            { value = I18N("refuseOption") },
             { faction = factions[1], value = "Accepter (" .. factions[1] .. ")" },
             { faction = factions[2], value = "Accepter (" .. factions[2] .. ")" },
             { faction = factions[3], value = "Accepter (" .. factions[3] .. ")" },
@@ -1528,7 +1534,7 @@ function ArrakeenScouts._createNoComingBackController(playerPanes)
     end
     local resolve = function (color, option, continuation)
         if option.faction then
-            ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, "Trash a card", "…")
+            ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, I18N("trashACard"), "…")
             ArrakeenScouts._ensureTrashFromHand(color).doAfter(function (card)
                 local cardName = Helper.getID(card)
                 ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, cardName, "✓")
@@ -1561,7 +1567,7 @@ end
 
 function ArrakeenScouts._createGetBackInTheGoodGracesController(playerPanes)
     local getOptions = function (color)
-        local options = { { value = "Passer" } }
+        local options = { { value = I18N("passOption") } }
         local tankPark = TleilaxuResearch.getTankPark(color)
         if not Park.isEmpty(tankPark) then
             for _, faction in ipairs({ "emperor", "spacingGuild", "beneGesserit", "fremen" }) do
@@ -1584,7 +1590,7 @@ end
 
 function ArrakeenScouts._createTreacheryController(playerPanes)
     local getOptions = function (color)
-        local options = { { status = false, value = "Passer" } }
+        local options = { { status = false, value = I18N("passOption") } }
         if InfluenceTrack.getInfluence("beneGesserit", color) > 0 then
             table.insert(options, { status = true, value = "-1 Bene Gesserit" })
         end
@@ -1604,7 +1610,7 @@ end
 
 function ArrakeenScouts._createNewInnovationsController(playerPanes)
     local getOptions = function (color)
-        local options = { { value = "Refuser" } }
+        local options = { { value = I18N("refuseOption") } }
         local solari = PlayBoard.getResource(color, "solari")
         if solari:get() >= 1 then
             table.insert(options, { resource = "solari", value = "-1 solari" })
@@ -1617,7 +1623,7 @@ function ArrakeenScouts._createNewInnovationsController(playerPanes)
     end
     local resolve = function (color, option, continuation)
         if option.resource then
-            ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, "Do a research", "…")
+            ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, I18N("doAResearch"), "…")
             local leader = PlayBoard.getLeader(color)
             leader.resources(color, option.resource, -1)
             return ArrakeenScouts._ensureResearch(color).doAfter(function ()
@@ -1634,6 +1640,7 @@ end
 
 function ArrakeenScouts._createOffWordOperationController(playerPanes)
     local getOptions = function (_)
+        -- TODO I18N
         return {
             { index = 1, roundCount = 1, reward = "+2 solari", value = "+2 solari dans 1 manche" },
             { index = 2, roundCount = 1, reward = "+1 (+2) épices", value = "+1 (+2) épices dans 1 manche" },
@@ -1674,16 +1681,16 @@ end
 
 function ArrakeenScouts._createCeaseAndDesistRequestController(playerPanes)
     local getOptions = function (color)
-        local options = { { status = false, value = "Refuser" } }
+        local options = { { status = false, value = I18N("refuseOption") } }
         local supplyPark = PlayBoard.getSupplyPark(color)
         if not Park.isEmpty(supplyPark) then
-            table.insert(options, { status = true, value = "Détruire 1 carte de sa main" })
+            table.insert(options, { status = true, value = I18N("destroyACardFromYourHand") })
         end
         return options
     end
     local resolve = function (color, option, continuation)
         if option.status then
-            ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, "Trash a card", "…")
+            ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, I18N("trashACard"), "…")
             return ArrakeenScouts._ensureTrashFromHand(color).doAfter(function (card)
                 local cardName = Helper.getID(card)
                 ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, cardName, "✓")
@@ -1870,13 +1877,13 @@ end
 
 function ArrakeenScouts._createFremenMercenariesController(playerPanes)
     local getOptions = function (color)
-        local options = { { amount = 0, value = "Refuser" } }
+        local options = { { amount = 0, value = I18N("refuseOption") } }
         local supplyPark = PlayBoard.getSupplyPark(color)
         local troops = Park.getObjects(supplyPark)
         local water = PlayBoard.getResource(color, "water")
         local maxValue = math.min(math.floor((#troops + 1) / 2), water:get())
         for i = 1, maxValue do
-            table.insert(options, { amount = i, value = "Spent " .. tostring(i) .. " water" })
+            table.insert(options, { amount = i, value = I18N("spendOption", { amount = i, resource = I18N.agree(i, "water") }) })
         end
         return options
     end
@@ -1892,13 +1899,13 @@ end
 
 function ArrakeenScouts._createRevealTheFutureController(playerPanes)
     local getOptions = function (color)
-        local options = { { amount = 0, value = "Refuser" } }
+        local options = { { amount = 0, value = I18N("refuseOption") } }
         local spice = PlayBoard.getResource(color, "spice")
         if spice:get() >= 1 then
-            table.insert(options, { amount = 1, value = "Spent 1 spice" })
+            table.insert(options, { amount = 1, value = I18N("spendOption", { amount = 1, resource = I18N.agree(1, "spice") }) })
         end
         if spice:get() >= 3 then
-            table.insert(options, { amount = 3, value = "Spent 3 spices" })
+            table.insert(options, { amount = 3, value = I18N("spendOption", { amount = 3, resource = I18N.agree(3, "spice") }) })
         end
         return options
     end
@@ -1920,13 +1927,13 @@ end
 
 function ArrakeenScouts._createSooSooSookWaterPeddlersController(playerPanes)
     local getOptions = function (color)
-        local options = { { amount = 0, value = "Refuser" } }
+        local options = { { amount = 0, value = I18N("refuseOption") } }
         local solari = PlayBoard.getResource(color, "solari")
         if solari:get() >= 2 then
-            table.insert(options, { amount = 2, value = "Spent 1 solari" })
+            table.insert(options, { amount = 2, value = I18N("spendOption", { amount = 1, resource = I18N.agree(1, "solari") }) })
         end
         if solari:get() >= 4 then
-            table.insert(options, { amount = 4, value = "Spent 3 solari" })
+            table.insert(options, { amount = 4, value = I18N("spendOption", { amount = 3, resource = I18N.agree(3, "solari") }) })
         end
         return options
     end
@@ -2029,7 +2036,7 @@ function ArrakeenScouts._createSequentialChoiceController(playerPanes, getOption
         if color == currentColor then
             controller.setAsActivePlayer(color)
         else
-            ArrakeenScouts._setAsPassivePane(color, playerPane, false, "Wait", "…")
+            ArrakeenScouts._setAsPassivePane(color, playerPane, false, I18N("waitOption"), "…")
         end
     end
 end
@@ -2037,9 +2044,9 @@ end
 ---
 function ArrakeenScouts._createSequentialBinaryChoiceController(playerPanes, predicate, resolveWithLeader)
     local getOptions = function (color)
-        local options = { { status = false, value = "Refuser" } }
+        local options = { { status = false, value = I18N("refuseOption") } }
         if predicate(color) then
-            table.insert(options, { status = true, value = "Accepter" })
+            table.insert(options, { status = true, value = I18N("acceptOption") })
         end
         return options
     end
@@ -2103,7 +2110,7 @@ function ArrakeenScouts._createPendingController(playerPanes, operation)
     end
 
     for color, playerPane in pairs(playerPanes) do
-        ArrakeenScouts._setAsPassivePane(color, playerPane, false, "Wait", "…")
+        ArrakeenScouts._setAsPassivePane(color, playerPane, false, I18N("waitOption"), "…")
     end
 
     controller.nextReward()

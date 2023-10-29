@@ -405,7 +405,7 @@ function Action.research(color, jump)
     Types.assertIsPlayerColor(color)
     TleilaxuResearch.advanceResearch(color, jump).doAfter(function (finalJump)
         if finalJump.x > 0 then
-            printToAll(I18N("researchAdvance"), color)
+            printToAll(I18N("researchAdvance", { count = jump }), color)
         elseif finalJump.x < 0 then
             printToAll(I18N("researchRollback"), color)
         end
@@ -415,14 +415,13 @@ end
 
 ---
 function Action.beetle(color, jump)
-    Helper.dumpFunction("Action.beetle", color, jump)
     Types.assertIsPlayerColor(color)
     Types.assertIsInteger(jump)
     TleilaxuResearch.advanceTleilax(color, jump).doAfter(function (finalJump)
         if finalJump > 0 then
-            printToAll(I18N("beetleAdvance", { jump = jump }), color)
+            printToAll(I18N("beetleAdvance", { count = jump }), color)
         elseif finalJump < 0 then
-            printToAll(I18N("beetleRollback", { jump = jump }), color)
+            printToAll(I18N("beetleRollback", { count = math.abs(jump) }), color)
         end
     end)
     return true

@@ -15,7 +15,7 @@ function Intrigue.onLoad(state)
         discardZone = '80642b'
     }))
 
-    AcquireCard.new(Intrigue.deckZone, "Intrigue", Intrigue._acquireIntrigueCard)
+    AcquireCard.new(Intrigue.deckZone, "Intrigue", PlayBoard.withLeader(Intrigue._acquireIntrigueCard))
     AcquireCard.new(Intrigue.discardZone, "Intrigue", nil)
 
     if state.settings then
@@ -30,7 +30,7 @@ end
 
 ---
 function Intrigue._staticSetUp(settings)
-    Deck.generateIntrigueDeck(Intrigue.deckZone, settings.riseOfx, settings.immortality).doAfter(function (deck)
+    Deck.generateIntrigueDeck(Intrigue.deckZone, settings.riseOfIx, settings.immortality).doAfter(function (deck)
         Helper.shuffleDeck(deck)
     end)
 end
