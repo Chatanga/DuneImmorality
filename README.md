@@ -93,7 +93,8 @@ Unfortunately, it seems to induce some kind of latency, leading to board corrupt
 
 - Blitz!
 - Rival combat optimization.
-- [Fanmade leaders](https://drive.google.com/drive/folders/1-V3xcHk6078YR1fyhtJL3tdqv2zg5q3Q)?
+- Régis Étienne's [fanmade leaders compilation](https://forum.cwowd.com/t/dune-imperium-personnages-fanmade/45175).
+- Arkhane's [Fanmade leaders compilation](https://boardgamegeek.com/thread/3144891/73-more-powerful-leaders-balanced-each-others-epic) (to be updated).
 - Replace freighters by tokens.
 - Change the [dreadnought model](https://www.thingiverse.com/thing:5326146).
 - Handle all space access options and explain agent action failures.

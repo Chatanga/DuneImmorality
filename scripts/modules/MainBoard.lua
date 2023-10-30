@@ -386,10 +386,8 @@ function MainBoard._createSpaceButton(space, position, slots)
         end
 
         local tooltip = I18N("sendAgentTo", { space = I18N(space.name)})
-        Helper.createAreaButton(space.zone, anchor, 0.7, tooltip, PlayBoard.withLeader(function (_, color, _)
-            if PlayBoard.getLeader(color) then
-                PlayBoard.getLeader(color).sendAgent(color, space.name)
-            end
+        Helper.createAreaButton(space.zone, anchor, 0.7, tooltip, PlayBoard.withLeader(function (leader, color, _)
+            leader.sendAgent(color, space.name)
         end))
     end)
 end
@@ -833,14 +831,14 @@ function MainBoard._asyncGoTechNegotiation(color, leader)
 end
 
 function MainBoard._goTechNegotiation_1(color, leader)
-    leader.troops(color, "supply", "negotiation", 1)
     leader.resources(color, "persuasion", 1)
+    TechMarket.registerAcquireTechOption(color, "techNegotiationTechBuyOption", "spice", 1)
     return true
 end
 
 function MainBoard._goTechNegotiation_2(color, leader)
     leader.resources(color, "persuasion", 1)
-    TechMarket.registerAcquireTechOption(color, "techNegotiationTechBuyOption", "spice", 1)
+    leader.troops(color, "supply", "negotiation", 1)
     return true
 end
 

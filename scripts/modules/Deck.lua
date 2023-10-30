@@ -370,7 +370,6 @@ local Deck = {
         fanmade = {
             arkhane = {
                 base = {
-                    abulurdHarkonnen = 1,
                     xavierHarkonnen = 1,
                     feydRauthaHarkonnen = 1,
                     hasimirFenring = 1,
@@ -379,21 +378,107 @@ local Deck = {
                     hwiNoree = 1,
                     metulli = 1,
                     milesTeg = 1,
-                    normaCenvas = 1,
                     irulanCorrino = 1,
                     wencisiaCorrino = 1,
                     vorianAtreides = 1,
                     serenaButler = 1,
                     whitmoreBluud = 1,
                     executrixOrdos = 1,
-                    torgTheYoung = 1,
-                    twylwythWaff = 1,
                     scytale = 1,
                     stabanTuek = 1,
                     esmarTuek = 1,
                     drisk = 1,
+                },
+                ix = {
+                    abulurdHarkonnen = 1,
                     arkhane = 1,
-                }
+                    normaCenvas = 1,
+                },
+                immortality = {
+                    torgTheYoung = 1,
+                    twylwythWaff = 1,
+                },
+            },
+            retienne = {
+                base = {
+                    helenaRichese = 1,
+                    farok = 1,
+                    ilbanRichese = 1,
+                    jopatiKolona = 1,
+                    letoAtreidesII = 1,
+                    xavierHarkonnen = 1,
+                    countFenring = 1,
+                    drisq = 1,
+                    executrix = 1,
+                    dukeMutelli = 1,
+                    isyanderTheTraitorShaiad = 1,
+                    swormasterDinari = 1,
+                    aliaAtreides = 1,
+                    princessYunaMoritani = 1,
+                    --horatioDelta = 1,
+                    tessiaVernius = 1,
+                    shaddamIV = 1,
+                    captainOtto = 1,
+                    princessWensicia = 1,
+                    --horatioFive = 1,
+                    drLietKynes = 1,
+                    bannerjee = 1,
+                    serenaButler = 1,
+                    shaddamV = 1,
+                    --sionaAtreides = 1,
+                    edric = 1,
+                    shimoon = 1,
+                    anirulCorrino = 1,
+                    uliet = 1,
+                    pretresseIsyaraStShaiad = 1,
+                    memnonThorvald = 1,
+                    senatorOthn = 1,
+                    vorianAtreides = 1,
+                    whitmoreBludd = 1,
+                    --almaMavisTaraza = 1,
+                    senateurMaximilienZelevas = 1,
+                    stabanTuek = 1,
+                    dukeLetoAtreides = 1,
+                    hwiNoree = 1,
+                    darwiOdrade = 1,
+                    ramalloTheSayyadina = 1,
+                    glossuTheBeastRabban = 1,
+                    --dukeJenhaestraDrevMeos = 1,
+                    baronVladimirHarkonnen = 1,
+                    paulAtreides = 1,
+                    chatt = 1,
+                    --horatioPrime = 1,
+                    abulurdHarkonnen = 1,
+                    milesTeg = 1,
+                    capitainYelchinOrdara = 1,
+                    ilesaEcaz = 1,
+                    esmarTuek = 1,
+                    countessArianaThorvald = 1,
+                    albertoGinaztera = 1,
+                    feydRautha = 1,
+                    ladyMargotFenring = 1,
+                    archdukeArmandEcaz = 1,
+                },
+                ix = {
+                    abulurdRabban = 1,
+                    generalKlevLagarin = 1,
+                    koalTraytron = 1,
+                    normaCenva = 1,
+                    omniusPrime = 1,
+                    princeRhomburVernius = 1,
+                    tioHoltzman = 1,
+                    viscountHundroMoritani = 1,
+                },
+                immortality = {
+                    masterWaff = 1,
+                    mirlat = 1,
+                    scytale = 1,
+                    torgTheYoung = 1,
+                    torgTheYounger = 1,
+                    tylwythWaff = 1,
+                    masterBijaz = 1,
+                    princessIrulan = 1,
+                },
             }
         }
     }
@@ -605,7 +690,12 @@ function Deck.generateLeaderDeck(deckZone, ix, immortality, fanmadeLeaders)
     local continuation = Helper.createContinuation("Deck.generateLeaderDeck")
     local contributions = Deck._mergeStandardContributionSets(Deck.leaders, ix, immortality)
     if fanmadeLeaders then
-        contributions = Deck._mergeContributionSets({ contributions, Deck._mergeStandardContributionSets(Deck.leaders.fanmade.arkhane, ix, immortality) })
+        local locale = I18N.getLocale()
+        if locale == 'fr' then
+            contributions = Deck._mergeContributionSets({ contributions, Deck._mergeStandardContributionSets(Deck.leaders.fanmade.arkhane, ix, immortality) })
+        elseif locale == 'en' then
+            contributions = Deck._mergeStandardContributionSets(Deck.leaders.fanmade.retienne, ix, immortality)
+        end
     end
     Deck._generateDeck("Leader", deckZone.getPosition(), contributions, Deck.sources.leaders).doAfter(continuation.run)
     return continuation

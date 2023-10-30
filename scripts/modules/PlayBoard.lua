@@ -452,11 +452,16 @@ function PlayBoard._staticSetUp(settings)
     end)
 
     Helper.registerEventListener("agentSent", function (color, spaceName)
+        Helper.dump("PlayBoard.isHuman(color) =", PlayBoard.isHuman(color))
         if PlayBoard.isHuman(color) then
+            log(1)
             -- Do it after the clean up done in TechMarket.
             Helper.onceFramesPassed(1).doAfter(function ()
+                log(2)
                 local cards = PlayBoard._getCardsPlayedThisTurn(color)
+                log(3)
                 for _, card in ipairs(cards) do
+                    log(4)
                     local cardName = Helper.getID(card)
                     if cardName == "appropriate" then
                         if InfluenceTrack.hasFriendship(color, "emperor") then
@@ -471,6 +476,7 @@ function PlayBoard._staticSetUp(settings)
                         TechMarket.registerAcquireTechOption(color, "rhomburVerniusTechBuyOption", "spice", 0)
                     end
                 end
+                log(5)
             end)
         end
     end)
@@ -650,8 +656,10 @@ end
 ---
 function PlayBoard.withLeader(action)
     return function (source, color, ...)
-        if PlayBoard.getLeader(color) then
-            action(source, color, ...)
+        local leader = PlayBoard.getLeader(color)
+        if leader then
+            -- Replace the source by the leader.
+            action(leader, color, ...)
         else
             broadcastToColor(I18N('noLeader'), color, "Purple")
         end

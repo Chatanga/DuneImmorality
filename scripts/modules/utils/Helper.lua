@@ -682,8 +682,8 @@ function Helper.registerGlobalCallback(callback)
             table.remove(Helper.uniqueNamePool, 1)
         else
             local nextIndex = Global.getVar(GLOBAL_COUNTER_NAME) or 1
-            --assert(nextIndex < 200, "Probably a callback leak (or are you too greedy ?).")
-            if nextIndex >= 200 then
+            --assert(nextIndex < 300, "Probably a callback leak (or are you too greedy ?).")
+            if nextIndex >= 300 then
                 Helper.dump("Alarming dynamic global callback count:", nextIndex)
             end
             --Helper.dumpFunction("Global.setVar", GLOBAL_COUNTER_NAME, nextIndex + 1)

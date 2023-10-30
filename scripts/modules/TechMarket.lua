@@ -167,7 +167,7 @@ end
 
 ---
 function TechMarket._doAcquireTech(stackIndex, color)
-    Helper.dumpFunction("TechMarket._doAcquireTech", stackIndex, color)
+    --Helper.dumpFunction("TechMarket._doAcquireTech", stackIndex, color)
     local continuation = Helper.createContinuation("TechMarket._doAcquireTech")
     local acquireCard = TechMarket.acquireCards[stackIndex]
 
@@ -216,7 +216,7 @@ end
 
 ---
 function TechMarket._buyTech(stackIndex, color)
-    Helper.dumpFunction("TechMarket._buyTech", stackIndex, color)
+    --Helper.dumpFunction("TechMarket._buyTech", stackIndex, color)
     local continuation = Helper.createContinuation("TechMarket._buyTech")
     local techTileStack = TechMarket._getTechTileStack(stackIndex)
     if techTileStack.topCard then
@@ -244,7 +244,7 @@ end
 
 ---
 function TechMarket._doBuyTech(techTileStack, option, color)
-    Helper.dumpFunction("TechMarket._doBuyTech", techTileStack, option, color)
+    --Helper.dumpFunction("TechMarket._doBuyTech", techTileStack, option, color)
     local techCost = TechCard.getCost(techTileStack.topCard)
 
     local optionDetails = TechMarket.acquireTechOptions[option]
@@ -263,8 +263,8 @@ function TechMarket._doBuyTech(techTileStack, option, color)
         recalledNegociatorCount = 0
     end
 
-    Helper.dump("adjustedTechCost:", adjustedTechCost)
-    Helper.dump("recalledNegociatorCount:", recalledNegociatorCount)
+    --Helper.dump("adjustedTechCost:", adjustedTechCost)
+    --Helper.dump("recalledNegociatorCount:", recalledNegociatorCount)
 
     local leader = PlayBoard.getLeader(color)
     if leader.resources(color, optionDetails.resourceType, -adjustedTechCost) then
@@ -282,7 +282,7 @@ end
 
 ---
 function TechMarket.getTopCardDetails(stackIndex)
-    Helper.dumpFunction("TechMarket.getTopCardDetails", stackIndex)
+    --Helper.dumpFunction("TechMarket.getTopCardDetails", stackIndex)
     local techTileStack = TechMarket._getTechTileStack(stackIndex)
     if techTileStack.topCard then
         return TechCard.getDetails(techTileStack.topCard)
@@ -291,7 +291,7 @@ function TechMarket.getTopCardDetails(stackIndex)
 end
 
 function TechMarket._getTechTileStack(stackIndex)
-    Helper.dumpFunction("TechMarket._getTechTileStack", stackIndex)
+    --Helper.dumpFunction("TechMarket._getTechTileStack", stackIndex)
     Types.assertIsInteger(stackIndex)
     Types.assertIsInRange(1, 3, stackIndex)
 
@@ -314,7 +314,7 @@ end
 ---@param resourceType ResourceName
 ---@param amount integer
 function TechMarket.registerAcquireTechOption(color, source, resourceType, amount)
-    Helper.dumpFunction("TechMarket.registerAcquireTechOption", color, source, resourceType, amount)
+    --Helper.dumpFunction("TechMarket.registerAcquireTechOption", color, source, resourceType, amount)
     Types.assertIsPlayerColor(color)
     assert(color)
     Types.assertIsResourceName(resourceType)

@@ -100,10 +100,11 @@ end
 function LeaderSelection._layoutLeaders(count, callback)
     local w = LeaderSelection.deckZone.getScale().x
     local h = LeaderSelection.deckZone.getScale().z
-    local origin = LeaderSelection.deckZone.getPosition() - Vector(w / 2 - 6, 0, h / 2 - 10)
+    local colCount = 6
+    local origin = LeaderSelection.deckZone.getPosition() - Vector((colCount / 2 - 0.5) * 5, 0, h / 2 - 10)
     for i = 0, count - 1 do
-        local x = (i % 6) * 5
-        local y = math.floor(i / 6) * 4
+        local x = (i % colCount) * 5
+        local y = math.floor(i / colCount) * 4
         callback(i + 1, origin + Vector(x, 1, y))
     end
 end
