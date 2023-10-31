@@ -194,20 +194,34 @@ function ImperiumCard._resolveCard(card)
         local cardInfo = ImperiumCard[cardName]
         assert(cardInfo, "Unknown card: " .. tostring(cardName))
         cardInfo.name = cardName
-        return cardInfo
+
+        -- For identity tests.
+        local instantiatedCardInfo = Helper.shallowCopy(cardInfo)
+        instantiatedCardInfo.cardObject = card
+
+        return instantiatedCardInfo
     else
-        error("No card info!")
         log(card)
+        error("No card info!")
     end
 end
 
 function ImperiumCard.evaluateReveal(color, playedCards, revealedCards, artillery)
+    return ImperiumCard.evaluateReveal2(
+        color,
+        Helper.mapValues(playedCards, ImperiumCard._resolveCard),
+        Helper.mapValues(revealedCards, ImperiumCard._resolveCard),
+        artillery)
+end
+
+-- TODO Rework this!
+function ImperiumCard.evaluateReveal2(color, playedCards, revealedCards, artillery)
     local result = {}
 
     local context = {
         color = color,
-        playedCards = Helper.mapValues(playedCards, ImperiumCard._resolveCard),
-        revealedCards = Helper.mapValues(revealedCards, ImperiumCard._resolveCard),
+        playedCards = playedCards,
+        revealedCards = revealedCards,
         -- This mock up is enough since reveal effects only cover persuasion and strength (or other resources).
         player = {
             resources = function (_, resourceName, amount)

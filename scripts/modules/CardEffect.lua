@@ -1,5 +1,6 @@
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
+local Set = require("utils.Set")
 
 local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
 local Combat = Module.lazyRequire("Combat")
@@ -226,26 +227,13 @@ function CardEffect.perSwordCard(expression, cardExcluded)
         if context.fake then
             return 0
         end
+        local allCards = Set.newFromList(Helper.concatTables(context.playedCards, context.revealedCards))
         local count = 0
         for _, card in ipairs(context.revealedCards) do
             if card.reveal and (not cardExcluded or card ~= context.card) then
-
-                if false then
-                    local pseudoContext = {
-                        fake = true,
-                        color = context.color,
-                        playedCards = {},
-                        revealedCards = { card },
-                    }
-                    pseudoContext.resources = function (_, selector, n)
-                        pseudoContext[selector] = (pseudoContext[selector] or 0) + n
-                    end
-
-                    ImperiumCard.evaluateCardRevealEffects(card, pseudoContext)
-                end
-
                 -- Special case here of a recursive call.
-                local output = ImperiumCard.evaluateReveal(context.color, {}, { card }, false)
+                local fakePlayedCards = (allCards - Set.newFromItems(card)):toList()
+                local output = ImperiumCard.evaluateReveal2(context.color, fakePlayedCards, { card }, false)
                 if output.strength and output.strength > 0 then
                     count = count + 1
                 end

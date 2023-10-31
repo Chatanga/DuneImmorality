@@ -303,15 +303,17 @@ Leader.tessiaVernius = Helper.createClass(Leader, {
 
     --- Careful observation
     influence = function (color, faction, amount)
-        local noFriendshipBefore = not InfluenceTrack.hasFriendship(color, faction)
-        local continuation = Helper.createContinuation("Leader.tessiaVernius.influence")
-        Action.influence(color, faction, amount).doAfter(function ()
-            local friendshipAfter = InfluenceTrack.hasFriendship(color, faction)
-            if noFriendshipBefore and friendshipAfter then
-                InfluenceTrack.recallSnooper(faction, color)
-            end
-        end)
-        return continuation
+        if faction then
+            local noFriendshipBefore = not InfluenceTrack.hasFriendship(color, faction)
+            local continuation = Helper.createContinuation("Leader.tessiaVernius.influence")
+            Action.influence(color, faction, amount).doAfter(function ()
+                local friendshipAfter = InfluenceTrack.hasFriendship(color, faction)
+                if noFriendshipBefore and friendshipAfter then
+                    InfluenceTrack.recallSnooper(faction, color)
+                end
+            end)
+            return continuation
+        end
     end,
 
     --- Duplicity
