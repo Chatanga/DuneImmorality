@@ -114,12 +114,12 @@ local Deck = {
             arkhane = { "http://cloud-3.steamusercontent.com/ugc/2093668799785649294/43F98BF29B58C81D6C1FABDC6D166BC0ED122953/", 1, 1 },
         },
         retienne = {
-            horatioDelta = { "http://cloud-3.steamusercontent.com/ugc/2120691978813604463/A5EC6C2D6540C450E5A88250E11177D28C74C1D2/", 1, 1 },
-            horatioFive = { "http://cloud-3.steamusercontent.com/ugc/2120691978813605794/3993C542CC0A5764E981F03759B7A0AA2623A95E/", 1, 1 },
-            sionaAtreides = { "http://cloud-3.steamusercontent.com/ugc/2120691978813607153/B59925EFADED6E2F319D2DDFF6DBF209DB07BEA7/", 1, 1 },
-            almaMavisTaraza = { "http://cloud-3.steamusercontent.com/ugc/2120691978813609369/0500E7617A9853B2BE2F7E7AE791B361218250DC/", 1, 1 },
-            dukeJenhaestraDrevMeos = { "http://cloud-3.steamusercontent.com/ugc/2120691978813611253/B7C33A61A918C6750601B4B781BA88988478DB02/", 1, 1 },
-            horatioPrime = { "http://cloud-3.steamusercontent.com/ugc/2120691978813612411/5ECF73D730CBC697C45C78D823D5D63EEB8F6717/", 1, 1 },
+            horatioDelta = { "http://cloud-3.steamusercontent.com/ugc/2120691978822944659/A5EC6C2D6540C450E5A88250E11177D28C74C1D2/", 1, 1 },
+            horatioFive = { "http://cloud-3.steamusercontent.com/ugc/2120691978822952789/3993C542CC0A5764E981F03759B7A0AA2623A95E/", 1, 1 },
+            sionaAtreides = { "http://cloud-3.steamusercontent.com/ugc/2120691978822952911/B59925EFADED6E2F319D2DDFF6DBF209DB07BEA7/", 1, 1 },
+            almaMavisTaraza = { "http://cloud-3.steamusercontent.com/ugc/2120691978822944967/0500E7617A9853B2BE2F7E7AE791B361218250DC/", 1, 1 },
+            dukeJenhaestraDrevMeos = { "http://cloud-3.steamusercontent.com/ugc/2120691978822950197/B7C33A61A918C6750601B4B781BA88988478DB02/", 1, 1 },
+            horatioPrime = { "http://cloud-3.steamusercontent.com/ugc/2120691978822946076/5ECF73D730CBC697C45C78D823D5D63EEB8F6717/", 1, 1 },
         }
     }
 }
