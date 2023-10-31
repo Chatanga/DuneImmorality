@@ -1,6 +1,6 @@
 #! /bin/bash
 
-import_dir='resources/cloud'
+import_dir='resources/import'
 mkdir -p "$import_dir"
 python3 extract_url.py mod.base.json | sort -u | while read url; do
     name=$(sed s/[^A-Za-z0-9]//g <<< "$url")
