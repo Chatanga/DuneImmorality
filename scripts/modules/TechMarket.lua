@@ -150,13 +150,13 @@ function TechMarket.acquireTech(stackIndex, color)
         Helper.onceTimeElapsed(2).doAfter(function ()
             TechMarket.frozen = false
         end)
-        TechMarket._doAcquireTech(stackIndex, color).doAfter(function (success)
-            if success and TechMarket.hagalSoloModeEnabled then
+        TechMarket._doAcquireTech(stackIndex, color).doAfter(function (card)
+            if card and TechMarket.hagalSoloModeEnabled then
                 TechMarket.pruneStacksForSoloMode()
             else
                 TechMarket.frozen = false
             end
-            if not success then
+            if not card then
                 broadcastToColor(I18N('notAffordableOption'), color, "Purple")
             end
         end)
@@ -193,7 +193,7 @@ function TechMarket._doAcquireTech(stackIndex, color)
                     end
                 end)
             else
-                continuation.cancel()
+                continuation.run(nil)
             end
         end)
 
@@ -204,8 +204,9 @@ function TechMarket._doAcquireTech(stackIndex, color)
                 innerContinuation.run(true)
             end
         else
+            printToAll(I18N("pruneTechCard", { card = Helper.getID(techTileStack.topCard) }), "White")
             MainBoard.trash(techTileStack.topCard)
-            innerContinuation.run(false)
+            innerContinuation.cancel()
         end
     else
         continuation.cancel()
@@ -273,6 +274,12 @@ function TechMarket._doBuyTech(techTileStack, option, color)
         Park.transfert(recalledNegociatorCount, negotiation, supply)
 
         TechMarket.acquireTechOptions[option] = nil
+
+        printToAll(I18N("buyTechCard", {
+            card = I18N(Helper.getID(techTileStack.topCard)),
+            amount = adjustedTechCost,
+            resource =  I18N.agree(adjustedTechCost, optionDetails.resourceType) }),
+        color)
 
         return true
     else

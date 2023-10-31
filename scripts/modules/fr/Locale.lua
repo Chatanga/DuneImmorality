@@ -130,6 +130,7 @@ return {
     loseInfluence = "■ -{amount} influence auprès {withFaction}",
     acquireTleilaxuCard = "■ Acquisition carte tleilaxu : « {card} »",
     acquireImperiumCard = "■ Acquisition carte Imperium : « {card} »",
+    buyTechCard= "■ Acquisition tech. pour {amount} {resource} : « {card} »",
 
     -- Combat
     dreadnoughtMandatoryOccupation = "Rappel : vous devez envoyer un cuirassé occuper un espace.",
@@ -162,6 +163,7 @@ return {
     rhomburVerniusTechBuyOption = "Chevalière de Rombur Vernius",
     manuallyBuyTech = "Acquérir manuellement une tech sans en payer le prix ?",
     notAffordableOption = "Vous n’avez pas les moyens d’utiliser cette option d’achat !",
+    pruneTechCard = "Retrait de la tuile tech. : « {card} »",
 
     -- Arrakeen Scouts
     joinCommittee = "Rejoindre le sous-comité : {committee}",

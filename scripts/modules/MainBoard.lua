@@ -832,13 +832,13 @@ end
 
 function MainBoard._goTechNegotiation_1(color, leader)
     leader.resources(color, "persuasion", 1)
-    TechMarket.registerAcquireTechOption(color, "techNegotiationTechBuyOption", "spice", 1)
+    leader.troops(color, "supply", "negotiation", 1)
     return true
 end
 
 function MainBoard._goTechNegotiation_2(color, leader)
     leader.resources(color, "persuasion", 1)
-    leader.troops(color, "supply", "negotiation", 1)
+    TechMarket.registerAcquireTechOption(color, "techNegotiationTechBuyOption", "spice", 1)
     return true
 end
 

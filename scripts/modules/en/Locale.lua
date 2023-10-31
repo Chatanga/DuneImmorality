@@ -128,8 +128,9 @@ return {
     takeHighCouncilSeat = "■ Take High-Council seat.",
     gainInfluence = "■ +{amount} influence with {withFaction}",
     loseInfluence = "■ -{amount} influence with {withFaction}",
-    acquireTleilaxuCard = "■ Acquire Tleixlaxu card : « {card} »",
-    acquireImperiumCard = "■ Acquire Imperium card : « {card} »",
+    acquireTleilaxuCard = "■ Acquire Tleixlaxu card : \"{card}\"",
+    acquireImperiumCard = "■ Acquire Imperium card : \"{card}\"",
+    buyTechCard= "■ Acquire tech for {amount} {resource}: \"{card}\"",
 
     -- Combat
     dreadnoughtMandatoryOccupation = "Reminder: you must sent a dreadnought and occupy a space.",
@@ -162,6 +163,7 @@ return {
     rhomburVerniusTechBuyOption = "Rombur Vernius' ring",
     manuallyBuyTech = "Manually acquiring a tech at no cost?",
     notAffordableOption = "You can't afford this buying option!",
+    pruneTechCard = "Pruning tech tile: \"{card}\"",
 
     -- Arrakeen Scouts
     joinCommittee = "Join the subcommittee: {committee}",
