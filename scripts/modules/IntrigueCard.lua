@@ -102,7 +102,7 @@ local IntrigueCard = {
     illicitDealings = {categories = {'plot'}, plot = {beetle(1)}},
     disguisedBureaucrat = {categories = {'plot'}, plot = {"If research lvl 1: +1 Spice, If research lvl 2: +1 inf ?"}},
     shadowyBargain = {categories = {'plot', 'endgame'}, plot = {specimen(1)}, endgame = {beetle(1)}},
-    tleilaxuPuppet = {categories = {'plot', 'endgame'}, plot = {persuasion(1)}, engame = {"If you have high council and research lvl 2: +1 VP"}},
+    tleilaxuPuppet = {categories = {'plot', 'endgame'}, plot = {persuasion(1)}, endgame = {"If you have high council and research lvl 2: +1 VP"}},
     studyMelange = {categories = {'plot', 'endgame'}, plot = {spice(1)}, endgame = {"If you have 3 spice and research lvl 2: +1 VP"}},
     counterattack = {categories = {'combat', 'plot'}, plot = {"Deploy up to 2 troops from garrison."}, combat = {"If Opp played combat intrigue: +4 swords"}},
     economicPositioning = {categories = {'combat', 'endgame'}, plot = {"retreat two troops --> +3 solari."}, endgame = {"if you have 10 solari: +1 VP"}},
@@ -140,6 +140,18 @@ function IntrigueCard.evaluatePlot(color, playedCards)
     end
 
     return result
+end
+
+function IntrigueCard.isPlotCard(card)
+    return Helper.isElementOf(IntrigueCard._resolveCard(card).categories, "plot")
+end
+
+function IntrigueCard.isCombatCard(card)
+    return Helper.isElementOf(IntrigueCard._resolveCard(card).categories, "combat")
+end
+
+function IntrigueCard.isEndgameCard(card)
+    return Helper.isElementOf(IntrigueCard._resolveCard(card).categories, "endgame")
 end
 
 return IntrigueCard

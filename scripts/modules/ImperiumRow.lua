@@ -66,9 +66,9 @@ end
 
 ---
 function ImperiumRow.acquireReservedImperiumCard(color)
-    local card = Helper.getCard(ImperiumRow.reservationSlotZone)
-    if card then
-        PlayBoard.giveCard(color, card, false)
+    local cardOrDeck = Helper.getDeckOrCard(ImperiumRow.reservationSlotZone)
+    if cardOrDeck then
+        PlayBoard.giveCardFromZone(color, ImperiumRow.reservationSlotZone, false)
         return true
     else
         return false
@@ -80,9 +80,11 @@ function ImperiumRow.reserveImperiumCard(indexInRow)
     local zone = ImperiumRow.slotZones[indexInRow]
     local card = Helper.getCard(zone)
     if card then
-        local oldCard = Helper.getCard(ImperiumRow.reservationSlotZone)
-        if oldCard  then
-            MainBoard.trash(oldCard)
+        if false then
+            local oldCard = Helper.getCard(ImperiumRow.reservationSlotZone)
+            if oldCard  then
+                MainBoard.trash(oldCard)
+            end
         end
         card.setPosition(ImperiumRow.reservationSlotZone.getPosition())
         ImperiumRow._replenish(indexInRow)

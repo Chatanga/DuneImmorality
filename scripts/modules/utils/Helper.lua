@@ -795,7 +795,7 @@ function Helper.createContinuation(name)
         if toBeNotified and duration > 10 then
             toBeNotified()
         else
-            assert(duration < 10, "Roting continuation!")
+            assert(duration < 10, "Roting continuation: " .. (continuation.name or "<nil>"))
         end
     end
 
@@ -843,13 +843,25 @@ function Helper.onceStabilized(timeout)
     Helper.pendingContinuations[continuation] = nil
 
     local start = os.time()
-    local holder = {}
+    local delayed = false
+    local success = false
 
     Wait.condition(function ()
-        continuation.run(holder.success)
+        continuation.run(success)
     end, function ()
-        holder.success = Helper.isStabilized(true)
-        return holder.success or (os.time() - start > (timeout or 10))
+        local duration = os.time() - start
+        success = Helper.isStabilized(delayed or duration <= 2)
+        if not success then
+            if not delayed and duration > 2 then
+                log(duration)
+                delayed = true
+                broadcastToAll("Delaying transition (see system log)...")
+            end
+            if duration > (timeout or 10) then
+                return true
+            end
+        end
+        return success
     end)
 
     return continuation
@@ -934,6 +946,7 @@ function Helper.onceOneDeck(zone)
         local objects = Helper.filter(zone.getObjects(), function (object)
             return object.type == "Card" or object.type == "Deck"
         end)
+        --log(#objects == 1 and objects[1].type or "nothing")
         if #objects == 1 and objects[1].type == "Deck" then
             local deck = objects[1]
             if deck.resting then
@@ -1115,6 +1128,31 @@ function Helper.createTemporalQueue(delay)
     end
 
     return tq
+end
+
+---
+function Helper.createSpaceQueue()
+    local sq = {
+        distance = 0,
+    }
+
+    function sq.submit(action)
+        assert(action)
+        action(sq.distance)
+        if sq.distance == 0 then
+            sq.updater = Wait.time(sq._reduce, 1)
+        end
+        sq.distance = sq.distance + 1
+    end
+
+    function sq._reduce()
+        sq.distance = sq.distance - 1
+        if sq.distance > 0 then
+            Wait.time(sq._reduce, 1)
+        end
+    end
+
+    return sq
 end
 
 ---
@@ -1402,7 +1440,7 @@ function Helper.dump(...)
         if i > 1 then
             str = str .. " "
         end
-        str = str .. tostring(element)
+        str = str .. tostring(element or "<nil>")
     end
     log(str)
 end

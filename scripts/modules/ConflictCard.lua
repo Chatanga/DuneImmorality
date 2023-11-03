@@ -83,9 +83,11 @@ function ConflictCard.collectReward(color, conflictName, rank)
         cardName = conflictName,
     }
 
+    log("begin")
     for _, reward in ipairs(rewards) do
         CardEffect.evaluate(context, reward)
     end
+    log("end")
 end
 
 return ConflictCard

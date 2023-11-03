@@ -153,17 +153,15 @@ function Combat._setUpConflict()
                     if controlableSpace then
                         local color = MainBoard.getControllingPlayer(controlableSpace)
                         if color then
-                            local troop = Park.getAnyObject(PlayBoard.getSupplyPark(color))
-                            if troop then
-                                troop.setPositionSmooth(Combat.combatCenterZone.getPosition())
-                            end
+                            Park.transfert(1, PlayBoard.getSupplyPark(color), Combat.getBattlegroundPark())
                         end
                     end
                 else
-                    --Helper.dump(Helper.getID(card), "~=", Helper.getID(token))
+                    Helper.dump(Helper.getID(card), "~=", Helper.getID(token))
                 end
             end
-            --Helper.dump("Found", i, "matching VP for conflict:", Helper.getID(card))
+            Helper.dump("Found", i, "matching VP for conflict:", Helper.getID(card))
+            broadcastToAll(I18N("announceCombat", { combat = I18N(Helper.getID(card)) }), "Orange")
         end)
     end
 end

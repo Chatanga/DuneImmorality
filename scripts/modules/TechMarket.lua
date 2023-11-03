@@ -177,8 +177,10 @@ function TechMarket._doAcquireTech(stackIndex, color)
         local innerContinuation = Helper.createContinuation("TechMarket._doAcquireTech#inner")
         innerContinuation.doAfter(function (success)
             if success then
-                PlayBoard.grantTechTile(color, techTileStack.topCard)
-                TechCard.applyBuyEffect(color, techTileStack.topCard)
+                if color then
+                    PlayBoard.grantTechTile(color, techTileStack.topCard)
+                    TechCard.applyBuyEffect(color, techTileStack.topCard)
+                end
 
                 Helper.onceTimeElapsed(0.5).doAfter(function ()
                     if techTileStack.otherCards then
@@ -206,7 +208,7 @@ function TechMarket._doAcquireTech(stackIndex, color)
         else
             printToAll(I18N("pruneTechCard", { card = Helper.getID(techTileStack.topCard) }), "White")
             MainBoard.trash(techTileStack.topCard)
-            innerContinuation.cancel()
+            innerContinuation.run(true)
         end
     else
         continuation.cancel()

@@ -128,10 +128,15 @@ Leader.helenaRichese = Helper.createClass(Leader, {
 
     --- Manipulate
     acquireReservedImperiumCard = function (color)
-        if Action.checkContext({ phase = "playerTurns", color = color }) and not PlayBoard.couldSendAgentOrReveal(color) then
-            return ImperiumRow.acquireReservedImperiumCard(color)
+        --- Be nice.
+        if false then
+            if Action.checkContext({ phase = "playerTurns", color = color }) and not PlayBoard.couldSendAgentOrReveal(color) then
+                return ImperiumRow.acquireReservedImperiumCard(color)
+            else
+                return Action.acquireReservedImperiumCard(color)
+            end
         else
-            return Action.acquireReservedImperiumCard(color)
+            return ImperiumRow.acquireReservedImperiumCard(color)
         end
     end
 })
@@ -303,16 +308,21 @@ Leader.tessiaVernius = Helper.createClass(Leader, {
 
     --- Careful observation
     influence = function (color, faction, amount)
+        Helper.dump("-influence-", color, faction, amount)
         if faction then
-            local noFriendshipBefore = not InfluenceTrack.hasFriendship(color, faction)
             local continuation = Helper.createContinuation("Leader.tessiaVernius.influence")
-            Action.influence(color, faction, amount).doAfter(function ()
+            local noFriendshipBefore = not InfluenceTrack.hasFriendship(color, faction)
+            Action.influence(color, faction, amount).doAfter(function (...)
                 local friendshipAfter = InfluenceTrack.hasFriendship(color, faction)
+                Helper.dump(faction, noFriendshipBefore, friendshipAfter)
                 if noFriendshipBefore and friendshipAfter then
                     InfluenceTrack.recallSnooper(faction, color)
                 end
+                continuation.run(...)
             end)
             return continuation
+        else
+            return Action.influence(color, faction, amount)
         end
     end,
 

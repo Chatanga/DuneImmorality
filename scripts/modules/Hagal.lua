@@ -141,11 +141,11 @@ end
 
 ---
 function Hagal.activate(phase, color)
+    Helper.dumpFunction("Hagal.activate", phase, color)
     -- A delay before and after the action, to let the human(s) see the progress.
     Helper.onceTimeElapsed(1).doAfter(function ()
         Hagal._lateActivate(phase, color).doAfter(function ()
-            -- TODO Add a dedicated entry in the settings?
-            if false then
+            if Hagal.getRivalCount() == 1 then
                 Helper.onceTimeElapsed(1).doAfter(TurnControl.endOfTurn)
             else
                 PlayBoard.createEndOfTurnButton(color)
@@ -194,7 +194,7 @@ end
 ---
 function Hagal._collectReward(color)
     local continuation = Helper.createContinuation("Hagal._collectReward")
-    Wait.frames(function ()
+    Helper.onceFramesPassed(1).doAfter(function ()
         local conflictName = Combat.getCurrentConflictName()
         local rank = Combat.getRank(color).value
         ConflictCard.collectReward(color, conflictName, rank)
@@ -239,7 +239,7 @@ function Hagal._collectReward(color)
             end
         end
         continuation.run()
-    end, 1)
+    end)
     return continuation
 end
 
@@ -326,11 +326,11 @@ end
 
 ---
 function Hagal.pickAnyCompatibleLeader(color)
-    local leaderOrPseudoLeader
     if Hagal.getRivalCount() == 1 then
-        leaderOrPseudoLeader = Helper.getDeck(Hagal.deckZone)
+        local pseudoLeader = Helper.getDeck(Hagal.deckZone)
+        assert(pseudoLeader, "Missing Hagal deck!")
         Hagal.deckZone = PlayBoard.getContent(color).leaderZone
-        assert(leaderOrPseudoLeader, "Missing Hagal deck!")
+        PlayBoard.setLeader(color, pseudoLeader)
     else
         local leaders = {}
         for _, leader in ipairs(LeaderSelection.getSelectableLeaders()) do
@@ -339,9 +339,8 @@ function Hagal.pickAnyCompatibleLeader(color)
             end
         end
         assert(#leaders > 0, "No leader left for Hagal!")
-        leaderOrPseudoLeader = Helper.pickAny(leaders)
+        LeaderSelection.claimLeader(color, Helper.pickAny(leaders))
     end
-    return leaderOrPseudoLeader
 end
 
 ---
@@ -377,7 +376,7 @@ end
 
 ---
 function Rival.shipments(color, amount)
-    for _ = 1, amount do
+    Helper.repeatChainedAction(amount, function ()
         local level = CommercialTrack.getFreighterLevel(color)
         if level < 2 then
             Rival.advanceFreighter(color, 1)
@@ -390,8 +389,16 @@ function Rival.shipments(color, amount)
                 Rival.troops(color, "supply", "garrison", 2)
             end
             Rival.resources(color, "solari", 5)
+            for _, otherColor in ipairs(PlayBoard.getPlayBoardColors()) do
+                if otherColor ~= color then
+                    local otherLeader = PlayBoard.getLeader(otherColor)
+                    otherLeader.resources(otherColor, "solari", 1)
+                end
+            end
         end
-    end
+        -- FIXME
+        return Helper.onceTimeElapsed(0.5)
+    end)
     return true
 end
 

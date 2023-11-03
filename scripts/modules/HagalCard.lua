@@ -413,7 +413,7 @@ function HagalCard.spaceIsFree(color, spaceName)
 end
 
 function HagalCard.isCombatCard(card)
-    local cardData = HagalCard.cards[Helper.getID(card)]
+    local cardData = card and HagalCard.cards[Helper.getID(card)]
     return cardData and cardData.combat
 end
 

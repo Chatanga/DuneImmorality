@@ -227,14 +227,14 @@ function LeaderSelection._setUpPicking(opponents, numberOfLeaders, random, hidde
     if random then
         Helper.registerEventListener("playerTurns", function (phase, color)
             if phase == 'leaderSelection' then
-                local leader
                 if PlayBoard.isRival(color) then
-                    leader = Hagal.pickAnyCompatibleLeader(color)
+                    -- Always auto and random in fact.
+                    --Hagal.pickAnyCompatibleLeader(color)
                 elseif PlayBoard.isHuman(color) then
                     local leaders = LeaderSelection.getSelectableLeaders()
-                    leader = Helper.pickAny(leaders)
+                    local leader = Helper.pickAny(leaders)
+                    LeaderSelection.claimLeader(color, leader)
                 end
-                LeaderSelection.claimLeader(color, leader)
             end
         end)
     end
@@ -329,7 +329,7 @@ function LeaderSelection._createDynamicLeaderSelection(leaders, hidden)
                 width = 1100,
                 height = 1700, -- FIXME Capped size and weird ratio...
                 color = { 0, 0, 0, 0 },
-                tooltip = "Claim"
+                tooltip = I18N("claimLeader", { leader = I18N(Helper.getID(leader)) })
             })
         else
             LeaderSelection._destructLeader(leader)

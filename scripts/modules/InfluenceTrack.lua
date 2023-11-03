@@ -145,7 +145,7 @@ function InfluenceTrack._staticSetUp()
                     if not InfluenceTrack.actionsLocked[faction][color] then
                         local rank = InfluenceTrack._getInfluenceTracksRank(faction, color)
                         InfluenceTrack.actionsLocked[faction][color] = true
-                        InfluenceTrack._changeInfluenceTracksRank(color, faction, i - rank).doAfter(function ()
+                        PlayBoard.getLeader(color).influence(color, faction, i - rank).doAfter(function ()
                             InfluenceTrack.actionsLocked[faction][color] = false
                         end)
                     end

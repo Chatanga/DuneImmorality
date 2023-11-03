@@ -2182,9 +2182,9 @@ function ArrakeenScouts._ensureCardOperation(getSourceCards, getDestinationCards
 
     Wait.condition(function()
         local card = cardCache[getMovedCardsFromSource()[1]]
-        Wait.time(function ()
+        Helper.onceTimeElapsed(0.5).doAfter(function ()
             continuation.run(card)
-        end, 0.5)
+        end)
     end, function()
         return #getMovedCardsFromSource() > 0
     end)

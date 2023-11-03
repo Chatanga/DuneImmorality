@@ -288,11 +288,13 @@ function MainBoard._staticSetUp(settings)
 
             -- Recalling agents.
             for _, space in pairs(MainBoard.spaces) do
-                for _, object in ipairs(Park.getObjects(space.park)) do
-                    if object.hasTag("Agent") and not object.hasTag("Mentat") then
-                        for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
-                            if object.hasTag(color) then
-                                Park.putObject(object, PlayBoard.getAgentPark(color))
+                if space.park then
+                    for _, object in ipairs(Park.getObjects(space.park)) do
+                        if object.hasTag("Agent") and not object.hasTag("Mentat") then
+                            for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
+                                if object.hasTag(color) then
+                                    Park.putObject(object, PlayBoard.getAgentPark(color))
+                                end
                             end
                         end
                     end
@@ -421,6 +423,7 @@ function MainBoard.sendAgent(color, spaceName)
         local agentPark = PlayBoard.getAgentPark(color)
         if asyncAction then
             Helper.emitEvent("agentSent", color, spaceName)
+            log("asyncAction: " .. asyncActionName)
             asyncAction(color, leader).doAfter(function (success)
                 if success then
                     MainBoard.collectExtraBonuses(color, leader, spaceName)
@@ -432,6 +435,7 @@ function MainBoard.sendAgent(color, spaceName)
             end)
         elseif action then
             Helper.emitEvent("agentSent", color, spaceName)
+            log("action: " .. actionName)
             if action(color, leader) then
                 MainBoard.collectExtraBonuses(color, leader, spaceName)
                 --log("Park.transfert(1, agentPark, parentSpace.park)")
@@ -1106,32 +1110,12 @@ end
 
 ---
 function MainBoard.trash(object)
-
-    local holder = {}
-
-    holder.reduceStack = function ()
-        Helper.onceFramesPassed(500).doAfter(function ()
-            if Types.trashStacking > 0 then
-                Types.trashStacking = Types.trashStacking - 1
-                holder.reduceStack()
-            else
-                Types.trashStacking = nil
-            end
-        end)
-    end
-
-    local height = Types.trashStacking
-    if Types.trashStacking then
-        Types.trashStacking = height + 1
-    else
-        height = 0
-        Types.trashStacking = 1
-        holder.reduceStack()
-    end
-
-    object.interactable = true
-    object.setLock(false)
-    object.setPositionSmooth(getObjectFromGUID('ef8614').getPosition() + Vector(0, 1 + height, 0))
+    MainBoard.trashQueue = MainBoard.trashQueue or Helper.createSpaceQueue()
+    MainBoard.trashQueue.submit(function (height)
+        object.interactable = true
+        object.setLock(false)
+        object.setPositionSmooth(getObjectFromGUID('ef8614').getPosition() + Vector(0, 1 + height, 0))
+    end)
 end
 
 return MainBoard

@@ -52,9 +52,9 @@ local ImperiumCard = {
     convincingArgument = {reveal = {persuasion(2)}, starter = true },
     dagger = {agentIcons = {'green', 'blue'}, reveal = {sword(1)}, starter = true},
     -- starter: ix
-    controlTheSpice = {agentIcons = {'yellow'}, reveal = {spice(1)}, starter = true},
+    controlTheSpice = {agentIcons = {'yellow'}, reveal = {persuasion(1), spice(1)}, starter = true},
     -- starter: immortality
-    experimentation = {agentIcons = {'yellow'}, reveal = {persuasion(1)}, starter = true},
+    experimentation = {agentIcons = {'yellow'}, reveal = {persuasion(1), specimen(1)}, starter = true},
     -- reserve
     arrakisLiaison = {factions = {'fremen'}, cost = 2, agentsIcons = {'blue'}, reveal = {persuasion(2)}},
     foldspace = {cost = 0, agentIcons = {'emperor', 'spacingGuild', 'beneGesserit', 'fremen', 'green', 'blue', 'yellow'}},

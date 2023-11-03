@@ -452,7 +452,7 @@ function PlayBoard._staticSetUp(settings)
     end)
 
     Helper.registerEventListener("agentSent", function (color, spaceName)
-        Helper.dump("PlayBoard.isHuman(color) =", PlayBoard.isHuman(color))
+        Helper.dump("PlayBoard.isHuman(", color, ") =", PlayBoard.isHuman(color))
         if PlayBoard.isHuman(color) then
             log(1)
             -- Do it after the clean up done in TechMarket.
@@ -478,6 +478,7 @@ function PlayBoard._staticSetUp(settings)
                 end
                 log(5)
             end)
+            log(6)
         end
     end)
 
@@ -512,17 +513,17 @@ function PlayBoard:_recall()
     Helper.forEach(Helper.filter(Park.getObjects(self.agentCardPark), Types.isImperiumCard), function (_, card)
         local cardName = Helper.getID(card)
         if cardName == "foldspace" then
-            card.setPositionSmooth(Reserve.foldspaceSlotZone.getPosition())
+            card.setPosition(Reserve.foldspaceSlotZone.getPosition())
         elseif Helper.isElementOf(cardName, {"seekAllies", "powerPlay", "treachery"}) then
-            card.setPositionSmooth(self.content.trash.getPosition() + Vector(0, 1, 0))
+            card.setPosition(self.content.trash.getPosition() + Vector(0, 1, 0))
         else
-            card.setPositionSmooth(self.content.discardZone.getPosition())
+            card.setPosition(self.content.discardZone.getPosition())
         end
     end)
 
     -- Send all revealed cards to the discard.
     Helper.forEach(Helper.filter(Park.getObjects(self.revealCardPark), Types.isImperiumCard), function (i, card)
-        card.setPositionSmooth(self.content.discardZone.getPosition() + Vector(0, i * 0.5, 0))
+        card.setPosition(self.content.discardZone.getPosition() + Vector(0, i * 0.5, 0))
     end)
 
     -- Send all played intrigues to their discard.
@@ -531,7 +532,7 @@ function PlayBoard:_recall()
         Helper.filter(Park.getObjects(self.revealCardPark), Types.isIntrigueCard)
     )
     Helper.forEach(playedIntrigueCards, function (i, card)
-        card.setPositionSmooth(Intrigue.discardZone.getPosition())
+        card.setPosition(Intrigue.discardZone.getPosition())
     end)
 
     -- Flip any used tech.
@@ -688,6 +689,7 @@ end
 
 ---
 function PlayBoard.getPlayBoard(color)
+    assert(color)
     assert(#Helper.getKeys(PlayBoard.playboards) > 0, "No playBoard at all: too soon!")
     local playBoard = PlayBoard.playboards[color]
     --assert(playBoard, "No playBoard for color " .. tostring(color))
@@ -1069,7 +1071,9 @@ function PlayBoard:_createButtons()
 
     board.createButton({
         click_function = self:_createExclusiveCallback(function ()
-            self:onRevealHand()
+            if PlayBoard.isHuman(self.color) then
+                self:onRevealHand()
+            end
         end),
         label = I18N("revealHandButton"),
         position = self:_newSymmetricBoardPosition(-14.8, 0, -5),
@@ -1089,7 +1093,9 @@ function PlayBoard:_createNukeButton()
     if self.content.atomicsToken then
         self.content.atomicsToken.createButton({
             click_function = self:_createExclusiveCallback(function ()
-                self:_nukeConfirm()
+                if PlayBoard.isHuman(self.color) then
+                    self:_nukeConfirm()
+                end
             end),
             tooltip = I18N('atomics'),
             position = Vector(0, 0, 0),
@@ -1303,6 +1309,7 @@ function PlayBoard:_resetDiscard()
         discard.setRotationSmooth({0, 180, 180}, false, false)
         discard.setPositionSmooth(self.content.drawDeckZone.getPosition() + Vector(0, 1, 0), false, true)
 
+        Helper.dump("self.content.drawDeckZone", self.content.drawDeckZone.getPosition())
         Helper.onceOneDeck(self.content.drawDeckZone).doAfter(function ()
             local replenishedDeckOrCard = Helper.getDeckOrCard(self.content.drawDeckZone)
             assert(replenishedDeckOrCard)
@@ -1428,13 +1435,19 @@ function PlayBoard.setLeader(color, leaderCard)
     else
         playBoard.leader = Leader.newLeader(Helper.getID(leaderCard))
     end
+
     assert(playBoard.leader)
     local position = playBoard.content.leaderZone.getPosition()
     leaderCard.setPosition(position)
     playBoard.leaderCard = leaderCard
-    Helper.onceMotionless(leaderCard).doAfter(function ()
-        Helper.noPhysics(leaderCard)
-    end)
+
+    -- Do not lock the Hagal deck.
+    if playBoard.opponent ~= "rival" or Hagal.getRivalCount() > 1 then
+        Helper.onceMotionless(leaderCard).doAfter(function ()
+            Helper.noPhysics(leaderCard)
+        end)
+    end
+
     return true
 end
 

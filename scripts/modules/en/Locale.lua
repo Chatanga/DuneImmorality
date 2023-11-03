@@ -59,6 +59,7 @@ return {
     leaderSelectionAdjust = "Adjust the number of leaders who will be randomly\nselected for the players to choose among:",
     leaderSelectionExclude = "You can flip out (or delete) any leader you want to exclude.\nOnce satisfied, hit the 'Start' button.",
     start = "Start",
+    claimLeader = "Claim {leader} as leader",
 
     -- Instructions
     leaderSelectionActiveInstruction = "Select a leader\non the upper board",
@@ -95,8 +96,8 @@ return {
     strengthAmount = "Strength",
     strength = "Sword",
     strengths = "Swords",
-    spentManually = "{leader} spent {amount} {resource} manually.",
-    receiveManually = "{leader} received {amount} {resource} manually.",
+    spentManually = "▲ {leader} spent {amount} {resource} manually.",
+    receiveManually = "▼ {leader} received {amount} {resource} manually.",
     influence = "influence",
 
     -- Actions
@@ -133,11 +134,12 @@ return {
     buyTechCard= "■ Acquire tech for {amount} {resource}: \"{card}\"",
 
     -- Combat
+    announceCombat = "Round combat is: \"{combat}\"",
     dreadnoughtMandatoryOccupation = "Reminder: you must sent a dreadnought and occupy a space.",
     troopEdit = "Troops: ±1",
 
     -- Boards
-    sendAgentTo = "Send agent to: {space}",
+    sendAgentTo = "Send agent to ➤ {space}",
     progressOnInfluenceTrack = "Progress on {withFaction} influence track",
     recallYourFreighter = "Recall your freighter",
     progressOnCommercialTrack = "Progress on the commercial track",
@@ -160,7 +162,7 @@ return {
     appropriateTechBuyOption = "Appropriate",
     ixianEngineerTechBuyOption = "Ixian Engineer",
     machineCultureTechBuyOption = "Machine Culture",
-    rhomburVerniusTechBuyOption = "Rombur Vernius' ring",
+    rhomburVerniusTechBuyOption = "Rhombur Vernius' ring",
     manuallyBuyTech = "Manually acquiring a tech at no cost?",
     notAffordableOption = "You can't afford this buying option!",
     pruneTechCard = "Pruning tech tile: \"{card}\"",

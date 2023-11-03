@@ -19,6 +19,7 @@ local TurnControl = {
     },
     players = {},
     firstPlayerLuaIndex = nil,
+    counterClockWise = false,
     currentRound = 0,
     currentPhaseLuaIndex = nil,
     currentPlayerLuaIndex = nil,
@@ -55,6 +56,7 @@ function TurnControl.onSave(state)
         specialPhase = TurnControl.specialPhase,
         firstPlayerLuaIndex = TurnControl.firstPlayerLuaIndex,
         --
+        counterClockWise = TurnControl.counterClockWise,
         currentRound = TurnControl.currentRound,
         currentPhaseLuaIndex = TurnControl.currentPhaseLuaIndex,
         currentPlayerLuaIndex = TurnControl.currentPlayerLuaIndex,
@@ -137,7 +139,7 @@ function TurnControl.getPhaseTurnSequence()
     local playerLuaIndex = TurnControl.firstPlayerLuaIndex
     repeat
         table.insert(turnSequence, TurnControl.players[playerLuaIndex])
-        playerLuaIndex = TurnControl._getNextPlayer(playerLuaIndex)
+        playerLuaIndex = TurnControl._getNextPlayer(playerLuaIndex, TurnControl.counterClockWise)
     until playerLuaIndex == TurnControl.firstPlayerLuaIndex
     return turnSequence
 end
@@ -164,19 +166,32 @@ function TurnControl._startPhase(phase)
     assert(phase)
     TurnControl.lastTransition = os.time()
 
+    local getNextPlayer = function ()
+        return TurnControl._getNextPlayer(TurnControl.firstPlayerLuaIndex, TurnControl.counterClockWise)
+    end
+
     if phase == "roundStart" then
         TurnControl.currentRound = TurnControl.currentRound + 1
         if TurnControl.currentRound > 1 then
-            TurnControl.firstPlayerLuaIndex = TurnControl._getNextPlayer(TurnControl.firstPlayerLuaIndex)
+            TurnControl.firstPlayerLuaIndex = getNextPlayer()
+            -- Skip House Hagal which always play second.
             if Hagal.getRivalCount() == 1 and PlayBoard.isRival(TurnControl.players[TurnControl.firstPlayerLuaIndex]) then
-                TurnControl.firstPlayerLuaIndex = TurnControl._getNextPlayer(TurnControl.firstPlayerLuaIndex)
+                TurnControl.firstPlayerLuaIndex = getNextPlayer()
             end
+        end
+        -- Reverse turn sequence to have House Hagal second.
+        if Hagal.getRivalCount() == 1 and not PlayBoard.isRival(TurnControl.players[getNextPlayer()]) then
+            TurnControl.counterClockWise = not TurnControl.counterClockWise
         end
     end
 
     TurnControl.currentPhase = phase
     TurnControl.customTurnSequence = nil
-    TurnControl.currentPlayerLuaIndex = TurnControl.firstPlayerLuaIndex
+    if phase == "leaderSelection" and TurnControl.counterClockWise then
+        TurnControl.currentPlayerLuaIndex = TurnControl._getNextPlayer(TurnControl.firstPlayerLuaIndex, TurnControl.counterClockWise)
+    else
+        TurnControl.currentPlayerLuaIndex = TurnControl.firstPlayerLuaIndex
+    end
 
     local firstPlayer = TurnControl.players[TurnControl.firstPlayerLuaIndex]
     Helper.dump("> Round:", TurnControl.getCurrentRound(), "- Phase:", phase, "- first player:", firstPlayer)
@@ -199,7 +214,7 @@ end
 ---
 function TurnControl.endOfTurn()
     Helper.onceStabilized().doAfter(function ()
-        TurnControl._next(TurnControl._getNextPlayer(TurnControl.currentPlayerLuaIndex))
+        TurnControl._next(TurnControl._getNextPlayer(TurnControl.currentPlayerLuaIndex, TurnControl.counterClockWise))
     end)
 end
 
@@ -242,14 +257,14 @@ function TurnControl._findActivePlayer(startPlayerLuaIndex)
         if TurnControl._isPlayerActive(playerLuaIndex) then
             return playerLuaIndex
         end
-        playerLuaIndex = TurnControl._getNextPlayer(playerLuaIndex)
+        playerLuaIndex = TurnControl._getNextPlayer(playerLuaIndex, TurnControl.counterClockWise)
     end
     return nil
 end
 
 ---
-function TurnControl._getNextPlayer(playerLuaIndex)
-    --Helper.dumpFunction("TurnControl._getNextPlayer", playerLuaIndex)
+function TurnControl._getNextPlayer(playerLuaIndex, counterClockWise)
+    --Helper.dumpFunction("TurnControl._getNextPlayer", playerLuaIndex, counterClockWise)
     assert(playerLuaIndex)
     if TurnControl.customTurnSequence then
         for i, otherPlayerLuaIndex in ipairs(TurnControl.customTurnSequence) do
@@ -260,7 +275,12 @@ function TurnControl._getNextPlayer(playerLuaIndex)
         error("Incorrect custom turn sequence")
     else
         local n = TurnControl.getPlayerCount()
-        local nextPlayerLuaIndex = (playerLuaIndex % n) + 1
+        local nextPlayerLuaIndex
+        if counterClockWise then
+            nextPlayerLuaIndex = ((playerLuaIndex + n - 2) % n) + 1
+        else
+            nextPlayerLuaIndex = (playerLuaIndex % n) + 1
+        end
         assert(nextPlayerLuaIndex)
         return nextPlayerLuaIndex
     end

@@ -88,6 +88,10 @@ function CardEffect._dispatch(selector, expression)
 
         if selector == "troop" then
             return call("troops", color, "supply", "garrison", value)
+        elseif selector == "negotiator" then
+            return call("troops", color, "supply", "negotiation", value)
+        elseif selector == "specimen" then
+            return call("troops", color, "supply", "tanks", value)
         elseif selector == "dreadnought" then
             return call("dreadnought", color, "supply", "garrison", value)
         elseif Helper.isElementOf(selector, { "spice", "water", "solari" }) then
@@ -210,7 +214,8 @@ end
 
 function CardEffect.control(space)
     return function (expression)
-        error("TODO")
+        -- TODO Implicit, but better formalize it here.
+        --error("TODO")
     end
 end
 
