@@ -6,8 +6,8 @@ local MainBoard = Module.lazyRequire("MainBoard")
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
 local TleilaxuRow = Module.lazyRequire("TleilaxuRow")
-local Hagal = Module.lazyRequire("Hagal")
 local Action = Module.lazyRequire("Action")
+local Types = Module.lazyRequire("Types")
 
 local HagalCard = {
     cards = {
@@ -39,6 +39,8 @@ local HagalCard = {
 }
 
 function HagalCard.setStrength(color, card)
+    Types.assertIsPlayerColor(color)
+    assert(card)
     local rival = PlayBoard.getLeader(color)
     local strength = HagalCard.cards[Helper.getID(card)].strength
     if strength then
@@ -50,6 +52,8 @@ function HagalCard.setStrength(color, card)
 end
 
 function HagalCard.activate(color, card, riseOfIx)
+    Types.assertIsPlayerColor(color)
+    assert(card)
     Action.setContext("hagalCard", card)
     HagalCard.riseOfIx = riseOfIx
     local rival = PlayBoard.getLeader(color)
@@ -413,6 +417,7 @@ function HagalCard.spaceIsFree(color, spaceName)
 end
 
 function HagalCard.isCombatCard(card)
+    assert(card)
     local cardData = card and HagalCard.cards[Helper.getID(card)]
     return cardData and cardData.combat
 end

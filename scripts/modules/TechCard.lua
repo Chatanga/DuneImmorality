@@ -5,6 +5,7 @@ local Helper = require("utils.Helper")
 local CardEffect = require("CardEffect")
 
 local PlayBoard = Module.lazyRequire("PlayBoard")
+local Types = Module.lazyRequire("Types")
 
 -- Function aliasing for a more readable code.
 local persuasion = CardEffect.persuasion
@@ -66,6 +67,7 @@ local TechCard = {
 }
 
 function TechCard._resolveCard(card)
+    assert(card)
     local cardName = Helper.getID(card)
     local cardInfo = TechCard[cardName]
     assert(cardInfo, "Unknown card: " .. tostring(cardName))
@@ -90,6 +92,9 @@ end
 
 ---
 function TechCard.applyBuyEffect(color, techCard)
+    Types.assertIsPlayerColor(color)
+    assert(techCard)
+
     local bonus = TechCard.getDetails(techCard).acquireBonus
     if bonus then
         local context = {

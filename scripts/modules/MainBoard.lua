@@ -331,6 +331,7 @@ end
 
 ---
 function MainBoard.findControlableSpace(victoryPointToken)
+    assert(victoryPointToken)
     local description = Helper.getID(victoryPointToken)
     if description == "secureImperialBasin" or description == "battleForImperialBasin" then
         return MainBoard.banners.imperialBasinBannerZone
@@ -1114,7 +1115,7 @@ function MainBoard.trash(object)
     MainBoard.trashQueue.submit(function (height)
         object.interactable = true
         object.setLock(false)
-        object.setPositionSmooth(getObjectFromGUID('ef8614').getPosition() + Vector(0, 1 + height, 0))
+        object.setPosition(getObjectFromGUID('ef8614').getPosition() + Vector(0, 1 + height * 0.5, 0))
     end)
 end
 

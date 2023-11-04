@@ -279,6 +279,9 @@ function InfluenceTrack._changeInfluenceTracksRank(color, faction, change)
         if oldRank >= 4 or newRank >= 4 then
             InfluenceTrack._challengeAlliance(faction)
         end
+        if oldRank < 4 and newRank >= 4 then
+            InfluenceTrack._gainAllianceBonus(faction, color)
+        end
         if oldRank < 2 and newRank >= 2 then
             InfluenceTrack._gainFriendship(faction, color)
         end
@@ -294,7 +297,11 @@ end
 
 ---
 function InfluenceTrack._gainFriendship(faction, color)
-    PlayBoard.getLeader(color).gainVictoryPoint(color, Helper.getID(InfluenceTrack.friendshipBags[faction]))
+    Types.assertIsFaction(faction)
+    Types.assertIsPlayerColor(color)
+    local token = InfluenceTrack.friendshipBags[faction]
+    assert(token)
+    PlayBoard.getLeader(color).gainVictoryPoint(color, Helper.getID(token))
 end
 
 ---
@@ -364,10 +371,11 @@ end
 
 ---
 function InfluenceTrack._gainAlliance(faction, color)
-    PlayBoard.getLeader(color).gainVictoryPoint(color, Helper.getID(InfluenceTrack.allianceTokens[faction]))
-    if not PlayBoard.isRival(color) then
-        InfluenceTrack._gainAllianceBonus(faction, color)
-    end
+    Types.assertIsFaction(faction)
+    Types.assertIsPlayerColor(color)
+    local token = InfluenceTrack.allianceTokens[faction]
+    assert(token)
+    PlayBoard.getLeader(color).gainVictoryPoint(color, Helper.getID(token))
 end
 
 ---

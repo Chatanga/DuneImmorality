@@ -397,12 +397,12 @@ function PlayBoard._staticSetUp(settings)
                 playBoard.leader.prepare(color, settings)
             end
         elseif phase == "endgame" then
-            PlayBoard._setActivePlayer(nil, nil)
             MainBoard.getFirstPlayerMarker().destruct()
         end
         for _, playBoard in pairs(PlayBoard._getPlayBoards()) do
             Helper.clearButtons(playBoard.instructionTextAnchor)
         end
+        PlayBoard._setActivePlayer(nil, nil)
     end)
 
     Helper.registerEventListener("playerTurns", function (phase, color)
@@ -454,14 +454,10 @@ function PlayBoard._staticSetUp(settings)
     Helper.registerEventListener("agentSent", function (color, spaceName)
         Helper.dump("PlayBoard.isHuman(", color, ") =", PlayBoard.isHuman(color))
         if PlayBoard.isHuman(color) then
-            log(1)
             -- Do it after the clean up done in TechMarket.
             Helper.onceFramesPassed(1).doAfter(function ()
-                log(2)
                 local cards = PlayBoard._getCardsPlayedThisTurn(color)
-                log(3)
                 for _, card in ipairs(cards) do
-                    log(4)
                     local cardName = Helper.getID(card)
                     if cardName == "appropriate" then
                         if InfluenceTrack.hasFriendship(color, "emperor") then
@@ -476,9 +472,7 @@ function PlayBoard._staticSetUp(settings)
                         TechMarket.registerAcquireTechOption(color, "rhomburVerniusTechBuyOption", "spice", 0)
                     end
                 end
-                log(5)
             end)
-            log(6)
         end
     end)
 
@@ -509,21 +503,27 @@ function PlayBoard:_recall()
 
     self:_createButtons()
 
+    local stackHeight = 0
+    local nextDiscardPosition = function ()
+        stackHeight = stackHeight + 1
+        return self.content.discardZone.getPosition() + Vector(0, stackHeight * 0.5, 0)
+    end
+
     -- Send all played cards to the discard, save those which shouldn't.
     Helper.forEach(Helper.filter(Park.getObjects(self.agentCardPark), Types.isImperiumCard), function (_, card)
         local cardName = Helper.getID(card)
         if cardName == "foldspace" then
             card.setPosition(Reserve.foldspaceSlotZone.getPosition())
         elseif Helper.isElementOf(cardName, {"seekAllies", "powerPlay", "treachery"}) then
-            card.setPosition(self.content.trash.getPosition() + Vector(0, 1, 0))
+            MainBoard.trash(card)
         else
-            card.setPosition(self.content.discardZone.getPosition())
+            card.setPosition(nextDiscardPosition())
         end
     end)
 
     -- Send all revealed cards to the discard.
     Helper.forEach(Helper.filter(Park.getObjects(self.revealCardPark), Types.isImperiumCard), function (i, card)
-        card.setPosition(self.content.discardZone.getPosition() + Vector(0, i * 0.5, 0))
+        card.setPosition(nextDiscardPosition())
     end)
 
     -- Send all played intrigues to their discard.
@@ -1185,6 +1185,7 @@ function PlayBoard:revealHand()
             We leave the sister card in the player's hand to simplify things and
             make clear to the player that the card must be manually revealed.
         ]]
+        assert(card)
         return Types.isImperiumCard(card) and Helper.getID(card) ~= "beneGesseritSister"
     end
 
@@ -1282,7 +1283,8 @@ function PlayBoard:drawCards(count)
     local drawableCardCount = Helper.getCardCount(deckOrCard)
 
     local dealCardCount = math.min(remainingCardToDrawCount, drawableCardCount)
-    if dealCardCount > 0 then
+    -- The getCardCount function is ok with nil arg, but we add a check for the sake of VS Code.
+    if deckOrCard and dealCardCount > 0 then
         deckOrCard.deal(dealCardCount, self.color)
         -- FIXME Should be in Action.
         printToAll(I18N("drawObjects", { amount = dealCardCount, object = I18N.agree(dealCardCount, "imperiumCard") }), self.color)
@@ -1290,26 +1292,23 @@ function PlayBoard:drawCards(count)
 
     remainingCardToDrawCount = remainingCardToDrawCount - dealCardCount
 
-    if remainingCardToDrawCount > 0 then
-        local reset = self:_resetDiscard()
-        if reset then
-            reset.doAfter(function()
+    -- Dealing cards take an unknown amout of time.
+    Helper.onceTimeElapsed(0.5).doAfter(function ()
+        if remainingCardToDrawCount > 0 then
+            self:_resetDiscard().doAfter(function()
                 self:drawCards(remainingCardToDrawCount)
             end)
         end
-    end
+    end)
 end
 
 ---
 function PlayBoard:_resetDiscard()
+    local continuation = Helper.createContinuation("PlayBoard:_resetDiscard")
     local discard = Helper.getDeckOrCard(self.content.discardZone)
     if discard then
-        local continuation = Helper.createContinuation("PlayBoard:_resetDiscard")
-
         discard.setRotationSmooth({0, 180, 180}, false, false)
         discard.setPositionSmooth(self.content.drawDeckZone.getPosition() + Vector(0, 1, 0), false, true)
-
-        Helper.dump("self.content.drawDeckZone", self.content.drawDeckZone.getPosition())
         Helper.onceOneDeck(self.content.drawDeckZone).doAfter(function ()
             local replenishedDeckOrCard = Helper.getDeckOrCard(self.content.drawDeckZone)
             assert(replenishedDeckOrCard)
@@ -1320,11 +1319,10 @@ function PlayBoard:_resetDiscard()
                 continuation.run(replenishedDeckOrCard)
             end
         end)
-
-        return continuation
     else
-        return nil
+        continuation.cancel()
     end
+    return continuation
 end
 
 ---
@@ -1421,6 +1419,9 @@ end
 
 ---
 function PlayBoard.setLeader(color, leaderCard)
+    Types.assertIsPlayerColor(color)
+    assert(leaderCard)
+
     local playBoard = PlayBoard.getPlayBoard(color)
     if playBoard.opponent == "rival" then
         if Hagal.getRivalCount() == 1 then
@@ -1630,6 +1631,9 @@ end
 
 ---
 function PlayBoard.giveCard(color, card, isTleilaxuCard)
+    Types.assertIsPlayerColor(color)
+    assert(card)
+
     local content = PlayBoard.getContent(color)
     assert(content)
 
@@ -1639,7 +1643,7 @@ function PlayBoard.giveCard(color, card, isTleilaxuCard)
     ImperiumCard.applyAcquireEffect(color, card)
 
     -- Move it on the top of the content deck if possible and wanted.
-    if (isTleilaxuCard and TleilaxuResearch.hasReachedOneHelix(color)) or PlayBoard.hasTech(color, "Spaceport") then
+    if (isTleilaxuCard and TleilaxuResearch.hasReachedOneHelix(color)) or PlayBoard.hasTech(color, "spaceport") then
         Player[color].showConfirmDialog(
             I18N("dialogCardAbove"),
             function(_)
@@ -1650,18 +1654,21 @@ end
 
 ---
 function PlayBoard.giveCardFromZone(color, zone, isTleilaxuCard)
+    Types.assertIsPlayerColor(color)
+
     local content = PlayBoard.getContent(color)
     assert(content)
 
     -- Acquire the card (not smoothly to avoid being grabbed by a player hand zone).
     Helper.moveCardFromZone(zone, content.discardZone.getPosition()).doAfter(function (card)
+        assert(card)
         local cardName = I18N(Helper.getID(card))
         printToAll(I18N(isTleilaxuCard and "acquireTleilaxuCard" or "acquireImperiumCard", { card = cardName }), color)
         ImperiumCard.applyAcquireEffect(color, card)
     end)
 
     -- Move it on the top of the player deck if possible and wanted.
-    if (isTleilaxuCard and TleilaxuResearch.hasReachedOneHelix(color)) or PlayBoard.hasTech(color, "Spaceport") then
+    if (isTleilaxuCard and TleilaxuResearch.hasReachedOneHelix(color)) or PlayBoard.hasTech(color, "spaceport") then
         Player[color].showConfirmDialog(
             I18N("dialogCardAbove"),
             function(_)

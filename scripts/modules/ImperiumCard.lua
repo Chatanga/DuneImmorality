@@ -2,7 +2,9 @@ local Helper = require("utils.Helper")
 
 -- Exceptional Immediate require for the sake of aliasing.
 local PlayBoard = require("PlayBoard")
+
 local CardEffect = require("CardEffect")
+local Types = require("Types")
 
 -- Function aliasing for a more readable code.
 local persuasion = CardEffect.persuasion
@@ -249,6 +251,9 @@ function ImperiumCard.evaluateReveal2(color, playedCards, revealedCards, artille
 end
 
 function ImperiumCard.applyAcquireEffect(color, card)
+    Types.assertIsPlayerColor(color)
+    assert(card)
+
     local bonus = ImperiumCard._resolveCard(card).acquireBonus
     if bonus then
         local context = {

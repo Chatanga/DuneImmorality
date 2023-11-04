@@ -69,6 +69,7 @@ end
 function TleilaxuRow.acquireTleilaxuCard(indexInRow, color)
     local acquireCard = TleilaxuRow.acquireCards[indexInRow]
     local card = Helper.getCard(acquireCard.zone)
+    assert(card)
     local price = ImperiumCard.getTleilaxuCardCost(card)
     local cardName = Helper.getID(card)
     assert(price, "Unknown tleilaxu card: " .. cardName)
@@ -113,6 +114,7 @@ end
 function TleilaxuRow.trash(indexInRow)
     local acquireCard = TleilaxuRow.acquireCards[indexInRow]
     local card = Helper.getCard(acquireCard.zone)
+    assert(card)
     local price = ImperiumCard.getTleilaxuCardCost(card)
     local cardName = Helper.getID(card)
     assert(price, "Unknown tleilaxu card: " .. cardName)

@@ -220,7 +220,15 @@ end
 
 ---
 function TurnControl.endOfPhase()
-    Helper.onceStabilized().doAfter(function ()
+    local bestTrigger
+    local heavyPhases = { "recall" }
+    if Helper.isElementOf(TurnControl.currentPhase, heavyPhases) then
+        bestTrigger = Helper.onceTimeElapsed(2)
+    else
+        bestTrigger = Helper.onceStabilized()
+    end
+
+    bestTrigger.doAfter(function ()
         if TurnControl.currentPhase then
             Helper.emitEvent("phaseEnd", TurnControl.currentPhase)
         end

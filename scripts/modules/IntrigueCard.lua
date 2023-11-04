@@ -109,6 +109,7 @@ local IntrigueCard = {
 }
 
 function IntrigueCard._resolveCard(card)
+    assert(card)
     local cardName = Helper.getID(card)
     local cardInfo = IntrigueCard[cardName]
     assert(cardInfo, "Unknown card: " .. cardName)

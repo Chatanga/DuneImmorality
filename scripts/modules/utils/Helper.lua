@@ -229,6 +229,7 @@ end
 ---@param flipAtTheEnd boolean?
 ---@return Continuation? A continuation run once the object is spawned.
 function Helper.moveCardFromZone(zone, position, rotation, smooth, flipAtTheEnd)
+    --Helper.dumpFunction("Helper.moveCardFromZone", zone, position, rotation, smooth, flipAtTheEnd)
     local continuation = Helper.createContinuation("Helper.moveCardFromZone")
     local deckOrCard = Helper.getDeckOrCard(zone)
     if deckOrCard then
@@ -237,6 +238,9 @@ function Helper.moveCardFromZone(zone, position, rotation, smooth, flipAtTheEnd)
                 position = position,
                 flip = flipAtTheEnd and true,
                 smooth = smooth or false,
+                -- It matters that the target position is not directly a deck or card.
+                -- Otherwise, the taken card won't be created and the callback won't be
+                -- called.
                 callback_function = continuation.run
             }
             if rotation then
@@ -253,7 +257,7 @@ function Helper.moveCardFromZone(zone, position, rotation, smooth, flipAtTheEnd)
             error("Unexpected type: " .. deckOrCard.type)
         end
     else
-        continuation.cancel()
+        continuation.run(nil)
     end
     return continuation
 end
@@ -907,7 +911,7 @@ function Helper.onceShuffled(container)
     local continuation = Helper.createContinuation("Helper.onceShuffled")
     Wait.time(function ()
         continuation.run(container)
-    end, 1.5) -- TODO Search for a better way.
+    end, 2) -- TODO Search for a better way.
     return continuation
 end
 
@@ -943,12 +947,11 @@ function Helper.onceOneDeck(zone)
     Wait.condition(function()
         continuation.run(Helper.getDeck(zone))
     end, function()
-        local objects = Helper.filter(zone.getObjects(), function (object)
+        local deckOrCards = Helper.filter(zone.getObjects(), function (object)
             return object.type == "Card" or object.type == "Deck"
         end)
-        --log(#objects == 1 and objects[1].type or "nothing")
-        if #objects == 1 and objects[1].type == "Deck" then
-            local deck = objects[1]
+        if #deckOrCards == 1 and deckOrCards[1].type == "Deck" then
+            local deck = deckOrCards[1]
             if deck.resting then
                 return true
             end

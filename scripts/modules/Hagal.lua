@@ -269,9 +269,8 @@ function Hagal._doActivateFirstValidCard(color, action, n, continuation)
 
     assert(n < 10, "Something is not right!")
 
-    local success = Helper.moveCardFromZone(Hagal.deckZone, emptySlots[2] + Vector(0, 1 + 0.4 * n, 0), Vector(0, 180, 0))
-    if success then
-        success.doAfter(function (card)
+    Helper.moveCardFromZone(Hagal.deckZone, emptySlots[2] + Vector(0, 1 + 0.4 * n, 0), Vector(0, 180, 0)).doAfter(function (card)
+        if card then
             if Helper.getID(card) == "reshuffle" then
                 Hagal._reshuffleDeck(color, action, n, continuation)
             elseif action(card) then
@@ -279,10 +278,10 @@ function Hagal._doActivateFirstValidCard(color, action, n, continuation)
             else
                 Hagal._doActivateFirstValidCard(color, action, n + 1, continuation)
             end
-        end)
-    else
-        Hagal._reshuffleDeck(color, action, n, continuation)
-    end
+        else
+            Hagal._reshuffleDeck(color, action, n, continuation)
+        end
+    end)
 end
 
 ---
@@ -316,6 +315,7 @@ end
 
 ---
 function Hagal.isLeaderCompatible(leader)
+    assert(leader)
     for _, compatibleLeader in ipairs(Helper.getKeys(Hagal.compatibleLeaders)) do
         if compatibleLeader == Helper.getID(leader) then
             return true

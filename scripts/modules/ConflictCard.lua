@@ -1,4 +1,5 @@
 local Module = require("utils.Module")
+local Helper = require("utils.Helper")
 
 -- Exceptional Immediate require for the sake of aliasing.
 local CardEffect = require("CardEffect")
@@ -83,11 +84,12 @@ function ConflictCard.collectReward(color, conflictName, rank)
         cardName = conflictName,
     }
 
-    log("begin")
+    Helper.dump("Collecting rewards for conflict ", conflictName, "at rank", rank, "...")
     for _, reward in ipairs(rewards) do
+        log(reward)
         CardEffect.evaluate(context, reward)
     end
-    log("end")
+    Helper.dump("... end")
 end
 
 return ConflictCard

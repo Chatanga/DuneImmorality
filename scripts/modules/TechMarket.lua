@@ -186,6 +186,7 @@ function TechMarket._doAcquireTech(stackIndex, color)
                     if techTileStack.otherCards then
                         local above = acquireCard.zone.getPosition() + Vector(0, 1, 0)
                         Helper.moveCardFromZone(acquireCard.zone, above, Vector(0, 180, 0), true).doAfter(function (card)
+                            assert(card)
                             Helper.onceMotionless(card).doAfter(function ()
                                 continuation.run(techTileStack.topCard)
                             end)

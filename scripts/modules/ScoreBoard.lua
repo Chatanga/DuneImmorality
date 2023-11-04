@@ -51,6 +51,7 @@ function ScoreBoard.onLoad(state)
     })
 
     Helper.forEachRecursively(ScoreBoard.tokens, function (name, token)
+        assert(token)
         token.setName(I18N(Helper.getID(token)))
 
         -- Clumsy workaround to name items in a bag.
