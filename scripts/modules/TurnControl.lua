@@ -212,6 +212,18 @@ function TurnControl._startPhase(phase)
 end
 
 ---
+function TurnControl.onPlayerTurn(player, previousPlayer)
+    local currentPlayer = TurnControl.getCurrentPlayer()
+    local playerColor = player and player.color
+    if currentPlayer ~= playerColor then
+        Helper.dump("Inconsistent onPlayerTurn:", currentPlayer, "~=", playerColor or "nil")
+        --TurnControl.endOfTurn()
+    else
+        Helper.dump("Consistent onPlayerTurn:", currentPlayer)
+    end
+end
+
+---
 function TurnControl.endOfTurn()
     Helper.onceStabilized().doAfter(function ()
         TurnControl._next(TurnControl._getNextPlayer(TurnControl.currentPlayerLuaIndex, TurnControl.counterClockWise))
@@ -247,9 +259,15 @@ function TurnControl._next(startPlayerLuaIndex)
     --Helper.dumpFunction("TurnControl._next", startPlayerLuaIndex)
     TurnControl.currentPlayerLuaIndex = TurnControl._findActivePlayer(startPlayerLuaIndex)
     if TurnControl.currentPlayerLuaIndex then
-        local player = TurnControl.players[TurnControl.currentPlayerLuaIndex]
-        Helper.dump(">> Turn:", player)
-        Helper.emitEvent("playerTurns", TurnControl.currentPhase, player)
+        local playerColor = TurnControl.players[TurnControl.currentPlayerLuaIndex]
+        local player = Helper.findPlayerByColor(playerColor)
+        if player and player.seated then
+            Turns.turn_color = playerColor
+            -- Prevent any change trough the TTS built-in turn button.
+            Turns.order = { playerColor }
+        end
+        Helper.dump(">> Turn:", playerColor)
+        Helper.emitEvent("playerTurns", TurnControl.currentPhase, playerColor)
     else
         TurnControl.endOfPhase()
     end

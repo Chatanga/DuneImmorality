@@ -1,4 +1,4 @@
-local BUILD = 'Sun Nov  5 16:29:00 CET 2023'
+local BUILD = 'Sun Nov  5 18:13:10 CET 2023'
 
 -- Do not load anything. Appropriate to work on the mod content without
 -- interference.
@@ -275,7 +275,9 @@ function onLoad(scriptState)
         "onObjectDrop",
         "onPlayerChangeColor",
         "onPlayerConnect",
-        "onPlayerDisconnect" })
+        "onPlayerDisconnect",
+        "onPlayerTurn",
+    })
 
     if not state.settings then
         if autoLoadedSettings then

@@ -442,7 +442,7 @@ function PlayBoard._staticSetUp(settings)
         end
 
         PlayBoard._setActivePlayer(phase, color)
-        Music.play("turn")
+        --Music.play("turn")
     end)
 
     Helper.registerEventListener("combatUpdate", function (forces)
