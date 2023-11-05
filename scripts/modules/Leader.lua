@@ -149,8 +149,7 @@ Leader.letoAtreides = Helper.createClass(Leader, {
         if resourceName == "solari" and amount < 0 and Action.checkContext({ phase = "playerTurns", color = color, space = MainBoard.isLandsraadSpace }) then
             finalAmount = amount + 1
         end
-        local leader = PlayBoard.getLeader(color)
-        return leader.resources(color, resourceName, finalAmount)
+        return Action.resources(color, resourceName, finalAmount)
     end,
 })
 
