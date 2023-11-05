@@ -6,8 +6,6 @@ local I18N = require("utils.I18N")
 local Deck = Module.lazyRequire("Deck")
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local TleilaxuResearch = Module.lazyRequire("TleilaxuResearch")
-local DynamicBonus = Module.lazyRequire("DynamicBonus")
-local ImperiumCard = Module.lazyRequire("ImperiumCard")
 local MainBoard = Module.lazyRequire("MainBoard")
 
 local TleilaxuRow = {}
@@ -100,10 +98,6 @@ function TleilaxuRow.acquireTleilaxuCard(indexInRow, color)
             Helper.moveCardFromZone(TleilaxuRow.deckZone, acquireCard.zone.getPosition(), Vector(0, 180, 0))
         end
 
-        if acquireCard.extraBonuses then
-            DynamicBonus.collectExtraBonuses(color, leader, acquireCard.extraBonuses)
-        end
-
         return true
     else
         return false
@@ -124,16 +118,6 @@ function TleilaxuRow.trash(indexInRow)
 
     -- Replenish the slot in the row.
     Helper.moveCardFromZone(TleilaxuRow.deckZone, acquireCard.zone.getPosition(), Vector(0, 180, 0))
-end
-
----
-function TleilaxuRow.addAcquireBonus(bonuses)
-    local acquireCard = TleilaxuRow.acquireCards[3]
-    local position = acquireCard.zone.getPosition()
-    if not acquireCard.extraBonuses then
-        acquireCard.extraBonuses = {}
-    end
-    DynamicBonus.createSpaceBonus(position, bonuses, acquireCard.extraBonuses)
 end
 
 return TleilaxuRow

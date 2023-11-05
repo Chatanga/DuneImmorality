@@ -10,7 +10,6 @@ local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
 local TechMarket = Module.lazyRequire("TechMarket")
 local Combat = Module.lazyRequire("Combat")
 local Hagal = Module.lazyRequire("Hagal")
-local DynamicBonus = Module.lazyRequire("DynamicBonus")
 
 local MainBoard = {}
 
@@ -63,18 +62,17 @@ function MainBoard.onLoad(state)
             hardyWarriors = { zone = "a2fd8e" },
             stillsuits = { zone = "556f43" },
             -- Landsraad
-            highCouncil = { zone = "8a6315" },
-            mentat = { zone = "30cff9" },
+            highCouncil = { zone = "dbdd82" },
             swordmaster = { zone = '6cc2f8' },
-            rallyTroops = { zone = '6932df' },
+            --rallyTroops = { zone = '6932df' },
             hallOfOratory = { zone = '3e7409' },
             -- CHOAM
             secureContract = { zone = "db4022" },
             sellMelange = { zone = "7539a3" },
-            sellMelange_1 = { zone = "107a42" },
-            sellMelange_2 = { zone = "43cb14" },
-            sellMelange_3 = { zone = "b00ba5" },
-            sellMelange_4 = { zone = "debf5e" },
+            --sellMelange_1 = { zone = "107a42" },
+            --sellMelange_2 = { zone = "43cb14" },
+            --sellMelange_3 = { zone = "b00ba5" },
+            --sellMelange_4 = { zone = "debf5e" },
             -- Dune
             arrakeen = { zone = "17b646" },
             carthag = { zone = "b1c938" },
@@ -87,8 +85,6 @@ function MainBoard.onLoad(state)
         },
         ixSpaces = {
             -- Landsraad
-            highCouncil = { zone = "dbdd82" },
-            mentat = { zone = "d6c7dd" },
             swordmaster = { zone = "035975" },
             rallyTroops = Helper.ERASE,
             hallOfOratory = Helper.ERASE,
@@ -109,7 +105,7 @@ function MainBoard.onLoad(state)
         },
         immortalitySpaces = {
             researchStation = Helper.ERASE,
-            researchStationImmortality = { zone = "af11aa" },
+            researchStationImmortality = { zone = "af11aa" }, -- TODO Assign its own zone!
         },
         banners = {
             arrakeenBannerZone = "f1f53d",
@@ -121,30 +117,11 @@ function MainBoard.onLoad(state)
             haggaBasin = "394db2",
             theGreatFlat = "116807"
         },
-        mentat = "c2a908",
-        mentatZones = {
-            base = "a11936",
-            ix = "0b21df"
-        },
-        highCouncilZones = {
-            base = "e51f6e",
-            ix = "a719db"
-        },
+        highCouncilZone = "e51f6e",
         firstPlayerMarker = "1f5576",
-        phaseMarker = "fb41e2",
     }))
 
     Helper.noPhysicsNorPlay(MainBoard.board)
-
-    local p = Helper.getHardcodedPositionFromGUID('fb41e2', -4.08299875, 0.721966565, -12.0102692)
-    local offset = Vector(0, 0, -0.64)
-    MainBoard.phaseMarkerPositions = {
-        roundStart = p + offset * 0,
-        playerTurns = p + offset * 1,
-        combat = p + offset * 2,
-        makers = p + offset * 3,
-        recall = p + offset * 4
-    }
 
     MainBoard.spiceBonuses = {}
     for name, token in pairs(MainBoard.spiceBonusTokens) do
@@ -170,7 +147,6 @@ function MainBoard.onSave(state)
                 return resource:get()
             end),
             highCouncilZoneGUID = MainBoard.highCouncilZone.getGUID(),
-            mentatZoneGUID = MainBoard.mentatZone.getGUID(),
             spaceGUIDs = Helper.map(MainBoard.spaces, function (_, space)
                 return space.zone.getGUID()
             end)
@@ -181,16 +157,8 @@ end
 ---
 function MainBoard.setUp(settings)
     if settings.riseOfIx then
-        MainBoard.highCouncilZones.base.destruct()
-        MainBoard.highCouncilZone = MainBoard.highCouncilZones.ix
-        MainBoard.mentatZones.base.destruct()
-        MainBoard.mentatZone = MainBoard.mentatZones.ix
         --MainBoard.board.setState(1)
     else
-        MainBoard.highCouncilZones.ix.destruct()
-        MainBoard.highCouncilZone = MainBoard.highCouncilZones.base
-        MainBoard.mentatZones.ix.destruct()
-        MainBoard.mentatZone = MainBoard.mentatZones.base
         MainBoard.board.setState(2)
     end
 
@@ -203,14 +171,12 @@ function MainBoard.setUp(settings)
         for spaceName, extSpace in pairs(MainBoard[extension .. "Spaces"]) do
             if enabledExtensions[extension] then
                 local baseSpace = MainBoard.spaces[spaceName]
-                -- Immortality reuses the research station zone, so we skip its destruction.
-                if baseSpace and spaceName ~= "researchStation" then
+                if baseSpace then
                     baseSpace.zone.destruct()
                 end
                 MainBoard.spaces[spaceName] = (extSpace ~= Helper.ERASE and extSpace or nil)
             else
-                -- Same reason as above, the other way.
-                if extSpace ~= Helper.ERASE and spaceName ~= "researchStationImmortality" then
+                if extSpace ~= Helper.ERASE then
                     extSpace.zone.destruct()
                 end
             end
@@ -241,15 +207,7 @@ function MainBoard._staticSetUp(settings)
     end
 
     Helper.registerEventListener("phaseStart", function (phase)
-        if phase == "roundStart" then
-            MainBoard.phaseMarker.setPosition(MainBoard.phaseMarkerPositions.roundStart)
-        elseif phase == "playerTurns" then
-            MainBoard.phaseMarker.setPosition(MainBoard.phaseMarkerPositions.playerTurns)
-        elseif phase == "combat" then
-            MainBoard.phaseMarker.setPosition(MainBoard.phaseMarkerPositions.combat)
-        elseif phase == "makers" then
-            MainBoard.phaseMarker.setPosition(MainBoard.phaseMarkerPositions.makers)
-
+        if phase == "makers" then
             for _, desert in ipairs({ "imperialBasin", "haggaBasin", "theGreatFlat" }) do
                 local space = MainBoard.spaces[desert]
                 local spiceBonus = MainBoard.spiceBonuses[desert]
@@ -258,8 +216,6 @@ function MainBoard._staticSetUp(settings)
                 end
             end
         elseif phase == "recall" then
-            MainBoard.phaseMarker.setPosition(MainBoard.phaseMarkerPositions.recall)
-
             -- Recalling mentat.
             if MainBoard.mentat.hasTag("notToBeRecalled") then
                 MainBoard.mentat.removeTag("notToBeRecalled")
@@ -424,10 +380,10 @@ function MainBoard.sendAgent(color, spaceName)
         local agentPark = PlayBoard.getAgentPark(color)
         if asyncAction then
             Helper.emitEvent("agentSent", color, spaceName)
-            log("asyncAction: " .. asyncActionName)
+            log("BEGIN asyncAction: " .. asyncActionName)
             asyncAction(color, leader).doAfter(function (success)
+                log("END asyncAction: " .. asyncActionName)
                 if success then
-                    MainBoard.collectExtraBonuses(color, leader, spaceName)
                     Park.transfert(1, agentPark, parentSpace.park)
                     continuation.run(true)
                 else
@@ -436,9 +392,9 @@ function MainBoard.sendAgent(color, spaceName)
             end)
         elseif action then
             Helper.emitEvent("agentSent", color, spaceName)
-            log("action: " .. actionName)
+            log("BEGIN action: " .. actionName)
             if action(color, leader) then
-                MainBoard.collectExtraBonuses(color, leader, spaceName)
+                log("END action: " .. actionName)
                 --log("Park.transfert(1, agentPark, parentSpace.park)")
                 Park.transfert(1, agentPark, parentSpace.park)
                 continuation.run(true)
@@ -705,20 +661,10 @@ end
 ---
 function MainBoard._goMentat(color, leader)
     if leader.resources(color, "solari", -Hagal.getMentatSpaceCost()) then
-        leader.takeMentat(color)
         leader.drawImperiumCards(color, 1)
         return true
     else
         return false
-    end
-end
-
----
-function MainBoard.getMentat()
-    if Vector.distance(MainBoard.mentat.getPosition(), MainBoard.mentatZone.getPosition()) < 1 then
-        return MainBoard.mentat
-    else
-        return nil
     end
 end
 
@@ -1051,34 +997,9 @@ function MainBoard.getBannerZones()
 end
 
 ---
-function MainBoard.onObjectEnterScriptingZone(zone, object)
-    if zone == MainBoard.mentatZone then
-        if Types.isMentat(object) then
-            for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
-                object.removeTag(color)
-            end
-            -- FIXME One case of whitewashing too many?
-            object.setColorTint(Color.fromString("White"))
-        end
-    end
-end
-
----
 function MainBoard.addSpaceBonus(spaceName, bonuses)
     local space = MainBoard.spaces[spaceName]
     assert(space, "Unknow space: " .. spaceName)
-    if not space.extraBonuses then
-        space.extraBonuses = {}
-    end
-    DynamicBonus.createSpaceBonus(space.zone.getPosition() + Vector(1.2, 0, 0.75), bonuses, space.extraBonuses)
-end
-
----
-function MainBoard.collectExtraBonuses(color, leader, spaceName)
-    local space = MainBoard.spaces[spaceName]
-    if space.extraBonuses then
-        DynamicBonus.collectExtraBonuses(color, leader, space.extraBonuses)
-    end
 end
 
 ---

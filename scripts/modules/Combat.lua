@@ -19,7 +19,13 @@ local Combat = {
         combatCenterZone = "6d632e",
         combatTokenZone = "1d4424",
         victoryPointTokenZone = "25b541",
-        victoryPointTokenBag = "d9a457"
+        victoryPointTokenBag = "d9a457",
+        garrisonsZones = {
+            Green = "0a54b2",
+            Yellow = "fd58be",
+            Blue = "37e1a6",
+            Red = "1cd225",
+        },
     },
     origins = {
         Green = Vector(8.15, 0.85, -7.65),
@@ -184,12 +190,12 @@ function Combat._createGarrisonPark(color)
         for i = 1, 4 do
             local x = (i - 2.5) * 0.45
             local z = (j - 2) * 0.45
-            local slot = Combat.origins[color] + Vector(x, 0, z)
+            local slot = Combat.garrisonsZones[color].getPosition() + Vector(x, -0.67, z)
             table.insert(slots, slot)
         end
     end
 
-    local zone = Park.createBoundingZone(0, Vector(0.35, 0.35, 0.35), slots)
+    local zone = Combat.garrisonsZones[color]
 
     local park = Park.createPark(
         color .. "Garrison",
@@ -203,7 +209,7 @@ function Combat._createGarrisonPark(color)
 
     local p = zone.getPosition()
     -- FIXME Hardcoded height, use an existing parent anchor.
-    p:setAt('y', 0.65)
+    p:setAt('y', 0.60)
     Helper.createTransientAnchor("Garrison anchor", p).doAfter(function (anchor)
         park.anchor = anchor
         anchor.locked = true
@@ -216,8 +222,12 @@ end
 
 ---
 function Combat._createDreadnoughtPark(color)
-    local origin = Combat.origins[color]
-    local center = Helper.getCenter(Helper.getValues(Combat.origins))
+    local origin = Combat.garrisonsZones[color].getPosition()
+    local zones = Helper.getValues(Combat.garrisonsZones)
+    local centers = Helper.mapValues(zones, function (zone)
+        return zone.getPosition()
+    end)
+    local center = Helper.getCenter(centers)
     local dir = Helper.signum((origin - center).x)
     local slots = {
         origin + Vector(1.3 * dir, 0, 0.9),

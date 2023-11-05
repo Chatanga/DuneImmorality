@@ -61,25 +61,6 @@ return {
     start = "Démarrer",
     claimLeader = "Prendre {leader} comme leader",
 
-    -- Instructions
-    leaderSelectionActiveInstruction = "Sélectionnez un dirigeant\nsur le plateau supérieur.",
-    leaderSelectionInactiveInstruction = "Attendez que vos adversaires\naient sélectionné leurs dirigeants.",
-    playerTurnsActiveInstruction = "Envoyez un agent\nou révélez votre main,\npuis appuyez sur Fin de tour.",
-    playerTurnsInactiveInstruction = "Attendez que vos adversaires\naient joué leurs tours\nd’agent / révélation.",
-    combatActiveInstruction = "Jouez une intrigue et\nappuyez sur Fin de tour\nou appuyez directement\nsur Fin de tour pour passer.",
-    combatInactiveInstruction = "Attendez que vos\nadversaires en combat\naient joué une intrigue\nou passé leur tour.",
-    combatEndActiveInstruction = "Prenez votre butin et\njouez des cartes d’intrigue\nle cas échéant,\npuis appuyez sur Fin de tour.",
-    combatEndInactiveInstruction = "Attendez que vos adversaires\naient récolté leur butin\net joué des intrigues.",
-    endgameActiveInstruction = "Jouez vos cartes de fin de jeu et\ntuiles tech que vous possédez\nafin de gagner des PV finaux.",
-    endgameInactiveInstruction = "Attendez que vos adversaires aient\njoué leurs cartes de fin de jeu\net tuiles tech qu’ils possèdent.",
-    -- Special instructions
-    gameStartActiveInstructionForVladimirHarkonnen = "Choisissez secrètement\ndeux factions.",
-    gameStartInactiveInstructionForVladimirHarkonnen = "Attendez que Vladimir Harkonnen\nait secrétement choisi\nses deux factions.",
-    gameStartActiveInstructionForIlesaEcaz = "Mettez de côté une carte\nde votre main.",
-    gameStartInactiveInstructionForIlesaEcaz = "Attendez que Ilesa Ecaz\nait mis de côté une carte\nde sa main.",
-    gameStartActiveInstructionForHundroMoritani = "Gardez une intrigue\net reposez l’autre\nau dessus du paquet d’intrigues.",
-    gameStartInactiveInstructionForHundroMoritani = "Attendez que Hundro Moritani\nait choisi entre\nses deux intrigues.",
-
     -- Resource
     spiceAmount = "Épice",
     spice = "unité d’épice",
@@ -124,7 +105,6 @@ return {
     tanksPark = "cuves axolotls",
     advanceFreighter = "■ Progression sur la piste commerciale.",
     recallFreighter = "■ Rappel de cargo.",
-    takeMentat = "■ Recrutement du Mentat.",
     recruitSwordmaster = "■ Recrutement du maître d’armes.",
     takeHighCouncilSeat = "■ Prise de siège au Haut-Conseil.",
     gainInfluence = "■ +{amount} influence auprès {withFaction}",

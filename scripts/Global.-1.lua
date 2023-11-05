@@ -1,4 +1,4 @@
-local BUILD = 'Sun Nov  5 00:21:26 CET 2023'
+local BUILD = 'Sun Nov  5 16:24:07 CET 2023'
 
 -- Do not load anything. Appropriate to work on the mod content without
 -- interference.
@@ -8,97 +8,6 @@ local constructionModeEnabled = false
 local autoLoadedSettings
 
 --[[
-autoLoadedSettings = {
-    language = "en",
-    randomizePlayerPositions = false,
-    virtualHotSeat = true,
-    numberOfPlayers = 3,
-    difficulty = nil,
-    riseOfIx = true,
-    epicMode = false,
-    immortality = true,
-    goTo11 = false,
-    leaderSelection = {
-        Green = "ilesaEcaz",
-        Yellow = "ilbanRichese",
-        Red = "helenaRichese",
-    },
-    fanmadeLeaders = false,
-    variant = nil,
-}
-autoLoadedSettings = {
-    language = "en",
-    randomizePlayerPositions = false,
-    virtualHotSeat = true,
-    numberOfPlayers = 2,
-    difficulty = "novice",
-    riseOfIx = true,
-    epicMode = false,
-    immortality = true,
-    goTo11 = false,
-    leaderSelection = {
-        Green = "hagal",
-        Yellow = "letoAtreides",
-        Red = "glossuRabban",
-    },
-    fanmadeLeaders = false,
-    variant = nil,
-}
-autoLoadedSettings = {
-    language = "fr",
-    randomizePlayerPositions = false,
-    virtualHotSeat = false,
-    numberOfPlayers = 1,
-    difficulty = "novice",
-    riseOfIx = true,
-    epicMode = false,
-    immortality = true,
-    goTo11 = false,
-    leaderSelection = {
-        Green = "letoAtreides",
-        Yellow = "ilbanRichese",
-        Red = "glossuRabban",
-    },
-    fanmadeLeaders = false,
-    variant = nil,
-    soundEnabled = true,
-}
-autoLoadedSettings = {
-    language = "fr",
-    randomizePlayerPositions = false,
-    virtualHotSeat = true,
-    numberOfPlayers = 3,
-    riseOfIx = true,
-    epicMode = false,
-    immortality = true,
-    goTo11 = false,
-    leaderSelection = {
-        Green = "letoAtreides",
-        Yellow = "ilbanRichese",
-        Red = "yunaMoritani",
-    },
-    fanmadeLeaders = true,
-    variant = "arrakeenScouts",
-    soundEnabled = true,
-}
-autoLoadedSettings = {
-    language = "fr",
-    randomizePlayerPositions = false,
-    virtualHotSeat = true,
-    numberOfPlayers = 4,
-    riseOfIx = true,
-    epicMode = false,
-    immortality = true,
-    goTo11 = false,
-    leaderSelection = {
-        Green = "letoAtreides",
-        Yellow = "ilbanRichese",
-        Red = "tessiaVernius",
-        Blue = "yunaMoritani"
-    },
-    fanmadeLeaders = false,
-    soundEnabled = true,
-}
 autoLoadedSettings = {
     language = "fr",
     randomizePlayerPositions = false,
@@ -114,7 +23,6 @@ autoLoadedSettings = {
         Red = "tessiaVernius",
         Blue = "yunaMoritani"
     },
-    fanmadeLeaders = false,
     soundEnabled = true,
 }
 ]]
@@ -135,20 +43,15 @@ local I18N = require("utils.I18N")
 local allModules = Module.registerModules({
     AcquireCard, -- To take advantage of Module.registerModuleRedirections.
     Action = require("Action"),
-    ArrakeenScouts = require("ArrakeenScouts"),
     Combat = require("Combat"),
     CommercialTrack = require("CommercialTrack"),
-    ConflictCard = require("ConflictCard"),
     Deck = require("Deck"),
-    DynamicBonus = require("DynamicBonus"),
     ScoreBoard = require("ScoreBoard"),
     Hagal = require("Hagal"),
     HagalCard = require("HagalCard"),
-    ImperiumCard = require("ImperiumCard"),
     ImperiumRow = require("ImperiumRow"),
     InfluenceTrack = require("InfluenceTrack"),
     Intrigue = require("Intrigue"),
-    IntrigueCard = require("IntrigueCard"),
     Leader = require("Leader"),
     LeaderSelection = require("LeaderSelection"),
     Locale = require("Locale"),
@@ -158,7 +61,6 @@ local allModules = Module.registerModules({
     PlayBoard = require("PlayBoard"),
     Reserve = require("Reserve"),
     Resource = require("Resource"),
-    TechCard = require("TechCard"),
     TechMarket = require("TechMarket"),
     TleilaxuResearch = require("TleilaxuResearch"),
     TleilaxuRow = require("TleilaxuRow"),
@@ -185,8 +87,8 @@ local PlayerSet = {
             --jp = "日本語",
             --zh = "中文",
         },
-        language = "fr",
-        randomizePlayerPositions = true,
+        language = "en",
+        randomizePlayerPositions = false,
         virtualHotSeat = false,
         numberOfPlayers_all = {
             "1 (+2)",
@@ -203,13 +105,6 @@ local PlayerSet = {
         goTo11 = true,
         leaderSelection_all = allModules.LeaderSelection.getSelectionMethods(),
         leaderSelection = "reversePick",
-        fanmadeLeaders = false,
-        variant_all = {
-            none = "None",
-            blitz = "(Blitz!)",
-            arrakeenScouts = "Arrakeen scouts"
-        },
-        variant = "none",
         soundEnabled = true,
     }
 }
@@ -218,7 +113,7 @@ local settings
 
 ---
 function onLoad(scriptState)
-    log("--------< Dune Immorality - " .. BUILD .. " >--------")
+    log("--------< Dune Uprising - " .. BUILD .. " >--------")
     Helper.destroyTransientObjects()
 
     if constructionModeEnabled then
@@ -240,7 +135,6 @@ function onLoad(scriptState)
 
     allModules.ordered = {
         allModules.Pdf,
-        allModules.ArrakeenScouts,
         allModules.Music,
         allModules.Deck,
         allModules.Hagal,
@@ -259,7 +153,6 @@ function onLoad(scriptState)
         allModules.TleilaxuRow,
         allModules.TurnControl,
     }
-    assert(#allModules.ordered == 19)
 
     -- We cannot use Module.callOnAllRegisteredModules("onLoad", state),
     -- because the order matter, now that we reload with "staticSetUp" (for the
@@ -275,7 +168,9 @@ function onLoad(scriptState)
         "onObjectDrop",
         "onPlayerChangeColor",
         "onPlayerConnect",
-        "onPlayerDisconnect" })
+        "onPlayerDisconnect",
+        "onPlayerTurn",
+    })
 
     if not state.settings then
         if autoLoadedSettings then
@@ -492,28 +387,12 @@ end
 function PlayerSet.applyNumberOfPlayers()
     if type(PlayerSet.fields.numberOfPlayers) == "table" or PlayerSet.fields.numberOfPlayers > 2 then
         PlayerSet.fields.difficulty = {}
-
-        PlayerSet.fields.fanmadeLeaders = false
-
-        PlayerSet.fields.variant = "none"
-        PlayerSet.fields.variant_all = {
-            none = "None",
-            blitz = "Blitz!",
-            arrakeenScouts = "Arrakeen scouts"
-        }
     else
         if PlayerSet.fields.numberOfPlayers == 1 then
             PlayerSet.fields.difficulty = "novice"
         else
             PlayerSet.fields.difficulty = {}
         end
-
-        PlayerSet.fields.fanmadeLeaders = {}
-
-        PlayerSet.fields.variant = {}
-        PlayerSet.fields.variant_all = {
-            none = "None"
-        }
     end
     PlayerSet.updateSetupButton()
 end
@@ -557,16 +436,6 @@ end
 
 ---
 function setLeaderSelection(player, value, id)
-    PlayerSet.ui:fromUI(player, value, id)
-end
-
----
-function setFanMadeLeaders(player, value, id)
-    PlayerSet.ui:fromUI(player, value, id)
-end
-
----
-function setVariant(player, value, id)
     PlayerSet.ui:fromUI(player, value, id)
 end
 
@@ -615,8 +484,6 @@ function setUpFromUI()
         immortality = PlayerSet.fields.immortality == true,
         goTo11 = PlayerSet.fields.goTo11 == true,
         leaderSelection = PlayerSet.fields.leaderSelection,
-        fanmadeLeaders = PlayerSet.fields.fanmadeLeaders == true,
-        variant = PlayerSet.fields.variant,
         soundEnabled = PlayerSet.fields.soundEnabled,
     })
 end

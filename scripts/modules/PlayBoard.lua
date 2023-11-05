@@ -13,13 +13,9 @@ local MainBoard = Module.lazyRequire("MainBoard")
 local Hagal = Module.lazyRequire("Hagal")
 local Leader = Module.lazyRequire("Leader")
 local Combat = Module.lazyRequire("Combat")
-local ImperiumCard = Module.lazyRequire("ImperiumCard")
-local IntrigueCard = Module.lazyRequire("IntrigueCard")
 local Intrigue = Module.lazyRequire("Intrigue")
 local Reserve = Module.lazyRequire("Reserve")
-local Action = Module.lazyRequire("Action")
 local Music = Module.lazyRequire("Music")
-local ConflictCard = Module.lazyRequire("ConflictCard")
 local TechMarket = Module.lazyRequire("TechMarket")
 local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
 
@@ -306,11 +302,6 @@ function PlayBoard.new(color, unresolvedContent, subState)
         local value = subState and subState[resourceName] or 0
         playBoard[resourceName] = Resource.new(token, color, resourceName, value)
     end
-
-    Helper.createTransientAnchor("InstructionTextAnchor", playBoard.content.board.getPosition() + playBoard:_newSymmetricBoardPosition(12, -0.5, -8)).doAfter(function (anchor)
-        playBoard.instructionTextAnchor = anchor
-    end)
-
     playBoard.agentCardPark = playBoard:_createCardPark(Vector(0, 0, 4))
     playBoard.revealCardPark = playBoard:_createCardPark(Vector(0, 0, 0))
     playBoard.agentPark = playBoard:_createAgentPark(unresolvedContent.agentPositions)
@@ -399,9 +390,6 @@ function PlayBoard._staticSetUp(settings)
         elseif phase == "endgame" then
             MainBoard.getFirstPlayerMarker().destruct()
         end
-        for _, playBoard in pairs(PlayBoard._getPlayBoards()) do
-            Helper.clearButtons(playBoard.instructionTextAnchor)
-        end
         PlayBoard._setActivePlayer(nil, nil)
     end)
 
@@ -411,22 +399,6 @@ function PlayBoard._staticSetUp(settings)
 
         for otherColor, otherPlayBoard in pairs(PlayBoard._getPlayBoards()) do
             if PlayBoard.isHuman(otherColor) then
-                local instruction = (playBoard.leader or Action).instruct(phase, color == otherColor) or "-"
-                if otherPlayBoard.instructionTextAnchor then
-                    Helper.clearButtons(otherPlayBoard.instructionTextAnchor)
-                    Helper.createAbsoluteButtonWithRoundness(otherPlayBoard.instructionTextAnchor, 1, false, {
-                        click_function = Helper.registerGlobalCallback(),
-                        label = instruction,
-                        position = otherPlayBoard.instructionTextAnchor.getPosition() + Vector(0, 0.5, 0),
-                        width = 0,
-                        height = 0,
-                        font_size = 200,
-                        scale = Vector(1, 1, 1),
-                        color = { 0, 0, 0, 0.90 },
-                        font_color = Color.fromString("White")
-                    })
-                end
-
                 -- FIXME To naive, won't work for multiple agents in a single turn (weirding way).
                 playBoard.alreadyPlayedCards = Helper.filter(Park.getObjects(playBoard.agentCardPark), function (card)
                     return Types.isImperiumCard(card) or Types.isIntrigueCard(card)
@@ -442,7 +414,7 @@ function PlayBoard._staticSetUp(settings)
         end
 
         PlayBoard._setActivePlayer(phase, color)
-        Music.play("turn")
+        --Music.play("turn")
     end)
 
     Helper.registerEventListener("combatUpdate", function (forces)
@@ -555,9 +527,9 @@ function PlayBoard._setActivePlayer(phase, color)
                 if playBoard.opponent == "rival" then
                     Hagal.activate(phase, color)
                 else
-                    if phase ~= "leaderSelection" and phase ~= "arrakeenScouts" then
+                    --if phase ~= "leaderSelection" and phase ~= "arrakeenScouts" then
                         playBoard:_createEndOfTurnButton()
-                    end
+                    --end
                     PlayBoard._movePlayerIfNeeded(color)
                 end
             else
@@ -580,11 +552,13 @@ function PlayBoard._movePlayerIfNeeded(color)
         end
     end
     if hostPlayer then
-        PlayBoard.getPlayBoard(hostPlayer.color).opponent = "puppet"
-        PlayBoard.getPlayBoard(color).opponent = hostPlayer
         Helper.onceFramesPassed(1).doAfter(function ()
+            PlayBoard.getPlayBoard(hostPlayer.color).opponent = "puppet"
+            PlayBoard.getPlayBoard(color).opponent = hostPlayer
             hostPlayer.changeColor(color)
         end)
+    else
+        Turns.turn_color = color
     end
 end
 
@@ -618,13 +592,6 @@ function PlayBoard.acceptTurn(phase, color)
 
     if phase == 'leaderSelection' then
         accepted = playBoard.leader == nil
-    elseif phase == 'gameStart' then
-        accepted = playBoard.lastPhase ~= phase and playBoard.leader.instruct(phase, color)
-    elseif phase == 'roundStart' then
-        accepted = playBoard.lastPhase ~= phase and playBoard.leader.instruct(phase, color)
-    elseif phase == 'arrakeenScouts' then
-        -- TODO We need something more elaborate.
-        accepted = true
     elseif phase == 'playerTurns' then
         if Hagal.getRivalCount() == 1 and PlayBoard.isRival(color) then
             accepted = not PlayBoard.playboards[TurnControl.getFirstPlayer()].revealed

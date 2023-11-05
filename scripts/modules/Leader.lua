@@ -51,19 +51,6 @@ Leader.vladimirHarkonnen = Helper.createClass(Leader, {
         tokenBag.destruct()
     end,
 
-    -- Masterstroke
-    instruct = function (phase, isActivePlayer)
-        if phase == "gameStart" then
-            if isActivePlayer then
-                return I18N("gameStartActiveInstructionForVladimirHarkonnen")
-            else
-                return I18N("gameStartInactiveInstructionForVladimirHarkonnen")
-            end
-        else
-            return Leader.instruct(phase, isActivePlayer)
-        end
-    end,
-
     --- Scheme
     signetRing = function (color)
         local leader = PlayBoard.getLeader(color)
@@ -149,8 +136,7 @@ Leader.letoAtreides = Helper.createClass(Leader, {
         if resourceName == "solari" and amount < 0 and Action.checkContext({ phase = "playerTurns", color = color, space = MainBoard.isLandsraadSpace }) then
             finalAmount = amount + 1
         end
-        local leader = PlayBoard.getLeader(color)
-        return leader.resources(color, resourceName, finalAmount)
+        return Action.resources(color, resourceName, finalAmount)
     end,
 })
 
@@ -258,19 +244,6 @@ Leader.ilesaEcaz = Helper.createClass(Leader, {
         local leader = PlayBoard.getLeader(color)
         return leader.resources(color, "solari", -1) and Action.acquireFoldspace(color)
     end,
-
-    --- One step ahead
-    instruct = function (phase, isActivePlayer)
-        if phase == "roundStart" then
-            if isActivePlayer then
-                return I18N("gameStartActiveInstructionForIlesaEcaz")
-            else
-                return I18N("gameStartInactiveInstructionForIlesaEcaz")
-            end
-        else
-            return Leader.instruct(phase, isActivePlayer)
-        end
-    end,
 })
 
 Leader.rhomburVernius = Helper.createClass(Leader, {
@@ -372,19 +345,6 @@ Leader.hundroMoritani = Helper.createClass(Leader, {
             local leader = PlayBoard.getLeader(color)
             leader.drawIntrigues(color, 2)
         end)
-    end,
-
-    --- Intelligence
-    instruct = function (phase, isActivePlayer)
-        if phase == "gameStart" then
-            if isActivePlayer then
-                return I18N("gameStartActiveInstructionForHundroMoritani")
-            else
-                return I18N("gameStartInactiveInstructionForHundroMoritani")
-            end
-        else
-            return Leader.instruct(phase, isActivePlayer)
-        end
     end,
 
     --- Couriers

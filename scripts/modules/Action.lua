@@ -71,27 +71,6 @@ function Action.checkContext(attributes)
 end
 
 ---
-function Action.instruct(phase, isActivePlayer)
-    local availablePhaseInstructions = {
-        leaderSelection = true,
-        playerTurns = true,
-        combat = true,
-        combatEnd = true,
-        endgame = true,
-    }
-
-    if availablePhaseInstructions[phase] then
-        if isActivePlayer then
-            return I18N(phase .. "ActiveInstruction")
-        else
-            return I18N(phase .. "InactiveInstruction")
-        end
-    else
-        return nil
-    end
-end
-
----
 function Action.prepare(color, settings)
     Action.resources(color, "water", 1)
     if settings.epicMode then
@@ -120,17 +99,6 @@ end
 function Action.sendAgent(color, spaceName)
     Action.context.space = spaceName
     return MainBoard.sendAgent(color, spaceName)
-end
-
----
-function Action.takeMentat(color)
-    local mentat = MainBoard.getMentat()
-    if mentat then
-        printToAll(I18N("takeMentat"), color)
-        return Park.putObject(mentat, PlayBoard.getAgentPark(color))
-    else
-        return false
-    end
 end
 
 ---
@@ -475,59 +443,5 @@ function Action.acquireTech(color, stackIndex, discount)
         return false
     end
 end
-
----
-function Action.choose(color, topic)
-    return true
-end
-
----
-function Action.decide(color, topic)
-    -- Any reason to disable this for human players,
-    -- since optional rewards are always desirable VPs?
-    return true
-end
-
---[[
----
-function Action.voiceForbid(color, space)
-end
-
----
-function Action.dreadnoughtControl(color, space)
-end
-
----
-function Action.acquireTechWithSolari(color, name)
-end
-
----
-function Action.destroyTech(color, name)
-end
-
----
-function Action.techEffect(color, name)
-end
-
----
-function Action.recallSnooper(color, faction)
-end
-
----
-function Action.trashImperiumCard(name)
-end
-
----
-function Action.reveal(color)
-end
-
----
-function Action.discardImperiumCard(name)
-end
-
----
-function Action.discardIntrigueCard(name)
-end
-]]
 
 return Action

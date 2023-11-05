@@ -1,25 +1,14 @@
-# Dune Immorality TTS Mod
-
-![Capture](resources/capture-1.jpg)
+# Dune Uprising TTS Mod
 
 Features:
-- Base game
+- Base game 4P
+- Base game 6P
 - Rise of Ix extension
 - Immortality extension
-- Hagal House
-- (Blitz!)
-- Arrakeen Scouts
-- (Fanmade leaders)
-- (Reload support)
 
 Supported langages:
 - French
 - English
-
-## Links :
-
-- Steam: https://steamcommunity.com/sharedfiles/filedetails/?id=3043517751
-- Mod: 3043517751
 
 ## Build Process
 
@@ -40,73 +29,8 @@ When using this path, the `bundle + pack + export` sequence above becomes `bundl
     ./bundle.sh && ./upload.py
 
 Having launched `./listen.py` in another terminal will provide you with an immediate feedback from TTS.
-Unfortunately, it seems to induce some kind of latency, leading to board corruptions on the remote guests.
 
-## Principles
+## Nota
 
-- Game -> Action (+log)
-- Player (-> Leader/Hagal -> Action (+log))
-
-## Sequencing (partial)
-
-    Global.setUp
-        LeaderSelection.setUp
-            [LeaderSelection.setUpTest
-                Playboard.setLeader(color, leader)]
-            [LeaderSelection.setUpPicking]
-
-    TurnControl.start
-        TurnControl.startPhase(leaderSelection)
-            [Hagal.pickAnyCompatibleLeader(color)
-                LeaderSelection.claimLeader(color, leaderOrPseudoLeader)
-                    Playboard.setLeader(color, leader)]
-            [<click>
-                LeaderSelection.claimLeader(color, leader)
-                    Playboard.setLeader(color, leader)]
-            Playboard.setLeader(color, leader)
-                playboard.leader =
-                    Hagal.newRival(Leader.getLeader(leaderCard) | nil) |
-                    Leader.getLeader(leaderCard)
-
-    TurnControl.endOfTurn
-        TurnControl.next
-            TurnControl.findActivePlayer
-                TurnControl >-(playerTurns, color)->
-                    Playboard.setActivePlayer(phase, color)
-                        [Hagal.activate(phase, color, playboard)
-                                Hagal.lateActivate(phase, color, playboard) -- with leader as Rival.]
-
-    TurnControl.endOfTurn
-        TurnControl.next
-            TurnControl.findActivePlayer
-                TurnControl.startPhase(nextPhase)
-
-## FIXME
-
-- Investigate missing trigger effects on guests after a reload.
-- Fix the whole save/reload behavior in a minimal way.
-- Random freeze when buying a tech (5 or 6).
-- Missing Rise of Ix board without Immortality.
-- 6 tech park saturation.
-
-## TODO (by priority)
-
-- Blitz!
-- Rival combat optimization.
-- Régis Étienne's [fanmade leaders compilation](https://forum.cwowd.com/t/dune-imperium-personnages-fanmade/45175).
-- Arkhane's [Fanmade leaders compilation](https://boardgamegeek.com/thread/3144891/73-more-powerful-leaders-balanced-each-others-epic) (to be updated).
-- Replace freighters by tokens.
-- Change the [dreadnought model](https://www.thingiverse.com/thing:5326146).
-- Handle all space access options and explain agent action failures.
-
-## Later (maybe)
-
-- Introduce the graphic log?
-- Keep Module special, but unify everything else?
-- Move the Tleilaxu track in its own module?
-- Workaround the font_size ratio / support for the boards.
-- Gather all VP sources in ScoreBoard?
-- Some kind of hungarian notation with Array (ipairs) and Dict (pairs), a Array being a Dict?
-- Alt mouse hover defeated by area buttons...
-- Redundancy GMNotes VS resolve using them?
-- Better support for chained transferts in Parks.
+- Boostrap: copy `cp input.mod.json "$HOME/.local/share/Tabletop Simulator/Saves/TS_Save_200.json"`
+- Windows / Bash scripts, UNIX paths, symbolic links?

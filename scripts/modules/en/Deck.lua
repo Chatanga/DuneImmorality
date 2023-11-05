@@ -78,77 +78,6 @@ local Deck = {
         yunaMoritani = { "http://cloud-3.steamusercontent.com/ugc/2093667512238499982/FA54B129B168169E3D58BA61536FCC0BB5AB7D34/", 1, 1 },
         hundroMoritani = { "http://cloud-3.steamusercontent.com/ugc/2093667512238498857/6A89778D9C4BB8AC07FE503D48A4483D13DF6E5B/", 1, 1 },
     },
-    fanmadeLeader = {
-        retienne = {
-            helenaRichese = { "http://cloud-3.steamusercontent.com/ugc/2120691978822946676/4B4D817E4373B58A09CEFBC0C643016FB603BEC0/", 1, 1 },
-            farok = { "http://cloud-3.steamusercontent.com/ugc/2120691978822948529/7499936C5425C8978AF8A162E6B862DCEB154192/", 1, 1 },
-            ilbanRichese = { "http://cloud-3.steamusercontent.com/ugc/2120691978822947282/EB1466B5CA83E65BF1482F8691C96509C5A8948D/", 1, 1 },
-            jopatiKolona = { "http://cloud-3.steamusercontent.com/ugc/2120691978822945556/11159B04990BC87DAA658F5730810361D41F7BC2/", 1, 1 },
-            letoAtreidesII = { "http://cloud-3.steamusercontent.com/ugc/2120691978822949434/5F6E2994A70189D660F8FCB4B9407A88CC822EE6/", 1, 1 },
-            xavierHarkonnen = { "http://cloud-3.steamusercontent.com/ugc/2120691978822945956/2AA47113DAA90E0B957860C2D3DB38D2875A61F5/", 1, 1 },
-            countFenring = { "http://cloud-3.steamusercontent.com/ugc/2120691978822946796/72EBA82ABAADAA4B608569DBF0620FB02A12F061/", 1, 1 },
-            drisq = { "http://cloud-3.steamusercontent.com/ugc/2120691978822948646/5F943B1B50312CCB827BB210B9A4A00BC4102613/", 1, 1 },
-            executrix = { "http://cloud-3.steamusercontent.com/ugc/2120691978822945195/50ECB2CA57F7A30932FBFF4FE807BC4C87AFA5F5/", 1, 1 },
-            mirlat = { "http://cloud-3.steamusercontent.com/ugc/2120691978822952557/92F6E7868CABE5AF4A3817513339DFFDB910B4FA/", 1, 1 },
-            dukeMutelli = { "http://cloud-3.steamusercontent.com/ugc/2120691978822948973/579A12C5C405340BF2245A5C9406A3A5A9B1B160/", 1, 1 },
-            isyanderTheTraitorShaiad = { "http://cloud-3.steamusercontent.com/ugc/2120691978822946526/9E3C346DD39F50CB53AA4F1A4580E60A57813D93/", 1, 1 },
-            swormasterDinari = { "http://cloud-3.steamusercontent.com/ugc/2120691978822946189/34A4B76895F079E24CF05B121DE774B2F7CCA1E8/", 1, 1 },
-            koalTraytron = { "http://cloud-3.steamusercontent.com/ugc/2120691978822950039/A6479EE2A5112361AC3E4E8AC40B58DB40301C92/", 1, 1 },
-            aliaAtreides = { "http://cloud-3.steamusercontent.com/ugc/2120691978822951312/455E8029819E17DC09284F4744340C86377A6AF6/", 1, 1 },
-            princessYunaMoritani = { "http://cloud-3.steamusercontent.com/ugc/2120691978822947811/2073D25F36695681143C9F896ED0BC89FE936BB7/", 1, 1 },
-            masterBijaz = { "http://cloud-3.steamusercontent.com/ugc/2120691978822949926/9DED2B6E9899786DE2283C6CA39EA2FD03CC62A3/", 1, 1 },
-            tessiaVernius = { "http://cloud-3.steamusercontent.com/ugc/2120691978822951910/97629F50C5BD6819758BEE23413B8C7A65B71DB0/", 1, 1 },
-            shaddamIV = { "http://cloud-3.steamusercontent.com/ugc/2120691978822950662/DE985348A1992CD27BB8052600E9C2AEA53A01D0/", 1, 1 },
-            captainOtto = { "http://cloud-3.steamusercontent.com/ugc/2120691978822953029/395F45D8BF7EE6E5CDE73F50FB326E4CB2CE8493/", 1, 1 },
-            princessWensicia = { "http://cloud-3.steamusercontent.com/ugc/2120691978822947568/58722B7E94519B1DAE28FF39FBDC3E7E145655B1/", 1, 1 },
-            generalKlevLagarin = { "http://cloud-3.steamusercontent.com/ugc/2120691978822949305/6AE1F8C93AE8B56D1DAB4968FBB5703C1483DE3E/", 1, 1 },
-            masterWaff = { "http://cloud-3.steamusercontent.com/ugc/2120691978822945075/F3B8810D0440B2DCE9B626FD795D0335581427CD/", 1, 1 },
-            scytale = { "http://cloud-3.steamusercontent.com/ugc/2120691978822949086/3936E89272B8441C6DE10657046402B5519A0AED/", 1, 1 },
-            drLietKynes = { "http://cloud-3.steamusercontent.com/ugc/2120691978822944842/D72A10E5EF3A21D164D8106821617CBBB5F79F4D/", 1, 1 },
-            princessIrulan = { "http://cloud-3.steamusercontent.com/ugc/2120691978822950333/1FDD8E596008264190366C577A0D32FCE56C133E/", 1, 1 },
-            bannerjee = { "http://cloud-3.steamusercontent.com/ugc/2120691978822949543/49573DEE8FB814EA25120CDA8F791953B54C1B22/", 1, 1 },
-            serenaButler = { "http://cloud-3.steamusercontent.com/ugc/2120691978822953341/79A90C795D9C16E9B0D9431728732606EF7F59DB/", 1, 1 },
-            shaddamV = { "http://cloud-3.steamusercontent.com/ugc/2120691978822948210/B97E370680476076388F1D46C060F35E1B551B0C/", 1, 1 },
-            edric = { "http://cloud-3.steamusercontent.com/ugc/2120691978822950552/0725C99FD0C96DE781D8E3E77AB03E4F49815B85/", 1, 1 },
-            shimoon = { "http://cloud-3.steamusercontent.com/ugc/2120691978822948309/E3C4EE1E9EF9EE0EF66E9F7EC3CCD48B0810FA8C/", 1, 1 },
-            anirulCorrino = { "http://cloud-3.steamusercontent.com/ugc/2120691978822945830/2B7510F754BD15E9781ED7592ABDF0F141B27674/", 1, 1 },
-            omniusPrime = { "http://cloud-3.steamusercontent.com/ugc/2120691978822945438/EB15C3B3BA711B20843DEB3E0880C93E4E16A8F3/", 1, 1 },
-            uliet = { "http://cloud-3.steamusercontent.com/ugc/2120691978822947027/3E2BF562926526FD0CBA76E405F56934BD6ABC5C/", 1, 1 },
-            pretresseIsyaraStShaiad = { "http://cloud-3.steamusercontent.com/ugc/2120691978822951725/B7E25A79517CCC48E004403837E3CE37C163B3EC/", 1, 1 },
-            princeRhomburVernius = { "http://cloud-3.steamusercontent.com/ugc/2120691978822946910/9ADF15588DEAB765A4B6789F089AA7F82A09358C/", 1, 1 },
-            memnonThorvald = { "http://cloud-3.steamusercontent.com/ugc/2120691978822950947/4B5986649B3181714AF5D710032CAB02F17C3503/", 1, 1 },
-            senatorOthn = { "http://cloud-3.steamusercontent.com/ugc/2120691978822948107/242E670E2E38977B3C0990E79E03B2D0C3EAAD0B/", 1, 1 },
-            viscountHundroMoritani = { "http://cloud-3.steamusercontent.com/ugc/2120691978822951093/672A168420F48F51040BE0E8289AC409C7A3EBB6/", 1, 1 },
-            vorianAtreides = { "http://cloud-3.steamusercontent.com/ugc/2120691978822949200/40B2657453B0C9AAB7B9A64F8D5C22F932C1F448/", 1, 1 },
-            whitmoreBludd = { "http://cloud-3.steamusercontent.com/ugc/2120691978822945308/30645C1902F9DB9D8F034495677C78CB44432E90/", 1, 1 },
-            torgTheYoung = { "http://cloud-3.steamusercontent.com/ugc/2120691978822944542/2AAD492B617B38C84C383D2B93EFB42E102CD8E1/", 1, 1 },
-            normaCenva = { "http://cloud-3.steamusercontent.com/ugc/2120691978822949797/134FEBD55A10E50D39EA39F4F3C62A6FAF35A876/", 1, 1 },
-            senateurMaximilienZelevas = { "http://cloud-3.steamusercontent.com/ugc/2120691978822946307/9E707A019BDEB3C8DA5A386E800D6D37E1BA4764/", 1, 1 },
-            stabanTuek = { "http://cloud-3.steamusercontent.com/ugc/2120691978822951207/C2A741AA10DFF9610E0621D5C4DF714CD7CF1885/", 1, 1 },
-            dukeLetoAtreides = { "http://cloud-3.steamusercontent.com/ugc/2120691978822947400/B95E8D80B2F3B266817D213CDE93EA3D264A7A5A/", 1, 1 },
-            hwiNoree = { "http://cloud-3.steamusercontent.com/ugc/2120691978822945710/D454532FE6E023CF36F0FF7CE4C000340B8D139A/", 1, 1 },
-            darwiOdrade = { "http://cloud-3.steamusercontent.com/ugc/2120691978822948866/CB039E93DFA1F6F4A4D5323B99CEFCE6857FE5E1/", 1, 1 },
-            ramalloTheSayyadina = { "http://cloud-3.steamusercontent.com/ugc/2120691978822952673/C1D2B049F807591F8619DF259983B3B8699949A0/", 1, 1 },
-            glossuTheBeastRabban = { "http://cloud-3.steamusercontent.com/ugc/2120691978822947931/E142005DFCFB258755B2CE6CB9045C6BC731CAB9/", 1, 1 },
-            tioHoltzman = { "http://cloud-3.steamusercontent.com/ugc/2120691978822951420/623C75E18F77D34CCC6C30EC379536FC4A11CB19/", 1, 1 },
-            baronVladimirHarkonnen = { "http://cloud-3.steamusercontent.com/ugc/2120691978822952391/225518FCCE472B12F066D9DF9BC17A308C9AD0E3/", 1, 1 },
-            abulurdRabban = { "http://cloud-3.steamusercontent.com/ugc/2120691978822949693/F448B0B5C2F7414D5E04470755FEEF72772714C7/", 1, 1 },
-            paulAtreides = { "http://cloud-3.steamusercontent.com/ugc/2120691978822948412/30649E10B9CB63263A7B253FCB30B9EE6E8569A6/", 1, 1 },
-            torgTheYounger = { "http://cloud-3.steamusercontent.com/ugc/2120691978822946423/ED5DB6E06B9A87C9851571AFB10181AE7EACFB0E/", 1, 1 },
-            chatt = { "http://cloud-3.steamusercontent.com/ugc/2120691978822948758/1D497DEE7E8ECDA065A53C408D9BD6E4295924A3/", 1, 1 },
-            abulurdHarkonnen = { "http://cloud-3.steamusercontent.com/ugc/2120691978822952276/E2D5D7464843A6DB73158BBA94E6E56E12BB3CFA/", 1, 1 },
-            milesTeg = { "http://cloud-3.steamusercontent.com/ugc/2120691978822951563/885BD554B6F01EFE62BE37D3762E4773CEFEB2E5/", 1, 1 },
-            capitainYelchinOrdara = { "http://cloud-3.steamusercontent.com/ugc/2120691978822953510/91A4BFAF3363D6BFBEC9E61F6DC98BD3B3B2D10B/", 1, 1 },
-            ilesaEcaz = { "http://cloud-3.steamusercontent.com/ugc/2120691978822950444/C72CA57BFF3EEC8B3935B5CEDC1B0386B0385440/", 1, 1 },
-            esmarTuek = { "http://cloud-3.steamusercontent.com/ugc/2120691978822950809/B633B6BA2B359E0461AA52099BB665BECC759C64/", 1, 1 },
-            countessArianaThorvald = { "http://cloud-3.steamusercontent.com/ugc/2120691978822952147/8FEB00CB2AA244E0D45B9C22E67A3B06BC748FED/", 1, 1 },
-            albertoGinaztera = { "http://cloud-3.steamusercontent.com/ugc/2120691978822944390/371E4C1DE7512B54A26F51AF5E772D608C968C23/", 1, 1 },
-            feydRautha = { "http://cloud-3.steamusercontent.com/ugc/2120691978822947132/38A1E69BDECACE6F4D6A876379DE7619F14C078A/", 1, 1 },
-            ladyMargotFenring = { "http://cloud-3.steamusercontent.com/ugc/2120691978822952038/6A2DE44A477D5E86E2BF850DFB7339A30676253D/", 1, 1 },
-            archdukeArmandEcaz = { "http://cloud-3.steamusercontent.com/ugc/2120691978822953173/BCC708B0333A967362DDFEDBF4A2C80E105CDB13/", 1, 1 },
-            tylwythWaff = { "http://cloud-3.steamusercontent.com/ugc/2120691978822947690/9C33E4AEC5DB715AD825CC338A21DAB2D2AF7148/", 1, 1 },
-        }
-    }
 }
 
 ---
@@ -495,11 +424,6 @@ function Deck.loadCustomDecks(loader)
     -- One leader per custom deck.
     for leaderName, _ in pairs(Deck.leader) do
         Deck.load(loader, cards.leaders, "leader", leaderName, 1, { leaderName })
-    end
-
-    -- One leader per custom deck.
-    for leaderName, _ in pairs(Deck.fanmadeLeader.retienne) do
-        Deck.loadWithSubCategory(loader, cards.leaders, "fanmadeLeader", "retienne", leaderName, 1, { leaderName })
     end
 
     return cards

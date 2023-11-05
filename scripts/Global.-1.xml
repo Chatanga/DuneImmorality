@@ -1,17 +1,17 @@
-<Panel position="0 -50" width="450" height="750" color="#000000" id="setupPane" rotation="0 0 0" outline="#6c3892" outlineSize="1"
+<Panel position="0 -50" width="450" height="750" color="#000000" id="setupPane" rotation="0 0 0" outline="#2e200f" outlineSize="1"
 	active="False" allowDragging="True" returnToOriginalPositionWhenReleased="False" visibility="Host">
 	<Defaults>
-		<Text class="primary" color="#8e5ab4" fontSize="16" alignment="MiddleLeft"/>
-		<Text class="secondary" color="#efd9ff" alignment="MiddleRight"/>
-		<Text class="epigraph" color="#df9730" fontSize="12" fontStyle="italic" alignment="MiddleCenter"/>
-		<Dropdown itemBackgroundColors="#6c389244|#df9730|#FFFFFF|#361441" textColor="#6c3892" itemTextColor="#6c3892" fontStyle="bold"/>
-		<InputField colors="#00000000|#6c389244|#6c3892" textColor="#efd9ff" fontStyle="bold"/>
-		<Toggle colors="#efd9ff|#ffd60b|#efd9ff|#222222" textColor="#efd9ff"/>
-		<Button colors="#6c3892|#df9730|#361441|#222222" textColor="#ffd60b"  fontSize="16" outline="#efd9ff" outlineSize="3 3"/>
+		<Text class="primary" color="#30281f" fontSize="20" alignment="MiddleLeft" fontStyle="bold"/>
+		<Text class="secondary" color="#721d00" alignment="MiddleRight"/>
+		<Text class="epigraph" color="#1e170f" fontSize="12" fontStyle="italic" alignment="MiddleCenter"/>
+		<Dropdown itemBackgroundColors="#2e200f44|#df9730|#ffffff|#361441" textColor="#2e200f" itemTextColor="#2e200f" fontStyle="bold"/>
+		<InputField colors="#00000000|#2e200f44|#2e200f" textColor="#2e200f" fontStyle="bold"/>
+		<Toggle colors="#9e907e|#ffd60b|#6d5e4c|#222222" textColor="#000000" fontStyle="bold"/>
+		<Button colors="#2e200f|#30281f|#df9730|#222222" textColor="#ffd60b"  fontSize="16" outline="#30281f" outlineSize="3 3"/>
 		<Image raycastTarget="true"/>
 	</Defaults>
 	<VerticalLayout>
-		<Image ignoreLayout="True" image="http://cloud-3.steamusercontent.com/ugc/2093668799785646039/D9B4C518F1CC8DB3B299B6552E439410D9346C33/"/>
+		<Image ignoreLayout="True" image="http://cloud-3.steamusercontent.com/ugc/2178113508631611749/173703C80CC9894291106BFFF74C5D28619FE03F/"/>
 		<VerticalLayout padding="40 40 150 50">
 			<VerticalLayout padding="0 0 0 20">
 				<Text class="epigraph" key="prolog"/>
@@ -56,16 +56,6 @@
 					<Option></Option>
 				</Dropdown>
 			</HorizontalLayout>
-			<VerticalLayout padding="25 0 0 0">
-				<Toggle id="fanmadeLeaders" isOn="False" onValueChanged="Global/setFanMadeLeaders" key="fanmadeLeaders"/>
-			</VerticalLayout>
-
-			<HorizontalLayout>
-				<Text class="primary" key="variants"/>
-				<Dropdown id="variant" flexibleWidth="1.5" onValueChanged="Global/setVariant">
-					<Option></Option>
-				</Dropdown>
-			</HorizontalLayout>
 
 			<HorizontalLayout>
 				<Text class="primary" key="miscellanous"/>
@@ -79,5 +69,6 @@
 			<Button id="setUpButton" minHeight="26" onClick="Global/setUpFromUI" key="setup"/>
 		</HorizontalLayout>
 	</VerticalLayout>
-	<Image position="0 375" width="256" height="256" image="http://cloud-3.steamusercontent.com/ugc/2093668799785645605/02244A1CFA3B51ABC56CDC512A9DDF383D09CA2A/"/>
+	<!--Image position="0 375" width="256" height="256" image="http://cloud-3.steamusercontent.com/ugc/2178113508629772555/403477904A57FC9749C8B4F2C5548C5425D08A71/"/-->
+	<Image position="0 375" width="450" height="230" image="http://cloud-3.steamusercontent.com/ugc/2178113508631057252/0DBB449E130AC23B875A07AE447E074C03B8926D/"/>
 </Panel>

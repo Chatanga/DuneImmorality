@@ -28,9 +28,8 @@ end
 ---
 function I18N.translate(key, args)
     local currentLocale = I18N.getLocale()
-    -- FIXME Temporary
     if not currentLocale then
-        currentLocale = "fr"
+        currentLocale = "en"
     end
     local locale = I18N.locales[currentLocale]
     if not locale then

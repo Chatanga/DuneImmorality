@@ -12,7 +12,6 @@ local Combat = Module.lazyRequire("Combat")
 local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
 local CommercialTrack = Module.lazyRequire("CommercialTrack")
 local TechMarket = Module.lazyRequire("TechMarket")
-local ConflictCard = Module.lazyRequire("ConflictCard")
 local MainBoard = Module.lazyRequire("MainBoard")
 local Intrigue = Module.lazyRequire("Intrigue")
 local Types = Module.lazyRequire("Types")
@@ -45,7 +44,6 @@ local Rival = Helper.createClass(Action, {
 function Hagal.onLoad(state)
     Helper.append(Hagal, Helper.resolveGUIDs(true, {
         deckZone = "8f49e3",
-        mentatSpaceCostPatch = "ba730f",
     }))
 
     if state.settings and state.settings.numberOfPlayers < 3 then
@@ -62,17 +60,6 @@ end
 function Hagal.setUp(settings)
     if settings.numberOfPlayers < 3 then
         Hagal._staticSetUp(settings)
-
-        if Hagal.getRivalCount() == 1 then
-            Hagal.mentatSpaceCostPatch.destruct()
-        elseif  Hagal.getRivalCount() == 2 then
-            if Hagal.getMentatSpaceCost() == 5 then
-                Hagal.mentatSpaceCostPatch.setLock(true)
-                Hagal.mentatSpaceCostPatch.setPosition(Vector(-3.98, 0.57, 3.43))
-            else
-                Hagal.mentatSpaceCostPatch.destruct()
-            end
-        end
     else
         Hagal._tearDown()
     end
@@ -113,7 +100,6 @@ end
 
 ---
 function Hagal._tearDown()
-    Hagal.mentatSpaceCostPatch.destruct()
     Hagal.deckZone.destruct()
 end
 
@@ -144,13 +130,7 @@ function Hagal.activate(phase, color)
     Helper.dumpFunction("Hagal.activate", phase, color)
     -- A delay before and after the action, to let the human(s) see the progress.
     Helper.onceTimeElapsed(1).doAfter(function ()
-        Hagal._lateActivate(phase, color).doAfter(function ()
-            if Hagal.getRivalCount() == 1 then
-                Helper.onceTimeElapsed(1).doAfter(TurnControl.endOfTurn)
-            else
-                PlayBoard.createEndOfTurnButton(color)
-            end
-        end)
+        Hagal._lateActivate(phase, color)
     end)
 end
 

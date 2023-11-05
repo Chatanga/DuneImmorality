@@ -6,7 +6,6 @@ local I18N = require("utils.I18N")
 
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local Deck = Module.lazyRequire("Deck")
-local TechCard = Module.lazyRequire("TechCard")
 local MainBoard = Module.lazyRequire("MainBoard")
 local Types = Module.lazyRequire("Types")
 
