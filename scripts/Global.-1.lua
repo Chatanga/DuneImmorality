@@ -1,4 +1,4 @@
-local BUILD = 'Sun Nov  5 18:13:10 CET 2023'
+local BUILD = 'Wed Nov  8 18:14:02 CET 2023'
 
 -- Do not load anything. Appropriate to work on the mod content without
 -- interference.

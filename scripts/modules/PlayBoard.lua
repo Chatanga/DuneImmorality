@@ -626,10 +626,9 @@ function PlayBoard.acceptTurn(phase, color)
         -- TODO We need something more elaborate.
         accepted = true
     elseif phase == 'playerTurns' then
-        if Hagal.getRivalCount() == 1 and PlayBoard.isRival(color) then
+        accepted = PlayBoard.couldSendAgentOrReveal(color)
+        if accepted and Hagal.getRivalCount() == 1 and PlayBoard.isRival(color) then
             accepted = not PlayBoard.playboards[TurnControl.getFirstPlayer()].revealed
-        else
-            accepted = PlayBoard.couldSendAgentOrReveal(color)
         end
     elseif phase == 'combat' then
         if Combat.isInCombat(color) then

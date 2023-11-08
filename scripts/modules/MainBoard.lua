@@ -462,6 +462,13 @@ function MainBoard.sendRivalAgent(color, spaceName)
         local agentPark = PlayBoard.getAgentPark(color)
         Helper.emitEvent("agentSent", color, spaceName)
         Park.transfert(1, agentPark, space.park)
+        if spaceName == "imperialBasin" then
+            MainBoard._applyControlOfAnySpace(MainBoard.banners.imperialBasinBannerZone, "solari")
+        elseif spaceName == "arrakeen" then
+            MainBoard._applyControlOfAnySpace(MainBoard.banners.arrakeenBannerZone, "solari")
+        elseif spaceName == "carthag" then
+            MainBoard._applyControlOfAnySpace(MainBoard.banners.carthagBannerZone, "solari")
+        end
         return true
     else
         return false
