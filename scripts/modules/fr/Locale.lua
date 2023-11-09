@@ -96,9 +96,12 @@ return {
     strengthAmount = "Force",
     strength = "épée",
     strengths = "épées",
-    spentManually = "▲ {leader} dépense {amount} {resource} manuellement.",
+    spendManually = "▲ {leader} dépense {amount} {resource} manuellement.",
     receiveManually = "▼ {leader} reçoit {amount} {resource} manuellement.",
+    fixManually = "Correction de {amount} {resource} manuellement ({location}).",
     influence = "influence",
+    beetle = "scarabée",
+    beetles = "scarabées",
 
     -- Actions
     playerTurn = "■ Tour : {leader}",
@@ -216,6 +219,7 @@ return {
 
     -- Tleilax board
     confirmSolarisToBeetles = "Voulez-vous payer 7 solaris pour avancer deux fois sur la piste Tleilaxu ?",
+    tleilaxTrack = "Piste du Tleilax",
 
     -- Factions
     withEmperor = "de l’Empereur",

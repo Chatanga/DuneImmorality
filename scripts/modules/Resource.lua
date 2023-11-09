@@ -11,7 +11,7 @@ local Resource = Helper.createClass(nil, {
 })
 
 ---
-function Resource.new(token, color, resourceName, value)
+function Resource.new(token, color, resourceName, value, location)
     token.interactable = false
 
     local resource = Helper.createClassInstance(Resource, {
@@ -20,6 +20,7 @@ function Resource.new(token, color, resourceName, value)
         resourceName = resourceName,
         value = value,
         laggingValue = value,
+        location = location,
     })
     Resource.resources[token.getGUID()] = resource
 
@@ -44,10 +45,12 @@ function Resource.new(token, color, resourceName, value)
         0.1 * token.getScale().y,
         resourceName == "water" and -0.25 or -0.0)
 
+    log(token.getScale())
+
     Helper.createAbsoluteButtonWithRoundness(token, 1, false, {
         label = tostring(resource.value),
         click_function = Helper.registerGlobalCallback(function (_, otherColor, altClick)
-            if resource.color then
+            if resource.color or resource.location then
                 resource:_changeValue(otherColor, altClick)
             else
                 resource:_setValue(otherColor, altClick)
@@ -55,8 +58,8 @@ function Resource.new(token, color, resourceName, value)
         end),
         tooltip = resource:_getTooltip(),
         position = token.getPosition() + offset,
-        height = color and 800 or 0,
-        width = color and 800 or 0,
+        height = (color or location) and 800,
+        width = (color or location) and 800,
         scale = scales[resourceName],
         alignment = 3,
         font_size = 600,
@@ -118,7 +121,7 @@ end
 
 ---
 function Resource:_changeValue(color, altClick)
-    if color ~= self.color then
+    if self.color and color ~= self.color then
         broadcastToColor(I18N("noTouch"), color, color)
         return
     end
@@ -140,12 +143,15 @@ function Resource:_changeValue(color, altClick)
             if self.color then
                 local leaderName = PlayBoard.getLeaderName(self.color)
                 if delta < 0 then
-                    local text = I18N("spentManually", { leader = leaderName, amount = -delta, resource = I18N.agree(delta, self.resourceName) })
+                    local text = I18N("spendManually", { leader = leaderName, amount = -delta, resource = I18N.agree(delta, self.resourceName) })
                     broadcastToAll(text, color)
                 elseif delta > 0 then
                     local text = I18N("receiveManually", { leader = leaderName, amount = delta, resource = I18N.agree(delta, self.resourceName) })
                     broadcastToAll(text, color)
                 end
+            else
+                local text = I18N("fixManually", { location = I18N(self.location), amount = delta, resource = I18N.agree(delta, self.resourceName) })
+                broadcastToAll(text, color)
             end
 
             self.laggingValue = self.value

@@ -149,7 +149,7 @@ function MainBoard.onLoad(state)
     MainBoard.spiceBonuses = {}
     for name, token in pairs(MainBoard.spiceBonusTokens) do
         local value = state.MainBoard and state.MainBoard.spiceBonuses[name] or 0
-        MainBoard.spiceBonuses[name] = Resource.new(token, nil, "spice", value)
+        MainBoard.spiceBonuses[name] = Resource.new(token, nil, "spice", value, name)
     end
 
     if state.settings then

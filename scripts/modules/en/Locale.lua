@@ -96,9 +96,12 @@ return {
     strengthAmount = "Strength",
     strength = "Sword",
     strengths = "Swords",
-    spentManually = "▲ {leader} spent {amount} {resource} manually.",
+    spendManually = "▲ {leader} spent {amount} {resource} manually.",
     receiveManually = "▼ {leader} received {amount} {resource} manually.",
+    fixManually = "Fixed {amount} {resource} manually ({location})\".",
     influence = "influence",
+    beetle = "beetle",
+    beetles = "beetles",
 
     -- Actions
     playerTurn = "■ Turn: {leader}",
@@ -216,6 +219,7 @@ return {
 
     -- Tleilax board
     confirmSolarisToBeetles = "Do you want to pay 7 Solaris to Advance Twice on the Tleilaxu Track ?",
+    tleilaxTrack = "Tleilax track",
 
     -- Factions
     withEmperor = "the Emperor",

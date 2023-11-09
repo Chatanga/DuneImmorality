@@ -73,7 +73,7 @@ function TleilaxuResearch.onLoad(state)
     Helper.noPhysicsNorPlay(TleilaxuResearch.board)
 
     local value = state.MainBoard and state.TleilaxuResearch.tleilaxSpiceBonusToken or 2
-    TleilaxuResearch.spiceBonus = Resource.new(TleilaxuResearch.tleilaxSpiceBonusToken, nil, "spice", value)
+    TleilaxuResearch.spiceBonus = Resource.new(TleilaxuResearch.tleilaxSpiceBonusToken, nil, "spice", value, "tleilaxTrack")
 
     if state.settings and state.settings.immortality then
         TleilaxuResearch._staticSetUp()
