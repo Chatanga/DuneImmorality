@@ -1,4 +1,4 @@
-local BUILD = 'Thu Nov  9 18:27:41 CET 2023'
+local BUILD = 'TBD'
 
 -- Do not load anything. Appropriate to work on the mod content without
 -- interference.
@@ -137,7 +137,7 @@ local allModules = Module.registerModules({
     Action = require("Action"),
     ArrakeenScouts = require("ArrakeenScouts"),
     Combat = require("Combat"),
-    CommercialTrack = require("CommercialTrack"),
+    ShipmentTrack = require("ShipmentTrack"),
     ConflictCard = require("ConflictCard"),
     Deck = require("Deck"),
     DynamicBonus = require("DynamicBonus"),
@@ -249,7 +249,7 @@ function onLoad(scriptState)
         allModules.Combat,
         allModules.LeaderSelection,
         allModules.MainBoard,
-        allModules.CommercialTrack,
+        allModules.ShipmentTrack,
         allModules.TechMarket,
         allModules.Intrigue,
         allModules.InfluenceTrack,

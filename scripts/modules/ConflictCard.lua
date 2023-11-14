@@ -6,6 +6,7 @@ local CardEffect = require("CardEffect")
 
 local Types = Module.lazyRequire("Types")
 local PlayBoard = Module.lazyRequire("PlayBoard")
+local MainBoard = Module.lazyRequire("MainBoard")
 
 -- Function aliasing for a more readable code.
 local persuasion = CardEffect.persuasion
@@ -84,7 +85,31 @@ function ConflictCard.collectReward(color, conflictName, rank)
         cardName = conflictName,
     }
 
-    Helper.dump("Collecting rewards for conflict ", conflictName, "at rank", rank, "...")
+    Helper.dump("Collecting rewards for conflict", conflictName, "at rank", rank, "...")
+    for _, reward in ipairs(rewards) do
+        log(reward)
+        CardEffect.evaluate(context, reward)
+    end
+    Helper.dump("... end")
+end
+
+function ConflictCard.cleanUpConflict(color, conflictName)
+    local conflict = ConflictCard[conflictName]
+    assert(conflict, "Unknown conflict: ", conflictName)
+    local rewards = conflict.rewards[1]
+
+    local context = {
+        color = color,
+        player = {
+            control = function (spaceName)
+                local controlableSpace = MainBoard.findControlableSpaceFromConflictName(conflictName)
+                MainBoard.occupy(controlableSpace, color, true)
+            end
+        },
+        cardName = conflictName,
+    }
+
+    Helper.dump("Cleaning conflict", conflictName, "...")
     for _, reward in ipairs(rewards) do
         log(reward)
         CardEffect.evaluate(context, reward)

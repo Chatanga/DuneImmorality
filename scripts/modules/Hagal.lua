@@ -1,6 +1,7 @@
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local Park = require("utils.Park")
+local I18N = require("utils.I18N")
 
 local Deck = Module.lazyRequire("Deck")
 local TurnControl = Module.lazyRequire("TurnControl")
@@ -10,7 +11,7 @@ local Action = Module.lazyRequire("Action")
 local HagalCard = Module.lazyRequire("HagalCard")
 local Combat = Module.lazyRequire("Combat")
 local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
-local CommercialTrack = Module.lazyRequire("CommercialTrack")
+local ShipmentTrack = Module.lazyRequire("ShipmentTrack")
 local TechMarket = Module.lazyRequire("TechMarket")
 local ConflictCard = Module.lazyRequire("ConflictCard")
 local MainBoard = Module.lazyRequire("MainBoard")
@@ -19,6 +20,7 @@ local Types = Module.lazyRequire("Types")
 
 -- Enlighting clarifications: https://boardgamegeek.com/thread/2578561/summarizing-automa-2p-and-1p-similarities-and-diff
 local Hagal = Helper.createClass(Action, {
+    name = "houseHagal",
     difficulties = {
         novice = { name = "Mercenary", swordmasterArrivalTurn = 5 },
         veteran = { name = "Sardaukar", swordmasterArrivalTurn = 4 },
@@ -129,8 +131,9 @@ end
 ---
 function Hagal.newRival(color, leader)
     local rival = Helper.createClassInstance(Rival, {
-        leader = leader or Hagal
+        leader = leader or Hagal,
     })
+    rival.name = rival.leader.name
     assert((Hagal.getRivalCount() == 1) == (leader == nil))
     if not leader then
         rival.recruitSwordmaster(color)
@@ -173,7 +176,7 @@ function Hagal._lateActivate(phase, color)
         if Hagal.getRivalCount() == 2 then
             Hagal._collectReward(color).doAfter(continuation.run)
         else
-            continuation.run()
+            Hagal._cleanUpConflict(color).doAfter(continuation.run)
         end
     elseif phase == "endgame" then
         continuation.run()
@@ -237,6 +240,20 @@ function Hagal._collectReward(color)
                 assert(bestBannerZone)
                 dreadnoughts[1].setPositionSmooth(bestBannerZone.getPosition())
             end
+        end
+        continuation.run()
+    end)
+    return continuation
+end
+
+---
+function Hagal._cleanUpConflict(color)
+    local continuation = Helper.createContinuation("Hagal._collectReward")
+    Helper.onceFramesPassed(1).doAfter(function ()
+        local conflictName = Combat.getCurrentConflictName()
+        local rank = Combat.getRank(color).value
+        if rank == 1 then
+            ConflictCard.cleanUpConflict(color, conflictName)
         end
         continuation.run()
     end)
@@ -377,7 +394,7 @@ end
 ---
 function Rival.shipments(color, amount)
     Helper.repeatChainedAction(amount, function ()
-        local level = CommercialTrack.getFreighterLevel(color)
+        local level = ShipmentTrack.getFreighterLevel(color)
         if level < 2 then
             Rival.advanceFreighter(color, 1)
         else

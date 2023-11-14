@@ -236,7 +236,7 @@ local PlayBoard = Helper.createClass(nil, {
             atomicsToken = "7e10a9",
         }
     },
-    playboards = {},
+    playBoards = {},
     nextPlayer = nil
 })
 
@@ -250,7 +250,7 @@ function PlayBoard.onLoad(state)
             alive = subState ~= nil
         end
         if alive then
-            PlayBoard.playboards[color] = PlayBoard.new(color, unresolvedContent, subState)
+            PlayBoard.playBoards[color] = PlayBoard.new(color, unresolvedContent, subState)
         end
     end
     PlayBoard.unresolvedContentByColor = nil
@@ -263,7 +263,7 @@ end
 ---
 function PlayBoard.onSave(state)
     state.PlayBoard =
-        Helper.map(PlayBoard.playboards, function (color, playBoard)
+        Helper.map(PlayBoard.playBoards, function (color, playBoard)
             local resourceValues = {}
             for _, resourceName in ipairs(PlayBoard.ALL_RESOURCE_NAMES) do
                 resourceValues[resourceName] = playBoard[resourceName]:get()
@@ -331,7 +331,7 @@ end
 
 ---
 function PlayBoard.setUp(settings, activeOpponents)
-    for color, playBoard in pairs(PlayBoard.playboards) do
+    for color, playBoard in pairs(PlayBoard.playBoards) do
         playBoard:_cleanUp(false, not settings.riseOfIx, not settings.immortality)
         if activeOpponents[color] then
             playBoard.opponent = activeOpponents[color]
@@ -547,7 +547,7 @@ end
 function PlayBoard._setActivePlayer(phase, color)
     local indexedColors = {"Green", "Yellow", "Blue", "Red"}
     for i, otherColor in ipairs(indexedColors) do
-        local playBoard = PlayBoard.playboards[otherColor]
+        local playBoard = PlayBoard.playBoards[otherColor]
         if playBoard then
             local effectIndex = 0 -- black index (no color actually)
             if otherColor == color then
@@ -589,7 +589,7 @@ function PlayBoard._movePlayerIfNeeded(color)
 end
 
 function PlayBoard.createEndOfTurnButton(color)
-    PlayBoard.playboards[color]:_createEndOfTurnButton()
+    PlayBoard.playBoards[color]:_createEndOfTurnButton()
 end
 
 ---
@@ -628,7 +628,7 @@ function PlayBoard.acceptTurn(phase, color)
     elseif phase == 'playerTurns' then
         accepted = PlayBoard.couldSendAgentOrReveal(color)
         if accepted and Hagal.getRivalCount() == 1 and PlayBoard.isRival(color) then
-            accepted = not PlayBoard.playboards[TurnControl.getFirstPlayer()].revealed
+            accepted = not PlayBoard.playBoards[TurnControl.getFirstPlayer()].revealed
         end
     elseif phase == 'combat' then
         if Combat.isInCombat(color) then
@@ -689,17 +689,17 @@ end
 ---
 function PlayBoard.getPlayBoard(color)
     assert(color)
-    assert(#Helper.getKeys(PlayBoard.playboards) > 0, "No playBoard at all: too soon!")
-    local playBoard = PlayBoard.playboards[color]
+    assert(#Helper.getKeys(PlayBoard.playBoards) > 0, "No playBoard at all: too soon!")
+    local playBoard = PlayBoard.playBoards[color]
     --assert(playBoard, "No playBoard for color " .. tostring(color))
     return playBoard
 end
 
 ---
 function PlayBoard._getPlayBoards(filterOutRival)
-    assert(#Helper.getKeys(PlayBoard.playboards) > 0, "No playBoard at all: too soon!")
+    assert(#Helper.getKeys(PlayBoard.playBoards) > 0, "No playBoard at all: too soon!")
     local filteredPlayBoards = {}
-    for color, playBoard in pairs(PlayBoard.playboards) do
+    for color, playBoard in pairs(PlayBoard.playBoards) do
         if playBoard.opponent and (not filterOutRival or playBoard.opponent ~= "rival") then
             filteredPlayBoards[color] = playBoard
         end
@@ -885,12 +885,12 @@ end
 
 ---
 function PlayBoard.onObjectEnterScriptingZone(zone, object)
-    for color, playBoard in pairs(PlayBoard.playboards) do
+    for color, playBoard in pairs(PlayBoard.playBoards) do
         if playBoard.opponent then
             if zone == playBoard.scorePark.zone then
                 if Types.isVictoryPointToken(object) then
                     playBoard:updatePlayerScore()
-                    local controlableSpace = MainBoard.findControlableSpace(object)
+                    local controlableSpace = MainBoard.findControlableSpaceFromConflictName(Helper.getID(object))
                     if controlableSpace then
                         MainBoard.occupy(controlableSpace, color)
                     end
@@ -907,7 +907,7 @@ end
 
 ---
 function PlayBoard.onObjectLeaveScriptingZone(zone, object)
-    for _, playBoard in pairs(PlayBoard.playboards) do
+    for _, playBoard in pairs(PlayBoard.playBoards) do
         if playBoard.opponent then
             if zone == playBoard.scorePark.zone then
                 if Types.isVictoryPointToken(object) then
@@ -921,7 +921,7 @@ end
 ---
 function PlayBoard:_tearDown()
     self:_cleanUp(true, true, true)
-    PlayBoard.playboards[self.color] = nil
+    PlayBoard.playBoards[self.color] = nil
 end
 
 ---
@@ -966,7 +966,7 @@ end
 
 ---
 function PlayBoard.findBoardColor(board)
-    for color, _ in pairs(PlayBoard.playboards) do
+    for color, _ in pairs(PlayBoard.playBoards) do
         if PlayBoard._getBoard(color) == board then
             return color
         end
@@ -1469,8 +1469,13 @@ end
 
 ---
 function PlayBoard.getLeaderName(color)
-    local leader = PlayBoard.findLeaderCard(color)
-    return leader and leader.getName() or "?"
+    if true then
+        local leader = PlayBoard.getLeader(color)
+        return (leader and leader.name and I18N(leader.name)) or "?"
+    else
+        local leaderCard = PlayBoard.findLeaderCard(color)
+        return leaderCard and leaderCard.getName() or "?"
+    end
 end
 
 ---

@@ -45,8 +45,6 @@ function Resource.new(token, color, resourceName, value, location)
         0.1 * token.getScale().y,
         resourceName == "water" and -0.25 or -0.0)
 
-    log(token.getScale())
-
     Helper.createAbsoluteButtonWithRoundness(token, 1, false, {
         label = tostring(resource.value),
         click_function = Helper.registerGlobalCallback(function (_, otherColor, altClick)

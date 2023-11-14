@@ -28,7 +28,8 @@ local Combat = {
         Red = Vector(1.55, 0.85, -7.65),
     },
     victoryPointTokenPositions = {},
-    dreadnoughtStrengths = {}
+    dreadnoughtStrengths = {},
+    ranking = {}
 }
 
 function Combat.onLoad(state)
@@ -47,7 +48,17 @@ function Combat.onLoad(state)
 
     if state.settings then
         Combat._staticSetUp(state.settings)
+        Combat.dreadnoughtStrengths = state.Combat.dreadnoughtStrengths
+        Combat.ranking = state.Combat.ranking
     end
+end
+
+---
+function Combat.onSave(state)
+    state.Combat = {
+        dreadnoughtStrengths = Combat.dreadnoughtStrengths,
+        ranking = Combat.ranking,
+    }
 end
 
 ---
@@ -87,10 +98,10 @@ function Combat._staticSetUp(settings)
             end, 1)
         elseif phase == "combatEnd" then
             local forces = Combat._calculateCombatForces()
-            local ranking = Combat._calculateRanking(forces)
-            local turnSequence = Combat._calculateOutcomeTurnSequence(ranking)
+            Combat.ranking = Combat._calculateRanking(forces)
+            local turnSequence = Combat._calculateOutcomeTurnSequence(Combat.ranking)
             TurnControl.overridePhaseTurnSequence(turnSequence)
-            Combat.showRanking(turnSequence, ranking)
+            Combat.showRanking(turnSequence, Combat.ranking)
         elseif phase == "recall" then
             for _, object in ipairs(Combat.victoryPointTokenZone.getObjects()) do
                 if Types.isVictoryPointToken(object) then
@@ -149,7 +160,7 @@ function Combat._setUpConflict()
                     guid = token.guid,
                 })
 
-                local controlableSpace = MainBoard.findControlableSpace(victoryPointToken)
+                local controlableSpace = MainBoard.findControlableSpaceFromConflictName(Helper.getID(victoryPointToken))
                 if controlableSpace then
                     local color = MainBoard.getControllingPlayer(controlableSpace)
                     if color then
@@ -342,8 +353,7 @@ end
 
 ---
 function Combat.getRank(color)
-    local forces = Combat._calculateCombatForces()
-    return Combat._calculateRanking(forces)[color]
+    return Combat.ranking[color]
 end
 
 ---

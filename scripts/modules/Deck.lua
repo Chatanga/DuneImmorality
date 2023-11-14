@@ -304,11 +304,11 @@ local Deck = {
             core = {
                 rallyTroops = Helper.ERASE,
                 hallOfOratory = Helper.ERASE,
-            },
-            solo = {
                 interstellarShipping = 1,
                 foldspaceAndInterstellarShipping = 1,
                 smugglingAndInterstellarShipping = 1,
+            },
+            solo = {
                 techNegotiation = 2,
                 dreadnought1p = 2,
             },

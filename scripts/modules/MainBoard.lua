@@ -330,14 +330,13 @@ function MainBoard.getHighCouncilSeatPark()
 end
 
 ---
-function MainBoard.findControlableSpace(victoryPointToken)
-    assert(victoryPointToken)
-    local description = Helper.getID(victoryPointToken)
-    if description == "secureImperialBasin" or description == "battleForImperialBasin" then
+function MainBoard.findControlableSpaceFromConflictName(conflictName)
+    assert(conflictName)
+    if conflictName == "secureImperialBasin" or conflictName == "battleForImperialBasin" then
         return MainBoard.banners.imperialBasinBannerZone
-    elseif description == "siegeOfArrakeen" or description == "battleForArrakeen" then
+    elseif conflictName == "siegeOfArrakeen" or conflictName == "battleForArrakeen" then
         return MainBoard.banners.arrakeenBannerZone
-    elseif description == "siegeOfCarthag" or description == "battleForCarthag" then
+    elseif conflictName == "siegeOfCarthag" or conflictName == "battleForCarthag" then
         return MainBoard.banners.carthagBannerZone
     else
         return nil
@@ -345,7 +344,7 @@ function MainBoard.findControlableSpace(victoryPointToken)
 end
 
 ---
-function MainBoard.occupy(controlableSpace, color)
+function MainBoard.occupy(controlableSpace, color, onlyCleanUp)
     for _, object in ipairs(controlableSpace.getObjects()) do
         for _, otherColor in ipairs(PlayBoard.getPlayBoardColors()) do
             if Types.isControlMarker(object, otherColor) then
@@ -360,16 +359,18 @@ function MainBoard.occupy(controlableSpace, color)
         end
     end
 
-    local p = controlableSpace.getPosition()
-    PlayBoard.getControlMarkerBag(color).takeObject({
-        -- Position is adjusted so as to insert the token below any dreadnought.
-        position = Vector(p.x, 0.78, p.z),
-        rotation = Vector(0, 180, 0),
-        smooth = false,
-        callback_function = function (controlMarker)
-            controlMarker.setLock(true)
-        end
-    })
+    if not onlyCleanUp then
+        local p = controlableSpace.getPosition()
+        PlayBoard.getControlMarkerBag(color).takeObject({
+            -- Position is adjusted so as to insert the token below any dreadnought.
+            position = Vector(p.x, 0.78, p.z),
+            rotation = Vector(0, 180, 0),
+            smooth = false,
+            callback_function = function (controlMarker)
+                controlMarker.setLock(true)
+            end
+        })
+    end
 end
 
 ---

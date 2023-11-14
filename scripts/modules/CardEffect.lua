@@ -79,9 +79,12 @@ function CardEffect._dispatch(selector, expression)
         local value = CardEffect.evaluate(context, expression)
         local leader = context.player
         local call = function (method, ...)
+            local name = leader.name or "?"
             if leader[method] then
+                --Helper.dump(name, "has a method", method)
                 leader[method](...)
             else
+                --Helper.dump(name, "has no method", method)
                 return false
             end
         end
@@ -113,6 +116,8 @@ function CardEffect._dispatch(selector, expression)
                 call("gainVictoryPoint", color, context.cardName)
             end
             return true
+        elseif selector == "control" then
+            return call("control", color, expression)
         elseif selector == "draw" then
             return call("drawImperiumCards", color, value)
         elseif selector == "shipment" then
@@ -213,10 +218,7 @@ function CardEffect.mentat()
 end
 
 function CardEffect.control(space)
-    return function (expression)
-        -- TODO Implicit, but better formalize it here.
-        --error("TODO")
-    end
+    return CardEffect._dispatch('control', space)
 end
 
 -- Functors
@@ -311,8 +313,8 @@ end
 
 function CardEffect.agentInEmperorSpace(expression)
     return function (context)
-        for _, spaceName in ipairs(MainBoard.getEmperorSpaces()) do
-            if MainBoard.hasAgentInSpace(spaceName, context.color) then
+        for _, space in ipairs(MainBoard.getEmperorSpaces()) do
+            if MainBoard.hasAgentInSpace(space, context.color) then
                 return CardEffect.evaluate(context, expression)
             end
         end

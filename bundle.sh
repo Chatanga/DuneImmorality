@@ -16,9 +16,6 @@ function bundle {
 	fi
 }
 
-timestamp="$(LANG=C date)"
-sed -i "s/^local BUILD\s*=\s*.*/local BUILD = '${timestamp}'/" "scripts/Global.-1.lua"
-
 if [ $# -gt 0 ]; then
 	while [ $# -gt 0 ]; do
 		bundle "$1"
@@ -31,3 +28,6 @@ else
 		bundle "$f"
 	done
 fi
+
+timestamp="$(LANG=C date)"
+sed -i "s/^local BUILD\s*=\s*.*/local BUILD = '${timestamp}'/" "$tmp_dir/Global.-1.ttslua"

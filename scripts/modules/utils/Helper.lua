@@ -8,6 +8,8 @@ local Helper = {
     eventListenersByTopic = {},
     areaButtonColor = { 0, 0, 0, 0 },
     uniqueNamePool = {},
+
+    AREA_BUTTON_COLOR = { 0, 0, 0, 0 },
     ERASE = function ()
         return "__erase__"
     end
@@ -508,7 +510,7 @@ function Helper.createSizedAreaButton(width, height, anchor, altitude, tooltip, 
         position = Vector(anchorPosition.x, altitude, anchorPosition.z),
         width = width,
         height = height,
-        color = Helper.areaButtonColor,
+        color = Helper.AREA_BUTTON_COLOR,
         hover_color = { 0.7, 0.7, 0.7, 0.7 },
         press_color = { 0.5, 1, 0.5, 0.4 },
         font_color = { 1, 1, 1, 100 },
