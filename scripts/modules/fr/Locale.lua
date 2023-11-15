@@ -96,7 +96,7 @@ return {
     strengthAmount = "Force",
     strength = "épée",
     strengths = "épées",
-    spentManually = "▲ {leader} dépense {amount} {resource} manuellement.",
+    spendManually = "▲ {leader} dépense {amount} {resource} manuellement.",
     receiveManually = "▼ {leader} reçoit {amount} {resource} manuellement.",
     fixManually = "Correction de {amount} {resource} manuellement ({location}).",
     influence = "influence",

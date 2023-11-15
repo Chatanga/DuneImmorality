@@ -96,7 +96,7 @@ return {
     strengthAmount = "Strength",
     strength = "Sword",
     strengths = "Swords",
-    spentManually = "▲ {leader} spent {amount} {resource} manually.",
+    spendManually = "▲ {leader} spent {amount} {resource} manually.",
     receiveManually = "▼ {leader} received {amount} {resource} manually.",
     fixManually = "Fixed {amount} {resource} manually ({location})\".",
     influence = "influence",
@@ -205,7 +205,7 @@ return {
     trashACard = "Trash a card",
     doAResearch = "Do a research",
     destroyACardFromYourHand = "Destroy a card from your hand",
-    spendOption = "Spent {amount} {resource}",
+    spendOption = "spend {amount} {resource}",
 
     -- Ranking
     firstInCombat = "★ 1st: {leader}",

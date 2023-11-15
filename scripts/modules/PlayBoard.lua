@@ -237,7 +237,8 @@ local PlayBoard = Helper.createClass(nil, {
         }
     },
     playBoards = {},
-    nextPlayer = nil
+    nextPlayer = nil,
+    occupationCooldown = {},
 })
 
 ---
@@ -408,6 +409,8 @@ function PlayBoard._staticSetUp(settings)
     Helper.registerEventListener("playerTurns", function (phase, color)
         --Helper.dumpFunction("PlayBoard.turnCallback", phase, color)
         local playBoard = PlayBoard.getPlayBoard(color)
+
+        PlayBoard.occupationCooldown = {}
 
         for otherColor, otherPlayBoard in pairs(PlayBoard._getPlayBoards()) do
             if PlayBoard.isHuman(otherColor) then
@@ -891,8 +894,9 @@ function PlayBoard.onObjectEnterScriptingZone(zone, object)
                 if Types.isVictoryPointToken(object) then
                     playBoard:updatePlayerScore()
                     local controlableSpace = MainBoard.findControlableSpaceFromConflictName(Helper.getID(object))
-                    if controlableSpace then
+                    if controlableSpace and not PlayBoard.occupationCooldown[controlableSpace] then
                         MainBoard.occupy(controlableSpace, color)
+                        PlayBoard.occupationCooldown[controlableSpace] = color
                     end
                 end
             elseif zone == playBoard.agentPark.zone then
