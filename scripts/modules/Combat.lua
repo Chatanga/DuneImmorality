@@ -34,7 +34,8 @@ local Combat = {
         Red = Vector(1.55, 0.85, -7.65),
     },
     victoryPointTokenPositions = {},
-    dreadnoughtStrengths = {}
+    dreadnoughtStrengths = {},
+    ranking = {}
 }
 
 function Combat.onLoad(state)
@@ -53,7 +54,17 @@ function Combat.onLoad(state)
 
     if state.settings then
         Combat._staticSetUp(state.settings)
+        Combat.dreadnoughtStrengths = state.Combat.dreadnoughtStrengths
+        Combat.ranking = state.Combat.ranking
     end
+end
+
+---
+function Combat.onSave(state)
+    state.Combat = {
+        dreadnoughtStrengths = Combat.dreadnoughtStrengths,
+        ranking = Combat.ranking,
+    }
 end
 
 ---
@@ -66,13 +77,17 @@ end
 function Combat._staticSetUp(settings)
     Combat.garrisonParks = {}
     for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
-        Combat.garrisonParks[color] = Combat._createGarrisonPark(color)
+        if not PlayBoard.isCommander(color) then
+            Combat.garrisonParks[color] = Combat._createGarrisonPark(color)
+        end
     end
 
     if settings.riseOfIx then
         Combat.dreadnoughtParks = {}
         for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
-            Combat.dreadnoughtParks[color] = Combat._createDreadnoughtPark(color)
+            if not PlayBoard.isCommander(color) then
+                Combat.dreadnoughtParks[color] = Combat._createDreadnoughtPark(color)
+            end
         end
     end
 
@@ -93,10 +108,10 @@ function Combat._staticSetUp(settings)
             end, 1)
         elseif phase == "combatEnd" then
             local forces = Combat._calculateCombatForces()
-            local ranking = Combat._calculateRanking(forces)
-            local turnSequence = Combat._calculateOutcomeTurnSequence(ranking)
+            Combat.ranking = Combat._calculateRanking(forces)
+            local turnSequence = Combat._calculateOutcomeTurnSequence(Combat.ranking)
             TurnControl.overridePhaseTurnSequence(turnSequence)
-            Combat.showRanking(turnSequence, ranking)
+            Combat.showRanking(turnSequence, Combat.ranking)
         elseif phase == "recall" then
             for _, object in ipairs(Combat.victoryPointTokenZone.getObjects()) do
                 if Types.isVictoryPointToken(object) then
@@ -118,7 +133,8 @@ function Combat._staticSetUp(settings)
     end)
 
     Helper.registerEventListener("phaseEnd", function (phase)
-        if phase == "combatEnd" then
+        -- TODO Originally "combatEnd"...
+        if phase == "recall" then
             for _, bannerZone in ipairs(MainBoard.getBannerZones()) do
                 local dreadnought = MainBoard.getControllingDreadnought(bannerZone)
                 -- Only recall locked controlling dreadnoughts.
@@ -352,8 +368,7 @@ end
 
 ---
 function Combat.getRank(color)
-    local forces = Combat._calculateCombatForces()
-    return Combat._calculateRanking(forces)[color]
+    return Combat.ranking[color]
 end
 
 ---

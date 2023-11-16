@@ -1,4 +1,4 @@
-local BUILD = 'Sun Nov  5 16:24:07 CET 2023'
+local BUILD = 'TBD'
 
 -- Do not load anything. Appropriate to work on the mod content without
 -- interference.
@@ -11,7 +11,7 @@ local autoLoadedSettings
 autoLoadedSettings = {
     language = "fr",
     randomizePlayerPositions = false,
-    virtualHotSeat = true,
+    specialMode = true,
     numberOfPlayers = 4,
     riseOfIx = true,
     epicMode = false,
@@ -44,7 +44,7 @@ local allModules = Module.registerModules({
     AcquireCard, -- To take advantage of Module.registerModuleRedirections.
     Action = require("Action"),
     Combat = require("Combat"),
-    CommercialTrack = require("CommercialTrack"),
+    ShipmentTrack = require("ShipmentTrack"),
     Deck = require("Deck"),
     ScoreBoard = require("ScoreBoard"),
     Hagal = require("Hagal"),
@@ -88,17 +88,19 @@ local PlayerSet = {
             --zh = "中文",
         },
         language = "en",
-        randomizePlayerPositions = false,
-        virtualHotSeat = false,
+        specialMode = false,
         numberOfPlayers_all = {
             "1 (+2)",
             "2 (+1)",
-            "3 (hotseat)",
-            "4 (hotseat)"
+            "3",
+            "4",
+            "2 x 3"
         },
         numberOfPlayers = {},
+        randomizePlayerPositions = false,
         difficulty_all = Helper.map(allModules.Hagal.getDifficulties(), function (_, v) return v.name end),
         difficulty = {},
+        useContracts = false,
         riseOfIx = true,
         epicMode = false,
         immortality = true,
@@ -117,6 +119,7 @@ function onLoad(scriptState)
     Helper.destroyTransientObjects()
 
     if constructionModeEnabled then
+        allModules.PlayBoard.rebuild()
         return
     end
 
@@ -143,7 +146,7 @@ function onLoad(scriptState)
         allModules.Combat,
         allModules.LeaderSelection,
         allModules.MainBoard,
-        allModules.CommercialTrack,
+        allModules.ShipmentTrack,
         allModules.TechMarket,
         allModules.Intrigue,
         allModules.InfluenceTrack,
@@ -198,7 +201,7 @@ function onSave()
     local savedState = {
         settings = settings
     }
-    Module.callOnAllRegisteredModules("onSave", savedState)
+    --Module.callOnAllRegisteredModules("onSave", savedState)
     if #Helper.getKeys(savedState) then
         return JSON.encode(savedState)
     else
@@ -211,9 +214,12 @@ function setUp(newSettings)
     assert(newSettings)
     I18N.setLocale(newSettings.language)
 
+    log("--- Settings ---")
+    log(newSettings)
+
     local properlySeatedPlayers = PlayerSet.getProperlySeatedPlayers()
-    if not newSettings.virtualHotSeat then
-        newSettings.numberOfPlayers = math.min(4, #properlySeatedPlayers)
+    if not newSettings.specialMode then
+        newSettings.numberOfPlayers = math.min(6, #properlySeatedPlayers)
     end
 
     local continuation = Helper.createContinuation("setUp")
@@ -229,6 +235,8 @@ function setUp(newSettings)
         settings = newSettings
 
         local orderedPlayers = PlayerSet.toCanonicallyOrderedPlayerList(activeOpponents)
+        log("--- orderedPlayers ---")
+        log(orderedPlayers)
         for _, module in ipairs(allModules.ordered) do
             module.setUp(settings, activeOpponents, orderedPlayers)
         end
@@ -255,7 +263,7 @@ end
 
 ---
 function PlayerSet.findActiveOpponents(properlySeatedPlayers, numberOfPlayers)
-    local colorsByPreference = { "Green", "Red", "Yellow", "Blue" }
+    local colorsByPreference = { "Green", "Red", "Yellow", "Blue", "Purple", "White" }
 
     local activeOpponents = {}
     for i, color in ipairs(properlySeatedPlayers) do
@@ -296,7 +304,12 @@ end
 
 ---
 function PlayerSet.toCanonicallyOrderedPlayerList(activeOpponents)
-    local orderedColors = { "Green", "Yellow", "Blue", "Red" }
+    local orderedColors
+    if #activeOpponents == 6 then
+        orderedColors = { "Green", "Purple", "Yellow", "Blue", "White", "Red" }
+    else
+        orderedColors = { "Green", "Yellow", "Blue", "Red" }
+    end
 
     local players = {}
     for _, color in ipairs(orderedColors) do
@@ -365,7 +378,7 @@ function setRandomizePlayerPositions(player, value, id)
 end
 
 ---
-function setVirtualHotSeat(player, value, id)
+function setSpecialMode(player, value, id)
     PlayerSet.ui:fromUI(player, value, id)
     if value == "True" then
         PlayerSet.fields.numberOfPlayers = 1
@@ -379,6 +392,10 @@ end
 ---
 function setNumberOfPlayers(player, value, id)
     PlayerSet.ui:fromUI(player, value, id)
+    if PlayerSet.fields.numberOfPlayers == 5 then
+        -- index ~= numberOfPlayers for the 5th entry
+        PlayerSet.fields.numberOfPlayers = PlayerSet.fields.numberOfPlayers + 1
+    end
     PlayerSet.applyNumberOfPlayers()
     PlayerSet.ui:toUI()
 end
@@ -452,7 +469,7 @@ function PlayerSet.updateSetupButton()
         local minPlayerCount
         if type(PlayerSet.fields.numberOfPlayers) == "table" then
             minPlayerCount = 3
-        elseif PlayerSet.fields.virtualHotSeat then
+        elseif PlayerSet.fields.specialMode then
             minPlayerCount = 1
         else
             minPlayerCount = math.min(2, PlayerSet.fields.numberOfPlayers)
@@ -476,7 +493,7 @@ function setUpFromUI()
     setUp({
         language = PlayerSet.fields.language,
         randomizePlayerPositions = PlayerSet.fields.randomizePlayerPositions == true,
-        virtualHotSeat = PlayerSet.fields.virtualHotSeat == true,
+        specialMode = PlayerSet.fields.specialMode == true,
         numberOfPlayers = PlayerSet.fields.numberOfPlayers,
         difficulty = PlayerSet.fields.difficulty,
         riseOfIx = PlayerSet.fields.riseOfIx == true,

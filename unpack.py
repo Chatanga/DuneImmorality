@@ -17,6 +17,7 @@ def extract_script_and_UI(name, id, element):
         with open(file_name + '.ttslua', 'w') as script_file:
             script_file.write(element['LuaScript'])
         element['LuaScript'] = "..."
+        element['LuaScriptState'] = ""
 
     if element['XmlUI']:
         with open(file_name + '.xml', 'w') as script_file:

@@ -1,0 +1,3 @@
+local ThroneRow = {}
+
+return ThroneRow

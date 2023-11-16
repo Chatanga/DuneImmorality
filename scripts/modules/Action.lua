@@ -13,7 +13,7 @@ local Reserve = Module.lazyRequire("Reserve")
 local MainBoard = Module.lazyRequire("MainBoard")
 local TechMarket = Module.lazyRequire("TechMarket")
 local ImperiumRow = Module.lazyRequire("ImperiumRow")
-local CommercialTrack = Module.lazyRequire("CommercialTrack")
+local ShipmentTrack = Module.lazyRequire("ShipmentTrack")
 local TleilaxuRow = Module.lazyRequire("TleilaxuRow")
 local ScoreBoard = Module.lazyRequire("ScoreBoard")
 
@@ -22,7 +22,7 @@ local Action = Helper.createClass(nil, {
 })
 
 ---
-function Action.onLoad()
+function Action.onLoad(state)
     Helper.registerEventListener("phaseStart", function (phase, _)
         Action.context = {
             phase = phase
@@ -35,6 +35,19 @@ function Action.onLoad()
         }
         printToAll(I18N("playerTurn", { leader = PlayBoard.getLeaderName(color) }), color)
     end)
+
+    if state.settings then
+        if state.Action then
+            Action.context = state.Action.context
+        end
+    end
+end
+
+---
+function Action.onSave(state)
+    state.Action = {
+        context = Action.context
+    }
 end
 
 --[[
@@ -237,6 +250,7 @@ end
 
 ---
 function Action._getTroopPark(color, parkName)
+    Helper.dumpFunction("Action._getTroopPark", color, parkName)
     if parkName == "supply" then
         return PlayBoard.getSupplyPark(color)
     elseif parkName == "garrison" then
@@ -295,7 +309,7 @@ function Action.advanceFreighter(color, positiveAmount)
     Types.assertIsPlayerColor(color)
     Types.assertIsPositiveInteger(positiveAmount)
     for _ = 1, positiveAmount do
-        if not CommercialTrack.freighterUp(color) then
+        if not ShipmentTrack.freighterUp(color) then
             return false
         else
             printToAll(I18N("advanceFreighter"), color)
@@ -307,7 +321,7 @@ end
 ---
 function Action.recallFreighter(color)
     Types.assertIsPlayerColor(color)
-    if CommercialTrack.freighterReset(color) then
+    if ShipmentTrack.freighterReset(color) then
         printToAll(I18N("recallFreighter"), color)
         return true
     else

@@ -2,15 +2,19 @@ local Helper = require("utils.Helper")
 
 ---@alias PlayerColor
 ---| 'Green'
+---| 'Purple'
 ---| 'Yellow'
 ---| 'Blue'
+---| 'White'
 ---| 'Red'
 
 ---@alias Faction
+---| 'greatHouses'
 ---| 'emperor'
 ---| 'spacingGuild'
 ---| 'beneGesserit'
 ---| 'fremen'
+---| 'fringeWorlds'
 
 ---@alias TroopLocation
 ---| 'supply'
@@ -18,6 +22,7 @@ local Helper = require("utils.Helper")
 ---| 'combat'
 ---| 'negotiation'
 ---| 'tanks'
+---| 'memory'
 
 ---@alias DreadnoughtLocation
 ---| 'supply'
@@ -62,8 +67,8 @@ function Types.isAgent(object, color)
 end
 
 ---
-function Types.isMentat(object, color)
-    return object.hasTag("Mentat") and (not color or object.hasTag(color))
+function Types.isSpy(object, color)
+    return object.hasTag("Spy") and (not color or object.hasTag(color))
 end
 
 ---
@@ -99,18 +104,22 @@ end
 ---
 function Types.assertIsPlayerColor(color)
     assert(color == "Green"
+        or color == "Purple"
         or color == "Yellow"
         or color == "Blue"
+        or color == "White"
         or color == "Red",
         "Not a player color: " .. tostring(color))
 end
 
 ---
 function Types.assertIsFaction(faction)
-    assert(faction == "emperor"
+    assert(faction == "greatHouses"
+        or faction == "emperor"
         or faction == "spacingGuild"
         or faction == "beneGesserit"
-        or faction == "fremen",
+        or faction == "fremen"
+        or faction == "fringeWorlds",
         "Not a faction: " .. tostring(faction))
 end
 

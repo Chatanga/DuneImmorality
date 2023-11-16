@@ -6,8 +6,9 @@
 local Helper = {
     sharedTables = {},
     eventListenersByTopic = {},
-    areaButtonColor = { 0, 0, 0, 0 },
     uniqueNamePool = {},
+
+    AREA_BUTTON_COLOR = { 0, 0, 0, 0 },
     ERASE = function ()
         return "__erase__"
     end
@@ -508,7 +509,7 @@ function Helper.createSizedAreaButton(width, height, anchor, altitude, tooltip, 
         position = Vector(anchorPosition.x, altitude, anchorPosition.z),
         width = width,
         height = height,
-        color = Helper.areaButtonColor,
+        color = Helper.AREA_BUTTON_COLOR,
         hover_color = { 0.7, 0.7, 0.7, 0.7 },
         press_color = { 0.5, 1, 0.5, 0.4 },
         font_color = { 1, 1, 1, 100 },
@@ -874,16 +875,18 @@ end
 ---@return boolean
 function Helper.isStabilized(beQuiet)
     local count = 0
-    for continuation, _ in pairs(Helper.pendingContinuations) do
-        if continuation then
-            if not beQuiet then
-                log("Pending continuation: " .. continuation.name)
-                continuation.tick(function ()
-                    log("Forgetting the pending continuation on timeout")
-                    Helper.pendingContinuations[continuation] = nil
-                end)
+    if Helper.pendingContinuations then
+        for continuation, _ in pairs(Helper.pendingContinuations) do
+            if continuation then
+                if not beQuiet then
+                    log("Pending continuation: " .. continuation.name)
+                    continuation.tick(function ()
+                        log("Forgetting the pending continuation on timeout")
+                        Helper.pendingContinuations[continuation] = nil
+                    end)
+                end
+                count = count + 1
             end
-            count = count + 1
         end
     end
     return count == 0
@@ -935,9 +938,16 @@ end
 ---@return Continuation
 function Helper.onceFramesPassed(count)
     local continuation = Helper.createContinuation("Helper.onceFramesPassed")
-    Wait.frames(function ()
-        continuation.run()
-    end, count)
+    if false then
+        Wait.frames(function ()
+            continuation.run()
+        end, count)
+    else
+        -- Players with high FPS configurations seem to have (be?) a problem.
+        Wait.time(function ()
+            continuation.run()
+        end, count / 60)
+    end
     return continuation
 end
 
@@ -1336,6 +1346,7 @@ function Helper.addAll(objects, otherObjects)
     assert(objects)
     assert(otherObjects)
     for _, object in ipairs(otherObjects) do
+        assert(object)
         table.insert(objects, object)
     end
 end
@@ -1571,6 +1582,8 @@ end
 
 ---
 function Helper.indexOf(table, element)
+    assert(table)
+    assert(element)
     for i, existingElement in ipairs(table) do
         if existingElement == element then
             return i
@@ -1581,6 +1594,7 @@ end
 
 ---
 function Helper.swap(elements, i, j)
+    assert(elements)
     if i ~= j then
         local tmp = elements[i]
         elements[i] = elements[j]
@@ -1590,6 +1604,7 @@ end
 
 ---
 function Helper.reverse(elements)
+    assert(elements)
     local count = #elements
     for i = 1, count do
         local j = count + 1 - i
@@ -1603,6 +1618,7 @@ end
 
 ---
 function Helper.cycle(elements)
+    assert(elements)
     local count = #elements
     local first = elements[1]
     for i = 1, count do
@@ -1621,6 +1637,7 @@ end
 
 ---
 function Helper.filter(elements, p)
+    assert(elements)
     local filteredElements = {}
     for _, element in ipairs(elements) do
         if p(element) then
@@ -1632,6 +1649,7 @@ end
 
 ---
 function Helper.count(elements, p)
+    assert(elements)
     local count = 0
     for k, v in pairs(elements) do
         if p(k, v) then
@@ -1643,6 +1661,7 @@ end
 
 ---
 function Helper.map(elements, f)
+    assert(elements)
     local newElements = {}
     for k, v in pairs(elements) do
         newElements[k] = f(k, v)
@@ -1652,6 +1671,7 @@ end
 
 ---
 function Helper.mapValues(elements, f)
+    assert(elements)
     local newElements = {}
     for k, v in ipairs(elements) do
         newElements[k] = f(v)

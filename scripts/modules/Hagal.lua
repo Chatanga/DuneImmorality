@@ -10,13 +10,12 @@ local Action = Module.lazyRequire("Action")
 local HagalCard = Module.lazyRequire("HagalCard")
 local Combat = Module.lazyRequire("Combat")
 local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
-local CommercialTrack = Module.lazyRequire("CommercialTrack")
+local ShipmentTrack = Module.lazyRequire("ShipmentTrack")
 local TechMarket = Module.lazyRequire("TechMarket")
 local MainBoard = Module.lazyRequire("MainBoard")
 local Intrigue = Module.lazyRequire("Intrigue")
 local Types = Module.lazyRequire("Types")
 
--- Enlighting clarifications: https://boardgamegeek.com/thread/2578561/summarizing-automa-2p-and-1p-similarities-and-diff
 local Hagal = Helper.createClass(Action, {
     difficulties = {
         novice = { name = "Mercenary", swordmasterArrivalTurn = 5 },
@@ -130,7 +129,13 @@ function Hagal.activate(phase, color)
     Helper.dumpFunction("Hagal.activate", phase, color)
     -- A delay before and after the action, to let the human(s) see the progress.
     Helper.onceTimeElapsed(1).doAfter(function ()
-        Hagal._lateActivate(phase, color)
+        Hagal._lateActivate(phase, color).doAfter(function ()
+            if Hagal.getRivalCount() == 1 then
+                Helper.onceTimeElapsed(1).doAfter(TurnControl.endOfTurn)
+            else
+                PlayBoard.createEndOfTurnButton(color)
+            end
+        end)
     end)
 end
 
@@ -306,6 +311,7 @@ end
 
 ---
 function Hagal.pickAnyCompatibleLeader(color)
+    Helper.dumpFunction("Hagal.pickAnyCompatibleLeader", color)
     if Hagal.getRivalCount() == 1 then
         local pseudoLeader = Helper.getDeck(Hagal.deckZone)
         assert(pseudoLeader, "Missing Hagal deck!")
@@ -357,7 +363,7 @@ end
 ---
 function Rival.shipments(color, amount)
     Helper.repeatChainedAction(amount, function ()
-        local level = CommercialTrack.getFreighterLevel(color)
+        local level = ShipmentTrack.getFreighterLevel(color)
         if level < 2 then
             Rival.advanceFreighter(color, 1)
         else
@@ -407,9 +413,9 @@ function Rival.acquireTech(color, stackIndex, discount)
         end
     end
 
-    local techDetails = TechMarket.getTopCardDetails(finalStackIndex)
+    local tech = TechMarket.getTopCardDetails(finalStackIndex)
     if Action.acquireTech(color, finalStackIndex, discount) then
-        if techDetails.name == "trainingDrones" then
+        if tech.name == "trainingDrones" then
             if PlayBoard.useTech(color, "trainingDrones") then
                 Rival.troops(color, "supply", "garrison", 1)
             end

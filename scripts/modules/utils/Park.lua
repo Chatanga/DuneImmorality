@@ -4,22 +4,12 @@ local Helper = require("utils.Helper")
 local Park = {}
 
 ---
-function Park.createCommonPark(tags, slots, margins, rotation)
+function Park.createCommonPark(tags, slots, margins, rotation, rotationSnap)
     local zone = Park.createBoundingZone(0, margins, slots)
 
     local name = Helper.stringConcat(tags)
 
-    local p = slots[1]:copy()
-    p:setAt("y", 1)
-    Helper.createTransientAnchor(name .. "Park", p).doAfter(function (anchor)
-        local snapPoints = {}
-        for _, slot in ipairs(slots) do
-            table.insert(snapPoints, Helper.createRelativeSnapPoint(anchor, slot, false, tags))
-        end
-        anchor.setSnapPoints(snapPoints)
-    end)
-
-    return Park.createPark(
+    local park = Park.createPark(
         name,
         slots,
         rotation or Vector(0, 0, 0),
@@ -28,6 +18,19 @@ function Park.createCommonPark(tags, slots, margins, rotation)
         nil,
         false,
         true)
+
+    local p = slots[1]:copy()
+    p:setAt("y", 1)
+    Helper.createTransientAnchor(name .. "Park", p).doAfter(function (anchor)
+        park.anchor = anchor
+        local snapPoints = {}
+        for _, slot in ipairs(slots) do
+            table.insert(snapPoints, Helper.createRelativeSnapPoint(anchor, slot, rotationSnap or false, tags))
+        end
+        anchor.setSnapPoints(snapPoints)
+    end)
+
+    return park
 end
 
 --[[

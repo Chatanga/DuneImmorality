@@ -14,6 +14,29 @@ local TechMarket = {
     acquireTechOptions = {},
 }
 
+-- Featureless mock
+local TechCard = {
+
+    isHagal = function (card)
+        return true
+    end,
+
+    applyBuyEffect = function (color, card)
+    end,
+
+    getCost = function (card)
+        return 0
+    end,
+
+    getDetails = function (card)
+        return {
+            hagal = true,
+            cost = 0,
+            name = "?"
+        }
+    end
+}
+
 ---
 function TechMarket.onLoad(state)
     Helper.append(TechMarket, Helper.resolveGUIDs(true, {

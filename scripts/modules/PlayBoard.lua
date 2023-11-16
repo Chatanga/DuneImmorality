@@ -15,36 +15,39 @@ local Leader = Module.lazyRequire("Leader")
 local Combat = Module.lazyRequire("Combat")
 local Intrigue = Module.lazyRequire("Intrigue")
 local Reserve = Module.lazyRequire("Reserve")
-local Music = Module.lazyRequire("Music")
 local TechMarket = Module.lazyRequire("TechMarket")
 local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
 
 local PlayBoard = Helper.createClass(nil, {
-    ALL_RESOURCE_NAMES = { "spice", "water", "solari", "persuasion", "strength" },
+    ALL_RESOURCE_NAMES = { "spice", "water", "solari", "strength", "persuasion" },
     -- Temporary structure (set to nil *after* loading).
     unresolvedContentByColor = {
         Red = {
-            board = "adcd28",
+            board = "d47b92",
             spice = "3074d4",
             solari = "576ccd",
             water = "692c4d",
-            persuasion = "72be72",
+            persuasion = "7eb590",
             strength = "3f6645",
-            leaderZone = "66cdbb",
             dreadnoughts = {"1a3c82", "a8f306"},
             dreadnoughtPositions = {
-                Helper.getHardcodedPositionFromGUID('1a3c82', -26.3000584, 1.11260116, 18.6999588),
-                Helper.getHardcodedPositionFromGUID('a8f306', -28.7000713, 1.112601, 18.6999741)
+                Helper.getHardcodedPositionFromGUID('1a3c82', -23.7, 1.19920409, 19.4),
+                Helper.getHardcodedPositionFromGUID('a8f306', -25.3, 1.19920444, 19.4)
             },
             agents = {"7751c8", "afa978"},
             agentPositions = {
-                Helper.getHardcodedPositionFromGUID('7751c8', -17.0, 1.11060035, 20.3),
-                Helper.getHardcodedPositionFromGUID('afa978', -18.3, 1.11060059, 20.3)
+                Helper.getHardcodedPositionFromGUID('7751c8', -19.9, 1.19722152, 21.7),
+                Helper.getHardcodedPositionFromGUID('afa978', -18.4, 1.19722152, 21.7)
+            },
+            spies = {
+                "fdecae",
+                "84d545",
+                "e7a4ef",
             },
             swordmaster = "ed3490",
             councilToken = "f19a48",
             fourPlayerVictoryToken = "a6c2e0",
-            fourPlayerVictoryTokenInitialPosition = Helper.getHardcodedPositionFromGUID('a6c2e0', -13.0, 1.3122313, 21.85),
+            fourPlayerVictoryTokenInitialPosition = Helper.getHardcodedPositionFromGUID('a6c2e0', -12.8, 1.41229177, 23.3),
             scoreMarker = "4feaca",
             controlMarkerBag = '61453d',
             troops = {
@@ -62,41 +65,43 @@ local PlayBoard = Helper.createClass(nil, {
                 "af7cd0"
             },
             forceMarker = '2d1d17',
-            drawDeckZone = "4f08fc",
-            discardZone = "e07493",
             trash = "ea3fe1",
             tleilaxToken = "2bfc39",
-            tleilaxTokenInitalPosition = Helper.getHardcodedPositionFromGUID('2bfc39', 0.54461664, 0.877500236, 22.0549927),
+            tleilaxTokenInitalPosition = Helper.getHardcodedPositionFromGUID('2bfc39', 0.5446167, 0.877500236, 22.0549927),
             researchToken = "39e0f3",
-            researchTokenInitalPosition = Helper.getHardcodedPositionFromGUID('39e0f3', 0.37, 0.880000353, 18.2351761),
+            researchTokenInitalPosition = Helper.getHardcodedPositionFromGUID('39e0f3', 0.3699999, 0.880000353, 18.2351761),
             freighter = "e9096d",
-            leaderPos = Helper.getHardcodedPositionFromGUID('66cdbb', -19.0, 1.25, 17.5),
-            firstPlayerPosition = Helper.getHardcodedPositionFromGUID('346e0d', -14.0, 1.5, 19.7) + Vector(0, -0.4, 0),
+            firstPlayerZone = "781a03",
+            firstPlayerPosition = Helper.getHardcodedPositionFromGUID('781a03', -13.6, 1.7, 20.89) + Vector(0, -0.4, 0),
             startEndTurnButton = "895594",
             atomicsToken = "d5ff47",
         },
         Blue = {
-            board = "77ca63",
+            board = "f23836",
             spice = "9cc286",
             solari = "fa5236",
             water = "0afaeb",
-            persuasion = "8cb9be",
+            persuasion = "d1fed4",
             strength = "aa3bb9",
-            leaderZone = "681774",
             dreadnoughts = {"82789e", "60f208"},
             dreadnoughtPositions = {
-                Helper.getHardcodedPositionFromGUID('82789e', -26.3000774, 1.11260116, -4.300044),
-                Helper.getHardcodedPositionFromGUID('60f208', -28.7000885, 1.11260128, -4.30005646)
+                Helper.getHardcodedPositionFromGUID('82789e', -23.7, 1.199204, -19.0),
+                Helper.getHardcodedPositionFromGUID('60f208', -25.3, 1.19920421, -19.0)
             },
             agents = {"64d013", "106d8b"},
             agentPositions = {
-                Helper.getHardcodedPositionFromGUID('64d013', -17.0, 1.11060047, -2.70000482),
-                Helper.getHardcodedPositionFromGUID('106d8b', -18.3, 1.11060035, -2.7)
+                Helper.getHardcodedPositionFromGUID('64d013', -19.9, 1.19722164, -16.7),
+                Helper.getHardcodedPositionFromGUID('106d8b', -18.4, 1.19722164, -16.7)
+            },
+            spies = {
+                "7d7083",
+                "e07c5c",
+                "272ba1",
             },
             swordmaster = "a78ad7",
             councilToken = "f5b14a",
             fourPlayerVictoryToken = "311255",
-            fourPlayerVictoryTokenInitialPosition = Helper.getHardcodedPositionFromGUID('311255', -13.0, 1.11223137, -1.1499995),
+            fourPlayerVictoryTokenInitialPosition = Helper.getHardcodedPositionFromGUID('311255', -12.8, 1.21229172, -15.1),
             scoreMarker = "1b1e76",
             controlMarkerBag = '8627e0',
             troops = {
@@ -114,41 +119,43 @@ local PlayBoard = Helper.createClass(nil, {
                 "694553"
             },
             forceMarker = 'f22e20',
-            drawDeckZone = "907f66",
-            discardZone = "26bf8b",
             trash = "52a539",
             tleilaxToken = "96607f",
             tleilaxTokenInitalPosition = Helper.getHardcodedPositionFromGUID('96607f', 0.5446168, 0.8800002, 22.75),
             researchToken = "292658",
-            researchTokenInitalPosition = Helper.getHardcodedPositionFromGUID('292658', 0.37, 0.8775002, 18.9369965),
+            researchTokenInitalPosition = Helper.getHardcodedPositionFromGUID('292658', 0.3699998, 0.8775002, 18.9369965),
             freighter = "68e424",
-            leaderPos = Helper.getHardcodedPositionFromGUID('681774', -19.0, 1.25506675, -5.5),
-            firstPlayerPosition = Helper.getHardcodedPositionFromGUID('1fc559', -14.0, 1.501278, -3.3) + Vector(0, -0.4, 0),
+            firstPlayerZone = "311c04",
+            firstPlayerPosition = Helper.getHardcodedPositionFromGUID('311c04', -13.6, 1.7, -17.49) + Vector(0, -0.4, 0),
             startEndTurnButton = "9eeccd",
             atomicsToken = "700023",
         },
         Green = {
-            board = "0bbae1",
+            board = "2facfd",
             spice = "22478f",
             solari = "e597dc",
             water = "fa9522",
-            persuasion = "ac97c5",
+            persuasion = "aa79bf",
             strength = "d880f7",
-            leaderZone = "cf1486",
             dreadnoughts = {"a15087", "734250"},
             dreadnoughtPositions = {
-                Helper.getHardcodedPositionFromGUID('a15087', 26.2999535, 1.112601, 18.6999741),
-                Helper.getHardcodedPositionFromGUID('734250', 28.69994, 1.112601, 18.69996)
+                Helper.getHardcodedPositionFromGUID('a15087', 23.7, 1.19651854, 19.4000015),
+                Helper.getHardcodedPositionFromGUID('734250', 25.3, 1.19651842, 19.4)
             },
-            agents = {"66ae45", "bceb0e"},
+            agents = {"bceb0e", "ee412b"},
             agentPositions = {
-                Helper.getHardcodedPositionFromGUID('66ae45', 17.0, 1.11060059, 20.2999935),
-                Helper.getHardcodedPositionFromGUID('bceb0e', 18.3, 1.11060047, 20.3)
+                Helper.getHardcodedPositionFromGUID('bceb0e', 15.35, 1.194536, 21.7),
+                Helper.getHardcodedPositionFromGUID('ee412b', 16.85, 1.194536, 21.7)
+            },
+            spies = {
+                "ed1748",
+                "795934",
+                "8ca6ca",
             },
             swordmaster = "fb1629",
             councilToken = "a0028d",
             fourPlayerVictoryToken = "66444c",
-            fourPlayerVictoryTokenInitialPosition = Helper.getHardcodedPositionFromGUID('66444c', 13.0, 1.31223154, 21.85),
+            fourPlayerVictoryTokenInitialPosition = Helper.getHardcodedPositionFromGUID('66444c', 12.8, 1.41229165, 23.3),
             scoreMarker = "76039f",
             controlMarkerBag = 'ad6b92',
             troops = {
@@ -166,41 +173,43 @@ local PlayBoard = Helper.createClass(nil, {
                 "fc9c62"
             },
             forceMarker = 'a1a9a7',
-            drawDeckZone = "6d8a2e",
-            discardZone = "2298aa",
             trash = "4060b5",
             tleilaxToken = "63d39f",
-            tleilaxTokenInitalPosition = Helper.getHardcodedPositionFromGUID('63d39f', 1.24461639, 0.8800001, 22.05),
+            tleilaxTokenInitalPosition = Helper.getHardcodedPositionFromGUID('63d39f', 1.24461651, 0.8800001, 22.05),
             researchToken = "658b17",
-            researchTokenInitalPosition = Helper.getHardcodedPositionFromGUID('658b17', 0.369999945, 0.877500236, 20.34),
+            researchTokenInitalPosition = Helper.getHardcodedPositionFromGUID('658b17', 0.369999915, 0.877500236, 20.34),
             freighter = "34281d",
-            leaderPos = Helper.getHardcodedPositionFromGUID('cf1486', 19.0, 1.18726385, 17.5),
-            firstPlayerPosition = Helper.getHardcodedPositionFromGUID('59523d', 14.0, 1.45146358, 19.7) + Vector(0, -0.4, 0),
+            firstPlayerZone = "ce7c68",
+            firstPlayerPosition = Helper.getHardcodedPositionFromGUID('ce7c68', 13.6, 1.7, 20.89) + Vector(0, -0.4, 0),
             startEndTurnButton = "96aa58",
             atomicsToken = "0a22ec",
         },
         Yellow = {
-            board = "fdd5f9",
+            board = "13b6cb",
             spice = "78fb8a",
             solari = "c5c4ef",
             water = "f217d0",
-            persuasion = "aa79bf",
+            persuasion = "c04d4e",
             strength = "6f007c",
-            leaderZone = "a677e0",
             dreadnoughts = {"5469fb", "71a414"},
             dreadnoughtPositions = {
-                Helper.getHardcodedPositionFromGUID('5469fb', 26.2999172, 1.11260128, -4.300019),
-                Helper.getHardcodedPositionFromGUID('71a414', 28.69992, 1.11260116, -4.300043)
+                Helper.getHardcodedPositionFromGUID('5469fb', 23.7, 1.19651854, -18.9999981),
+                Helper.getHardcodedPositionFromGUID('71a414', 25.3, 1.19651842, -19.0)
             },
             agents = {"5068c8", "67b476"},
             agentPositions = {
-                Helper.getHardcodedPositionFromGUID('5068c8', 17.0, 1.11060047, -2.70000386),
-                Helper.getHardcodedPositionFromGUID('67b476', 18.3, 1.11060047, -2.699999)
+                Helper.getHardcodedPositionFromGUID('5068c8', 15.35, 1.194536, -16.7),
+                Helper.getHardcodedPositionFromGUID('67b476', 16.85, 1.194536, -16.7)
+            },
+            spies = {
+                "94ffec",
+                "f59e0c",
+                "4e66c4",
             },
             swordmaster = "635c49",
             councilToken = "1be491",
             fourPlayerVictoryToken = "4e8873",
-            fourPlayerVictoryTokenInitialPosition = Helper.getHardcodedPositionFromGUID('4e8873', 13.0, 1.3122313, -1.14999926),
+            fourPlayerVictoryTokenInitialPosition = Helper.getHardcodedPositionFromGUID('4e8873', 12.8, 1.41229165, -15.1),
             scoreMarker = "20bbd1",
             controlMarkerBag = 'b92a4c',
             troops = {
@@ -218,23 +227,375 @@ local PlayBoard = Helper.createClass(nil, {
                 "b5d32e"
             },
             forceMarker = 'c2dd31',
-            drawDeckZone = "e6cfee",
-            discardZone = "6bb3b6",
             trash = "7d1e07",
             tleilaxToken = "d20bcf",
-            tleilaxTokenInitalPosition = Helper.getHardcodedPositionFromGUID('d20bcf', 1.24461651, 0.880000234, 22.75),
+            tleilaxTokenInitalPosition = Helper.getHardcodedPositionFromGUID('d20bcf', 1.24461639, 0.880000234, 22.75),
             researchToken = "8988cf",
-            researchTokenInitalPosition = Helper.getHardcodedPositionFromGUID('8988cf', 0.369999975, 0.877500236, 19.6394081),
+            researchTokenInitalPosition = Helper.getHardcodedPositionFromGUID('8988cf', 0.3699999, 0.8775003, 19.6394081),
             freighter = "8fa76f",
-            leaderPos = Helper.getHardcodedPositionFromGUID('a677e0', 19.0, 1.17902148, -5.5),
-            firstPlayerPosition = Helper.getHardcodedPositionFromGUID('e9a44c', 14.0, 1.44851, -3.3) + Vector(0, -0.4, 0),
+            firstPlayerZone = "ba0c20",
+            firstPlayerPosition = Helper.getHardcodedPositionFromGUID('ba0c20', 13.6, 1.7, -17.49) + Vector(0, -0.4, 0),
             startEndTurnButton = "3d1b90",
             atomicsToken = "7e10a9",
-        }
+        },
+        White = {
+            board = "4ad196",
+            spice = "9d593f",
+            solari = "5a16bb",
+            water = "830a1a",
+            persuasion = "57a567",
+            --agents = {"5068c8", "67b476"},
+            spies = {
+                "96bbc4",
+                "040248",
+                "bddedd",
+            },
+            councilToken = "ded786",
+            --fourPlayerVictoryToken = "4e8873",
+            scoreMarker = "974cdf",
+            trash = "a4f139",
+            firstPlayerZone = "f4c962",
+            firstPlayerPosition = Helper.getHardcodedPositionFromGUID('f4c962', -13.6, 1.7, 1.7) + Vector(0, -0.4, 0),
+            startEndTurnButton = "8d70a4", -- Full white tint won't work (will be magically change to red)!
+            atomicsToken = "a20687",
+        },
+        Purple = {
+            board = "dc05a6",
+            spice = "2c9946",
+            solari = "43d234",
+            water = "c72ecc",
+            persuasion = "ab28ea",
+            --agents = {"5068c8", "67b476"},
+            spies = {
+                "e5b04d",
+                "407c67",
+                "a3d964",
+            },
+            councilToken = "8c6ba7",
+            --fourPlayerVictoryToken = "4e8873",
+            scoreMarker = "612a60",
+            trash = "556139",
+            firstPlayerZone = "7a8ea9",
+            firstPlayerPosition = Helper.getHardcodedPositionFromGUID('7a8ea9', 13.58, 1.7, 1.7) + Vector(0, -0.4, 0),
+            startEndTurnButton = "eded7c",
+            atomicsToken = "0a3ccb",
+        },
     },
-    playboards = {},
-    nextPlayer = nil
+    playBoards = {}
 })
+
+---
+function PlayBoard.rebuild()
+    if false then
+        return
+    end
+
+    for _, color in ipairs({ "Green", "Yellow", "Blue", "Red", "White", "Purple" }) do
+        local content = Helper.resolveGUIDs(true, PlayBoard.unresolvedContentByColor[color])
+
+        local colorSwitch = function (left, right)
+            if color == "Red" or color == "White" or color == "Blue" then
+                return left
+            else
+                return right
+            end
+        end
+
+        local symmetric = function (x, y, z)
+            return colorSwitch(Vector(-x, y, z), Vector(x, y, z))
+        end
+        local offseted = function (x, y, z)
+            return colorSwitch(Vector(12.75 + x, y, z), Vector(x, y, z))
+        end
+
+        local symmetric2 = function (x, y, z)
+            local r = symmetric(-x, y, -z)
+            return Vector(-r.x, r.y, -r.z)
+        end
+        local offseted2 = function (x, y, z)
+            local r = offseted(-x, y, -z)
+            return Vector(-r.x, r.y, -r.z)
+        end
+
+        local c1 = 0.5
+
+        local objectGroups = {
+            {
+                board = Vector(0, 0, 0),
+                fourPlayerVictoryToken = symmetric(-11.2, 0, 8.1),
+            },
+            {
+                spice = offseted(-8.4, 0, 4.5),
+                solari = offseted(-4.4, 0, 4.5),
+                water = offseted(-6.4, 0, 4),
+                leaderZone = offseted(0, 0, -4),
+                agents = {
+                    origin = offseted(-8.65, 0, 6.5),
+                    width = 4,
+                    height = 1,
+                    xOffset = Vector(1.5, 0, 0),
+                },
+                spies = {
+                    origin = offseted(-7.9, 0, 5.75),
+                    width = 3,
+                    height = 1,
+                    xOffset = Vector(1.5, 0, 0),
+                },
+                drawDeckZone = offseted(0, 0, -4),
+                discardZone = offseted(0, 0, -4),
+            },
+            {
+                persuasion = symmetric(c1, 0, 0.2),
+                strength = symmetric(c1, 0, 6),
+                dreadnoughts = {
+                    origin = symmetric(c1-0.8, 0, 4.2),
+                    width = 2,
+                    height = 1,
+                    xOffset = symmetric(1.6, 0, 0),
+                    yOffset = Vector(0, 0, 0),
+                },
+                councilToken = symmetric(1.35, 0, -0.6),
+                controlMarkerBag = symmetric(c1, 0, 4),
+                troops = {
+                    origin = symmetric(c1-0.5, 0, 1.8),
+                    width = 3,
+                    height = 4,
+                    xOffset = symmetric(0.5, 0, 0),
+                    yOffset = Vector(0, 0, 0.5),
+                },
+            },
+            {
+                trash = symmetric(10, 0, 1),
+                startEndTurnButton = symmetric(10, 0, 6),
+                atomicsToken = symmetric(10, 0, 4),
+            },
+        }
+
+        local c0 = 1
+        local positions = {
+            Green = Vector(24, 1, 14.2 + c0),
+            Yellow = Vector(24, 1, -24.2 + c0),
+            Red = Vector(-24, 1, 14.2 + c0),
+            Blue = Vector(-24, 1, -24.2 + c0),
+            White = Vector(-24, 1, -5 + c0),
+            Purple = Vector(24, 1, -5 + c0),
+        }
+        local position = positions[color]
+
+        local offset = position - content.board.getPosition()
+
+        for _, objects in ipairs(objectGroups) do
+            for name, localOffset in pairs(objects) do
+                local object = content[name]
+                if object then
+                    if type(object) == "table" then
+                        assert(type(localOffset) == "table", name)
+                        for j, item in ipairs(object) do
+                            local newPosition = position + localOffset.origin
+                            local x = (j - 1) % localOffset.width
+                            local y = math.floor((j - 1) / localOffset.width)
+                            newPosition = newPosition + localOffset.xOffset:copy():scale(x) + (localOffset.yOffset and localOffset.yOffset:copy():scale(y) or Vector(0, 0, 0))
+                            newPosition.y = (item.getPosition() + offset).y + localOffset.origin.y
+                            item.setPosition(newPosition)
+                        end
+                    else
+                        local newPosition = position + localOffset
+                        newPosition.y = (object.getPosition() + offset).y + localOffset.y
+                        object.setPosition(newPosition)
+                        object.setLock(true)
+                    end
+                end
+            end
+        end
+
+        local handTransform = Player[color].getHandTransform()
+        handTransform.position = handTransform.position + offset
+        Player[color].setHandTransform(handTransform)
+
+        local layoutGrid = function (width, height, f)
+            local n = width * height
+            for i = 1, n do
+                local x = (i - 1) % width
+                local y = math.floor((i - 1) / width)
+                f(x, y)
+            end
+        end
+
+        -- Coordinates in the object space (rotated by 180°).
+        local decals = {
+            {
+                name = "Scoreboard",
+                url = colorSwitch(
+                    "http://cloud-3.steamusercontent.com/ugc/2042984690511948114/BD4C6DB374A73A3A1586E84DD94DD2459EB51782/",
+                    "http://cloud-3.steamusercontent.com/ugc/2042984690511949009/00AEA6A9B03D893B1BF82EFF392448FD52B8C70E/"),
+                position = symmetric2(1.4, 0.2, -8.1),
+                rotation = { 90, 180, 0 },
+                scale = { 21.56, 1.1, 1.1 },
+            },
+            {
+                name = "First Player Token Slot",
+                url = "http://cloud-3.steamusercontent.com/ugc/2042984592862631937/B2176FBF3640DC02A6840C8E0FB162057724DE41/",
+                position = symmetric2(10.4, 0.2, -5.7),
+                rotation = { 90, 180, 0 },
+                scale = { 2, 2, 2 },
+            },
+            {
+                name = "Deck Slot",
+                url = "http://cloud-3.steamusercontent.com/ugc/2042984592862630696/9973F87497827C194B979D7410D0DD47E46305FA/",
+                position = offseted2(10.4, 0.2, -1.5),
+                rotation = { 90, 180, 0 },
+                scale = { 2.4, 3.4, 3.4 },
+            },
+            {
+                name = "Discard Slot",
+                url = "http://cloud-3.steamusercontent.com/ugc/2042984592862631187/76205DFA6ECBC5F9C6B38BE95F42E6B5468B5999/",
+                position = offseted2(2.4, 0.2, -1.5),
+                rotation = { 90, 180, 0 },
+                scale = { 2.4, 3.4, 3.4 },
+            },
+            {
+                name = "Leader Slot",
+                url = "http://cloud-3.steamusercontent.com/ugc/2042984592862632410/7882B2E68FF7767C67EE5C63C9D7CF17B405A5C3/",
+                position = offseted2(6.4, 0.2, -1),
+                rotation = { 90, 180, 0 },
+                scale = { 5, 3.5, 3.5 },
+            },
+        }
+
+        layoutGrid(4, 1, function (x, y)
+            table.insert(decals, {
+                name = "Generic Slot",
+                url = "http://cloud-3.steamusercontent.com/ugc/2042984592862621000/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
+                position = offseted2(4.15 + x * 1.5, 0.2, -6.5),
+                rotation = { 90, 0, 0 },
+                scale = { 0.5, 0.5, 0.5 },
+            })
+        end)
+
+        layoutGrid(3, 1, function (x, y)
+            table.insert(decals,  {
+                name = "Generic Slot",
+                url = "http://cloud-3.steamusercontent.com/ugc/2042984592862621000/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
+                position = offseted2(4.9 + x * 1.5, 0.2, -5.75),
+                rotation = { 90, 0, 0 },
+                scale = { 0.25, 0.25, 0.25 },
+            })
+        end)
+
+        layoutGrid(2, 3, function (x, y)
+            table.insert(decals, {
+                name = "Tech Tile Slot",
+                url = "http://cloud-3.steamusercontent.com/ugc/2042984592862632706/6A948CDC20774D0D4E5EA0EFF3E0D2C23F30FCC1/",
+                position = symmetric2(-4 -3 * x, 0.2, -2 -2 * y),
+                rotation = { 90, 0, 0 },
+                scale = { 2.6, 1.8, 1.8 },
+            })
+        end)
+
+        if content.dreadnoughts then
+            layoutGrid(2, 1, function (x, y)
+                table.insert(decals, {
+                    name = "Generic Slot",
+                    url = "http://cloud-3.steamusercontent.com/ugc/2042984592862621000/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
+                    position = symmetric2(-1.3 + x * 1.6, 0.2, -4.2),
+                    rotation = { 90, 0, 0 },
+                    scale = { 0.5, 0.5, 0.5 },
+                })
+            end)
+        end
+
+        if false then
+            layoutGrid(9, 2, function (x, y)
+                table.insert(decals, {
+                    name = "Intrigium",
+                    url = "http://cloud-3.steamusercontent.com/ugc/2120690798716490121/DB0A29253195530F3A39D5AC737922A5B2338795/",
+                    position = symmetric2(9.5 -2.5 * x, 0.2, 3.2 + 4 * y),
+                    rotation = { 90, 180, 0 },
+                    scale = { 2, 2, 2 },
+                })
+            end)
+        else
+            layoutGrid(6, 1, function (x, y)
+                table.insert(decals, {
+                    name = "Intrigium",
+                    url = "http://cloud-3.steamusercontent.com/ugc/2120690798716490121/DB0A29253195530F3A39D5AC737922A5B2338795/",
+                    position = symmetric2(9.5 -2.5 * x, 0.2, 3.2 + 4 * y),
+                    rotation = { 90, 180, 0 },
+                    scale = { 2, 2, 2 },
+                })
+            end)
+        end
+
+        content.board.setDecals(decals)
+    end
+end
+
+---
+---@param position Vector
+function PlayBoard:moveAt(position, isRelative)
+    --Helper.dumpFunction("PlayBoard:moveAt", position, isRelative)
+
+    local toBeMoved = Helper.shallowCopy(self.content)
+    local offset = isRelative and position or (position - toBeMoved.board.getPosition())
+
+    local exceptions = {
+        "swordmaster",
+        "scoreMarker",
+        "forceMarker",
+        "tleilaxToken",
+        "tleilaxTokenInitalPosition",
+        "researchToken",
+        "researchTokenInitalPosition",
+        "freighter",
+    }
+    for _, exception in ipairs(exceptions) do
+        toBeMoved[exception] = nil
+    end
+
+    toBeMoved.drawDeck = self.content.drawDeckZone and Helper.getDeckOrCard(self.content.drawDeckZone) or nil
+    toBeMoved.discard = self.content.discardZone and Helper.getDeckOrCard(self.content.discardZone) or nil
+
+    local move = "setPositionSmooth"
+
+    Helper.forEachRecursively(toBeMoved, function (name, object)
+        assert(tostring(object) ~= "null", name)
+        if object.getPosition then
+            object[move](object.getPosition() + offset)
+        elseif object.x then
+            object.x = object.x + offset.x
+            object.y = object.y + offset.y
+            object.z = object.z + offset.z
+        else
+            log(name)
+        end
+    end)
+
+    local parks = {
+        self.agentCardPark,
+        self.revealCardPark,
+        self.agentPark,
+        self.dreadnoughtPark,
+        self.supplyPark,
+        self.techPark,
+        self.scorePark,
+    }
+
+    for _, park in ipairs(parks) do
+        for _, slot in ipairs(park.slots) do
+            slot.x = slot.x + offset.x
+            slot.y = slot.y + offset.y
+            slot.z = slot.z + offset.z
+        end
+        park.zone[move](park.zone.getPosition() + offset)
+        if park.anchor then
+            park.anchor[move](park.anchor.getPosition() + offset)
+        end
+    end
+
+    local handTransform = Player[self.color].getHandTransform()
+    handTransform.position = handTransform.position + offset
+    Player[self.color].setHandTransform(handTransform)
+end
 
 ---
 function PlayBoard.onLoad(state)
@@ -246,7 +607,7 @@ function PlayBoard.onLoad(state)
             alive = subState ~= nil
         end
         if alive then
-            PlayBoard.playboards[color] = PlayBoard.new(color, unresolvedContent, subState)
+            PlayBoard.playBoards[color] = PlayBoard.new(color, unresolvedContent, subState)
         end
     end
     PlayBoard.unresolvedContentByColor = nil
@@ -259,13 +620,52 @@ end
 ---
 function PlayBoard.onSave(state)
     state.PlayBoard =
-        Helper.map(PlayBoard.playboards, function (color, playBoard)
+        Helper.map(PlayBoard.playBoards, function (color, playBoard)
             local resourceValues = {}
             for _, resourceName in ipairs(PlayBoard.ALL_RESOURCE_NAMES) do
-                resourceValues[resourceName] = playBoard[resourceName]:get()
+                if playBoard[resourceName] then
+                    resourceValues[resourceName] = playBoard[resourceName]:get()
+                end
             end
             return resourceValues
         end)
+end
+
+---
+function PlayBoard.generatePosition(playBoard, operation, position)
+
+    local colorSwitch = function (left, right)
+        if playBoard.color == "Red" or playBoard.color == "White" or playBoard.color == "Blue" then
+            return left
+        else
+            return right
+        end
+    end
+
+    local p = playBoard.content.board.getPosition()
+    if not operation then
+        p = p + position
+    elseif operation == "symmetric" then
+        p = p + colorSwitch(Vector(-position.x, position.y, position.z), position)
+    elseif operation == "offseted" then
+        p = p + colorSwitch(Vector(12.75 + position.x, position.y, position.z), position)
+    else
+        assert("Unknow operation: " .. tostring(operation))
+    end
+
+    return p
+end
+
+---
+function PlayBoard.createTransientZone(playBoard, operation, position, scale)
+    local zone = spawnObject({
+        type = 'ScriptingTrigger',
+        position = PlayBoard.generatePosition(playBoard, operation, position),
+        rotation = Vector(0, 180, 0),
+        scale = { scale.x, scale.y, scale.z },
+    })
+    Helper.markAsTransient(zone)
+    return zone
 end
 
 ---
@@ -293,23 +693,33 @@ function PlayBoard.new(color, unresolvedContent, subState)
         )
     --end
 
+    playBoard.content.drawDeckZone = PlayBoard.createTransientZone(playBoard, "offseted", Vector(-10.4, 0.2, 1.5), Vector(2.3, 1, 3.3))
+    playBoard.content.leaderZone = PlayBoard.createTransientZone(playBoard, "offseted", Vector(-6.4, 0.2, 1), Vector(5, 1, 3.5))
+    playBoard.content.discardZone = PlayBoard.createTransientZone(playBoard, "offseted", Vector(-2.4, 0.2, 1.5), Vector(2.3, 1, 3.3))
+
     -- FIXME Why this offset? In particular, why the Z component introduces an asymmetry?
     local offset = Vector(0, 0.55, 5.1)
     local centerPosition = playBoard.content.board.getPosition() + offset
 
     for _, resourceName in ipairs(PlayBoard.ALL_RESOURCE_NAMES) do
         local token = playBoard.content[resourceName]
-        local value = subState and subState[resourceName] or 0
-        playBoard[resourceName] = Resource.new(token, color, resourceName, value)
+        if token then
+            local value = subState and subState[resourceName] or 0
+            playBoard[resourceName] = Resource.new(token, color, resourceName, value)
+        end
     end
-    playBoard.agentCardPark = playBoard:_createCardPark(Vector(0, 0, 4))
-    playBoard.revealCardPark = playBoard:_createCardPark(Vector(0, 0, 0))
-    playBoard.agentPark = playBoard:_createAgentPark(unresolvedContent.agentPositions)
-    playBoard.dreadnoughtPark = playBoard:_createDreadnoughtPark(unresolvedContent.dreadnoughtPositions)
-    playBoard.supplyPark = playBoard:_createSupplyPark(centerPosition)
-    playBoard.techPark = playBoard:_createTechPark(centerPosition)
-    playBoard:_generatePlayerScoreboardPositions()
-    playBoard.scorePark = playBoard:_createPlayerScorePark()
+    playBoard.agentCardPark = playBoard:_createCardPark(Vector(0, 0, 0))
+    playBoard.revealCardPark = playBoard:_createCardPark(Vector(0, 0, -4))
+    if not PlayBoard.isCommander(color) then
+        playBoard.agentPark = playBoard:_createAgentPark(unresolvedContent.agentPositions)
+        playBoard.dreadnoughtPark = playBoard:_createDreadnoughtPark(unresolvedContent.dreadnoughtPositions)
+        playBoard.supplyPark = playBoard:_createSupplyPark()
+
+        -- TODO Should not.
+        playBoard:_generatePlayerScoreboardPositions()
+        playBoard.scorePark = playBoard:_createPlayerScorePark()
+    end
+    playBoard.techPark = playBoard:_createTechPark(Vector(0, 0, 0))
 
     playBoard:_createButtons()
 
@@ -322,7 +732,7 @@ end
 
 ---
 function PlayBoard.setUp(settings, activeOpponents)
-    for color, playBoard in pairs(PlayBoard.playboards) do
+    for color, playBoard in pairs(PlayBoard.playBoards) do
         playBoard:_cleanUp(false, not settings.riseOfIx, not settings.immortality)
         if activeOpponents[color] then
             playBoard.opponent = activeOpponents[color]
@@ -349,8 +759,22 @@ function PlayBoard.setUp(settings, activeOpponents)
         else
             playBoard:_tearDown()
         end
-    end
 
+        if settings.numberOfPlayers <= 4 then
+            Helper.onceTimeElapsed(1).doAfter(function ()
+                local offsets = {
+                    Green = Vector(0, 0, -9.5),
+                    Yellow = Vector(0, 0, 9.5),
+                    Red = Vector(0, 0, -9.5),
+                    Blue = Vector(0, 0, 9.5),
+                }
+                local offset = offsets[color]
+                if offset then
+                    playBoard:moveAt(offset, true)
+                end
+            end)
+        end
+    end
     PlayBoard._staticSetUp(settings)
 end
 
@@ -517,9 +941,10 @@ end
 
 ---
 function PlayBoard._setActivePlayer(phase, color)
+    --Helper.dumpFunction("PlayBoard._setActivePlayer", phase, color)
     local indexedColors = {"Green", "Yellow", "Blue", "Red"}
     for i, otherColor in ipairs(indexedColors) do
-        local playBoard = PlayBoard.playboards[otherColor]
+        local playBoard = PlayBoard.playBoards[otherColor]
         if playBoard then
             local effectIndex = 0 -- black index (no color actually)
             if otherColor == color then
@@ -536,7 +961,7 @@ function PlayBoard._setActivePlayer(phase, color)
                 Helper.clearButtons(playBoard.content.startEndTurnButton)
             end
             local board = playBoard.content.board
-            board.AssetBundle.playTriggerEffect(effectIndex)
+            --board.AssetBundle.playTriggerEffect(effectIndex)
         end
     end
 end
@@ -563,7 +988,7 @@ function PlayBoard._movePlayerIfNeeded(color)
 end
 
 function PlayBoard.createEndOfTurnButton(color)
-    PlayBoard.playboards[color]:_createEndOfTurnButton()
+    PlayBoard.playBoards[color]:_createEndOfTurnButton()
 end
 
 ---
@@ -594,7 +1019,7 @@ function PlayBoard.acceptTurn(phase, color)
         accepted = playBoard.leader == nil
     elseif phase == 'playerTurns' then
         if Hagal.getRivalCount() == 1 and PlayBoard.isRival(color) then
-            accepted = not PlayBoard.playboards[TurnControl.getFirstPlayer()].revealed
+            accepted = not PlayBoard.playBoards[TurnControl.getFirstPlayer()].revealed
         else
             accepted = PlayBoard.couldSendAgentOrReveal(color)
         end
@@ -657,21 +1082,22 @@ end
 ---
 function PlayBoard.getPlayBoard(color)
     assert(color)
-    assert(#Helper.getKeys(PlayBoard.playboards) > 0, "No playBoard at all: too soon!")
-    local playBoard = PlayBoard.playboards[color]
+    assert(#Helper.getKeys(PlayBoard.playBoards) > 0, "No playBoard at all: too soon!")
+    local playBoard = PlayBoard.playBoards[color]
     --assert(playBoard, "No playBoard for color " .. tostring(color))
     return playBoard
 end
 
 ---
 function PlayBoard._getPlayBoards(filterOutRival)
-    assert(#Helper.getKeys(PlayBoard.playboards) > 0, "No playBoard at all: too soon!")
+    assert(#Helper.getKeys(PlayBoard.playBoards) > 0, "No playBoard at all: too soon!")
     local filteredPlayBoards = {}
-    for color, playBoard in pairs(PlayBoard.playboards) do
+    for color, playBoard in pairs(PlayBoard.playBoards) do
         if playBoard.opponent and (not filterOutRival or playBoard.opponent ~= "rival") then
             filteredPlayBoards[color] = playBoard
         end
     end
+    assert(#Helper.getKeys(filteredPlayBoards) > 0, "No playBoard at all in the end: still too soon! (Lazy PlayBoard setUp?)")
     return filteredPlayBoards
 end
 
@@ -687,27 +1113,22 @@ end
 
 ---
 function PlayBoard:_createCardPark(globalOffset)
-    local offsets = {
-        Red = Vector(13, 0.69, -5),
-        Blue = Vector(13, 0.69, -5),
-        Green = Vector(-13, 0.69, -5),
-        Yellow = Vector(-13, 0.69, -5)
-    }
+    local origin = PlayBoard.generatePosition(self, "symmetric", Vector(-9.5, 0.2, -3.2)) + globalOffset
+
     local step = 0
-    if self.color == "Yellow" or self.color == "Green" then
+    if self.color == "Yellow" or self.color == "Purple" or self.color == "Green" then
         step = 2.5
     end
-    if self.color == "Red" or self.color == "Blue" then
+    if self.color == "Red" or self.color == "White" or self.color == "Blue" then
         step = -2.5
     end
-    local origin = self.content.board.getPosition() + offsets[self.color] + globalOffset
 
     local slots = {}
-    for i = 0, 11 do
+    for i = 0, 8 do
         table.insert(slots, origin + Vector(i * step, 0, 0))
     end
 
-    local park = Park.createCommonPark({ "Imperium", "Intrigue" }, slots, Vector(2.4, 0.5, 3.2), Vector(0, 180, 0))
+    local park = Park.createCommonPark({ "Imperium", "Intrigue" }, slots, Vector(2.4, 0.5, 3.2), Vector(0, 180, 0), true)
     park.tagUnion = true
     park.smooth = false
     return park
@@ -744,16 +1165,18 @@ function PlayBoard:_createDreadnoughtPark(dreadnoughtPositions)
 end
 
 ---
-function PlayBoard:_createSupplyPark(centerPosition)
+function PlayBoard:_createSupplyPark()
+    local origin = PlayBoard.generatePosition(self, "symmetric", Vector(0.5, 0, 2))
+
     local allSlots = {}
     local slots = {}
     for i = 1, 4 do
         for j = 1, 4 do
             local x = (i - 2.5) * 0.5
             local z = (j - 2.5) * 0.5
-            local slot = Vector(x, 0.29, z):rotateOver('y', -45) + centerPosition
+            local slot = Vector(x, 0.29, z):rotateOver('y', -45) + origin
             table.insert(allSlots, slot)
-            if i < 3 or j < 3 then
+            if i > 2 or j > 2 then
                 table.insert(slots, slot)
             end
         end
@@ -779,17 +1202,18 @@ function PlayBoard:_createSupplyPark(centerPosition)
 end
 
 ---
-function PlayBoard:_createTechPark(centerPosition)
+function PlayBoard:_createTechPark()
+    local origin = PlayBoard.generatePosition(self, "symmetric", Vector(-0.45, 0, 3.6))
     local color = self.color
     local slots = {}
     for i = 1, 2 do
         for j = 3, 1, -1 do
             local x = (i - 1.5) * 3 + 6
-            if color == "Red" or color == "Blue" then
+            if color == "Red" or color == "White" or color == "Blue" then
                 x = -x
             end
                 local z = (j - 2) * 2 + 0.4
-            local slot = Vector(x, 0.5, z) + centerPosition
+            local slot = Vector(x, 0.5, z) + origin
             table.insert(slots, slot)
         end
     end
@@ -824,7 +1248,7 @@ function PlayBoard:_createPlayerScorePark()
     local origin = self.content.fourPlayerVictoryTokenInitialPosition
 
     local direction = 1
-    if self.color == "Red" or  self.color == "Blue" then
+    if self.color == "Red" or self.color == "White" or self.color == "Blue" then
         direction = -1
     end
 
@@ -847,14 +1271,16 @@ function PlayBoard:updatePlayerScore()
         rectifiedScore = rectifiedScore > 13 and rectifiedScore - 10 or rectifiedScore
         local scoreMarker = self.content.scoreMarker
         scoreMarker.setLock(false)
-        scoreMarker.setPositionSmooth(self.scorePositions[rectifiedScore])
+        if rectifiedScore ~= 0 then
+            scoreMarker.setPositionSmooth(self.scorePositions[rectifiedScore])
+        end
     end
 end
 
 ---
 function PlayBoard.onObjectEnterScriptingZone(zone, object)
-    for color, playBoard in pairs(PlayBoard.playboards) do
-        if playBoard.opponent then
+    for color, playBoard in pairs(PlayBoard.playBoards) do
+        if playBoard.opponent and playBoard.scorePark then
             if zone == playBoard.scorePark.zone then
                 if Types.isVictoryPointToken(object) then
                     playBoard:updatePlayerScore()
@@ -863,11 +1289,6 @@ function PlayBoard.onObjectEnterScriptingZone(zone, object)
                         MainBoard.occupy(controlableSpace, color)
                     end
                 end
-            elseif zone == playBoard.agentPark.zone then
-                if Types.isMentat(object) then
-                    object.addTag(color)
-                    object.setColorTint(playBoard.content.swordmaster.getColorTint())
-                end
             end
         end
     end
@@ -875,8 +1296,8 @@ end
 
 ---
 function PlayBoard.onObjectLeaveScriptingZone(zone, object)
-    for _, playBoard in pairs(PlayBoard.playboards) do
-        if playBoard.opponent then
+    for _, playBoard in pairs(PlayBoard.playBoards) do
+        if playBoard.opponent and playBoard.scorePark then
             if zone == playBoard.scorePark.zone then
                 if Types.isVictoryPointToken(object) then
                     playBoard:updatePlayerScore()
@@ -888,53 +1309,116 @@ end
 
 ---
 function PlayBoard:_tearDown()
-    self:_cleanUp(true, true, true)
-    PlayBoard.playboards[self.color] = nil
+    self:_cleanUp(true, true, true, true)
+    PlayBoard.playBoards[self.color] = nil
 end
 
 ---
-function PlayBoard:_cleanUp(base, ix, immortality)
+function PlayBoard:_cleanUp(base, ix, immortality, full)
     local content = self.content
 
     local toBeRemoved = {}
 
+    local collect = function (childName)
+        local child = content[childName]
+        if child then
+            if type(child) == "table" then
+                for _, leafChild in ipairs(child) do
+                    table.insert(toBeRemoved, leafChild)
+                end
+            else
+                table.insert(toBeRemoved, child)
+            end
+            content[childName] = nil
+        end
+    end
+
     if base then
-        Helper.addAll(toBeRemoved, {
-            content.swordmaster,
-            content.councilToken,
-            content.scoreMarker,
-            content.controlMarkerBag,
-            content.forceMarker,
-            content.startEndTurnButton,
-            content.fourPlayerVictoryToken
-        })
-        Helper.addAll(toBeRemoved, content.agents)
-        Helper.addAll(toBeRemoved, content.troops)
+        collect("councilToken")
+        collect("scoreMarker")
+        collect("startEndTurnButton")
+        collect("drawDeckZone")
+        collect("leaderZone")
+        collect("discardZone")
+        collect("firstPlayerZone")
+
+        collect("spice")
+        collect("solari")
+        collect("water")
+        collect("strength")
+        collect("persuasion")
+        collect("trash")
+
+        collect("spies")
+
+        if not PlayBoard.isCommander(self.color) then
+            collect("swordmaster") -- TODO Add to commander
+            collect("controlMarkerBag")
+            collect("forceMarker")
+            collect("fourPlayerVictoryToken") -- TODO Add to commander
+            collect("agents") -- TODO Add to commander
+            collect("troops")
+        end
     end
 
     if ix then
-        Helper.addAll(toBeRemoved, content.dreadnoughts)
-        table.insert(toBeRemoved, content.controlMarkerBag)
-        table.insert(toBeRemoved, content.freighter)
-        table.insert(toBeRemoved, content.atomicsToken)
+        if not PlayBoard.isCommander(self.color) then
+            collect("dreadnoughts")
+            collect("controlMarkerBag")
+            collect("freighter")
+        end
+        collect("atomicsToken")
     end
 
     if immortality then
-        table.insert(toBeRemoved, content.tleilaxToken)
-        table.insert(toBeRemoved, content.researchToken)
+        if not PlayBoard.isCommander(self.color) then
+            collect("tleilaxToken")
+            collect("researchToken")
+        end
+    end
+
+    if full then
+        self:_clearButtons()
+
+        if PlayBoard.isCommander(self.color) then
+            collect("board")
+
+            local parkNames = {
+                "agentCardPark",
+                "revealCardPark",
+                "agentPark",
+                "techPark",
+                "scorePark",
+            }
+
+            for _, parkName in ipairs(parkNames) do
+                local park = self[parkName]
+                self[parkName] = nil
+                if park then
+                    table.insert(toBeRemoved, park.anchor)
+                    table.insert(toBeRemoved, park.zone)
+                end
+            end
+
+            -- TODO Get rid of the hand zone instead.
+            local handTransform = Player[self.color].getHandTransform()
+            handTransform.position = handTransform.position + self:_newSymmetricBoardPosition(50, 0, 0)
+            Player[self.color].setHandTransform(handTransform)
+        end
     end
 
     for _, object in ipairs(toBeRemoved) do
-        if toBeRemoved then
-            object.interactable = true
-            object.destruct()
-        end
+        assert(object)
+        object.interactable = true
+        object.destruct()
     end
+
+    content = {}
 end
 
 ---
 function PlayBoard.findBoardColor(board)
-    for color, _ in pairs(PlayBoard.playboards) do
+    for color, _ in pairs(PlayBoard.playBoards) do
         if PlayBoard._getBoard(color) == board then
             return color
         end
@@ -962,7 +1446,7 @@ end
 ---
 function PlayBoard:getFontColor()
     local fontColor = { 0.9, 0.9, 0.9 }
-    if self.color == 'Yellow' then
+    if self.color == "Yellow" or self.color == "White" then
         fontColor = { 0.1, 0.1, 0.1 }
     end
     return fontColor
@@ -988,7 +1472,7 @@ function PlayBoard:_createButtons()
             self:drawCards(1)
         end),
         label = I18N("drawOneCardButton"),
-        position = self:_newOffsetedBoardPosition(-13.5, 0, 1.8),
+        position = self:_newOffsetedBoardPosition(-10.4, 0.2, -0.6),
         width = 1100,
         height = 250,
         font_size = 150,
@@ -996,27 +1480,29 @@ function PlayBoard:_createButtons()
         font_color = fontColor
     })
 
-    board.createButton({
-        click_function = self:_createExclusiveCallback(function ()
-            -- Note: the Holtzman effect happens at the recall phase (drawing 5
-            -- cards is not stricly done when a round starts.)
-            self:drawCards(5)
-        end),
-        label = I18N("drawFiveCardsButton"),
-        position = self:_newOffsetedBoardPosition(-13.5, 0, 2.6),
-        width = 1400,
-        height = 250,
-        font_size = 150,
-        color = self.color,
-        font_color = fontColor
-    })
+    if false then
+        board.createButton({
+            click_function = self:_createExclusiveCallback(function ()
+                -- Note: the Holtzman effect happens at the recall phase (drawing 5
+                -- cards is not stricly done when a round starts.)
+                self:drawCards(5)
+            end),
+            label = I18N("drawFiveCardsButton"),
+            position = self:_newOffsetedBoardPosition(-13.5, 0, 2.6),
+            width = 1400,
+            height = 250,
+            font_size = 150,
+            color = self.color,
+            font_color = fontColor
+        })
+    end
 
     board.createButton({
         click_function = self:_createExclusiveCallback(function ()
             self:_resetDiscard()
         end),
         label = I18N("resetDiscardButton"),
-        position = self:_newOffsetedBoardPosition(-3.5, 0, 2.6),
+        position = self:_newOffsetedBoardPosition(-2.4, 0.2, -0.6),
         width = 1400,
         height = 250,
         font_size = 150,
@@ -1027,7 +1513,7 @@ function PlayBoard:_createButtons()
     board.createButton({
         click_function = Helper.registerGlobalCallback(),
         label = I18N("agentTurn"),
-        position = self:_newSymmetricBoardPosition(-14.8, 0, -1),
+        position = self:_newSymmetricBoardPosition(-11.3, 0.2, -3.3),
         rotation = self:_newSymmetricBoardRotation(0, -90, 0),
         width = 0,
         height = 0,
@@ -1043,7 +1529,7 @@ function PlayBoard:_createButtons()
             end
         end),
         label = I18N("revealHandButton"),
-        position = self:_newSymmetricBoardPosition(-14.8, 0, -5),
+        position = self:_newSymmetricBoardPosition(-11.3, 0.2, -7.3),
         rotation = self:_newSymmetricBoardRotation(0, -90, 0),
         width = 1600,
         height = 320,
@@ -1092,7 +1578,7 @@ end
 
 ---
 function PlayBoard:tryRevealHandEarly()
-    local origin = PlayBoard.getPlayBoard(self.color):_newSymmetricBoardPosition(-8, 0, -4.5)
+    local origin = PlayBoard.getPlayBoard(self.color):_newSymmetricBoardPosition(-2, 0.2, -6.5)
 
     local board = self.content.board
 
@@ -1169,8 +1655,8 @@ function PlayBoard:revealHand()
     local councilSeat = PlayBoard.hasHighCouncilSeat(self.color)
     local artillery = PlayBoard.hasTech(self.color, "artillery")
 
-    local intrigueCardContributions = IntrigueCard.evaluatePlot(self.color, playedIntrigues, allRevealedCards, artillery)
-    local imperiumCardContributions = ImperiumCard.evaluateReveal(self.color, playedCards, allRevealedCards, artillery)
+    local intrigueCardContributions = IntrigueCard and IntrigueCard.evaluatePlot(self.color, playedIntrigues, allRevealedCards, artillery) or {}
+    local imperiumCardContributions = ImperiumCard and ImperiumCard.evaluateReveal(self.color, playedCards, allRevealedCards, artillery) or {}
 
     self.persuasion:set(
         (intrigueCardContributions.persuasion or 0) +
@@ -1385,6 +1871,11 @@ function PlayBoard.isHuman(color)
 end
 
 ---
+function PlayBoard.isCommander(color)
+    return color == "Purple" or color == "White"
+end
+
+---
 function PlayBoard.setLeader(color, leaderCard)
     Types.assertIsPlayerColor(color)
     assert(leaderCard)
@@ -1487,10 +1978,14 @@ end
 function PlayBoard:getScore()
     local score = 0
     if not PlayBoard.isRival(self.color) or Hagal.getRivalCount() == 2 then
-        for _, object in ipairs(self.scorePark.zone.getObjects()) do
-            if Types.isVictoryPointToken(object) then
-                score = score + 1
+        if self.scorePark then
+            for _, object in ipairs(self.scorePark.zone.getObjects()) do
+                if Types.isVictoryPointToken(object) then
+                    score = score + 1
+                end
             end
+        else
+            log("Missing score park for player " .. self.color)
         end
     end
     return score
@@ -1652,6 +2147,13 @@ function PlayBoard.getDrawDeck(color)
 end
 
 ---
+function PlayBoard.getDiscard(color)
+    local playBoard = PlayBoard.getPlayBoard(color)
+    local deckOrCard = Helper.getDeckOrCard(playBoard.content.discardZone)
+    return deckOrCard
+end
+
+---
 function PlayBoard.getHandedCards(color)
     return Helper.filter(Player[color].getHandObjects(), Types.isImperiumCard)
 end
@@ -1696,7 +2198,7 @@ end
 
 ---
 function PlayBoard:_newSymmetricBoardPosition(x, y, z)
-    if self.color == "Red" or self.color == "Blue" then
+    if self.color == "Red" or self.color == "White" or self.color == "Blue" then
         return self:_newBoardPosition(-x, y, z)
     else
         return self:_newBoardPosition(x, y, z)
@@ -1705,7 +2207,7 @@ end
 
 ---
 function PlayBoard:_newSymmetricBoardRotation(x, y, z)
-    if self.color == "Red" or self.color == "Blue" then
+    if self.color == "Red" or self.color == "White" or self.color == "Blue" then
         return self:_newBoardPosition(x, -y, z)
     else
         return self:_newBoardPosition(x, y, z)
@@ -1714,8 +2216,8 @@ end
 
 ---
 function PlayBoard:_newOffsetedBoardPosition(x, y, z)
-    if self.color == "Red" or self.color == "Blue" then
-        return self:_newBoardPosition(17 + x, y, z)
+    if self.color == "Red" or self.color == "White" or self.color == "Blue" then
+        return self:_newBoardPosition(12.75 + x, y, z)
     else
         return self:_newBoardPosition(x, y, z)
     end
@@ -1723,7 +2225,7 @@ end
 
 ---
 function PlayBoard:_newBoardPosition(x, y, z)
-    return Vector(x, y + 0.7, -z)
+    return Vector(x, y, -z)
 end
 
 return PlayBoard

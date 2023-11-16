@@ -26,9 +26,8 @@
 
 			<Text class="primary" key="players"/>
 			<VerticalLayout padding="25 0 0 0">
-				<Toggle id="randomizePlayerPositions" onValueChanged="Global/setRandomizePlayerPositions" isOn="True" key="randomizePlayersPositions"/>
 				<HorizontalLayout>
-					<Toggle id="virtualHotSeat" onValueChanged="Global/setVirtualHotSeat" isOn="False" key="virtualHotSeat"/>
+					<Toggle id="specialMode" onValueChanged="Global/setSpecialMode" isOn="False" key="specialMode"/>
 					<Dropdown id="numberOfPlayers" onValueChanged="Global/setNumberOfPlayers" flexibleWidth="2.5" active="False">
 						<Option></Option>
 					</Dropdown>
@@ -36,10 +35,12 @@
 						<Option></Option>
 					</Dropdown>
 				</HorizontalLayout>
+				<Toggle id="randomizePlayerPositions" onValueChanged="Global/setRandomizePlayerPositions" isOn="True" key="randomizePlayersPositions"/>
 			</VerticalLayout>
 
 			<Text class="primary" key="extensions"/>
 			<VerticalLayout padding="25 0 0 0">
+				<Toggle id="useContracts" onValueChanged="Global/setUseContracts" isOn="True" key="useContracts"/>
 				<Toggle id="riseOfIx" isOn="True" onValueChanged="Global/setRiseOfIx" key="riseOfIx"/>
 				<VerticalLayout padding="25 0 0 0">
 					<Toggle id="epicMode" isOn="False" onValueChanged="Global/setEpicMode" key="epicMode"/>
@@ -69,6 +70,5 @@
 			<Button id="setUpButton" minHeight="26" onClick="Global/setUpFromUI" key="setup"/>
 		</HorizontalLayout>
 	</VerticalLayout>
-	<!--Image position="0 375" width="256" height="256" image="http://cloud-3.steamusercontent.com/ugc/2178113508629772555/403477904A57FC9749C8B4F2C5548C5425D08A71/"/-->
 	<Image position="0 375" width="450" height="230" image="http://cloud-3.steamusercontent.com/ugc/2178113508631057252/0DBB449E130AC23B875A07AE447E074C03B8926D/"/>
 </Panel>

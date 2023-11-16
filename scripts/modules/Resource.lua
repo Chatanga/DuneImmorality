@@ -3,6 +3,7 @@ local Helper = require("utils.Helper")
 local I18N = require("utils.I18N")
 
 local PlayBoard = Module.lazyRequire("PlayBoard")
+local Types = Module.lazyRequire("Types")
 
 local Resource = Helper.createClass(nil, {
     MIN_VALUE = 0,
@@ -12,6 +13,10 @@ local Resource = Helper.createClass(nil, {
 
 ---
 function Resource.new(token, color, resourceName, value)
+    assert(token)
+    Types.assertIsResourceName(resourceName)
+    Types.assertIsPositiveInteger(value)
+
     token.interactable = false
 
     local resource = Helper.createClassInstance(Resource, {
@@ -140,7 +145,7 @@ function Resource:_changeValue(color, altClick)
             if self.color then
                 local leaderName = PlayBoard.getLeaderName(self.color)
                 if delta < 0 then
-                    local text = I18N("spentManually", { leader = leaderName, amount = -delta, resource = I18N.agree(delta, self.resourceName) })
+                    local text = I18N("spendManually", { leader = leaderName, amount = -delta, resource = I18N.agree(delta, self.resourceName) })
                     broadcastToAll(text, color)
                 elseif delta > 0 then
                     local text = I18N("receiveManually", { leader = leaderName, amount = delta, resource = I18N.agree(delta, self.resourceName) })

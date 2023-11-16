@@ -84,23 +84,6 @@ function TurnControl.setUp(settings, _, players)
 end
 
 ---
-function TurnControl._bindButton(label, button, callback)
-    button.createButton({
-        click_function = TurnControl._createExclusiveCallback(function (...)
-            button.AssetBundle.playTriggerEffect(0)
-            callback(...)
-        end),
-        position = Vector(0, 0.6, 0),
-        label = label,
-        width = 1500,
-        height = 1500,
-        color = { 0, 0, 0, 0 },
-        font_size = 350,
-        font_color = { 1, 1, 1, 100 }
-    })
-end
-
----
 function TurnControl._createExclusiveCallback(innerCallback)
     return Helper.registerGlobalCallback(function (_, color, _)
         if color == "Black" then
@@ -147,6 +130,7 @@ end
 
 ---
 function TurnControl.start()
+    assert(TurnControl.firstPlayerLuaIndex)
     TurnControl._startPhase(TurnControl.phaseOrder[1])
 end
 
@@ -302,7 +286,8 @@ end
 ---
 function TurnControl._getNextPhase(phase)
     if phase == 'leaderSelection' then
-        return 'gameStart'
+        --return 'gameStart' -- Skipped
+        return 'roundStart'
     elseif phase == 'gameStart' then
         return 'roundStart'
     elseif phase == 'roundStart' then
@@ -310,7 +295,8 @@ function TurnControl._getNextPhase(phase)
     elseif phase == 'playerTurns' then
         return 'combat'
     elseif phase == 'combat' then
-        return 'combatEnd'
+        -- return 'combatEnd' -- Skipped
+        return 'makers'
     elseif phase == 'combatEnd' then
         return 'makers'
     elseif phase == 'makers' then
