@@ -94,6 +94,6 @@ def process(positions, filename, content):
 
     return (expansion_count, new_content)
 
-assert len(sys.argv) == 3
-positions = collect_positions(sys.argv[1])
-expand_in_scripts(positions, sys.argv[2])
+def expand(input_file_name, output_file_name):
+    positions = collect_positions(input_file_name)
+    expand_in_scripts(positions, output_file_name)

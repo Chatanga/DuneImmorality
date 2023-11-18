@@ -1,6 +1,5 @@
 import json
 import sys
-from datetime import datetime
 
 tts_tmp_dir = '/tmp/TabletopSimulator/Tabletop Simulator Lua'
 
@@ -23,9 +22,9 @@ def inject_script_and_UI(name, id, element):
             print("Description UI XML", file_name, "introuvable.", file = sys.stderr)
             element.pop('XmlUI')
 
-def pack_save(save_file_name):
+def pack_save(input_save_file_name, output_save_file_name, date):
     save = None
-    with open(save_file_name, 'r') as save_file:
+    with open(input_save_file_name, 'r') as save_file:
         save = json.load(save_file)
 
     inject_script_and_UI('Global', -1, save)
@@ -44,10 +43,7 @@ def pack_save(save_file_name):
                     name = state['Name']
                 inject_script_and_UI(name, state['GUID'], state)
 
-    date = datetime.now().strftime("%m/%d/%Y %I:%M:%S %p")
     save['Date'] = date
 
-    print(json.dumps(save, indent = 2))
-
-assert len(sys.argv) == 2
-pack_save(sys.argv[1])
+    with open(output_save_file_name, 'w') as save_file:
+        print(json.dumps(save, indent = 2), file = save_file)

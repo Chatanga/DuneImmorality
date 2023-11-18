@@ -60,11 +60,11 @@ def browse_save(save_file_name, scriptStates):
                     name = state['Name']
                 collect_script_and_UI(name, state['GUID'], state, scriptStates)
 
-scriptStates = []
-browse_save('tmp/mod.unscripted.patched.json', scriptStates)
-saveAndPlay('127.0.0.1', 39999, {
-    "messageID": 1,
-    "scriptStates": scriptStates
-})
-
 # netstat -tlpn
+def upload():
+    scriptStates = []
+    browse_save('tmp/mod.unscripted.patched.json', scriptStates)
+    saveAndPlay('127.0.0.1', 39999, {
+        "messageID": 1,
+        "scriptStates": scriptStates
+    })

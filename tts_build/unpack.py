@@ -24,9 +24,9 @@ def extract_script_and_UI(name, id, element):
             script_file.write(element['XmlUI'])
         element['XmlUI'] = "..."
 
-def unpack_save(save_file_name):
+def unpack_save(input_save_file_name, output_save_file_name):
     save = None
-    with open(save_file_name, 'r') as save_file:
+    with open(input_save_file_name, 'r') as save_file:
         save = json.load(save_file)
 
     extract_script_and_UI('Global', -1, save)
@@ -45,7 +45,5 @@ def unpack_save(save_file_name):
                     name = state['Name']
                 extract_script_and_UI(name, state['GUID'], state)
 
-    print(json.dumps(save, indent = 2))
-
-assert len(sys.argv) == 2
-unpack_save(sys.argv[1])
+    with open(output_save_file_name, 'w') as save_file:
+        print(json.dumps(save, indent = 2), file = save_file)

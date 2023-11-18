@@ -69,6 +69,3 @@ def patch_save(input_path, output_path):
 
     with open(output_path, 'w') as new_save:
         new_save.write(json.dumps(save, indent = 2))
-
-assert len(sys.argv) == 3
-patch_save(sys.argv[1], sys.argv[2])
