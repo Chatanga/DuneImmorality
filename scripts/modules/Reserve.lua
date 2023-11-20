@@ -11,7 +11,7 @@ local Reserve = {}
 function Reserve.onLoad(state)
     Helper.append(Reserve, Helper.resolveGUIDs(true, {
         foldspaceSlotZone = "6b62e0",
-        arrakisLiaisonSlotZone = "cbcd9a",
+        prepareTheWaySlotZone = "cbcd9a",
         theSpiceMustFlowSlotZone = "c087d2"
     }))
 
@@ -22,21 +22,27 @@ end
 
 ---
 function Reserve.setUp()
-    Deck.generateSpecialDeck("foldspace", Reserve.foldspaceSlotZone)
-    Deck.generateSpecialDeck("arrakisLiaison", Reserve.arrakisLiaisonSlotZone)
-    Deck.generateSpecialDeck("theSpiceMustFlow", Reserve.theSpiceMustFlowSlotZone)
+    if false then
+        Deck.generateSpecialDeck("base", "foldspace", Reserve.foldspaceSlotZone)
+    else
+        Reserve.foldspaceSlotZone.destruct()
+    end
+    Deck.generateSpecialDeck("uprising", "prepareTheWay", Reserve.prepareTheWaySlotZone)
+    Deck.generateSpecialDeck("uprising", "theSpiceMustFlow", Reserve.theSpiceMustFlowSlotZone)
     Reserve._staticSetUp()
 end
 
 ---
 function Reserve._staticSetUp()
-    Reserve.foldspace = AcquireCard.new(Reserve.foldspaceSlotZone, "Imperium", PlayBoard.withLeader(function (_, color)
+    if false then
+        Reserve.foldspace = AcquireCard.new(Reserve.foldspaceSlotZone, "Imperium", PlayBoard.withLeader(function (_, color)
+            local leader = PlayBoard.getLeader(color)
+            leader.acquireFoldspace(color)
+        end))
+    end
+    Reserve.prepareTheWay = AcquireCard.new(Reserve.prepareTheWaySlotZone, "Imperium", PlayBoard.withLeader(function (_, color)
         local leader = PlayBoard.getLeader(color)
-        leader.acquireFoldspace(color)
-    end))
-    Reserve.arrakisLiaison = AcquireCard.new(Reserve.arrakisLiaisonSlotZone, "Imperium", PlayBoard.withLeader(function (_, color)
-        local leader = PlayBoard.getLeader(color)
-        leader.acquireArrakisLiaison(color)
+        leader.acquirePrepareTheWay(color)
     end))
     Reserve.theSpiceMustFlow = AcquireCard.new(Reserve.theSpiceMustFlowSlotZone, "Imperium", PlayBoard.withLeader(function (_, color)
         local leader = PlayBoard.getLeader(color)
@@ -46,12 +52,16 @@ end
 
 ---
 function Reserve.acquireFoldspace(color)
-    PlayBoard.giveCardFromZone(color, Reserve.foldspace.zone, false)
+    if false then
+        PlayBoard.giveCardFromZone(color, Reserve.foldspace.zone, false)
+    else
+        error("TODO")
+    end
 end
 
 ---
-function Reserve.acquireArrakisLiaison(color)
-    PlayBoard.giveCardFromZone(color, Reserve.arrakisLiaison.zone, false)
+function Reserve.acquirePrepareTheWay(color)
+    PlayBoard.giveCardFromZone(color, Reserve.prepareTheWay.zone, false)
 end
 
 ---

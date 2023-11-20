@@ -44,7 +44,7 @@ function TleilaxuRow._staticSetUp()
             Helper.moveCardFromZone(TleilaxuRow.deckZone, zone.getPosition(), Vector(0, 180, 0))
         end
     end)
-    Deck.generateSpecialDeck("reclaimedForces", TleilaxuRow.slotZones[3])
+    Deck.generateSpecialDeck("immortality", "reclaimedForces", TleilaxuRow.slotZones[3])
 
     TleilaxuRow.acquireCards = {}
     for i, zone in ipairs(TleilaxuRow.slotZones) do

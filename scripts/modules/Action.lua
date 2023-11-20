@@ -87,10 +87,10 @@ end
 function Action.prepare(color, settings)
     Action.resources(color, "water", 1)
     if settings.epicMode then
-        Action.troops(color, "supply", "garrison", 5)
         Action.drawIntrigues(color, 1)
-    else
-        Action.troops(color, "supply", "garrison", 3)
+    end
+    if not PlayBoard.isCommander(color) then
+        Action.troops(color, "supply", "garrison", settings.epicMode and 5 or 3)
     end
 end
 
@@ -112,6 +112,12 @@ end
 function Action.sendAgent(color, spaceName)
     Action.context.space = spaceName
     return MainBoard.sendAgent(color, spaceName)
+end
+
+---
+function Action.sendSpy(color, observationPostName)
+    Action.context.observationPost = observationPostName
+    return MainBoard.sendSpy(color, observationPostName)
 end
 
 ---
@@ -250,7 +256,7 @@ end
 
 ---
 function Action._getTroopPark(color, parkName)
-    Helper.dumpFunction("Action._getTroopPark", color, parkName)
+    --Helper.dumpFunction("Action._getTroopPark", color, parkName)
     if parkName == "supply" then
         return PlayBoard.getSupplyPark(color)
     elseif parkName == "garrison" then
@@ -293,9 +299,9 @@ function Action.acquireFoldspace(color)
 end
 
 ---
-function Action.acquireArrakisLiaison(color, toItsHand)
+function Action.acquirePrepareTheWay(color, toItsHand)
     Types.assertIsPlayerColor(color)
-    return Reserve.acquireArrakisLiaison(color, toItsHand)
+    return Reserve.acquirePrepareTheWay(color, toItsHand)
 end
 
 ---

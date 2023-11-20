@@ -7,16 +7,17 @@ local TechMarket = Module.lazyRequire("TechMarket")
 
 local ShipmentTrack = {
     initialFreighterPositions = {
-        Yellow = Helper.getHardcodedPositionFromGUID('8fa76f', 8.999586, 0.650369346, 2.85039115),
-        Green = Helper.getHardcodedPositionFromGUID('34281d', 8.449569, 0.6503631, 2.85039282),
-        Blue = Helper.getHardcodedPositionFromGUID('68e424', 7.349561, 0.650360644, 2.85443878),
-        Red = Helper.getHardcodedPositionFromGUID('e9096d', 7.89961529, 0.6503637, 2.853247)
+        Yellow = Helper.getHardcodedPositionFromGUID('8fa76f', 8.999592, 0.6503693, 2.85035729),
+        Green = Helper.getHardcodedPositionFromGUID('34281d', 8.449568, 0.6503631, 2.85038328),
+        Blue = Helper.getHardcodedPositionFromGUID('68e424', 7.349551, 0.650360644, 2.85444713),
+        Red = Helper.getHardcodedPositionFromGUID('e9096d', 7.899611, 0.6503637, 2.85325766)
     }
 }
 
 ---
 function ShipmentTrack.onLoad(state)
     Helper.append(ShipmentTrack, Helper.resolveGUIDs(true, {
+        --[[
         levelSlots = {
             "1eeba7",
             "4c40e8",
@@ -31,6 +32,7 @@ function ShipmentTrack.onLoad(state)
         ignoredBonusSlots = {
             tech = "0990d7", -- Implicit when the freighter is reset.
         }
+        ]]
     }))
 
     if state.settings and state.settings.riseOfIx then
@@ -49,6 +51,7 @@ end
 
 ---
 function ShipmentTrack._staticSetUp()
+    --[[
     for i, levelSlot in ipairs(ShipmentTrack.levelSlots) do
         ShipmentTrack._createLevelButton(i - 1, levelSlot)
     end
@@ -56,10 +59,12 @@ function ShipmentTrack._staticSetUp()
     for bonusName, bonusSlot in pairs(ShipmentTrack.bonusSlots) do
         ShipmentTrack._createBonusButton(bonusName, bonusSlot)
     end
+    ]]
 end
 
 ---
 function ShipmentTrack._tearDown()
+    --[[
     for _, levelSlot in ipairs(ShipmentTrack.levelSlots) do
         levelSlot.destruct()
     end
@@ -71,6 +76,7 @@ function ShipmentTrack._tearDown()
     for _, bonusSlot in pairs(ShipmentTrack.ignoredBonusSlots) do
         bonusSlot.destruct()
     end
+    ]]
 end
 
 ---

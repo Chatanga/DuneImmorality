@@ -95,7 +95,7 @@ function TurnControl._createExclusiveCallback(innerCallback)
                 innerCallback()
             end
         else
-            broadcastToColor(I18N('noTouch'), color, "Purple")
+            broadcastToColor(I18N('noTouch'), color, "Brown")
         end
     end)
 end
@@ -118,6 +118,8 @@ end
 
 ---
 function TurnControl.overridePhaseTurnSequence(turnSequence)
+    log("TurnControl.overridePhaseTurnSequence:")
+    log(turnSequence)
     TurnControl.customTurnSequence = {}
     for _, color in ipairs(turnSequence) do
         for playerLuaIndex, otherColor in ipairs(TurnControl.players) do

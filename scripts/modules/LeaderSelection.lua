@@ -352,7 +352,9 @@ end
 function LeaderSelection.claimLeader(color, leader)
     Helper.clearButtons(leader)
     LeaderSelection.dynamicLeaderSelection[leader] = true
-    PlayBoard.setLeader(color, leader)
+    if PlayBoard.setLeader(color, leader) then
+        TurnControl.endOfTurn()
+    end
 end
 
 ---

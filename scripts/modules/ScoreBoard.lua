@@ -28,6 +28,12 @@ function ScoreBoard.onLoad(state)
             stagedIncident = "bee42f",
             endgameCardBag = "cfe0cb",
             combatVictoryPointBag = "d9a457",
+            emperorFriendshipBag = "6a4186",
+            spacingGuildFriendshipBag = "400d45",
+            beneGesseritFriendshipBag = "e763f6",
+            fremenFriendshipBag = "8bcfe7",
+            greatHousesFriendshipBag = "95926b",
+            fringeWorldsFriendshipBag = "a43ec0",
         },
         hagal = {
             intrigueBag = "f9bc89",

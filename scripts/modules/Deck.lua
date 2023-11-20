@@ -129,15 +129,79 @@ local Deck = {
             throneRoomPolitics = 1,
             tleilaxuMaster = 2,
             tleilaxuSurgeon = 1,
-        }
+        },
+        uprising = {
+            unswervingLoyalty = 2,
+            spaceTimeFolding = 1,
+            weirdingWoman = 2,
+            sardaukarSoldier = 1,
+            smugglerHarvester = 2,
+            makerKeeper = 2,
+            reliableInformant = 2,
+            hiddenMissive = 1,
+            fedaykinStilltent = 1,
+            imperialSpymaster = 1,
+            spyNetwork = 1,
+            desertSurvival = 2,
+            undercoverAsset = 1,
+            beneGesseritOperative = 2,
+            maulaPistol = 2,
+            thumper = 1,
+            nothernWatermaster = 1,
+            covertOperation = 1,
+            doubleAgent = 2,
+            guildEnvoy = 1,
+            rebelSupplier = 2,
+            calculusOfPower = 2,
+            guildSpy = 1,
+            dangerousRhetoric = 1,
+            branchingPath = 1,
+            ecologicalTestingStation = 1,
+            theBeastSpoils = 1,
+            smugglerHaven = 1,
+            shishakli = 1,
+            paracompass = 1,
+            sardaukarCoordination = 2,
+            truthtrance = 2,
+            publicSpectable = 2,
+            southernElders = 1,
+            treadInDarkness = 2,
+            spacingGuildFavor = 2,
+            capturedMentat = 1,
+            subversiveAdvisor = 1,
+            leadership = 1,
+            inHighPlaces = 1,
+            strikeFleet = 1,
+            trecherousManeuver = 1,
+            chaniCleverTactician = 1,
+            junctionHeadquarters = 1,
+            corrinthCity = 1,
+            stilgarTheDevoted = 1,
+            desertPower = 1,
+            arrakisRevolt = 1,
+            priceIsNoObject = 1,
+            longLiveTheFighters = 1,
+            overthrow = 1,
+            steersman = 1,
+        },
     },
     special = {
-        -- Base
-        foldspace = 6,
-        arrakisLiaison = 8,
-        theSpiceMustFlow = 10,
-        -- Immortality
-        reclaimedForces = 1
+        base = {
+            foldspace = 6,
+            arrakisLiaison = 8,
+            theSpiceMustFlow = 10,
+        },
+        immortality = {
+            reclaimedForces = 1,
+        },
+        uprising = {
+            cargoRunner = 1,
+            deliveryAgreement = 1,
+            priorityContracts = 1,
+            interstellarTrade = 1,
+            prepareTheWay = 8,
+            theSpiceMustFlow = 10,
+        },
     },
     tleilaxu = {
         piterGeniusAdvisor = 1, -- Immortality release promo
@@ -228,6 +292,49 @@ local Deck = {
             studyMelange = 1,
             tleilaxuPuppet = 1,
             viciousTalents = 2,
+        },
+        uprising = {
+            sietchRitual = 1,
+            mercenaries = 1,
+            councilorAmbition = 1,
+            strategicStockpiling = 1,
+            detonation = 2,
+            departForArrakis = 1,
+            cunning = 1,
+            opportunism = 1,
+            changeAllegiances = 1,
+            specialMission = 2,
+            unexpectedAllies = 1,
+            callToArms = 1,
+            buyAccess = 1,
+            imperiumPolitics = 1,
+            shaddamFavor = 1,
+            intelligenceReport =1,
+            manipulate = 1,
+            distraction = 2,
+            marketOpportunity = 1,
+            goToGround = 1,
+            contingencyPlan = 3,
+            inspireAwe = 1,
+            findWeakness = 1,
+            spiceIsPower = 1,
+            devour = 1,
+            impress = 1,
+            springTheTrap = 1,
+            weirdingCombat = 1,
+            tacticalOption = 1,
+            questionableMethods = 1,
+            desertMouse = 1,
+            ornithopter = 1,
+            crysknife = 1,
+            shadowAlliance = 1,
+            secureSpiceTrade = 1,
+        },
+        uprisingContract = {
+            leverage = 1,
+            backedByChoam = 1,
+            reachAgreement = 1,
+            choamProfits = 1,
         }
     },
     conflict = {
@@ -241,7 +348,12 @@ local Deck = {
             ix = {
                 skirmishE = 1,
                 skirmishF = 1,
-            }
+            },
+            uprising = {
+                skirmishG = 1,
+                skirmishH = 1,
+                skirmishI = 1,
+            },
         },
         level2 = {
             base = {
@@ -258,7 +370,18 @@ local Deck = {
             },
             ix = {
                 tradeMonopoly = 1,
-            }
+            },
+            uprising = {
+                choamSecurity = 1,
+                spiceFreighters = 1,
+                siegeOfArrakeenNew = 1,
+                seizeSpiceRefinery = 1,
+                testOfLoyalty = 1,
+                shadowContest = 1,
+                secureImperialBasinNew = 1,
+                protectTheSietches = 1,
+                tradeDispute = 1,
+            },
         },
         level3 = {
             base = {
@@ -270,6 +393,12 @@ local Deck = {
             ix = {
                 economicSupremacy = 1,
             },
+            uprising = {
+                propaganda = 1,
+                battleForImperialBasinNew = 1,
+                battleForArrakeenNew = 1,
+                battleForSpiceRefinery = 1,
+            }
         },
     },
     hagal = {
@@ -329,24 +458,49 @@ local Deck = {
         }
     },
     tech = {
-        spaceport = 1,
-        restrictedOrdnance = 1,
-        artillery = 1,
-        disposalFacility = 1,
-        holoprojectors = 1,
-        minimicFilm = 1,
-        windtraps = 1,
-        detonationDevices = 1,
-        memocorders = 1,
-        flagship = 1,
-        shuttleFleet = 1,
-        spySatellites = 1,
-        chaumurky = 1,
-        sonicSnoopers = 1,
-        trainingDrones = 1,
-        troopTransports = 1,
-        holtzmanEngine = 1,
-        invasionShips = 1,
+        ix = {
+            spaceport = 1,
+            restrictedOrdnance = 1,
+            artillery = 1,
+            disposalFacility = 1,
+            holoprojectors = 1,
+            minimicFilm = 1,
+            windtraps = 1,
+            detonationDevices = 1,
+            memocorders = 1,
+            flagship = 1,
+            shuttleFleet = 1,
+            spySatellites = 1,
+            chaumurky = 1,
+            sonicSnoopers = 1,
+            trainingDrones = 1,
+            troopTransports = 1,
+            holtzmanEngine = 1,
+            invasionShips = 1,
+        },
+    },
+    contract = {
+        harvest_1 = 1,
+        harvest_2 = 1,
+        harvest_3 = 1,
+        harvest_4 = 1,
+        deliverSupplies = 1,
+        highCouncil_1 = 1,
+        highCouncil_2 = 1,
+        acquire = 1,
+        immediate = 1,
+        researchStation_1 = 1,
+        researchStation_2 = 1,
+        espionnage_1 = 1,
+        espionnage_2 = 1,
+        heighliner_1 = 1,
+        heighliner_2 = 1,
+        sardaukar_1 = 1,
+        sardaukar_2 = 1,
+        spiceRefinery_1 = 1,
+        spiceRefinery_2 = 1,
+        arrakeen_1 = 1,
+        arrakeen_2 = 1,
     },
     leaders = {
         base = {
@@ -358,15 +512,29 @@ local Deck = {
             paulAtreides = 1,
             arianaThorvald = 1,
             memnonThorvald = 1,
-            armandEcaz = 1,
-            ilesaEcaz = 1,
         },
         ix = {
+            armandEcaz = 1,
+            ilesaEcaz = 1,
             rhomburVernius = 1,
             tessiaVernius = 1,
             yunaMoritani = 1,
             hundroMoritani = 1,
         },
+        uprising = {
+            stabanTuek = 1,
+            amberMetulli = 1,
+            gurneyHalleck = 1,
+            margotFenring = 1,
+            irulanCorrino = 1,
+            jessicaAtreides = 1,
+            feydRauthaHarkonnen = 1,
+            shaddamCorrino = 1,
+            muadDib = 1,
+        },
+        uprisingAlt = {
+            reverendMotherJessica = 1,
+        }
     }
 }
 
@@ -376,6 +544,7 @@ local techCardBack = "http://cloud-3.steamusercontent.com/ugc/209366751223853182
 local conflict1CardBack = "http://cloud-3.steamusercontent.com/ugc/2093667512238537179/0423ECA84C0D71CCB38EBD60DEAE641EE72D7933/"
 local conflict2CardBack = "http://cloud-3.steamusercontent.com/ugc/2093667512238537448/3B3F54DF65F76F0850D0EC683602524806A11E49/"
 local conflict3CardBack = "http://cloud-3.steamusercontent.com/ugc/2093667512238537046/9E194557E37B5C4CA74C7A77CBFB6B8A36043916/"
+local objectiveCardBack = "http://cloud-3.steamusercontent.com/ugc/2220898342999519816/02A61DC439DF213EA61A8CCEC1F545F4D369F2E8/"
 local hagalCardBack = "http://cloud-3.steamusercontent.com/ugc/2093668799785646965/26E28590801800D852F4BCA53E959AAFAAFC8FF3/"
 local leaderCardBack = "http://cloud-3.steamusercontent.com/ugc/2093668799785645356/005244DAC0A29EE68CFF741FC06564969563E8CF/"
 
@@ -450,12 +619,12 @@ function Deck.generateImperiumDeck(deckZone, ix, immortality)
 end
 
 ---
-function Deck.generateSpecialDeck(name, deckZone)
-    assert(deckZone)
+function Deck.generateSpecialDeck(parent, name, deckZone)
+    assert(deckZone, name)
     local continuation = Helper.createContinuation("Deck.generateSpecialDeck")
     assert(name)
-    assert(Deck.special[name])
-    local contributions = { [name] = Deck.special[name] }
+    assert(Deck.special[parent][name], name)
+    local contributions = { [name] = Deck.special[parent][name] }
     Deck._generateDeck("Imperium", deckZone.getPosition(), contributions, Deck.sources.special).doAfter(function (deck)
         deck.flip()
         continuation.run(deck)
@@ -486,7 +655,7 @@ function Deck.generateTechDeck(deckZones)
     assert(#deckZones == 3)
     local continuation = Helper.createContinuation("Deck.generateTechDeck")
 
-    local keys = Helper.getKeys(Deck.tech)
+    local keys = Helper.getKeys(Deck.tech.ix)
     Helper.shuffle(keys)
 
     local decks = {}
@@ -496,7 +665,7 @@ function Deck.generateTechDeck(deckZones)
         remaining = remaining + 1
         local part = {}
         for j = (i - 1) * 6 + 1, i * 6 do
-            part[keys[j]] = Deck.tech[keys[j]]
+            part[keys[j]] = Deck.tech.ix[keys[j]]
         end
         local deckZone = deckZones[i]
         Deck._generateDeck("Tech", deckZone.getPosition(), part, Deck.sources.tech).doAfter(function (deck)
@@ -587,8 +756,16 @@ function Deck.generateLeaderDeck(deckZone, ix, immortality, fanmadeLeaders)
 end
 
 ---
+function Deck.generateSingleLeaderDeck(position, leaderName)
+    local continuation = Helper.createContinuation("Deck.generateSingleLeaderDeck")
+    local contributions = { [leaderName] = 1 }
+    Deck._generateDeck("Leader", position, contributions, Deck.sources.leaders).doAfter(continuation.run)
+    return continuation
+end
+
+---
 function Deck._mergeStandardContributionSets(root, ix, immortality)
-    local contributionSets = { root.base }
+    local contributionSets = { root.uprising }
     if ix then
         table.insert(contributionSets, root.ix)
     end
@@ -629,6 +806,7 @@ end
 ---@param startLuaIndex any The Lua start index for the card names.
 ---@param cardNames any An list of card names matching those in the custon deck.
 function Deck.loadCustomDeck(cards, customDeck, startLuaIndex, cardNames)
+    --Helper.dumpFunction("Deck.loadCustomDeck", cards, customDeck, startLuaIndex, cardNames)
     assert(cards)
     assert(customDeck)
     assert(startLuaIndex and startLuaIndex > 0)
@@ -646,6 +824,8 @@ function Deck._generateCardData(customDeck, customDeckId, cardId)
     assert(customDeckId, "customDeckId")
     assert(cardId, "cardId")
 
+    assert(customDeck.__scale)
+
     local data = {
         Name = "Card",
         Transform = {
@@ -655,9 +835,9 @@ function Deck._generateCardData(customDeck, customDeckId, cardId)
             rotX = 0,
             rotY = 0,
             rotZ = 0,
-            scaleX = 1,
-            scaleY = 1,
-            scaleZ = 1
+            scaleX = customDeck.__scale.x,
+            scaleY = customDeck.__scale.y,
+            scaleZ = customDeck.__scale.z
         },
         Nickname = "",
         Description = "",

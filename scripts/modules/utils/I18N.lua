@@ -27,6 +27,8 @@ end
 
 ---
 function I18N.translate(key, args)
+    assert(key)
+    assert(type(key) == "string", type(string))
     local currentLocale = I18N.getLocale()
     if not currentLocale then
         currentLocale = "en"
@@ -37,28 +39,30 @@ function I18N.translate(key, args)
     end
 
     local content = locale[key]
-    --Helper.dump(key, "->", content)
+    assert(not content or type(content) == "string", key)
     return content and I18N._parse(content, args) or "{" .. key .. "}"
 end
 
 function I18N._parse(content, args)
+    assert(content)
+    assert(type(content) == "string", type(string))
     local text = ""
     local s = 1
     repeat
         local done = true
-        local i = string.find(content, "{", s, true)
+        local i = content:find("{", s, true)
         if i then
-            local e = string.find(content, "}", i, true)
+            local e = content:find("}", i, true)
             if e then
-                local expression = string.sub(content, i + 1, e - 1)
+                local expression = content:sub(i + 1, e - 1)
                 local v = I18N._evaluate(expression, args)
-                text = text .. string.sub(content, s, i - 1) .. tostring(v or ("{" .. expression .. "}"))
+                text = text .. content:sub(s, i - 1) .. tostring(v or ("{" .. expression .. "}"))
                 s = e + 1
                 done = false
             end
         end
     until done
-    text = text .. string.sub(content, s)
+    text = text .. content:sub(s)
     return text
 end
 

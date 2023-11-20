@@ -3,7 +3,6 @@ local Helper = require("utils.Helper")
 local Park = require("utils.Park")
 local I18N = require("utils.I18N")
 
-local Resource = Module.lazyRequire("Resource")
 local Types = Module.lazyRequire("Types")
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
@@ -14,9 +13,54 @@ local Hagal = Module.lazyRequire("Hagal")
 local MainBoard = {}
 
 ---
+function MainBoard.rebuild()
+    --local destination = getObjectFromGUID("21cc52")
+    local destination = getObjectFromGUID("483a1a")
+    --local destination = getObjectFromGUID("d75455")
+    assert(destination)
+
+    local snapPoints = {}
+
+    for _, snapPoint in ipairs(destination.getSnapPoints()) do
+        assert(#snapPoint.tags == 1)
+        local tag = snapPoint.tags[1]
+        for _, prefix in ipairs({ "space", "post", "flag" }) do
+            if Helper.startsWith(tag, prefix .. "_") then
+                local newTag = prefix .. tag:sub(prefix:len() + 2)
+                Helper.dump(tag, "->", newTag)
+                snapPoint.tags = { newTag }
+                break
+            end
+        end
+        table.insert(snapPoints, snapPoint)
+    end
+
+    local rejectedCount = 0
+    for _, snapPoint in ipairs(Global.getSnapPoints()) do
+        if #snapPoint.tags > 0 then
+            assert(#snapPoint.tags == 1)
+            table.insert(snapPoints, {
+                position = destination.positionToLocal(snapPoint.position),
+                tags = snapPoint.tags,
+            })
+        else
+            rejectedCount = rejectedCount + 1
+        end
+    end
+    log("Rejected: " .. tostring(rejectedCount) .. "/" .. tostring(#Global.getSnapPoints()))
+
+    destination.setSnapPoints(snapPoints)
+    Global.setSnapPoints({})
+
+    for _, snapPoint in ipairs(destination.getSnapPoints()) do
+        log(snapPoint.tags[1])
+    end
+end
+
+---
 function MainBoard.onLoad(state)
     Helper.append(MainBoard, Helper.resolveGUIDs(true, {
-        board = "483a1a", -- Inner state: "21cc52"
+        board = "21cc52", -- 4P: "483a1a", 6P: "21cc52"
         factions = {
             emperor = {
                 alliance = "13e990",
@@ -51,91 +95,22 @@ function MainBoard.onLoad(state)
                 Red = "088f51"
             }
         },
-        spaces = {
-            -- Factions
-            conspire = { zone = "cd9386" },
-            wealth = { zone = "b2c461" },
-            heighliner = { zone = "8b0515" },
-            foldspace = { zone = "9a9eb5" },
-            selectiveBreeding = { zone = "7dc6e5" },
-            secrets = { zone = "1f7c08" },
-            hardyWarriors = { zone = "a2fd8e" },
-            stillsuits = { zone = "556f43" },
-            -- Landsraad
-            highCouncil = { zone = "dbdd82" },
-            swordmaster = { zone = '6cc2f8' },
-            --rallyTroops = { zone = '6932df' },
-            hallOfOratory = { zone = '3e7409' },
-            -- CHOAM
-            secureContract = { zone = "db4022" },
-            sellMelange = { zone = "7539a3" },
-            --sellMelange_1 = { zone = "107a42" },
-            --sellMelange_2 = { zone = "43cb14" },
-            --sellMelange_3 = { zone = "b00ba5" },
-            --sellMelange_4 = { zone = "debf5e" },
-            -- Dune
-            arrakeen = { zone = "17b646" },
-            carthag = { zone = "b1c938" },
-            researchStation = { zone = "af11aa" },
-            sietchTabr = { zone = "5bc970" },
-            -- Desert
-            imperialBasin = { zone = "2c77c1" },
-            haggaBasin = { zone = "622708" },
-            theGreatFlat = { zone = "69f925" },
-        },
-        ixSpaces = {
-            -- Landsraad
-            swordmaster = { zone = "035975" },
-            rallyTroops = Helper.ERASE,
-            hallOfOratory = Helper.ERASE,
-            -- CHOAM
-            secureContract = Helper.ERASE,
-            sellMelange = Helper.ERASE,
-            sellMelange_1 = Helper.ERASE,
-            sellMelange_2 = Helper.ERASE,
-            sellMelange_3 = Helper.ERASE,
-            sellMelange_4 = Helper.ERASE,
-            smuggling = { zone = "82589e" },
-            interstellarShipping = { zone = "487ad9" },
-            -- Ix
-            techNegotiation = { zone = "04f512" },
-            techNegotiation_1 = { zone = "a7cdf8" },
-            techNegotiation_2 = { zone = "479378" },
-            dreadnought = { zone = "83ea90" },
-        },
-        immortalitySpaces = {
-            researchStation = Helper.ERASE,
-            researchStationImmortality = { zone = "af11aa" }, -- TODO Assign its own zone!
-        },
-        banners = {
-            arrakeenBannerZone = "f1f53d",
-            carthagBannerZone = "9fc2e1",
-            imperialBasinBannerZone = "3fe117",
-        },
-        spiceBonusTokens = {
-            imperialBasin = "3cdb2d",
-            haggaBasin = "394db2",
-            theGreatFlat = "116807"
-        },
-        highCouncilZone = "e51f6e",
         firstPlayerMarker = "1f5576",
     }))
 
     Helper.noPhysicsNorPlay(MainBoard.board)
 
     MainBoard.spiceBonuses = {}
+    --[[
     for name, token in pairs(MainBoard.spiceBonusTokens) do
         local value = state.MainBoard and state.MainBoard.spiceBonuses[name] or 0
         MainBoard.spiceBonuses[name] = Resource.new(token, nil, "spice", value)
     end
+    ]]
 
     if state.settings then
-        MainBoard.highCouncilZone = getObjectFromGUID(state.MainBoard.highCouncilZoneGUID)
-        MainBoard.mentatZone = getObjectFromGUID(state.MainBoard.mentatZoneGUID)
-        MainBoard.spaces = Helper.map(state.MainBoard.spaceGUIDs, function (_, guid)
-            return { zone = getObjectFromGUID(guid) }
-        end)
         MainBoard._staticSetUp(state.MainBoard.settings)
+        -- TODO Restore spice bonuses
     end
 end
 
@@ -143,45 +118,20 @@ end
 function MainBoard.onSave(state)
     if state.settings then
         state.MainBoard = {
-            spiceBonuses = Helper.map(MainBoard.spiceBonuses, function (name, resource)
+            spiceBonuses = Helper.mapValue(MainBoard.spiceBonuses, function (resource)
                 return resource:get()
             end),
-            highCouncilZoneGUID = MainBoard.highCouncilZone.getGUID(),
-            spaceGUIDs = Helper.map(MainBoard.spaces, function (_, space)
-                return space.zone.getGUID()
-            end)
         }
     end
 end
 
 ---
 function MainBoard.setUp(settings)
-    if settings.riseOfIx then
-        --MainBoard.board.setState(1)
+    if settings.numberOfPlayers == 6 then
+        --MainBoard.board.setState(2)
     else
-        MainBoard.board.setState(2)
-    end
+        MainBoard.board.setState(1)
 
-    local enabledExtensions = {
-        ix = settings.riseOfIx,
-        immortality = settings.immortality
-    }
-
-    for _, extension in ipairs({ "ix", "immortality" }) do
-        for spaceName, extSpace in pairs(MainBoard[extension .. "Spaces"]) do
-            if enabledExtensions[extension] then
-                local baseSpace = MainBoard.spaces[spaceName]
-                if baseSpace then
-                    baseSpace.zone.destruct()
-                end
-                MainBoard.spaces[spaceName] = (extSpace ~= Helper.ERASE and extSpace or nil)
-            else
-                if extSpace ~= Helper.ERASE then
-                    extSpace.zone.destruct()
-                end
-            end
-        end
-        MainBoard[extension .. "Spaces"] = nil
     end
 
     MainBoard._staticSetUp(settings)
@@ -189,22 +139,10 @@ end
 
 ---
 function MainBoard._staticSetUp(settings)
-    MainBoard.highCouncilPark = MainBoard:_createHighCouncilPark(MainBoard.highCouncilZone)
+    -- TODO Reactivate
+    --MainBoard.highCouncilPark = MainBoard:_createHighCouncilPark(MainBoard.highCouncilZone)
 
-    for name, space in pairs(MainBoard.spaces) do
-        space.name = name
-
-        local p = space.zone.getPosition()
-        -- FIXME Hardcoded height, use an existing parent anchor.
-        local slots = {
-            Vector(p.x - 0.36, 0.68, p.z - 0.3),
-            Vector(p.x + 0.36, 0.68, p.z + 0.3),
-            Vector(p.x - 0.36, 0.68, p.z + 0.3),
-            Vector(p.x + 0.36, 0.68, p.z - 0.3)
-        }
-
-        MainBoard._createSpaceButton(space, p, slots)
-    end
+    MainBoard._processSnapPoints(settings)
 
     Helper.registerEventListener("phaseStart", function (phase)
         if phase == "makers" then
@@ -216,15 +154,6 @@ function MainBoard._staticSetUp(settings)
                 end
             end
         elseif phase == "recall" then
-            -- Recalling mentat.
-            if MainBoard.mentat.hasTag("notToBeRecalled") then
-                MainBoard.mentat.removeTag("notToBeRecalled")
-            else
-                for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
-                    MainBoard.mentat.removeTag(color)
-                end
-                MainBoard.mentat.setPosition(MainBoard.mentatZone.getPosition())
-            end
 
             -- Recalling dreadnoughts in controlable spaces.
             for _, bannerZone in pairs(MainBoard.banners) do
@@ -258,6 +187,60 @@ function MainBoard._staticSetUp(settings)
             end
         end
     end)
+end
+
+---
+function MainBoard._processSnapPoints(settings)
+
+    MainBoard.spaces = {}
+    MainBoard.observationPosts = {}
+
+    -- Having change the state is not enough.
+    if settings.numberOfPlayers == 6 then
+        MainBoard._collectSnapPoints(getObjectFromGUID("21cc52"))
+        -- TODO Consider commander's boards.
+    else
+        MainBoard._collectSnapPoints(getObjectFromGUID("483a1a"))
+    end
+    if settings.riseOfIx then
+        -- FIXME Direct access
+        MainBoard._collectSnapPoints(TechMarket.board)
+    end
+
+    -- A trick to ensure that parent space are created before
+    -- their child spaces (which always have a longer name).
+    local orderedSpaces = Helper.getValues(MainBoard.spaces)
+    table.sort(orderedSpaces, function (s1, s2)
+        return s1.name:len() < s2.name:len()
+    end)
+
+    for _, space in ipairs(orderedSpaces) do
+        MainBoard._createSpaceButton(space)
+    end
+
+    for _, observationPost in pairs(MainBoard.observationPosts) do
+        local p = observationPost.position
+        MainBoard._createObservationPostButton(observationPost)
+    end
+end
+
+---
+function MainBoard._collectSnapPoints(object)
+    local snapPoints = object.getSnapPoints()
+    for _, snapPoint in ipairs(snapPoints) do
+        assert(snapPoint.tags and #snapPoint.tags == 1)
+        for _, tag in ipairs(snapPoint.tags) do
+            if Helper.startsWith(tag, "space") then
+                local spaceName = tag:sub(6):gsub("^%u", string.lower)
+                local position = object.positionToWorld(snapPoint.position)
+                MainBoard.spaces[spaceName] = { name = spaceName, position = position }
+            elseif Helper.startsWith(tag, "post") then
+                local observationPostName = tag:sub(5):gsub("^%u", string.lower)
+                local position = object.positionToWorld(snapPoint.position)
+                MainBoard.observationPosts[observationPostName] = { name = observationPostName, position = position }
+            end
+        end
+    end
 end
 
 ---
@@ -329,19 +312,29 @@ function MainBoard.occupy(controlableSpace, color)
 end
 
 ---
-function MainBoard._createSpaceButton(space, position, slots)
-    Helper.createTransientAnchor("AgentPark", position - Vector(0, 0.5, 0)).doAfter(function (anchor)
-
+function MainBoard._createSpaceButton(space)
+    Helper.createTransientAnchor("AgentPark", space.position - Vector(0, 0.5, 0)).doAfter(function (anchor)
         if MainBoard._findParentSpace(space) == space then
-            local zone = space.zone
-            local tags = { "Agent" }
-            space.park = Park.createPark("AgentPark", slots, Vector(0, 0, 0), zone, tags, nil, false, true)
 
+            local p = space.position
+            -- FIXME Hardcoded height, use an existing parent anchor.
+            local slots = {
+                Vector(p.x - 0.36, 0.68, p.z - 0.3),
+                Vector(p.x + 0.36, 0.68, p.z + 0.3),
+                Vector(p.x - 0.36, 0.68, p.z + 0.3),
+                Vector(p.x + 0.36, 0.68, p.z - 0.3)
+            }
+
+            space.zone = Park.createTransientBoundingZone(0, Vector(1, 3, 0.7), slots)
+            local tags = { "Agent" }
+            space.park = Park.createPark("AgentPark", slots, nil, space.zone, tags, nil, false, true)
             local snapPoints = {}
             for _, slot in ipairs(slots) do
                 table.insert(snapPoints, Helper.createRelativeSnapPoint(anchor, slot, false, tags))
             end
             anchor.setSnapPoints(snapPoints)
+        else
+            space.zone = Park.createTransientBoundingZone(0, Vector(0.75, 1, 0.75), { space.position })
         end
 
         local tooltip = I18N("sendAgentTo", { space = I18N(space.name)})
@@ -352,11 +345,33 @@ function MainBoard._createSpaceButton(space, position, slots)
 end
 
 ---
+function MainBoard._createObservationPostButton(observationPost)
+    local slots = { observationPost.position }
+    Helper.createTransientAnchor("AgentPark", observationPost.position - Vector(0, 0.5, 0)).doAfter(function (anchor)
+        observationPost.zone = Park.createTransientBoundingZone(0, Vector(0.75, 1, 0.75), slots)
+
+        local tags = { "Spy" }
+        observationPost.park = Park.createPark("SpyPark", slots, nil, observationPost.zone, tags, nil, false, true)
+
+        local snapPoints = {}
+        for _, slot in ipairs(slots) do
+            table.insert(snapPoints, Helper.createRelativeSnapPoint(anchor, slot, false, tags))
+        end
+        anchor.setSnapPoints(snapPoints)
+
+        local tooltip = I18N("sendSpyTo", { observationPost = I18N(observationPost.name)})
+        Helper.createAreaButton(observationPost.zone, anchor, 0.7, tooltip, PlayBoard.withLeader(function (leader, color, _)
+            leader.sendSpy(color, observationPost.name)
+        end))
+    end)
+end
+
+---
 function MainBoard._findParentSpace(space)
     local parentSpace = space
-    local underscoreIndex = string.find(space.name, "_")
+    local underscoreIndex = space.name:find("_")
     if underscoreIndex then
-        local parentSpaceName = string.sub(space.name, 1, underscoreIndex - 1)
+        local parentSpaceName = space.name:sub(1, underscoreIndex - 1)
         parentSpace = MainBoard.spaces[parentSpaceName]
         assert(parentSpace, "No parent space name named: " .. parentSpaceName)
     end
@@ -412,6 +427,25 @@ function MainBoard.sendAgent(color, spaceName)
 end
 
 ---
+function MainBoard.sendSpy(color, observationPostName)
+    local continuation = Helper.createContinuation("MainBoard.sendSpy")
+
+    local observationPost = MainBoard.observationPosts[observationPostName]
+
+    if not Park.isEmpty(PlayBoard.getSpyPark(color)) then
+        local spyPark = PlayBoard.getSpyPark(color)
+        Helper.emitEvent("spySent", color, observationPostName)
+        --log("Park.transfert(1, agentPark, parentSpace.park)")
+        Park.transfert(1, spyPark, observationPost.park)
+        continuation.run(true)
+    else
+        continuation.run(false)
+    end
+
+    return continuation
+end
+
+---
 function MainBoard.sendRivalAgent(color, spaceName)
     local space = MainBoard.spaces[spaceName]
     if not Park.isEmpty(PlayBoard.getAgentPark(color)) then
@@ -424,6 +458,257 @@ function MainBoard.sendRivalAgent(color, spaceName)
     end
 end
 
+---
+function MainBoard._goFremkit(color, spaceName)
+    return true
+end
+
+---
+function MainBoard._goSecrets(color, spaceName)
+    return true
+end
+
+---
+function MainBoard._goSardaukar(color, spaceName)
+    return true
+end
+
+---
+function MainBoard._goShipping(color, spaceName)
+    return true
+end
+
+---
+function MainBoard._goEspionage(color, spaceName)
+    return true
+end
+
+---
+function MainBoard._goHeighliner(color, spaceName)
+    return true
+end
+
+---
+function MainBoard._goDeepDesert(color, spaceName)
+    return true
+end
+
+---
+function MainBoard._goSietchTabr(color, spaceName)
+    return true
+end
+
+---
+function MainBoard._goHaggaBasin(color, spaceName)
+    return true
+end
+
+---
+function MainBoard._goSwordmaster(color, spaceName)
+    return true
+end
+
+---
+function MainBoard._goAssemblyHall(color, spaceName)
+    return true
+end
+
+---
+function MainBoard._goSpiceRefinery(color, spaceName)
+    return true
+end
+
+---
+function MainBoard._goGatherSupport(color, spaceName)
+    return true
+end
+
+---
+function MainBoard._goDesertTactics(color, spaceName)
+    return true
+end
+
+---
+function MainBoard._goDutifulService(color, spaceName)
+    return true
+end
+
+---
+function MainBoard._goAcceptContract(color, spaceName)
+    return true
+end
+
+---
+function MainBoard._goImperialBasin(color, spaceName)
+    return true
+end
+
+---
+function MainBoard._goSpiceRefinery_0(color, spaceName)
+    return true
+end
+
+---
+function MainBoard._goDeliverSupplies(color, spaceName)
+    return true
+end
+
+---
+function MainBoard._goResearchStation(color, spaceName)
+    return true
+end
+
+---
+function MainBoard._goHaggaBasin_Spice(color, spaceName)
+    return true
+end
+
+---
+function MainBoard._goSpiceRefinery_1(color, spaceName)
+    return true
+end
+
+---
+function MainBoard._goDeepDesert_Spice(color, spaceName)
+    return true
+end
+
+---
+function MainBoard._goHaggaBasin_WormIfHook(color, spaceName)
+    return true
+end
+
+---
+function MainBoard._goDeepDesert_WormsIfHook(color, spaceName)
+    return true
+end
+
+---
+function MainBoard._goImperialPrivilege(color, spaceName)
+    return true
+end
+
+---
+function MainBoard._goFremen(color, spaceName)
+    return true
+end
+
+---
+function MainBoard._goSietchTabr_WaterShieldWall(color, spaceName)
+    return true
+end
+
+---
+function MainBoard._goSietchTabr_HookTroopWater(color, spaceName)
+    return true
+end
+
+---
+function MainBoard._goSpacingGuild(color, spaceName)
+    return true
+end
+
+---
+function MainBoard._goEmperor(color, spaceName)
+    return true
+end
+
+---
+function MainBoard._goBeneGesserit(color, spaceName)
+    return true
+end
+
+---
+function MainBoard._goLandsraadCouncil1(color, spaceName)
+    return true
+end
+
+---
+function MainBoard._goLandsraadCouncil2(color, spaceName)
+    return true
+end
+
+---
+function MainBoard._goSpiceRefineryArrakeen(color, spaceName)
+    return true
+end
+
+---
+function MainBoard._goResearchStationSpiceRefinery(color, spaceName)
+    return true
+end
+
+---
+function MainBoard._goSietchTabrResearchStation(color, spaceName)
+    return true
+end
+
+---
+function MainBoard._goArrakeen(color, spaceName)
+    return true
+end
+
+---
+function MainBoard._goHighCouncil(color, spaceName)
+    return true
+end
+
+---
+function MainBoard._goCarthag(color, spaceName)
+    return true
+end
+
+---
+function MainBoard._goContract(color, spaceName)
+    return true
+end
+
+---
+function MainBoard._goExpedition(color, spaceName)
+    return true
+end
+
+---
+function MainBoard._goHabbanyaErg(color, spaceName)
+    return true
+end
+
+---
+function MainBoard._goImperialBassin(color, spaceName)
+    return true
+end
+
+---
+function MainBoard._goControversialTechnology(color, spaceName)
+    return true
+end
+
+---
+function MainBoard._goFringeWorlds(color, spaceName)
+    return true
+end
+
+---
+function MainBoard._goGreatHouse(color, spaceName)
+    return true
+end
+
+---
+function MainBoard._goChoam(color, spaceName)
+    return true
+end
+
+---
+function MainBoard._goEconomicSupport(color, spaceName)
+    return true
+end
+
+---
+function MainBoard._goMilitarySupport(color, spaceName)
+    return true
+end
+
+--[[
 ---
 function MainBoard._goConspire(color, leader)
     if leader.resources(color, "spice", -4) then
@@ -803,6 +1088,7 @@ function MainBoard._goDreadnought(color, leader)
         return false
     end
 end
+]]
 
 --- The color could be nil (the same way it could be nil with Types.isAgent)
 function MainBoard.hasAgentInSpace(spaceName, color)
@@ -843,6 +1129,7 @@ end
 
 ---
 function MainBoard.getEmperorSpaces()
+    error("TODO")
     return {
         "conspire",
         "wealth" }
@@ -855,6 +1142,7 @@ end
 
 ---
 function MainBoard.getSpacingGuildSpace()
+    error("TODO")
     return {
         "heighliner",
         "foldspace" }
@@ -867,6 +1155,7 @@ end
 
 ---
 function MainBoard.getBeneGesseritSpaces()
+    error("TODO")
     return {
         "selectiveBreeding",
         "secrets" }
@@ -879,6 +1168,7 @@ end
 
 ---
 function MainBoard.getFremenSpaces()
+    error("TODO")
     return {
         "hardyWarriors",
         "stillsuits" }
@@ -886,6 +1176,7 @@ end
 
 ---
 function MainBoard.isFactionSpace(spaceName)
+    error("TODO")
     return MainBoard.isEmperorSpace(spaceName)
         or MainBoard.isSpacingGuildSpace(spaceName)
         or MainBoard.isBeneGesseritSpace(spaceName)
@@ -894,11 +1185,13 @@ end
 
 ---
 function MainBoard.isLandsraadSpace(spaceName)
+    error("TODO")
     return Helper.isElementOf(spaceName, MainBoard.getLandsraadSpaces())
 end
 
 ---
 function MainBoard.getLandsraadSpaces()
+    error("TODO")
     return {
         "highCouncil",
         "mentat",
@@ -921,6 +1214,7 @@ end
 
 ---
 function MainBoard.getCHOAMSpaces()
+    error("TODO")
     return {
         "secureContract",
         "sellMelange",
@@ -937,6 +1231,7 @@ end
 
 ---
 function MainBoard.getCitySpaces()
+    error("TODO")
     return {
         "arrakeen",
         "carthag",
@@ -952,6 +1247,7 @@ end
 
 ---
 function MainBoard.getDesertSpaces()
+    error("TODO")
     return {
         "imperialBasin",
         "haggaBasin",
@@ -966,6 +1262,7 @@ end
 
 ---
 function MainBoard.getCombatSpaces()
+    error("TODO")
     return {
         "heighliner",
         "hardyWarriors",
@@ -1015,6 +1312,7 @@ function MainBoard.getSnooperTrackPosition(faction)
         return p * (1 / count)
     end
 
+    error("TODO")
     local positions = {
         emperor = getAveragePosition({ "conspire", "wealth" }),
         spacingGuild = getAveragePosition({ "heighliner", "foldspace" }),

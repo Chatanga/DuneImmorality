@@ -18,7 +18,7 @@ local Combat = {
         conflictDiscardZone = "43f00f",
         combatCenterZone = "6d632e",
         combatTokenZone = "1d4424",
-        victoryPointTokenZone = "25b541",
+        --victoryPointTokenZone = "25b541",
         victoryPointTokenBag = "d9a457",
         garrisonsZones = {
             Green = "0a54b2",
@@ -46,9 +46,9 @@ function Combat.onLoad(state)
     Combat.combatForcePositions = {}
     for i = 0, 19 do
         Combat.combatForcePositions[i + 1] = Vector(
-            origin.x - 0.4 + (i % 10) * 0.9,
+            origin.x + 1.6 + (i % 10) * 0.98,
             0.66,
-            origin.z - 0.93 - math.floor(i / 10) * 1.03
+            origin.z + 0.64 - math.floor(i / 10) * 1.03
         )
     end
 
@@ -250,7 +250,7 @@ function Combat._createDreadnoughtPark(color)
         origin + Vector(1.3 * dir, 0, -0.9),
     }
 
-    local zone = Park.createBoundingZone(0, Vector(0.25, 3, 0.25), slots)
+    local zone = Park.createTransientBoundingZone(0, Vector(0.25, 3, 0.25), slots)
 
     local park = Park.createPark(
         color .. "DreadnoughtGarrison",
@@ -272,7 +272,7 @@ function Combat._createBattlegroundPark()
         for i = 1, 8 do
             local x = (i - 4.5) * 0.5
             local z = (j - 4.5) * 0.5
-            local slot = Combat.combatCenterZone.getPosition() + Vector(x, 0, z)
+            local slot = Combat.combatCenterZone.getPosition() + Vector(x, -0.7, z)
             table.insert(slots, slot)
         end
     end
@@ -283,9 +283,9 @@ function Combat._createBattlegroundPark()
     local park = Park.createPark(
         "Battleground",
         slots,
-        Vector(0, 0, 0),
+        nil,
         zone,
-        { "Troop", "Dreadnought" },
+        { "Troop", "Dreadnought", "Sandworm" },
         nil,
         false,
         true)
@@ -423,6 +423,8 @@ function Combat._calculateCombatForces()
                     force = force + 2
                 elseif Types.isDreadnought(object, color) then
                     force = force + (Combat.dreadnoughtStrengths[color] or 3)
+                elseif Types.isSandworm(object, color) then
+                    force = force + 3
                 else
                     error("Unknown unit type: " .. object.getGUID())
                 end

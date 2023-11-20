@@ -2,10 +2,10 @@ local Helper = require("utils.Helper")
 
 ---@alias PlayerColor
 ---| 'Green'
----| 'Purple'
+---| 'Brown'
 ---| 'Yellow'
 ---| 'Blue'
----| 'White'
+---| 'Teal'
 ---| 'Red'
 
 ---@alias Faction
@@ -52,8 +52,13 @@ function Types.isDreadnought(object, color)
 end
 
 ---
+function Types.isSandworm(object, color)
+    return object.hasTag("Sandworm") and (not color or object.hasTag(color))
+end
+
+---
 function Types.isUnit(object, color)
-    return Types.isTroop(object, color) or Types.isDreadnought(object, color)
+    return Types.isTroop(object, color) or Types.isDreadnought(object, color) or Types.isSandworm(object, color)
 end
 
 ---
@@ -104,10 +109,10 @@ end
 ---
 function Types.assertIsPlayerColor(color)
     assert(color == "Green"
-        or color == "Purple"
+        or color == "Brown"
         or color == "Yellow"
         or color == "Blue"
-        or color == "White"
+        or color == "Teal"
         or color == "Red",
         "Not a player color: " .. tostring(color))
 end

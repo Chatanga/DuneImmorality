@@ -96,14 +96,9 @@ This mod approach: use snapoints for multistates objects, otherwise stick to zon
 ## TODO Immorality
 
 - Corriger les décalcos (déclarations comprises) et déterminer, comme pour les snaps, la parenté.
-- transfetCoalescentQueue -> transferCoalescentQueue
 - Solo : affiner détection intrigues combat.
-- Corriger cartes Hagal 2J.
-- Corriger mode 2J : libération territoire occupé.
-- Corriger mode 2J : persistance classement.
 - Terminer I18N pour les éclaireurs d'Arrakeen.
 - Corriger tags.
-- CommercialTrack -> ShipmentTrack (piste d'expédition).
 
 Debug Moonsharp:
 
@@ -112,7 +107,6 @@ Debug Moonsharp:
 
 ## TODO All
 
-- Pythonnifier complètement le processus de build.
 - Corriger custom token -> tile pour MainBoard.
 - Switch player: gray -> teal.
 - Log envoi agent.
@@ -123,6 +117,12 @@ Debug Moonsharp:
 - Toujours décorréler l'acquisition (carte, tech, contrat) de son effet.
 
 ## TODO Uprising
+
+- Espaces dynamiques MainBoard.
+- Logo d’activation.
+- Reactivation ImperiumCard.
+- I18N.
+- Revoir Settings.
 
 - Se méfier de "input.mod.json" vis à vis des opérations de rebase et commit. Mieux vaut qu'une seule personne le modifie et que les autres ignorent leurs modifications locales (les sauvegardes contiennent un timestamp nécessaire).
 

@@ -9,19 +9,21 @@ local autoLoadedSettings
 
 --[[
 autoLoadedSettings = {
-    language = "fr",
+    language = "en",
     randomizePlayerPositions = false,
     specialMode = true,
     numberOfPlayers = 4,
-    riseOfIx = true,
+    riseOfIx = false,
     epicMode = false,
-    immortality = true,
+    immortality = false,
     goTo11 = false,
     leaderSelection = {
-        Green = "rhomburVernius",
-        Yellow = "ilbanRichese",
-        Red = "tessiaVernius",
-        Blue = "yunaMoritani"
+        Green = "jessicaAtreides",
+        Yellow = "gurneyHalleck",
+        Red = "irulanCorrino",
+        Blue = "feydRauthaHarkonnen",
+        Teal = "muadDib",
+        Brown = "shaddamCorrino",
     },
     soundEnabled = true,
 }
@@ -119,7 +121,8 @@ function onLoad(scriptState)
     Helper.destroyTransientObjects()
 
     if constructionModeEnabled then
-        allModules.PlayBoard.rebuild()
+        --allModules.PlayBoard.rebuild()
+        --allModules.MainBoard.rebuild()
         return
     end
 
@@ -140,8 +143,8 @@ function onLoad(scriptState)
         allModules.Pdf,
         allModules.Music,
         allModules.Deck,
-        allModules.Hagal,
         allModules.ScoreBoard,
+        allModules.Hagal,
         allModules.PlayBoard,
         allModules.Combat,
         allModules.LeaderSelection,
@@ -235,8 +238,6 @@ function setUp(newSettings)
         settings = newSettings
 
         local orderedPlayers = PlayerSet.toCanonicallyOrderedPlayerList(activeOpponents)
-        log("--- orderedPlayers ---")
-        log(orderedPlayers)
         for _, module in ipairs(allModules.ordered) do
             module.setUp(settings, activeOpponents, orderedPlayers)
         end
@@ -263,7 +264,7 @@ end
 
 ---
 function PlayerSet.findActiveOpponents(properlySeatedPlayers, numberOfPlayers)
-    local colorsByPreference = { "Green", "Red", "Yellow", "Blue", "Purple", "White" }
+    local colorsByPreference = { "Green", "Red", "Yellow", "Blue", "Brown", "Teal" }
 
     local activeOpponents = {}
     for i, color in ipairs(properlySeatedPlayers) do
@@ -305,8 +306,8 @@ end
 ---
 function PlayerSet.toCanonicallyOrderedPlayerList(activeOpponents)
     local orderedColors
-    if #activeOpponents == 6 then
-        orderedColors = { "Green", "Purple", "Yellow", "Blue", "White", "Red" }
+    if #Helper.getKeys(activeOpponents) == 6 then
+        orderedColors = { "Green", "Brown", "Yellow", "Blue", "Teal", "Red" }
     else
         orderedColors = { "Green", "Yellow", "Blue", "Red" }
     end

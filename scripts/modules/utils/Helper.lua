@@ -124,7 +124,7 @@ function Helper.resolveGUIDs(reportUnresolvedGUIDs, data)
         local t = type(data)
         if t == "string" then
             -- FIXME Doesn't Lua support more elaborate regex?
-            if string.match(data, "[a-z0-9][a-z0-9][a-z0-9][a-z0-9][a-z0-9][a-z0-9]") then
+            if data:match("[a-z0-9][a-z0-9][a-z0-9][a-z0-9][a-z0-9][a-z0-9]") then
                 newData = getObjectFromGUID(data)
                 if not newData and reportUnresolvedGUIDs then
                     log("[resolveGUIDs] Unknow GUID: '" .. data .. "'")

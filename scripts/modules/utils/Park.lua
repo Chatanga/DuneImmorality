@@ -5,7 +5,7 @@ local Park = {}
 
 ---
 function Park.createCommonPark(tags, slots, margins, rotation, rotationSnap)
-    local zone = Park.createBoundingZone(0, margins, slots)
+    local zone = Park.createTransientBoundingZone(0, margins, slots)
 
     local name = Helper.stringConcat(tags)
 
@@ -266,7 +266,9 @@ function Park._instantTidyUp(park, newObjectsInTransit)
                 freeObjectCount = freeObjectCount - 1
 
                 nearestObject.setPosition(slot)
-                nearestObject.setRotation(park.rotation:copy())
+                if park.rotation then
+                    nearestObject.setRotation(park.rotation:copy())
+                end
                 nearestObject.setLock(park.locked)
             end
         end
@@ -340,7 +342,7 @@ function Park.deepCopy(c)
 end
 
 ---
-function Park.createBoundingZone(rotationAroundY, margins, points)
+function Park.createTransientBoundingZone(rotationAroundY, margins, points)
     assert(#points > 0)
 
     local barycenter = nil
@@ -381,9 +383,9 @@ function Park.createBoundingZone(rotationAroundY, margins, points)
         position = barycenter,
         rotation = Vector(0, rotationAroundY, 0),
         scale = {
-            math.max(1, sx + margins.x),
-            math.max(1, sy + margins.y),
-            math.max(1, sz + margins.z)}
+            math.max(0.1, sx + margins.x),
+            math.max(0.1, sy + margins.y),
+            math.max(0.1, sz + margins.z)}
     })
 
     Helper.markAsTransient(zone)

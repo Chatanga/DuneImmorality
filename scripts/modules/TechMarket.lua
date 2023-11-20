@@ -76,7 +76,9 @@ end
 ---
 function TechMarket._staticSetUp()
     for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
-        TechMarket.negotiationParks[color] = TechMarket._createNegotiationPark(color)
+        if not PlayBoard.isCommander(color) then
+            TechMarket.negotiationParks[color] = TechMarket._createNegotiationPark(color)
+        end
     end
     TechMarket._createNegotiationButton()
 
@@ -382,7 +384,7 @@ function TechMarket._createNegotiationPark(color)
         end
     end
 
-    local zone = Park.createBoundingZone(0, Vector(0.25, 0.25, 0.25), slots)
+    local zone = Park.createTransientBoundingZone(0, Vector(0.25, 0.25, 0.25), slots)
 
     return Park.createPark(
         color .. "Negotiation",

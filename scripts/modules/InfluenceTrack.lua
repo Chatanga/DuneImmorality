@@ -62,38 +62,48 @@ function InfluenceTrack.onLoad(state)
                 Red = 'acfcef',
                 Blue = '426a23',
                 Green = 'd7c9ba',
-                Yellow = '489871'
+                Yellow = '489871',
             },
             spacingGuild = {
                 Red = 'be464e',
                 Blue = '4069d8',
                 Green = '89da7d',
-                Yellow = '9d0075'
+                Yellow = '9d0075',
             },
             beneGesserit = {
                 Red = '713eae',
                 Blue = '2a88a6',
                 Green = '2dc980',
-                Yellow = 'a3729e'
+                Yellow = 'a3729e',
             },
             fremen = {
                 Red = '088f51',
                 Blue = '0e6e41',
                 Green = 'd390dc',
-                Yellow = '77d7c8'
-            }
+                Yellow = '77d7c8',
+            },
+            greatHouses = {
+                Brown = 'f49d90',
+            },
+            fringeWorlds = {
+                Teal = 'e02010',
+            },
         },
         friendshipBags = {
             emperor = "6a4186",
             spacingGuild = "400d45",
             beneGesserit = "e763f6",
-            fremen = "8bcfe7"
+            fremen = "8bcfe7",
+            greatHouses = '52b0f6',
+            fringeWorlds = 'ac33a8',
         },
         allianceTokens = {
             emperor = '13e990',
             spacingGuild = 'ad1aae',
             beneGesserit = '33452e',
-            fremen = '4c2bcc'
+            fremen = '4c2bcc',
+            greatHouses = '52b0f6',
+            fringeWorlds = 'ac33a8',
         }
     }))
 

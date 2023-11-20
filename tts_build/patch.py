@@ -10,8 +10,11 @@ def rectify_rotation(object):
             c = 0
         object['Transform'][coordinate] = c
 
-def patch_object(object):
+def patch_object(object, componentTagCounts):
     rectify_rotation(object)
+
+    object['LuaScript'] = ''
+    object['LuaScriptState'] = ''
 
     if False:
         url_mapping = {
@@ -36,6 +39,16 @@ def patch_object(object):
             if interestingContent in object:
                 print("{} ({}) has {}".format(object['Name'], object['GUID'], interestingContent))
 
+    if True:
+        if 'Tags' in object:
+            for tag in object['Tags']:
+                componentTagCounts[tag] += 1
+        if 'AttachedSnapPoints' in object:
+            for snapPoint in object['AttachedSnapPoints']:
+                if 'Tags' in snapPoint:
+                    for tag in snapPoint['Tags']:
+                        componentTagCounts[tag] += 1
+
 def patch_save(input_path, output_path):
 
     save = None
@@ -43,6 +56,12 @@ def patch_save(input_path, output_path):
         save = json.load(save_file)
 
     save['SaveName'] = "Dune Uprising - Prototype"
+
+    componentTags = {}
+    componentTagCounts = {}
+    for tag in save['ComponentTags']['labels']:
+        componentTags[tag['displayed']] = tag['normalized']
+        componentTagCounts[tag['displayed']] = 0
 
     objects = save['ObjectStates']
     new_objects = []
@@ -52,18 +71,28 @@ def patch_save(input_path, output_path):
     for object in objects:
         if 'States' in object:
             for _, state in object['States'].items():
-                patch_object(state)
+                patch_object(state, componentTagCounts)
 
         if 'ContainedObjects' in object:
             for child in object['ContainedObjects']:
-                patch_object(child)
+                patch_object(child, componentTagCounts)
 
         guid = object['GUID']
         object_by_guid[guid] = object
 
-        patch_object(object)
+        patch_object(object, componentTagCounts)
 
         new_objects.append(object)
+
+    newLabels = []
+    for tag in componentTagCounts.items():
+        if tag[1] > 0:
+            print(tag[0])
+            newLabels.append({
+                'displayed': tag[0],
+                'normalized': componentTags[tag[0]],
+            })
+    save['ComponentTags']['labels'] = newLabels
 
     save['ObjectStates'] = new_objects
 

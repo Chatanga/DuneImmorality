@@ -8,6 +8,7 @@ local ImperiumRow = Module.lazyRequire("ImperiumRow")
 local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
 local Combat = Module.lazyRequire("Combat")
 local PlayBoard = Module.lazyRequire("PlayBoard")
+local Deck = Module.lazyRequire("Deck")
 
 local Leader = Helper.createClass(Action)
 
@@ -354,5 +355,72 @@ Leader.hundroMoritani = Helper.createClass(Leader, {
             and leader.shipments(color, 1)
     end
 })
+
+Leader.stabanTuek = Helper.createClass(Leader, {
+})
+
+Leader.amberMetulli = Helper.createClass(Leader, {
+})
+
+Leader.gurneyHalleck = Helper.createClass(Leader, {
+})
+
+Leader.margotFenring = Helper.createClass(Leader, {
+})
+
+Leader.irulanCorrino = Helper.createClass(Leader, {
+})
+
+Leader.jessicaAtreides = Helper.createClass(Leader, {
+    -- Change name and appearence when activated.
+
+    --- Other memories
+    prepare = function (color, settings)
+        Action.prepare(color, settings)
+
+        local leaderCard = PlayBoard.findLeaderCard(color)
+
+        local otherMemories = function (otherColor)
+            leaderCard.destruct()
+            Deck.generateSingleLeaderDeck(leaderCard.getPosition() + Vector(0, 1, 0), "reverendMotherJessica").doAfter(function (card)
+                card.flip()
+                Leader.jessicaAtreides.name = "reverendMotherJessica"
+            end)
+            broadcastToAll(I18N("otherMemoriesUsed"), color)
+        end
+
+        Helper.createTransientAnchor("OtherMemoriesAnchor", leaderCard.getPosition() + Vector(0, -0.5, 0)).doAfter(function (anchor)
+            Helper.createAbsoluteButtonWithRoundness(anchor, 1, false, {
+                click_function = Helper.registerGlobalCallback(function (_, otherColor)
+                    if otherColor == color then
+                        otherMemories(otherColor)
+                        anchor.destruct()
+                    else
+                        broadcastToColor(I18N("noTouch"), otherColor, "Purple")
+                    end
+                end),
+                label = I18N("otherMemoriesButton"),
+                position = anchor.getPosition() + Vector(0, 0.6, -1.8),
+                width = 1000,
+                height = 200,
+                font_size = 120,
+                scale = Vector(1, 1, 1),
+                color = { 0, 0, 0, 1 },
+                font_color = Color.fromString("White"),
+                tooltip = I18N("otherMemoriesTooltip"),
+            })
+        end)
+   end,
+})
+
+Leader.feydRauthaHarkonnen = Helper.createClass(Leader, {
+})
+
+Leader.shaddamCorrino = Helper.createClass(Leader, {
+})
+
+Leader.muadDib = Helper.createClass(Leader, {
+})
+
 
 return Leader
