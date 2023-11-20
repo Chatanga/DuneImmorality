@@ -1,5 +1,4 @@
 import json
-import sys
 
 def rectify_rotation(object):
     for coordinate in ['rotX', 'rotY', 'rotZ']:
@@ -39,7 +38,7 @@ def patch_object(object, componentTagCounts):
             if interestingContent in object:
                 print("{} ({}) has {}".format(object['Name'], object['GUID'], interestingContent))
 
-    if True:
+    if False:
         if 'Tags' in object:
             for tag in object['Tags']:
                 componentTagCounts[tag] += 1

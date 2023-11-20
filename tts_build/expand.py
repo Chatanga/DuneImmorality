@@ -1,7 +1,6 @@
 import json
 import os
 import re
-import sys
 
 guid_pattern = re.compile('["\'][0-9a-f]{6}["\']')
 

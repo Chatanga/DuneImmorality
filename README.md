@@ -52,7 +52,7 @@ In addition to the step above, you could have `python3 listen.py` running in ano
 
 ### Internals
 
-![Capture](workflow.png)
+![Capture](tts_build/workflow.png)
 
 The whole process could be executed with a single call:
 

@@ -17,7 +17,8 @@ import tts_build.upload
 
 # Same folder as the one used by the Atom plugin for historical reasons.
 # Any other location would be fine.
-tts_tmp_dir='/tmp/TabletopSimulator/Tabletop Simulator Lua/'
+#tts_tmp_dir='/tmp/TabletopSimulator/Tabletop Simulator Lua/'
+tts_tmp_dir='tmp/scripts.bundled/'
 
 # Requirements:
 # - Python3
@@ -38,6 +39,7 @@ def build():
 	tts_save_dir = os.path.join(app_dir, 'Tabletop Simulator', 'Saves')
 
 	# The 200 -> 201 pair is arbitrary.
+	# TODO Add some kind of --input/output parameters saved in "build.rc".
 	input_save = os.path.join(tts_save_dir, 'TS_Save_200.json')
 	output_save = os.path.join(tts_save_dir, 'TS_Save_201.json')
 
@@ -77,7 +79,9 @@ def importSave(input_save):
 
 def unpack():
 	print("[unpack]")
-	tts_build.unpack.unpack_save('input.mod.json', os.path.join('tmp', 'mod.unscripted.json'))
+	input_file_name = 'input.mod.json'
+	output_file_name = os.path.join('tmp', 'mod.unscripted.json')
+	tts_build.unpack.unpack_save(tts_tmp_dir, input_file_name, output_file_name)
 
 def unbundle():
 	print("[unbundle]")
@@ -104,11 +108,14 @@ def unbundle():
 
 def patch():
 	print("[patch]")
-	tts_build.patch.patch_save(os.path.join('tmp', 'mod.unscripted.json'), os.path.join('tmp', 'mod.unscripted.patched.json'))
+	input_file_name = os.path.join('tmp', 'mod.unscripted.json')
+	output_file_name = os.path.join('tmp', 'mod.unscripted.patched.json')
+	tts_build.patch.patch_save(input_file_name, output_file_name)
 
 def expand():
 	print("[expand]")
-	tts_build.expand.expand(os.path.join('tmp', 'mod.unscripted.patched.json'), 'scripts')
+	input_file_name = os.path.join('tmp', 'mod.unscripted.patched.json')
+	tts_build.expand.expand(input_file_name, 'scripts')
 
 def bundle(timestamp):
 	print("[bundle]")
@@ -145,7 +152,9 @@ def bundle(timestamp):
 
 def pack(timestamp):
 	print("[pack]")
-	tts_build.pack.pack_save(os.path.join('tmp', 'mod.unscripted.patched.json'), os.path.join('tmp', 'mod.patched.json'), timestamp)
+	input_file_name = os.path.join('tmp', 'mod.unscripted.patched.json')
+	output_file_name = os.path.join('tmp', 'mod.patched.json')
+	tts_build.pack.pack_save(tts_tmp_dir, input_file_name, output_file_name, timestamp)
 
 def exportSave(output_save):
 	print("[exportSave]")
@@ -156,6 +165,7 @@ def exportSave(output_save):
 
 def upload():
 	print("[upload]")
-	tts_build.upload.upload()
+	output_file_name = 'tmp/mod.unscripted.patched.json'
+	tts_build.upload.upload(tts_tmp_dir, output_file_name)
 
 build()
