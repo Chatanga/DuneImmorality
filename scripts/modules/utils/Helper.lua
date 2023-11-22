@@ -946,15 +946,26 @@ end
 ---@return Continuation
 function Helper.onceOneDeck(zone)
     local continuation = Helper.createContinuation("Helper.onceOneDeck")
+
+    local getDecksOrCards = function ()
+        return Helper.filter(zone.getObjects(), function (object)
+            return object.type == "Card" or object.type == "Deck"
+        end)
+    end
+
+    local maxCardCount = 0
+    for _, deckOrCard in ipairs(getDecksOrCards()) do
+        maxCardCount = math.max(maxCardCount, Helper.getCardCount(deckOrCard))
+    end
+
     Wait.condition(function()
         continuation.run(Helper.getDeck(zone))
     end, function()
-        local deckOrCards = Helper.filter(zone.getObjects(), function (object)
-            return object.type == "Card" or object.type == "Deck"
-        end)
-        if #deckOrCards == 1 and deckOrCards[1].type == "Deck" then
-            local deck = deckOrCards[1]
-            if deck.resting then
+        local deckOrCards = getDecksOrCards()
+        if #deckOrCards == 1 then
+            local deckOrCard = deckOrCards[1]
+            local cardCound = Helper.getCardCount(deckOrCard)
+            if cardCound > maxCardCount and deckOrCard.resting then
                 return true
             end
         end
@@ -1082,6 +1093,8 @@ end
 function Helper.changePlayerColorInCoroutine(player, newColor)
     --Helper.dumpFunction("Helper.changePlayerColorInCoroutine", player, newColor)
 
+    local neutralColor = "Black"
+
     local function seatPlayer(p, color)
         p:changeColor(color)
         if not Helper.cachedPlayers then
@@ -1094,12 +1107,16 @@ function Helper.changePlayerColorInCoroutine(player, newColor)
     local oldColor = Helper._getPlayerColor(player)
     local otherPlayer = Helper.findPlayerByColor(newColor)
     if oldColor ~= newColor then
-        if otherPlayer then
-            seatPlayer(otherPlayer, "Grey")
-        end
-        seatPlayer(player, newColor)
-        if otherPlayer then
-            seatPlayer(otherPlayer, oldColor)
+        if not Helper.findPlayerByColor(neutralColor) then
+            if otherPlayer then
+                seatPlayer(otherPlayer, neutralColor)
+            end
+            seatPlayer(player, newColor)
+            if otherPlayer then
+                seatPlayer(otherPlayer, oldColor)
+            end
+        else
+            log("Skipping player color change")
         end
     end
 end

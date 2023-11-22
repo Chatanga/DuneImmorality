@@ -206,6 +206,7 @@ return {
     doAResearch = "Réaliser une recherche",
     destroyACardFromYourHand = "Détruire 1 carte de sa main",
     spendOption = "Dépenser {amount} {resource}",
+    amount = "{amount} {resource}",
 
     -- Ranking
     firstInCombat = "★ 1er : {leader}",

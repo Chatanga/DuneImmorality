@@ -85,9 +85,11 @@ Unfortunately, it seems to induce some kind of latency, leading to board corrupt
 
 - Investigate missing trigger effects on guests after a reload.
 - Fix the whole save/reload behavior in a minimal way.
-- Random freeze when buying a tech (5 or 6).
 - Missing Rise of Ix board without Immortality.
 - 6 tech park saturation.
+- Revoir Rival -> Action / POO.
+- Nouvelles cartes Hagal améliorées (en/fr).
+- Reports Uprising.
 
 ## TODO (by priority)
 

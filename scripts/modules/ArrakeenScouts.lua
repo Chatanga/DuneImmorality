@@ -126,7 +126,7 @@ local ArrakeenScouts = {
     pendingOperations = {},
 }
 
---ArrakeenScouts._debug = { "emperorsTax" }
+--ArrakeenScouts._debug = { "stationedSupport_immortality" }
 
 ---
 function ArrakeenScouts.onLoad(state)
@@ -1037,7 +1037,7 @@ function ArrakeenScouts._createBetterSequentialAuctionController(playerPanes, re
         local rankName = { "first", "second", "third", "fourth" }
 
         local getLabel = function (color)
-            local label = tostring(bids[color]) .. I18N.agree(bids[color], resourceName) .. " ➤ "
+            local label = I18N("amount", { amount = bids[color], resource = I18N.agree(bids[color], resourceName) }) .. " ➤ "
             local rank = ArrakeenScouts._getRank(color, ranking, level)
             if rank and rank.level <= level then
                 label = label .. I18N(rankName[rank.level] .. (rank.exAequo and "ExAequo" or ""))
@@ -1084,7 +1084,8 @@ function ArrakeenScouts._createSequentialAuctionController(playerPanes, resource
             minValue = maxBid + 1
         end
         for i = minValue, finalMaxValue do
-            table.insert(options, { amount = i, value = tostring(i) .. " " .. resourceName })
+            local value = I18N("amount", { amount = i, resource = I18N.agree(i, resourceName) })
+            table.insert(options, { amount = i, value = value })
         end
         ArrakeenScouts._setAsOptionPane(color, playerPane, secret, options, controller)
     end
@@ -1737,16 +1738,31 @@ end
 
 function ArrakeenScouts._createStationedSupportController(playerPanes, immortality)
     local troops = {}
-    local predicate = function (color)
+    local getOptions = function (color)
+        local options = { { amount = 0, value = I18N("refuseOption") } }
         local supplyPark = PlayBoard.getSupplyPark(color)
         troops[color] = Park.getObjects(supplyPark)
-        return #troops[color] >= 2
+        if #troops[color] >= 2 then
+            table.insert(options, { status = true, value = I18N("acceptOption") })
+        end
+        return options
     end
-    local resolve = function (color, _)
-        local spaceName = immortality and "researchStationImmortality" or "researchStation"
-        MainBoard.addSpaceBonus(spaceName, { [color] = { combatTroop = { troops[color][1], troops[color][2] } } })
+    local resolve = function (color, option, continuation)
+        if option.status then
+            ArrakeenScouts._ensureDiscard(color).doAfter(function (card)
+                assert(card)
+                local cardName = Helper.getID(card)
+                ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, cardName, "✓")
+                local spaceName = immortality and "researchStationImmortality" or "researchStation"
+                MainBoard.addSpaceBonus(spaceName, { [color] = { combatTroop = { troops[color][1], troops[color][2] } } })
+                continuation.run()
+            end)
+        else
+            ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, nil, "✗")
+            continuation.run()
+        end
     end
-    ArrakeenScouts._createSequentialBinaryChoiceController(playerPanes, predicate, resolve)
+    ArrakeenScouts._createSequentialChoiceController(playerPanes, getOptions, false, resolve)
 end
 
 function ArrakeenScouts._createGeneticResearchController(playerPanes)
@@ -1951,10 +1967,10 @@ function ArrakeenScouts._createSooSooSookWaterPeddlersController(playerPanes)
         local options = { { amount = 0, value = I18N("refuseOption") } }
         local solari = PlayBoard.getResource(color, "solari")
         if solari:get() >= 2 then
-            table.insert(options, { amount = 2, value = I18N("spendOption", { amount = 1, resource = I18N.agree(1, "solari") }) })
+            table.insert(options, { amount = 2, value = I18N("spendOption", { amount = 2, resource = I18N.agree(1, "solari") }) })
         end
         if solari:get() >= 4 then
-            table.insert(options, { amount = 4, value = I18N("spendOption", { amount = 3, resource = I18N.agree(3, "solari") }) })
+            table.insert(options, { amount = 4, value = I18N("spendOption", { amount = 4, resource = I18N.agree(3, "solari") }) })
         end
         return options
     end
