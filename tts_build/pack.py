@@ -5,7 +5,7 @@ import sys
 def inject_script_and_UI(tts_tmp_dir, name, id, element):
     file_name = os.path.join(tts_tmp_dir, name + '.' + str(id))
 
-    if element['LuaScript'] == '...':
+    if element.get('LuaScript') == '...':
         try:
             with open(file_name + '.ttslua', 'r') as script_file:
                 element['LuaScript'] = script_file.read()
@@ -13,7 +13,7 @@ def inject_script_and_UI(tts_tmp_dir, name, id, element):
             print("Script Lua", file_name, "introuvable.", file = sys.stderr)
             element.pop('LuaScript')
 
-    if element['XmlUI'] == '...':
+    if element.get('XmlUI') == '...':
         try:
             with open(file_name + '.xml', 'r') as script_file:
                 element['XmlUI'] = script_file.read()

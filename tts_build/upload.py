@@ -20,7 +20,7 @@ def collect_script_and_UI(tts_tmp_dir, name, id, element, scriptStates):
         "guid": id
     }
 
-    if element['LuaScript'] == '...':
+    if element.get('LuaScript') == '...':
         try:
             with open(file_name + '.ttslua', 'r') as script_file:
                 scriptState['script'] = script_file.read()
@@ -28,7 +28,7 @@ def collect_script_and_UI(tts_tmp_dir, name, id, element, scriptStates):
             print("Script Lua", file_name, "introuvable.", file = sys.stderr)
             element.pop('LuaScript')
 
-    if element['XmlUI'] == '...':
+    if element.get('XmlUI') == '...':
         try:
             with open(file_name + '.xml', 'r') as script_file:
                 scriptState['ui'] = script_file.read()

@@ -26,6 +26,7 @@
         "onSave",
         "onPlayerChangeColor",
         "onPlayerConnect",
-        "onPlayerDisconnect"
+        "onPlayerDisconnect",
+        "Hands"
     ]
 }

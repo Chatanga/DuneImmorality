@@ -7,7 +7,7 @@ local Park = {}
 function Park.createCommonPark(tags, slots, margins, rotation, rotationSnap)
     local zone = Park.createTransientBoundingZone(0, margins, slots)
 
-    local name = Helper.stringConcat(tags)
+    local name = Helper.stringConcat(tags) .. "_" .. zone.getGUID()
 
     local park = Park.createPark(
         name,

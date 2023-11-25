@@ -674,6 +674,28 @@ function Helper._createAbsoluteWidgetWithRoundnessParameters(object, roundness, 
     return parameters
 end
 
+---
+function Helper.collectSnapPoints(net, object)
+    local snapPoints = object.getSnapPoints()
+    for _, snapPoint in ipairs(snapPoints) do
+        --assert(snapPoint.tags and #snapPoint.tags == 1)
+        if snapPoint.tags then
+            if #snapPoint.tags == 1 then
+                for _, tag in ipairs(snapPoint.tags) do
+                    for prefix, collector in pairs(net) do
+                        if Helper.startsWith(tag, prefix) then
+                            local name = tag:sub(prefix:len() + 1):gsub("^%u", string.lower)
+                            collector(name, object.positionToWorld(snapPoint.position))
+                        end
+                    end
+                end
+            else
+                Helper.dump("Unexpected snap tags:", snapPoint.tags)
+            end
+        end
+    end
+end
+
 -- *** Dynamic (button) callbacks ***
 
 ---
@@ -954,15 +976,26 @@ end
 ---@return Continuation
 function Helper.onceOneDeck(zone)
     local continuation = Helper.createContinuation("Helper.onceOneDeck")
+
+    local getDecksOrCards = function ()
+        return Helper.filter(zone.getObjects(), function (object)
+            return object.type == "Card" or object.type == "Deck"
+        end)
+    end
+
+    local maxCardCount = 0
+    for _, deckOrCard in ipairs(getDecksOrCards()) do
+        maxCardCount = math.max(maxCardCount, Helper.getCardCount(deckOrCard))
+    end
+
     Wait.condition(function()
         continuation.run(Helper.getDeck(zone))
     end, function()
-        local deckOrCards = Helper.filter(zone.getObjects(), function (object)
-            return object.type == "Card" or object.type == "Deck"
-        end)
-        if #deckOrCards == 1 and deckOrCards[1].type == "Deck" then
-            local deck = deckOrCards[1]
-            if deck.resting then
+        local deckOrCards = getDecksOrCards()
+        if #deckOrCards == 1 then
+            local deckOrCard = deckOrCards[1]
+            local cardCound = Helper.getCardCount(deckOrCard)
+            if cardCound > maxCardCount and deckOrCard.resting then
                 return true
             end
         end
@@ -1090,6 +1123,8 @@ end
 function Helper.changePlayerColorInCoroutine(player, newColor)
     --Helper.dumpFunction("Helper.changePlayerColorInCoroutine", player, newColor)
 
+    local neutralColor = "Black"
+
     local function seatPlayer(p, color)
         p:changeColor(color)
         if not Helper.cachedPlayers then
@@ -1102,12 +1137,16 @@ function Helper.changePlayerColorInCoroutine(player, newColor)
     local oldColor = Helper._getPlayerColor(player)
     local otherPlayer = Helper.findPlayerByColor(newColor)
     if oldColor ~= newColor then
-        if otherPlayer then
-            seatPlayer(otherPlayer, "Grey")
-        end
-        seatPlayer(player, newColor)
-        if otherPlayer then
-            seatPlayer(otherPlayer, oldColor)
+        if not Helper.findPlayerByColor(neutralColor) then
+            if otherPlayer then
+                seatPlayer(otherPlayer, neutralColor)
+            end
+            seatPlayer(player, newColor)
+            if otherPlayer then
+                seatPlayer(otherPlayer, oldColor)
+            end
+        else
+            log("Skipping player color change")
         end
     end
 end
@@ -1454,7 +1493,7 @@ function Helper.dump(...)
         if i > 1 then
             str = str .. " "
         end
-        str = str .. tostring(element or "<nil>")
+        str = str .. Helper.toString(element or "<nil>")
     end
     log(str)
 end
@@ -1478,11 +1517,11 @@ function Helper.dumpFunction(...)
         else
             local strElement
             if type(element) == "string" then
-                strElement = '"' .. tostring(element) .. '"'
+                strElement = '"' .. Helper.toString(element) .. '"'
             elseif type(element) == "function" then
                 strElement = '<func>'
             else
-                strElement = tostring(element) or "?"
+                strElement = Helper.toString(element) or "?"
             end
             str = str .. strElement
         end
@@ -1498,6 +1537,40 @@ function Helper.dumpFunction(...)
     log(str)
 end
 
+---
+function Helper.toString(object)
+    if object then
+        if type(object) == "table" then
+            local str
+            if #object > 0 then
+                str = "["
+                for i, element in ipairs(object) do
+                    if i > 1 then
+                        str = str .. ", "
+                    end
+                    str = str .. Helper.toString(element or "<nil>")
+                end
+                str = str .. "]"
+            else
+                str = "{"
+                local i = 0
+                for key, value in pairs(object) do
+                    i = i + 1
+                    if i > 1 then
+                        str = str .. ", "
+                    end
+                    str = str .. Helper.toString(key) .. " -> " .. Helper.toString(value)
+                end
+                str = str .. "}"
+            end
+            return str
+        else
+            return tostring(object)
+        end
+    else
+        return "nil"
+    end
+end
 ---
 function Helper.concatTables(...)
     local result = {}

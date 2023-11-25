@@ -5,13 +5,13 @@ import os
 def extract_script_and_UI(tts_tmp_dir, name, id, element):
     file_name = os.path.join(tts_tmp_dir, name + '.' + str(id))
 
-    if element['LuaScript']:
+    if element.get('LuaScript'):
         with open(file_name + '.ttslua', 'w') as script_file:
             script_file.write(element['LuaScript'])
         element['LuaScript'] = "..."
         element['LuaScriptState'] = ""
 
-    if element['XmlUI']:
+    if element.get('XmlUI'):
         with open(file_name + '.xml', 'w') as script_file:
             script_file.write(element['XmlUI'])
         element['XmlUI'] = "..."

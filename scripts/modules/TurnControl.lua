@@ -4,6 +4,7 @@ local I18N = require("utils.I18N")
 
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local Hagal = Module.lazyRequire("Hagal")
+local Deck = Module.lazyRequire("Deck")
 
 local TurnControl = {
     phaseOrder = {
@@ -58,6 +59,9 @@ end
 
 --- Initialize the turn system with the provided players (or all the seated players) and start a new round.
 function TurnControl.setUp(settings, _, players)
+    Turns.enable = true
+    Turns.type = 1
+
     TurnControl.players = players
     TurnControl.scoreGoal = settings.epicMode and 12 or 10
 
@@ -78,9 +82,74 @@ function TurnControl.setUp(settings, _, players)
         end
         assert(TurnControl.firstPlayerLuaIndex)
     else
-        -- TODO Random
-        TurnControl.firstPlayerLuaIndex = math.random(#TurnControl.players)
+        local firstPlayer
+        repeat
+            -- TODO Random
+            TurnControl.firstPlayerLuaIndex = math.random(#TurnControl.players)
+            firstPlayer = TurnControl.players[TurnControl.firstPlayerLuaIndex]
+        until not PlayBoard.isCommander(firstPlayer)
+        Helper.dump("firstPlayer =", firstPlayer)
+
+        TurnControl._assignObjectives()
     end
+end
+
+--- FIXME Way too convoluted!
+function TurnControl._assignObjectives()
+    local cardNames = { "crysknife" }
+    if #TurnControl.players == 3 then
+        table.insert(cardNames, "ornithopter1to3p")
+    elseif #TurnControl.players >= 4 then
+        table.insert(cardNames, "muabDib4to6p")
+        table.insert(cardNames, "crysknife4to6p")
+    else
+        error("Unexpected number of players: " .. tostring(#TurnControl.players))
+    end
+    Helper.shuffle(cardNames)
+
+    local objectiveCards = {}
+    for i, color in ipairs(TurnControl.players) do
+        if not PlayBoard.isCommander(color) then
+            if i == TurnControl.firstPlayerLuaIndex then
+                objectiveCards[color] = "muabDibFirstPlayer"
+            else
+                objectiveCards[color] = cardNames[1]
+                table.remove(cardNames, 1)
+            end
+        end
+    end
+
+    local getCategory = function (cardName)
+        for _, category in ipairs({ "ornithopter", "crysknife", "muabDib" }) do
+            if Helper.startsWith(cardName, category) then
+                return category
+            end
+        end
+        assert(false)
+    end
+
+    if #TurnControl.players == 6 and getCategory(objectiveCards.Green) == getCategory(objectiveCards.Yellow) then
+        local tmp = objectiveCards.Green
+        objectiveCards.Green = objectiveCards.Red
+        objectiveCards.Red = tmp
+    end
+
+    cardNames = {}
+    for _, color in ipairs(TurnControl.players) do
+        if not PlayBoard.isCommander(color) then
+            -- Ordering guarantees?
+            cardNames[objectiveCards[color]] = 1
+        end
+    end
+
+    local intrigueDiscard = getObjectFromGUID("80642b")
+    Deck.generateObjectiveDeck(intrigueDiscard, cardNames).doAfter(function (deck)
+        for _, color in ipairs(TurnControl.players) do
+            if not PlayBoard.isCommander(color) then
+                PlayBoard.giveObjectiveCardFromZone(color, intrigueDiscard)
+            end
+        end
+    end)
 end
 
 ---
@@ -242,7 +311,22 @@ function TurnControl._next(startPlayerLuaIndex)
         Helper.dump(">> Turn:", playerColor)
         Helper.emitEvent("playerTurns", TurnControl.currentPhase, playerColor)
     else
-        TurnControl.endOfPhase()
+        if TurnControl.currentPhase == "combat" then
+            local primaryTable = getObjectFromGUID("2b4b92")
+            Helper.createAbsoluteButtonWithRoundness(primaryTable, 1, false, {
+                click_function = Helper.registerGlobalCallback(function ()
+                    primaryTable.clearButtons()
+                    TurnControl.endOfPhase()
+                end),
+                label = "Recall",
+                position = primaryTable.getPosition() + Vector(3.5, 1.8, -15.75),
+                width = 1200,
+                height = 450,
+                font_size = 300,
+            })
+        else
+            TurnControl.endOfPhase()
+        end
     end
 end
 
@@ -327,7 +411,7 @@ function TurnControl._endgameGoalReached(hardLimit)
     end
 
     local bestScore = 0
-    for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
+    for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
         bestScore = math.max(bestScore, PlayBoard.getPlayBoard(color):getScore())
     end
     return bestScore >= TurnControl.scoreGoal

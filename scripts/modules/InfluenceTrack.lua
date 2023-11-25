@@ -7,44 +7,17 @@ local PlayBoard = Module.lazyRequire("PlayBoard")
 local MainBoard = Module.lazyRequire("MainBoard")
 
 local InfluenceTrack = {
-    influenceTokenInitialPositions = {
-        emperor = {
-            Red = Helper.getHardcodedPositionFromGUID('acfcef', -9.718932, 0.752500057, 1.85002029),
-            Blue = Helper.getHardcodedPositionFromGUID('426a23', -10.1873131, 0.7525, 1.85005832),
-            Green = Helper.getHardcodedPositionFromGUID('d7c9ba', -9.273371, 0.754999936, 1.8500092),
-            Yellow = Helper.getHardcodedPositionFromGUID('489871', -8.834659, 0.755000055, 1.85005462)
-        },
-        spacingGuild = {
-            Red = Helper.getHardcodedPositionFromGUID('be464e', -9.737917, 0.752500057, -3.640007),
-            Blue = Helper.getHardcodedPositionFromGUID('4069d8', -10.1552429, 0.7525, -3.64000773),
-            Green = Helper.getHardcodedPositionFromGUID('89da7d', -9.288127, 0.754999936, -3.64001),
-            Yellow = Helper.getHardcodedPositionFromGUID('9d0075', -8.846331, 0.755000055, -3.63998413)
-        },
-        beneGesserit = {
-            Red = Helper.getHardcodedPositionFromGUID('713eae', -9.766583, 0.752500057, -9.100027),
-            Blue = Helper.getHardcodedPositionFromGUID('2a88a6', -10.2121153, 0.7525, -9.100084),
-            Green = Helper.getHardcodedPositionFromGUID('2dc980', -9.319731, 0.754999936, -9.100017),
-            Yellow = Helper.getHardcodedPositionFromGUID('a3729e', -8.888711, 0.755000055, -9.100081)
-        },
-        fremen = {
-            Red = Helper.getHardcodedPositionFromGUID('088f51', -9.762483, 0.752500057, -14.5700312),
-            Blue = Helper.getHardcodedPositionFromGUID('0e6e41', -10.2238894, 0.7525, -14.5700541),
-            Green = Helper.getHardcodedPositionFromGUID('d390dc', -9.328378, 0.754999936, -14.570013),
-            Yellow = Helper.getHardcodedPositionFromGUID('77d7c8', -8.887749, 0.755000055, -14.5700006)
-        }
-    },
-    allianceTokenInitialPositions = {
-        emperor = Helper.getHardcodedPositionFromGUID('13e990', -9.511963, 0.78, 5.86089),
-        spacingGuild = Helper.getHardcodedPositionFromGUID('ad1aae', -9.507135, 0.780000031, 0.24908106),
-        beneGesserit = Helper.getHardcodedPositionFromGUID('33452e', -9.551374, 0.780000031, -5.21345472),
-        fremen = Helper.getHardcodedPositionFromGUID('4c2bcc', -9.543688, 0.780000031, -10.6707687)
-    },
+    influenceTokens = {},
+    influenceTokenInitialPositions = {},
+    allianceTokenInitialPositions = {},
     influenceLevels = {},
     actionsLocked = {
         emperor = {},
         spacingGuild = {},
         beneGesserit = {},
-        fremen = {}
+        fremen = {},
+        greatHouses = {},
+        fringeWorlds = {},
     },
 }
 
@@ -57,53 +30,23 @@ function InfluenceTrack.onLoad(state)
             beneGesserit = "bed196",
             fremen = "b10897",
         },
-        influenceTokens = {
-            emperor = {
-                Red = 'acfcef',
-                Blue = '426a23',
-                Green = 'd7c9ba',
-                Yellow = '489871',
-            },
-            spacingGuild = {
-                Red = 'be464e',
-                Blue = '4069d8',
-                Green = '89da7d',
-                Yellow = '9d0075',
-            },
-            beneGesserit = {
-                Red = '713eae',
-                Blue = '2a88a6',
-                Green = '2dc980',
-                Yellow = 'a3729e',
-            },
-            fremen = {
-                Red = '088f51',
-                Blue = '0e6e41',
-                Green = 'd390dc',
-                Yellow = '77d7c8',
-            },
-            greatHouses = {
-                Brown = 'f49d90',
-            },
-            fringeWorlds = {
-                Teal = 'e02010',
-            },
-        },
         friendshipBags = {
             emperor = "6a4186",
             spacingGuild = "400d45",
             beneGesserit = "e763f6",
             fremen = "8bcfe7",
-            greatHouses = '52b0f6',
-            fringeWorlds = 'ac33a8',
+            greatHouses = '95926b',
+            fringeWorlds = 'a43ec0',
         },
         allianceTokens = {
+            --[[
             emperor = '13e990',
             spacingGuild = 'ad1aae',
             beneGesserit = '33452e',
             fremen = '4c2bcc',
             greatHouses = '52b0f6',
             fringeWorlds = 'ac33a8',
+            ]]
         }
     }))
 
@@ -118,12 +61,13 @@ end
 
 ---
 function InfluenceTrack.setUp(settings)
-    InfluenceTrack._staticSetUp()
+    InfluenceTrack._staticSetUp(settings)
 end
 
 ---
-function InfluenceTrack._staticSetUp()
-    InfluenceTrack.influenceLevels = {}
+function InfluenceTrack._staticSetUp(settings)
+    InfluenceTrack._processSnapPoints(settings)
+
     for faction, initialPositions in pairs(InfluenceTrack.influenceTokenInitialPositions) do
         local factionLevels = {}
         local meanStartPosition = Vector(0, 0, 0)
@@ -163,6 +107,75 @@ function InfluenceTrack._staticSetUp()
             end)
         end
         InfluenceTrack.influenceLevels[faction] = factionLevels
+    end
+end
+
+---
+function InfluenceTrack._processSnapPoints(settings)
+    -- TODO Get rid of the *InitialPositions variables
+
+    local allColors = { "Green", "Yellow", "Blue", "Red", "Teal", "Brown" }
+
+    local influenceTokens = {}
+    for _, object in ipairs(getObjects()) do
+        if object.hasTag("AllianceToken") then
+            for faction, _ in pairs(InfluenceTrack.actionsLocked) do
+                if object.hasTag(faction) then
+                    InfluenceTrack.allianceTokens[faction] = object
+                    break
+                end
+            end
+        elseif object.hasTag("InfluenceTokens") then
+            for _, color in ipairs(allColors) do
+                if object.hasTag(color) then
+                    table.insert(influenceTokens, object)
+                    break
+                end
+            end
+        end
+    end
+
+    local net = {
+        faction = function (faction, position)
+
+            InfluenceTrack.influenceTokens[faction] = {}
+            InfluenceTrack.influenceTokenInitialPositions[faction] = {}
+            for _, influenceToken in ipairs(influenceTokens) do
+                local tokenPosition = influenceToken.getPosition()
+                if tokenPosition.y < position.y and Vector.distance(tokenPosition, position) < 2 then
+                    for _, color in ipairs(allColors) do
+                        if influenceToken.hasTag(color) then
+                            InfluenceTrack.influenceTokens[faction][color] = influenceToken
+
+                            local xOffsets = {
+                                Blue = -0.66,
+                                Red = -0.22,
+                                Green = 0.22,
+                                Yellow = 0.66,
+                                Teal = 0,
+                                Brown = 0,
+                            }
+                            local influenceTokenInitialPosition = position + Vector(xOffsets[color], 0, -1.6)
+                            InfluenceTrack.influenceTokenInitialPositions[faction][color] = influenceTokenInitialPosition
+                            influenceToken.setPosition(influenceTokenInitialPosition)
+                            break
+                        end
+                    end
+                end
+            end
+
+            local allianceTokenInitialPosition = position + Vector(-0.02, 0, 2.32)
+            InfluenceTrack.allianceTokenInitialPositions[faction] = allianceTokenInitialPosition
+            InfluenceTrack.allianceTokens[faction].setPositionSmooth(allianceTokenInitialPosition)
+        end
+    }
+
+    -- Having changed the state is not enough.
+    if settings.numberOfPlayers == 6 then
+        Helper.collectSnapPoints(net, getObjectFromGUID("21cc52"))
+        -- TODO Consider commander's boards.
+    else
+        Helper.collectSnapPoints(net, getObjectFromGUID("483a1a"))
     end
 end
 
@@ -260,6 +273,7 @@ end
 
 ---
 function InfluenceTrack._changeInfluenceTracksRank(color, faction, change)
+    --Helper.dumpFunction("InfluenceTrack._changeInfluenceTracksRank", color, faction, change)
     Types.assertIsPlayerColor(color)
     Types.assertIsFaction(faction)
     Types.assertIsInteger(change)
@@ -330,7 +344,7 @@ function InfluenceTrack._challengeAlliance(faction)
     local bestRank = 4
     local allianceOwner
 
-    for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
+    for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
         if InfluenceTrack.hasAlliance(color, faction) then
             allianceOwner = color
         end
@@ -392,16 +406,28 @@ end
 function InfluenceTrack._gainAllianceBonus(faction, color)
     local leader = PlayBoard.getLeader(color)
     if not PlayBoard.isRival(color) then
-        if faction == "emperor" then
-            leader.troops(color, "supply", "garrison", 2)
-        elseif faction == "spacingGuild" then
-            leader.resources(color, "solari", 3)
-        elseif faction == "beneGesserit" then
-            leader.drawIntrigues(color, 1)
-        elseif faction == "fremen" then
-            leader.resources(color, "water", 1)
+        if #Helper.getKeys(InfluenceTrack.influenceLevels) == 6 then
+            if faction == "greatHouses" then
+                leader.troops(color, "supply", "garrison", 2)
+            elseif faction == "spacingGuild" then
+                leader.resources(color, "solari", 3)
+            elseif faction == "beneGesserit" then
+                leader.drawIntrigues(color, 1)
+            elseif faction == "fringeWorlds" then
+                leader.spy(color, 1)
+            end
         else
-            error("Unknown faction: ", faction)
+            if faction == "emperor" then
+                leader.troops(color, "supply", "garrison", 2)
+            elseif faction == "spacingGuild" then
+                leader.resources(color, "solari", 3)
+            elseif faction == "beneGesserit" then
+                leader.drawIntrigues(color, 1)
+            elseif faction == "fremen" then
+                leader.resources(color, "water", 1)
+            else
+                error("Unknown faction: ", faction)
+            end
         end
     end
 end

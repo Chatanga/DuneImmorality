@@ -1,9 +1,14 @@
 local Helper = require("utils.Helper")
 
 local Deck = {
+    objective = {
+        uprisingObjective = { "http://cloud-3.steamusercontent.com/ugc/2220898342999520437/F23014D780D16DDF23D8AF674BDEE3A9CB912F78/", 3, 2 },
+    },
     imperium = {
         -- starter with dune the desert planet
         starter = { "http://cloud-3.steamusercontent.com/ugc/2093667512238504518/BF3BA9C253ED953533B90D94DD56D0BAD4021B3C/", 4, 2 },
+        starterImperium_emperor = { "http://cloud-3.steamusercontent.com/ugc/2305342013587605699/767F540B36884449C0A833D2CF0A25E36651F9AE/", 5, 2 },
+        starterImperium_muadDib = { "http://cloud-3.steamusercontent.com/ugc/2305342013587607664/E73DE11761FD6A911456F07E348ED58BC7B21638/", 5, 2 },
         -- base with foldspace, liasion, and the spice must flow
         imperium = { "http://cloud-3.steamusercontent.com/ugc/2093667512238501976/6F98BCE051343A3D07D58D6BC62A8FCA2C9AAE1A/", 8, 6 },
         -- new release card
@@ -37,9 +42,6 @@ local Deck = {
     conflict3 = {
         conflict = { "http://cloud-3.steamusercontent.com/ugc/2093667512238537756/F1BEAE6266E75B7A2F5DE511DB4FEB25A2CD486B/", 3, 2 },
         uprisingConflict = { "http://cloud-3.steamusercontent.com/ugc/2220898342999675915/71EFAC5FF1CC15BC3BF35E613D956BE814964C41/", 2, 2 },
-    },
-    objective = {
-        uprisingObjective = { "http://cloud-3.steamusercontent.com/ugc/2220898342999520437/F23014D780D16DDF23D8AF674BDEE3A9CB912F78/", 3, 2 },
     },
     hagal = {
         hagal = { "http://cloud-3.steamusercontent.com/ugc/2093668799785647713/66020C11E4FEA2D22744020D27465DCC2BB02BBE/", 7, 2 },
@@ -91,6 +93,7 @@ local Deck = {
         yunaMoritani = { "http://cloud-3.steamusercontent.com/ugc/2093667512238499982/FA54B129B168169E3D58BA61536FCC0BB5AB7D34/", 1, 1 },
         hundroMoritani = { "http://cloud-3.steamusercontent.com/ugc/2093667512238498857/6A89778D9C4BB8AC07FE503D48A4483D13DF6E5B/", 1, 1 },
         -- uprising
+        --[[
         stabanTuek = { "http://cloud-3.steamusercontent.com/ugc/2220898342984782273/A1FEC768EE0C71D75588E180F4F865DBEEE1EA9B/", 1, 1 },
         amberMetulli = { "http://cloud-3.steamusercontent.com/ugc/2220898342984780893/ECA8A89C4C6A13915BB4B96505573487770091C1/", 1, 1 },
         gurneyHalleck = { "http://cloud-3.steamusercontent.com/ugc/2220898342984779815/EF8A9F85919F6547EF3162E5985820CF2581A266/", 1, 1 },
@@ -101,6 +104,18 @@ local Deck = {
         feydRauthaHarkonnen = { "http://cloud-3.steamusercontent.com/ugc/2220898342984752091/8033091C9146CC44C104E44A9807B881536B733C/", 1, 1 },
         shaddamCorrino = { "http://cloud-3.steamusercontent.com/ugc/2220898342984745065/CF3A0F8F8D9307EF7E816C203CFAFF5152DC1D0B/", 1, 1 },
         muadDib = { "http://cloud-3.steamusercontent.com/ugc/2220898342984739388/A410D97166803DF8F109285153CE44C9B20B418E/", 1, 1 },
+        ]]
+        -- uprising
+        stabanTuek = { "http://cloud-3.steamusercontent.com/ugc/2305342013585679818/E675A8B105716B01D7C1C086102CEBCE0756B4C7/", 1, 1 },
+        amberMetulli = { "http://cloud-3.steamusercontent.com/ugc/2305342013585661722/E525FD044AB8D577752189B9094E795D1F4BC9D5/", 1, 1 },
+        gurneyHalleck = { "http://cloud-3.steamusercontent.com/ugc/2305342013585652069/6F7B49241ECB5CB66B0C8F68F05B91DAA2D6E11E/", 1, 1 },
+        margotFenring = { "http://cloud-3.steamusercontent.com/ugc/2305342013585657205/1A4453CC4C74E1F8B58C504243AD495B649DBB07/", 1, 1 },
+        irulanCorrino = { "http://cloud-3.steamusercontent.com/ugc/2305342013585659402/EC550B921EFB707D338F5A45AB39609A9DFDE7BA/", 1, 1 },
+        reverendMotherJessica = { "http://cloud-3.steamusercontent.com/ugc/2305342013585668820/3FA11CDE733EB59839FB85D0328588F28BE43D57/", 1, 1 },
+        jessicaAtreides = { "http://cloud-3.steamusercontent.com/ugc/2305342013585667938/1969BB59A8DD3C683E82A2D07D1C41BB2F175313/", 1, 1 },
+        feydRauthaHarkonnen = { "http://cloud-3.steamusercontent.com/ugc/2305342013585664929/C6CC977066E02C55DFA870BF59D42A8DC21F6811/", 1, 1 },
+        shaddamCorrino = { "http://cloud-3.steamusercontent.com/ugc/2305342013585675680/056063BC4E61922C15A7A45DD5093EA6EC04C354/", 1, 1 },
+        muadDib = { "http://cloud-3.steamusercontent.com/ugc/2305342013585673410/202B5C036B90D32A408FE938AF0747BAF2DE7DFB/", 1, 1 },
     },
 }
 
@@ -129,6 +144,7 @@ end
 ---
 function Deck.loadCustomDecks(loader)
     local cards = {
+        objective = {},
         imperium = {},
         special = {},
         tleilaxu = {},
@@ -139,6 +155,14 @@ function Deck.loadCustomDecks(loader)
         leaders = {}
     }
 
+    Deck.load(loader, cards.objective, "objective", "uprisingObjective", 1, {
+        "ornithopter1to3p",
+        "muabDibFirstPlayer",
+        "crysknife",
+        "muabDib4to6p",
+        "crysknife4to6p",
+    })
+
     Deck.load(loader, cards.imperium, "imperium", "starter", 1, {
         "duneTheDesertPlanet",
         "dagger",
@@ -146,7 +170,29 @@ function Deck.loadCustomDecks(loader)
         "convincingArgument",
         "seekAllies",
         "signetRing",
-        "diplomacy"
+        "diplomacy",
+    })
+    Deck.load(loader, cards.imperium, "imperium", "starterImperium_emperor", 1, {
+        "emperorConvincingArgument",
+        "emperorCorrinoMight",
+        "emperorCriticalShipments",
+        "emperorDemandResults",
+        "emperorDevastatingAssault",
+        "emperorImperialOrnithopter", "",
+        "emperorSignetRing",
+        "emperorSeekAllies",
+        "emperorImperialTent",
+    })
+    Deck.load(loader, cards.imperium, "imperium", "starterImperium_muadDib", 1, {
+        "muadDibCommandRespect",
+        "muadDibConvincingArgument",
+        "muadDibDemandAttention",
+        "muadDibDesertCall",
+        "muadDibLimitedLandsraadAccess", "",
+        "muadDibSeekAllies",
+        "muadDibUsul",
+        "muadDibThreatenSpiceProduction",
+        "muadDibSignetRing",
     })
     Deck.load(loader, cards.imperium, "imperium", "imperium", 1, {
         "sardaukarLegion",
@@ -318,6 +364,12 @@ function Deck.loadCustomDecks(loader)
         "longLiveTheFighters",
         "overthrow",
         "steersman",
+    })
+    Deck.load(loader, cards.imperium, "imperium", "uprisingImperium_contract", 1, {
+        "cargoRunner",
+        "deliveryAgreement",
+        "priorityContracts",
+        "interstellarTrade",
     })
     Deck.load(loader, cards.special, "imperium", "imperium", 5, {
         "foldspace",

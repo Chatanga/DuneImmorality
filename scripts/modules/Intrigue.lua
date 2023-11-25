@@ -30,7 +30,7 @@ end
 
 ---
 function Intrigue._staticSetUp(settings)
-    Deck.generateIntrigueDeck(Intrigue.deckZone, settings.riseOfIx, settings.immortality).doAfter(function (deck)
+    Deck.generateIntrigueDeck(Intrigue.deckZone, settings.useContracts, settings.riseOfIx, settings.immortality).doAfter(function (deck)
         Helper.shuffleDeck(deck)
     end)
 end
@@ -45,9 +45,11 @@ end
 function Intrigue.drawIntrigue(color, amount)
     Types.assertIsPositiveInteger(amount)
     -- Add an offset to put the card on the left side of the player's hand.
-    local position = Player[color].getHandTransform().position + Vector(-7.5, 0, 0)
+    local handTransform = Player[color].getHandTransform()
+    local position = handTransform.position + Vector(0, 0, -5)
+    local rotation = handTransform.rotation + Vector(0, 180, 0)
     Helper.onceTimeElapsed(0.25, amount).doAfter(function()
-        Helper.moveCardFromZone(Intrigue.deckZone, position, nil, false, true)
+        Helper.moveCardFromZone(Intrigue.deckZone, position, rotation, false, true)
     end)
 end
 
@@ -61,9 +63,13 @@ function Intrigue.stealIntrigue(color, otherColor, amount)
     Helper.shuffle(intrigues)
 
     -- Add an offset to put the card on the left side of the player's hand.
-    local position = Player[color].getHandTransform().position + Vector(-7.5, 0, 0)
+    local handTransform = Player[color].getHandTransform()
+    local position = handTransform.position + Vector(0, 0, -5)
+    local rotation = handTransform.rotation + Vector(0, 180, 0)
     Helper.onceTimeElapsed(0.25, realAmount).doAfter(function() -- Why?
-        table.remove(intrigues, 1).setPosition(position)
+        local card = table.remove(intrigues, 1)
+        card.setPosition(position)
+        card.setRotation(rotation)
     end)
 end
 

@@ -464,4 +464,10 @@ function Action.acquireTech(color, stackIndex, discount)
     end
 end
 
+---
+function Action.acquireHook(color)
+    -- TODO
+    return true
+end
+
 return Action

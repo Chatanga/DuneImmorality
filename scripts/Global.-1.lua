@@ -11,8 +11,9 @@ local autoLoadedSettings
 autoLoadedSettings = {
     language = "en",
     randomizePlayerPositions = false,
-    specialMode = true,
-    numberOfPlayers = 4,
+    numberOfPlayers = 6,
+    hotSeat = true,
+    useContracts = true,
     riseOfIx = false,
     epicMode = false,
     immortality = false,
@@ -45,6 +46,7 @@ local I18N = require("utils.I18N")
 local allModules = Module.registerModules({
     AcquireCard, -- To take advantage of Module.registerModuleRedirections.
     Action = require("Action"),
+    ChoamContractMarket = require("ChoamContractMarket"),
     Combat = require("Combat"),
     ShipmentTrack = require("ShipmentTrack"),
     Deck = require("Deck"),
@@ -77,7 +79,7 @@ local PlayerSet = {
             Green = true,
             Yellow = true,
             Blue = true,
-            Red = true
+            Red = true,
         },
         language_all = {
             --de = "Deutsche",
@@ -90,24 +92,24 @@ local PlayerSet = {
             --zh = "中文",
         },
         language = "en",
-        specialMode = false,
-        numberOfPlayers_all = {
+        hotSeat = false,
+        gameMode_all = {
             "1 (+2)",
             "2 (+1)",
             "3",
             "4",
             "2 x 3"
         },
-        numberOfPlayers = {},
+        gameMode = 4,
         randomizePlayerPositions = false,
         difficulty_all = Helper.map(allModules.Hagal.getDifficulties(), function (_, v) return v.name end),
         difficulty = {},
-        useContracts = false,
-        riseOfIx = true,
-        epicMode = false,
-        immortality = true,
-        goTo11 = true,
-        leaderSelection_all = allModules.LeaderSelection.getSelectionMethods(),
+        useContracts = true,
+        riseOfIx = false,
+        epicMode = {},
+        immortality = false,
+        goTo11 = {},
+        leaderSelection_all = allModules.LeaderSelection.getSelectionMethods(4),
         leaderSelection = "reversePick",
         soundEnabled = true,
     }
@@ -151,6 +153,7 @@ function onLoad(scriptState)
         allModules.MainBoard,
         allModules.ShipmentTrack,
         allModules.TechMarket,
+        allModules.ChoamContractMarket,
         allModules.Intrigue,
         allModules.InfluenceTrack,
         allModules.ImperiumRow,
@@ -217,12 +220,12 @@ function setUp(newSettings)
     assert(newSettings)
     I18N.setLocale(newSettings.language)
 
-    log("--- Settings ---")
-    log(newSettings)
+    --log("Settings:")
+    --log(newSettings)
 
     local properlySeatedPlayers = PlayerSet.getProperlySeatedPlayers()
-    if not newSettings.specialMode then
-        newSettings.numberOfPlayers = math.min(6, #properlySeatedPlayers)
+    if not newSettings.hotSeat then
+        newSettings.numberOfPlayers = math.min(newSettings.numberOfPlayers, #properlySeatedPlayers)
     end
 
     local continuation = Helper.createContinuation("setUp")
@@ -378,45 +381,51 @@ function setRandomizePlayerPositions(player, value, id)
     PlayerSet.ui:fromUI(player, value, id)
 end
 
----
-function setSpecialMode(player, value, id)
+function setHotSeat(player, value, id)
     PlayerSet.ui:fromUI(player, value, id)
-    if value == "True" then
-        PlayerSet.fields.numberOfPlayers = 1
-    else
-        PlayerSet.fields.numberOfPlayers = {}
-    end
-    PlayerSet.applyNumberOfPlayers()
-    PlayerSet.ui:toUI()
+    PlayerSet.updateSetupButton()
 end
 
----
-function setNumberOfPlayers(player, value, id)
+function setGameMode(player, value, id)
     PlayerSet.ui:fromUI(player, value, id)
-    if PlayerSet.fields.numberOfPlayers == 5 then
-        -- index ~= numberOfPlayers for the 5th entry
-        PlayerSet.fields.numberOfPlayers = PlayerSet.fields.numberOfPlayers + 1
-    end
-    PlayerSet.applyNumberOfPlayers()
-    PlayerSet.ui:toUI()
-end
-
----
-function PlayerSet.applyNumberOfPlayers()
-    if type(PlayerSet.fields.numberOfPlayers) == "table" or PlayerSet.fields.numberOfPlayers > 2 then
+    if type(PlayerSet.fields.gameMode) == "table" or PlayerSet.fields.gameMode > 2 then
         PlayerSet.fields.difficulty = {}
     else
-        if PlayerSet.fields.numberOfPlayers == 1 then
-            PlayerSet.fields.difficulty = "novice"
-        else
-            PlayerSet.fields.difficulty = {}
-        end
+        PlayerSet.fields.difficulty = "novice"
+    end
+    local numberOfPlayers = PlayerSet.fields.gameMode + math.floor(PlayerSet.fields.gameMode / 5)
+    log(numberOfPlayers)
+    PlayerSet.fields.leaderSelection_all = allModules.LeaderSelection.getSelectionMethods(numberOfPlayers)
+    if PlayerSet.fields.gameMode == 5 then
+        PlayerSet.fields.useContracts = {}
+        PlayerSet.fields.color_all = {
+            Green = true,
+            Yellow = true,
+            Blue = true,
+            Red = true,
+            Brown = true,
+            Teal = true,
+        }
+    else
+        PlayerSet.fields.useContracts = true
+        PlayerSet.fields.color_all = {
+            Green = true,
+            Yellow = true,
+            Blue = true,
+            Red = true,
+        }
     end
     PlayerSet.updateSetupButton()
+    PlayerSet.ui:toUI()
 end
 
 ---
 function setDifficulty(player, value, id)
+    PlayerSet.ui:fromUI(player, value, id)
+end
+
+---
+function setUseContracts(player, value, id)
     PlayerSet.ui:fromUI(player, value, id)
 end
 
@@ -468,12 +477,12 @@ function PlayerSet.updateSetupButton()
         local properlySeatedPlayers = PlayerSet.getProperlySeatedPlayers()
 
         local minPlayerCount
-        if type(PlayerSet.fields.numberOfPlayers) == "table" then
+        if type(PlayerSet.fields.gameMode) == "table" then
             minPlayerCount = 3
-        elseif PlayerSet.fields.specialMode then
+        elseif PlayerSet.fields.hotSeat then
             minPlayerCount = 1
         else
-            minPlayerCount = math.min(2, PlayerSet.fields.numberOfPlayers)
+            minPlayerCount = math.min(2, PlayerSet.fields.gameMode)
         end
 
         if #properlySeatedPlayers >= minPlayerCount then
@@ -494,9 +503,10 @@ function setUpFromUI()
     setUp({
         language = PlayerSet.fields.language,
         randomizePlayerPositions = PlayerSet.fields.randomizePlayerPositions == true,
-        specialMode = PlayerSet.fields.specialMode == true,
-        numberOfPlayers = PlayerSet.fields.numberOfPlayers,
+        hotSeat = PlayerSet.fields.hotSeat == true,
+        numberOfPlayers = PlayerSet.fields.gameMode + math.floor(PlayerSet.fields.gameMode / 5),
         difficulty = PlayerSet.fields.difficulty,
+        useContracts = PlayerSet.fields.useContracts == true,
         riseOfIx = PlayerSet.fields.riseOfIx == true,
         epicMode = PlayerSet.fields.epicMode == true,
         immortality = PlayerSet.fields.immortality == true,

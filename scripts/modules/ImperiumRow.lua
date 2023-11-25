@@ -31,7 +31,7 @@ end
 
 ---
 function ImperiumRow.setUp(settings)
-    Deck.generateImperiumDeck(ImperiumRow.deckZone, settings.riseOfIx, settings.immortality).doAfter(function (deck)
+    Deck.generateImperiumDeck(ImperiumRow.deckZone, settings.useContracts, settings.riseOfIx, settings.immortality).doAfter(function (deck)
         Helper.shuffleDeck(deck)
         for _, zone in ipairs(ImperiumRow.slotZones) do
             Helper.moveCardFromZone(ImperiumRow.deckZone, zone.getPosition(), Vector(0, 180, 0))

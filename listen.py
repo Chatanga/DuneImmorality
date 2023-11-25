@@ -1,12 +1,15 @@
 #!/usr/bin/python3
 
 import json
+import os
 import re
 import select
 import socket
 import sys
 
 BUFFER_SIZE = 1024
+
+tts_tmp_dir='tmp/scripts.bundled/'
 
 def listen(host, port):
     print('Listening for TTS error messages...')
@@ -103,7 +106,7 @@ def error(message):
 
 def relocate(lineNumber):
     file_origin = 0
-    with open('tts.tmp/Global.-1.ttslua', 'r') as script_file:
+    with open(os.path.join(tts_tmp_dir, 'Global.-1.ttslua'), 'r') as script_file:
         i = 0
         while True:
             line = script_file.readline()
@@ -115,7 +118,7 @@ def relocate(lineNumber):
                 if result:
                     file = result.group(1)
                     if file == '__root':
-                        file = 'scripts/Global.-1.lua'
+                        file = os.path.join('scripts', 'Global.-1.lua')
                     else:
                         file = 'scripts/modules/' + file.replace('.', '/') + '.lua'
                     file_origin = i

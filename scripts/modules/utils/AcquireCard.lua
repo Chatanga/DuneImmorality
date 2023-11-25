@@ -6,17 +6,21 @@ local AcquireCard = Helper.createClass(nil, {
 })
 
 ---
-function AcquireCard.new(zone, snapPointTag, acquire)
+function AcquireCard.new(zone, tag, acquire, cardHeight)
     local acquireCard = Helper.createClassInstance(AcquireCard, {
         zone = zone,
+        cardHeight = cardHeight or 0.01,
         anchor = nil
     })
+
+    assert(#zone.getTags() == 0)
+    zone.addTag(tag)
 
     local position = zone.getPosition() - Vector(0, 0.5, 0)
     Helper.createTransientAnchor("AcquireCard", position).doAfter(function (anchor)
         acquireCard.anchor = anchor
 
-        local snapPoint = Helper.createRelativeSnapPointFromZone(anchor, zone, true, { snapPointTag })
+        local snapPoint = Helper.createRelativeSnapPointFromZone(anchor, zone, true, { tag })
         anchor.setSnapPoints({ snapPoint })
 
         if acquire then
@@ -55,9 +59,10 @@ function AcquireCard.onObjectLeaveScriptingZone(...)
 end
 
 function AcquireCard:_createButton(acquire)
-    local cardCount = Helper.getCardCount(Helper.getDeckOrCard(self.zone))
+    --local cardCount = Helper.getCardCount(Helper.getDeckOrCard(self.zone))
+    local cardCount = #self.zone.getObjects()
     if cardCount > 0 then
-        local height = 0.7 + 0.1 + cardCount * 0.01
+        local height = 0.7 + 0.1 + cardCount * self.cardHeight
         local label = I18N("acquireButton") .. " (" .. tostring(cardCount) .. ")"
         Helper.createAreaButton(self.zone, self.anchor, height, label, function (_, color)
             if not self.disabled then

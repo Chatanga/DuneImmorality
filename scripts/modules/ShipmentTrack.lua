@@ -7,10 +7,10 @@ local TechMarket = Module.lazyRequire("TechMarket")
 
 local ShipmentTrack = {
     initialFreighterPositions = {
-        Yellow = Helper.getHardcodedPositionFromGUID('8fa76f', 8.999592, 0.6503693, 2.85035729),
-        Green = Helper.getHardcodedPositionFromGUID('34281d', 8.449568, 0.6503631, 2.85038328),
-        Blue = Helper.getHardcodedPositionFromGUID('68e424', 7.349551, 0.650360644, 2.85444713),
-        Red = Helper.getHardcodedPositionFromGUID('e9096d', 7.899611, 0.6503637, 2.85325766)
+        Yellow = Helper.getHardcodedPositionFromGUID('8fa76f', 8.999384, 0.689741254, 2.84977412),
+        Green = Helper.getHardcodedPositionFromGUID('34281d', 8.449363, 0.6897417, 2.85018063),
+        Blue = Helper.getHardcodedPositionFromGUID('68e424', 7.34935427, 0.68979913, 2.85444117),
+        Red = Helper.getHardcodedPositionFromGUID('e9096d', 7.899373, 0.6897421, 2.853153)
     }
 }
 
@@ -158,7 +158,7 @@ end
 function ShipmentTrack._pickSolariBonus(color)
     local leader = PlayBoard.getLeader(color)
     leader.resources(color, "solari", 5)
-    for _, otherColor in ipairs(PlayBoard.getPlayBoardColors()) do
+    for _, otherColor in ipairs(PlayBoard.getActivePlayBoardColors()) do
         if otherColor ~= color then
             local otherLeader = PlayBoard.getLeader(otherColor)
             otherLeader.resources(otherColor, "solari", 1)

@@ -8,12 +8,6 @@ local PlayBoard = Module.lazyRequire("PlayBoard")
 local Hagal = Module.lazyRequire("Hagal")
 
 local LeaderSelection = {
-    selectionMethods = {
-        random = "Random",
-        reversePick = "Reverse pick",
-        reverseHiddenPick = "Reverse hidden pick",
-        altHiddenPick = "4·3·1·2 hidden pick"
-    },
     dynamicLeaderSelection = {},
     leaderSelectionPoolSize = 8,
     turnSequence = {},
@@ -30,13 +24,21 @@ function LeaderSelection.onLoad()
 end
 
 ---
-function LeaderSelection.getSelectionMethods()
-    return LeaderSelection.selectionMethods
+function LeaderSelection.getSelectionMethods(numberOfPlayers)
+    local selectionMode = {
+        random = "Random",
+        reversePick = "Reverse pick",
+        reverseHiddenPick = "Reverse hidden pick",
+    }
+    if numberOfPlayers == 4 then
+        selectionMode.altHiddenPick = "4·3·1·2 hidden pick"
+    end
+    return selectionMode
 end
 
 ---
 function LeaderSelection.setUp(settings, opponents, orderedPlayers)
-    Deck.generateLeaderDeck(LeaderSelection.deckZone, settings.riseOfIx, settings.immortality, settings.fanmadeLeaders).doAfter(function (deck)
+    Deck.generateLeaderDeck(LeaderSelection.deckZone, settings.useContracts, settings.riseOfIx, settings.immortality, settings.fanmadeLeaders).doAfter(function (deck)
         local numberOfLeaders = #deck.getObjects()
         local continuation = Helper.createContinuation("LeaderSelection.setUp")
         local count = numberOfLeaders

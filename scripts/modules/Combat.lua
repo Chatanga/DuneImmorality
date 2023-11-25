@@ -76,7 +76,7 @@ end
 ---
 function Combat._staticSetUp(settings)
     Combat.garrisonParks = {}
-    for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
+    for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
         if not PlayBoard.isCommander(color) then
             Combat.garrisonParks[color] = Combat._createGarrisonPark(color)
         end
@@ -84,7 +84,7 @@ function Combat._staticSetUp(settings)
 
     if settings.riseOfIx then
         Combat.dreadnoughtParks = {}
-        for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
+        for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
             if not PlayBoard.isCommander(color) then
                 Combat.dreadnoughtParks[color] = Combat._createDreadnoughtPark(color)
             end
@@ -113,19 +113,22 @@ function Combat._staticSetUp(settings)
             TurnControl.overridePhaseTurnSequence(turnSequence)
             Combat.showRanking(turnSequence, Combat.ranking)
         elseif phase == "recall" then
-            for _, object in ipairs(Combat.victoryPointTokenZone.getObjects()) do
-                if Types.isVictoryPointToken(object) then
-                    MainBoard.trash(object)
+            if Combat.victoryPointTokenZone then
+                for _, object in ipairs(Combat.victoryPointTokenZone.getObjects()) do
+                    if Types.isVictoryPointToken(object) then
+                        MainBoard.trash(object)
+                    end
                 end
             end
-            -- Recalling units (troops and dreadnoughts) in the combat (not in a controlable space).
+            -- Recalling units (troops, dreadnoughts and sandworms) in the combat (not in a controlable space).
             for _, object in ipairs(Combat.combatCenterZone.getObjects()) do
-                for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
+                for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
                     if Types.isTroop(object, color) then
                         Park.putObject(object, PlayBoard.getSupplyPark(color))
                     elseif Types.isDreadnought(object, color) then
-                        --Helper.dump("Recalling", color, "dreadnought")
                         Park.putObject(object, Combat.dreadnoughtParks[color])
+                    elseif Types.isSandworm(object, color) then
+                        object.destruct()
                     end
                 end
             end
@@ -140,7 +143,7 @@ function Combat._staticSetUp(settings)
                 -- Only recall locked controlling dreadnoughts.
                 if dreadnought and dreadnought.getLock() then
                     dreadnought.setLock(false)
-                    for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
+                    for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
                         if dreadnought.hasTag(color) then
                             Park.putObject(dreadnought, Combat.dreadnoughtParks[color])
                         end
@@ -382,7 +385,7 @@ function Combat._calculateRanking(forces)
     while potentialWinnerCount > 0 do
         local rankWinners = {}
         local maxForce = 1
-        for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
+        for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
             if remainingForces[color] then
                 if remainingForces[color] > maxForce then
                     rankWinners = { color }
@@ -415,7 +418,7 @@ end
 function Combat._calculateCombatForces()
     local forces = {}
 
-    for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
+    for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
         local force = 0
         for _, object in ipairs(Combat.combatCenterZone.getObjects()) do
             if Types.isUnit(object, color) then
@@ -446,28 +449,30 @@ function Combat._updateCombatForces(forces)
     local occupations = {}
 
     -- TODO Better having a zone with filtering tags.
-    for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
-        local force = forces[color]
+    for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
+        if not PlayBoard.isCommander(color) then
+            local force = forces[color]
 
-        local minorForce = force > 0 and (force - 1) % 20 + 1 or 0
-        local majorForce = force > 0 and math.floor((force - 1) / 20) or 0
+            local minorForce = force > 0 and (force - 1) % 20 + 1 or 0
+            local majorForce = force > 0 and math.floor((force - 1) / 20) or 0
 
-        occupations[minorForce] = (occupations[minorForce] or 0) + 1
-        local heightOffset = Vector(
-            0,
-            (occupations[minorForce] - 1) * 0.35
-                + math.min(1, majorForce) * 0.30, -- Last part is here because the rotation center for the tokent is not the barycenter.
-            0)
+            occupations[minorForce] = (occupations[minorForce] or 0) + 1
+            local heightOffset = Vector(
+                0,
+                (occupations[minorForce] - 1) * 0.35
+                    + math.min(1, majorForce) * 0.30, -- Last part is here because the rotation center for the tokent is not the barycenter.
+                0)
 
-        local forceMarker = PlayBoard.getContent(color).forceMarker
-        if force > 0 then
-            forceMarker.setPositionSmooth(Combat.combatForcePositions[minorForce] + heightOffset, false, false)
-            forceMarker.setRotationSmooth(Vector(0, 180 + 90 * math.floor(majorForce / 2), 180 * math.min(1, majorForce)))
+            local forceMarker = PlayBoard.getContent(color).forceMarker
+            if force > 0 then
+                forceMarker.setPositionSmooth(Combat.combatForcePositions[minorForce] + heightOffset, false, false)
+                forceMarker.setRotationSmooth(Vector(0, 180 + 90 * math.floor(majorForce / 2), 180 * math.min(1, majorForce)))
 
-            forces[color] = force
-        else
-            forceMarker.setPositionSmooth(Combat.noCombatForcePositions + heightOffset, false, false)
-            forceMarker.setRotationSmooth(Vector(0, 180, 0))
+                forces[color] = force
+            else
+                forceMarker.setPositionSmooth(Combat.noCombatForcePositions + heightOffset, false, false)
+                forceMarker.setRotationSmooth(Vector(0, 180, 0))
+            end
         end
     end
 
@@ -513,11 +518,13 @@ function Combat.gainVictoryPoint(color, name)
         end)
     end
 
-    for _, object in ipairs(Combat.victoryPointTokenZone.getObjects()) do
-        if object.hasTag("victoryPointToken") and Helper.getID(object) == name and not Combat.grantedTokens[object] then
-            Combat.grantedTokens[object] = true
-            PlayBoard.grantScoreToken(color, object)
-            return true
+    if Combat.victoryPointTokenZone then
+        for _, object in ipairs(Combat.victoryPointTokenZone.getObjects()) do
+            if object.hasTag("victoryPointToken") and Helper.getID(object) == name and not Combat.grantedTokens[object] then
+                Combat.grantedTokens[object] = true
+                PlayBoard.grantScoreToken(color, object)
+                return true
+            end
         end
     end
     return false

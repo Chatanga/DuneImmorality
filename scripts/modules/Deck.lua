@@ -20,7 +20,29 @@ local Deck = {
         immortality = {
             duneTheDesertPlanet = Helper.ERASE,
             experimentation = 2,
-        }
+        },
+        emperor = {
+            emperorConvincingArgument = 1,
+            emperorCorrinoMight = 1,
+            emperorCriticalShipments = 1,
+            emperorDemandResults = 1,
+            emperorDevastatingAssault = 1,
+            emperorImperialOrnithopter = 2,
+            emperorSignetRing = 1,
+            emperorSeekAllies = 1,
+            emperorImperialTent = 1,
+        },
+        muadDib = {
+            muadDibCommandRespect = 1,
+            muadDibConvincingArgument = 1,
+            muadDibDemandAttention = 1,
+            muadDibDesertCall = 1,
+            muadDibLimitedLandsraadAccess = 2,
+            muadDibSeekAllies = 1,
+            muadDibUsul = 1,
+            muadDibThreatenSpiceProduction = 1,
+            muadDibSignetRing = 1,
+        },
     },
     imperium = {
         base = {
@@ -184,6 +206,12 @@ local Deck = {
             overthrow = 1,
             steersman = 1,
         },
+        uprisingContract = {
+            cargoRunner = 1,
+            deliveryAgreement = 1,
+            priorityContracts = 1,
+            interstellarTrade = 1,
+        },
     },
     special = {
         base = {
@@ -195,10 +223,6 @@ local Deck = {
             reclaimedForces = 1,
         },
         uprising = {
-            cargoRunner = 1,
-            deliveryAgreement = 1,
-            priorityContracts = 1,
-            interstellarTrade = 1,
             prepareTheWay = 8,
             theSpiceMustFlow = 10,
         },
@@ -578,6 +602,36 @@ function Deck._staticSetUp(settings)
 end
 
 ---
+function Deck.generateObjectiveDeck(deckZone, cardNames)
+    assert(deckZone)
+    local continuation = Helper.createContinuation("Deck.generateObjectiveDeck")
+    Deck._generateDeck("Imperium", deckZone.getPosition(), cardNames, Deck.sources.objective).doAfter(continuation.run)
+    return continuation
+end
+
+---@deprecated
+function Deck._generateObjectiveDeck(deckZone, numberOfPlayers)
+    assert(deckZone)
+    local continuation = Helper.createContinuation("Deck.generateObjectiveDeck")
+
+    local contributions = {
+        muabDibFirstPlayer = 1,
+        crysknife = 1,
+    }
+    if numberOfPlayers == 3 then
+        contributions.ornithopter1to3p = 1
+    elseif numberOfPlayers >= 4 then
+        contributions.muabDib4to6p = 1
+        contributions.crysknife4to6p = 1
+    else
+        error("Unexpected number of players: " .. tostring(numberOfPlayers))
+    end
+
+    Deck._generateDeck("Imperium", deckZone.getPosition(), contributions, Deck.sources.objective).doAfter(continuation.run)
+    return continuation
+end
+
+---
 function Deck.generateStarterDeck(deckZone, immortality, epic)
     assert(deckZone)
     local continuation = Helper.createContinuation("Deck.generateStarterDeck")
@@ -590,6 +644,26 @@ function Deck.generateStarterDeck(deckZone, immortality, epic)
         contributions["duneTheDesertPlanet"] = 1
         contributions["controlTheSpice"] = 1
     end
+    Deck._generateDeck("Imperium", deckZone.getPosition(), contributions, Deck.sources.imperium).doAfter(continuation.run)
+    return continuation
+end
+
+---
+function Deck.generateEmperorStarterDeck(deckZone)
+    assert(deckZone)
+    local continuation = Helper.createContinuation("Deck.generateStarterDeck")
+    local contributionSets = { Deck.starter.emperor }
+    local contributions = Deck._mergeContributionSets(contributionSets)
+    Deck._generateDeck("Imperium", deckZone.getPosition(), contributions, Deck.sources.imperium).doAfter(continuation.run)
+    return continuation
+end
+
+---
+function Deck.generateMuadDibStarterDeck(deckZone)
+    assert(deckZone)
+    local continuation = Helper.createContinuation("Deck.generateStarterDeck")
+    local contributionSets = { Deck.starter.muadDib }
+    local contributions = Deck._mergeContributionSets(contributionSets)
     Deck._generateDeck("Imperium", deckZone.getPosition(), contributions, Deck.sources.imperium).doAfter(continuation.run)
     return continuation
 end
@@ -610,10 +684,13 @@ function Deck.generateStarterDiscard(discardZone, immortality, epic)
 end
 
 ---
-function Deck.generateImperiumDeck(deckZone, ix, immortality)
+function Deck.generateImperiumDeck(deckZone, contracts, ix, immortality)
     assert(deckZone)
     local continuation = Helper.createContinuation("Deck.generateImperiumDeck")
     local contributions = Deck._mergeStandardContributionSets(Deck.imperium, ix, immortality)
+    if contracts then
+        contributions = Deck._mergeContributionSets({ contributions, Deck.imperium.uprisingContract })
+    end
     Deck._generateDeck("Imperium", deckZone.getPosition(), contributions, Deck.sources.imperium).doAfter(continuation.run)
     return continuation
 end
@@ -641,10 +718,13 @@ function Deck.generateTleilaxuDeck(deckZone)
 end
 
 ---
-function Deck.generateIntrigueDeck(deckZone, ix, immortality)
+function Deck.generateIntrigueDeck(deckZone, contracts, ix, immortality)
     assert(deckZone)
     local continuation = Helper.createContinuation("Deck.generateIntrigueDeck")
     local contributions = Deck._mergeStandardContributionSets(Deck.intrigue, ix, immortality)
+    if contracts then
+        contributions = Deck._mergeContributionSets({ contributions, Deck.intrigue.uprisingContract })
+    end
     Deck._generateDeck("Intrigue", deckZone.getPosition(), contributions, Deck.sources.intrigue).doAfter(continuation.run)
     return continuation
 end
@@ -739,10 +819,13 @@ function Deck.generateHagalDeck(deckZone, ix, immortality, playerCount)
 end
 
 ---
-function Deck.generateLeaderDeck(deckZone, ix, immortality, fanmadeLeaders)
+function Deck.generateLeaderDeck(deckZone, contracts, ix, immortality, fanmadeLeaders)
     assert(deckZone)
     local continuation = Helper.createContinuation("Deck.generateLeaderDeck")
     local contributions = Deck._mergeStandardContributionSets(Deck.leaders, ix, immortality)
+    if not contracts then
+        contributions.shaddamCorrino = nil
+    end
     if fanmadeLeaders then
         local locale = I18N.getLocale()
         if locale == 'fr' then
@@ -986,6 +1069,11 @@ end
 function Deck._nextCustomDeckId()
     customDeckBaseId = customDeckBaseId + 1
     return customDeckBaseId
+end
+
+---
+function Deck.createObjectiveCustomDeck(faceUrl, width, height)
+    return Deck._createCustomDeck(objectiveCardBack, faceUrl, width, height, Vector(1, 1, 1))
 end
 
 ---

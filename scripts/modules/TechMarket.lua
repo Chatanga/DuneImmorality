@@ -75,7 +75,7 @@ end
 
 ---
 function TechMarket._staticSetUp()
-    for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
+    for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
         if not PlayBoard.isCommander(color) then
             TechMarket.negotiationParks[color] = TechMarket._createNegotiationPark(color)
         end
@@ -170,7 +170,7 @@ end
 function TechMarket.acquireTech(stackIndex, color)
     if not TechMarket.frozen then
         TechMarket.frozen = true
-        -- Pending continuaton force us to this kind of simplification.
+        -- Pending continuation force us to this kind of simplification.
         Helper.onceTimeElapsed(2).doAfter(function ()
             TechMarket.frozen = false
         end)

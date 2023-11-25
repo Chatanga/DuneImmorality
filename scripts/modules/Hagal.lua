@@ -375,7 +375,7 @@ function Rival.shipments(color, amount)
                 Rival.troops(color, "supply", "garrison", 2)
             end
             Rival.resources(color, "solari", 5)
-            for _, otherColor in ipairs(PlayBoard.getPlayBoardColors()) do
+            for _, otherColor in ipairs(PlayBoard.getActivePlayBoardColors()) do
                 if otherColor ~= color then
                     local otherLeader = PlayBoard.getLeader(otherColor)
                     otherLeader.resources(otherColor, "solari", 1)
