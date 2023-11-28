@@ -15,7 +15,7 @@ local LeaderSelection = {
 
 ---
 function LeaderSelection.onLoad()
-    Helper.append(LeaderSelection, Helper.resolveGUIDs(true, {
+    Helper.append(LeaderSelection, Helper.resolveGUIDs(false, {
         deckZone = "23f2b5",
         secondaryTable = "662ced",
     }))
@@ -38,6 +38,8 @@ end
 
 ---
 function LeaderSelection.setUp(settings, opponents, orderedPlayers)
+    local autoStart = not settings.tweakLeaderSelection
+    LeaderSelection.leaderSelectionPoolSize = settings.defaultLeaderPoolSize
     Deck.generateLeaderDeck(LeaderSelection.deckZone, settings.useContracts, settings.riseOfIx, settings.immortality, settings.fanmadeLeaders).doAfter(function (deck)
         local numberOfLeaders = #deck.getObjects()
         local continuation = Helper.createContinuation("LeaderSelection.setUp")
@@ -60,13 +62,13 @@ function LeaderSelection.setUp(settings, opponents, orderedPlayers)
             if type(settings.leaderSelection) == "table" then
                 LeaderSelection._setUpTest(opponents, settings.leaderSelection)
             elseif settings.leaderSelection == "random" then
-                LeaderSelection._setUpPicking(opponents, numberOfLeaders, true, false)
+                LeaderSelection._setUpPicking(opponents, numberOfLeaders, autoStart, true, false)
             elseif settings.leaderSelection == "reversePick" then
-                LeaderSelection._setUpPicking(opponents, numberOfLeaders, false, false)
+                LeaderSelection._setUpPicking(opponents, numberOfLeaders, autoStart, false, false)
             elseif settings.leaderSelection == "reverseHiddenPick" then
-                LeaderSelection._setUpPicking(opponents, numberOfLeaders, false, true)
+                LeaderSelection._setUpPicking(opponents, numberOfLeaders, autoStart, false, true)
             elseif settings.leaderSelection == "altHiddenPick" then
-                LeaderSelection._setUpPicking(opponents, numberOfLeaders, false, true)
+                LeaderSelection._setUpPicking(opponents, numberOfLeaders,  autoStart, false, true)
             else
                 error(settings.leaderSelection)
             end
@@ -138,7 +140,7 @@ function LeaderSelection._setUpTest(opponents, leaderNames)
 end
 
 ---
-function LeaderSelection._setUpPicking(opponents, numberOfLeaders, random, hidden)
+function LeaderSelection._setUpPicking(opponents, numberOfLeaders, autoStart, random, hidden)
     local fontColor = Color(223/255, 151/255, 48/255)
 
     if hidden then
@@ -206,25 +208,31 @@ function LeaderSelection._setUpPicking(opponents, numberOfLeaders, random, hidde
         font_color = fontColor
     })
 
-    Helper.createAbsoluteButtonWithRoundness(LeaderSelection.secondaryTable, 2, false, {
-        click_function = Helper.registerGlobalCallback(function ()
-            if #LeaderSelection._getVisibleLeaders() >= #Helper.getKeys(opponents) then
-                local visibleLeaders = LeaderSelection._prepareVisibleLeaders(hidden)
-                LeaderSelection._createDynamicLeaderSelection(visibleLeaders, hidden)
-                Helper.clearButtons(LeaderSelection.secondaryTable)
-                TurnControl.start()
-            else
-                error("Not enough leaders left!")
-            end
-        end),
-        label = I18N("start"),
-        position = LeaderSelection.secondaryTable.getPosition() + Vector(0, 1.8, -32),
-        width = 2200,
-        height = 600,
-        font_size = 500,
-        color = fontColor,
-        font_color = { 0, 0, 0, 1 }
-    })
+    local start = function ()
+        if #LeaderSelection._getVisibleLeaders() >= #Helper.getKeys(opponents) then
+            local visibleLeaders = LeaderSelection._prepareVisibleLeaders(hidden)
+            LeaderSelection._createDynamicLeaderSelection(visibleLeaders, hidden)
+            Helper.clearButtons(LeaderSelection.secondaryTable)
+            TurnControl.start()
+        else
+            error("Not enough leaders left!")
+        end
+    end
+
+    if autoStart then
+        start()
+    else
+        Helper.createAbsoluteButtonWithRoundness(LeaderSelection.secondaryTable, 2, false, {
+            click_function = Helper.registerGlobalCallback(start),
+            label = I18N("start"),
+            position = LeaderSelection.secondaryTable.getPosition() + Vector(0, 1.8, -32),
+            width = 2200,
+            height = 600,
+            font_size = 500,
+            color = fontColor,
+            font_color = { 0, 0, 0, 1 }
+        })
+    end
 
     if random then
         Helper.registerEventListener("playerTurns", function (phase, color)

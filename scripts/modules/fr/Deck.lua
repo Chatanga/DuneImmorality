@@ -1,9 +1,14 @@
 local Helper = require("utils.Helper")
 
 local Deck = {
+    objective = {
+        uprisingObjective = { "http://cloud-3.steamusercontent.com/ugc/2305342013587727376/31449D20F329E25D1674B822346A5A8EEE052D71/", 3, 2 },
+    },
     imperium = {
         -- starter without dune planet
         starter = { "http://cloud-3.steamusercontent.com/ugc/2093667512238503531/D25AA65312D89EB7CEED36D451618E731A674BED/", 4, 2 },
+        starterImperium_emperor = { "http://cloud-3.steamusercontent.com/ugc/2305342013587708486/6C2EBDBB0DA2CBC4EBE3C91970F4A6C66C4225FD/", 5, 2 },
+        starterImperium_muadDib = { "http://cloud-3.steamusercontent.com/ugc/2305342013587708940/56225166A2ED9BD37EF06E0F83EEC329A35DB1CD/", 5, 2 },
         -- dune planet
         starterDunePlanet = { "http://cloud-3.steamusercontent.com/ugc/2093667512238502926/98F5861E28F3167495D3F2890879072BF3A84E60/", 2, 2 },
         -- base without foldspace, nor liasion, nor the spice must flow, but with Jessica of Arrakis and Duncan Loyal Blade
@@ -23,20 +28,29 @@ local Deck = {
         tleilaxResearch = { "http://cloud-3.steamusercontent.com/ugc/2093667512238501306/639814906915DFA557375A3F7963C9DE53301D57/", 4, 5 },
         -- reclaimed forces
         tleilaxResearchReclaimedForces = { "http://cloud-3.steamusercontent.com/ugc/2093667512238501804/60812AEA733FF5558BA9190E47CBD474EBF38C94/", 1, 1 },
+        uprisingImperium = { "http://cloud-3.steamusercontent.com/ugc/2305342013584422068/208B1B1326B5A629C98BE345C9470D5AE5F4863A/", 10, 7 },
+        uprisingImperium_contract = { "http://cloud-3.steamusercontent.com/ugc/2305342013584421150/FBCA07DDFF6DCE128A065CFFF0B8364EE92EC156/", 2, 2 },
+        uprisingImperium_prepareTheWay = { "http://cloud-3.steamusercontent.com/ugc/2305342013584438654/4C366D975FAA25147144770955A7EBA0EFE6117B/", 4, 2 },
+        uprisingImperium_theSpiceMustFlow = { "http://cloud-3.steamusercontent.com/ugc/2305342013584443088/35C76D798308EEA5D9BF50DB3F8B2E3159B14AF9/", 5, 2 },
     },
     intrigue = {
         intrigue = { "http://cloud-3.steamusercontent.com/ugc/2093667512238521654/13659DD01D152A8B8055B894B247CB1D254D3752/", 8, 5 },
         ixIntrigue = { "http://cloud-3.steamusercontent.com/ugc/2093667512238520112/3D33B3E59811CEDC64A53F104D31190E76676C64/", 5, 4 },
         immortalityIntrigue = { "http://cloud-3.steamusercontent.com/ugc/2093667512238520919/83BA634F05FC7A14933153A18B7AEF83E07E3C14/", 6, 3 },
+        uprisingIntrigue = { "http://cloud-3.steamusercontent.com/ugc/2305342013595938894/099FFE5EDD43C0E39212970D0A4FDBA12CC729BF/", 10, 4 },
+        uprisingIntrigue_contract = { "http://cloud-3.steamusercontent.com/ugc/2305342013584425562/BFDA5F7ABDF2A97F17019C1715DE0F41BF2BF649/", 2 , 2 },
     },
     conflict1 = {
         conflict = { "http://cloud-3.steamusercontent.com/ugc/2093667512238536892/F1C0913A589ADB0A0532DFB8FAA7E9D7942CF6CB/", 3, 2 },
+        uprisingConflict = { "http://cloud-3.steamusercontent.com/ugc/2305342013587685602/288CBFF505CD4CE7E283BF2158A816517DD365C1/", 2, 2 },
     },
     conflict2 = {
         conflict = { "http://cloud-3.steamusercontent.com/ugc/2093667512238537279/B1CD3F41933A9DD44522934B5F6CF3C5FF77A51C/", 6, 2 },
+        uprisingConflict = { "http://cloud-3.steamusercontent.com/ugc/2305342013587685809/D5CD3A18CBB9DCE0C305AE999213B504F5F3890D/", 5, 2 },
     },
     conflict3 = {
         conflict = { "http://cloud-3.steamusercontent.com/ugc/2093667512238537756/F1BEAE6266E75B7A2F5DE511DB4FEB25A2CD486B/", 3, 2 },
+        uprisingConflict = { "http://cloud-3.steamusercontent.com/ugc/2305342013587686145/AB1D6A865796D30CD1035C9DEB28002091881B14/", 2, 2 },
     },
     hagal = {
         hagal = { "http://cloud-3.steamusercontent.com/ugc/2093668799785647713/66020C11E4FEA2D22744020D27465DCC2BB02BBE/", 7, 2 },
@@ -72,20 +86,32 @@ local Deck = {
         restrictedOrdnance = { "http://cloud-3.steamusercontent.com/ugc/2093667512238535614/80CE99F45AED6EF9A249C9BF13E03458D633E8E4/", 1, 1 },
     },
     leader = {
-        yunaMoritani = { "http://cloud-3.steamusercontent.com/ugc/2093667512238500769/CDAED205706CD8E32700B8A56C9BD387C5D72696/", 1, 1 },
-        hundroMoritani = { "http://cloud-3.steamusercontent.com/ugc/2093667512238499395/A64F2D77C6F482F31B12EC97C2DEEBBDF45AF3F9/", 1, 1 },
-        memnonThorvald = { "http://cloud-3.steamusercontent.com/ugc/2093667512238496955/36DB26EE194B780C9C879C74FC634C15433CE06A/", 1, 1 },
-        arianaThorvald = { "http://cloud-3.steamusercontent.com/ugc/2093667512238497102/3C1CA2B3506FB7AD8B1B40DB1414F7461F6974C8/", 1, 1 },
-        ilesaEcaz = { "http://cloud-3.steamusercontent.com/ugc/2093667512238497232/7A0FCC4CA1D0CAF19C8066776DC23A9631000997/", 1, 1 },
-        armandEcaz = { "http://cloud-3.steamusercontent.com/ugc/2093667512238498599/98401D1D00D15DB3512E48BBD63B9922EE17EF71/", 1, 1 },
-        paulAtreides = { "http://cloud-3.steamusercontent.com/ugc/2093667512238499852/008429F21B2898E4C2982EC7FB1AF422FDD85E24/", 1, 1 },
-        letoAtreides = { "http://cloud-3.steamusercontent.com/ugc/2093667512238500640/152B626A2D773B224CFFF878E35CEFDBB6F67505/", 1, 1 },
-        tessiaVernius = { "http://cloud-3.steamusercontent.com/ugc/2093667512238499203/6C34345ADF23EBD567DE0EE662B4920906F721F0/", 1, 1 },
-        rhomburVernius = { "http://cloud-3.steamusercontent.com/ugc/2093667512238497351/58A6CF3EB6EBDEAC4B5826C0D21408A3CC02E678/", 1, 1 },
         glossuRabban = { "http://cloud-3.steamusercontent.com/ugc/2093667512238498462/68A9DE7E06DA5857EE51ECB978E13E3921A15B1A/", 1, 1 },
         vladimirHarkonnen = { "http://cloud-3.steamusercontent.com/ugc/2093667512238497473/6F682C5E5C1ADE0B9B1B8FAC80B9525A6748C351/", 1, 1 },
+        memnonThorvald = { "http://cloud-3.steamusercontent.com/ugc/2093667512238496955/36DB26EE194B780C9C879C74FC634C15433CE06A/", 1, 1 },
+        arianaThorvald = { "http://cloud-3.steamusercontent.com/ugc/2093667512238497102/3C1CA2B3506FB7AD8B1B40DB1414F7461F6974C8/", 1, 1 },
+        paulAtreides = { "http://cloud-3.steamusercontent.com/ugc/2093667512238499852/008429F21B2898E4C2982EC7FB1AF422FDD85E24/", 1, 1 },
+        letoAtreides = { "http://cloud-3.steamusercontent.com/ugc/2093667512238500640/152B626A2D773B224CFFF878E35CEFDBB6F67505/", 1, 1 },
         ilbanRichese = { "http://cloud-3.steamusercontent.com/ugc/2093667512238498742/F0F052CCAB7005F4D30879BF639AFACEDFF70A80/", 1, 1 },
         helenaRichese = { "http://cloud-3.steamusercontent.com/ugc/2093667512238499726/A069B3ECF1B4E9C42D2453E28EA13257F397B3F3/", 1, 1 },
+        -- Ix
+        yunaMoritani = { "http://cloud-3.steamusercontent.com/ugc/2093667512238500769/CDAED205706CD8E32700B8A56C9BD387C5D72696/", 1, 1 },
+        hundroMoritani = { "http://cloud-3.steamusercontent.com/ugc/2093667512238499395/A64F2D77C6F482F31B12EC97C2DEEBBDF45AF3F9/", 1, 1 },
+        ilesaEcaz = { "http://cloud-3.steamusercontent.com/ugc/2093667512238497232/7A0FCC4CA1D0CAF19C8066776DC23A9631000997/", 1, 1 },
+        armandEcaz = { "http://cloud-3.steamusercontent.com/ugc/2093667512238498599/98401D1D00D15DB3512E48BBD63B9922EE17EF71/", 1, 1 },
+        tessiaVernius = { "http://cloud-3.steamusercontent.com/ugc/2093667512238499203/6C34345ADF23EBD567DE0EE662B4920906F721F0/", 1, 1 },
+        rhomburVernius = { "http://cloud-3.steamusercontent.com/ugc/2093667512238497351/58A6CF3EB6EBDEAC4B5826C0D21408A3CC02E678/", 1, 1 },
+        -- uprising
+        stabanTuek = { "http://cloud-3.steamusercontent.com/ugc/2305342013588634387/C1C83545F676ACDC3C63577BED070BD80ABADEED/", 1, 1 },
+        amberMetulli = { "http://cloud-3.steamusercontent.com/ugc/2305342013587700294/CD03E06EFC734492D344B04C385FEF43DC2DF173/", 1, 1 },
+        gurneyHalleck = { "http://cloud-3.steamusercontent.com/ugc/2305342013587699512/09C5E2F178B9F48ED577C7E74FC58C53D7698D7D/", 1, 1 },
+        margotFenring = { "http://cloud-3.steamusercontent.com/ugc/2305342013587700118/A3381C2EF2869950BD00E6AE7ADB5B662F883764/", 1, 1 },
+        irulanCorrino = { "http://cloud-3.steamusercontent.com/ugc/2305342013587699637/5D95D6143B4407029C8665AF8E10B20634FEE3A3/", 1, 1 },
+        reverendMotherJessica = { "http://cloud-3.steamusercontent.com/ugc/2305342013587699895/171F9173728A3E031830C1AF989B9B0BAFAA5DAF/", 1, 1 },
+        jessicaAtreides = { "http://cloud-3.steamusercontent.com/ugc/2305342013587699760/4CB1D17A9AA19831A1C2925FB431DCFDA1EE10B8/", 1, 1 },
+        feydRauthaHarkonnen = { "http://cloud-3.steamusercontent.com/ugc/2305342013587699389/996AAC7E5AC098A6804153865E8116754B19DDDB/", 1, 1 },
+        shaddamCorrino = { "http://cloud-3.steamusercontent.com/ugc/2305342013587701053/D307B7C2139EC0E0B999900940DC6F5827EB68A8/", 1, 1 },
+        muadDib = { "http://cloud-3.steamusercontent.com/ugc/2305342013587700874/BA1804DF868BF77175777B0FB5B1D109B46E13A9/", 1, 1 },
     },
 }
 
@@ -112,6 +138,7 @@ end
 ---
 function Deck.loadCustomDecks(loader)
     local cards = {
+        objective = {},
         imperium = {},
         special = {},
         tleilaxu = {},
@@ -121,6 +148,14 @@ function Deck.loadCustomDecks(loader)
         tech = {},
         leaders = {}
     }
+
+    Deck.load(loader, cards.objective, "objective", "uprisingObjective", 1, {
+        "ornithopter1to3p",
+        "muabDibFirstPlayer",
+        "crysknife",
+        "muabDib4to6p",
+        "crysknife4to6p",
+    })
 
     Deck.load(loader, cards.imperium, "imperium", "starter", 1, {
         "seekAllies",
@@ -132,6 +167,28 @@ function Deck.loadCustomDecks(loader)
     })
     Deck.load(loader, cards.imperium, "imperium", "starterDunePlanet", 1, {
         "duneTheDesertPlanet",
+    })
+    Deck.load(loader, cards.imperium, "imperium", "starterImperium_emperor", 1, {
+        "emperorConvincingArgument",
+        "emperorCorrinoMight",
+        "emperorCriticalShipments",
+        "emperorDemandResults",
+        "emperorDevastatingAssault",
+        "emperorImperialOrnithopter", "",
+        "emperorSignetRing",
+        "emperorSeekAllies",
+        "emperorImperialTent",
+    })
+    Deck.load(loader, cards.imperium, "imperium", "starterImperium_muadDib", 1, {
+        "muadDibCommandRespect",
+        "muadDibConvincingArgument",
+        "muadDibDemandAttention",
+        "muadDibDesertCall",
+        "muadDibLimitedLandsraadAccess", "",
+        "muadDibSeekAllies",
+        "muadDibUsul",
+        "muadDibThreatenSpiceProduction",
+        "muadDibSignetRing",
     })
     Deck.load(loader, cards.imperium, "imperium", "imperium", 1, {
         "opulence",
@@ -272,6 +329,67 @@ function Deck.loadCustomDecks(loader)
         "usurp",
     })
 
+    Deck.load(loader, cards.imperium, "imperium", "uprisingImperium", 1, {
+        "unswervingLoyalty", "",
+        "spaceTimeFolding",
+        "weirdingWoman", "",
+        "sardaukarSoldier",
+        "smugglerHarvester", "",
+        "makerKeeper", "",
+        "reliableInformant",
+        "hiddenMissive",
+        "wheelsWithinWheels",
+        "fedaykinStilltent",
+        "imperialSpymaster",
+        "spyNetwork",
+        "desertSurvival", "",
+        "undercoverAsset",
+        "beneGesseritOperative", "",
+        "maulaPistol", "",
+        "thumper",
+        "nothernWatermaster",
+        "covertOperation",
+        "doubleAgent", "",
+        "guildEnvoy",
+        "rebelSupplier", "",
+        "calculusOfPower", "",
+        "guildSpy",
+        "dangerousRhetoric",
+        "branchingPath",
+        "ecologicalTestingStation",
+        "theBeastSpoils",
+        "smugglerHaven",
+        "shishakli",
+        "paracompass",
+        "sardaukarCoordination", "",
+        "truthtrance", "",
+        "publicSpectable", "",
+        "southernElders",
+        "treadInDarkness", "",
+        "spacingGuildFavor", "",
+        "capturedMentat",
+        "subversiveAdvisor",
+        "leadership",
+        "inHighPlaces",
+        "strikeFleet",
+        "trecherousManeuver",
+        "chaniCleverTactician",
+        "junctionHeadquarters",
+        "corrinthCity",
+        "stilgarTheDevoted",
+        "desertPower",
+        "arrakisRevolt",
+        "priceIsNoObject",
+        "longLiveTheFighters",
+        "overthrow",
+        "steersman",
+    })
+    Deck.load(loader, cards.imperium, "imperium", "uprisingImperium_contract", 1, {
+        "cargoRunner",
+        "deliveryAgreement",
+        "priorityContracts",
+        "interstellarTrade",
+    })
     Deck.load(loader, cards.special, "imperium", "imperiumFoldedSpace", 1, {
         "foldspace",
         -- +5
@@ -283,6 +401,12 @@ function Deck.loadCustomDecks(loader)
     Deck.load(loader, cards.special, "imperium", "imperiumTheSpiceMustFlow", 1, {
         "theSpiceMustFlow",
         -- +9
+    })
+    Deck.load(loader, cards.special, "imperium", "uprisingImperium_prepareTheWay", 8, {
+        "prepareTheWay",
+    })
+    Deck.load(loader, cards.special, "imperium", "uprisingImperium_theSpiceMustFlow", 10, {
+        "theSpiceMustFlow",
     })
     Deck.load(loader, cards.special, "imperium", "tleilaxResearchReclaimedForces", 11, {
         "reclaimedForces",
@@ -357,6 +481,49 @@ function Deck.loadCustomDecks(loader)
         "viciousTalents",
         -- +4
     })
+    Deck.load(loader, cards.intrigue, "intrigue", "uprisingIntrigue", 1, {
+        "sietchRitual",
+        "mercenaries",
+        "councilorAmbition",
+        "strategicStockpiling",
+        "detonation", "",
+        "departForArrakis",
+        "cunning",
+        "opportunism",
+        "changeAllegiances",
+        "specialMission", "",
+        "unexpectedAllies",
+        "callToArms",
+        "buyAccess",
+        "imperiumPolitics",
+        "shaddamFavor",
+        "intelligenceReport",
+        "manipulate",
+        "distraction", "",
+        "marketOpportunity",
+        "goToGround",
+        "contingencyPlan", "", "",
+        "inspireAwe",
+        "findWeakness",
+        "spiceIsPower",
+        "devour",
+        "impress",
+        "springTheTrap",
+        "weirdingCombat",
+        "tacticalOption",
+        "questionableMethods",
+        "desertMouse",
+        "ornithopter",
+        "crysknife",
+        "shadowAlliance",
+        "secureSpiceTrade",
+    })
+    Deck.load(loader, cards.intrigue, "intrigue", "uprisingIntrigue_contract", 1, {
+        "leverage",
+        "backedByChoam",
+        "reachAgreement",
+        "choamProfits",
+    })
 
     Deck.load(loader, cards.conflict, "conflict1", "conflict", 1, {
         "skirmishA",
@@ -365,6 +532,11 @@ function Deck.loadCustomDecks(loader)
         "skirmishD",
         "skirmishE",
         "skirmishF"
+    })
+    Deck.load(loader, cards.conflict, "conflict1", "uprisingConflict", 1, {
+        "skirmishG",
+        "skirmishH",
+        "skirmishI",
     })
     Deck.load(loader, cards.conflict, "conflict2", "conflict", 1, {
         "desertPower",
@@ -379,12 +551,29 @@ function Deck.loadCustomDecks(loader)
         "secureImperialBasin",
         "tradeMonopoly"
     })
+    Deck.load(loader, cards.conflict, "conflict2", "uprisingConflict", 1, {
+        "choamSecurity",
+        "spiceFreighters",
+        "siegeOfArrakeenNew",
+        "seizeSpiceRefinery",
+        "testOfLoyalty",
+        "shadowContest",
+        "secureImperialBasinNew",
+        "protectTheSietches",
+        "tradeDispute",
+    })
     Deck.load(loader, cards.conflict, "conflict3", "conflict", 1, {
         "battleForImperialBasin",
         "grandVision",
         "battleForCarthag",
         "battleForArrakeen",
         "economicSupremacy"
+    })
+    Deck.load(loader, cards.conflict, "conflict3", "uprisingConflict", 1, {
+        "propaganda",
+        "battleForImperialBasinNew",
+        "battleForArrakeenNew",
+        "battleForSpiceRefinery",
     })
 
     Deck.load(loader, cards.hagal, "hagal", "hagal", 1, {

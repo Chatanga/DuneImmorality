@@ -41,7 +41,7 @@ local Rival = Helper.createClass(Action, {
 
 ---
 function Hagal.onLoad(state)
-    Helper.append(Hagal, Helper.resolveGUIDs(true, {
+    Helper.append(Hagal, Helper.resolveGUIDs(false, {
         deckZone = "8f49e3",
     }))
 

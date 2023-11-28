@@ -43,6 +43,7 @@ function TurnControl.onLoad(state)
 end
 
 function TurnControl.onSave(state)
+    --Helper.dumpFunction("TurnControl.onSave")
     state.TurnControl = {
         players = TurnControl.players,
         scoreGoal = TurnControl.scoreGoal,
@@ -59,12 +60,10 @@ end
 
 --- Initialize the turn system with the provided players (or all the seated players) and start a new round.
 function TurnControl.setUp(settings, _, players)
-    Turns.enable = true
-    Turns.type = 1
-
     TurnControl.players = players
     TurnControl.scoreGoal = settings.epicMode and 12 or 10
 
+    Helper.dump("settings.numberOfPlayers", settings.numberOfPlayers)
     if settings.numberOfPlayers == 1 then
         for i, player in ipairs(players) do
             if PlayBoard.isHuman(player) then
@@ -88,8 +87,6 @@ function TurnControl.setUp(settings, _, players)
             TurnControl.firstPlayerLuaIndex = math.random(#TurnControl.players)
             firstPlayer = TurnControl.players[TurnControl.firstPlayerLuaIndex]
         until not PlayBoard.isCommander(firstPlayer)
-        Helper.dump("firstPlayer =", firstPlayer)
-
         TurnControl._assignObjectives()
     end
 end
@@ -143,12 +140,16 @@ function TurnControl._assignObjectives()
     end
 
     local intrigueDiscard = getObjectFromGUID("80642b")
+    assert(intrigueDiscard)
     Deck.generateObjectiveDeck(intrigueDiscard, cardNames).doAfter(function (deck)
-        for _, color in ipairs(TurnControl.players) do
-            if not PlayBoard.isCommander(color) then
-                PlayBoard.giveObjectiveCardFromZone(color, intrigueDiscard)
+        assert(Helper.getDeckOrCard(intrigueDiscard) == deck)
+        Helper.onceTimeElapsed(3).doAfter(function ()
+            for _, color in ipairs(TurnControl.players) do
+                if not PlayBoard.isCommander(color) then
+                    PlayBoard.giveObjectiveCardFromZone(color, intrigueDiscard)
+                end
             end
-        end
+        end)
     end)
 end
 
@@ -187,8 +188,7 @@ end
 
 ---
 function TurnControl.overridePhaseTurnSequence(turnSequence)
-    log("TurnControl.overridePhaseTurnSequence:")
-    log(turnSequence)
+    --Helper.dumpFunction("TurnControl.overridePhaseTurnSequence:", turnSequence)
     TurnControl.customTurnSequence = {}
     for _, color in ipairs(turnSequence) do
         for playerLuaIndex, otherColor in ipairs(TurnControl.players) do
@@ -256,14 +256,10 @@ function TurnControl._startPhase(phase)
 end
 
 ---
-function TurnControl.onPlayerTurn(player, previousPlayer)
-    local currentPlayer = TurnControl.getCurrentPlayer()
+function TurnControl.onPlayerTurn(player, _)
     local playerColor = player and player.color
-    if currentPlayer ~= playerColor then
-        Helper.dump("Inconsistent onPlayerTurn:", currentPlayer, "~=", playerColor or "nil")
-        --TurnControl.endOfTurn()
-    else
-        Helper.dump("Consistent onPlayerTurn:", currentPlayer)
+    if #Turns.order > 1 then
+        Turns.order = { playerColor }
     end
 end
 
@@ -300,13 +296,14 @@ end
 
 ---
 function TurnControl._next(startPlayerLuaIndex)
-    --Helper.dumpFunction("TurnControl._next", startPlayerLuaIndex)
     TurnControl.currentPlayerLuaIndex = TurnControl._findActivePlayer(startPlayerLuaIndex)
     if TurnControl.currentPlayerLuaIndex then
         local playerColor = TurnControl.players[TurnControl.currentPlayerLuaIndex]
         local player = Helper.findPlayerByColor(playerColor)
         if player and player.seated then
             Turns.turn_color = playerColor
+            -- Prevent any change trough the TTS built-in turn button.
+            Turns.order = { playerColor }
         end
         Helper.dump(">> Turn:", playerColor)
         Helper.emitEvent("playerTurns", TurnControl.currentPhase, playerColor)

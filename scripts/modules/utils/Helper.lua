@@ -310,8 +310,8 @@ end
 function Helper.getDeckOrCard(zone)
     assert(zone)
     assert(type(zone) ~= 'string', tostring(zone) .. ' looks like a GUID, not a zone')
-    for _, object in ipairs(zone.getObjects()) do
-        if not object.held_by_color and (object.type == "Card" or object.type == "Deck") then
+    for _, object in ipairs(zone.getObjects(true)) do
+        if object.type and not object.held_by_color and (object.type == "Card" or object.type == "Deck") then
             return object
         end
     end
@@ -448,7 +448,7 @@ function Helper.destroyTransientObjects()
             count = count + 1
         end
     end
-    -- log("Destroyed " .. tostring(count) .. " anchors.")
+    --log("Destroyed " .. tostring(count) .. " anchors.")
 end
 
 -- *** Snapoints and anchored buttons ***
@@ -1210,23 +1210,25 @@ end
 ---
 function Helper.createCoalescentQueue(separationDelay, coalesce, handle)
     local cq = {
-        separationDelay = separationDelay,
-        continuation = nil
+        separationDelay = separationDelay or 1,
     }
 
     function cq.handleLater()
+        assert(cq.lastEvent)
         if cq.delayedHandler then
             Wait.stop(cq.delayedHandler)
+            cq.delayedHandler = nil
             cq.continuation.cancel()
         end
         cq.continuation = Helper.createContinuation("Helper.createCoalescentQueue")
-        cq.delayedHandler = Wait.time(cq.continuation.run, 1)
         cq.continuation.doAfter(function()
             assert(cq.lastEvent)
+            cq.delayedHandler = nil
             local event = cq.lastEvent
             cq.lastEvent = nil
             handle(event)
         end)
+        cq.delayedHandler = Wait.time(cq.continuation.run, cq.separationDelay)
     end
 
     function cq.submit(event)
@@ -1243,6 +1245,18 @@ function Helper.createCoalescentQueue(separationDelay, coalesce, handle)
             cq.lastEvent = event
         end
         cq.handleLater()
+    end
+
+    function cq.flush()
+        if cq.delayedHandler then
+            assert(cq.lastEvent)
+            Wait.stop(cq.delayedHandler)
+            cq.delayedHandler = nil
+            cq.continuation.cancel()
+            local event = cq.lastEvent
+            cq.lastEvent = nil
+            handle(event)
+        end
     end
 
     return cq
@@ -1493,7 +1507,7 @@ function Helper.dump(...)
         if i > 1 then
             str = str .. " "
         end
-        str = str .. Helper.toString(element or "<nil>")
+        str = str .. Helper.toString(element ~= nil and element or "<nil>")
     end
     log(str)
 end
@@ -1539,7 +1553,7 @@ end
 
 ---
 function Helper.toString(object)
-    if object then
+    if object ~= nil then
         if type(object) == "table" then
             local str
             if #object > 0 then

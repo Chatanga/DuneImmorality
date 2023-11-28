@@ -10,6 +10,8 @@ local TechMarket = Module.lazyRequire("TechMarket")
 local Combat = Module.lazyRequire("Combat")
 local Hagal = Module.lazyRequire("Hagal")
 local Resource = Module.lazyRequire("Resource")
+local Action = Module.lazyRequire("Action")
+local TurnControl = Module.lazyRequire("TurnControl")
 
 local MainBoard = {}
 
@@ -64,7 +66,7 @@ end
 
 ---
 function MainBoard.onLoad(state)
-    Helper.append(MainBoard, Helper.resolveGUIDs(true, {
+    Helper.append(MainBoard, Helper.resolveGUIDs(false, {
         board = "21cc52", -- 4P: "483a1a", 6P: "21cc52"
         emperorBoard = "4cb9ba",
         fremenBoard = "01c575",
@@ -122,15 +124,16 @@ function MainBoard.onLoad(state)
             end
         end
 
-        MainBoard._staticSetUp(state.MainBoard.settings)
+        MainBoard._staticSetUp(state.settings)
     end
 end
 
 ---
 function MainBoard.onSave(state)
+    --Helper.dumpFunction("MainBoard.onSave")
     if state.settings then
         state.MainBoard = {
-            spiceBonuses = Helper.mapValue(MainBoard.spiceBonuses, function (resource)
+            spiceBonuses = Helper.map(MainBoard.spiceBonuses, function (_, resource)
                 return resource:get()
             end),
         }
@@ -144,8 +147,11 @@ function MainBoard.setUp(settings)
     else
         MainBoard.board.setState(1)
         MainBoard.emperorBoard.destruct()
+        MainBoard.emperorBoard = nil
         MainBoard.fremenBoard.destruct()
+        MainBoard.fremenBoard = nil
         MainBoard.spiceBonusTokens.habbanyaErg.destruct()
+        MainBoard.spiceBonusTokens.habbanyaErg = nil
     end
 
     MainBoard._staticSetUp(settings)
@@ -356,7 +362,11 @@ function MainBoard._createSpaceButton(space)
 
         local tooltip = I18N("sendAgentTo", { space = I18N(space.name)})
         Helper.createAreaButton(space.zone, anchor, 0.7, tooltip, PlayBoard.withLeader(function (leader, color, _)
-            leader.sendAgent(color, space.name)
+            if TurnControl.getCurrentPlayer() == color then
+                leader.sendAgent(color, space.name)
+            else
+                broadcastToColor(I18N('noYourTurn'), color, "Purple")
+            end
         end))
     end)
 end
@@ -415,9 +425,9 @@ function MainBoard.sendAgent(color, spaceName)
         local agentPark = PlayBoard.getAgentPark(color)
         if asyncAction then
             Helper.emitEvent("agentSent", color, spaceName)
-            log("BEGIN asyncAction: " .. asyncActionName)
+            Action.setContext("agentSent", spaceName)
             asyncAction(color, leader).doAfter(function (success)
-                log("END asyncAction: " .. asyncActionName)
+                Action.setContext("agentSent", nil)
                 if success then
                     Park.transfert(1, agentPark, parentSpace.park)
                     continuation.run(true)
@@ -427,10 +437,9 @@ function MainBoard.sendAgent(color, spaceName)
             end)
         elseif action then
             Helper.emitEvent("agentSent", color, spaceName)
-            log("BEGIN action: " .. actionName)
+            Action.setContext("agentSent", spaceName)
             if action(color, leader) then
-                log("END action: " .. actionName)
-                --log("Park.transfert(1, agentPark, parentSpace.park)")
+                Action.setContext("agentSent", nil)
                 Park.transfert(1, agentPark, parentSpace.park)
                 continuation.run(true)
             else
@@ -645,7 +654,7 @@ end
 
 ---
 function MainBoard._goShipping(color, leader)
-    if leader.resources(color, "spice", 3) then
+    if leader.resources(color, "spice", -3) then
         leader.resources(color, "solari", 5)
         return true
     else

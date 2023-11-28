@@ -26,7 +26,7 @@ local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
     "7011f2",
     "2a8414",
 
-    Swordmaster bonuse
+    Swordmaster bonuses
 
     Red     db91e0
     Green   f5bfa8
@@ -88,6 +88,7 @@ local PlayBoard = Helper.createClass(nil, {
             },
             forceMarker = '2d1d17',
             trash = "ea3fe1",
+            completedContractBag = "ce13d1",
             tleilaxToken = "2bfc39",
             tleilaxTokenInitalPosition = Helper.getHardcodedPositionFromGUID('2bfc39', 0.542932034, 0.882152, 22.0543556),
             researchToken = "39e0f3",
@@ -147,6 +148,7 @@ local PlayBoard = Helper.createClass(nil, {
             },
             forceMarker = 'f22e20',
             trash = "52a539",
+            completedContractBag = "f67091",
             tleilaxToken = "96607f",
             tleilaxTokenInitalPosition = Helper.getHardcodedPositionFromGUID('96607f', 0.5425504, 0.884651959, 22.75358),
             researchToken = "292658",
@@ -206,6 +208,7 @@ local PlayBoard = Helper.createClass(nil, {
             },
             forceMarker = 'a1a9a7',
             trash = "4060b5",
+            completedContractBag = "e48304",
             tleilaxToken = "63d39f",
             tleilaxTokenInitalPosition = Helper.getHardcodedPositionFromGUID('63d39f', 1.24582708, 0.8846519, 22.04864),
             researchToken = "658b17",
@@ -265,6 +268,7 @@ local PlayBoard = Helper.createClass(nil, {
             },
             forceMarker = 'c2dd31',
             trash = "7d1e07",
+            completedContractBag = "04d334",
             tleilaxToken = "d20bcf",
             tleilaxTokenInitalPosition = Helper.getHardcodedPositionFromGUID('d20bcf', 1.2472316, 0.8846521, 22.7536983),
             researchToken = "8988cf",
@@ -301,6 +305,7 @@ local PlayBoard = Helper.createClass(nil, {
             councilToken = "ded786",
             scoreMarker = "974cdf",
             trash = "a4f139",
+            completedContractBag = "98c18d",
             firstPlayerMarkerZone = "f4c962",
             firstPlayerPosition = Helper.getHardcodedPositionFromGUID('f4c962', -13.6, 1.7, 1.7) + Vector(0, -0.4, 0),
             startEndTurnButton = "8d70a4",
@@ -331,6 +336,7 @@ local PlayBoard = Helper.createClass(nil, {
             councilToken = "8c6ba7",
             scoreMarker = "612a60",
             trash = "556139",
+            completedContractBag = "49dedf",
             firstPlayerMarkerZone = "7a8ea9",
             firstPlayerPosition = Helper.getHardcodedPositionFromGUID('7a8ea9', 13.58, 1.7, 1.7) + Vector(0, -0.4, 0),
             startEndTurnButton = "eded7c",
@@ -670,16 +676,19 @@ end
 
 ---
 function PlayBoard.onSave(state)
-    state.PlayBoard =
-        Helper.map(PlayBoard.playBoards, function (color, playBoard)
-            local resourceValues = {}
-            for _, resourceName in ipairs(PlayBoard.ALL_RESOURCE_NAMES) do
-                if playBoard[resourceName] then
-                    resourceValues[resourceName] = playBoard[resourceName]:get()
-                end
+    --Helper.dumpFunction("PlayBoard.onSave")
+    state.PlayBoard = Helper.map(PlayBoard.playBoards, function (color, playBoard)
+        local resourceValues = {}
+        for _, resourceName in ipairs(PlayBoard.ALL_RESOURCE_NAMES) do
+            if playBoard[resourceName] then
+                resourceValues[resourceName] = playBoard[resourceName]:get()
             end
-            return resourceValues
-        end)
+        end
+        return {
+            opponent = playBoard.opponent,
+            resources = resourceValues,
+        }
+    end)
 end
 
 ---
@@ -725,12 +734,14 @@ function PlayBoard.new(color, unresolvedContent, subState)
         score = 0,
         scorePositions = {},
     })
-    playBoard.content = Helper.resolveGUIDs(true, unresolvedContent)
+    playBoard.content = Helper.resolveGUIDs(false, unresolvedContent)
 
     playBoard.content.board.interactable = false
     playBoard.content.startEndTurnButton.interactable = false
 
-    --if not subState then
+    if subState then
+        playBoard.opponent = subState.opponent
+    else
         Helper.noPlay(
             playBoard.content.councilToken,
             playBoard.content.freighter,
@@ -741,7 +752,7 @@ function PlayBoard.new(color, unresolvedContent, subState)
             playBoard.content.scoreMarker,
             playBoard.content.forceMarker
         )
-    --end
+    end
 
     playBoard.content.drawDeckZone = PlayBoard.createTransientZone(playBoard, "offseted", Vector(-10.4, 0.4, 1.5), Vector(2.3, 1, 3.3))
     playBoard.content.leaderZone = PlayBoard.createTransientZone(playBoard, "offseted", Vector(-6.4, 0.4, 1), Vector(5, 1, 3.5))
@@ -763,7 +774,7 @@ function PlayBoard.new(color, unresolvedContent, subState)
     for _, resourceName in ipairs(PlayBoard.ALL_RESOURCE_NAMES) do
         local token = playBoard.content[resourceName]
         if token then
-            local value = subState and subState[resourceName] or 0
+            local value = subState and subState.resources[resourceName] or 0
             playBoard[resourceName] = Resource.new(token, color, resourceName, value)
         end
     end
@@ -779,10 +790,10 @@ function PlayBoard.new(color, unresolvedContent, subState)
     playBoard.scorePark = playBoard:_createPlayerScorePark()
     playBoard.techPark = playBoard:_createTechPark()
 
-    playBoard:_createButtons()
+    playBoard:_createButtons(true)
 
     Helper.registerEventListener("locale", function ()
-        playBoard:_createButtons()
+        playBoard:_createButtons(true)
     end)
 
     return playBoard
@@ -794,6 +805,9 @@ function PlayBoard.setUp(settings, activeOpponents)
         playBoard:_cleanUp(false, not settings.riseOfIx, not settings.immortality)
         if activeOpponents[color] then
             playBoard.opponent = activeOpponents[color]
+            if type(playBoard.opponent) ~= "string" then
+                playBoard.opponent = playBoard.opponent.color
+            end
             if playBoard.opponent ~= "rival" then
                 if color == "Teal" then
                     Deck.generateMuadDibStarterDeck(playBoard.content.drawDeckZone).doAfter(Helper.shuffleDeck)
@@ -805,7 +819,6 @@ function PlayBoard.setUp(settings, activeOpponents)
                 end
             else
                 if settings.riseOfIx and not PlayBoard.isCommander(color) then
-                    log(color)
                     playBoard.content.researchToken.destruct()
                     playBoard.content.researchToken = nil
                 end
@@ -820,7 +833,7 @@ function PlayBoard.setUp(settings, activeOpponents)
                 playBoard.content.fourPlayerVictoryToken = nil
             end
 
-            playBoard:updatePlayerScore()
+            playBoard:_updatePlayerScore()
         else
             playBoard:_tearDown()
         end
@@ -840,6 +853,16 @@ function PlayBoard.setUp(settings, activeOpponents)
             end)
         end
     end
+
+    -- Do it again after that PlayBoard.playBoards has been updated (Sandworm button).
+    --[[
+    for color, playBoard in pairs(PlayBoard.playBoards) do
+        if activeOpponents[color] then
+            playBoard:_createButtons()
+        end
+    end
+    ]]
+
     PlayBoard._staticSetUp(settings)
 end
 
@@ -978,7 +1001,7 @@ function PlayBoard:_recall()
         if cardName == "foldspace" then
             card.setPosition(Reserve.foldspaceSlotZone.getPosition())
         elseif Helper.isElementOf(cardName, {"seekAllies", "powerPlay", "treachery"}) then
-            MainBoard.trash(card)
+            self:trash(card)
         else
             card.setPosition(nextDiscardPosition())
         end
@@ -1045,7 +1068,7 @@ function PlayBoard._movePlayerIfNeeded(color)
     if hostPlayer then
         Helper.onceFramesPassed(1).doAfter(function ()
             PlayBoard.getPlayBoard(hostPlayer.color).opponent = "puppet"
-            PlayBoard.getPlayBoard(color).opponent = hostPlayer
+            PlayBoard.getPlayBoard(color).opponent = hostPlayer.color
             hostPlayer.changeColor(color)
         end)
     else
@@ -1053,6 +1076,7 @@ function PlayBoard._movePlayerIfNeeded(color)
     end
 end
 
+---
 function PlayBoard.createEndOfTurnButton(color)
     PlayBoard.playBoards[color]:_createEndOfTurnButton()
 end
@@ -1090,12 +1114,15 @@ function PlayBoard.acceptTurn(phase, color)
             accepted = PlayBoard.couldSendAgentOrReveal(color)
         end
     elseif phase == 'combat' then
+        --[[
         if Combat.isInCombat(color) then
             accepted = PlayBoard.combatPassCountdown > 0 and not PlayBoard.isRival(color) and #PlayBoard.getIntrigues(color) > 0
             PlayBoard.combatPassCountdown = PlayBoard.combatPassCountdown - 1
         end
+        ]]
+        accepted = false
     elseif phase == 'combatEnd' then
-        -- TODO Player is victorious and the combat provied a reward (auto?) or
+        -- TODO Player is victorious and the combat provided a reward (auto?) or
         -- a dreadnought needs to be placed or a combat card remains to be played.
         accepted = playBoard.lastPhase ~= phase and Combat.getRank(color) ~= nil
     elseif phase == 'makers' then
@@ -1289,7 +1316,7 @@ function PlayBoard:_createTechPark()
             table.insert(slots, slot)
         end
     end
-    local park = Park.createCommonPark({ "Tech", "Contract" }, slots, Vector(3, 1, 2), Vector(0, 180, 0))
+    local park = Park.createCommonPark({ "Tech", "Contract" }, slots, Vector(3, 1, 2), nil)
     park.tagUnion = true
     return park
 end
@@ -1340,7 +1367,7 @@ function PlayBoard:_createPlayerScorePark()
 end
 
 ---
-function PlayBoard:updatePlayerScore()
+function PlayBoard:_updatePlayerScore()
     if self.content.scoreMarker then
         --local cappedScore = math.min(13, self:getScore())
         local rectifiedScore = self:getScore()
@@ -1359,7 +1386,7 @@ function PlayBoard.onObjectEnterScriptingZone(zone, object)
         if playBoard.opponent and playBoard.scorePark then
             if zone == playBoard.scorePark.zone then
                 if Types.isVictoryPointToken(object) then
-                    playBoard:updatePlayerScore()
+                    playBoard:_updatePlayerScore()
                     local controlableSpace = MainBoard.findControlableSpace(object)
                     if controlableSpace then
                         MainBoard.occupy(controlableSpace, color)
@@ -1376,7 +1403,7 @@ function PlayBoard.onObjectLeaveScriptingZone(zone, object)
         if playBoard.opponent and playBoard.scorePark then
             if zone == playBoard.scorePark.zone then
                 if Types.isVictoryPointToken(object) then
-                    playBoard:updatePlayerScore()
+                    playBoard:_updatePlayerScore()
                 end
             end
         end
@@ -1424,6 +1451,7 @@ function PlayBoard:_cleanUp(base, ix, immortality, full)
         collect("strength")
         collect("persuasion")
         collect("trash")
+        collect("completedContractBag")
 
         collect("agents")
         collect("swordmaster")
@@ -1441,7 +1469,6 @@ function PlayBoard:_cleanUp(base, ix, immortality, full)
     if ix then
         if not PlayBoard.isCommander(self.color) then
             collect("dreadnoughts")
-            collect("controlMarkerBag")
             collect("freighter")
         end
         collect("atomicsToken")
@@ -1538,7 +1565,7 @@ end
 ---
 function PlayBoard:getFontColor()
     local fontColor = { 0.9, 0.9, 0.9 }
-    if self.color == "Yellow" or self.color == "Teal" then
+    if self.color == "Green" or self.color == "Yellow" or self.color == "Teal" then
         fontColor = { 0.1, 0.1, 0.1 }
     end
     return fontColor
@@ -1552,7 +1579,7 @@ function PlayBoard:_clearButtons()
 end
 
 ---
-function PlayBoard:_createButtons()
+function PlayBoard:_createButtons(skipSandwormButton)
     self:_clearButtons()
 
     local colors = {
@@ -1563,7 +1590,7 @@ function PlayBoard:_createButtons()
         Teal = Color(99 / 255, 158 / 255, 158 / 255),
         Brown = Color(106 / 255, 103 / 255, 97 / 255),
     }
-    local color = colors[self.color]
+    local chroma = colors[self.color]
 
     Color.Teal:set(0.75, 1, 0.25)
 
@@ -1571,36 +1598,38 @@ function PlayBoard:_createButtons()
 
     local board = self.content.board
 
-    if not PlayBoard.isCommander(color) then
-        board.createButton({
-            click_function = self:_createExclusiveCallback(function (_, _, altClick)
-                local battlegroundPark = Combat.getBattlegroundPark()
-                if altClick then
-                    for _, object in ipairs(Park.getObjects(battlegroundPark)) do
-                        if Types.isSandworm(object, color) then
-                            object.destruct()
-                            break
+    if PlayBoard.playBoards then
+        if not skipSandwormButton and (#Helper.getKeys(PlayBoard.playBoards) < 6 or PlayBoard.isTeamMuabDib(self.color)) then
+            board.createButton({
+                click_function = self:_createExclusiveCallback(function (_, _, altClick)
+                    local battlegroundPark = Combat.getBattlegroundPark()
+                    if altClick then
+                        for _, object in ipairs(Park.getObjects(battlegroundPark)) do
+                            if Types.isSandworm(object, self.color) then
+                                object.destruct()
+                                break
+                            end
                         end
+                    else
+                        local sandworm = getObjectFromGUID("14b25e").clone({ position = battlegroundPark.zone.getPosition() - Vector(0, 20, 0) })
+                        sandworm.addTag("Sandworm")
+                        sandworm.addTag(self.color)
+                        sandworm.setRotation(Vector(0, math.random(360), 0))
+                        sandworm.setScale(sandworm.getScale():copy():scale(1/1.5))
+                        sandworm.setColorTint(self.content.agents[1].getColorTint())
+                        Park.putObject(sandworm, battlegroundPark)
                     end
-                else
-                    local sandworm = getObjectFromGUID("14b25e").clone({ position = battlegroundPark.zone.getPosition() - Vector(0, 20, 0) })
-                    sandworm.addTag("Sandworm")
-                    sandworm.addTag(color)
-                    sandworm.setRotation(Vector(0, math.random(360), 0))
-                    sandworm.setScale(sandworm.getScale():copy():scale(1/1.5))
-                    sandworm.setColorTint(self.content.agents[1].getColorTint())
-                    Park.putObject(sandworm, battlegroundPark)
-                end
-            end),
-            label = I18N("sandwormButton"),
-            position = self:_newSymmetricBoardPosition(-2.4, 0.2, 7),
-            rotation = self:_newSymmetricBoardRotation(0, 0, 0),
-            width = 900,
-            height = 200,
-            font_size = 120,
-            color = color,
-            font_color = fontColor
-        })
+                end),
+                label = I18N("sandwormButton"),
+                position = self:_newSymmetricBoardPosition(-2.4, 0.2, 4),
+                rotation = self:_newSymmetricBoardRotation(0, 0, 0),
+                width = 700,
+                height = 400,
+                font_size = 120,
+                color = chroma,
+                font_color = fontColor
+            })
+        end
     end
 
     board.createButton({
@@ -1612,7 +1641,7 @@ function PlayBoard:_createButtons()
         width = 1100,
         height = 250,
         font_size = 150,
-        color = color,
+        color = chroma,
         font_color = fontColor
     })
 
@@ -1628,7 +1657,7 @@ function PlayBoard:_createButtons()
             width = 1400,
             height = 250,
             font_size = 150,
-            color = color,
+            color = chroma,
             font_color = fontColor
         })
     end
@@ -1642,7 +1671,7 @@ function PlayBoard:_createButtons()
         width = 1400,
         height = 250,
         font_size = 150,
-        color = color,
+        color = chroma,
         font_color = fontColor
     })
 
@@ -1655,7 +1684,7 @@ function PlayBoard:_createButtons()
         height = 0,
         font_size = 280,
         color = { 0, 0, 0, 1 },
-        font_color = color
+        font_color = chroma
     })
 
     board.createButton({
@@ -1670,11 +1699,48 @@ function PlayBoard:_createButtons()
         width = 1600,
         height = 320,
         font_size = 280,
-        color = color,
+        color = chroma,
         font_color = fontColor
     })
 
     self:_createNukeButton()
+
+    self.content.completedContractBag.createButton({
+        click_function = Helper.registerGlobalCallback(),
+        label = "",
+        position = Vector(0, 0.1, 1),
+        width = 0,
+        height = 0,
+        font_size = 400,
+        font_color = "White"
+    })
+end
+
+---
+function PlayBoard.onObjectEnterContainer(container, object)
+    PlayBoard._updateBagCounts(container)
+end
+
+---
+function PlayBoard.onObjectLeaveContainer(container, object)
+    PlayBoard._updateBagCounts(container)
+end
+
+---
+function PlayBoard._updateBagCounts(container)
+    for _, playBoard in pairs(PlayBoard.playBoards) do
+        if playBoard.opponent ~= "rival" then
+            if container == playBoard.content.completedContractBag then
+                local count = #Helper.filter(container.getObjects(), function (element)
+                    return element.tags and Helper.isElementOf("Contract", element.tags)
+                end)
+                playBoard.content.completedContractBag.editButton({
+                    index = 0,
+                    label = tostring(count),
+                })
+            end
+        end
+    end
 end
 
 ---
@@ -2015,6 +2081,21 @@ function PlayBoard.isCommander(color)
 end
 
 ---
+function PlayBoard.isAllied(color)
+    return not PlayBoard.isCommander(color)
+end
+
+---
+function PlayBoard.isTeamEmperor(color)
+    return color == "Red" or color == "Red" or color == "Brown"
+end
+
+---
+function PlayBoard.isTeamMuabDib(color)
+    return color == "Green" or color == "Yellow" or color == "Teal"
+end
+
+---
 function PlayBoard.setLeader(color, leaderCard)
     Types.assertIsPlayerColor(color)
     assert(leaderCard)
@@ -2294,14 +2375,16 @@ end
 
 ---
 function PlayBoard.giveObjectiveCardFromZone(color, zone)
+    --Helper.dumpFunction("PlayBoard.giveObjectiveCardFromZone")
     Types.assertIsPlayerColor(color)
     local content = PlayBoard.getContent(color)
     assert(content)
-    --[[
-    local firstSlot = Park.findEmptySlots(PlayBoard.getAgentCardPark(color))[1]
-    return Helper.moveCardFromZone(zone, firstSlot, nil, true, true)
-    ]]
-    return Helper.moveCardFromZone(zone, content.discardZone.getPosition() + Vector(0, 1, 0), nil, false, true)
+    if true then
+        local firstSlot = Park.findEmptySlots(PlayBoard.getAgentCardPark(color))[1]
+        return Helper.moveCardFromZone(zone, firstSlot + Vector(0, 1, 0), nil, false, true)
+    else
+        return Helper.moveCardFromZone(zone, content.discardZone.getPosition() + Vector(0, 1, 0), nil, false, true)
+    end
 end
 
 ---
@@ -2401,6 +2484,16 @@ end
 ---
 function PlayBoard._isRight(color)
     return color == "Green" or color == "Brown" or color == "Yellow"
+end
+
+---
+function PlayBoard:trash(object)
+    self.trashQueue = self.trashQueue or Helper.createSpaceQueue()
+    self.trashQueue.submit(function (height)
+        object.interactable = true
+        object.setLock(false)
+        object.setPosition(self.content.trash.getPosition() + Vector(0, 1 + height * 0.5, 0))
+    end)
 end
 
 return PlayBoard

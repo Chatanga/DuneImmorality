@@ -12,7 +12,7 @@ function Park.createCommonPark(tags, slots, margins, rotation, rotationSnap)
     local park = Park.createPark(
         name,
         slots,
-        rotation or Vector(0, 0, 0),
+        rotation,
         zone,
         tags,
         nil,

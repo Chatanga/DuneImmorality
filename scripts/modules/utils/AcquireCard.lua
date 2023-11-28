@@ -13,7 +13,7 @@ function AcquireCard.new(zone, tag, acquire, cardHeight)
         anchor = nil
     })
 
-    assert(#zone.getTags() == 0)
+    --assert(#zone.getTags() == 0)
     zone.addTag(tag)
 
     local position = zone.getPosition() - Vector(0, 0.5, 0)
@@ -59,11 +59,12 @@ function AcquireCard.onObjectLeaveScriptingZone(...)
 end
 
 function AcquireCard:_createButton(acquire)
-    --local cardCount = Helper.getCardCount(Helper.getDeckOrCard(self.zone))
-    local cardCount = #self.zone.getObjects()
-    if cardCount > 0 then
-        local height = 0.7 + 0.1 + cardCount * self.cardHeight
-        local label = I18N("acquireButton") .. " (" .. tostring(cardCount) .. ")"
+    local cardCount = Helper.getCardCount(Helper.getDeckOrCard(self.zone))
+    local objectCount = #self.zone.getObjects()
+    local count = math.max(cardCount, objectCount)
+    if count > 0 then
+        local height = 0.7 + 0.1 + count * self.cardHeight
+        local label = I18N("acquireButton") .. " (" .. tostring(count) .. ")"
         Helper.createAreaButton(self.zone, self.anchor, height, label, function (_, color)
             if not self.disabled then
                 local continuation = acquire(self, color)

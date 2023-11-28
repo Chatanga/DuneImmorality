@@ -61,6 +61,7 @@ end
 
 ---
 function Combat.onSave(state)
+    --Helper.dumpFunction("Combat.onSave")
     state.Combat = {
         dreadnoughtStrengths = Combat.dreadnoughtStrengths,
         ranking = Combat.ranking,
@@ -157,6 +158,9 @@ end
 
 ---
 function Combat._setUpConflict()
+    -- FIXME Happen too fast?
+    local count = Helper.getCardCount(Helper.getDeckOrCard(Combat.conflictDeckZone))
+    --assert(count == 10, tostring(count))
     Helper.moveCardFromZone(Combat.conflictDeckZone, Combat.conflictDiscardZone.getPosition() + Vector(0, 1, 0), nil, true, true).doAfter(function (card)
         assert(card)
         local i = 0

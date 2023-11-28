@@ -1,5 +1,6 @@
 local Module = {
-    modulesByName = {}
+    modulesByName = {},
+    registeredModuleRedirections = {},
 }
 
 ---
@@ -100,7 +101,7 @@ end
 function Module.registerModuleRedirections(functionNames)
     for _, functionName in ipairs(functionNames) do
         local originalGlobalFunction = Global.getVar(functionName)
-        Global.setVar(functionName, function (...)
+        local globalFunction = function (...)
             if originalGlobalFunction then
                 originalGlobalFunction(...)
             end
@@ -109,7 +110,9 @@ function Module.registerModuleRedirections(functionNames)
                     module[functionName](...)
                 end
             end
-        end)
+        end
+        Module.registeredModuleRedirections[functionName] = globalFunction
+        Global.setVar(functionName, globalFunction)
     end
 end
 
@@ -119,6 +122,13 @@ function Module.callOnAllRegisteredModules(functionName, ...)
         if module[functionName] then
             module[functionName](...)
         end
+    end
+end
+
+---
+function Module.unregisterAllModuleRedirections()
+    for functionName, _ in pairs(Module.registeredModuleRedirections) do
+        Global.setVar(functionName, nil)
     end
 end
 

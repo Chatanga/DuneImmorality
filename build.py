@@ -30,8 +30,10 @@ def build():
 	platform_system = platform.system()
 	if platform_system == 'Linux':
 		app_dir = os.path.join(os.environ['HOME'], '.local', 'share')
-	elif platform_system == 'Window':
+		luabundler = 'luabundler'
+	elif platform_system == 'Windows':
 		app_dir = os.path.join(os.environ['USERPROFILE'], 'Documents', 'My Games')
+		luabundler = 'luabundler.cmd'
 	else:
 		print('Unknown os: ' + platform_system, file = sys.stderr)
 		exit(1)
@@ -57,11 +59,11 @@ def build():
 	if args.full:
 		importSave(input_save)
 		unpack()
-		unbundle()
+		unbundle(luabundler)
 		patch()
-		#expand()
+		storeJson()
 
-	bundle(timestamp)
+	bundle(luabundler, timestamp)
 
 	if args.upload:
 		upload()
@@ -70,20 +72,19 @@ def build():
 		exportSave(output_save)
 
 def importSave(input_save):
-	print("[importSave]")
+	print("[import]")
 	if os.path.exists(input_save):
-		shutil.copyfile(input_save, 'input.mod.json')
+		shutil.copyfile(input_save, os.path.join('tmp', 'mod.unpatched.json'))
 	else:
-		print("Boostrapping by creating " + input_save)
-		shutil.copyfile('input.mod.json', input_save)
+		raise("No save to import! Do not use the '--full' option here.")
 
 def unpack():
 	print("[unpack]")
-	input_file_name = 'input.mod.json'
+	input_file_name = os.path.join('tmp', 'mod.unpatched.json')
 	output_file_name = os.path.join('tmp', 'mod.unscripted.json')
 	tts_build.unpack.unpack_save(tts_tmp_dir, input_file_name, output_file_name)
 
-def unbundle():
+def unbundle(luabundler):
 	print("[unbundle]")
 
 	target = os.path.join('tmp', 'scripts')
@@ -95,10 +96,10 @@ def unbundle():
 	for f in os.listdir(tts_tmp_dir):
 		full_path = os.path.join(tts_tmp_dir, f)
 		if os.path.isfile(full_path) and f.endswith('.ttslua'):
-			filename = re.sub('\.ttslua$', '.lua', f)
+			filename = re.sub(r'\.ttslua$', '.lua', f)
 			print("Unbundle " + f + "...")
 			exitCode = subprocess.call([
-				'luabundler', 'unbundle', full_path,
+				luabundler, 'unbundle', full_path,
 				'-m', os.path.join(target, 'modules'),
 				'-o', os.path.join(target, filename)])
 			if exitCode == 0:
@@ -111,27 +112,33 @@ def patch():
 	input_file_name = os.path.join('tmp', 'mod.unscripted.json')
 	output_file_name = os.path.join('tmp', 'mod.unscripted.patched.json')
 	tts_build.patch.patch_save(input_file_name, output_file_name)
+	#expand()
 
 def expand():
 	print("[expand]")
 	input_file_name = os.path.join('tmp', 'mod.unscripted.patched.json')
 	tts_build.expand.expand(input_file_name, 'scripts')
 
-def bundle(timestamp):
+def storeJson():
+	print("[store]")
+	shutil.copyfile(os.path.join('tmp', 'mod.unscripted.patched.json'), 'skeleton.json')
+
+def bundle(luabundler, timestamp):
 	print("[bundle]")
 
-	for f in os.listdir(tts_tmp_dir):
-		full_path = os.path.join(tts_tmp_dir, f)
-		if os.path.isfile(full_path) and f.endswith('.ttslua'):
-			os.remove(full_path)
+	if os.path.exists(tts_tmp_dir):
+		for f in os.listdir(tts_tmp_dir):
+			full_path = os.path.join(tts_tmp_dir, f)
+			if os.path.isfile(full_path) and f.endswith('.ttslua'):
+				os.remove(full_path)
 
 	for f in os.listdir('scripts'):
 		full_path = os.path.join('scripts', f)
 		if os.path.isfile(full_path) and f.endswith('.lua'):
-			filename = re.sub('\.lua$', '', f)
+			filename = re.sub(r'\.lua$', '', f)
 			print("Bundle " + f + "...")
 			exitCode = subprocess.call([
-				'luabundler', 'bundle', full_path,
+				luabundler, 'bundle', full_path,
 				'-p', os.path.join('scripts', 'modules', '?.lua'),
 				'-o', os.path.join(tts_tmp_dir, filename + '.ttslua')])
 
@@ -145,27 +152,27 @@ def bundle(timestamp):
 	with open (luaFile, 'r') as f:
 		content = f.read()
 
-	content_new = re.sub("local BUILD\s*=\s*.*", "local BUILD = '{}'".format(timestamp), content)
+	content_new = re.sub(r"local BUILD\s*=\s*.*", "local BUILD = '{}'".format(timestamp), content)
 
 	with open (luaFile, 'w') as f:
 		f.write(content_new)
 
 def pack(timestamp):
 	print("[pack]")
-	input_file_name = os.path.join('tmp', 'mod.unscripted.patched.json')
+	input_file_name = 'skeleton.json'
 	output_file_name = os.path.join('tmp', 'mod.patched.json')
 	tts_build.pack.pack_save(tts_tmp_dir, input_file_name, output_file_name, timestamp)
 
 def exportSave(output_save):
-	print("[exportSave]")
+	print("[export]")
 	shutil.copyfile(os.path.join('tmp', 'mod.patched.json'), output_save)
 	output_png_file = output_save.replace('.json', '.png')
 	if not os.path.exists(output_png_file):
-		shutil.copyfile('immorality.png', output_png_file)
+		shutil.copyfile('uprising.png', output_png_file)
 
 def upload():
 	print("[upload]")
-	output_file_name = 'tmp/mod.unscripted.patched.json'
-	tts_build.upload.upload(tts_tmp_dir, output_file_name)
+	input_file_name = 'skeleton.json'
+	tts_build.upload.upload(tts_tmp_dir, input_file_name)
 
 build()

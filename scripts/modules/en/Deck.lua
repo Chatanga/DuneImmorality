@@ -320,6 +320,7 @@ function Deck.loadCustomDecks(loader)
         "makerKeeper", "",
         "reliableInformant",
         "hiddenMissive",
+        "wheelsWithinWheels",
         "fedaykinStilltent",
         "imperialSpymaster",
         "spyNetwork",

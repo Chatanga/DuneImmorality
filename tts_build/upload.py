@@ -60,9 +60,9 @@ def browse_save(tts_tmp_dir, save_file_name, scriptStates):
                 collect_script_and_UI(tts_tmp_dir, name, state['GUID'], state, scriptStates)
 
 # netstat -tlpn
-def upload(tts_tmp_dir, output_save_file_name):
+def upload(tts_tmp_dir, save_file_name):
     scriptStates = []
-    browse_save(tts_tmp_dir, output_save_file_name, scriptStates)
+    browse_save(tts_tmp_dir, save_file_name, scriptStates)
     saveAndPlay('127.0.0.1', 39999, {
         "messageID": 1,
         "scriptStates": scriptStates

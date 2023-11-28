@@ -56,9 +56,12 @@ function XmlUI:fromUI(player, value, id)
                 return
             end
         end
-    else
+    elseif value == "False" or value == "True" then
         local on = value == "True"
         self.fields[id] = on
+        return
+    else
+        self.fields[id] = value
         return
     end
     error("Unknown value: " ..tostring(value))
@@ -69,15 +72,20 @@ function XmlUI:toUI()
     assert(root, "Unknown id: " .. self.id)
     root.attributes.active = self.active
     for name, value in pairs(self.fields) do
-        if not XmlUI._isEnumeration(name) then
+        if not XmlUI._isEnumeration(name) and not XmlUI._isRange(name) then
             local element = XmlUI._findXmlElement(self.xml, name)
             assert(element, "Unknown id: " .. name)
             if XmlUI._isActive(value) then
                 local values = self:_getEnumeration(name)
+                local range = self:_getRange(name)
                 if values then
                     XmlUI._setXmlDropdownOptions(element, values, value)
-                else
+                elseif range then
+                    XmlUI._setXmlSlider(element, range, value)
+                elseif element.tag == "Toggle" then
                     XmlUI._setXmlToggle(element, value)
+                elseif element.tag == "Text" then
+                    XmlUI._setXmlText(element, value)
                 end
                 XmlUI._setXmlInteractable(element, true)
             else
@@ -97,6 +105,16 @@ end
 ---
 function XmlUI:_getEnumeration(name)
     return self.fields[name .. "_all"]
+end
+
+---
+function XmlUI._isRange(name)
+    return name:sub(-6) == "_range"
+end
+
+---
+function XmlUI:_getRange(name)
+    return self.fields[name .. "_range"]
 end
 
 ---
@@ -136,10 +154,26 @@ function XmlUI._setXmlDropdownOptions(dropdown, optionValues, default)
 end
 
 ---
+function XmlUI._setXmlText(text, value)
+    assert(text)
+    assert(text.tag == "Text", text.tag)
+    text.value = value
+end
+
+---
 function XmlUI._setXmlToggle(toggle, on)
     assert(toggle)
     assert(toggle.tag == "Toggle", toggle.tag)
-    toggle.attributes.isOn = on and "True" or "False"
+    toggle.attributes.isOn = XmlUI._toBool(on)
+end
+
+---
+function XmlUI._setXmlSlider(slider, range, value)
+    assert(slider)
+    assert(slider.tag == "Slider", slider.tag)
+    slider.attributes.minValue = range.min
+    slider.attributes.maxValue = range.max
+    slider.attributes.value = value
 end
 
 ---
@@ -159,17 +193,17 @@ end
 ---
 function XmlUI._setXmlActive(xml, active)
     assert(xml)
-    xml.attributes.active = active and "True" or "False"
+    xml.attributes.active = XmlUI._toBool(active)
 end
 
 ---
 function XmlUI._setXmlInteractable(xml, interactable)
     assert(xml)
-    if xml.tag == "Dropdown" then
+    if xml.tag == "Dropdown" or xml.tag == "Slider" then
         -- FIXME Bidouille esthétique.
-        xml.attributes.active = interactable and "True" or "False"
+        xml.attributes.active = XmlUI._toBool(interactable)
     else
-        xml.attributes.interactable = interactable and "True" or "False"
+        xml.attributes.interactable = XmlUI._toBool(interactable)
     end
 end
 
@@ -190,6 +224,11 @@ function XmlUI._translate(node)
             XmlUI._translate(child)
         end
     end
+end
+
+---
+function XmlUI._toBool(value)
+    return value and "True" or "False"
 end
 
 return XmlUI

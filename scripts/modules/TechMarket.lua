@@ -58,6 +58,7 @@ end
 
 ---
 function TechMarket.onSave(state)
+    --Helper.dumpFunction("TechMarket.onSave")
     state.TechMarket = {
         hagalSoloModeEnabled = TechMarket.hagalSoloModeEnabled
     }

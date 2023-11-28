@@ -159,8 +159,9 @@ local Deck = {
             sardaukarSoldier = 1,
             smugglerHarvester = 2,
             makerKeeper = 2,
-            reliableInformant = 2,
+            reliableInformant = 1,
             hiddenMissive = 1,
+            wheelsWithinWheels = 1,
             fedaykinStilltent = 1,
             imperialSpymaster = 1,
             spyNetwork = 1,
@@ -594,6 +595,27 @@ function Deck._staticSetUp(settings)
         support = require("en.Deck")
     elseif settings.language == "fr" then
         support = require("fr.Deck")
+
+        -- Brutal...
+        Wait.time(function ()
+
+            local boards = {
+                board4P = { guid = "483a1a", url = "http://cloud-3.steamusercontent.com/ugc/2305342013587677822/8DBDCE4796B52A64AE78D5F95A1CD0B87A87F66D/" },
+                board6P = { guid = "21cc52", url = "http://cloud-3.steamusercontent.com/ugc/2305342013587679397/718503B8558D419B491BF1624D72BCF13941A8F5/" },
+            }
+
+            for name, boardInfo in pairs(boards) do
+                local board = getObjectFromGUID(boardInfo.guid)
+                if board then
+                    log("Mutating board " .. name)
+                    local parameters = board.getCustomObject()
+                    parameters.image = boardInfo.url
+                    board.setCustomObject(parameters)
+                    board.reload()
+                end
+            end
+        end, 10)
+
     else
         error("Unsupported language: " .. settings.language)
     end
@@ -605,7 +627,7 @@ end
 function Deck.generateObjectiveDeck(deckZone, cardNames)
     assert(deckZone)
     local continuation = Helper.createContinuation("Deck.generateObjectiveDeck")
-    Deck._generateDeck("Imperium", deckZone.getPosition(), cardNames, Deck.sources.objective).doAfter(continuation.run)
+    Deck._generateDeck("Objective", deckZone.getPosition(), cardNames, Deck.sources.objective).doAfter(continuation.run)
     return continuation
 end
 

@@ -17,7 +17,7 @@ function ScoreBoard.onLoad(state)
         alliance / friendship -> InfluenceTrack
         others -> here
     ]]
-    ScoreBoard.tokens = Helper.resolveGUIDs(true, {
+    ScoreBoard.tokens = Helper.resolveGUIDs(false, {
         base = {
             theSpiceMustFlowBag = "43c7b5",
             guildAmbassadorBag = "4bdbd5",

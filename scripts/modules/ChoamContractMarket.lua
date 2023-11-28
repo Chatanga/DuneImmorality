@@ -10,10 +10,14 @@ local ChoamContractMarket = {
 }
 
 ---
-function ChoamContractMarket.onLoad()
+function ChoamContractMarket.onLoad(state)
     Helper.append(ChoamContractMarket, Helper.resolveGUIDs(true, {
         contractBag = "099d8b",
     }))
+
+    if state.settings then
+        ChoamContractMarket._staticSetUp(state.settings)
+    end
 end
 
 ---

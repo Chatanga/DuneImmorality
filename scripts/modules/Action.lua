@@ -16,6 +16,7 @@ local ImperiumRow = Module.lazyRequire("ImperiumRow")
 local ShipmentTrack = Module.lazyRequire("ShipmentTrack")
 local TleilaxuRow = Module.lazyRequire("TleilaxuRow")
 local ScoreBoard = Module.lazyRequire("ScoreBoard")
+local TurnControl = Module.lazyRequire("TurnControl")
 
 local Action = Helper.createClass(nil, {
     context = {}
@@ -33,7 +34,7 @@ function Action.onLoad(state)
             phase = phase,
             color = color
         }
-        printToAll(I18N("playerTurn", { leader = PlayBoard.getLeaderName(color) }), color)
+        Action.log(I18N("playerTurn", { leader = PlayBoard.getLeaderName(color) }), color)
     end)
 
     if state.settings then
@@ -45,6 +46,7 @@ end
 
 ---
 function Action.onSave(state)
+    --Helper.dumpFunction("Action.onSave")
     state.Action = {
         context = Action.context
     }
@@ -100,7 +102,21 @@ end
 
 ---
 function Action.setContext(key, value)
-    Action.context[key] = value or true
+    if key == "agentSent" and Action.transfetCoalescentQueue then
+        Action.transfetCoalescentQueue.flush()
+    end
+    Action.context[key] = value
+end
+
+---
+function Action.log(message, color)
+    local agentSentValue = Action.context["agentSent"]
+    local prefix = ""
+    if agentSentValue then
+        printToAll(I18N("sendingAgent", { space = I18N(agentSentValue) }), color)
+        prefix = " └─> "
+    end
+    printToAll(prefix .. message, color)
 end
 
 ---
@@ -123,7 +139,7 @@ end
 ---
 function Action.recruitSwordmaster(color)
     if PlayBoard.recruitSwordmaster(color) then
-        printToAll(I18N("recruitSwordmaster"), color)
+        Action.log(I18N("recruitSwordmaster"), color)
         return true
     else
         return false
@@ -133,7 +149,7 @@ end
 ---
 function Action.takeHighCouncilSeat(color)
     if PlayBoard.takeHighCouncilSeat(color) then
-        printToAll(I18N("takeHighCouncilSeat"), color)
+        Action.log(I18N("takeHighCouncilSeat"), color)
         return true
     else
         return false
@@ -153,7 +169,7 @@ function Action.resources(color, resourceName, amount)
     if resource:get() >= -amount then
         if amount ~= 0 then
             resource:change(amount)
-            printToAll(I18N(amount > 0 and "credit" or "debit", {
+            Action.log(I18N(amount > 0 and "credit" or "debit", {
                 what = I18N.agree(math.abs(amount), resourceName),
                 amount = math.abs(amount),
             }), color)
@@ -181,7 +197,7 @@ function Action.influence(color, faction, amount)
     local continuation = Helper.createContinuation("Action.influence")
     if faction then
         InfluenceTrack.change(color, faction, amount).doAfter(function (realAmount)
-            printToAll(I18N(amount > 0 and "gainInfluence" or "loseInfluence", {
+            Action.log(I18N(amount > 0 and "gainInfluence" or "loseInfluence", {
                 withFaction = I18N(Helper.toCamelCase("with", faction)),
                 amount = math.abs(amount),
             }), color)
@@ -232,7 +248,7 @@ function Action.troops(color, from, to, baseCount)
 
         local function handle(t)
             if t.count ~= 0 then
-                printToAll(I18N("transfer", {
+                Action.log(I18N("transfer", {
                     count = t.count,
                     what = I18N.agree(t.count, "troop"),
                     from = I18N(t.from .. "Park"),
@@ -318,7 +334,7 @@ function Action.advanceFreighter(color, positiveAmount)
         if not ShipmentTrack.freighterUp(color) then
             return false
         else
-            printToAll(I18N("advanceFreighter"), color)
+            Action.log(I18N("advanceFreighter"), color)
         end
     end
     return true
@@ -328,7 +344,7 @@ end
 function Action.recallFreighter(color)
     Types.assertIsPlayerColor(color)
     if ShipmentTrack.freighterReset(color) then
-        printToAll(I18N("recallFreighter"), color)
+        Action.log(I18N("recallFreighter"), color)
         return true
     else
         return false
@@ -351,7 +367,7 @@ function Action.dreadnought(color, from, to, amount)
     local count = Park.transfert(amount, Action._getDreadnoughtPark(color, from), Action._getDreadnoughtPark(color, to))
 
     if count > 0 then
-        printToAll(I18N("transfer", {
+        Action.log(I18N("transfer", {
             count = count,
             what = I18N.agree(count, "dreadnought"),
             from = I18N(from .. "Park"),
@@ -393,9 +409,9 @@ function Action.research(color, jump)
     Types.assertIsPlayerColor(color)
     TleilaxuResearch.advanceResearch(color, jump).doAfter(function (finalJump)
         if finalJump.x > 0 then
-            printToAll(I18N("researchAdvance", { count = jump }), color)
+            Action.log(I18N("researchAdvance", { count = jump }), color)
         elseif finalJump.x < 0 then
-            printToAll(I18N("researchRollback"), color)
+            Action.log(I18N("researchRollback"), color)
         end
     end)
     return true
@@ -407,9 +423,9 @@ function Action.beetle(color, jump)
     Types.assertIsInteger(jump)
     TleilaxuResearch.advanceTleilax(color, jump).doAfter(function (finalJump)
         if finalJump > 0 then
-            printToAll(I18N("beetleAdvance", { count = jump }), color)
+            Action.log(I18N("beetleAdvance", { count = jump }), color)
         elseif finalJump < 0 then
-            printToAll(I18N("beetleRollback", { count = math.abs(jump) }), color)
+            Action.log(I18N("beetleRollback", { count = math.abs(jump) }), color)
         end
     end)
     return true
@@ -419,7 +435,7 @@ end
 function Action.atomics(color)
     Types.assertIsPlayerColor(color)
     ImperiumRow.nuke(color)
-    printToAll(I18N("atomics"), color)
+    Action.log(I18N("atomics"), color)
     return true
 end
 
@@ -428,7 +444,7 @@ function Action.drawIntrigues(color, amount)
     Types.assertIsPlayerColor(color)
     Types.assertIsInteger(amount)
     Intrigue.drawIntrigue(color, amount)
-    printToAll(I18N("drawObjects", { amount = amount, object = I18N.agree(amount, "intrigueCard") }), color)
+    Action.log(I18N("drawObjects", { amount = amount, object = I18N.agree(amount, "intrigueCard") }), color)
     return true
 end
 

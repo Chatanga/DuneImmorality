@@ -36,18 +36,27 @@ This mod approach: use snapoints for multistates objects, otherwise stick to zon
 
 ## TODO Uprising
 
+- Elucider le mystère des PV.
+- Refaire les PV et leurs sac et les tagger correctement.
+- Contrôle d’espace problématique avec Uprising et sans CardEffect.
+- Retirer les options avec ver si pas d’hameçon.
+- Découpage des zones de combat.
+- Position hameçon.
+
 [75%] 4J
+- Snaps pour les drapeaux.
+- Capacités spéciales des dirigeants.
+    - FeydRauthaHarkonnen.prepare -> clonage cube blanc (ou le mettre avec le matos en plus) + snaps + tag dédié.
+    - Verrouiller carte révérende mère Jessica.
+    - Park "memory" pour Jessica.
 - Revoir les décalcos tech. et élargir les tags des snaps (Tech + Contract).
 - 3 + 1 "Battle Trophy".
 - Nouveaux PV (notamment victoires directes et indirectes) et sacs à PV.
-- FeydRauthaHarkonnen.prepare -> clonage cube blanc (ou le mettre avec le matos en plus) + snaps + tag dédié.
-- Verrouiller carte révérende mère Jessica.
-- Park "memory" pour Jessica.
 - Régler tressautement paquets.
 
 [50%] Extensions
 - Achat de tech débrayé par défaut.
-- Rétablir tous les effets de cartes sauf conflits et Hagal.
+- Rétablir uniquement et sans inclure CardEffect : TechCard et ImperiumCard (uniquement les cartes Tleilaxu avec leur coût).
 - Patch Ix (avec postes d'observation) pour le plateau principal (emmerdant pour les snaps -> 2 x 2 ?).
 - Patch Immortality pour le plateau principal.
 - Considérer 'base' (legacy ?) comme une extension.
@@ -71,6 +80,14 @@ This mod approach: use snapoints for multistates objects, otherwise stick to zon
     - Un joueur peut utiliser les ressources d'un autre joueurs (uniquement avec un clic gauche), mais le résultat est un transfert à partir des siennes.
 - Fin de tour d'un joueur -> raz des épées si aucune unité en combat.
 - Maître d'armes -> assignation jeton +2 épées, mais rappel destructif.
+- Refaire les PV (custom tile ?) et leurs sacs (?) et les tagger correctement.
+- Rétablir uniquement et sans inclure CardEffect :
+                - TechCard
+                - ImperiumCard (uniquement les cartes Tleilaxu avec leur coût)
+- Snaps pour les drapeaux, la zone des combats (?) et le plateau 6J.
+- Gestion des espaces en 6J.
+- Mécanisme de report d'alliance.
+- Mécanisme des alliés.
 
 [10%] Solo
 - Mise en place.
@@ -84,7 +101,6 @@ This mod approach: use snapoints for multistates objects, otherwise stick to zon
 - Utiliser l'appelation CouncilorToken et ScoreMarker.
 - Fin de tour / phase robuste.
 - Toujours décorréler l'acquisition (carte, tech, contrat) de son effet.
-- Log envoi agent.
 - Cache spatial de Deck.lua.
 - Surcouche d'accès à Deck.
 - Revoir la gestion des tuiles.

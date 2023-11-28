@@ -2,16 +2,16 @@ local BUILD = 'TBD'
 
 -- Do not load anything. Appropriate to work on the mod content without
 -- interference.
-local constructionModeEnabled = false
+local constructionModeEnabled = true
 
 -- For test purposes.
 local autoLoadedSettings
 
 --[[
 autoLoadedSettings = {
-    language = "en",
+    language = "fr",
     randomizePlayerPositions = false,
-    numberOfPlayers = 6,
+    numberOfPlayers = 4,
     hotSeat = true,
     useContracts = true,
     riseOfIx = false,
@@ -92,7 +92,7 @@ local PlayerSet = {
             --zh = "中文",
         },
         language = "en",
-        hotSeat = false,
+        gameModeEnabled = false,
         gameMode_all = {
             "1 (+2)",
             "2 (+1)",
@@ -100,7 +100,8 @@ local PlayerSet = {
             "4",
             "2 x 3"
         },
-        gameMode = 4,
+        gameMode = {},
+        hotSeat = {},
         randomizePlayerPositions = false,
         difficulty_all = Helper.map(allModules.Hagal.getDifficulties(), function (_, v) return v.name end),
         difficulty = {},
@@ -111,6 +112,10 @@ local PlayerSet = {
         goTo11 = {},
         leaderSelection_all = allModules.LeaderSelection.getSelectionMethods(4),
         leaderSelection = "reversePick",
+        defaultLeaderPoolSize_range = { min = 4, max = 12 },
+        defaultLeaderPoolSize = 8,
+        defaultLeaderPoolSizeLabel = "-",
+        tweakLeaderSelection = false,
         soundEnabled = true,
     }
 }
@@ -125,10 +130,17 @@ function onLoad(scriptState)
     if constructionModeEnabled then
         --allModules.PlayBoard.rebuild()
         --allModules.MainBoard.rebuild()
-        return
+    else
+        -- The destroyed objects need one frame to disappear and not interfere with the mod.
+        Wait.frames(function ()
+            asyncOnLoad(scriptState)
+        end, 1)
     end
+end
 
-    local tables = Helper.resolveGUIDs(true, {
+---
+function asyncOnLoad(scriptState)
+    local tables = Helper.resolveGUIDs(false, {
         primaryTable = "2b4b92",
         secondaryTable = "662ced",
     })
@@ -137,6 +149,7 @@ function onLoad(scriptState)
         tables.secondaryTable)
 
     local state = scriptState ~= "" and JSON.decode(scriptState) or {}
+    settings = state.settings
 
     allModules.Locale.onLoad(state)
     allModules.Action.onLoad(state)
@@ -179,6 +192,8 @@ function onLoad(scriptState)
         "onPlayerConnect",
         "onPlayerDisconnect",
         "onPlayerTurn",
+        "onObjectEnterContainer",
+        "onObjectLeaveContainer",
     })
 
     if not state.settings then
@@ -189,6 +204,7 @@ function onLoad(scriptState)
         else
             PlayerSet.ui = XmlUI.new(Global, "setupPane", PlayerSet.fields)
             PlayerSet.ui:show()
+            PlayerSet.updateDefaultLeaderPoolSizeLabel()
             PlayerSet.updateSetupButton()
         end
     end
@@ -196,6 +212,7 @@ end
 
 ---
 function onSave()
+    --Helper.dumpFunction("onSave")
     if constructionModeEnabled then
         return
     end
@@ -207,7 +224,7 @@ function onSave()
     local savedState = {
         settings = settings
     }
-    --Module.callOnAllRegisteredModules("onSave", savedState)
+    Module.callOnAllRegisteredModules("onSave", savedState)
     if #Helper.getKeys(savedState) then
         return JSON.encode(savedState)
     else
@@ -216,12 +233,21 @@ function onSave()
 end
 
 ---
+function onDestroy()
+    Helper.dump("onDestroy")
+    Module.unregisterAllModuleRedirections()
+    Helper.dump("destroyTransientObjects")
+    Helper.destroyTransientObjects()
+    Helper.dump("done")
+end
+
+---
 function setUp(newSettings)
     assert(newSettings)
     I18N.setLocale(newSettings.language)
 
-    --log("Settings:")
-    --log(newSettings)
+    log("-settings-")
+    log(newSettings)
 
     local properlySeatedPlayers = PlayerSet.getProperlySeatedPlayers()
     if not newSettings.hotSeat then
@@ -374,6 +400,7 @@ function setLanguage(player, value, id)
     PlayerSet.ui:fromUI(player, value, id)
     I18N.setLocale(PlayerSet.fields.language)
     PlayerSet.ui:toUI()
+    PlayerSet.updateDefaultLeaderPoolSizeLabel()
 end
 
 ---
@@ -381,20 +408,45 @@ function setRandomizePlayerPositions(player, value, id)
     PlayerSet.ui:fromUI(player, value, id)
 end
 
-function setHotSeat(player, value, id)
+---
+function setGameModeEnabled(player, value, id)
+    Helper.dumpFunction("setGameModeEnabled", player, value, id)
     PlayerSet.ui:fromUI(player, value, id)
-    PlayerSet.updateSetupButton()
+    if value == "True" then
+        PlayerSet.fields.gameMode = 1
+    else
+        PlayerSet.fields.gameMode = {}
+    end
+    PlayerSet.applyNumberOfPlayers()
+    PlayerSet.ui:toUI()
 end
 
+---
 function setGameMode(player, value, id)
     PlayerSet.ui:fromUI(player, value, id)
+    PlayerSet.applyNumberOfPlayers()
+    PlayerSet.ui:toUI()
+end
+
+function PlayerSet.applyNumberOfPlayers()
+    --PlayerSet.fields.hotSeat = type(PlayerSet.fields.gameMode) ~= "table" and false or {}
+
     if type(PlayerSet.fields.gameMode) == "table" or PlayerSet.fields.gameMode > 2 then
         PlayerSet.fields.difficulty = {}
     else
         PlayerSet.fields.difficulty = "novice"
     end
-    local numberOfPlayers = PlayerSet.fields.gameMode + math.floor(PlayerSet.fields.gameMode / 5)
-    log(numberOfPlayers)
+
+    PlayerSet.fields.hotSeat = (type(PlayerSet.fields.gameMode) == "table" or PlayerSet.fields.gameMode == 1) and {} or false
+
+    local numberOfPlayers
+    if type(PlayerSet.fields.gameMode) == "table" then
+        numberOfPlayers = PlayerSet.getProperlySeatedPlayers()
+    else
+        numberOfPlayers = PlayerSet.fields.gameMode + math.floor(PlayerSet.fields.gameMode / 5)
+    end
+    Helper.dump("numberOfPlayers:", numberOfPlayers)
+
     PlayerSet.fields.leaderSelection_all = allModules.LeaderSelection.getSelectionMethods(numberOfPlayers)
     if PlayerSet.fields.gameMode == 5 then
         PlayerSet.fields.useContracts = {}
@@ -415,6 +467,7 @@ function setGameMode(player, value, id)
             Red = true,
         }
     end
+
     PlayerSet.updateSetupButton()
     PlayerSet.ui:toUI()
 end
@@ -422,6 +475,12 @@ end
 ---
 function setDifficulty(player, value, id)
     PlayerSet.ui:fromUI(player, value, id)
+end
+
+---
+function setHotSeat(player, value, id)
+    PlayerSet.ui:fromUI(player, value, id)
+    PlayerSet.updateSetupButton()
 end
 
 ---
@@ -467,6 +526,18 @@ function setLeaderSelection(player, value, id)
 end
 
 ---
+function setDefaultLeaderPoolSize(player, value, id)
+    PlayerSet.ui:fromUI(player, value, id)
+    PlayerSet.updateDefaultLeaderPoolSizeLabel()
+end
+
+---
+function setTweakLeaderSelection(player, value, id)
+    Helper.dumpFunction("setTweakLeaderSelection", player, value, id)
+    PlayerSet.ui:fromUI(player, value, id)
+end
+
+---
 function setSoundEnabled(player, value, id)
     PlayerSet.ui:fromUI(player, value, id)
 end
@@ -496,15 +567,23 @@ function PlayerSet.updateSetupButton()
 end
 
 ---
+function PlayerSet.updateDefaultLeaderPoolSizeLabel()
+    local value = PlayerSet.fields.defaultLeaderPoolSize
+    PlayerSet.fields.defaultLeaderPoolSizeLabel = I18N("defaultLeaderPoolSizeLabel", { value = value } )
+    -- Do not use PlayerSet.ui:toUI() to avoid breaking the current UI operation.
+    self.UI.setValue("defaultLeaderPoolSizeLabel", PlayerSet.fields.defaultLeaderPoolSizeLabel)
+end
+
+---
 function setUpFromUI()
     PlayerSet.ui:hide()
     PlayerSet.ui = nil
 
     setUp({
         language = PlayerSet.fields.language,
-        randomizePlayerPositions = PlayerSet.fields.randomizePlayerPositions == true,
-        hotSeat = PlayerSet.fields.hotSeat == true,
         numberOfPlayers = PlayerSet.fields.gameMode + math.floor(PlayerSet.fields.gameMode / 5),
+        hotSeat = PlayerSet.fields.hotSeat == true,
+        randomizePlayerPositions = PlayerSet.fields.randomizePlayerPositions == true,
         difficulty = PlayerSet.fields.difficulty,
         useContracts = PlayerSet.fields.useContracts == true,
         riseOfIx = PlayerSet.fields.riseOfIx == true,
@@ -512,6 +591,8 @@ function setUpFromUI()
         immortality = PlayerSet.fields.immortality == true,
         goTo11 = PlayerSet.fields.goTo11 == true,
         leaderSelection = PlayerSet.fields.leaderSelection,
+        defaultLeaderPoolSize = tonumber(PlayerSet.fields.defaultLeaderPoolSize),
+        tweakLeaderSelection = PlayerSet.fields.tweakLeaderSelection,
         soundEnabled = PlayerSet.fields.soundEnabled,
     })
 end

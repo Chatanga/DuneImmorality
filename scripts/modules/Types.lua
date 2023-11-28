@@ -107,6 +107,11 @@ function Types.isTech(object)
 end
 
 ---
+function Types.isContract(object)
+    return object.hasTag("Contract")
+end
+
+---
 function Types.assertIsPlayerColor(color)
     assert(color == "Green"
         or color == "Brown"

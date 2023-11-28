@@ -10,20 +10,18 @@
 **First time:**
 
 ```bash
-python3 build.py --full
+python3 build.py
 ```
 
-You should now have 2 new saves 200 and 201 in TTS.
+You should now have a new save 201 in TTS.
 
-**You only change the scripts, but don't have a running TTS instance with a loaded save:**
+**You've only changed the scripts, but don't have a running TTS instance with a loaded save:**
 
 ```bash
 python3 build.py
 ```
 
-Save 200 is imported, updated with your scripts, then exported to 201.
-
-**You only change the scripts and have a running TTS instance with a loaded save:**
+**You've only change the scripts and have a running TTS instance with a loaded save:**
 
 ```bash
 python3 build.py --upload
@@ -31,11 +29,18 @@ python3 build.py --upload
 
 It directly updates the scripts to your live save.
 
-**You changed the save content in TSS:**
+**You've changed the save in TSS:**
 
-Overwrite save 200 with it, then `python3 build.py --full` and reload the save.
+Overwrite the save 200 with it, then `python3 build.py --full` and finally reload the save 201.
 
-In addition to the steps above, you could have `python3 listen.py` running in another terminal to print the output of TSS (especially usefull for translating the source location of the error message).
+**You want to change the save outside TSS:**
+
+Edit the local `skeleton.json` file, then `python3 build.py` and reload the save.
+
+## Notes
+
+Using 'TS_Save_200.json' and 'TS_Save_201.json' as our working saves is arbitrary and could be changed in the top `build.py` file.
+In fact, the two could be the same, it's just safer to separate the two of them.
 
 ## Internals
 
@@ -47,9 +52,9 @@ The whole process could be executed with a single call:
 python3 build.py --full
 ```
 
-It amounts to call the sequence of commands `import + unpack + unbundle + patch + bundle + pack + export`.
+It amounts to call the sequence of commands `import + unpack + unbundle + patch + store + bundle + pack + export`.
 However, when only modifying scripts, the beginning of this sequence is not needed and,
-after an initial call to `import + unpack + unbundle`, we simply need to call `bundle + pack + export`.
+after an initial call to `import + unpack + unbundle + patch + store`, we simply need to call `bundle + pack + export`.
 
 ```bash
 python3 build.py

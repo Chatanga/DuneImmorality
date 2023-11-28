@@ -55,7 +55,7 @@ function InfluenceTrack.onLoad(state)
     end
 
     if state.settings then
-        InfluenceTrack._staticSetUp()
+        InfluenceTrack._staticSetUp(state.settings)
     end
 end
 
@@ -418,7 +418,7 @@ function InfluenceTrack._gainAllianceBonus(faction, color)
             end
         else
             if faction == "emperor" then
-                leader.troops(color, "supply", "garrison", 2)
+                -- 1 spy
             elseif faction == "spacingGuild" then
                 leader.resources(color, "solari", 3)
             elseif faction == "beneGesserit" then

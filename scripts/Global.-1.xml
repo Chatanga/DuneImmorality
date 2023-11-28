@@ -2,12 +2,12 @@
 	active="False" allowDragging="True" returnToOriginalPositionWhenReleased="False" _visibility="Host">
 	<Defaults>
 		<Text class="primary" color="#000000" fontSize="20" fontStyle="bold" alignment="MiddleLeft"/>
-		<Text class="secondary" color="#30281f" fontStyle="bold" alignment="MiddleLeft"/>
-		<Text class="epigraph" color="#1e170f" fontSize="12" fontStyle="italic" alignment="MiddleCenter"/>
-		<Dropdown itemBackgroundColors="#2e200f44|#df9730|#ffffff|#361441" textColor="#2e200f" itemTextColor="#2e200f" fontStyle="bold"/>
-		<InputField colors="#00000000|#2e200f44|#2e200f" textColor="#2e200f" fontStyle="bold"/>
-		<Toggle colors="#9e907e|#ffd60b|#6d5e4c|#222222" textColor="#000000" fontStyle="bold"/>
-		<Button colors="#406f2e|#30281f|#df9730|#222222" textColor="#ffd60b" fontSize="16" outline="#30281f" outlineSize="3 3"/>
+		<Text class="secondary" color="#000000" fontSize="14" fontStyle="bold" alignment="MiddleLeft"/>
+		<Text class="epigraph" color="#1e170f" fontSize="14" fontStyle="italic" alignment="MiddleCenter"/>
+		<Dropdown itemBackgroundColors="#2e200f44|#df9730|#ffffff|#361441" textColor="#2e200f" fontSize="12" itemTextColor="#2e200f" fontStyle="bold"/>
+		<InputField colors="#00000000|#2e200f44|#2e200f" textColor="#2e200f" fontSize="14" fontStyle="bold"/>
+		<Toggle colors="#9e907e|#ffd60b|#6d5e4c|#222222" textColor="#000000" fontSize="14" fontStyle="bold"/>
+		<Button colors="#406f2e|#30281f|#df9730|#222222" textColor="#ffd60b" fontSize="14" outline="#30281f" outlineSize="3 3"/>
 		<Image raycastTarget="true"/>
 	</Defaults>
 	<VerticalLayout>
@@ -24,17 +24,20 @@
 				</Dropdown>
 			</HorizontalLayout>
 
-			<HorizontalLayout>
-				<Text class="primary" key="players"/>
-				<Dropdown id="gameMode" onValueChanged="Global/setGameMode" flexibleWidth="1.5">
-					<Option></Option>
-				</Dropdown>
-				<Dropdown id="difficulty" onValueChanged="Global/setDifficulty" flexibleWidth="3" active="False">
-					<Option></Option>
-				</Dropdown>
-			</HorizontalLayout>
+			<Text class="primary" key="players"/>
 			<VerticalLayout padding="25 0 0 0">
-				<Toggle id="hotSeat" onValueChanged="Global/setHotSeat" isOn="False" key="hotSeat"/>
+				<HorizontalLayout>
+					<Toggle id="gameModeEnabled" onValueChanged="Global/setGameModeEnabled" isOn="False" key="gameModeEnabled"/>
+					<Dropdown id="gameMode" onValueChanged="Global/setGameMode" flexibleWidth="2.5" active="False">
+						<Option></Option>
+					</Dropdown>
+					<Dropdown id="difficulty" onValueChanged="Global/setDifficulty" flexibleWidth="3" active="False">
+						<Option></Option>
+					</Dropdown>
+				</HorizontalLayout>
+				<VerticalLayout padding="25 0 0 0">
+					<Toggle id="hotSeat" onValueChanged="Global/setHotSeat" isOn="False" key="hotSeat"/>
+				</VerticalLayout>
 				<Toggle id="randomizePlayerPositions" onValueChanged="Global/setRandomizePlayerPositions" isOn="True" key="randomizePlayersPositions"/>
 			</VerticalLayout>
 
@@ -57,6 +60,13 @@
 					<Option></Option>
 				</Dropdown>
 			</HorizontalLayout>
+			<VerticalLayout padding="25 0 0 0">
+				<HorizontalLayout>
+					<Text class="secondary" id="defaultLeaderPoolSizeLabel"/>
+					<Slider id="defaultLeaderPoolSize" flexibleWidth="2" onValueChanged="setDefaultLeaderPoolSize" wholeNumbers="True" minValue="6" maxValue="12" value="8" />
+				</HorizontalLayout>
+				<Toggle id="tweakLeaderSelection" onValueChanged="Global/setTweakLeaderSelection" isOn="False" key="tweakLeaderSelection"/>
+			</VerticalLayout>
 
 			<HorizontalLayout>
 				<Text class="primary" key="miscellanous"/>
