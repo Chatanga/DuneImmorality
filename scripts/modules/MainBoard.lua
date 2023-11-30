@@ -284,26 +284,15 @@ function MainBoard._processSnapPoints(settings)
     for _, observationPost in pairs(MainBoard.observationPosts) do
         MainBoard._createObservationPostButton(observationPost)
     end
+
+    for _, bannerZone in pairs(MainBoard.banners) do
+        MainBoard._createBannerSpace(bannerZone)
+    end
 end
 
 ---
 function MainBoard.getHighCouncilSeatPark()
     return MainBoard.highCouncilPark
-end
-
----
-function MainBoard.findControlableSpace(victoryPointToken)
-    assert(victoryPointToken)
-    local description = Helper.getID(victoryPointToken)
-    if description == "secureImperialBasin" or description == "battleForImperialBasin" then
-        return MainBoard.banners.imperialBasinBannerZone
-    elseif description == "siegeOfArrakeen" or description == "battleForArrakeen" then
-        return MainBoard.banners.arrakeenBannerZone
-    elseif description == "siegeOfCarthag" or description == "battleForCarthag" then
-        return MainBoard.banners.carthagBannerZone
-    else
-        return nil
-    end
 end
 
 ---
@@ -393,6 +382,17 @@ function MainBoard._createObservationPostButton(observationPost)
         Helper.createAreaButton(observationPost.zone, anchor, 0.7, tooltip, PlayBoard.withLeader(function (leader, color, altClick)
             leader.sendSpy(color, observationPost.name)
         end))
+    end)
+end
+
+---
+function MainBoard._createBannerSpace(bannerZone)
+    Helper.createTransientAnchor("BannerPark", bannerZone.getPosition() - Vector(0, 0.5, 0)).doAfter(function (anchor)
+        anchor.setSnapPoints({{
+            position = anchor.positionToLocal(bannerZone.getPosition()),
+            tags = { "Flag", "Dreadnought" },
+            rotation_snap = true,
+        }})
     end)
 end
 
@@ -584,7 +584,7 @@ end
 
 ---
 function MainBoard._goImperialPrivilege(color, leader)
-    if leader.resources(color, "solari", -3) then
+    if InfluenceTrack.hasFriendship(color, "spacingGuild") and leader.resources(color, "solari", -3) then
         leader.drawImperiumCards(color, 1)
         return true
     else
@@ -654,7 +654,7 @@ end
 
 ---
 function MainBoard._goShipping(color, leader)
-    if leader.resources(color, "spice", -3) then
+    if InfluenceTrack.hasFriendship(color, "spacingGuild") and leader.resources(color, "spice", -3) then
         leader.resources(color, "solari", 5)
         return true
     else
@@ -747,6 +747,7 @@ end
 ---
 function MainBoard._goSpiceRefinery(color, leader, amount)
     if amount == 0 or leader.resources(color, "spice", -amount) then
+        MainBoard._applyControlOfAnySpace(MainBoard.banners.spiceRefineryBannerZone, "solari")
         leader.resources(color, "solari", (amount + 1) * 2)
         return true
     else
@@ -756,6 +757,7 @@ end
 
 ---
 function MainBoard._goArrakeen(color, leader)
+    MainBoard._applyControlOfAnySpace(MainBoard.banners.arrakeenBannerZone, "solari")
     leader.troops(color, "supply", "garrison", 1)
     leader.drawImperiumCards(color, 1)
     return true
@@ -823,7 +825,12 @@ end
 
 ---
 function MainBoard._goImperialBasin(color, leader)
-    return MainBoard._anySpiceSpace(color, leader, 0, 1, MainBoard.spiceBonuses.imperialBasin)
+    if MainBoard._anySpiceSpace(color, leader, 0, 1, MainBoard.spiceBonuses.imperialBasin) then
+        MainBoard._applyControlOfAnySpace(MainBoard.banners.imperialBasinBannerZone, "spice")
+        return true
+    else
+        return false
+    end
 end
 
 ---
@@ -1316,7 +1323,7 @@ function MainBoard.getBannerZones()
     return {
         MainBoard.banners.imperialBasinBannerZone,
         MainBoard.banners.arrakeenBannerZone,
-        MainBoard.banners.carthagBannerZone,
+        MainBoard.banners.spiceRefineryBannerZone,
     }
 end
 

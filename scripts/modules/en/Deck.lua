@@ -76,6 +76,28 @@ local Deck = {
         shuttleFleet = { "http://cloud-3.steamusercontent.com/ugc/2093667512238533645/9E39289A6CED8A977E8206E1B5FD1A14F4BA55F8/", 1, 1 },
         restrictedOrdnance = { "http://cloud-3.steamusercontent.com/ugc/2093667512238534629/1F4181A709E103B8807D6D6FBF3C6BA62A4C20F9/", 1, 1 },
     },
+    contract = {
+        spiceRefineryWater = { "http://cloud-3.steamusercontent.com/ugc/2220898342984602444/7EA3323DDA7E60E1A8AB1119431D2D25187417F7/", 1, 1 },
+        spiceRefineryCard = { "http://cloud-3.steamusercontent.com/ugc/2220898342984601510/78FB61B6A6BE119DEC9E93CC343BE1C199191E89/", 1, 1 },
+        researchStationSpy = { "http://cloud-3.steamusercontent.com/ugc/2220898342984609303/9408609A985B7FFC43C43E0E791694870CB379C7/", 1, 1 },
+        researchStationSolari = { "http://cloud-3.steamusercontent.com/ugc/2220898342984610402/C2F0768CD60F9944C16F128F307BA6F8107C0E93/", 1, 1 },
+        arrakeenSpy = { "http://cloud-3.steamusercontent.com/ugc/2220898342984577284/4CB29CF8FC8D0BF9A5B575B3E05B31774E59F3CD/", 1, 1 },
+        arrakeenWater = { "http://cloud-3.steamusercontent.com/ugc/2220898342984583351/926CFC63532C4D7BC6AA6B9151AFF0221A553B44/", 1, 1 },
+        espionage = { "http://cloud-3.steamusercontent.com/ugc/2220898342984589512/35C1BFE9773F01181B1280C061914D7CE07BFE71/", 1, 1 },
+        --espionage = { "http://cloud-3.steamusercontent.com/ugc/2220898342984589512/35C1BFE9773F01181B1280C061914D7CE07BFE71/", 1, 1 },
+        sardaukarRecall = { "http://cloud-3.steamusercontent.com/ugc/2305342013595062838/E5463C7FFA3426E57F5B07A0DE91602798170C69/", 1, 1 },
+        sardaukarCard = { "http://cloud-3.steamusercontent.com/ugc/2220898342984611356/1711DFB19987B48883EF6B53E1CD62739D70E1A2/", 1, 1 },
+        highCouncilSolari = { "http://cloud-3.steamusercontent.com/ugc/2220898342984598694/33A0566759303798910FF7F7C4414E09BDBBE037/", 1, 1 },
+        highCouncilInfluence = { "http://cloud-3.steamusercontent.com/ugc/2220898342984599326/16A847D5CB4EB5E926D4404BB5F30BAF574558F5/", 1, 1 },
+        immediat = { "http://cloud-3.steamusercontent.com/ugc/2220898342984600292/3D848E8CC39986DD283094AC31757997C097F4D7/", 1, 1 },
+        heighlinerTroop = { "http://cloud-3.steamusercontent.com/ugc/2220898342984596412/348DAD4630FD7CD067043AFBC5ADCB91733D9D23/", 1, 1 },
+        heighlinerWater = { "http://cloud-3.steamusercontent.com/ugc/2220898342984595230/5B022A86311D086273A90DBA7D53DC22DCA9C917/", 1, 1 },
+        deliverSupplies = { "http://cloud-3.steamusercontent.com/ugc/2220898342984588570/B42F88CDC1519A7893668030B695338E7EA18391/", 1, 1 },
+        acquire = { "http://cloud-3.steamusercontent.com/ugc/2220898342984560038/94ED4105E316EDD45B0202837A711FF3A99E7CFA/", 1, 1 },
+        harvest = { "http://cloud-3.steamusercontent.com/ugc/2220898342984593596/832069DB1C4F8B9B328876E798D071FFD35F0173/", 1, 1 },
+        --harvest = { "http://cloud-3.steamusercontent.com/ugc/2220898342984593596/832069DB1C4F8B9B328876E798D071FFD35F0173/", 1, 1 },
+        harvestMore = { "http://cloud-3.steamusercontent.com/ugc/2220898342984590796/B564DA078EA0BE9D2A7AAA8FA4DF105D4AD82A17/", 1, 1 },
+    },
     leader = {
         vladimirHarkonnen = { "http://cloud-3.steamusercontent.com/ugc/2093667512238499582/B5899377296C2BFAC0CF48E18AA3773AA8E998DE/", 1, 1 },
         glossuRabban = { "http://cloud-3.steamusercontent.com/ugc/2093667512238498058/DCF40F0D8C34B14180DC33B369DCC8AA4FD3FB55/", 1, 1 },
@@ -629,6 +651,13 @@ function Deck.loadCustomDecks(loader)
 
     -- One leader per custom deck.
     for leaderName, _ in pairs(Deck.leader) do
+        --[[
+        if leaderName == "jessicaAtreides" then
+            Deck.load(loader, cards.leaders, "leader", leaderName, 1, { leaderName, "reverendMotherJessica" })
+        elseif leaderName ~= "reverendMotherJessica" then
+            Deck.load(loader, cards.leaders, "leader", leaderName, 1, { leaderName })
+        end
+        ]]
         Deck.load(loader, cards.leaders, "leader", leaderName, 1, { leaderName })
     end
 

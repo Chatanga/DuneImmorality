@@ -38,48 +38,12 @@ function Pdf.setUp(settings)
     end
 end
 
-function Pdf._mututateBook(bookName, info, url)
+function Pdf._mututateBook(_, info, url)
     --- We cannot create PDF ex nihilo, but need an existing PDF to be mutated.
-    getObjectFromGUID(info.guid).destruct()
-
-    -- TODO Use getData()!
-    local data = {
-        GUID = info.guid,
-        Name = "Custom_PDF",
-        Transform = {
-            posX = info.position.x,
-            posY = info.position.y,
-            posZ = info.position.z,
-            rotX = 0,
-            rotY = 180,
-            rotZ = 0,
-            scaleX = info.scale.x,
-            scaleY = info.scale.y,
-            scaleZ = info.scale.z,
-        },
-        GMNotes = bookName,
-        LayoutGroupSortIndex = 0,
-        Value = 0,
-        Locked = true,
-        Grid = true,
-        Snap = true,
-        IgnoreFoW = false,
-        MeasureMovement = false,
-        DragSelectable = true,
-        Autoraise = true,
-        Sticky = true,
-        Tooltip = true,
-        GridProjection = false,
-        HideWhenFaceDown = false,
-        Hands = false,
-        CustomPDF = {
-            PDFUrl = url,
-            PDFPassword = "",
-            PDFPage = 0,
-            PDFPageOffset = 0
-        },
-    }
-
+    local book = getObjectFromGUID(info.guid)
+    local data = book.getData()
+    data.CustomPDF.PDFUrl = url
+    book.destruct()
     spawnObjectData({ data = data })
 end
 

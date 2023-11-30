@@ -1,3 +1,0 @@
-local ContractMarket = {}
-
-return ContractMarket

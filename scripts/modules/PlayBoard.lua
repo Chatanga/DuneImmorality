@@ -1374,9 +1374,7 @@ function PlayBoard:_updatePlayerScore()
         rectifiedScore = rectifiedScore > 13 and rectifiedScore - 10 or rectifiedScore
         local scoreMarker = self.content.scoreMarker
         scoreMarker.setLock(false)
-        if rectifiedScore ~= 0 then
-            scoreMarker.setPositionSmooth(self.scorePositions[rectifiedScore])
-        end
+        scoreMarker.setPositionSmooth(self.scorePositions[rectifiedScore])
     end
 end
 
@@ -1387,10 +1385,12 @@ function PlayBoard.onObjectEnterScriptingZone(zone, object)
             if zone == playBoard.scorePark.zone then
                 if Types.isVictoryPointToken(object) then
                     playBoard:_updatePlayerScore()
+                    --[[
                     local controlableSpace = MainBoard.findControlableSpace(object)
                     if controlableSpace then
                         MainBoard.occupy(controlableSpace, color)
                     end
+                    ]]
                 end
             end
         end
@@ -1850,7 +1850,7 @@ function PlayBoard:revealHand()
 
     -- FIXME The agent could have been removed (e.g. Kwisatz Haderach)
     local techNegotiation = MainBoard.hasAgentInSpace("techNegotiation", self.color)
-    local hallOfOratory = MainBoard.hasAgentInSpace("hallOfOratory", self.color)
+    local assemblyHall = MainBoard.hasAgentInSpace("assemblyHall", self.color)
 
     local minimicFilm = PlayBoard.hasTech(self.color, "minimicFilm")
     local restrictedOrdnance = PlayBoard.hasTech(self.color, "restrictedOrdnance")
@@ -1864,7 +1864,7 @@ function PlayBoard:revealHand()
         (intrigueCardContributions.persuasion or 0) +
         (imperiumCardContributions.persuasion or 0) +
         (techNegotiation and 1 or 0) +
-        (hallOfOratory and 1 or 0) +
+        (assemblyHall and 1 or 0) +
         (councilSeat and 2 or 0) +
         (minimicFilm and 1 or 0))
 

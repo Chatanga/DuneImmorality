@@ -399,11 +399,11 @@ local Deck = {
             uprising = {
                 choamSecurity = 1,
                 spiceFreighters = 1,
-                siegeOfArrakeenNew = 1,
+                siegeOfArrakeen = 1,
                 seizeSpiceRefinery = 1,
                 testOfLoyalty = 1,
                 shadowContest = 1,
-                secureImperialBasinNew = 1,
+                secureImperialBasin = 1,
                 protectTheSietches = 1,
                 tradeDispute = 1,
             },
@@ -420,8 +420,8 @@ local Deck = {
             },
             uprising = {
                 propaganda = 1,
-                battleForImperialBasinNew = 1,
-                battleForArrakeenNew = 1,
+                battleForImperialBasin = 1,
+                battleForArrakeen = 1,
                 battleForSpiceRefinery = 1,
             }
         },
@@ -504,29 +504,6 @@ local Deck = {
             invasionShips = 1,
         },
     },
-    contract = {
-        harvest_1 = 1,
-        harvest_2 = 1,
-        harvest_3 = 1,
-        harvest_4 = 1,
-        deliverSupplies = 1,
-        highCouncil_1 = 1,
-        highCouncil_2 = 1,
-        acquire = 1,
-        immediate = 1,
-        researchStation_1 = 1,
-        researchStation_2 = 1,
-        espionnage_1 = 1,
-        espionnage_2 = 1,
-        heighliner_1 = 1,
-        heighliner_2 = 1,
-        sardaukar_1 = 1,
-        sardaukar_2 = 1,
-        spiceRefinery_1 = 1,
-        spiceRefinery_2 = 1,
-        arrakeen_1 = 1,
-        arrakeen_2 = 1,
-    },
     leaders = {
         base = {
             vladimirHarkonnen = 1,
@@ -556,11 +533,11 @@ local Deck = {
             feydRauthaHarkonnen = 1,
             shaddamCorrino = 1,
             muadDib = 1,
-        },
-        uprisingAlt = {
+        --},
+        --uprisingAlt = {
             reverendMotherJessica = 1,
         }
-    }
+    },
 }
 
 local imperiumCardBack = "http://cloud-3.steamusercontent.com/ugc/2093667512238502565/C3DC7A02CF378129569B414967C9BE25097C6E77/"
@@ -968,7 +945,7 @@ function Deck._generateCardData(customDeck, customDeckId, cardId)
         DragSelectable = true,
         Autoraise = true,
         Sticky = true,
-        Tooltip = true,
+        Tooltip = false,
         GridProjection = false,
         HideWhenFaceDown = true,
         Hands = true,
@@ -1026,7 +1003,7 @@ function Deck._generateDeck(deckName, position, contributions, sources)
         DragSelectable = true,
         Autoraise = true,
         Sticky = true,
-        Tooltip = true,
+        Tooltip = false,
         GridProjection = false,
         HideWhenFaceDown = true,
         Hands = false,

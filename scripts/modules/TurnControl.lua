@@ -309,6 +309,7 @@ function TurnControl._next(startPlayerLuaIndex)
         Helper.emitEvent("playerTurns", TurnControl.currentPhase, playerColor)
     else
         if TurnControl.currentPhase == "combat" then
+            Turns.order = {}
             local primaryTable = getObjectFromGUID("2b4b92")
             Helper.createAbsoluteButtonWithRoundness(primaryTable, 1, false, {
                 click_function = Helper.registerGlobalCallback(function ()

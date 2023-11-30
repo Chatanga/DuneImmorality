@@ -499,6 +499,20 @@ function Helper.createAreaButton(zone, anchor, altitude, tooltip, callback)
 end
 
 ---
+function Helper.createExperimentalAreaButton(zone, anchor, altitude, tooltip, callback)
+    assert(zone)
+    assert(anchor)
+    assert(altitude)
+
+    local zoneScale = zone.getScale()
+
+    local width = zoneScale.x * 450
+    local height = zoneScale.z * 200
+
+    return Helper.createSizedAreaButton(width, height, anchor, altitude, tooltip, callback)
+end
+
+---
 function Helper.createSizedAreaButton(width, height, anchor, altitude, tooltip, callback)
     assert(anchor)
 

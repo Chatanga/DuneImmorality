@@ -18,7 +18,7 @@ local Combat = {
         conflictDiscardZone = "43f00f",
         combatCenterZone = "6d632e",
         combatTokenZone = "1d4424",
-        --victoryPointTokenZone = "25b541",
+        victoryPointTokenZone = "a98488",
         victoryPointTokenBag = "d9a457",
         garrisonsZones = {
             Green = "0a54b2",
@@ -178,6 +178,7 @@ function Combat._setUpConflict()
                     guid = token.guid,
                 })
 
+                --[[
                 local controlableSpace = MainBoard.findControlableSpace(victoryPointToken)
                 if controlableSpace then
                     local color = MainBoard.getControllingPlayer(controlableSpace)
@@ -185,6 +186,7 @@ function Combat._setUpConflict()
                         Park.transfert(1, PlayBoard.getSupplyPark(color), Combat.getBattlegroundPark())
                     end
                 end
+                ]]
             end
         end
         --Helper.dump("Found", i, "matching VP for conflict:", Helper.getID(card))

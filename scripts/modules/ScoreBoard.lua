@@ -20,13 +20,6 @@ function ScoreBoard.onLoad(state)
     ScoreBoard.tokens = Helper.resolveGUIDs(false, {
         base = {
             theSpiceMustFlowBag = "43c7b5",
-            guildAmbassadorBag = "4bdbd5",
-            sayyadinaBag = "4575f3",
-            opulenceBag = "67fbba",
-            theSleeperMustAwaken = "946ca1",
-            choamShares = "c530e6",
-            stagedIncident = "bee42f",
-            endgameCardBag = "cfe0cb",
             combatVictoryPointBag = "d9a457",
             emperorFriendshipBag = "6a4186",
             spacingGuildFriendshipBag = "400d45",
@@ -34,6 +27,25 @@ function ScoreBoard.onLoad(state)
             fremenFriendshipBag = "8bcfe7",
             greatHousesFriendshipBag = "95926b",
             fringeWorldsFriendshipBag = "a43ec0",
+            endgameCardBag = "cfe0cb",
+            --
+            smugglerHaven = "8243d3",
+            corrinthCity = "46f6f2",
+            junctionHeadquarters = "c799ba",
+            objective = "f346be",
+            priorityContracts = "5e061e",
+            deliveryAgreement = "d081dd",
+            strategicStockpiling1 = "3b1328",
+            strategicStockpiling2 = "227ee4",
+            opportunism = "5785d5",
+        },
+        legacy = {
+            guildAmbassadorBag = "4bdbd5",
+            sayyadinaBag = "4575f3",
+            opulenceBag = "67fbba",
+            theSleeperMustAwaken = "946ca1",
+            choamShares = "c530e6",
+            stagedIncident = "bee42f",
         },
         hagal = {
             intrigueBag = "f9bc89",
@@ -53,7 +65,7 @@ function ScoreBoard.onLoad(state)
             scientificBreakthrough = "d22031",
             tleilaxBag = "082e07",
             forHumanityBag = "71c0c8"
-        }
+        },
     })
 
     Helper.forEachRecursively(ScoreBoard.tokens, function (name, token)
@@ -62,6 +74,7 @@ function ScoreBoard.onLoad(state)
 
         -- Clumsy workaround to name items in a bag.
         if token.type == "Bag" then
+            log("Renaming in " .. name)
             local count = #token.getObjects()
             for i = 1, count do
                 local innerToken = token.takeObject({ position = token.getPosition() + Vector(0, i * 0.5, 0) })
@@ -71,6 +84,8 @@ function ScoreBoard.onLoad(state)
                     innerToken.setLock(false)
                 end)
             end
+        elseif token.type == "Infinite" then
+            -- TODO
         end
     end)
 
@@ -81,7 +96,7 @@ end
 
 ---
 function ScoreBoard.setUp(settings)
-    for _, extension in ipairs({ "riseOfIx", "immortality" }) do
+    for _, extension in ipairs({ "legacy", "riseOfIx", "immortality" }) do
         if not settings[extension] then
             Helper.forEach(ScoreBoard.tokens[extension], function (_, token)
                 token.destruct()

@@ -2,14 +2,14 @@ local BUILD = 'TBD'
 
 -- Do not load anything. Appropriate to work on the mod content without
 -- interference.
-local constructionModeEnabled = true
+local constructionModeEnabled = false
 
 -- For test purposes.
 local autoLoadedSettings
 
 --[[
 autoLoadedSettings = {
-    language = "fr",
+    language = "en",
     randomizePlayerPositions = false,
     numberOfPlayers = 4,
     hotSeat = true,
@@ -19,7 +19,8 @@ autoLoadedSettings = {
     immortality = false,
     goTo11 = false,
     leaderSelection = {
-        Green = "jessicaAtreides",
+        --Green = "jessicaAtreides",
+        Green = "amberMetulli",
         Yellow = "gurneyHalleck",
         Red = "irulanCorrino",
         Blue = "feydRauthaHarkonnen",
@@ -246,12 +247,9 @@ function setUp(newSettings)
     assert(newSettings)
     I18N.setLocale(newSettings.language)
 
-    log("-settings-")
-    log(newSettings)
-
     local properlySeatedPlayers = PlayerSet.getProperlySeatedPlayers()
     if not newSettings.hotSeat then
-        newSettings.numberOfPlayers = math.min(newSettings.numberOfPlayers, #properlySeatedPlayers)
+        newSettings.numberOfPlayers = math.min(6, #properlySeatedPlayers)
     end
 
     local continuation = Helper.createContinuation("setUp")

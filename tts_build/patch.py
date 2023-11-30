@@ -62,6 +62,26 @@ def patch_save(input_path, output_path):
 
     save['SaveName'] = "Dune Uprising - Prototype"
 
+    save['CameraStates'][0] = {
+        "Position": {
+            "x": 0,
+            "y": 0,
+            "z": -10
+        },
+        "Rotation": {
+            "x": 45,
+            "y": 0,
+            "z": 0
+        },
+        "Distance": 50,
+        "Zoomed": False,
+        "AbsolutePosition": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    }
+
     componentTags = {}
     componentTagCounts = {}
     for tag in save['ComponentTags']['labels']:
