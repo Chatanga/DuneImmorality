@@ -832,9 +832,9 @@ function MainBoard._asyncGoTechNegotiation(color, leader)
     Player[color].showOptionsDialog(I18N("goTechNegotiation"), options, 1, function (_, index, _)
         local success = true
         if index == 1 then
-            MainBoard._goTechNegotiation_1(color, leader)
-        elseif index == 2 then
             MainBoard._goTechNegotiation_2(color, leader)
+        elseif index == 2 then
+            MainBoard._goTechNegotiation_1(color, leader)
         else
             success = false
         end

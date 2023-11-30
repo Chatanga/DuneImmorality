@@ -384,7 +384,7 @@ function Rival.influence(color, faction, amount)
         table.sort(factions, function (f1, f2)
             local i1 = InfluenceTrack.getInfluence(f1, color)
             local i2 = InfluenceTrack.getInfluence(f2, color)
-            return i1 > i2
+            return i1 < i2
         end)
         finalFaction = factions[1]
     end
@@ -399,7 +399,7 @@ function Rival.shipments(color, amount)
             Rival.advanceFreighter(color, 1)
         else
             Rival.recallFreighter(color)
-            Rival.influence(nil, 1)
+            Rival.influence(color, nil, 1)
             if PlayBoard.hasTech(color, "troopTransports") then
                 Rival.troops(color, "supply", "combat", 3)
             else
