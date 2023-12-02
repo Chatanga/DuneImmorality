@@ -10,13 +10,12 @@ local Intrigue = {}
 
 ---
 function Intrigue.onLoad(state)
-    Helper.append(Intrigue, Helper.resolveGUIDs(true, {
+    --Helper.dumpFunction("Intrigue.onLoad(...)")
+
+    Helper.append(Intrigue, Helper.resolveGUIDs(false, {
         deckZone = 'a377d8',
         discardZone = '80642b'
     }))
-
-    AcquireCard.new(Intrigue.deckZone, "Intrigue", PlayBoard.withLeader(Intrigue._acquireIntrigueCard))
-    AcquireCard.new(Intrigue.discardZone, "Intrigue", nil)
 
     if state.settings then
         Intrigue._staticSetUp(state.settings)
@@ -26,13 +25,16 @@ end
 ---
 function Intrigue.setUp(settings)
     Intrigue._staticSetUp(settings)
+
+    Deck.generateIntrigueDeck(Intrigue.deckZone, settings.useContracts, settings.riseOfIx, settings.immortality).doAfter(function (deck)
+        Helper.shuffleDeck(deck)
+    end)
 end
 
 ---
 function Intrigue._staticSetUp(settings)
-    Deck.generateIntrigueDeck(Intrigue.deckZone, settings.useContracts, settings.riseOfIx, settings.immortality).doAfter(function (deck)
-        Helper.shuffleDeck(deck)
-    end)
+    AcquireCard.new(Intrigue.deckZone, "Intrigue", PlayBoard.withLeader(Intrigue._acquireIntrigueCard))
+    AcquireCard.new(Intrigue.discardZone, "Intrigue", nil)
 end
 
 ---

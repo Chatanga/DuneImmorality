@@ -1401,10 +1401,14 @@ function Helper.toVector(data)
     if not data then
         log("nothing to vectorize")
         return Vector(0, 0, 0)
+    elseif type(data) ~= "table" then
+        error("Can't vectorize back a " .. type(data) .. " (" .. tostring(data) .. ")")
     elseif Helper._isSomeKindOfObject(data) then
         return data
-    else
+    elseif #data > 0 then
         return Vector(data[1], data[2], data[3])
+    else
+        return Vector(data.x, data.y, data.z)
     end
 end
 

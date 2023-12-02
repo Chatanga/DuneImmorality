@@ -41,9 +41,13 @@ local Rival = Helper.createClass(Action, {
 
 ---
 function Hagal.onLoad(state)
-    Helper.append(Hagal, Helper.resolveGUIDs(false, {
-        deckZone = "8f49e3",
-    }))
+    --Helper.dumpFunction("Hagal.onLoad(...)")
+
+    if not state.settings or state.settings.numberOfPlayers < 3 then
+        Helper.append(Hagal, Helper.resolveGUIDs(true, {
+            deckZone = "8f49e3",
+        }))
+    end
 
     if state.settings and state.settings.numberOfPlayers < 3 then
         Hagal._staticSetUp(state.settings)

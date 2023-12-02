@@ -5,9 +5,8 @@ return {
     prolog = "« Une mise en place est toujours un moment très délicat. »",
     language = "Langue",
     players = "Joueurs",
-    gameModeEnabled = "Modes spéciaux",
+    virtualHotSeat = "Solo / Hotseat",
     randomizePlayersPositions = "Mélanger les positions des joueurs",
-    hotSeat = "Chaises musicales",
     extensions = "Extensions",
     useContracts = "Contrats de la CHOM",
     riseOfIx = "L’Avènement de Ix",
@@ -149,6 +148,7 @@ return {
     goSpiceRefinery = "Selectionnez une option.",
     zeroSpiceOption = "0 spice unit",
     oneSpiceOption = "1 spice unit",
+    makersAndRecall = "Faiseurs + Rappel",
 
     goDeepDesert = "Selectionnez une option.",
     fourSpicesOption = "4 spice units",

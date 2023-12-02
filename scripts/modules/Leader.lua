@@ -380,12 +380,9 @@ Leader.jessicaAtreides = Helper.createClass(Leader, {
 
         local leaderCard = PlayBoard.findLeaderCard(color)
 
-        local otherMemories = function (otherColor)
-            leaderCard.destruct()
-            Deck.generateSingleLeaderDeck(leaderCard.getPosition() + Vector(0, 1, 0), "reverendMotherJessica").doAfter(function (card)
-                card.flip()
-                Leader.jessicaAtreides.name = "reverendMotherJessica"
-            end)
+        local otherMemories = function ()
+            --leaderCard.flip()
+            leaderCard.setRotation(Vector(0, 180, 180))
             broadcastToAll(I18N("otherMemoriesUsed"), color)
         end
 
@@ -393,7 +390,7 @@ Leader.jessicaAtreides = Helper.createClass(Leader, {
             Helper.createAbsoluteButtonWithRoundness(anchor, 1, false, {
                 click_function = Helper.registerGlobalCallback(function (_, otherColor)
                     if otherColor == color then
-                        otherMemories(otherColor)
+                        otherMemories()
                         anchor.destruct()
                     else
                         broadcastToColor(I18N("noTouch"), otherColor, "Purple")

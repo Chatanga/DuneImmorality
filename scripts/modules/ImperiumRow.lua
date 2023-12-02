@@ -11,7 +11,9 @@ local ImperiumRow = {}
 
 ---
 function ImperiumRow.onLoad(state)
-    Helper.append(ImperiumRow, Helper.resolveGUIDs(true, {
+    --Helper.dumpFunction("ImperiumRow.onLoad(...)")
+
+    Helper.append(ImperiumRow, Helper.resolveGUIDs(false, {
         deckZone = "8bd982",
         -- FIXME Confusing "reserve" wording.
         reservationSlotZone = "473cf7",

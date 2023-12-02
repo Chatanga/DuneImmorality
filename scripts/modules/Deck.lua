@@ -399,11 +399,11 @@ local Deck = {
             uprising = {
                 choamSecurity = 1,
                 spiceFreighters = 1,
-                siegeOfArrakeen = 1,
+                siegeOfArrakeenNew = 1,
                 seizeSpiceRefinery = 1,
                 testOfLoyalty = 1,
                 shadowContest = 1,
-                secureImperialBasin = 1,
+                secureImperialBasinNew = 1,
                 protectTheSietches = 1,
                 tradeDispute = 1,
             },
@@ -420,8 +420,8 @@ local Deck = {
             },
             uprising = {
                 propaganda = 1,
-                battleForImperialBasin = 1,
-                battleForArrakeen = 1,
+                battleForImperialBasinNew = 1,
+                battleForArrakeenNew = 1,
                 battleForSpiceRefinery = 1,
             }
         },
@@ -533,8 +533,8 @@ local Deck = {
             feydRauthaHarkonnen = 1,
             shaddamCorrino = 1,
             muadDib = 1,
-        --},
-        --uprisingAlt = {
+        },
+        uprisingAlt = {
             reverendMotherJessica = 1,
         }
     },
@@ -553,46 +553,23 @@ local leaderCardBack = "http://cloud-3.steamusercontent.com/ugc/2093668799785645
 local customDeckBaseId = 100
 
 ---
-function Deck.onLoad(state)
-    if state.settings then
-        Deck._staticSetUp(state.settings)
-    end
+function Deck.onLoad()
+    -- NOP
 end
 
 ---
 function Deck.setUp(settings)
-    Deck._staticSetUp(settings)
-end
-
----
-function Deck._staticSetUp(settings)
+    --Helper.dumpFunction("Deck.setUp")
     local support
 
     if settings.language == "en" then
         support = require("en.Deck")
     elseif settings.language == "fr" then
         support = require("fr.Deck")
-
-        -- Brutal...
-        Wait.time(function ()
-
-            local boards = {
-                board4P = { guid = "483a1a", url = "http://cloud-3.steamusercontent.com/ugc/2305342013587677822/8DBDCE4796B52A64AE78D5F95A1CD0B87A87F66D/" },
-                board6P = { guid = "21cc52", url = "http://cloud-3.steamusercontent.com/ugc/2305342013587679397/718503B8558D419B491BF1624D72BCF13941A8F5/" },
-            }
-
-            for name, boardInfo in pairs(boards) do
-                local board = getObjectFromGUID(boardInfo.guid)
-                if board then
-                    log("Mutating board " .. name)
-                    local parameters = board.getCustomObject()
-                    parameters.image = boardInfo.url
-                    board.setCustomObject(parameters)
-                    board.reload()
-                end
-            end
-        end, 10)
-
+        -- Change main boards textures (4P/6P) after some time.
+        if settings.language == "fr" then
+            Wait.time(Deck._mutateMainBoards, 10)
+        end
     else
         error("Unsupported language: " .. settings.language)
     end
@@ -601,37 +578,36 @@ function Deck._staticSetUp(settings)
 end
 
 ---
+function Deck._mutateMainBoards()
+    local boards = {
+        board4P = { guid = "483a1a", url = "http://cloud-3.steamusercontent.com/ugc/2305342013587677822/8DBDCE4796B52A64AE78D5F95A1CD0B87A87F66D/" },
+        board6P = { guid = "21cc52", url = "http://cloud-3.steamusercontent.com/ugc/2305342013587679397/718503B8558D419B491BF1624D72BCF13941A8F5/" },
+    }
+
+    for name, boardInfo in pairs(boards) do
+        local board = getObjectFromGUID(boardInfo.guid)
+        if board then
+            log("Mutating board " .. name)
+            local parameters = board.getCustomObject()
+            parameters.image = boardInfo.url
+            board.setCustomObject(parameters)
+            board.reload()
+        end
+    end
+end
+
+---
 function Deck.generateObjectiveDeck(deckZone, cardNames)
+    --Helper.dump("generateObjectiveDeck")
     assert(deckZone)
     local continuation = Helper.createContinuation("Deck.generateObjectiveDeck")
     Deck._generateDeck("Objective", deckZone.getPosition(), cardNames, Deck.sources.objective).doAfter(continuation.run)
     return continuation
 end
 
----@deprecated
-function Deck._generateObjectiveDeck(deckZone, numberOfPlayers)
-    assert(deckZone)
-    local continuation = Helper.createContinuation("Deck.generateObjectiveDeck")
-
-    local contributions = {
-        muabDibFirstPlayer = 1,
-        crysknife = 1,
-    }
-    if numberOfPlayers == 3 then
-        contributions.ornithopter1to3p = 1
-    elseif numberOfPlayers >= 4 then
-        contributions.muabDib4to6p = 1
-        contributions.crysknife4to6p = 1
-    else
-        error("Unexpected number of players: " .. tostring(numberOfPlayers))
-    end
-
-    Deck._generateDeck("Imperium", deckZone.getPosition(), contributions, Deck.sources.objective).doAfter(continuation.run)
-    return continuation
-end
-
 ---
 function Deck.generateStarterDeck(deckZone, immortality, epic)
+    --Helper.dump("generateStarterDeck")
     assert(deckZone)
     local continuation = Helper.createContinuation("Deck.generateStarterDeck")
     local contributionSets = { Deck.starter.base }
@@ -649,8 +625,9 @@ end
 
 ---
 function Deck.generateEmperorStarterDeck(deckZone)
+    --Helper.dump("generateEmperorStarterDeck")
     assert(deckZone)
-    local continuation = Helper.createContinuation("Deck.generateStarterDeck")
+    local continuation = Helper.createContinuation("Deck.generateEmperorStarterDeck")
     local contributionSets = { Deck.starter.emperor }
     local contributions = Deck._mergeContributionSets(contributionSets)
     Deck._generateDeck("Imperium", deckZone.getPosition(), contributions, Deck.sources.imperium).doAfter(continuation.run)
@@ -659,8 +636,9 @@ end
 
 ---
 function Deck.generateMuadDibStarterDeck(deckZone)
+    --Helper.dump("generateMuadDibStarterDeck")
     assert(deckZone)
-    local continuation = Helper.createContinuation("Deck.generateStarterDeck")
+    local continuation = Helper.createContinuation("Deck.generateMuadDibStarterDeck")
     local contributionSets = { Deck.starter.muadDib }
     local contributions = Deck._mergeContributionSets(contributionSets)
     Deck._generateDeck("Imperium", deckZone.getPosition(), contributions, Deck.sources.imperium).doAfter(continuation.run)
@@ -669,6 +647,7 @@ end
 
 ---
 function Deck.generateStarterDiscard(discardZone, immortality, epic)
+    --Helper.dump("generateStarterDiscard")
     assert(discardZone)
     local continuation = Helper.createContinuation("Deck.generateStarterDiscard")
     if immortality and epic then
@@ -684,6 +663,7 @@ end
 
 ---
 function Deck.generateImperiumDeck(deckZone, contracts, ix, immortality)
+    --Helper.dump("generateImperiumDeck")
     assert(deckZone)
     local continuation = Helper.createContinuation("Deck.generateImperiumDeck")
     local contributions = Deck._mergeStandardContributionSets(Deck.imperium, ix, immortality)
@@ -696,6 +676,7 @@ end
 
 ---
 function Deck.generateSpecialDeck(parent, name, deckZone)
+    Helper.dump("generateSpecialDeck")
     assert(deckZone, name)
     local continuation = Helper.createContinuation("Deck.generateSpecialDeck")
     assert(name)
@@ -710,6 +691,7 @@ end
 
 ---
 function Deck.generateTleilaxuDeck(deckZone)
+    --Helper.dump("generateTleilaxuDeck")
     assert(deckZone)
     local continuation = Helper.createContinuation("Deck.generateTleilaxuDeck")
     Deck._generateDeck("Imperium", deckZone.getPosition(), Deck.tleilaxu, Deck.sources.tleilaxu).doAfter(continuation.run)
@@ -718,6 +700,7 @@ end
 
 ---
 function Deck.generateIntrigueDeck(deckZone, contracts, ix, immortality)
+    --Helper.dump("generateIntrigueDeck")
     assert(deckZone)
     local continuation = Helper.createContinuation("Deck.generateIntrigueDeck")
     local contributions = Deck._mergeStandardContributionSets(Deck.intrigue, ix, immortality)
@@ -730,6 +713,7 @@ end
 
 ---
 function Deck.generateTechDeck(deckZones)
+    --Helper.dump("generateTechDeck")
     assert(deckZones)
     assert(#deckZones == 3)
     local continuation = Helper.createContinuation("Deck.generateTechDeck")
@@ -763,6 +747,7 @@ end
 
 --
 function Deck.generateConflictDeck(deckZone, ix, epic)
+    --Helper.dump("generateConflictDeck")
     assert(deckZone)
     local continuation = Helper.createContinuation("Deck.generateConflictDeck")
 
@@ -789,6 +774,7 @@ end
 
 ---
 function Deck.generateHagalDeck(deckZone, ix, immortality, playerCount)
+    --Helper.dump("generateHagalDeck")
     assert(deckZone)
     assert(playerCount == 1 or playerCount == 2)
     local continuation = Helper.createContinuation("Deck.generateHagalDeck")
@@ -819,6 +805,7 @@ end
 
 ---
 function Deck.generateLeaderDeck(deckZone, contracts, ix, immortality, fanmadeLeaders)
+    --Helper.dump("generateLeaderDeck")
     assert(deckZone)
     local continuation = Helper.createContinuation("Deck.generateLeaderDeck")
     local contributions = Deck._mergeStandardContributionSets(Deck.leaders, ix, immortality)
@@ -839,6 +826,7 @@ end
 
 ---
 function Deck.generateSingleLeaderDeck(position, leaderName)
+    --Helper.dump("generateSingleLeaderDeck")
     local continuation = Helper.createContinuation("Deck.generateSingleLeaderDeck")
     local contributions = { [leaderName] = 1 }
     Deck._generateDeck("Leader", position, contributions, Deck.sources.leaders).doAfter(continuation.run)
@@ -1003,7 +991,7 @@ function Deck._generateDeck(deckName, position, contributions, sources)
         DragSelectable = true,
         Autoraise = true,
         Sticky = true,
-        Tooltip = false,
+        Tooltip = true,
         GridProjection = false,
         HideWhenFaceDown = true,
         Hands = false,
@@ -1072,51 +1060,56 @@ end
 
 ---
 function Deck.createObjectiveCustomDeck(faceUrl, width, height)
-    return Deck._createCustomDeck(objectiveCardBack, faceUrl, width, height, Vector(1, 1, 1))
+    return Deck.createCustomDeck(objectiveCardBack, faceUrl, width, height, Vector(1, 1, 1))
 end
 
 ---
 function Deck.createImperiumCustomDeck(faceUrl, width, height)
-    return Deck._createCustomDeck(imperiumCardBack, faceUrl, width, height, Vector(1.05, 1, 1.05))
+    return Deck.createCustomDeck(imperiumCardBack, faceUrl, width, height, Vector(1.05, 1, 1.05))
 end
 
 ---
 function Deck.createIntrigueCustomDeck(faceUrl, width, height)
-    return Deck._createCustomDeck(intrigueCardBack, faceUrl, width, height, Vector(1, 1, 1))
+    return Deck.createCustomDeck(intrigueCardBack, faceUrl, width, height, Vector(1, 1, 1))
 end
 
 ---
 function Deck.createTechCustomDeck(faceUrl, width, height)
-    return Deck._createCustomDeck(techCardBack, faceUrl, width, height, Vector(0.55, 1, 0.55))
+    return Deck.createCustomDeck(techCardBack, faceUrl, width, height, Vector(0.55, 1, 0.55))
 end
 
 ---
 function Deck.createConflict1CustomDeck(faceUrl, width, height)
-    return Deck._createCustomDeck(conflict1CardBack, faceUrl, width, height, Vector(1, 1, 1))
+    return Deck.createCustomDeck(conflict1CardBack, faceUrl, width, height, Vector(1, 1, 1))
 end
 
 ---
 function Deck.createConflict2CustomDeck(faceUrl, width, height)
-    return Deck._createCustomDeck(conflict2CardBack, faceUrl, width, height, Vector(1, 1, 1))
+    return Deck.createCustomDeck(conflict2CardBack, faceUrl, width, height, Vector(1, 1, 1))
 end
 
 ---
 function Deck.createConflict3CustomDeck(faceUrl, width, height)
-    return Deck._createCustomDeck(conflict3CardBack, faceUrl, width, height, Vector(1, 1, 1))
+    return Deck.createCustomDeck(conflict3CardBack, faceUrl, width, height, Vector(1, 1, 1))
 end
 
 ---
 function Deck.createHagalCustomDeck(faceUrl, width, height, scale)
-    return Deck._createCustomDeck(hagalCardBack, faceUrl, width, height, scale or Vector(0.83, 1, 0.83))
+    return Deck.createCustomDeck(hagalCardBack, faceUrl, width, height, scale or Vector(0.83, 1, 0.83))
 end
 
 ---
 function Deck.createLeaderCustomDeck(faceUrl, width, height)
-    return Deck._createCustomDeck(leaderCardBack, faceUrl, width, height, Vector(1.12, 1, 1.12))
+    return Deck.createCustomDeck(leaderCardBack, faceUrl, width, height, Vector(1.12, 1, 1.12))
 end
 
 ---
-function Deck._createCustomDeck(backUrl, faceUrl, width, height, scale)
+function Deck.createCustomDeck(backUrl, faceUrl, width, height, scale)
+    assert(backUrl)
+    assert(faceUrl)
+    assert(width)
+    assert(height)
+    assert(scale)
     return {
         FaceURL = faceUrl,
         BackURL = backUrl,

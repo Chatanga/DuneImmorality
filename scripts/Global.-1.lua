@@ -9,18 +9,17 @@ local autoLoadedSettings
 
 --[[
 autoLoadedSettings = {
-    language = "en",
-    randomizePlayerPositions = false,
-    numberOfPlayers = 4,
+    language = "fr",
     hotSeat = true,
+    numberOfPlayers = 3,
+    randomizePlayerPositions = false,
     useContracts = true,
     riseOfIx = false,
     epicMode = false,
     immortality = false,
     goTo11 = false,
     leaderSelection = {
-        --Green = "jessicaAtreides",
-        Green = "amberMetulli",
+        Green = "jessicaAtreides",
         Yellow = "gurneyHalleck",
         Red = "irulanCorrino",
         Blue = "feydRauthaHarkonnen",
@@ -93,16 +92,15 @@ local PlayerSet = {
             --zh = "中文",
         },
         language = "en",
-        gameModeEnabled = false,
-        gameMode_all = {
+        virtualHotSeat = false,
+        virtualHotSeatMode_all = {
             "1 (+2)",
             "2 (+1)",
             "3",
             "4",
             "2 x 3"
         },
-        gameMode = {},
-        hotSeat = {},
+        virtualHotSeatMode = {},
         randomizePlayerPositions = false,
         difficulty_all = Helper.map(allModules.Hagal.getDifficulties(), function (_, v) return v.name end),
         difficulty = {},
@@ -155,34 +153,40 @@ function asyncOnLoad(scriptState)
     allModules.Locale.onLoad(state)
     allModules.Action.onLoad(state)
 
+    if settings then
+        I18N.setLocale(settings.language)
+    end
+
     allModules.ordered = {
-        allModules.Pdf,
-        allModules.Music,
-        allModules.Deck,
-        allModules.ScoreBoard,
-        allModules.Hagal,
-        allModules.PlayBoard,
-        allModules.Combat,
-        allModules.LeaderSelection,
-        allModules.MainBoard,
-        allModules.ShipmentTrack,
-        allModules.TechMarket,
-        allModules.ChoamContractMarket,
-        allModules.Intrigue,
-        allModules.InfluenceTrack,
-        allModules.ImperiumRow,
-        allModules.Reserve,
-        allModules.TleilaxuResearch,
-        allModules.TleilaxuRow,
-        allModules.TurnControl,
+        { name = "Pdf", module = allModules.Pdf},
+        { name = "Music", module = allModules.Music},
+        { name = "Deck", module = allModules.Deck},
+        { name = "ScoreBoard", module = allModules.ScoreBoard},
+        { name = "Hagal", module = allModules.Hagal},
+        { name = "PlayBoard", module = allModules.PlayBoard},
+        { name = "Combat", module = allModules.Combat},
+        { name = "LeaderSelection", module = allModules.LeaderSelection},
+        { name = "MainBoard", module = allModules.MainBoard},
+        { name = "ShipmentTrack", module = allModules.ShipmentTrack},
+        { name = "TechMarket", module = allModules.TechMarket},
+        { name = "ChoamContractMarket", module = allModules.ChoamContractMarket},
+        { name = "Intrigue", module = allModules.Intrigue},
+        { name = "InfluenceTrack", module = allModules.InfluenceTrack},
+        { name = "ImperiumRow", module = allModules.ImperiumRow},
+        { name = "Reserve", module = allModules.Reserve},
+        { name = "TleilaxuResearch", module = allModules.TleilaxuResearch},
+        { name = "TleilaxuRow", module = allModules.TleilaxuRow},
+        { name = "TurnControl", module = allModules.TurnControl},
     }
 
     -- We cannot use Module.callOnAllRegisteredModules("onLoad", state),
     -- because the order matter, now that we reload with "staticSetUp" (for the
     -- same reason setUp is ordered too).
-    for _, module in ipairs(allModules.ordered) do
-        module.onLoad(state)
+    for i, moduleInfo in ipairs(allModules.ordered) do
+        Helper.dump(tostring(i) .. ". Loading " .. moduleInfo.name)
+        moduleInfo.module.onLoad(state)
     end
+    log("Done loading all modules")
 
     -- List the TTS events we want to make available in the modules.
     Module.registerModuleRedirections({
@@ -225,7 +229,9 @@ function onSave()
     local savedState = {
         settings = settings
     }
+
     Module.callOnAllRegisteredModules("onSave", savedState)
+
     if #Helper.getKeys(savedState) then
         return JSON.encode(savedState)
     else
@@ -245,12 +251,9 @@ end
 ---
 function setUp(newSettings)
     assert(newSettings)
-    I18N.setLocale(newSettings.language)
-
     local properlySeatedPlayers = PlayerSet.getProperlySeatedPlayers()
-    if not newSettings.hotSeat then
-        newSettings.numberOfPlayers = math.min(6, #properlySeatedPlayers)
-    end
+
+    I18N.setLocale(newSettings.language)
 
     local continuation = Helper.createContinuation("setUp")
     local activeOpponents = PlayerSet.findActiveOpponents(properlySeatedPlayers, newSettings.numberOfPlayers)
@@ -265,9 +268,11 @@ function setUp(newSettings)
         settings = newSettings
 
         local orderedPlayers = PlayerSet.toCanonicallyOrderedPlayerList(activeOpponents)
-        for _, module in ipairs(allModules.ordered) do
-            module.setUp(settings, activeOpponents, orderedPlayers)
+        for i, moduleInfo in ipairs(allModules.ordered) do
+            Helper.dump(tostring(i) .. ". Setting " .. moduleInfo.name)
+            moduleInfo.module.setUp(settings, activeOpponents, orderedPlayers)
         end
+        log("Done setting all modules")
 
         -- TurnControl.start() is called by "LeaderSelection" asynchronously,
         -- effectively starting the game.
@@ -407,46 +412,37 @@ function setRandomizePlayerPositions(player, value, id)
 end
 
 ---
-function setGameModeEnabled(player, value, id)
-    Helper.dumpFunction("setGameModeEnabled", player, value, id)
+function setVirtualHotSeat(player, value, id)
+    --Helper.dumpFunction("setVirtualHotSeat", player, value, id)
     PlayerSet.ui:fromUI(player, value, id)
     if value == "True" then
-        PlayerSet.fields.gameMode = 1
+        PlayerSet.fields.virtualHotSeatMode = 1
     else
-        PlayerSet.fields.gameMode = {}
+        PlayerSet.fields.virtualHotSeatMode = {}
     end
-    PlayerSet.applyNumberOfPlayers()
+    PlayerSet.applyVirtualHotSeatMode()
     PlayerSet.ui:toUI()
 end
 
 ---
-function setGameMode(player, value, id)
+function setVirtualHotSeatMode(player, value, id)
     PlayerSet.ui:fromUI(player, value, id)
-    PlayerSet.applyNumberOfPlayers()
+    PlayerSet.applyVirtualHotSeatMode()
     PlayerSet.ui:toUI()
 end
 
-function PlayerSet.applyNumberOfPlayers()
-    --PlayerSet.fields.hotSeat = type(PlayerSet.fields.gameMode) ~= "table" and false or {}
+function PlayerSet.applyVirtualHotSeatMode()
 
-    if type(PlayerSet.fields.gameMode) == "table" or PlayerSet.fields.gameMode > 2 then
+    if type(PlayerSet.fields.virtualHotSeatMode) == "table" or PlayerSet.fields.virtualHotSeatMode > 2 then
         PlayerSet.fields.difficulty = {}
     else
         PlayerSet.fields.difficulty = "novice"
     end
 
-    PlayerSet.fields.hotSeat = (type(PlayerSet.fields.gameMode) == "table" or PlayerSet.fields.gameMode == 1) and {} or false
-
-    local numberOfPlayers
-    if type(PlayerSet.fields.gameMode) == "table" then
-        numberOfPlayers = PlayerSet.getProperlySeatedPlayers()
-    else
-        numberOfPlayers = PlayerSet.fields.gameMode + math.floor(PlayerSet.fields.gameMode / 5)
-    end
-    Helper.dump("numberOfPlayers:", numberOfPlayers)
+    local numberOfPlayers = PlayerSet.getNumberOfPlayers(PlayerSet.fields.virtualHotSeatMode)
 
     PlayerSet.fields.leaderSelection_all = allModules.LeaderSelection.getSelectionMethods(numberOfPlayers)
-    if PlayerSet.fields.gameMode == 5 then
+    if numberOfPlayers == 6 then
         PlayerSet.fields.useContracts = {}
         PlayerSet.fields.color_all = {
             Green = true,
@@ -468,6 +464,18 @@ function PlayerSet.applyNumberOfPlayers()
 
     PlayerSet.updateSetupButton()
     PlayerSet.ui:toUI()
+end
+
+---
+function PlayerSet.getNumberOfPlayers(virtualHotSeatMode)
+    local numberOfPlayers
+    if type(virtualHotSeatMode) == "table" then
+        numberOfPlayers = math.min(6, #PlayerSet.getProperlySeatedPlayers())
+    else
+        numberOfPlayers = virtualHotSeatMode + math.floor(virtualHotSeatMode / 5)
+    end
+    --Helper.dump("numberOfPlayers:", numberOfPlayers)
+    return numberOfPlayers
 end
 
 ---
@@ -546,12 +554,10 @@ function PlayerSet.updateSetupButton()
         local properlySeatedPlayers = PlayerSet.getProperlySeatedPlayers()
 
         local minPlayerCount
-        if type(PlayerSet.fields.gameMode) == "table" then
+        if type(PlayerSet.fields.virtualHotSeatMode) == "table" then
             minPlayerCount = 3
-        elseif PlayerSet.fields.hotSeat then
-            minPlayerCount = 1
         else
-            minPlayerCount = math.min(2, PlayerSet.fields.gameMode)
+            minPlayerCount = 1
         end
 
         if #properlySeatedPlayers >= minPlayerCount then
@@ -579,7 +585,7 @@ function setUpFromUI()
 
     setUp({
         language = PlayerSet.fields.language,
-        numberOfPlayers = PlayerSet.fields.gameMode + math.floor(PlayerSet.fields.gameMode / 5),
+        numberOfPlayers = PlayerSet.getNumberOfPlayers(PlayerSet.fields.virtualHotSeatMode),
         hotSeat = PlayerSet.fields.hotSeat == true,
         randomizePlayerPositions = PlayerSet.fields.randomizePlayerPositions == true,
         difficulty = PlayerSet.fields.difficulty,

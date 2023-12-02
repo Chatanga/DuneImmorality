@@ -39,7 +39,9 @@ local Combat = {
 }
 
 function Combat.onLoad(state)
-    Helper.append(Combat, Helper.resolveGUIDs(true, Combat.unresolvedContent))
+    --Helper.dumpFunction("Combat.onLoad(...)")
+
+    Helper.append(Combat, Helper.resolveGUIDs(false, Combat.unresolvedContent))
 
     local origin = Combat.combatTokenZone.getPosition()
     Combat.noCombatForcePositions = Vector(origin.x, 0.66, origin.z)
@@ -70,12 +72,14 @@ end
 
 ---
 function Combat.setUp(settings)
-    Deck.generateConflictDeck(Combat.conflictDeckZone, settings.riseOfIx, settings.epicMode)
-    Combat._staticSetUp(settings)
+    Deck.generateConflictDeck(Combat.conflictDeckZone, settings.riseOfIx, settings.epicMode).doAfter(function ()
+        Combat._staticSetUp(settings)
+    end)
 end
 
 ---
 function Combat._staticSetUp(settings)
+
     Combat.garrisonParks = {}
     for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
         if not PlayBoard.isCommander(color) then
@@ -158,9 +162,6 @@ end
 
 ---
 function Combat._setUpConflict()
-    -- FIXME Happen too fast?
-    local count = Helper.getCardCount(Helper.getDeckOrCard(Combat.conflictDeckZone))
-    --assert(count == 10, tostring(count))
     Helper.moveCardFromZone(Combat.conflictDeckZone, Combat.conflictDiscardZone.getPosition() + Vector(0, 1, 0), nil, true, true).doAfter(function (card)
         assert(card)
         local i = 0

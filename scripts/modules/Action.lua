@@ -24,11 +24,14 @@ local Action = Helper.createClass(nil, {
 
 ---
 function Action.onLoad(state)
+    --Helper.dumpFunction("Action.onLoad(...)")
+
     Helper.registerEventListener("phaseStart", function (phase, _)
         Action.context = {
             phase = phase
         }
     end)
+
     Helper.registerEventListener("playerTurns", function (phase, color)
         Action.context = {
             phase = phase,
@@ -38,9 +41,8 @@ function Action.onLoad(state)
     end)
 
     if state.settings then
-        if state.Action then
-            Action.context = state.Action.context
-        end
+        assert(state.Action)
+        Action.context = state.Action.context
     end
 end
 

@@ -22,22 +22,31 @@ local TurnControl = {
     firstPlayerLuaIndex = nil,
     counterClockWise = false,
     currentRound = 0,
-    currentPhaseLuaIndex = nil,
+    currentPhase = nil,
     currentPlayerLuaIndex = nil,
     customTurnSequence = nil,
 }
 
 function TurnControl.onLoad(state)
+    --Helper.dumpFunction("TurnControl.onLoad(...)")
+
     if state.settings then
         if state.TurnControl then
             TurnControl.players = state.TurnControl.players
             TurnControl.scoreGoal = state.TurnControl.scoreGoal
             TurnControl.specialPhase = state.TurnControl.specialPhase
             TurnControl.firstPlayerLuaIndex = state.TurnControl.firstPlayerLuaIndex
+            TurnControl.counterClockWise = state.TurnControl.counterClockWise
             TurnControl.currentRound = state.TurnControl.currentRound
-            TurnControl.currentPhaseLuaIndex = state.TurnControl.currentPhaseLuaIndex
+            TurnControl.currentPhase = state.TurnControl.currentPhase
             TurnControl.currentPlayerLuaIndex = state.TurnControl.currentPlayerLuaIndex
             TurnControl.customTurnSequence = state.TurnControl.customTurnSequence
+
+            if TurnControl.currentPlayerLuaIndex then
+                Helper.onceTimeElapsed(2).doAfter(TurnControl._notifyPlayerTurn)
+            else
+                TurnControl._createMakersAndRecallButton()
+            end
         end
     end
 end
@@ -49,10 +58,9 @@ function TurnControl.onSave(state)
         scoreGoal = TurnControl.scoreGoal,
         specialPhase = TurnControl.specialPhase,
         firstPlayerLuaIndex = TurnControl.firstPlayerLuaIndex,
-        --
         counterClockWise = TurnControl.counterClockWise,
         currentRound = TurnControl.currentRound,
-        currentPhaseLuaIndex = TurnControl.currentPhaseLuaIndex,
+        currentPhase = TurnControl.currentPhase,
         currentPlayerLuaIndex = TurnControl.currentPlayerLuaIndex,
         customTurnSequence = TurnControl.customTurnSequence,
     }
@@ -63,7 +71,6 @@ function TurnControl.setUp(settings, _, players)
     TurnControl.players = players
     TurnControl.scoreGoal = settings.epicMode and 12 or 10
 
-    Helper.dump("settings.numberOfPlayers", settings.numberOfPlayers)
     if settings.numberOfPlayers == 1 then
         for i, player in ipairs(players) do
             if PlayBoard.isHuman(player) then
@@ -298,48 +305,65 @@ end
 function TurnControl._next(startPlayerLuaIndex)
     TurnControl.currentPlayerLuaIndex = TurnControl._findActivePlayer(startPlayerLuaIndex)
     if TurnControl.currentPlayerLuaIndex then
-        local playerColor = TurnControl.players[TurnControl.currentPlayerLuaIndex]
-        local player = Helper.findPlayerByColor(playerColor)
-        if player and player.seated then
-            Turns.turn_color = playerColor
-            -- Prevent any change trough the TTS built-in turn button.
-            Turns.order = { playerColor }
-        end
-        Helper.dump(">> Turn:", playerColor)
-        Helper.emitEvent("playerTurns", TurnControl.currentPhase, playerColor)
+        TurnControl._notifyPlayerTurn()
     else
         if TurnControl.currentPhase == "combat" then
-            Turns.order = {}
-            local primaryTable = getObjectFromGUID("2b4b92")
-            Helper.createAbsoluteButtonWithRoundness(primaryTable, 1, false, {
-                click_function = Helper.registerGlobalCallback(function ()
-                    primaryTable.clearButtons()
-                    TurnControl.endOfPhase()
-                end),
-                label = "Recall",
-                position = primaryTable.getPosition() + Vector(3.5, 1.8, -15.75),
-                width = 1200,
-                height = 450,
-                font_size = 300,
-            })
+            TurnControl._createMakersAndRecallButton()
         else
             TurnControl.endOfPhase()
         end
     end
 end
 
+-- TODO Nicer button.
+function TurnControl._createMakersAndRecallButton()
+    local fromIntRGB = function (r, g, b)
+        return Color(r / 255, g / 255, b / 255)
+    end
+
+    Turns.order = {}
+    local primaryTable = getObjectFromGUID("2b4b92")
+    Helper.createAbsoluteButtonWithRoundness(primaryTable, 1, false, {
+        click_function = Helper.registerGlobalCallback(function ()
+            primaryTable.clearButtons()
+            TurnControl.endOfPhase()
+        end),
+        label = I18N("makersAndRecall"),
+        position = primaryTable.getPosition() + Vector(3.5, 1.8, -15.8),
+        width = 2600,
+        height = 420,
+        font_size = 300,
+        color = fromIntRGB(128, 77, 0),
+        font_color = fromIntRGB(204, 153, 0),
+    })
+end
+
+function TurnControl._notifyPlayerTurn()
+    local playerColor = TurnControl.players[TurnControl.currentPlayerLuaIndex]
+    local player = Helper.findPlayerByColor(playerColor)
+    if player and player.seated then
+        Turns.turn_color = playerColor
+        -- Prevent any change trough the TTS built-in turn button.
+        Turns.order = { playerColor }
+    end
+    Helper.dump(">> Turn:", playerColor)
+    Helper.emitEvent("playerTurns", TurnControl.currentPhase, playerColor)
+end
+
 ---
 function TurnControl._findActivePlayer(startPlayerLuaIndex)
-    --Helper.dumpFunction("TurnControl._findActivePlayer", startPlayerLuaIndex)
+    Helper.dumpFunction("TurnControl._findActivePlayer", startPlayerLuaIndex)
     assert(startPlayerLuaIndex)
     local playerLuaIndex = startPlayerLuaIndex
     local n = TurnControl.getPlayerCount()
     for _ = 1, n do
         if TurnControl._isPlayerActive(playerLuaIndex) then
+            --Helper.dump("->", playerLuaIndex)
             return playerLuaIndex
         end
         playerLuaIndex = TurnControl._getNextPlayer(playerLuaIndex, TurnControl.counterClockWise)
     end
+    --Helper.dump("-> -")
     return nil
 end
 
@@ -363,6 +387,7 @@ function TurnControl._getNextPlayer(playerLuaIndex, counterClockWise)
             nextPlayerLuaIndex = (playerLuaIndex % n) + 1
         end
         assert(nextPlayerLuaIndex)
+        --Helper.dump("->", nextPlayerLuaIndex)
         return nextPlayerLuaIndex
     end
 end

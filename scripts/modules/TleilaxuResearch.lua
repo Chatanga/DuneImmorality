@@ -50,7 +50,9 @@ local TleilaxuResearch = {
 
 ---
 function TleilaxuResearch.onLoad(state)
-    Helper.append(TleilaxuResearch, Helper.resolveGUIDs(true, {
+    --Helper.dumpFunction("TleilaxuResearch.onLoad(...)")
+
+    Helper.append(TleilaxuResearch, Helper.resolveGUIDs(false, {
         board = "d5c2db",
         TanksZone = "f5de09",
         tleilaxSpiceBonusToken = "46cd6b",
@@ -68,10 +70,12 @@ function TleilaxuResearch.onLoad(state)
         twoHelicesZone = "03e529"
     }))
 
-    Helper.noPhysicsNorPlay(TleilaxuResearch.board)
+    if TleilaxuResearch.board then
+        Helper.noPhysicsNorPlay(TleilaxuResearch.board)
 
-    local value = state.MainBoard and state.TleilaxuResearch.tleilaxSpiceBonusToken or 2
-    TleilaxuResearch.spiceBonus = Resource.new(TleilaxuResearch.tleilaxSpiceBonusToken, nil, "spice", value)
+        local value = (state and state.TleilaxuResearch and state.TleilaxuResearch.tleilaxSpiceBonusToken) or 2
+        TleilaxuResearch.spiceBonus = Resource.new(TleilaxuResearch.tleilaxSpiceBonusToken, nil, "spice", value)
+    end
 
     if state.settings and state.settings.immortality then
         TleilaxuResearch._staticSetUp()
@@ -81,9 +85,11 @@ end
 ---
 function TleilaxuResearch.onSave(state)
     --Helper.dumpFunction("TleilaxuResearch.onSave")
-    state.TleilaxuResearch = {
-        spiceBonus = TleilaxuResearch.spiceBonus:get(),
-    }
+    if state.settings and TleilaxuResearch.board then
+        state.TleilaxuResearch = {
+            spiceBonus = TleilaxuResearch.spiceBonus:get(),
+        }
+    end
 end
 
 ---
@@ -97,6 +103,7 @@ end
 
 ---
 function TleilaxuResearch._staticSetUp()
+
     TleilaxuResearch.researchTokenOrigin = TleilaxuResearch._getAveragePosition("researchTokenInitalPosition")
     TleilaxuResearch._generateResearchButtons()
 

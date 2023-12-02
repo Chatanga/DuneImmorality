@@ -7,16 +7,18 @@ local TechMarket = Module.lazyRequire("TechMarket")
 
 local ShipmentTrack = {
     initialFreighterPositions = {
-        Yellow = Helper.getHardcodedPositionFromGUID('8fa76f', 8.999384, 0.689741254, 2.84977412),
-        Green = Helper.getHardcodedPositionFromGUID('34281d', 8.449363, 0.6897417, 2.85018063),
-        Blue = Helper.getHardcodedPositionFromGUID('68e424', 7.34935427, 0.68979913, 2.85444117),
-        Red = Helper.getHardcodedPositionFromGUID('e9096d', 7.899373, 0.6897421, 2.853153)
+        Yellow = Helper.getHardcodedPositionFromGUID('8fa76f', 8.999371, 0.6897479, 2.849765),
+        Green = Helper.getHardcodedPositionFromGUID('34281d', 8.44936, 0.689741552, 2.85018778),
+        Blue = Helper.getHardcodedPositionFromGUID('68e424', 7.34934473, 0.6897391, 2.85446048),
+        Red = Helper.getHardcodedPositionFromGUID('e9096d', 7.89936638, 0.6897422, 2.853125)
     }
 }
 
 ---
 function ShipmentTrack.onLoad(state)
-    Helper.append(ShipmentTrack, Helper.resolveGUIDs(true, {
+    --Helper.dumpFunction("ShipmentTrack.onLoad(...)")
+
+    Helper.append(ShipmentTrack, Helper.resolveGUIDs(false, {
         --[[
         levelSlots = {
             "1eeba7",

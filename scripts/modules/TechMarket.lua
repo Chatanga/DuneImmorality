@@ -39,7 +39,9 @@ local TechCard = {
 
 ---
 function TechMarket.onLoad(state)
-    Helper.append(TechMarket, Helper.resolveGUIDs(true, {
+    --Helper.dumpFunction("TechMarket.onLoad(...)")
+
+    Helper.append(TechMarket, Helper.resolveGUIDs(false, {
         board = "d75455",
         negotiationZone = "2253fa",
         techSlots = {

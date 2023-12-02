@@ -66,6 +66,8 @@ end
 
 ---
 function MainBoard.onLoad(state)
+    --Helper.dumpFunction("MainBoard.onLoad(...)")
+
     Helper.append(MainBoard, Helper.resolveGUIDs(false, {
         board = "21cc52", -- 4P: "483a1a", 6P: "21cc52"
         emperorBoard = "4cb9ba",
@@ -584,7 +586,7 @@ end
 
 ---
 function MainBoard._goImperialPrivilege(color, leader)
-    if InfluenceTrack.hasFriendship(color, "spacingGuild") and leader.resources(color, "solari", -3) then
+    if InfluenceTrack.hasFriendship(color, "emperor") and leader.resources(color, "solari", -3) then
         leader.drawImperiumCards(color, 1)
         return true
     else

@@ -24,23 +24,6 @@
 				</Dropdown>
 			</HorizontalLayout>
 
-			<Text class="primary" key="players"/>
-			<VerticalLayout padding="25 0 0 0">
-				<HorizontalLayout>
-					<Toggle id="gameModeEnabled" onValueChanged="Global/setGameModeEnabled" isOn="False" key="gameModeEnabled"/>
-					<Dropdown id="gameMode" onValueChanged="Global/setGameMode" flexibleWidth="2.5" active="False">
-						<Option></Option>
-					</Dropdown>
-					<Dropdown id="difficulty" onValueChanged="Global/setDifficulty" flexibleWidth="3" active="False">
-						<Option></Option>
-					</Dropdown>
-				</HorizontalLayout>
-				<VerticalLayout padding="25 0 0 0">
-					<Toggle id="hotSeat" onValueChanged="Global/setHotSeat" isOn="False" key="hotSeat"/>
-				</VerticalLayout>
-				<Toggle id="randomizePlayerPositions" onValueChanged="Global/setRandomizePlayerPositions" isOn="True" key="randomizePlayersPositions"/>
-			</VerticalLayout>
-
 			<Text class="primary" key="extensions"/>
 			<VerticalLayout padding="25 0 0 0">
 				<Toggle id="useContracts" onValueChanged="Global/setUseContracts" isOn="True" key="useContracts"/>
@@ -72,6 +55,16 @@
 				<Text class="primary" key="miscellanous"/>
 			</HorizontalLayout>
 			<VerticalLayout padding="25 0 0 0">
+				<Toggle id="randomizePlayerPositions" onValueChanged="Global/setRandomizePlayerPositions" isOn="True" key="randomizePlayersPositions"/>
+				<HorizontalLayout>
+					<Toggle id="virtualHotSeat" onValueChanged="Global/setVirtualHotSeat" isOn="False" key="virtualHotSeat"/>
+					<Dropdown id="virtualHotSeatMode" onValueChanged="Global/setVirtualHotSeatMode" flexibleWidth="2.5" active="False">
+						<Option></Option>
+					</Dropdown>
+					<Dropdown id="difficulty" onValueChanged="Global/setDifficulty" flexibleWidth="3" active="False">
+						<Option></Option>
+					</Dropdown>
+				</HorizontalLayout>
 				<Toggle id="soundEnabled" onValueChanged="Global/setSoundEnabled" isOn="True" key="soundEnabled"/>
 			</VerticalLayout>
 

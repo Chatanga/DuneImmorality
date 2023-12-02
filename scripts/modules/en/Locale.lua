@@ -5,9 +5,8 @@ return {
     prolog = "\"A setup is a very delicate time...\"",
     language = "Language",
     players = "Players",
-    gameModeEnabled = "Special modes",
+    virtualHotSeat = "Solo / Hotseat",
     randomizePlayersPositions = "Randomize players' positions",
-    hotSeat = "Hot seat",
     extensions = "Extensions",
     useContracts = "CHOAM contracts",
     riseOfIx = "Rise of Ix (unsupported)",
@@ -116,10 +115,10 @@ return {
     takeHighCouncilSeat = "■ Take High-Council seat.",
     gainInfluence = "■ +{amount} influence with {withFaction}",
     loseInfluence = "■ -{amount} influence with {withFaction}",
-    acquireTleilaxuCard = "■ Acquire Tleixlaxu card : \"{card}\"",
-    acquireImperiumCard = "■ Acquire Imperium card : \"{card}\"",
+    acquireTleilaxuCard = "■ Acquire Tleixlaxu card: \"{card}\"",
+    acquireImperiumCard = "■ Acquire Imperium card: \"{card}\"",
     buyTechCard= "■ Acquire tech for {amount} {resource}: \"{card}\"",
-    sendingAgent = "■ Sending an agent to : {space}",
+    sendingAgent = "■ Sending an agent to: {space}",
 
     -- Combat
     announceCombat = "Round combat is: \"{combat}\"",
@@ -149,6 +148,7 @@ return {
     goSpiceRefinery = "Select an option.",
     zeroSpiceOption = "0 spice unit",
     oneSpiceOption = "1 spice unit",
+    makersAndRecall = "Makers + Recall",
 
     goDeepDesert = "Select an option.",
     fourSpicesOption = "4 spice units",

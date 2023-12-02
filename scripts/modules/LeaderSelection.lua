@@ -15,6 +15,8 @@ local LeaderSelection = {
 
 ---
 function LeaderSelection.onLoad()
+    --Helper.dumpFunction("LeaderSelection.onLoad(...)")
+
     Helper.append(LeaderSelection, Helper.resolveGUIDs(false, {
         deckZone = "23f2b5",
         secondaryTable = "662ced",
@@ -36,13 +38,6 @@ function LeaderSelection.getSelectionMethods(numberOfPlayers)
     return selectionMode
 end
 
---- TODO Temporary fix.
-function LeaderSelection._mergeJessica(leaderCards)
-    assert(leaderCards.jessicaAtreides)
-    assert(leaderCards.reverendMotherJessica)
-    leaderCards.jessicaAtreides.setPosition(leaderCards.reverendMotherJessica.getPosition())
-end
-
 ---
 function LeaderSelection.setUp(settings, opponents, orderedPlayers)
     local autoStart = not settings.tweakLeaderSelection
@@ -52,17 +47,13 @@ function LeaderSelection.setUp(settings, opponents, orderedPlayers)
         local continuation = Helper.createContinuation("LeaderSelection.setUp")
         local count = numberOfLeaders
 
-        local leaderCards = {}
-
         LeaderSelection._layoutLeaders(numberOfLeaders, function (_, position)
             deck.takeObject({
                 position = position,
                 flip = true,
                 callback_function = function (card)
-                    leaderCards[Helper.getID(card)] = card
                     count = count - 1
                     if count == 0 then
-                        LeaderSelection._mergeJessica(leaderCards)
                         Helper.onceTimeElapsed(1).doAfter(continuation.run)
                     end
                 end
@@ -311,6 +302,7 @@ function LeaderSelection._getVisibleLeaders()
             end
         end
     end
+    Helper.dump(i, "/", j)
     return leaders
 end
 

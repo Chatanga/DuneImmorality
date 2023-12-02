@@ -12,7 +12,9 @@ local TleilaxuRow = {}
 
 ---
 function TleilaxuRow.onLoad(state)
-    Helper.append(TleilaxuRow, Helper.resolveGUIDs(true, {
+    --Helper.dumpFunction("TleilaxuRow.onLoad(...)")
+
+    Helper.append(TleilaxuRow, Helper.resolveGUIDs(false, {
         deckZone = "14b2ca",
         slotZones = {
             'e5ba35',
@@ -29,6 +31,17 @@ end
 ---
 function TleilaxuRow.setUp(settings)
     if settings.immortality then
+        Deck.generateTleilaxuDeck(TleilaxuRow.deckZone).doAfter(function (deck)
+            Helper.shuffleDeck(deck)
+            Helper.onceShuffled(deck).doAfter(function ()
+                for i = 1, 2 do
+                    local zone = TleilaxuRow.slotZones[i]
+                    Helper.moveCardFromZone(TleilaxuRow.deckZone, zone.getPosition(), Vector(0, 180, 0))
+                end
+            end)
+        end)
+        Deck.generateSpecialDeck("immortality", "reclaimedForces", TleilaxuRow.slotZones[3])
+
         TleilaxuRow._staticSetUp()
     else
         TleilaxuRow._tearDown()
@@ -37,15 +50,6 @@ end
 
 ---
 function TleilaxuRow._staticSetUp()
-    Deck.generateTleilaxuDeck(TleilaxuRow.deckZone).doAfter(function (deck)
-        Helper.shuffleDeck(deck)
-        for i = 1, 2 do
-            local zone = TleilaxuRow.slotZones[i]
-            Helper.moveCardFromZone(TleilaxuRow.deckZone, zone.getPosition(), Vector(0, 180, 0))
-        end
-    end)
-    Deck.generateSpecialDeck("immortality", "reclaimedForces", TleilaxuRow.slotZones[3])
-
     TleilaxuRow.acquireCards = {}
     for i, zone in ipairs(TleilaxuRow.slotZones) do
         local acquireCard = AcquireCard.new(zone, "Imperium", PlayBoard.withLeader(function (_, color)

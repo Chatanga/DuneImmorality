@@ -3,10 +3,11 @@
 Features:
 
 - Base game 4P
-- Base game 6P
-- Hagal House
-- Rise of Ix extension
-- Immortality extension
+- (Base game 6P)
+- (Hagal House)
+- (Rise of Ix extension)
+- (Immortality extension)
+- (Legacy as an extension)
 
 Supported langages:
 
@@ -16,9 +17,6 @@ Supported langages:
 ## Build Process
 
 cf. [tts_build/README.md](tts_build/README.md)
-
-Note : se méfier de "input.mod.json" vis à vis des opérations de rebase et commit.
-Mieux vaut qu'une seule personne le modifie et que les autres ignorent leurs modifications locales (les sauvegardes contiennent un timestamp nécessaire).
 
 ## Nota
 
@@ -34,81 +32,59 @@ Mieux vaut qu'une seule personne le modifie et que les autres ignorent leurs mod
 
 This mod approach: use snapoints for multistates objects, otherwise stick to zones. Decals and anchors are procedurally generated (one for all or at each load).
 
-## TODO Uprising
+## TODO
 
-- Elucider le mystère des PV.
-- Refaire les PV et leurs sac et les tagger correctement.
-- Contrôle d’espace problématique avec Uprising et sans CardEffect.
+- Refaire les PV et leurs sacs.
 - Retirer les options avec ver si pas d’hameçon.
-- Découpage des zones de combat.
-- Position hameçon.
+- Respecter le découpage des zones de combat.
 
 [75%] 4J
-- Snaps pour les drapeaux.
+- Revoir le contexte d’action pour les logs.
+- Créer pions PV pour nouveaux conflits.
 - Capacités spéciales des dirigeants.
-    - FeydRauthaHarkonnen.prepare -> clonage cube blanc (ou le mettre avec le matos en plus) + snaps + tag dédié.
-    - Verrouiller carte révérende mère Jessica.
-    - Park "memory" pour Jessica.
 - Revoir les décalcos tech. et élargir les tags des snaps (Tech + Contract).
-- 3 + 1 "Battle Trophy".
-- Nouveaux PV (notamment victoires directes et indirectes) et sacs à PV.
-- Régler tressautement paquets.
-
-[50%] Extensions
-- Achat de tech débrayé par défaut.
-- Rétablir uniquement et sans inclure CardEffect : TechCard et ImperiumCard (uniquement les cartes Tleilaxu avec leur coût).
-- Patch Ix (avec postes d'observation) pour le plateau principal (emmerdant pour les snaps -> 2 x 2 ?).
-- Patch Immortality pour le plateau principal.
-- Considérer 'base' (legacy ?) comme une extension.
+- 1/2 PV pour les 3 + 1 objectifs.
 
 [10%] 6J
 - Ajouter un emplacement ThroneRow.
 - Rendre mobiles les éléments de jeu pour avoir 2 configurations 4J et 6J.
 - Automatiser les espaces 6J.
 - Reprendre les images des marqueurs de score.
-- Créer 6 SwordmasterBonusToken (de couleurs différentes).
 - Sélecteur d'allié.
 - Activation et surcharge des commandants (une vraie surcharge !).
     - Ajouter un sélecteur (nécessaire de toute manière pour le maître d'armes) sur le plateau colorisant les agents du commandant.
     - Remise en cause du clic pour envoyer ? Non, sélection allié, puis sens déduit ou double puis swordmaster. De fait, c'est aussi le moyen de rappeler la nécessité de sélectionner un allié.
 - Système influences partagées.
-- Enlever le bouton Sandworm à 6J pour l'Imperium.
-- Paquet de départ de commandant.
-- Activation (et espaces) plateaux commandants.
-- Commander.lua ?
 - Transfert de ressources.
     - Un joueur peut utiliser les ressources d'un autre joueurs (uniquement avec un clic gauche), mais le résultat est un transfert à partir des siennes.
 - Fin de tour d'un joueur -> raz des épées si aucune unité en combat.
 - Maître d'armes -> assignation jeton +2 épées, mais rappel destructif.
-- Refaire les PV (custom tile ?) et leurs sacs (?) et les tagger correctement.
-- Rétablir uniquement et sans inclure CardEffect :
-                - TechCard
-                - ImperiumCard (uniquement les cartes Tleilaxu avec leur coût)
-- Snaps pour les drapeaux, la zone des combats (?) et le plateau 6J.
-- Gestion des espaces en 6J.
-- Mécanisme de report d'alliance.
-- Mécanisme des alliés.
 
-[10%] Solo
+[50%] Extensions
+- Achat de tech débrayé par défaut.
+- Rétablir TechCard et ImperiumCard (uniquement les cartes Tleilaxu avec leur coût).
+- Patch Ix (avec postes d'observation) pour le plateau principal (emmerdant pour les snaps -> 2 x 2 ?).
+- Patch Immortality pour le plateau principal.
+- Considérer base/core/legacy comme une extension.
+
+[10%] 2P / Solo
 - Mise en place.
 - Tirage de cartes et prise en compte des épées, mais aucune automatisation sinon.
 
-## Stabilisation
+### Later
 
-- Changer MainBoard from "custom token" en "custom tile".
-- Se pencher sur la sérialisation (save / load), identifier les continuations longues.
+- Régler tressautement paquets après apple à "moveAt".
+- Custom token -> tile (MainBoard).
+- Cache pour le module Deck.
 - Dialogue fait maison pour notifier l'annulation par l'utilisateur.
 - Utiliser l'appelation CouncilorToken et ScoreMarker.
 - Fin de tour / phase robuste.
 - Toujours décorréler l'acquisition (carte, tech, contrat) de son effet.
-- Cache spatial de Deck.lua.
-- Surcouche d'accès à Deck.
-- Revoir la gestion des tuiles.
-- Patcher le bouton de tour pour les idiots ?
-- Corriger colorimétrie.
-- Corriger altitudes objets et actions (findHeight du projet de test ?).
+- Prendre en considération crans de zoom, préconfigurer les caméras ?
+- Une deuxième main pour les joueurs ?
+- Mains des joueurs à l'horizontal en 4J ?
 
-## Details
+## Notes
 
 Ajouter *.move(position) pour :
     MainBoard (the game board with 6P extensions, not the table)
@@ -135,9 +111,3 @@ Deck : plateaux noirs cachés (avec drapeau), dont un générique, pour le conte
     Cartes Imperium Tleilaxu
     Cartes des dirigeants
     Manuels
-
-## Maybe
-
-- Prendre en considération crans de zoom, préconfigurer les caméras ?
-- Une deuxième main pour les joueurs ?
-- Mains des joueurs à l'horizontal en 4J ?

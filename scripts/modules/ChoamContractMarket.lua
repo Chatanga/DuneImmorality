@@ -35,7 +35,9 @@ local ChoamContractMarket = {
 
 ---
 function ChoamContractMarket.onLoad(state)
-    Helper.append(ChoamContractMarket, Helper.resolveGUIDs(true, {
+    --Helper.dumpFunction("ChoamContractMarket.onLoad(...)")
+
+    Helper.append(ChoamContractMarket, Helper.resolveGUIDs(false, {
         contractBagEn = "099d8b",
         contractBagFr = "fb05ac",
     }))
@@ -49,12 +51,22 @@ end
 function ChoamContractMarket.setUp(settings)
     if settings.useContracts then
         ChoamContractMarket._staticSetUp(settings)
+
+        Helper.shuffleDeck(ChoamContractMarket.contractBag)
+        Helper.onceShuffled(ChoamContractMarket.contractBag).doAfter(function ()
+            for i, zone in ipairs(ChoamContractMarket.contractSlots) do
+                local callback = PlayBoard.withLeader(ChoamContractMarket["_acquireContract" .. tostring(i)])
+                local acquireCard = AcquireCard.new(zone, "Contract", callback, 0.3)
+                table.insert(ChoamContractMarket.acquireCards, acquireCard)
+                ChoamContractMarket._replenish(i)
+            end
+        end)
     else
         ChoamContractMarket._tearDown()
     end
 end
 
----
+--- @deprecated
 function ChoamContractMarket._createTile(position)
     local data =  {
         Name = "Custom_Tile",
@@ -131,16 +143,6 @@ function ChoamContractMarket._staticSetUp(settings)
     end
 
     ChoamContractMarket._processSnapPoints(settings)
-
-    Helper.shuffleDeck(ChoamContractMarket.contractBag)
-    Helper.onceShuffled(ChoamContractMarket.contractBag).doAfter(function ()
-        for i, zone in ipairs(ChoamContractMarket.contractSlots) do
-            local callback = PlayBoard.withLeader(ChoamContractMarket["_acquireContract" .. tostring(i)])
-            local acquireCard = AcquireCard.new(zone, "Contract", callback, 0.3)
-            table.insert(ChoamContractMarket.acquireCards, acquireCard)
-            ChoamContractMarket._replenish(i)
-        end
-    end)
 end
 
 ---

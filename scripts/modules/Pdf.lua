@@ -11,13 +11,14 @@ local Pdf = {
 }
 
 ---
-function Pdf.onLoad(state)
+function Pdf.onLoad()
+    --Helper.dumpFunction("Pdf.onLoad(...)")
     Pdf.fr = require("fr.Pdf")
     Pdf.en = require("en.Pdf")
 end
 
 ---
-function Pdf.setUp(settings)
+function Pdf.setUp()
     local locale = I18N.getLocale()
 
     if locale == "en" then

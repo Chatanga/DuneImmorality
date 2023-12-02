@@ -12,6 +12,8 @@ local ScoreBoard = {
 
 ---
 function ScoreBoard.onLoad(state)
+    --Helper.dumpFunction("ScoreBoard.onLoad(...)")
+
     --[[
         4 players tokens -> PlayBoard
         alliance / friendship -> InfluenceTrack
@@ -68,6 +70,14 @@ function ScoreBoard.onLoad(state)
         },
     })
 
+    if state.settings and state.settings.riseOfIx then
+        ScoreBoard._staticSetUp(state.settings)
+    end
+end
+
+---
+function ScoreBoard.setUp(settings)
+
     Helper.forEachRecursively(ScoreBoard.tokens, function (name, token)
         assert(token)
         token.setName(I18N(Helper.getID(token)))
@@ -89,13 +99,6 @@ function ScoreBoard.onLoad(state)
         end
     end)
 
-    if state.settings and state.settings.riseOfIx then
-        ScoreBoard._staticSetUp(state.settings)
-    end
-end
-
----
-function ScoreBoard.setUp(settings)
     for _, extension in ipairs({ "legacy", "riseOfIx", "immortality" }) do
         if not settings[extension] then
             Helper.forEach(ScoreBoard.tokens[extension], function (_, token)

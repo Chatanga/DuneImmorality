@@ -23,7 +23,9 @@ local InfluenceTrack = {
 
 ---
 function InfluenceTrack.onLoad(state)
-    Helper.append(InfluenceTrack, Helper.resolveGUIDs(true, {
+    --Helper.dumpFunction("InfluenceTrack.onLoad(...)")
+
+    Helper.append(InfluenceTrack, Helper.resolveGUIDs(false, {
         snoopers = {
             emperor = "a58ce8",
             spacingGuild = "857f74",
@@ -38,16 +40,7 @@ function InfluenceTrack.onLoad(state)
             greatHouses = '95926b',
             fringeWorlds = 'a43ec0',
         },
-        allianceTokens = {
-            --[[
-            emperor = '13e990',
-            spacingGuild = 'ad1aae',
-            beneGesserit = '33452e',
-            fremen = '4c2bcc',
-            greatHouses = '52b0f6',
-            fringeWorlds = 'ac33a8',
-            ]]
-        }
+        allianceTokens = {}
     }))
 
     for _, bag in pairs(InfluenceTrack.friendshipBags) do
@@ -55,18 +48,18 @@ function InfluenceTrack.onLoad(state)
     end
 
     if state.settings then
-        InfluenceTrack._staticSetUp(state.settings)
+        InfluenceTrack._staticSetUp(state.settings, false)
     end
 end
 
 ---
 function InfluenceTrack.setUp(settings)
-    InfluenceTrack._staticSetUp(settings)
+    InfluenceTrack._staticSetUp(settings, true)
 end
 
 ---
-function InfluenceTrack._staticSetUp(settings)
-    InfluenceTrack._processSnapPoints(settings)
+function InfluenceTrack._staticSetUp(settings, firstTime)
+    InfluenceTrack._processSnapPoints(settings, firstTime)
 
     for faction, initialPositions in pairs(InfluenceTrack.influenceTokenInitialPositions) do
         local factionLevels = {}
@@ -111,7 +104,7 @@ function InfluenceTrack._staticSetUp(settings)
 end
 
 ---
-function InfluenceTrack._processSnapPoints(settings)
+function InfluenceTrack._processSnapPoints(settings, firstTime)
     -- TODO Get rid of the *InitialPositions variables
 
     local allColors = { "Green", "Yellow", "Blue", "Red", "Teal", "Brown" }
@@ -157,7 +150,9 @@ function InfluenceTrack._processSnapPoints(settings)
                             }
                             local influenceTokenInitialPosition = position + Vector(xOffsets[color], 0, -1.6)
                             InfluenceTrack.influenceTokenInitialPositions[faction][color] = influenceTokenInitialPosition
-                            influenceToken.setPosition(influenceTokenInitialPosition)
+                            if firstTime then
+                                influenceToken.setPosition(influenceTokenInitialPosition)
+                            end
                             break
                         end
                     end
@@ -166,7 +161,9 @@ function InfluenceTrack._processSnapPoints(settings)
 
             local allianceTokenInitialPosition = position + Vector(-0.02, 0, 2.32)
             InfluenceTrack.allianceTokenInitialPositions[faction] = allianceTokenInitialPosition
-            InfluenceTrack.allianceTokens[faction].setPositionSmooth(allianceTokenInitialPosition)
+            if firstTime then
+                InfluenceTrack.allianceTokens[faction].setPositionSmooth(allianceTokenInitialPosition)
+            end
         end
     }
 
