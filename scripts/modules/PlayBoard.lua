@@ -395,10 +395,14 @@ function PlayBoard.rebuild()
                 fourPlayerVictoryToken = symmetric(-11.2, 0, 8.1),
             },
             {
+                --[[
                 spice = offseted(-8.4, 0, 4.5),
                 solari = offseted(-4.4, 0, 4.5),
                 water = offseted(-6.4, 0, 4),
-                leaderZone = offseted(0, 0, -4),
+                ]]
+                spice = offseted(-8.4, 0, 4),
+                solari = offseted(-6.4, 0, 4.5),
+                water = offseted(-4.4, 0, 4),
                 agents = {
                     origin = offseted(-7.9, 0, 6.5),
                     width = 3,
@@ -411,8 +415,6 @@ function PlayBoard.rebuild()
                     height = 1,
                     xOffset = Vector(1.5, 0, 0),
                 },
-                drawDeckZone = offseted(0, 0, -4),
-                discardZone = offseted(0, 0, -4),
             },
             {
                 persuasion = symmetric(c1, 0, 0.2),
@@ -436,7 +438,7 @@ function PlayBoard.rebuild()
             },
             {
                 trash = symmetric(10, 0, 1),
-                startEndTurnButton = symmetric(10, 0, 6),
+                startEndTurnButton = symmetric(-2.4, 0, 6),
                 atomicsToken = symmetric(10, 0, 4),
             },
         }
@@ -625,7 +627,8 @@ function PlayBoard:moveAt(position, isRelative)
     toBeMoved.drawDeck = self.content.drawDeckZone and Helper.getDeckOrCard(self.content.drawDeckZone) or nil
     toBeMoved.discard = self.content.discardZone and Helper.getDeckOrCard(self.content.discardZone) or nil
 
-    local move = "setPositionSmooth"
+    local smooth = true
+    local move = smooth and "setPositionSmooth" or "setPosition"
 
     Helper.forEachRecursively(toBeMoved, function (name, object)
         assert(tostring(object) ~= "null", name)
@@ -655,7 +658,10 @@ function PlayBoard:moveAt(position, isRelative)
             slot.y = slot.y + offset.y
             slot.z = slot.z + offset.z
         end
-        park.zone[move](park.zone.getPosition() + offset)
+
+        for _, zone in ipairs(Park.getZones(park)) do
+            zone[move](zone.getPosition() + offset)
+        end
         if park.anchor then
             park.anchor[move](park.anchor.getPosition() + offset)
         end
@@ -832,10 +838,10 @@ function PlayBoard.new(color, unresolvedContent, subState)
             playBoard[resourceName] = Resource.new(token, color, resourceName, value)
         end
     end
-    playBoard.agentCardPark = playBoard:_createCardPark(Vector(0, 0, 0))
-    playBoard.revealCardPark = playBoard:_createCardPark(Vector(0, 0, -4))
-    playBoard.agentPark = playBoard:_createAgentPark()
-    playBoard.spyPark = playBoard:_createSpyPark()
+    playBoard.agentCardPark = playBoard:_createAgentCardPark()
+    playBoard.revealCardPark = playBoard:_createRevealCardPark()
+    playBoard.agentPark = playBoard:_createAgentPark(subState == nil)
+    playBoard.spyPark = playBoard:_createSpyPark(subState == nil)
     if not PlayBoard.isCommander(color) then
         playBoard.dreadnoughtPark = playBoard:_createDreadnoughtPark(subState == nil)
         playBoard.supplyPark = playBoard:_createSupplyPark(subState == nil)
@@ -908,15 +914,6 @@ function PlayBoard.setUp(settings, activeOpponents)
         end
     end
 
-    -- Do it again after that PlayBoard.playBoards has been updated (Sandworm button).
-    --[[
-    for color, playBoard in pairs(PlayBoard.playBoards) do
-        if activeOpponents[color] then
-            playBoard:_createButtons()
-        end
-    end
-    ]]
-
     PlayBoard._staticSetUp(settings)
 end
 
@@ -924,9 +921,20 @@ end
 function PlayBoard._staticSetUp(settings)
 
     Helper.registerEventListener("phaseStart", function (phase, firstPlayer)
+
         if phase == "leaderSelection" or phase == "roundStart" then
             local playBoard = PlayBoard.getPlayBoard(firstPlayer)
             MainBoard.getFirstPlayerMarker().setPositionSmooth(playBoard.content.firstPlayerInitialPosition, false, false)
+        end
+
+        -- There is no "gameStart" in Uprising
+        if phase == "roundStart" and TurnControl.getCurrentRound() == 1 then
+            for _, playBoard in pairs(PlayBoard._getPlayBoards()) do
+                if playBoard.opponent ~= "rival" then
+                    -- Force button creation now that we have all the information to create the Sandworm button.
+                    playBoard:_createButtons()
+                end
+            end
         end
 
         if phase == "roundStart" then
@@ -1121,7 +1129,9 @@ function PlayBoard._movePlayerIfNeeded(color)
     end
     if hostPlayer then
         Helper.onceFramesPassed(1).doAfter(function ()
+            Helper.dump(hostPlayer.color, "-> puppet")
             PlayBoard.getPlayBoard(hostPlayer.color).opponent = "puppet"
+            Helper.dump(hostPlayer.color, "->", color)
             PlayBoard.getPlayBoard(color).opponent = hostPlayer.color
             hostPlayer.changeColor(color)
         end)
@@ -1260,12 +1270,12 @@ function PlayBoard._getBoard(color)
 end
 
 ---
-function PlayBoard:_createCardPark(globalOffset)
-    local origin = PlayBoard.generatePosition(self, "symmetric", Vector(-9.5, 0.2, -3.2)) + globalOffset
+function PlayBoard:_createAgentCardPark()
+    local origin = PlayBoard.generatePosition(self, "symmetric", Vector(-9.5, 0.2, -3.2))
     local step = PlayBoard._isLeft(self.color) and -2.5 or 2.5
 
     local slots = {}
-    for i = 0, 8 do
+    for i = 0, 5 do
         table.insert(slots, origin + Vector(i * step, 0, 0))
     end
 
@@ -1276,7 +1286,31 @@ function PlayBoard:_createCardPark(globalOffset)
 end
 
 ---
-function PlayBoard:_createAgentPark()
+function PlayBoard:_createRevealCardPark()
+    local origin = PlayBoard.generatePosition(self, "symmetric", Vector(-9.5, 0.2, -3.2))
+    local step = PlayBoard._isLeft(self.color) and -2.5 or 2.5
+
+    local bottomSlots = {}
+    for i = 0, 8 do
+        table.insert(bottomSlots, origin + Vector(i * step, 0, -4))
+    end
+    local bottomZone = Park.createTransientBoundingZone(0, Vector(2.4, 0.5, 3.2), bottomSlots)
+    local topSlots = {}
+    for i = 8, 6, -1 do
+        table.insert(topSlots, origin + Vector(i * step, 0, 0))
+    end
+    local topZone = Park.createTransientBoundingZone(0, Vector(2.4, 0.5, 3.2), topSlots)
+
+    local slots = Helper.concatTables(bottomSlots, topSlots)
+
+    local park = Park.createCommonPark({ "Imperium", "Intrigue" }, slots, nil, Vector(0, 180, 0), true, { bottomZone, topZone })
+    park.tagUnion = true
+    park.smooth = false
+    return park
+end
+
+---
+function PlayBoard:_createAgentPark(firstTime)
     -- Extrapolate the other positions (for the swordmaster)
     -- from the positions of the two existing agents.
     assert(#self.content.agentInitialPositions == 2)
@@ -1289,22 +1323,28 @@ function PlayBoard:_createAgentPark()
         p2 + (p2 - p1),
     }
 
-    local park = Park.createCommonPark({ self.color, "Agent" }, slots, Vector(0.75, 3, 0.75))
-    for i, agent in ipairs(self.content.agents) do
-        agent.setPosition(slots[i])
+    --local park = Park.createCommonPark({ self.color, "Agent" }, slots, Vector(0.75, 3, 0.75))
+    local park = Park.createCommonPark({ "Agent" }, slots, Vector(0.75, 3, 0.75))
+    if firstTime then
+        for i, agent in ipairs(self.content.agents) do
+            agent.setPosition(slots[i])
+        end
     end
     return park
 end
 
 ---
-function PlayBoard:_createSpyPark()
+function PlayBoard:_createSpyPark(firstTime)
     assert(#self.content.spyInitialPositions == 3)
     local slots = Helper.mapValues(self.content.spyInitialPositions, function (slot)
         return slot:copy()
     end)
-    local park = Park.createCommonPark({ self.color, "Spy" }, slots, Vector(0.75, 1, 0.75))
-    for i, spy in ipairs(self.content.spies) do
-        spy.setPosition(slots[i])
+    --local park = Park.createCommonPark({ self.color, "Spy" }, slots, Vector(0.75, 1, 0.75))
+    local park = Park.createCommonPark({ "Spy" }, slots, Vector(0.75, 1, 0.75))
+    if firstTime then
+        for i, spy in ipairs(self.content.spies) do
+            spy.setPosition(slots[i])
+        end
     end
     return park
 end
@@ -1312,7 +1352,8 @@ end
 ---
 function PlayBoard:_createDreadnoughtPark(firstTime)
     assert(#self.content.dreadnoughtInitialPositions == 2)
-    local park = Park.createCommonPark({ self.color, "Dreadnought" }, self.content.dreadnoughtInitialPositions, Vector(1, 3, 0.5))
+    --local park = Park.createCommonPark({ self.color, "Dreadnought" }, self.content.dreadnoughtInitialPositions, Vector(1, 3, 0.5))
+    local park = Park.createCommonPark({ "Dreadnought" }, self.content.dreadnoughtInitialPositions, Vector(1, 3, 0.5))
     if firstTime then
         for i, dreadnought in ipairs(self.content.dreadnoughts) do
             dreadnought.setPosition(self.content.dreadnoughtInitialPositions[i])
@@ -1353,7 +1394,7 @@ function PlayBoard:_createSupplyPark(firstTime)
         "Supply" .. self.color,
         slots,
         Vector(0, -45, 0),
-        supplyZone,
+        { supplyZone },
         { "Troop", self.color },
         nil,
         true,
@@ -1442,7 +1483,7 @@ end
 function PlayBoard.onObjectEnterScriptingZone(zone, object)
     for color, playBoard in pairs(PlayBoard.playBoards) do
         if playBoard.opponent and playBoard.scorePark then
-            if zone == playBoard.scorePark.zone then
+            if Helper.isElementOf(zone, Park.getZones(playBoard.scorePark)) then
                 if Types.isVictoryPointToken(object) then
                     playBoard:_updatePlayerScore()
                     --[[
@@ -1461,7 +1502,7 @@ end
 function PlayBoard.onObjectLeaveScriptingZone(zone, object)
     for _, playBoard in pairs(PlayBoard.playBoards) do
         if playBoard.opponent and playBoard.scorePark then
-            if zone == playBoard.scorePark.zone then
+            if Helper.isElementOf(zone, Park.getZones(playBoard.scorePark)) then
                 if Types.isVictoryPointToken(object) then
                     playBoard:_updatePlayerScore()
                 end
@@ -1561,7 +1602,9 @@ function PlayBoard:_cleanUp(base, ix, immortality, full)
                 self[parkName] = nil
                 if park then
                     table.insert(toBeRemoved, park.anchor)
-                    table.insert(toBeRemoved, park.zone)
+                    for _, zone in ipairs(Park.getZones(park)) do
+                        table.insert(toBeRemoved, zone)
+                    end
                 end
             end
 
@@ -1671,7 +1714,7 @@ function PlayBoard:_createButtons(skipSandwormButton)
                             end
                         end
                     else
-                        local sandworm = getObjectFromGUID("14b25e").clone({ position = battlegroundPark.zone.getPosition() - Vector(0, 20, 0) })
+                        local sandworm = getObjectFromGUID("14b25e").clone({ position = Park.getPosition(battlegroundPark) - Vector(0, 20, 0) })
                         sandworm.addTag("Sandworm")
                         sandworm.addTag(self.color)
                         sandworm.setRotation(Vector(0, math.random(360), 0))
@@ -2264,7 +2307,7 @@ function PlayBoard:getScore()
     local score = 0
     if not PlayBoard.isRival(self.color) or Hagal.getRivalCount() == 2 then
         if self.scorePark then
-            for _, object in ipairs(self.scorePark.zone.getObjects()) do
+            for _, object in ipairs(Park.getObjects(self.scorePark)) do
                 if Types.isVictoryPointToken(object) then
                     score = score + 1
                 end
@@ -2308,7 +2351,7 @@ end
 
 ---
 function PlayBoard.getTech(color, techName)
-    local techs = PlayBoard.getPlayBoard(color).techPark.zone.getObjects()
+    local techs = Park.getObjects(PlayBoard.getPlayBoard(color).techPark)
     for _, tech in ipairs(techs) do
         if Helper.getID(tech) == techName then
             return tech
@@ -2330,9 +2373,13 @@ end
 
 ---
 function PlayBoard.hasHighCouncilSeat(color)
-    local zone = MainBoard.getHighCouncilSeatPark().zone
-    local token = PlayBoard.getCouncilToken(color)
-    return Helper.contains(zone, token)
+    for _, zone in ipairs(Park.getZones(MainBoard.getHighCouncilSeatPark())) do
+        local token = PlayBoard.getCouncilToken(color)
+        if Helper.contains(zone, token) then
+            return true
+        end
+    end
+    return false
 end
 
 ---
@@ -2356,7 +2403,8 @@ end
 ---
 function PlayBoard.hasSwordmaster(color)
     local content = PlayBoard.getContent(color)
-    return content.swordmaster.getPosition():distance(content.swordmasterInitialPosition) > 1
+    Helper.dump(content.swordmaster.getPosition(), "-", content.swordmasterInitialPosition, "=", content.swordmaster.getPosition():distance(content.swordmasterInitialPosition))
+    return content.swordmaster.getPosition():distance(content.swordmasterInitialPosition) > 10
 end
 
 ---

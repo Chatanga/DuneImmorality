@@ -282,16 +282,19 @@ end
 ---
 function onPlayerChangeColor()
     PlayerSet.updateSetupButton()
+    PlayerSet.updateSelectionMethods()
 end
 
 ---
 function onPlayerConnect()
     PlayerSet.updateSetupButton()
+    PlayerSet.updateSelectionMethods()
 end
 
 ---
 function onPlayerDisconnect()
     PlayerSet.updateSetupButton()
+    PlayerSet.updateSelectionMethods()
 end
 
 ---
@@ -549,8 +552,23 @@ function setSoundEnabled(player, value, id)
 end
 
 ---
+function PlayerSet.updateSelectionMethods()
+    if PlayerSet.ui then
+
+        local numberOfPlayers = PlayerSet.getNumberOfPlayers(PlayerSet.fields.virtualHotSeatMode)
+        PlayerSet.fields.leaderSelection_all = allModules.LeaderSelection.getSelectionMethods(numberOfPlayers)
+
+        PlayerSet.ui:toUI()
+    end
+end
+
+---
 function PlayerSet.updateSetupButton()
     if PlayerSet.ui then
+
+        local numberOfPlayers = PlayerSet.getNumberOfPlayers(PlayerSet.fields.virtualHotSeatMode)
+        PlayerSet.fields.leaderSelection_all = allModules.LeaderSelection.getSelectionMethods(numberOfPlayers)
+
         local properlySeatedPlayers = PlayerSet.getProperlySeatedPlayers()
 
         local minPlayerCount

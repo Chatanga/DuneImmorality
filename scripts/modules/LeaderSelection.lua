@@ -339,9 +339,12 @@ function LeaderSelection._createDynamicLeaderSelection(leaders, hidden)
                     end
                 end),
                 position = Vector(position.x, 0.9, position.z),
-                width = 1100,
-                height = 1700, -- FIXME Capped size and weird ratio...
-                color = { 0, 0, 0, 0 },
+                width = 600,
+                height = 900,
+                color = Helper.AREA_BUTTON_COLOR,
+                hover_color = { 0.7, 0.7, 0.7, 0.7 },
+                press_color = { 0.5, 1, 0.5, 0.4 },
+                font_color = { 1, 1, 1, 100 },
                 tooltip = I18N("claimLeader", { leader = I18N(Helper.getID(leader)) })
             })
         else

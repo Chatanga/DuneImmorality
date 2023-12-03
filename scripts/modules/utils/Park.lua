@@ -4,16 +4,15 @@ local Helper = require("utils.Helper")
 local Park = {}
 
 ---
-function Park.createCommonPark(tags, slots, margins, rotation, rotationSnap)
-    local zone = Park.createTransientBoundingZone(0, margins, slots)
-
-    local name = Helper.stringConcat(tags) .. "_" .. zone.getGUID()
+function Park.createCommonPark(tags, slots, margins, rotation, rotationSnap, zones)
+    local finalZones = (zones and #zones > 0) and zones or { Park.createTransientBoundingZone(0, margins, slots) }
+    local name = Helper.stringConcat(tags) .. "_" .. finalZones[1].getGUID()
 
     local park = Park.createPark(
         name,
         slots,
         rotation,
-        zone,
+        finalZones,
         tags,
         nil,
         false,
@@ -42,15 +41,15 @@ end
     name: a unique name for the park.
     slots: the slot positions.
     rotation: the optional rotation to apply to parked objects.
-    zone: a zone to test if an object is in the park.
+    zones: one or more zones to test if an object is in the park.
     tags: restriction on the park content.
     description: an optional restriction on the park content.
     locked: should the park content be locked?
 ]]
 ---
-function Park.createPark(name, slots, rotation, zone, tags, description, locked, smooth)
+function Park.createPark(name, slots, rotation, zones, tags, description, locked, smooth)
     assert(#slots > 0, "No slot provided for new park.")
-    assert(zone, "No park zone provided.")
+    assert(zones and #zones > 0, "No park zones provided.")
 
     Helper.setSharedTable(name, {})
 
@@ -60,7 +59,7 @@ function Park.createPark(name, slots, rotation, zone, tags, description, locked,
         name = name,
         slots = slots,
         rotation = rotation,
-        zone = zone,
+        zones = zones,
         tags = tags,
         tagUnion = false,
         description = description,
@@ -186,17 +185,29 @@ function Park.waitStabilisation(park)
 end
 
 ---
+function Park.getZones(park, zone)
+    return park.zones
+end
+
+---
+function Park.getPosition(park)
+    return park.zones[0].getPosition()
+end
+
+---
 function Park.getObjects(park)
     assert(park)
     local objects = {}
-    for _, object in ipairs(park.zone.getObjects()) do
-        local objectsInTransit = Helper.getSharedTable(park.name)
-        if not Helper.tableContains(objectsInTransit, object) then
-            local isOneOfThem =
-                (park.tagUnion and Helper.hasAnyTag(object, park.tags) or Helper.hasAllTags(object, park.tags)) and
-                (not Helper.getID(park) or Helper.getID(park) == Helper.getID(object))
-            if isOneOfThem then
-                table.insert(objects, object)
+    for _, zone in ipairs(park.zones) do
+        for _, object in ipairs(zone.getObjects()) do
+            local objectsInTransit = Helper.getSharedTable(park.name)
+            if not Helper.tableContains(objectsInTransit, object) then
+                local isOneOfThem =
+                    (park.tagUnion and Helper.hasAnyTag(object, park.tags) or Helper.hasAllTags(object, park.tags)) and
+                    (not Helper.getID(park) or Helper.getID(park) == Helper.getID(object))
+                if isOneOfThem then
+                    table.insert(objects, object)
+                end
             end
         end
     end

@@ -393,7 +393,7 @@ function TechMarket._createNegotiationPark(color)
         color .. "Negotiation",
         slots,
         Vector(0, 0, 0),
-        zone,
+        { zone },
         { "Troop", color },
         nil,
         false,

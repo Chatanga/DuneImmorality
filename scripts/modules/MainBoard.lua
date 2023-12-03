@@ -122,7 +122,7 @@ function MainBoard.onLoad(state)
         for name, token in pairs(MainBoard.spiceBonusTokens) do
             if token then
                 local value = state.MainBoard and state.MainBoard.spiceBonuses[name] or 0
-                MainBoard.spiceBonuses[name] = Resource.new(token, nil, "spice", value)
+                MainBoard.spiceBonuses[name] = Resource.new(token, nil, "spice", value, name)
             end
         end
 
@@ -237,7 +237,7 @@ function MainBoard._processSnapPoints(settings)
         spice = function (name, position)
             MainBoard.spiceBonusTokens[name].setPosition(position)
             if not MainBoard.spiceBonuses[name] then
-                MainBoard.spiceBonuses[name] = Resource.new(MainBoard.spiceBonusTokens[name], nil, "spice", 0)
+                MainBoard.spiceBonuses[name] = Resource.new(MainBoard.spiceBonusTokens[name], nil, "spice", 0, name)
             end
         end,
         flag = function (name, position)
@@ -267,7 +267,7 @@ function MainBoard._processSnapPoints(settings)
         "HighCouncil",
         highCouncilSeats,
         Vector(0, 0, 0),
-        Park.createTransientBoundingZone(0, Vector(0.5, 1, 0.5), highCouncilSeats),
+        { Park.createTransientBoundingZone(0, Vector(0.5, 1, 0.5), highCouncilSeats) },
         { "HighCouncilSeatToken" },
         nil,
         true,
@@ -341,7 +341,7 @@ function MainBoard._createSpaceButton(space)
 
             space.zone = Park.createTransientBoundingZone(0, Vector(1, 3, 0.7), slots)
             local tags = { "Agent" }
-            space.park = Park.createPark("AgentPark", slots, nil, space.zone, tags, nil, false, true)
+            space.park = Park.createPark("AgentPark", slots, nil, { space.zone }, tags, nil, false, true)
             local snapPoints = {}
             for _, slot in ipairs(slots) do
                 table.insert(snapPoints, Helper.createRelativeSnapPoint(anchor, slot, false, tags))
@@ -372,7 +372,7 @@ function MainBoard._createObservationPostButton(observationPost)
         observationPost.zone = Park.createTransientBoundingZone(0, Vector(0.75, 1, 0.75), slots)
 
         local tags = { "Spy" }
-        observationPost.park = Park.createPark("SpyPark", slots, nil, observationPost.zone, tags, nil, false, true)
+        observationPost.park = Park.createPark("SpyPark", slots, nil, { observationPost.zone }, tags, nil, false, true)
 
         local snapPoints = {}
         for _, slot in ipairs(slots) do
@@ -596,6 +596,7 @@ end
 
 ---
 function MainBoard._goSwordmaster(color, leader)
+    Helper.dump("PlayBoard.hasSwordmaster(", color, ")", PlayBoard.hasSwordmaster(color))
     local firstAccess = #Helper.filter(PlayBoard.getActivePlayBoardColors(), PlayBoard.hasSwordmaster) == 0
     if not PlayBoard.hasSwordmaster(color) and leader.resources(color, "solari", firstAccess and -8 or -6) then
         leader.recruitSwordmaster(color)
@@ -676,16 +677,20 @@ function MainBoard._asyncGoSietchTabr(color, leader)
         I18N("hookTroopWaterOption"),
         I18N("waterShieldWallOption"),
     }
-    -- FIXME Pending continuation if the dialog is canceled.
-    Player[color].showOptionsDialog(I18N("goSietchTabr"), options, 1, function (_, index, _)
-        if index == 1 then
-            continuation.run(MainBoard._goSietchTabr_HookTroopWater(color, leader))
-        elseif index == 2 then
-            continuation.run(MainBoard._goSietchTabr_WaterShieldWall(color, leader))
-        else
-            continuation.run(false)
-        end
-    end)
+    if InfluenceTrack.hasFriendship(color, "fremen") then
+        -- FIXME Pending continuation if the dialog is canceled.
+        Player[color].showOptionsDialog(I18N("goSietchTabr"), options, 1, function (_, index, _)
+            if index == 1 then
+                continuation.run(MainBoard._goSietchTabr_HookTroopWater(color, leader))
+            elseif index == 2 then
+                continuation.run(MainBoard._goSietchTabr_WaterShieldWall(color, leader))
+            else
+                continuation.run(false)
+            end
+        end)
+    else
+        continuation.run(false)
+    end
     return continuation
 end
 

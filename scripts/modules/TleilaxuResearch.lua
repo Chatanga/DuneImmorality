@@ -453,7 +453,7 @@ function TleilaxuResearch._createTanksPark(color)
         color .. "Tanks",
         slots,
         Vector(0, 0, 0),
-        zone,
+        { zone },
         { "Troop", color },
         nil,
         false,

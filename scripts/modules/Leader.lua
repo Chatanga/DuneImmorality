@@ -381,7 +381,10 @@ Leader.jessicaAtreides = Helper.createClass(Leader, {
         local leaderCard = PlayBoard.findLeaderCard(color)
 
         local otherMemories = function ()
-            --leaderCard.flip()
+            -- FIXME name / GM notes are both used
+            Leader.jessicaAtreides.name = "reverendMotherJessica"
+            leaderCard.setGMNotes(Leader.jessicaAtreides.name)
+            leaderCard.setName(I18N(Leader.jessicaAtreides.name))
             leaderCard.setRotation(Vector(0, 180, 180))
             broadcastToAll(I18N("otherMemoriesUsed"), color)
         end

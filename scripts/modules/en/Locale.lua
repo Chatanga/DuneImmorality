@@ -85,7 +85,10 @@ return {
     strengths = "Swords",
     spendManually = "▲ {leader} spent {amount} {resource} manually.",
     receiveManually = "▼ {leader} received {amount} {resource} manually.",
+    fixManually = "Fixed {amount} {resource} manually ({location})\".",
     influence = "influence",
+    beetle = "beetle",
+    beetles = "beetles",
 
     -- Actions
     playerTurn = "■ Turn: {leader}",
@@ -252,7 +255,7 @@ return {
 
     otherMemoriesButton = "Other Memories",
     otherMemoriesTooltip = "Use your memories.",
-    otherMemoriesUsed = "Lady Jessica Atreides used her memories.",
+    otherMemoriesUsed = "Lady Jessica used her memories.",
 
     firstSnooperRecall = "Tessia Vernius has recalled her first snooper from {withFaction}.",
     secondSnooperRecall = "Tessia Vernius has recalled her second snooper from {withFaction}.",
@@ -267,7 +270,7 @@ return {
     margotFenring = "Lady Margot Fenring",
     irulanCorrino = "Princess Irulan",
     reverendMotherJessica = "Reverend Mother Jessica",
-    jessicaAtreides = "Lady Jessica Atreides",
+    jessicaAtreides = "Lady Jessica",
     feydRauthaHarkonnen = "Feyd-Rautha Harkonnen",
     shaddamCorrino = "Shaddam IV",
     muadDib = "Muad'Dib",

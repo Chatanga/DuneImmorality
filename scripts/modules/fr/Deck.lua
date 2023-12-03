@@ -140,14 +140,21 @@ local Deck = {
 function Deck.load(loader, cards, category, customDeckName, startLuaIndex, cardNames)
     local desc = Deck[category][customDeckName]
     assert(desc, "No descriptor for: " .. category .. "." .. customDeckName)
-    local functionName = Helper.toCamelCase("create", category, "CustomDeck")
-    assert(loader[functionName], "No loader for: " .. functionName )
-    local customDeck = loader[functionName](desc[1], desc[2], desc[3], desc[4])
+    local customDeck
+    if desc[5] then
+        customDeck = loader.createCustomDeck(desc[5], desc[1], desc[2], desc[3], desc[4])
+    else
+        local functionName = Helper.toCamelCase("create", category, "CustomDeck")
+        assert(loader[functionName], "No loader for: " .. functionName )
+        customDeck = loader[functionName](desc[1], desc[2], desc[3], desc[4])
+    end
     return loader.loadCustomDeck(cards, customDeck, startLuaIndex, cardNames)
 end
 
 ---
 function Deck.loadWithSubCategory(loader, cards, category, subCategory, customDeckName, startLuaIndex, cardNames)
+    assert(Deck[category], "No category: " .. category)
+    assert(Deck[category][subCategory], "No sub category: " .. category .. "." .. subCategory)
     local desc = Deck[category][subCategory][customDeckName]
     assert(desc, "No descriptor for: " .. category .. "." .. customDeckName)
     local functionName = Helper.toCamelCase("create", category, "CustomDeck")

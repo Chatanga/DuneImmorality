@@ -54,10 +54,7 @@ function ChoamContractMarket.setUp(settings)
 
         Helper.shuffleDeck(ChoamContractMarket.contractBag)
         Helper.onceShuffled(ChoamContractMarket.contractBag).doAfter(function ()
-            for i, zone in ipairs(ChoamContractMarket.contractSlots) do
-                local callback = PlayBoard.withLeader(ChoamContractMarket["_acquireContract" .. tostring(i)])
-                local acquireCard = AcquireCard.new(zone, "Contract", callback, 0.3)
-                table.insert(ChoamContractMarket.acquireCards, acquireCard)
+            for i, _ in ipairs(ChoamContractMarket.contractSlots) do
                 ChoamContractMarket._replenish(i)
             end
         end)
@@ -143,6 +140,12 @@ function ChoamContractMarket._staticSetUp(settings)
     end
 
     ChoamContractMarket._processSnapPoints(settings)
+
+    for i, zone in ipairs(ChoamContractMarket.contractSlots) do
+        local callback = PlayBoard.withLeader(ChoamContractMarket["_acquireContract" .. tostring(i)])
+        local acquireCard = AcquireCard.new(zone, "Contract", callback, 0.3)
+        table.insert(ChoamContractMarket.acquireCards, acquireCard)
+    end
 end
 
 ---

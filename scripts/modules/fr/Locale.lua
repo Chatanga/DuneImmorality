@@ -65,7 +65,7 @@ return {
     leaderSelectionAdjust = "Ajustez le nombre de dirigeants sélectionnés au hasard\nparmi lesquels les joueurs devront choisir :",
     leaderSelectionExclude = "Vous pouvez retourner (ou détruire) n’importe quel dirigeant pour l’exclure.\nUne fois satisfait, appuyez sur le bouton 'Démarrer'.",
     start = "Démarrer",
-    claimLeader = "Prendre {leader} comme leader",
+    claimLeader = "Prendre {leader} comme dirigean",
 
     -- Resource
     spiceAmount = "Épice",
@@ -85,7 +85,10 @@ return {
     strengths = "épées",
     spendManually = "▲ {leader} dépense {amount} {resource} manuellement.",
     receiveManually = "▼ {leader} reçoit {amount} {resource} manuellement.",
+    fixManually = "Correction de {amount} {resource} manuellement ({location}).",
     influence = "influence",
+    beetle = "scarabée",
+    beetles = "scarabées",
 
     -- Actions
     playerTurn = "■ Tour : {leader}",
@@ -143,19 +146,19 @@ return {
     noWaterOption = "Sans eau",
     withWaterOption = "Avec de l’eau",
     goSietchTabr = "Selectionnez une option.",
-    hookTroopWaterOption = "Hameçon + Eau + Troupe",
-    waterShieldWallOption = "Eau + Atomiques",
+    hookTroopWaterOption = "Hameçon à ver",
+    waterShieldWallOption = "Mur du Bouclier",
     goSpiceRefinery = "Selectionnez une option.",
-    zeroSpiceOption = "0 spice unit",
-    oneSpiceOption = "1 spice unit",
+    zeroSpiceOption = "Pas d’épice",
+    oneSpiceOption = "1 épice",
     makersAndRecall = "Faiseurs + Rappel",
 
     goDeepDesert = "Selectionnez une option.",
-    fourSpicesOption = "4 spice units",
+    fourSpicesOption = "4 épices",
     twoWormsOption = "2 vers des sables",
     goHaggaBasin = "Selectionnez une option.",
-    twoSpicesOption = "2 spice units",
-    onWormOption = "1 vers des sables",
+    twoSpicesOption = "2 épices",
+    onWormOption = "1 verre de table",
 
     goTechNegotiation = "Sélectionnez une option.",
     sendNegotiatorOption = "Négociateur",
@@ -252,7 +255,7 @@ return {
 
     otherMemoriesButton = "Mémoire seconde",
     otherMemoriesTooltip = "Utilisez votre mémoire seconde.",
-    otherMemoriesUsed = "Dame Jessica Atréides a utilisée sa mémoire seconde.",
+    otherMemoriesUsed = "Dame Jessica a utilisée sa mémoire seconde.",
 
     firstSnooperRecall = "Tessia Vernius a rappelé son premier fouineur {withFaction}.",
     secondSnooperRecall = "Tessia Vernius a rappelé son second fouineur {withFaction}.",
@@ -267,7 +270,7 @@ return {
     margotFenring = "Dame Margot Fenring",
     irulanCorrino = "Princesse Irulan",
     reverendMotherJessica = "Révérende Mère Jessica",
-    jessicaAtreides = "Dame Jessica Atréides",
+    jessicaAtreides = "Dame Jessica",
     feydRauthaHarkonnen = "Feyd-Rautha Harkonnen",
     shaddamCorrino = "Shaddam IV",
     muadDib = "Muad’Dib",

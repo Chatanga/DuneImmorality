@@ -12,7 +12,7 @@ local Resource = Helper.createClass(nil, {
 })
 
 ---
-function Resource.new(token, color, resourceName, value)
+function Resource.new(token, color, resourceName, value, location)
     assert(token)
     Types.assertIsResourceName(resourceName)
     Types.assertIsPositiveInteger(value)
@@ -25,6 +25,7 @@ function Resource.new(token, color, resourceName, value)
         resourceName = resourceName,
         value = value,
         laggingValue = value,
+        location = location,
     })
     Resource.resources[token.getGUID()] = resource
 
@@ -52,7 +53,7 @@ function Resource.new(token, color, resourceName, value)
     Helper.createAbsoluteButtonWithRoundness(token, 1, false, {
         label = tostring(resource.value),
         click_function = Helper.registerGlobalCallback(function (_, otherColor, altClick)
-            if resource.color then
+            if resource.color or resource.location then
                 resource:_changeValue(otherColor, altClick)
             else
                 resource:_setValue(otherColor, altClick)
@@ -60,8 +61,8 @@ function Resource.new(token, color, resourceName, value)
         end),
         tooltip = resource:_getTooltip(),
         position = token.getPosition() + offset,
-        height = color and 800 or 0,
-        width = color and 800 or 0,
+        height = (color or location) and 800,
+        width = (color or location) and 800,
         scale = scales[resourceName],
         alignment = 3,
         font_size = 600,
@@ -123,7 +124,7 @@ end
 
 ---
 function Resource:_changeValue(color, altClick)
-    if color ~= self.color then
+    if self.color and color ~= self.color then
         broadcastToColor(I18N("noTouch"), color, color)
         return
     end
@@ -151,6 +152,9 @@ function Resource:_changeValue(color, altClick)
                     local text = I18N("receiveManually", { leader = leaderName, amount = delta, resource = I18N.agree(delta, self.resourceName) })
                     broadcastToAll(text, color)
                 end
+            else
+                local text = I18N("fixManually", { location = I18N(self.location), amount = delta, resource = I18N.agree(delta, self.resourceName) })
+                broadcastToAll(text, color)
             end
 
             self.laggingValue = self.value
