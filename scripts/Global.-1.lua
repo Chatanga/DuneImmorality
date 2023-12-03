@@ -8,7 +8,6 @@ local constructionModeEnabled = false
 local autoLoadedSettings
 
 --[[
-]]
 autoLoadedSettings = {
     language = "fr",
     hotSeat = true,
@@ -29,6 +28,7 @@ autoLoadedSettings = {
     },
     soundEnabled = true,
 }
+]]
 
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")

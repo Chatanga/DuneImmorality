@@ -4,39 +4,27 @@ Features:
 
 - Base game 4P
 - (Base game 6P)
-- (Hagal House)
 - (Rise of Ix extension)
 - (Immortality extension)
 - (Legacy as an extension)
+- (Hagal House)
 
 Supported langages:
 
-- French
 - English
+- French
+- (Portugese)
 
 ## Build Process
 
 cf. [tts_build/README.md](tts_build/README.md)
 
-## Nota
-
-    Object  Snap    Zone    Decal?
-    x       x       x       x       Have a position
-    x       x               x       which could be "grounded"
-    x               x               and a size.
-    x               x               Could be (precisely) modified.
-    x       x               x       Could stick to its parent (and disappear with it)
-            x       x               Is invisible (and unobstrusive)
-    x               x               Is easily identified (GUID or GMNotes) -> not at all for decals
-    x                               Can have button attached (uniscaled objects are the best this purpose)
-
-This mod approach: use snapoints for multistates objects, otherwise stick to zones. Decals and anchors are procedurally generated (one for all or at each load).
-
 ## TODO
 
-- Zone de préchargement pour Deck !
+__All__
 
-[75%] All
+- Zone de préchargement pour Deck (B).
+- Ne gérer que 2 manuels et une aide-mémoire (et repositionner).
 - Retirer les options avec ver si pas d’hameçon.
 - Automatiser l’acquisition / détection d’hameçon pour les actions liées.
 - Respecter le découpage des zones de combat.
@@ -45,9 +33,10 @@ This mod approach: use snapoints for multistates objects, otherwise stick to zon
 - Revoir les décalcos tech. et élargir les tags des snaps (Tech + Contract).
 - Sacs de jetons 1/2 PV pour les 3 + ? objectifs (+ Decal + Snap).
 
-[10%] 6J
+__6J__
+
 - Ajouter un emplacement ThroneRow.
-- Rendre mobiles les éléments de jeu pour avoir 2 configurations 4J et 6J.
+- Rendre mobiles les éléments de jeu pour avoir 2 configurations 4J et 6J (A).
 - Automatiser les espaces 6J.
 - Reprendre les images des marqueurs de score des commandants.
 - Activation et surcharge des commandants (une vraie surcharge !).
@@ -57,18 +46,20 @@ This mod approach: use snapoints for multistates objects, otherwise stick to zon
 - Fin de tour d'un joueur -> raz des épées si aucune unité en combat.
 - Maître d'armes -> assignation jeton +2 épées, mais rappel destructif.
 
-[50%] Extensions
+__Extensions__
+
 - Achat de tech débrayé par défaut.
 - Rétablir TechCard et ImperiumCard (uniquement les cartes Tleilaxu avec leur coût).
 - Patch Ix (avec postes d'observation) pour le plateau principal (emmerdant pour les snaps -> 2 x 2 ?).
 - Patch Immortality pour le plateau principal.
 - Considérer base/core/legacy comme une extension.
 
-[10%] 2P / Solo
+__2P / Solo__
+
 - Mise en place.
 - Tirage de cartes et prise en compte des épées, mais aucune automatisation sinon.
 
-### Later
+__Later__
 
 - Régler tressautement paquets après un appel à "moveAt".
 - Custom token -> tile (MainBoard).
@@ -82,7 +73,7 @@ This mod approach: use snapoints for multistates objects, otherwise stick to zon
 
 ## Notes
 
-Ajouter *.move(position) pour :
+A. Ajouter *.move(position) pour :
     MainBoard (the game board with 6P extensions, not the table)
     PlayBoard
     TleilaxuResearch
@@ -95,7 +86,7 @@ Ajouter *.move(position) pour :
     ScoreBoard (les jetons de PV)
     ThroneRow
 
-Deck : plateaux noirs cachés (avec drapeau), dont un générique, pour le contenu localisé :
+B. Deck : plateaux noirs cachés (avec drapeau), dont un générique, pour le contenu localisé :
     Cartes Imperium
     Cartes d'intrigue
     Cartes Hagal
