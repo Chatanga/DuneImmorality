@@ -191,7 +191,7 @@ end
 
 ---
 function Park.getPosition(park)
-    return park.zones[0].getPosition()
+    return park.zones[1].getPosition()
 end
 
 ---
