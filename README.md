@@ -34,29 +34,26 @@ This mod approach: use snapoints for multistates objects, otherwise stick to zon
 
 ## TODO
 
-- Refaire les PV et leurs sacs.
-- Retirer les options avec ver si pas d’hameçon.
-- Respecter le découpage des zones de combat.
+- Zone de préchargement pour Deck !
 
-[75%] 4J
+[75%] All
+- Retirer les options avec ver si pas d’hameçon.
+- Automatiser l’acquisition / détection d’hameçon pour les actions liées.
+- Respecter le découpage des zones de combat.
 - Revoir le contexte d’action pour les logs.
-- Créer pions PV pour nouveaux conflits.
 - Capacités spéciales des dirigeants.
 - Revoir les décalcos tech. et élargir les tags des snaps (Tech + Contract).
-- 1/2 PV pour les 3 + 1 objectifs.
+- Sacs de jetons 1/2 PV pour les 3 + ? objectifs (+ Decal + Snap).
 
 [10%] 6J
 - Ajouter un emplacement ThroneRow.
 - Rendre mobiles les éléments de jeu pour avoir 2 configurations 4J et 6J.
 - Automatiser les espaces 6J.
-- Reprendre les images des marqueurs de score.
-- Sélecteur d'allié.
+- Reprendre les images des marqueurs de score des commandants.
 - Activation et surcharge des commandants (une vraie surcharge !).
-    - Ajouter un sélecteur (nécessaire de toute manière pour le maître d'armes) sur le plateau colorisant les agents du commandant.
-    - Remise en cause du clic pour envoyer ? Non, sélection allié, puis sens déduit ou double puis swordmaster. De fait, c'est aussi le moyen de rappeler la nécessité de sélectionner un allié.
+- Ajouter un sélecteur (nécessaire de toute manière pour le maître d'armes) sur le plateau colorisant les agents du commandant.
 - Système influences partagées.
-- Transfert de ressources.
-    - Un joueur peut utiliser les ressources d'un autre joueurs (uniquement avec un clic gauche), mais le résultat est un transfert à partir des siennes.
+- Transfert de ressources inter-alliés.
 - Fin de tour d'un joueur -> raz des épées si aucune unité en combat.
 - Maître d'armes -> assignation jeton +2 épées, mais rappel destructif.
 
@@ -73,9 +70,8 @@ This mod approach: use snapoints for multistates objects, otherwise stick to zon
 
 ### Later
 
-- Régler tressautement paquets après apple à "moveAt".
+- Régler tressautement paquets après un appel à "moveAt".
 - Custom token -> tile (MainBoard).
-- Cache pour le module Deck.
 - Dialogue fait maison pour notifier l'annulation par l'utilisateur.
 - Utiliser l'appelation CouncilorToken et ScoreMarker.
 - Fin de tour / phase robuste.

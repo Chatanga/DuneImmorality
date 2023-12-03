@@ -42,6 +42,7 @@ local PlayBoard = Helper.createClass(nil, {
     unresolvedContentByColor = {
         Red = {
             board = "d47b92",
+            colorband = "643f4d",
             spice = "3074d4",
             solari = "576ccd",
             water = "692c4d",
@@ -104,6 +105,7 @@ local PlayBoard = Helper.createClass(nil, {
         },
         Blue = {
             board = "f23836",
+            colorband = "bca124",
             spice = "9cc286",
             solari = "fa5236",
             water = "0afaeb",
@@ -166,6 +168,7 @@ local PlayBoard = Helper.createClass(nil, {
         },
         Green = {
             board = "2facfd",
+            colorband = "a138eb",
             spice = "22478f",
             solari = "e597dc",
             water = "fa9522",
@@ -228,6 +231,7 @@ local PlayBoard = Helper.createClass(nil, {
         },
         Yellow = {
             board = "13b6cb",
+            colorband = "9232e7",
             spice = "78fb8a",
             solari = "c5c4ef",
             water = "f217d0",
@@ -290,6 +294,7 @@ local PlayBoard = Helper.createClass(nil, {
         },
         Teal = {
             board = "4ad196",
+            colorband = "6d455c",
             spice = "9d593f",
             solari = "5a16bb",
             water = "830a1a",
@@ -323,6 +328,7 @@ local PlayBoard = Helper.createClass(nil, {
         },
         Brown = {
             board = "dc05a6",
+            colorband = "1434c7",
             spice = "2c9946",
             solari = "43d234",
             water = "c72ecc",
@@ -392,6 +398,7 @@ function PlayBoard.rebuild()
         local objectGroups = {
             {
                 board = Vector(0, 0, 0),
+                colorband = Vector(0, 0, -0.55),
                 fourPlayerVictoryToken = symmetric(-11.2, 0, 8.1),
             },
             {
@@ -769,8 +776,10 @@ function PlayBoard.new(color, unresolvedContent, subState)
     })
     playBoard.content = Helper.resolveGUIDs(false, unresolvedContent)
 
-    playBoard.content.board.interactable = false
-    playBoard.content.startEndTurnButton.interactable = false
+    Helper.noPhysicsNorPlay(
+        playBoard.content.board,
+        playBoard.content.colorband,
+        playBoard.content.startEndTurnButton)
 
     playBoard.content.drawDeckZone = PlayBoard.createTransientZone(playBoard, "offseted", Vector(-10.4, 0.4, 1.5), Vector(2.3, 1, 3.3))
     playBoard.content.leaderZone = PlayBoard.createTransientZone(playBoard, "offseted", Vector(-6.4, 0.4, 1), Vector(5, 1, 3.5))
@@ -810,12 +819,10 @@ function PlayBoard.new(color, unresolvedContent, subState)
             playBoard.content.councilToken,
             playBoard.content.freighter,
             playBoard.content.tleilaxToken,
-            playBoard.content.researchToken
-        )
+            playBoard.content.researchToken)
         Helper.noPhysicsNorPlay(
             playBoard.content.scoreMarker,
-            playBoard.content.forceMarker
-        )
+            playBoard.content.forceMarker)
     end
 
     local snapZones = {
@@ -1111,8 +1118,12 @@ function PlayBoard._setActivePlayer(phase, color)
             else
                 Helper.clearButtons(playBoard.content.startEndTurnButton)
             end
+            -- FIXME Trigger effects are too unreliable for guest players.
+            --[[
             local board = playBoard.content.board
             board.AssetBundle.playTriggerEffect(effectIndex)
+            ]]
+            playBoard.content.colorband.setColorTint(effectIndex > 0 and indexedColors[effectIndex] or "Black")
         end
     end
 end
@@ -1130,10 +1141,15 @@ function PlayBoard._movePlayerIfNeeded(color)
     if hostPlayer then
         Helper.onceFramesPassed(1).doAfter(function ()
             Helper.dump(hostPlayer.color, "-> puppet")
-            PlayBoard.getPlayBoard(hostPlayer.color).opponent = "puppet"
-            Helper.dump(hostPlayer.color, "->", color)
-            PlayBoard.getPlayBoard(color).opponent = hostPlayer.color
-            hostPlayer.changeColor(color)
+            local playBoard = PlayBoard.getPlayBoard(hostPlayer.color)
+            if playBoard then
+                PlayBoard.getPlayBoard(hostPlayer.color).opponent = "puppet"
+                Helper.dump(hostPlayer.color, "->", color)
+                PlayBoard.getPlayBoard(color).opponent = hostPlayer.color
+                hostPlayer.changeColor(color)
+            else
+                error("Wrong player color!")
+            end
         end)
     else
         Turns.turn_color = color
@@ -1587,6 +1603,7 @@ function PlayBoard:_cleanUp(base, ix, immortality, full)
 
         if PlayBoard.isCommander(self.color) then
             collect("board")
+            collect("colorband")
 
             local parkNames = {
                 "agentCardPark",
