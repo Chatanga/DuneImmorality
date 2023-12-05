@@ -133,13 +133,11 @@ end
 ---
 function MainBoard.onSave(state)
     --Helper.dumpFunction("MainBoard.onSave")
-    if state.settings then
-        state.MainBoard = {
-            spiceBonuses = Helper.map(MainBoard.spiceBonuses, function (_, resource)
-                return resource:get()
-            end),
-        }
-    end
+    state.MainBoard = {
+        spiceBonuses = Helper.map(MainBoard.spiceBonuses, function (_, resource)
+            return resource:get()
+        end),
+    }
 end
 
 ---

@@ -85,7 +85,7 @@ end
 ---
 function TleilaxuResearch.onSave(state)
     --Helper.dumpFunction("TleilaxuResearch.onSave")
-    if state.settings and TleilaxuResearch.board then
+    if TleilaxuResearch.board then
         state.TleilaxuResearch = {
             spiceBonus = TleilaxuResearch.spiceBonus:get(),
         }

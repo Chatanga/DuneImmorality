@@ -227,15 +227,14 @@ function onSave()
         Helper.dump("Unstable save!")
     end
 
-    local savedState = {
-        settings = settings
-    }
-
-    Module.callOnAllRegisteredModules("onSave", savedState)
-
-    if #Helper.getKeys(savedState) then
+    if settings then
+        local savedState = {
+            settings = settings
+        }
+        Module.callOnAllRegisteredModules("onSave", savedState)
         return JSON.encode(savedState)
     else
+        -- We do not save anything until the game is set up.
         return ''
     end
 end
