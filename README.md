@@ -2,7 +2,7 @@
 
 Features:
 
-- Base game 4P
+- Base game 3-4P
 - (Base game 6P)
 - (Rise of Ix extension)
 - (Immortality extension)
@@ -23,8 +23,6 @@ cf. [tts_build/README.md](tts_build/README.md)
 
 __All__
 
-- Zone de préchargement pour Deck (B).
-- Ne gérer que 2 manuels et une aide-mémoire (et repositionner).
 - Retirer les options avec ver si pas d’hameçon.
 - Automatiser l’acquisition / détection d’hameçon pour les actions liées.
 - Respecter le découpage des zones de combat.
@@ -33,7 +31,7 @@ __All__
 - Revoir les décalcos tech. et élargir les tags des snaps (Tech + Contract).
 - Sacs de jetons 1/2 PV pour les 3 + ? objectifs (+ Decal + Snap).
 
-__6J__
+__6P__
 
 - Ajouter un emplacement ThroneRow.
 - Rendre mobiles les éléments de jeu pour avoir 2 configurations 4J et 6J (A).
@@ -85,16 +83,3 @@ A. Ajouter *.move(position) pour :
     ContractMarket (inclut une partie de Mainboard)
     ScoreBoard (les jetons de PV)
     ThroneRow
-
-B. Deck : plateaux noirs cachés (avec drapeau), dont un générique, pour le contenu localisé :
-    Cartes Imperium
-    Cartes d'intrigue
-    Cartes Hagal
-    Cartes Rival
-    Cartes de conflits
-    Cartes d'objectifs
-    Cartes / tuiles tech
-    Cartes / tuiles contrat
-    Cartes Imperium Tleilaxu
-    Cartes des dirigeants
-    Manuels

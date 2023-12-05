@@ -129,6 +129,7 @@ function onLoad(scriptState)
     if constructionModeEnabled then
         --allModules.PlayBoard.rebuild()
         --allModules.MainBoard.rebuild()
+        --allModules.Deck.rebuildPreloadAreas()
     else
         -- The destroyed objects need one frame to disappear and not interfere with the mod.
         Wait.frames(function ()

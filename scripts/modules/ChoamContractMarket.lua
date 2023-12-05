@@ -38,8 +38,10 @@ function ChoamContractMarket.onLoad(state)
     --Helper.dumpFunction("ChoamContractMarket.onLoad(...)")
 
     Helper.append(ChoamContractMarket, Helper.resolveGUIDs(false, {
-        contractBagEn = "099d8b",
-        contractBagFr = "fb05ac",
+        contractBags = {
+            en = "099d8b",
+            fr = "fb05ac",
+        }
     }))
 
     if state.settings then
@@ -132,12 +134,18 @@ end
 
 ---
 function ChoamContractMarket._staticSetUp(settings)
-    -- TODO Temporary
-    if I18N.getLocale() == "fr" then
-        ChoamContractMarket.contractBag = ChoamContractMarket.contractBagFr
-    else
-        ChoamContractMarket.contractBag = ChoamContractMarket.contractBagEn
+    local barycenter = Vector(0, 0, 0)
+    for language, bag in pairs(ChoamContractMarket.contractBags) do
+        barycenter = barycenter + bag.getPosition()
+        if language == settings.language then
+            ChoamContractMarket.contractBag = bag
+        else
+            bag.destruct()
+        end
     end
+    barycenter = barycenter * (1.0 / #Helper.getKeys(ChoamContractMarket.contractBags))
+    ChoamContractMarket.contractBag.setPosition(barycenter)
+    ChoamContractMarket.contractBags = nil
 
     ChoamContractMarket._processSnapPoints(settings)
 

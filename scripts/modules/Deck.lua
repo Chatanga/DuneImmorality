@@ -1,5 +1,8 @@
+local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local I18N = require("utils.I18N")
+
+local Locale = Module.lazyRequire("Locale")
 
 local Deck = {
     sources = {},
@@ -553,8 +556,71 @@ local leaderCardBack = "http://cloud-3.steamusercontent.com/ugc/2093668799785645
 local customDeckBaseId = 100
 
 ---
+function Deck.rebuildPreloadAreas()
+    Locale.onLoad()
+    local allSupports = {
+        en = require("en.Deck"),
+        fr = require("fr.Deck"),
+    }
+
+    for _, guid in ipairs({ "a5a2e6", "db4507" }) do
+        local zone = getObjectFromGUID(guid)
+        assert(zone)
+        for _, object in ipairs(zone.getObjects()) do
+            if object.type == "Deck" then
+                object.destruct()
+            end
+        end
+    end
+
+    Helper.onceFramesPassed(1).doAfter(function ()
+        for language, _ in pairs(allSupports) do
+            I18N.setLocale(language)
+
+            local support = allSupports[language]
+            local sources = support.loadCustomDecks(Deck)
+
+            local areas = getObjectsWithTag("deckPreloadArea" .. language)
+            assert(#areas == 1)
+            local origin = areas[1].getPosition()
+
+            for i, category in ipairs({
+                "objective",
+                "imperium",
+                "special",
+                "tleilaxu",
+                "intrigue",
+                "conflict",
+                "hagal",
+                "tech",
+                "leaders",
+            }) do
+                local contributions = {}
+                local categorySources = {}
+                Helper.forEach(sources[category], function (card, customDeck)
+                    contributions[card] = 1
+                    categorySources[card] = customDeck
+                end)
+
+                Deck._generateDeck("Imperium", origin + Vector(0, 0, 4 * i - 20), contributions, categorySources).doAfter(function (deck)
+                    deck.setInvisibleTo(Player.getColors())
+                    Helper.dump("Loaded", language, "/", category)
+                end)
+            end
+        end
+    end)
+end
+
+---
 function Deck.onLoad()
-    -- NOP
+    for _, guid in ipairs({ "a5a2e6", "db4507" }) do
+        local zone = getObjectFromGUID(guid)
+        if zone then
+            for _, object in ipairs(zone.getObjects()) do
+                object.setInvisibleTo(Player.getColors())
+            end
+        end
+    end
 end
 
 ---

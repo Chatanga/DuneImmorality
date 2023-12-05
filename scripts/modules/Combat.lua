@@ -467,7 +467,7 @@ function Combat._updateCombatForces(forces)
             local heightOffset = Vector(
                 0,
                 (occupations[minorForce] - 1) * 0.35
-                    + math.min(1, majorForce) * 0.30, -- Last part is here because the rotation center for the tokent is not the barycenter.
+                    + math.min(1, majorForce) * 0.30, -- Last part is here because the rotation center for the tokens is not the barycenter.
                 0)
 
             local forceMarker = PlayBoard.getContent(color).forceMarker
