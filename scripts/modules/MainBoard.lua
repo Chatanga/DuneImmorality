@@ -873,6 +873,16 @@ function MainBoard._applyControlOfAnySpace(bannerZone, resourceName)
 end
 
 ---
+function MainBoard.findControlableSpace(name)
+    for bannerZoneName, zone in pairs(MainBoard.banners) do
+        if Helper.startsWith(bannerZoneName, name) then
+            return zone
+        end
+    end
+    return nil
+end
+
+---
 function MainBoard.getControllingPlayer(bannerZone)
     local controllingPlayer = nil
 

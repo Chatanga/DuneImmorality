@@ -164,33 +164,38 @@ end
 function Combat._setUpConflict()
     Helper.moveCardFromZone(Combat.conflictDeckZone, Combat.conflictDiscardZone.getPosition() + Vector(0, 1, 0), nil, true, true).doAfter(function (card)
         assert(card)
+        local cardName = Helper.getID(card)
+
         local i = 0
         local tokens = Combat.victoryPointTokenBag.getObjects()
         for _, token in pairs(tokens) do
             assert(token)
-            if Helper.getID(card) == Helper.getID(token) then
+            if cardName == Helper.getID(token) then
                 local origin = Combat.victoryPointTokenZone.getPosition()
                 local position = origin + Vector(0.5 - (i % 2), 0.5 + math.floor(i / 2), 0)
                 i = i + 1
-                local victoryPointToken = Combat.victoryPointTokenBag.takeObject({
+                Combat.victoryPointTokenBag.takeObject({
                     position = position,
                     rotation = Vector(0, 180, 0),
                     smooth = true,
                     guid = token.guid,
                 })
+            end
+        end
 
-                --[[
-                local controlableSpace = MainBoard.findControlableSpace(victoryPointToken)
+        for _, controlableSpaceName in ipairs({ "imperialBasin", "arrakeen", "spiceRefinery" }) do
+            if cardName:find(controlableSpaceName:gsub("^%l", string.upper)) then
+                local controlableSpace = MainBoard.findControlableSpace(controlableSpaceName)
+                assert(controlableSpace)
                 if controlableSpace then
                     local color = MainBoard.getControllingPlayer(controlableSpace)
                     if color then
                         Park.transfert(1, PlayBoard.getSupplyPark(color), Combat.getBattlegroundPark())
                     end
                 end
-                ]]
             end
         end
-        --Helper.dump("Found", i, "matching VP for conflict:", Helper.getID(card))
+
         broadcastToAll(I18N("announceCombat", { combat = I18N(Helper.getID(card)) }), "Orange")
     end)
 end

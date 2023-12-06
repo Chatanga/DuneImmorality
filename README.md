@@ -22,16 +22,13 @@ cf. [tts_build/README.md](tts_build/README.md)
 ## TODO
 
 __All__
-- Donner un VP auto pour l'achat de l'"Epice doit couler" 
+- Donner un VP auto pour l'achat de l'"Epice doit couler" .
 - Retirer les options avec ver si pas d’hameçon.
 - Automatiser l’acquisition / détection d’hameçon pour les actions liées.
 - Respecter le découpage des zones de combat.
 - Revoir le contexte d’action pour les logs.
 - Capacités spéciales des dirigeants.
 - Revoir les décalcos tech. et élargir les tags des snaps (Tech + Contract).
-- Sacs de jetons 1/2 PV pour les 3 + ? objectifs (+ Decal + Snap). ( les sacs sont présents sur le workshop, je les ai ajouté)
-- Donner une troupe auto en cas de contrôle d'un lieu avec flag de contrôle si un conflit est sur ce lieu
-
 
 __6P__
 
