@@ -9,7 +9,7 @@ return {
     randomizePlayersPositions = "Mélanger les positions des joueurs",
     extensions = "Extensions",
     useContracts = "Contrats de la CHOM",
-    riseOfIx = "L’Avènement de Ix",
+    riseOfIx = "L’Avènement de Ix (non supporté)",
     epicMode = "Mode épique",
     immortality = "Immortalité",
     goTo11 = "Jusqu’à 11",
