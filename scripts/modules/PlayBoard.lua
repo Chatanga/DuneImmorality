@@ -539,6 +539,36 @@ function PlayBoard.rebuild()
                 rotation = { 90, 180, 0 },
                 scale = { 5, 3.5, 3.5 },
             },
+            {
+                name = "MuadDib Objective Slot",
+                url = "http://cloud-3.steamusercontent.com/ugc/2285077174179797415/D172CF392A59D3596816D630A26AC2AED60B8796/",
+                position = symmetric2(-3.4, 0.2, 0),
+                rotation = { 90, 180, 0 },
+                scale = { 1.1, 1.1, 1.1 },
+            },
+            {
+                name = "Krys Objective Slot",
+                url = "http://cloud-3.steamusercontent.com/ugc/2285077174179797013/7D1043073C71821322CA599EA4B8D5B4AA7C34F3/",
+                position = symmetric2(-4.8, 0.2, 0),
+                rotation = { 90, 180, 0 },
+                scale = { 1.1, 1.1, 1.1 },
+            },
+            {
+                name = "Ornithopter Objective Slot",
+                url = "http://cloud-3.steamusercontent.com/ugc/2285077174179797729/D5C773ACE09B761D4A49751DB9ADB15E404C2FBE/",
+                position = symmetric2(-6.2, 0.2, 0),
+                rotation = { 90, 180, 0 },
+                scale = { 1.1, 1.1, 1.1 },
+            },
+            --[[
+            {
+                name = "Joker Objective Slot",
+                url = "",
+                position = symmetric2(-7.6, 0.2, 0),
+                rotation = { 90, 180, 0 },
+                scale = { 1, 1, 1 },
+            },
+            ]]
         }
 
         layoutGrid(3, 1, function (x, y)
@@ -836,6 +866,11 @@ function PlayBoard.new(color, unresolvedContent, subState)
         local snapPoint = Helper.createRelativeSnapPointFromZone(playBoard.content.board, playBoard.content[name], true, tags)
         table.insert(snapPoints, snapPoint)
     end
+
+    table.insert(snapPoints, { position = playBoard:_newSymmetricBoardPosition(-3.4, 0.2, 0), rotation_snap = true, tags = { "MuadDibObjectiveToken" } })
+    table.insert(snapPoints, { position = playBoard:_newSymmetricBoardPosition(-4.8, 0.2, 0), rotation_snap = true, tags = { "KrysObjectiveToken" } })
+    table.insert(snapPoints, { position = playBoard:_newSymmetricBoardPosition(-6.2, 0.2, 0), rotation_snap = true, tags = { "OrnithopterObjectiveToken" } })
+
     playBoard.content.board.setSnapPoints(snapPoints)
 
     for _, resourceName in ipairs(PlayBoard.ALL_RESOURCE_NAMES) do
