@@ -384,7 +384,9 @@ function PlayerSet.randomizePlayerPositions(activeOpponents, continuation)
         Helper.unregisterGlobalCallback(PlayerSet.registeredCallback)
         PlayerSet.registeredCallback = nil
 
-        continuation.run()
+        Helper.onceTimeElapsed(2).doAfter(function ()
+            continuation.run()
+        end)
         return 1
     end)
     startLuaCoroutine(Global, PlayerSet.registeredCallback)
