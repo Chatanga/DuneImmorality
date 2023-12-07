@@ -117,6 +117,7 @@ return {
     recallFreighter = "■ Recall freighter.",
     recruitSwordmaster = "■ Recruit Swordmaster.",
     takeHighCouncilSeat = "■ Take High-Council seat.",
+    takeMakerHook = "■ Learn to use a Maker hook.",
     gainInfluence = "■ +{amount} influence with {withFaction}",
     loseInfluence = "■ -{amount} influence with {withFaction}",
     acquireTleilaxuCard = "■ Acquire Tleixlaxu card: \"{card}\"",

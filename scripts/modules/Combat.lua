@@ -26,6 +26,7 @@ local Combat = {
             Blue = "37e1a6",
             Red = "1cd225",
         },
+        protoSandworm = "14b25e"
     },
     origins = {
         Green = Vector(8.15, 0.85, -7.65),
@@ -79,6 +80,7 @@ end
 
 ---
 function Combat._staticSetUp(settings)
+    Combat._processSnapPoints(settings)
 
     Combat.garrisonParks = {}
     for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
@@ -161,6 +163,32 @@ function Combat._staticSetUp(settings)
 end
 
 ---
+function Combat._processSnapPoints(settings)
+
+    MainBoard.makerHookPositions = {}
+
+    local net = {
+        makerHook = function (name, position)
+            local color = name:gsub("^%l", string.upper)
+            MainBoard.makerHookPositions[color] = position
+            Helper.createTransientAnchor(color .. "MakerHook", position - Vector(0, 0.5, 0)).doAfter(function (anchor)
+                local tags = { "MakerHook" }
+                local snapPoints = { Helper.createRelativeSnapPoint(anchor, position, false, tags) }
+                anchor.setSnapPoints(snapPoints)
+            end)
+        end,
+    }
+
+    -- Having changed the state is not enough.
+    if settings.numberOfPlayers == 6 then
+        Helper.collectSnapPoints(net, getObjectFromGUID("21cc52"))
+        -- TODO Consider commander's boards.
+    else
+        Helper.collectSnapPoints(net, getObjectFromGUID("483a1a"))
+    end
+end
+
+---
 function Combat._setUpConflict()
     Helper.moveCardFromZone(Combat.conflictDeckZone, Combat.conflictDiscardZone.getPosition() + Vector(0, 1, 0), nil, true, true).doAfter(function (card)
         assert(card)
@@ -217,9 +245,9 @@ end
 ---
 function Combat._createGarrisonPark(color)
     local slots = {}
-    for j = 3, 1, -1 do
-        for i = 1, 4 do
-            local x = (i - 2.5) * 0.45
+    for i = 1, 4 do
+        for j = 3, 1, -1 do
+            local x = (PlayBoard.isLeft(color) and (2.5 - i) or (i - 2.5)) * 0.45
             local z = (j - 2) * 0.45
             local slot = Combat.garrisonsZones[color].getPosition() + Vector(x, -0.67, z)
             table.insert(slots, slot)
@@ -549,6 +577,40 @@ function Combat.showRanking(turnSequence, ranking)
         local rank = ranking[color]
         local key = rankNames[rank.value] .. (rank.exAequo > 1 and "ExAequo" or "") .. "InCombat"
         printToAll(I18N(key, { leader = PlayBoard.getLeaderName(color) }), color)
+    end
+end
+
+---
+function Combat.getMakerHookPosition(color)
+    return MainBoard.makerHookPositions[color]
+end
+
+---
+function Combat.callSandworm(color, count)
+    local battlegroundPark = Combat.getBattlegroundPark()
+    if count < 0 then
+        local remaining = -count
+        for _, object in ipairs(Park.getObjects(battlegroundPark)) do
+            if Types.isSandworm(object, color) then
+                object.destruct()
+                remaining = remaining - 1
+                if remaining == 0 then
+                    break
+                end
+            end
+        end
+    else
+        for _ = 1, count do
+            local sandworm = Combat.protoSandworm.clone({
+                position = Park.getPosition(battlegroundPark) - Vector(0, 20, 0)
+            })
+            sandworm.addTag("Sandworm")
+            sandworm.addTag(color)
+            sandworm.setRotation(Vector(0, math.random(360), 0))
+            sandworm.setScale(sandworm.getScale():copy():scale(1/1.5))
+            sandworm.setColorTint(color)
+            Park.putObject(sandworm, battlegroundPark)
+        end
     end
 end
 

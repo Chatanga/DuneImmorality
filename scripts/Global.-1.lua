@@ -8,6 +8,7 @@ local constructionModeEnabled = false
 local autoLoadedSettings
 
 --[[
+]]
 autoLoadedSettings = {
     language = "fr",
     hotSeat = true,
@@ -27,9 +28,8 @@ autoLoadedSettings = {
         Brown = "shaddamCorrino",
     },
     soundEnabled = true,
-    horizontalHandLayout = false,
+    horizontalHandLayout = true,
 }
-]]
 
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
@@ -113,7 +113,7 @@ local PlayerSet = {
         leaderSelection_all = allModules.LeaderSelection.getSelectionMethods(4),
         leaderSelection = "reversePick",
         defaultLeaderPoolSize_range = { min = 4, max = 12 },
-        defaultLeaderPoolSize = 8,
+        defaultLeaderPoolSize = 9,
         defaultLeaderPoolSizeLabel = "-",
         tweakLeaderSelection = false,
         horizontalHandLayout = true,

@@ -158,6 +158,25 @@ function Action.takeHighCouncilSeat(color)
     end
 end
 
+---
+function Action.takeMakerHook(color)
+    if PlayBoard.takeMakerHook(color) then
+        Action.log(I18N("takeMakerHook"), color)
+        return true
+    else
+        return false
+    end
+end
+
+---
+function Action.callSandworm(color, count)
+    if Combat.callSandworm(color, count) then
+        return true
+    else
+        return false
+    end
+end
+
 ---@param color PlayerColor
 ---@param resourceName ResourceName
 ---@param amount integer
@@ -480,12 +499,6 @@ function Action.acquireTech(color, stackIndex, discount)
     else
         return false
     end
-end
-
----
-function Action.acquireHook(color)
-    -- TODO
-    return true
 end
 
 return Action

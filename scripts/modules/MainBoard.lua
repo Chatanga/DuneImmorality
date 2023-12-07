@@ -28,7 +28,7 @@ function MainBoard.rebuild()
         local tag = snapPoint.tags[1]
         if #snapPoint.tags > 0 then
             if #snapPoint.tags == 1 then
-                for _, prefix in ipairs({ "space", "post", "flag" }) do
+                for _, prefix in ipairs({ "space", "post", "flag", "makerHook" }) do
                     if Helper.startsWith(tag, prefix .. "_") then
                         local newTag = prefix .. tag:sub(prefix:len() + 2)
                         Helper.dump(tag, "->", newTag)
@@ -695,7 +695,7 @@ end
 ---
 function MainBoard._goSietchTabr_HookTroopWater(color, leader)
     if InfluenceTrack.hasFriendship(color, "fremen") then
-        leader.acquireHook(color)
+        leader.takeMakerHook(color)
         leader.troops(color, "supply", "garrison", 1)
         leader.resources(color, "water", 1)
         return true
@@ -771,20 +771,24 @@ end
 ---
 function MainBoard._asyncGoDeepDesert(color, leader)
     local continuation = Helper.createContinuation("MainBoard._asyncGoDeepDesert")
-    local options = {
-        I18N("fourSpicesOption"),
-        I18N("twoWormsOption"),
-    }
-    -- FIXME Pending continuation if the dialog is canceled.
-    Player[color].showOptionsDialog(I18N("goDeepDesert"), options, 1, function (_, index, _)
-        if index == 1 then
-            continuation.run(MainBoard._goDeepDesert_Spice(color, leader))
-        elseif index == 2 then
-            continuation.run(MainBoard._goDeepDesert_WormsIfHook(color, leader))
-        else
-            continuation.run(false)
-        end
-    end)
+    if not PlayBoard.hasMakerHook(color) then
+        continuation.run(MainBoard._goDeepDesert_Spice(color, leader))
+    else
+        local options = {
+            I18N("fourSpicesOption"),
+            I18N("twoWormsOption"),
+        }
+        -- FIXME Pending continuation if the dialog is canceled.
+        Player[color].showOptionsDialog(I18N("goDeepDesert"), options, 1, function (_, index, _)
+            if index == 1 then
+                continuation.run(MainBoard._goDeepDesert_Spice(color, leader))
+            elseif index == 2 then
+                continuation.run(MainBoard._goDeepDesert_WormsIfHook(color, leader))
+            else
+                continuation.run(false)
+            end
+        end)
+    end
     return continuation
 end
 
@@ -795,26 +799,35 @@ end
 
 ---
 function MainBoard._goDeepDesert_WormsIfHook(color, leader)
-    return MainBoard._anySpiceSpace(color, leader, 3, 0, MainBoard.spiceBonuses.deepDesert)
+    if MainBoard._anySpiceSpace(color, leader, 3, 0, MainBoard.spiceBonuses.deepDesert) then
+        leader.callSandworm(color, 2)
+        return true
+    else
+        return false
+    end
 end
 
 ---
 function MainBoard._asyncGoHaggaBasin(color, leader)
     local continuation = Helper.createContinuation("MainBoard._asyncGoHaggaBasin")
-    local options = {
-        I18N("twoSpicesOption"),
-        I18N("onWormOption"),
-    }
-    -- FIXME Pending continuation if the dialog is canceled.
-    Player[color].showOptionsDialog(I18N("goHaggaBasin"), options, 1, function (_, index, _)
-        if index == 1 then
-            continuation.run(MainBoard._goHaggaBasin_Spice(color, leader))
-        elseif index == 2 then
-            continuation.run(MainBoard._goHaggaBasin_WormIfHook(color, leader))
-        else
-            continuation.run(false)
-        end
-    end)
+    if not PlayBoard.hasMakerHook(color) then
+        continuation.run(MainBoard._goHaggaBasin_Spice(color, leader))
+    else
+        local options = {
+            I18N("twoSpicesOption"),
+            I18N("onWormOption"),
+        }
+        -- FIXME Pending continuation if the dialog is canceled.
+        Player[color].showOptionsDialog(I18N("goHaggaBasin"), options, 1, function (_, index, _)
+            if index == 1 then
+                continuation.run(MainBoard._goHaggaBasin_Spice(color, leader))
+            elseif index == 2 then
+                continuation.run(MainBoard._goHaggaBasin_WormIfHook(color, leader))
+            else
+                continuation.run(false)
+            end
+        end)
+    end
     return continuation
 end
 
@@ -825,7 +838,12 @@ end
 
 ---
 function MainBoard._goHaggaBasin_WormIfHook(color, leader)
-    return MainBoard._anySpiceSpace(color, leader, 1, 0, MainBoard.spiceBonuses.haggaBasin)
+    if MainBoard._anySpiceSpace(color, leader, 1, 0, MainBoard.spiceBonuses.haggaBasin) then
+        leader.callSandworm(color, 1)
+        return true
+    else
+        return false
+    end
 end
 
 ---

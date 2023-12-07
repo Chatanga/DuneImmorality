@@ -117,6 +117,7 @@ return {
     recallFreighter = "■ Rappel de cargo.",
     recruitSwordmaster = "■ Recrutement du maître d’armes.",
     takeHighCouncilSeat = "■ Prise de siège au Haut-Conseil.",
+    takeMakerHook = "■ Acquisition d’un hameçon à faiseur.",
     gainInfluence = "■ +{amount} influence auprès {withFaction}",
     loseInfluence = "■ -{amount} influence auprès {withFaction}",
     acquireTleilaxuCard = "■ Acquisition carte tleilaxu : « {card} »",

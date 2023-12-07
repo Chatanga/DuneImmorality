@@ -152,6 +152,7 @@ function InfluenceTrack._processSnapPoints(settings, firstTime)
                             InfluenceTrack.influenceTokenInitialPositions[faction][color] = influenceTokenInitialPosition
                             if firstTime then
                                 influenceToken.setPosition(influenceTokenInitialPosition)
+                                Helper.noPlay(influenceToken)
                             end
                             break
                         end

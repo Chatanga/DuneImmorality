@@ -24,8 +24,6 @@ cf. [tts_build/README.md](tts_build/README.md)
 __All__
 
 - Donner un VP auto pour l'achat de l'"Epice doit couler" .
-- Retirer les options avec ver si pas d’hameçon.
-- Automatiser l’acquisition / détection d’hameçon pour les actions liées.
 - Respecter le découpage des zones de combat.
 - Revoir le contexte d’action pour les logs.
 - Capacités spéciales des dirigeants.
