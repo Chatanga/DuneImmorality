@@ -228,7 +228,7 @@ local Deck = {
         },
         uprising = {
             prepareTheWay = 8,
-            theSpiceMustFlow = 10,
+            theSpiceMustFlowNew = 10,
         },
     },
     tleilaxu = {

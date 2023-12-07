@@ -7,6 +7,7 @@ local Deck = Module.lazyRequire("Deck")
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local TleilaxuResearch = Module.lazyRequire("TleilaxuResearch")
 local MainBoard = Module.lazyRequire("MainBoard")
+local ImperiumCard = Module.lazyRequire("ImperiumCard")
 
 local TleilaxuRow = {}
 

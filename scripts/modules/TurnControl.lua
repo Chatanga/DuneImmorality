@@ -208,7 +208,7 @@ end
 
 ---
 function TurnControl.start()
-    assert(TurnControl.firstPlayerLuaIndex)
+    assert(TurnControl.firstPlayerLuaIndex, "A setup failure is highly probable!")
     TurnControl._startPhase(TurnControl.phaseOrder[1])
 end
 

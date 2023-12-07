@@ -17,9 +17,12 @@ local Intrigue = Module.lazyRequire("Intrigue")
 local Reserve = Module.lazyRequire("Reserve")
 local TechMarket = Module.lazyRequire("TechMarket")
 local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
+--local IntrigueCard = Module.lazyRequire("IntrigueCard")
+local ImperiumCard = Module.lazyRequire("ImperiumCard")
 
 local PlayBoard = Helper.createClass(nil, {
     ALL_RESOURCE_NAMES = { "spice", "water", "solari", "strength", "persuasion" },
+    AUTO_REVEAL = false,
     -- Temporary structure (set to nil *after* loading).
     unresolvedContentByColor = {
         Red = {
@@ -1514,7 +1517,7 @@ function PlayBoard:_createPlayerScorePark()
     local slots = {}
     for i = 1, 18 do
         slots[i] = Vector(
-            origin.x + (i - 1) * 1.092 * direction,
+            origin.x + (i - 1) * 1.075 * direction,
             origin.y,
             origin.z)
     end
@@ -1888,6 +1891,18 @@ function PlayBoard._updateBagCounts(container)
 end
 
 ---
+function PlayBoard.getCompletedContractCount(color)
+    local playBoard = PlayBoard.getPlayBoard(color)
+    if playBoard.opponent ~= "rival" then
+        local objets = playBoard.content.completedContractBag.getObjects()
+        return #Helper.filter(objets, function (element)
+            return element.tags and Helper.isElementOf("Contract", element.tags)
+        end)
+    end
+    return 0
+end
+
+---
 function PlayBoard:_createNukeButton()
     if self.content.atomicsToken then
         self.content.atomicsToken.createButton({
@@ -1980,12 +1995,24 @@ function PlayBoard:revealHand()
     local playedCards = Helper.filter(Park.getObjects(self.agentCardPark), Types.isImperiumCard)
 
     local properCard = function (card)
-        --[[
-            We leave the sister card in the player's hand to simplify things and
-            make clear to the player that the card must be manually revealed.
-        ]]
         assert(card)
-        return Types.isImperiumCard(card) and Helper.getID(card) ~= "beneGesseritSister"
+        if Types.isImperiumCard(card) then
+            if PlayBoard.AUTO_REVEAL then
+                --[[
+                    We leave the cards with a choice (not an option) in the player's hand to simplify
+                    things and make clear to the player that the card must be manually revealed.
+                ]]
+                return not Helper.isElementOf(Helper.getID(card), {
+                    "beneGesseritSister",
+                    "undercoverAsset",
+                    "desertPower"
+                })
+            else
+                return true
+            end
+        else
+            return false
+        end
     end
 
     local revealedCards = Helper.filter(Player[self.color].getHandObjects(), properCard)
@@ -2001,8 +2028,12 @@ function PlayBoard:revealHand()
     local councilSeat = PlayBoard.hasHighCouncilSeat(self.color)
     local artillery = PlayBoard.hasTech(self.color, "artillery")
 
-    local intrigueCardContributions = IntrigueCard and IntrigueCard.evaluatePlot(self.color, playedIntrigues, allRevealedCards, artillery) or {}
-    local imperiumCardContributions = ImperiumCard and ImperiumCard.evaluateReveal(self.color, playedCards, allRevealedCards, artillery) or {}
+    local intrigueCardContributions = {}
+    local imperiumCardContributions = {}
+    if PlayBoard.AUTO_REVEAL then
+        --intrigueCardContributions = IntrigueCard.evaluatePlot(self.color, playedIntrigues, allRevealedCards, artillery)
+        imperiumCardContributions = ImperiumCard.evaluateReveal(self.color, playedCards, allRevealedCards, artillery)
+    end
 
     self.persuasion:set(
         (intrigueCardContributions.persuasion or 0) +

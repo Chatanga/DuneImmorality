@@ -402,7 +402,7 @@ return {
     reverendMotherMohiam = "Reverend Mother Mohiam",
     powerPlay = "Power Play",
     duncanLoyalBlade = "Duncan Loyal Blade",
-    thumper = "Thumper",
+    --thumper = "Thumper",
     boundlessAmbition = "Boundless Ambition",
     guildChiefAdministrator = "Guild Chief Administrator",
     guildAccord = "Guild Accord",
@@ -481,7 +481,6 @@ return {
     twistedMentat = "Twisted Mentat",
     unnaturalReflexes = "Unnatural Reflexes",
     usurp = "Usurp",
-
     unswervingLoyalty = "Unswerving Loyalty",
     spaceTimeFolding = "Space Time Folding",
     weirdingWoman = "Weirding Woman",
@@ -498,7 +497,7 @@ return {
     undercoverAsset = "Undercover Asset",
     beneGesseritOperative = "Bene Gesserit Operative",
     maulaPistol = "Maula Pistol",
-    --thumper = "thumper",
+    thumper = "thumper",
     nothernWatermaster = "Nothern Watermaster",
     covertOperation = "Covert Operation",
     doubleAgent = "Double Agent",
@@ -540,7 +539,7 @@ return {
     priorityContracts = "Priority Contracts",
     interstellarTrade = "Interstellar Trade",
     prepareTheWay = "Prepare the Way",
-    -- theSpiceMustFlow  = "The Spice must Flow",
+    theSpiceMustFlowNew  = "The Spice must Flow",
 
     -- Intrigue
     bribery = "Bribery",

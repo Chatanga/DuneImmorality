@@ -124,6 +124,11 @@ function ScoreBoard._staticSetUp(settings)
 end
 
 function ScoreBoard.gainVictoryPoint(color, name)
+    -- FIXME Ugly workaround!
+    if name == "theSpiceMustFlowNew" then
+        name = "theSpiceMustFlow"
+    end
+
     local holder = {
         success = false
     }

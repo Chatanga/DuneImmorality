@@ -8,7 +8,6 @@ local constructionModeEnabled = false
 local autoLoadedSettings
 
 --[[
-]]
 autoLoadedSettings = {
     language = "fr",
     hotSeat = true,
@@ -17,7 +16,7 @@ autoLoadedSettings = {
     useContracts = true,
     riseOfIx = false,
     epicMode = false,
-    immortality = false,
+    immortality = true,
     goTo11 = false,
     leaderSelection = {
         Green = "jessicaAtreides",
@@ -28,8 +27,9 @@ autoLoadedSettings = {
         Brown = "shaddamCorrino",
     },
     soundEnabled = true,
-    horizontalHandLayout = true,
+    horizontalHandLayout = false,
 }
+]]
 
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
@@ -54,6 +54,7 @@ local allModules = Module.registerModules({
     ScoreBoard = require("ScoreBoard"),
     Hagal = require("Hagal"),
     HagalCard = require("HagalCard"),
+    ImperiumCard = require("ImperiumCard"),
     ImperiumRow = require("ImperiumRow"),
     InfluenceTrack = require("InfluenceTrack"),
     Intrigue = require("Intrigue"),

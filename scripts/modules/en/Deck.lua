@@ -397,7 +397,7 @@ function Deck.loadCustomDecks(loader)
         "prepareTheWay",
     })
     Deck.load(loader, cards.special, "imperium", "uprisingImperium_theSpiceMustFlow", 10, {
-        "theSpiceMustFlow",
+        "theSpiceMustFlowNew",
     })
     Deck.load(loader, cards.tleilaxu, "imperium", "tleilaxResearch", 1, {
         "beguilingPheromones",

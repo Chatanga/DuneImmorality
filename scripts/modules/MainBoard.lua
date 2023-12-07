@@ -941,6 +941,31 @@ function MainBoard.getControllingDreadnought(bannerZone)
     return nil
 end
 
+---
+function MainBoard.getDeployedSpyCount(color, onlyInMakerSpace)
+
+    local isMakerSpace = function (name)
+        return Helper.isElementOf(name, {
+            "DeepDesert",
+            "HabbanyaErg",
+            "HaggaBasin",
+            "ImperialBasin",
+        })
+    end
+
+    local count = 0
+    for name, observationPost in pairs(MainBoard.observationPosts) do
+        if not onlyInMakerSpace or isMakerSpace(name) then
+            for _, spy in ipairs(Park.getObjects(observationPost.park)) do
+                if spy.hasTag(color) then
+                    count = count + 1
+                end
+            end
+        end
+    end
+    return count
+end
+
 --[[
 
 ---
