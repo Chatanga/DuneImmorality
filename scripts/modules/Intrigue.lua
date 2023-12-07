@@ -46,12 +46,9 @@ end
 ---
 function Intrigue.drawIntrigue(color, amount)
     Types.assertIsPositiveInteger(amount)
-    -- Add an offset to put the card on the left side of the player's hand.
-    local handTransform = Player[color].getHandTransform()
-    local position = handTransform.position + Vector(0, 0, -5)
-    local rotation = handTransform.rotation + Vector(0, 180, 0)
+    local spaceInfo = Intrigue._getSpaceInfo(color)
     Helper.onceTimeElapsed(0.25, amount).doAfter(function()
-        Helper.moveCardFromZone(Intrigue.deckZone, position, rotation, false, true)
+        Helper.moveCardFromZone(Intrigue.deckZone, spaceInfo.position, spaceInfo.rotation, false, true)
     end)
 end
 
@@ -64,15 +61,29 @@ function Intrigue.stealIntrigue(color, otherColor, amount)
 
     Helper.shuffle(intrigues)
 
-    -- Add an offset to put the card on the left side of the player's hand.
-    local handTransform = Player[color].getHandTransform()
-    local position = handTransform.position + Vector(0, 0, -5)
-    local rotation = handTransform.rotation + Vector(0, 180, 0)
+    local spaceInfo = Intrigue._getSpaceInfo(color)
     Helper.onceTimeElapsed(0.25, realAmount).doAfter(function() -- Why?
         local card = table.remove(intrigues, 1)
-        card.setPosition(position)
-        card.setRotation(rotation)
+        card.setPosition(spaceInfo.position)
+        card.setRotation(spaceInfo.rotation)
     end)
+end
+
+---
+function Intrigue._getSpaceInfo(color)
+    -- Add an offset to put the card on the left side of the player's hand.
+    local handTransform = Player[color].getHandTransform()
+    local position = handTransform.position
+    if handTransform.rotation == Vector(0, 0, 0) then
+        position = position + Vector(-5, 0, 0)
+    else
+        position = position + Vector(0, 0, -5)
+    end
+    local rotation = handTransform.rotation + Vector(0, 180, 0)
+    return {
+        position = position,
+        rotation = rotation
+    }
 end
 
 ---
