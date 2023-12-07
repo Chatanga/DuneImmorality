@@ -23,7 +23,6 @@ cf. [tts_build/README.md](tts_build/README.md)
 
 __All__
 
-- Donner un VP auto pour l'achat de l'"Epice doit couler" .
 - Respecter le découpage des zones de combat.
 - Revoir le contexte d’action pour les logs.
 - Capacités spéciales des dirigeants.
@@ -57,6 +56,7 @@ __2P / Solo__
 
 __Later__
 
+- Utiliser la zone de préchargement, produire avec cardinalités, tagger les decks et takeObject(guid).
 - Régler tressautement paquets après un appel à "moveAt".
 - Custom token -> tile (MainBoard).
 - Dialogue fait maison pour notifier l'annulation par l'utilisateur.
