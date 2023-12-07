@@ -20,6 +20,7 @@ return {
     fanmadeLeaders = "Fanmade leaders",
     variants = "Variants",
     miscellanous = "Miscellanous",
+    horizontalHandLayout = "Horizontal hands layout with 4 players",
     soundEnabled = "Sounds enabled",
     setup = "Setup",
     notEnoughPlayers = "Not enough players",

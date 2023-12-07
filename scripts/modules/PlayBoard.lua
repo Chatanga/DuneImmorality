@@ -641,7 +641,7 @@ end
 
 ---
 ---@param position Vector
-function PlayBoard:moveAt(position, isRelative)
+function PlayBoard:moveAt(position, isRelative, horizontalHandLayout)
     --Helper.dumpFunction("PlayBoard:moveAt", position, isRelative)
 
     local toBeMoved = Helper.shallowCopy(self.content)
@@ -706,6 +706,11 @@ function PlayBoard:moveAt(position, isRelative)
 
     local handTransform = Player[self.color].getHandTransform()
     handTransform.position = handTransform.position + offset
+    if horizontalHandLayout then
+        handTransform.position = handTransform.position + self:_newSymmetricBoardPosition(-15, 0, 11.95)
+        handTransform.scale = Vector(25, 5, 4)
+        handTransform.rotation = Vector(0, 0, 0)
+    end
     Player[self.color].setHandTransform(handTransform)
 end
 
@@ -942,17 +947,27 @@ function PlayBoard.setUp(settings, activeOpponents)
 
         if settings.numberOfPlayers <= 4 then
             Helper.onceTimeElapsed(1).doAfter(function ()
-                local offsets = {
-                    Green = Vector(0, 0, -9.5),
-                    Yellow = Vector(0, 0, 9.5),
-                    Red = Vector(0, 0, -9.5),
-                    Blue = Vector(0, 0, 9.5),
-                }
+                local offsets
+                if settings.horizontalHandLayout then
+                    offsets = {
+                        Green = Vector(0, 0, -7.25),
+                        Yellow = Vector(0, 0, 7.25),
+                        Red = Vector(0, 0, -7.25),
+                        Blue = Vector(0, 0, 7.25),
+                    }
+                else
+                    offsets = {
+                        Green = Vector(0, 0, -9.25),
+                        Yellow = Vector(0, 0, 9.25),
+                        Red = Vector(0, 0, -9.25),
+                        Blue = Vector(0, 0, 9.25),
+                    }
+                end
                 local offset = offsets[color]
                 if offset then
-                    playBoard:moveAt(offset, true)
+                    playBoard:moveAt(offset, true, settings.horizontalHandLayout)
                 end
-            end)
+        end)
         end
     end
 

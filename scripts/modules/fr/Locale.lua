@@ -20,6 +20,7 @@ return {
     fanmadeLeaders = "Dirigeants par les fans",
     variants = "Variantes",
     miscellanous = "Divers",
+    horizontalHandLayout = "Mains à l’horizontale à 4 joueurs",
     soundEnabled = "Sons activés",
     setup = "Mise en place",
     notEnoughPlayers = "Pas assez de joueurs",

@@ -22,6 +22,7 @@ cf. [tts_build/README.md](tts_build/README.md)
 ## TODO
 
 __All__
+
 - Donner un VP auto pour l'achat de l'"Epice doit couler" .
 - Retirer les options avec ver si pas d’hameçon.
 - Automatiser l’acquisition / détection d’hameçon pour les actions liées.
@@ -66,7 +67,6 @@ __Later__
 - Toujours décorréler l'acquisition (carte, tech, contrat) de son effet.
 - Prendre en considération crans de zoom, préconfigurer les caméras ?
 - Une deuxième main pour les joueurs ?
-- Mains des joueurs à l'horizontal en 4J ?
 
 ## Notes
 

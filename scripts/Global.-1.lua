@@ -27,6 +27,7 @@ autoLoadedSettings = {
         Brown = "shaddamCorrino",
     },
     soundEnabled = true,
+    horizontalHandLayout = false,
 }
 ]]
 
@@ -115,6 +116,7 @@ local PlayerSet = {
         defaultLeaderPoolSize = 8,
         defaultLeaderPoolSizeLabel = "-",
         tweakLeaderSelection = false,
+        horizontalHandLayout = true,
         soundEnabled = true,
     }
 }
@@ -266,6 +268,8 @@ function setUp(newSettings)
     continuation.doAfter(function ()
         -- Not assigned before in order to avoid saving anything.
         settings = newSettings
+
+        log(settings)
 
         local orderedPlayers = PlayerSet.toCanonicallyOrderedPlayerList(activeOpponents)
         for i, moduleInfo in ipairs(allModules.ordered) do
@@ -549,6 +553,11 @@ function setTweakLeaderSelection(player, value, id)
 end
 
 ---
+function setHorizontalHandLayout(player, value, id)
+    PlayerSet.ui:fromUI(player, value, id)
+end
+
+---
 function setSoundEnabled(player, value, id)
     PlayerSet.ui:fromUI(player, value, id)
 end
@@ -617,6 +626,7 @@ function setUpFromUI()
         leaderSelection = PlayerSet.fields.leaderSelection,
         defaultLeaderPoolSize = tonumber(PlayerSet.fields.defaultLeaderPoolSize),
         tweakLeaderSelection = PlayerSet.fields.tweakLeaderSelection,
+        horizontalHandLayout = PlayerSet.fields.horizontalHandLayout,
         soundEnabled = PlayerSet.fields.soundEnabled,
     })
 end

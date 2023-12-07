@@ -52,7 +52,7 @@
 			</VerticalLayout>
 
 			<HorizontalLayout>
-				<Text class="primary" key="miscellanous"/>
+				<Text class="primary" key="players"/>
 			</HorizontalLayout>
 			<VerticalLayout padding="25 0 0 0">
 				<Toggle id="randomizePlayerPositions" onValueChanged="Global/setRandomizePlayerPositions" isOn="True" key="randomizePlayersPositions"/>
@@ -65,6 +65,13 @@
 						<Option></Option>
 					</Dropdown>
 				</HorizontalLayout>
+			</VerticalLayout>
+
+			<HorizontalLayout>
+				<Text class="primary" key="miscellanous"/>
+			</HorizontalLayout>
+			<VerticalLayout padding="25 0 0 0">
+				<Toggle id="horizontalHandLayout" onValueChanged="Global/setHorizontalHandLayout" isOn="True" key="horizontalHandLayout"/>
 				<Toggle id="soundEnabled" onValueChanged="Global/setSoundEnabled" isOn="True" key="soundEnabled"/>
 			</VerticalLayout>
 
