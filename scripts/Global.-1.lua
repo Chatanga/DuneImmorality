@@ -135,9 +135,9 @@ function onLoad(scriptState)
         --allModules.Deck.rebuildPreloadAreas()
     else
         -- The destroyed objects need one frame to disappear and not interfere with the mod.
-        Wait.frames(function ()
+        Wait.time(function ()
             asyncOnLoad(scriptState)
-        end, 1)
+        end, Helper.MINIMAL_DURATION)
     end
 end
 

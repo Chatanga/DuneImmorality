@@ -302,7 +302,6 @@ function LeaderSelection._getVisibleLeaders()
             end
         end
     end
-    Helper.dump(i, "/", j)
     return leaders
 end
 

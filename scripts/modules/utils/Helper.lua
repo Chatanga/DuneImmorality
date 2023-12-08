@@ -8,6 +8,7 @@ local Helper = {
     eventListenersByTopic = {},
     uniqueNamePool = {},
 
+    MINIMAL_DURATION = 1/30,
     AREA_BUTTON_COLOR = { 0, 0, 0, 0 },
     ERASE = function ()
         return "__erase__"
@@ -932,16 +933,16 @@ end
 function Helper.onceMotionless(object)
     local continuation = Helper.createContinuation("Helper.onceMotionless")
     -- Wait 1 frame for the movement to start.
-    Wait.frames(function ()
+    Wait.time(function ()
         Wait.condition(function()
-            Wait.frames(function ()
+            Wait.time(function ()
                 continuation.run(object)
-            end, 1)
+            end, Helper.MINIMAL_DURATION)
         end, function()
             continuation.tick()
             return object.resting
         end)
-    end, 1)
+    end, Helper.MINIMAL_DURATION)
     return continuation
 end
 
@@ -974,16 +975,10 @@ end
 ---@return Continuation
 function Helper.onceFramesPassed(count)
     local continuation = Helper.createContinuation("Helper.onceFramesPassed")
-    if false then
-        Wait.frames(function ()
-            continuation.run()
-        end, count)
-    else
-        -- Players with high FPS configurations seem to have (be?) a problem.
-        Wait.time(function ()
-            continuation.run()
-        end, count / 60)
-    end
+    -- Wait.frames is unreliable with players with high FPS configurations.
+    Wait.time(function ()
+        continuation.run()
+    end, count * Helper.MINIMAL_DURATION)
     return continuation
 end
 

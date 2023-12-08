@@ -5,7 +5,7 @@ Features:
 - Base game 3-4P
 - (Base game 6P)
 - (Rise of Ix extension)
-- (Immortality extension)
+- Immortality extension
 - (Legacy as an extension)
 - (Hagal House)
 
@@ -44,7 +44,7 @@ __6P__
 __Extensions__
 
 - Achat de tech débrayé par défaut.
-- Rétablir TechCard et ImperiumCard (uniquement les cartes Tleilaxu avec leur coût).
+- Rétablir TechCard.
 - Patch Ix (avec postes d'observation) pour le plateau principal (emmerdant pour les snaps -> 2 x 2 ?).
 - Patch Immortality pour le plateau principal.
 - Considérer base/core/legacy comme une extension.
