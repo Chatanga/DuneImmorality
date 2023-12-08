@@ -481,6 +481,7 @@ return {
     twistedMentat = "Twisted Mentat",
     unnaturalReflexes = "Unnatural Reflexes",
     usurp = "Usurp",
+
     unswervingLoyalty = "Unswerving Loyalty",
     spaceTimeFolding = "Space Time Folding",
     weirdingWoman = "Weirding Woman",
