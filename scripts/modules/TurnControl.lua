@@ -395,8 +395,7 @@ end
 ---
 function TurnControl._getNextPhase(phase)
     if phase == 'leaderSelection' then
-        --return 'gameStart' -- Skipped
-        return 'roundStart'
+        return 'gameStart'
     elseif phase == 'gameStart' then
         return 'roundStart'
     elseif phase == 'roundStart' then

@@ -267,6 +267,12 @@ return {
     fourthSnooperRecall = "Tessia Vernius a rappelé son quatrième fouineur {withFaction}.",
     firstSnooperRecallEffectInfo = "Ayant rappelé votre premier fouineur, vous pouvez défausser une carte pour gagne 1 mesure d’épice.",
 
+    gurneyIsSmiling = "Gurney montre ses dents.",
+
+    imperialBirthright = "Irulan exerce son droit de naissance.",
+
+    loyalty = "Margot récolte les fruits de sa loyauté",
+
     -- Uprising leaders
     stabanTuek = "Staban Tuek",
     amberMetulli = "Dame Amber Metulli",

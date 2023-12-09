@@ -962,6 +962,7 @@ function Deck._generateCardData(customDeck, customDeckId, cardId)
 
     assert(customDeck.__scale)
 
+    -- We do not provide a missleading GUID!
     local data = {
         Name = "Card",
         Transform = {

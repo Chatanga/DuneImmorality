@@ -25,13 +25,12 @@ __All__
 
 - Respecter le découpage des zones de combat.
 - Revoir le contexte d’action pour les logs.
-- Capacités spéciales des dirigeants.
-- Revoir les décalcos tech. et élargir les tags des snaps (Tech + Contract).
+- Revoir les décalcos tech.
 
 __6P__
 
 - Ajouter un emplacement ThroneRow.
-- Rendre mobiles les éléments de jeu pour avoir 2 configurations 4J et 6J (A).
+- Rendre mobiles les éléments de jeu pour avoir 2 configurations 4J et 6J.
 - Automatiser les espaces 6J.
 - Reprendre les images des marqueurs de score des commandants.
 - Activation et surcharge des commandants (une vraie surcharge !).
@@ -65,18 +64,3 @@ __Later__
 - Toujours décorréler l'acquisition (carte, tech, contrat) de son effet.
 - Prendre en considération crans de zoom, préconfigurer les caméras ?
 - Une deuxième main pour les joueurs ?
-
-## Notes
-
-A. Ajouter *.move(position) pour :
-    MainBoard (the game board with 6P extensions, not the table)
-    PlayBoard
-    TleilaxuResearch
-    TleilaxuRow
-    ImperiumRow
-    Reserve
-    Intrigue
-    TechMarket (inclut une partie de Mainboard)
-    ContractMarket (inclut une partie de Mainboard)
-    ScoreBoard (les jetons de PV)
-    ThroneRow

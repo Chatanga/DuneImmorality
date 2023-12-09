@@ -305,12 +305,15 @@ end
 ---
 function Hagal.isLeaderCompatible(leader)
     assert(leader)
+    --[[
     for _, compatibleLeader in ipairs(Helper.getKeys(Hagal.compatibleLeaders)) do
         if compatibleLeader == Helper.getID(leader) then
             return true
         end
     end
     return false
+    ]]
+    return true
 end
 
 ---

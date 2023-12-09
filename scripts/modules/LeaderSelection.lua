@@ -241,7 +241,7 @@ function LeaderSelection._setUpPicking(opponents, numberOfLeaders, autoStart, ra
             if phase == 'leaderSelection' then
                 if PlayBoard.isRival(color) then
                     -- Always auto and random in fact.
-                    --Hagal.pickAnyCompatibleLeader(color)
+                    Hagal.pickAnyCompatibleLeader(color)
                 elseif PlayBoard.isHuman(color) then
                     local leaders = LeaderSelection.getSelectableLeaders()
                     local leader = Helper.pickAny(leaders)

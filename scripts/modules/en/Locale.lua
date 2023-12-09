@@ -267,6 +267,12 @@ return {
     fourthSnooperRecall = "Tessia Vernius has recalled her fourth snooper from {withFaction}.",
     firstSnooperRecallEffectInfo = "Having recalled your first snooper, you may discard a card to get 1 spice unit.",
 
+    gurneyIsSmiling = "Gurney is showing his teeths.",
+
+    imperialBirthright = "Irulan exercises his imperial birthright.",
+
+    loyalty = "Margot reaps the rewards of her loyalty",
+
     -- Uprising leaders
     stabanTuek = "Staban Tuek",
     amberMetulli = "Lady Amber Metulli",

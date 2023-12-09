@@ -459,29 +459,34 @@ function Combat._calculateCombatForces()
     local forces = {}
 
     for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
-        local force = 0
-        for _, object in ipairs(Combat.combatCenterZone.getObjects()) do
-            if Types.isUnit(object, color) then
-                if Types.isTroop(object, color) then
-                    force = force + 2
-                elseif Types.isDreadnought(object, color) then
-                    force = force + (Combat.dreadnoughtStrengths[color] or 3)
-                elseif Types.isSandworm(object, color) then
-                    force = force + 3
-                else
-                    error("Unknown unit type: " .. object.getGUID())
-                end
-            end
-        end
-
-        if force > 0 then
-            force = force + PlayBoard.getResource(color, "strength"):get()
-        end
-
-        forces[color] = force
+        forces[color] = Combat.calculateCombatForce(color)
     end
 
     return forces
+end
+
+---
+function Combat.calculateCombatForce(color)
+    local force = 0
+    for _, object in ipairs(Combat.combatCenterZone.getObjects()) do
+        if Types.isUnit(object, color) then
+            if Types.isTroop(object, color) then
+                force = force + 2
+            elseif Types.isDreadnought(object, color) then
+                force = force + (Combat.dreadnoughtStrengths[color] or 3)
+            elseif Types.isSandworm(object, color) then
+                force = force + 3
+            else
+                error("Unknown unit type: " .. object.getGUID())
+            end
+        end
+    end
+
+    if force > 0 then
+        force = force + PlayBoard.getResource(color, "strength"):get()
+    end
+
+    return force
 end
 
 ---

@@ -1,11 +1,11 @@
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local AcquireCard = require("utils.AcquireCard")
-local I18N = require("utils.I18N")
 
 local PlayBoard = Module.lazyRequire("PlayBoard")
 
 local ChoamContractMarket = {
+    -- Unused
     contract = {
         harvest_1 = 1,
         harvest_2 = 1,
@@ -54,10 +54,14 @@ function ChoamContractMarket.setUp(settings)
     if settings.useContracts then
         ChoamContractMarket._staticSetUp(settings)
 
-        Helper.shuffleDeck(ChoamContractMarket.contractBag)
-        Helper.onceShuffled(ChoamContractMarket.contractBag).doAfter(function ()
-            for i, _ in ipairs(ChoamContractMarket.contractSlots) do
-                ChoamContractMarket._replenish(i)
+        Helper.registerEventListener("phaseStart", function (phaseName)
+            if phaseName == "gameStart" then
+                Helper.shuffleDeck(ChoamContractMarket.contractBag)
+                Helper.onceShuffled(ChoamContractMarket.contractBag).doAfter(function ()
+                    for i, _ in ipairs(ChoamContractMarket.contractSlots) do
+                        ChoamContractMarket._replenish(i)
+                    end
+                end)
             end
         end)
     else
@@ -154,6 +158,22 @@ function ChoamContractMarket._replenish(indexInRow)
         rotation = Vector(0, 180, 0),
         smooth = true,
     })
+end
+
+---
+function ChoamContractMarket.takeAnySardaukarContract(position)
+    --Helper.dumpFunction("ChoamContractMarket.takeAnySardaukarContract", position)
+    for _, object in ipairs(ChoamContractMarket.contractBag.getObjects()) do
+        assert(object.guid)
+        if Helper.isElementOf("SardaukarContract",  object.tags) then
+            ChoamContractMarket.contractBag.takeObject({
+                position = position,
+                rotation = Vector(0, 180, 0),
+                guid = object.guid,
+            })
+            break
+        end
+    end
 end
 
 return ChoamContractMarket

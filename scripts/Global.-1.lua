@@ -11,7 +11,7 @@ local autoLoadedSettings
 autoLoadedSettings = {
     language = "fr",
     hotSeat = true,
-    numberOfPlayers = 3,
+    numberOfPlayers = 4,
     randomizePlayerPositions = false,
     useContracts = true,
     riseOfIx = false,
@@ -21,8 +21,8 @@ autoLoadedSettings = {
     leaderSelection = {
         Green = "jessicaAtreides",
         Yellow = "gurneyHalleck",
-        Red = "irulanCorrino",
-        Blue = "feydRauthaHarkonnen",
+        Red = "feydRauthaHarkonnen",
+        Blue = "irulanCorrino",
         Teal = "muadDib",
         Brown = "shaddamCorrino",
     },
