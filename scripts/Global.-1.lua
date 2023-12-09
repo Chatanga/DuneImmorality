@@ -26,8 +26,9 @@ autoLoadedSettings = {
         Teal = "muadDib",
         Brown = "shaddamCorrino",
     },
-    soundEnabled = true,
     horizontalHandLayout = false,
+    assistedRevelation = true,
+    soundEnabled = true,
 }
 ]]
 
@@ -118,6 +119,7 @@ local PlayerSet = {
         defaultLeaderPoolSizeLabel = "-",
         tweakLeaderSelection = false,
         horizontalHandLayout = true,
+        assistedRevelation = false,
         soundEnabled = true,
     }
 }
@@ -559,6 +561,11 @@ function setHorizontalHandLayout(player, value, id)
 end
 
 ---
+function setAssistedRevelation(player, value, id)
+    PlayerSet.ui:fromUI(player, value, id)
+end
+
+---
 function setSoundEnabled(player, value, id)
     PlayerSet.ui:fromUI(player, value, id)
 end
@@ -628,6 +635,8 @@ function setUpFromUI()
         defaultLeaderPoolSize = tonumber(PlayerSet.fields.defaultLeaderPoolSize),
         tweakLeaderSelection = PlayerSet.fields.tweakLeaderSelection,
         horizontalHandLayout = PlayerSet.fields.horizontalHandLayout,
+        --assistedRevelation = PlayerSet.fields.assistedRevelation,
+        assistedRevelation = getObjectFromGUID('a7fd90') ~= nil,
         soundEnabled = PlayerSet.fields.soundEnabled,
     })
 end

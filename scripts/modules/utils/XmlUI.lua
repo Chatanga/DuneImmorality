@@ -74,22 +74,25 @@ function XmlUI:toUI()
     for name, value in pairs(self.fields) do
         if not XmlUI._isEnumeration(name) and not XmlUI._isRange(name) then
             local element = XmlUI._findXmlElement(self.xml, name)
-            assert(element, "Unknown id: " .. name)
-            if XmlUI._isActive(value) then
-                local values = self:_getEnumeration(name)
-                local range = self:_getRange(name)
-                if values then
-                    XmlUI._setXmlDropdownOptions(element, values, value)
-                elseif range then
-                    XmlUI._setXmlSlider(element, range, value)
-                elseif element.tag == "Toggle" then
-                    XmlUI._setXmlToggle(element, value)
-                elseif element.tag == "Text" then
-                    XmlUI._setXmlText(element, value)
+            if element then
+                if XmlUI._isActive(value) then
+                    local values = self:_getEnumeration(name)
+                    local range = self:_getRange(name)
+                    if values then
+                        XmlUI._setXmlDropdownOptions(element, values, value)
+                    elseif range then
+                        XmlUI._setXmlSlider(element, range, value)
+                    elseif element.tag == "Toggle" then
+                        XmlUI._setXmlToggle(element, value)
+                    elseif element.tag == "Text" then
+                        XmlUI._setXmlText(element, value)
+                    end
+                    XmlUI._setXmlInteractable(element, true)
+                else
+                    XmlUI._setXmlInteractable(element, false)
                 end
-                XmlUI._setXmlInteractable(element, true)
             else
-                XmlUI._setXmlInteractable(element, false)
+                --log("Unknown id: " .. name)
             end
         end
     end

@@ -21,6 +21,7 @@ return {
     variants = "Variants",
     miscellanous = "Miscellanous",
     horizontalHandLayout = "Horizontal hands layout with 4 players",
+    assistedRevelation = "Assisted revelation",
     soundEnabled = "Sounds enabled",
     setup = "Setup",
     notEnoughPlayers = "Not enough players",

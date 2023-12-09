@@ -22,7 +22,7 @@ local ImperiumCard = Module.lazyRequire("ImperiumCard")
 
 local PlayBoard = Helper.createClass(nil, {
     ALL_RESOURCE_NAMES = { "spice", "water", "solari", "strength", "persuasion" },
-    AUTO_REVEAL = false,
+    autoRevealEnabled = false,
     -- Temporary structure (set to nil *after* loading).
     unresolvedContentByColor = {
         Red = {
@@ -968,6 +968,7 @@ end
 
 ---
 function PlayBoard._staticSetUp(settings)
+    PlayBoard.autoRevealEnabled = settings.assistedRevelation
 
     Helper.registerEventListener("phaseStart", function (phase, firstPlayer)
 
@@ -1997,7 +1998,7 @@ function PlayBoard:revealHand()
     local properCard = function (card)
         assert(card)
         if Types.isImperiumCard(card) then
-            if PlayBoard.AUTO_REVEAL then
+            if PlayBoard.autoRevealEnabled then
                 --[[
                     We leave the cards with a choice (not an option) in the player's hand to simplify
                     things and make clear to the player that the card must be manually revealed.
@@ -2030,7 +2031,7 @@ function PlayBoard:revealHand()
 
     local intrigueCardContributions = {}
     local imperiumCardContributions = {}
-    if PlayBoard.AUTO_REVEAL then
+    if PlayBoard.autoRevealEnabled then
         --intrigueCardContributions = IntrigueCard.evaluatePlot(self.color, playedIntrigues, allRevealedCards, artillery)
         imperiumCardContributions = ImperiumCard.evaluateReveal(self.color, playedCards, allRevealedCards, artillery)
     end

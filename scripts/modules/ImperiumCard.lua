@@ -239,7 +239,7 @@ local ImperiumCard = {
     trecherousManeuver = {factions = {'emperor'}, cost = 5, agentIcons = {'emperor', 'spacingGuild', 'beneGesserit', 'fremen'}, reveal = {persuasion(1), intrigue(1)}},
     chaniCleverTactician = {factions = {'fremen'}, cost = 5, agentIcons = {'fremen', 'blue', 'yellow'}, reveal = {persuasion(fremenBond(2)), 'reply 2 troops --> sword(4)'}},
     junctionHeadquarters = {factions = {'spacingGuild'}, cost = 6, agentIcons = {'green', 'blue', 'yellow'}, reveal = {persuasion(1), water(1), troop(1)}},
-    corrinthCity = {factions = {'perEmperor'}, cost = 6, agentIcons = {'emperor', 'green'}, reveal = {choice(1, {{solari(5)}, 'solari(-5) --> takeHighCouncilSeat(1)'})}},
+    corrinthCity = {factions = {'emperor'}, cost = 6, agentIcons = {'emperor', 'green'}, reveal = {choice(1, {{solari(5)}, 'solari(-5) --> takeHighCouncilSeat(1)'})}},
     stilgarTheDevoted = {factions = {'fremen'}, cost = 6, agentIcons = {'fremen', 'blue', 'yellow'}, reveal = {persuasion(perFremen(2))}},
     desertPower = {factions = {'fremen'}, cost = 6, agentIcons = {'yellow'}, reveal = {choice(1, {{persuasion(2)}, {'hook: water(1) -> worm(1)'}})}},
     arrakisRevolt = {factions = {'fremen'}, cost = 6, acquireBonus = {troop(1)}, agentIcons = {'blue'}, reveal = {persuasion(1), sword(3)}},
