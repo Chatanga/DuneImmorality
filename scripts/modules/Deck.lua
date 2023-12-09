@@ -653,7 +653,7 @@ function Deck._mutateMainBoards()
     for name, boardInfo in pairs(boards) do
         local board = getObjectFromGUID(boardInfo.guid)
         if board then
-            log("Mutating board " .. name)
+            --Helper.dump("Mutating board " .. name)
             local parameters = board.getCustomObject()
             parameters.image = boardInfo.url
             board.setCustomObject(parameters)
@@ -742,7 +742,7 @@ end
 
 ---
 function Deck.generateSpecialDeck(parent, name, deckZone)
-    Helper.dump("generateSpecialDeck")
+    --Helper.dump("generateSpecialDeck")
     assert(deckZone, name)
     local continuation = Helper.createContinuation("Deck.generateSpecialDeck")
     assert(name)

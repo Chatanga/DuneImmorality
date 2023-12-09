@@ -189,10 +189,10 @@ function asyncOnLoad(scriptState)
     -- because the order matter, now that we reload with "staticSetUp" (for the
     -- same reason setUp is ordered too).
     for i, moduleInfo in ipairs(allModules.ordered) do
-        Helper.dump(tostring(i) .. ". Loading " .. moduleInfo.name)
+        --Helper.dump(tostring(i) .. ". Loading " .. moduleInfo.name)
         moduleInfo.module.onLoad(state)
     end
-    log("Done loading all modules")
+    --Helper.dump("Done loading all modules")
 
     -- List the TTS events we want to make available in the modules.
     Module.registerModuleRedirections({
@@ -228,7 +228,7 @@ function onSave()
         return
     end
 
-    if not Helper.isStabilized() then
+    if false and not Helper.isStabilized() then
         Helper.dump("Unstable save!")
     end
 
@@ -272,14 +272,12 @@ function setUp(newSettings)
         -- Not assigned before in order to avoid saving anything.
         settings = newSettings
 
-        log(settings)
-
         local orderedPlayers = PlayerSet.toCanonicallyOrderedPlayerList(activeOpponents)
         for i, moduleInfo in ipairs(allModules.ordered) do
-            Helper.dump(tostring(i) .. ". Setting " .. moduleInfo.name)
+            --Helper.dump(tostring(i) .. ". Setting " .. moduleInfo.name)
             moduleInfo.module.setUp(settings, activeOpponents, orderedPlayers)
         end
-        log("Done setting all modules")
+        --Helper.dump("Done setting all modules")
 
         -- TurnControl.start() is called by "LeaderSelection" asynchronously,
         -- effectively starting the game.

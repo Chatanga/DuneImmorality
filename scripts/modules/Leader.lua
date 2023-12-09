@@ -282,13 +282,11 @@ Leader.tessiaVernius = Helper.createClass(Leader, {
 
     --- Careful observation
     influence = function (color, faction, amount)
-        Helper.dump("-influence-", color, faction, amount)
         if faction then
             local continuation = Helper.createContinuation("Leader.tessiaVernius.influence")
             local noFriendshipBefore = not InfluenceTrack.hasFriendship(color, faction)
             Action.influence(color, faction, amount).doAfter(function (...)
                 local friendshipAfter = InfluenceTrack.hasFriendship(color, faction)
-                Helper.dump(faction, noFriendshipBefore, friendshipAfter)
                 if noFriendshipBefore and friendshipAfter then
                     InfluenceTrack.recallSnooper(faction, color)
                 end

@@ -93,7 +93,7 @@ function LeaderSelection.setUp(settings, opponents, orderedPlayers)
                 if #turnSequence == 4 then
                     Helper.swap(turnSequence, 4, 3)
                 else
-                    log("Skipping 4 <-> 3 for less than 4 players.")
+                    Helper.dump("Skipping 4 <-> 3 for less than 4 players.")
                 end
             end
 

@@ -84,7 +84,7 @@ function ScoreBoard.setUp(settings)
 
         -- Clumsy workaround to name items in a bag.
         if token.type == "Bag" then
-            log("Renaming in " .. name)
+            --log("Renaming in " .. name)
             local count = #token.getObjects()
             for i = 1, count do
                 local innerToken = token.takeObject({ position = token.getPosition() + Vector(0, i * 0.5, 0) })

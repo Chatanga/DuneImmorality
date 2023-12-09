@@ -275,7 +275,7 @@ end
 
 ---
 function Hagal._reshuffleDeck(color, action, n, continuation)
-    --log("Reshuffling Hagal deck.")
+    --Helper.dump("Reshuffling Hagal deck.")
     for _, object in ipairs(getObjects()) do
         if object.hasTag("Hagal") and (object.type == "Deck" or object.type == "Card") then
             if not object.is_face_down then

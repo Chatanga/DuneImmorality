@@ -1048,7 +1048,7 @@ function PlayBoard._staticSetUp(settings)
     end)
 
     Helper.registerEventListener("agentSent", function (color, spaceName)
-        Helper.dump("PlayBoard.isHuman(", color, ") =", PlayBoard.isHuman(color))
+        --Helper.dump("PlayBoard.isHuman(", color, ") =", PlayBoard.isHuman(color))
         if PlayBoard.isHuman(color) then
             -- Do it after the clean up done in TechMarket.
             Helper.onceFramesPassed(1).doAfter(function ()
@@ -1183,11 +1183,11 @@ function PlayBoard._movePlayerIfNeeded(color)
     end
     if hostPlayer then
         Helper.onceFramesPassed(1).doAfter(function ()
-            Helper.dump(hostPlayer.color, "-> puppet")
+            --Helper.dump(hostPlayer.color, "-> puppet")
             local playBoard = PlayBoard.getPlayBoard(hostPlayer.color)
             if playBoard then
                 PlayBoard.getPlayBoard(hostPlayer.color).opponent = "puppet"
-                Helper.dump(hostPlayer.color, "->", color)
+                --Helper.dump(hostPlayer.color, "->", color)
                 PlayBoard.getPlayBoard(color).opponent = hostPlayer.color
                 hostPlayer.changeColor(color)
             else
@@ -1226,7 +1226,7 @@ end
 function PlayBoard.acceptTurn(phase, color)
     assert(color)
     local playBoard = PlayBoard.getPlayBoard(color)
-    Helper.dump("PlayBoard.acceptTurn", phase, color, playBoard.lastPhase)
+    --Helper.dump("PlayBoard.acceptTurn", phase, color, playBoard.lastPhase)
     local accepted = false
 
     if phase == 'leaderSelection' then
@@ -1761,7 +1761,7 @@ function PlayBoard:_createButtons()
 
     local board = self.content.board
 
-    Helper.dump("TurnControl.getCurrentRound =", TurnControl.getCurrentRound())
+    --Helper.dump("TurnControl.getCurrentRound =", TurnControl.getCurrentRound())
     if TurnControl.getCurrentRound() > 0 and PlayBoard.hasMakerHook(self.color) then
         board.createButton({
             click_function = self:_createExclusiveCallback(function (_, _, altClick)
@@ -2282,7 +2282,7 @@ function PlayBoard.setLeader(color, leaderCard)
             playBoard.leader = Hagal.newRival(color)
         else
             if not Hagal.isLeaderCompatible(leaderCard) then
-                log("Not a leader compatible with a rival: " .. Helper.getID(leaderCard))
+                Helper.dump("Not a leader compatible with a rival:", Helper.getID(leaderCard))
                 return false
             end
             playBoard.leader = Hagal.newRival(color, Leader.newLeader(Helper.getID(leaderCard)))

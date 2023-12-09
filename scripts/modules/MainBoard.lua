@@ -58,7 +58,7 @@ function MainBoard.rebuild()
             rejectedCount = rejectedCount + 1
         end
     end
-    log("Rejected: " .. tostring(rejectedCount) .. "/" .. tostring(#Global.getSnapPoints()))
+    Helper.dump("Rejected:", rejectedCount, "/", #Global.getSnapPoints())
 
     destination.setSnapPoints(snapPoints)
     Global.setSnapPoints({})
@@ -192,14 +192,13 @@ function MainBoard._staticSetUp(settings)
             end
 
             -- Recalling agents.
-            Helper.dump("colors:", PlayBoard.getActivePlayBoardColors())
-            for name, space in pairs(MainBoard.spaces) do
+            for _, space in pairs(MainBoard.spaces) do
                 if space.park then
                     for _, object in ipairs(Park.getObjects(space.park)) do
                         if object.hasTag("Agent") then
                             for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
                                 if object.hasTag(color) then
-                                    Helper.dump("Recalling a", color, "agent ->", PlayBoard.getAgentPark(color).name)
+                                    --Helper.dump("Recalling a", color, "agent ->", PlayBoard.getAgentPark(color).name)
                                     Park.putObject(object, PlayBoard.getAgentPark(color))
                                 end
                             end
@@ -594,7 +593,6 @@ end
 
 ---
 function MainBoard._goSwordmaster(color, leader)
-    Helper.dump("PlayBoard.hasSwordmaster(", color, ")", PlayBoard.hasSwordmaster(color))
     local firstAccess = #Helper.filter(PlayBoard.getActivePlayBoardColors(), PlayBoard.hasSwordmaster) == 0
     if not PlayBoard.hasSwordmaster(color) and leader.resources(color, "solari", firstAccess and -8 or -6) then
         leader.recruitSwordmaster(color)
