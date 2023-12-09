@@ -19,6 +19,7 @@ local TechMarket = Module.lazyRequire("TechMarket")
 local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
 --local IntrigueCard = Module.lazyRequire("IntrigueCard")
 local ImperiumCard = Module.lazyRequire("ImperiumCard")
+local Action = Module.lazyRequire("Action")
 
 local PlayBoard = Helper.createClass(nil, {
     ALL_RESOURCE_NAMES = { "spice", "water", "solari", "strength", "persuasion" },
@@ -2121,7 +2122,7 @@ function PlayBoard:drawCards(count)
     if deckOrCard and dealCardCount > 0 then
         deckOrCard.deal(dealCardCount, self.color)
         -- FIXME Should be in Action.
-        printToAll(I18N("drawObjects", { amount = dealCardCount, object = I18N.agree(dealCardCount, "imperiumCard") }), self.color)
+        Action.log(I18N("drawObjects", { amount = dealCardCount, object = I18N.agree(dealCardCount, "imperiumCard") }), self.color)
     end
 
     remainingCardToDrawCount = remainingCardToDrawCount - dealCardCount

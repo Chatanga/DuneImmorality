@@ -1,10 +1,12 @@
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local AcquireCard = require("utils.AcquireCard")
+local I18N = require("utils.I18N")
 
 local Deck = Module.lazyRequire("Deck")
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local Types = Module.lazyRequire("Types")
+local Action = Module.lazyRequire("Action")
 
 local Intrigue = {}
 
@@ -55,6 +57,7 @@ end
 ---
 function Intrigue.stealIntrigue(color, otherColor, amount)
     Types.assertIsPositiveInteger(amount)
+    local victimName = PlayBoard.getLeaderName(otherColor)
 
     local intrigues = PlayBoard.getIntrigues(otherColor)
     local realAmount = math.min(amount, #intrigues)
@@ -66,6 +69,11 @@ function Intrigue.stealIntrigue(color, otherColor, amount)
         local card = table.remove(intrigues, 1)
         card.setPosition(spaceInfo.position)
         card.setRotation(spaceInfo.rotation)
+        log(Helper.getID(card))
+        log(I18N(Helper.getID(card)))
+        local cardName = I18N(Helper.getID(card))
+        log(I18N("stealIntrigue", { victim = victimName, card = cardName }))
+        Action.secretLog(I18N("stealIntrigue", { victim = victimName, card = cardName }), color)
     end)
 end
 

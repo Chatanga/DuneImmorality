@@ -125,6 +125,7 @@ return {
     acquireImperiumCard = "■ Acquisition carte Imperium : « {card} »",
     buyTechCard= "■ Acquisition tech. pour {amount} {resource} : « {card} »",
     sendingAgent = "■ Envoi d’un agent vers : {space}",
+    stealIntrigue = "■ Vol de « {card} » à {victim}",
 
     -- Combat
     announceCombat = "Le combat de la manche est : « {combat} »",

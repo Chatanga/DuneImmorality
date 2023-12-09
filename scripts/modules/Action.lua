@@ -122,6 +122,17 @@ function Action.log(message, color)
 end
 
 ---
+function Action.secretLog(message, color)
+    local agentSentValue = Action.context["agentSent"]
+    local prefix = ""
+    if agentSentValue then
+        printToColor(I18N("sendingAgent", { space = I18N(agentSentValue) }), color, "Grey")
+        prefix = " └─> "
+    end
+    printToColor(prefix .. message, color, "Grey")
+end
+
+---
 function Action.unsetContext(key)
     Action.context[key] = nil
 end
