@@ -17,30 +17,18 @@ local MainBoard = {}
 
 ---
 function MainBoard.rebuild()
-    --local destination = getObjectFromGUID("21cc52")
-    local destination = getObjectFromGUID("483a1a")
-    --local destination = getObjectFromGUID("d75455")
+    --local destination = getObjectFromGUID("483a1a") -- 4P
+    local destination = getObjectFromGUID("21cc52") -- 6P
+    --local destination = getObjectFromGUID("4cb9ba") -- Emperor
+    --local destination = getObjectFromGUID("01c575") -- Fremen
+    --local destination = getObjectFromGUID("d75455") -- Ix
     assert(destination)
 
     local snapPoints = {}
 
     for _, snapPoint in ipairs(destination.getSnapPoints()) do
-        local tag = snapPoint.tags[1]
-        if #snapPoint.tags > 0 then
-            if #snapPoint.tags == 1 then
-                for _, prefix in ipairs({ "space", "post", "flag", "makerHook" }) do
-                    if Helper.startsWith(tag, prefix .. "_") then
-                        local newTag = prefix .. tag:sub(prefix:len() + 2)
-                        Helper.dump(tag, "->", newTag)
-                        snapPoint.tags = { newTag }
-                        break
-                    end
-                end
-                table.insert(snapPoints, snapPoint)
-            else
-                Helper.dump("Bad existing snap: ", snapPoint.tags)
-            end
-        end
+        Helper.dump("Snap:", snapPoint.tags)
+        table.insert(snapPoints, snapPoint)
     end
 
     local rejectedCount = 0
@@ -49,6 +37,7 @@ function MainBoard.rebuild()
             if #snapPoint.tags > 1 then
                 Helper.dump("Not a unique tag:", snapPoint.tags)
             end
+            Helper.dump("Snap:", snapPoint.tags)
             table.insert(snapPoints, {
                 position = destination.positionToLocal(snapPoint.position),
                 tags = snapPoint.tags,
@@ -59,6 +48,28 @@ function MainBoard.rebuild()
         end
     end
     Helper.dump("Rejected:", rejectedCount, "/", #Global.getSnapPoints())
+
+    destination.setSnapPoints(snapPoints)
+    Global.setSnapPoints({})
+end
+
+---
+function MainBoard.rebuild2()
+    local destination = getObjectFromGUID("483a1a") -- 4P
+    --local destination = getObjectFromGUID("21cc52") -- 6P
+
+    local snapPoints = {}
+
+    for _, snapPoint in ipairs(destination.getSnapPoints()) do
+        Helper.dump("Snap:", snapPoint.tags)
+
+        local position = snapPoint.position
+        position:scale(5.945034 / 11.2)
+        --position:setAt("y", position.y + 0.5)
+        --position:setAt("z", position.z - 1.88)
+
+        table.insert(snapPoints, snapPoint)
+    end
 
     destination.setSnapPoints(snapPoints)
     Global.setSnapPoints({})
@@ -113,10 +124,12 @@ function MainBoard.onLoad(state)
             habbanyaErg = "394db2",
         },
         firstPlayerMarker = "1f5576",
+        shieldWallToken = "31d6b0",
     }))
     MainBoard.spiceBonuses = {}
 
     Helper.noPhysicsNorPlay(MainBoard.board)
+    Helper.forEachValue(MainBoard.spiceBonusTokens, Helper.noPhysicsNorPlay)
 
     if state.settings then
         for name, token in pairs(MainBoard.spiceBonusTokens) do
@@ -189,7 +202,6 @@ function MainBoard._staticSetUp(settings)
             for desert, _ in pairs(MainBoard.spiceBonusTokens) do
                 local space = MainBoard.spaces[desert]
                 if space then
-                    log("Maker: " .. desert)
                     local spiceBonus = MainBoard.spiceBonuses[desert]
                     if Park.isEmpty(space.park) then
                         spiceBonus:change(1)
@@ -255,9 +267,11 @@ function MainBoard._processSnapPoints(settings)
             MainBoard.observationPosts[name] = { name = name, position = position }
         end,
         spice = function (name, position)
-            MainBoard.spiceBonusTokens[name].setPosition(position)
+            local token = MainBoard.spiceBonusTokens[name]
+            token.setPosition(position + Vector(0, -0.05, 0))
+            Helper.noPhysics(token)
             if not MainBoard.spiceBonuses[name] then
-                MainBoard.spiceBonuses[name] = Resource.new(MainBoard.spiceBonusTokens[name], nil, "spice", 0, name)
+                MainBoard.spiceBonuses[name] = Resource.new(token, nil, "spice", 0, name)
             end
         end,
         flag = function (name, position)
@@ -268,21 +282,12 @@ function MainBoard._processSnapPoints(settings)
             })
             Helper.markAsTransient(zone)
             MainBoard.banners[name .. "BannerZone"] = zone
-        end,
+        end
     }
 
-    -- Having changed the state is not enough.
-    if settings.numberOfPlayers == 6 then
-        Helper.collectSnapPoints(net, getObjectFromGUID("21cc52"))
-        -- TODO Consider commander's boards.
-    else
-        Helper.collectSnapPoints(net, getObjectFromGUID("483a1a"))
-    end
-    if settings.riseOfIx then
-        -- FIXME Direct access
-        Helper.collectSnapPoints(TechMarket.board)
-    end
+    MainBoard.collectSnapPointsEverywhere(settings, net)
 
+    assert(#highCouncilSeats > 0)
     MainBoard.highCouncilPark = Park.createPark(
         "HighCouncil",
         highCouncilSeats,
@@ -309,6 +314,20 @@ function MainBoard._processSnapPoints(settings)
 
     for _, bannerZone in pairs(MainBoard.banners) do
         MainBoard._createBannerSpace(bannerZone)
+    end
+end
+
+---
+function MainBoard.collectSnapPointsEverywhere(settings, net)
+    if settings.numberOfPlayers == 6 then
+        Helper.collectSnapPoints(net, getObjectFromGUID("21cc52"))
+        Helper.collectSnapPoints(net, getObjectFromGUID("4cb9ba"))
+        Helper.collectSnapPoints(net, getObjectFromGUID("01c575"))
+    else
+        Helper.collectSnapPoints(net, getObjectFromGUID("483a1a"))
+    end
+    if settings.riseOfIx then
+        Helper.collectSnapPoints(TechMarket.board)
     end
 end
 
@@ -372,7 +391,7 @@ function MainBoard._createSpaceButton(space)
         end
 
         local tooltip = I18N("sendAgentTo", { space = I18N(space.name)})
-        Helper.createAreaButton(space.zone, anchor, 0.7, tooltip, PlayBoard.withLeader(function (leader, color, _)
+        Helper.createAreaButton(space.zone, anchor, 0.75, tooltip, PlayBoard.withLeader(function (leader, color, _)
             if TurnControl.getCurrentPlayer() == color then
                 leader.sendAgent(color, space.name)
             else
@@ -401,7 +420,7 @@ function MainBoard._createObservationPostButton(observationPost)
         anchor.setSnapPoints(snapPoints)
 
         local tooltip = I18N("sendSpyTo", { observationPost = I18N(observationPost.name)})
-        Helper.createAreaButton(observationPost.zone, anchor, 0.7, tooltip, PlayBoard.withLeader(function (leader, color, altClick)
+        Helper.createAreaButton(observationPost.zone, anchor, 0.75, tooltip, PlayBoard.withLeader(function (leader, color, altClick)
             leader.sendSpy(color, observationPost.name)
         end))
     end)

@@ -8,15 +8,16 @@ local constructionModeEnabled = false
 local autoLoadedSettings
 
 --[[
+]]
 autoLoadedSettings = {
     language = "fr",
     hotSeat = true,
-    numberOfPlayers = 4,
+    numberOfPlayers = 6,
     randomizePlayerPositions = false,
     useContracts = true,
     riseOfIx = false,
     epicMode = false,
-    immortality = true,
+    immortality = false,
     goTo11 = false,
     leaderSelection = {
         Green = "jessicaAtreides",
@@ -30,7 +31,6 @@ autoLoadedSettings = {
     assistedRevelation = true,
     soundEnabled = true,
 }
-]]
 
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
@@ -134,6 +134,7 @@ function onLoad(scriptState)
     if constructionModeEnabled then
         --allModules.PlayBoard.rebuild()
         --allModules.MainBoard.rebuild()
+        --allModules.MainBoard.rebuild2()
         --allModules.Deck.rebuildPreloadAreas()
     else
         -- The destroyed objects need one frame to disappear and not interfere with the mod.

@@ -234,6 +234,8 @@ return {
     withSpacingGuild = "de la Guilde spatiale",
     withBeneGesserit = "du Bene Gesserit",
     withFremen = "des Fremens",
+    withGreatHouses = "les Maisons Majeures",
+    withFringeWorlds = "les mondes de la bordure",
 
     -- Leaders
     vladimirHarkonnen = "Baron Vladimir Harkonnen",
@@ -347,6 +349,13 @@ return {
     haggaBasin_Spice = "2 unités d’épice",
     haggaBasin_WormIfHook = "1 ver des sables",
     --imperialBasin = "ImperialBasin",
+    militarySupport = "Support militaire",
+    economicSupport = "Support économique",
+    controversialTechnology = "Technologie controversée",
+    expedition = "Éxpedition",
+    habbanyaErg = "Erg de la Habbanya",
+    desertMastery = "Desert Mastery",
+    vastWealth = "Vaste richesse",
 
     -- Objective cards
     --crysknife = "",

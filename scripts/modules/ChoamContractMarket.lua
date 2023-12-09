@@ -3,6 +3,7 @@ local Helper = require("utils.Helper")
 local AcquireCard = require("utils.AcquireCard")
 
 local PlayBoard = Module.lazyRequire("PlayBoard")
+local MainBoard = Module.lazyRequire("MainBoard")
 
 local ChoamContractMarket = {
     -- Unused
@@ -118,12 +119,7 @@ function ChoamContractMarket._processSnapPoints(settings)
         end,
     }
 
-    -- Having changed the state is not enough.
-    if settings.numberOfPlayers == 6 then
-        Helper.collectSnapPoints(net, getObjectFromGUID("21cc52"))
-    else
-        Helper.collectSnapPoints(net, getObjectFromGUID("483a1a"))
-    end
+    MainBoard.collectSnapPointsEverywhere(settings, net)
 end
 
 ---

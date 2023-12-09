@@ -234,6 +234,8 @@ return {
     withSpacingGuild = "the Spacing Guild",
     withBeneGesserit = "the Bene Gesserit",
     withFremen = "the Fremens",
+    withGreatHouses = "the Great Houses",
+    withFringeWorlds = "the Fringe Worlds",
 
     -- Leaders
     vladimirHarkonnen = "Baron Vladimir Harkonnen",
@@ -347,6 +349,13 @@ return {
     haggaBasin_Spice = "Take the spice",
     haggaBasin_WormIfHook = "Call a sandworm",
     --imperialBasin = "ImperialBasin",
+    militarySupport = "Military Support",
+    economicSupport = "Economic Support",
+    controversialTechnology = "controversial Technology",
+    expedition = "Expedition",
+    habbanyaErg = "Habbanya Erg",
+    desertMastery = "Desert Mastery",
+    vastWealth = "Vast Wealth",
 
     -- Objective cards
     --crysknife = "",

@@ -189,13 +189,7 @@ function Combat._processSnapPoints(settings)
         end,
     }
 
-    -- Having changed the state is not enough.
-    if settings.numberOfPlayers == 6 then
-        Helper.collectSnapPoints(net, getObjectFromGUID("21cc52"))
-        -- TODO Consider commander's boards.
-    else
-        Helper.collectSnapPoints(net, getObjectFromGUID("483a1a"))
-    end
+    MainBoard.collectSnapPointsEverywhere(settings, net)
 end
 
 ---
@@ -259,7 +253,7 @@ function Combat._createGarrisonPark(color)
         for j = 3, 1, -1 do
             local x = (PlayBoard.isLeft(color) and (2.5 - i) or (i - 2.5)) * 0.45
             local z = (j - 2) * 0.45
-            local slot = Combat.garrisonsZones[color].getPosition() + Vector(x, -0.67, z)
+            local slot = Combat.garrisonsZones[color].getPosition() + Vector(x, -0.59, z)
             table.insert(slots, slot)
         end
     end
@@ -362,7 +356,7 @@ function Combat._createButton(color, park)
                 end
             end
         end),
-        position = Vector(position.x, 0.7, position.z),
+        position = Vector(position.x, 0.75, position.z),
         width = 1200,
         height = 1200,
         color = areaColor,

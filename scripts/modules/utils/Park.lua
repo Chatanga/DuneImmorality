@@ -5,6 +5,7 @@ local Park = {}
 
 ---
 function Park.createCommonPark(tags, slots, margins, rotation, rotationSnap, zones)
+    assert(#slots > 0)
     local finalZones = (zones and #zones > 0) and zones or { Park.createTransientBoundingZone(0, margins, slots) }
     local name = Helper.stringConcat(tags) .. "_" .. finalZones[1].getGUID()
 

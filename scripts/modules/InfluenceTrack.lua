@@ -88,7 +88,7 @@ function InfluenceTrack._staticSetUp(settings, firstTime)
             levelPosition:setAt('y', 0.5)
             Helper.createTransientAnchor(faction .. "Rank" .. tostring(i), levelPosition).doAfter(function (anchor)
                 local actionName = I18N("progressOnInfluenceTrack", { withFaction = I18N(Helper.toCamelCase("with", faction)) })
-                Helper.createSizedAreaButton(1000, 400, anchor, 0.7, actionName, PlayBoard.withLeader(function (_, color, _)
+                Helper.createSizedAreaButton(1000, 400, anchor, 0.75, actionName, PlayBoard.withLeader(function (_, color, _)
                     if not InfluenceTrack.actionsLocked[faction][color] then
                         local rank = InfluenceTrack._getInfluenceTracksRank(faction, color)
                         InfluenceTrack.actionsLocked[faction][color] = true
@@ -130,12 +130,11 @@ function InfluenceTrack._processSnapPoints(settings, firstTime)
 
     local net = {
         faction = function (faction, position)
-
             InfluenceTrack.influenceTokens[faction] = {}
             InfluenceTrack.influenceTokenInitialPositions[faction] = {}
             for _, influenceToken in ipairs(influenceTokens) do
                 local tokenPosition = influenceToken.getPosition()
-                if tokenPosition.y < position.y and Vector.distance(tokenPosition, position) < 2 then
+                if tokenPosition.z < position.z and Vector.distance(tokenPosition, position) < 2 then
                     for _, color in ipairs(allColors) do
                         if influenceToken.hasTag(color) then
                             InfluenceTrack.influenceTokens[faction][color] = influenceToken
@@ -152,7 +151,7 @@ function InfluenceTrack._processSnapPoints(settings, firstTime)
                             InfluenceTrack.influenceTokenInitialPositions[faction][color] = influenceTokenInitialPosition
                             if firstTime then
                                 influenceToken.setPosition(influenceTokenInitialPosition)
-                                Helper.noPlay(influenceToken)
+                                Helper.noPhysicsNorPlay(influenceToken)
                             end
                             break
                         end
@@ -168,13 +167,7 @@ function InfluenceTrack._processSnapPoints(settings, firstTime)
         end
     }
 
-    -- Having changed the state is not enough.
-    if settings.numberOfPlayers == 6 then
-        Helper.collectSnapPoints(net, getObjectFromGUID("21cc52"))
-        -- TODO Consider commander's boards.
-    else
-        Helper.collectSnapPoints(net, getObjectFromGUID("483a1a"))
-    end
+    MainBoard.collectSnapPointsEverywhere(settings, net)
 end
 
 ---

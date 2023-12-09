@@ -697,6 +697,7 @@ function Helper.collectSnapPoints(net, object)
         --assert(snapPoint.tags and #snapPoint.tags == 1)
         if snapPoint.tags then
             if #snapPoint.tags == 1 then
+                --Helper.dump("Snap:", snapPoint.tags)
                 for _, tag in ipairs(snapPoint.tags) do
                     for prefix, collector in pairs(net) do
                         if Helper.startsWith(tag, prefix) then
@@ -708,6 +709,8 @@ function Helper.collectSnapPoints(net, object)
             else
                 Helper.dump("Unexpected snap tags:", snapPoint.tags)
             end
+        else
+            Helper.dump("Unexpected snap tags:", snapPoint.tags)
         end
     end
 end
@@ -1880,6 +1883,15 @@ function Helper.forEach(elements, f)
     assert(f)
     for k, v in pairs(elements) do
         f(k, v)
+    end
+end
+
+---
+function Helper.forEachValue(elements, f)
+    assert(elements)
+    assert(f)
+    for _, v in ipairs(elements) do
+        f(v)
     end
 end
 
