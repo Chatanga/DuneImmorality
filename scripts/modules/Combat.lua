@@ -26,7 +26,12 @@ local Combat = {
             Blue = "37e1a6",
             Red = "1cd225",
         },
-        protoSandworm = "14b25e"
+        protoSandworm = "14b25e",
+        objectiveTokens = {
+            muabDib = "a17bcb",
+            ornithopter = "bd4b71",
+            crysknife = "85f9b6",
+        },
     },
     origins = {
         Green = Vector(8.15, 0.85, -7.65),
@@ -53,6 +58,11 @@ function Combat.onLoad(state)
             0.66,
             origin.z + 0.64 - math.floor(i / 10) * 1.03
         )
+    end
+
+    Helper.noPhysicsNorPlay(Combat.protoSandworm)
+    for _, objectiveToken in pairs(Combat.objectiveTokens) do
+        Helper.noPhysics(objectiveToken)
     end
 
     if state.settings then

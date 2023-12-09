@@ -972,30 +972,26 @@ function PlayBoard._staticSetUp(settings)
     PlayBoard.autoRevealEnabled = settings.assistedRevelation
 
     Helper.registerEventListener("phaseStart", function (phase, firstPlayer)
-
         if phase == "leaderSelection" or phase == "roundStart" then
             local playBoard = PlayBoard.getPlayBoard(firstPlayer)
             MainBoard.getFirstPlayerMarker().setPositionSmooth(playBoard.content.firstPlayerInitialPosition, false, false)
         end
 
-        if phase == "gameStart" then
-            for _, playBoard in pairs(PlayBoard._getPlayBoards()) do
-                if playBoard.opponent ~= "rival" then
+        if phase == "roundStart" then
+
+            if TurnControl.getCurrentRound() == 1 then
+                for _, playBoard in pairs(PlayBoard._getPlayBoards(true)) do
                     -- Force button creation now that we have all the information to create the Sandworm button.
                     playBoard:_createButtons()
                 end
             end
-        end
 
-        if phase == "roundStart" then
-            for color, playBoard in pairs(PlayBoard._getPlayBoards()) do
-                if playBoard.opponent ~= "rival" then
-                    local cardAmount = PlayBoard.hasTech(color, "holtzmanEngine") and 6 or 5
-                    playBoard:drawCards(cardAmount)
+            for color, playBoard in pairs(PlayBoard._getPlayBoards(true)) do
+                local cardAmount = PlayBoard.hasTech(color, "holtzmanEngine") and 6 or 5
+                playBoard:drawCards(cardAmount)
 
-                    if PlayBoard.hasTech(color, "shuttleFleet") then
-                        playBoard.leader.resources(color, "solari", 2)
-                    end
+                if PlayBoard.hasTech(color, "shuttleFleet") then
+                    playBoard.leader.resources(color, "solari", 2)
                 end
             end
         end
@@ -1763,11 +1759,13 @@ function PlayBoard:_createButtons()
 
     local board = self.content.board
 
-    --Helper.dump("TurnControl.getCurrentRound =", TurnControl.getCurrentRound())
-    if TurnControl.getCurrentRound() > 0 and PlayBoard.hasMakerHook(self.color) then
+    if TurnControl.getCurrentRound() > 0 then
         board.createButton({
             click_function = self:_createExclusiveCallback(function (_, _, altClick)
                 if PlayBoard.hasMakerHook(self.color) then
+                    Combat.callSandworm(self.color, altClick and -1 or 1)
+                else
+                    -- TODO Confirmation popup?
                     Combat.callSandworm(self.color, altClick and -1 or 1)
                 end
             end),
