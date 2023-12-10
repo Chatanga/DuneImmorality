@@ -647,7 +647,7 @@ end
 function Deck._mutateMainBoards()
     local boards = {
         board4P = { guid = "483a1a", url = "http://cloud-3.steamusercontent.com/ugc/2305342013587677822/8DBDCE4796B52A64AE78D5F95A1CD0B87A87F66D/" },
-        board6P = { guid = "21cc52", url = "http://cloud-3.steamusercontent.com/ugc/2305342013587679397/718503B8558D419B491BF1624D72BCF13941A8F5/" },
+        board6P = { guid = "21cc52", url = "http://cloud-3.steamusercontent.com/ugc/2305343372518406394/7275233D2DA3F5859067823B21D910FEAF7E283E/" },
     }
 
     for name, boardInfo in pairs(boards) do

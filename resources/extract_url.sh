@@ -2,7 +2,7 @@
 
 import_dir='resources/import'
 mkdir -p "$import_dir"
-python3 extract_url.py input.mod.json | sort -u | while read url; do
+python3 extract_url.py ../skeleton.json | sort -u | while read url; do
     name=$(sed s/[^A-Za-z0-9]//g <<< "$url")
     if [ ! -f "$import_dir/$name" ]; then
         echo "Downloading $url"
