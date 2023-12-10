@@ -1098,34 +1098,133 @@ function Helper._getNopCallback()
     return uniqueName
 end
 
--- *** Experimental player color suppor ***
-
----
-function Helper.getPlayerColor(player)
-    return player.color
-end
-
----
-function Helper._getPlayerColor(player)
-    --Helper.dumpFunction("Helper._getPlayerColor", player)
-    local color = Helper.cachedPlayers and Helper.cachedPlayers[player.steam_id] or nil
-    if not color then
-        color = player.color
-        assert(Player[player.color].steam_id == player.steam_id)
-    end
-    --Helper.dump(player, "color is", color, "and", player.color)
-    return color
-end
+-- *** player color suppor ***
 
 ---
 function Helper.findPlayerByColor(color)
-    --Helper.dumpFunction("Helper.findPlayerByColor", color)
-    for _, player in ipairs(Player.getPlayers()) do
-        if Helper._getPlayerColor(player) == color then
-            return player
+    return Player[color]
+end
+
+--- Colour shuffler script, developed by markimus on steam.
+function Helper.randomizePlayerPositions()
+    local continuation = Helper.createContinuation("Helper.randomizePlayerPositions")
+
+    if #getSeatedPlayers() < 2 then
+        printToAll("There must be more than one player for shuffling to work.", "Red")
+        continuation.run()
+        return continuation
+    end
+    if Player["Black"].seated then
+        printToAll("Please remove Player Black for shuffling to work.", "Red")
+        continuation.run()
+        return continuation
+    end
+
+    local randomColours = {}
+
+    -- Insert the colours.
+
+    for _, v in pairs(getSeatedPlayers()) do
+        table.insert(randomColours, v)
+    end
+
+    Helper.shuffle(randomColours)
+
+    local seatedPlayers = {}
+    for i, v in pairs(getSeatedPlayers()) do
+        seatedPlayers[v] = {}
+        seatedPlayers[v].target = randomColours[i]
+        seatedPlayers[v].myColour = v
+        --printToAll(Player[v].steam_name .. "(".. v ..") -> ".. ranColours[i], {1, 1, 1})
+        if seatedPlayers[v].target == v then
+            seatedPlayers[v].prevMoved = true
+            seatedPlayers[v].moved = true
+        else
+            seatedPlayers[v].prevMoved = false
+            seatedPlayers[v].moved = false
         end
     end
-    return nil
+
+    -- Start shuffling players.
+
+    local registeredCallback = Helper.registerGlobalCallback(function ()
+
+        for timeout = 1, 50 do
+
+            -- Go through seated players. if they haven't moved, check if they can be moved.
+            for i, v in pairs(seatedPlayers) do
+                --print("Test")
+                if v.moved == false then
+                    if not Player[v.target].seated then
+                        local myC = v.myColour
+                        if Player[myC].seated then
+                            --print("Moving player ".. myC)
+                            Player[myC]:changeColor(v.target)
+                            while Player[myC].seated and not Player[v.target].seated do
+                                coroutine.yield()
+                            end
+                            v.myColour = v.target
+                            v.moved = true
+                        else
+                            table.remove(seatedPlayers, i)
+                        end
+                    end
+                end
+            end
+
+            local checkIfSame = true
+            for _, v in pairs(seatedPlayers) do
+                if v.prevMoved ~= v.moved then
+                    checkIfSame = false
+                    break
+                end
+            end
+
+            if checkIfSame then
+                --print("Is same.")
+                local allNonMovedPlayers = {}
+                for i, v in pairs(seatedPlayers) do
+                    if not v.moved then
+                        table.insert(allNonMovedPlayers, v)
+                    end
+                end
+
+                if #allNonMovedPlayers ~= 0 then
+                    local lastPlayer = allNonMovedPlayers[#allNonMovedPlayers]
+                    Player[lastPlayer.myColour]:changeColor("Black")
+                    lastPlayer.myColour = "Black"
+                    while not Player["Black"].seated do
+                        coroutine.yield()
+                    end
+                end
+            end
+
+            local count1, count2 = 0, 0
+            for _, v in pairs(seatedPlayers) do
+                count1 = count1 + 1
+                if v.moved then
+                    count2 = count2 + 1
+                end
+            end
+
+            if count1 == count2 then
+                break
+            end
+
+            for _, v in pairs(seatedPlayers) do
+                v.prevMoved = v.moved
+            end
+
+            coroutine.yield()
+        end
+
+        Helper.onceTimeElapsed(4).doAfter(continuation.run)
+        return 1
+    end)
+
+    startLuaCoroutine(Global, registeredCallback)
+
+    return continuation
 end
 
 ---
@@ -1134,28 +1233,23 @@ function Helper.changePlayerColorInCoroutine(player, newColor)
 
     local neutralColor = "Black"
 
-    local function seatPlayer(p, color)
-        p:changeColor(color)
-        if not Helper.cachedPlayers then
-            Helper.cachedPlayers = {}
+    local function seatPlayer(sourceColor, targetColor)
+        Player[sourceColor]:changeColor(targetColor)
+        while Player[sourceColor].seated and not Player[targetColor].seated do
+            coroutine.yield()
         end
-        Helper.cachedPlayers[p.steam_id] = color
-        Helper._sleep(0.5)
     end
 
     local oldColor = Helper._getPlayerColor(player)
-    local otherPlayer = Helper.findPlayerByColor(newColor)
     if oldColor ~= newColor then
+        local otherPlayer = Helper.findPlayerByColor(newColor)
         if not Helper.findPlayerByColor(neutralColor) then
             if otherPlayer then
                 seatPlayer(otherPlayer, neutralColor)
             end
             seatPlayer(player, newColor)
-            if otherPlayer then
-                seatPlayer(otherPlayer, oldColor)
-            end
         else
-            log("Skipping player color change")
+            log("Black player is seated! Skipping player color change.")
         end
     end
 end

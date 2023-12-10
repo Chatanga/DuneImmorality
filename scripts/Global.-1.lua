@@ -261,9 +261,8 @@ function setUp(newSettings)
     I18N.setLocale(newSettings.language)
 
     local continuation = Helper.createContinuation("setUp")
-    local activeOpponents = PlayerSet.findActiveOpponents(properlySeatedPlayers, newSettings.numberOfPlayers)
     if newSettings.randomizePlayerPositions then
-        PlayerSet.randomizePlayerPositions(activeOpponents, continuation)
+        Helper.randomizePlayerPositions().doAfter(continuation.run)
     else
         continuation.run()
     end
@@ -272,6 +271,7 @@ function setUp(newSettings)
         -- Not assigned before in order to avoid saving anything.
         settings = newSettings
 
+        local activeOpponents = PlayerSet.findActiveOpponents(properlySeatedPlayers, newSettings.numberOfPlayers)
         local orderedPlayers = PlayerSet.toCanonicallyOrderedPlayerList(activeOpponents)
         for i, moduleInfo in ipairs(allModules.ordered) do
             --Helper.dump(tostring(i) .. ". Setting " .. moduleInfo.name)
@@ -360,41 +360,6 @@ function PlayerSet.toCanonicallyOrderedPlayerList(activeOpponents)
     end
 
     return players
-end
-
----
-function PlayerSet.randomizePlayerPositions(activeOpponents, continuation)
-    PlayerSet.registeredCallback = Helper.registerGlobalCallback(function ()
-        local colors = {}
-        local opponents = {}
-        local newColors = {}
-
-        for color, opponent in pairs(activeOpponents) do
-            table.insert(colors, color)
-            table.insert(opponents, opponent)
-            table.insert(newColors, color)
-        end
-
-        Helper.shuffle(newColors)
-
-        for i = 1, #opponents do
-            local opponent = opponents[i]
-            local newColor = newColors[i]
-            if opponent ~= "rival" and opponent ~= "puppet" then
-                Helper.changePlayerColorInCoroutine(opponent, newColor)
-            end
-            activeOpponents[newColor] = opponent
-        end
-
-        Helper.unregisterGlobalCallback(PlayerSet.registeredCallback)
-        PlayerSet.registeredCallback = nil
-
-        Helper.onceTimeElapsed(2).doAfter(function ()
-            continuation.run()
-        end)
-        return 1
-    end)
-    startLuaCoroutine(Global, PlayerSet.registeredCallback)
 end
 
 ---

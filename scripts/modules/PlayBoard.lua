@@ -1167,32 +1167,36 @@ function PlayBoard._setActivePlayer(phase, color)
     end
 end
 
---- Hotseat (FIXME Unreliable with randomization?)
 function PlayBoard._movePlayerIfNeeded(color)
+    if Player[color].seated then
+        return
+    end
+
     local hostPlayer = nil
     for _, player in ipairs(Player.getPlayers()) do
-        if player.color == color then
-            return
-        elseif player.host then
+        if player.host then
             hostPlayer = player
         end
     end
-    if hostPlayer then
-        Helper.onceFramesPassed(1).doAfter(function ()
-            --Helper.dump(hostPlayer.color, "-> puppet")
-            local playBoard = PlayBoard.getPlayBoard(hostPlayer.color)
-            if playBoard then
-                PlayBoard.getPlayBoard(hostPlayer.color).opponent = "puppet"
+
+    assert(hostPlayer)
+    Helper.onceFramesPassed(1).doAfter(function ()
+        --Helper.dump(hostPlayer.color, "-> puppet")
+        local hostPlayBoard = PlayBoard.getPlayBoard(hostPlayer.color)
+        if hostPlayBoard then
+            local playboard = PlayBoard.getPlayBoard(color)
+            if playboard.opponent == "puppet" then
+                hostPlayBoard.opponent = "puppet"
                 --Helper.dump(hostPlayer.color, "->", color)
-                PlayBoard.getPlayBoard(color).opponent = hostPlayer.color
+                playboard.opponent = hostPlayer.color
                 hostPlayer.changeColor(color)
             else
-                error("Wrong player color!")
+                log("No player seated where there should be one!")
             end
-        end)
-    else
-        Turns.turn_color = color
-    end
+        else
+            error("Wrong player color!")
+        end
+    end)
 end
 
 ---
