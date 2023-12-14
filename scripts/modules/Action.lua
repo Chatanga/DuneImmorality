@@ -16,7 +16,6 @@ local ImperiumRow = Module.lazyRequire("ImperiumRow")
 local ShipmentTrack = Module.lazyRequire("ShipmentTrack")
 local TleilaxuRow = Module.lazyRequire("TleilaxuRow")
 local ScoreBoard = Module.lazyRequire("ScoreBoard")
-local TurnControl = Module.lazyRequire("TurnControl")
 
 local Action = Helper.createClass(nil, {
     context = {}
@@ -98,9 +97,7 @@ function Action.prepare(color, settings)
     if settings.epicMode then
         Action.drawIntrigues(color, 1)
     end
-    if not PlayBoard.isCommander(color) then
-        Action.troops(color, "supply", "garrison", settings.epicMode and 5 or 3)
-    end
+    Action.troops(color, "supply", "garrison", settings.epicMode and 5 or 3)
 end
 
 ---

@@ -12,8 +12,59 @@ local Hagal = Module.lazyRequire("Hagal")
 local Resource = Module.lazyRequire("Resource")
 local Action = Module.lazyRequire("Action")
 local TurnControl = Module.lazyRequire("TurnControl")
+local Commander = Module.lazyRequire("Commander")
 
-local MainBoard = {}
+local MainBoard = {
+    spaceDetails = {
+        sardaukar = { group = "emperor", posts = { "emperor" } },
+        vastWealth = { group = "emperor", posts = { "emperor" } },
+        dutifulServices = { group = "emperor", posts = { "emperor" } },
+
+        militarySupport = { group = "greatHouses", posts = { "greatHouse" } },
+        economicSupport = { group = "greatHouses", posts = { "greatHouse" } },
+
+        heighliner = { group = "spacingGuild", combat = true, posts = { "spacingGuild" } },
+        deliverSupplies = { group = "spacingGuild", posts = { "spacingGuild" } },
+
+        espionage = { group = "beneGesserit", posts = { "beneGesserit" } },
+        secrets = { group = "beneGesserit", posts = { "beneGesserit" } },
+
+        controversialTechnology = { group = "fringeWorlds", posts = { "fringeWorlds" } },
+        expedition = { group = "fringeWorlds", posts = { "fringeWorlds" } },
+
+        desertTactics = { group = "fremen", combat = true, posts = { "fremen" } },
+        fremkit = { group = "fremen", combat = true, posts = { "fremen" } },
+        hardyWarriors = { group = "fremen", combat = true, posts = { "fremen" } },
+        desertMastery = { group = "fremen", combat = true, posts = { "fremen" } },
+
+        highCouncil = { group = "landsraad", posts = { "landsraadCouncil1" } },
+        imperialPrivilege = { group = "landsraad", posts = { "landsraadCouncil1" } },
+        swordmaster = { group = "landsraad", posts = { "landsraadCouncil1" } },
+        assemblyHall = { group = "landsraad", posts = { "landsraadCouncil2" } },
+        gatherSupport = { group = "landsraad", posts = { "landsraadCouncil2" } },
+
+        techNegotiation = { group = "ix", posts = {} },
+        dreadnought = { group = "ix", posts = {} },
+
+        shipping = { group = "choam", posts = { "choam" } },
+        acceptContract = { group = "choam", posts = { "choam" } },
+
+        smuggling = { group = "choam", posts = {} },
+        interstellarShipping = { group = "choam", posts = {} },
+
+        sietchTabr = { group = "city", combat = true, posts = { "sietchTabrResearchStation" } },
+        researchStation = { group = "city", combat = true, posts = { "sietchTabrResearchStation", "researchStationSpiceRefinery" } },
+        researchStationImmortality = { group = "city", combat = true, posts = {} },
+        spiceRefinery = { group = "city", combat = true, posts = { "researchStationSpiceRefinery", "spiceRefineryArrakeen" } },
+        arrakeen = { group = "city", combat = true, posts = { "spiceRefineryArrakeen" } },
+        carthag = { group = "city", combat = true, posts = { "carthag" } },
+
+        deepDesert = { group = "desert", combat = true, posts = { "deepDesert" } },
+        haggaBasin = { group = "desert", combat = true, posts = { "haggaBasin" } },
+        habbanyaErg = { group = "desert", combat = true, posts = { "habbanyaErg" } },
+        imperialBasin = { group = "desert", combat = true, posts = { "imperialBasin" } },
+    }
+}
 
 ---
 function MainBoard.rebuild()
@@ -531,7 +582,7 @@ end
 ---
 function MainBoard._goFremkit(color, leader)
     leader.drawImperiumCards(color, 1)
-    leader.influence(color, "fremen", 1)
+    leader.influence(color, "fremen", 1, true)
     return true
 end
 
@@ -539,7 +590,7 @@ end
 function MainBoard._goDesertTactics(color, leader)
     if leader.resources(color, "water", -1) then
         leader.troops(color, "supply", "garrison", 1)
-        leader.influence(color, "fremen", 1)
+        leader.influence(color, "fremen", 1, true)
         return true
     else
         return false
@@ -591,20 +642,82 @@ end
 
 ---
 function MainBoard._goDutifulService(color, leader)
-    leader.influence(color, "emperor", 1)
+    leader.influence(color, "emperor", 1, true)
     return true
 end
 
 ---
 function MainBoard._goSardaukar(color, leader)
-    if leader.resources(color, "spice", -4) then
-        leader.troops(color, "supply", "garrison", 4)
+    local cost = Commander.isCommander(leader) and 4 or 3
+    if leader.resources(color, "spice", -cost) then
+        --leader.troops(color, "supply", "garrison", 4)
         leader.drawIntrigues(color, 1)
-        leader.influence(color, "emperor", 1)
+        leader.influence(color, "emperor", 1, true)
         return true
     else
         return false
     end
+end
+
+---
+function MainBoard._goVastWealth(color, leader)
+    leader.resources(color, "solari", 3)
+    leader.influence(color, "emperor", 1, true)
+    return true
+end
+
+---
+function MainBoard._goMilitarySupport(color, leader)
+    if leader.resources(color, "spice", -2) then
+        leader.influence(color, "greatHouses", 1)
+        return true
+    else
+        return false
+    end
+end
+
+---
+function MainBoard._goEconomicSupport(color, leader)
+    leader.resources(color, "spice", 1)
+    leader.influence(color, "greatHouses", 1)
+    return true
+end
+
+---
+function MainBoard._goControversialTechnology(color, leader)
+    if leader.resources(color, "spice", -2) then
+        leader.drawImperiumCards(color, 1)
+        leader.drawIntrigues(color, 1)
+        leader.influence(color, "fringeWorlds", 1)
+        return true
+    else
+        return false
+    end
+end
+
+---
+function MainBoard._goExpedition(color, leader)
+    leader.influence(color, "fringeWorlds", 1)
+    return true
+end
+
+---
+function MainBoard._goHardyWarriors(color, leader)
+    if leader.resources(color, "water", -1) then
+        leader.troops(color, "supply", "garrison", 2)
+        leader.influence(color, "fremen", 1, true)
+        return true
+    else
+        return false
+    end
+end
+
+---
+function MainBoard._goDesertMastery(color, leader)
+    leader.drawImperiumCards(color, 1)
+    leader.resources(color, "spice", 1)
+    leader.influence(color, "fremen", 1, true)
+    return true
 end
 
 ---
@@ -706,6 +819,14 @@ end
 ---
 function MainBoard._goAcceptContract(color, leader)
     return leader.drawImperiumCards(color, 1)
+end
+
+
+---
+function MainBoard._goCarthag(color, leader)
+    leader.drawIntrigues(color, 1)
+    leader.troops(color, "supply", "garrison", 1)
+    return true
 end
 
 ---
@@ -848,6 +969,16 @@ function MainBoard._goDeepDesert_WormsIfHook(color, leader)
 end
 
 ---
+function MainBoard._goHabbanyaErg(color, leader)
+    if MainBoard._anySpiceSpace(color, leader, 1, 2, MainBoard.spiceBonuses.habbanyaErg) then
+        leader.drawImperiumCards(color, 1)
+        return true
+    else
+        return false
+    end
+end
+
+---
 function MainBoard._asyncGoHaggaBasin(color, leader)
     local continuation = Helper.createContinuation("MainBoard._asyncGoHaggaBasin")
     if not PlayBoard.hasMakerHook(color) then
@@ -983,19 +1114,9 @@ end
 
 ---
 function MainBoard.getDeployedSpyCount(color, onlyInMakerSpace)
-
-    local isMakerSpace = function (name)
-        return Helper.isElementOf(name, {
-            "DeepDesert",
-            "HabbanyaErg",
-            "HaggaBasin",
-            "ImperialBasin",
-        })
-    end
-
     local count = 0
     for name, observationPost in pairs(MainBoard.observationPosts) do
-        if not onlyInMakerSpace or isMakerSpace(name) then
+        if not onlyInMakerSpace or MainBoard.isDesertSpace(name) then
             for _, spy in ipairs(Park.getObjects(observationPost.park)) do
                 if spy.hasTag(color) then
                     count = count + 1
@@ -1006,69 +1127,9 @@ function MainBoard.getDeployedSpyCount(color, onlyInMakerSpace)
     return count
 end
 
---[[
+-- *** --
 
----
-function MainBoard._goWealth(color, leader)
-    leader.resources(color, "solari", 2)
-    leader.influence(color, "emperor", 1)
-    return true
-end
-
----
-function MainBoard._goFoldspace(color, leader)
-    leader.acquireFoldspace(color)
-    leader.influence(color, "spacingGuild", 1)
-    return true
-end
-
----
-function MainBoard._goHardyWarriors(color, leader)
-    if leader.resources(color, "water", -1) then
-        leader.troops(color, "supply", "garrison", 2)
-        leader.influence(color, "fremen", 1)
-        return true
-    else
-        return false
-    end
-end
-
----
-function MainBoard._goStillsuits(color, leader)
-    leader.resources(color, "water", 1)
-    leader.influence(color, "fremen", 1)
-    return true
-end
-
----
-function MainBoard._goImperialBasin(color, leader)
-    if MainBoard._anySpiceSpace(color, leader, 0, 1, MainBoard.spiceBonuses.imperialBasin) then
-        MainBoard._applyControlOfAnySpace(MainBoard.banners.imperialBasinBannerZone, "spice")
-        return true
-    else
-        return false
-    end
-end
-
----
-function MainBoard._goHaggaBasin(color, leader)
-    return MainBoard._anySpiceSpace(color, leader, 1, 2, MainBoard.spiceBonuses.haggaBasin)
-end
-
----
-function MainBoard._goTheGreatFlat(color, leader)
-    return MainBoard._anySpiceSpace(color, leader, 2, 3, MainBoard.spiceBonuses.theGreatFlat)
-end
-
----
-function MainBoard._goResearchStation(color, leader)
-    if leader.resources(color, "water", -2) then
-        leader.drawImperiumCards(color, 3)
-        return true
-    else
-        return false
-    end
-end
+--[[ Immortality stuff
 
 ---
 function MainBoard._goResearchStationImmortality(color, leader)
@@ -1080,80 +1141,9 @@ function MainBoard._goResearchStationImmortality(color, leader)
         return false
     end
 end
+]]
 
----
-function MainBoard._goCarthag(color, leader)
-    leader.drawIntrigues(color, 1)
-    leader.troops(color, "supply", "garrison", 1)
-    MainBoard._applyControlOfAnySpace(MainBoard.banners.carthagBannerZone, "solari")
-    return true
-end
-
----
-function MainBoard._goArrakeen(color, leader)
-    leader.troops(color, "supply", "garrison", 1)
-    leader.drawImperiumCards(color, 1)
-    MainBoard._applyControlOfAnySpace(MainBoard.banners.arrakeenBannerZone, "solari")
-    return true
-end
-
----
-function MainBoard._goMentat(color, leader)
-    if leader.resources(color, "solari", -Hagal.getMentatSpaceCost()) then
-        leader.drawImperiumCards(color, 1)
-        return true
-    else
-        return false
-    end
-end
-
----
-function MainBoard._goSecureContract(color, leader)
-    leader.resources(color, "solari", 3)
-    return true
-end
-
-function MainBoard._asyncGoSellMelange(color, leader)
-    local continuation = Helper.createContinuation("MainBoard._asyncGoSellMelange")
-    local options = {
-        "2 -> 4",
-        "3 -> 8",
-        "4 -> 10",
-        "5 -> 12",
-    }
-    -- FIXME Pending continuation if the dialog is canceled.
-    Player[color].showOptionsDialog(I18N("goSellMelange"), options, 1, function (_, index, _)
-        continuation.run(MainBoard._sellMelange(color, leader, index))
-    end)
-    return continuation
-end
-
-function MainBoard._goSellMelange_1(color, leader)
-    return MainBoard._sellMelange(color, leader, 1)
-end
-
-function MainBoard._goSellMelange_2(color, leader)
-    return MainBoard._sellMelange(color, leader, 2)
-end
-
-function MainBoard._goSellMelange_3(color, leader)
-    return MainBoard._sellMelange(color, leader, 3)
-end
-
-function MainBoard._goSellMelange_4(color, leader)
-    return MainBoard._sellMelange(color, leader, 4)
-end
-
-function MainBoard._sellMelange(color, leader, index)
-    local spiceCost = index + 1
-    local solariBenefit = (index + 1) * 2 + 2
-    if leader.resources(color, "spice", -spiceCost) then
-        leader.resources(color, "solari", solariBenefit)
-        return true
-    else
-        return false
-    end
-end
+--[[ Ix stuff
 
 ---
 function MainBoard._goSmuggling(color, leader)
@@ -1216,10 +1206,6 @@ function MainBoard._goDreadnought(color, leader)
     end
 end
 
----
-function MainBoard._goHabbanyaErg(color, leader)
-    return true
-end
 ]]
 
 --- The color could be nil (the same way it could be nil with Types.isAgent)
@@ -1256,134 +1242,52 @@ end
 
 ---
 function MainBoard.isEmperorSpace(spaceName)
-    return Helper.isElementOf(spaceName, MainBoard.getEmperorSpaces())
-end
-
----
-function MainBoard.getEmperorSpaces()
-    error("TODO")
-    return {
-        "conspire",
-        "wealth" }
+    return MainBoard.spaceDetails[spaceName].group == "emperor"
 end
 
 ---
 function MainBoard.isSpacingGuildSpace(spaceName)
-    return Helper.isElementOf(spaceName, MainBoard.getSpacingGuildSpace())
-end
-
----
-function MainBoard.getSpacingGuildSpace()
-    error("TODO")
-    return {
-        "heighliner",
-        "foldspace" }
+    return MainBoard.spaceDetails[spaceName].group == "spacingGuild"
 end
 
 ---
 function MainBoard.isBeneGesseritSpace(spaceName)
-    return Helper.isElementOf(spaceName, MainBoard.getBeneGesseritSpaces())
-end
-
----
-function MainBoard.getBeneGesseritSpaces()
-    error("TODO")
-    return {
-        "selectiveBreeding",
-        "secrets" }
+    return MainBoard.spaceDetails[spaceName].group == "beneGesserit"
 end
 
 ---
 function MainBoard.isFremenSpace(spaceName)
-    return Helper.isElementOf(spaceName, MainBoard.getFremenSpaces())
+    return MainBoard.spaceDetails[spaceName].group == "fremen"
 end
 
 ---
-function MainBoard.getFremenSpaces()
-    error("TODO")
-    return {
-        "hardyWarriors",
-        "stillsuits" }
+function MainBoard.isGreatHouses(spaceName)
+    return MainBoard.spaceDetails[spaceName].group == "greatHouses"
+end
+
+---
+function MainBoard.isFringeWorlds(spaceName)
+    return MainBoard.spaceDetails[spaceName].group == "fringeWorlds"
 end
 
 ---
 function MainBoard.isFactionSpace(spaceName)
-    error("TODO")
     return MainBoard.isEmperorSpace(spaceName)
         or MainBoard.isSpacingGuildSpace(spaceName)
         or MainBoard.isBeneGesseritSpace(spaceName)
         or MainBoard.isFremenSpace(spaceName)
-end
-
----
-function MainBoard.isLandsraadSpace(spaceName)
-    error("TODO")
-    return Helper.isElementOf(spaceName, MainBoard.getLandsraadSpaces())
-end
-
----
-function MainBoard.getLandsraadSpaces()
-    error("TODO")
-    return {
-        "highCouncil",
-        "mentat",
-        "swordmaster",
-        "rallyTroops",
-        "hallOfOratory",
-        "highCouncil",
-        "mentat",
-        "swordmaster",
-        "rallyTroops",
-        "hallOfOratory",
-        "techNegotiation",
-        "dreadnought" }
-end
-
----
-function MainBoard.isCHOAMSpace(spaceName)
-    return Helper.isElementOf(spaceName, MainBoard.getCHOAMSpaces())
-end
-
----
-function MainBoard.getCHOAMSpaces()
-    error("TODO")
-    return {
-        "secureContract",
-        "sellMelange",
-        "secureContract",
-        "sellMelange",
-        "smuggling",
-        "interstellarShipping" }
+        or MainBoard.isGreatHouses(spaceName)
+        or MainBoard.isFringeWorlds(spaceName)
 end
 
 ---
 function MainBoard.isCitySpace(spaceName)
-    return Helper.isElementOf(spaceName, MainBoard.getCitySpaces())
+    return MainBoard.spaceDetails[spaceName].group == "city"
 end
 
----
-function MainBoard.getCitySpaces()
-    error("TODO")
-    return {
-        "arrakeen",
-        "carthag",
-        "researchStation",
-        "researchStationImmortality",
-        "sietchTabr" }
-end
-
----
+--- aka Maker space
 function MainBoard.isDesertSpace(spaceName)
-    return Helper.isElementOf(spaceName, MainBoard.getDesertSpaces())
-end
-
----
-function MainBoard.getDesertSpaces()
-    error("TODO")
-    return {
-        "imperialBasin",
-        "haggaBasin",
-        "theGreatFlat" }
+    return MainBoard.spaceDetails[spaceName].group == "desert"
 end
 
 ---
@@ -1393,27 +1297,8 @@ function MainBoard.isSpiceTradeSpace(spaceName)
 end
 
 ---
-function MainBoard.getCombatSpaces()
-    error("TODO")
-    return {
-        "heighliner",
-        "hardyWarriors",
-        "stillsuits",
-        "arrakeen",
-        "carthag",
-        "researchStation",
-        "researchStationImmortality",
-        "sietchTabr",
-        "imperialBasin",
-        "haggaBasin",
-        "theGreatFlat" }
-end
-
----
 function MainBoard.isCombatSpace(spaceName)
-    local result = Helper.isElementOf(spaceName, MainBoard.getCombatSpaces())
-    --Helper.dump(spaceName, "is a combat space ->", result)
-    return result
+    return MainBoard.spaceDetails[spaceName].combat
 end
 
 ---

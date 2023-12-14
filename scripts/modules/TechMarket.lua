@@ -79,7 +79,7 @@ end
 ---
 function TechMarket._staticSetUp()
     for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
-        if not PlayBoard.isCommander(color) then
+        if not Commander.isCommander(color) then
             TechMarket.negotiationParks[color] = TechMarket._createNegotiationPark(color)
         end
     end

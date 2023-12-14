@@ -3,6 +3,7 @@ local Helper = require("utils.Helper")
 local I18N = require("utils.I18N")
 
 local PlayBoard = Module.lazyRequire("PlayBoard")
+local Commander = Module.lazyRequire("Commander")
 local Hagal = Module.lazyRequire("Hagal")
 local Deck = Module.lazyRequire("Deck")
 
@@ -93,7 +94,7 @@ function TurnControl.setUp(settings, _, players)
             -- TODO Random
             TurnControl.firstPlayerLuaIndex = math.random(#TurnControl.players)
             firstPlayer = TurnControl.players[TurnControl.firstPlayerLuaIndex]
-        until not PlayBoard.isCommander(firstPlayer)
+        until not Commander.isCommander(firstPlayer)
         TurnControl._assignObjectives()
     end
 end
@@ -113,7 +114,7 @@ function TurnControl._assignObjectives()
 
     local objectiveCards = {}
     for i, color in ipairs(TurnControl.players) do
-        if not PlayBoard.isCommander(color) then
+        if not Commander.isCommander(color) then
             if i == TurnControl.firstPlayerLuaIndex then
                 objectiveCards[color] = "muadDibFirstPlayer"
             else
@@ -140,7 +141,7 @@ function TurnControl._assignObjectives()
 
     cardNames = {}
     for _, color in ipairs(TurnControl.players) do
-        if not PlayBoard.isCommander(color) then
+        if not Commander.isCommander(color) then
             -- Ordering guarantees?
             cardNames[objectiveCards[color]] = 1
         end

@@ -5,6 +5,7 @@ local I18N = require("utils.I18N")
 local Types = Module.lazyRequire("Types")
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local MainBoard = Module.lazyRequire("MainBoard")
+local Commander = Module.lazyRequire("Commander")
 
 local InfluenceTrack = {
     influenceTokens = {},
@@ -60,6 +61,7 @@ end
 ---
 function InfluenceTrack._staticSetUp(settings, firstTime)
     InfluenceTrack._processSnapPoints(settings, firstTime)
+    InfluenceTrack.isTeamGame = settings.numberOfPlayers == 6
 
     for faction, initialPositions in pairs(InfluenceTrack.influenceTokenInitialPositions) do
         local factionLevels = {}
@@ -150,6 +152,7 @@ function InfluenceTrack._processSnapPoints(settings, firstTime)
                             local influenceTokenInitialPosition = position + Vector(xOffsets[color], 0, -1.6)
                             InfluenceTrack.influenceTokenInitialPositions[faction][color] = influenceTokenInitialPosition
                             if firstTime then
+                                Helper.dump("Influence token", faction, color)
                                 influenceToken.setPosition(influenceTokenInitialPosition)
                                 Helper.noPhysicsNorPlay(influenceToken)
                             end
@@ -247,7 +250,15 @@ end
 
 ---
 function InfluenceTrack.getInfluence(faction, color)
-    return InfluenceTrack._getInfluenceTracksRank(faction, color)
+    if Commander.isCommander(color) and Helper.isElementOf(faction, { "greatHouses", "spacingGuild", "beneGesserit", "fringeWorlds" }) then
+        local allyBestInfluence = 0
+        for _, otherColor in Commander.getAllies(color) do
+            allyBestInfluence = math.max(allyBestInfluence, InfluenceTrack._getInfluenceTracksRank(faction, otherColor))
+        end
+        return allyBestInfluence
+    else
+        return InfluenceTrack._getInfluenceTracksRank(faction, color)
+    end
 end
 
 ---

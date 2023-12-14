@@ -38,11 +38,11 @@ def patch_object(object, componentTagCounts):
             if interestingContent in object:
                 print("{} ({}) has {}".format(object['Name'], object['GUID'], interestingContent))
 
-    if False:
+    if True:
         if 'Tags' in object:
             for tag in object['Tags']:
                 if not tag in componentTagCounts:
-                    print("Missing tag: " + tag)
+                    print("Undeclared tag: " + tag)
                     componentTagCounts[tag] = 0
                 componentTagCounts[tag] += 1
         if 'AttachedSnapPoints' in object:
@@ -50,7 +50,7 @@ def patch_object(object, componentTagCounts):
                 if 'Tags' in snapPoint:
                     for tag in snapPoint['Tags']:
                         if not tag in componentTagCounts:
-                            print("Missing tag: " + tag)
+                            print("Undeclared snap tag: " + tag)
                             componentTagCounts[tag] = 0
                         componentTagCounts[tag] += 1
 
@@ -85,6 +85,7 @@ def patch_save(input_path, output_path):
     componentTags = {}
     componentTagCounts = {}
     for tag in save['ComponentTags']['labels']:
+        #print(tag['displayed'], "->", tag['normalized'])
         componentTags[tag['displayed']] = tag['normalized']
         componentTagCounts[tag['displayed']] = 0
 
@@ -112,12 +113,13 @@ def patch_save(input_path, output_path):
     newLabels = []
     for tag in componentTagCounts.items():
         if tag[1] > 0:
-            print(tag[0])
             if tag[0] in componentTags:
                 newLabels.append({
                     'displayed': tag[0],
                     'normalized': componentTags[tag[0]],
                 })
+        else:
+            print("Orphan tag:", tag[0])
     save['ComponentTags']['labels'] = newLabels
 
     save['ObjectStates'] = new_objects

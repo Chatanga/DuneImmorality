@@ -111,7 +111,7 @@ function TleilaxuResearch._staticSetUp()
     TleilaxuResearch._generateTleilaxButtons()
 
     for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
-        if not PlayBoard.isCommander(color) then
+        if not Commander.isCommander(color) then
             TleilaxuResearch.tanksParks[color] = TleilaxuResearch._createTanksPark(color)
         end
     end
@@ -159,7 +159,7 @@ function TleilaxuResearch._getAveragePosition(positionField)
     local p = Vector(0, 0, 0)
     local count = 0
     for _, color in pairs(PlayBoard.getActivePlayBoardColors()) do
-        if not PlayBoard.isCommander(color) then
+        if not Commander.isCommander(color) then
             p = p + PlayBoard.getContent(color)[positionField]
             count = count + 1
         end

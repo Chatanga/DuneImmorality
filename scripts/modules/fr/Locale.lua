@@ -234,8 +234,8 @@ return {
     withSpacingGuild = "de la Guilde spatiale",
     withBeneGesserit = "du Bene Gesserit",
     withFremen = "des Fremens",
-    withGreatHouses = "les Maisons Majeures",
-    withFringeWorlds = "les mondes de la bordure",
+    withGreatHouses = "des maisons majeures",
+    withFringeWorlds = "des mondes de la bordure",
 
     -- Leaders
     vladimirHarkonnen = "Baron Vladimir Harkonnen",
@@ -269,11 +269,13 @@ return {
     fourthSnooperRecall = "Tessia Vernius a rappelé son quatrième fouineur {withFaction}.",
     firstSnooperRecallEffectInfo = "Ayant rappelé votre premier fouineur, vous pouvez défausser une carte pour gagne 1 mesure d’épice.",
 
-    gurneyIsSmiling = "Gurney montre ses dents.",
+    gurneySmile = "Gurney montre ses dents.",
 
     imperialBirthright = "Irulan exerce son droit de naissance.",
 
     loyalty = "Margot récolte les fruits de sa loyauté",
+
+    stabanSpiceSmuggling = "Staban détourne un peu d’épice.",
 
     -- Uprising leaders
     stabanTuek = "Staban Tuek",

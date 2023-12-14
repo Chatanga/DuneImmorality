@@ -1,7 +1,7 @@
 {
   "SaveName": "Dune Uprising - Prototype",
-  "EpochTime": 1702138718,
-  "Date": "12/9/2023 5:18:38 PM",
+  "EpochTime": 1702238487,
+  "Date": "12/10/2023 9:01:27 PM",
   "VersionNumber": "v13.2.2",
   "GameMode": "Dune Uprising",
   "GameType": "Game",
@@ -214,7 +214,448 @@
     "Hiding": 0
   },
   "ComponentTags": {
-    "labels": []
+    "labels": [
+      {
+        "displayed": "Handable",
+        "normalized": "handable"
+      },
+      {
+        "displayed": "Imperium",
+        "normalized": "imperium"
+      },
+      {
+        "displayed": "Intrigue",
+        "normalized": "intrigue"
+      },
+      {
+        "displayed": "AllianceToken",
+        "normalized": "alliancetoken"
+      },
+      {
+        "displayed": "Emperor",
+        "normalized": "emperor"
+      },
+      {
+        "displayed": "VictoryPointToken",
+        "normalized": "victorypointtoken"
+      },
+      {
+        "displayed": "BeneGesserit",
+        "normalized": "benegesserit"
+      },
+      {
+        "displayed": "SpacingGuild",
+        "normalized": "spacingguild"
+      },
+      {
+        "displayed": "Fremen",
+        "normalized": "fremen"
+      },
+      {
+        "displayed": "Agent",
+        "normalized": "agent"
+      },
+      {
+        "displayed": "Green",
+        "normalized": "green"
+      },
+      {
+        "displayed": "HighCouncilSeatToken",
+        "normalized": "highcouncilseattoken"
+      },
+      {
+        "displayed": "Blue",
+        "normalized": "blue"
+      },
+      {
+        "displayed": "Red",
+        "normalized": "red"
+      },
+      {
+        "displayed": "Troop",
+        "normalized": "troop"
+      },
+      {
+        "displayed": "Yellow",
+        "normalized": "yellow"
+      },
+      {
+        "displayed": "Snooper",
+        "normalized": "snooper"
+      },
+      {
+        "displayed": "Cargo",
+        "normalized": "cargo"
+      },
+      {
+        "displayed": "Dreadnought",
+        "normalized": "dreadnought"
+      },
+      {
+        "displayed": "InfluenceTokens",
+        "normalized": "influencetokens"
+      },
+      {
+        "displayed": "ScoreToken",
+        "normalized": "scoretoken"
+      },
+      {
+        "displayed": "VoiceToken",
+        "normalized": "voicetoken"
+      },
+      {
+        "displayed": "FirstPlayerMarker",
+        "normalized": "firstplayermarker"
+      },
+      {
+        "displayed": "ForceToken",
+        "normalized": "forcetoken"
+      },
+      {
+        "displayed": "spaceTechNegotiation",
+        "normalized": "spacetechnegotiation"
+      },
+      {
+        "displayed": "spaceTechNegotiation_Buy",
+        "normalized": "spacetechnegotiation_buy"
+      },
+      {
+        "displayed": "spaceTechNegotiation_Negotiate",
+        "normalized": "spacetechnegotiation_negotiate"
+      },
+      {
+        "displayed": "spaceDreadnought",
+        "normalized": "spacedreadnought"
+      },
+      {
+        "displayed": "TleilaxuToken",
+        "normalized": "tleilaxutoken"
+      },
+      {
+        "displayed": "ResearchToken",
+        "normalized": "researchtoken"
+      },
+      {
+        "displayed": "Brown",
+        "normalized": "brown"
+      },
+      {
+        "displayed": "Teal",
+        "normalized": "teal"
+      },
+      {
+        "displayed": "Spy",
+        "normalized": "spy"
+      },
+      {
+        "displayed": "deckPreloadAreaEn",
+        "normalized": "deckpreloadareaen"
+      },
+      {
+        "displayed": "Worm",
+        "normalized": "worm"
+      },
+      {
+        "displayed": "ShieldWall",
+        "normalized": "shieldwall"
+      },
+      {
+        "displayed": "MakerHook",
+        "normalized": "makerhook"
+      },
+      {
+        "displayed": "GreatHouses",
+        "normalized": "greathouses"
+      },
+      {
+        "displayed": "FringeWorlds",
+        "normalized": "fringeworlds"
+      },
+      {
+        "displayed": "factionEmperor",
+        "normalized": "factionemperor"
+      },
+      {
+        "displayed": "spaceSardaukar",
+        "normalized": "spacesardaukar"
+      },
+      {
+        "displayed": "spaceVastWealth",
+        "normalized": "spacevastwealth"
+      },
+      {
+        "displayed": "factionFremen",
+        "normalized": "factionfremen"
+      },
+      {
+        "displayed": "spaceHardyWarriors",
+        "normalized": "spacehardywarriors"
+      },
+      {
+        "displayed": "spaceDesertMastery",
+        "normalized": "spacedesertmastery"
+      },
+      {
+        "displayed": "SwordmasterBonus",
+        "normalized": "swordmasterbonus"
+      },
+      {
+        "displayed": "deckPreloadAreaFr",
+        "normalized": "deckpreloadareafr"
+      },
+      {
+        "displayed": "FeydRauthaTrainingMarker",
+        "normalized": "feydrauthatrainingmarker"
+      },
+      {
+        "displayed": "spaceArrakeen",
+        "normalized": "spacearrakeen"
+      },
+      {
+        "displayed": "spaceSpiceRefinery",
+        "normalized": "spacespicerefinery"
+      },
+      {
+        "displayed": "spaceCarthag",
+        "normalized": "spacecarthag"
+      },
+      {
+        "displayed": "spaceSietchTabr",
+        "normalized": "spacesietchtabr"
+      },
+      {
+        "displayed": "spaceDeepDesert",
+        "normalized": "spacedeepdesert"
+      },
+      {
+        "displayed": "spaceHabbanyaErg",
+        "normalized": "spacehabbanyaerg"
+      },
+      {
+        "displayed": "spaceHaggaBasin",
+        "normalized": "spacehaggabasin"
+      },
+      {
+        "displayed": "spaceImperialBasin",
+        "normalized": "spaceimperialbasin"
+      },
+      {
+        "displayed": "spaceResearchStation",
+        "normalized": "spaceresearchstation"
+      },
+      {
+        "displayed": "flagArrakeen",
+        "normalized": "flagarrakeen"
+      },
+      {
+        "displayed": "flagImperialBasin",
+        "normalized": "flagimperialbasin"
+      },
+      {
+        "displayed": "flagSpiceRefinery",
+        "normalized": "flagspicerefinery"
+      },
+      {
+        "displayed": "spiceHabbanyaErg",
+        "normalized": "spicehabbanyaerg"
+      },
+      {
+        "displayed": "spiceHaggaBasin",
+        "normalized": "spicehaggabasin"
+      },
+      {
+        "displayed": "spiceImperialBasin",
+        "normalized": "spiceimperialbasin"
+      },
+      {
+        "displayed": "spiceDeepDesert",
+        "normalized": "spicedeepdesert"
+      },
+      {
+        "displayed": "postDeepDesert",
+        "normalized": "postdeepdesert"
+      },
+      {
+        "displayed": "postHabbanyaErg",
+        "normalized": "posthabbanyaerg"
+      },
+      {
+        "displayed": "postHaggaBasin",
+        "normalized": "posthaggabasin"
+      },
+      {
+        "displayed": "postImperialBasin",
+        "normalized": "postimperialbasin"
+      },
+      {
+        "displayed": "postSpiceRefineryArrakeen",
+        "normalized": "postspicerefineryarrakeen"
+      },
+      {
+        "displayed": "postCarthag",
+        "normalized": "postcarthag"
+      },
+      {
+        "displayed": "postSietchTabrResearchStation",
+        "normalized": "postsietchtabrresearchstation"
+      },
+      {
+        "displayed": "postResearchStationSpiceRefinery",
+        "normalized": "postresearchstationspicerefinery"
+      },
+      {
+        "displayed": "postChoam",
+        "normalized": "postchoam"
+      },
+      {
+        "displayed": "postLandsraadCouncil2",
+        "normalized": "postlandsraadcouncil2"
+      },
+      {
+        "displayed": "postLandsraadCouncil1",
+        "normalized": "postlandsraadcouncil1"
+      },
+      {
+        "displayed": "postSpacingGuild",
+        "normalized": "postspacingguild"
+      },
+      {
+        "displayed": "postGreatHouse",
+        "normalized": "postgreathouse"
+      },
+      {
+        "displayed": "postFringeWorlds",
+        "normalized": "postfringeworlds"
+      },
+      {
+        "displayed": "postBeneGesserit",
+        "normalized": "postbenegesserit"
+      },
+      {
+        "displayed": "makerHookBlue",
+        "normalized": "makerhookblue"
+      },
+      {
+        "displayed": "makerHookRed",
+        "normalized": "makerhookred"
+      },
+      {
+        "displayed": "makerHookGreen",
+        "normalized": "makerhookgreen"
+      },
+      {
+        "displayed": "makerHookYellow",
+        "normalized": "makerhookyellow"
+      },
+      {
+        "displayed": "contractSlot1",
+        "normalized": "contractslot1"
+      },
+      {
+        "displayed": "contractSlot2",
+        "normalized": "contractslot2"
+      },
+      {
+        "displayed": "spaceImperialPrivilege",
+        "normalized": "spaceimperialprivilege"
+      },
+      {
+        "displayed": "seatHighCouncil3",
+        "normalized": "seathighcouncil3"
+      },
+      {
+        "displayed": "seatHighCouncil2",
+        "normalized": "seathighcouncil2"
+      },
+      {
+        "displayed": "seatHighCouncil1",
+        "normalized": "seathighcouncil1"
+      },
+      {
+        "displayed": "spaceSwordmaster",
+        "normalized": "spaceswordmaster"
+      },
+      {
+        "displayed": "spaceHighCouncil",
+        "normalized": "spacehighcouncil"
+      },
+      {
+        "displayed": "spaceShipping",
+        "normalized": "spaceshipping"
+      },
+      {
+        "displayed": "spaceAcceptContract",
+        "normalized": "spaceacceptcontract"
+      },
+      {
+        "displayed": "factionGreatHouses",
+        "normalized": "factiongreathouses"
+      },
+      {
+        "displayed": "factionSpacingGuild",
+        "normalized": "factionspacingguild"
+      },
+      {
+        "displayed": "factionBeneGesserit",
+        "normalized": "factionbenegesserit"
+      },
+      {
+        "displayed": "factionFringeWorlds",
+        "normalized": "factionfringeworlds"
+      },
+      {
+        "displayed": "spaceExpedition",
+        "normalized": "spaceexpedition"
+      },
+      {
+        "displayed": "spaceControversialTechnology",
+        "normalized": "spacecontroversialtechnology"
+      },
+      {
+        "displayed": "spaceSecrets",
+        "normalized": "spacesecrets"
+      },
+      {
+        "displayed": "spaceEspionage",
+        "normalized": "spaceespionage"
+      },
+      {
+        "displayed": "spaceDeliverSupplies",
+        "normalized": "spacedeliversupplies"
+      },
+      {
+        "displayed": "spaceHeighliner",
+        "normalized": "spaceheighliner"
+      },
+      {
+        "displayed": "spaceGatherSupport",
+        "normalized": "spacegathersupport"
+      },
+      {
+        "displayed": "spaceMilitarySupport",
+        "normalized": "spacemilitarysupport"
+      },
+      {
+        "displayed": "spaceEconomicSupport",
+        "normalized": "spaceeconomicsupport"
+      },
+      {
+        "displayed": "seatHighCouncil4",
+        "normalized": "seathighcouncil4"
+      },
+      {
+        "displayed": "seatHighCouncil5",
+        "normalized": "seathighcouncil5"
+      },
+      {
+        "displayed": "seatHighCouncil6",
+        "normalized": "seathighcouncil6"
+      },
+      {
+        "displayed": "spaceAssemblyHall",
+        "normalized": "spaceassemblyhall"
+      }
+    ]
   },
   "Turns": {
     "Enable": false,
@@ -571,7 +1012,7 @@
       "Name": "Custom_Token",
       "Transform": {
         "posX": 11.8471861,
-        "posY": 0.6925232,
+        "posY": 0.6925231,
         "posZ": 26.1129265,
         "rotX": 0,
         "rotY": 180,
@@ -837,9 +1278,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191993356,
+        "r": 0.1919933,
         "g": 0.701,
-        "b": 0.167993337
+        "b": 0.167993277
       },
       "Tags": [
         "Agent",
@@ -896,9 +1337,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191996664,
+        "r": 0.191996634,
         "g": 0.701,
-        "b": 0.167996645
+        "b": 0.167996615
       },
       "Tags": [
         "Green",
@@ -939,7 +1380,7 @@
       "Name": "Custom_Model",
       "Transform": {
         "posX": -19.15,
-        "posY": 1.19722152,
+        "posY": 1.19722164,
         "posZ": -16.7,
         "rotX": 0,
         "rotY": 180,
@@ -957,7 +1398,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117993005,
+        "r": 0.117992945,
         "g": 0.53,
         "b": 1.0
       },
@@ -1017,8 +1458,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.0999932662,
-        "b": 0.09399324
+        "g": 0.09999322,
+        "b": 0.09399318
       },
       "Tags": [
         "Agent",
@@ -1057,7 +1498,7 @@
       "Name": "Custom_Model",
       "Transform": {
         "posX": -17.65,
-        "posY": 1.19722164,
+        "posY": 1.1972214,
         "posZ": -16.7,
         "rotX": 0,
         "rotY": 180,
@@ -1075,7 +1516,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117993005,
+        "r": 0.117992945,
         "g": 0.53,
         "b": 1.0
       },
@@ -1134,7 +1575,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121512182,
+        "r": 0.121512152,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -1238,7 +1679,7 @@
       "Name": "Custom_Model",
       "Transform": {
         "posX": -17.65,
-        "posY": 1.19722164,
+        "posY": 1.19722152,
         "posZ": 21.7,
         "rotX": 0,
         "rotY": 180,
@@ -1257,8 +1698,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.0999932662,
-        "b": 0.09399324
+        "g": 0.09999322,
+        "b": 0.09399318
       },
       "Tags": [
         "Agent",
@@ -1315,7 +1756,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117993005,
+        "r": 0.117992945,
         "g": 0.53,
         "b": 1.0
       },
@@ -1375,8 +1816,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.0999932662,
-        "b": 0.09399324
+        "g": 0.09999322,
+        "b": 0.09399318
       },
       "Tags": [
         "Agent",
@@ -1433,9 +1874,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191993356,
+        "r": 0.1919933,
         "g": 0.701,
-        "b": 0.167993337
+        "b": 0.167993277
       },
       "Tags": [
         "Agent",
@@ -1474,7 +1915,7 @@
       "Name": "BlockSquare",
       "Transform": {
         "posX": 24.0,
-        "posY": 1.37116718,
+        "posY": 1.3711673,
         "posZ": 17.5,
         "rotX": 0,
         "rotY": 0,
@@ -1492,9 +1933,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191996664,
+        "r": 0.191996634,
         "g": 0.701,
-        "b": 0.167996645
+        "b": 0.167996615
       },
       "Tags": [
         "Green",
@@ -1541,9 +1982,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191996664,
+        "r": 0.191996634,
         "g": 0.701,
-        "b": 0.167996645
+        "b": 0.167996615
       },
       "Tags": [
         "Green",
@@ -1590,9 +2031,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191996664,
+        "r": 0.191996634,
         "g": 0.701,
-        "b": 0.167996645
+        "b": 0.167996615
       },
       "Tags": [
         "Green",
@@ -1639,7 +2080,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117996491,
+        "r": 0.117996462,
         "g": 0.53,
         "b": 1.0
       },
@@ -1670,7 +2111,7 @@
       "Name": "BlockSquare",
       "Transform": {
         "posX": -24.0,
-        "posY": 1.37385273,
+        "posY": 1.37385285,
         "posZ": -20.9,
         "rotX": 0,
         "rotY": 180,
@@ -1688,7 +2129,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117996491,
+        "r": 0.117996462,
         "g": 0.53,
         "b": 1.0
       },
@@ -1719,7 +2160,7 @@
       "Name": "BlockSquare",
       "Transform": {
         "posX": -25.0,
-        "posY": 1.37385285,
+        "posY": 1.37385273,
         "posZ": -21.4,
         "rotX": 0,
         "rotY": 180,
@@ -1737,7 +2178,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117996491,
+        "r": 0.117996462,
         "g": 0.53,
         "b": 1.0
       },
@@ -1768,7 +2209,7 @@
       "Name": "BlockSquare",
       "Transform": {
         "posX": -24.0,
-        "posY": 1.37385285,
+        "posY": 1.37385273,
         "posZ": 17.5,
         "rotX": 0,
         "rotY": 0,
@@ -1787,8 +2228,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.099996604,
-        "b": 0.09399659
+        "g": 0.0999965742,
+        "b": 0.09399656
       },
       "Tags": [
         "Red",
@@ -1836,8 +2277,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.099996604,
-        "b": 0.09399659
+        "g": 0.0999965742,
+        "b": 0.09399656
       },
       "Tags": [
         "Red",
@@ -2550,7 +2991,7 @@
       "Name": "Custom_Token",
       "Transform": {
         "posX": -1.42134929,
-        "posY": 0.789378762,
+        "posY": 0.74252367,
         "posZ": -7.09970045,
         "rotX": 0,
         "rotY": 180,
@@ -2607,7 +3048,7 @@
       "Name": "Custom_Token",
       "Transform": {
         "posX": 2.75210977,
-        "posY": 0.7893788,
+        "posY": 0.7425237,
         "posZ": -6.565152,
         "rotX": 0,
         "rotY": 180,
@@ -2664,7 +3105,7 @@
       "Name": "Custom_Token",
       "Transform": {
         "posX": 8.524075,
-        "posY": 0.789378762,
+        "posY": 0.74252367,
         "posZ": -3.66547465,
         "rotX": 0,
         "rotY": 180,
@@ -2740,8 +3181,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.099996604,
-        "b": 0.09399659
+        "g": 0.0999965742,
+        "b": 0.09399656
       },
       "Tags": [
         "Red",
@@ -2788,9 +3229,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191996664,
+        "r": 0.191996634,
         "g": 0.701,
-        "b": 0.167996645
+        "b": 0.167996615
       },
       "Tags": [
         "Green",
@@ -2837,9 +3278,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191996664,
+        "r": 0.191996634,
         "g": 0.701,
-        "b": 0.167996645
+        "b": 0.167996615
       },
       "Tags": [
         "Green",
@@ -2886,9 +3327,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191996664,
+        "r": 0.191996634,
         "g": 0.701,
-        "b": 0.167996645
+        "b": 0.167996615
       },
       "Tags": [
         "Green",
@@ -2935,9 +3376,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191996664,
+        "r": 0.191996634,
         "g": 0.701,
-        "b": 0.167996645
+        "b": 0.167996615
       },
       "Tags": [
         "Green",
@@ -2985,8 +3426,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.099996604,
-        "b": 0.09399659
+        "g": 0.0999965742,
+        "b": 0.09399656
       },
       "Tags": [
         "Red",
@@ -3034,8 +3475,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.099996604,
-        "b": 0.09399659
+        "g": 0.0999965742,
+        "b": 0.09399656
       },
       "Tags": [
         "Red",
@@ -3083,8 +3524,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.099996604,
-        "b": 0.09399659
+        "g": 0.0999965742,
+        "b": 0.09399656
       },
       "Tags": [
         "Red",
@@ -3131,9 +3572,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191996664,
+        "r": 0.191996634,
         "g": 0.701,
-        "b": 0.167996645
+        "b": 0.167996615
       },
       "Tags": [
         "Green",
@@ -3180,9 +3621,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191996664,
+        "r": 0.191996634,
         "g": 0.701,
-        "b": 0.167996645
+        "b": 0.167996615
       },
       "Tags": [
         "Green",
@@ -3230,8 +3671,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.099996604,
-        "b": 0.09399659
+        "g": 0.0999965742,
+        "b": 0.09399656
       },
       "Tags": [
         "Red",
@@ -3279,8 +3720,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.099996604,
-        "b": 0.09399659
+        "g": 0.0999965742,
+        "b": 0.09399656
       },
       "Tags": [
         "Red",
@@ -3328,8 +3769,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.099996604,
-        "b": 0.09399659
+        "g": 0.0999965742,
+        "b": 0.09399656
       },
       "Tags": [
         "Red",
@@ -3376,7 +3817,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117996491,
+        "r": 0.117996462,
         "g": 0.53,
         "b": 1.0
       },
@@ -3425,7 +3866,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117996491,
+        "r": 0.117996462,
         "g": 0.53,
         "b": 1.0
       },
@@ -3474,7 +3915,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117996491,
+        "r": 0.117996462,
         "g": 0.53,
         "b": 1.0
       },
@@ -3505,7 +3946,7 @@
       "Name": "BlockSquare",
       "Transform": {
         "posX": -24.5,
-        "posY": 1.37385273,
+        "posY": 1.37385285,
         "posZ": -20.9,
         "rotX": 0,
         "rotY": 180,
@@ -3523,7 +3964,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117996491,
+        "r": 0.117996462,
         "g": 0.53,
         "b": 1.0
       },
@@ -3572,7 +4013,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117996491,
+        "r": 0.117996462,
         "g": 0.53,
         "b": 1.0
       },
@@ -3603,7 +4044,7 @@
       "Name": "BlockSquare",
       "Transform": {
         "posX": -25.0,
-        "posY": 1.37385273,
+        "posY": 1.37385285,
         "posZ": -20.9,
         "rotX": 0,
         "rotY": 180,
@@ -3621,7 +4062,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117996491,
+        "r": 0.117996462,
         "g": 0.53,
         "b": 1.0
       },
@@ -4020,7 +4461,7 @@
       "Name": "Custom_Model",
       "Transform": {
         "posX": 16.1,
-        "posY": 1.194536,
+        "posY": 1.19453609,
         "posZ": -16.7,
         "rotX": 0,
         "rotY": 180,
@@ -4040,7 +4481,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171993345
+        "b": 0.171993285
       },
       "Tags": [
         "Agent",
@@ -4079,7 +4520,7 @@
       "Name": "Custom_Model",
       "Transform": {
         "posX": 17.6,
-        "posY": 1.19453609,
+        "posY": 1.194536,
         "posZ": -16.7,
         "rotX": 0,
         "rotY": 180,
@@ -4099,7 +4540,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171993345
+        "b": 0.171993285
       },
       "Tags": [
         "Agent",
@@ -4158,7 +4599,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171993345
+        "b": 0.171993285
       },
       "Tags": [
         "Agent",
@@ -4217,7 +4658,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171996653
+        "b": 0.171996623
       },
       "Tags": [
         "Troop",
@@ -4266,7 +4707,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171996653
+        "b": 0.171996623
       },
       "Tags": [
         "Troop",
@@ -4315,7 +4756,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171996653
+        "b": 0.171996623
       },
       "Tags": [
         "Troop",
@@ -4344,7 +4785,7 @@
       "Name": "BlockSquare",
       "Transform": {
         "posX": 24.0,
-        "posY": 1.3711673,
+        "posY": 1.37116718,
         "posZ": -21.4,
         "rotX": 0,
         "rotY": 180,
@@ -4364,7 +4805,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171996653
+        "b": 0.171996623
       },
       "Tags": [
         "Troop",
@@ -4393,7 +4834,7 @@
       "Name": "BlockSquare",
       "Transform": {
         "posX": 24.5,
-        "posY": 1.3711673,
+        "posY": 1.37116718,
         "posZ": -20.9,
         "rotX": 0,
         "rotY": 180,
@@ -4413,7 +4854,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171996653
+        "b": 0.171996623
       },
       "Tags": [
         "Troop",
@@ -4442,7 +4883,7 @@
       "Name": "BlockSquare",
       "Transform": {
         "posX": 25.0,
-        "posY": 1.37116706,
+        "posY": 1.37116718,
         "posZ": -19.9,
         "rotX": 0,
         "rotY": 180,
@@ -4462,7 +4903,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171996653
+        "b": 0.171996623
       },
       "Tags": [
         "Troop",
@@ -4491,7 +4932,7 @@
       "Name": "BlockSquare",
       "Transform": {
         "posX": 25.0,
-        "posY": 1.3711673,
+        "posY": 1.37116718,
         "posZ": -20.9,
         "rotX": 0,
         "rotY": 180,
@@ -4511,7 +4952,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171996653
+        "b": 0.171996623
       },
       "Tags": [
         "Troop",
@@ -4560,7 +5001,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171996653
+        "b": 0.171996623
       },
       "Tags": [
         "HighCouncilSeatToken",
@@ -4621,7 +5062,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171996653
+        "b": 0.171996623
       },
       "Tags": [
         "Troop",
@@ -4670,7 +5111,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171996653
+        "b": 0.171996623
       },
       "Tags": [
         "Troop",
@@ -4819,7 +5260,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": -9.226773,
-        "posY": 0.5925234,
+        "posY": 0.5925232,
         "posZ": 25.21266,
         "rotX": 0,
         "rotY": 90.02257,
@@ -4879,7 +5320,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": -10.4207869,
-        "posY": 0.592523158,
+        "posY": 0.592523336,
         "posZ": 25.79578,
         "rotX": 0,
         "rotY": 89.99609,
@@ -5049,9 +5490,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.4429555,
-        "g": 0.230955511,
-        "b": 0.0899638
+        "r": 0.442955464,
+        "g": 0.230955482,
+        "b": 0.08996377
       },
       "Tags": [
         "VictoryPointToken"
@@ -5109,9 +5550,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.4429555,
-        "g": 0.230955511,
-        "b": 0.0899638
+        "r": 0.442955464,
+        "g": 0.230955482,
+        "b": 0.08996377
       },
       "Tags": [
         "VictoryPointToken"
@@ -5169,9 +5610,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.4429555,
-        "g": 0.230955511,
-        "b": 0.0899638
+        "r": 0.442955464,
+        "g": 0.230955482,
+        "b": 0.08996377
       },
       "Tags": [
         "VictoryPointToken"
@@ -5229,9 +5670,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.4429555,
-        "g": 0.230955511,
-        "b": 0.0899638
+        "r": 0.442955464,
+        "g": 0.230955482,
+        "b": 0.08996377
       },
       "Tags": [
         "VictoryPointToken"
@@ -5270,11 +5711,11 @@
       "GUID": "8fa76f",
       "Name": "Custom_Model",
       "Transform": {
-        "posX": 8.999357,
-        "posY": 0.739725351,
-        "posZ": 2.849667,
+        "posX": 8.999361,
+        "posY": 0.692984,
+        "posZ": 2.8496747,
         "rotX": 0,
-        "rotY": 269.986816,
+        "rotY": 269.986755,
         "rotZ": 0,
         "scaleX": 0.250000417,
         "scaleY": 0.250000417,
@@ -5291,7 +5732,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171919852
+        "b": 0.1719198
       },
       "Tags": [
         "Cargo",
@@ -5329,11 +5770,11 @@
       "GUID": "34281d",
       "Name": "Custom_Model",
       "Transform": {
-        "posX": 8.449354,
-        "posY": 0.7397553,
-        "posZ": 2.8501873,
+        "posX": 8.449358,
+        "posY": 0.6929841,
+        "posZ": 2.850195,
         "rotX": 0,
-        "rotY": 269.982727,
+        "rotY": 269.982758,
         "rotZ": 0,
         "scaleX": 0.250000417,
         "scaleY": 0.250000417,
@@ -5348,9 +5789,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191919863,
+        "r": 0.1919198,
         "g": 0.701,
-        "b": 0.167919844
+        "b": 0.167919785
       },
       "Tags": [
         "Cargo",
@@ -5388,11 +5829,11 @@
       "GUID": "e9096d",
       "Name": "Custom_Model",
       "Transform": {
-        "posX": 7.89934635,
-        "posY": 0.739742637,
-        "posZ": 2.8531332,
+        "posX": 7.89935,
+        "posY": 0.692984,
+        "posZ": 2.853141,
         "rotX": 0,
-        "rotY": 269.968475,
+        "rotY": 269.968445,
         "rotZ": 0,
         "scaleX": 0.250000417,
         "scaleY": 0.250000417,
@@ -5408,8 +5849,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.0999195054,
-        "b": 0.09391902
+        "g": 0.09991943,
+        "b": 0.09391894
       },
       "Tags": [
         "Cargo",
@@ -5447,11 +5888,11 @@
       "GUID": "68e424",
       "Name": "Custom_Model",
       "Transform": {
-        "posX": 7.34957552,
-        "posY": 0.7397563,
-        "posZ": 2.85484457,
+        "posX": 7.34958,
+        "posY": 0.692984,
+        "posZ": 2.8548522,
         "rotX": 0,
-        "rotY": 269.9805,
+        "rotY": 269.98056,
         "rotZ": 0,
         "scaleX": 0.250000417,
         "scaleY": 0.250000417,
@@ -5466,7 +5907,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117915474,
+        "r": 0.1179154,
         "g": 0.53,
         "b": 1.0
       },
@@ -5507,7 +5948,7 @@
       "Name": "Custom_Model",
       "Transform": {
         "posX": 23.6999645,
-        "posY": 1.19653666,
+        "posY": 1.19653678,
         "posZ": -19.0000057,
         "rotX": 0,
         "rotY": 0,
@@ -5527,7 +5968,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171993345
+        "b": 0.171993285
       },
       "Tags": [
         "Dreadnought",
@@ -5584,9 +6025,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191993356,
+        "r": 0.1919933,
         "g": 0.701,
-        "b": 0.167993337
+        "b": 0.167993277
       },
       "Tags": [
         "Dreadnought",
@@ -5624,8 +6065,8 @@
       "GUID": "82789e",
       "Name": "Custom_Model",
       "Transform": {
-        "posX": -23.7000389,
-        "posY": 1.19922209,
+        "posX": -23.70004,
+        "posY": 1.19922245,
         "posZ": -19.0000038,
         "rotX": 0,
         "rotY": 0,
@@ -5643,7 +6084,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117993005,
+        "r": 0.117992945,
         "g": 0.53,
         "b": 1.0
       },
@@ -5683,9 +6124,9 @@
       "GUID": "1a3c82",
       "Name": "Custom_Model",
       "Transform": {
-        "posX": -23.7000351,
-        "posY": 1.19922233,
-        "posZ": 19.3999977,
+        "posX": -23.700037,
+        "posY": 1.19922245,
+        "posZ": 19.3999958,
         "rotX": 0,
         "rotY": 0,
         "rotZ": 0,
@@ -5703,8 +6144,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.0999932662,
-        "b": 0.09399324
+        "g": 0.09999322,
+        "b": 0.09399318
       },
       "Tags": [
         "Dreadnought",
@@ -5743,7 +6184,7 @@
       "Name": "Custom_Token",
       "Transform": {
         "posX": -9.766421,
-        "posY": 0.8118788,
+        "posY": 0.7650237,
         "posZ": -14.568038,
         "rotX": 0,
         "rotY": 180,
@@ -5762,8 +6203,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.0999977961,
-        "b": 0.09399777
+        "g": 0.09999775,
+        "b": 0.09399774
       },
       "Tags": [
         "InfluenceTokens",
@@ -5804,7 +6245,7 @@
       "Name": "Custom_Token",
       "Transform": {
         "posX": -9.28876,
-        "posY": 0.8143787,
+        "posY": 0.7675236,
         "posZ": -3.63948274,
         "rotX": 0,
         "rotY": 0,
@@ -5822,9 +6263,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191996664,
+        "r": 0.191996634,
         "g": 0.701,
-        "b": 0.167996645
+        "b": 0.167996615
       },
       "Tags": [
         "Green",
@@ -5865,7 +6306,7 @@
       "Name": "Custom_Token",
       "Transform": {
         "posX": -9.719175,
-        "posY": 0.8118788,
+        "posY": 0.7650237,
         "posZ": 1.84998655,
         "rotX": 0,
         "rotY": 180,
@@ -5884,8 +6325,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.0999977961,
-        "b": 0.09399777
+        "g": 0.09999775,
+        "b": 0.09399774
       },
       "Tags": [
         "InfluenceTokens",
@@ -5926,7 +6367,7 @@
       "Name": "Custom_Token",
       "Transform": {
         "posX": -9.767484,
-        "posY": 0.8118788,
+        "posY": 0.765023768,
         "posZ": -9.099446,
         "rotX": 0,
         "rotY": 180,
@@ -5945,8 +6386,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.0999977961,
-        "b": 0.09399777
+        "g": 0.09999775,
+        "b": 0.09399774
       },
       "Tags": [
         "InfluenceTokens",
@@ -5987,7 +6428,7 @@
       "Name": "Custom_Token",
       "Transform": {
         "posX": -9.273661,
-        "posY": 0.8143787,
+        "posY": 0.7675236,
         "posZ": 1.85055,
         "rotX": 0,
         "rotY": 180,
@@ -6005,9 +6446,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191996664,
+        "r": 0.191996634,
         "g": 0.701,
-        "b": 0.167996645
+        "b": 0.167996615
       },
       "Tags": [
         "Green",
@@ -6048,7 +6489,7 @@
       "Name": "Custom_Token",
       "Transform": {
         "posX": -10.1558838,
-        "posY": 0.811878741,
+        "posY": 0.765023649,
         "posZ": -3.639396,
         "rotX": 0,
         "rotY": 180,
@@ -6066,7 +6507,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.11799825,
+        "r": 0.11799822,
         "g": 0.53,
         "b": 1.0
       },
@@ -6109,7 +6550,7 @@
       "Name": "Custom_Token",
       "Transform": {
         "posX": -8.83496,
-        "posY": 0.8143788,
+        "posY": 0.767523766,
         "posZ": 1.85059786,
         "rotX": 0,
         "rotY": 180,
@@ -6129,7 +6570,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171996653
+        "b": 0.171996623
       },
       "Tags": [
         "InfluenceTokens",
@@ -6170,7 +6611,7 @@
       "Name": "Custom_Token",
       "Transform": {
         "posX": -9.738128,
-        "posY": 0.8118788,
+        "posY": 0.765023768,
         "posZ": -3.64014149,
         "rotX": 0,
         "rotY": 0,
@@ -6189,8 +6630,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.0999977961,
-        "b": 0.09399777
+        "g": 0.09999775,
+        "b": 0.09399774
       },
       "Tags": [
         "InfluenceTokens",
@@ -6231,7 +6672,7 @@
       "Name": "Custom_Token",
       "Transform": {
         "posX": -10.1875734,
-        "posY": 0.811878741,
+        "posY": 0.765023649,
         "posZ": 1.85000288,
         "rotX": 0,
         "rotY": 180,
@@ -6249,7 +6690,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.11799825,
+        "r": 0.11799822,
         "g": 0.53,
         "b": 1.0
       },
@@ -6292,7 +6733,7 @@
       "Name": "Custom_Token",
       "Transform": {
         "posX": -10.2148647,
-        "posY": 0.811878741,
+        "posY": 0.765023649,
         "posZ": -9.097554,
         "rotX": 0,
         "rotY": 180,
@@ -6310,7 +6751,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.11799825,
+        "r": 0.11799822,
         "g": 0.53,
         "b": 1.0
       },
@@ -6353,7 +6794,7 @@
       "Name": "Custom_Token",
       "Transform": {
         "posX": -8.88815,
-        "posY": 0.8143788,
+        "posY": 0.767523766,
         "posZ": -14.5700579,
         "rotX": 0,
         "rotY": 180,
@@ -6373,7 +6814,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171996653
+        "b": 0.171996623
       },
       "Tags": [
         "InfluenceTokens",
@@ -6414,7 +6855,7 @@
       "Name": "Custom_Token",
       "Transform": {
         "posX": -9.328647,
-        "posY": 0.8143787,
+        "posY": 0.7675236,
         "posZ": -14.5701361,
         "rotX": 0,
         "rotY": 180,
@@ -6432,9 +6873,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191996664,
+        "r": 0.191996634,
         "g": 0.701,
-        "b": 0.167996645
+        "b": 0.167996615
       },
       "Tags": [
         "Green",
@@ -6475,7 +6916,7 @@
       "Name": "Custom_Token",
       "Transform": {
         "posX": -8.889674,
-        "posY": 0.8143788,
+        "posY": 0.767523766,
         "posZ": -9.099579,
         "rotX": 0,
         "rotY": 180,
@@ -6495,7 +6936,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171996653
+        "b": 0.171996623
       },
       "Tags": [
         "InfluenceTokens",
@@ -6536,7 +6977,7 @@
       "Name": "Custom_Token",
       "Transform": {
         "posX": -8.846606,
-        "posY": 0.8143788,
+        "posY": 0.767523766,
         "posZ": -3.64003229,
         "rotX": 0,
         "rotY": 180,
@@ -6556,7 +6997,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171996653
+        "b": 0.171996623
       },
       "Tags": [
         "InfluenceTokens",
@@ -6597,7 +7038,7 @@
       "Name": "Custom_Token",
       "Transform": {
         "posX": -9.320634,
-        "posY": 0.8143787,
+        "posY": 0.7675236,
         "posZ": -9.09944,
         "rotX": 0,
         "rotY": 180,
@@ -6615,9 +7056,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191996664,
+        "r": 0.191996634,
         "g": 0.701,
-        "b": 0.167996645
+        "b": 0.167996615
       },
       "Tags": [
         "Green",
@@ -6658,7 +7099,7 @@
       "Name": "Custom_Token",
       "Transform": {
         "posX": -10.2275038,
-        "posY": 0.811878741,
+        "posY": 0.765023649,
         "posZ": -14.5681734,
         "rotX": 0,
         "rotY": 180,
@@ -6676,7 +7117,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.11799825,
+        "r": 0.11799822,
         "g": 0.53,
         "b": 1.0
       },
@@ -6718,9 +7159,9 @@
       "GUID": "1b1e76",
       "Name": "Custom_Token",
       "Transform": {
-        "posX": 10.3948574,
-        "posY": 1.43612087,
-        "posZ": -13.9791279,
+        "posX": 10.3947115,
+        "posY": 1.39011216,
+        "posZ": -13.9780092,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -6737,7 +7178,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117994674,
+        "r": 0.117994644,
         "g": 0.53,
         "b": 1.0
       },
@@ -6779,9 +7220,9 @@
       "GUID": "20bbd1",
       "Name": "Custom_Token",
       "Transform": {
-        "posX": 10.3968554,
-        "posY": 0.839365542,
-        "posZ": -14.0010185,
+        "posX": 10.3966284,
+        "posY": 0.7925407,
+        "posZ": -14.0015039,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -6808,7 +7249,7 @@
       ],
       "LayoutGroupSortIndex": 0,
       "Value": 0,
-      "Locked": true,
+      "Locked": false,
       "Grid": true,
       "Snap": true,
       "IgnoreFoW": false,
@@ -6840,9 +7281,9 @@
       "GUID": "76039f",
       "Name": "Custom_Token",
       "Transform": {
-        "posX": 10.3979712,
-        "posY": 1.03733921,
-        "posZ": -14.0064821,
+        "posX": 10.3979778,
+        "posY": 0.991169155,
+        "posZ": -14.00651,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -6901,9 +7342,9 @@
       "GUID": "4feaca",
       "Name": "Custom_Token",
       "Transform": {
-        "posX": 10.3934469,
-        "posY": 1.23731792,
-        "posZ": -14.0120115,
+        "posX": 10.3931408,
+        "posY": 1.19123971,
+        "posZ": -14.0117865,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -6962,8 +7403,8 @@
       "GUID": "71a414",
       "Name": "Custom_Model",
       "Transform": {
-        "posX": 25.2999783,
-        "posY": 1.19653654,
+        "posX": 25.2999763,
+        "posY": 1.19653666,
         "posZ": -19.0,
         "rotX": 0,
         "rotY": 0,
@@ -6983,7 +7424,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171993345
+        "b": 0.171993285
       },
       "Tags": [
         "Dreadnought",
@@ -7021,8 +7462,8 @@
       "GUID": "734250",
       "Name": "Custom_Model",
       "Transform": {
-        "posX": 25.29996,
-        "posY": 1.1965369,
+        "posX": 25.2999573,
+        "posY": 1.19653666,
         "posZ": 19.3999939,
         "rotX": 0,
         "rotY": 0,
@@ -7040,9 +7481,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191993356,
+        "r": 0.1919933,
         "g": 0.701,
-        "b": 0.167993337
+        "b": 0.167993277
       },
       "Tags": [
         "Dreadnought",
@@ -7080,8 +7521,8 @@
       "GUID": "60f208",
       "Name": "Custom_Model",
       "Transform": {
-        "posX": -25.3000355,
-        "posY": 1.19922209,
+        "posX": -25.3000374,
+        "posY": 1.19922221,
         "posZ": -19.0000019,
         "rotX": 0,
         "rotY": 0,
@@ -7099,7 +7540,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117993005,
+        "r": 0.117992945,
         "g": 0.53,
         "b": 1.0
       },
@@ -7139,8 +7580,8 @@
       "GUID": "a8f306",
       "Name": "Custom_Model",
       "Transform": {
-        "posX": -25.3000431,
-        "posY": 1.19922209,
+        "posX": -25.300045,
+        "posY": 1.19922233,
         "posZ": 19.4,
         "rotX": 0,
         "rotY": 0,
@@ -7159,8 +7600,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.0999932662,
-        "b": 0.09399324
+        "g": 0.09999322,
+        "b": 0.09399318
       },
       "Tags": [
         "Dreadnought",
@@ -7199,7 +7640,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": -7.77242041,
-        "posY": 0.5925237,
+        "posY": 0.592523754,
         "posZ": 25.9622841,
         "rotX": 0,
         "rotY": 180,
@@ -7217,7 +7658,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.419150174,
+        "r": 0.419150144,
         "g": 0.0,
         "b": 0.681184649
       },
@@ -7259,7 +7700,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": -7.77,
-        "posY": 0.5925238,
+        "posY": 0.592523754,
         "posZ": 26.99879,
         "rotX": 0,
         "rotY": 180,
@@ -7699,7 +8140,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 4.000013,
-        "posY": 0.5925232,
+        "posY": 0.5925231,
         "posZ": 25.0000343,
         "rotX": 0,
         "rotY": 180,
@@ -7717,9 +8158,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.442955464,
-        "g": 0.230955482,
-        "b": 0.08996377
+        "r": 0.442955434,
+        "g": 0.230955452,
+        "b": 0.08996376
       },
       "Tags": [
         "VictoryPointToken"
@@ -7759,7 +8200,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 3.33571029,
-        "posY": 0.73937875,
+        "posY": 0.692523658,
         "posZ": -10.1753712,
         "rotX": 0,
         "rotY": 180,
@@ -7777,8 +8218,8 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.3536212,
-        "g": 0.126021087,
+        "r": 0.353621185,
+        "g": 0.126021057,
         "b": 0.0
       },
       "Tags": [
@@ -8535,7 +8976,7 @@
       "Name": "Custom_Model_Bag",
       "Transform": {
         "posX": -9.847425,
-        "posY": 0.7087584,
+        "posY": 0.7087585,
         "posZ": 27.01462,
         "rotX": 0,
         "rotY": 180,
@@ -10637,9 +11078,9 @@
       "GUID": "2d1d17",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -1.40780842,
-        "posY": 1.33163381,
-        "posZ": -13.8053036,
+        "posX": -1.40907657,
+        "posY": 1.28474355,
+        "posZ": -13.8066893,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -10657,8 +11098,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.099996604,
-        "b": 0.09399659
+        "g": 0.0999965742,
+        "b": 0.09399656
       },
       "Tags": [
         "ForceToken"
@@ -10710,9 +11151,9 @@
       "GUID": "f22e20",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -1.416881,
-        "posY": 1.63099086,
-        "posZ": -13.8145227,
+        "posX": -1.41896558,
+        "posY": 1.58413815,
+        "posZ": -13.816699,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -10729,7 +11170,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117996491,
+        "r": 0.117996462,
         "g": 0.53,
         "b": 1.0
       },
@@ -10783,9 +11224,9 @@
       "GUID": "a1a9a7",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -1.40567386,
-        "posY": 1.03186238,
-        "posZ": -13.8050451,
+        "posX": -1.40605259,
+        "posY": 0.9850691,
+        "posZ": -13.805316,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -10802,9 +11243,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191996664,
+        "r": 0.191996634,
         "g": 0.701,
-        "b": 0.167996645
+        "b": 0.167996615
       },
       "Tags": [
         "ForceToken"
@@ -10856,9 +11297,9 @@
       "GUID": "c2dd31",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -1.39734888,
-        "posY": 0.7390406,
-        "posZ": -13.8009672,
+        "posX": -1.39731228,
+        "posY": 0.692072034,
+        "posZ": -13.8009167,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -10877,14 +11318,14 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171996653
+        "b": 0.171996623
       },
       "Tags": [
         "ForceToken"
       ],
       "LayoutGroupSortIndex": 0,
       "Value": 0,
-      "Locked": true,
+      "Locked": false,
       "Grid": false,
       "Snap": true,
       "IgnoreFoW": false,
@@ -13035,9 +13476,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.199427336,
-        "g": 0.0555206165,
-        "b": 0.297891557
+        "r": 0.1994273,
+        "g": 0.0555206,
+        "b": 0.297891527
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -13191,9 +13632,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.442955434,
-        "g": 0.230955452,
-        "b": 0.08996376
+        "r": 0.4429554,
+        "g": 0.230955422,
+        "b": 0.08996373
       },
       "Tags": [
         "VictoryPointToken"
@@ -13251,9 +13692,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.4429573,
-        "g": 0.2309573,
-        "b": 0.08996526
+        "r": 0.442957252,
+        "g": 0.23095727,
+        "b": 0.08996523
       },
       "Tags": [
         "VictoryPointToken"
@@ -13311,9 +13752,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.442957252,
-        "g": 0.23095727,
-        "b": 0.08996523
+        "r": 0.442957222,
+        "g": 0.23095724,
+        "b": 0.08996522
       },
       "Tags": [
         "VictoryPointToken"
@@ -13593,7 +14034,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 2.0,
-        "posY": 0.592523038,
+        "posY": 0.592523158,
         "posZ": 27.0,
         "rotX": 0,
         "rotY": 180,
@@ -13611,9 +14052,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.442957133,
-        "g": 0.23095715,
-        "b": 0.08996514
+        "r": 0.4429571,
+        "g": 0.230957121,
+        "b": 0.08996511
       },
       "Tags": [
         "VictoryPointToken"
@@ -13671,9 +14112,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.442955375,
-        "g": 0.230955362,
-        "b": 0.08996371
+        "r": 0.442955345,
+        "g": 0.230955333,
+        "b": 0.08996368
       },
       "Tags": [
         "VictoryPointToken"
@@ -14448,7 +14889,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171996653
+        "b": 0.171996623
       },
       "Tags": [
         "TleilaxuToken",
@@ -14507,9 +14948,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191996664,
+        "r": 0.191996634,
         "g": 0.701,
-        "b": 0.167996645
+        "b": 0.167996615
       },
       "Tags": [
         "Green",
@@ -14568,7 +15009,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.11799825,
+        "r": 0.11799822,
         "g": 0.53,
         "b": 1.0
       },
@@ -14630,8 +15071,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.0999977961,
-        "b": 0.09399777
+        "g": 0.09999775,
+        "b": 0.09399774
       },
       "Tags": [
         "Red",
@@ -14690,9 +15131,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191996664,
+        "r": 0.191996634,
         "g": 0.701,
-        "b": 0.167996645
+        "b": 0.167996615
       },
       "Tags": [
         "Green",
@@ -14753,7 +15194,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171996653
+        "b": 0.171996623
       },
       "Tags": [
         "ResearchToken",
@@ -14812,7 +15253,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.11799825,
+        "r": 0.11799822,
         "g": 0.53,
         "b": 1.0
       },
@@ -14874,8 +15315,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.0999977961,
-        "b": 0.09399777
+        "g": 0.09999775,
+        "b": 0.09399774
       },
       "Tags": [
         "Red",
@@ -14935,8 +15376,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.09997962,
-        "b": 0.09397956
+        "g": 0.09997956,
+        "b": 0.0939795
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -14988,7 +15429,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171993345
+        "b": 0.171993285
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -15038,9 +15479,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191993356,
+        "r": 0.1919933,
         "g": 0.701,
-        "b": 0.167993337
+        "b": 0.167993277
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -15090,7 +15531,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117993005,
+        "r": 0.117992945,
         "g": 0.53,
         "b": 1.0
       },
@@ -15385,8 +15826,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.099996604,
-        "b": 0.09399659
+        "g": 0.0999965742,
+        "b": 0.09399656
       },
       "Tags": [
         "Red",
@@ -15434,8 +15875,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.099996604,
-        "b": 0.09399659
+        "g": 0.0999965742,
+        "b": 0.09399656
       },
       "Tags": [
         "Red",
@@ -15483,8 +15924,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.099996604,
-        "b": 0.09399659
+        "g": 0.0999965742,
+        "b": 0.09399656
       },
       "Tags": [
         "Red",
@@ -15531,7 +15972,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117996491,
+        "r": 0.117996462,
         "g": 0.53,
         "b": 1.0
       },
@@ -15580,7 +16021,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117996491,
+        "r": 0.117996462,
         "g": 0.53,
         "b": 1.0
       },
@@ -15629,7 +16070,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117996491,
+        "r": 0.117996462,
         "g": 0.53,
         "b": 1.0
       },
@@ -15678,9 +16119,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191996664,
+        "r": 0.191996634,
         "g": 0.701,
-        "b": 0.167996645
+        "b": 0.167996615
       },
       "Tags": [
         "Green",
@@ -15727,9 +16168,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191996664,
+        "r": 0.191996634,
         "g": 0.701,
-        "b": 0.167996645
+        "b": 0.167996615
       },
       "Tags": [
         "Green",
@@ -15776,9 +16217,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191996664,
+        "r": 0.191996634,
         "g": 0.701,
-        "b": 0.167996645
+        "b": 0.167996615
       },
       "Tags": [
         "Green",
@@ -15807,7 +16248,7 @@
       "Name": "BlockSquare",
       "Transform": {
         "posX": 24.0,
-        "posY": 1.37116706,
+        "posY": 1.37116718,
         "posZ": -19.9,
         "rotX": 0,
         "rotY": 180,
@@ -15827,7 +16268,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171996653
+        "b": 0.171996623
       },
       "Tags": [
         "Troop",
@@ -15876,7 +16317,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171996653
+        "b": 0.171996623
       },
       "Tags": [
         "Troop",
@@ -15925,7 +16366,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171996653
+        "b": 0.171996623
       },
       "Tags": [
         "Troop",
@@ -19020,9 +19461,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.4128844,
-        "g": 0.401321828,
-        "b": 0.379075646
+        "r": 0.412884325,
+        "g": 0.401321769,
+        "b": 0.379075557
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -19562,9 +20003,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.412888855,
-        "g": 0.4013263,
-        "b": 0.3790801
+        "r": 0.412888825,
+        "g": 0.401326269,
+        "b": 0.379080057
       },
       "Tags": [
         "Brown",
@@ -19623,7 +20064,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.386806846,
+        "r": 0.386806816,
         "g": 0.6184682,
         "b": 0.6184682
       },
@@ -20120,9 +20561,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.412888855,
-        "g": 0.4013263,
-        "b": 0.3790801
+        "r": 0.412888825,
+        "g": 0.401326269,
+        "b": 0.379080057
       },
       "Tags": [
         "Brown",
@@ -20181,9 +20622,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.412888855,
-        "g": 0.4013263,
-        "b": 0.3790801
+        "r": 0.412888825,
+        "g": 0.401326269,
+        "b": 0.379080057
       },
       "Tags": [
         "Brown",
@@ -20244,7 +20685,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171996653
+        "b": 0.171996623
       },
       "Tags": [
         "Spy",
@@ -20305,7 +20746,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171996653
+        "b": 0.171996623
       },
       "Tags": [
         "Spy",
@@ -20366,7 +20807,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171996653
+        "b": 0.171996623
       },
       "Tags": [
         "Spy",
@@ -20425,9 +20866,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191996664,
+        "r": 0.191996634,
         "g": 0.701,
-        "b": 0.167996645
+        "b": 0.167996615
       },
       "Tags": [
         "Green",
@@ -20486,9 +20927,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191996664,
+        "r": 0.191996634,
         "g": 0.701,
-        "b": 0.167996645
+        "b": 0.167996615
       },
       "Tags": [
         "Green",
@@ -20547,9 +20988,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191996664,
+        "r": 0.191996634,
         "g": 0.701,
-        "b": 0.167996645
+        "b": 0.167996615
       },
       "Tags": [
         "Green",
@@ -20609,8 +21050,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.0999977961,
-        "b": 0.09399777
+        "g": 0.09999775,
+        "b": 0.09399774
       },
       "Tags": [
         "Red",
@@ -20670,8 +21111,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.0999977961,
-        "b": 0.09399777
+        "g": 0.09999775,
+        "b": 0.09399774
       },
       "Tags": [
         "Red",
@@ -20713,7 +21154,7 @@
       "Transform": {
         "posX": -19.15,
         "posY": 1.52385342,
-        "posZ": 1.750001,
+        "posZ": 1.75000083,
         "rotX": 0,
         "rotY": 0,
         "rotZ": 0,
@@ -20730,7 +21171,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.386806846,
+        "r": 0.386806816,
         "g": 0.6184682,
         "b": 0.6184682
       },
@@ -20774,7 +21215,7 @@
       "Transform": {
         "posX": -17.65,
         "posY": 1.52385342,
-        "posZ": 1.75000048,
+        "posZ": 1.7500006,
         "rotX": 0,
         "rotY": 0,
         "rotZ": 0,
@@ -20791,7 +21232,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.386806846,
+        "r": 0.386806816,
         "g": 0.6184682,
         "b": 0.6184682
       },
@@ -20852,7 +21293,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.386806846,
+        "r": 0.386806816,
         "g": 0.6184682,
         "b": 0.6184682
       },
@@ -20913,7 +21354,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.11799825,
+        "r": 0.11799822,
         "g": 0.53,
         "b": 1.0
       },
@@ -20974,7 +21415,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.11799825,
+        "r": 0.11799822,
         "g": 0.53,
         "b": 1.0
       },
@@ -21035,7 +21476,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.11799825,
+        "r": 0.11799822,
         "g": 0.53,
         "b": 1.0
       },
@@ -21097,8 +21538,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.0999977961,
-        "b": 0.09399777
+        "g": 0.09999775,
+        "b": 0.09399774
       },
       "Tags": [
         "Red",
@@ -21157,9 +21598,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191993356,
+        "r": 0.1919933,
         "g": 0.701,
-        "b": 0.167993337
+        "b": 0.167993277
       },
       "Tags": [
         "Agent",
@@ -21198,8 +21639,8 @@
       "Name": "Custom_Token",
       "Transform": {
         "posX": 19.1,
-        "posY": 1.521168,
-        "posZ": 1.75000072,
+        "posY": 1.52116787,
+        "posZ": 1.75000083,
         "rotX": 0,
         "rotY": 0,
         "rotZ": 0,
@@ -21216,9 +21657,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.412888855,
-        "g": 0.4013263,
-        "b": 0.3790801
+        "r": 0.412888825,
+        "g": 0.401326269,
+        "b": 0.379080057
       },
       "Tags": [
         "Brown",
@@ -21277,7 +21718,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.386802375,
+        "r": 0.386802316,
         "g": 0.6184682,
         "b": 0.6184682
       },
@@ -21310,9 +21751,9 @@
       "GUID": "612a60",
       "Name": "Custom_Token",
       "Transform": {
-        "posX": 10.3911715,
-        "posY": 1.83595526,
-        "posZ": -13.9819908,
+        "posX": 10.3908548,
+        "posY": 1.78976738,
+        "posZ": -13.9808207,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -21330,7 +21771,7 @@
       },
       "ColorDiffuse": {
         "r": 0.627,
-        "g": 0.12499436,
+        "g": 0.12499433,
         "b": 0.941
       },
       "Tags": [
@@ -21371,9 +21812,9 @@
       "GUID": "974cdf",
       "Name": "Custom_Token",
       "Transform": {
-        "posX": 10.3911514,
-        "posY": 1.63613451,
-        "posZ": -13.9825249,
+        "posX": 10.3909273,
+        "posY": 1.59014165,
+        "posZ": -13.9810839,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -25035,7 +25476,7 @@
       "ColorDiffuse": {
         "r": 0.6045295,
         "g": 0.487625778,
-        "b": 0.409681
+        "b": 0.409680933
       },
       "Tags": [
         "Worm"
@@ -25073,8 +25514,8 @@
       "Name": "Custom_Token",
       "Transform": {
         "posX": 3.80046225,
-        "posY": 0.789378762,
-        "posZ": -3.14679813,
+        "posY": 0.74252367,
+        "posZ": -3.14679837,
         "rotX": 0,
         "rotY": 89.97587,
         "rotZ": 180,
@@ -26836,7 +27277,7 @@
       "Name": "Custom_Token",
       "Transform": {
         "posX": -9.534466,
-        "posY": 0.7650197,
+        "posY": 0.765019536,
         "posZ": -20.4782429,
         "rotX": 0,
         "rotY": 0,
@@ -26854,7 +27295,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.388231456,
+        "r": 0.388231426,
         "g": 0.619607747,
         "b": 0.619607747
       },
@@ -26915,9 +27356,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.411760837,
-        "g": 0.399996132,
-        "b": 0.3803883
+        "r": 0.4117608,
+        "g": 0.3999961,
+        "b": 0.38038826
       },
       "Tags": [
         "Brown",
@@ -26958,7 +27399,7 @@
       "Name": "Custom_Token",
       "Transform": {
         "posX": 25.8,
-        "posY": 1.246167,
+        "posY": 1.24616706,
         "posZ": -21.8,
         "rotX": 0,
         "rotY": 90.00007,
@@ -27080,7 +27521,7 @@
       "Name": "Custom_Token",
       "Transform": {
         "posX": -25.8,
-        "posY": 1.24885261,
+        "posY": 1.24885249,
         "posZ": 16.113636,
         "rotX": 0,
         "rotY": 270.000061,
@@ -27141,7 +27582,7 @@
       "Name": "Custom_Token",
       "Transform": {
         "posX": 2.669573,
-        "posY": 0.7893788,
+        "posY": 0.7425237,
         "posZ": -5.061605,
         "rotX": 0,
         "rotY": 180,
@@ -27198,7 +27639,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": -7.94,
-        "posY": 0.59,
+        "posY": 0.5925234,
         "posZ": 10.12261,
         "rotX": 0,
         "rotY": 180,
@@ -27287,7 +27728,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": -7.94,
-        "posY": 0.5925195,
+        "posY": 0.592522144,
         "posZ": -18.183279,
         "rotX": 0,
         "rotY": 180,
@@ -27500,7 +27941,7 @@
       "Name": "Custom_Token",
       "Transform": {
         "posX": -0.3038585,
-        "posY": 0.6925232,
+        "posY": 0.692523241,
         "posZ": 27.6080017,
         "rotX": 0,
         "rotY": 180,
@@ -28676,9 +29117,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.442958146,
-        "g": 0.230958134,
-        "b": 0.08996596
+        "r": 0.442958117,
+        "g": 0.2309581,
+        "b": 0.08996592
       },
       "Tags": [
         "VictoryPointToken"
@@ -29264,7 +29705,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 7.000085,
-        "posY": 0.5925232,
+        "posY": 0.5925233,
         "posZ": 27.9999352,
         "rotX": 0,
         "rotY": 180,
@@ -29324,7 +29765,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 6.0,
-        "posY": 0.592523158,
+        "posY": 0.5925233,
         "posZ": 28.0,
         "rotX": 0,
         "rotY": 180,
@@ -29384,7 +29825,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 7.99999952,
-        "posY": 0.5925231,
+        "posY": 0.5925232,
         "posZ": 28.0,
         "rotX": 0,
         "rotY": 180,
@@ -29402,9 +29843,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.442958146,
-        "g": 0.230958134,
-        "b": 0.08996596
+        "r": 0.442958117,
+        "g": 0.2309581,
+        "b": 0.08996592
       },
       "Tags": [
         "VictoryPointToken"
@@ -29462,9 +29903,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.442958146,
-        "g": 0.230958134,
-        "b": 0.08996596
+        "r": 0.442958117,
+        "g": 0.2309581,
+        "b": 0.08996592
       },
       "Tags": [
         "VictoryPointToken"
@@ -86584,9 +87025,9 @@
       "GUID": "21cc52",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -0.000350744842,
-        "posY": 0.639378548,
-        "posZ": -4.050159,
+        "posX": -0.00035074554,
+        "posY": 0.592523456,
+        "posZ": -4.0501585,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,

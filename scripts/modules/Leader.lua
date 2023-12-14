@@ -355,10 +355,10 @@ Leader.hundroMoritani = Helper.createClass(Leader, {
 
 Leader.stabanTuek = Helper.createClass(Leader, {
 
-    --- Limited allies
     prepare = function (color, settings)
         Action.prepare(color, settings)
 
+        --- Limited allies
         local drawDeck = PlayBoard.getDrawDeck(color)
         if drawDeck then
             for i, card in ipairs(drawDeck.getObjects()) do
@@ -375,7 +375,17 @@ Leader.stabanTuek = Helper.createClass(Leader, {
                 end
             end
         end
+
+        -- Smuggle spice
+        Helper.registerEventListener("agentSent", function (otherColor, spaceName)
+            if otherColor ~= color and MainBoard.isDesertSpace(spaceName) and MainBoard.isSpying(spaceName, color) then
+                Action.log(I18N("stabanSpiceSmuggling"), color)
+                local leader = PlayBoard.getLeader(color)
+                leader.resources(color, "persuasion", 1)
+            end
+        end)
     end
+
 })
 
 Leader.amberMetulli = Helper.createClass(Leader, {

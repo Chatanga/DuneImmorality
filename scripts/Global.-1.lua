@@ -50,6 +50,7 @@ local allModules = Module.registerModules({
     Action = require("Action"),
     ChoamContractMarket = require("ChoamContractMarket"),
     Combat = require("Combat"),
+    Commander = require("Commander"),
     ShipmentTrack = require("ShipmentTrack"),
     Deck = require("Deck"),
     ScoreBoard = require("ScoreBoard"),

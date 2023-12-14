@@ -4,6 +4,7 @@ local Park = require("utils.Park")
 local I18N = require("utils.I18N")
 
 local PlayBoard = Module.lazyRequire("PlayBoard")
+local Commander = Module.lazyRequire("Commander")
 local Action = Module.lazyRequire("Action")
 local Deck = Module.lazyRequire("Deck")
 local Types = Module.lazyRequire("Types")
@@ -94,7 +95,7 @@ function Combat._staticSetUp(settings)
 
     Combat.garrisonParks = {}
     for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
-        if not PlayBoard.isCommander(color) then
+        if not Commander.isCommander(color) then
             Combat.garrisonParks[color] = Combat._createGarrisonPark(color)
         end
     end
@@ -102,7 +103,7 @@ function Combat._staticSetUp(settings)
     if settings.riseOfIx then
         Combat.dreadnoughtParks = {}
         for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
-            if not PlayBoard.isCommander(color) then
+            if not Commander.isCommander(color) then
                 Combat.dreadnoughtParks[color] = Combat._createDreadnoughtPark(color)
             end
         end
@@ -499,7 +500,7 @@ function Combat._updateCombatForces(forces)
 
     -- TODO Better having a zone with filtering tags.
     for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
-        if not PlayBoard.isCommander(color) then
+        if not Commander.isCommander(color) then
             local force = forces[color]
 
             local minorForce = force > 0 and (force - 1) % 20 + 1 or 0
