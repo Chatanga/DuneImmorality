@@ -804,7 +804,7 @@ function Deck.generateConflictDeck(deckZone, ix, epic)
     local cardCounts = epic and { 0, 5, 5 } or { 1, 5, 4 }
 
     local contributions = {}
-    for level = 1, 3 do
+    for level = 3, 1, -1 do
         local cardCount = cardCounts[level]
         if cardCount > 0 then
             local levelContributions = Deck._mergeStandardContributionSets(Deck.conflict["level" .. tostring(level)], ix, false)
@@ -1296,7 +1296,8 @@ function Deck._generateStaticDeck(deckType, deckZone, contributions, _)
                     --Helper.dump(name, "-> from deck:", firstGuid)
                     source.deck.takeObject({
                         guid = firstGuid,
-                        position = deckZone.getPosition() + Vector(0, 0, 0),
+                        -- Stacking is needed to preserve input order.
+                        position = deckZone.getPosition() + Vector(0, cardCount * 0.1, 0),
                         smooth = false,
                     })
                     cardCount = cardCount + 1
