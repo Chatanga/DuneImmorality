@@ -8,21 +8,20 @@ local constructionModeEnabled = false
 local autoLoadedSettings
 
 --[[
-]]
 autoLoadedSettings = {
     language = "fr",
     hotSeat = true,
-    numberOfPlayers = 6,
-    randomizePlayerPositions = false,
+    numberOfPlayers = 4,
+    randomizePlayerPositions = true,
     useContracts = true,
     riseOfIx = false,
     epicMode = false,
-    immortality = false,
+    immortality = true,
     goTo11 = false,
     leaderSelection = {
         Green = "jessicaAtreides",
         Yellow = "gurneyHalleck",
-        Red = "feydRauthaHarkonnen",
+        Red = "stabanTuek",
         Blue = "irulanCorrino",
         Teal = "muadDib",
         Brown = "shaddamCorrino",
@@ -31,6 +30,7 @@ autoLoadedSettings = {
     assistedRevelation = true,
     soundEnabled = true,
 }
+]]
 
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")

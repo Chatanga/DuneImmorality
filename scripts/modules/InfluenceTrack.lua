@@ -152,7 +152,7 @@ function InfluenceTrack._processSnapPoints(settings, firstTime)
                             local influenceTokenInitialPosition = position + Vector(xOffsets[color], 0, -1.6)
                             InfluenceTrack.influenceTokenInitialPositions[faction][color] = influenceTokenInitialPosition
                             if firstTime then
-                                Helper.dump("Influence token", faction, color)
+                                --Helper.dump("Influence token", faction, color)
                                 influenceToken.setPosition(influenceTokenInitialPosition)
                                 Helper.noPhysicsNorPlay(influenceToken)
                             end

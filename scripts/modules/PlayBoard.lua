@@ -37,8 +37,8 @@ local PlayBoard = Helper.createClass(nil, {
             strength = "3f6645",
             dreadnoughts = {"1a3c82", "a8f306"},
             dreadnoughtInitialPositions = {
-                Helper.getHardcodedPositionFromGUID('1a3c82', -23.7000237, 1.19922233, 19.4),
-                Helper.getHardcodedPositionFromGUID('a8f306', -25.3000278, 1.19922221, 19.4)
+                Helper.getHardcodedPositionFromGUID('1a3c82', -23.70004, 1.19922245, 19.3999958),
+                Helper.getHardcodedPositionFromGUID('a8f306', -25.3000488, 1.19922245, 19.4)
             },
             agents = {"7751c8", "afa978"},
             agentInitialPositions = {
@@ -46,7 +46,7 @@ local PlayBoard = Helper.createClass(nil, {
                 Helper.getHardcodedPositionFromGUID('afa978', -17.65, 1.19722152, 21.7)
             },
             swordmaster = "ed3490",
-            swordmasterInitialPosition = Helper.getHardcodedPositionFromGUID('ed3490', -2.8040576, 0.5908922, 26.5912743),
+            swordmasterInitialPosition = Helper.getHardcodedPositionFromGUID('ed3490', -2.8040576, 0.5908921, 26.5912743),
             swordmasterBonusToken = "db91e0",
             spies = {
                 "fdecae",
@@ -83,7 +83,7 @@ local PlayBoard = Helper.createClass(nil, {
             tleilaxToken = "2bfc39",
             tleilaxTokenInitalPosition = Helper.getHardcodedPositionFromGUID('2bfc39', 0.5429316, 0.882152, 22.0543556),
             researchToken = "39e0f3",
-            researchTokenInitalPosition = Helper.getHardcodedPositionFromGUID('39e0f3', 0.369857252, 0.884652138, 18.2348137),
+            researchTokenInitalPosition = Helper.getHardcodedPositionFromGUID('39e0f3', 0.369857281, 0.884652138, 18.2348137),
             freighter = "e9096d",
             firstPlayerMarkerZone = "781a03",
             firstPlayerInitialPosition = Helper.getHardcodedPositionFromGUID('781a03', -13.6, 1.7, 20.89) + Vector(0, -0.4, 0),
@@ -101,12 +101,12 @@ local PlayBoard = Helper.createClass(nil, {
             strength = "aa3bb9",
             dreadnoughts = {"82789e", "60f208"},
             dreadnoughtInitialPositions = {
-                Helper.getHardcodedPositionFromGUID('82789e', -23.7000332, 1.19922245, -19.0000038),
-                Helper.getHardcodedPositionFromGUID('60f208', -25.3000145, 1.19922233, -19.0)
+                Helper.getHardcodedPositionFromGUID('82789e', -23.7000427, 1.19922209, -19.0000038),
+                Helper.getHardcodedPositionFromGUID('60f208', -25.3000412, 1.19922221, -19.0000019)
             },
             agents = {"64d013", "106d8b"},
             agentInitialPositions = {
-                Helper.getHardcodedPositionFromGUID('64d013', -19.15, 1.19722164, -16.7),
+                Helper.getHardcodedPositionFromGUID('64d013', -19.15, 1.19722152, -16.7),
                 Helper.getHardcodedPositionFromGUID('106d8b', -17.65, 1.1972214, -16.7)
             },
             swordmaster = "a78ad7",
@@ -166,15 +166,15 @@ local PlayBoard = Helper.createClass(nil, {
             dreadnoughts = {"a15087", "734250"},
             dreadnoughtInitialPositions = {
                 Helper.getHardcodedPositionFromGUID('a15087', 23.6999912, 1.19653666, 19.3999977),
-                Helper.getHardcodedPositionFromGUID('734250', 25.2999668, 1.19653666, 19.3999958)
+                Helper.getHardcodedPositionFromGUID('734250', 25.2999535, 1.19653654, 19.3999939)
             },
             agents = {"bceb0e", "ee412b"},
             agentInitialPositions = {
                 Helper.getHardcodedPositionFromGUID('bceb0e', 16.1, 1.194536, 21.7),
-                Helper.getHardcodedPositionFromGUID('ee412b', 17.6, 1.19453609, 21.7)
+                Helper.getHardcodedPositionFromGUID('ee412b', 17.6, 1.194536, 21.7)
             },
             swordmaster = "fb1629",
-            swordmasterInitialPosition = Helper.getHardcodedPositionFromGUID('fb1629', 0.178526565, 0.590892136, 26.5916252),
+            swordmasterInitialPosition = Helper.getHardcodedPositionFromGUID('fb1629', 0.1785265, 0.590892136, 26.5916252),
             swordmasterBonusToken = "f5bfa8",
             spies = {
                 "ed1748",
@@ -211,7 +211,7 @@ local PlayBoard = Helper.createClass(nil, {
             tleilaxToken = "63d39f",
             tleilaxTokenInitalPosition = Helper.getHardcodedPositionFromGUID('63d39f', 1.2458272, 0.8846519, 22.04864),
             researchToken = "658b17",
-            researchTokenInitalPosition = Helper.getHardcodedPositionFromGUID('658b17', 0.370005578, 0.882152, 20.3406372),
+            researchTokenInitalPosition = Helper.getHardcodedPositionFromGUID('658b17', 0.3700056, 0.882152, 20.3406372),
             freighter = "34281d",
             firstPlayerMarkerZone = "ce7c68",
             firstPlayerInitialPosition = Helper.getHardcodedPositionFromGUID('ce7c68', 13.6, 1.7, 20.89) + Vector(0, -0.4, 0),
@@ -229,12 +229,12 @@ local PlayBoard = Helper.createClass(nil, {
             strength = "6f007c",
             dreadnoughts = {"5469fb", "71a414"},
             dreadnoughtInitialPositions = {
-                Helper.getHardcodedPositionFromGUID('5469fb', 23.6999817, 1.19653678, -19.0000076),
-                Helper.getHardcodedPositionFromGUID('71a414', 25.2999935, 1.19653666, -19.0)
+                Helper.getHardcodedPositionFromGUID('5469fb', 23.6999626, 1.19653666, -19.0000057),
+                Helper.getHardcodedPositionFromGUID('71a414', 25.2999744, 1.19653642, -19.0)
             },
             agents = {"5068c8", "67b476"},
             agentInitialPositions = {
-                Helper.getHardcodedPositionFromGUID('5068c8', 16.1, 1.19453609, -16.7),
+                Helper.getHardcodedPositionFromGUID('5068c8', 16.1, 1.194536, -16.7),
                 Helper.getHardcodedPositionFromGUID('67b476', 17.6, 1.194536, -16.7)
             },
             swordmaster = "635c49",
@@ -253,7 +253,7 @@ local PlayBoard = Helper.createClass(nil, {
             councilToken = "1be491",
             fourPlayerVictoryToken = "4e8873",
             scoreMarker = "20bbd1",
-            scoreMarkerInitialPosition = Helper.getHardcodedPositionFromGUID('20bbd1', 10.3966284, 0.7925407, -14.0015039),
+            scoreMarkerInitialPosition = Helper.getHardcodedPositionFromGUID('20bbd1', 10.3968172, 0.7925637, -14.0016289),
             controlMarkerBag = 'b92a4c',
             troops = {
                 "fbf8d2",
@@ -273,9 +273,9 @@ local PlayBoard = Helper.createClass(nil, {
             trash = "7d1e07",
             completedContractBag = "04d334",
             tleilaxToken = "d20bcf",
-            tleilaxTokenInitalPosition = Helper.getHardcodedPositionFromGUID('d20bcf', 1.247232, 0.884652, 22.7536983),
+            tleilaxTokenInitalPosition = Helper.getHardcodedPositionFromGUID('d20bcf', 1.24723184, 0.884652, 22.7536983),
             researchToken = "8988cf",
-            researchTokenInitalPosition = Helper.getHardcodedPositionFromGUID('8988cf', 0.3700853, 0.8821521, 19.6398125),
+            researchTokenInitalPosition = Helper.getHardcodedPositionFromGUID('8988cf', 0.370085269, 0.8821521, 19.6398125),
             freighter = "8fa76f",
             firstPlayerMarkerZone = "ba0c20",
             firstPlayerInitialPosition = Helper.getHardcodedPositionFromGUID('ba0c20', 13.6, 1.7, -17.49) + Vector(0, -0.4, 0),
@@ -304,9 +304,9 @@ local PlayBoard = Helper.createClass(nil, {
                 "bddedd",
             },
             spyInitialPositions = {
-                Helper.getHardcodedPositionFromGUID('96bbc4', -19.15, 1.52385342, 1.749999),
-                Helper.getHardcodedPositionFromGUID('040248', -17.65, 1.52385306, 1.75000083),
-                Helper.getHardcodedPositionFromGUID('bddedd', -16.15, 1.52385283, 1.74999917)
+                Helper.getHardcodedPositionFromGUID('96bbc4', -19.15, 1.52385342, 1.7500006),
+                Helper.getHardcodedPositionFromGUID('040248', -17.65, 1.52385318, 1.75000072),
+                Helper.getHardcodedPositionFromGUID('bddedd', -16.15, 1.52385342, 1.74999952)
             },
             councilToken = "ded786",
             scoreMarker = "974cdf",
@@ -327,11 +327,11 @@ local PlayBoard = Helper.createClass(nil, {
             persuasion = "ab28ea",
             agents = {"0ad113", "d23b8f"},
             agentInitialPositions = {
-                Helper.getHardcodedPositionFromGUID('0ad113', 16.1, 1.296167, 2.50000024),
-                Helper.getHardcodedPositionFromGUID('d23b8f', 17.6, 1.296167, 2.5)
+                Helper.getHardcodedPositionFromGUID('0ad113', 16.1, 1.296167, 2.49999952),
+                Helper.getHardcodedPositionFromGUID('d23b8f', 17.6, 1.29616714, 2.49999976)
             },
             swordmaster = "cc393c",
-            swordmasterInitialPosition = Helper.getHardcodedPositionFromGUID('cc393c', -0.3038585, 0.692523241, 27.6080017),
+            swordmasterInitialPosition = Helper.getHardcodedPositionFromGUID('cc393c', -0.303858459, 0.6925232, 27.6080017),
             swordmasterBonusToken = "aa9a39",
             spies = {
                 "e5b04d",
@@ -339,9 +339,9 @@ local PlayBoard = Helper.createClass(nil, {
                 "a3d964",
             },
             spyInitialPositions = {
-                Helper.getHardcodedPositionFromGUID('e5b04d', 16.1, 1.52116692, 1.75),
-                Helper.getHardcodedPositionFromGUID('407c67', 17.6, 1.52116787, 1.75000072),
-                Helper.getHardcodedPositionFromGUID('a3d964', 19.1, 1.52116776, 1.74999988)
+                Helper.getHardcodedPositionFromGUID('e5b04d', 16.1, 1.521167, 1.74999988),
+                Helper.getHardcodedPositionFromGUID('407c67', 17.6, 1.521168, 1.75),
+                Helper.getHardcodedPositionFromGUID('a3d964', 19.1, 1.521168, 1.750001)
             },
             councilToken = "8c6ba7",
             scoreMarker = "612a60",

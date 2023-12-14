@@ -730,4 +730,9 @@ return {
     rivalWater = "Rival - Water",
     rivalSpice = "Rival - Spice",
     beneTleilax = "Bene Tleilax",
+    objective = "Objective",
+    priorityContract = "Priority Contract",
+    strategicStockpiling1 = "Strategic Stockpiling (Spice)",
+    strategicStockpiling2 = "Strategic Stockpiling (Water)",
+    --opportunism = "Opportunism",
 }

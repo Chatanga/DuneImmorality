@@ -381,7 +381,7 @@ Leader.stabanTuek = Helper.createClass(Leader, {
             if otherColor ~= color and MainBoard.isDesertSpace(spaceName) and MainBoard.isSpying(spaceName, color) then
                 Action.log(I18N("stabanSpiceSmuggling"), color)
                 local leader = PlayBoard.getLeader(color)
-                leader.resources(color, "persuasion", 1)
+                leader.resources(color, "spice", 1)
             end
         end)
     end
@@ -399,7 +399,7 @@ Leader.gurneyHalleck = Helper.createClass(Leader, {
             if color == otherColor then
                 local threshold = settings.numberOfPlayers == 6 and 10 or 6
                 if Combat.calculateCombatForce(color) >= threshold then
-                    Action.log(I18N("gurneyIsSmiling"), color)
+                    Action.log(I18N("gurneySmile"), color)
                     local leader = PlayBoard.getLeader(color)
                     leader.resources(color, "persuasion", 1)
                 end

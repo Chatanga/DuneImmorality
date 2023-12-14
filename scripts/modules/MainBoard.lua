@@ -18,7 +18,7 @@ local MainBoard = {
     spaceDetails = {
         sardaukar = { group = "emperor", posts = { "emperor" } },
         vastWealth = { group = "emperor", posts = { "emperor" } },
-        dutifulServices = { group = "emperor", posts = { "emperor" } },
+        dutifulService = { group = "emperor", posts = { "emperor" } },
 
         militarySupport = { group = "greatHouses", posts = { "greatHouse" } },
         economicSupport = { group = "greatHouses", posts = { "greatHouse" } },
@@ -889,14 +889,18 @@ end
 ---
 function MainBoard._asyncGoSpiceRefinery(color, leader)
     local continuation = Helper.createContinuation("MainBoard._asyncGoSpiceRefinery")
-    local options = {
-        I18N("zeroSpiceOption"),
-        I18N("oneSpiceOption"),
-    }
-    -- FIXME Pending continuation if the dialog is canceled.
-    Player[color].showOptionsDialog(I18N("goSpiceRefinery"), options, 1, function (_, index, _)
-        continuation.run(MainBoard._goSpiceRefinery(color, leader, index - 1))
-    end)
+    if PlayBoard.getResource(color, "spice"):get() == 0 then
+        continuation.run(MainBoard._goSpiceRefinery(color, leader, 0))
+    else
+        local options = {
+            I18N("zeroSpiceOption"),
+            I18N("oneSpiceOption"),
+        }
+        -- FIXME Pending continuation if the dialog is canceled.
+        Player[color].showOptionsDialog(I18N("goSpiceRefinery"), options, 1, function (_, index, _)
+            continuation.run(MainBoard._goSpiceRefinery(color, leader, index - 1))
+        end)
+    end
     return continuation
 end
 
@@ -1112,21 +1116,6 @@ function MainBoard.getControllingDreadnought(bannerZone)
     return nil
 end
 
----
-function MainBoard.getDeployedSpyCount(color, onlyInMakerSpace)
-    local count = 0
-    for name, observationPost in pairs(MainBoard.observationPosts) do
-        if not onlyInMakerSpace or MainBoard.isDesertSpace(name) then
-            for _, spy in ipairs(Park.getObjects(observationPost.park)) do
-                if spy.hasTag(color) then
-                    count = count + 1
-                end
-            end
-        end
-    end
-    return count
-end
-
 -- *** --
 
 --[[ Immortality stuff
@@ -1232,6 +1221,36 @@ function MainBoard.hasEnemyAgentInSpace(spaceName, color)
     return false
 end
 
+---
+function MainBoard.getDeployedSpyCount(color, onlyInMakerSpace)
+    local count = 0
+    for name, observationPost in pairs(MainBoard.observationPosts) do
+        if not onlyInMakerSpace or MainBoard.isDesertSpace(name) then
+            for _, spy in ipairs(Park.getObjects(observationPost.park)) do
+                if spy.hasTag(color) then
+                    count = count + 1
+                end
+            end
+        end
+    end
+    return count
+end
+
+--
+function MainBoard.isSpying(spaceName, color)
+    --Helper.dumpFunction("MainBoard.isSpying", spaceName, color)
+    for name, observationPost in pairs(MainBoard.observationPosts) do
+        if name == spaceName then
+            for _, spy in ipairs(Park.getObjects(observationPost.park)) do
+                if spy.hasTag(color) then
+                    return true
+                end
+            end
+        end
+    end
+    return false
+end
+
 function MainBoard.hasVoiceToken(spaceName)
     local space = MainBoard.spaces[spaceName]
     if space then
@@ -1287,6 +1306,7 @@ end
 
 --- aka Maker space
 function MainBoard.isDesertSpace(spaceName)
+    --Helper.dump("MainBoard.isDesertSpace", spaceName)
     return MainBoard.spaceDetails[spaceName].group == "desert"
 end
 

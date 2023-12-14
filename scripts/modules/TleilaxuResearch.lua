@@ -5,6 +5,7 @@ local I18N = require("utils.I18N")
 
 local Resource = Module.lazyRequire("Resource")
 local PlayBoard = Module.lazyRequire("PlayBoard")
+local Commander = Module.lazyRequire("Commander")
 
 local TleilaxuResearch = {
     --[[

@@ -154,7 +154,7 @@ function TurnControl._assignObjectives()
             Deck.generateObjectiveDeck(combatZone, cardNames).doAfter(function (deck)
                 assert(Helper.getDeckOrCard(combatZone) == deck)
                 for i, color in ipairs(TurnControl.players) do
-                    if not PlayBoard.isCommander(color) then
+                    if not Commander.isCommander(color) then
                         PlayBoard.giveObjectiveCardFromZone(color, combatZone)
                     end
                 end

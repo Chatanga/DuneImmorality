@@ -275,7 +275,7 @@ return {
 
     loyalty = "Margot récolte les fruits de sa loyauté",
 
-    stabanSpiceSmuggling = "Staban détourne un peu d’épice.",
+    stabanSpiceSmuggling = "Staban détourne sa part d’épice.",
 
     -- Uprising leaders
     stabanTuek = "Staban Tuek",
@@ -731,4 +731,9 @@ return {
     rivalWater = "Rival - Eau",
     rivalSpice = "Rival - Épice",
     beneTleilax = "Bene Tleilax",
+    objective = "Objectif",
+    priorityContract = "Contrat prioritaire",
+    strategicStockpiling1 = "Stocks stratégiques (épice)",
+    strategicStockpiling2 = "Stocks stratégiques (eau)",
+    --opportunism = "Opportunisme",
 }

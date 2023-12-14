@@ -145,7 +145,7 @@ end
 function LeaderSelection._setUpPicking(opponents, numberOfLeaders, autoStart, random, hidden)
     local fontColor = Color(223/255, 151/255, 48/255)
 
-    if hidden then
+    if not random then
         Helper.createAbsoluteButtonWithRoundness(LeaderSelection.secondaryTable, 2, false, {
             click_function = Helper.registerGlobalCallback(),
             label = I18N("leaderSelectionAdjust"),
@@ -328,7 +328,7 @@ function LeaderSelection._createDynamicLeaderSelection(leaders, hidden)
     end
 
     for i, leader in ipairs(leaders) do
-        if i <= LeaderSelection.leaderSelectionPoolSize or not hidden then
+        if i <= LeaderSelection.leaderSelectionPoolSize then
             LeaderSelection.dynamicLeaderSelection[leader] = false
             local position = leader.getPosition()
             Helper.createAbsoluteButtonWithRoundness(leader, 1, false, {
