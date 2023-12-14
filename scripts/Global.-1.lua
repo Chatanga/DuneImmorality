@@ -26,7 +26,7 @@ autoLoadedSettings = {
         Teal = "muadDib",
         Brown = "shaddamCorrino",
     },
-    horizontalHandLayout = false,
+    horizontalHandLayout = true,
     assistedRevelation = true,
     soundEnabled = true,
 }
@@ -164,25 +164,25 @@ function asyncOnLoad(scriptState)
     end
 
     allModules.ordered = {
-        { name = "Pdf", module = allModules.Pdf},
-        { name = "Music", module = allModules.Music},
-        { name = "Deck", module = allModules.Deck},
-        { name = "ScoreBoard", module = allModules.ScoreBoard},
-        { name = "Hagal", module = allModules.Hagal},
-        { name = "PlayBoard", module = allModules.PlayBoard},
-        { name = "Combat", module = allModules.Combat},
-        { name = "LeaderSelection", module = allModules.LeaderSelection},
-        { name = "MainBoard", module = allModules.MainBoard},
-        { name = "ShipmentTrack", module = allModules.ShipmentTrack},
-        { name = "TechMarket", module = allModules.TechMarket},
-        { name = "ChoamContractMarket", module = allModules.ChoamContractMarket},
-        { name = "Intrigue", module = allModules.Intrigue},
-        { name = "InfluenceTrack", module = allModules.InfluenceTrack},
-        { name = "ImperiumRow", module = allModules.ImperiumRow},
-        { name = "Reserve", module = allModules.Reserve},
-        { name = "TleilaxuResearch", module = allModules.TleilaxuResearch},
-        { name = "TleilaxuRow", module = allModules.TleilaxuRow},
-        { name = "TurnControl", module = allModules.TurnControl},
+        { name = "Pdf", module = allModules.Pdf },
+        { name = "Music", module = allModules.Music },
+        { name = "Deck", module = allModules.Deck },
+        { name = "ScoreBoard", module = allModules.ScoreBoard },
+        { name = "Hagal", module = allModules.Hagal },
+        { name = "PlayBoard", module = allModules.PlayBoard },
+        { name = "Combat", module = allModules.Combat },
+        { name = "LeaderSelection", module = allModules.LeaderSelection },
+        { name = "MainBoard", module = allModules.MainBoard },
+        { name = "ShipmentTrack", module = allModules.ShipmentTrack },
+        { name = "TechMarket", module = allModules.TechMarket },
+        { name = "ChoamContractMarket", module = allModules.ChoamContractMarket },
+        { name = "Intrigue", module = allModules.Intrigue },
+        { name = "InfluenceTrack", module = allModules.InfluenceTrack },
+        { name = "ImperiumRow", module = allModules.ImperiumRow },
+        { name = "Reserve", module = allModules.Reserve },
+        { name = "TleilaxuResearch", module = allModules.TleilaxuResearch },
+        { name = "TleilaxuRow", module = allModules.TleilaxuRow },
+        { name = "TurnControl", module = allModules.TurnControl },
     }
 
     -- We cannot use Module.callOnAllRegisteredModules("onLoad", state),
@@ -273,15 +273,26 @@ function setUp(newSettings)
 
         local activeOpponents = PlayerSet.findActiveOpponents(properlySeatedPlayers, newSettings.numberOfPlayers)
         local orderedPlayers = PlayerSet.toCanonicallyOrderedPlayerList(activeOpponents)
-        for i, moduleInfo in ipairs(allModules.ordered) do
-            --Helper.dump(tostring(i) .. ". Setting " .. moduleInfo.name)
-            moduleInfo.module.setUp(settings, activeOpponents, orderedPlayers)
-        end
-        --Helper.dump("Done setting all modules")
+        runSetUp(1, activeOpponents, orderedPlayers)
 
         -- TurnControl.start() is called by "LeaderSelection" asynchronously,
         -- effectively starting the game.
     end)
+end
+
+function runSetUp(index, activeOpponents, orderedPlayers)
+    local moduleInfo = allModules.ordered[index]
+    if moduleInfo then
+        Helper.dump(tostring(index) .. ". Setting " .. moduleInfo.name)
+        local nextContinuation = moduleInfo.module.setUp(settings, activeOpponents, orderedPlayers)
+        if not nextContinuation then
+            nextContinuation = Helper.createContinuation("runSetUp")
+            nextContinuation.run()
+        end
+        nextContinuation.doAfter(Helper.partialApply(runSetUp, index + 1, activeOpponents, orderedPlayers))
+    else
+        --Helper.dump("Done setting all modules")
+    end
 end
 
 ---

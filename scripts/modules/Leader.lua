@@ -144,9 +144,7 @@ Leader.letoAtreides = Helper.createClass(Leader, {
 Leader.paulAtreides = Helper.createClass(Leader, {
 
     --- Prescience
-    prepare = function (color, settings)
-        Action.prepare(color, settings)
-
+    setUp = function (color, settings)
         local prescience = function (_, otherColor)
             if otherColor == color then
                 local cardOrDeck = PlayBoard.getDrawDeck(color)
@@ -181,7 +179,7 @@ Leader.paulAtreides = Helper.createClass(Leader, {
                 tooltip = I18N("prescienceTooltip"),
             })
         end)
-   end,
+    end,
 
     --- Discipline
     signetRing = function (color)
@@ -258,12 +256,7 @@ Leader.rhomburVernius = Helper.createClass(Leader, {
 
 Leader.tessiaVernius = Helper.createClass(Leader, {
 
-    --- Careful observation
-    prepare = function (color, settings)
-        Action.prepare(color, settings)
-
-        InfluenceTrack.setUpSnoopers()
-
+    setUp = function (color, settings)
         local leaderCard = PlayBoard.findLeaderCard(color)
         local snapPoints = {}
         for i = 1, 4 do
@@ -274,6 +267,12 @@ Leader.tessiaVernius = Helper.createClass(Leader, {
             })
         end
         leaderCard.setSnapPoints(snapPoints)
+    end,
+
+    --- Careful observation
+    prepare = function (color, settings)
+        Action.prepare(color, settings)
+        InfluenceTrack.setUpSnoopers()
     end,
 
     tearDown = function ()
@@ -369,7 +368,6 @@ Leader.stabanTuek = Helper.createClass(Leader, {
                         flip = true,
                         position = Vector(drawDeck.getPosition() + Vector(0, 1, 0)),
                         callback_function = function (livingCard)
-                            log(Helper.getID(livingCard))
                             PlayBoard.getPlayBoard(color):trash(livingCard)
                         end
                     })
@@ -386,9 +384,7 @@ Leader.amberMetulli = Helper.createClass(Leader, {
 Leader.gurneyHalleck = Helper.createClass(Leader, {
 
     --- Always smiling
-    prepare = function (color, settings)
-        Action.prepare(color, settings)
-
+    setUp = function (color, settings)
         Helper.registerEventListener("reveal", function (otherColor)
             if color == otherColor then
                 local threshold = settings.numberOfPlayers == 6 and 10 or 6
@@ -399,7 +395,7 @@ Leader.gurneyHalleck = Helper.createClass(Leader, {
                 end
             end
         end)
-   end,
+    end,
 })
 
 Leader.margotFenring = Helper.createClass(Leader, {
@@ -452,9 +448,7 @@ Leader.irulanCorrino = Helper.createClass(Leader, {
 Leader.jessicaAtreides = Helper.createClass(Leader, {
 
     --- Other memories
-    prepare = function (color, settings)
-        Action.prepare(color, settings)
-
+    setUp = function (color, settings)
         local leaderCard = PlayBoard.findLeaderCard(color)
 
         local otherMemories = function ()
@@ -492,22 +486,20 @@ Leader.jessicaAtreides = Helper.createClass(Leader, {
 
 Leader.feydRauthaHarkonnen = Helper.createClass(Leader, {
 
-    --- Devious training
-    prepare = function (color, settings)
-        Action.prepare(color, settings)
+    positions = {
+        Vector(0.1, 0, 0.55),
+        Vector(-0.15, 0, 0.4),
+        Vector(-0.15, 0, 0.7),
+        Vector(-0.4, 0, 0.55),
+        Vector(-0.65, 0, 0.4),
+        Vector(-0.55, 0, 0.7),
+        Vector(-0.75, 0, 0.7),
+        Vector(-0.95, 0, 0.55),
+    },
 
-        local positions = {
-            Vector(0.1, 0, 0.55),
-            Vector(-0.15, 0, 0.4),
-            Vector(-0.15, 0, 0.7),
-            Vector(-0.4, 0, 0.55),
-            Vector(-0.65, 0, 0.4),
-            Vector(-0.55, 0, 0.7),
-            Vector(-0.75, 0, 0.7),
-            Vector(-0.95, 0, 0.55),
-        }
+    setUp = function (color, settings)
         local snapPoints = {}
-        for _, position in ipairs(positions) do
+        for _, position in ipairs(Leader.feydRauthaHarkonnen.positions) do
             table.insert(snapPoints, {
                 position = position,
                 tags = { "FeydRauthaTrainingMarker" },
@@ -516,10 +508,16 @@ Leader.feydRauthaHarkonnen = Helper.createClass(Leader, {
 
         local leaderCard = PlayBoard.findLeaderCard(color)
         leaderCard.setSnapPoints(snapPoints)
+    end,
 
+    --- Devious training
+    prepare = function (color, settings)
+        Action.prepare(color, settings)
+
+        local leaderCard = PlayBoard.findLeaderCard(color)
         local marker = getObjectFromGUID("505c31")
-        marker.setPosition(leaderCard.positionToWorld(positions[1]))
-  end,
+        marker.setPosition(leaderCard.positionToWorld(Leader.feydRauthaHarkonnen.positions[1]))
+    end
 })
 
 Leader.shaddamCorrino = Helper.createClass(Leader, {

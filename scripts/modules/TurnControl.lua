@@ -104,7 +104,7 @@ function TurnControl._assignObjectives()
     if #TurnControl.players == 3 then
         table.insert(cardNames, "ornithopter1to3p")
     elseif #TurnControl.players >= 4 then
-        table.insert(cardNames, "muabDib4to6p")
+        table.insert(cardNames, "muadDib4to6p")
         table.insert(cardNames, "crysknife4to6p")
     else
         error("Unexpected number of players: " .. tostring(#TurnControl.players))
@@ -115,7 +115,7 @@ function TurnControl._assignObjectives()
     for i, color in ipairs(TurnControl.players) do
         if not PlayBoard.isCommander(color) then
             if i == TurnControl.firstPlayerLuaIndex then
-                objectiveCards[color] = "muabDibFirstPlayer"
+                objectiveCards[color] = "muadDibFirstPlayer"
             else
                 objectiveCards[color] = cardNames[1]
                 table.remove(cardNames, 1)
@@ -124,7 +124,7 @@ function TurnControl._assignObjectives()
     end
 
     local getCategory = function (cardName)
-        for _, category in ipairs({ "ornithopter", "crysknife", "muabDib" }) do
+        for _, category in ipairs({ "ornithopter", "crysknife", "muadDib" }) do
             if Helper.startsWith(cardName, category) then
                 return category
             end
@@ -146,18 +146,20 @@ function TurnControl._assignObjectives()
         end
     end
 
-    local intrigueDiscard = getObjectFromGUID("80642b")
-    assert(intrigueDiscard)
-    Deck.generateObjectiveDeck(intrigueDiscard, cardNames).doAfter(function (deck)
-        assert(Helper.getDeckOrCard(intrigueDiscard) == deck)
-        Helper.onceTimeElapsed(3).doAfter(function ()
-            for _, color in ipairs(TurnControl.players) do
-                if not PlayBoard.isCommander(color) then
-                    PlayBoard.giveObjectiveCardFromZone(color, intrigueDiscard)
+    local combatZone = getObjectFromGUID("6d632e")
+    assert(combatZone)
+    if true then
+        --Helper.onceTimeElapsed(5).doAfter(function ()
+            Deck.generateObjectiveDeck(combatZone, cardNames).doAfter(function (deck)
+                assert(Helper.getDeckOrCard(combatZone) == deck)
+                for i, color in ipairs(TurnControl.players) do
+                    if not PlayBoard.isCommander(color) then
+                        PlayBoard.giveObjectiveCardFromZone(color, combatZone)
+                    end
                 end
-            end
-        end)
-    end)
+            end)
+        --end)
+    end
 end
 
 ---

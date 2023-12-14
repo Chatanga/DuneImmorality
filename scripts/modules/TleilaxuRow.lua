@@ -41,7 +41,7 @@ function TleilaxuRow.setUp(settings)
                 end
             end)
         end)
-        Deck.generateSpecialDeck("immortality", "reclaimedForces", TleilaxuRow.slotZones[3])
+        Deck.generateSpecialDeck(TleilaxuRow.slotZones[3], "immortality", "reclaimedForces")
 
         TleilaxuRow._staticSetUp()
     else

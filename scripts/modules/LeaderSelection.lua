@@ -43,7 +43,7 @@ function LeaderSelection.setUp(settings, opponents, orderedPlayers)
     local autoStart = not settings.tweakLeaderSelection
     LeaderSelection.leaderSelectionPoolSize = settings.defaultLeaderPoolSize
     Deck.generateLeaderDeck(LeaderSelection.deckZone, settings.useContracts, settings.riseOfIx, settings.immortality, settings.fanmadeLeaders).doAfter(function (deck)
-        local numberOfLeaders = #deck.getObjects()
+        local numberOfLeaders = deck.getQuantity()
         local continuation = Helper.createContinuation("LeaderSelection.setUp")
         local count = numberOfLeaders
 

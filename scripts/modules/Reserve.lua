@@ -25,12 +25,12 @@ end
 ---
 function Reserve.setUp()
     if false then
-        Deck.generateSpecialDeck("base", "foldspace", Reserve.foldspaceSlotZone)
+        Deck.generateSpecialDeck(Reserve.foldspaceSlotZone, "base", "foldspace")
     else
         Reserve.foldspaceSlotZone.destruct()
     end
-    Deck.generateSpecialDeck("uprising", "prepareTheWay", Reserve.prepareTheWaySlotZone)
-    Deck.generateSpecialDeck("uprising", "theSpiceMustFlowNew", Reserve.theSpiceMustFlowSlotZone)
+    Deck.generateSpecialDeck(Reserve.prepareTheWaySlotZone, "uprising", "prepareTheWay")
+    Deck.generateSpecialDeck(Reserve.theSpiceMustFlowSlotZone, "uprising", "theSpiceMustFlowNew")
     Reserve._staticSetUp()
 end
 

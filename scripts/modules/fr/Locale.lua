@@ -351,9 +351,9 @@ return {
     -- Objective cards
     --crysknife = "",
     ornithopter1to3p = "Ornithoptère",
-    muabDib4to6p = "Muad’Dib",
+    muadDib4to6p = "Muad’Dib",
     crysknife4to6p = "Krys",
-    muabDibFirstPlayer = "Muad’Dib (premier joueur)",
+    muadDibFirstPlayer = "Muad’Dib (premier joueur)",
 
     -- Imperium cards
     duneTheDesertPlanet = "Dune, la planète désertique",

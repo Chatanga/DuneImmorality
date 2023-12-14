@@ -170,9 +170,9 @@ function Deck.loadCustomDecks(loader)
 
     Deck.load(loader, cards.objective, "objective", "uprisingObjective", 1, {
         "ornithopter1to3p",
-        "muabDibFirstPlayer",
+        "muadDibFirstPlayer",
         "crysknife",
-        "muabDib4to6p",
+        "muadDib4to6p",
         "crysknife4to6p",
     })
 

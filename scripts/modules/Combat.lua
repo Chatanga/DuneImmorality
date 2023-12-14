@@ -28,7 +28,7 @@ local Combat = {
         },
         protoSandworm = "14b25e",
         objectiveTokens = {
-            muabDib = "a17bcb",
+            muadDib = "a17bcb",
             ornithopter = "bd4b71",
             crysknife = "85f9b6",
         },

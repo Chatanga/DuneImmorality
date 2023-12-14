@@ -311,7 +311,8 @@ end
 function Helper.getDeckOrCard(zone)
     assert(zone)
     assert(type(zone) ~= 'string', tostring(zone) .. ' looks like a GUID, not a zone')
-    for _, object in ipairs(zone.getObjects(true)) do
+    -- It is pairs, not ipairs!
+    for _, object in pairs(zone.getObjects()) do
         if object.type and not object.held_by_color and (object.type == "Card" or object.type == "Deck") then
             return object
         end
@@ -1218,7 +1219,7 @@ function Helper.randomizePlayerPositions()
             coroutine.yield()
         end
 
-        Helper.onceTimeElapsed(4).doAfter(continuation.run)
+        continuation.run()
         return 1
     end)
 
@@ -1461,12 +1462,12 @@ end
 
 ---
 function Helper.toCamelCase(...)
-    local chameauString = ""
+    local chameauString
     for i, str in ipairs({...}) do
         if i > 1 then
             chameauString = chameauString .. str:gsub("^%l", string.upper)
         else
-            chameauString = chameauString .. str
+            chameauString = str:gsub("^%u", string.lower)
         end
     end
     return chameauString

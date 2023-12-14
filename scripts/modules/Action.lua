@@ -88,6 +88,11 @@ function Action.checkContext(attributes)
 end
 
 ---
+function Action.setUp(color, settings)
+    -- NOP
+end
+
+---
 function Action.prepare(color, settings)
     Action.resources(color, "water", 1)
     if settings.epicMode then
