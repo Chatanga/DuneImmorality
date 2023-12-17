@@ -367,4 +367,12 @@ function ImperiumCard.isStarterCard(card)
     return cardInfo.starter or false
 end
 
+function ImperiumCard.isFactionCard(card, faction)
+    if faction then
+        Types.assertIsFaction(faction)
+    end
+    local cardInfo = ImperiumCard._resolveCard(card)
+    return cardInfo.factions and (not faction or Helper.isElementOf(faction, cardInfo.factions))
+end
+
 return ImperiumCard

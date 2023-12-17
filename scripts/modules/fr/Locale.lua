@@ -38,13 +38,19 @@ return {
     phaseEndgame = "Phase : fin de jeu",
     phaseArrakeenScouts = "Phase : éclaireurs d’Arrakeen",
     endgameReached = "Fin de jeu théorique atteinte",
+    takeHighCouncilSeatByForce = "Prend de force",
+    takeHighCouncilSeatByForceConfirm = "Prendre de force son siège au Haut-Conseil ?",
 
     -- Card
     acquireButton = "Acquérir",
+    notFremenCard = "Tentative d’ajout d’un pouilleux de Fremen dans la salle du trône !",
 
     -- Playboards
     noTouch = "Ne touchez pas à ce bouton !",
     noLeader = "Vous n’avez pas encore de dirigeant !",
+    noAlly = "You n’avez pas sélectionné d’allié !",
+    notShaddamTeam = "Vous n’êtes pas allié à l’Empereur de l’univers connu !",
+    notMuadDibTeam = "Vous n’êtes pas allié à Usul Muad-Dib, le Lisan al-Gaib !",
     noYourTurn = "Ce n’est pas votre tour !",
     sandwormButton = "Ver des\nsables : ±1",
     drawOneCardButton = "Piocher 1 carte",
@@ -62,6 +68,7 @@ return {
     no = "Non",
     dialogCardAbove = "Voulez-vous mettre la carte sur le dessus de votre paquet ? (Ok = oui, Cancel = non)",
     endOfTurn = "Finir\ntour",
+    activatedAlly = "⬍ Allié activé",
 
     -- Leader selection
     leaderSelectionAdjust = "Ajustez le nombre de dirigeants sélectionnés au hasard\nparmi lesquels les joueurs devront choisir :",
@@ -691,7 +698,7 @@ return {
     shadowContest = "Épreuve de l’ombre",
     secureImperialBasinNew = "Sécuriser le bassin impérial",
     protectTheSietches = "Protéger les sietchs",
-    tradeDispute = "Différend commerciale",
+    tradeDispute = "Différend commercial",
     battleForImperialBasin = "Bataille pour le bassin impérial",
     grandVision = "Vision grandiose",
     battleForCarthag = "Bataille pour Carthag",

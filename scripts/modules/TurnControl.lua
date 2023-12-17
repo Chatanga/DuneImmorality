@@ -248,7 +248,7 @@ function TurnControl._startPhase(phase)
     end
 
     local firstPlayer = TurnControl.players[TurnControl.firstPlayerLuaIndex]
-    --Helper.dump("> Round:", TurnControl.getCurrentRound(), "- Phase:", phase, "- first player:", firstPlayer)
+    Helper.dump("> Round:", TurnControl.getCurrentRound(), "- Phase:", phase, "- first player:", firstPlayer)
     broadcastToAll(I18N(Helper.toCamelCase("phase", phase)), Color.fromString("Pink"))
     Helper.emitEvent("phaseStart", TurnControl.currentPhase, firstPlayer)
 
@@ -349,7 +349,7 @@ function TurnControl._notifyPlayerTurn()
         -- Prevent any change trough the TTS built-in turn button.
         Turns.order = { playerColor }
     end
-    --Helper.dump(">> Turn:", playerColor)
+    Helper.dump(">> Turn:", playerColor)
     Helper.emitEvent("playerTurns", TurnControl.currentPhase, playerColor)
 end
 

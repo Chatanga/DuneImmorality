@@ -5,6 +5,7 @@ local I18N = require("utils.I18N")
 local Types = Module.lazyRequire("Types")
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local MainBoard = Module.lazyRequire("MainBoard")
+local TurnControl = Module.lazyRequire("TurnControl")
 local Commander = Module.lazyRequire("Commander")
 
 local InfluenceTrack = {
@@ -92,11 +93,13 @@ function InfluenceTrack._staticSetUp(settings, firstTime)
                 local actionName = I18N("progressOnInfluenceTrack", { withFaction = I18N(Helper.toCamelCase("with", faction)) })
                 Helper.createSizedAreaButton(1000, 400, anchor, 0.75, actionName, PlayBoard.withLeader(function (_, color, _)
                     if not InfluenceTrack.actionsLocked[faction][color] then
-                        local rank = InfluenceTrack._getInfluenceTracksRank(faction, color)
-                        InfluenceTrack.actionsLocked[faction][color] = true
-                        PlayBoard.getLeader(color).influence(color, faction, i - rank).doAfter(function ()
-                            InfluenceTrack.actionsLocked[faction][color] = false
-                        end)
+                        if InfluenceTrack.hasAccess(color, faction) then
+                            local rank = InfluenceTrack._getInfluenceTracksRank(faction, color)
+                            InfluenceTrack.actionsLocked[faction][color] = true
+                            PlayBoard.getLeader(color).influence(color, faction, i - rank, true).doAfter(function ()
+                                InfluenceTrack.actionsLocked[faction][color] = false
+                            end)
+                        end
                     end
                 end))
             end)
@@ -170,6 +173,11 @@ function InfluenceTrack._processSnapPoints(settings, firstTime)
         end
     }
 
+    if settings.numberOfPlayers < 6 then
+        InfluenceTrack.allianceTokens.greatHouses.destruct()
+        InfluenceTrack.allianceTokens.fringeWorlds.destruct()
+    end
+
     MainBoard.collectSnapPointsEverywhere(settings, net)
 end
 
@@ -238,24 +246,50 @@ function InfluenceTrack.recallSnooper(faction, color)
 end
 
 ---
-function InfluenceTrack.hasFriendship(color, faction)
+function InfluenceTrack.hasAccess(color, faction)
     Types.assertIsPlayerColor(color)
     Types.assertIsFaction(faction)
-
-    local influenceLevels = InfluenceTrack.influenceLevels[faction][color]
-    if InfluenceTrack.influenceTokens[faction][color].getPosition().z > influenceLevels.friendship then
-        return true
+    if faction == "emperor" then
+        return Commander.isShaddam(color)
+    elseif faction == "fremen" then
+        return Commander.isMuadDib(color)
+    else
+        return not Commander.isCommander(color)
     end
 end
 
 ---
+function InfluenceTrack.hasFriendship(color, faction)
+    Types.assertIsPlayerColor(color)
+    Types.assertIsFaction(faction)
+    return InfluenceTrack.getInfluence(faction, color) >= 2
+end
+
+---
 function InfluenceTrack.getInfluence(faction, color)
-    if Commander.isCommander(color) and Helper.isElementOf(faction, { "greatHouses", "spacingGuild", "beneGesserit", "fringeWorlds" }) then
-        local allyBestInfluence = 0
-        for _, otherColor in Commander.getAllies(color) do
-            allyBestInfluence = math.max(allyBestInfluence, InfluenceTrack._getInfluenceTracksRank(faction, otherColor))
+    --Helper.dumpFunction("InfluenceTrack.getInfluence", faction, color)
+    if TurnControl.getPlayerCount() == 6 then
+        if Commander.isCommander(color) then
+            local bestInfluence = 0
+            for _, otherColor in ipairs(Commander.getAllies(color)) do
+                bestInfluence = math.max(bestInfluence, InfluenceTrack.getInfluence(faction, otherColor))
+            end
+            if faction == "emperor" and Commander.isShaddam(color) then
+                bestInfluence = math.max(bestInfluence, InfluenceTrack._getInfluenceTracksRank(faction, color))
+            end
+            if faction == "fremen" and Commander.isMuadDib(color) then
+                bestInfluence = math.max(bestInfluence, InfluenceTrack._getInfluenceTracksRank(faction, color))
+            end
+            return bestInfluence
+        else
+            local finalFaction = faction
+            if faction == "emperor" then
+                finalFaction = "greatHouses"
+            elseif faction == "fremen" then
+                finalFaction = "fringeWorlds"
+            end
+            return InfluenceTrack._getInfluenceTracksRank(finalFaction, color)
         end
-        return allyBestInfluence
     else
         return InfluenceTrack._getInfluenceTracksRank(faction, color)
     end
@@ -263,6 +297,7 @@ end
 
 ---
 function InfluenceTrack._getInfluenceTracksRank(faction, color)
+    --Helper.dumpFunction("InfluenceTrack._getInfluenceTracksRank", faction, color)
     local influenceLevels = InfluenceTrack.influenceLevels[faction][color]
     local pos = InfluenceTrack.influenceTokens[faction][color].getPosition()
     return math.floor((pos.z - influenceLevels.none) / influenceLevels.step)
@@ -305,8 +340,12 @@ function InfluenceTrack._changeInfluenceTracksRank(color, faction, change)
         if oldRank >= 4 or newRank >= 4 then
             InfluenceTrack._challengeAlliance(faction)
         end
+
         if oldRank < 4 and newRank >= 4 then
             InfluenceTrack._gainAllianceBonus(faction, color)
+        end
+        if oldRank < 1 and newRank >= 1 then
+            InfluenceTrack._gainCommanderBonus(faction, color, 1)
         end
         if oldRank < 2 and newRank >= 2 then
             InfluenceTrack._gainFriendship(faction, color)
@@ -314,6 +353,10 @@ function InfluenceTrack._changeInfluenceTracksRank(color, faction, change)
         if oldRank >= 2 and newRank < 2 then
             InfluenceTrack._loseFriendship(faction, color)
         end
+        if oldRank < 3 and newRank >= 3 then
+            InfluenceTrack._gainCommanderBonus(faction, color, 3)
+        end
+
         continuation.run(realChange)
         Helper.emitEvent("influence", faction, color, newRank)
     end)
@@ -350,7 +393,7 @@ function InfluenceTrack._challengeAlliance(faction)
         if InfluenceTrack.hasAlliance(color, faction) then
             allianceOwner = color
         end
-        local rank = InfluenceTrack._getInfluenceTracksRank(faction, color)
+        local rank = InfluenceTrack.getInfluence(faction, color)
         if rank >= bestRank then
             if rank > bestRank then
                 bestRank = rank
@@ -408,7 +451,7 @@ end
 function InfluenceTrack._gainAllianceBonus(faction, color)
     local leader = PlayBoard.getLeader(color)
     if not PlayBoard.isRival(color) then
-        if #Helper.getKeys(InfluenceTrack.influenceLevels) == 6 then
+        if TurnControl.getPlayerCount() == 6 then
             if faction == "greatHouses" then
                 leader.troops(color, "supply", "garrison", 2)
             elseif faction == "spacingGuild" then
@@ -435,6 +478,27 @@ function InfluenceTrack._gainAllianceBonus(faction, color)
 end
 
 ---
+function InfluenceTrack._gainCommanderBonus(faction, color, level)
+    if TurnControl.getPlayerCount() == 6 then
+        if faction == "emperor" then
+            for _, otherColor in ipairs(Commander.getShaddamTeam()) do
+                if level == 1 then
+                    PlayBoard.getLeader(otherColor).resources(otherColor, "solari", 1)
+                end
+            end
+        elseif faction == "fremen" then
+            for _, otherColor in ipairs(Commander.getMuadDibTeam()) do
+                if level == 1 then
+                    PlayBoard.getLeader(otherColor).resources(otherColor, "spice", 1)
+                elseif level == 3 then
+                    PlayBoard.getLeader(otherColor).resources(otherColor, "water", 1)
+                end
+            end
+        end
+    end
+end
+
+---
 function InfluenceTrack._loseAlliance(faction, color)
     local position = InfluenceTrack.allianceTokenInitialPositions[faction]
     InfluenceTrack.allianceTokens[faction].setPositionSmooth(position, false, false)
@@ -442,7 +506,6 @@ end
 
 function InfluenceTrack.gainVictoryPoint(color, name)
     for _, friendshipTokenBag in pairs(InfluenceTrack.friendshipBags) do
-        -- FIXME No "bag" suffix?
         if Helper.getID(friendshipTokenBag) == name then
             PlayBoard.grantScoreTokenFromBag(color, friendshipTokenBag)
             return true

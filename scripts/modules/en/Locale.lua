@@ -41,11 +41,15 @@ return {
 
     -- Card
     acquireButton = "Acquire",
+    notFremenCard = "Attempting to add a filthy Fremen to the Throne room!",
 
     -- Playboard
     noTouch = "Don't touch this button!",
     noLeader = "You don't have a leader yet!",
+    noAlly = "You didn't selected an ally!",
     noYourTurn = "It's not your turn!",
+    notShaddamTeam = "You are not allied to the Emperor of the Known Universe!",
+    notMuadDibTeam = "You are not allied with Usul Muad-Dib, the Lisan al-Gaib!",
     sandwormButton = "Sandworms:\n±1",
     drawOneCardButton = "Draw 1 Card",
     drawFiveCardsButton = "❰ Draw 5 Cards ❱",
@@ -62,6 +66,9 @@ return {
     no = "No",
     dialogCardAbove = "Do you want to put the card on top of your deck ? (Ok = yes, Cancel = No)",
     endOfTurn = "End\nTurn",
+    takeHighCouncilSeatByForce = "Take by force",
+    takeHighCouncilSeatByForceConfirm = "Taking High-Council seat by force?",
+    activatedAlly = "Activated ally",
 
     -- Leader selection
     leaderSelectionAdjust = "Adjust the number of leaders who will be randomly\nselected for the players to choose among:",

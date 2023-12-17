@@ -6,14 +6,14 @@ local AcquireCard = Helper.createClass(nil, {
 })
 
 ---
-function AcquireCard.new(zone, tag, acquire, cardHeight)
+function AcquireCard.new(zone, tag, acquire, cardHeight, decalUrl)
     local acquireCard = Helper.createClassInstance(AcquireCard, {
         zone = zone,
         cardHeight = cardHeight or 0.01,
         anchor = nil
     })
 
-    --assert(#zone.getTags() == 0)
+    assert(#zone.getTags() == 0)
     zone.addTag(tag)
 
     local position = zone.getPosition() - Vector(0, 0.5, 0)
@@ -38,9 +38,27 @@ function AcquireCard.new(zone, tag, acquire, cardHeight)
                 end
             end)
         end
+
+        if decalUrl then
+            acquireCard:_setDecal(decalUrl)
+        end
     end)
 
     return acquireCard
+end
+
+---
+function AcquireCard:_setDecal(decalUrl)
+    local scale = self.zone.getScale()
+    self.anchor.setDecals({
+        {
+            name = "AcquireCard",
+            url = decalUrl,
+            position = Vector(0, 0.1, 0),
+            rotation = { 90, 180, 0 },
+            scale = Vector.scale(Vector(scale.x, scale.z, scale.y), 1.1),
+        }
+    })
 end
 
 ---

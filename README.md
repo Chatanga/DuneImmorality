@@ -5,7 +5,7 @@ Features:
 - Base game 3-4P
 - (Base game 6P)
 - (Rise of Ix extension)
-- Immortality extension
+- (Immortality extension)
 - (Legacy as an extension)
 - (Hagal House)
 
@@ -21,24 +21,26 @@ cf. [tts_build/README.md](tts_build/README.md)
 
 ## TODO
 
+__Bugs__
+
+- Le compteur de AcquireCard ne voit que les arrivées / départs de Card, pas de Deck.
+- Dialogue fait maison pour notifier explicitement l'annulation par l'utilisateur.
+
 __All__
 
-- Respecter le découpage des zones de combat.
+- Snapifier le secteur des combats (casernes troupes et cuirassés, champs de bataille, zone PV, conflits, jetons de force).
+- Doubler tous les jetons de PV de combat.
+- Automatiser les contrats.
+- (Gestion clic droit pour envoyer un agent et retirer un espion.) -> À valider.
 - Revoir le contexte d’action pour les logs.
-- Revoir les décalcos tech.
+- Élargir la persistance à l’avant sélection des dirigeants.
+- Déverrouiller la révélation assistée.
+- Réactiver la détection de cartes jouées (Undercover Asset & Co.).
 
 __6P__
 
-- Ajouter un emplacement ThroneRow.
-- Rendre mobiles les éléments de jeu pour avoir 2 configurations 4J et 6J.
-- Automatiser les espaces 6J.
-- Reprendre les images des marqueurs de score des commandants.
-- Activation et surcharge des commandants (une vraie surcharge !).
-- Ajouter un sélecteur (nécessaire de toute manière pour le maître d'armes) sur le plateau colorisant les agents du commandant.
-- Système influences partagées.
 - Transfert de ressources inter-alliés.
-- Fin de tour d'un joueur -> raz des épées si aucune unité en combat.
-- Maître d'armes -> assignation jeton +2 épées, mais rappel destructif.
+- Ajouter sous-espaces manquants en 6J (ou bien tous les retirer).
 
 __Extensions__
 
@@ -51,16 +53,20 @@ __Extensions__
 __2P / Solo__
 
 - Mise en place.
+- Récupérer un paquet Hagal à jour.
 - Tirage de cartes et prise en compte des épées, mais aucune automatisation sinon.
 
-__Later__
+__Aesthetic__
 
-- Utiliser la zone de préchargement, produire avec cardinalités, tagger les decks et takeObject(guid).
-- Régler tressautement paquets après un appel à "moveAt".
-- Custom token -> tile (MainBoard).
-- Dialogue fait maison pour notifier l'annulation par l'utilisateur.
-- Utiliser l'appelation CouncilorToken et ScoreMarker.
-- Fin de tour / phase robuste.
+- Réorganiser les éléments de jeu en 4J et 6J.
+- Revoir les décalcos tech / contrat.
+- Refaire les jetons de PV.
+- Ranger les goodies (fouineurs, baron, feyd, voix à donner en bonus, bonus maîtres d'armes) dans une zone invisible ?
+- Prendre en considération les crans de zoom, préconfigurer les caméras ?
+- Snaps jetons factions 6J empereur/fremen trop hauts.
+
+__Internal__
+
+- Utiliser les appelations (Councilor)Token et (Score)Marker.
+- Fin de tour/phase robuste par asynchronisme.
 - Toujours décorréler l'acquisition (carte, tech, contrat) de son effet.
-- Prendre en considération crans de zoom, préconfigurer les caméras ?
-- Une deuxième main pour les joueurs ?

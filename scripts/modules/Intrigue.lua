@@ -35,8 +35,8 @@ end
 
 ---
 function Intrigue._staticSetUp(settings)
-    AcquireCard.new(Intrigue.deckZone, "Intrigue", PlayBoard.withLeader(Intrigue._acquireIntrigueCard))
-    AcquireCard.new(Intrigue.discardZone, "Intrigue", nil)
+    AcquireCard.new(Intrigue.deckZone, "Intrigue", PlayBoard.withLeader(Intrigue._acquireIntrigueCard), nil, Deck.getAcquireCardDecalUrl("generic"))
+    AcquireCard.new(Intrigue.discardZone, "Intrigue", nil, nil, Deck.getAcquireCardDecalUrl("generic"))
 end
 
 ---

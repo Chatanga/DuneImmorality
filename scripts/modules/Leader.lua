@@ -98,10 +98,10 @@ Leader.ilbanRichese = Helper.createClass(Leader, {
 Leader.helenaRichese = Helper.createClass(Leader, {
 
     --- Eyes everywhere
-    sendAgent = function (color, spaceName)
+    sendAgent = function (color, spaceName, recallSpy)
         -- TODO Manage accesses
         local force = MainBoard.isLandsraadSpace(spaceName) or MainBoard.isSpiceTradeSpace(spaceName)
-        return Action.sendAgent(color, spaceName)
+        return Action.sendAgent(color, spaceName, recallSpy)
     end,
 
     --- Manipulate
@@ -197,9 +197,9 @@ Leader.arianaThorvald = Helper.createClass(Leader, {
     end,
 
     --- Spice addict
-    sendAgent = function (color, spaceName)
+    sendAgent = function (color, spaceName, recallSpy)
         local continuation = Helper.createContinuation("Leader.arianaThorvald.sendAgent")
-        Action.sendAgent(color, spaceName).doAfter(function (success)
+        Action.sendAgent(color, spaceName, recallSpy).doAfter(function (success)
             if success and MainBoard.isDesertSpace(spaceName) then
                 local leader = PlayBoard.getLeader(color)
                 leader.resources(color, "spice", -1)
@@ -214,9 +214,9 @@ Leader.arianaThorvald = Helper.createClass(Leader, {
 Leader.memnonThorvald = Helper.createClass(Leader, {
 
     --- Connections
-    sendAgent = function (color, spaceName)
+    sendAgent = function (color, spaceName, recallSpy)
         local continuation = Helper.createContinuation("Leader.memnonThorvald.sendAgent")
-        Action.sendAgent(color, spaceName).doAfter(function (success)
+        Action.sendAgent(color, spaceName, recallSpy).doAfter(function (success)
             if success and spaceName == "highCouncil" then
                 local leader = PlayBoard.getLeader(color)
                 leader.influence(color, nil, 1)
@@ -533,8 +533,10 @@ Leader.feydRauthaHarkonnen = Helper.createClass(Leader, {
 Leader.shaddamCorrino = Helper.createClass(Leader, {
 
     --- Sardaukar commander
-    prepare = function (color, settings)
-        Action.prepare(color, settings)
+    prepare = function (color, settings, asCommander)
+        if not asCommander then
+            Action.prepare(color, settings)
+        end
 
         local leaderCard = PlayBoard.findLeaderCard(color)
         local position = leaderCard.getPosition()
@@ -544,6 +546,12 @@ Leader.shaddamCorrino = Helper.createClass(Leader, {
 })
 
 Leader.muadDib = Helper.createClass(Leader, {
+
+    prepare = function (color, settings, asCommander)
+        if not asCommander then
+            Action.prepare(color, settings)
+        end
+    end
 })
 
 

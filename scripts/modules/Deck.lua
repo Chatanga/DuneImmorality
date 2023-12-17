@@ -5,6 +5,10 @@ local I18N = require("utils.I18N")
 local Locale = Module.lazyRequire("Locale")
 
 local Deck = {
+    decals = {
+        corrinoAcquireCard = "http://cloud-3.steamusercontent.com/ugc/2286203878409177043/9E9986D0F348F5D23A16745A271FFD28958651FB/",
+        genericAcquireCard = "http://cloud-3.steamusercontent.com/ugc/2286203878409243895/5F7C572489E5E03F3230B012DA0E01A84EDAABF8/",
+    },
     customDeckBaseId = 100,
     backs = {
         imperiumCardBack = "http://cloud-3.steamusercontent.com/ugc/2093667512238502565/C3DC7A02CF378129569B414967C9BE25097C6E77/",
@@ -634,6 +638,12 @@ function Deck.setUp(settings)
     end
 
     Deck.sources = support.loadCustomDecks(Deck)
+end
+
+function Deck.getAcquireCardDecalUrl(name)
+    local decalUrl = Deck.decals[name .. "AcquireCard"]
+    assert(decalUrl, name)
+    return decalUrl
 end
 
 ---

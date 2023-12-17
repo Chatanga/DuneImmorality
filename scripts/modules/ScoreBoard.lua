@@ -78,29 +78,29 @@ end
 ---
 function ScoreBoard.setUp(settings)
 
-    Helper.forEachRecursively(ScoreBoard.tokens, function (name, token)
-        assert(token)
-        token.setName(I18N(Helper.getID(token)))
-
-        -- Clumsy workaround to name items in a bag.
-        if token.type == "Bag" then
-            --log("Renaming in " .. name)
-            local count = #token.getObjects()
-            for i = 1, count do
-                local innerToken = token.takeObject({ position = token.getPosition() + Vector(0, i * 0.5, 0) })
-                innerToken.setLock(true)
-                Helper.onceTimeElapsed(0.5).doAfter(function ()
-                    innerToken.setName(I18N(Helper.getID(innerToken)))
-                    innerToken.setLock(false)
-                end)
-            end
-        elseif token.type == "Infinite" then
-            -- TODO
-        end
-    end)
-
     for _, extension in ipairs({ "legacy", "riseOfIx", "immortality" }) do
-        if not settings[extension] then
+        if settings[extension] then
+            Helper.forEachRecursively(ScoreBoard.tokens[extension], function (name, token)
+                assert(token)
+                token.setName(I18N(Helper.getID(token)))
+
+                -- Clumsy workaround to name items in a bag.
+                if token.type == "Bag" then
+                    --log("Renaming in " .. name)
+                    local count = #token.getObjects()
+                    for i = 1, count do
+                        local innerToken = token.takeObject({ position = token.getPosition() + Vector(0, i * 0.5, 0) })
+                        innerToken.setLock(true)
+                        Helper.onceTimeElapsed(0.5).doAfter(function ()
+                            innerToken.setName(I18N(Helper.getID(innerToken)))
+                            innerToken.setLock(false)
+                        end)
+                    end
+                elseif token.type == "Infinite" then
+                    -- TODO
+                end
+            end)
+        else
             Helper.forEach(ScoreBoard.tokens[extension], function (_, token)
                 token.destruct()
             end)

@@ -37,8 +37,8 @@ local PlayBoard = Helper.createClass(nil, {
             strength = "3f6645",
             dreadnoughts = {"1a3c82", "a8f306"},
             dreadnoughtInitialPositions = {
-                Helper.getHardcodedPositionFromGUID('1a3c82', -23.70004, 1.19922245, 19.3999958),
-                Helper.getHardcodedPositionFromGUID('a8f306', -25.3000488, 1.19922245, 19.4)
+                Helper.getHardcodedPositionFromGUID('1a3c82', -23.7000542, 1.19922233, 19.3999958),
+                Helper.getHardcodedPositionFromGUID('a8f306', -25.30006, 1.19922209, 19.4)
             },
             agents = {"7751c8", "afa978"},
             agentInitialPositions = {
@@ -46,7 +46,7 @@ local PlayBoard = Helper.createClass(nil, {
                 Helper.getHardcodedPositionFromGUID('afa978', -17.65, 1.19722152, 21.7)
             },
             swordmaster = "ed3490",
-            swordmasterInitialPosition = Helper.getHardcodedPositionFromGUID('ed3490', -2.8040576, 0.5908921, 26.5912743),
+            swordmasterInitialPosition = Helper.getHardcodedPositionFromGUID('ed3490', -2.31130552, 0.590892136, 7.91),
             swordmasterBonusToken = "db91e0",
             spies = {
                 "fdecae",
@@ -60,8 +60,8 @@ local PlayBoard = Helper.createClass(nil, {
             },
             councilToken = "f19a48",
             fourPlayerVictoryToken = "a6c2e0",
-            scoreMarker = "4feaca",
-            scoreMarkerInitialPosition = Helper.getHardcodedPositionFromGUID('4feaca', 10.3931408, 1.19123971, -14.0117865),
+            scoreMarker = "175a0a",
+            scoreMarkerInitialPosition = Helper.getHardcodedPositionFromGUID('175a0a', 10.3971605, 1.19113612, -14.0999384),
             controlMarkerBag = '61453d',
             troops = {
                 "8b2acc",
@@ -101,16 +101,16 @@ local PlayBoard = Helper.createClass(nil, {
             strength = "aa3bb9",
             dreadnoughts = {"82789e", "60f208"},
             dreadnoughtInitialPositions = {
-                Helper.getHardcodedPositionFromGUID('82789e', -23.7000427, 1.19922209, -19.0000038),
-                Helper.getHardcodedPositionFromGUID('60f208', -25.3000412, 1.19922221, -19.0000019)
+                Helper.getHardcodedPositionFromGUID('82789e', -23.7000542, 1.19922209, -19.0000038),
+                Helper.getHardcodedPositionFromGUID('60f208', -25.3000565, 1.19922209, -19.0000038)
             },
             agents = {"64d013", "106d8b"},
             agentInitialPositions = {
                 Helper.getHardcodedPositionFromGUID('64d013', -19.15, 1.19722152, -16.7),
-                Helper.getHardcodedPositionFromGUID('106d8b', -17.65, 1.1972214, -16.7)
+                Helper.getHardcodedPositionFromGUID('106d8b', -17.65, 1.19722152, -16.7)
             },
             swordmaster = "a78ad7",
-            swordmasterInitialPosition = Helper.getHardcodedPositionFromGUID('a78ad7', -1.80386221, 0.590892255, 26.5916252),
+            swordmasterInitialPosition = Helper.getHardcodedPositionFromGUID('a78ad7', -1.31110787, 0.5908922, 7.910757),
             swordmasterBonusToken = "28ec54",
             spies = {
                 "7d7083",
@@ -118,14 +118,14 @@ local PlayBoard = Helper.createClass(nil, {
                 "272ba1",
             },
             spyInitialPositions = {
-                Helper.getHardcodedPositionFromGUID('7d7083', -19.15, 1.52385259, -17.45),
+                Helper.getHardcodedPositionFromGUID('7d7083', -19.15, 1.52385247, -17.45),
                 Helper.getHardcodedPositionFromGUID('e07c5c', -17.65, 1.52385259, -17.45),
                 Helper.getHardcodedPositionFromGUID('272ba1', -16.15, 1.52385259, -17.45)
             },
             councilToken = "f5b14a",
             fourPlayerVictoryToken = "311255",
-            scoreMarker = "1b1e76",
-            scoreMarkerInitialPosition = Helper.getHardcodedPositionFromGUID('1b1e76', 10.3947115, 1.39011216, -13.9780092),
+            scoreMarker = "7fa9a7",
+            scoreMarkerInitialPosition = Helper.getHardcodedPositionFromGUID('7fa9a7', 10.3996868, 1.3900243, -14.0999832),
             controlMarkerBag = '8627e0',
             troops = {
                 "2a5276",
@@ -166,7 +166,7 @@ local PlayBoard = Helper.createClass(nil, {
             dreadnoughts = {"a15087", "734250"},
             dreadnoughtInitialPositions = {
                 Helper.getHardcodedPositionFromGUID('a15087', 23.6999912, 1.19653666, 19.3999977),
-                Helper.getHardcodedPositionFromGUID('734250', 25.2999535, 1.19653654, 19.3999939)
+                Helper.getHardcodedPositionFromGUID('734250', 25.2999344, 1.1965369, 19.3999939)
             },
             agents = {"bceb0e", "ee412b"},
             agentInitialPositions = {
@@ -174,7 +174,7 @@ local PlayBoard = Helper.createClass(nil, {
                 Helper.getHardcodedPositionFromGUID('ee412b', 17.6, 1.194536, 21.7)
             },
             swordmaster = "fb1629",
-            swordmasterInitialPosition = Helper.getHardcodedPositionFromGUID('fb1629', 0.1785265, 0.590892136, 26.5916252),
+            swordmasterInitialPosition = Helper.getHardcodedPositionFromGUID('fb1629', 0.6700001, 0.590892255, 7.91075754),
             swordmasterBonusToken = "f5bfa8",
             spies = {
                 "ed1748",
@@ -182,14 +182,14 @@ local PlayBoard = Helper.createClass(nil, {
                 "8ca6ca",
             },
             spyInitialPositions = {
-                Helper.getHardcodedPositionFromGUID('ed1748', 16.1, 1.52116692, 20.95),
+                Helper.getHardcodedPositionFromGUID('ed1748', 16.1, 1.521167, 20.95),
                 Helper.getHardcodedPositionFromGUID('795934', 17.6, 1.521167, 20.95),
                 Helper.getHardcodedPositionFromGUID('8ca6ca', 19.1, 1.521167, 20.95)
             },
             councilToken = "a0028d",
             fourPlayerVictoryToken = "66444c",
-            scoreMarker = "76039f",
-            scoreMarkerInitialPosition = Helper.getHardcodedPositionFromGUID('76039f', 10.3979778, 0.991169155, -14.00651),
+            scoreMarker = "7bae32",
+            scoreMarkerInitialPosition = Helper.getHardcodedPositionFromGUID('7bae32', 10.3968363, 0.9910373, -14.1004887),
             controlMarkerBag = 'ad6b92',
             troops = {
                 "167fd4",
@@ -229,8 +229,8 @@ local PlayBoard = Helper.createClass(nil, {
             strength = "6f007c",
             dreadnoughts = {"5469fb", "71a414"},
             dreadnoughtInitialPositions = {
-                Helper.getHardcodedPositionFromGUID('5469fb', 23.6999626, 1.19653666, -19.0000057),
-                Helper.getHardcodedPositionFromGUID('71a414', 25.2999744, 1.19653642, -19.0)
+                Helper.getHardcodedPositionFromGUID('5469fb', 23.69995, 1.19653678, -19.0000057),
+                Helper.getHardcodedPositionFromGUID('71a414', 25.2999611, 1.19653678, -19.0000019)
             },
             agents = {"5068c8", "67b476"},
             agentInitialPositions = {
@@ -238,7 +238,7 @@ local PlayBoard = Helper.createClass(nil, {
                 Helper.getHardcodedPositionFromGUID('67b476', 17.6, 1.194536, -16.7)
             },
             swordmaster = "635c49",
-            swordmasterInitialPosition = Helper.getHardcodedPositionFromGUID('635c49', -0.804006, 0.5908922, 26.5916328),
+            swordmasterInitialPosition = Helper.getHardcodedPositionFromGUID('635c49', -0.311252445, 0.5908922, 7.91076469),
             swordmasterBonusToken = "e160d9",
             spies = {
                 "94ffec",
@@ -252,8 +252,8 @@ local PlayBoard = Helper.createClass(nil, {
             },
             councilToken = "1be491",
             fourPlayerVictoryToken = "4e8873",
-            scoreMarker = "20bbd1",
-            scoreMarkerInitialPosition = Helper.getHardcodedPositionFromGUID('20bbd1', 10.3968172, 0.7925637, -14.0016289),
+            scoreMarker = "f9ac91",
+            scoreMarkerInitialPosition = Helper.getHardcodedPositionFromGUID('f9ac91', 10.3922548, 0.792523265, -14.0973749),
             controlMarkerBag = 'b92a4c',
             troops = {
                 "fbf8d2",
@@ -290,13 +290,14 @@ local PlayBoard = Helper.createClass(nil, {
             solari = "5a16bb",
             water = "830a1a",
             persuasion = "57a567",
+            strength = "a18dca",
             agents = {"fb2522", "14a2ac"},
             agentInitialPositions = {
                 Helper.getHardcodedPositionFromGUID('fb2522', -19.15, 1.29885256, 2.50000024),
-                Helper.getHardcodedPositionFromGUID('14a2ac', -17.65, 1.29885256, 2.49999976)
+                Helper.getHardcodedPositionFromGUID('14a2ac', -17.65, 1.29885256, 2.5)
             },
             swordmaster = "83a527",
-            swordmasterInitialPosition = Helper.getHardcodedPositionFromGUID('83a527', -2.30385923, 0.6925232, 27.6080017),
+            swordmasterInitialPosition = Helper.getHardcodedPositionFromGUID('83a527', 1.67, 0.692523241, 7.91),
             swordmasterBonusToken = "a456bf",
             spies = {
                 "96bbc4",
@@ -304,13 +305,13 @@ local PlayBoard = Helper.createClass(nil, {
                 "bddedd",
             },
             spyInitialPositions = {
-                Helper.getHardcodedPositionFromGUID('96bbc4', -19.15, 1.52385342, 1.7500006),
-                Helper.getHardcodedPositionFromGUID('040248', -17.65, 1.52385318, 1.75000072),
-                Helper.getHardcodedPositionFromGUID('bddedd', -16.15, 1.52385342, 1.74999952)
+                Helper.getHardcodedPositionFromGUID('96bbc4', -19.15, 1.52385342, 1.75000131),
+                Helper.getHardcodedPositionFromGUID('040248', -17.65, 1.52385354, 1.75000107),
+                Helper.getHardcodedPositionFromGUID('bddedd', -16.15, 1.52385342, 1.74999964)
             },
             councilToken = "ded786",
-            scoreMarker = "974cdf",
-            scoreMarkerInitialPosition = Helper.getHardcodedPositionFromGUID('974cdf', 10.3909273, 1.59014165, -13.9810839),
+            scoreMarker = "201011",
+            scoreMarkerInitialPosition = Helper.getHardcodedPositionFromGUID('201011', 10.4034386, 1.59002388, -14.10084),
             trash = "a4f139",
             completedContractBag = "98c18d",
             firstPlayerMarkerZone = "f4c962",
@@ -325,13 +326,14 @@ local PlayBoard = Helper.createClass(nil, {
             solari = "43d234",
             water = "c72ecc",
             persuasion = "ab28ea",
+            strength = "50f36d",
             agents = {"0ad113", "d23b8f"},
             agentInitialPositions = {
-                Helper.getHardcodedPositionFromGUID('0ad113', 16.1, 1.296167, 2.49999952),
-                Helper.getHardcodedPositionFromGUID('d23b8f', 17.6, 1.29616714, 2.49999976)
+                Helper.getHardcodedPositionFromGUID('0ad113', 16.1, 1.296167, 2.49999928),
+                Helper.getHardcodedPositionFromGUID('d23b8f', 17.6, 1.29616714, 2.5)
             },
             swordmaster = "cc393c",
-            swordmasterInitialPosition = Helper.getHardcodedPositionFromGUID('cc393c', -0.303858459, 0.6925232, 27.6080017),
+            swordmasterInitialPosition = Helper.getHardcodedPositionFromGUID('cc393c', -3.31000066, 0.692523241, 7.91),
             swordmasterBonusToken = "aa9a39",
             spies = {
                 "e5b04d",
@@ -339,13 +341,13 @@ local PlayBoard = Helper.createClass(nil, {
                 "a3d964",
             },
             spyInitialPositions = {
-                Helper.getHardcodedPositionFromGUID('e5b04d', 16.1, 1.521167, 1.74999988),
-                Helper.getHardcodedPositionFromGUID('407c67', 17.6, 1.521168, 1.75),
-                Helper.getHardcodedPositionFromGUID('a3d964', 19.1, 1.521168, 1.750001)
+                Helper.getHardcodedPositionFromGUID('e5b04d', 16.1, 1.521167, 1.75000012),
+                Helper.getHardcodedPositionFromGUID('407c67', 17.6, 1.521168, 1.75000036),
+                Helper.getHardcodedPositionFromGUID('a3d964', 19.1, 1.52116776, 1.75000107)
             },
             councilToken = "8c6ba7",
-            scoreMarker = "612a60",
-            scoreMarkerInitialPosition = Helper.getHardcodedPositionFromGUID('612a60', 10.3908548, 1.78976738, -13.9808207),
+            scoreMarker = "2ccf7f",
+            scoreMarkerInitialPosition = Helper.getHardcodedPositionFromGUID('2ccf7f', 10.4005365, 1.78961742, -14.1058607),
             trash = "556139",
             completedContractBag = "49dedf",
             firstPlayerMarkerZone = "7a8ea9",
@@ -354,7 +356,15 @@ local PlayBoard = Helper.createClass(nil, {
             atomicsToken = "0a3ccb",
         },
     },
-    playBoards = {}
+    playBoards = {},
+    swordmasterBonusPositions = {
+        Red = Vector(-0.29, 0.79, -7.77),
+        Blue = Vector(-0.29, 0.79, -12.35),
+        Green = Vector(6.96, 0.79, -7.77),
+        Yellow = Vector(6.96, 0.79, -12.35),
+        Teal = Vector(3.33, 0.79, -12.35),
+        Brown = Vector(3.33, 0.79, -7.77),
+    }
 })
 
 ---
@@ -642,7 +652,6 @@ function PlayBoard:moveAt(position, isRelative, horizontalHandLayout)
 
     local exceptions = {
         "swordmaster",
-        "swordmasterBonusToken",
         "scoreMarker",
         "forceMarker",
         "tleilaxToken",
@@ -838,13 +847,6 @@ function PlayBoard.new(color, unresolvedContent, state, subState)
                 playBoard.leader = Leader.newLeader(subState.leader)
                 if Commander.isCommander(color) then
                     playBoard.leader = Commander.newCommander(color, playBoard.leader)
-                    if color == "Brown" then
-                        Commander.setActivatedAlly(color, "Red")
-                    elseif color == "Teal" then
-                        Commander.setActivatedAlly(color, "Green")
-                    else
-                        assert(false)
-                    end
                 end
             end
             playBoard.leader.setUp(color, state.settings)
@@ -862,10 +864,12 @@ function PlayBoard.new(color, unresolvedContent, state, subState)
             playBoard.content.councilToken,
             playBoard.content.freighter,
             playBoard.content.tleilaxToken,
-            playBoard.content.researchToken)
+            playBoard.content.researchToken
+        )
         Helper.noPhysicsNorPlay(
             playBoard.content.scoreMarker,
-            playBoard.content.forceMarker)
+            playBoard.content.forceMarker
+        )
     end
 
     local snapZones = {
@@ -906,7 +910,6 @@ function PlayBoard.new(color, unresolvedContent, state, subState)
     playBoard.techPark = playBoard:_createTechPark()
 
     playBoard:_createButtons()
-
     Helper.registerEventListener("locale", function ()
         playBoard:_createButtons()
     end)
@@ -967,12 +970,20 @@ function PlayBoard.setUp(settings, activeOpponents)
                 end
             end
 
-            if not Commander.isCommander(color) and settings.numberOfPlayers ~= 4 then
-                playBoard.content.fourPlayerVictoryToken.destruct()
-                playBoard.content.fourPlayerVictoryToken = nil
+            if not Commander.isCommander(color) then
+                if settings.numberOfPlayers ~= 4  then
+                    playBoard.content.fourPlayerVictoryToken.destruct()
+                    playBoard.content.fourPlayerVictoryToken = nil
+                end
+                if settings.numberOfPlayers == 6 and Commander.isTeamShaddam(color) then
+                    playBoard.content.makerHook.destruct()
+                    playBoard.content.makerHook = nil
+                end
             end
 
-            playBoard:_updatePlayerScore()
+            Helper.onceFramesPassed(1).doAfter(function ()
+                playBoard:_updatePlayerScore()
+            end)
         else
             playBoard:_tearDown()
         end
@@ -1030,6 +1041,9 @@ function PlayBoard._staticSetUp(settings)
             for color, playBoard in pairs(PlayBoard._getPlayBoards()) do
                 playBoard.leader.setUp(color, settings)
                 playBoard.leader.prepare(color, settings)
+                if Commander.isCommander(color) then
+                    playBoard:_createAllySelector()
+                end
             end
         elseif phase == "endgame" then
             MainBoard.getFirstPlayerMarker().destruct()
@@ -1047,6 +1061,24 @@ function PlayBoard._staticSetUp(settings)
                 playBoard.alreadyPlayedCards = Helper.filter(Park.getObjects(playBoard.agentCardPark), function (card)
                     return Types.isImperiumCard(card) or Types.isIntrigueCard(card)
                 end)
+            end
+        end
+
+        -- FIXME How come I've ended up with such a bad naming?
+        if phase == "playerTurns" and Commander.isCommander(color) then
+            local sides = {}
+            for _, agent in ipairs(Park.getObjects(PlayBoard.getAgentPark(color))) do
+                if agent.hasTag("left") then
+                    sides.left = true
+                end
+                if agent.hasTag("right") then
+                    sides.right = true
+                end
+            end
+            if #Helper.getKeys(sides) == 1 then
+                Commander.setActivatedAlly(color, Commander.getAllies(color)[sides.left and 1 or 2])
+            else
+                Commander.setActivatedAlly(color, nil)
             end
         end
 
@@ -1104,6 +1136,27 @@ function PlayBoard._staticSetUp(settings)
             end
         end
     end)
+
+    for color, playBoard in pairs(PlayBoard._getPlayBoards()) do
+        local token = PlayBoard._getCouncilToken(color)
+        if token then
+            token.createButton({
+                click_function = playBoard:_createExclusiveCallback(function ()
+                    Player[playBoard.color].showConfirmDialog(
+                        I18N("takeHighCouncilSeatByForceConfirm"),
+                        function(_)
+                            local leader = PlayBoard.getLeader(color)
+                            leader.takeHighCouncilSeat(color)
+                        end)
+                end),
+                position = Vector(0, 0, 0),
+                tooltip = I18N("takeHighCouncilSeatByForce"),
+                width = 1500,
+                height = 1500,
+                color = { 0, 0, 0, 0 },
+            })
+        end
+    end
 end
 
 ---
@@ -1114,9 +1167,7 @@ function PlayBoard:_recall()
 
     self.revealed = false
     self.persuasion:set((councilSeat and 2 or 0) + (minimicFilm and 1 or 0))
-    if not Commander.isCommander(self.color) then
-        self.strength:set((restrictedOrdnance and councilSeat) and 4 or 0)
-    end
+    self.strength:set(((restrictedOrdnance and councilSeat) and 4 or 0) + (PlayBoard.hasSwordmaster(self.color) and 2 or 0))
 
     self:_createButtons()
 
@@ -1179,6 +1230,15 @@ function PlayBoard._setActivePlayer(phase, color)
                 end
             else
                 Helper.clearButtons(playBoard.content.startEndTurnButton)
+
+                -- As stated in the rule, reset swords after a reveal for non-combatants.
+                if TurnControl.getPlayerCount() == 6
+                    and not Commander.isCommander(otherColor)
+                    and playBoard.revealed and
+                    not Combat.isInCombat(otherColor) then
+
+                    playBoard.strength:set(0)
+                end
             end
             -- FIXME Trigger effects are too unreliable for guest players.
             --[[
@@ -1241,7 +1301,7 @@ function PlayBoard:_createEndOfTurnButton()
         height = 1500,
         color = { 0, 0, 0, 0 },
         font_size = 450,
-        font_color = Helper.concatTables(self:getFontColor(), { 100 })
+        font_color = Helper.concatTables(PlayBoard._getTextColor(self.color), { 100 })
     })
 end
 
@@ -1255,6 +1315,8 @@ function PlayBoard.acceptTurn(phase, color)
     if phase == 'leaderSelection' then
         accepted = playBoard.leader == nil
     elseif phase == 'gameStart' then
+        accepted = false
+    elseif phase == 'roundStart' then
         accepted = false
     elseif phase == 'playerTurns' then
         if Hagal.getRivalCount() == 1 and PlayBoard.isRival(color) then
@@ -1293,8 +1355,12 @@ function PlayBoard.withLeader(action)
     return function (source, color, ...)
         local leader = PlayBoard.getLeader(color)
         if leader then
-            -- Replace the source by the leader.
-            action(leader, color, ...)
+            if not Commander.isCommander(color) or Commander.getActivatedAlly(color) then
+                -- Replace the source by the leader.
+                action(leader, color, ...)
+            else
+                broadcastToColor(I18N('noAlly'), color, "Purple")
+            end
         else
             broadcastToColor(I18N('noLeader'), color, "Purple")
         end
@@ -1554,7 +1620,6 @@ end
 ---
 function PlayBoard:_updatePlayerScore()
     if self.content.scoreMarker then
-        --local cappedScore = math.min(13, self:getScore())
         local rectifiedScore = self:getScore()
         rectifiedScore = rectifiedScore > 13 and rectifiedScore - 10 or rectifiedScore
         local scoreMarker = self.content.scoreMarker
@@ -1640,6 +1705,7 @@ function PlayBoard:_cleanUp(base, ix, immortality, full)
 
         collect("agents")
         collect("swordmaster")
+        collect("swordmasterBonusToken")
         collect("spies")
 
         if not Commander.isCommander(self.color) then
@@ -1750,15 +1816,6 @@ function PlayBoard:_createExclusiveCallback(innerCallback)
     end)
 end
 
----
-function PlayBoard:getFontColor()
-    local fontColor = { 0.9, 0.9, 0.9 }
-    if self.color == "Green" or self.color == "Yellow" or self.color == "Teal" then
-        fontColor = { 0.1, 0.1, 0.1 }
-    end
-    return fontColor
-end
-
 function PlayBoard:_clearButtons()
     Helper.clearButtons(self.content.board)
     if self.content.atomicsToken then
@@ -1767,10 +1824,19 @@ function PlayBoard:_clearButtons()
 end
 
 ---
+function PlayBoard._getTextColor(color)
+    local fontColor = { 0.9, 0.9, 0.9 }
+    if color == "Green" or color == "Yellow" or color == "Teal" then
+        fontColor = { 0.1, 0.1, 0.1 }
+    end
+    return fontColor
+end
+
+---
 function PlayBoard:_createButtons()
     self:_clearButtons()
 
-    local colors = {
+    local chromae = {
         Red = "Red",
         Blue = "Blue",
         Green = "Green",
@@ -1778,11 +1844,9 @@ function PlayBoard:_createButtons()
         Teal = Color(99 / 255, 158 / 255, 158 / 255),
         Brown = Color(106 / 255, 103 / 255, 97 / 255),
     }
-    local chroma = colors[self.color]
+    local chroma = chromae[self.color]
 
-    Color.Teal:set(0.75, 1, 0.25)
-
-    local fontColor = self:getFontColor()
+    local fontColor = PlayBoard._getTextColor(self.color)
 
     local board = self.content.board
 
@@ -2055,6 +2119,8 @@ function PlayBoard:revealHand()
     local restrictedOrdnance = PlayBoard.hasTech(self.color, "restrictedOrdnance")
     local councilSeat = PlayBoard.hasHighCouncilSeat(self.color)
     local artillery = PlayBoard.hasTech(self.color, "artillery")
+    local swordmasterBonus = TurnControl.getPlayerCount() == 6
+        and PlayBoard.swordmasterBonusPositions[self.color]:distance(self.content.swordmasterBonusToken.getPosition()) < 1
 
     local intrigueCardContributions = {}
     local imperiumCardContributions = {}
@@ -2071,11 +2137,10 @@ function PlayBoard:revealHand()
         (councilSeat and 2 or 0) +
         (minimicFilm and 1 or 0))
 
-    if not Commander.isCommander(self.color) then
-        self.strength:set(
-            (imperiumCardContributions.strength or 0) +
-            ((restrictedOrdnance and councilSeat) and 4 or 0))
-    end
+    self.strength:set(
+        (imperiumCardContributions.strength or 0) +
+        ((restrictedOrdnance and councilSeat) and 4 or 0) +
+        (swordmasterBonus and 2 or 0))
 
     Park.putObjects(revealedCards, self.revealCardPark)
 
@@ -2243,29 +2308,52 @@ function PlayBoard:_nukeConfirm()
 end
 
 ---
-function PlayBoard._getPlayerTextColors(color)
+function PlayBoard:_createAllySelector()
+    assert(Commander.isCommander(self.color))
 
-    local background = {0, 0, 0, 1}
-    local foreground = {1, 1, 1, 1}
+    local p = self.content.board.getPosition() + self:_newSymmetricBoardPosition(0.5, 0, -3)
+    Helper.createTransientAnchor(self.color .. "AllySelector", p).doAfter(function (anchor)
 
-    if color == 'Green' then
-        background = {0.192, 0.701, 0.168, 1}
-        foreground = {0.7804, 0.7804, 0.7804, 1}
-    elseif color == 'Yellow' then
-        background = {0.9058, 0.898, 0.1725, 1}
-        foreground = {0, 0, 0, 1}
-    elseif color == 'Blue' then
-        background = {0.118, 0.53, 1, 1}
-        foreground = {0.7804, 0.7804, 0.7804, 1}
-    elseif color == 'Red' then
-        background =  {0.856, 0.1, 0.094, 1}
-        foreground = {0.7804, 0.7804, 0.7804, 1}
-    end
+        Helper.createAbsoluteButtonWithRoundness(anchor, 1, false, {
+            click_function = Helper.registerGlobalCallback(),
+            label = I18N("activatedAlly"),
+            position = anchor.getPosition() + Vector(0, 0.2, 0),
+            width = 0,
+            height = 0,
+            font_size = 180,
+            font_color = {0, 0, 0, 100},
+            color = {0, 0, 0, 0}
+        })
 
-    return {
-        bg = background,
-        fg = foreground
-    }
+        for i, allyColor in ipairs(Commander.getAllies(self.color)) do
+            Helper.createAbsoluteButtonWithRoundness(anchor, 1, false, {
+                click_function = self:_createExclusiveCallback(function ()
+                    Commander.setActivatedAlly(self.color, allyColor)
+                end),
+                label = PlayBoard.getLeaderName(allyColor),
+                position = anchor.getPosition() + Vector(0, 0.2, (i - 1.5) * 1.75),
+                width = 1600,
+                height = 240,
+                font_size = 150,
+                font_color = PlayBoard._getTextColor(allyColor),
+                color = Color.fromString("Grey")
+            })
+        end
+
+        local onAllyChange = function (color, allyColor)
+            if color == self.color then
+                for i, otherAllyColor in ipairs(Commander.getAllies(self.color)) do
+                    anchor.editButton({
+                        index = i,
+                        color = Color.fromString(otherAllyColor == allyColor and allyColor or "Grey"),
+                    })
+                end
+            end
+        end
+
+        Helper.registerEventListener("selectAlly", onAllyChange)
+        onAllyChange(self.color, Commander.getActivatedAlly(self.color))
+    end)
 end
 
 ---
@@ -2300,13 +2388,6 @@ function PlayBoard.setLeader(color, leaderCard)
         playBoard.leader = Leader.newLeader(Helper.getID(leaderCard))
         if Commander.isCommander(color) then
             playBoard.leader = Commander.newCommander(color, playBoard.leader)
-            if color == "Brown" then
-                Commander.setActivatedAlly(color, "Red")
-            elseif color == "Teal" then
-                Commander.setActivatedAlly(color, "Green")
-            else
-                assert(false)
-            end
         end
     end
 
@@ -2404,6 +2485,15 @@ function PlayBoard:getScore()
                     score = score + 1
                 end
             end
+
+            if TurnControl.getPlayerCount() == 6 then
+                if Commander.isCommander(self.color) then
+                    score = score + 4
+                else
+                    score = score + 1
+                end
+            end
+
         else
             log("Missing score park for player " .. self.color)
         end
@@ -2466,7 +2556,7 @@ end
 ---
 function PlayBoard.hasHighCouncilSeat(color)
     for _, zone in ipairs(Park.getZones(MainBoard.getHighCouncilSeatPark())) do
-        local token = PlayBoard.getCouncilToken(color)
+        local token = PlayBoard._getCouncilToken(color)
         if Helper.contains(zone, token) then
             return true
         end
@@ -2476,7 +2566,7 @@ end
 
 ---
 function PlayBoard.takeHighCouncilSeat(color)
-    local token = PlayBoard.getCouncilToken(color)
+    local token = PlayBoard._getCouncilToken(color)
     if not PlayBoard.hasHighCouncilSeat(color) then
         if Park.putObject(token, MainBoard.getHighCouncilSeatPark()) then
             token.interactable = true
@@ -2505,12 +2595,17 @@ end
 
 ---
 function PlayBoard.takeMakerHook(color)
-    local makerHook = PlayBoard.getMakerHook(color)
-    if not PlayBoard.hasMakerHook(color) then
+    local makerHook = PlayBoard._getMakerHook(color)
+    if not PlayBoard.hasMakerHook(color) and (TurnControl.getPlayerCount() < 6 or (Commander.isTeamMuabDib(color) and Commander.isAlly(color))) then
         makerHook.setPositionSmooth(Combat.getMakerHookPosition(color))
         Helper.onceMotionless(makerHook).doAfter(function ()
             PlayBoard.getPlayBoard(color):_createButtons()
         end)
+        local otherColor = Commander.getOtherAlly(color)
+        if not PlayBoard.hasMakerHook(otherColor) then
+            PlayBoard.takeMakerHook(otherColor)
+            Helper.emitEvent("makerHookTaken", color)
+        end
         return true
     end
     return false
@@ -2519,29 +2614,40 @@ end
 ---
 function PlayBoard.hasSwordmaster(color)
     local content = PlayBoard.getContent(color)
-    Helper.dump(content.swordmaster.getPosition(), "-", content.swordmasterInitialPosition, "=", content.swordmaster.getPosition():distance(content.swordmasterInitialPosition))
+    --Helper.dump(content.swordmaster.getPosition(), "-", content.swordmasterInitialPosition, "=", content.swordmaster.getPosition():distance(content.swordmasterInitialPosition))
     return content.swordmaster.getPosition():distance(content.swordmasterInitialPosition) > 10
 end
 
 ---
 function PlayBoard.recruitSwordmaster(color)
-    return Park.putObject(PlayBoard.getSwordmaster(color), PlayBoard.getAgentPark(color))
+    local playBoard = PlayBoard.getPlayBoard(color)
+    if Park.putObject(playBoard.content.swordmaster, PlayBoard.getAgentPark(color)) then
+        playBoard.content.swordmasterBonusToken.setPosition(PlayBoard.swordmasterBonusPositions[(color)] + Vector(0, -0.15, 0))
+        Helper.noPhysics(playBoard.content.swordmasterBonusToken)
+        if TurnControl.getPlayerCount() == 6 then
+            playBoard.strength:change(2)
+        end
+        Helper.emitEvent("swordmasterTaken", color)
+        return true
+    else
+        return false
+    end
 end
 
 ---
-function PlayBoard.getSwordmaster(color)
+function PlayBoard._getSwordmaster(color)
     local content = PlayBoard.getContent(color)
     return content.swordmaster
 end
 
 ---
-function PlayBoard.getCouncilToken(color)
+function PlayBoard._getCouncilToken(color)
     local content = PlayBoard.getContent(color)
     return content.councilToken
 end
 
 ---
-function PlayBoard.getMakerHook(color)
+function PlayBoard._getMakerHook(color)
     local content = PlayBoard.getContent(color)
     return content.makerHook
 end

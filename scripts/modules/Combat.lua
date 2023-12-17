@@ -115,6 +115,10 @@ function Combat._staticSetUp(settings)
         Combat._updateCombatForces(Combat._calculateCombatForces())
     end)
 
+    Helper.registerEventListener("selectAlly", function ()
+        Combat._updateCombatForces(Combat._calculateCombatForces())
+    end)
+
     Helper.registerEventListener("phaseStart", function (phase)
         if phase == "roundStart" then
             Combat._setUpConflict()
@@ -489,6 +493,12 @@ function Combat.calculateCombatForce(color)
 
     if force > 0 then
         force = force + PlayBoard.getResource(color, "strength"):get()
+        if TurnControl.getPlayerCount() == 6 and Commander.isAlly(color) then
+            local commander = Commander.getCommander(color)
+            if color == Commander.getActivatedAlly(commander) then
+                force = force + PlayBoard.getResource(commander, "strength"):get()
+            end
+        end
     end
 
     return force

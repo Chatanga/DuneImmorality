@@ -20,7 +20,7 @@ function TleilaxuRow.onLoad(state)
         slotZones = {
             'e5ba35',
             '1e5a32',
-            '965fea'
+            '965fea',
         }
     }))
 
@@ -55,7 +55,7 @@ function TleilaxuRow._staticSetUp()
     for i, zone in ipairs(TleilaxuRow.slotZones) do
         local acquireCard = AcquireCard.new(zone, "Imperium", PlayBoard.withLeader(function (_, color)
             PlayBoard.getLeader(color).acquireTleilaxuCard(color, i)
-        end))
+        end), nil, Deck.getAcquireCardDecalUrl("generic"))
         table.insert(TleilaxuRow.acquireCards, acquireCard)
     end
 end

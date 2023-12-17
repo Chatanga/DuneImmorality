@@ -4,7 +4,8 @@ local Helper = require("utils.Helper")
 local Action = Module.lazyRequire("Action")
 
 local Commander = Helper.createClass(Action, {
-    activatedAllies = {}
+    leaders = {},
+    activatedAllies = {},
 })
 
 ---
@@ -20,17 +21,58 @@ end
 ---
 function Commander.getAllies(color)
     if color == "Brown" then
-        return { "Red", "Blue" }
+        return { "Blue", "Red" }
     elseif color == "Teal" then
-        return { "Green", "Yellow" }
+        return { "Yellow", "Green" }
     else
         return nil
     end
 end
 
 ---
-function Commander.isTeamEmperor(color)
-    return color == "Red" or color == "Red" or color == "Brown"
+function Commander.getOtherAlly(color)
+    if color == "Blue" then
+        return "Red"
+    elseif color == "Red" then
+        return "Blue"
+    elseif color == "Yellow" then
+        return "Green"
+    elseif color == "Green" then
+        return "Yellow"
+    else
+        return nil
+    end
+end
+
+---
+function Commander.getCommander(color)
+    if Helper.isElementOf(color, { "Blue", "Red" }) then
+        return "Brown"
+    elseif Helper.isElementOf(color, { "Yellow", "Green" }) then
+        return "Teal"
+    else
+        return nil
+    end
+end
+
+---
+function Commander.isShaddam(color)
+    return color == "Brown"
+end
+
+---
+function Commander.isTeamShaddam(color)
+    return color == "Red" or color == "Blue" or color == "Brown"
+end
+
+---
+function Commander.getShaddamTeam()
+    return { "Brown", "Red", "Blue" }
+end
+
+---
+function Commander.isMuadDib(color)
+    return color == "Teal"
 end
 
 ---
@@ -39,19 +81,24 @@ function Commander.isTeamMuabDib(color)
 end
 
 ---
+function Commander.getMuadDibTeam()
+    return { "Teal", "Green", "Yellow" }
+end
+
+---
 function Commander.newCommander(color, leader)
     assert(Commander.isCommander(color))
-    local commander = Helper.createClassInstance(Commander, {
-        leader = leader
-    })
+    local commander = Helper.createClassInstance(Commander, {})
+    Commander.leaders[color] = leader
     return commander
 end
 
 ---
 function Commander.setActivatedAlly(color, allyColor)
     assert(Commander.isCommander(color))
-    assert(Commander.isAlly(allyColor))
+    assert(not allyColor or Commander.isAlly(allyColor))
     Commander.activatedAllies[color] = allyColor
+    Helper.emitEvent("selectAlly", color, allyColor)
 end
 
 ---
@@ -60,11 +107,8 @@ function Commander.getActivatedAlly(color)
 end
 
 ---
-function Action.prepare(color, settings)
-    Action.resources(color, "water", 1)
-    if settings.epicMode then
-        Action.drawIntrigues(color, 1)
-    end
+function Commander.prepare(color, settings)
+    Commander.leaders[color].prepare(color, settings, true)
 end
 
 ---
@@ -79,7 +123,7 @@ end
 
 ---
 function Commander.influence(color, faction, amount, forced)
-    --Helper.dumpFunction("Commander.influence", color, faction, amount)
+    Helper.dumpFunction("Commander.influence", color, faction, amount)
     if Helper.isElementOf(faction, { "greatHouses", "spacingGuild", "beneGesserit", "fringeWorlds" }) then
         return Action.influence(Commander.getActivatedAlly(color), faction, amount)
     elseif forced then
@@ -94,7 +138,6 @@ end
 
 ---
 function Commander.troops(color, from, to, amount)
-    --Helper.dumpFunction("Commander.troops", color, from, to, amount)
     return Action.troops(Commander.getActivatedAlly(color), from, to, amount)
 end
 

@@ -48,13 +48,13 @@ function ImperiumRow._staticSetUp()
         AcquireCard.new(zone, "Imperium", PlayBoard.withLeader(function (_, color)
             local leader = PlayBoard.getLeader(color)
             leader.acquireImperiumCard(color, i)
-        end))
+        end), nil, Deck.getAcquireCardDecalUrl("generic"))
     end
 
     AcquireCard.new(ImperiumRow.reservationSlotZone, "Imperium", PlayBoard.withLeader(function (_, color)
         local leader = PlayBoard.getLeader(color)
         leader.acquireReservedImperiumCard(color)
-    end))
+    end), nil, Deck.getAcquireCardDecalUrl("generic"))
 
     Helper.registerEventListener("phaseStart", function (phase)
         if phase == "recall" then

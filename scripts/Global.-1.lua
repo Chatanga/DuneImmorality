@@ -4,19 +4,17 @@ local BUILD = 'TBD'
 -- interference.
 local constructionModeEnabled = false
 
--- For test purposes.
-local autoLoadedSettings
-
+-- For test purposes (the secondary table won't disappear as a side effect).
 --[[
-autoLoadedSettings = {
+local autoLoadedSettings = {
     language = "fr",
     hotSeat = true,
-    numberOfPlayers = 4,
+    numberOfPlayers = 6,
     randomizePlayerPositions = true,
     useContracts = true,
     riseOfIx = false,
     epicMode = false,
-    immortality = true,
+    immortality = false,
     goTo11 = false,
     leaderSelection = {
         Green = "jessicaAtreides",
@@ -72,6 +70,7 @@ local allModules = Module.registerModules({
     TechMarket = require("TechMarket"),
     TleilaxuResearch = require("TleilaxuResearch"),
     TleilaxuRow = require("TleilaxuRow"),
+    ThroneRow = require("ThroneRow"),
     TurnControl = require("TurnControl"),
     Types = require("Types"),
 })
@@ -98,8 +97,8 @@ local PlayerSet = {
         language = "en",
         virtualHotSeat = false,
         virtualHotSeatMode_all = {
-            "1 (+2)",
-            "2 (+1)",
+            --"1 (+2)",
+            --"2 (+1)",
             "3",
             "4",
             "2 x 3"
@@ -135,7 +134,7 @@ function onLoad(scriptState)
     if constructionModeEnabled then
         --allModules.PlayBoard.rebuild()
         --allModules.MainBoard.rebuild()
-        --allModules.MainBoard.rebuild2()
+        --allModules.MainBoard.rebuild()
         --allModules.Deck.rebuildPreloadAreas()
     else
         -- The destroyed objects need one frame to disappear and not interfere with the mod.
@@ -184,6 +183,7 @@ function asyncOnLoad(scriptState)
         { name = "Reserve", module = allModules.Reserve },
         { name = "TleilaxuResearch", module = allModules.TleilaxuResearch },
         { name = "TleilaxuRow", module = allModules.TleilaxuRow },
+        { name = "ThroneRow", module = allModules.ThroneRow },
         { name = "TurnControl", module = allModules.TurnControl },
     }
 
@@ -276,16 +276,16 @@ function setUp(newSettings)
         local activeOpponents = PlayerSet.findActiveOpponents(properlySeatedPlayers, newSettings.numberOfPlayers)
         local orderedPlayers = PlayerSet.toCanonicallyOrderedPlayerList(activeOpponents)
         runSetUp(1, activeOpponents, orderedPlayers)
-
-        -- TurnControl.start() is called by "LeaderSelection" asynchronously,
-        -- effectively starting the game.
     end)
+
+    -- TurnControl.start() is called by "LeaderSelection" asynchronously,
+    -- effectively starting the game.
 end
 
 function runSetUp(index, activeOpponents, orderedPlayers)
     local moduleInfo = allModules.ordered[index]
     if moduleInfo then
-        Helper.dump(tostring(index) .. ". Setting " .. moduleInfo.name)
+        --Helper.dump(tostring(index) .. ". Setting " .. moduleInfo.name)
         local nextContinuation = moduleInfo.module.setUp(settings, activeOpponents, orderedPlayers)
         if not nextContinuation then
             nextContinuation = Helper.createContinuation("runSetUp")
@@ -421,13 +421,13 @@ end
 
 function PlayerSet.applyVirtualHotSeatMode()
 
-    if type(PlayerSet.fields.virtualHotSeatMode) == "table" or PlayerSet.fields.virtualHotSeatMode > 2 then
+    local numberOfPlayers = PlayerSet.getNumberOfPlayers(PlayerSet.fields.virtualHotSeatMode)
+
+    if numberOfPlayers > 2 then
         PlayerSet.fields.difficulty = {}
     else
         PlayerSet.fields.difficulty = "novice"
     end
-
-    local numberOfPlayers = PlayerSet.getNumberOfPlayers(PlayerSet.fields.virtualHotSeatMode)
 
     PlayerSet.fields.leaderSelection_all = allModules.LeaderSelection.getSelectionMethods(numberOfPlayers)
     if numberOfPlayers == 6 then
@@ -460,7 +460,9 @@ function PlayerSet.getNumberOfPlayers(virtualHotSeatMode)
     if type(virtualHotSeatMode) == "table" then
         numberOfPlayers = math.min(6, #PlayerSet.getProperlySeatedPlayers())
     else
-        numberOfPlayers = virtualHotSeatMode + math.floor(virtualHotSeatMode / 5)
+        --local toNumberOfPlayers = { 1, 2, 3, 4, 6 }
+        local toNumberOfPlayers = { 3, 4, 6 }
+        numberOfPlayers = toNumberOfPlayers[virtualHotSeatMode]
     end
     --Helper.dump("numberOfPlayers:", numberOfPlayers)
     return numberOfPlayers
@@ -549,7 +551,6 @@ end
 ---
 function PlayerSet.updateSelectionMethods()
     if PlayerSet.ui then
-
         local numberOfPlayers = PlayerSet.getNumberOfPlayers(PlayerSet.fields.virtualHotSeatMode)
         PlayerSet.fields.leaderSelection_all = allModules.LeaderSelection.getSelectionMethods(numberOfPlayers)
 
@@ -560,7 +561,6 @@ end
 ---
 function PlayerSet.updateSetupButton()
     if PlayerSet.ui then
-
         local numberOfPlayers = PlayerSet.getNumberOfPlayers(PlayerSet.fields.virtualHotSeatMode)
         PlayerSet.fields.leaderSelection_all = allModules.LeaderSelection.getSelectionMethods(numberOfPlayers)
 
@@ -596,13 +596,15 @@ function setUpFromUI()
     PlayerSet.ui:hide()
     PlayerSet.ui = nil
 
+    local numberOfPlayers = PlayerSet.getNumberOfPlayers(PlayerSet.fields.virtualHotSeatMode)
+
     setUp({
         language = PlayerSet.fields.language,
-        numberOfPlayers = PlayerSet.getNumberOfPlayers(PlayerSet.fields.virtualHotSeatMode),
+        numberOfPlayers = numberOfPlayers,
         hotSeat = PlayerSet.fields.hotSeat == true,
         randomizePlayerPositions = PlayerSet.fields.randomizePlayerPositions == true,
         difficulty = PlayerSet.fields.difficulty,
-        useContracts = PlayerSet.fields.useContracts == true,
+        useContracts = PlayerSet.fields.useContracts == true or numberOfPlayers == 6,
         riseOfIx = PlayerSet.fields.riseOfIx == true,
         epicMode = PlayerSet.fields.epicMode == true,
         immortality = PlayerSet.fields.immortality == true,

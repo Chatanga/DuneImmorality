@@ -16,6 +16,7 @@ local ImperiumRow = Module.lazyRequire("ImperiumRow")
 local ShipmentTrack = Module.lazyRequire("ShipmentTrack")
 local TleilaxuRow = Module.lazyRequire("TleilaxuRow")
 local ScoreBoard = Module.lazyRequire("ScoreBoard")
+local ThroneRow = Module.lazyRequire("ThroneRow")
 
 local Action = Helper.createClass(nil, {
     context = {}
@@ -140,9 +141,9 @@ function Action.unsetContext(key)
 end
 
 ---
-function Action.sendAgent(color, spaceName)
+function Action.sendAgent(color, spaceName, recallSpy)
     Action.context.space = spaceName
-    return MainBoard.sendAgent(color, spaceName)
+    return MainBoard.sendAgent(color, spaceName, recallSpy)
 end
 
 ---
@@ -358,6 +359,12 @@ end
 function Action.acquireTheSpiceMustFlow(color)
     Types.assertIsPlayerColor(color)
     return Reserve.acquireTheSpiceMustFlow(color)
+end
+
+---
+function Action.acquireThroneCard(color, indexInRow)
+    Types.assertIsPlayerColor(color)
+    return ThroneRow.acquireThroneCard(color, indexInRow)
 end
 
 ---

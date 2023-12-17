@@ -105,7 +105,7 @@ function MainBoard.rebuild()
 end
 
 ---
-function MainBoard.rebuild2()
+function MainBoard.rebuildAlt()
     local destination = getObjectFromGUID("483a1a") -- 4P
     --local destination = getObjectFromGUID("21cc52") -- 6P
 
@@ -284,8 +284,12 @@ function MainBoard._staticSetUp(settings)
                         if object.hasTag("Agent") then
                             for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
                                 if object.hasTag(color) then
-                                    --Helper.dump("Recalling a", color, "agent ->", PlayBoard.getAgentPark(color).name)
-                                    Park.putObject(object, PlayBoard.getAgentPark(color))
+                                    if settings.numberOfPlayers == 6 and object.hasTag("Swordmaster") then
+                                        object.destruct()
+                                    else
+                                        --Helper.dump("Recalling a", color, "agent ->", PlayBoard.getAgentPark(color).name)
+                                        Park.putObject(object, PlayBoard.getAgentPark(color))
+                                    end
                                 end
                             end
                         end
@@ -298,7 +302,6 @@ end
 
 ---
 function MainBoard._processSnapPoints(settings)
-
     local highCouncilSeats = {}
     MainBoard.spaces = {}
     MainBoard.observationPosts = {}
@@ -442,9 +445,9 @@ function MainBoard._createSpaceButton(space)
         end
 
         local tooltip = I18N("sendAgentTo", { space = I18N(space.name)})
-        Helper.createAreaButton(space.zone, anchor, 0.75, tooltip, PlayBoard.withLeader(function (leader, color, _)
+        Helper.createAreaButton(space.zone, anchor, 0.75, tooltip, PlayBoard.withLeader(function (leader, color, altClick)
             if TurnControl.getCurrentPlayer() == color then
-                leader.sendAgent(color, space.name)
+                leader.sendAgent(color, space.name, altClick)
             else
                 broadcastToColor(I18N('noYourTurn'), color, "Purple")
             end
@@ -501,7 +504,7 @@ function MainBoard._findParentSpace(space)
 end
 
 ---
-function MainBoard.sendAgent(color, spaceName)
+function MainBoard.sendAgent(color, spaceName, recallSpy)
     local continuation = Helper.createContinuation("MainBoard.sendAgent")
 
     local space = MainBoard.spaces[spaceName]
@@ -514,6 +517,9 @@ function MainBoard.sendAgent(color, spaceName)
     local action = MainBoard[actionName]
     local leader = PlayBoard.getLeader(color)
     if not Park.isEmpty(PlayBoard.getAgentPark(color)) then
+        if recallSpy then
+            MainBoard._recallSpy(color, leader, spaceName)
+        end
         local agentPark = PlayBoard.getAgentPark(color)
         if asyncAction then
             Helper.emitEvent("agentSent", color, spaceName)
@@ -564,6 +570,38 @@ function MainBoard.sendSpy(color, observationPostName)
     end
 
     return continuation
+end
+
+---
+function MainBoard._recallSpy(color, leader, spaceName)
+    Helper.dumpFunction("MainBoard._recallSpy", color, leader, spaceName)
+    local details = MainBoard.spaceDetails[spaceName]
+    assert(details, spaceName)
+
+    local recallableSpies = {}
+
+    for _, postName in ipairs(details.posts) do
+        local observationPost = MainBoard.observationPosts[postName]
+        assert(observationPost, postName)
+        for _, spy in ipairs(Park.getObjects(observationPost.park)) do
+            if spy.hasTag(color) then
+                table.insert(recallableSpies, spy)
+                break
+            end
+        end
+    end
+
+    local continuation = Helper.createContinuation("MainBoard._recallSpy")
+    if #recallableSpies >= 1 then
+        if #recallableSpies > 1 then
+            log("Selecting an arbitrary spy at the research station.")
+        end
+        local spyPark = PlayBoard.getSpyPark(color)
+        Park.putObject(recallableSpies[1], spyPark)
+        leader.drawImperiumCards(color, 1)
+    else
+        continuation.cancel()
+    end
 end
 
 ---
@@ -648,22 +686,28 @@ end
 
 ---
 function MainBoard._goSardaukar(color, leader)
-    local cost = Commander.isCommander(leader) and 4 or 3
-    if leader.resources(color, "spice", -cost) then
-        --leader.troops(color, "supply", "garrison", 4)
-        leader.drawIntrigues(color, 1)
-        leader.influence(color, "emperor", 1, true)
-        return true
-    else
-        return false
+    if TurnControl.getPlayerCount() < 6 or Commander.isShaddam(color) then
+        local cost = Commander.isShaddam(leader) and 4 or 3
+        if leader.resources(color, "spice", -cost) then
+            --leader.troops(color, "supply", "garrison", 4)
+            leader.drawIntrigues(color, 1)
+            leader.influence(color, "emperor", 1, true)
+            return true
+        else
+            return false
+        end
     end
 end
 
 ---
 function MainBoard._goVastWealth(color, leader)
-    leader.resources(color, "solari", 3)
-    leader.influence(color, "emperor", 1, true)
-    return true
+    if TurnControl.getPlayerCount() < 6 or Commander.isShaddam(color) then
+        leader.resources(color, "solari", 3)
+        leader.influence(color, "emperor", 1, true)
+        return true
+    else
+        return false
+    end
 end
 
 ---
@@ -703,10 +747,14 @@ end
 
 ---
 function MainBoard._goHardyWarriors(color, leader)
-    if leader.resources(color, "water", -1) then
-        leader.troops(color, "supply", "garrison", 2)
-        leader.influence(color, "fremen", 1, true)
-        return true
+    if TurnControl.getPlayerCount() < 6 or Commander.isMuadDib(color) then
+        if leader.resources(color, "water", -1) then
+            leader.troops(color, "supply", "garrison", 2)
+            leader.influence(color, "fremen", 1, true)
+            return true
+        else
+            return false
+        end
     else
         return false
     end
@@ -714,10 +762,14 @@ end
 
 ---
 function MainBoard._goDesertMastery(color, leader)
-    leader.drawImperiumCards(color, 1)
-    leader.resources(color, "spice", 1)
-    leader.influence(color, "fremen", 1, true)
-    return true
+    if TurnControl.getPlayerCount() < 6 or Commander.isMuadDib(color) then
+        leader.drawImperiumCards(color, 1)
+        leader.resources(color, "spice", 1)
+        leader.influence(color, "fremen", 1, true)
+        return true
+    else
+        return false
+    end
 end
 
 ---

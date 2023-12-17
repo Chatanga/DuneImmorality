@@ -1,4 +1,4 @@
-<Panel position="0 -50" width="450" height="750" color="#000000" id="setupPane" rotation="0 0 0" outline="#2e200f" outlineSize="1"
+<Panel position="0 -90" width="450" height="450" color="#000000" id="setupPane" rotation="0 0 0" outline="#2e200f" outlineSize="1"
 	active="False" allowDragging="True" returnToOriginalPositionWhenReleased="False" _visibility="Host">
 	<Defaults>
 		<Text class="primary" color="#000000" fontSize="20" fontStyle="bold" alignment="MiddleLeft"/>
@@ -12,7 +12,7 @@
 	</Defaults>
 	<VerticalLayout>
 		<Image ignoreLayout="True" image="http://cloud-3.steamusercontent.com/ugc/2178113508631611749/173703C80CC9894291106BFFF74C5D28619FE03F/"/>
-		<VerticalLayout padding="40 40 150 50">
+		<VerticalLayout padding="40 40 40 40">
 			<VerticalLayout padding="0 0 0 20">
 				<Text class="epigraph" key="prolog"/>
 			</VerticalLayout>
@@ -24,6 +24,7 @@
 				</Dropdown>
 			</HorizontalLayout>
 
+			<!--
 			<Text class="primary" key="extensions"/>
 			<VerticalLayout padding="25 0 0 0">
 				<Toggle id="useContracts" onValueChanged="Global/setUseContracts" isOn="True" key="useContracts"/>
@@ -36,6 +37,7 @@
 					<Toggle id="goTo11" isOn="False" onValueChanged="Global/setGoTo11" key="goTo11"/>
 				</VerticalLayout>
 			</VerticalLayout>
+			-->
 
 			<HorizontalLayout>
 				<Text class="primary" key="leaderSelection"/>
@@ -81,5 +83,5 @@
 			<Button id="setUpButton" minHeight="26" onClick="Global/setUpFromUI" key="setup"/>
 		</HorizontalLayout>
 	</VerticalLayout>
-	<Image position="0 375" width="450" height="230" image="http://cloud-3.steamusercontent.com/ugc/2178113508631057252/0DBB449E130AC23B875A07AE447E074C03B8926D/"/>
+	<Image position="0 325" width="450" height="230" image="http://cloud-3.steamusercontent.com/ugc/2178113508631057252/0DBB449E130AC23B875A07AE447E074C03B8926D/"/>
 </Panel>

@@ -61,19 +61,31 @@ function LeaderSelection.setUp(settings, opponents, orderedPlayers)
         end)
 
         continuation.doAfter(function ()
-            if type(settings.leaderSelection) == "table" then
-                LeaderSelection._setUpTest(opponents, settings.leaderSelection)
-            elseif settings.leaderSelection == "random" then
-                LeaderSelection._setUpPicking(opponents, numberOfLeaders, autoStart, true, false)
-            elseif settings.leaderSelection == "reversePick" then
-                LeaderSelection._setUpPicking(opponents, numberOfLeaders, autoStart, false, false)
-            elseif settings.leaderSelection == "reverseHiddenPick" then
-                LeaderSelection._setUpPicking(opponents, numberOfLeaders, autoStart, false, true)
-            elseif settings.leaderSelection == "altHiddenPick" then
-                LeaderSelection._setUpPicking(opponents, numberOfLeaders,  autoStart, false, true)
-            else
-                error(settings.leaderSelection)
+            local testSetUp = type(settings.leaderSelection) == "table"
+
+            if settings.numberOfPlayers == 6 and not testSetUp then
+                local leaders = LeaderSelection._grabLeaders()
+
+                PlayBoard.setLeader("Teal", leaders["muadDib"])
+                PlayBoard.setLeader("Brown", leaders["shaddamCorrino"])
             end
+
+            -- Give minimal time to the leaders above to exit the zone.
+            Helper.onceFramesPassed(1).doAfter(function ()
+                if testSetUp then
+                    LeaderSelection._setUpTest(opponents, settings.leaderSelection)
+                elseif settings.leaderSelection == "random" then
+                    LeaderSelection._setUpPicking(opponents, numberOfLeaders, autoStart, true, false)
+                elseif settings.leaderSelection == "reversePick" then
+                    LeaderSelection._setUpPicking(opponents, numberOfLeaders, autoStart, false, false)
+                elseif settings.leaderSelection == "reverseHiddenPick" then
+                    LeaderSelection._setUpPicking(opponents, numberOfLeaders, autoStart, false, true)
+                elseif settings.leaderSelection == "altHiddenPick" then
+                    LeaderSelection._setUpPicking(opponents, numberOfLeaders,  autoStart, false, true)
+                else
+                    error(settings.leaderSelection)
+                end
+            end)
         end)
     end)
 
@@ -116,13 +128,19 @@ function LeaderSelection._layoutLeaders(count, callback)
 end
 
 ---
-function LeaderSelection._setUpTest(opponents, leaderNames)
+function LeaderSelection._grabLeaders()
     local leaders = {}
     for _, object in ipairs(LeaderSelection.deckZone.getObjects()) do
         if object.hasTag("Leader") then
             leaders[Helper.getID(object)] = object
         end
     end
+    return leaders
+end
+
+---
+function LeaderSelection._setUpTest(opponents, leaderNames)
+    local leaders = LeaderSelection._grabLeaders()
 
     for color, _ in pairs(opponents) do
         assert(leaderNames[color], "No leader for color " .. color)
@@ -278,7 +296,12 @@ function LeaderSelection._setUpPicking(opponents, numberOfLeaders, autoStart, ra
                     LeaderSelection._destructLeader(leader)
                 end
             end
-            LeaderSelection.secondaryTable.destruct()
+        end
+
+        if phase == 'gameStart' then
+            for _, object in ipairs(LeaderSelection.deckZone.getObjects()) do
+                object.destruct()
+            end
         end
     end)
 end
