@@ -13,7 +13,7 @@ def patch_object(object, componentTagCounts):
     rectify_rotation(object)
 
     object['LuaScript'] = ''
-    object['LuaScriptState'] = ''
+    #object['LuaScriptState'] = ''
 
     if False:
         url_mapping = {

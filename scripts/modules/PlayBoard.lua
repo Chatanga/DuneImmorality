@@ -852,7 +852,9 @@ function PlayBoard.new(color, unresolvedContent, state, subState)
             playBoard.leader.setUp(color, state.settings)
         end)
 
-        playBoard.content.dreadnoughtInitialPositions = Helper.mapValues(subState.initialPositions.dreadnoughtInitialPositions, Helper.toVector)
+        if not Commander.isCommander(color) then
+            playBoard.content.dreadnoughtInitialPositions = Helper.mapValues(subState.initialPositions.dreadnoughtInitialPositions, Helper.toVector)
+        end
         playBoard.content.agentInitialPositions = Helper.mapValues(subState.initialPositions.agentInitialPositions, Helper.toVector)
         playBoard.content.swordmasterInitialPosition = Helper.toVector(subState.initialPositions.swordmasterInitialPosition)
         playBoard.content.spyInitialPositions = Helper.mapValues(subState.initialPositions.spyInitialPositions, Helper.toVector)
@@ -2599,13 +2601,15 @@ function PlayBoard.takeMakerHook(color)
     if not PlayBoard.hasMakerHook(color) and (TurnControl.getPlayerCount() < 6 or (Commander.isTeamMuabDib(color) and Commander.isAlly(color))) then
         makerHook.setPositionSmooth(Combat.getMakerHookPosition(color))
         Helper.onceMotionless(makerHook).doAfter(function ()
-            PlayBoard.getPlayBoard(color):_createButtons()
-        end)
-        local otherColor = Commander.getOtherAlly(color)
-        if not PlayBoard.hasMakerHook(otherColor) then
-            PlayBoard.takeMakerHook(otherColor)
             Helper.emitEvent("makerHookTaken", color)
-        end
+            PlayBoard.getPlayBoard(color):_createButtons()
+
+            local otherColor = Commander.getOtherAlly(color)
+            assert(otherColor ~= color)
+            if not PlayBoard.hasMakerHook(otherColor) then
+                PlayBoard.takeMakerHook(otherColor)
+            end
+        end)
         return true
     end
     return false

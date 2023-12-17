@@ -57,6 +57,11 @@ end
 ---
 function InfluenceTrack.setUp(settings)
     InfluenceTrack._staticSetUp(settings, true)
+
+    if settings.numberOfPlayers < 6 then
+        InfluenceTrack.allianceTokens.greatHouses.destruct()
+        InfluenceTrack.allianceTokens.fringeWorlds.destruct()
+    end
 end
 
 ---
@@ -172,11 +177,6 @@ function InfluenceTrack._processSnapPoints(settings, firstTime)
             end
         end
     }
-
-    if settings.numberOfPlayers < 6 then
-        InfluenceTrack.allianceTokens.greatHouses.destruct()
-        InfluenceTrack.allianceTokens.fringeWorlds.destruct()
-    end
 
     MainBoard.collectSnapPointsEverywhere(settings, net)
 end

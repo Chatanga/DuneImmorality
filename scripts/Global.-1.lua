@@ -78,12 +78,6 @@ local allModules = Module.registerModules({
 -- A 'xxx_all' member is not UI field, but define the options for the 'xxx' field.
 local PlayerSet = {
     fields = {
-        color_all = {
-            Green = true,
-            Yellow = true,
-            Blue = true,
-            Red = true,
-        },
         language_all = {
             --de = "Deutsche",
             en = "English",
@@ -377,9 +371,21 @@ end
 
 ---
 function PlayerSet.getProperlySeatedPlayers()
+    local seatedPlayers = getSeatedPlayers()
+
+    -- FIXME
+    local authorizedColors = {
+        Green = true,
+        Yellow = true,
+        Blue = true,
+        Red = true,
+        Brown = true,
+        Teal = true,
+    }
+
     local properlySeatedPlayers = {}
-    for _, color in ipairs(getSeatedPlayers()) do
-        if PlayerSet.fields.color_all[color] then
+    for _, color in ipairs(seatedPlayers) do
+        if authorizedColors[color] then
             table.insert(properlySeatedPlayers, color)
         end
     end
@@ -432,22 +438,8 @@ function PlayerSet.applyVirtualHotSeatMode()
     PlayerSet.fields.leaderSelection_all = allModules.LeaderSelection.getSelectionMethods(numberOfPlayers)
     if numberOfPlayers == 6 then
         PlayerSet.fields.useContracts = {}
-        PlayerSet.fields.color_all = {
-            Green = true,
-            Yellow = true,
-            Blue = true,
-            Red = true,
-            Brown = true,
-            Teal = true,
-        }
     else
         PlayerSet.fields.useContracts = true
-        PlayerSet.fields.color_all = {
-            Green = true,
-            Yellow = true,
-            Blue = true,
-            Red = true,
-        }
     end
 
     PlayerSet.updateSetupButton()

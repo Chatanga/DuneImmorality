@@ -13,7 +13,7 @@ function AcquireCard.new(zone, tag, acquire, cardHeight, decalUrl)
         anchor = nil
     })
 
-    assert(#zone.getTags() == 0)
+    --assert(#zone.getTags() == 0)
     zone.addTag(tag)
 
     local position = zone.getPosition() - Vector(0, 0.5, 0)
