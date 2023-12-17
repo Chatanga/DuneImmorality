@@ -134,33 +134,38 @@ function TurnControl._assignObjectives()
     end
 
     if #TurnControl.players == 6 and getCategory(objectiveCards.Green) == getCategory(objectiveCards.Yellow) then
-        local tmp = objectiveCards.Green
-        objectiveCards.Green = objectiveCards.Red
-        objectiveCards.Red = tmp
+        if objectiveCards.Green == "muadDibFirstPlayer" or objectiveCards.Red == "muadDibFirstPlayer" then
+            local tmp = objectiveCards.Yellow
+            objectiveCards.Yellow = objectiveCards.Blue
+            objectiveCards.Blue = tmp
+        else
+            local tmp = objectiveCards.Green
+            objectiveCards.Green = objectiveCards.Red
+            objectiveCards.Red = tmp
+        end
     end
 
     cardNames = {}
-    for _, color in ipairs(TurnControl.players) do
+    for i, color in ipairs(TurnControl.players) do
         if not Commander.isCommander(color) then
-            -- Ordering guarantees?
+            -- TODO Check ordering guarantees.
             cardNames[objectiveCards[color]] = 1
         end
     end
 
     local combatZone = getObjectFromGUID("6d632e")
     assert(combatZone)
-    if true then
-        --Helper.onceTimeElapsed(5).doAfter(function ()
-            Deck.generateObjectiveDeck(combatZone, cardNames).doAfter(function (deck)
-                assert(Helper.getDeckOrCard(combatZone) == deck)
-                for i, color in ipairs(TurnControl.players) do
-                    if not Commander.isCommander(color) then
-                        PlayBoard.giveObjectiveCardFromZone(color, combatZone)
-                    end
-                end
-            end)
-        --end)
-    end
+
+    Deck.generateObjectiveDeck(combatZone, cardNames).doAfter(function (deck)
+        assert(Helper.getDeckOrCard(combatZone) == deck)
+        local reversedPlayers = Helper.shallowCopy(TurnControl.players)
+        Helper.reverse(reversedPlayers)
+        for i, color in ipairs(reversedPlayers) do
+            if not Commander.isCommander(color) then
+                PlayBoard.giveObjectiveCardFromZone(color, combatZone)
+            end
+        end
+    end)
 end
 
 ---

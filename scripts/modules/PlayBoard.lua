@@ -2720,12 +2720,8 @@ function PlayBoard.giveObjectiveCardFromZone(color, zone)
     Types.assertIsPlayerColor(color)
     local content = PlayBoard.getContent(color)
     assert(content)
-    if true then
-        local firstSlot = Park.findEmptySlots(PlayBoard.getAgentCardPark(color))[1]
-        return Helper.moveCardFromZone(zone, firstSlot + Vector(0, 1, 0), nil, false, true)
-    else
-        return Helper.moveCardFromZone(zone, content.discardZone.getPosition() + Vector(0, 1, 0), nil, false, true)
-    end
+    local firstSlot = Park.findEmptySlots(PlayBoard.getAgentCardPark(color))[1]
+    return Helper.moveCardFromZone(zone, firstSlot + Vector(0, 1, 0), nil, false, true)
 end
 
 ---

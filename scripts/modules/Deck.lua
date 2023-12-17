@@ -652,7 +652,7 @@ function Deck.generateObjectiveDeck(deckZone, cardNames)
     assert(deckZone)
     assert(deckZone.getPosition)
     local continuation = Helper.createContinuation("Deck.generateObjectiveDeck")
-    Deck._generateDeck("Objective", deckZone, cardNames, Deck.sources.objective).doAfter(continuation.run)
+    Deck._generateDeck("Objective", deckZone, cardNames, Deck.sources.objective, 0.5).doAfter(continuation.run)
     return continuation
 end
 
@@ -826,7 +826,7 @@ function Deck.generateConflictDeck(deckZone, ix, epic)
         end
     end
 
-    Deck._generateDeck("Conflict", deckZone, contributions, Deck.sources.conflict).doAfter(continuation.run)
+    Deck._generateDeck("Conflict", deckZone, contributions, Deck.sources.conflict, 0.5).doAfter(continuation.run)
 
     return continuation
 end
@@ -1008,10 +1008,10 @@ function Deck._generateCardData(customDeck, customDeckId, cardId)
 end
 
 ---
-function Deck._generateDeck(deckType, deckZone, contributions, sources)
+function Deck._generateDeck(deckType, deckZone, contributions, sources, spacing)
     --Helper.dumpFunction("Deck._generateDeck", deckType, "_", #Helper.getKeys(contributions), "_")
     assert(deckZone.getPosition)
-    return Deck._generateStaticDeck(deckType, deckZone, contributions, sources)
+    return Deck._generateStaticDeck(deckType, deckZone, contributions, sources, spacing)
 end
 
 --- Add 2 back cards such as to always have a deck to take cards from.
@@ -1262,7 +1262,7 @@ function Deck._generateStaticLeaderDeck(deckPosition)
 end
 
 ---
-function Deck._generateStaticDeck(deckType, deckZone, contributions, _)
+function Deck._generateStaticDeck(deckType, deckZone, contributions, _, spacing)
     --Helper.dumpFunction("Deck._generateStaticDeck", deckType)
     assert(deckType)
     assert(deckZone)
@@ -1307,7 +1307,7 @@ function Deck._generateStaticDeck(deckType, deckZone, contributions, _)
                     source.deck.takeObject({
                         guid = firstGuid,
                         -- Stacking is needed to preserve input order.
-                        position = deckZone.getPosition() + Vector(0, cardCount * 0.1, 0),
+                        position = deckZone.getPosition() + Vector(0, cardCount * (spacing or 0.1), 0),
                         smooth = false,
                     })
                     cardCount = cardCount + 1
