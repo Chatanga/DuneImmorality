@@ -757,7 +757,7 @@ function PlayBoard.onSave(state)
             resources = resourceValues,
             leader = playBoard.leader and playBoard.leader.name,
             lastPhase = playBoard.lastPhase,
-            --alreadyPlayedCards = playBoard.alreadyPlayedCards,
+            --alreadyPlayedCards = playBoard.alreadyPlayedCards, (not compatible)
             revealed = playBoard.revealed,
             initialPositions = {
                 dreadnoughtInitialPositions = playBoard.content.dreadnoughtInitialPositions,
@@ -830,7 +830,7 @@ function PlayBoard.new(color, unresolvedContent, state, subState)
         playBoard.opponent = subState.opponent
 
         playBoard.lastPhase = subState.lastPhase
-        --playBoard.alreadyPlayedCards = subState.alreadyPlayedCards
+        --playBoard.alreadyPlayedCards = subState.alreadyPlayedCards (not compatible)
         playBoard.revealed = subState.revealed
 
         -- Zones can't be queried right now (creation order matters?).
@@ -861,6 +861,10 @@ function PlayBoard.new(color, unresolvedContent, state, subState)
         playBoard.content.tleilaxTokenInitalPosition = Helper.toVector(subState.initialPositions.tleilaxTokenInitalPosition)
         playBoard.content.researchTokenInitalPosition = Helper.toVector(subState.initialPositions.researchTokenInitalPosition)
         playBoard.content.firstPlayerInitialPosition = Helper.toVector(subState.initialPositions.firstPlayerInitialPosition)
+
+        if Commander.isCommander(color) then
+            playBoard:_createAllySelector()
+        end
     else
         Helper.noPlay(
             playBoard.content.councilToken,
@@ -886,9 +890,11 @@ function PlayBoard.new(color, unresolvedContent, state, subState)
         table.insert(snapPoints, snapPoint)
     end
 
-    table.insert(snapPoints, { position = playBoard:_newSymmetricBoardPosition(-3.4, 0.2, 0), rotation_snap = true, tags = { "MuadDibObjectiveToken" } })
-    table.insert(snapPoints, { position = playBoard:_newSymmetricBoardPosition(-4.8, 0.2, 0), rotation_snap = true, tags = { "KrysObjectiveToken" } })
-    table.insert(snapPoints, { position = playBoard:_newSymmetricBoardPosition(-6.2, 0.2, 0), rotation_snap = true, tags = { "OrnithopterObjectiveToken" } })
+    if not Commander.isCommander(color) then
+        table.insert(snapPoints, { position = playBoard:_newSymmetricBoardPosition(-3.4, 0.2, 0), rotation_snap = true, tags = { "MuadDibObjectiveToken" } })
+        table.insert(snapPoints, { position = playBoard:_newSymmetricBoardPosition(-4.8, 0.2, 0), rotation_snap = true, tags = { "KrysObjectiveToken" } })
+        table.insert(snapPoints, { position = playBoard:_newSymmetricBoardPosition(-6.2, 0.2, 0), rotation_snap = true, tags = { "OrnithopterObjectiveToken" } })
+    end
 
     playBoard.content.board.setSnapPoints(snapPoints)
 
@@ -922,7 +928,7 @@ end
 ---
 function PlayBoard.setUp(settings, activeOpponents)
     for color, playBoard in pairs(PlayBoard.playBoards) do
-        playBoard:_cleanUp(false, not settings.riseOfIx, not settings.immortality)
+        playBoard:_cleanUp(false, not settings.riseOfIx, not settings.immortality, settings.numberOfPlayers ~= 6)
 
         if settings.numberOfPlayers <= 4 then
             local offsets
@@ -1078,7 +1084,7 @@ function PlayBoard._staticSetUp(settings)
                 end
             end
             if #Helper.getKeys(sides) == 1 then
-                Commander.setActivatedAlly(color, Commander.getAllies(color)[sides.left and 1 or 2])
+                Commander.setActivatedAlly(color, sides.left and Commander.getLeftSeatedAlly(color) or Commander.getRightSeatedAlly(color))
             else
                 Commander.setActivatedAlly(color, nil)
             end
@@ -1184,7 +1190,7 @@ function PlayBoard:_recall()
         local cardName = Helper.getID(card)
         if cardName == "foldspace" then
             card.setPosition(Reserve.foldspaceSlotZone.getPosition())
-        elseif Helper.isElementOf(cardName, {"seekAllies", "powerPlay", "treachery"}) then
+        elseif Helper.isElementOf(cardName, {"seekAllies", "emperorSeekAllies", "muadDibSeekAllies", "powerPlay", "treachery"}) then
             self:trash(card)
         else
             card.setPosition(nextDiscardPosition())
@@ -1664,12 +1670,12 @@ end
 
 ---
 function PlayBoard:_tearDown()
-    self:_cleanUp(true, true, true, true)
+    self:_cleanUp(true, true, true, true, true)
     PlayBoard.playBoards[self.color] = nil
 end
 
 ---
-function PlayBoard:_cleanUp(base, ix, immortality, full)
+function PlayBoard:_cleanUp(base, ix, immortality, teamMode, full)
     local content = self.content
 
     local toBeRemoved = {}
@@ -1717,6 +1723,10 @@ function PlayBoard:_cleanUp(base, ix, immortality, full)
             collect("troops")
             collect("makerHook")
         end
+    end
+
+    if teamMode then
+        collect("swordmasterBonusToken")
     end
 
     if ix then
@@ -2121,8 +2131,7 @@ function PlayBoard:revealHand()
     local restrictedOrdnance = PlayBoard.hasTech(self.color, "restrictedOrdnance")
     local councilSeat = PlayBoard.hasHighCouncilSeat(self.color)
     local artillery = PlayBoard.hasTech(self.color, "artillery")
-    local swordmasterBonus = TurnControl.getPlayerCount() == 6
-        and PlayBoard.swordmasterBonusPositions[self.color]:distance(self.content.swordmasterBonusToken.getPosition()) < 1
+    local swordmasterBonus = TurnControl.getPlayerCount() == 6 and PlayBoard.hasSwordmaster(self.color)
 
     local intrigueCardContributions = {}
     local imperiumCardContributions = {}
@@ -2601,6 +2610,7 @@ function PlayBoard.takeMakerHook(color)
     if not PlayBoard.hasMakerHook(color) and (TurnControl.getPlayerCount() < 6 or (Commander.isTeamMuabDib(color) and Commander.isAlly(color))) then
         makerHook.setPositionSmooth(Combat.getMakerHookPosition(color))
         Helper.onceMotionless(makerHook).doAfter(function ()
+            Helper.noPlay(makerHook)
             Helper.emitEvent("makerHookTaken", color)
             PlayBoard.getPlayBoard(color):_createButtons()
 
@@ -2618,17 +2628,20 @@ end
 ---
 function PlayBoard.hasSwordmaster(color)
     local content = PlayBoard.getContent(color)
-    --Helper.dump(content.swordmaster.getPosition(), "-", content.swordmasterInitialPosition, "=", content.swordmaster.getPosition():distance(content.swordmasterInitialPosition))
-    return content.swordmaster.getPosition():distance(content.swordmasterInitialPosition) > 10
+    if TurnControl.getPlayerCount() == 6 then
+        return content.swordmasterBonusToken and content.swordmasterBonusToken.getPosition():distance(PlayBoard.swordmasterBonusPositions[color]) < 1
+    else
+        return content.swordmaster and content.swordmaster.getPosition():distance(content.swordmasterInitialPosition) > 10
+    end
 end
 
 ---
 function PlayBoard.recruitSwordmaster(color)
     local playBoard = PlayBoard.getPlayBoard(color)
-    if Park.putObject(playBoard.content.swordmaster, PlayBoard.getAgentPark(color)) then
-        playBoard.content.swordmasterBonusToken.setPosition(PlayBoard.swordmasterBonusPositions[(color)] + Vector(0, -0.15, 0))
-        Helper.noPhysics(playBoard.content.swordmasterBonusToken)
+    if playBoard.content.swordmaster and Park.putObject(playBoard.content.swordmaster, PlayBoard.getAgentPark(color)) then
         if TurnControl.getPlayerCount() == 6 then
+            playBoard.content.swordmasterBonusToken.setPosition(PlayBoard.swordmasterBonusPositions[color] + Vector(0, -0.15, 0))
+            Helper.noPhysics(playBoard.content.swordmasterBonusToken)
             playBoard.strength:change(2)
         end
         Helper.emitEvent("swordmasterTaken", color)
@@ -2639,9 +2652,13 @@ function PlayBoard.recruitSwordmaster(color)
 end
 
 ---
-function PlayBoard._getSwordmaster(color)
-    local content = PlayBoard.getContent(color)
-    return content.swordmaster
+function PlayBoard.destroySwordmaster(color)
+    local playBoard = PlayBoard.getPlayBoard(color)
+    if playBoard.content.swordmaster then
+        --playBoard:trash(playBoard.content.swordmaster)
+        playBoard.content.swordmaster.destruct()
+        playBoard.content.swordmaster = nil
+    end
 end
 
 ---
@@ -2813,12 +2830,12 @@ function PlayBoard:_newBoardPosition(x, y, z)
     return Vector(x, y, -z)
 end
 
----
+--- Relative to the board, not a commander.
 function PlayBoard.isLeft(color)
     return color == "Red" or color == "Teal" or color == "Blue"
 end
 
----
+--- Relative to the board, not a commander.
 function PlayBoard.isRight(color)
     return color == "Green" or color == "Brown" or color == "Yellow"
 end

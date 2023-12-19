@@ -23,7 +23,7 @@ function ThroneRow.onLoad(state)
         }
     }))
 
-    if state.settings and state.settings.immortality then
+    if state.settings and state.settings.numberOfPlayers == 6 then
         ThroneRow._staticSetUp()
     end
 end

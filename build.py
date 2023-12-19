@@ -112,7 +112,7 @@ def patch():
 	input_file_name = os.path.join('tmp', 'mod.unscripted.json')
 	output_file_name = os.path.join('tmp', 'mod.unscripted.patched.json')
 	tts_build.patch.patch_save(input_file_name, output_file_name)
-	expand()
+	#expand()
 
 def expand():
 	print("[expand]")

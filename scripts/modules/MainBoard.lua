@@ -13,6 +13,7 @@ local Resource = Module.lazyRequire("Resource")
 local Action = Module.lazyRequire("Action")
 local TurnControl = Module.lazyRequire("TurnControl")
 local Commander = Module.lazyRequire("Commander")
+local Music = Module.lazyRequire("Music")
 
 local MainBoard = {
     spaceDetails = {
@@ -222,6 +223,17 @@ function MainBoard.setUp(settings)
         MainBoard._mutateMainBoards()
     end
 
+    Helper.createAbsoluteButtonWithRoundness(MainBoard.shieldWallToken, 7, false, {
+        click_function = Helper.registerGlobalCallback(function (_, color, _)
+            MainBoard.blowUpShieldWall(color)
+        end),
+        position = MainBoard.shieldWallToken.getPosition() + Vector(0.2, 0.1, 0.2),
+        width = 800,
+        height = 800,
+        color = {0, 0, 0, 0},
+        tooltip = I18N("explosion")
+    })
+
     MainBoard._staticSetUp(settings)
 end
 
@@ -229,7 +241,9 @@ end
 function MainBoard._mutateMainBoards()
     local boards = {
         board4P = { guid = "483a1a", url = "http://cloud-3.steamusercontent.com/ugc/2305342013587677822/8DBDCE4796B52A64AE78D5F95A1CD0B87A87F66D/" },
-        board6P = { guid = "21cc52", url = "http://cloud-3.steamusercontent.com/ugc/2305343372518406394/7275233D2DA3F5859067823B21D910FEAF7E283E/" },
+        board6P = { guid = "21cc52", url = "http://cloud-3.steamusercontent.com/ugc/2306470076750286375/5674BB27C821E484B2B85671604BBB1263D024A3/" },
+        emperorBoard = { guid = "4cb9ba", url = "http://cloud-3.steamusercontent.com/ugc/2306470076750293188/C43A9E3E725E49800D2C1952117537CD15F5E058/" },
+        fremenBoard = { guid = "01c575", url = "http://cloud-3.steamusercontent.com/ugc/2306470076750293361/0829FF264AB7DA8B456AB07C4F7522203CB969F3/" },
     }
 
     for name, boardInfo in pairs(boards) do
@@ -285,7 +299,7 @@ function MainBoard._staticSetUp(settings)
                             for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
                                 if object.hasTag(color) then
                                     if settings.numberOfPlayers == 6 and object.hasTag("Swordmaster") then
-                                        object.destruct()
+                                        PlayBoard.destroySwordmaster(color)
                                     else
                                         --Helper.dump("Recalling a", color, "agent ->", PlayBoard.getAgentPark(color).name)
                                         Park.putObject(object, PlayBoard.getAgentPark(color))
@@ -516,18 +530,20 @@ function MainBoard.sendAgent(color, spaceName, recallSpy)
     local asyncAction = MainBoard[asyncActionName]
     local action = MainBoard[actionName]
     local leader = PlayBoard.getLeader(color)
-    if not Park.isEmpty(PlayBoard.getAgentPark(color)) then
+
+    local agent = MainBoard.findProperAgent(color)
+
+    if agent then
         if recallSpy then
             MainBoard._recallSpy(color, leader, spaceName)
         end
-        local agentPark = PlayBoard.getAgentPark(color)
         if asyncAction then
             Helper.emitEvent("agentSent", color, spaceName)
             Action.setContext("agentSent", spaceName)
             asyncAction(color, leader).doAfter(function (success)
                 Action.setContext("agentSent", nil)
                 if success then
-                    Park.transfert(1, agentPark, parentSpace.park)
+                    Park.putObject(agent, parentSpace.park)
                     continuation.run(true)
                 else
                     continuation.run(false)
@@ -538,7 +554,7 @@ function MainBoard.sendAgent(color, spaceName, recallSpy)
             Action.setContext("agentSent", spaceName)
             if action(color, leader) then
                 Action.setContext("agentSent", nil)
-                Park.transfert(1, agentPark, parentSpace.park)
+                Park.putObject(agent, parentSpace.park)
                 continuation.run(true)
             else
                 continuation.run(false)
@@ -551,6 +567,40 @@ function MainBoard.sendAgent(color, spaceName, recallSpy)
     end
 
     return continuation
+end
+
+---
+function MainBoard.findProperAgent(color)
+    local leftAlly = Commander.getLeftSeatedAlly(color)
+    local rightAlly = Commander.getRightSeatedAlly(color)
+    local agentPark = PlayBoard.getAgentPark(color)
+    local candidates = {}
+    if Commander.isCommander(color) then
+        local allyColor = Commander.getActivatedAlly(color)
+        if allyColor then
+            for _, agent in ipairs(Park.getObjects(agentPark)) do
+                if (leftAlly == allyColor and agent.hasTag("Left"))
+                or (rightAlly == allyColor and agent.hasTag("Right")) then
+                    table.insert(candidates, agent)
+                end
+            end
+        end
+    else
+        for _, agent in ipairs(Park.getObjects(agentPark)) do
+            table.insert(candidates, agent)
+        end
+    end
+    if #candidates == 0 then
+        return nil
+    elseif #candidates > 1 then
+        for i, agent in ipairs(candidates) do
+            if agent.hasTag("Swordmaster") then
+                table.remove(candidates, i)
+                break
+            end
+        end
+    end
+    return candidates[1]
 end
 
 ---
@@ -921,6 +971,7 @@ end
 function MainBoard._goSietchTabr_WaterShieldWall(color, leader)
     if InfluenceTrack.hasFriendship(color, "fremen") then
         leader.resources(color, "water", 1)
+        MainBoard.blowUpShieldWall(color)
         return true
     else
         return false
@@ -1248,6 +1299,19 @@ function MainBoard._goDreadnought(color, leader)
 end
 
 ]]
+
+---
+function MainBoard.blowUpShieldWall(color)
+    Player[color].showConfirmDialog(
+        I18N("confirmShieldWallDestruction"),
+        function(_)
+            Music.play("atomics")
+            broadcastToAll(I18N('blowUpShieldWall', { leader = PlayBoard.getLeaderName(color) }), color, "Purple")
+            Helper.onceTimeElapsed(3).doAfter(function ()
+                MainBoard.trash(MainBoard.shieldWallToken)
+            end)
+        end)
+end
 
 --- The color could be nil (the same way it could be nil with Types.isAgent)
 function MainBoard.hasAgentInSpace(spaceName, color)

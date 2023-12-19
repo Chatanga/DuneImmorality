@@ -134,6 +134,11 @@ return {
     sendingAgent = "■ Envoi d’un agent vers : {space}",
     stealIntrigue = "■ Vol de « {card} » à {victim}",
 
+    -- Shield Wall
+    confirmShieldWallDestruction = "Confirmez-vous cette violation flagrante de la Grande Convention ?",
+    blowUpShieldWall = "{leader} fait exploser le Mur du Bouclier !",
+    explosion = "Ka-Boom !",
+
     -- Combat
     announceCombat = "Le combat de la manche est : « {combat} »",
     dreadnoughtMandatoryOccupation = "Rappel : vous devez envoyer un cuirassé occuper un espace.",
@@ -562,7 +567,7 @@ return {
     overthrow = "Renversement",
     steersman = "Timonier",
 
-    cargoRunner = "Coureur de fret",
+    cargoRunner = "Convoyeur de fret",
     deliveryAgreement = "Accords de livraison",
     priorityContracts = "Contrats prioritaires",
     interstellarTrade = "Commerce interstellaire",
@@ -676,9 +681,9 @@ return {
     skirmishD = "Escarmouche",
     skirmishE = "Escarmouche",
     skirmishF = "Escarmouche",
-    skirmishG = "Skirmish",
-    skirmishH = "Skirmish",
-    skirmishI = "Skirmish",
+    skirmishG = "Escarmouche",
+    skirmishH = "Escarmouche",
+    skirmishI = "Escarmouche",
     desertPower = "La puissance du désert",
     raidStockpiles = "Piller les stocks",
     cloakAndDagger = "De cap et d’épée",

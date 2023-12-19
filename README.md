@@ -29,17 +29,19 @@ __Bugs__
 __All__
 
 - Snapifier le secteur des combats (casernes troupes et cuirassés, champs de bataille, zone PV, conflits, jetons de force).
-- Doubler tous les jetons de PV de combat.
+- Doubler tous les jetons de PV de combat, ajouter faux PV pour C et A, refaire TSMF.
 - Automatiser les contrats.
-- (Gestion clic droit pour envoyer un agent et retirer un espion.) -> À valider.
 - Revoir le contexte d’action pour les logs.
 - Élargir la persistance à l’avant sélection des dirigeants.
 - Déverrouiller la révélation assistée.
 - Réactiver la détection de cartes jouées (Undercover Asset & Co.).
+- Ajouter un bouton "Réclamer les PV" pour convertir les paires en PV.
+- Sortir automatiquement un jeton d'objectif (nommé) pour les conflits.
+- Marquer par décalcos les positions de départ des maîtres d'armes -> mieux : modifier le test.
+- Séquençage randomisation ?
 
 __6P__
 
-- Transfert de ressources inter-alliés.
 - Ajouter sous-espaces manquants en 6J (ou bien tous les retirer).
 
 __Extensions__

@@ -30,6 +30,28 @@ function Commander.getAllies(color)
 end
 
 ---
+function Commander.getLeftSeatedAlly(color)
+    if color == "Brown" then
+        return "Blue"
+    elseif color == "Teal" then
+        return "Green"
+    else
+        return nil
+    end
+end
+
+---
+function Commander.getRightSeatedAlly(color)
+    if color == "Brown" then
+        return "Red"
+    elseif color == "Teal" then
+        return "Yellow"
+    else
+        return nil
+    end
+end
+
+---
 function Commander.getOtherAlly(color)
     if color == "Blue" then
         return "Red"

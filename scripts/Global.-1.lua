@@ -128,7 +128,7 @@ function onLoad(scriptState)
     if constructionModeEnabled then
         --allModules.PlayBoard.rebuild()
         --allModules.MainBoard.rebuild()
-        --allModules.MainBoard.rebuild()
+        --allModules.MainBoard.rebuildAlt()
         --allModules.Deck.rebuildPreloadAreas()
     else
         -- The destroyed objects need one frame to disappear and not interfere with the mod.
@@ -429,7 +429,7 @@ function PlayerSet.applyVirtualHotSeatMode()
 
     local numberOfPlayers = PlayerSet.getNumberOfPlayers(PlayerSet.fields.virtualHotSeatMode)
 
-    if numberOfPlayers > 2 then
+    if PlayerSet.isUndefined(PlayerSet.fields.virtualHotSeatMode) or numberOfPlayers > 2 then
         PlayerSet.fields.difficulty = {}
     else
         PlayerSet.fields.difficulty = "novice"
@@ -449,7 +449,7 @@ end
 ---
 function PlayerSet.getNumberOfPlayers(virtualHotSeatMode)
     local numberOfPlayers
-    if type(virtualHotSeatMode) == "table" then
+    if PlayerSet.isUndefined(virtualHotSeatMode) then
         numberOfPlayers = math.min(6, #PlayerSet.getProperlySeatedPlayers())
     else
         --local toNumberOfPlayers = { 1, 2, 3, 4, 6 }
@@ -559,7 +559,7 @@ function PlayerSet.updateSetupButton()
         local properlySeatedPlayers = PlayerSet.getProperlySeatedPlayers()
 
         local minPlayerCount
-        if type(PlayerSet.fields.virtualHotSeatMode) == "table" then
+        if PlayerSet.isUndefined(PlayerSet.fields.virtualHotSeatMode) then
             minPlayerCount = 3
         else
             minPlayerCount = 1
@@ -581,6 +581,11 @@ function PlayerSet.updateDefaultLeaderPoolSizeLabel()
     PlayerSet.fields.defaultLeaderPoolSizeLabel = I18N("defaultLeaderPoolSizeLabel", { value = value } )
     -- Do not use PlayerSet.ui:toUI() to avoid breaking the current UI operation.
     self.UI.setValue("defaultLeaderPoolSizeLabel", PlayerSet.fields.defaultLeaderPoolSizeLabel)
+end
+
+---
+function PlayerSet.isUndefined(value)
+    return not value or type(value) == "table"
 end
 
 ---

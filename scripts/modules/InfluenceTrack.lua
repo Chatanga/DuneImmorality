@@ -266,9 +266,9 @@ function InfluenceTrack.hasFriendship(color, faction)
 end
 
 ---
-function InfluenceTrack.getInfluence(faction, color)
+function InfluenceTrack.getInfluence(faction, color, direct)
     --Helper.dumpFunction("InfluenceTrack.getInfluence", faction, color)
-    if TurnControl.getPlayerCount() == 6 then
+    if TurnControl.getPlayerCount() == 6 and not direct then
         if Commander.isCommander(color) then
             local bestInfluence = 0
             for _, otherColor in ipairs(Commander.getAllies(color)) do
@@ -299,8 +299,13 @@ end
 function InfluenceTrack._getInfluenceTracksRank(faction, color)
     --Helper.dumpFunction("InfluenceTrack._getInfluenceTracksRank", faction, color)
     local influenceLevels = InfluenceTrack.influenceLevels[faction][color]
-    local pos = InfluenceTrack.influenceTokens[faction][color].getPosition()
-    return math.floor((pos.z - influenceLevels.none) / influenceLevels.step)
+    local token = InfluenceTrack.influenceTokens[faction][color]
+    if token then
+        local pos = token.getPosition()
+        return math.floor((pos.z - influenceLevels.none) / influenceLevels.step)
+    else
+        return 0
+    end
 end
 
 ---
@@ -393,7 +398,7 @@ function InfluenceTrack._challengeAlliance(faction)
         if InfluenceTrack.hasAlliance(color, faction) then
             allianceOwner = color
         end
-        local rank = InfluenceTrack.getInfluence(faction, color)
+        local rank = InfluenceTrack.getInfluence(faction, color, true)
         if rank >= bestRank then
             if rank > bestRank then
                 bestRank = rank
@@ -411,7 +416,7 @@ function InfluenceTrack._challengeAlliance(faction)
                 allianceOwner = bestRankedPlayers[1]
                 InfluenceTrack._gainAlliance(faction, allianceOwner)
             else
-                broadcastToAll(allianceOwner .. " must grant alliance to one of " .. tostring(bestRankedPlayers), "Pink")
+                broadcastToAll(tostring(allianceOwner) .. " must grant alliance to one of " .. tostring(bestRankedPlayers), "Pink") -- FIXME
             end
         end
     end
@@ -444,6 +449,7 @@ function InfluenceTrack._gainAlliance(faction, color)
     Types.assertIsPlayerColor(color)
     local token = InfluenceTrack.allianceTokens[faction]
     assert(token)
+    --Helper.dump(Helper.getID(token), "=", token.getGUID())
     PlayBoard.getLeader(color).gainVictoryPoint(color, Helper.getID(token))
 end
 
@@ -459,7 +465,7 @@ function InfluenceTrack._gainAllianceBonus(faction, color)
             elseif faction == "beneGesserit" then
                 leader.drawIntrigues(color, 1)
             elseif faction == "fringeWorlds" then
-                leader.spy(color, 1)
+                -- 1 spy
             end
         else
             if faction == "emperor" then

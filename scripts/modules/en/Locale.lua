@@ -134,6 +134,11 @@ return {
     sendingAgent = "■ Sending an agent to: {space}",
     stealIntrigue = '■ Stealing "{card}" from {victim}',
 
+    -- Shield Wall
+    confirmShieldWallDestruction = "Do you really want not to obey the forms of the Great Convention?",
+    blowUpShieldWall = "{leader} is blowing up the Shield Wall!",
+    explosion = "Kaboom!",
+
     -- Combat
     announceCombat = "Round combat is: \"{combat}\"",
     dreadnoughtMandatoryOccupation = "Reminder: you must sent a dreadnought and occupy a space.",

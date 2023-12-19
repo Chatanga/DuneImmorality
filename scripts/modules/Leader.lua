@@ -375,8 +375,10 @@ Leader.stabanTuek = Helper.createClass(Leader, {
                 end
             end
         end
+    end,
 
-        -- Smuggle spice
+    -- Smuggle spice
+    setUp = function (color, settings)
         Helper.registerEventListener("agentSent", function (otherColor, spaceName)
             if otherColor ~= color and MainBoard.isDesertSpace(spaceName) and MainBoard.isSpying(spaceName, color) then
                 Action.log(I18N("stabanSpiceSmuggling"), color)
@@ -536,6 +538,11 @@ Leader.shaddamCorrino = Helper.createClass(Leader, {
     prepare = function (color, settings, asCommander)
         if not asCommander then
             Action.prepare(color, settings)
+        else
+            Action.resources(color, "water", 1)
+            if settings.epicMode then
+                Action.drawIntrigues(color, 1)
+            end
         end
 
         local leaderCard = PlayBoard.findLeaderCard(color)
@@ -550,6 +557,11 @@ Leader.muadDib = Helper.createClass(Leader, {
     prepare = function (color, settings, asCommander)
         if not asCommander then
             Action.prepare(color, settings)
+        else
+            Action.resources(color, "water", 1)
+            if settings.epicMode then
+                Action.drawIntrigues(color, 1)
+            end
         end
     end
 })
