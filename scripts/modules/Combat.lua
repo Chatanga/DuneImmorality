@@ -84,7 +84,7 @@ end
 
 ---
 function Combat.setUp(settings)
-    Deck.generateConflictDeck(Combat.conflictDeckZone, settings.riseOfIx, settings.epicMode).doAfter(function ()
+    Deck.generateConflictDeck(Combat.conflictDeckZone, settings.riseOfIx, settings.epicMode, settings.numberOfPlayers).doAfter(function ()
         Combat._staticSetUp(settings)
     end)
 end
@@ -199,6 +199,10 @@ end
 
 ---
 function Combat._setUpConflict()
+    if Helper.getCardCount(Helper.getDeckOrCard(Combat.conflictDeckZone)) == 0 then
+        return
+    end
+
     Helper.moveCardFromZone(Combat.conflictDeckZone, Combat.conflictDiscardZone.getPosition() + Vector(0, 1, 0), nil, true, true).doAfter(function (card)
         assert(card)
         local cardName = Helper.getID(card)

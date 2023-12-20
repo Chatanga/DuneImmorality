@@ -9,7 +9,7 @@ local constructionModeEnabled = false
 local autoLoadedSettings = {
     language = "fr",
     hotSeat = true,
-    numberOfPlayers = 6,
+    numberOfPlayers = 4,
     randomizePlayerPositions = true,
     useContracts = true,
     riseOfIx = false,
@@ -610,8 +610,7 @@ function setUpFromUI()
         defaultLeaderPoolSize = tonumber(PlayerSet.fields.defaultLeaderPoolSize),
         tweakLeaderSelection = PlayerSet.fields.tweakLeaderSelection,
         horizontalHandLayout = PlayerSet.fields.horizontalHandLayout,
-        --assistedRevelation = PlayerSet.fields.assistedRevelation,
-        assistedRevelation = getObjectFromGUID('a7fd90') ~= nil,
+        assistedRevelation = PlayerSet.fields.assistedRevelation,
         soundEnabled = PlayerSet.fields.soundEnabled,
     })
 end

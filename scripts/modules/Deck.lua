@@ -805,13 +805,20 @@ function Deck.generateTechDeck(deckZones)
 end
 
 --
-function Deck.generateConflictDeck(deckZone, ix, epic)
+function Deck.generateConflictDeck(deckZone, ix, epic, playerCount)
     --Helper.dump("generateConflictDeck")
     assert(deckZone)
     assert(deckZone.getPosition)
     local continuation = Helper.createContinuation("Deck.generateConflictDeck")
 
-    local cardCounts = epic and { 0, 5, 5 } or { 1, 5, 4 }
+    local cardCounts
+    if playerCount == 6 then
+        cardCounts = { 0, 5, 4 }
+    elseif epic then
+        cardCounts = { 0, 5, 5 }
+    else
+        cardCounts = { 1, 5, 4 }
+    end
 
     local contributions = {}
     for level = 3, 1, -1 do

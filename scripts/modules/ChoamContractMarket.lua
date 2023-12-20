@@ -55,14 +55,10 @@ function ChoamContractMarket.setUp(settings)
     if settings.useContracts then
         ChoamContractMarket._staticSetUp(settings)
 
-        Helper.registerEventListener("phaseStart", function (phaseName)
-            if phaseName == "gameStart" then
-                Helper.shuffleDeck(ChoamContractMarket.contractBag)
-                Helper.onceShuffled(ChoamContractMarket.contractBag).doAfter(function ()
-                    for i, _ in ipairs(ChoamContractMarket.contractSlots) do
-                        ChoamContractMarket._replenish(i)
-                    end
-                end)
+        Helper.shuffleDeck(ChoamContractMarket.contractBag)
+        Helper.onceShuffled(ChoamContractMarket.contractBag).doAfter(function ()
+            for i, _ in ipairs(ChoamContractMarket.contractSlots) do
+                ChoamContractMarket._replenish(i)
             end
         end)
     else
@@ -149,16 +145,19 @@ end
 function ChoamContractMarket._replenish(indexInRow)
     local acquireCard = ChoamContractMarket.acquireCards[indexInRow]
     local position = acquireCard.zone.getPosition()
-    ChoamContractMarket.contractBag.takeObject({
-        position = position,
-        rotation = Vector(0, 180, 0),
-        smooth = true,
-    })
+    if ChoamContractMarket.contractBag.getQuantity() > 0 then
+        ChoamContractMarket.contractBag.takeObject({
+            position = position,
+            rotation = Vector(0, 180, 0),
+            smooth = true,
+        })
+    end
 end
 
 ---
 function ChoamContractMarket.takeAnySardaukarContract(position)
     --Helper.dumpFunction("ChoamContractMarket.takeAnySardaukarContract", position)
+
     for _, object in ipairs(ChoamContractMarket.contractBag.getObjects()) do
         assert(object.guid)
         if Helper.isElementOf("SardaukarContract",  object.tags) then
@@ -167,7 +166,17 @@ function ChoamContractMarket.takeAnySardaukarContract(position)
                 rotation = Vector(0, 180, 0),
                 guid = object.guid,
             })
-            break
+            return
+        end
+    end
+
+    for indexInRow, acquireCard in ipairs(ChoamContractMarket.acquireCards) do
+        for _, object in ipairs(acquireCard.zone.getObjects()) do
+            if object.hasTag("Contract") and object.hasTag("SardaukarContract") then
+                object.setPosition(position)
+                ChoamContractMarket._replenish(indexInRow)
+                return
+            end
         end
     end
 end

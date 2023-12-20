@@ -67,7 +67,6 @@ end
 ---
 function InfluenceTrack._staticSetUp(settings, firstTime)
     InfluenceTrack._processSnapPoints(settings, firstTime)
-    InfluenceTrack.isTeamGame = settings.numberOfPlayers == 6
 
     for faction, initialPositions in pairs(InfluenceTrack.influenceTokenInitialPositions) do
         local factionLevels = {}
@@ -142,9 +141,11 @@ function InfluenceTrack._processSnapPoints(settings, firstTime)
         faction = function (faction, position)
             InfluenceTrack.influenceTokens[faction] = {}
             InfluenceTrack.influenceTokenInitialPositions[faction] = {}
+
             for _, influenceToken in ipairs(influenceTokens) do
                 local tokenPosition = influenceToken.getPosition()
-                if tokenPosition.z < position.z and Vector.distance(tokenPosition, position) < 2 then
+                local dz = tokenPosition.z - position.z
+                    if -2 < dz and dz < 3.5 then
                     for _, color in ipairs(allColors) do
                         if influenceToken.hasTag(color) then
                             InfluenceTrack.influenceTokens[faction][color] = influenceToken
@@ -249,12 +250,16 @@ end
 function InfluenceTrack.hasAccess(color, faction)
     Types.assertIsPlayerColor(color)
     Types.assertIsFaction(faction)
-    if faction == "emperor" then
-        return Commander.isShaddam(color)
-    elseif faction == "fremen" then
-        return Commander.isMuadDib(color)
+    if TurnControl.getPlayerCount() == 6 then
+        if faction == "emperor" then
+            return Commander.isShaddam(color)
+        elseif faction == "fremen" then
+            return Commander.isMuadDib(color)
+        else
+            return not Commander.isCommander(color)
+        end
     else
-        return not Commander.isCommander(color)
+        return true
     end
 end
 

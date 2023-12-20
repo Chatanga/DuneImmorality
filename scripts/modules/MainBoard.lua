@@ -628,29 +628,31 @@ function MainBoard._recallSpy(color, leader, spaceName)
     local details = MainBoard.spaceDetails[spaceName]
     assert(details, spaceName)
 
-    local recallableSpies = {}
+    if PlayBoard.getDrawDeck(color) then
+        local recallableSpies = {}
 
-    for _, postName in ipairs(details.posts) do
-        local observationPost = MainBoard.observationPosts[postName]
-        assert(observationPost, postName)
-        for _, spy in ipairs(Park.getObjects(observationPost.park)) do
-            if spy.hasTag(color) then
-                table.insert(recallableSpies, spy)
-                break
+        for _, postName in ipairs(details.posts) do
+            local observationPost = MainBoard.observationPosts[postName]
+            assert(observationPost, postName)
+            for _, spy in ipairs(Park.getObjects(observationPost.park)) do
+                if spy.hasTag(color) then
+                    table.insert(recallableSpies, spy)
+                    break
+                end
             end
         end
-    end
 
-    local continuation = Helper.createContinuation("MainBoard._recallSpy")
-    if #recallableSpies >= 1 then
-        if #recallableSpies > 1 then
-            log("Selecting an arbitrary spy at the research station.")
+        local continuation = Helper.createContinuation("MainBoard._recallSpy")
+        if #recallableSpies >= 1 then
+            if #recallableSpies > 1 then
+                log("Selecting an arbitrary spy at the research station.")
+            end
+            local spyPark = PlayBoard.getSpyPark(color)
+            Park.putObject(recallableSpies[1], spyPark)
+            leader.drawImperiumCards(color, 1)
+        else
+            continuation.cancel()
         end
-        local spyPark = PlayBoard.getSpyPark(color)
-        Park.putObject(recallableSpies[1], spyPark)
-        leader.drawImperiumCards(color, 1)
-    else
-        continuation.cancel()
     end
 end
 

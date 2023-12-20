@@ -251,6 +251,8 @@ function Helper.moveCardFromZone(zone, position, rotation, smooth, flipAtTheEnd)
             deckOrCard.takeObject(parameters)
         elseif deckOrCard.type == "Card" then
             -- FIXME Moving a single card to another or a deck will raise an "Unknown Error" (at least for the reserve decks). Why?
+            -- Using a smooth move solves this issue, but it is not really possible to avoid being caught by a player's hand.
+            log('Expected harmless "Unknown Error" here (cf. Helper.moveCardFromZone comment):')
             local safePosition = position + Vector(0, 1, 0)
             Helper._moveObject(deckOrCard, safePosition, rotation, smooth, flipAtTheEnd).doAfter(function (card)
                 continuation.run(card)
@@ -1113,7 +1115,7 @@ end
 function Helper.randomizePlayerPositions()
     local continuation = Helper.createContinuation("Helper.randomizePlayerPositions")
 
-    if #getSeatedPlayers() < 2 then
+    if #getSeatedPlayers() <= 1 then
         printToAll("There must be more than one player for shuffling to work.", "Red")
         continuation.run()
         return continuation
@@ -1222,7 +1224,9 @@ function Helper.randomizePlayerPositions()
             coroutine.yield()
         end
 
+        Helper._sleep(2)
         continuation.run()
+
         return 1
     end)
 

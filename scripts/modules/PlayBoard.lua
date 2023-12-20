@@ -836,20 +836,24 @@ function PlayBoard.new(color, unresolvedContent, state, subState)
         -- Zones can't be queried right now (creation order matters?).
         Helper.onceFramesPassed(1).doAfter(function ()
             playBoard.leaderCard = Helper.getDeckOrCard(playBoard.content.leaderZone)
-            assert(playBoard.leaderCard)
-            if playBoard.opponent == "rival" then
-                if Hagal.getRivalCount() == 1 then
-                    playBoard.leader = Hagal.newRival(color)
+            --assert(playBoard.leaderCard)
+            if playBoard.leaderCard then
+                if playBoard.opponent == "rival" then
+                    if Hagal.getRivalCount() == 1 then
+                        playBoard.leader = Hagal.newRival(color)
+                    else
+                        playBoard.leader = Hagal.newRival(color, Leader.newLeader(subState.leader))
+                    end
                 else
-                    playBoard.leader = Hagal.newRival(color, Leader.newLeader(subState.leader))
+                    playBoard.leader = Leader.newLeader(subState.leader)
+                    if Commander.isCommander(color) then
+                        playBoard.leader = Commander.newCommander(color, playBoard.leader)
+                    end
                 end
+                playBoard.leader.setUp(color, state.settings)
             else
-                playBoard.leader = Leader.newLeader(subState.leader)
-                if Commander.isCommander(color) then
-                    playBoard.leader = Commander.newCommander(color, playBoard.leader)
-                end
+                log("Restoring a save done after the set up and before the leaders have been selected is not supported!")
             end
-            playBoard.leader.setUp(color, state.settings)
         end)
 
         if not Commander.isCommander(color) then
@@ -1010,7 +1014,7 @@ end
 
 ---
 function PlayBoard._staticSetUp(settings)
-    PlayBoard.autoRevealEnabled = settings.assistedRevelation
+    PlayBoard.autoRevealEnabled = settings.assistedRevelation or getObjectFromGUID('a7fd90') ~= nil
 
     Helper.registerEventListener("phaseStart", function (phase, firstPlayer)
         if phase == "leaderSelection" or phase == "roundStart" then
@@ -1146,6 +1150,8 @@ function PlayBoard._staticSetUp(settings)
     end)
 
     for color, playBoard in pairs(PlayBoard._getPlayBoards()) do
+        PlayBoard._updateBagCounts(playBoard.content.completedContractBag)
+
         local token = PlayBoard._getCouncilToken(color)
         if token then
             token.createButton({
@@ -2609,17 +2615,19 @@ function PlayBoard.takeMakerHook(color)
     local makerHook = PlayBoard._getMakerHook(color)
     if not PlayBoard.hasMakerHook(color) and (TurnControl.getPlayerCount() < 6 or (Commander.isTeamMuabDib(color) and Commander.isAlly(color))) then
         makerHook.setPositionSmooth(Combat.getMakerHookPosition(color))
-        Helper.onceMotionless(makerHook).doAfter(function ()
-            Helper.noPlay(makerHook)
-            Helper.emitEvent("makerHookTaken", color)
-            PlayBoard.getPlayBoard(color):_createButtons()
+        if TurnControl.getPlayerCount() == 6 then
+            Helper.onceMotionless(makerHook).doAfter(function ()
+                Helper.noPlay(makerHook)
+                Helper.emitEvent("makerHookTaken", color)
+                PlayBoard.getPlayBoard(color):_createButtons()
 
-            local otherColor = Commander.getOtherAlly(color)
-            assert(otherColor ~= color)
-            if not PlayBoard.hasMakerHook(otherColor) then
-                PlayBoard.takeMakerHook(otherColor)
-            end
-        end)
+                local otherColor = Commander.getOtherAlly(color)
+                assert(otherColor ~= color)
+                if not PlayBoard.hasMakerHook(otherColor) then
+                    PlayBoard.takeMakerHook(otherColor)
+                end
+            end)
+        end
         return true
     end
     return false

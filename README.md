@@ -3,7 +3,7 @@
 Features:
 
 - Base game 3-4P
-- (Base game 6P)
+- Base game 6P
 - (Rise of Ix extension)
 - (Immortality extension)
 - (Legacy as an extension)
@@ -25,6 +25,9 @@ __Bugs__
 
 - Le compteur de AcquireCard ne voit que les arrivées / départs de Card, pas de Deck.
 - Dialogue fait maison pour notifier explicitement l'annulation par l'utilisateur.
+- Séquençage randomisation ? La sortir complètement (temporellement) ?
+- Erreur inconnue mais inoffensive en envoyant une carte sur un paquet.
+- Créer 2 zones de main par joueur et en détruire une plutôt qu’un bouger une ?
 
 __All__
 
@@ -38,11 +41,11 @@ __All__
 - Ajouter un bouton "Réclamer les PV" pour convertir les paires en PV.
 - Sortir automatiquement un jeton d'objectif (nommé) pour les conflits.
 - Marquer par décalcos les positions de départ des maîtres d'armes -> mieux : modifier le test.
-- Séquençage randomisation ?
 
 __6P__
 
 - Ajouter sous-espaces manquants en 6J (ou bien tous les retirer).
+- Compteur global PV équipe.
 
 __Extensions__
 
