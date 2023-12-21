@@ -741,7 +741,7 @@ function MainBoard._goSardaukar(color, leader)
     if TurnControl.getPlayerCount() < 6 or Commander.isShaddam(color) then
         local cost = Commander.isShaddam(leader) and 4 or 3
         if leader.resources(color, "spice", -cost) then
-            --leader.troops(color, "supply", "garrison", 4)
+            leader.troops(color, "supply", "garrison", 4)
             leader.drawIntrigues(color, 1)
             leader.influence(color, "emperor", 1, true)
             return true
