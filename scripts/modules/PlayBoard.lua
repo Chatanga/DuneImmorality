@@ -1150,6 +1150,15 @@ function PlayBoard._staticSetUp(settings)
     end)
 
     for _, playBoard in pairs(PlayBoard._getPlayBoards()) do
+        playBoard.content.completedContractBag.createButton({
+            click_function = Helper.registerGlobalCallback(),
+            label = "",
+            position = Vector(0, 0.1, 1),
+            width = 0,
+            height = 0,
+            font_size = 400,
+            font_color = "White"
+        })
         PlayBoard._updateBagCounts(playBoard.content.completedContractBag)
     end
 end
@@ -1159,10 +1168,11 @@ function PlayBoard:_recall()
     local minimicFilm = PlayBoard.hasTech(self.color, "minimicFilm")
     local restrictedOrdnance = PlayBoard.hasTech(self.color, "restrictedOrdnance")
     local councilSeat = PlayBoard.hasHighCouncilSeat(self.color)
+    local swordmasterBonus = TurnControl.getPlayerCount() == 6 and PlayBoard.hasSwordmaster(self.color)
 
     self.revealed = false
     self.persuasion:set((councilSeat and 2 or 0) + (minimicFilm and 1 or 0))
-    self.strength:set(((restrictedOrdnance and councilSeat) and 4 or 0) + (PlayBoard.hasSwordmaster(self.color) and 2 or 0))
+    self.strength:set(((restrictedOrdnance and councilSeat) and 4 or 0) + (swordmasterBonus and 2 or 0))
 
     self:_createButtons()
 
@@ -1945,17 +1955,6 @@ function PlayBoard:_createButtons()
     })
 
     self:_createNukeButton()
-
-    Helper.clearButtons(self.content.completedContractBag)
-    self.content.completedContractBag.createButton({
-        click_function = Helper.registerGlobalCallback(),
-        label = "",
-        position = Vector(0, 0.1, 1),
-        width = 0,
-        height = 0,
-        font_size = 400,
-        font_color = "White"
-    })
 end
 
 ---

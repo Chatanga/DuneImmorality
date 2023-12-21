@@ -40,7 +40,9 @@ __All__
 - Réactiver la détection de cartes jouées (Undercover Asset & Co.).
 - Ajouter un bouton "Réclamer les PV" pour convertir les paires en PV.
 - Sortir automatiquement un jeton d'objectif (nommé) pour les conflits.
+- Automatiser le bannières en se basant sur les jetons d’objectif (oublier la compatibilité anciens conflits).
 - Marquer par décalcos les positions de départ des maîtres d'armes -> mieux : modifier le test.
+- Ajouter un jeton d’objectif "?".
 
 __6P__
 
