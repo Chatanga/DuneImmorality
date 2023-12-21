@@ -871,12 +871,12 @@ function PlayBoard.new(color, unresolvedContent, state, subState)
         end
     else
         Helper.noPlay(
-            playBoard.content.councilToken,
             playBoard.content.freighter,
             playBoard.content.tleilaxToken,
             playBoard.content.researchToken
         )
         Helper.noPhysicsNorPlay(
+            playBoard.content.councilToken,
             playBoard.content.scoreMarker,
             playBoard.content.forceMarker
         )
@@ -1149,27 +1149,8 @@ function PlayBoard._staticSetUp(settings)
         end
     end)
 
-    for color, playBoard in pairs(PlayBoard._getPlayBoards()) do
+    for _, playBoard in pairs(PlayBoard._getPlayBoards()) do
         PlayBoard._updateBagCounts(playBoard.content.completedContractBag)
-
-        local token = PlayBoard._getCouncilToken(color)
-        if token then
-            token.createButton({
-                click_function = playBoard:_createExclusiveCallback(function ()
-                    Player[playBoard.color].showConfirmDialog(
-                        I18N("takeHighCouncilSeatByForceConfirm"),
-                        function(_)
-                            local leader = PlayBoard.getLeader(color)
-                            leader.takeHighCouncilSeat(color)
-                        end)
-                end),
-                position = Vector(0, 0, 0),
-                tooltip = I18N("takeHighCouncilSeatByForce"),
-                width = 1500,
-                height = 1500,
-                color = { 0, 0, 0, 0 },
-            })
-        end
     end
 end
 
@@ -1869,6 +1850,7 @@ function PlayBoard:_createButtons()
     local board = self.content.board
 
     if TurnControl.getCurrentRound() > 0 then
+
         board.createButton({
             click_function = self:_createExclusiveCallback(function (_, _, altClick)
                 if PlayBoard.hasMakerHook(self.color) then
@@ -1887,6 +1869,25 @@ function PlayBoard:_createButtons()
             color = chroma,
             font_color = fontColor
         })
+
+        if not PlayBoard.hasHighCouncilSeat(self.color) then
+            Helper.clearButtons(self.content.councilToken)
+            self.content.councilToken.createButton({
+                click_function = self:_createExclusiveCallback(function ()
+                    Player[self.color].showConfirmDialog(
+                        I18N("takeHighCouncilSeatByForceConfirm"),
+                        function(_)
+                            local leader = PlayBoard.getLeader(self.color)
+                            leader.takeHighCouncilSeat(self.color)
+                        end)
+                end),
+                position = Vector(0, 0, 0),
+                tooltip = I18N("takeHighCouncilSeatByForce"),
+                width = 1500,
+                height = 1500,
+                color = { 0, 0, 0, 0 },
+            })
+        end
     end
 
     board.createButton({
@@ -1901,23 +1902,6 @@ function PlayBoard:_createButtons()
         color = chroma,
         font_color = fontColor
     })
-
-    if false then
-        board.createButton({
-            click_function = self:_createExclusiveCallback(function ()
-                -- Note: the Holtzman effect happens at the recall phase (drawing 5
-                -- cards is not stricly done when a round starts.)
-                self:drawCards(5)
-            end),
-            label = I18N("drawFiveCardsButton"),
-            position = self:_newOffsetedBoardPosition(-13.5, 0, 2.6),
-            width = 1400,
-            height = 250,
-            font_size = 150,
-            color = chroma,
-            font_color = fontColor
-        })
-    end
 
     board.createButton({
         click_function = self:_createExclusiveCallback(function ()
@@ -1962,6 +1946,7 @@ function PlayBoard:_createButtons()
 
     self:_createNukeButton()
 
+    Helper.clearButtons(self.content.completedContractBag)
     self.content.completedContractBag.createButton({
         click_function = Helper.registerGlobalCallback(),
         label = "",
@@ -2586,6 +2571,7 @@ function PlayBoard.takeHighCouncilSeat(color)
     local token = PlayBoard._getCouncilToken(color)
     if not PlayBoard.hasHighCouncilSeat(color) then
         if Park.putObject(token, MainBoard.getHighCouncilSeatPark()) then
+            Helper.clearButtons(token)
             token.interactable = true
             local playBoard = PlayBoard.getPlayBoard(color)
             playBoard.persuasion:change(2)

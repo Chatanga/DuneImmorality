@@ -223,17 +223,6 @@ function MainBoard.setUp(settings)
         MainBoard._mutateMainBoards()
     end
 
-    Helper.createAbsoluteButtonWithRoundness(MainBoard.shieldWallToken, 7, false, {
-        click_function = Helper.registerGlobalCallback(function (_, color, _)
-            MainBoard.blowUpShieldWall(color)
-        end),
-        position = MainBoard.shieldWallToken.getPosition() + Vector(0.2, 0.1, 0.2),
-        width = 800,
-        height = 800,
-        color = {0, 0, 0, 0},
-        tooltip = I18N("explosion")
-    })
-
     MainBoard._staticSetUp(settings)
 end
 
@@ -261,6 +250,18 @@ end
 ---
 function MainBoard._staticSetUp(settings)
     MainBoard._processSnapPoints(settings)
+
+    MainBoard.shieldWallToken.clearButtons()
+    Helper.createAbsoluteButtonWithRoundness(MainBoard.shieldWallToken, 7, false, {
+        click_function = Helper.registerGlobalCallback(function (_, color, _)
+            MainBoard.blowUpShieldWall(color)
+        end),
+        position = MainBoard.shieldWallToken.getPosition() + Vector(0.2, 0.1, 0.2),
+        width = 800,
+        height = 800,
+        color = {0, 0, 0, 0},
+        tooltip = I18N("explosion")
+    })
 
     Helper.registerEventListener("phaseStart", function (phase)
         if phase == "makers" then
@@ -732,14 +733,15 @@ end
 
 ---
 function MainBoard._goDutifulService(color, leader)
+    assert(TurnControl.getPlayerCount() < 6)
     leader.influence(color, "emperor", 1, true)
     return true
 end
 
----
+--- Used in both 4P and 6P modes.
 function MainBoard._goSardaukar(color, leader)
     if TurnControl.getPlayerCount() < 6 or Commander.isShaddam(color) then
-        local cost = Commander.isShaddam(leader) and 4 or 3
+        local cost = TurnControl.getPlayerCount() == 6 and 3 or 4
         if leader.resources(color, "spice", -cost) then
             leader.troops(color, "supply", "garrison", 4)
             leader.drawIntrigues(color, 1)
@@ -753,7 +755,8 @@ end
 
 ---
 function MainBoard._goVastWealth(color, leader)
-    if TurnControl.getPlayerCount() < 6 or Commander.isShaddam(color) then
+    assert(TurnControl.getPlayerCount() == 6)
+    if Commander.isShaddam(color) then
         leader.resources(color, "solari", 3)
         leader.influence(color, "emperor", 1, true)
         return true
@@ -764,6 +767,7 @@ end
 
 ---
 function MainBoard._goMilitarySupport(color, leader)
+    assert(TurnControl.getPlayerCount() == 6)
     if leader.resources(color, "spice", -2) then
         leader.influence(color, "greatHouses", 1)
         return true
@@ -774,6 +778,7 @@ end
 
 ---
 function MainBoard._goEconomicSupport(color, leader)
+    assert(TurnControl.getPlayerCount() == 6)
     leader.resources(color, "spice", 1)
     leader.influence(color, "greatHouses", 1)
     return true
@@ -781,6 +786,7 @@ end
 
 ---
 function MainBoard._goControversialTechnology(color, leader)
+    assert(TurnControl.getPlayerCount() == 6)
     if leader.resources(color, "spice", -2) then
         leader.drawImperiumCards(color, 1)
         leader.drawIntrigues(color, 1)
@@ -793,13 +799,14 @@ end
 
 ---
 function MainBoard._goExpedition(color, leader)
+    assert(TurnControl.getPlayerCount() == 6)
     leader.influence(color, "fringeWorlds", 1)
     return true
 end
 
----
 function MainBoard._goHardyWarriors(color, leader)
-    if TurnControl.getPlayerCount() < 6 or Commander.isMuadDib(color) then
+    assert(TurnControl.getPlayerCount() == 6)
+    if Commander.isMuadDib(color) then
         if leader.resources(color, "water", -1) then
             leader.troops(color, "supply", "garrison", 2)
             leader.influence(color, "fremen", 1, true)
@@ -812,9 +819,9 @@ function MainBoard._goHardyWarriors(color, leader)
     end
 end
 
----
 function MainBoard._goDesertMastery(color, leader)
-    if TurnControl.getPlayerCount() < 6 or Commander.isMuadDib(color) then
+    assert(TurnControl.getPlayerCount() == 6)
+    if Commander.isMuadDib(color) then
         leader.drawImperiumCards(color, 1)
         leader.resources(color, "spice", 1)
         leader.influence(color, "fremen", 1, true)
@@ -1079,6 +1086,7 @@ end
 
 ---
 function MainBoard._goHabbanyaErg(color, leader)
+    assert(TurnControl.getPlayerCount() == 6)
     if MainBoard._anySpiceSpace(color, leader, 1, 2, MainBoard.spiceBonuses.habbanyaErg) then
         leader.drawImperiumCards(color, 1)
         return true

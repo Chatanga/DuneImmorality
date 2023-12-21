@@ -46,7 +46,7 @@ return {
     -- Playboard
     noTouch = "Don't touch this button!",
     noLeader = "You don't have a leader yet!",
-    noAlly = "You didn't selected an ally!",
+    noAlly = "You haven't selected an ally!",
     noYourTurn = "It's not your turn!",
     notShaddamTeam = "You are not allied to the Emperor of the Known Universe!",
     notMuadDibTeam = "You are not allied with Usul Muad-Dib, the Lisan al-Gaib!",
