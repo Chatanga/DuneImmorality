@@ -87,7 +87,10 @@ Leader.ilbanRichese = Helper.createClass(Leader, {
     --- Ruthless negotiator
     resources = function (color, resourceName, amount)
         local success = Action.resources(color, resourceName, amount)
-        if success and amount < 0 and Action.checkContext({ phase = "playerTurns", color = color, space = MainBoard.isLandsraadSpace }) then
+        if success
+        and resourceName == "solari"
+        and amount < 0
+        and Action.checkContext({ phase = "playerTurns", color = color, space = MainBoard.isLandsraadSpace }) then
             local leader = PlayBoard.getLeader(color)
             leader.drawImperiumCards(color, 1)
         end
