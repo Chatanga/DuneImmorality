@@ -120,11 +120,13 @@ end
 
 ---
 function ChoamContractMarket._acquireContract1(_, color)
+    -- TODO Introduce the usual indirection player -> action -> ChoamContractMarket.
     ChoamContractMarket.acquireContract(1, color)
 end
 
 ---
 function ChoamContractMarket._acquireContract2(_, color)
+    -- TODO Introduce the usual indirection player -> action -> ChoamContractMarket.
     ChoamContractMarket.acquireContract(2, color)
 end
 

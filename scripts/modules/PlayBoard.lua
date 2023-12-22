@@ -2681,6 +2681,7 @@ function PlayBoard.giveCard(color, card, isTleilaxuCard)
     assert(content)
 
     -- Acquire the card (not smoothly to avoid being grabbed by a player hand zone).
+    Helper.dump("card.setPosition", content.discardZone.getPosition())
     card.setPosition(content.discardZone.getPosition())
     printToAll(I18N(isTleilaxuCard and "acquireTleilaxuCard" or "acquireImperiumCard", { card = I18N(Helper.getID(card)) }), color)
     if ImperiumCard then

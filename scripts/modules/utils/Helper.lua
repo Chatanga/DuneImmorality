@@ -194,6 +194,7 @@ end
 ---@param flipAtTheEnd? boolean
 ---@return Continuation A continuation run once the object is motionless.
 function Helper._moveObject(object, position, rotation, smooth, flipAtTheEnd)
+    --Helper.dumpFunction("Helper._moveObject", object, position, rotation, smooth, flipAtTheEnd)
     assert(object)
 
     local continuation = Helper.createContinuation("Helper._moveObject")
@@ -212,12 +213,15 @@ function Helper._moveObject(object, position, rotation, smooth, flipAtTheEnd)
         end
     end
 
-    Helper.onceMotionless(object).doAfter(function ()
-        if flipAtTheEnd then
+    if flipAtTheEnd then
+        -- Dangerous. An "unknown error" could occur with a card sent to another or a deck.
+        Helper.onceMotionless(object).doAfter(function ()
             object.flip()
-        end
+            continuation.run(object)
+        end)
+    else
         continuation.run(object)
-    end)
+    end
 
     return continuation
 end
@@ -250,13 +254,8 @@ function Helper.moveCardFromZone(zone, position, rotation, smooth, flipAtTheEnd)
             end
             deckOrCard.takeObject(parameters)
         elseif deckOrCard.type == "Card" then
-            -- FIXME Moving a single card to another or a deck will raise an "Unknown Error" (at least for the reserve decks). Why?
-            -- Using a smooth move solves this issue, but it is not really possible to avoid being caught by a player's hand.
-            log('Expected harmless "Unknown Error" here (cf. Helper.moveCardFromZone comment):')
             local safePosition = position + Vector(0, 1, 0)
-            Helper._moveObject(deckOrCard, safePosition, rotation, smooth, flipAtTheEnd).doAfter(function (card)
-                continuation.run(card)
-            end)
+            Helper._moveObject(deckOrCard, safePosition, rotation, smooth, flipAtTheEnd).doAfter(continuation.run)
         else
             error("Unexpected type: " .. deckOrCard.type)
         end
@@ -935,6 +934,7 @@ function Helper.isStabilized(beQuiet)
     return count == 0
 end
 
+--- Beware of card being swallowed up in a deck at the end of its move.
 ---@return Continuation
 function Helper.onceMotionless(object)
     local continuation = Helper.createContinuation("Helper.onceMotionless")

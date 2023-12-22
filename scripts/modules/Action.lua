@@ -333,7 +333,8 @@ end
 ---
 function Action.acquireReservedImperiumCard(color)
     Types.assertIsPlayerColor(color)
-    return false
+    -- Do no return false by default, since an intrigue in Uprising allows any player to do the same thing as Helena Richese.
+    return ImperiumRow.acquireReservedImperiumCard(color)
 end
 
 ---
