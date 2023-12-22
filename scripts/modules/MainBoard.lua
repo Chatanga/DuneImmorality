@@ -536,6 +536,7 @@ function MainBoard.sendAgent(color, spaceName, recallSpy)
 
     if agent then
         if recallSpy then
+            -- FIXME Should be done iif the action is successful.
             MainBoard._recallSpy(color, leader, spaceName)
         end
         if asyncAction then

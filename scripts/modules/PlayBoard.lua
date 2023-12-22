@@ -707,17 +707,34 @@ function PlayBoard:moveAt(position, isRelative, horizontalHandLayout)
         end
     end
 
-    PlayBoard.tq = PlayBoard.tq or Helper.createTemporalQueue(0.25)
-    PlayBoard.tq.submit(function ()
-        local handTransform = Player[self.color].getHandTransform()
-        handTransform.position = handTransform.position + offset
-        if horizontalHandLayout then
-            handTransform.position = handTransform.position + self:_newSymmetricBoardPosition(-15, 0, 11.95)
-            handTransform.scale = Vector(25, 5, 4)
-            handTransform.rotation = Vector(0, 0, 0)
+    -- Not reliable, only done for the old vertical layout.
+    if not horizontalHandLayout then
+        PlayBoard.tq = PlayBoard.tq or Helper.createTemporalQueue(0.25)
+        PlayBoard.tq.submit(function ()
+            local handTransform = Player[self.color].getHandTransform()
+            handTransform.position = handTransform.position + offset
+            if horizontalHandLayout then
+                handTransform.position = handTransform.position + self:_newSymmetricBoardPosition(-15, 0, 11.95)
+                handTransform.scale = Vector(25, 5, 4)
+                handTransform.rotation = Vector(0, 0, 0)
+            end
+            Player[self.color].setHandTransform(handTransform)
+        end)
+    end
+end
+
+---
+function PlayBoard:_pruneHandsInExcess(color, horizontalHandLayout)
+    local rgba = Color.fromString(color)
+    rgba.a = 0
+    for _, hand in ipairs(Hands.getHands()) do
+        if hand.getColorTint() == rgba then
+            local horizontal = math.abs(hand.getRotation().y) < 1
+            if horizontal ~= horizontalHandLayout then
+                hand.destruct()
+            end
         end
-        Player[self.color].setHandTransform(handTransform)
-    end)
+    end
 end
 
 ---
@@ -933,6 +950,8 @@ end
 function PlayBoard.setUp(settings, activeOpponents)
     for color, playBoard in pairs(PlayBoard.playBoards) do
         playBoard:_cleanUp(false, not settings.riseOfIx, not settings.immortality, settings.numberOfPlayers ~= 6)
+
+        PlayBoard:_pruneHandsInExcess(playBoard.color, settings.numberOfPlayers <= 4 and settings.horizontalHandLayout)
 
         if settings.numberOfPlayers <= 4 then
             local offsets
@@ -1768,15 +1787,13 @@ function PlayBoard:_cleanUp(base, ix, immortality, teamMode, full)
                 end
             end
 
-            -- TODO Get rid of the hand zone instead.
             local handTransform = Player[self.color].getHandTransform()
-            handTransform.position = handTransform.position + self:_newSymmetricBoardPosition(50, 0, 0)
-            Player[self.color].setHandTransform(handTransform)
-
-            -- Safe?
-            for i, hand in ipairs(Hands.getHands()) do
-                if hand.getPosition() == Player[self.color].getHandTransform().position then
-                    hand.destruct()
+            if handTransform then
+                for _, hand in ipairs(Hands.getHands()) do
+                    if hand.getPosition() == handTransform.position then
+                        hand.destruct()
+                        break
+                    end
                 end
             end
 
