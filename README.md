@@ -112,3 +112,7 @@ Unfortunately, it seems to induce some kind of latency, leading to board corrupt
 - Alt mouse hover defeated by area buttons...
 - Redundancy GMNotes VS resolve using them?
 - Better support for chained transferts in Parks.
+- Fix Steam languages metadata.
+- Mentat washing when crossing its zone.
+- Finer playable intrigue detection in solo.
+- Accumulation and immediate acquisition by Helena.
