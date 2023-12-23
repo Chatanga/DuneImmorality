@@ -707,7 +707,7 @@ function PlayBoard:moveAt(position, isRelative, horizontalHandLayout)
         end
     end
 
-    -- Not reliable, only done for the old vertical layout.
+    -- Not reliable, only done for the old vertical layout which doesn't have alternate zones.
     if not horizontalHandLayout then
         PlayBoard.tq = PlayBoard.tq or Helper.createTemporalQueue(0.25)
         PlayBoard.tq.submit(function ()

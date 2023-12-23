@@ -12,6 +12,8 @@ def rectify_rotation(object):
 def patch_object(object, componentTagCounts):
     rectify_rotation(object)
 
+    #object['Transform']['posY'] += 1
+
     object['LuaScript'] = ''
     #object['LuaScriptState'] = ''
 
