@@ -129,7 +129,7 @@ end
 
 ---
 function MainBoard.onLoad(state)
-    --Helper.dumpFunction("MainBoard.onLoad(...)")
+    --Helper.dumpFunction("MainBoard.onLoad")
 
     Helper.append(MainBoard, Helper.resolveGUIDs(false, {
         board = "21cc52", -- 4P: "483a1a", 6P: "21cc52"
@@ -191,7 +191,7 @@ function MainBoard.onLoad(state)
             end
         end
 
-        MainBoard._staticSetUp(state.settings)
+        MainBoard._transientSetUp(state.settings)
     end
 end
 
@@ -223,7 +223,7 @@ function MainBoard.setUp(settings)
         MainBoard._mutateMainBoards()
     end
 
-    MainBoard._staticSetUp(settings)
+    MainBoard._transientSetUp(settings)
 end
 
 ---
@@ -248,7 +248,7 @@ function MainBoard._mutateMainBoards()
 end
 
 ---
-function MainBoard._staticSetUp(settings)
+function MainBoard._transientSetUp(settings)
     MainBoard._processSnapPoints(settings)
 
     MainBoard.shieldWallToken.clearButtons()
@@ -1339,6 +1339,7 @@ function MainBoard.hasAgentInSpace(spaceName, color)
     return false
 end
 
+---
 function MainBoard.hasEnemyAgentInSpace(spaceName, color)
     for _, otherColor in ipairs(PlayBoard.getActivePlayBoardColors()) do
         if otherColor ~= color and MainBoard.hasAgentInSpace(spaceName, otherColor) then
@@ -1351,8 +1352,19 @@ end
 ---
 function MainBoard.getDeployedSpyCount(color, onlyInMakerSpace)
     local count = 0
-    for name, observationPost in pairs(MainBoard.observationPosts) do
-        if not onlyInMakerSpace or MainBoard.isDesertSpace(name) then
+    for observationPostName, observationPost in pairs(MainBoard.observationPosts) do
+        local ok = true;
+        if onlyInMakerSpace then
+            ok = false;
+            local spaceNames = MainBoard._getConnectedSpaceNames(observationPostName)
+            for _, spaceName in ipairs(spaceNames) do
+                if MainBoard.isDesertSpace(spaceName) then
+                    ok = true;
+                    break;
+                end
+            end
+        end
+        if ok then
             for _, spy in ipairs(Park.getObjects(observationPost.park)) do
                 if spy.hasTag(color) then
                     count = count + 1
@@ -1363,21 +1375,35 @@ function MainBoard.getDeployedSpyCount(color, onlyInMakerSpace)
     return count
 end
 
+---
+function MainBoard._getConnectedSpaceNames(observationPostName)
+    local connectedSpaceNames = {}
+    for spaceName, spaceDetail in pairs(MainBoard.spaceDetails) do
+        for _, otherObservationPostName in ipairs(spaceDetail.posts) do
+            if otherObservationPostName == observationPostName then
+                table.insert(connectedSpaceNames, spaceName)
+            end
+        end
+    end
+    return connectedSpaceNames
+end
+
 --
 function MainBoard.isSpying(spaceName, color)
     --Helper.dumpFunction("MainBoard.isSpying", spaceName, color)
-    for name, observationPost in pairs(MainBoard.observationPosts) do
-        if name == spaceName then
-            for _, spy in ipairs(Park.getObjects(observationPost.park)) do
-                if spy.hasTag(color) then
-                    return true
-                end
+    local spaceDetail = MainBoard.spaceDetails[spaceName]
+    for _, observationPostName in ipairs(spaceDetail.posts) do
+        local observationPost = MainBoard.observationPosts[observationPostName]
+        for _, spy in ipairs(Park.getObjects(observationPost.park)) do
+            if spy.hasTag(color) then
+                return true
             end
         end
     end
     return false
 end
 
+---
 function MainBoard.hasVoiceToken(spaceName)
     local space = MainBoard.spaces[spaceName]
     if space then

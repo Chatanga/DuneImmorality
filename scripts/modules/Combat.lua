@@ -46,7 +46,7 @@ local Combat = {
 }
 
 function Combat.onLoad(state)
-    --Helper.dumpFunction("Combat.onLoad(...)")
+    --Helper.dumpFunction("Combat.onLoad")
 
     Helper.append(Combat, Helper.resolveGUIDs(false, Combat.unresolvedContent))
 
@@ -67,7 +67,7 @@ function Combat.onLoad(state)
     end
 
     if state.settings then
-        Combat._staticSetUp(state.settings)
+        Combat._transientSetUp(state.settings)
         Combat.dreadnoughtStrengths = state.Combat.dreadnoughtStrengths
         Combat.ranking = state.Combat.ranking
     end
@@ -85,12 +85,12 @@ end
 ---
 function Combat.setUp(settings)
     Deck.generateConflictDeck(Combat.conflictDeckZone, settings.riseOfIx, settings.epicMode, settings.numberOfPlayers).doAfter(function ()
-        Combat._staticSetUp(settings)
+        Combat._transientSetUp(settings)
     end)
 end
 
 ---
-function Combat._staticSetUp(settings)
+function Combat._transientSetUp(settings)
     Combat._processSnapPoints(settings)
 
     Combat.garrisonParks = {}
@@ -584,7 +584,7 @@ function Combat.gainVictoryPoint(color, name)
 
     if Combat.victoryPointTokenZone then
         for _, object in ipairs(Combat.victoryPointTokenZone.getObjects()) do
-            if object.hasTag("victoryPointToken") and Helper.getID(object) == name and not Combat.grantedTokens[object] then
+            if Types.isVictoryPointToken(object) and Helper.getID(object) == name and not Combat.grantedTokens[object] then
                 Combat.grantedTokens[object] = true
                 PlayBoard.grantScoreToken(color, object)
                 return true

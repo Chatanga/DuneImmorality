@@ -12,7 +12,7 @@ local ScoreBoard = {
 
 ---
 function ScoreBoard.onLoad(state)
-    --Helper.dumpFunction("ScoreBoard.onLoad(...)")
+    --Helper.dumpFunction("ScoreBoard.onLoad")
 
     --[[
         4 players tokens -> PlayBoard
@@ -71,7 +71,7 @@ function ScoreBoard.onLoad(state)
     })
 
     if state.settings and state.settings.riseOfIx then
-        ScoreBoard._staticSetUp(state.settings)
+        ScoreBoard._transientSetUp(state.settings)
     end
 end
 
@@ -115,11 +115,11 @@ function ScoreBoard.setUp(settings)
         ScoreBoard.tokens.hagal = nil
     end
 
-    ScoreBoard._staticSetUp(settings)
+    ScoreBoard._transientSetUp(settings)
 end
 
 ---
-function ScoreBoard._staticSetUp(settings)
+function ScoreBoard._transientSetUp(settings)
     -- NOP
 end
 

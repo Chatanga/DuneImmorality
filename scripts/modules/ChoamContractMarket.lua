@@ -36,7 +36,7 @@ local ChoamContractMarket = {
 
 ---
 function ChoamContractMarket.onLoad(state)
-    --Helper.dumpFunction("ChoamContractMarket.onLoad(...)")
+    --Helper.dumpFunction("ChoamContractMarket.onLoad")
 
     Helper.append(ChoamContractMarket, Helper.resolveGUIDs(false, {
         contractBags = {
@@ -46,14 +46,14 @@ function ChoamContractMarket.onLoad(state)
     }))
 
     if state.settings then
-        ChoamContractMarket._staticSetUp(state.settings)
+        ChoamContractMarket._transientSetUp(state.settings)
     end
 end
 
 ---
 function ChoamContractMarket.setUp(settings)
     if settings.useContracts then
-        ChoamContractMarket._staticSetUp(settings)
+        ChoamContractMarket._transientSetUp(settings)
 
         Helper.shuffleDeck(ChoamContractMarket.contractBag)
         Helper.onceShuffled(ChoamContractMarket.contractBag).doAfter(function ()
@@ -67,7 +67,7 @@ function ChoamContractMarket.setUp(settings)
 end
 
 ---
-function ChoamContractMarket._staticSetUp(settings)
+function ChoamContractMarket._transientSetUp(settings)
     local barycenter = Vector(0, 0, 0)
     for language, bag in pairs(ChoamContractMarket.contractBags) do
         barycenter = barycenter + bag.getPosition()

@@ -1,12 +1,25 @@
+--[[
+    The Global script:
+    - register the modules,
+    - call onLoad (and later onSave) on them.
+    - show a UI or use the 'autoLoadedSettings' to set up the modules.
+    That's all. When set up, the LeaderSelection module will proceed with the
+    next step and finally call TurnControl.startGame to effectively start the
+    game.
+]]
+
+-- Will be automatically replaced by the build timestamp.
 local BUILD = 'TBD'
 
--- Do not load anything. Appropriate to work on the mod content without
--- interference.
+-- Do not load anything. Appropriate to work on the mod content in TTS without
+-- interference from the scripts.
 local constructionModeEnabled = false
 
 -- For test purposes (the secondary table won't disappear as a side effect).
+local autoLoadedSettings = nil
+
 --[[
-local autoLoadedSettings = {
+autoLoadedSettings = {
     language = "fr",
     hotSeat = true,
     numberOfPlayers = 4,
@@ -75,18 +88,16 @@ local allModules = Module.registerModules({
     Types = require("Types"),
 })
 
--- A 'xxx_all' member is not UI field, but define the options for the 'xxx' field.
-local PlayerSet = {
+local Controller = {
+    -- The view.
+    ui = nil,
+    -- The model.
+    -- A 'xxx_all' member is not a UI field, but defines the options for the
+    -- corresponding 'xxx' field.
     fields = {
         language_all = {
-            --de = "Deutsche",
             en = "English",
-            --ep = "Español",
-            --eo = "Esperanto",
             fr = "Français",
-            --it = "Italiano",
-            --jp = "日本語",
-            --zh = "中文",
         },
         language = "en",
         virtualHotSeat = false,
@@ -99,7 +110,7 @@ local PlayerSet = {
         },
         virtualHotSeatMode = {},
         randomizePlayerPositions = false,
-        difficulty_all = Helper.map(allModules.Hagal.getDifficulties(), function (_, v) return v.name end),
+        difficulty_all = Helper.mapValues(allModules.Hagal.getDifficulties(), function (v) return v.name end),
         difficulty = {},
         useContracts = true,
         riseOfIx = false,
@@ -118,11 +129,17 @@ local PlayerSet = {
     }
 }
 
+-- The game settings, set by the startup menu when pressing the "Setup" button
+-- or automatically using the autoLoadedSettings variable.
 local settings
 
----
+--- TTS event handler.
 function onLoad(scriptState)
     log("--------< Dune Uprising - " .. BUILD .. " >--------")
+
+    -- All transient objects (mostly anchors, but also some zones) are destroyed
+    -- at startup, then recreated in the 'onLoad' functions (and 'staticSetup'
+    -- methods in case the game has already been set up).
     Helper.destroyTransientObjects()
 
     if constructionModeEnabled then
@@ -131,10 +148,11 @@ function onLoad(scriptState)
         --allModules.MainBoard.rebuildAlt()
         --allModules.Deck.rebuildPreloadAreas()
     else
-        -- The destroyed objects need one frame to disappear and not interfere with the mod.
-        Wait.time(function ()
+        -- The destroyed objects need one frame to disappear and not interfere
+        -- with the mod.
+        Helper.onceFramesPassed(1).doAfter(function ()
             asyncOnLoad(scriptState)
-        end, Helper.MINIMAL_DURATION)
+        end)
     end
 end
 
@@ -151,14 +169,10 @@ function asyncOnLoad(scriptState)
     local state = scriptState ~= "" and JSON.decode(scriptState) or {}
     settings = state.settings
 
-    allModules.Locale.onLoad(state)
-    allModules.Action.onLoad(state)
-
-    if settings then
-        I18N.setLocale(settings.language)
-    end
-
+    -- TODO Detail dependencies?
     allModules.ordered = {
+        { name = "Locale", module = allModules.Locale },
+        { name = "Action", module = allModules.Action },
         { name = "Pdf", module = allModules.Pdf },
         { name = "Music", module = allModules.Music },
         { name = "Deck", module = allModules.Deck },
@@ -209,15 +223,15 @@ function asyncOnLoad(scriptState)
                 setUp(autoLoadedSettings)
             end)
         else
-            PlayerSet.ui = XmlUI.new(Global, "setupPane", PlayerSet.fields)
-            PlayerSet.ui:show()
-            PlayerSet.updateDefaultLeaderPoolSizeLabel()
-            PlayerSet.updateSetupButton()
+            Controller.ui = XmlUI.new(Global, "setupPane", Controller.fields)
+            Controller.ui:show()
+            Controller.updateDefaultLeaderPoolSizeLabel()
+            Controller.updateSetupButton()
         end
     end
 end
 
----
+--- TTS event handler.
 function onSave()
     --Helper.dumpFunction("onSave")
     if constructionModeEnabled then
@@ -232,6 +246,7 @@ function onSave()
         local savedState = {
             settings = settings
         }
+        -- FIXME Only call it for the same modules for which "onLoad" has been called.
         Module.callOnAllRegisteredModules("onSave", savedState)
         return JSON.encode(savedState)
     else
@@ -240,21 +255,18 @@ function onSave()
     end
 end
 
----
+--- Never called actually.
 function onDestroy()
-    Helper.dump("onDestroy")
+    Helper.dumpFunction("onDestroy")
     Module.unregisterAllModuleRedirections()
     Helper.dump("destroyTransientObjects")
     Helper.destroyTransientObjects()
     Helper.dump("done")
 end
 
----
+--- Set up the game, an irreversible operation.
 function setUp(newSettings)
     assert(newSettings)
-    local properlySeatedPlayers = PlayerSet.getProperlySeatedPlayers()
-
-    I18N.setLocale(newSettings.language)
 
     local continuation = Helper.createContinuation("setUp")
     if newSettings.randomizePlayerPositions then
@@ -267,50 +279,196 @@ function setUp(newSettings)
         -- Not assigned before in order to avoid saving anything.
         settings = newSettings
 
-        local activeOpponents = PlayerSet.findActiveOpponents(properlySeatedPlayers, newSettings.numberOfPlayers)
-        local orderedPlayers = PlayerSet.toCanonicallyOrderedPlayerList(activeOpponents)
-        runSetUp(1, activeOpponents, orderedPlayers)
+        local properlySeatedPlayers = Controller.getProperlySeatedPlayers()
+        local activeOpponents = Controller.findActiveOpponents(properlySeatedPlayers, newSettings.numberOfPlayers)
+        runSetUp(1, activeOpponents)
     end)
 
     -- TurnControl.start() is called by "LeaderSelection" asynchronously,
     -- effectively starting the game.
 end
 
-function runSetUp(index, activeOpponents, orderedPlayers)
+--- Set up each module, one by one.
+function runSetUp(index, activeOpponents)
     local moduleInfo = allModules.ordered[index]
     if moduleInfo then
         --Helper.dump(tostring(index) .. ". Setting " .. moduleInfo.name)
-        local nextContinuation = moduleInfo.module.setUp(settings, activeOpponents, orderedPlayers)
+        local nextContinuation = moduleInfo.module.setUp(settings, activeOpponents)
         if not nextContinuation then
             nextContinuation = Helper.createContinuation("runSetUp")
             nextContinuation.run()
         end
-        nextContinuation.doAfter(Helper.partialApply(runSetUp, index + 1, activeOpponents, orderedPlayers))
+        nextContinuation.doAfter(Helper.partialApply(runSetUp, index + 1, activeOpponents))
     else
         --Helper.dump("Done setting all modules")
     end
 end
 
----
+--- TTS event handler.
 function onPlayerChangeColor()
-    PlayerSet.updateSetupButton()
-    PlayerSet.updateSelectionMethods()
+    Controller.updateSetupButton()
+    Controller.updateSelectionMethods()
 end
 
----
+--- TTS event handler.
 function onPlayerConnect()
-    PlayerSet.updateSetupButton()
-    PlayerSet.updateSelectionMethods()
+    Controller.updateSetupButton()
+    Controller.updateSelectionMethods()
 end
 
----
+--- TTS event handler.
 function onPlayerDisconnect()
-    PlayerSet.updateSetupButton()
-    PlayerSet.updateSelectionMethods()
+    Controller.updateSetupButton()
+    Controller.updateSelectionMethods()
 end
 
----
-function PlayerSet.findActiveOpponents(properlySeatedPlayers, numberOfPlayers)
+--- UI callback (cf. XML).
+function setLanguage(player, value, id)
+    Controller.ui:fromUI(player, value, id)
+    -- The locale is changed in real time by the UI, but not the test mode.
+    I18N.setLocale(Controller.fields.language)
+    Controller.ui:toUI()
+    Controller.updateDefaultLeaderPoolSizeLabel()
+end
+
+--- UI callback (cf. XML).
+function setRandomizePlayerPositions(player, value, id)
+    Controller.ui:fromUI(player, value, id)
+end
+
+--- UI callback (cf. XML).
+function setVirtualHotSeat(player, value, id)
+    --Helper.dumpFunction("setVirtualHotSeat", player, value, id)
+    Controller.ui:fromUI(player, value, id)
+    if value == "True" then
+        Controller.fields.virtualHotSeatMode = 1
+    else
+        Controller.fields.virtualHotSeatMode = {}
+    end
+    Controller.applyVirtualHotSeatMode()
+    Controller.ui:toUI()
+end
+
+--- UI callback (cf. XML).
+function setVirtualHotSeatMode(player, value, id)
+    Controller.ui:fromUI(player, value, id)
+    Controller.applyVirtualHotSeatMode()
+    Controller.ui:toUI()
+end
+
+--- UI callback (cf. XML).
+function setDifficulty(player, value, id)
+    Controller.ui:fromUI(player, value, id)
+end
+
+--- UI callback (cf. XML).
+function setHotSeat(player, value, id)
+    Controller.ui:fromUI(player, value, id)
+    Controller.updateSetupButton()
+end
+
+--- UI callback (cf. XML).
+function setUseContracts(player, value, id)
+    Controller.ui:fromUI(player, value, id)
+end
+
+--- UI callback (cf. XML).
+function setRiseOfIx(player, value, id)
+    Controller.ui:fromUI(player, value, id)
+    if value == "True" then
+        Controller.fields.epicMode = false
+    else
+        Controller.fields.epicMode = {}
+    end
+    Controller.ui:toUI()
+end
+
+--- UI callback (cf. XML).
+function setEpicMode(player, value, id)
+    Controller.ui:fromUI(player, value, id)
+end
+
+--- UI callback (cf. XML).
+function setImmortality(player, value, id)
+    Controller.ui:fromUI(player, value, id)
+    if value == "True" then
+        Controller.fields.goTo11 = false
+    else
+        Controller.fields.goTo11 = {}
+    end
+    Controller.ui:toUI()
+end
+
+--- UI callback (cf. XML).
+function setGoTo11(player, value, id)
+    Controller.ui:fromUI(player, value, id)
+end
+
+--- UI callback (cf. XML).
+function setLeaderSelection(player, value, id)
+    Controller.ui:fromUI(player, value, id)
+end
+
+--- UI callback (cf. XML).
+function setDefaultLeaderPoolSize(player, value, id)
+    Controller.ui:fromUI(player, value, id)
+    Controller.updateDefaultLeaderPoolSizeLabel()
+end
+
+--- UI callback (cf. XML).
+function setTweakLeaderSelection(player, value, id)
+    Helper.dumpFunction("setTweakLeaderSelection", player, value, id)
+    Controller.ui:fromUI(player, value, id)
+end
+
+--- UI callback (cf. XML).
+function setHorizontalHandLayout(player, value, id)
+    Controller.ui:fromUI(player, value, id)
+end
+
+--- UI callback (cf. XML).
+function setAssistedRevelation(player, value, id)
+    Controller.ui:fromUI(player, value, id)
+end
+
+--- UI callback (cf. XML).
+function setSoundEnabled(player, value, id)
+    Controller.ui:fromUI(player, value, id)
+end
+
+--- UI callback (cf. XML).
+function setUpFromUI()
+    Controller.ui:hide()
+    Controller.ui = nil
+
+    local numberOfPlayers = Controller.getNumberOfPlayers(Controller.fields.virtualHotSeatMode)
+
+    setUp({
+        language = Controller.fields.language,
+        numberOfPlayers = numberOfPlayers,
+        hotSeat = Controller.fields.hotSeat == true,
+        randomizePlayerPositions = Controller.fields.randomizePlayerPositions == true,
+        difficulty = Controller.fields.difficulty,
+        useContracts = Controller.fields.useContracts == true or numberOfPlayers == 6,
+        riseOfIx = Controller.fields.riseOfIx == true,
+        epicMode = Controller.fields.epicMode == true,
+        immortality = Controller.fields.immortality == true,
+        goTo11 = Controller.fields.goTo11 == true,
+        leaderSelection = Controller.fields.leaderSelection,
+        defaultLeaderPoolSize = tonumber(Controller.fields.defaultLeaderPoolSize),
+        tweakLeaderSelection = Controller.fields.tweakLeaderSelection,
+        horizontalHandLayout = Controller.fields.horizontalHandLayout,
+        assistedRevelation = Controller.fields.assistedRevelation,
+        soundEnabled = Controller.fields.soundEnabled,
+    })
+end
+
+--- Return the mapping between (player) colors and opponent types. An opponent
+--- type could be:
+--- - a Player instance (simply replaced in a later stage by the "human" string),
+--- - the "rival" string for an automated rival (or House Hagal in the 1P mode),
+--- - the "puppet" string for a playable but unseated color in hotseat mode.
+function Controller.findActiveOpponents(properlySeatedPlayers, numberOfPlayers)
     local colorsByPreference = { "Green", "Red", "Yellow", "Blue", "Brown", "Teal" }
 
     local activeOpponents = {}
@@ -350,37 +508,18 @@ function PlayerSet.findActiveOpponents(properlySeatedPlayers, numberOfPlayers)
     return activeOpponents
 end
 
----
-function PlayerSet.toCanonicallyOrderedPlayerList(activeOpponents)
-    local orderedColors
-    if #Helper.getKeys(activeOpponents) == 6 then
-        orderedColors = { "Green", "Brown", "Yellow", "Blue", "Teal", "Red" }
-    else
-        orderedColors = { "Green", "Yellow", "Blue", "Red" }
-    end
-
-    local players = {}
-    for _, color in ipairs(orderedColors) do
-        if activeOpponents[color] then
-            table.insert(players, color)
-        end
-    end
-
-    return players
-end
-
----
-function PlayerSet.getProperlySeatedPlayers()
+--- return only the (colors of the) legitimate player depending on the selected
+--- mode (1-4P or 6P).
+function Controller.getProperlySeatedPlayers()
     local seatedPlayers = getSeatedPlayers()
 
-    -- FIXME
     local authorizedColors = {
         Green = true,
         Yellow = true,
         Blue = true,
         Red = true,
-        Brown = true,
-        Teal = true,
+        Brown = #seatedPlayers == 6,
+        Teal = #seatedPlayers == 6,
     }
 
     local properlySeatedPlayers = {}
@@ -393,64 +532,32 @@ function PlayerSet.getProperlySeatedPlayers()
 end
 
 ---
-function setLanguage(player, value, id)
-    PlayerSet.ui:fromUI(player, value, id)
-    I18N.setLocale(PlayerSet.fields.language)
-    PlayerSet.ui:toUI()
-    PlayerSet.updateDefaultLeaderPoolSizeLabel()
-end
+function Controller.applyVirtualHotSeatMode()
 
----
-function setRandomizePlayerPositions(player, value, id)
-    PlayerSet.ui:fromUI(player, value, id)
-end
+    local numberOfPlayers = Controller.getNumberOfPlayers(Controller.fields.virtualHotSeatMode)
 
----
-function setVirtualHotSeat(player, value, id)
-    --Helper.dumpFunction("setVirtualHotSeat", player, value, id)
-    PlayerSet.ui:fromUI(player, value, id)
-    if value == "True" then
-        PlayerSet.fields.virtualHotSeatMode = 1
+    if Controller.isUndefined(Controller.fields.virtualHotSeatMode) or numberOfPlayers > 2 then
+        Controller.fields.difficulty = {}
     else
-        PlayerSet.fields.virtualHotSeatMode = {}
-    end
-    PlayerSet.applyVirtualHotSeatMode()
-    PlayerSet.ui:toUI()
-end
-
----
-function setVirtualHotSeatMode(player, value, id)
-    PlayerSet.ui:fromUI(player, value, id)
-    PlayerSet.applyVirtualHotSeatMode()
-    PlayerSet.ui:toUI()
-end
-
-function PlayerSet.applyVirtualHotSeatMode()
-
-    local numberOfPlayers = PlayerSet.getNumberOfPlayers(PlayerSet.fields.virtualHotSeatMode)
-
-    if PlayerSet.isUndefined(PlayerSet.fields.virtualHotSeatMode) or numberOfPlayers > 2 then
-        PlayerSet.fields.difficulty = {}
-    else
-        PlayerSet.fields.difficulty = "novice"
+        Controller.fields.difficulty = "novice"
     end
 
-    PlayerSet.fields.leaderSelection_all = allModules.LeaderSelection.getSelectionMethods(numberOfPlayers)
+    Controller.fields.leaderSelection_all = allModules.LeaderSelection.getSelectionMethods(numberOfPlayers)
     if numberOfPlayers == 6 then
-        PlayerSet.fields.useContracts = {}
+        Controller.fields.useContracts = {}
     else
-        PlayerSet.fields.useContracts = true
+        Controller.fields.useContracts = true
     end
 
-    PlayerSet.updateSetupButton()
-    PlayerSet.ui:toUI()
+    Controller.updateSetupButton()
+    Controller.ui:toUI()
 end
 
 ---
-function PlayerSet.getNumberOfPlayers(virtualHotSeatMode)
+function Controller.getNumberOfPlayers(virtualHotSeatMode)
     local numberOfPlayers
-    if PlayerSet.isUndefined(virtualHotSeatMode) then
-        numberOfPlayers = math.min(6, #PlayerSet.getProperlySeatedPlayers())
+    if Controller.isUndefined(virtualHotSeatMode) then
+        numberOfPlayers = math.min(6, #Controller.getProperlySeatedPlayers())
     else
         --local toNumberOfPlayers = { 1, 2, 3, 4, 6 }
         local toNumberOfPlayers = { 3, 4, 6 }
@@ -461,156 +568,49 @@ function PlayerSet.getNumberOfPlayers(virtualHotSeatMode)
 end
 
 ---
-function setDifficulty(player, value, id)
-    PlayerSet.ui:fromUI(player, value, id)
-end
+function Controller.updateSelectionMethods()
+    if Controller.ui then
+        local numberOfPlayers = Controller.getNumberOfPlayers(Controller.fields.virtualHotSeatMode)
+        Controller.fields.leaderSelection_all = allModules.LeaderSelection.getSelectionMethods(numberOfPlayers)
 
----
-function setHotSeat(player, value, id)
-    PlayerSet.ui:fromUI(player, value, id)
-    PlayerSet.updateSetupButton()
-end
-
----
-function setUseContracts(player, value, id)
-    PlayerSet.ui:fromUI(player, value, id)
-end
-
----
-function setRiseOfIx(player, value, id)
-    PlayerSet.ui:fromUI(player, value, id)
-    if value == "True" then
-        PlayerSet.fields.epicMode = false
-    else
-        PlayerSet.fields.epicMode = {}
-    end
-    PlayerSet.ui:toUI()
-end
-
----
-function setEpicMode(player, value, id)
-    PlayerSet.ui:fromUI(player, value, id)
-end
-
----
-function setImmortality(player, value, id)
-    PlayerSet.ui:fromUI(player, value, id)
-    if value == "True" then
-        PlayerSet.fields.goTo11 = false
-    else
-        PlayerSet.fields.goTo11 = {}
-    end
-    PlayerSet.ui:toUI()
-end
-
----
-function setGoTo11(player, value, id)
-    PlayerSet.ui:fromUI(player, value, id)
-end
-
----
-function setLeaderSelection(player, value, id)
-    PlayerSet.ui:fromUI(player, value, id)
-end
-
----
-function setDefaultLeaderPoolSize(player, value, id)
-    PlayerSet.ui:fromUI(player, value, id)
-    PlayerSet.updateDefaultLeaderPoolSizeLabel()
-end
-
----
-function setTweakLeaderSelection(player, value, id)
-    Helper.dumpFunction("setTweakLeaderSelection", player, value, id)
-    PlayerSet.ui:fromUI(player, value, id)
-end
-
----
-function setHorizontalHandLayout(player, value, id)
-    PlayerSet.ui:fromUI(player, value, id)
-end
-
----
-function setAssistedRevelation(player, value, id)
-    PlayerSet.ui:fromUI(player, value, id)
-end
-
----
-function setSoundEnabled(player, value, id)
-    PlayerSet.ui:fromUI(player, value, id)
-end
-
----
-function PlayerSet.updateSelectionMethods()
-    if PlayerSet.ui then
-        local numberOfPlayers = PlayerSet.getNumberOfPlayers(PlayerSet.fields.virtualHotSeatMode)
-        PlayerSet.fields.leaderSelection_all = allModules.LeaderSelection.getSelectionMethods(numberOfPlayers)
-
-        PlayerSet.ui:toUI()
+        Controller.ui:toUI()
     end
 end
 
 ---
-function PlayerSet.updateSetupButton()
-    if PlayerSet.ui then
-        local numberOfPlayers = PlayerSet.getNumberOfPlayers(PlayerSet.fields.virtualHotSeatMode)
-        PlayerSet.fields.leaderSelection_all = allModules.LeaderSelection.getSelectionMethods(numberOfPlayers)
+function Controller.updateSetupButton()
+    if Controller.ui then
+        local numberOfPlayers = Controller.getNumberOfPlayers(Controller.fields.virtualHotSeatMode)
+        Controller.fields.leaderSelection_all = allModules.LeaderSelection.getSelectionMethods(numberOfPlayers)
 
-        local properlySeatedPlayers = PlayerSet.getProperlySeatedPlayers()
+        local properlySeatedPlayers = Controller.getProperlySeatedPlayers()
 
         local minPlayerCount
-        if PlayerSet.isUndefined(PlayerSet.fields.virtualHotSeatMode) then
+        if Controller.isUndefined(Controller.fields.virtualHotSeatMode) then
             minPlayerCount = 3
         else
             minPlayerCount = 1
         end
 
         if #properlySeatedPlayers >= minPlayerCount then
-            PlayerSet.ui:setButtonI18N("setUpButton", "setup", true)
+            Controller.ui:setButtonI18N("setUpButton", "setup", true)
         else
-            PlayerSet.ui:setButtonI18N("setUpButton", "notEnoughPlayers", false)
+            Controller.ui:setButtonI18N("setUpButton", "notEnoughPlayers", false)
         end
 
-        PlayerSet.ui:toUI()
+        Controller.ui:toUI()
     end
 end
 
 ---
-function PlayerSet.updateDefaultLeaderPoolSizeLabel()
-    local value = PlayerSet.fields.defaultLeaderPoolSize
-    PlayerSet.fields.defaultLeaderPoolSizeLabel = I18N("defaultLeaderPoolSizeLabel", { value = value } )
-    -- Do not use PlayerSet.ui:toUI() to avoid breaking the current UI operation.
-    self.UI.setValue("defaultLeaderPoolSizeLabel", PlayerSet.fields.defaultLeaderPoolSizeLabel)
+function Controller.updateDefaultLeaderPoolSizeLabel()
+    local value = Controller.fields.defaultLeaderPoolSize
+    Controller.fields.defaultLeaderPoolSizeLabel = I18N("defaultLeaderPoolSizeLabel", { value = value } )
+    -- Do not use Controller.ui:toUI() to avoid breaking the current UI operation.
+    self.UI.setValue("defaultLeaderPoolSizeLabel", Controller.fields.defaultLeaderPoolSizeLabel)
 end
 
 ---
-function PlayerSet.isUndefined(value)
+function Controller.isUndefined(value)
     return not value or type(value) == "table"
-end
-
----
-function setUpFromUI()
-    PlayerSet.ui:hide()
-    PlayerSet.ui = nil
-
-    local numberOfPlayers = PlayerSet.getNumberOfPlayers(PlayerSet.fields.virtualHotSeatMode)
-
-    setUp({
-        language = PlayerSet.fields.language,
-        numberOfPlayers = numberOfPlayers,
-        hotSeat = PlayerSet.fields.hotSeat == true,
-        randomizePlayerPositions = PlayerSet.fields.randomizePlayerPositions == true,
-        difficulty = PlayerSet.fields.difficulty,
-        useContracts = PlayerSet.fields.useContracts == true or numberOfPlayers == 6,
-        riseOfIx = PlayerSet.fields.riseOfIx == true,
-        epicMode = PlayerSet.fields.epicMode == true,
-        immortality = PlayerSet.fields.immortality == true,
-        goTo11 = PlayerSet.fields.goTo11 == true,
-        leaderSelection = PlayerSet.fields.leaderSelection,
-        defaultLeaderPoolSize = tonumber(PlayerSet.fields.defaultLeaderPoolSize),
-        tweakLeaderSelection = PlayerSet.fields.tweakLeaderSelection,
-        horizontalHandLayout = PlayerSet.fields.horizontalHandLayout,
-        assistedRevelation = PlayerSet.fields.assistedRevelation,
-        soundEnabled = PlayerSet.fields.soundEnabled,
-    })
 end

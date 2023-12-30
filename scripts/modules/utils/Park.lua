@@ -344,7 +344,7 @@ function Park.findEmptySlots(park)
     return freeSlots
 end
 
---- TODO Unify with Helper.deepCopy which doesn't use copy?
+--- TODO Unify with Helper.deepCopy which doesn't use copy?
 function Park.deepCopy(c)
     local copy = {}
     for i, e in ipairs(c) do

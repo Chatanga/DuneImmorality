@@ -16,7 +16,7 @@ local ShipmentTrack = {
 
 ---
 function ShipmentTrack.onLoad(state)
-    --Helper.dumpFunction("ShipmentTrack.onLoad(...)")
+    --Helper.dumpFunction("ShipmentTrack.onLoad")
 
     Helper.append(ShipmentTrack, Helper.resolveGUIDs(false, {
         --[[
@@ -38,21 +38,21 @@ function ShipmentTrack.onLoad(state)
     }))
 
     if state.settings and state.settings.riseOfIx then
-        ShipmentTrack._staticSetUp()
+        ShipmentTrack._transientSetUp()
     end
 end
 
 ---
 function ShipmentTrack.setUp(settings)
     if settings.riseOfIx then
-        ShipmentTrack._staticSetUp()
+        ShipmentTrack._transientSetUp()
     else
         ShipmentTrack._tearDown()
     end
 end
 
 ---
-function ShipmentTrack._staticSetUp()
+function ShipmentTrack._transientSetUp()
     --[[
     for i, levelSlot in ipairs(ShipmentTrack.levelSlots) do
         ShipmentTrack._createLevelButton(i - 1, levelSlot)

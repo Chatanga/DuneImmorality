@@ -25,7 +25,7 @@ local InfluenceTrack = {
 
 ---
 function InfluenceTrack.onLoad(state)
-    --Helper.dumpFunction("InfluenceTrack.onLoad(...)")
+    --Helper.dumpFunction("InfluenceTrack.onLoad")
 
     Helper.append(InfluenceTrack, Helper.resolveGUIDs(false, {
         snoopers = {
@@ -50,13 +50,13 @@ function InfluenceTrack.onLoad(state)
     end
 
     if state.settings then
-        InfluenceTrack._staticSetUp(state.settings, false)
+        InfluenceTrack._transientSetUp(state.settings, false)
     end
 end
 
 ---
 function InfluenceTrack.setUp(settings)
-    InfluenceTrack._staticSetUp(settings, true)
+    InfluenceTrack._transientSetUp(settings, true)
 
     if settings.numberOfPlayers < 6 then
         InfluenceTrack.allianceTokens.greatHouses.destruct()
@@ -65,7 +65,7 @@ function InfluenceTrack.setUp(settings)
 end
 
 ---
-function InfluenceTrack._staticSetUp(settings, firstTime)
+function InfluenceTrack._transientSetUp(settings, firstTime)
     InfluenceTrack._processSnapPoints(settings, firstTime)
 
     for faction, initialPositions in pairs(InfluenceTrack.influenceTokenInitialPositions) do

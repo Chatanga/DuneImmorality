@@ -24,7 +24,7 @@ local Action = Helper.createClass(nil, {
 
 ---
 function Action.onLoad(state)
-    --Helper.dumpFunction("Action.onLoad(...)")
+    --Helper.dumpFunction("Action.onLoad")
 
     Helper.registerEventListener("phaseStart", function (phase, _)
         Action.context = {

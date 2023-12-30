@@ -1,3 +1,9 @@
+--[[
+    Reify the turn sequence in interaction with the PlayBoard module (as well
+    as Hagal and Commander for the more specialized game modes), emitting events
+    along the way to offer a mean to other modules to activate when needed.
+]]
+
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local I18N = require("utils.I18N")
@@ -29,7 +35,7 @@ local TurnControl = {
 }
 
 function TurnControl.onLoad(state)
-    --Helper.dumpFunction("TurnControl.onLoad(...)")
+    --Helper.dumpFunction("TurnControl.onLoad")
 
     if state.settings then
         if state.TurnControl then
@@ -67,22 +73,22 @@ function TurnControl.onSave(state)
     }
 end
 
---- Initialize the turn system with the provided players (or all the seated players) and start a new round.
-function TurnControl.setUp(settings, _, players)
-    TurnControl.players = players
+--- Initialize the turn system with the provided players (or all the seated
+--- players) and start a new round.
+function TurnControl.setUp(settings, activeOpponents)
+    TurnControl.players = TurnControl.toCanonicallyOrderedPlayerList(activeOpponents)
     TurnControl.scoreGoal = settings.epicMode and 12 or 10
 
     if settings.numberOfPlayers == 1 then
-        for i, player in ipairs(players) do
+        for i, player in ipairs(TurnControl.players) do
             if PlayBoard.isHuman(player) then
                 TurnControl.firstPlayerLuaIndex = TurnControl._getNextPlayer(i)
                 break
             end
         end
     elseif settings.numberOfPlayers == 2 then
-        for i, player in ipairs(players) do
+        for i, player in ipairs(TurnControl.players) do
             if PlayBoard.isRival(player) then
-                -- TODO Random
                 TurnControl.firstPlayerLuaIndex = TurnControl._getNextPlayer(i, math.random() > 0)
                 break
             end
@@ -91,7 +97,6 @@ function TurnControl.setUp(settings, _, players)
     else
         local firstPlayer
         repeat
-            -- TODO Random
             TurnControl.firstPlayerLuaIndex = math.random(#TurnControl.players)
             firstPlayer = TurnControl.players[TurnControl.firstPlayerLuaIndex]
         until not Commander.isCommander(firstPlayer)
@@ -99,6 +104,26 @@ function TurnControl.setUp(settings, _, players)
     end
 end
 
+--- Return the (colors of the) active opponents in the mod canonical order,
+--- starting from Green and progressing clockwise.
+function TurnControl.toCanonicallyOrderedPlayerList(activeOpponents)
+    local orderedColors = { "Green", "Brown", "Yellow", "Blue", "Teal", "Red" }
+
+    local players = {}
+    for _, color in ipairs(orderedColors) do
+        if activeOpponents[color] then
+            table.insert(players, color)
+        end
+    end
+
+    return players
+end
+
+--- Generate an objective deck and randomly deal a card to each player within
+--- two constraints: preserving the current first player (already choosen) and
+--- not giving the same card to two allies (6P mode).
+--- Note: it would be possible to designate the first player in this function,
+--- but the two have been kept separated for historical reasons.
 --- FIXME Way too convoluted!
 function TurnControl._assignObjectives()
     local cardNames = { "crysknife" }
@@ -346,6 +371,7 @@ function TurnControl._createMakersAndRecallButton()
     })
 end
 
+---
 function TurnControl._notifyPlayerTurn()
     local playerColor = TurnControl.players[TurnControl.currentPlayerLuaIndex]
     local player = Helper.findPlayerByColor(playerColor)

@@ -11,7 +11,7 @@ local ImperiumRow = {}
 
 ---
 function ImperiumRow.onLoad(state)
-    --Helper.dumpFunction("ImperiumRow.onLoad(...)")
+    --Helper.dumpFunction("ImperiumRow.onLoad")
 
     Helper.append(ImperiumRow, Helper.resolveGUIDs(false, {
         deckZone = "8bd982",
@@ -27,7 +27,7 @@ function ImperiumRow.onLoad(state)
     }))
 
     if state.settings then
-        ImperiumRow._staticSetUp()
+        ImperiumRow._transientSetUp()
     end
 end
 
@@ -39,11 +39,11 @@ function ImperiumRow.setUp(settings)
             Helper.moveCardFromZone(ImperiumRow.deckZone, zone.getPosition(), Vector(0, 180, 0))
         end
     end)
-    ImperiumRow._staticSetUp()
+    ImperiumRow._transientSetUp()
 end
 
 ---
-function ImperiumRow._staticSetUp()
+function ImperiumRow._transientSetUp()
     for i, zone in ipairs(ImperiumRow.slotZones) do
         AcquireCard.new(zone, "Imperium", PlayBoard.withLeader(function (_, color)
             local leader = PlayBoard.getLeader(color)

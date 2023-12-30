@@ -39,7 +39,7 @@ local TechCard = {
 
 ---
 function TechMarket.onLoad(state)
-    --Helper.dumpFunction("TechMarket.onLoad(...)")
+    --Helper.dumpFunction("TechMarket.onLoad")
 
     Helper.append(TechMarket, Helper.resolveGUIDs(false, {
         board = "d75455",
@@ -70,14 +70,14 @@ end
 function TechMarket.setUp(settings)
     if settings.riseOfIx then
         TechMarket.hagalSoloModeEnabled = settings.numberOfPlayers == 1
-        TechMarket._staticSetUp()
+        TechMarket._transientSetUp()
     else
         TechMarket._tearDown()
     end
 end
 
 ---
-function TechMarket._staticSetUp()
+function TechMarket._transientSetUp()
     for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
         if not Commander.isCommander(color) then
             TechMarket.negotiationParks[color] = TechMarket._createNegotiationPark(color)

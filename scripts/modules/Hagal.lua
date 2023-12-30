@@ -41,7 +41,7 @@ local Rival = Helper.createClass(Action, {
 
 ---
 function Hagal.onLoad(state)
-    --Helper.dumpFunction("Hagal.onLoad(...)")
+    --Helper.dumpFunction("Hagal.onLoad")
 
     if not state.settings or state.settings.numberOfPlayers < 3 then
         Helper.append(Hagal, Helper.resolveGUIDs(true, {
@@ -50,7 +50,7 @@ function Hagal.onLoad(state)
     end
 
     if state.settings and state.settings.numberOfPlayers < 3 then
-        Hagal._staticSetUp(state.settings)
+        Hagal._transientSetUp(state.settings)
     end
 end
 
@@ -62,14 +62,14 @@ end
 ---
 function Hagal.setUp(settings)
     if settings.numberOfPlayers < 3 then
-        Hagal._staticSetUp(settings)
+        Hagal._transientSetUp(settings)
     else
         Hagal._tearDown()
     end
 end
 
 ---
-function Hagal._staticSetUp(settings)
+function Hagal._transientSetUp(settings)
     Hagal.numberOfPlayers = settings.numberOfPlayers
     Hagal.difficulty = settings.difficulty
     Hagal.riseOfIx = settings.riseOfIx

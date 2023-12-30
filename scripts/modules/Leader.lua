@@ -56,7 +56,7 @@ Leader.vladimirHarkonnen = Helper.createClass(Leader, {
     signetRing = function (color)
         local leader = PlayBoard.getLeader(color)
         return leader.resources(color, "solari", -1) and Action.drawIntrigues(color, 1)
-    end,
+    end
 })
 
 Leader.glossuRabban = Helper.createClass(Leader, {
@@ -95,7 +95,7 @@ Leader.ilbanRichese = Helper.createClass(Leader, {
             leader.drawImperiumCards(color, 1)
         end
         return success
-    end,
+    end
 })
 
 Leader.helenaRichese = Helper.createClass(Leader, {
@@ -141,7 +141,7 @@ Leader.letoAtreides = Helper.createClass(Leader, {
             finalAmount = amount + 1
         end
         return Action.resources(color, resourceName, finalAmount)
-    end,
+    end
 })
 
 Leader.paulAtreides = Helper.createClass(Leader, {
@@ -188,7 +188,7 @@ Leader.paulAtreides = Helper.createClass(Leader, {
     signetRing = function (color)
         local leader = PlayBoard.getLeader(color)
         return leader.drawImperiumCards(color, 1)
-    end,
+    end
 })
 
 Leader.arianaThorvald = Helper.createClass(Leader, {
@@ -211,7 +211,7 @@ Leader.arianaThorvald = Helper.createClass(Leader, {
             continuation.run(success)
         end)
         return continuation
-    end,
+    end
 })
 
 Leader.memnonThorvald = Helper.createClass(Leader, {
@@ -233,7 +233,7 @@ Leader.memnonThorvald = Helper.createClass(Leader, {
     signetRing = function (color, spaceName)
         local leader = PlayBoard.getLeader(color)
         return leader.resources(color, "spice", 1)
-    end,
+    end
 })
 
 Leader.armandEcaz = Helper.createClass(Leader, {
@@ -245,7 +245,7 @@ Leader.ilesaEcaz = Helper.createClass(Leader, {
     signetRing = function (color)
         local leader = PlayBoard.getLeader(color)
         return leader.resources(color, "solari", -1) and Action.acquireFoldspace(color)
-    end,
+    end
 })
 
 Leader.rhomburVernius = Helper.createClass(Leader, {
@@ -305,8 +305,7 @@ Leader.tessiaVernius = Helper.createClass(Leader, {
         local leader = PlayBoard.getLeader(color)
         leader.influence(color, nil, -1)
         leader.influence(color, nil, 1)
-    end,
-
+    end
 })
 
 Leader.yunaMoritani = Helper.createClass(Leader, {
@@ -334,7 +333,7 @@ Leader.yunaMoritani = Helper.createClass(Leader, {
             and leader.influence(color, nil, 1)
             and leader.troop(color, "supply", "garrison", 1)
             and leader.resources(color, "spice", 1)
-    end,
+    end
 })
 
 Leader.hundroMoritani = Helper.createClass(Leader, {
@@ -358,10 +357,9 @@ Leader.hundroMoritani = Helper.createClass(Leader, {
 
 Leader.stabanTuek = Helper.createClass(Leader, {
 
+    --- Limited allies
     prepare = function (color, settings)
         Action.prepare(color, settings)
-
-        --- Limited allies
         local drawDeck = PlayBoard.getDrawDeck(color)
         if drawDeck then
             for i, card in ipairs(drawDeck.getObjects()) do
@@ -390,7 +388,6 @@ Leader.stabanTuek = Helper.createClass(Leader, {
             end
         end)
     end
-
 })
 
 Leader.amberMetulli = Helper.createClass(Leader, {
@@ -410,7 +407,7 @@ Leader.gurneyHalleck = Helper.createClass(Leader, {
                 end
             end
         end)
-    end,
+    end
 })
 
 Leader.margotFenring = Helper.createClass(Leader, {
@@ -433,7 +430,7 @@ Leader.margotFenring = Helper.createClass(Leader, {
         else
             return Action.influence(color, faction, amount)
         end
-    end,
+    end
 })
 
 Leader.irulanCorrino = Helper.createClass(Leader, {
@@ -456,7 +453,7 @@ Leader.irulanCorrino = Helper.createClass(Leader, {
         else
             return Action.influence(color, faction, amount)
         end
-    end,
+    end
 })
 
 -- FIXME Just "Jessica" actually.
@@ -467,7 +464,6 @@ Leader.jessicaAtreides = Helper.createClass(Leader, {
         local leaderCard = PlayBoard.findLeaderCard(color)
 
         local otherMemories = function ()
-            -- FIXME name / GM notes are both used
             Leader.jessicaAtreides.name = "reverendMotherJessica"
             leaderCard.setGMNotes(Leader.jessicaAtreides.name)
             leaderCard.setName(I18N(Leader.jessicaAtreides.name))
@@ -496,7 +492,7 @@ Leader.jessicaAtreides = Helper.createClass(Leader, {
                 tooltip = I18N("otherMemoriesTooltip"),
             })
         end)
-   end,
+   end
 })
 
 Leader.feydRauthaHarkonnen = Helper.createClass(Leader, {
@@ -537,7 +533,6 @@ Leader.feydRauthaHarkonnen = Helper.createClass(Leader, {
 
 Leader.shaddamCorrino = Helper.createClass(Leader, {
 
-    --- Sardaukar commander
     prepare = function (color, settings, asCommander)
         if not asCommander then
             Action.prepare(color, settings)
@@ -548,6 +543,7 @@ Leader.shaddamCorrino = Helper.createClass(Leader, {
             end
         end
 
+        --- Sardaukar commander
         local leaderCard = PlayBoard.findLeaderCard(color)
         local position = leaderCard.getPosition()
         ChoamContractMarket.takeAnySardaukarContract(position + Vector(-1.2, 1, 0))
@@ -568,6 +564,5 @@ Leader.muadDib = Helper.createClass(Leader, {
         end
     end
 })
-
 
 return Leader

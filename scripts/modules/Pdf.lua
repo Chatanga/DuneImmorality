@@ -12,7 +12,7 @@ local Pdf = {
 
 ---
 function Pdf.onLoad()
-    --Helper.dumpFunction("Pdf.onLoad(...)")
+    --Helper.dumpFunction("Pdf.onLoad")
     Pdf.fr = require("fr.Pdf")
     Pdf.en = require("en.Pdf")
 end

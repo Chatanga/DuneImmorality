@@ -12,7 +12,7 @@ local ThroneRow = {}
 
 ---
 function ThroneRow.onLoad(state)
-    --Helper.dumpFunction("ThroneRow.onLoad(...)")
+    --Helper.dumpFunction("ThroneRow.onLoad")
 
     Helper.append(ThroneRow, Helper.resolveGUIDs(false, {
         slotZones = {
@@ -24,21 +24,21 @@ function ThroneRow.onLoad(state)
     }))
 
     if state.settings and state.settings.numberOfPlayers == 6 then
-        ThroneRow._staticSetUp()
+        ThroneRow._transientSetUp()
     end
 end
 
 ---
 function ThroneRow.setUp(settings)
     if settings.numberOfPlayers == 6 then
-        ThroneRow._staticSetUp()
+        ThroneRow._transientSetUp()
     else
         ThroneRow._tearDown()
     end
 end
 
 ---
-function ThroneRow._staticSetUp()
+function ThroneRow._transientSetUp()
     ThroneRow.acquireCards = {}
     for i, zone in ipairs(ThroneRow.slotZones) do
         local acquireCard = AcquireCard.new(zone, "Imperium", PlayBoard.withLeader(function (_, color)

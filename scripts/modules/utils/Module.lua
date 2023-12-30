@@ -3,7 +3,7 @@ local Module = {
     registeredModuleRedirections = {},
 }
 
----
+--- 
 function Module.registerModules(modulesByName)
     Module.modulesByName = Module._registerModules("", modulesByName)
     return Module._lazyRequireAll("", modulesByName)

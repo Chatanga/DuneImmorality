@@ -739,7 +739,7 @@ end
 
 ---
 function PlayBoard.onLoad(state)
-    --Helper.dumpFunction("PlayBoard.onLoad(...)")
+    --Helper.dumpFunction("PlayBoard.onLoad")
 
     for color, unresolvedContent in pairs(PlayBoard.unresolvedContentByColor) do
         local alive = true
@@ -755,7 +755,7 @@ function PlayBoard.onLoad(state)
     PlayBoard.unresolvedContentByColor = nil
 
     if state.settings then
-        PlayBoard._staticSetUp(state.settings)
+        PlayBoard._transientSetUp(state.settings)
     end
 end
 
@@ -868,8 +868,6 @@ function PlayBoard.new(color, unresolvedContent, state, subState)
                     end
                 end
                 playBoard.leader.setUp(color, state.settings)
-            else
-                log("Restoring a save done after the set up and before the leaders have been selected is not supported!")
             end
         end)
 
@@ -1020,7 +1018,7 @@ function PlayBoard.setUp(settings, activeOpponents)
         end
     end
 
-    PlayBoard._staticSetUp(settings)
+    PlayBoard._transientSetUp(settings)
 
     if PlayBoard.tq then
         local continuation = Helper.createContinuation("PlayBoard.setUp")
@@ -1032,7 +1030,7 @@ function PlayBoard.setUp(settings, activeOpponents)
 end
 
 ---
-function PlayBoard._staticSetUp(settings)
+function PlayBoard._transientSetUp(settings)
     PlayBoard.autoRevealEnabled = settings.assistedRevelation or getObjectFromGUID('a7fd90') ~= nil
 
     Helper.registerEventListener("phaseStart", function (phase, firstPlayer)
@@ -2442,8 +2440,8 @@ end
 
 ---
 function PlayBoard.getLeaderName(color)
-    local leader = PlayBoard.findLeaderCard(color)
-    return leader and leader.getName() or "?"
+    local leaderCard = PlayBoard.findLeaderCard(color)
+    return leaderCard and leaderCard.getName() or "?"
 end
 
 ---

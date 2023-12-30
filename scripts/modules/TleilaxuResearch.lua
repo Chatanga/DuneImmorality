@@ -51,7 +51,7 @@ local TleilaxuResearch = {
 
 ---
 function TleilaxuResearch.onLoad(state)
-    --Helper.dumpFunction("TleilaxuResearch.onLoad(...)")
+    --Helper.dumpFunction("TleilaxuResearch.onLoad")
 
     Helper.append(TleilaxuResearch, Helper.resolveGUIDs(false, {
         board = "d5c2db",
@@ -79,7 +79,7 @@ function TleilaxuResearch.onLoad(state)
     end
 
     if state.settings and state.settings.immortality then
-        TleilaxuResearch._staticSetUp()
+        TleilaxuResearch._transientSetUp()
     end
 end
 
@@ -96,14 +96,14 @@ end
 ---
 function TleilaxuResearch.setUp(settings)
     if settings.immortality then
-        TleilaxuResearch._staticSetUp()
+        TleilaxuResearch._transientSetUp()
     else
         TleilaxuResearch._tearDown()
     end
 end
 
 ---
-function TleilaxuResearch._staticSetUp()
+function TleilaxuResearch._transientSetUp()
 
     TleilaxuResearch.researchTokenOrigin = TleilaxuResearch._getAveragePosition("researchTokenInitalPosition")
     TleilaxuResearch._generateResearchButtons()

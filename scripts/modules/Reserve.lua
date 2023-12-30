@@ -9,7 +9,7 @@ local Reserve = {}
 
 ---
 function Reserve.onLoad(state)
-    --Helper.dumpFunction("Reserve.onLoad(...)")
+    --Helper.dumpFunction("Reserve.onLoad")
 
     Helper.append(Reserve, Helper.resolveGUIDs(false, {
         foldspaceSlotZone = "6b62e0",
@@ -18,7 +18,7 @@ function Reserve.onLoad(state)
     }))
 
     if state.settings then
-        Reserve._staticSetUp()
+        Reserve._transientSetUp()
     end
 end
 
@@ -31,11 +31,11 @@ function Reserve.setUp()
     end
     Deck.generateSpecialDeck(Reserve.prepareTheWaySlotZone, "uprising", "prepareTheWay")
     Deck.generateSpecialDeck(Reserve.theSpiceMustFlowSlotZone, "uprising", "theSpiceMustFlowNew")
-    Reserve._staticSetUp()
+    Reserve._transientSetUp()
 end
 
 ---
-function Reserve._staticSetUp()
+function Reserve._transientSetUp()
     if false then
         Reserve.foldspace = AcquireCard.new(Reserve.foldspaceSlotZone, "Imperium", PlayBoard.withLeader(function (_, color)
             local leader = PlayBoard.getLeader(color)
