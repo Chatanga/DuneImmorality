@@ -314,7 +314,7 @@ function LeaderSelection._setUpPicking(autoStart, random, hidden)
     end
 
     if random then
-        assert(LeaderSelection.stage == Stage.INITIALIZED)
+        assert(LeaderSelection.stage == Stage.STARTED)
         Helper.registerEventListener("playerTurns", function (phase, color)
             if phase == 'leaderSelection' then
                 if PlayBoard.isRival(color) then
