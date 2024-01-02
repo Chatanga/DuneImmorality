@@ -223,7 +223,7 @@ function InfluenceTrack.recallSnooper(faction, color)
         Helper.noPlay(foundSnooper)
         foundSnooper.setPositionSmooth(p)
 
-        Helper.onceTimeElapsed(1).doAfter(function()
+        Helper.onceTimeElapsed(1).doAfter(function ()
             local parameters = { withFaction = I18N(Helper.toCamelCase("with", faction)) }
             local leader = PlayBoard.getLeader(color)
             if snooperRank == 1 then

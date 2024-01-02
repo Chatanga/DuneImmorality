@@ -2,6 +2,7 @@ local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local AcquireCard = require("utils.AcquireCard")
 local I18N = require("utils.I18N")
+local Dialog = require("utils.Dialog")
 
 local Deck = Module.lazyRequire("Deck")
 local PlayBoard = Module.lazyRequire("PlayBoard")
@@ -85,7 +86,7 @@ function TleilaxuRow.acquireTleilaxuCard(indexInRow, color)
                 I18N("troops"),
                 I18N("beetle"),
             }
-            Player[color].showOptionsDialog(I18N("reclaimedForces"), options, 1, function (_, index, _)
+            Dialog.showOptionsDialog(color, I18N("reclaimedForces"), options, function (index)
                 if index == 1 then
                     leader.troops(color, "tanks", "supply", price)
                     leader.troops(color, "supply", "garrison", 2)

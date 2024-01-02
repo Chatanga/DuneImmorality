@@ -799,7 +799,7 @@ end
 ---
 function Helper.removeButtons(object, indexes)
     local orderedIndexes = indexes
-    table.sort(orderedIndexes, function(a, b) return a > b end)
+    table.sort(orderedIndexes, function (a, b) return a > b end)
     local previousIndex
     for _, index in ipairs(indexes) do
         assert(not previousIndex or previousIndex > index)
@@ -828,10 +828,14 @@ function Helper.createContinuation(name)
     ---@field finish function
     ---@field run function
     ---@field cancel function
+    ---@field forget function
 
     local continuation = {
         name = name,
         start = Time.time,
+        canceled = false,
+        done = false,
+        actions = {},
         what = function ()
             return "continuation"
         end
@@ -846,21 +850,21 @@ function Helper.createContinuation(name)
         end
     end
 
-    continuation.actions = {}
-
     continuation.doAfter = function (action)
         assert(type(action) == 'function')
         if continuation.done then
-            action(continuation.parameters)
+            if not continuation.canceled then
+                action(table.unpack(continuation.parameters))
+            end
         else
             table.insert(continuation.actions, action)
         end
     end
 
-    continuation.next = function (parameters)
-        continuation.parameters = parameters
+    continuation.next = function (...)
+        continuation.parameters = {...}
         for _, action in ipairs(continuation.actions) do
-            action(parameters)
+            action(...)
         end
     end
 
@@ -869,13 +873,18 @@ function Helper.createContinuation(name)
         continuation.done = true
     end
 
-    continuation.run = function (parameters)
-        continuation.next(parameters)
+    continuation.run = function (...)
+        continuation.next(...)
         continuation.finish()
     end
 
     continuation.cancel = function ()
+        continuation.canceled = true
         continuation.finish()
+    end
+
+    continuation.forget = function ()
+        Helper.pendingContinuations[continuation] = nil
     end
 
     Helper.pendingContinuations[continuation] = true
@@ -887,7 +896,7 @@ end
 ---@return Continuation
 function Helper.onceStabilized(timeout)
     local continuation = Helper.createContinuation("Helper.onceStabilized")
-    Helper.pendingContinuations[continuation] = nil
+    continuation.forget()
 
     local start = os.time()
     local delayed = false
@@ -924,7 +933,7 @@ function Helper.isStabilized(beQuiet)
                     log("Pending continuation: " .. continuation.name)
                     continuation.tick(function ()
                         log("Forgetting the pending continuation on timeout")
-                        Helper.pendingContinuations[continuation] = nil
+                        continuation.forget()
                     end)
                 end
                 count = count + 1
@@ -940,11 +949,11 @@ function Helper.onceMotionless(object)
     local continuation = Helper.createContinuation("Helper.onceMotionless")
     -- Wait 1 frame for the movement to start.
     Wait.time(function ()
-        Wait.condition(function()
+        Wait.condition(function ()
             Wait.time(function ()
                 continuation.run(object)
             end, Helper.MINIMAL_DURATION)
-        end, function()
+        end, function ()
             continuation.tick()
             return object.resting
         end)
@@ -1003,9 +1012,9 @@ function Helper.onceOneDeck(zone)
         maxCardCount = math.max(maxCardCount, Helper.getCardCount(deckOrCard))
     end
 
-    Wait.condition(function()
+    Wait.condition(function ()
         continuation.run(Helper.getDeck(zone))
-    end, function()
+    end, function ()
         local deckOrCards = getDecksOrCards()
         if #deckOrCards == 1 then
             local deckOrCard = deckOrCards[1]
@@ -1332,7 +1341,7 @@ function Helper.createCoalescentQueue(separationDelay, coalesce, handle)
             cq.continuation.cancel()
         end
         cq.continuation = Helper.createContinuation("Helper.createCoalescentQueue")
-        cq.continuation.doAfter(function()
+        cq.continuation.doAfter(function ()
             assert(cq.lastEvent)
             cq.delayedHandler = nil
             local event = cq.lastEvent

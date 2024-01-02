@@ -47,7 +47,7 @@ Leader.vladimirHarkonnen = Helper.createClass(Leader, {
         end)
     end,
 
-    tearDown = function()
+    tearDown = function ()
         local tokenBag = getObjectFromGUID('f89231')
         tokenBag.destruct()
     end,
@@ -135,12 +135,12 @@ Leader.helenaRichese = Helper.createClass(Leader, {
 Leader.letoAtreides = Helper.createClass(Leader, {
 
     --- Landsraad popularity
-    resources = function (color, resourceName, amount)
+    bargain = function (color, resourceName, amount)
         local finalAmount = amount
         if resourceName == "solari" and amount < 0 and Action.checkContext({ phase = "playerTurns", color = color, space = MainBoard.isLandsraadSpace }) then
             finalAmount = amount + 1
         end
-        return Action.resources(color, resourceName, finalAmount)
+        return finalAmount
     end
 })
 
@@ -202,13 +202,13 @@ Leader.arianaThorvald = Helper.createClass(Leader, {
     --- Spice addict
     sendAgent = function (color, spaceName, recallSpy)
         local continuation = Helper.createContinuation("Leader.arianaThorvald.sendAgent")
-        Action.sendAgent(color, spaceName, recallSpy).doAfter(function (success)
-            if success and MainBoard.isDesertSpace(spaceName) then
+        Action.sendAgent(color, spaceName, recallSpy).doAfter(function ()
+            if MainBoard.isDesertSpace(spaceName) then
                 local leader = PlayBoard.getLeader(color)
                 leader.resources(color, "spice", -1)
                 leader.drawImperiumCards(color, 1)
             end
-            continuation.run(success)
+            continuation.run()
         end)
         return continuation
     end
@@ -219,12 +219,12 @@ Leader.memnonThorvald = Helper.createClass(Leader, {
     --- Connections
     sendAgent = function (color, spaceName, recallSpy)
         local continuation = Helper.createContinuation("Leader.memnonThorvald.sendAgent")
-        Action.sendAgent(color, spaceName, recallSpy).doAfter(function (success)
-            if success and spaceName == "highCouncil" then
+        Action.sendAgent(color, spaceName, recallSpy).doAfter(function ()
+            if spaceName == "highCouncil" then
                 local leader = PlayBoard.getLeader(color)
                 leader.influence(color, nil, 1)
             end
-            continuation.run(success)
+            continuation.run()
         end)
         return continuation
     end,

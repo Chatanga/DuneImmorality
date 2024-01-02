@@ -41,7 +41,7 @@ function LeaderSelection.onLoad(state)
         secondaryTable = "662ced",
     }))
 
-    if state.settings and state.LeaderSelection.stage ~= Stage.DONE then
+    if state.settings then
         LeaderSelection._transientSetUp(
             state.settings,
             state.LeaderSelection.players,
@@ -104,10 +104,12 @@ end
 
 ---
 function LeaderSelection._transientSetUp(settings, players, stage)
-    assert(stage == Stage.INITIALIZED or stage == Stage.STARTED)
-
     LeaderSelection.players = players
     LeaderSelection.stage = stage
+
+    if LeaderSelection.stage == Stage.DONE then
+        return
+    end
 
     local autoStart = not settings.tweakLeaderSelection
     local testSetUp = type(settings.leaderSelection) == "table"
@@ -193,6 +195,7 @@ function LeaderSelection._setUpTest(players, leaderNames)
         end
     end
 
+    LeaderSelection.stage = Stage.DONE
     TurnControl.start()
 end
 

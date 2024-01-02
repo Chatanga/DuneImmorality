@@ -3,7 +3,7 @@ local Module = {
     registeredModuleRedirections = {},
 }
 
---- 
+---
 function Module.registerModules(modulesByName)
     Module.modulesByName = Module._registerModules("", modulesByName)
     return Module._lazyRequireAll("", modulesByName)
@@ -48,7 +48,7 @@ function Module.lazyRequire(name)
     local meta = {
         module = nil
     }
-    meta.__index = function(_, key)
+    meta.__index = function (_, key)
         if not meta.module then
             meta.module = Module._resolveModule(name)
         end

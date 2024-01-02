@@ -49,7 +49,7 @@ end
 function Intrigue.drawIntrigue(color, amount)
     Types.assertIsPositiveInteger(amount)
     local spaceInfo = Intrigue._getSpaceInfo(color)
-    Helper.onceTimeElapsed(0.25, amount).doAfter(function()
+    Helper.onceTimeElapsed(0.25, amount).doAfter(function ()
         Helper.moveCardFromZone(Intrigue.deckZone, spaceInfo.position, spaceInfo.rotation, false, true)
     end)
 end
@@ -65,7 +65,7 @@ function Intrigue.stealIntrigue(color, otherColor, amount)
     Helper.shuffle(intrigues)
 
     local spaceInfo = Intrigue._getSpaceInfo(color)
-    Helper.onceTimeElapsed(0.25, realAmount).doAfter(function() -- Why?
+    Helper.onceTimeElapsed(0.25, realAmount).doAfter(function () -- Why?
         local card = table.remove(intrigues, 1)
         card.setPosition(spaceInfo.position)
         card.setRotation(spaceInfo.rotation)

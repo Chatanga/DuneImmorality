@@ -2,6 +2,7 @@ local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local Park = require("utils.Park")
 local I18N = require("utils.I18N")
+local Dialog = require("utils.Dialog")
 
 local Types = Module.lazyRequire("Types")
 local PlayBoard = Module.lazyRequire("PlayBoard")
@@ -17,7 +18,7 @@ local Music = Module.lazyRequire("Music")
 
 local MainBoard = {
     spaceDetails = {
-        sardaukar = { group = "emperor", posts = { "emperor" } },
+        sardaukar = { group = "emperor", posts = { "emperor" }, spyRecallSensitive = true },
         vastWealth = { group = "emperor", posts = { "emperor" } },
         dutifulService = { group = "emperor", posts = { "emperor" } },
 
@@ -27,42 +28,42 @@ local MainBoard = {
         heighliner = { group = "spacingGuild", combat = true, posts = { "spacingGuild" } },
         deliverSupplies = { group = "spacingGuild", posts = { "spacingGuild" } },
 
-        espionage = { group = "beneGesserit", posts = { "beneGesserit" } },
-        secrets = { group = "beneGesserit", posts = { "beneGesserit" } },
+        espionage = { group = "beneGesserit", posts = { "beneGesserit" }, spyRecallSensitive = true },
+        secrets = { group = "beneGesserit", posts = { "beneGesserit" }, spyRecallSensitive = true },
 
-        controversialTechnology = { group = "fringeWorlds", posts = { "fringeWorlds" } },
+        controversialTechnology = { group = "fringeWorlds", posts = { "fringeWorlds" }, spyRecallSensitive = true },
         expedition = { group = "fringeWorlds", posts = { "fringeWorlds" } },
 
         desertTactics = { group = "fremen", combat = true, posts = { "fremen" } },
         fremkit = { group = "fremen", combat = true, posts = { "fremen" } },
         hardyWarriors = { group = "fremen", combat = true, posts = { "fremen" } },
-        desertMastery = { group = "fremen", combat = true, posts = { "fremen" } },
+        desertMastery = { group = "fremen", combat = true, posts = { "fremen" }, spyRecallSensitive = true },
 
-        highCouncil = { group = "landsraad", posts = { "landsraadCouncil1" } },
-        imperialPrivilege = { group = "landsraad", posts = { "landsraadCouncil1" } },
+        highCouncil = { group = "landsraad", posts = { "landsraadCouncil1" }, spyRecallSensitive = true },
+        imperialPrivilege = { group = "landsraad", posts = { "landsraadCouncil1" }, spyRecallSensitive = true },
         swordmaster = { group = "landsraad", posts = { "landsraadCouncil1" } },
-        assemblyHall = { group = "landsraad", posts = { "landsraadCouncil2" } },
+        assemblyHall = { group = "landsraad", posts = { "landsraadCouncil2" }, spyRecallSensitive = true },
         gatherSupport = { group = "landsraad", posts = { "landsraadCouncil2" } },
 
         techNegotiation = { group = "ix", posts = {} },
         dreadnought = { group = "ix", posts = {} },
 
         shipping = { group = "choam", posts = { "choam" } },
-        acceptContract = { group = "choam", posts = { "choam" } },
+        acceptContract = { group = "choam", posts = { "choam" }, spyRecallSensitive = true },
 
         smuggling = { group = "choam", posts = {} },
         interstellarShipping = { group = "choam", posts = {} },
 
         sietchTabr = { group = "city", combat = true, posts = { "sietchTabrResearchStation" } },
-        researchStation = { group = "city", combat = true, posts = { "sietchTabrResearchStation", "researchStationSpiceRefinery" } },
+        researchStation = { group = "city", combat = true, posts = { "sietchTabrResearchStation", "researchStationSpiceRefinery" }, spyRecallSensitive = true },
         researchStationImmortality = { group = "city", combat = true, posts = {} },
         spiceRefinery = { group = "city", combat = true, posts = { "researchStationSpiceRefinery", "spiceRefineryArrakeen" } },
-        arrakeen = { group = "city", combat = true, posts = { "spiceRefineryArrakeen" } },
-        carthag = { group = "city", combat = true, posts = { "carthag" } },
+        arrakeen = { group = "city", combat = true, posts = { "spiceRefineryArrakeen" }, spyRecallSensitive = true },
+        carthag = { group = "city", combat = true, posts = { "carthag" }, spyRecallSensitive = true },
 
         deepDesert = { group = "desert", combat = true, posts = { "deepDesert" } },
         haggaBasin = { group = "desert", combat = true, posts = { "haggaBasin" } },
-        habbanyaErg = { group = "desert", combat = true, posts = { "habbanyaErg" } },
+        habbanyaErg = { group = "desert", combat = true, posts = { "habbanyaErg" }, spyRecallSensitive = true },
         imperialBasin = { group = "desert", combat = true, posts = { "imperialBasin" } },
     }
 }
@@ -251,17 +252,19 @@ end
 function MainBoard._transientSetUp(settings)
     MainBoard._processSnapPoints(settings)
 
-    MainBoard.shieldWallToken.clearButtons()
-    Helper.createAbsoluteButtonWithRoundness(MainBoard.shieldWallToken, 7, false, {
-        click_function = Helper.registerGlobalCallback(function (_, color, _)
-            MainBoard.blowUpShieldWall(color)
-        end),
-        position = MainBoard.shieldWallToken.getPosition() + Vector(0.2, 0.1, 0.2),
-        width = 800,
-        height = 800,
-        color = {0, 0, 0, 0},
-        tooltip = I18N("explosion")
-    })
+    if MainBoard.shieldWallToken then
+        MainBoard.shieldWallToken.clearButtons()
+        Helper.createAbsoluteButtonWithRoundness(MainBoard.shieldWallToken, 7, false, {
+            click_function = Helper.registerGlobalCallback(function (_, color, _)
+                MainBoard.blowUpShieldWall(color)
+            end),
+            position = MainBoard.shieldWallToken.getPosition() + Vector(0.2, 0.1, 0.2),
+            width = 800,
+            height = 800,
+            color = {0, 0, 0, 0},
+            tooltip = I18N("explosion")
+        })
+    end
 
     Helper.registerEventListener("phaseStart", function (phase)
         if phase == "makers" then
@@ -464,7 +467,7 @@ function MainBoard._createSpaceButton(space)
             if TurnControl.getCurrentPlayer() == color then
                 leader.sendAgent(color, space.name, altClick)
             else
-                broadcastToColor(I18N('noYourTurn'), color, "Purple")
+                broadcastToColor(I18N('notYourTurn'), color, "Purple")
             end
         end))
     end)
@@ -522,57 +525,59 @@ end
 function MainBoard.sendAgent(color, spaceName, recallSpy)
     local continuation = Helper.createContinuation("MainBoard.sendAgent")
 
-    local space = MainBoard.spaces[spaceName]
-    local parentSpace = MainBoard._findParentSpace(space)
-
-    local asyncActionName = Helper.toCamelCase("_asyncGo", space.name)
-    local actionName = Helper.toCamelCase("_go", space.name)
-
-    local asyncAction = MainBoard[asyncActionName]
-    local action = MainBoard[actionName]
-    local leader = PlayBoard.getLeader(color)
-
-    local agent = MainBoard.findProperAgent(color)
-
+    local agent = MainBoard._findProperAgent(color)
     if agent then
-        if recallSpy then
-            -- FIXME Should be done iif the action is successful.
-            MainBoard._recallSpy(color, leader, spaceName)
-        end
-        if asyncAction then
-            Helper.emitEvent("agentSent", color, spaceName)
-            Action.setContext("agentSent", spaceName)
-            asyncAction(color, leader).doAfter(function (success)
-                Action.setContext("agentSent", nil)
-                if success then
-                    Park.putObject(agent, parentSpace.park)
-                    continuation.run(true)
+        local space = MainBoard.spaces[spaceName]
+        local parentSpace = MainBoard._findParentSpace(space)
+
+        local goSpaceName = Helper.toCamelCase("_go", space.name)
+        local goSpace = MainBoard[goSpaceName]
+        local leader = PlayBoard.getLeader(color)
+
+        if goSpace then
+            local innerContinuation = Helper.createContinuation("MainBoard." .. goSpaceName)
+            goSpace(color, leader, innerContinuation)
+            innerContinuation.doAfter(function (action)
+                -- The innerContinuation never cancels (but return nil) to allow
+                -- us to cancel the root continuation.
+                if action then
+                    MainBoard._decideToGatherIntelligence(color, spaceName, recallSpy).doAfter(function (goAhead, spy)
+                        if goAhead then
+                            Helper.emitEvent("agentSent", color, spaceName)
+                            Action.setContext("agentSent", spaceName)
+                            Park.putObject(agent, parentSpace.park)
+                            if spy then
+                                -- TODO Log it one way or another.
+                                Park.putObject(spy, PlayBoard.getSpyPark(color))
+                                leader.drawImperiumCards(color, 1, true)
+                            end
+                            action()
+                            -- FIXME We are cheating here...
+                            Helper.onceTimeElapsed(1).doAfter(function ()
+                                Action.setContext("agentSent", nil)
+                            end)
+                            continuation.run()
+                        else
+                            continuation.cancel()
+                        end
+                    end)
                 else
-                    continuation.run(false)
+                    continuation.cancel()
                 end
             end)
-        elseif action then
-            Helper.emitEvent("agentSent", color, spaceName)
-            Action.setContext("agentSent", spaceName)
-            if action(color, leader) then
-                Action.setContext("agentSent", nil)
-                Park.putObject(agent, parentSpace.park)
-                continuation.run(true)
-            else
-                continuation.run(false)
-            end
         else
-            error("Unknow space action: " .. actionName)
+            error("Unknow go space function: " .. goSpaceName)
         end
     else
-        continuation.run(false)
+        broadcastToColor(I18N("noAgent"), color, "Purple")
+        continuation.cancel()
     end
 
     return continuation
 end
 
 ---
-function MainBoard.findProperAgent(color)
+function MainBoard._findProperAgent(color)
     local leftAlly = Commander.getLeftSeatedAlly(color)
     local rightAlly = Commander.getRightSeatedAlly(color)
     local agentPark = PlayBoard.getAgentPark(color)
@@ -625,37 +630,81 @@ function MainBoard.sendSpy(color, observationPostName)
 end
 
 ---
-function MainBoard._recallSpy(color, leader, spaceName)
-    Helper.dumpFunction("MainBoard._recallSpy", color, leader, spaceName)
+function MainBoard._decideToGatherIntelligence(color, spaceName, recallSpy)
+    --Helper.dumpFunction("MainBoard._decideToGatherIntelligence", color, spaceName, recallSpy)
+    local continuation = Helper.createContinuation("MainBoard._decideToGatherIntelligence")
+
+    local recallableSpies = MainBoard.getRecallableSpies(color, spaceName)
+
+    local hasCardsToDraw = PlayBoard.getDrawDeck(color) or PlayBoard.getDiscard(color)
+
+    local details = MainBoard.spaceDetails[spaceName]
+    assert(details, spaceName)
+    -- TODO Take care of special cases such as Ariana Thorvald ability?
+    local itMatters = details.spyRecallSensitive
+
+    if #recallableSpies == 0 or not hasCardsToDraw then
+        if recallSpy then
+            broadcastToAll(I18N('noSpyToRecallOrCardToDraw'), color, "Purple")
+            continuation.run(false)
+        else
+            continuation.run(true)
+        end
+    elseif recallSpy then
+        if #recallableSpies == 1 then
+            continuation.run(true, recallableSpies[1].spy)
+        else
+            local options = Helper.mapValues(recallableSpies, function (recallableSpy)
+                return I18N(recallableSpy.toSpaceName)
+            end)
+            Dialog.showOptionsAndCancelDialog(color, I18N("selectSpyToRecall"), options, continuation, function (index)
+                if index > 0 then
+                    continuation.run(true, recallableSpies[index].spy)
+                else
+                    continuation.run(false)
+                end
+            end)
+        end
+    elseif itMatters then
+        Dialog.showConfirmOrCancelDialog(color, I18N("confirmNotRecallingAnySpy"), continuation, function (confirmed)
+            continuation.run(confirmed)
+        end)
+    else
+        continuation.run(true)
+    end
+
+    return continuation
+end
+
+---
+function MainBoard.getRecallableSpies(color, spaceName)
     local details = MainBoard.spaceDetails[spaceName]
     assert(details, spaceName)
 
-    if PlayBoard.getDrawDeck(color) then
-        local recallableSpies = {}
-
-        for _, postName in ipairs(details.posts) do
-            local observationPost = MainBoard.observationPosts[postName]
-            assert(observationPost, postName)
-            for _, spy in ipairs(Park.getObjects(observationPost.park)) do
-                if spy.hasTag(color) then
-                    table.insert(recallableSpies, spy)
-                    break
-                end
+    local findConnectedSpaceName = function (postName)
+        for otherSpaceName, otherDetails in pairs(MainBoard.spaceDetails) do
+            if otherSpaceName ~= spaceName and Helper.isElementOf(postName, otherDetails.posts) then
+                return otherSpaceName
             end
         end
+        return nil
+    end
 
-        local continuation = Helper.createContinuation("MainBoard._recallSpy")
-        if #recallableSpies >= 1 then
-            if #recallableSpies > 1 then
-                log("Selecting an arbitrary spy at the research station.")
+    local recallableSpies = {}
+    for _, postName in ipairs(details.posts) do
+        local observationPost = MainBoard.observationPosts[postName]
+        assert(observationPost, postName)
+        for _, spy in ipairs(Park.getObjects(observationPost.park)) do
+            if spy.hasTag(color) then
+                table.insert(recallableSpies, {
+                    toSpaceName = findConnectedSpaceName(postName),
+                    spy = spy,
+                })
+                break
             end
-            local spyPark = PlayBoard.getSpyPark(color)
-            Park.putObject(recallableSpies[1], spyPark)
-            leader.drawImperiumCards(color, 1)
-        else
-            continuation.cancel()
         end
     end
+    return recallableSpies
 end
 
 ---
@@ -672,487 +721,565 @@ function MainBoard.sendRivalAgent(color, spaceName)
 end
 
 ---
-function MainBoard._goFremkit(color, leader)
-    leader.drawImperiumCards(color, 1)
-    leader.influence(color, "fremen", 1, true)
+function MainBoard._hasResource(leader, color, resourceName, amount)
+    local realAmount = leader.bargain(color, resourceName, amount)
+    return PlayBoard.getResource(color, resourceName):get() >= realAmount
+end
+
+---
+function MainBoard._checkGenericAccess(color, leader, requirements)
+    for resourceName, amount in pairs(requirements) do
+        if not MainBoard._hasResource(leader, color, resourceName, amount) then
+            broadcastToColor(I18N("noResource", { resource = I18N(resourceName .. "Amount") }), color, "Purple")
+            return false
+        end
+    end
     return true
 end
 
 ---
-function MainBoard._goDesertTactics(color, leader)
-    if leader.resources(color, "water", -1) then
-        leader.troops(color, "supply", "garrison", 1)
+function MainBoard._goFremkit(color, leader, continuation)
+    continuation.run(function ()
+        leader.drawImperiumCards(color, 1)
         leader.influence(color, "fremen", 1, true)
-        return true
+    end)
+end
+
+---
+function MainBoard._goDesertTactics(color, leader, continuation)
+    if MainBoard._checkGenericAccess(color, leader, { water = 1 }) then
+        continuation.run(function ()
+            leader.resources(color, "water", -1)
+            leader.troops(color, "supply", "garrison", 1)
+            leader.influence(color, "fremen", 1, true)
+        end)
     else
-        return false
+        continuation.run()
     end
 end
 
 ---
-function MainBoard._goSecrets(color, leader)
-    leader.drawIntrigues(color, 1)
-    for _, otherColor in ipairs(PlayBoard.getActivePlayBoardColors()) do
-        if otherColor ~= color then
-            if #PlayBoard.getIntrigues(otherColor) > 3 then
-                leader.stealIntrigue(color, otherColor, 1)
+function MainBoard._goSecrets(color, leader, continuation)
+    continuation.run(function ()
+        leader.drawIntrigues(color, 1)
+        for _, otherColor in ipairs(PlayBoard.getActivePlayBoardColors()) do
+            if otherColor ~= color then
+                if #PlayBoard.getIntrigues(otherColor) > 3 then
+                    leader.stealIntrigue(color, otherColor, 1)
+                end
             end
         end
-    end
-    leader.influence(color, "beneGesserit", 1)
-    return true
-end
-
----
-function MainBoard._goEspionage(color, leader)
-    if leader.resources(color, "spice", -1) then
-        leader.drawImperiumCards(color, 1)
         leader.influence(color, "beneGesserit", 1)
-        return true
+    end)
+end
+
+---
+function MainBoard._goEspionage(color, leader, continuation)
+    if MainBoard._checkGenericAccess(color, leader, { spice = 1 }) then
+        continuation.run(function ()
+            leader.resources(color, "spice", -1)
+            leader.drawImperiumCards(color, 1)
+            leader.influence(color, "beneGesserit", 1)
+        end)
     else
-        return false
+        continuation.run()
     end
 end
 
 ---
-function MainBoard._goDeliverSupplies(color, leader)
-    leader.resources(color, "water", 1)
-    leader.influence(color, "spacingGuild", 1)
-    return true
-end
-
----
-function MainBoard._goHeighliner(color, leader)
-    if leader.resources(color, "spice", -5) then
-        leader.troops(color, "supply", "garrison", 5)
+function MainBoard._goDeliverSupplies(color, leader, continuation)
+    continuation.run(function ()
+        leader.resources(color, "water", 1)
         leader.influence(color, "spacingGuild", 1)
-        return true
+    end)
+end
+
+---
+function MainBoard._goHeighliner(color, leader, continuation)
+    if MainBoard._checkGenericAccess(color, leader, { spice = 5 }) then
+        continuation.run(function ()
+            leader.resources(color, "spice", -5)
+            leader.troops(color, "supply", "garrison", 5)
+            leader.influence(color, "spacingGuild", 1)
+        end)
     else
-        return false
+        continuation.run()
     end
 end
 
 ---
-function MainBoard._goDutifulService(color, leader)
+function MainBoard._goDutifulService(color, leader, continuation)
     assert(TurnControl.getPlayerCount() < 6)
-    leader.influence(color, "emperor", 1, true)
-    return true
+    continuation.run(function ()
+        leader.influence(color, "emperor", 1, true)
+    end)
 end
 
---- Used in both 4P and 6P modes.
-function MainBoard._goSardaukar(color, leader)
+---
+function MainBoard._goSardaukar(color, leader, continuation)
+    -- Used in both 4P and 6P modes.
     if TurnControl.getPlayerCount() < 6 or Commander.isShaddam(color) then
-        local cost = TurnControl.getPlayerCount() == 6 and 3 or 4
-        if leader.resources(color, "spice", -cost) then
-            leader.troops(color, "supply", "garrison", 4)
-            leader.drawIntrigues(color, 1)
-            leader.influence(color, "emperor", 1, true)
-            return true
+        if MainBoard._checkGenericAccess(color, leader, { spice = MainBoard.getSardaukarCost() }) then
+            continuation.run(function ()
+                leader.resources(color, "spice", -MainBoard.getSardaukarCost())
+                leader.troops(color, "supply", "garrison", 4)
+                leader.drawIntrigues(color, 1)
+                leader.influence(color, "emperor", 1, true)
+            end)
         else
-            return false
+            continuation.run()
         end
+    else
+        broadcastToColor(I18N("forbiddenAccess"), color, "Purple")
+        continuation.run()
     end
 end
 
 ---
-function MainBoard._goVastWealth(color, leader)
+function MainBoard.getSardaukarCost()
+    return TurnControl.getPlayerCount() == 6 and 3 or 4
+end
+
+---
+function MainBoard._goVastWealth(color, leader, continuation)
     assert(TurnControl.getPlayerCount() == 6)
     if Commander.isShaddam(color) then
-        leader.resources(color, "solari", 3)
-        leader.influence(color, "emperor", 1, true)
-        return true
+        continuation.run(function ()
+            leader.resources(color, "solari", 3)
+            leader.influence(color, "emperor", 1, true)
+        end)
     else
-        return false
+        broadcastToColor(I18N("forbiddenAccess"), color, "Purple")
+        continuation.run()
     end
 end
 
 ---
-function MainBoard._goMilitarySupport(color, leader)
+function MainBoard._goMilitarySupport(color, leader, continuation)
     assert(TurnControl.getPlayerCount() == 6)
-    if leader.resources(color, "spice", -2) then
+    if MainBoard._checkGenericAccess(color, leader, { spice = 2 }) then
+        continuation.run(function ()
+            leader.resources(color, "spice", -2)
+            leader.influence(color, "greatHouses", 1)
+        end)
+    else
+        continuation.run()
+    end
+end
+
+---
+function MainBoard._goEconomicSupport(color, leader, continuation)
+    assert(TurnControl.getPlayerCount() == 6)
+    continuation.run(function ()
+        leader.resources(color, "spice", 1)
         leader.influence(color, "greatHouses", 1)
-        return true
+    end)
+end
+
+---
+function MainBoard._goControversialTechnology(color, leader, continuation)
+    assert(TurnControl.getPlayerCount() == 6)
+    if MainBoard._checkGenericAccess(color, leader, { spice = 2 }) then
+        continuation.run(function ()
+            leader.resources(color, "spice", -2)
+            leader.drawImperiumCards(color, 1)
+            leader.drawIntrigues(color, 1)
+            leader.influence(color, "fringeWorlds", 1)
+        end)
     else
-        return false
+        continuation.run()
     end
 end
 
 ---
-function MainBoard._goEconomicSupport(color, leader)
+function MainBoard._goExpedition(color, leader, continuation)
     assert(TurnControl.getPlayerCount() == 6)
-    leader.resources(color, "spice", 1)
-    leader.influence(color, "greatHouses", 1)
-    return true
-end
-
----
-function MainBoard._goControversialTechnology(color, leader)
-    assert(TurnControl.getPlayerCount() == 6)
-    if leader.resources(color, "spice", -2) then
-        leader.drawImperiumCards(color, 1)
-        leader.drawIntrigues(color, 1)
+    continuation.run(function ()
         leader.influence(color, "fringeWorlds", 1)
-        return true
-    else
-        return false
-    end
+    end)
 end
 
 ---
-function MainBoard._goExpedition(color, leader)
+function MainBoard._goHardyWarriors(color, leader, continuation)
     assert(TurnControl.getPlayerCount() == 6)
-    leader.influence(color, "fringeWorlds", 1)
-    return true
-end
-
-function MainBoard._goHardyWarriors(color, leader)
-    assert(TurnControl.getPlayerCount() == 6)
-    if Commander.isMuadDib(color) then
-        if leader.resources(color, "water", -1) then
+    if not Commander.isMuadDib(color) then
+        broadcastToColor(I18N("forbiddenAccess"), color, "Purple")
+        continuation.run()
+    end
+    if MainBoard._checkGenericAccess(color, leader, { water = 1 }) then
+        continuation.run(function ()
+            leader.resources(color, "water", -1)
             leader.troops(color, "supply", "garrison", 2)
             leader.influence(color, "fremen", 1, true)
-            return true
-        else
-            return false
-        end
+        end)
     else
-        return false
+        continuation.run()
     end
 end
 
-function MainBoard._goDesertMastery(color, leader)
+function MainBoard._goDesertMastery(color, leader, continuation)
     assert(TurnControl.getPlayerCount() == 6)
     if Commander.isMuadDib(color) then
-        leader.drawImperiumCards(color, 1)
-        leader.resources(color, "spice", 1)
-        leader.influence(color, "fremen", 1, true)
-        return true
+        continuation.run(function ()
+            leader.drawImperiumCards(color, 1)
+            leader.resources(color, "spice", 1)
+            leader.influence(color, "fremen", 1, true)
+        end)
     else
-        return false
+        broadcastToColor(I18N("forbiddenAccess"), color, "Purple")
+        continuation.run()
     end
 end
 
 ---
-function MainBoard._goHighCouncil(color, leader)
-    if leader.resources(color, "solari", -5) then
-        if PlayBoard.hasHighCouncilSeat(color) then
-            leader.resources(color, "spice", 2)
-            leader.drawIntrigues(color, 1)
-            leader.troops(color, "supply", "garrison", 3)
-            return true
-        else
-            return leader.takeHighCouncilSeat(color)
-        end
+function MainBoard._goHighCouncil(color, leader, continuation)
+    if MainBoard._checkGenericAccess(color, leader, { solari = 5 }) then
+        continuation.run(function ()
+            leader.resources(color, "solari", -5)
+            if PlayBoard.hasHighCouncilSeat(color) then
+                leader.resources(color, "spice", 2)
+                leader.drawIntrigues(color, 1)
+                leader.troops(color, "supply", "garrison", 3)
+            else
+                leader.takeHighCouncilSeat(color)
+            end
+        end)
     else
-        return false
+        continuation.run()
     end
 end
 
 ---
-function MainBoard._goImperialPrivilege(color, leader)
-    if InfluenceTrack.hasFriendship(color, "emperor") and leader.resources(color, "solari", -3) then
-        leader.drawImperiumCards(color, 1)
-        return true
+function MainBoard._goImperialPrivilege(color, leader, continuation)
+    if not InfluenceTrack.hasFriendship(color, "emperor") then
+        broadcastToColor(I18N("noFriendship", { withFaction = I18N("withEmperor") }), color, "Purple")
+        continuation.run()
+    elseif MainBoard._checkGenericAccess(color, leader, { solari = 3 }) then
+        continuation.run(function ()
+            leader.resources(color, "solari", -3)
+            leader.drawImperiumCards(color, 1)
+        end)
     else
-        return false
+        continuation.run()
     end
 end
 
 ---
-function MainBoard._goSwordmaster(color, leader)
+function MainBoard._goSwordmaster(color, leader, continuation)
+    if PlayBoard.hasSwordmaster(color) then
+        broadcastToColor(I18N("alreadyHaveSwordmaster"), color, "Purple")
+        continuation.run()
+    elseif MainBoard._checkGenericAccess(color, leader, { solari = MainBoard._getSwordmasterCost() }) then
+        continuation.run(function ()
+            leader.resources(color, "solari", -MainBoard._getSwordmasterCost())
+            leader.recruitSwordmaster(color)
+        end)
+    else
+        continuation.run()
+    end
+end
+
+---
+function MainBoard._getSwordmasterCost()
     local firstAccess = #Helper.filter(PlayBoard.getActivePlayBoardColors(), PlayBoard.hasSwordmaster) == 0
-    if not PlayBoard.hasSwordmaster(color) and leader.resources(color, "solari", firstAccess and -8 or -6) then
-        leader.recruitSwordmaster(color)
-        return true
-    else
-        return false
-    end
+    return firstAccess and 8 or 6
 end
 
 ---
-function MainBoard._goAssemblyHall(color, leader)
-    leader.drawIntrigues(color, 1)
-    leader.resources(color, "persuasion", 1)
-    return true
+function MainBoard._goAssemblyHall(color, leader, continuation)
+    continuation.run(function ()
+        leader.drawIntrigues(color, 1)
+        leader.resources(color, "persuasion", 1)
+    end)
 end
 
 ---
-function MainBoard._asyncGoGatherSupport(color, leader)
-    local continuation = Helper.createContinuation("MainBoard._asyncGoGatherSupport")
-    if PlayBoard.getResource(color, "solari"):get() >= 2 then
+function MainBoard._goGatherSupport(color, leader, continuation)
+    if MainBoard._hasResource(leader, color, "solari", 2) then
         local options = {
             I18N("noWaterOption"),
             I18N("withWaterOption"),
         }
-        -- FIXME Pending continuation if the dialog is canceled.
-        Player[color].showOptionsDialog(I18N("goGatherSupport"), options, 1, function (_, index, _)
-            continuation.run(MainBoard._gatherSupport(color, leader, index == 2))
-        end)
-        return continuation
-    else
-        continuation.run(MainBoard._gatherSupport(color, leader, false))
-    end
-    return continuation
-end
-
----
-function MainBoard._goGatherSupport_NoWater(color, leader)
-    return MainBoard._gatherSupport(color, leader, false)
-end
-
----
-function MainBoard._goGatherSupport_WithWater(color, leader)
-    return MainBoard._gatherSupport(color, leader, true)
-end
-
----
-function MainBoard._gatherSupport(color, leader, withWater)
-    if not withWater or leader.resources(color, "solari", -2) then
-        leader.troops(color, "supply", "garrison", 2)
-        if withWater then
-            leader.resources(color, "water", 1)
-        end
-        return true
-    else
-        return false
-    end
-end
-
----
-function MainBoard._goShipping(color, leader)
-    if InfluenceTrack.hasFriendship(color, "spacingGuild") and leader.resources(color, "spice", -3) then
-        leader.resources(color, "solari", 5)
-        return true
-    else
-        return false
-    end
-end
-
----
-function MainBoard._goAcceptContract(color, leader)
-    return leader.drawImperiumCards(color, 1)
-end
-
-
----
-function MainBoard._goCarthag(color, leader)
-    leader.drawIntrigues(color, 1)
-    leader.troops(color, "supply", "garrison", 1)
-    return true
-end
-
----
-function MainBoard._asyncGoSietchTabr(color, leader)
-    local continuation = Helper.createContinuation("MainBoard._asyncGoSietchTabr")
-    local options = {
-        I18N("hookTroopWaterOption"),
-        I18N("waterShieldWallOption"),
-    }
-    if InfluenceTrack.hasFriendship(color, "fremen") then
-        -- FIXME Pending continuation if the dialog is canceled.
-        Player[color].showOptionsDialog(I18N("goSietchTabr"), options, 1, function (_, index, _)
+        Dialog.showOptionsAndCancelDialog(color, I18N("goGatherSupport"), options, continuation, function (index)
             if index == 1 then
-                continuation.run(MainBoard._goSietchTabr_HookTroopWater(color, leader))
+                MainBoard._goGatherSupport_NoWater(color, leader, continuation)
             elseif index == 2 then
-                continuation.run(MainBoard._goSietchTabr_WaterShieldWall(color, leader))
+                MainBoard._goGatherSupport_WithWater(color, leader, continuation)
             else
-                continuation.run(false)
+                assert(index == 0)
+                continuation.run()
             end
         end)
     else
-        continuation.run(false)
+        MainBoard._goGatherSupport_NoWater(color, leader, continuation)
     end
-    return continuation
 end
 
 ---
-function MainBoard._goSietchTabr_HookTroopWater(color, leader)
-    if InfluenceTrack.hasFriendship(color, "fremen") then
-        leader.takeMakerHook(color)
-        leader.troops(color, "supply", "garrison", 1)
-        leader.resources(color, "water", 1)
-        return true
+function MainBoard._goGatherSupport_WithWater(color, leader, continuation)
+    if MainBoard._checkGenericAccess(color, leader, { water = 1 }) then
+        continuation.run(function ()
+            leader.resources(color, "solari", -2)
+            leader.troops(color, "supply", "garrison", 2)
+            leader.resources(color, "water", 1)
+        end)
     else
-        return false
+        continuation.run()
     end
 end
 
 ---
-function MainBoard._goSietchTabr_WaterShieldWall(color, leader)
-    if InfluenceTrack.hasFriendship(color, "fremen") then
-        leader.resources(color, "water", 1)
-        MainBoard.blowUpShieldWall(color)
-        return true
-    else
-        return false
-    end
-end
-
----
-function MainBoard._goResearchStation(color, leader)
-    if leader.resources(color, "water", -2) then
+function MainBoard._goGatherSupport_NoWater(color, leader, continuation)
+    continuation.run(function ()
         leader.troops(color, "supply", "garrison", 2)
-        leader.drawImperiumCards(color, 2)
-        return true
+    end)
+end
+
+---
+function MainBoard._goShipping(color, leader, continuation)
+    if not InfluenceTrack.hasFriendship(color, "spacingGuild") then
+        broadcastToColor(I18N("noFriendship", { withFaction = I18N("withSpacingGuild") }), color, "Purple")
+        continuation.run()
+    elseif MainBoard._checkGenericAccess(color, leader, { spice = 3 }) then
+        continuation.run(function ()
+            leader.resources(color, "solari", 5)
+        end)
     else
-        return false
+        continuation.run()
     end
 end
 
 ---
-function MainBoard._asyncGoSpiceRefinery(color, leader)
-    local continuation = Helper.createContinuation("MainBoard._asyncGoSpiceRefinery")
-    if PlayBoard.getResource(color, "spice"):get() == 0 then
-        continuation.run(MainBoard._goSpiceRefinery(color, leader, 0))
-    else
+function MainBoard._goAcceptContract(color, leader, continuation)
+    continuation.run(function ()
+        leader.drawImperiumCards(color, 1)
+    end)
+end
+
+---
+function MainBoard._goCarthag(color, leader, continuation)
+    continuation.run(function ()
+        leader.drawIntrigues(color, 1)
+        leader.troops(color, "supply", "garrison", 1)
+    end)
+end
+
+---
+function MainBoard._goSietchTabr(color, leader, continuation)
+    if InfluenceTrack.hasFriendship(color, "fremen") then
         local options = {
-            I18N("zeroSpiceOption"),
-            I18N("oneSpiceOption"),
+            I18N("hookTroopWaterOption"),
+            I18N("waterShieldWallOption"),
         }
         -- FIXME Pending continuation if the dialog is canceled.
-        Player[color].showOptionsDialog(I18N("goSpiceRefinery"), options, 1, function (_, index, _)
-            continuation.run(MainBoard._goSpiceRefinery(color, leader, index - 1))
+        Dialog.showOptionsAndCancelDialog(color, I18N("goSietchTabr"), options, continuation, function (index)
+            if index == 1 then
+                continuation.run(function ()
+                    MainBoard._goSietchTabr_HookTroopWater(color, leader, continuation)
+                end)
+            elseif index == 2 then
+                continuation.run(function ()
+                    MainBoard._goSietchTabr_WaterShieldWall(color, leader, continuation)
+                end)
+            else
+                assert(index == 0)
+                continuation.run()
+            end
+        end)
+    else
+        broadcastToColor(I18N("noFriendship", { withFaction = I18N("withFremen") }), color, "Purple")
+        continuation.run()
+    end
+end
+
+---
+function MainBoard._goSietchTabr_HookTroopWater(color, leader, continuation)
+    if not InfluenceTrack.hasFriendship(color, "fremen") then
+        broadcastToColor(I18N("noFriendship", { withFaction = I18N("withFremen") }), color, "Purple")
+        continuation.run()
+    else
+        continuation.run(function ()
+            leader.takeMakerHook(color)
+            leader.troops(color, "supply", "garrison", 1)
+            leader.resources(color, "water", 1)
         end)
     end
-    return continuation
 end
 
 ---
-function MainBoard._goSpiceRefinery_0(color, leader)
-    return MainBoard._goSpiceRefinery(color, leader, 0)
-end
-
----
-function MainBoard._goSpiceRefinery_1(color, leader)
-    return MainBoard._goSpiceRefinery(color, leader, 1)
-end
-
----
-function MainBoard._goSpiceRefinery(color, leader, amount)
-    if amount == 0 or leader.resources(color, "spice", -amount) then
-        MainBoard._applyControlOfAnySpace(MainBoard.banners.spiceRefineryBannerZone, "solari")
-        leader.resources(color, "solari", (amount + 1) * 2)
-        return true
+function MainBoard._goSietchTabr_WaterShieldWall(color, leader, continuation)
+    if not InfluenceTrack.hasFriendship(color, "fremen") then
+        broadcastToColor(I18N("noFriendship", { withFaction = I18N("withFremen") }), color, "Purple")
+        continuation.run()
     else
-        return false
+        continuation.run(function ()
+            leader.resources(color, "water", 1)
+            MainBoard.blowUpShieldWall(color, true)
+        end)
     end
 end
 
 ---
-function MainBoard._goArrakeen(color, leader)
-    MainBoard._applyControlOfAnySpace(MainBoard.banners.arrakeenBannerZone, "solari")
-    leader.troops(color, "supply", "garrison", 1)
-    leader.drawImperiumCards(color, 1)
-    return true
+function MainBoard._goResearchStation(color, leader, continuation)
+    if MainBoard._checkGenericAccess(color, leader, { water = 2 }) then
+        continuation.run(function ()
+            leader.resources(color, "water", -2)
+            leader.troops(color, "supply", "garrison", 2)
+            leader.drawImperiumCards(color, 2)
+        end)
+    else
+        continuation.run()
+    end
 end
 
 ---
-function MainBoard._asyncGoDeepDesert(color, leader)
-    local continuation = Helper.createContinuation("MainBoard._asyncGoDeepDesert")
-    if not PlayBoard.hasMakerHook(color) then
-        continuation.run(MainBoard._goDeepDesert_Spice(color, leader))
+function MainBoard._goSpiceRefinery(color, leader, continuation)
+    if MainBoard._hasResource(leader, color, "spice", 1) then
+        local options = {
+            I18N("noSpiceOption"),
+            I18N("withSpiceOption"),
+        }
+        Dialog.showOptionsAndCancelDialog(color, I18N("goSpiceRefinery"), options, continuation, function (index)
+            if index == 1 then
+                MainBoard._goSpiceRefinery_NoSpice(color, leader, continuation)
+            elseif index == 2 then
+                MainBoard._goSpiceRefinery_WithSpice(color, leader, continuation)
+            else
+                assert(index == 0)
+                continuation.run()
+            end
+        end)
     else
+        MainBoard._goSpiceRefinery_NoSpice(color, leader, continuation)
+    end
+end
+
+---
+function MainBoard._goSpiceRefinery_WithSpice(color, leader, continuation)
+    if MainBoard._checkGenericAccess(color, leader, { spice = 1 }) then
+        continuation.run(function ()
+            leader.resources(color, "spice", -1)
+            leader.resources(color, "solari", 4)
+            MainBoard._applyControlOfAnySpace(MainBoard.banners.spiceRefineryBannerZone, "solari")
+        end)
+    else
+        continuation.run()
+    end
+end
+
+---
+function MainBoard._goSpiceRefinery_NoSpice(color, leader, continuation)
+    continuation.run(function ()
+        leader.resources(color, "solari", 2)
+        MainBoard._applyControlOfAnySpace(MainBoard.banners.spiceRefineryBannerZone, "solari")
+    end)
+end
+
+---
+function MainBoard._goArrakeen(color, leader, continuation)
+    continuation.run(function ()
+        leader.troops(color, "supply", "garrison", 1)
+        leader.drawImperiumCards(color, 1)
+        MainBoard._applyControlOfAnySpace(MainBoard.banners.arrakeenBannerZone, "solari")
+    end)
+end
+
+---
+function MainBoard._goDeepDesert(color, leader, continuation)
+    if PlayBoard.hasMakerHook(color) then
         local options = {
             I18N("fourSpicesOption"),
             I18N("twoWormsOption"),
         }
-        -- FIXME Pending continuation if the dialog is canceled.
-        Player[color].showOptionsDialog(I18N("goDeepDesert"), options, 1, function (_, index, _)
+        Dialog.showOptionsAndCancelDialog(color, I18N("goDeepDesert"), options, continuation, function (index)
             if index == 1 then
-                continuation.run(MainBoard._goDeepDesert_Spice(color, leader))
+                MainBoard._goDeepDesert_Spice(color, leader, continuation)
             elseif index == 2 then
-                continuation.run(MainBoard._goDeepDesert_WormsIfHook(color, leader))
+                MainBoard._goDeepDesert_WormsIfHook(color, leader, continuation)
             else
-                continuation.run(false)
+                assert(index == 0)
+                continuation.run()
             end
         end)
+    else
+        MainBoard._goDeepDesert_Spice(color, leader, continuation)
     end
-    return continuation
 end
 
 ---
-function MainBoard._goDeepDesert_Spice(color, leader)
-    return MainBoard._anySpiceSpace(color, leader, 3, 4, MainBoard.spiceBonuses.deepDesert)
+function MainBoard._goDeepDesert_Spice(color, leader, continuation)
+    MainBoard._anySpiceSpace(color, leader, 3, 4, MainBoard.spiceBonuses.deepDesert, continuation)
 end
 
 ---
-function MainBoard._goDeepDesert_WormsIfHook(color, leader)
-    if MainBoard._anySpiceSpace(color, leader, 3, 0, MainBoard.spiceBonuses.deepDesert) then
+function MainBoard._goDeepDesert_WormsIfHook(color, leader, continuation)
+    MainBoard._anySpiceSpace(color, leader, 3, 0, MainBoard.spiceBonuses.deepDesert, continuation, function ()
         leader.callSandworm(color, 2)
-        return true
-    else
-        return false
-    end
+    end)
 end
 
 ---
-function MainBoard._goHabbanyaErg(color, leader)
+function MainBoard._goHabbanyaErg(color, leader, continuation)
     assert(TurnControl.getPlayerCount() == 6)
-    if MainBoard._anySpiceSpace(color, leader, 1, 2, MainBoard.spiceBonuses.habbanyaErg) then
+    MainBoard._anySpiceSpace(color, leader, 1, 2, MainBoard.spiceBonuses.habbanyaErg, continuation, function ()
         leader.drawImperiumCards(color, 1)
-        return true
-    else
-        return false
-    end
+    end)
 end
 
 ---
-function MainBoard._asyncGoHaggaBasin(color, leader)
-    local continuation = Helper.createContinuation("MainBoard._asyncGoHaggaBasin")
-    if not PlayBoard.hasMakerHook(color) then
-        continuation.run(MainBoard._goHaggaBasin_Spice(color, leader))
-    else
+function MainBoard._goHaggaBasin(color, leader, continuation)
+    if PlayBoard.hasMakerHook(color) then
         local options = {
             I18N("twoSpicesOption"),
             I18N("onWormOption"),
         }
-        -- FIXME Pending continuation if the dialog is canceled.
-        Player[color].showOptionsDialog(I18N("goHaggaBasin"), options, 1, function (_, index, _)
+        Dialog.showOptionsAndCancelDialog(color, I18N("goHaggaBasin"), options, continuation, function (index)
             if index == 1 then
-                continuation.run(MainBoard._goHaggaBasin_Spice(color, leader))
+                MainBoard._goHaggaBasin_Spice(color, leader, continuation)
             elseif index == 2 then
-                continuation.run(MainBoard._goHaggaBasin_WormIfHook(color, leader))
+                MainBoard._goHaggaBasin_WormIfHook(color, leader, continuation)
             else
-                continuation.run(false)
+                assert(index == 0)
+                continuation.run()
             end
         end)
+    else
+        MainBoard._goHaggaBasin_Spice(color, leader, continuation)
     end
-    return continuation
 end
 
 ---
-function MainBoard._goHaggaBasin_Spice(color, leader)
-    return MainBoard._anySpiceSpace(color, leader, 1, 2, MainBoard.spiceBonuses.haggaBasin)
+function MainBoard._goHaggaBasin_Spice(color, leader, continuation)
+    return MainBoard._anySpiceSpace(color, leader, 1, 2, MainBoard.spiceBonuses.haggaBasin, continuation)
 end
 
 ---
-function MainBoard._goHaggaBasin_WormIfHook(color, leader)
-    if MainBoard._anySpiceSpace(color, leader, 1, 0, MainBoard.spiceBonuses.haggaBasin) then
+function MainBoard._goHaggaBasin_WormIfHook(color, leader, continuation)
+    MainBoard._anySpiceSpace(color, leader, 1, 0, MainBoard.spiceBonuses.haggaBasin, continuation, function ()
         leader.callSandworm(color, 1)
-        return true
-    else
-        return false
-    end
+    end)
 end
 
 ---
-function MainBoard._goImperialBasin(color, leader)
-    if MainBoard._anySpiceSpace(color, leader, 0, 1, MainBoard.spiceBonuses.imperialBasin) then
+function MainBoard._goImperialBasin(color, leader, continuation)
+    MainBoard._anySpiceSpace(color, leader, 0, 1, MainBoard.spiceBonuses.imperialBasin, continuation, function ()
         MainBoard._applyControlOfAnySpace(MainBoard.banners.imperialBasinBannerZone, "spice")
-        return true
-    else
-        return false
-    end
+    end)
 end
 
 ---
-function MainBoard._anySpiceSpace(color, leader, waterCost, spiceBaseAmount, spiceBonus)
-    if leader.resources(color, "water", -waterCost) then
-        local harvestedSpiceAmount = MainBoard._harvestSpice(spiceBaseAmount, spiceBonus)
-        leader.resources(color, "spice", harvestedSpiceAmount)
-        return true
+function MainBoard._anySpiceSpace(color, leader, waterCost, spiceBaseAmount, spiceBonus, continuation, additionalAction)
+    if MainBoard._checkGenericAccess(color, leader, { water = waterCost }) then
+        continuation.run(function ()
+            local harvestedSpiceAmount = MainBoard._harvestSpice(spiceBaseAmount, spiceBonus)
+            leader.resources(color, "water", -waterCost)
+            leader.resources(color, "spice", harvestedSpiceAmount)
+            if additionalAction then
+                additionalAction()
+            end
+        end)
     else
-        return false
+        continuation.run()
     end
 end
 
@@ -1271,8 +1398,7 @@ function MainBoard._asyncGoTechNegotiation(color, leader)
         I18N("sendNegotiatorOption"),
         I18N("buyTechWithDiscont1Option"),
     }
-    -- FIXME Pending continuation if the dialog is canceled.
-    Player[color].showOptionsDialog(I18N("goTechNegotiation"), options, 1, function (_, index, _)
+    Dialog.showOptionsAndCancelDialog(color, I18N("goTechNegotiation"), options, continuation, function (index)
         local success = true
         if index == 1 then
             MainBoard._goTechNegotiation_1(color, leader)
@@ -1312,16 +1438,23 @@ end
 ]]
 
 ---
-function MainBoard.blowUpShieldWall(color)
-    Player[color].showConfirmDialog(
-        I18N("confirmShieldWallDestruction"),
-        function(_)
+function MainBoard.blowUpShieldWall(color, skipConfirmation)
+    if MainBoard.shieldWallToken then
+        local kaBoom = function (_)
             Music.play("atomics")
             broadcastToAll(I18N('blowUpShieldWall', { leader = PlayBoard.getLeaderName(color) }), color, "Purple")
             Helper.onceTimeElapsed(3).doAfter(function ()
                 MainBoard.trash(MainBoard.shieldWallToken)
+                MainBoard.shieldWallToken = nil
             end)
-        end)
+        end
+
+        if skipConfirmation then
+            kaBoom()
+        else
+            Dialog.showConfirmDialog(color, I18N("confirmShieldWallDestruction"), kaBoom)
+        end
+    end
 end
 
 --- The color could be nil (the same way it could be nil with Types.isAgent)

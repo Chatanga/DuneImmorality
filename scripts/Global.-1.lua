@@ -22,8 +22,8 @@ local autoLoadedSettings = nil
 autoLoadedSettings = {
     language = "fr",
     hotSeat = true,
-    numberOfPlayers = 4,
-    randomizePlayerPositions = true,
+    numberOfPlayers = 6,
+    randomizePlayerPositions = false,
     useContracts = true,
     riseOfIx = false,
     epicMode = false,
@@ -225,6 +225,7 @@ function asyncOnLoad(scriptState)
         else
             Controller.ui = XmlUI.new(Global, "setupPane", Controller.fields)
             Controller.ui:show()
+            I18N.setLocale(Controller.fields.language)
             Controller.updateDefaultLeaderPoolSizeLabel()
             Controller.updateSetupButton()
         end

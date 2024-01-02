@@ -2,6 +2,7 @@ local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local Park = require("utils.Park")
 local I18N = require("utils.I18N")
+local Dialog = require("utils.Dialog")
 
 local Resource = Module.lazyRequire("Resource")
 local PlayBoard = Module.lazyRequire("PlayBoard")
@@ -194,7 +195,7 @@ function TleilaxuResearch._generateResearchButtons()
             if jump.x == 1 and math.abs(jump.z) <= 1 then
                 leader.research(color, jump)
             else
-                Player[color].showConfirmDialog(I18N("forbiddenMove"), function()
+                Dialog.showConfirmDialog(color, I18N("forbiddenMove"), function ()
                     leader.research(color, jump)
                 end)
             end
@@ -277,7 +278,7 @@ function TleilaxuResearch._advanceResearch(color, jump, withBenefits)
                 end
 
                 if researchCellBenefits.solariToBeetle then
-                    Player[color].showConfirmDialog(I18N("confirmSolarisToBeetles"), function()
+                    Dialog.showConfirmDialog(color, I18N("confirmSolarisToBeetles"), function ()
                         if leader.resources(color, "solari", -7) then
                             leader.beetle(color, 2)
                         end
@@ -331,7 +332,7 @@ function TleilaxuResearch._generateTleilaxButtons()
             local jump = math.min(1, level - tokenLevel)
 
             if jump < 0 then
-                Player[color].showConfirmDialog(I18N("forbiddenMove"), function()
+                Dialog.showConfirmDialog(color, I18N("forbiddenMove"), function ()
                     TleilaxuResearch._advanceTleilax(color, jump, false).doAfter(function ()
                         leader.beetle(color, jump)
                     end)

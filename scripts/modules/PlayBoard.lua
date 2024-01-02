@@ -3,6 +3,7 @@ local Helper = require("utils.Helper")
 local Park = require("utils.Park")
 local I18N = require("utils.I18N")
 local Set = require("utils.Set")
+local Dialog = require("utils.Dialog")
 
 local Resource = Module.lazyRequire("Resource")
 local TleilaxuResearch = Module.lazyRequire("TleilaxuResearch")
@@ -1899,9 +1900,10 @@ function PlayBoard:_createButtons()
             Helper.clearButtons(self.content.councilToken)
             self.content.councilToken.createButton({
                 click_function = self:_createExclusiveCallback(function ()
-                    Player[self.color].showConfirmDialog(
+                    Dialog.showConfirmDialog(
+                        self.color,
                         I18N("takeHighCouncilSeatByForceConfirm"),
-                        function(_)
+                        function ()
                             local leader = PlayBoard.getLeader(self.color)
                             leader.takeHighCouncilSeat(self.color)
                         end)
@@ -2205,9 +2207,10 @@ function PlayBoard:tryToDrawCards(count, message)
         local leaderName = PlayBoard.getLeaderName(self.color)
         broadcastToAll(I18N("isDecidingToDraw", { leader = leaderName }), "Pink")
         local maxCount = math.min(count, availableCardCount)
-        Player[self.color].showConfirmDialog(
+        Dialog.showConfirmDialog(
+            self.color,
             I18N("warningBeforeDraw", { count = count, maxCount = maxCount }),
-            function(_)
+            function ()
                 if message then
                     broadcastToAll(message, self.color)
                 end
@@ -2239,7 +2242,7 @@ function PlayBoard:drawCards(count)
     -- Dealing cards take an unknown amout of time.
     Helper.onceTimeElapsed(0.5).doAfter(function ()
         if remainingCardToDrawCount > 0 then
-            self:_resetDiscard().doAfter(function()
+            self:_resetDiscard().doAfter(function ()
                 self:drawCards(remainingCardToDrawCount)
             end)
         end
@@ -2705,9 +2708,10 @@ function PlayBoard.giveCard(color, card, isTleilaxuCard)
 
     -- Move it on the top of the content deck if possible and wanted.
     if (isTleilaxuCard and TleilaxuResearch.hasReachedOneHelix(color)) or PlayBoard.hasTech(color, "spaceport") then
-        Player[color].showConfirmDialog(
+        Dialog.showConfirmDialog(
+            color,
             I18N("dialogCardAbove"),
-            function(_)
+            function ()
                 Helper.moveCardFromZone(content.discardZone, content.drawDeckZone.getPosition(), Vector(0, 180, 180))
             end)
     end
@@ -2732,9 +2736,10 @@ function PlayBoard.giveCardFromZone(color, zone, isTleilaxuCard)
 
     -- Move it on the top of the player deck if possible and wanted.
     if (isTleilaxuCard and TleilaxuResearch.hasReachedOneHelix(color)) or PlayBoard.hasTech(color, "spaceport") then
-        Player[color].showConfirmDialog(
+        Dialog.showConfirmDialog(
+            color,
             I18N("dialogCardAbove"),
-            function(_)
+            function ()
                 Helper.moveCardFromZone(content.discardZone, content.drawDeckZone.getPosition() + Vector(0, 1, 0), Vector(0, 180, 180))
             end)
     end

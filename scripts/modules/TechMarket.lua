@@ -3,6 +3,7 @@ local Helper = require("utils.Helper")
 local Park = require("utils.Park")
 local AcquireCard = require("utils.AcquireCard")
 local I18N = require("utils.I18N")
+local Dialog = require("utils.Dialog")
 
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local Deck = Module.lazyRequire("Deck")
@@ -255,16 +256,19 @@ function TechMarket._buyTech(stackIndex, color)
         if #options > 0 then
             if #options > 1 then
                 -- FIXME Pending continuation if the dialog is canceled.
-                Player[color].showOptionsDialog(I18N("buyTechSelection"), Helper.mapValues(options, I18N), 1, function (_, index, _)
-                    continuation.run(index and TechMarket._doBuyTech(techTileStack, options[index], color))
+                Dialog.showOptionsAndCancelDialog(color, I18N("buyTechSelection"), Helper.mapValues(options, I18N), continuation, function (index)
+                    if index > 0 then
+                        continuation.run(index and TechMarket._doBuyTech(techTileStack, options[index], color))
+                    else
+                        continuation.run(false)
+                    end
                 end)
             else
                 continuation.run(TechMarket._doBuyTech(techTileStack, options[1], color))
             end
         else
-            -- FIXME Pending continuation if the dialog is canceled.
-            Player[color].showConfirmDialog(I18N("manuallyBuyTech"), function ()
-                continuation.run(true)
+            Dialog.showConfirmOrCancelDialog(color, I18N("manuallyBuyTech"), continuation, function (confirmed)
+                continuation.run(confirmed)
             end)
         end
     else

@@ -415,7 +415,7 @@ function Combat._calculateOutcomeTurnSequence(ranking)
     end
 
     local combatEndTurnSequence = Helper.getKeys(ranking)
-    table.sort(combatEndTurnSequence, function(c1, c2)
+    table.sort(combatEndTurnSequence, function (c1, c2)
         return distinctRanking[c1] < distinctRanking[c2]
     end)
 

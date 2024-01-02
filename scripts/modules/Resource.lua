@@ -140,7 +140,7 @@ function Resource:_changeValue(color, altClick)
             Wait.stop(self.laggingUpdate)
         end
 
-        self.laggingUpdate = Wait.time(function()
+        self.laggingUpdate = Wait.time(function ()
             local delta = self.value - self.laggingValue
 
             if self.color then

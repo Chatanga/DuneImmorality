@@ -19,24 +19,21 @@ Supported langages:
 
 __Bugs__
 
-- Repositionner *tout* le contenu du mod en Y >= 1 pour que les snaps relatifs fonctionnent.
-- Remplacer les états et les mutations de plateaux (et PDF ?) par des instances multiples.
+- [Fix] Repositionner *tout* le contenu du mod en Y >= 1 pour que les snaps relatifs fonctionnent.
 - Le compteur de AcquireCard ne voit que les arrivées / départs de Card, pas de Deck.
-- Dialogue fait maison pour notifier explicitement l'annulation par l'utilisateur.
 
 __All__
 
 - Snapifier le secteur des combats (casernes troupes et cuirassés, champs de bataille, zone PV, conflits, jetons de force).
 - Doubler tous les jetons de PV de combat, ajouter faux PV pour C et A, refaire TSMF.
-- Automatiser les contrats.
 - Déverrouiller la révélation assistée.
 - Réactiver la détection de cartes jouées (Undercover Asset & Co.) -> utilisée par Ix.
 - Marquer par décalcos les positions de départ des maîtres d'armes -> mieux : modifier le test.
+
+- Automatiser les contrats.
 - Automatiser le gain de 2 solaris pour un contrat si le module n'est pas actif (ou s'il n'y a plus de contrats).
 
-- Améliorer le clic-droit sur un espace.
 - Revoir le contexte d’action pour les logs.
-- Découpler les actions des tests de possibilité.
 
 - Créer le jeton d’objectif manquant (?).
 - Ajouter un bouton "Réclamer les PV" pour convertir les paires en PV.
@@ -80,6 +77,7 @@ __Internal__
 - Toujours décorréler l'acquisition (carte, tech, contrat) de son effet.
 - Retirer complétement les trigger effects des plateaux des joueurs.
 - AcquireCard pour la pioche et la défausse des joueurs ?
+- Remplacer les états et les mutations de plateaux (et PDF ?) par des instances multiples ?
 
 ## Build Process
 

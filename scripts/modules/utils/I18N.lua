@@ -70,6 +70,6 @@ function I18N._evaluate(expression, args)
     return args[expression]
 end
 
-setmetatable(I18N, { __call = function(_, ...) return I18N.translate(...) end })
+setmetatable(I18N, { __call = function (_, ...) return I18N.translate(...) end })
 
 return I18N

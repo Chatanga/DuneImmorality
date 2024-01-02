@@ -215,10 +215,27 @@ function Action.resources(color, resourceName, amount)
     end
 end
 
----
-function Action.drawImperiumCards(color, amount)
+---@param color PlayerColor
+---@param resourceName ResourceName
+---@param amount integer
+---@return integer
+function Action.bargain(color, resourceName, amount)
     Types.assertIsPlayerColor(color)
-    PlayBoard.getPlayBoard(color):tryToDrawCards(amount)
+    Types.assertIsResourceName(resourceName)
+    Types.assertIsInteger(amount)
+
+    return amount
+end
+
+---
+function Action.drawImperiumCards(color, amount, forced)
+    Types.assertIsPlayerColor(color)
+    local playBoard = PlayBoard.getPlayBoard(color)
+    if forced then
+        playBoard:drawCards(amount)
+    else
+        playBoard:tryToDrawCards(amount)
+    end
     return true
 end
 
