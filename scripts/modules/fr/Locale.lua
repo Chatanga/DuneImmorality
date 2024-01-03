@@ -71,6 +71,8 @@ return {
     atomicsConfirm = "Confirmer",
     yes = "Oui",
     no = "Non",
+    ok = "Ok",
+    cancel = "Annuler",
     dialogCardAbove = "Voulez-vous mettre la carte sur le dessus de votre paquet ? (Ok = oui, Cancel = non)",
     endOfTurn = "Finir\ntour",
     activatedAlly = "⬍ Allié activé",

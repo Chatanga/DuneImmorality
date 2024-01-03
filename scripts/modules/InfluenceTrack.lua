@@ -92,10 +92,10 @@ function InfluenceTrack._transientSetUp(settings, firstTime)
         meanStep = meanStep / n
         for i = 0, 6 do
             local levelPosition = meanStartPosition + Vector(0, 0, meanStep * i)
-            levelPosition:setAt('y', 0.5)
+            levelPosition:setAt('y', 1.5)
             Helper.createTransientAnchor(faction .. "Rank" .. tostring(i), levelPosition).doAfter(function (anchor)
                 local actionName = I18N("progressOnInfluenceTrack", { withFaction = I18N(Helper.toCamelCase("with", faction)) })
-                Helper.createSizedAreaButton(1000, 400, anchor, 0.75, actionName, PlayBoard.withLeader(function (_, color, _)
+                Helper.createSizedAreaButton(1000, 400, anchor, 1.75, actionName, PlayBoard.withLeader(function (_, color, _)
                     if not InfluenceTrack.actionsLocked[faction][color] then
                         if InfluenceTrack.hasAccess(color, faction) then
                             local rank = InfluenceTrack._getInfluenceTracksRank(faction, color)

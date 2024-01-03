@@ -35,7 +35,7 @@ local MainBoard = {
         expedition = { group = "fringeWorlds", posts = { "fringeWorlds" } },
 
         desertTactics = { group = "fremen", combat = true, posts = { "fremen" } },
-        fremkit = { group = "fremen", combat = true, posts = { "fremen" } },
+        fremkit = { group = "fremen", combat = true, posts = { "fremen" }, spyRecallSensitive = true },
         hardyWarriors = { group = "fremen", combat = true, posts = { "fremen" } },
         desertMastery = { group = "fremen", combat = true, posts = { "fremen" }, spyRecallSensitive = true },
 
@@ -444,10 +444,10 @@ function MainBoard._createSpaceButton(space)
             local p = space.position
             -- FIXME Hardcoded height, use an existing parent anchor.
             local slots = {
-                Vector(p.x - 0.36, 0.68, p.z - 0.3),
-                Vector(p.x + 0.36, 0.68, p.z + 0.3),
-                Vector(p.x - 0.36, 0.68, p.z + 0.3),
-                Vector(p.x + 0.36, 0.68, p.z - 0.3)
+                Vector(p.x - 0.36, 1.68, p.z - 0.3),
+                Vector(p.x + 0.36, 1.68, p.z + 0.3),
+                Vector(p.x - 0.36, 1.68, p.z + 0.3),
+                Vector(p.x + 0.36, 1.68, p.z - 0.3)
             }
 
             space.zone = Park.createTransientBoundingZone(0, Vector(1, 3, 0.7), slots)
@@ -463,7 +463,7 @@ function MainBoard._createSpaceButton(space)
         end
 
         local tooltip = I18N("sendAgentTo", { space = I18N(space.name)})
-        Helper.createAreaButton(space.zone, anchor, 0.75, tooltip, PlayBoard.withLeader(function (leader, color, altClick)
+        Helper.createAreaButton(space.zone, anchor, 1.75, tooltip, PlayBoard.withLeader(function (leader, color, altClick)
             if TurnControl.getCurrentPlayer() == color then
                 leader.sendAgent(color, space.name, altClick)
             else
@@ -492,7 +492,7 @@ function MainBoard._createObservationPostButton(observationPost)
         anchor.setSnapPoints(snapPoints)
 
         local tooltip = I18N("sendSpyTo", { observationPost = I18N(observationPost.name)})
-        Helper.createAreaButton(observationPost.zone, anchor, 0.75, tooltip, PlayBoard.withLeader(function (leader, color, altClick)
+        Helper.createAreaButton(observationPost.zone, anchor, 1.75, tooltip, PlayBoard.withLeader(function (leader, color, altClick)
             leader.sendSpy(color, observationPost.name)
         end))
     end)
@@ -693,14 +693,15 @@ function MainBoard.getRecallableSpies(color, spaceName)
     local recallableSpies = {}
     for _, postName in ipairs(details.posts) do
         local observationPost = MainBoard.observationPosts[postName]
-        assert(observationPost, postName)
-        for _, spy in ipairs(Park.getObjects(observationPost.park)) do
-            if spy.hasTag(color) then
-                table.insert(recallableSpies, {
-                    toSpaceName = findConnectedSpaceName(postName),
-                    spy = spy,
-                })
-                break
+        if observationPost then
+            for _, spy in ipairs(Park.getObjects(observationPost.park)) do
+                if spy.hasTag(color) then
+                    table.insert(recallableSpies, {
+                        toSpaceName = findConnectedSpaceName(postName),
+                        spy = spy,
+                    })
+                    break
+                end
             end
         end
     end
@@ -905,8 +906,7 @@ function MainBoard._goHardyWarriors(color, leader, continuation)
     if not Commander.isMuadDib(color) then
         broadcastToColor(I18N("forbiddenAccess"), color, "Purple")
         continuation.run()
-    end
-    if MainBoard._checkGenericAccess(color, leader, { water = 1 }) then
+    elseif MainBoard._checkGenericAccess(color, leader, { water = 1 }) then
         continuation.run(function ()
             leader.resources(color, "water", -1)
             leader.troops(color, "supply", "garrison", 2)

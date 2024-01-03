@@ -789,10 +789,10 @@ function Deck.generateTechDeck(deckZones)
         for j = (i - 1) * 6 + 1, i * 6 do
             part[keys[j]] = Deck.tech.ix[keys[j]]
         end
-        local deckPosition = deckZones[i].getPosition()
-        Deck._generateDeck("Tech", deckZones[i], part, Deck.sources.tech).doAfter(function (deck)
-            local above = deckPosition + Vector(0, 1, 0)
-            Helper.moveCardFromZone(deckPosition, above, nil, true, true)
+        local zone = deckZones[i]
+        Deck._generateDeck("Tech", zone, part, Deck.sources.tech).doAfter(function (deck)
+            local above = zone.getPosition() + Vector(0, 1, 0)
+            Helper.moveCardFromZone(zone, above, nil, true, true)
             table.insert(decks, deck)
             remaining = remaining - 1
             if remaining == 0 then

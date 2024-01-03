@@ -235,6 +235,7 @@ end
 ---@param flipAtTheEnd boolean?
 ---@return Continuation? A continuation run once the object is spawned.
 function Helper.moveCardFromZone(zone, position, rotation, smooth, flipAtTheEnd)
+    assert(zone.type == "Scripting")
     --Helper.dumpFunction("Helper.moveCardFromZone", zone, position, rotation, smooth, flipAtTheEnd)
     local continuation = Helper.createContinuation("Helper.moveCardFromZone")
     local deckOrCard = Helper.getDeckOrCard(zone)
@@ -693,6 +694,9 @@ end
 
 ---
 function Helper.collectSnapPoints(net, object)
+    if not object then
+        return
+    end
     local snapPoints = object.getSnapPoints()
     for _, snapPoint in ipairs(snapPoints) do
         --assert(snapPoint.tags and #snapPoint.tags == 1)

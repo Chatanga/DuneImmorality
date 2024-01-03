@@ -7,10 +7,10 @@ local TechMarket = Module.lazyRequire("TechMarket")
 
 local ShipmentTrack = {
     initialFreighterPositions = {
-        Yellow = Helper.getHardcodedPositionFromGUID('8fa76f', 8.999361, 0.692984, 2.8496747),
-        Green = Helper.getHardcodedPositionFromGUID('34281d', 8.449358, 0.6929841, 2.850195),
-        Blue = Helper.getHardcodedPositionFromGUID('68e424', 7.34958, 0.692984, 2.8548522),
-        Red = Helper.getHardcodedPositionFromGUID('e9096d', 7.89935, 0.692984, 2.853141)
+        Yellow = Helper.getHardcodedPositionFromGUID('8fa76f', 8.999361, 1.692984, 2.8496747),
+        Green = Helper.getHardcodedPositionFromGUID('34281d', 8.449358, 1.6929840999999999, 2.850195),
+        Blue = Helper.getHardcodedPositionFromGUID('68e424', 7.34958, 1.692984, 2.8548522),
+        Red = Helper.getHardcodedPositionFromGUID('e9096d', 7.89935, 1.692984, 2.853141)
     }
 }
 

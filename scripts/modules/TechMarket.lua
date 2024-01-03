@@ -9,6 +9,7 @@ local PlayBoard = Module.lazyRequire("PlayBoard")
 local Deck = Module.lazyRequire("Deck")
 local MainBoard = Module.lazyRequire("MainBoard")
 local Types = Module.lazyRequire("Types")
+local Commander = Module.lazyRequire("Commander")
 
 local TechMarket = {
     negotiationParks = {},
@@ -145,7 +146,7 @@ end
 
 ---
 function TechMarket._createNegotiationButton()
-    Helper.createAnchoredAreaButton(TechMarket.negotiationZone, 0.6, 0.1, I18N("negotiatorEdit"), PlayBoard.withLeader(function (_, color, altClick)
+    Helper.createAnchoredAreaButton(TechMarket.negotiationZone, 1.6, 0.1, I18N("negotiatorEdit"), PlayBoard.withLeader(function (_, color, altClick)
         local leader = PlayBoard.getLeader(color)
         if altClick then
             leader.troops(color, "negotiation", "supply", 1)
@@ -377,7 +378,7 @@ function TechMarket._createNegotiationPark(color)
     }
 
     local origin = TechMarket.negotiationZone.getPosition() + offsets[color]
-    origin:setAt('y', 0.86) -- ground level
+    origin:setAt('y', 1.86) -- ground level
     local slots = {}
     for k = 1, 2 do
         for j = 1, 2 do

@@ -19,7 +19,6 @@ Supported langages:
 
 __Bugs__
 
-- [Fix] Repositionner *tout* le contenu du mod en Y >= 1 pour que les snaps relatifs fonctionnent.
 - Le compteur de AcquireCard ne voit que les arrivées / départs de Card, pas de Deck.
 
 __All__
@@ -32,13 +31,14 @@ __All__
 
 - Automatiser les contrats.
 - Automatiser le gain de 2 solaris pour un contrat si le module n'est pas actif (ou s'il n'y a plus de contrats).
-
-- Revoir le contexte d’action pour les logs.
+- Ajouter des boutons d'acquisition sur les contrats de Shaddam ?
 
 - Créer le jeton d’objectif manquant (?).
 - Ajouter un bouton "Réclamer les PV" pour convertir les paires en PV.
 - Sortir automatiquement un jeton d'objectif (nommé) pour les conflits.
 - Automatiser le bannières en se basant sur les jetons d’objectif (oublier la compatibilité anciens conflits).
+
+- Revoir le contexte d’action pour les logs.
 
 - Mode libre pour la sélection des dirigeants.
 
@@ -61,6 +61,7 @@ __2P / Solo__
 - Mise en place.
 - Récupérer un paquet Hagal à jour.
 - Tirage de cartes et prise en compte des épées, mais aucune automatisation sinon.
+- End Turn || Take Control.
 
 __Aesthetic__
 

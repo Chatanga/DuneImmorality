@@ -81,7 +81,7 @@ function AcquireCard:_createButton(acquire)
     local objectCount = #self.zone.getObjects()
     local count = math.max(cardCount, objectCount)
     if count > 0 then
-        local height = 0.65 + count * self.cardHeight
+        local height = 1.65 + count * self.cardHeight
         local label = I18N("acquireButton") .. " (" .. tostring(count) .. ")"
         Helper.createExperimentalAreaButton(self.zone, self.anchor, height, label, function (_, color)
             if not self.disabled then

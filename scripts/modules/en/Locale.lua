@@ -69,6 +69,8 @@ return {
     atomicsConfirm = "Confirm",
     yes = "Yes",
     no = "No",
+    ok = "Ok",
+    cancel = "Cancel",
     dialogCardAbove = "Do you want to put the card on top of your deck ? (Ok = yes, Cancel = No)",
     endOfTurn = "End\nTurn",
     takeHighCouncilSeatByForce = "Take by force",

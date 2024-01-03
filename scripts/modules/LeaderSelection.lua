@@ -421,7 +421,7 @@ function LeaderSelection._createDynamicLeaderSelection(leaders, hidden)
                         LeaderSelection.claimLeader(color, leader)
                     end
                 end),
-                position = Vector(position.x, 0.9, position.z),
+                position = Vector(position.x, 1.9, position.z),
                 width = 600,
                 height = 900,
                 color = Helper.AREA_BUTTON_COLOR,

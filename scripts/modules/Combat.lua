@@ -51,12 +51,12 @@ function Combat.onLoad(state)
     Helper.append(Combat, Helper.resolveGUIDs(false, Combat.unresolvedContent))
 
     local origin = Combat.combatTokenZone.getPosition()
-    Combat.noCombatForcePositions = Vector(origin.x, 0.66, origin.z)
+    Combat.noCombatForcePositions = Vector(origin.x, 1.66, origin.z)
     Combat.combatForcePositions = {}
     for i = 0, 19 do
         Combat.combatForcePositions[i + 1] = Vector(
             origin.x + 1.6 + (i % 10) * 0.98,
-            0.66,
+            1.66,
             origin.z + 0.64 - math.floor(i / 10) * 1.03
         )
     end
@@ -365,7 +365,7 @@ function Combat._createButton(color, park)
                 end
             end
         end),
-        position = Vector(position.x, 0.75, position.z),
+        position = Vector(position.x, 1.75, position.z),
         width = 1200,
         height = 1200,
         color = areaColor,
