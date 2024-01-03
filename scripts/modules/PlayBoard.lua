@@ -1287,17 +1287,20 @@ function PlayBoard._movePlayerIfNeeded(color)
 
     assert(hostPlayer)
     Helper.onceFramesPassed(1).doAfter(function ()
-        --Helper.dump(hostPlayer.color, "-> puppet")
         local hostPlayBoard = PlayBoard.getPlayBoard(hostPlayer.color)
         if hostPlayBoard then
             local playboard = PlayBoard.getPlayBoard(color)
             if playboard.opponent == "puppet" then
                 hostPlayBoard.opponent = "puppet"
-                --Helper.dump(hostPlayer.color, "->", color)
-                playboard.opponent = hostPlayer.color
+                playboard.opponent = color
                 hostPlayer.changeColor(color)
             else
-                log("No player seated where there should be one!")
+                Helper.dump("Expected a puppet opponent, but got a", playboard.opponent)
+                for otherColor, playBoard in pairs(PlayBoard.playBoards) do
+                    local target = color == otherColor and "(target)" or "-"
+                    local host = hostPlayer.color == otherColor and "(host)" or "-"
+                    Helper.dump(otherColor, "->", playBoard.opponent, "/", target, host)
+                end
             end
         else
             error("Wrong player color!")
