@@ -687,12 +687,12 @@
         "normalized": "spacedutifulservice"
       },
       {
-        "displayed": "spaceSpiceRefinery_0",
-        "normalized": "spacespicerefinery_0"
+        "displayed": "spaceSpiceRefinery_NoSpice",
+        "normalized": "spacespicerefinery_NoSpice"
       },
       {
-        "displayed": "spaceSpiceRefinery_1",
-        "normalized": "spacespicerefinery_1"
+        "displayed": "spaceSpiceRefinery_WithSpice",
+        "normalized": "spacespicerefinery_WithSpice"
       },
       {
         "displayed": "spaceSietchTabr_HookTroopWater",
@@ -33332,7 +33332,7 @@
                 "z": -0.327478
               },
               "Tags": [
-                "spaceSpiceRefinery_0"
+                "spaceSpiceRefinery_NoSpice"
               ]
             },
             {
@@ -33342,7 +33342,7 @@
                 "z": -0.283455342
               },
               "Tags": [
-                "spaceSpiceRefinery_1"
+                "spaceSpiceRefinery_WithSpice"
               ]
             },
             {

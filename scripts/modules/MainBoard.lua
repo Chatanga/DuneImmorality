@@ -57,7 +57,7 @@ local MainBoard = {
         sietchTabr = { group = "city", combat = true, posts = { "sietchTabrResearchStation" } },
         researchStation = { group = "city", combat = true, posts = { "sietchTabrResearchStation", "researchStationSpiceRefinery" }, spyRecallSensitive = true },
         researchStationImmortality = { group = "city", combat = true, posts = {} },
-        spiceRefinery = { group = "city", combat = true, posts = { "researchStationSpiceRefinery", "spiceRefineryArrakeen" } },
+        spiceRefinery = { group = "city", combat = true, posts = { "researchStationSpiceRefinery", "spiceRefineryArrakeen" } },        
         arrakeen = { group = "city", combat = true, posts = { "spiceRefineryArrakeen" }, spyRecallSensitive = true },
         carthag = { group = "city", combat = true, posts = { "carthag" }, spyRecallSensitive = true },
 
@@ -530,21 +530,22 @@ function MainBoard.sendAgent(color, spaceName, recallSpy)
         local space = MainBoard.spaces[spaceName]
         local parentSpace = MainBoard._findParentSpace(space)
 
-        local goSpaceName = Helper.toCamelCase("_go", space.name)
-        local goSpace = MainBoard[goSpaceName]
+        local functionSpaceName = Helper.toCamelCase("_go", space.name)
+        local goSpace = MainBoard[functionSpaceName]
         local leader = PlayBoard.getLeader(color)
+        local innerContinuationSpaceName = Helper.splitString(space.name, "_")[1]     
 
         if goSpace then
-            local innerContinuation = Helper.createContinuation("MainBoard." .. goSpaceName)
+            local innerContinuation = Helper.createContinuation("MainBoard." .. innerContinuationSpaceName)
             goSpace(color, leader, innerContinuation)
             innerContinuation.doAfter(function (action)
                 -- The innerContinuation never cancels (but return nil) to allow
                 -- us to cancel the root continuation.
                 if action then
-                    MainBoard._decideToGatherIntelligence(color, spaceName, recallSpy).doAfter(function (goAhead, spy)
+                    MainBoard._decideToGatherIntelligence(color, innerContinuationSpaceName, recallSpy).doAfter(function (goAhead, spy)
                         if goAhead then
-                            Helper.emitEvent("agentSent", color, spaceName)
-                            Action.setContext("agentSent", spaceName)
+                            Helper.emitEvent("agentSent", color, innerContinuationSpaceName)
+                            Action.setContext("agentSent", innerContinuationSpaceName)
                             Park.putObject(agent, parentSpace.park)
                             if spy then
                                 -- TODO Log it one way or another.
@@ -1157,6 +1158,7 @@ end
 ---
 function MainBoard._goSpiceRefinery_WithSpice(color, leader, continuation)
     if MainBoard._checkGenericAccess(color, leader, { spice = 1 }) then
+        broadcastToAll("blahhhh", undefined)
         continuation.run(function ()
             leader.resources(color, "spice", -1)
             leader.resources(color, "solari", 4)
