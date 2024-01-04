@@ -51,6 +51,7 @@ return {
     noAlly = "You n’avez pas sélectionné d’allié !",
     notYourTurn = "Ce n’est pas votre tour !",
     noAgent = "Il ne vous reste plus d’agent !",
+    agentAlreadyPresent = "Vous avez déjà un agent présent sur cette case !",
     noFriendship = "Vous n’avez pas assez d’influence auprès {withFaction} !",
     alreadyHaveSwordmaster = "Vous avez déjà un maître d’armes !",
     noResource = "Vous n’êtes pas assez pourvu en {resource} !",

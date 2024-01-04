@@ -49,6 +49,7 @@ return {
     noAlly = "You haven't selected an ally!",
     notYourTurn = "It's not your turn!",
     noAgent = "You don't have any agent left",
+    agentAlreadyPresent = "You already have an agent present there!",
     noFriendship = "You don't have enough influence with {withFaction}!",
     alreadyHaveSwordmaster = "You already have a swordmaster!",
     noResource = "You don't have enough {resource}!",

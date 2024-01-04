@@ -526,52 +526,67 @@ function MainBoard.sendAgent(color, spaceName, recallSpy)
     local continuation = Helper.createContinuation("MainBoard.sendAgent")
 
     local agent = MainBoard._findProperAgent(color)
-    if agent then
-        local space = MainBoard.spaces[spaceName]
-        local parentSpace = MainBoard._findParentSpace(space)
 
-        local functionSpaceName = Helper.toCamelCase("_go", space.name)
-        local goSpace = MainBoard[functionSpaceName]
-        local leader = PlayBoard.getLeader(color)
-        local innerContinuationSpaceName = Helper.splitString(space.name, "_")[1]     
-
-        if goSpace then
-            local innerContinuation = Helper.createContinuation("MainBoard." .. innerContinuationSpaceName)
-            goSpace(color, leader, innerContinuation)
-            innerContinuation.doAfter(function (action)
-                -- The innerContinuation never cancels (but return nil) to allow
-                -- us to cancel the root continuation.
-                if action then
-                    MainBoard._decideToGatherIntelligence(color, innerContinuationSpaceName, recallSpy).doAfter(function (goAhead, spy)
-                        if goAhead then
-                            Helper.emitEvent("agentSent", color, innerContinuationSpaceName)
-                            Action.setContext("agentSent", innerContinuationSpaceName)
-                            Park.putObject(agent, parentSpace.park)
-                            if spy then
-                                -- TODO Log it one way or another.
-                                Park.putObject(spy, PlayBoard.getSpyPark(color))
-                                leader.drawImperiumCards(color, 1, true)
-                            end
-                            action()
-                            -- FIXME We are cheating here...
-                            Helper.onceTimeElapsed(1).doAfter(function ()
-                                Action.setContext("agentSent", nil)
-                            end)
-                            continuation.run()
-                        else
-                            continuation.cancel()
-                        end
-                    end)
-                else
-                    continuation.cancel()
-                end
-            end)
-        else
-            error("Unknow go space function: " .. goSpaceName)
+    local buttonSpace = MainBoard.spaces[spaceName]
+    local functionSpaceName = Helper.toCamelCase("_go", buttonSpace.name)
+    local goSpace = MainBoard[functionSpaceName]
+    
+    local mainSpaceName = Helper.splitString(buttonSpace.name, "_")[1]        
+    local mainSpaceScriptZone = MainBoard.spaces[mainSpaceName].zone  
+    
+    local previousAgentPresent = false
+    -- Iterate through object occupying the zone
+    for _, occupyingObject in ipairs(mainSpaceScriptZone.getObjects(true)) do
+        if occupyingObject.hasTag(color) then
+            previousAgentPresent = true
         end
-    else
+    end
+
+    if not agent then 
         broadcastToColor(I18N("noAgent"), color, "Purple")
         continuation.cancel()
+    elseif previousAgentPresent then
+        broadcastToColor(I18N("agentAlreadyPresent"), color, "Purple")
+        continuation.cancel()
+    elseif not goSpace then    
+        error("Unknow go space function: " .. goSpaceName)
+    else
+        local parentSpace = MainBoard._findParentSpace(buttonSpace)
+        local leader = PlayBoard.getLeader(color)        
+        local innerContinuation = Helper.createContinuation("MainBoard." .. mainSpaceName)
+
+        goSpace(color, leader, innerContinuation)
+        innerContinuation.doAfter(function (action)
+            -- The innerContinuation never cancels (but return nil) to allow
+            -- us to cancel the root continuation.
+            if action then
+                MainBoard._manageIntelligenceAndInfiltrate(color, mainSpaceName, recallSpy).doAfter(function (goAhead, spy, recallMode)
+                    if goAhead then
+                        Helper.emitEvent("agentSent", color, mainSpaceName)
+                        Action.setContext("agentSent", mainSpaceName)
+                        Park.putObject(agent, parentSpace.park)
+                        if spy then
+                            Park.putObject(spy, PlayBoard.getSpyPark(color))
+                            if recallMode == "infiltrate" then broadcastToColor("Spy used to infiltrate!", color, "Purple") end
+                            if recallMode == "draw" then 
+                                leader.drawImperiumCards(color, 1, true) 
+                                broadcastToAll(" └─> recalled Spy to gather intelligence", color)
+                            end
+                        end
+                        action()
+                        -- FIXME We are cheating here...
+                        Helper.onceTimeElapsed(1).doAfter(function ()
+                            Action.setContext("agentSent", nil)
+                        end)
+                        continuation.run()
+                    else
+                        continuation.cancel()
+                    end
+                end)
+            else
+                continuation.cancel()
+            end
+        end)                   
     end
 
     return continuation
@@ -631,9 +646,9 @@ function MainBoard.sendSpy(color, observationPostName)
 end
 
 ---
-function MainBoard._decideToGatherIntelligence(color, spaceName, recallSpy)
-    --Helper.dumpFunction("MainBoard._decideToGatherIntelligence", color, spaceName, recallSpy)
-    local continuation = Helper.createContinuation("MainBoard._decideToGatherIntelligence")
+function MainBoard._manageIntelligenceAndInfiltrate(color, spaceName, recallSpy)
+    --Helper.dumpFunction("MainBoard._manageIntelligenceAndInfiltrate", color, spaceName, recallSpy)
+    local continuation = Helper.createContinuation("MainBoard._manageIntelligenceAndInfiltrate")
 
     local recallableSpies = MainBoard.getRecallableSpies(color, spaceName)
 
@@ -642,41 +657,61 @@ function MainBoard._decideToGatherIntelligence(color, spaceName, recallSpy)
     local details = MainBoard.spaceDetails[spaceName]
     assert(details, spaceName)
     -- TODO Take care of special cases such as Ariana Thorvald ability?
-    local itMatters = details.spyRecallSensitive
+    
+    local ennemyAgentPresent = false
 
-    if #recallableSpies == 0 or not hasCardsToDraw then
-        if recallSpy then
-            broadcastToAll(I18N('noSpyToRecallOrCardToDraw'), color, "Purple")
-            continuation.run(false)
-        else
-            continuation.run(true)
+    local spaceScriptZone = MainBoard.spaces[spaceName].zone  
+
+    -- Iterate through object occupying the zone
+    for _, occupyingObject in ipairs(spaceScriptZone.getObjects(true)) do
+        if occupyingObject.hasTag("Agent") then
+            ennemyAgentPresent = true            
         end
-    elseif recallSpy then
-        MainBoard._recallSpy(color, recallableSpies, continuation)
-    else -- mettre une condition pour déterminer si un autre agent ennemi est présent
-        Dialog.showYesOrNoDialog(color, I18N("confirmSpyRecall"), continuation, function (confirmed)
-            if confirmed then
-                MainBoard._recallSpy(color, recallableSpies, continuation)
-            else           
+    end
+
+    if ennemyAgentPresent == false then
+        if #recallableSpies == 0 or not hasCardsToDraw then
+            if recallSpy then
+                broadcastToColor(I18N('noSpyToRecallOrCardToDraw'), color, "Purple")
+                continuation.run(false)
+            else
                 continuation.run(true)
             end
-        end)
-    
+        elseif recallSpy then
+            MainBoard._recallSpy(color, recallableSpies, continuation, "draw")
+        else 
+            Dialog.showYesOrNoDialog(color, I18N("confirmSpyRecall"), continuation, function (confirmed)
+                if confirmed then
+                    MainBoard._recallSpy(color, recallableSpies, continuation, "draw")
+                else           
+                    continuation.run(true)
+                end
+            end)        
+        end    
+    else 
+        if #recallableSpies == 0 then
+            broadcastToColor("No spy present to allow you to infiltrate !", color, "Purple")
+            continuation.run(false)
+        else      
+            MainBoard._recallSpy(color, recallableSpies, continuation, "infiltrate")
+        end
     end
+
+    
 
     return continuation
 end
 
-function MainBoard._recallSpy(color, recallableSpies, continuation)
+function MainBoard._recallSpy(color, recallableSpies, continuation, recallMode)
     if #recallableSpies == 1 then
-        continuation.run(true, recallableSpies[1].spy)
+        continuation.run(true, recallableSpies[1].spy, recallMode)
     else
         local options = Helper.mapValues(recallableSpies, function (recallableSpy)
             return I18N(recallableSpy.toSpaceName)
         end)
         Dialog.showOptionsAndCancelDialog(color, I18N("selectSpyToRecall"), options, continuation, function (index)
             if index > 0 then
-                continuation.run(true, recallableSpies[index].spy)
+                continuation.run(true, recallableSpies[index].spy, recallMode)
             else
                 continuation.run(false)
             end
