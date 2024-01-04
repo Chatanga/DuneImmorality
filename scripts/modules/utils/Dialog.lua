@@ -44,6 +44,25 @@ function Dialog.showConfirmOrCancelDialog(color, title, linkedContinuation, call
     end
 end
 
+function Dialog.showYesOrNoDialog(color, title, linkedContinuation, callback)
+    if Dialog.nativeDialogUsed then
+        if linkedContinuation then
+            linkedContinuation.forget()
+        end
+        Player[color].showConfirmDialog(title, function ()
+            callback(true)
+        end)
+    else
+        local options = {
+            I18N("yes"),
+            I18N("no"),
+        }
+        Dialog._showOptionsAndCancelDialog(color, title, options, function (index)
+            callback(index == 1)
+        end)
+    end
+end
+
 ---
 function Dialog.showOptionsDialog(color, title, options, callback)
     assert(options)

@@ -18,7 +18,7 @@ local Music = Module.lazyRequire("Music")
 
 local MainBoard = {
     spaceDetails = {
-        sardaukar = { group = "emperor", posts = { "emperor" }, spyRecallSensitive = true },
+        sardaukar = { group = "emperor", posts = { "emperor" } },
         vastWealth = { group = "emperor", posts = { "emperor" } },
         dutifulService = { group = "emperor", posts = { "emperor" } },
 
@@ -28,42 +28,42 @@ local MainBoard = {
         heighliner = { group = "spacingGuild", combat = true, posts = { "spacingGuild" } },
         deliverSupplies = { group = "spacingGuild", posts = { "spacingGuild" } },
 
-        espionage = { group = "beneGesserit", posts = { "beneGesserit" }, spyRecallSensitive = true },
-        secrets = { group = "beneGesserit", posts = { "beneGesserit" }, spyRecallSensitive = true },
+        espionage = { group = "beneGesserit", posts = { "beneGesserit" } },
+        secrets = { group = "beneGesserit", posts = { "beneGesserit" } },
 
-        controversialTechnology = { group = "fringeWorlds", posts = { "fringeWorlds" }, spyRecallSensitive = true },
+        controversialTechnology = { group = "fringeWorlds", posts = { "fringeWorlds" } },
         expedition = { group = "fringeWorlds", posts = { "fringeWorlds" } },
 
         desertTactics = { group = "fremen", combat = true, posts = { "fremen" } },
-        fremkit = { group = "fremen", combat = true, posts = { "fremen" }, spyRecallSensitive = true },
+        fremkit = { group = "fremen", combat = true, posts = { "fremen" } },
         hardyWarriors = { group = "fremen", combat = true, posts = { "fremen" } },
-        desertMastery = { group = "fremen", combat = true, posts = { "fremen" }, spyRecallSensitive = true },
+        desertMastery = { group = "fremen", combat = true, posts = { "fremen" } },
 
-        highCouncil = { group = "landsraad", posts = { "landsraadCouncil1" }, spyRecallSensitive = true },
-        imperialPrivilege = { group = "landsraad", posts = { "landsraadCouncil1" }, spyRecallSensitive = true },
+        highCouncil = { group = "landsraad", posts = { "landsraadCouncil1" } },
+        imperialPrivilege = { group = "landsraad", posts = { "landsraadCouncil1" } },
         swordmaster = { group = "landsraad", posts = { "landsraadCouncil1" } },
-        assemblyHall = { group = "landsraad", posts = { "landsraadCouncil2" }, spyRecallSensitive = true },
+        assemblyHall = { group = "landsraad", posts = { "landsraadCouncil2" } },
         gatherSupport = { group = "landsraad", posts = { "landsraadCouncil2" } },
 
         techNegotiation = { group = "ix", posts = {} },
         dreadnought = { group = "ix", posts = {} },
 
         shipping = { group = "choam", posts = { "choam" } },
-        acceptContract = { group = "choam", posts = { "choam" }, spyRecallSensitive = true },
+        acceptContract = { group = "choam", posts = { "choam" } },
 
         smuggling = { group = "choam", posts = {} },
         interstellarShipping = { group = "choam", posts = {} },
 
         sietchTabr = { group = "city", combat = true, posts = { "sietchTabrResearchStation" } },
-        researchStation = { group = "city", combat = true, posts = { "sietchTabrResearchStation", "researchStationSpiceRefinery" }, spyRecallSensitive = true },
+        researchStation = { group = "city", combat = true, posts = { "sietchTabrResearchStation", "researchStationSpiceRefinery" } },
         researchStationImmortality = { group = "city", combat = true, posts = {} },
         spiceRefinery = { group = "city", combat = true, posts = { "researchStationSpiceRefinery", "spiceRefineryArrakeen" } },        
-        arrakeen = { group = "city", combat = true, posts = { "spiceRefineryArrakeen" }, spyRecallSensitive = true },
-        carthag = { group = "city", combat = true, posts = { "carthag" }, spyRecallSensitive = true },
+        arrakeen = { group = "city", combat = true, posts = { "spiceRefineryArrakeen" } },
+        carthag = { group = "city", combat = true, posts = { "carthag" } },
 
         deepDesert = { group = "desert", combat = true, posts = { "deepDesert" } },
         haggaBasin = { group = "desert", combat = true, posts = { "haggaBasin" } },
-        habbanyaErg = { group = "desert", combat = true, posts = { "habbanyaErg" }, spyRecallSensitive = true },
+        habbanyaErg = { group = "desert", combat = true, posts = { "habbanyaErg" } },
         imperialBasin = { group = "desert", combat = true, posts = { "imperialBasin" } },
     }
 }
@@ -492,7 +492,7 @@ function MainBoard._createObservationPostButton(observationPost)
         anchor.setSnapPoints(snapPoints)
 
         local tooltip = I18N("sendSpyTo", { observationPost = I18N(observationPost.name)})
-        Helper.createAreaButton(observationPost.zone, anchor, 1.75, tooltip, PlayBoard.withLeader(function (leader, color, altClick)
+        Helper.createAreaButton(observationPost.zone, anchor, 1.75, tooltip, PlayBoard.withLeader(function (leader, color)
             leader.sendSpy(color, observationPost.name)
         end))
     end)
@@ -652,29 +652,36 @@ function MainBoard._decideToGatherIntelligence(color, spaceName, recallSpy)
             continuation.run(true)
         end
     elseif recallSpy then
-        if #recallableSpies == 1 then
-            continuation.run(true, recallableSpies[1].spy)
-        else
-            local options = Helper.mapValues(recallableSpies, function (recallableSpy)
-                return I18N(recallableSpy.toSpaceName)
-            end)
-            Dialog.showOptionsAndCancelDialog(color, I18N("selectSpyToRecall"), options, continuation, function (index)
-                if index > 0 then
-                    continuation.run(true, recallableSpies[index].spy)
-                else
-                    continuation.run(false)
-                end
-            end)
-        end
-    elseif itMatters then
-        Dialog.showConfirmOrCancelDialog(color, I18N("confirmNotRecallingAnySpy"), continuation, function (confirmed)
-            continuation.run(confirmed)
+        MainBoard._recallSpy(color, recallableSpies, continuation)
+    else -- mettre une condition pour déterminer si un autre agent ennemi est présent
+        Dialog.showYesOrNoDialog(color, I18N("confirmSpyRecall"), continuation, function (confirmed)
+            if confirmed then
+                MainBoard._recallSpy(color, recallableSpies, continuation)
+            else           
+                continuation.run(true)
+            end
         end)
-    else
-        continuation.run(true)
+    
     end
 
     return continuation
+end
+
+function MainBoard._recallSpy(color, recallableSpies, continuation)
+    if #recallableSpies == 1 then
+        continuation.run(true, recallableSpies[1].spy)
+    else
+        local options = Helper.mapValues(recallableSpies, function (recallableSpy)
+            return I18N(recallableSpy.toSpaceName)
+        end)
+        Dialog.showOptionsAndCancelDialog(color, I18N("selectSpyToRecall"), options, continuation, function (index)
+            if index > 0 then
+                continuation.run(true, recallableSpies[index].spy)
+            else
+                continuation.run(false)
+            end
+        end)
+    end
 end
 
 ---
