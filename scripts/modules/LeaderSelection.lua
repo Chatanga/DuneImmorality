@@ -273,7 +273,7 @@ function LeaderSelection._setUpPicking(autoStart, random, hidden)
         local start = function ()
             if #LeaderSelection._getVisibleLeaders() >= #LeaderSelection.players then
                 local visibleLeaders = LeaderSelection._prepareVisibleLeaders(hidden)
-                LeaderSelection._createDynamicLeaderSelection(visibleLeaders, hidden)
+                LeaderSelection._createDynamicLeaderSelection(visibleLeaders)
                 Helper.clearButtons(LeaderSelection.secondaryTable)
                 LeaderSelection.stage = Stage.STARTED
                 TurnControl.start()
@@ -298,7 +298,7 @@ function LeaderSelection._setUpPicking(autoStart, random, hidden)
         end
     elseif LeaderSelection.stage == Stage.STARTED then
         local visibleLeaders = LeaderSelection._getVisibleLeaders()
-        LeaderSelection._createDynamicLeaderSelection(visibleLeaders, hidden)
+        LeaderSelection._createDynamicLeaderSelection(visibleLeaders)
         Helper.clearButtons(LeaderSelection.secondaryTable)
 
         Helper.onceFramesPassed(1).doAfter(function ()
@@ -406,10 +406,8 @@ function LeaderSelection._prepareVisibleLeaders(hidden)
     return leaders
 end
 
-function LeaderSelection._createDynamicLeaderSelection(leaders, hidden)
-    if hidden then
-        Helper.shuffle(leaders)
-    end
+function LeaderSelection._createDynamicLeaderSelection(leaders)
+    Helper.shuffle(leaders)
 
     for i, leader in ipairs(leaders) do
         if i <= LeaderSelection.leaderSelectionPoolSize then
