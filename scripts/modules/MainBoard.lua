@@ -18,7 +18,7 @@ local Music = Module.lazyRequire("Music")
 
 local MainBoard = {
     spaceDetails = {
-        sardaukar = { group = "emperor", posts = { "emperor" }, spyRecallSensitive = true },
+        sardaukar = { group = "emperor", posts = { "emperor" } },
         vastWealth = { group = "emperor", posts = { "emperor" } },
         dutifulService = { group = "emperor", posts = { "emperor" } },
 
@@ -28,42 +28,42 @@ local MainBoard = {
         heighliner = { group = "spacingGuild", combat = true, posts = { "spacingGuild" } },
         deliverSupplies = { group = "spacingGuild", posts = { "spacingGuild" } },
 
-        espionage = { group = "beneGesserit", posts = { "beneGesserit" }, spyRecallSensitive = true },
-        secrets = { group = "beneGesserit", posts = { "beneGesserit" }, spyRecallSensitive = true },
+        espionage = { group = "beneGesserit", posts = { "beneGesserit" } },
+        secrets = { group = "beneGesserit", posts = { "beneGesserit" } },
 
-        controversialTechnology = { group = "fringeWorlds", posts = { "fringeWorlds" }, spyRecallSensitive = true },
+        controversialTechnology = { group = "fringeWorlds", posts = { "fringeWorlds" } },
         expedition = { group = "fringeWorlds", posts = { "fringeWorlds" } },
 
         desertTactics = { group = "fremen", combat = true, posts = { "fremen" } },
-        fremkit = { group = "fremen", combat = true, posts = { "fremen" }, spyRecallSensitive = true },
+        fremkit = { group = "fremen", combat = true, posts = { "fremen" } },
         hardyWarriors = { group = "fremen", combat = true, posts = { "fremen" } },
-        desertMastery = { group = "fremen", combat = true, posts = { "fremen" }, spyRecallSensitive = true },
+        desertMastery = { group = "fremen", combat = true, posts = { "fremen" } },
 
-        highCouncil = { group = "landsraad", posts = { "landsraadCouncil1" }, spyRecallSensitive = true },
-        imperialPrivilege = { group = "landsraad", posts = { "landsraadCouncil1" }, spyRecallSensitive = true },
+        highCouncil = { group = "landsraad", posts = { "landsraadCouncil1" } },
+        imperialPrivilege = { group = "landsraad", posts = { "landsraadCouncil1" } },
         swordmaster = { group = "landsraad", posts = { "landsraadCouncil1" } },
-        assemblyHall = { group = "landsraad", posts = { "landsraadCouncil2" }, spyRecallSensitive = true },
+        assemblyHall = { group = "landsraad", posts = { "landsraadCouncil2" } },
         gatherSupport = { group = "landsraad", posts = { "landsraadCouncil2" } },
 
         techNegotiation = { group = "ix", posts = {} },
         dreadnought = { group = "ix", posts = {} },
 
         shipping = { group = "choam", posts = { "choam" } },
-        acceptContract = { group = "choam", posts = { "choam" }, spyRecallSensitive = true },
+        acceptContract = { group = "choam", posts = { "choam" } },
 
         smuggling = { group = "choam", posts = {} },
         interstellarShipping = { group = "choam", posts = {} },
 
         sietchTabr = { group = "city", combat = true, posts = { "sietchTabrResearchStation" } },
-        researchStation = { group = "city", combat = true, posts = { "sietchTabrResearchStation", "researchStationSpiceRefinery" }, spyRecallSensitive = true },
+        researchStation = { group = "city", combat = true, posts = { "sietchTabrResearchStation", "researchStationSpiceRefinery" } },
         researchStationImmortality = { group = "city", combat = true, posts = {} },
-        spiceRefinery = { group = "city", combat = true, posts = { "researchStationSpiceRefinery", "spiceRefineryArrakeen" } },
-        arrakeen = { group = "city", combat = true, posts = { "spiceRefineryArrakeen" }, spyRecallSensitive = true },
-        carthag = { group = "city", combat = true, posts = { "carthag" }, spyRecallSensitive = true },
+        spiceRefinery = { group = "city", combat = true, posts = { "researchStationSpiceRefinery", "spiceRefineryArrakeen" } },        
+        arrakeen = { group = "city", combat = true, posts = { "spiceRefineryArrakeen" } },
+        carthag = { group = "city", combat = true, posts = { "carthag" } },
 
         deepDesert = { group = "desert", combat = true, posts = { "deepDesert" } },
         haggaBasin = { group = "desert", combat = true, posts = { "haggaBasin" } },
-        habbanyaErg = { group = "desert", combat = true, posts = { "habbanyaErg" }, spyRecallSensitive = true },
+        habbanyaErg = { group = "desert", combat = true, posts = { "habbanyaErg" } },
         imperialBasin = { group = "desert", combat = true, posts = { "imperialBasin" } },
     }
 }
@@ -492,7 +492,7 @@ function MainBoard._createObservationPostButton(observationPost)
         anchor.setSnapPoints(snapPoints)
 
         local tooltip = I18N("sendSpyTo", { observationPost = I18N(observationPost.name)})
-        Helper.createAreaButton(observationPost.zone, anchor, 1.75, tooltip, PlayBoard.withLeader(function (leader, color, altClick)
+        Helper.createAreaButton(observationPost.zone, anchor, 1.75, tooltip, PlayBoard.withLeader(function (leader, color)
             leader.sendSpy(color, observationPost.name)
         end))
     end)
@@ -526,51 +526,67 @@ function MainBoard.sendAgent(color, spaceName, recallSpy)
     local continuation = Helper.createContinuation("MainBoard.sendAgent")
 
     local agent = MainBoard._findProperAgent(color)
-    if agent then
-        local space = MainBoard.spaces[spaceName]
-        local parentSpace = MainBoard._findParentSpace(space)
 
-        local goSpaceName = Helper.toCamelCase("_go", space.name)
-        local goSpace = MainBoard[goSpaceName]
-        local leader = PlayBoard.getLeader(color)
-
-        if goSpace then
-            local innerContinuation = Helper.createContinuation("MainBoard." .. goSpaceName)
-            goSpace(color, leader, innerContinuation)
-            innerContinuation.doAfter(function (action)
-                -- The innerContinuation never cancels (but return nil) to allow
-                -- us to cancel the root continuation.
-                if action then
-                    MainBoard._decideToGatherIntelligence(color, spaceName, recallSpy).doAfter(function (goAhead, spy)
-                        if goAhead then
-                            Helper.emitEvent("agentSent", color, spaceName)
-                            Action.setContext("agentSent", spaceName)
-                            Park.putObject(agent, parentSpace.park)
-                            if spy then
-                                -- TODO Log it one way or another.
-                                Park.putObject(spy, PlayBoard.getSpyPark(color))
-                                leader.drawImperiumCards(color, 1, true)
-                            end
-                            action()
-                            -- FIXME We are cheating here...
-                            Helper.onceTimeElapsed(1).doAfter(function ()
-                                Action.setContext("agentSent", nil)
-                            end)
-                            continuation.run()
-                        else
-                            continuation.cancel()
-                        end
-                    end)
-                else
-                    continuation.cancel()
-                end
-            end)
-        else
-            error("Unknow go space function: " .. goSpaceName)
+    local buttonSpace = MainBoard.spaces[spaceName]
+    local functionSpaceName = Helper.toCamelCase("_go", buttonSpace.name)
+    local goSpace = MainBoard[functionSpaceName]
+    
+    local mainSpaceName = Helper.splitString(buttonSpace.name, "_")[1]        
+    local mainSpaceScriptZone = MainBoard.spaces[mainSpaceName].zone  
+    
+    local previousAgentPresent = false
+    -- Iterate through object occupying the zone
+    for _, occupyingObject in ipairs(mainSpaceScriptZone.getObjects(true)) do
+        if occupyingObject.hasTag(color) then
+            previousAgentPresent = true
         end
-    else
+    end
+
+    if not agent then 
         broadcastToColor(I18N("noAgent"), color, "Purple")
         continuation.cancel()
+    elseif previousAgentPresent then
+        broadcastToColor(I18N("agentAlreadyPresent"), color, "Purple")
+        continuation.cancel()
+    elseif not goSpace then    
+        error("Unknow go space function: " .. goSpaceName)
+    else
+        local parentSpace = MainBoard._findParentSpace(buttonSpace)
+        local leader = PlayBoard.getLeader(color)        
+        local innerContinuation = Helper.createContinuation("MainBoard." .. mainSpaceName)
+
+        goSpace(color, leader, innerContinuation)
+        innerContinuation.doAfter(function (action)
+            -- The innerContinuation never cancels (but return nil) to allow
+            -- us to cancel the root continuation.
+            if action then
+                MainBoard._manageIntelligenceAndInfiltrate(color, mainSpaceName, recallSpy).doAfter(function (goAhead, spy, recallMode)
+                    if goAhead then
+                        Helper.emitEvent("agentSent", color, mainSpaceName)
+                        Action.setContext("agentSent", mainSpaceName)
+                        Park.putObject(agent, parentSpace.park)
+                        if spy then
+                            Park.putObject(spy, PlayBoard.getSpyPark(color))
+                            if recallMode == "infiltrate" then broadcastToColor("Spy used to infiltrate!", color, "Purple") end
+                            if recallMode == "draw" then 
+                                leader.drawImperiumCards(color, 1, true) 
+                                broadcastToAll(" └─> recalled Spy to gather intelligence", color)
+                            end
+                        end
+                        action()
+                        -- FIXME We are cheating here...
+                        Helper.onceTimeElapsed(1).doAfter(function ()
+                            Action.setContext("agentSent", nil)
+                        end)
+                        continuation.run()
+                    else
+                        continuation.cancel()
+                    end
+                end)
+            else
+                continuation.cancel()
+            end
+        end)                   
     end
 
     return continuation
@@ -630,9 +646,9 @@ function MainBoard.sendSpy(color, observationPostName)
 end
 
 ---
-function MainBoard._decideToGatherIntelligence(color, spaceName, recallSpy)
-    --Helper.dumpFunction("MainBoard._decideToGatherIntelligence", color, spaceName, recallSpy)
-    local continuation = Helper.createContinuation("MainBoard._decideToGatherIntelligence")
+function MainBoard._manageIntelligenceAndInfiltrate(color, spaceName, recallSpy)
+    --Helper.dumpFunction("MainBoard._manageIntelligenceAndInfiltrate", color, spaceName, recallSpy)
+    local continuation = Helper.createContinuation("MainBoard._manageIntelligenceAndInfiltrate")
 
     local recallableSpies = MainBoard.getRecallableSpies(color, spaceName)
 
@@ -641,39 +657,66 @@ function MainBoard._decideToGatherIntelligence(color, spaceName, recallSpy)
     local details = MainBoard.spaceDetails[spaceName]
     assert(details, spaceName)
     -- TODO Take care of special cases such as Ariana Thorvald ability?
-    local itMatters = details.spyRecallSensitive
+    
+    local ennemyAgentPresent = false
 
-    if #recallableSpies == 0 or not hasCardsToDraw then
-        if recallSpy then
-            broadcastToAll(I18N('noSpyToRecallOrCardToDraw'), color, "Purple")
-            continuation.run(false)
-        else
-            continuation.run(true)
+    local spaceScriptZone = MainBoard.spaces[spaceName].zone  
+
+    -- Iterate through object occupying the zone
+    for _, occupyingObject in ipairs(spaceScriptZone.getObjects(true)) do
+        if occupyingObject.hasTag("Agent") then
+            ennemyAgentPresent = true            
         end
-    elseif recallSpy then
-        if #recallableSpies == 1 then
-            continuation.run(true, recallableSpies[1].spy)
-        else
-            local options = Helper.mapValues(recallableSpies, function (recallableSpy)
-                return I18N(recallableSpy.toSpaceName)
-            end)
-            Dialog.showOptionsAndCancelDialog(color, I18N("selectSpyToRecall"), options, continuation, function (index)
-                if index > 0 then
-                    continuation.run(true, recallableSpies[index].spy)
-                else
-                    continuation.run(false)
-                end
-            end)
-        end
-    elseif itMatters then
-        Dialog.showConfirmOrCancelDialog(color, I18N("confirmNotRecallingAnySpy"), continuation, function (confirmed)
-            continuation.run(confirmed)
-        end)
-    else
-        continuation.run(true)
     end
 
+    if ennemyAgentPresent == false then
+        if #recallableSpies == 0 or not hasCardsToDraw then
+            if recallSpy then
+                broadcastToColor(I18N('noSpyToRecallOrCardToDraw'), color, "Purple")
+                continuation.run(false)
+            else
+                continuation.run(true)
+            end
+        elseif recallSpy then
+            MainBoard._recallSpy(color, recallableSpies, continuation, "draw")
+        else 
+            Dialog.showYesOrNoDialog(color, I18N("confirmSpyRecall"), continuation, function (confirmed)
+                if confirmed then
+                    MainBoard._recallSpy(color, recallableSpies, continuation, "draw")
+                else           
+                    continuation.run(true)
+                end
+            end)        
+        end    
+    else 
+        if #recallableSpies == 0 then
+            broadcastToColor("No spy present to allow you to infiltrate !", color, "Purple")
+            continuation.run(false)
+        else      
+            MainBoard._recallSpy(color, recallableSpies, continuation, "infiltrate")
+        end
+    end
+
+    
+
     return continuation
+end
+
+function MainBoard._recallSpy(color, recallableSpies, continuation, recallMode)
+    if #recallableSpies == 1 then
+        continuation.run(true, recallableSpies[1].spy, recallMode)
+    else
+        local options = Helper.mapValues(recallableSpies, function (recallableSpy)
+            return I18N(recallableSpy.toSpaceName)
+        end)
+        Dialog.showOptionsAndCancelDialog(color, I18N("selectSpyToRecall"), options, continuation, function (index)
+            if index > 0 then
+                continuation.run(true, recallableSpies[index].spy, recallMode)
+            else
+                continuation.run(false)
+            end
+        end)
+    end
 end
 
 ---
@@ -1017,7 +1060,7 @@ end
 
 ---
 function MainBoard._goGatherSupport_WithWater(color, leader, continuation)
-    if MainBoard._checkGenericAccess(color, leader, { water = 1 }) then
+    if MainBoard._checkGenericAccess(color, leader, { solari = 2 }) then
         continuation.run(function ()
             leader.resources(color, "solari", -2)
             leader.troops(color, "supply", "garrison", 2)
@@ -1213,9 +1256,13 @@ end
 
 ---
 function MainBoard._goDeepDesert_WormsIfHook(color, leader, continuation)
-    MainBoard._anySpiceSpace(color, leader, 3, 0, MainBoard.spiceBonuses.deepDesert, continuation, function ()
-        leader.callSandworm(color, 2)
-    end)
+    if PlayBoard.hasMakerHook(color) then
+        MainBoard._anySpiceSpace(color, leader, 3, 0, MainBoard.spiceBonuses.deepDesert, continuation, function ()
+            leader.callSandworm(color, 2)
+        end)
+    else
+        broadcastToColor(I18N("noMakerHook"), color, "Purple")
+    end
 end
 
 ---
@@ -1255,9 +1302,13 @@ end
 
 ---
 function MainBoard._goHaggaBasin_WormIfHook(color, leader, continuation)
-    MainBoard._anySpiceSpace(color, leader, 1, 0, MainBoard.spiceBonuses.haggaBasin, continuation, function ()
-        leader.callSandworm(color, 1)
-    end)
+    if PlayBoard.hasMakerHook(color) then
+        MainBoard._anySpiceSpace(color, leader, 1, 0, MainBoard.spiceBonuses.haggaBasin, continuation, function ()
+            leader.callSandworm(color, 1)
+        end)
+    else
+        broadcastToColor(I18N("noMakerHook"), color, "Purple")
+    end
 end
 
 ---
