@@ -1018,7 +1018,7 @@ end
 
 ---
 function MainBoard._goGatherSupport_WithWater(color, leader, continuation)
-    if MainBoard._checkGenericAccess(color, leader, { water = 1 }) then
+    if MainBoard._checkGenericAccess(color, leader, { solari = 2 }) then
         continuation.run(function ()
             leader.resources(color, "solari", -2)
             leader.troops(color, "supply", "garrison", 2)
@@ -1158,7 +1158,6 @@ end
 ---
 function MainBoard._goSpiceRefinery_WithSpice(color, leader, continuation)
     if MainBoard._checkGenericAccess(color, leader, { spice = 1 }) then
-        broadcastToAll("blahhhh", undefined)
         continuation.run(function ()
             leader.resources(color, "spice", -1)
             leader.resources(color, "solari", 4)
@@ -1215,9 +1214,13 @@ end
 
 ---
 function MainBoard._goDeepDesert_WormsIfHook(color, leader, continuation)
-    MainBoard._anySpiceSpace(color, leader, 3, 0, MainBoard.spiceBonuses.deepDesert, continuation, function ()
-        leader.callSandworm(color, 2)
-    end)
+    if PlayBoard.hasMakerHook(color) then
+        MainBoard._anySpiceSpace(color, leader, 3, 0, MainBoard.spiceBonuses.deepDesert, continuation, function ()
+            leader.callSandworm(color, 2)
+        end)
+    else
+        broadcastToColor(I18N("noMakerHook"), color, "Purple")
+    end
 end
 
 ---
@@ -1257,9 +1260,13 @@ end
 
 ---
 function MainBoard._goHaggaBasin_WormIfHook(color, leader, continuation)
-    MainBoard._anySpiceSpace(color, leader, 1, 0, MainBoard.spiceBonuses.haggaBasin, continuation, function ()
-        leader.callSandworm(color, 1)
-    end)
+    if PlayBoard.hasMakerHook(color) then
+        MainBoard._anySpiceSpace(color, leader, 1, 0, MainBoard.spiceBonuses.haggaBasin, continuation, function ()
+            leader.callSandworm(color, 1)
+        end)
+    else
+        broadcastToColor(I18N("noMakerHook"), color, "Purple")
+    end
 end
 
 ---

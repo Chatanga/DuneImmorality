@@ -49,7 +49,7 @@ return {
     noAlly = "You haven't selected an ally!",
     notYourTurn = "It's not your turn!",
     noAgent = "You don't have any agent left",
-    noFriendship = "You don't have any influence with {withFaction}!",
+    noFriendship = "You don't have enough influence with {withFaction}!",
     alreadyHaveSwordmaster = "You already have a swordmaster!",
     noResource = "You don't have enough {resource}!",
     forbiddenAccess = "You cannot access this space!",
@@ -185,6 +185,7 @@ return {
     goHaggaBasin = "Select an option.",
     twoSpicesOption = "2 spice units",
     onWormOption = "1 sandworm",
+    noMakerHook = "You don't have a maker's hook!",
 
     goTechNegotiation = "Select an option.",
     sendNegotiatorOption = "Negotiator",

@@ -185,6 +185,7 @@ return {
     goHaggaBasin = "Selectionnez une option.",
     twoSpicesOption = "2 épices",
     onWormOption = "1 ver des sables",
+    noMakerHook = "Vous ne possédez pas de crochet à faiseur!",
 
     goTechNegotiation = "Sélectionnez une option.",
     sendNegotiatorOption = "Négociateur",
