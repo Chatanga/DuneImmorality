@@ -1070,6 +1070,7 @@ function MainBoard._goShipping(color, leader, continuation)
         continuation.run()
     elseif MainBoard._checkGenericAccess(color, leader, { spice = 3 }) then
         continuation.run(function ()
+            leader.resources(color, "spice", -3)
             leader.resources(color, "solari", 5)
         end)
     else
