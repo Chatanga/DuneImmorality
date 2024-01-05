@@ -1000,7 +1000,12 @@ function MainBoard._goSwordmaster(color, leader, continuation)
     elseif MainBoard._checkGenericAccess(color, leader, { solari = MainBoard._getSwordmasterCost() }) then
         continuation.run(function ()
             leader.resources(color, "solari", -MainBoard._getSwordmasterCost())
-            leader.recruitSwordmaster(color)
+            -- on cheat içi aussi pour pas avoir de conflit entre le move park de l'agent envoyé vers la case 
+            -- et le move park du swordmaster vers le plateau joueur
+            Helper.onceTimeElapsed(1).doAfter(function ()
+                leader.recruitSwordmaster(color)
+            end)
+            
         end)
     else
         continuation.run()
