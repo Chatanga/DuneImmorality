@@ -276,7 +276,11 @@ function LeaderSelection._setUpPicking(autoStart, random, hidden)
                 LeaderSelection._createDynamicLeaderSelection(visibleLeaders)
                 Helper.clearButtons(LeaderSelection.secondaryTable)
                 LeaderSelection.stage = Stage.STARTED
-                TurnControl.start()
+                -- FIXME We are cheating here... AGAIN !!! XD
+                Helper.onceTimeElapsed(1).doAfter(function ()
+                    TurnControl.start()
+                end)
+               
             else
                 error("Not enough leaders left!")
             end
