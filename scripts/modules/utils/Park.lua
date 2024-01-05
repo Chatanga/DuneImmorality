@@ -239,9 +239,11 @@ function Park._instantTidyUp(park, newObjectsInTransit)
     local freeObjects = {}
     local freeObjectCount = 0
     for _, object in ipairs(Park.getObjects(park)) do
-        freeObjects[object] = true
-        freeObjectCount = freeObjectCount + 1
-        newObjectsInTransit[object] = nil
+        if object.resting then
+            freeObjects[object] = true
+            freeObjectCount = freeObjectCount + 1
+            newObjectsInTransit[object] = nil
+        end
     end
 
     while freeSlotCount > 0 and freeObjectCount > 0 do

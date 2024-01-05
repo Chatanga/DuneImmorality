@@ -111,23 +111,8 @@ function LeaderSelection._transientSetUp(settings, players, stage)
         return
     end
 
-    local autoStart = not settings.tweakLeaderSelection
-    local testSetUp = type(settings.leaderSelection) == "table"
-
-    if testSetUp then
-        LeaderSelection._setUpTest(players, settings.leaderSelection)
-    elseif settings.leaderSelection == "random" then
-        LeaderSelection._setUpPicking(autoStart, true, false)
-    elseif settings.leaderSelection == "reversePick" then
-        LeaderSelection._setUpPicking(autoStart, false, false)
-    elseif settings.leaderSelection == "reverseHiddenPick" then
-        LeaderSelection._setUpPicking(autoStart, false, true)
-    elseif settings.leaderSelection == "altHiddenPick" then
-        LeaderSelection._setUpPicking(autoStart, false, true)
-    else
-        error(settings.leaderSelection)
-    end
-
+    -- Do it *before* calling _setUpXxx which could trigger an immediate
+    -- TurnControl.start and a subsequent "leaderSelection" phase event.
     Helper.registerEventListener("phaseStart", function (phase, firstPlayer)
         if phase == "leaderSelection" then
             local turnSequence = Helper.shallowCopy(players)
@@ -151,6 +136,23 @@ function LeaderSelection._transientSetUp(settings, players, stage)
             TurnControl.overridePhaseTurnSequence(turnSequence)
         end
     end)
+
+    local autoStart = not settings.tweakLeaderSelection
+    local testSetUp = type(settings.leaderSelection) == "table"
+
+    if testSetUp then
+        LeaderSelection._setUpTest(players, settings.leaderSelection)
+    elseif settings.leaderSelection == "random" then
+        LeaderSelection._setUpPicking(autoStart, true, false)
+    elseif settings.leaderSelection == "reversePick" then
+        LeaderSelection._setUpPicking(autoStart, false, false)
+    elseif settings.leaderSelection == "reverseHiddenPick" then
+        LeaderSelection._setUpPicking(autoStart, false, true)
+    elseif settings.leaderSelection == "altHiddenPick" then
+        LeaderSelection._setUpPicking(autoStart, false, true)
+    else
+        error(settings.leaderSelection)
+    end
 end
 
 ---
@@ -276,11 +278,7 @@ function LeaderSelection._setUpPicking(autoStart, random, hidden)
                 LeaderSelection._createDynamicLeaderSelection(visibleLeaders)
                 Helper.clearButtons(LeaderSelection.secondaryTable)
                 LeaderSelection.stage = Stage.STARTED
-                -- FIXME We are cheating here... AGAIN !!! XD
-                Helper.onceTimeElapsed(1).doAfter(function ()
-                    TurnControl.start()
-                end)
-               
+                TurnControl.start()
             else
                 error("Not enough leaders left!")
             end

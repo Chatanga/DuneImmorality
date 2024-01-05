@@ -19,6 +19,7 @@ local constructionModeEnabled = false
 local autoLoadedSettings = nil
 
 --[[
+]]
 autoLoadedSettings = {
     language = "fr",
     hotSeat = true,
@@ -41,7 +42,6 @@ autoLoadedSettings = {
     assistedRevelation = true,
     soundEnabled = true,
 }
-]]
 
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
@@ -180,7 +180,6 @@ function asyncOnLoad(scriptState)
         { name = "Hagal", module = allModules.Hagal },
         { name = "PlayBoard", module = allModules.PlayBoard },
         { name = "Combat", module = allModules.Combat },
-        { name = "LeaderSelection", module = allModules.LeaderSelection },
         { name = "MainBoard", module = allModules.MainBoard },
         { name = "ShipmentTrack", module = allModules.ShipmentTrack },
         { name = "TechMarket", module = allModules.TechMarket },
@@ -193,6 +192,7 @@ function asyncOnLoad(scriptState)
         { name = "TleilaxuRow", module = allModules.TleilaxuRow },
         { name = "ThroneRow", module = allModules.ThroneRow },
         { name = "TurnControl", module = allModules.TurnControl },
+        { name = "LeaderSelection", module = allModules.LeaderSelection },
     }
 
     -- We cannot use Module.callOnAllRegisteredModules("onLoad", state),

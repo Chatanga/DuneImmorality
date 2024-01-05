@@ -24,21 +24,21 @@ __Bugs__
 __All__
 
 - Snapifier le secteur des combats (casernes troupes et cuirassés, champs de bataille, zone PV, conflits, jetons de force).
-- Doubler tous les jetons de PV de combat, ajouter faux PV pour C et A, refaire TSMF.
+- Doubler tous les jetons de PV de combat, ajouter faux PV pour C et A, refaire TSMF -> Asmodius.
 - Déverrouiller la révélation assistée.
-- Réactiver la détection de cartes jouées (Undercover Asset & Co.) -> utilisée par Ix.
+- Réactiver la détection de cartes jouées (intégrer infiltration et exotismes tel que Undercover Asset) -> utilisée par Ix.
 - Marquer par décalcos les positions de départ des maîtres d'armes -> mieux : modifier le test.
 
 - Automatiser les contrats.
 - Automatiser le gain de 2 solaris pour un contrat si le module n'est pas actif (ou s'il n'y a plus de contrats).
 - Ajouter des boutons d'acquisition sur les contrats de Shaddam ?
 
-- Créer le jeton d’objectif manquant (?).
+- Créer le jeton d’objectif manquant (le "?").
 - Ajouter un bouton "Réclamer les PV" pour convertir les paires en PV.
 - Sortir automatiquement un jeton d'objectif (nommé) pour les conflits.
 - Automatiser le bannières en se basant sur les jetons d’objectif (oublier la compatibilité anciens conflits).
 
-- Revoir le contexte d’action pour les logs.
+- Revoir le contexte d’action pour les logs -> Asmodius.
 
 - Mode libre pour la sélection des dirigeants.
 
@@ -70,6 +70,7 @@ __Aesthetic__
 - Ranger les goodies (fouineurs, baron, feyd, voix à donner en bonus, bonus maîtres d'armes) dans une zone invisible ?
 - Prendre en considération les crans de zoom, préconfigurer les caméras ?
 - Snaps jetons factions 6J empereur/fremen trop hauts.
+- Élargir les bordures colorées des plateaux.
 
 __Internal__
 
@@ -143,6 +144,7 @@ Modules relies on the Luabundler tool, but also on utils.Modules.
 Reusable modules without dependencies on the other modules.
 
 - __AcquireCard.lua__ - An auto adjustable dynami button to draw from a stack of deck.
+- __Dialog.lua__ - Alternative dialogs to be notified when a user choose to cancel.
 - __Helper.lua__ - Various helping functions.
 - __I18N.lua__ - Internationalisation support.
 - __Module.lua__ - LazyModule would be a better name.
