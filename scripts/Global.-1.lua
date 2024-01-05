@@ -19,7 +19,6 @@ local constructionModeEnabled = false
 local autoLoadedSettings = nil
 
 --[[
-]]
 autoLoadedSettings = {
     language = "fr",
     hotSeat = true,
@@ -42,6 +41,7 @@ autoLoadedSettings = {
     assistedRevelation = true,
     soundEnabled = true,
 }
+]]
 
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
@@ -169,7 +169,7 @@ function asyncOnLoad(scriptState)
     local state = scriptState ~= "" and JSON.decode(scriptState) or {}
     settings = state.settings
 
-    -- TODO Detail dependencies?
+    -- TODO Detail dependencies? An explicit graph would be useful.
     allModules.ordered = {
         { name = "Locale", module = allModules.Locale },
         { name = "Action", module = allModules.Action },
