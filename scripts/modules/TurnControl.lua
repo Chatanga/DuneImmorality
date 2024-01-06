@@ -36,7 +36,6 @@ local TurnControl = {
 
 function TurnControl.onLoad(state)
     --Helper.dumpFunction("TurnControl.onLoad")
-
     if state.settings then
         if state.TurnControl then
             TurnControl.players = state.TurnControl.players
@@ -298,8 +297,11 @@ end
 ---
 function TurnControl.onPlayerTurn(player, _)
     local playerColor = player and player.color
-    if #Turns.order > 1 then
+    --Helper.dumpFunction("TurnControl.onPlayerTurn", player ~= nil, playerColor)
+    if player then
         Turns.order = { playerColor }
+        Turns.enable = #Turns.order > 0
+        --Helper.dump(3, Turns.enable and "(true)" or "(false)", "- Turns.order:", Turns.order)
     end
 end
 
@@ -348,13 +350,15 @@ function TurnControl._next(startPlayerLuaIndex)
     end
 end
 
--- TODO Nicer button.
 function TurnControl._createMakersAndRecallButton()
     local fromIntRGB = function (r, g, b)
         return Color(r / 255, g / 255, b / 255)
     end
 
     Turns.order = {}
+    Turns.enable = false
+    --Helper.dump(1, Turns.enable and "(true)" or "(false)", "- Turns.order:", Turns.order)
+
     local primaryTable = getObjectFromGUID("2b4b92")
     Helper.createAbsoluteButtonWithRoundness(primaryTable, 1, false, {
         click_function = Helper.registerGlobalCallback(function ()
@@ -375,13 +379,56 @@ end
 function TurnControl._notifyPlayerTurn()
     local playerColor = TurnControl.players[TurnControl.currentPlayerLuaIndex]
     local player = Helper.findPlayerByColor(playerColor)
-    if player and player.seated then
-        Turns.turn_color = playerColor
-        -- Prevent any change trough the TTS built-in turn button.
-        Turns.order = { playerColor }
+    --Helper.dump(playerColor, "is", player.seated and "seated" or "not seated")
+    if player then
+        if not player.seated then
+            TurnControl._movePlayerIfNeeded(playerColor)
+        end
+        Helper.onceFramesPassed(1).doAfter(function ()
+            if player then
+                Turns.turn_color = playerColor
+                Turns.order = { playerColor }
+                Turns.enable = #Turns.order > 0
+                --Helper.dump(2, Turns.enable and "(true)" or "(false)", "- Turns.order:", Turns.order)
+            end
+            Helper.dump(">> Turn:", playerColor)
+            Helper.emitEvent("playerTurns", TurnControl.currentPhase, playerColor)
+        end)
     end
-    Helper.dump(">> Turn:", playerColor)
-    Helper.emitEvent("playerTurns", TurnControl.currentPhase, playerColor)
+end
+
+function TurnControl._movePlayerIfNeeded(color)
+    if Player[color].seated then
+        return
+    end
+
+    local hostPlayer = nil
+    for _, player in ipairs(Player.getPlayers()) do
+        if player.host then
+            hostPlayer = player
+        end
+    end
+
+    assert(hostPlayer)
+
+    local hostPlayBoard = PlayBoard.getPlayBoard(hostPlayer.color)
+    if hostPlayBoard then
+        local playboard = PlayBoard.getPlayBoard(color)
+        if playboard.opponent == "puppet" then
+            hostPlayBoard.opponent = "puppet"
+            playboard.opponent = color
+            hostPlayer.changeColor(color)
+        else
+            Helper.dump("Expected a puppet opponent, but got a", playboard.opponent)
+            for otherColor, playBoard in pairs(PlayBoard.playBoards) do
+                local target = color == otherColor and "(target)" or "-"
+                local host = hostPlayer.color == otherColor and "(host)" or "-"
+                Helper.dump(otherColor, "->", playBoard.opponent, "/", target, host)
+            end
+        end
+    else
+        error("Wrong player color!")
+    end
 end
 
 ---

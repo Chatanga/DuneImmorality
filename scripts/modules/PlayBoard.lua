@@ -1249,7 +1249,6 @@ function PlayBoard._setActivePlayer(phase, color)
                     if phase ~= "leaderSelection" then
                         playBoard:_createEndOfTurnButton()
                     end
-                    PlayBoard._movePlayerIfNeeded(color)
                 end
             else
                 Helper.clearButtons(playBoard.content.startEndTurnButton)
@@ -1273,41 +1272,6 @@ function PlayBoard._setActivePlayer(phase, color)
     end
 end
 
-function PlayBoard._movePlayerIfNeeded(color)
-    if Player[color].seated then
-        return
-    end
-
-    local hostPlayer = nil
-    for _, player in ipairs(Player.getPlayers()) do
-        if player.host then
-            hostPlayer = player
-        end
-    end
-
-    assert(hostPlayer)
-    Helper.onceFramesPassed(1).doAfter(function ()
-        local hostPlayBoard = PlayBoard.getPlayBoard(hostPlayer.color)
-        if hostPlayBoard then
-            local playboard = PlayBoard.getPlayBoard(color)
-            if playboard.opponent == "puppet" then
-                hostPlayBoard.opponent = "puppet"
-                playboard.opponent = color
-                hostPlayer.changeColor(color)
-            else
-                Helper.dump("Expected a puppet opponent, but got a", playboard.opponent)
-                for otherColor, playBoard in pairs(PlayBoard.playBoards) do
-                    local target = color == otherColor and "(target)" or "-"
-                    local host = hostPlayer.color == otherColor and "(host)" or "-"
-                    Helper.dump(otherColor, "->", playBoard.opponent, "/", target, host)
-                end
-            end
-        else
-            error("Wrong player color!")
-        end
-    end)
-end
-
 ---
 function PlayBoard.createEndOfTurnButton(color)
     PlayBoard.playBoards[color]:_createEndOfTurnButton()
@@ -1320,6 +1284,7 @@ function PlayBoard:_createEndOfTurnButton()
         click_function = self:_createExclusiveCallback(function ()
             self.content.startEndTurnButton.AssetBundle.playTriggerEffect(0)
             TurnControl.endOfTurn()
+            Helper.clearButtons(self.content.startEndTurnButton)
         end),
         position = Vector(0, 0.6, 0),
         label = I18N("endOfTurn"),
@@ -1830,13 +1795,13 @@ end
 ---
 function PlayBoard:_createExclusiveCallback(innerCallback)
     return Helper.registerGlobalCallback(function (object, color, altClick)
-        if self.color == color or PlayBoard.isRival(self.color) then
+        if self.color == color or PlayBoard.isRival(self.color) or true then
             if not self.buttonsDisabled then
                 self.buttonsDisabled = true
                 Helper.onceTimeElapsed(0.5).doAfter(function ()
                     self.buttonsDisabled = false
                 end)
-                innerCallback(object, color, altClick)
+                innerCallback(object, self.color, altClick)
             end
         else
             broadcastToColor(I18N('noTouch'), color, "Purple")
