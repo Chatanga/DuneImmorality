@@ -1108,13 +1108,9 @@ function MainBoard._goSietchTabr(color, leader, continuation)
         -- FIXME Pending continuation if the dialog is canceled.
         Dialog.showOptionsAndCancelDialog(color, I18N("goSietchTabr"), options, continuation, function (index)
             if index == 1 then
-                continuation.run(function ()
-                    MainBoard._goSietchTabr_HookTroopWater(color, leader, continuation)
-                end)
+                MainBoard._goSietchTabr_HookTroopWater(color, leader, continuation)
             elseif index == 2 then
-                continuation.run(function ()
-                    MainBoard._goSietchTabr_WaterShieldWall(color, leader, continuation)
-                end)
+                MainBoard._goSietchTabr_WaterShieldWall(color, leader, continuation)
             else
                 assert(index == 0)
                 continuation.run()
