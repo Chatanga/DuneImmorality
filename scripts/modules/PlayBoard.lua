@@ -2163,6 +2163,8 @@ end
 
 ---
 function PlayBoard:tryToDrawCards(count, message)
+    local continuation = Helper.createContinuation("PlayBoard:tryToDrawCards")
+
     local content = self.content
     local deck = Helper.getDeckOrCard(content.drawDeckZone)
     local discard = Helper.getDeckOrCard(content.discardZone)
@@ -2171,50 +2173,64 @@ function PlayBoard:tryToDrawCards(count, message)
     local availableCardCount = Helper.getCardCount(deck) + Helper.getCardCount(discard)
     local notEnoughCards = availableCardCount < count
 
-    if needDiscardReset or notEnoughCards then
+    if availableCardCount == 0 then
+        continuation.run(0)
+    elseif needDiscardReset or notEnoughCards then
         local leaderName = PlayBoard.getLeaderName(self.color)
         broadcastToAll(I18N("isDecidingToDraw", { leader = leaderName }), "Pink")
         local maxCount = math.min(count, availableCardCount)
-        Dialog.showConfirmDialog(
+        Dialog.showConfirmOrCancelDialog(
             self.color,
             I18N("warningBeforeDraw", { count = count, maxCount = maxCount }),
-            function ()
-                if message then
-                    broadcastToAll(message, self.color)
+            nil,
+            function (confirmed)
+                if confirmed then
+                    if message then
+                        broadcastToAll(message, self.color)
+                    end
+                    self:drawCards(count).doAfter(continuation.run)
+                else
+                    continuation.run(0)
                 end
-                self:drawCards(count)
             end)
     else
-        self:drawCards(count)
+        self:drawCards(count).doAfter(continuation.run)
     end
+
+    return continuation
 end
 
 ---
 function PlayBoard:drawCards(count)
+    Helper.dumpFunction("PlayBoard:drawCards", count)
     Types.assertIsInteger(count)
-    local remainingCardToDrawCount = count
+
+    local continuation = Helper.createContinuation("PlayBoard:drawCards")
 
     local deckOrCard = Helper.getDeckOrCard(self.content.drawDeckZone)
     local drawableCardCount = Helper.getCardCount(deckOrCard)
 
-    local dealCardCount = math.min(remainingCardToDrawCount, drawableCardCount)
+    local dealCardCount = math.min(count, drawableCardCount)
     -- The getCardCount function is ok with nil arg, but we add a check for the sake of VS Code.
     if deckOrCard and dealCardCount > 0 then
         deckOrCard.deal(dealCardCount, self.color)
-        -- FIXME Should be in Action.
-        Action.log(I18N("drawObjects", { amount = dealCardCount, object = I18N.agree(dealCardCount, "imperiumCard") }), self.color)
     end
-
-    remainingCardToDrawCount = remainingCardToDrawCount - dealCardCount
 
     -- Dealing cards take an unknown amout of time.
     Helper.onceTimeElapsed(0.5).doAfter(function ()
+        local remainingCardToDrawCount = count - dealCardCount
         if remainingCardToDrawCount > 0 then
             self:_resetDiscard().doAfter(function ()
-                self:drawCards(remainingCardToDrawCount)
+                self:drawCards(remainingCardToDrawCount).doAfter(function (dealOfOtherCardCount)
+                    continuation.run(dealCardCount + dealOfOtherCardCount)
+                end)
             end)
+        else
+            continuation.run(dealCardCount)
         end
     end)
+
+    return continuation
 end
 
 ---

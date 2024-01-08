@@ -552,6 +552,7 @@ function MainBoard.sendAgent(color, spaceName, recallSpy)
             if action then
                 MainBoard._manageIntelligenceAndInfiltrate(color, parentSpaceName, recallSpy).doAfter(function (goAhead, spy, recallMode)
                     if goAhead then
+                        local innerInnerContinuation = Helper.createContinuation("MainBoard." .. parentSpaceName .. ".goAhead")
                         Helper.emitEvent("agentSent", color, parentSpaceName)
                         Action.setContext("agentSent", parentSpaceName)
                         Park.putObject(agent, parentSpace.park)
@@ -559,20 +560,26 @@ function MainBoard.sendAgent(color, spaceName, recallSpy)
                             Park.putObject(spy, PlayBoard.getSpyPark(color))
                             if recallMode == "infiltrate" then
                                 broadcastToColor(I18N("infiltrateWithSpy"), color, "Purple")
+                                innerInnerContinuation.run()
                             elseif recallMode == "intelligence" then
-                                leader.drawImperiumCards(color, 1, true)
+                                leader.drawImperiumCards(color, 1, true).doAfter(innerInnerContinuation.run)
                                 -- TODO Create Action.recallSpy(color) as some kind of subaction for sendAgent (only really needed for Hagal)?
                                 broadcastToAll(" └─> " .. I18N("gatherIntelligenceWithSpy"), color)
                             else
                                 error("Unexpected mode: " .. tostring(recallMode))
+                                innerInnerContinuation.run()
                             end
+                        else
+                            innerInnerContinuation.run()
                         end
-                        action()
-                        -- FIXME We are cheating here...
-                        Helper.onceTimeElapsed(1).doAfter(function ()
-                            Action.setContext("agentSent", nil)
+                        innerInnerContinuation.doAfter(function ()
+                            action()
+                            -- FIXME We are cheating here...
+                            Helper.onceTimeElapsed(1).doAfter(function ()
+                                Action.setContext("agentSent", nil)
+                            end)
+                            continuation.run()
                         end)
-                        continuation.run()
                     else
                         continuation.cancel()
                     end

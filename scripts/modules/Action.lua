@@ -231,12 +231,18 @@ end
 function Action.drawImperiumCards(color, amount, forced)
     Types.assertIsPlayerColor(color)
     local playBoard = PlayBoard.getPlayBoard(color)
+    local continuation
     if forced then
-        playBoard:drawCards(amount)
+        continuation = playBoard:drawCards(amount)
     else
-        playBoard:tryToDrawCards(amount)
+        continuation = playBoard:tryToDrawCards(amount)
     end
-    return true
+    continuation.doAfter(function (dealCardCount)
+        if dealCardCount > 0 then
+            Action.log(I18N("drawObjects", { amount = dealCardCount, object = I18N.agree(dealCardCount, "imperiumCard") }), color)
+        end
+    end)
+    return continuation
 end
 
 ---@param color PlayerColor
