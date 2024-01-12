@@ -108,6 +108,14 @@ function Commander.getMuadDibTeam()
 end
 
 ---
+function Commander.inSameTeam(...)
+    assert(#{...} > 1)
+    local shaddamTeamMemberCount = #Helper.filter({...}, Commander.isTeamShaddam)
+    local muadDibTeamMemberCount = #Helper.filter({...}, Commander.isTeamMuabDib)
+    return shaddamTeamMemberCount == 0 or muadDibTeamMemberCount == 0
+end
+
+---
 function Commander.newCommander(color, leader)
     assert(Commander.isCommander(color))
     local commander = Helper.createClassInstance(Commander, {})

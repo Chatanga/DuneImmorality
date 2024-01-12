@@ -25,6 +25,7 @@ local TurnControl = {
         'recall',
         'endgame',
     },
+    hotSeat = false,
     players = {},
     firstPlayerLuaIndex = nil,
     counterClockWise = false,
@@ -38,6 +39,7 @@ function TurnControl.onLoad(state)
     --Helper.dumpFunction("TurnControl.onLoad")
     if state.settings then
         if state.TurnControl then
+            TurnControl.hotSeat = state.TurnControl.hotSeat
             TurnControl.players = state.TurnControl.players
             TurnControl.scoreGoal = state.TurnControl.scoreGoal
             TurnControl.specialPhase = state.TurnControl.specialPhase
@@ -60,6 +62,7 @@ end
 function TurnControl.onSave(state)
     --Helper.dumpFunction("TurnControl.onSave")
     state.TurnControl = {
+        hotSeat = TurnControl.hotSeat,
         players = TurnControl.players,
         scoreGoal = TurnControl.scoreGoal,
         specialPhase = TurnControl.specialPhase,
@@ -75,6 +78,7 @@ end
 --- Initialize the turn system with the provided players (or all the seated
 --- players) and start a new round.
 function TurnControl.setUp(settings, activeOpponents)
+    TurnControl.hotSeat = settings.hotSeat
     TurnControl.players = TurnControl.toCanonicallyOrderedPlayerList(activeOpponents)
     TurnControl.scoreGoal = settings.epicMode and 12 or 10
 
@@ -295,17 +299,6 @@ function TurnControl._startPhase(phase)
 end
 
 ---
-function TurnControl.onPlayerTurn(player, _)
-    local playerColor = player and player.color
-    --Helper.dumpFunction("TurnControl.onPlayerTurn", player ~= nil, playerColor)
-    if player then
-        Turns.order = { playerColor }
-        Turns.enable = #Turns.order > 0
-        --Helper.dump(3, Turns.enable and "(true)" or "(false)", "- Turns.order:", Turns.order)
-    end
-end
-
----
 function TurnControl.endOfTurn()
     Helper.onceStabilized().doAfter(function ()
         TurnControl._next(TurnControl._getNextPlayer(TurnControl.currentPlayerLuaIndex, TurnControl.counterClockWise))
@@ -357,7 +350,6 @@ function TurnControl._createMakersAndRecallButton()
 
     Turns.order = {}
     Turns.enable = false
-    --Helper.dump(1, Turns.enable and "(true)" or "(false)", "- Turns.order:", Turns.order)
 
     local primaryTable = getObjectFromGUID("2b4b92")
     Helper.createAbsoluteButtonWithRoundness(primaryTable, 1, false, {
@@ -381,15 +373,14 @@ function TurnControl._notifyPlayerTurn()
     local player = Helper.findPlayerByColor(playerColor)
     --Helper.dump(playerColor, "is", player.seated and "seated" or "not seated")
     if player then
-        if not player.seated then
-            TurnControl._movePlayerIfNeeded(playerColor)
+        if not player.seated and (not TurnControl.hotSeat or not TurnControl._assumeDirectControl(playerColor)) then
+            broadcastToAll(I18N("noSeatedPlayer", { color = I18N(playerColor) }), Color.fromString("Pink"))
         end
         Helper.onceFramesPassed(1).doAfter(function ()
-            if player then
-                Turns.turn_color = playerColor
-                Turns.order = { playerColor }
+            Turns.turn_color = playerColor
+            Turns.order = { playerColor }
+            if not Turns.enable and not TurnControl.hotSeat then
                 Turns.enable = #Turns.order > 0
-                --Helper.dump(2, Turns.enable and "(true)" or "(false)", "- Turns.order:", Turns.order)
             end
             Helper.dump(">> Turn:", playerColor)
             Helper.emitEvent("playerTurns", TurnControl.currentPhase, playerColor)
@@ -397,38 +388,39 @@ function TurnControl._notifyPlayerTurn()
     end
 end
 
-function TurnControl._movePlayerIfNeeded(color)
-    if Player[color].seated then
-        return
+function TurnControl._assumeDirectControl(color)
+    local legitimatePlayers = TurnControl.getLegitimatePlayers(color)
+    if not Helper.isEmpty(legitimatePlayers) then
+        legitimatePlayers[1].changeColor(color)
+        return true
+    else
+        return false
     end
+end
 
-    local hostPlayer = nil
-    for _, player in ipairs(Player.getPlayers()) do
-        if player.host then
-            hostPlayer = player
-        end
-    end
+function TurnControl.getLegitimatePlayers(color)
 
-    assert(hostPlayer)
+    local legitimatePlayers = {}
 
-    local hostPlayBoard = PlayBoard.getPlayBoard(hostPlayer.color)
-    if hostPlayBoard then
-        local playboard = PlayBoard.getPlayBoard(color)
-        if playboard.opponent == "puppet" then
-            hostPlayBoard.opponent = "puppet"
-            playboard.opponent = color
-            hostPlayer.changeColor(color)
-        else
-            Helper.dump("Expected a puppet opponent, but got a", playboard.opponent)
-            for otherColor, playBoard in pairs(PlayBoard.playBoards) do
-                local target = color == otherColor and "(target)" or "-"
-                local host = hostPlayer.color == otherColor and "(host)" or "-"
-                Helper.dump(otherColor, "->", playBoard.opponent, "/", target, host)
+    -- In 6P we add any seated player of the same team.
+    if TurnControl.getPlayerCount() == 6 then
+        for _, player in ipairs(Player.getPlayers()) do
+            if player.seated and Commander.inSameTeam(color, player.color) then
+                table.insert(legitimatePlayers, player)
             end
         end
-    else
-        error("Wrong player color!")
     end
+
+    -- Failing to find at least one, we take the host player.
+    if Helper.isEmpty(legitimatePlayers) then
+        for _, player in ipairs(Player.getPlayers()) do
+            if player.host then
+                table.insert(legitimatePlayers, player)
+            end
+        end
+    end
+
+    return legitimatePlayers
 end
 
 ---
@@ -557,6 +549,11 @@ end
 ---
 function TurnControl.getCurrentRound()
     return TurnControl.currentRound
+end
+
+---
+function TurnControl.isHotSeatEnabled()
+    return TurnControl.hotSeat
 end
 
 return TurnControl

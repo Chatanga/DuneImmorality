@@ -1,6 +1,13 @@
 return {
     ["?"] = "?",
 
+    Green = "vert",
+    Yellow = "jaune",
+    Blue = "bleu",
+    Red = "rouge",
+    Brown = "marron",
+    Teal = "sarcelle",
+
     -- Setup UI
     prolog = "« Une mise en place est toujours un moment très délicat. »",
     language = "Langue",
@@ -75,8 +82,10 @@ return {
     ok = "Ok",
     cancel = "Annuler",
     dialogCardAbove = "Voulez-vous mettre la carte sur le dessus de votre paquet ? (Ok = oui, Cancel = non)",
-    endOfTurn = "Finir\ntour",
+    endTurn = "Finir\ntour",
     activatedAlly = "⬍ Allié activé",
+    noSeatedPlayer = "Le joueur {color} est absent !",
+    takePlace = "Piquer\nla\nplace",
 
     -- Leader selection
     leaderSelectionAdjust = "Ajustez le nombre de dirigeants sélectionnés au hasard\nparmi lesquels les joueurs devront choisir :",

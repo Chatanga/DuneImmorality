@@ -1,6 +1,13 @@
 return {
     ["?"] = "?",
 
+    Green = "green",
+    Yellow = "yellow",
+    Blue = "blue",
+    Red = "red",
+    Brown = "brown",
+    Teal = "teal",
+
     -- Setup UI
     prolog = "\"A setup is a very delicate time...\"",
     language = "Language",
@@ -73,10 +80,12 @@ return {
     ok = "Ok",
     cancel = "Cancel",
     dialogCardAbove = "Do you want to put the card on top of your deck ? (Ok = yes, Cancel = No)",
-    endOfTurn = "End\nTurn",
+    endTurn = "End\nTurn",
     takeHighCouncilSeatByForce = "Take by force",
     takeHighCouncilSeatByForceConfirm = "Taking High-Council seat by force?",
     activatedAlly = "Activated ally",
+    noSeatedPlayer = "The {color} player is missing!",
+    takePlace = "Take\nPlace",
 
     -- Leader selection
     leaderSelectionAdjust = "Adjust the number of leaders who will be randomly\nselected for the players to choose among:",

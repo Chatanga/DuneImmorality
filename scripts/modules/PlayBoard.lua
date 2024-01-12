@@ -88,7 +88,7 @@ local PlayBoard = Helper.createClass(nil, {
             freighter = "e9096d",
             firstPlayerMarkerZone = "781a03",
             firstPlayerInitialPosition = Helper.getHardcodedPositionFromGUID('781a03', -13.6, 2.7, 20.89) + Vector(0, -0.4, 0),
-            startEndTurnButton = "895594",
+            endTurnButton = "895594",
             atomicsToken = "d5ff47",
             makerHook = "2a8414",
         },
@@ -152,7 +152,7 @@ local PlayBoard = Helper.createClass(nil, {
             freighter = "68e424",
             firstPlayerMarkerZone = "311c04",
             firstPlayerInitialPosition = Helper.getHardcodedPositionFromGUID('311c04', -13.6, 2.7, -17.49) + Vector(0, -0.4, 0),
-            startEndTurnButton = "9eeccd",
+            endTurnButton = "9eeccd",
             atomicsToken = "700023",
             makerHook = "7011f2",
         },
@@ -216,7 +216,7 @@ local PlayBoard = Helper.createClass(nil, {
             freighter = "34281d",
             firstPlayerMarkerZone = "ce7c68",
             firstPlayerInitialPosition = Helper.getHardcodedPositionFromGUID('ce7c68', 13.6, 2.7, 20.89) + Vector(0, -0.4, 0),
-            startEndTurnButton = "96aa58",
+            endTurnButton = "96aa58",
             atomicsToken = "0a22ec",
             makerHook = "0492e6",
         },
@@ -280,7 +280,7 @@ local PlayBoard = Helper.createClass(nil, {
             freighter = "8fa76f",
             firstPlayerMarkerZone = "ba0c20",
             firstPlayerInitialPosition = Helper.getHardcodedPositionFromGUID('ba0c20', 13.6, 2.7, -17.49) + Vector(0, -0.4, 0),
-            startEndTurnButton = "3d1b90",
+            endTurnButton = "3d1b90",
             atomicsToken = "7e10a9",
             makerHook = "a07d90",
         },
@@ -317,7 +317,7 @@ local PlayBoard = Helper.createClass(nil, {
             completedContractBag = "98c18d",
             firstPlayerMarkerZone = "f4c962",
             firstPlayerInitialPosition = Helper.getHardcodedPositionFromGUID('f4c962', -13.6, 2.7, 1.7) + Vector(0, -0.4, 0),
-            startEndTurnButton = "8d70a4",
+            endTurnButton = "8d70a4",
             atomicsToken = "a20687",
         },
         Brown = {
@@ -353,7 +353,7 @@ local PlayBoard = Helper.createClass(nil, {
             completedContractBag = "49dedf",
             firstPlayerMarkerZone = "7a8ea9",
             firstPlayerInitialPosition = Helper.getHardcodedPositionFromGUID('7a8ea9', 13.58, 2.7, 1.7) + Vector(0, -0.4, 0),
-            startEndTurnButton = "eded7c",
+            endTurnButton = "eded7c",
             atomicsToken = "0a3ccb",
         },
     },
@@ -449,7 +449,7 @@ function PlayBoard.rebuild()
             },
             {
                 trash = symmetric(10, 0, 1),
-                startEndTurnButton = symmetric(-2.4, 0, 6),
+                endTurnButton = symmetric(-2.4, 0, 6),
                 atomicsToken = symmetric(10, 0, 4),
             },
         }
@@ -838,7 +838,7 @@ function PlayBoard.new(color, unresolvedContent, state, subState)
     Helper.noPhysicsNorPlay(
         playBoard.content.board,
         playBoard.content.colorband,
-        playBoard.content.startEndTurnButton)
+        playBoard.content.endTurnButton)
 
     playBoard.content.drawDeckZone = PlayBoard.createTransientZone(playBoard, "offseted", Vector(-10.4, 0.4, 1.5), Vector(2.3, 1, 3.3))
     playBoard.content.leaderZone = PlayBoard.createTransientZone(playBoard, "offseted", Vector(-6.4, 0.4, 1), Vector(5, 1, 3.5))
@@ -977,10 +977,8 @@ function PlayBoard.setUp(settings, activeOpponents)
 
         if activeOpponents[color] then
             playBoard.opponent = activeOpponents[color]
-            if type(playBoard.opponent) ~= "string" then
-                playBoard.opponent = playBoard.opponent.color
-            end
             if playBoard.opponent ~= "rival" then
+                playBoard.opponent = "human"
                 if color == "Teal" then
                     Deck.generateMuadDibStarterDeck(playBoard.content.drawDeckZone).doAfter(Helper.shuffleDeck)
                 elseif color == "Brown" then
@@ -1032,7 +1030,7 @@ end
 
 ---
 function PlayBoard._transientSetUp(settings)
-    PlayBoard.autoRevealEnabled = settings.assistedRevelation or getObjectFromGUID('a7fd90') ~= nil
+    PlayBoard.assistedRevealEnabled = settings.assistedRevelation or getObjectFromGUID('a7fd90') ~= nil
 
     Helper.registerEventListener("phaseStart", function (phase, firstPlayer)
         if phase == "leaderSelection" or phase == "roundStart" then
@@ -1245,14 +1243,8 @@ function PlayBoard._setActivePlayer(phase, color)
                 effectIndex = i
                 if playBoard.opponent == "rival" then
                     Hagal.activate(phase, color)
-                else
-                    if phase ~= "leaderSelection" then
-                        playBoard:_createEndOfTurnButton()
-                    end
                 end
             else
-                Helper.clearButtons(playBoard.content.startEndTurnButton)
-
                 -- As stated in the rule, reset swords after a reveal for non-combatants.
                 if TurnControl.getPlayerCount() == 6
                     and not Commander.isCommander(otherColor)
@@ -1270,6 +1262,28 @@ function PlayBoard._setActivePlayer(phase, color)
             playBoard.content.colorband.setColorTint(effectIndex > 0 and indexedColors[effectIndex] or "Black")
         end
     end
+
+    if phase ~= "leaderSelection" then
+        PlayBoard._updateControlButtons()
+    end
+end
+
+---
+function PlayBoard._updateControlButtons()
+    for color, playBoard  in pairs(PlayBoard._getPlayBoards()) do
+        if color == TurnControl.getCurrentPlayer() then
+            local player = Helper.findPlayerByColor(color)
+            if player and player.seated then
+                playBoard:_createEndOfTurnButton()
+            else
+                playBoard:_createTakePlaceButton()
+            end
+        elseif TurnControl.isHotSeatEnabled() then
+            playBoard:_createTakePlaceButton()
+        else
+            Helper.clearButtons(playBoard.content.endTurnButton)
+        end
+    end
 end
 
 ---
@@ -1279,15 +1293,41 @@ end
 
 ---
 function PlayBoard:_createEndOfTurnButton()
-    Helper.clearButtons(self.content.startEndTurnButton)
-    self.content.startEndTurnButton.createButton({
-        click_function = self:_createExclusiveCallback(function ()
-            self.content.startEndTurnButton.AssetBundle.playTriggerEffect(0)
-            TurnControl.endOfTurn()
-            Helper.clearButtons(self.content.startEndTurnButton)
+    Helper.clearButtons(self.content.endTurnButton)
+    local action = function ()
+        self.content.endTurnButton.AssetBundle.playTriggerEffect(0)
+        TurnControl.endOfTurn()
+        Helper.clearButtons(self.content.endTurnButton)
+    end
+    local callback = TurnControl.isHotSeatEnabled()
+        and self:_createSharedCallback(action)
+        or  self:_createExclusiveCallback(action)
+    self.content.endTurnButton.createButton({
+        click_function = callback,
+        position = Vector(0, 0.6, 0),
+        label = I18N("endTurn"),
+        width = 1500,
+        height = 1500,
+        color = { 0, 0, 0, 0 },
+        font_size = 450,
+        font_color = Helper.concatTables(PlayBoard._getTextColor(self.color), { 100 })
+    })
+end
+
+---
+function PlayBoard:_createTakePlaceButton()
+    Helper.clearButtons(self.content.endTurnButton)
+    self.content.endTurnButton.createButton({
+        click_function = self:_createSharedCallback(function (_, color, _)
+            self.content.endTurnButton.AssetBundle.playTriggerEffect(0)
+            local player = Helper.findPlayerByColor(color)
+            if player then
+                player.changeColor(self.color)
+                Helper.onceFramesPassed(1).doAfter(PlayBoard._updateControlButtons)
+            end
         end),
         position = Vector(0, 0.6, 0),
-        label = I18N("endOfTurn"),
+        label = I18N("takePlace"),
         width = 1500,
         height = 1500,
         color = { 0, 0, 0, 0 },
@@ -1680,7 +1720,7 @@ function PlayBoard:_cleanUp(base, ix, immortality, teamMode, full)
     if base then
         collect("councilToken")
         collect("scoreMarker")
-        collect("startEndTurnButton")
+        collect("endTurnButton")
         collect("drawDeckZone")
         collect("leaderZone")
         collect("discardZone")
@@ -1795,13 +1835,33 @@ end
 ---
 function PlayBoard:_createExclusiveCallback(innerCallback)
     return Helper.registerGlobalCallback(function (object, color, altClick)
-        if self.color == color or PlayBoard.isRival(self.color) or true then
+        if self.color == color or PlayBoard.isRival(self.color) or TurnControl.isHotSeatEnabled() then
             if not self.buttonsDisabled then
                 self.buttonsDisabled = true
                 Helper.onceTimeElapsed(0.5).doAfter(function ()
                     self.buttonsDisabled = false
                 end)
                 innerCallback(object, self.color, altClick)
+            end
+        else
+            broadcastToColor(I18N('noTouch'), color, "Purple")
+        end
+    end)
+end
+
+---
+function PlayBoard:_createSharedCallback(innerCallback)
+    return Helper.registerGlobalCallback(function (object, color, altClick)
+        local legitimateColors = Helper.mapValues(TurnControl.getLegitimatePlayers(self.color), function (player)
+            return player.color
+        end)
+        if Helper.isElementOf(color, legitimateColors) then
+            if not self.buttonsDisabled then
+                self.buttonsDisabled = true
+                Helper.onceTimeElapsed(0.5).doAfter(function ()
+                    self.buttonsDisabled = false
+                end)
+                innerCallback(object, color, altClick)
             end
         else
             broadcastToColor(I18N('noTouch'), color, "Purple")
@@ -2076,7 +2136,7 @@ function PlayBoard:revealHand()
     local properCard = function (card)
         assert(card)
         if Types.isImperiumCard(card) then
-            if PlayBoard.autoRevealEnabled then
+            if PlayBoard.assistedRevealEnabled then
                 --[[
                     We leave the cards with a choice (not an option) in the player's hand to simplify
                     things and make clear to the player that the card must be manually revealed.
@@ -2110,7 +2170,7 @@ function PlayBoard:revealHand()
 
     local intrigueCardContributions = {}
     local imperiumCardContributions = {}
-    if PlayBoard.autoRevealEnabled then
+    if PlayBoard.assistedRevealEnabled then
         --intrigueCardContributions = IntrigueCard.evaluatePlot(self.color, playedIntrigues, allRevealedCards, artillery)
         imperiumCardContributions = ImperiumCard.evaluateReveal(self.color, playedCards, allRevealedCards, artillery)
     end
@@ -2202,7 +2262,7 @@ end
 
 ---
 function PlayBoard:drawCards(count)
-    Helper.dumpFunction("PlayBoard:drawCards", count)
+    --Helper.dumpFunction("PlayBoard:drawCards", count)
     Types.assertIsInteger(count)
 
     local continuation = Helper.createContinuation("PlayBoard:drawCards")

@@ -1481,6 +1481,11 @@ end
 -- *** Lua miscellaneous ***
 
 ---
+function Helper.isEmpty(table)
+    return #table == 0 and #Helper.getKeys(table) == 0
+end
+
+---
 function Helper.toCamelCase(...)
     local chameauString
     for i, str in ipairs({...}) do

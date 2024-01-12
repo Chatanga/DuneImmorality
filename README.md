@@ -20,6 +20,7 @@ Supported langages:
 __Bugs__
 
 - Le compteur de AcquireCard ne voit que les arrivées / départs de Card, pas de Deck.
+- Lutter contre la corruption en remplaçant les états et mutations par des instances multiples ?
 
 __All__
 
@@ -61,7 +62,6 @@ __2P / Solo__
 - Mise en place.
 - Récupérer un paquet Hagal à jour.
 - Tirage de cartes et prise en compte des épées, mais aucune automatisation sinon.
-- End Turn || Take Control.
 
 __Aesthetic__
 
@@ -70,16 +70,7 @@ __Aesthetic__
 - Ranger les goodies (fouineurs, baron, feyd, voix à donner en bonus, bonus maîtres d'armes) dans une zone invisible ?
 - Prendre en considération les crans de zoom, préconfigurer les caméras ?
 - Snaps jetons factions 6J empereur/fremen trop hauts.
-- Élargir les bordures colorées des plateaux.
-
-__Internal__
-
-- Utiliser les appelations (Councilor)Token et (Score)Marker.
-- Fin de tour/phase robuste par asynchronisme.
-- Toujours décorréler l'acquisition (carte, tech, contrat) de son effet.
-- Retirer complétement les trigger effects des plateaux des joueurs.
-- AcquireCard pour la pioche et la défausse des joueurs ?
-- Remplacer les états et les mutations de plateaux (et PDF ?) par des instances multiples ?
+- Élargir les bordures colorées des plateaux (retirer complétement les trigger effects dans la foulée).
 
 ## Build Process
 

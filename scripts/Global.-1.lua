@@ -208,11 +208,9 @@ function asyncOnLoad(scriptState)
     Module.registerModuleRedirections({
         "onObjectEnterScriptingZone",
         "onObjectLeaveScriptingZone",
-        "onObjectDrop",
         "onPlayerChangeColor",
         "onPlayerConnect",
         "onPlayerDisconnect",
-        "onPlayerTurn",
         "onObjectEnterContainer",
         "onObjectLeaveContainer",
     })
@@ -447,7 +445,7 @@ function setUpFromUI()
     setUp({
         language = Controller.fields.language,
         numberOfPlayers = numberOfPlayers,
-        hotSeat = Controller.fields.hotSeat == true,
+        hotSeat = not Controller.isUndefined(Controller.fields.virtualHotSeatMode),
         randomizePlayerPositions = Controller.fields.randomizePlayerPositions == true,
         difficulty = Controller.fields.difficulty,
         useContracts = Controller.fields.useContracts == true or numberOfPlayers == 6,
@@ -466,9 +464,11 @@ end
 
 --- Return the mapping between (player) colors and opponent types. An opponent
 --- type could be:
---- - a Player instance (simply replaced in a later stage by the "human" string),
+--- - a Player instance,
 --- - the "rival" string for an automated rival (or House Hagal in the 1P mode),
 --- - the "puppet" string for a playable but unseated color in hotseat mode.
+--- Later, in opponents (not activeOppenents), Player instances and "puppet" are
+--- replaced by the "human" string.
 function Controller.findActiveOpponents(properlySeatedPlayers, numberOfPlayers)
     local colorsByPreference = { "Green", "Red", "Yellow", "Blue", "Brown", "Teal" }
 
