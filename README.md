@@ -45,7 +45,6 @@ __All__
 
 __6P__
 
-- Ajouter sous-espaces manquants en 6J (ou bien tous les retirer).
 - Compteur global PV équipe.
 
 __Extensions__
