@@ -12,6 +12,7 @@ local PlayBoard = Module.lazyRequire("PlayBoard")
 local Commander = Module.lazyRequire("Commander")
 local Hagal = Module.lazyRequire("Hagal")
 local Deck = Module.lazyRequire("Deck")
+local Combat = Module.lazyRequire("Combat")
 
 local TurnControl = {
     phaseOrder = {
@@ -174,23 +175,22 @@ function TurnControl._assignObjectives()
     end
 
     cardNames = {}
-    for i, color in ipairs(TurnControl.players) do
+    for _, color in ipairs(TurnControl.players) do
         if not Commander.isCommander(color) then
             -- TODO Check ordering guarantees.
             cardNames[objectiveCards[color]] = 1
         end
     end
 
-    local combatZone = getObjectFromGUID("6d632e")
-    assert(combatZone)
-
-    Deck.generateObjectiveDeck(combatZone, cardNames).doAfter(function (deck)
-        assert(Helper.getDeckOrCard(combatZone) == deck)
+    local someUntaggedZone = Combat.combatCenterZone
+    assert(someUntaggedZone)
+    Deck.generateObjectiveDeck(someUntaggedZone, cardNames).doAfter(function (deck)
+        assert(Helper.getDeckOrCard(someUntaggedZone) == deck)
         local reversedPlayers = Helper.shallowCopy(TurnControl.players)
         Helper.reverse(reversedPlayers)
         for i, color in ipairs(reversedPlayers) do
             if not Commander.isCommander(color) then
-                PlayBoard.giveObjectiveCardFromZone(color, combatZone)
+                PlayBoard.giveObjectiveCardFromZone(color, someUntaggedZone)
             end
         end
     end)

@@ -775,7 +775,6 @@ function PlayBoard.onSave(state)
             resources = resourceValues,
             leader = playBoard.leader and playBoard.leader.name,
             lastPhase = playBoard.lastPhase,
-            --alreadyPlayedCards = playBoard.alreadyPlayedCards, (not compatible)
             revealed = playBoard.revealed,
             initialPositions = {
                 dreadnoughtInitialPositions = playBoard.content.dreadnoughtInitialPositions,
@@ -848,13 +847,11 @@ function PlayBoard.new(color, unresolvedContent, state, subState)
         playBoard.opponent = subState.opponent
 
         playBoard.lastPhase = subState.lastPhase
-        --playBoard.alreadyPlayedCards = subState.alreadyPlayedCards (not compatible)
         playBoard.revealed = subState.revealed
 
-        -- Zones can't be queried right now (creation order matters?).
+        -- Zones can't be queried right now.
         Helper.onceFramesPassed(1).doAfter(function ()
             playBoard.leaderCard = Helper.getDeckOrCard(playBoard.content.leaderZone)
-            --assert(playBoard.leaderCard)
             if playBoard.leaderCard then
                 if playBoard.opponent == "rival" then
                     if Hagal.getRivalCount() == 1 then
@@ -1534,7 +1531,7 @@ function PlayBoard:_createDreadnoughtPark(firstTime)
     local slots = Helper.mapValues(self.content.dreadnoughtInitialPositions, function (slot)
         return slot:copy()
     end)
-    local park = Park.createCommonPark({ "Dreadnought" }, slots, Vector(1, 3, 0.5))
+    local park = Park.createCommonPark({ "Dreadnought" }, slots, Vector(1, 2, 1))
     if firstTime then
         for i, dreadnought in ipairs(self.content.dreadnoughts) do
             dreadnought.setPosition(self.content.dreadnoughtInitialPositions[i])
@@ -1561,7 +1558,7 @@ function PlayBoard:_createSupplyPark(firstTime)
         end
     end
 
-    local supplyZone = Park.createTransientBoundingZone(45, Vector(0.4, 0.35, 0.4), allSlots)
+    local supplyZone = Park.createTransientBoundingZone(45, Vector(0.5, 0.5, 0.5), allSlots)
 
     if firstTime then
         for i, troop in ipairs(self.content.troops) do
@@ -2209,6 +2206,16 @@ function PlayBoard._getCardsPlayedThisTurn(color)
     end)
 
     return (Set.newFromList(playedCards) - Set.newFromList(playBoard.alreadyPlayedCards or {})):toList()
+end
+
+---
+function PlayBoard.hasPlayedThisTurn(color, cardName)
+    for _, card in ipairs(PlayBoard._getCardsPlayedThisTurn(color)) do
+        if Helper.getID(card) == cardName then
+            return true
+        end
+    end
+    return false
 end
 
 ---

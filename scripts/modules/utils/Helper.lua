@@ -435,6 +435,7 @@ end
 function Helper.markAsTransient(object)
     -- Tagging is not usable on a zone without filtering its content.
     object.setGMNotes("Transient")
+    return object
 end
 
 ---
@@ -701,18 +702,14 @@ function Helper.collectSnapPoints(net, object)
     for _, snapPoint in ipairs(snapPoints) do
         --assert(snapPoint.tags and #snapPoint.tags == 1)
         if snapPoint.tags then
-            if #snapPoint.tags == 1 then
-                --Helper.dump("Snap:", snapPoint.tags)
-                for _, tag in ipairs(snapPoint.tags) do
-                    for prefix, collector in pairs(net) do
-                        if Helper.startsWith(tag, prefix) then
-                            local name = tag:sub(prefix:len() + 1):gsub("^%u", string.lower)
-                            collector(name, object.positionToWorld(snapPoint.position))
-                        end
+            --Helper.dump("Snap:", snapPoint.tags)
+            for _, tag in ipairs(snapPoint.tags) do
+                for prefix, collector in pairs(net) do
+                    if Helper.startsWith(tag, prefix) then
+                        local name = tag:sub(prefix:len() + 1):gsub("^%u", string.lower)
+                        collector(name, object.positionToWorld(snapPoint.position))
                     end
                 end
-            else
-                Helper.dump("Unexpected snap tags:", snapPoint.tags)
             end
         else
             Helper.dump("Unexpected snap tags:", snapPoint.tags)
@@ -1954,6 +1951,13 @@ function Helper.partialApply(f, ...)
             table.insert(args, arg)
         end
         return f(table.unpack(args))
+    end
+end
+
+---
+function Helper.field(name)
+    return function (object)
+        return object[name]
     end
 end
 

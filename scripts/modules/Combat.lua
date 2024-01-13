@@ -15,18 +15,7 @@ local Music = Module.lazyRequire("Music")
 local Combat = {
     -- Temporary structure (set to nil *after* loading).
     unresolvedContent = {
-        conflictDeckZone = "07e239",
-        conflictDiscardZone = "43f00f",
-        combatCenterZone = "6d632e",
-        combatTokenZone = "1d4424",
-        victoryPointTokenZone = "a98488",
         victoryPointTokenBag = "d9a457",
-        garrisonsZones = {
-            Green = "0a54b2",
-            Yellow = "fd58be",
-            Blue = "37e1a6",
-            Red = "1cd225",
-        },
         protoSandworm = "14b25e",
         objectiveTokens = {
             muadDib = "a17bcb",
@@ -49,17 +38,6 @@ function Combat.onLoad(state)
     --Helper.dumpFunction("Combat.onLoad")
 
     Helper.append(Combat, Helper.resolveGUIDs(false, Combat.unresolvedContent))
-
-    local origin = Combat.combatTokenZone.getPosition()
-    Combat.noCombatForcePositions = Vector(origin.x, 1.66, origin.z)
-    Combat.combatForcePositions = {}
-    for i = 0, 19 do
-        Combat.combatForcePositions[i + 1] = Vector(
-            origin.x + 1.6 + (i % 10) * 0.98,
-            1.66,
-            origin.z + 0.64 - math.floor(i / 10) * 1.03
-        )
-    end
 
     Helper.noPhysicsNorPlay(Combat.protoSandworm)
     for _, objectiveToken in pairs(Combat.objectiveTokens) do
@@ -84,6 +62,68 @@ end
 
 ---
 function Combat.setUp(settings)
+
+    Combat.garrisonParks = {}
+    Combat.dreadnoughtParks = {}
+    Combat.battlefieldZones = {}
+
+    local createZone = function (position, scale)
+        return Helper.markAsTransient(spawnObject({
+            type = 'ScriptingTrigger',
+            position = position,
+            scale = scale,
+        }))
+    end
+
+    MainBoard.collectSnapPointsEverywhere(settings, {
+
+        conflictDeck = function (_, position)
+            Combat.conflictDeckZone = createZone(position, Vector(2, 1, 3))
+        end,
+
+        conflictDiscard = function (_, position)
+            Combat.conflictDiscardZone = createZone(position, Vector(2, 1, 3))
+        end,
+
+        garrison = function (name, position)
+            local color = name:gsub("^%l", string.upper)
+            Combat.garrisonParks[color] = Combat._createGarrisonPark(color, position)
+            if settings.riseOfIx then
+                Combat.dreadnoughtParks[color] = Combat._createDreadnoughtPark(color, position)
+            end
+        end,
+
+        battlefield = function (name, position)
+            if name == "" then
+                Combat.battlegroundPark = Combat._createBattlegroundPark(position)
+            else
+                local color = name:gsub("^%l", string.upper)
+                Combat.battlefieldZones[color] = createZone(position, Vector(2.3, 2, 2.3))
+            end
+        end,
+
+        swormasterBonusToken = function (name, position)
+            local color = name:gsub("^%l", string.upper)
+            -- TODO
+        end,
+
+        victoryTokenRoom = function (name, position)
+            Combat.victoryPointTokenZone = createZone(position, Vector(5, 2, 1))
+        end,
+
+        combatMarkerRoom = function (name, position)
+            Combat.noCombatForcePositions = Vector(position.x, 1.66, position.z)
+            Combat.combatForcePositions = {}
+            for i = 0, 19 do
+                Combat.combatForcePositions[i + 1] = Vector(
+                    position.x + 1.6 + (i % 10) * 0.98,
+                    1.66,
+                    position.z + 0.64 - math.floor(i / 10) * 1.03
+                )
+            end
+        end,
+    })
+
     Deck.generateConflictDeck(Combat.conflictDeckZone, settings.riseOfIx, settings.epicMode, settings.numberOfPlayers).doAfter(function ()
         Combat._transientSetUp(settings)
     end)
@@ -92,24 +132,6 @@ end
 ---
 function Combat._transientSetUp(settings)
     Combat._processSnapPoints(settings)
-
-    Combat.garrisonParks = {}
-    for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
-        if not Commander.isCommander(color) then
-            Combat.garrisonParks[color] = Combat._createGarrisonPark(color)
-        end
-    end
-
-    if settings.riseOfIx then
-        Combat.dreadnoughtParks = {}
-        for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
-            if not Commander.isCommander(color) then
-                Combat.dreadnoughtParks[color] = Combat._createDreadnoughtPark(color)
-            end
-        end
-    end
-
-    Combat.battlegroundPark = Combat._createBattlegroundPark()
 
     Helper.registerEventListener("strengthValueChanged", function ()
         Combat._updateCombatForces(Combat._calculateCombatForces())
@@ -179,10 +201,8 @@ end
 
 ---
 function Combat._processSnapPoints(settings)
-
     MainBoard.makerHookPositions = {}
-
-    local net = {
+    MainBoard.collectSnapPointsEverywhere(settings, {
         makerHook = function (name, position)
             local color = name:gsub("^%l", string.upper)
             MainBoard.makerHookPositions[color] = position
@@ -192,9 +212,7 @@ function Combat._processSnapPoints(settings)
                 anchor.setSnapPoints(snapPoints)
             end)
         end,
-    }
-
-    MainBoard.collectSnapPointsEverywhere(settings, net)
+    })
 end
 
 ---
@@ -256,18 +274,22 @@ function Combat.onObjectLeaveScriptingZone(zone, object)
 end
 
 ---
-function Combat._createGarrisonPark(color)
+function Combat._createGarrisonPark(color, position)
     local slots = {}
     for i = 1, 4 do
         for j = 3, 1, -1 do
             local x = (PlayBoard.isLeft(color) and (2.5 - i) or (i - 2.5)) * 0.45
             local z = (j - 2) * 0.45
-            local slot = Combat.garrisonsZones[color].getPosition() + Vector(x, -0.59, z)
+            local slot = position + Vector(x, 0.18, z)
             table.insert(slots, slot)
         end
     end
 
-    local zone = Combat.garrisonsZones[color]
+    local zone = Helper.markAsTransient(spawnObject({
+        type = 'ScriptingTrigger',
+        position = position,
+        scale = Vector(2.3, 1, 2.3),
+    }))
 
     local park = Park.createPark(
         color .. "Garrison",
@@ -279,10 +301,8 @@ function Combat._createGarrisonPark(color)
         false,
         true)
 
-    local p = zone.getPosition()
     -- FIXME Hardcoded height, use an existing parent anchor.
-    p:setAt('y', 0.60)
-    Helper.createTransientAnchor("Garrison anchor", p).doAfter(function (anchor)
+    Helper.createTransientAnchor("Garrison anchor", Vector(position.x, 0.6, position.z)).doAfter(function (anchor)
         park.anchor = anchor
         anchor.locked = true
         anchor.interactable = true
@@ -293,20 +313,14 @@ function Combat._createGarrisonPark(color)
 end
 
 ---
-function Combat._createDreadnoughtPark(color)
-    local origin = Combat.garrisonsZones[color].getPosition()
-    local zones = Helper.getValues(Combat.garrisonsZones)
-    local centers = Helper.mapValues(zones, function (zone)
-        return zone.getPosition()
-    end)
-    local center = Helper.getCenter(centers)
-    local dir = Helper.signum((origin - center).x)
+function Combat._createDreadnoughtPark(color, position)
+    local dir = PlayBoard.isLeft(color) and -1 or 1
     local slots = {
-        origin + Vector(1.3 * dir, 0, 0.9),
-        origin + Vector(1.3 * dir, 0, -0.9),
+        position + Vector(1.3 * dir, 0.2, 0.9),
+        position + Vector(1.3 * dir, 0.2, -0.9),
     }
 
-    local zone = Park.createTransientBoundingZone(0, Vector(0.25, 3, 0.25), slots)
+    local zone = Park.createTransientBoundingZone(0, Vector(0.5, 2, 0.5), slots)
 
     local park = Park.createPark(
         color .. "DreadnoughtGarrison",
@@ -322,25 +336,29 @@ function Combat._createDreadnoughtPark(color)
 end
 
 ---
-function Combat._createBattlegroundPark()
+function Combat._createBattlegroundPark(position)
     local slots = {}
     for j = 1, 8 do
         for i = 1, 8 do
             local x = (i - 4.5) * 0.5
             local z = (j - 4.5) * 0.5
-            local slot = Combat.combatCenterZone.getPosition() + Vector(x, -0.7, z)
+            local slot = position + Vector(x, 0.18, z)
             table.insert(slots, slot)
         end
     end
     Helper.shuffle(slots)
 
-    local zone = Combat.combatCenterZone
+    Combat.combatCenterZone = Helper.markAsTransient(spawnObject({
+        type = 'ScriptingTrigger',
+        position = position,
+        scale = Vector(6.6, 1, 5),
+    }))
 
     local park = Park.createPark(
         "Battleground",
         slots,
         nil,
-        { zone },
+        { Combat.combatCenterZone },
         { "Troop", "Dreadnought", "Sandworm" },
         nil,
         false,

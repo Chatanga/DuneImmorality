@@ -24,11 +24,11 @@ __Bugs__
 
 __All__
 
-- Snapifier le secteur des combats (casernes troupes et cuirassés, champs de bataille, zone PV, conflits, jetons de force).
-- Doubler tous les jetons de PV de combat, ajouter faux PV pour C et A, refaire TSMF -> Asmodius.
-- Déverrouiller la révélation assistée.
-- Réactiver la détection de cartes jouées (intégrer infiltration et exotismes tel que Undercover Asset) -> utilisée par Ix.
 - Marquer par décalcos les positions de départ des maîtres d'armes -> mieux : modifier le test.
+- Doubler tous les jetons de PV de combat, ajouter faux PV pour C et A, refaire TSMF -> Asmodius.
+- Revoir le contexte d’action pour les logs -> Asmodius.
+- Mode libre pour la sélection des dirigeants.
+- Déverrouiller la révélation assistée.
 
 - Automatiser les contrats.
 - Automatiser le gain de 2 solaris pour un contrat si le module n'est pas actif (ou s'il n'y a plus de contrats).
@@ -39,27 +39,21 @@ __All__
 - Sortir automatiquement un jeton d'objectif (nommé) pour les conflits.
 - Automatiser le bannières en se basant sur les jetons d’objectif (oublier la compatibilité anciens conflits).
 
-- Revoir le contexte d’action pour les logs -> Asmodius.
-
-- Mode libre pour la sélection des dirigeants.
-
 __6P__
 
 - Compteur global PV équipe.
 
 __Extensions__
 
-- Achat de tech débrayé par défaut.
 - Rétablir TechCard.
-- Patch Ix (avec postes d'observation) pour le plateau principal (emmerdant pour les snaps -> 2 x 2 ?).
-- Patch Immortality pour le plateau principal.
+- Patch Ix (avec postes d'observation) pour le plateau principal -> Asmodius.
+- Patch Immortality pour le plateau principal -> Asmodius.
 - Considérer base/core/legacy comme une extension.
 - Incorporer la variante de Paul Dennen.
 
 __2P / Solo__
 
-- Mise en place.
-- Récupérer un paquet Hagal à jour.
+- Récupérer un paquet Hagal à jour -> Asmodius.
 - Tirage de cartes et prise en compte des épées, mais aucune automatisation sinon.
 
 __Aesthetic__

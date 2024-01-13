@@ -764,10 +764,17 @@ end
 
 ---
 function MainBoard._checkGenericAccess(color, leader, requirements)
-    for resourceName, amount in pairs(requirements) do
-        if not MainBoard._hasResource(leader, color, resourceName, amount) then
-            broadcastToColor(I18N("noResource", { resource = I18N(resourceName .. "Amount") }), color, "Purple")
-            return false
+    for requirement, value in pairs(requirements) do
+        if Helper.isElementOf(requirement, { "spice", "water", "solari" }) then
+            if not MainBoard._hasResource(leader, color, requirement, value) then
+                broadcastToColor(I18N("noResource", { resource = I18N(requirement .. "Amount") }), color, "Purple")
+                return false
+            end
+        elseif requirement == "friendship" then
+            if not InfluenceTrack.hasFriendship(color, value) and not PlayBoard.hasPlayedThisTurn(color, "undercoverAsset") then
+                broadcastToColor(I18N("noFriendship", { withFaction = I18N(Helper.toCamelCase("with", value)) }), color, "Purple")
+                return false
+            end
         end
     end
     return true
@@ -986,10 +993,7 @@ end
 
 ---
 function MainBoard._goImperialPrivilege(color, leader, continuation)
-    if not InfluenceTrack.hasFriendship(color, "emperor") then
-        broadcastToColor(I18N("noFriendship", { withFaction = I18N("withEmperor") }), color, "Purple")
-        continuation.run()
-    elseif MainBoard._checkGenericAccess(color, leader, { solari = 3 }) then
+    if MainBoard._checkGenericAccess(color, leader, { solari = 3, friendship = "emperor" }) then
         continuation.run(function ()
             leader.resources(color, "solari", -3)
             leader.drawImperiumCards(color, 1)
@@ -1077,10 +1081,7 @@ end
 
 ---
 function MainBoard._goShipping(color, leader, continuation)
-    if not InfluenceTrack.hasFriendship(color, "spacingGuild") then
-        broadcastToColor(I18N("noFriendship", { withFaction = I18N("withSpacingGuild") }), color, "Purple")
-        continuation.run()
-    elseif MainBoard._checkGenericAccess(color, leader, { spice = 3 }) then
+    if MainBoard._checkGenericAccess(color, leader, { spice = 3, friendship = "spacingGuild" }) then
         continuation.run(function ()
             leader.resources(color, "spice", -3)
             leader.resources(color, "solari", 5)
@@ -1107,7 +1108,7 @@ end
 
 ---
 function MainBoard._goSietchTabr(color, leader, continuation)
-    if InfluenceTrack.hasFriendship(color, "fremen") then
+    if MainBoard._checkGenericAccess(color, leader, { friendship = "fremen" }) then
         local options = {
             I18N("hookTroopWaterOption"),
             I18N("waterShieldWallOption"),
@@ -1124,35 +1125,32 @@ function MainBoard._goSietchTabr(color, leader, continuation)
             end
         end)
     else
-        broadcastToColor(I18N("noFriendship", { withFaction = I18N("withFremen") }), color, "Purple")
         continuation.run()
     end
 end
 
 ---
 function MainBoard._goSietchTabr_HookTroopWater(color, leader, continuation)
-    if not InfluenceTrack.hasFriendship(color, "fremen") then
-        broadcastToColor(I18N("noFriendship", { withFaction = I18N("withFremen") }), color, "Purple")
-        continuation.run()
-    else
+    if MainBoard._checkGenericAccess(color, leader, { friendship = "fremen" }) then
         continuation.run(function ()
             leader.takeMakerHook(color)
             leader.troops(color, "supply", "garrison", 1)
             leader.resources(color, "water", 1)
         end)
+    else
+        continuation.run()
     end
 end
 
 ---
 function MainBoard._goSietchTabr_WaterShieldWall(color, leader, continuation)
-    if not InfluenceTrack.hasFriendship(color, "fremen") then
-        broadcastToColor(I18N("noFriendship", { withFaction = I18N("withFremen") }), color, "Purple")
-        continuation.run()
-    else
+    if MainBoard._checkGenericAccess(color, leader, { friendship = "fremen" }) then
         continuation.run(function ()
             leader.resources(color, "water", 1)
             MainBoard.blowUpShieldWall(color, true)
         end)
+    else
+        continuation.run()
     end
 end
 
