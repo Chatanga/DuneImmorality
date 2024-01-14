@@ -1129,6 +1129,7 @@ function PlayBoard._transientSetUp(settings)
             -- Do it after the clean up done in TechMarket.
             Helper.onceFramesPassed(1).doAfter(function ()
                 local cards = PlayBoard._getCardsPlayedThisTurn(color)
+                --Helper.dump("cards played this turn:", Helper.mapValues(cards, Helper.getID))
                 for _, card in ipairs(cards) do
                     local cardName = Helper.getID(card)
                     if cardName == "appropriate" then
@@ -1387,10 +1388,10 @@ function PlayBoard.withLeader(action)
                 -- Replace the source by the leader.
                 action(leader, color, ...)
             else
-                broadcastToColor(I18N('noAlly'), color, "Purple")
+                Dialog.broadcastToColor(I18N('noAlly'), color, "Purple")
             end
         else
-            broadcastToColor(I18N('noLeader'), color, "Purple")
+            Dialog.broadcastToColor(I18N('noLeader'), color, "Purple")
         end
     end
 end
@@ -1841,7 +1842,7 @@ function PlayBoard:_createExclusiveCallback(innerCallback)
                 innerCallback(object, self.color, altClick)
             end
         else
-            broadcastToColor(I18N('noTouch'), color, "Purple")
+            Dialog.broadcastToColor(I18N('noTouch'), color, "Purple")
         end
     end)
 end
@@ -1861,7 +1862,7 @@ function PlayBoard:_createSharedCallback(innerCallback)
                 innerCallback(object, color, altClick)
             end
         else
-            broadcastToColor(I18N('noTouch'), color, "Purple")
+            Dialog.broadcastToColor(I18N('noTouch'), color, "Purple")
         end
     end)
 end
@@ -2063,7 +2064,7 @@ end
 function PlayBoard:onRevealHand()
     local currentPlayer = TurnControl.getCurrentPlayer()
     if currentPlayer and currentPlayer ~= self.color then
-        broadcastToColor(I18N("revealNotTurn"), self.color, "Pink")
+        Dialog.broadcastToColor(I18N("revealNotTurn"), self.color, "Pink")
     else
         if not self.revealed and self:stillHavePlayableAgents() then
             self:tryRevealHandEarly()

@@ -1,6 +1,7 @@
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local I18N = require("utils.I18N")
+local Dialog = require("utils.Dialog")
 
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local Types = Module.lazyRequire("Types")
@@ -125,7 +126,7 @@ end
 ---
 function Resource:_changeValue(color, altClick)
     if self.color and color ~= self.color then
-        broadcastToColor(I18N("noTouch"), color, color)
+        Dialog.broadcastToColor(I18N("noTouch"), color, color)
         return
     end
 

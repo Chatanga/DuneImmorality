@@ -456,7 +456,7 @@ function Helper.destroyTransientObjects()
     --log("Destroyed " .. tostring(count) .. " anchors.")
 end
 
--- *** Snapoints and anchored buttons ***
+-- *** Snappoints and anchored buttons ***
 
 --[[
     Create a snapPoint relative to a parent centered on the provided zone, but
@@ -1114,7 +1114,7 @@ function Helper._getNopCallback()
     return uniqueName
 end
 
--- *** player color suppor ***
+-- *** player color support ***
 
 ---
 function Helper.findPlayerByColor(color)

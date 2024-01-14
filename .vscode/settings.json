@@ -28,6 +28,6 @@
         "onPlayerConnect",
         "onPlayerDisconnect",
         "Hands",
-        "printToColor"
+        "printToColor",
     ]
 }

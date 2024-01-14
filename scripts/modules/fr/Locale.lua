@@ -86,6 +86,7 @@ return {
     activatedAlly = "⬍ Allié activé",
     noSeatedPlayer = "Le joueur {color} est absent !",
     takePlace = "Piquer\nla\nplace",
+    forwardMessage = "Au joueur {color} : {message}",
 
     -- Leader selection
     leaderSelectionAdjust = "Ajustez le nombre de dirigeants sélectionnés au hasard\nparmi lesquels les joueurs devront choisir :",

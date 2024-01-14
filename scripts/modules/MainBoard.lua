@@ -467,7 +467,7 @@ function MainBoard._createSpaceButton(space)
             if TurnControl.getCurrentPlayer() == color then
                 leader.sendAgent(color, space.name, altClick)
             else
-                broadcastToColor(I18N('notYourTurn'), color, "Purple")
+                Dialog.broadcastToColor(I18N('notYourTurn'), color, "Purple")
             end
         end))
     end)
@@ -536,10 +536,10 @@ function MainBoard.sendAgent(color, spaceName, recallSpy)
     local parentSpaceName = parentSpace.name
 
     if not agent then
-        broadcastToColor(I18N("noAgent"), color, "Purple")
+        Dialog.broadcastToColor(I18N("noAgent"), color, "Purple")
         continuation.cancel()
     elseif MainBoard.hasAgentInSpace(parentSpaceName, color) then
-        broadcastToColor(I18N("agentAlreadyPresent"), color, "Purple")
+        Dialog.broadcastToColor(I18N("agentAlreadyPresent"), color, "Purple")
         continuation.cancel()
     else
         local leader = PlayBoard.getLeader(color)
@@ -559,7 +559,7 @@ function MainBoard.sendAgent(color, spaceName, recallSpy)
                         if spy then
                             Park.putObject(spy, PlayBoard.getSpyPark(color))
                             if recallMode == "infiltrate" then
-                                broadcastToColor(I18N("infiltrateWithSpy"), color, "Purple")
+                                Dialog.broadcastToColor(I18N("infiltrateWithSpy"), color, "Purple")
                                 innerInnerContinuation.run()
                             elseif recallMode == "intelligence" then
                                 leader.drawImperiumCards(color, 1, true).doAfter(innerInnerContinuation.run)
@@ -666,7 +666,7 @@ function MainBoard._manageIntelligenceAndInfiltrate(color, spaceName, recallSpy)
     if enemyAgentPresent == false then
         if #recallableSpies == 0 or not hasCardsToDraw then
             if recallSpy then
-                broadcastToColor(I18N('noSpyToRecallOrCardToDraw'), color, "Purple")
+                Dialog.broadcastToColor(I18N('noSpyToRecallOrCardToDraw'), color, "Purple")
                 continuation.run(false)
             else
                 continuation.run(true)
@@ -684,7 +684,7 @@ function MainBoard._manageIntelligenceAndInfiltrate(color, spaceName, recallSpy)
         end
     else
         if #recallableSpies == 0 then
-            broadcastToColor(I18N("noSpyToInfiltrate"), color, "Purple")
+            Dialog.broadcastToColor(I18N("noSpyToInfiltrate"), color, "Purple")
             continuation.run(false)
         else
             MainBoard._recallSpy(color, recallableSpies, continuation, "infiltrate")
@@ -767,12 +767,12 @@ function MainBoard._checkGenericAccess(color, leader, requirements)
     for requirement, value in pairs(requirements) do
         if Helper.isElementOf(requirement, { "spice", "water", "solari" }) then
             if not MainBoard._hasResource(leader, color, requirement, value) then
-                broadcastToColor(I18N("noResource", { resource = I18N(requirement .. "Amount") }), color, "Purple")
+                Dialog.broadcastToColor(I18N("noResource", { resource = I18N(requirement .. "Amount") }), color, "Purple")
                 return false
             end
         elseif requirement == "friendship" then
             if not InfluenceTrack.hasFriendship(color, value) and not PlayBoard.hasPlayedThisTurn(color, "undercoverAsset") then
-                broadcastToColor(I18N("noFriendship", { withFaction = I18N(Helper.toCamelCase("with", value)) }), color, "Purple")
+                Dialog.broadcastToColor(I18N("noFriendship", { withFaction = I18N(Helper.toCamelCase("with", value)) }), color, "Purple")
                 return false
             end
         end
@@ -873,7 +873,7 @@ function MainBoard._goSardaukar(color, leader, continuation)
             continuation.run()
         end
     else
-        broadcastToColor(I18N("forbiddenAccess"), color, "Purple")
+        Dialog.broadcastToColor(I18N("forbiddenAccess"), color, "Purple")
         continuation.run()
     end
 end
@@ -892,7 +892,7 @@ function MainBoard._goVastWealth(color, leader, continuation)
             leader.influence(color, "emperor", 1, true)
         end)
     else
-        broadcastToColor(I18N("forbiddenAccess"), color, "Purple")
+        Dialog.broadcastToColor(I18N("forbiddenAccess"), color, "Purple")
         continuation.run()
     end
 end
@@ -946,7 +946,7 @@ end
 function MainBoard._goHardyWarriors(color, leader, continuation)
     assert(TurnControl.getPlayerCount() == 6)
     if not Commander.isMuadDib(color) then
-        broadcastToColor(I18N("forbiddenAccess"), color, "Purple")
+        Dialog.broadcastToColor(I18N("forbiddenAccess"), color, "Purple")
         continuation.run()
     elseif MainBoard._checkGenericAccess(color, leader, { water = 1 }) then
         continuation.run(function ()
@@ -968,7 +968,7 @@ function MainBoard._goDesertMastery(color, leader, continuation)
             leader.influence(color, "fremen", 1, true)
         end)
     else
-        broadcastToColor(I18N("forbiddenAccess"), color, "Purple")
+        Dialog.broadcastToColor(I18N("forbiddenAccess"), color, "Purple")
         continuation.run()
     end
 end
@@ -1006,7 +1006,7 @@ end
 ---
 function MainBoard._goSwordmaster(color, leader, continuation)
     if PlayBoard.hasSwordmaster(color) then
-        broadcastToColor(I18N("alreadyHaveSwordmaster"), color, "Purple")
+        Dialog.broadcastToColor(I18N("alreadyHaveSwordmaster"), color, "Purple")
         continuation.run()
     elseif MainBoard._checkGenericAccess(color, leader, { solari = MainBoard._getSwordmasterCost() }) then
         continuation.run(function ()
@@ -1253,7 +1253,7 @@ function MainBoard._goDeepDesert_WormsIfHook(color, leader, continuation)
             leader.callSandworm(color, 2)
         end)
     else
-        broadcastToColor(I18N("noMakerHook"), color, "Purple")
+        Dialog.broadcastToColor(I18N("noMakerHook"), color, "Purple")
     end
 end
 
@@ -1299,7 +1299,7 @@ function MainBoard._goHaggaBasin_WormIfHook(color, leader, continuation)
             leader.callSandworm(color, 1)
         end)
     else
-        broadcastToColor(I18N("noMakerHook"), color, "Purple")
+        Dialog.broadcastToColor(I18N("noMakerHook"), color, "Purple")
         continuation.run()
     end
 end

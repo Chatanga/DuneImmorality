@@ -86,6 +86,7 @@ return {
     activatedAlly = "Activated ally",
     noSeatedPlayer = "The {color} player is missing!",
     takePlace = "Take\nPlace",
+    forwardMessage = "To the {color} player: {message}",
 
     -- Leader selection
     leaderSelectionAdjust = "Adjust the number of leaders who will be randomly\nselected for the players to choose among:",

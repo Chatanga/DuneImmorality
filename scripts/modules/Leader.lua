@@ -1,6 +1,7 @@
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local I18N = require("utils.I18N")
+local Dialog = require("utils.Dialog")
 
 local Action = Module.lazyRequire("Action")
 local MainBoard = Module.lazyRequire("MainBoard")
@@ -152,16 +153,16 @@ Leader.paulAtreides = Helper.createClass(Leader, {
             if otherColor == color then
                 local cardOrDeck = PlayBoard.getDrawDeck(color)
                 if cardOrDeck == nil then
-                    broadcastToColor(I18N("prescienceVoid"), color, "Purple")
+                    Dialog.broadcastToColor(I18N("prescienceVoid"), color, "Purple")
                 elseif cardOrDeck.type == "Card" then
                     --broadcastToAll(I18N("prescienceUsed"), color)
-                    broadcastToColor(I18N("prescienceManual"), color, "Purple")
+                    Dialog.broadcastToColor(I18N("prescienceManual"), color, "Purple")
                 else
                     cardOrDeck.Container.search(color, 1)
                     --broadcastToAll(I18N("prescienceUsed"), color)
                 end
             else
-                broadcastToColor(I18N("noTouch"), otherColor, "Purple")
+                Dialog.broadcastToColor(I18N("noTouch"), otherColor, "Purple")
             end
         end
 
@@ -478,7 +479,7 @@ Leader.jessicaAtreides = Helper.createClass(Leader, {
                         otherMemories()
                         anchor.destruct()
                     else
-                        broadcastToColor(I18N("noTouch"), otherColor, "Purple")
+                        Dialog.broadcastToColor(I18N("noTouch"), otherColor, "Purple")
                     end
                 end),
                 label = I18N("otherMemoriesButton"),

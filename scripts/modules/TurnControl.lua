@@ -7,6 +7,7 @@
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local I18N = require("utils.I18N")
+local Dialog = require("utils.Dialog")
 
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local Commander = Module.lazyRequire("Commander")
@@ -208,7 +209,7 @@ function TurnControl._createExclusiveCallback(innerCallback)
                 innerCallback()
             end
         else
-            broadcastToColor(I18N('noTouch'), color, "Brown")
+            Dialog.broadcastToColor(I18N('noTouch'), color, "Brown")
         end
     end)
 end

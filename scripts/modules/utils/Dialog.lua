@@ -246,4 +246,16 @@ function Dialog._createOptionButton(index, label, callback)
     return button
 end
 
+---
+function Dialog.broadcastToColor(message, playerColor, messageColor)
+    assert(message)
+    assert(playerColor)
+    local player = Helper.findPlayerByColor(playerColor)
+    if player and player.seated then
+        broadcastToColor(message, playerColor, messageColor)
+    else
+        broadcastToAll(I18N("forwardMessage", { color = I18N(playerColor), message = message }), messageColor)
+    end
+end
+
 return Dialog

@@ -2,6 +2,7 @@ local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local AcquireCard = require("utils.AcquireCard")
 local I18N = require("utils.I18N")
+local Dialog = require("utils.Dialog")
 
 local Deck = Module.lazyRequire("Deck")
 local PlayBoard = Module.lazyRequire("PlayBoard")
@@ -45,7 +46,7 @@ function ThroneRow._transientSetUp()
             if Commander.isTeamShaddam(color) then
                 PlayBoard.getLeader(color).acquireThroneCard(color, i)
             else
-                broadcastToColor(I18N('notShaddamTeam'), color, "Purple")
+                Dialog.broadcastToColor(I18N('notShaddamTeam'), color, "Purple")
             end
         end), nil, Deck.getAcquireCardDecalUrl("corrino"))
         table.insert(ThroneRow.acquireCards, acquireCard)
