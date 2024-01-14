@@ -26,6 +26,7 @@ local Commander = Module.lazyRequire("Commander")
 local PlayBoard = Helper.createClass(nil, {
     ALL_RESOURCE_NAMES = { "spice", "water", "solari", "strength", "persuasion" },
     assistedRevealEnabled = false,
+    playedCardDetection = false,
     -- Temporary structure (set to nil *after* loading).
     unresolvedContentByColor = {
         Red = {
@@ -358,6 +359,7 @@ local PlayBoard = Helper.createClass(nil, {
         },
     },
     playBoards = {},
+    -- TODO Use the snappoints (swordmasterBonusTokenXxx) instead.
     swordmasterBonusPositions = {
         Red = Vector(-0.29, 0.79, -7.77),
         Blue = Vector(-0.29, 0.79, -12.35),
@@ -1027,7 +1029,8 @@ end
 
 ---
 function PlayBoard._transientSetUp(settings)
-    PlayBoard.assistedRevealEnabled = settings.assistedRevelation or getObjectFromGUID('a7fd90') ~= nil
+    PlayBoard.assistedRevealEnabled = settings.assistedRevelation or isDeluxeEdition()
+    PlayBoard.playedCardDetection = settings.playedCardDetection or isDeluxeEdition()
 
     Helper.registerEventListener("phaseStart", function (phase, firstPlayer)
         if phase == "leaderSelection" or phase == "roundStart" then
@@ -2200,13 +2203,17 @@ end
 
 ---
 function PlayBoard._getCardsPlayedThisTurn(color)
-    local playBoard = PlayBoard.getPlayBoard(color)
+    if PlayBoard.playedCardDetection then
+        local playBoard = PlayBoard.getPlayBoard(color)
 
-    local playedCards = Helper.filter(Park.getObjects(playBoard.agentCardPark), function (card)
-        return Types.isImperiumCard(card) or Types.isIntrigueCard(card)
-    end)
+        local playedCards = Helper.filter(Park.getObjects(playBoard.agentCardPark), function (card)
+            return Types.isImperiumCard(card) or Types.isIntrigueCard(card)
+        end)
 
-    return (Set.newFromList(playedCards) - Set.newFromList(playBoard.alreadyPlayedCards or {})):toList()
+        return (Set.newFromList(playedCards) - Set.newFromList(playBoard.alreadyPlayedCards or {})):toList()
+    else
+        return {}
+    end
 end
 
 ---

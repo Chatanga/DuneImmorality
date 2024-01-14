@@ -39,6 +39,7 @@ autoLoadedSettings = {
     },
     horizontalHandLayout = true,
     assistedRevelation = true,
+    playedCardDetection = true,
     soundEnabled = true,
 }
 ]]
@@ -124,7 +125,6 @@ local Controller = {
         defaultLeaderPoolSizeLabel = "-",
         tweakLeaderSelection = false,
         horizontalHandLayout = true,
-        assistedRevelation = false,
         soundEnabled = true,
     }
 }
@@ -303,6 +303,11 @@ function runSetUp(index, activeOpponents)
     end
 end
 
+---
+function isDeluxeEdition()
+    return getObjectFromGUID('a7fd90') ~= nil
+end
+
 --- TTS event handler.
 function onPlayerChangeColor()
     Controller.updateSetupButton()
@@ -426,16 +431,6 @@ function setHorizontalHandLayout(player, value, id)
 end
 
 --- UI callback (cf. XML).
-function setAssistedRevelation(player, value, id)
-    Controller.ui:fromUI(player, value, id)
-end
-
---- UI callback (cf. XML).
-function setSoundEnabled(player, value, id)
-    Controller.ui:fromUI(player, value, id)
-end
-
---- UI callback (cf. XML).
 function setUpFromUI()
     Controller.ui:hide()
     Controller.ui = nil
@@ -457,7 +452,8 @@ function setUpFromUI()
         defaultLeaderPoolSize = tonumber(Controller.fields.defaultLeaderPoolSize),
         tweakLeaderSelection = Controller.fields.tweakLeaderSelection,
         horizontalHandLayout = Controller.fields.horizontalHandLayout,
-        assistedRevelation = Controller.fields.assistedRevelation,
+        assistedRevelation = false,
+        playedCardDetection = false,
         soundEnabled = Controller.fields.soundEnabled,
     })
 end

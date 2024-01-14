@@ -62,71 +62,9 @@ end
 
 ---
 function Combat.setUp(settings)
-
-    Combat.garrisonParks = {}
-    Combat.dreadnoughtParks = {}
-    Combat.battlefieldZones = {}
-
-    local createZone = function (position, scale)
-        return Helper.markAsTransient(spawnObject({
-            type = 'ScriptingTrigger',
-            position = position,
-            scale = scale,
-        }))
-    end
-
-    MainBoard.collectSnapPointsEverywhere(settings, {
-
-        conflictDeck = function (_, position)
-            Combat.conflictDeckZone = createZone(position, Vector(2, 1, 3))
-        end,
-
-        conflictDiscard = function (_, position)
-            Combat.conflictDiscardZone = createZone(position, Vector(2, 1, 3))
-        end,
-
-        garrison = function (name, position)
-            local color = name:gsub("^%l", string.upper)
-            Combat.garrisonParks[color] = Combat._createGarrisonPark(color, position)
-            if settings.riseOfIx then
-                Combat.dreadnoughtParks[color] = Combat._createDreadnoughtPark(color, position)
-            end
-        end,
-
-        battlefield = function (name, position)
-            if name == "" then
-                Combat.battlegroundPark = Combat._createBattlegroundPark(position)
-            else
-                local color = name:gsub("^%l", string.upper)
-                Combat.battlefieldZones[color] = createZone(position, Vector(2.3, 2, 2.3))
-            end
-        end,
-
-        swormasterBonusToken = function (name, position)
-            local color = name:gsub("^%l", string.upper)
-            -- TODO
-        end,
-
-        victoryTokenRoom = function (name, position)
-            Combat.victoryPointTokenZone = createZone(position, Vector(5, 2, 1))
-        end,
-
-        combatMarkerRoom = function (name, position)
-            Combat.noCombatForcePositions = Vector(position.x, 1.66, position.z)
-            Combat.combatForcePositions = {}
-            for i = 0, 19 do
-                Combat.combatForcePositions[i + 1] = Vector(
-                    position.x + 1.6 + (i % 10) * 0.98,
-                    1.66,
-                    position.z + 0.64 - math.floor(i / 10) * 1.03
-                )
-            end
-        end,
-    })
-
-    Deck.generateConflictDeck(Combat.conflictDeckZone, settings.riseOfIx, settings.epicMode, settings.numberOfPlayers).doAfter(function ()
-        Combat._transientSetUp(settings)
-    end)
+    Combat._transientSetUp(settings)
+    assert(Combat.conflictDeckZone)
+    return Deck.generateConflictDeck(Combat.conflictDeckZone, settings.riseOfIx, settings.epicMode, settings.numberOfPlayers)
 end
 
 ---
@@ -201,18 +139,78 @@ end
 
 ---
 function Combat._processSnapPoints(settings)
-    MainBoard.makerHookPositions = {}
+    Combat.garrisonParks = {}
+    Combat.dreadnoughtParks = {}
+    Combat.makerHookPositions = {}
+    Combat.battlefieldZones = {}
+
+    local createZone = function (position, scale)
+        return Helper.markAsTransient(spawnObject({
+            type = 'ScriptingTrigger',
+            position = position,
+            scale = scale,
+        }))
+    end
+
     MainBoard.collectSnapPointsEverywhere(settings, {
+
+        conflictDeck = function (_, position)
+            Combat.conflictDeckZone = createZone(position, Vector(2, 1, 3))
+        end,
+
+        conflictDiscard = function (_, position)
+            Combat.conflictDiscardZone = createZone(position, Vector(2, 1, 3))
+        end,
+
+        garrison = function (name, position)
+            local color = name:gsub("^%l", string.upper)
+            Combat.garrisonParks[color] = Combat._createGarrisonPark(color, position)
+            if settings.riseOfIx then
+                Combat.dreadnoughtParks[color] = Combat._createDreadnoughtPark(color, position)
+            end
+        end,
+
         makerHook = function (name, position)
             local color = name:gsub("^%l", string.upper)
-            MainBoard.makerHookPositions[color] = position
+            Combat.makerHookPositions[color] = position
             Helper.createTransientAnchor(color .. "MakerHook", position - Vector(0, 0.5, 0)).doAfter(function (anchor)
                 local tags = { "MakerHook" }
                 local snapPoints = { Helper.createRelativeSnapPoint(anchor, position, false, tags) }
                 anchor.setSnapPoints(snapPoints)
             end)
         end,
+
+        battlefield = function (name, position)
+            if name == "" then
+                Combat.battlegroundPark = Combat._createBattlegroundPark(position)
+            else
+                local color = name:gsub("^%l", string.upper)
+                Combat.battlefieldZones[color] = createZone(position, Vector(2.3, 2, 2.3))
+            end
+        end,
+
+        swormasterBonusToken = function (name, position)
+            local color = name:gsub("^%l", string.upper)
+            -- TODO
+        end,
+
+        victoryTokenRoom = function (name, position)
+            Combat.victoryPointTokenZone = createZone(position, Vector(5, 2, 1))
+        end,
+
+        combatMarkerRoom = function (name, position)
+            Combat.noCombatForcePositions = Vector(position.x, 1.66, position.z)
+            Combat.combatForcePositions = {}
+            for i = 0, 19 do
+                Combat.combatForcePositions[i + 1] = Vector(
+                    position.x + 1.6 + (i % 10) * 0.98,
+                    1.66,
+                    position.z + 0.64 - math.floor(i / 10) * 1.03
+                )
+            end
+        end,
     })
+
 end
 
 ---
@@ -624,7 +622,7 @@ end
 
 ---
 function Combat.getMakerHookPosition(color)
-    return MainBoard.makerHookPositions[color]
+    return Combat.makerHookPositions[color]
 end
 
 ---

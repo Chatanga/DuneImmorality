@@ -74,7 +74,6 @@
 			</HorizontalLayout>
 			<VerticalLayout padding="25 0 0 0">
 				<Toggle id="horizontalHandLayout" onValueChanged="Global/setHorizontalHandLayout" isOn="True" key="horizontalHandLayout"/>
-				<!--Toggle id="assistedRevelation" onValueChanged="Global/setAssistedRevelation" isOn="False" key="assistedRevelation"/-->
 				<Toggle id="soundEnabled" onValueChanged="Global/setSoundEnabled" isOn="True" key="soundEnabled"/>
 			</VerticalLayout>
 

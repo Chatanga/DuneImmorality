@@ -771,7 +771,9 @@ function MainBoard._checkGenericAccess(color, leader, requirements)
                 return false
             end
         elseif requirement == "friendship" then
-            if not InfluenceTrack.hasFriendship(color, value) and not PlayBoard.hasPlayedThisTurn(color, "undercoverAsset") then
+            if PlayBoard.playedCardDetection and PlayBoard.hasPlayedThisTurn(color, "undercoverAsset") then
+                return true
+            elseif not InfluenceTrack.hasFriendship(color, value) then
                 Dialog.broadcastToColor(I18N("noFriendship", { withFaction = I18N(Helper.toCamelCase("with", value)) }), color, "Purple")
                 return false
             end
