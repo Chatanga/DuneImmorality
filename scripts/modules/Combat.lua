@@ -654,4 +654,9 @@ function Combat.callSandworm(color, count)
     end
 end
 
+---
+function Combat.getCombatCenterZone()
+    return Combat.combatCenterZone
+end
+
 return Combat

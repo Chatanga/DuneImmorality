@@ -69,71 +69,12 @@ local MainBoard = {
 }
 
 ---
-function MainBoard.rebuild()
-    --local destination = getObjectFromGUID("483a1a") -- 4P
-    local destination = getObjectFromGUID("21cc52") -- 6P
-    --local destination = getObjectFromGUID("4cb9ba") -- Emperor
-    --local destination = getObjectFromGUID("01c575") -- Fremen
-    --local destination = getObjectFromGUID("d75455") -- Ix
-    assert(destination)
-
-    local snapPoints = {}
-
-    for _, snapPoint in ipairs(destination.getSnapPoints()) do
-        Helper.dump("Snap:", snapPoint.tags)
-        table.insert(snapPoints, snapPoint)
-    end
-
-    local rejectedCount = 0
-    for _, snapPoint in ipairs(Global.getSnapPoints()) do
-        if #snapPoint.tags > 0 then
-            if #snapPoint.tags > 1 then
-                Helper.dump("Not a unique tag:", snapPoint.tags)
-            end
-            Helper.dump("Snap:", snapPoint.tags)
-            table.insert(snapPoints, {
-                position = destination.positionToLocal(snapPoint.position),
-                tags = snapPoint.tags,
-                rotation_snap = snapPoint.rotation_snap,
-            })
-        else
-            rejectedCount = rejectedCount + 1
-        end
-    end
-    Helper.dump("Rejected:", rejectedCount, "/", #Global.getSnapPoints())
-
-    destination.setSnapPoints(snapPoints)
-    Global.setSnapPoints({})
-end
-
----
-function MainBoard.rebuildAlt()
-    local destination = getObjectFromGUID("483a1a") -- 4P
-    --local destination = getObjectFromGUID("21cc52") -- 6P
-
-    local snapPoints = {}
-
-    for _, snapPoint in ipairs(destination.getSnapPoints()) do
-        Helper.dump("Snap:", snapPoint.tags)
-
-        local position = snapPoint.position
-        position:scale(5.945034 / 11.2)
-        --position:setAt("y", position.y + 0.5)
-        --position:setAt("z", position.z - 1.88)
-
-        table.insert(snapPoints, snapPoint)
-    end
-
-    destination.setSnapPoints(snapPoints)
-    Global.setSnapPoints({})
-end
-
----
 function MainBoard.onLoad(state)
     --Helper.dumpFunction("MainBoard.onLoad")
 
     Helper.append(MainBoard, Helper.resolveGUIDs(false, {
-        board = "21cc52", -- 4P: "483a1a", 6P: "21cc52"
+        board = "483a1a", -- 4P
+        --board = "21cc52", -- 6P
         emperorBoard = "4cb9ba",
         fremenBoard = "01c575",
         factions = {
@@ -210,8 +151,10 @@ end
 function MainBoard.setUp(settings)
     local continuation = Helper.createContinuation("MainBoard.setUp")
     if settings.numberOfPlayers == 6 then
-        --MainBoard.board.setState(2)
-        continuation.run()
+        MainBoard.board.setState(2)
+        Helper.onceTimeElapsed(2).doAfter(function ()
+            continuation.run()
+        end)
     else
         MainBoard.emperorBoard.destruct()
         MainBoard.emperorBoard = nil
@@ -219,10 +162,8 @@ function MainBoard.setUp(settings)
         MainBoard.fremenBoard = nil
         MainBoard.spiceBonusTokens.habbanyaErg.destruct()
         MainBoard.spiceBonusTokens.habbanyaErg = nil
-        MainBoard.board.setState(1)
-        Helper.onceTimeElapsed(2).doAfter(function ()
-            continuation.run()
-        end)
+        --MainBoard.board.setState(1)
+        continuation.run()
     end
 
     local nextContinuation = Helper.createContinuation("MainBoard.setUp.next")
@@ -335,19 +276,23 @@ function MainBoard._processSnapPoints(settings)
     MainBoard.observationPosts = {}
     MainBoard.banners = {}
 
-    local net = {
+    MainBoard.collectSnapPointsEverywhere(settings, {
+
         seat = function (name, position)
             local str = name:sub(12)
             local index = tonumber(str)
             assert(index, "Not a number: " .. str)
             highCouncilSeats[index] = position
         end,
+
         space = function (name, position)
             MainBoard.spaces[name] = { name = name, position = position }
         end,
+
         post = function (name, position)
             MainBoard.observationPosts[name] = { name = name, position = position }
         end,
+
         spice = function (name, position)
             local token = MainBoard.spiceBonusTokens[name]
             token.setPosition(position + Vector(0, -0.05, 0))
@@ -356,6 +301,7 @@ function MainBoard._processSnapPoints(settings)
                 MainBoard.spiceBonuses[name] = Resource.new(token, nil, "spice", 0, name)
             end
         end,
+
         flag = function (name, position)
             local zone = spawnObject({
                 type = 'ScriptingTrigger',
@@ -365,9 +311,7 @@ function MainBoard._processSnapPoints(settings)
             Helper.markAsTransient(zone)
             MainBoard.banners[name .. "BannerZone"] = zone
         end
-    }
-
-    MainBoard.collectSnapPointsEverywhere(settings, net)
+    })
 
     assert(#highCouncilSeats > 0)
     MainBoard.highCouncilPark = Park.createPark(
@@ -402,14 +346,14 @@ end
 ---
 function MainBoard.collectSnapPointsEverywhere(settings, net)
     if settings.numberOfPlayers == 6 then
-        Helper.collectSnapPoints(net, getObjectFromGUID("21cc52"))
-        Helper.collectSnapPoints(net, getObjectFromGUID("4cb9ba"))
-        Helper.collectSnapPoints(net, getObjectFromGUID("01c575"))
+        Helper.collectSnapPoints(getObjectFromGUID("21cc52"), net)
+        Helper.collectSnapPoints(getObjectFromGUID("4cb9ba"), net)
+        Helper.collectSnapPoints(getObjectFromGUID("01c575"), net)
     else
-        Helper.collectSnapPoints(net, getObjectFromGUID("483a1a"))
+        Helper.collectSnapPoints(getObjectFromGUID("483a1a"), net)
     end
     if settings.riseOfIx then
-        Helper.collectSnapPoints(TechMarket.board)
+        Helper.collectSnapPoints(TechMarket.board, net)
     end
 end
 
@@ -781,7 +725,7 @@ function MainBoard._checkGenericAccess(color, leader, requirements)
                 return false
             end
         elseif requirement == "friendship" then
-            if PlayBoard.playedCardDetection and PlayBoard.hasPlayedThisTurn(color, "undercoverAsset") then
+            if PlayBoard.hasPlayedThisTurn(color, "undercoverAsset") then
                 return true
             elseif not InfluenceTrack.hasFriendship(color, value) then
                 Dialog.broadcastToColor(I18N("noFriendship", { withFaction = I18N(Helper.toCamelCase("with", value)) }), color, "Purple")

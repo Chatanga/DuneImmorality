@@ -694,7 +694,8 @@ function Helper._createAbsoluteWidgetWithRoundnessParameters(object, roundness, 
 end
 
 ---
-function Helper.collectSnapPoints(net, object)
+function Helper.collectSnapPoints(object, net)
+    --Helper.dumpFunction("Helper.collectSnapPoints", object and object.getGUID() or "nil")
     if not object then
         return
     end

@@ -97,10 +97,10 @@ end
 
 ---
 function ChoamContractMarket._processSnapPoints(settings)
-
     ChoamContractMarket.contractSlots = {}
 
-    local net = {
+    MainBoard.collectSnapPointsEverywhere(settings, {
+
         contract = function (name, position)
             local zone = spawnObject({
                 type = 'ScriptingTrigger',
@@ -113,9 +113,7 @@ function ChoamContractMarket._processSnapPoints(settings)
                 ChoamContractMarket.contractSlots[indexInRow] = zone
             end
         end,
-    }
-
-    MainBoard.collectSnapPointsEverywhere(settings, net)
+    })
 end
 
 ---

@@ -144,8 +144,6 @@ function onLoad(scriptState)
 
     if constructionModeEnabled then
         --allModules.PlayBoard.rebuild()
-        --allModules.MainBoard.rebuild()
-        --allModules.MainBoard.rebuildAlt()
         --allModules.Deck.rebuildPreloadAreas()
     else
         -- The destroyed objects need one frame to disappear and not interfere
@@ -291,7 +289,7 @@ end
 function runSetUp(index, activeOpponents)
     local moduleInfo = allModules.ordered[index]
     if moduleInfo then
-        Helper.dump(tostring(index) .. ". Setting " .. moduleInfo.name)
+        --Helper.dump(tostring(index) .. ". Setting " .. moduleInfo.name)
         local nextContinuation = moduleInfo.module.setUp(settings, activeOpponents)
         if not nextContinuation then
             nextContinuation = Helper.createContinuation("runSetUp")
@@ -299,7 +297,7 @@ function runSetUp(index, activeOpponents)
         end
         nextContinuation.doAfter(Helper.partialApply(runSetUp, index + 1, activeOpponents))
     else
-        Helper.dump("Done setting all modules")
+        --Helper.dump("Done setting all modules")
     end
 end
 

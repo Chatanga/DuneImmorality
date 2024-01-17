@@ -137,7 +137,8 @@ function InfluenceTrack._processSnapPoints(settings, firstTime)
         end
     end
 
-    local net = {
+    MainBoard.collectSnapPointsEverywhere(settings, {
+
         faction = function (faction, position)
             InfluenceTrack.influenceTokens[faction] = {}
             InfluenceTrack.influenceTokenInitialPositions[faction] = {}
@@ -177,9 +178,7 @@ function InfluenceTrack._processSnapPoints(settings, firstTime)
                 InfluenceTrack.allianceTokens[faction].setPositionSmooth(allianceTokenInitialPosition)
             end
         end
-    }
-
-    MainBoard.collectSnapPointsEverywhere(settings, net)
+    })
 end
 
 ---

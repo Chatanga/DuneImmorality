@@ -183,7 +183,7 @@ function TurnControl._assignObjectives()
         end
     end
 
-    local someUntaggedZone = Combat.combatCenterZone
+    local someUntaggedZone = Combat.getCombatCenterZone()
     assert(someUntaggedZone)
     Deck.generateObjectiveDeck(someUntaggedZone, cardNames).doAfter(function (deck)
         assert(Helper.getDeckOrCard(someUntaggedZone) == deck)
