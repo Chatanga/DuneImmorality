@@ -208,23 +208,33 @@ end
 
 ---
 function MainBoard.setUp(settings)
+    local continuation = Helper.createContinuation("MainBoard.setUp")
     if settings.numberOfPlayers == 6 then
         --MainBoard.board.setState(2)
+        continuation.run()
     else
-        MainBoard.board.setState(1)
         MainBoard.emperorBoard.destruct()
         MainBoard.emperorBoard = nil
         MainBoard.fremenBoard.destruct()
         MainBoard.fremenBoard = nil
         MainBoard.spiceBonusTokens.habbanyaErg.destruct()
         MainBoard.spiceBonusTokens.habbanyaErg = nil
+        MainBoard.board.setState(1)
+        Helper.onceTimeElapsed(2).doAfter(function ()
+            continuation.run()
+        end)
     end
 
-    if settings.language == "fr" then
-        MainBoard._mutateMainBoards()
-    end
+    local nextContinuation = Helper.createContinuation("MainBoard.setUp.next")
+    continuation.doAfter(function ()
+        if settings.language == "fr" then
+            MainBoard._mutateMainBoards()
+        end
+        MainBoard._transientSetUp(settings)
+        nextContinuation.run()
+    end)
 
-    MainBoard._transientSetUp(settings)
+    return nextContinuation
 end
 
 ---

@@ -19,7 +19,6 @@ local constructionModeEnabled = false
 local autoLoadedSettings = nil
 
 --[[
-]]
 autoLoadedSettings = {
     language = "fr",
     hotSeat = true,
@@ -43,6 +42,7 @@ autoLoadedSettings = {
     playedCardDetection = true,
     soundEnabled = true,
 }
+]]
 
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
@@ -291,7 +291,7 @@ end
 function runSetUp(index, activeOpponents)
     local moduleInfo = allModules.ordered[index]
     if moduleInfo then
-        --Helper.dump(tostring(index) .. ". Setting " .. moduleInfo.name)
+        Helper.dump(tostring(index) .. ". Setting " .. moduleInfo.name)
         local nextContinuation = moduleInfo.module.setUp(settings, activeOpponents)
         if not nextContinuation then
             nextContinuation = Helper.createContinuation("runSetUp")
@@ -299,7 +299,7 @@ function runSetUp(index, activeOpponents)
         end
         nextContinuation.doAfter(Helper.partialApply(runSetUp, index + 1, activeOpponents))
     else
-        --Helper.dump("Done setting all modules")
+        Helper.dump("Done setting all modules")
     end
 end
 

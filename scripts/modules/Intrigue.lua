@@ -26,11 +26,13 @@ end
 
 ---
 function Intrigue.setUp(settings)
-    Intrigue._transientSetUp(settings)
-
+    local continuation = Helper.createContinuation("Intrigue.setUp")
     Deck.generateIntrigueDeck(Intrigue.deckZone, settings.useContracts, settings.riseOfIx, settings.immortality).doAfter(function (deck)
         Helper.shuffleDeck(deck)
+        Intrigue._transientSetUp(settings)
+        continuation.run()
     end)
+    return continuation
 end
 
 ---

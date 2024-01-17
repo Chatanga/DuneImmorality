@@ -32,13 +32,6 @@ function Pdf.setUp()
             Pdf._mututateBook(bookName, bookInfo, bookUrl)
         end)
     end
-
-    if false then
-        -- TODO better?
-        if (locale == "fr") then
-            getObjectFromGUID("e43180").flip()
-        end
-    end
 end
 
 function Pdf._mututateBook(_, info, url)

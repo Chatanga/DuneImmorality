@@ -32,7 +32,9 @@ end
 
 ---
 function TleilaxuRow.setUp(settings)
+    local continuation = Helper.createContinuation("TleilaxuRow.setUp")
     if settings.immortality then
+        Deck.generateSpecialDeck(TleilaxuRow.slotZones[3], "immortality", "reclaimedForces")
         Deck.generateTleilaxuDeck(TleilaxuRow.deckZone).doAfter(function (deck)
             Helper.shuffleDeck(deck)
             Helper.onceShuffled(deck).doAfter(function ()
@@ -41,13 +43,14 @@ function TleilaxuRow.setUp(settings)
                     Helper.moveCardFromZone(TleilaxuRow.deckZone, zone.getPosition(), Vector(0, 180, 0))
                 end
             end)
+            TleilaxuRow._transientSetUp()
+            continuation.run()
         end)
-        Deck.generateSpecialDeck(TleilaxuRow.slotZones[3], "immortality", "reclaimedForces")
-
-        TleilaxuRow._transientSetUp()
     else
         TleilaxuRow._tearDown()
+        continuation.run()
     end
+    return continuation
 end
 
 ---
