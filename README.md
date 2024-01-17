@@ -42,6 +42,7 @@ __All__
 __6P__
 
 - Compteur global PV équipe.
+- Echange de ressources.
 
 __Extensions__
 
@@ -54,6 +55,7 @@ __Extensions__
 __2P / Solo__
 
 - Récupérer un paquet Hagal à jour -> Asmodius.
+- Récupérer les cartes de rivaux -> Asmodius.
 - Tirage de cartes et prise en compte des épées, mais aucune automatisation sinon.
 
 __Aesthetic__

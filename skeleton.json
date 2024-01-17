@@ -1,7 +1,7 @@
 {
   "SaveName": "Dune Uprising - Prototype",
-  "EpochTime": 1705147744,
-  "Date": "1/13/2024 1:09:04 PM",
+  "EpochTime": 1705340168,
+  "Date": "1/15/2024 6:36:08 PM",
   "VersionNumber": "v13.2.2",
   "GameMode": "Dune Uprising",
   "GameType": "Game",
@@ -1179,7 +1179,7 @@
       "Name": "Custom_Token",
       "Transform": {
         "posX": 11.8471861,
-        "posY": 1.69252312,
+        "posY": 1.69252324,
         "posZ": 26.1129265,
         "rotX": 0,
         "rotY": 180,
@@ -1365,7 +1365,7 @@
       "Name": "Custom_Token",
       "Transform": {
         "posX": 12.7772741,
-        "posY": 1.69252324,
+        "posY": 1.69252312,
         "posZ": 27.04854,
         "rotX": 0,
         "rotY": 180,
@@ -1445,9 +1445,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191991687,
+        "r": 0.191991627,
         "g": 0.701,
-        "b": 0.167991668
+        "b": 0.167991608
       },
       "Tags": [
         "Agent",
@@ -1504,9 +1504,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191995829,
+        "r": 0.1919958,
         "g": 0.701,
-        "b": 0.167995811
+        "b": 0.167995781
       },
       "Tags": [
         "Green",
@@ -1565,7 +1565,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117991246,
+        "r": 0.117991187,
         "g": 0.53,
         "b": 1.0
       },
@@ -1625,8 +1625,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.09999158,
-        "b": 0.0939915553
+        "g": 0.09999152,
+        "b": 0.0939914957
       },
       "Tags": [
         "Agent",
@@ -1683,7 +1683,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117991246,
+        "r": 0.117991187,
         "g": 0.53,
         "b": 1.0
       },
@@ -1742,7 +1742,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.1215113,
+        "r": 0.121511273,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -1865,8 +1865,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.09999158,
-        "b": 0.0939915553
+        "g": 0.09999152,
+        "b": 0.0939914957
       },
       "Tags": [
         "Agent",
@@ -1923,7 +1923,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117991246,
+        "r": 0.117991187,
         "g": 0.53,
         "b": 1.0
       },
@@ -1965,7 +1965,7 @@
       "Name": "Custom_Model",
       "Transform": {
         "posX": -2.31130552,
-        "posY": 1.59089208,
+        "posY": 1.59089231,
         "posZ": 7.91,
         "rotX": 0,
         "rotY": 180,
@@ -1984,8 +1984,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.09999158,
-        "b": 0.0939915553
+        "g": 0.09999152,
+        "b": 0.0939914957
       },
       "Tags": [
         "Agent",
@@ -2043,9 +2043,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191991687,
+        "r": 0.191991627,
         "g": 0.701,
-        "b": 0.167991668
+        "b": 0.167991608
       },
       "Tags": [
         "Agent",
@@ -2103,9 +2103,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191995829,
+        "r": 0.1919958,
         "g": 0.701,
-        "b": 0.167995811
+        "b": 0.167995781
       },
       "Tags": [
         "Green",
@@ -2152,9 +2152,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191995829,
+        "r": 0.1919958,
         "g": 0.701,
-        "b": 0.167995811
+        "b": 0.167995781
       },
       "Tags": [
         "Green",
@@ -2201,9 +2201,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191995829,
+        "r": 0.1919958,
         "g": 0.701,
-        "b": 0.167995811
+        "b": 0.167995781
       },
       "Tags": [
         "Green",
@@ -2250,7 +2250,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117995612,
+        "r": 0.117995583,
         "g": 0.53,
         "b": 1.0
       },
@@ -2299,7 +2299,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117995612,
+        "r": 0.117995583,
         "g": 0.53,
         "b": 1.0
       },
@@ -2348,7 +2348,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117995612,
+        "r": 0.117995583,
         "g": 0.53,
         "b": 1.0
       },
@@ -2398,8 +2398,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.0999957845,
-        "b": 0.09399574
+        "g": 0.09999574,
+        "b": 0.09399573
       },
       "Tags": [
         "Red",
@@ -2447,8 +2447,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.0999957845,
-        "b": 0.09399574
+        "g": 0.09999574,
+        "b": 0.09399573
       },
       "Tags": [
         "Red",
@@ -3351,8 +3351,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.0999957845,
-        "b": 0.09399574
+        "g": 0.09999574,
+        "b": 0.09399573
       },
       "Tags": [
         "Red",
@@ -3399,9 +3399,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191995829,
+        "r": 0.1919958,
         "g": 0.701,
-        "b": 0.167995811
+        "b": 0.167995781
       },
       "Tags": [
         "Green",
@@ -3448,9 +3448,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191995829,
+        "r": 0.1919958,
         "g": 0.701,
-        "b": 0.167995811
+        "b": 0.167995781
       },
       "Tags": [
         "Green",
@@ -3497,9 +3497,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191995829,
+        "r": 0.1919958,
         "g": 0.701,
-        "b": 0.167995811
+        "b": 0.167995781
       },
       "Tags": [
         "Green",
@@ -3546,9 +3546,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191995829,
+        "r": 0.1919958,
         "g": 0.701,
-        "b": 0.167995811
+        "b": 0.167995781
       },
       "Tags": [
         "Green",
@@ -3596,8 +3596,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.0999957845,
-        "b": 0.09399574
+        "g": 0.09999574,
+        "b": 0.09399573
       },
       "Tags": [
         "Red",
@@ -3645,8 +3645,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.0999957845,
-        "b": 0.09399574
+        "g": 0.09999574,
+        "b": 0.09399573
       },
       "Tags": [
         "Red",
@@ -3694,8 +3694,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.0999957845,
-        "b": 0.09399574
+        "g": 0.09999574,
+        "b": 0.09399573
       },
       "Tags": [
         "Red",
@@ -3742,9 +3742,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191995829,
+        "r": 0.1919958,
         "g": 0.701,
-        "b": 0.167995811
+        "b": 0.167995781
       },
       "Tags": [
         "Green",
@@ -3791,9 +3791,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191995829,
+        "r": 0.1919958,
         "g": 0.701,
-        "b": 0.167995811
+        "b": 0.167995781
       },
       "Tags": [
         "Green",
@@ -3841,8 +3841,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.0999957845,
-        "b": 0.09399574
+        "g": 0.09999574,
+        "b": 0.09399573
       },
       "Tags": [
         "Red",
@@ -3890,8 +3890,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.0999957845,
-        "b": 0.09399574
+        "g": 0.09999574,
+        "b": 0.09399573
       },
       "Tags": [
         "Red",
@@ -3939,8 +3939,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.0999957845,
-        "b": 0.09399574
+        "g": 0.09999574,
+        "b": 0.09399573
       },
       "Tags": [
         "Red",
@@ -3987,7 +3987,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117995612,
+        "r": 0.117995583,
         "g": 0.53,
         "b": 1.0
       },
@@ -4036,7 +4036,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117995612,
+        "r": 0.117995583,
         "g": 0.53,
         "b": 1.0
       },
@@ -4085,7 +4085,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117995612,
+        "r": 0.117995583,
         "g": 0.53,
         "b": 1.0
       },
@@ -4134,7 +4134,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117995612,
+        "r": 0.117995583,
         "g": 0.53,
         "b": 1.0
       },
@@ -4183,7 +4183,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117995612,
+        "r": 0.117995583,
         "g": 0.53,
         "b": 1.0
       },
@@ -4232,7 +4232,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117995612,
+        "r": 0.117995583,
         "g": 0.53,
         "b": 1.0
       },
@@ -4467,7 +4467,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171991676
+        "b": 0.171991616
       },
       "Tags": [
         "Agent",
@@ -4526,7 +4526,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171991676
+        "b": 0.171991616
       },
       "Tags": [
         "Agent",
@@ -4585,7 +4585,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171991676
+        "b": 0.171991616
       },
       "Tags": [
         "Agent",
@@ -4645,7 +4645,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171995819
+        "b": 0.171995789
       },
       "Tags": [
         "Troop",
@@ -4694,7 +4694,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171995819
+        "b": 0.171995789
       },
       "Tags": [
         "Troop",
@@ -4743,7 +4743,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171995819
+        "b": 0.171995789
       },
       "Tags": [
         "Troop",
@@ -4792,7 +4792,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171995819
+        "b": 0.171995789
       },
       "Tags": [
         "Troop",
@@ -4841,7 +4841,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171995819
+        "b": 0.171995789
       },
       "Tags": [
         "Troop",
@@ -4890,7 +4890,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171995819
+        "b": 0.171995789
       },
       "Tags": [
         "Troop",
@@ -4939,7 +4939,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171995819
+        "b": 0.171995789
       },
       "Tags": [
         "Troop",
@@ -4988,7 +4988,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171995819
+        "b": 0.171995789
       },
       "Tags": [
         "HighCouncilSeatToken",
@@ -5029,7 +5029,7 @@
       "Name": "BlockSquare",
       "Transform": {
         "posX": 24.0,
-        "posY": 2.37116718,
+        "posY": 2.37116742,
         "posZ": -20.4,
         "rotX": 0,
         "rotY": 180,
@@ -5049,7 +5049,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171995819
+        "b": 0.171995789
       },
       "Tags": [
         "Troop",
@@ -5098,7 +5098,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171995819
+        "b": 0.171995789
       },
       "Tags": [
         "Troop",
@@ -5127,7 +5127,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": -16.1951618,
-        "posY": 1.59252346,
+        "posY": 1.59252322,
         "posZ": 34.82682,
         "rotX": 0,
         "rotY": 90.01646,
@@ -5187,7 +5187,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": -17.3891449,
-        "posY": 1.59252346,
+        "posY": 1.59252357,
         "posZ": 34.2445221,
         "rotX": 0,
         "rotY": 89.99601,
@@ -5247,7 +5247,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": -16.1951332,
-        "posY": 1.59252346,
+        "posY": 1.59252334,
         "posZ": 34.243988,
         "rotX": 0,
         "rotY": 90.02212,
@@ -5307,7 +5307,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": -17.3891468,
-        "posY": 1.59252346,
+        "posY": 1.59252369,
         "posZ": 34.8271065,
         "rotX": 0,
         "rotY": 89.99566,
@@ -5477,9 +5477,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.44295463,
-        "g": 0.230954617,
-        "b": 0.0899631
+        "r": 0.4429546,
+        "g": 0.230954587,
+        "b": 0.0899630561
       },
       "Tags": [
         "VictoryPointToken"
@@ -5537,9 +5537,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.44295463,
-        "g": 0.230954617,
-        "b": 0.0899631
+        "r": 0.4429546,
+        "g": 0.230954587,
+        "b": 0.0899630561
       },
       "Tags": [
         "VictoryPointToken"
@@ -5597,9 +5597,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.44295463,
-        "g": 0.230954617,
-        "b": 0.0899631
+        "r": 0.4429546,
+        "g": 0.230954587,
+        "b": 0.0899630561
       },
       "Tags": [
         "VictoryPointToken"
@@ -5657,9 +5657,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.44295463,
-        "g": 0.230954617,
-        "b": 0.0899631
+        "r": 0.4429546,
+        "g": 0.230954587,
+        "b": 0.0899630561
       },
       "Tags": [
         "VictoryPointToken"
@@ -5719,7 +5719,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171918184
+        "b": 0.171918124
       },
       "Tags": [
         "Cargo",
@@ -5776,9 +5776,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.1919182,
+        "r": 0.191918135,
         "g": 0.701,
-        "b": 0.167918175
+        "b": 0.167918116
       },
       "Tags": [
         "Cargo",
@@ -5836,8 +5836,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.09991784,
-        "b": 0.09391733
+        "g": 0.09991779,
+        "b": 0.09391726
       },
       "Tags": [
         "Cargo",
@@ -5894,7 +5894,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117913716,
+        "r": 0.117913641,
         "g": 0.53,
         "b": 1.0
       },
@@ -5934,8 +5934,8 @@
       "GUID": "5469fb",
       "Name": "Custom_Model",
       "Transform": {
-        "posX": 23.699995,
-        "posY": 2.19653678,
+        "posX": 23.6999931,
+        "posY": 2.19653654,
         "posZ": -19.0,
         "rotX": 0,
         "rotY": 0,
@@ -5955,7 +5955,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171991676
+        "b": 0.171991616
       },
       "Tags": [
         "Dreadnought",
@@ -5993,7 +5993,7 @@
       "GUID": "a15087",
       "Name": "Custom_Model",
       "Transform": {
-        "posX": 23.699995,
+        "posX": 23.6999931,
         "posY": 2.19653678,
         "posZ": 19.3999977,
         "rotX": 0,
@@ -6012,9 +6012,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191991687,
+        "r": 0.191991627,
         "g": 0.701,
-        "b": 0.167991668
+        "b": 0.167991608
       },
       "Tags": [
         "Dreadnought",
@@ -6052,8 +6052,8 @@
       "GUID": "82789e",
       "Name": "Custom_Model",
       "Transform": {
-        "posX": -23.7000065,
-        "posY": 2.19922256,
+        "posX": -23.7000084,
+        "posY": 2.199222,
         "posZ": -18.9998569,
         "rotX": 0,
         "rotY": 0,
@@ -6071,7 +6071,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117991246,
+        "r": 0.117991187,
         "g": 0.53,
         "b": 1.0
       },
@@ -6111,7 +6111,7 @@
       "GUID": "1a3c82",
       "Name": "Custom_Model",
       "Transform": {
-        "posX": -23.7000046,
+        "posX": -23.7000065,
         "posY": 2.199222,
         "posZ": 19.3999958,
         "rotX": 0,
@@ -6131,8 +6131,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.09999158,
-        "b": 0.0939915553
+        "g": 0.09999152,
+        "b": 0.0939914957
       },
       "Tags": [
         "Dreadnought",
@@ -6190,8 +6190,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.09999695,
-        "b": 0.09399692
+        "g": 0.0999969,
+        "b": 0.09399689
       },
       "Tags": [
         "InfluenceTokens",
@@ -6250,9 +6250,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191995829,
+        "r": 0.1919958,
         "g": 0.701,
-        "b": 0.167995811
+        "b": 0.167995781
       },
       "Tags": [
         "Green",
@@ -6312,8 +6312,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.09999695,
-        "b": 0.09399692
+        "g": 0.0999969,
+        "b": 0.09399689
       },
       "Tags": [
         "InfluenceTokens",
@@ -6373,8 +6373,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.09999695,
-        "b": 0.09399692
+        "g": 0.0999969,
+        "b": 0.09399689
       },
       "Tags": [
         "InfluenceTokens",
@@ -6433,9 +6433,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191995829,
+        "r": 0.1919958,
         "g": 0.701,
-        "b": 0.167995811
+        "b": 0.167995781
       },
       "Tags": [
         "Green",
@@ -6494,7 +6494,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117997371,
+        "r": 0.117997341,
         "g": 0.53,
         "b": 1.0
       },
@@ -6557,7 +6557,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171995819
+        "b": 0.171995789
       },
       "Tags": [
         "InfluenceTokens",
@@ -6617,8 +6617,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.09999695,
-        "b": 0.09399692
+        "g": 0.0999969,
+        "b": 0.09399689
       },
       "Tags": [
         "InfluenceTokens",
@@ -6677,7 +6677,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117997371,
+        "r": 0.117997341,
         "g": 0.53,
         "b": 1.0
       },
@@ -6738,7 +6738,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117997371,
+        "r": 0.117997341,
         "g": 0.53,
         "b": 1.0
       },
@@ -6801,7 +6801,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171995819
+        "b": 0.171995789
       },
       "Tags": [
         "InfluenceTokens",
@@ -6860,9 +6860,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191995829,
+        "r": 0.1919958,
         "g": 0.701,
-        "b": 0.167995811
+        "b": 0.167995781
       },
       "Tags": [
         "Green",
@@ -6923,7 +6923,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171995819
+        "b": 0.171995789
       },
       "Tags": [
         "InfluenceTokens",
@@ -6984,7 +6984,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171995819
+        "b": 0.171995789
       },
       "Tags": [
         "InfluenceTokens",
@@ -7043,9 +7043,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191995829,
+        "r": 0.1919958,
         "g": 0.701,
-        "b": 0.167995811
+        "b": 0.167995781
       },
       "Tags": [
         "Green",
@@ -7104,7 +7104,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117997371,
+        "r": 0.117997341,
         "g": 0.53,
         "b": 1.0
       },
@@ -7146,7 +7146,7 @@
       "GUID": "71a414",
       "Name": "Custom_Model",
       "Transform": {
-        "posX": 25.2999973,
+        "posX": 25.2999954,
         "posY": 2.19653654,
         "posZ": -19.0,
         "rotX": 0,
@@ -7167,7 +7167,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171991676
+        "b": 0.171991616
       },
       "Tags": [
         "Dreadnought",
@@ -7205,7 +7205,7 @@
       "GUID": "734250",
       "Name": "Custom_Model",
       "Transform": {
-        "posX": 25.2999935,
+        "posX": 25.2999916,
         "posY": 2.19653678,
         "posZ": 19.3999939,
         "rotX": 0,
@@ -7224,9 +7224,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191991687,
+        "r": 0.191991627,
         "g": 0.701,
-        "b": 0.167991668
+        "b": 0.167991608
       },
       "Tags": [
         "Dreadnought",
@@ -7264,7 +7264,7 @@
       "GUID": "60f208",
       "Name": "Custom_Model",
       "Transform": {
-        "posX": -25.25597,
+        "posX": -25.2559719,
         "posY": 2.19922233,
         "posZ": -19.0000019,
         "rotX": 0,
@@ -7283,7 +7283,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117991246,
+        "r": 0.117991187,
         "g": 0.53,
         "b": 1.0
       },
@@ -7324,7 +7324,7 @@
       "Name": "Custom_Model",
       "Transform": {
         "posX": -25.3000889,
-        "posY": 2.199222,
+        "posY": 2.19922233,
         "posZ": 19.3999977,
         "rotX": 0,
         "rotY": 0,
@@ -7343,8 +7343,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.09999158,
-        "b": 0.0939915553
+        "g": 0.09999152,
+        "b": 0.0939914957
       },
       "Tags": [
         "Dreadnought",
@@ -7383,7 +7383,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": -7.58169556,
-        "posY": 1.59252357,
+        "posY": 1.59252381,
         "posZ": 26.1773,
         "rotX": 0,
         "rotY": 180,
@@ -7401,7 +7401,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.4191493,
+        "r": 0.41914928,
         "g": 0.0,
         "b": 0.681184649
       },
@@ -7443,7 +7443,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": -7.57927561,
-        "posY": 1.59252357,
+        "posY": 1.59252381,
         "posZ": 27.2138081,
         "rotX": 0,
         "rotY": 180,
@@ -7901,9 +7901,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.4429546,
-        "g": 0.230954587,
-        "b": 0.0899630561
+        "r": 0.44295457,
+        "g": 0.230954558,
+        "b": 0.08996303
       },
       "Tags": [
         "VictoryPointToken"
@@ -7961,8 +7961,8 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.353620321,
-        "g": 0.126020253,
+        "r": 0.3536203,
+        "g": 0.126020223,
         "b": 0.0
       },
       "Tags": [
@@ -10841,8 +10841,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.0999957845,
-        "b": 0.09399574
+        "g": 0.09999574,
+        "b": 0.09399573
       },
       "Tags": [
         "ForceToken"
@@ -10913,7 +10913,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117995612,
+        "r": 0.117995583,
         "g": 0.53,
         "b": 1.0
       },
@@ -10986,9 +10986,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191995829,
+        "r": 0.1919958,
         "g": 0.701,
-        "b": 0.167995811
+        "b": 0.167995781
       },
       "Tags": [
         "ForceToken"
@@ -11061,7 +11061,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171995819
+        "b": 0.171995789
       },
       "Tags": [
         "ForceToken"
@@ -11455,314 +11455,14 @@
       "XmlUI": "",
       "ContainedObjects": [
         {
-          "GUID": "c38946",
-          "Name": "Custom_Tile",
-          "Transform": {
-            "posX": 7.14490271,
-            "posY": 1.70633435,
-            "posZ": 24.6792583,
-            "rotX": 0,
-            "rotY": 270.0143,
-            "rotZ": 0,
-            "scaleX": 0.432911634,
-            "scaleY": 1.0,
-            "scaleZ": 0.432911634
-          },
-          "Nickname": "",
-          "Description": "",
-          "GMNotes": "economicSupremacy",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 0.854901969,
-            "g": 0.0980273,
-            "b": 0.0941047445
-          },
-          "Tags": [
-            "VictoryPointToken"
-          ],
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": false,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": false,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": false,
-          "Hands": true,
-          "CustomImage": {
-            "ImageURL": "https://i.imgur.com/Sav3DSJ.jpg",
-            "ImageSecondaryURL": "",
-            "ImageScalar": 1.0,
-            "WidthScale": 0.0,
-            "CustomTile": {
-              "Type": 2,
-              "Thickness": 0.2,
-              "Stackable": false,
-              "Stretch": true
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        },
-        {
-          "GUID": "364302",
-          "Name": "Custom_Tile",
-          "Transform": {
-            "posX": 7.14490032,
-            "posY": 1.70035326,
-            "posZ": 10.3111725,
-            "rotX": 0,
-            "rotY": 270.014343,
-            "rotZ": 0,
-            "scaleX": 0.432911634,
-            "scaleY": 1.0,
-            "scaleZ": 0.432911634
-          },
-          "Nickname": "",
-          "Description": "",
-          "GMNotes": "spiceFreighters",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 0.854901969,
-            "g": 0.09802727,
-            "b": 0.09410473
-          },
-          "Tags": [
-            "VictoryPointToken"
-          ],
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": false,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": false,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": false,
-          "Hands": true,
-          "CustomImage": {
-            "ImageURL": "http://cloud-3.steamusercontent.com/ugc/2093667512238528276/B111228D9429BCF8E49AA73C88FBE6C9B5D84B39/",
-            "ImageSecondaryURL": "",
-            "ImageScalar": 1.0,
-            "WidthScale": 0.0,
-            "CustomTile": {
-              "Type": 2,
-              "Thickness": 0.2,
-              "Stackable": false,
-              "Stretch": false
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        },
-        {
-          "GUID": "f131f2",
-          "Name": "Custom_Tile",
-          "Transform": {
-            "posX": 7.14482164,
-            "posY": 1.73779416,
-            "posZ": 22.7514954,
-            "rotX": 0,
-            "rotY": 270.0037,
-            "rotZ": 0,
-            "scaleX": 0.432911634,
-            "scaleY": 1.0,
-            "scaleZ": 0.432911634
-          },
-          "Nickname": "",
-          "Description": "",
-          "GMNotes": "siegeOfCarthag",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 0.854901969,
-            "g": 0.09802727,
-            "b": 0.09410473
-          },
-          "Tags": [
-            "VictoryPointToken"
-          ],
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": false,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": false,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": false,
-          "Hands": true,
-          "CustomImage": {
-            "ImageURL": "http://cloud-3.steamusercontent.com/ugc/2093667512238528276/B111228D9429BCF8E49AA73C88FBE6C9B5D84B39/",
-            "ImageSecondaryURL": "",
-            "ImageScalar": 1.0,
-            "WidthScale": 0.0,
-            "CustomTile": {
-              "Type": 2,
-              "Thickness": 0.2,
-              "Stackable": false,
-              "Stretch": false
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        },
-        {
-          "GUID": "905a58",
-          "Name": "Custom_Tile",
-          "Transform": {
-            "posX": 7.14490175,
-            "posY": 1.69405591,
-            "posZ": 18.932024,
-            "rotX": 0,
-            "rotY": 270.014343,
-            "rotZ": 0,
-            "scaleX": 0.432911634,
-            "scaleY": 1.0,
-            "scaleZ": 0.432911634
-          },
-          "Nickname": "",
-          "Description": "",
-          "GMNotes": "battleForImperialBasin",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 0.854901969,
-            "g": 0.09802727,
-            "b": 0.09410473
-          },
-          "Tags": [
-            "VictoryPointToken"
-          ],
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": false,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": false,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": false,
-          "Hands": true,
-          "CustomImage": {
-            "ImageURL": "http://cloud-3.steamusercontent.com/ugc/2093667512238527031/513D46D34361E9BBA183731078949457192A93B4/",
-            "ImageSecondaryURL": "",
-            "ImageScalar": 1.0,
-            "WidthScale": 0.0,
-            "CustomTile": {
-              "Type": 2,
-              "Thickness": 0.2,
-              "Stackable": false,
-              "Stretch": true
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        },
-        {
-          "GUID": "e123ce",
-          "Name": "Custom_Tile",
-          "Transform": {
-            "posX": 7.14490128,
-            "posY": 1.69405591,
-            "posZ": 17.9741516,
-            "rotX": 0,
-            "rotY": 270.014343,
-            "rotZ": 0,
-            "scaleX": 0.432911634,
-            "scaleY": 1.0,
-            "scaleZ": 0.432911634
-          },
-          "Nickname": "",
-          "Description": "",
-          "GMNotes": "battleForCarthag",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 0.854901969,
-            "g": 0.09802727,
-            "b": 0.09410473
-          },
-          "Tags": [
-            "VictoryPointToken"
-          ],
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": false,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": false,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": false,
-          "Hands": true,
-          "CustomImage": {
-            "ImageURL": "http://cloud-3.steamusercontent.com/ugc/2093667512238527031/513D46D34361E9BBA183731078949457192A93B4/",
-            "ImageSecondaryURL": "",
-            "ImageScalar": 1.0,
-            "WidthScale": 0.0,
-            "CustomTile": {
-              "Type": 2,
-              "Thickness": 0.2,
-              "Stackable": false,
-              "Stretch": true
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        },
-        {
           "GUID": "e364df",
           "Name": "Custom_Tile",
           "Transform": {
-            "posX": 7.14490128,
-            "posY": 1.69405591,
-            "posZ": 17.01628,
+            "posX": 7.161476,
+            "posY": 1.7154696,
+            "posZ": 24.6135521,
             "rotX": 0,
-            "rotY": 270.014343,
+            "rotY": 180,
             "rotZ": 0,
             "scaleX": 0.432911634,
             "scaleY": 1.0,
@@ -11778,666 +11478,6 @@
           },
           "ColorDiffuse": {
             "r": 0.854901969,
-            "g": 0.09802727,
-            "b": 0.09410473
-          },
-          "Tags": [
-            "VictoryPointToken"
-          ],
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": false,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": false,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": false,
-          "Hands": true,
-          "CustomImage": {
-            "ImageURL": "http://cloud-3.steamusercontent.com/ugc/2093667512238527031/513D46D34361E9BBA183731078949457192A93B4/",
-            "ImageSecondaryURL": "",
-            "ImageScalar": 1.0,
-            "WidthScale": 0.0,
-            "CustomTile": {
-              "Type": 2,
-              "Thickness": 0.2,
-              "Stackable": false,
-              "Stretch": true
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        },
-        {
-          "GUID": "ff1ce6",
-          "Name": "Custom_Tile",
-          "Transform": {
-            "posX": 7.1449,
-            "posY": 1.70035326,
-            "posZ": 9.3533,
-            "rotX": 0,
-            "rotY": 270.014343,
-            "rotZ": 0,
-            "scaleX": 0.432911634,
-            "scaleY": 1.0,
-            "scaleZ": 0.432911634
-          },
-          "Nickname": "",
-          "Description": "",
-          "GMNotes": "battleForImperialBasin",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 0.854901969,
-            "g": 0.09802727,
-            "b": 0.09410473
-          },
-          "Tags": [
-            "VictoryPointToken"
-          ],
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": false,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": false,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": false,
-          "Hands": true,
-          "CustomImage": {
-            "ImageURL": "http://cloud-3.steamusercontent.com/ugc/2093667512238527031/513D46D34361E9BBA183731078949457192A93B4/",
-            "ImageSecondaryURL": "",
-            "ImageScalar": 1.0,
-            "WidthScale": 0.0,
-            "CustomTile": {
-              "Type": 2,
-              "Thickness": 0.2,
-              "Stackable": false,
-              "Stretch": true
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        },
-        {
-          "GUID": "e25f79",
-          "Name": "Custom_Tile",
-          "Transform": {
-            "posX": 7.1449,
-            "posY": 1.70035338,
-            "posZ": 8.395431,
-            "rotX": 0,
-            "rotY": 270.010651,
-            "rotZ": 0,
-            "scaleX": 0.432911634,
-            "scaleY": 1.0,
-            "scaleZ": 0.432911634
-          },
-          "Nickname": "",
-          "Description": "",
-          "GMNotes": "battleForArrakeen",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 0.854901969,
-            "g": 0.09802727,
-            "b": 0.09410473
-          },
-          "Tags": [
-            "VictoryPointToken"
-          ],
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": false,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": false,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": false,
-          "Hands": true,
-          "CustomImage": {
-            "ImageURL": "http://cloud-3.steamusercontent.com/ugc/2093667512238527031/513D46D34361E9BBA183731078949457192A93B4/",
-            "ImageSecondaryURL": "",
-            "ImageScalar": 1.0,
-            "WidthScale": 0.0,
-            "CustomTile": {
-              "Type": 2,
-              "Thickness": 0.2,
-              "Stackable": false,
-              "Stretch": true
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        },
-        {
-          "GUID": "ba1a77",
-          "Name": "Custom_Tile",
-          "Transform": {
-            "posX": 7.14490128,
-            "posY": 1.69405591,
-            "posZ": 16.0584087,
-            "rotX": 0,
-            "rotY": 270.014343,
-            "rotZ": 0,
-            "scaleX": 0.432911634,
-            "scaleY": 1.0,
-            "scaleZ": 0.432911634
-          },
-          "Nickname": "",
-          "Description": "",
-          "GMNotes": "economicSupremacy",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 0.854901969,
-            "g": 0.0980273,
-            "b": 0.0941047445
-          },
-          "Tags": [
-            "VictoryPointToken"
-          ],
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": false,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": false,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": false,
-          "Hands": true,
-          "CustomImage": {
-            "ImageURL": "https://i.imgur.com/Sav3DSJ.jpg",
-            "ImageSecondaryURL": "",
-            "ImageScalar": 1.0,
-            "WidthScale": 0.0,
-            "CustomTile": {
-              "Type": 2,
-              "Thickness": 0.2,
-              "Stackable": false,
-              "Stretch": true
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        },
-        {
-          "GUID": "29a66c",
-          "Name": "Custom_Tile",
-          "Transform": {
-            "posX": 7.14489746,
-            "posY": 1.69971216,
-            "posZ": 15.100522,
-            "rotX": 0,
-            "rotY": 270.014832,
-            "rotZ": 0,
-            "scaleX": 0.432911634,
-            "scaleY": 1.0,
-            "scaleZ": 0.432911634
-          },
-          "Nickname": "",
-          "Description": "",
-          "GMNotes": "siegeOfArrakeen",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 0.854901969,
-            "g": 0.09802727,
-            "b": 0.09410473
-          },
-          "Tags": [
-            "VictoryPointToken"
-          ],
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": false,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": false,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": false,
-          "Hands": true,
-          "CustomImage": {
-            "ImageURL": "http://cloud-3.steamusercontent.com/ugc/2093667512238528276/B111228D9429BCF8E49AA73C88FBE6C9B5D84B39/",
-            "ImageSecondaryURL": "",
-            "ImageScalar": 1.0,
-            "WidthScale": 0.0,
-            "CustomTile": {
-              "Type": 2,
-              "Thickness": 0.2,
-              "Stackable": false,
-              "Stretch": false
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        },
-        {
-          "GUID": "4f428d",
-          "Name": "Custom_Tile",
-          "Transform": {
-            "posX": 7.144901,
-            "posY": 1.70035326,
-            "posZ": 14.142663,
-            "rotX": 0,
-            "rotY": 270.01062,
-            "rotZ": 0,
-            "scaleX": 0.432911634,
-            "scaleY": 1.0,
-            "scaleZ": 0.432911634
-          },
-          "Nickname": "",
-          "Description": "",
-          "GMNotes": "economicSupremacy",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 0.854901969,
-            "g": 0.0980273,
-            "b": 0.0941047445
-          },
-          "Tags": [
-            "VictoryPointToken"
-          ],
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": false,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": false,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": false,
-          "Hands": true,
-          "CustomImage": {
-            "ImageURL": "https://i.imgur.com/Sav3DSJ.jpg",
-            "ImageSecondaryURL": "",
-            "ImageScalar": 1.0,
-            "WidthScale": 0.0,
-            "CustomTile": {
-              "Type": 2,
-              "Thickness": 0.2,
-              "Stackable": false,
-              "Stretch": true
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        },
-        {
-          "GUID": "6047f9",
-          "Name": "Custom_Tile",
-          "Transform": {
-            "posX": 7.144901,
-            "posY": 1.70035326,
-            "posZ": 13.18479,
-            "rotX": 0,
-            "rotY": 270.01062,
-            "rotZ": 0,
-            "scaleX": 0.432911634,
-            "scaleY": 1.0,
-            "scaleZ": 0.432911634
-          },
-          "Nickname": "",
-          "Description": "",
-          "GMNotes": "economicSupremacy",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 0.854901969,
-            "g": 0.0980273,
-            "b": 0.0941047445
-          },
-          "Tags": [
-            "VictoryPointToken"
-          ],
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": false,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": false,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": false,
-          "Hands": true,
-          "CustomImage": {
-            "ImageURL": "https://i.imgur.com/Sav3DSJ.jpg",
-            "ImageSecondaryURL": "",
-            "ImageScalar": 1.0,
-            "WidthScale": 0.0,
-            "CustomTile": {
-              "Type": 2,
-              "Thickness": 0.2,
-              "Stackable": false,
-              "Stretch": true
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        },
-        {
-          "GUID": "11076b",
-          "Name": "Custom_Tile",
-          "Transform": {
-            "posX": 7.144958,
-            "posY": 1.78116214,
-            "posZ": 21.8063469,
-            "rotX": 0,
-            "rotY": 270.015228,
-            "rotZ": 0,
-            "scaleX": 0.432911634,
-            "scaleY": 1.0,
-            "scaleZ": 0.432911634
-          },
-          "Nickname": "",
-          "Description": "",
-          "GMNotes": "desertPower",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 0.854901969,
-            "g": 0.09802727,
-            "b": 0.09410473
-          },
-          "Tags": [
-            "VictoryPointToken"
-          ],
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": false,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": false,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": false,
-          "Hands": true,
-          "CustomImage": {
-            "ImageURL": "http://cloud-3.steamusercontent.com/ugc/2093667512238528276/B111228D9429BCF8E49AA73C88FBE6C9B5D84B39/",
-            "ImageSecondaryURL": "",
-            "ImageScalar": 1.0,
-            "WidthScale": 0.0,
-            "CustomTile": {
-              "Type": 2,
-              "Thickness": 0.2,
-              "Stackable": false,
-              "Stretch": false
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        },
-        {
-          "GUID": "d61804",
-          "Name": "Custom_Tile",
-          "Transform": {
-            "posX": 7.14490271,
-            "posY": 1.65793777,
-            "posZ": 23.7080441,
-            "rotX": 0,
-            "rotY": 270.0142,
-            "rotZ": 0,
-            "scaleX": 0.432911634,
-            "scaleY": 1.0,
-            "scaleZ": 0.432911634
-          },
-          "Nickname": "",
-          "Description": "",
-          "GMNotes": "terriblePurpose",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 0.854901969,
-            "g": 0.09802727,
-            "b": 0.09410473
-          },
-          "Tags": [
-            "VictoryPointToken"
-          ],
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": false,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": false,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": false,
-          "Hands": true,
-          "CustomImage": {
-            "ImageURL": "http://cloud-3.steamusercontent.com/ugc/2093667512238528276/B111228D9429BCF8E49AA73C88FBE6C9B5D84B39/",
-            "ImageSecondaryURL": "",
-            "ImageScalar": 1.0,
-            "WidthScale": 0.0,
-            "CustomTile": {
-              "Type": 2,
-              "Thickness": 0.2,
-              "Stackable": false,
-              "Stretch": false
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        },
-        {
-          "GUID": "8b658c",
-          "Name": "Custom_Tile",
-          "Transform": {
-            "posX": 7.14490032,
-            "posY": 1.70035326,
-            "posZ": 12.2269173,
-            "rotX": 0,
-            "rotY": 270.014343,
-            "rotZ": 0,
-            "scaleX": 0.432911634,
-            "scaleY": 1.0,
-            "scaleZ": 0.432911634
-          },
-          "Nickname": "",
-          "Description": "",
-          "GMNotes": "battleForArrakeen",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 0.854901969,
-            "g": 0.09802727,
-            "b": 0.09410473
-          },
-          "Tags": [
-            "VictoryPointToken"
-          ],
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": false,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": false,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": false,
-          "Hands": true,
-          "CustomImage": {
-            "ImageURL": "http://cloud-3.steamusercontent.com/ugc/2093667512238527031/513D46D34361E9BBA183731078949457192A93B4/",
-            "ImageSecondaryURL": "",
-            "ImageScalar": 1.0,
-            "WidthScale": 0.0,
-            "CustomTile": {
-              "Type": 2,
-              "Thickness": 0.2,
-              "Stackable": false,
-              "Stretch": true
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        },
-        {
-          "GUID": "2d469b",
-          "Name": "Custom_Tile",
-          "Transform": {
-            "posX": 7.14490032,
-            "posY": 1.70035326,
-            "posZ": 11.2690449,
-            "rotX": 0,
-            "rotY": 270.014343,
-            "rotZ": 0,
-            "scaleX": 0.432911634,
-            "scaleY": 1.0,
-            "scaleZ": 0.432911634
-          },
-          "Nickname": "",
-          "Description": "",
-          "GMNotes": "secureImperialBasin",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 0.854901969,
-            "g": 0.09802727,
-            "b": 0.09410473
-          },
-          "Tags": [
-            "VictoryPointToken"
-          ],
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": false,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": false,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": false,
-          "Hands": true,
-          "CustomImage": {
-            "ImageURL": "http://cloud-3.steamusercontent.com/ugc/2093667512238528276/B111228D9429BCF8E49AA73C88FBE6C9B5D84B39/",
-            "ImageSecondaryURL": "",
-            "ImageScalar": 1.0,
-            "WidthScale": 0.0,
-            "CustomTile": {
-              "Type": 2,
-              "Thickness": 0.2,
-              "Stackable": false,
-              "Stretch": false
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        },
-        {
-          "GUID": "63791b",
-          "Name": "Custom_Tile",
-          "Transform": {
-            "posX": 7.144902,
-            "posY": 1.694056,
-            "posZ": 20.8477688,
-            "rotX": 0,
-            "rotY": 270.01062,
-            "rotZ": 0,
-            "scaleX": 0.432911634,
-            "scaleY": 1.0,
-            "scaleZ": 0.432911634
-          },
-          "Nickname": "",
-          "Description": "",
-          "GMNotes": "skirmishA",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 0.854901969,
             "g": 0.09802722,
             "b": 0.0941047
           },
@@ -12459,7 +11499,7 @@
           "HideWhenFaceDown": false,
           "Hands": true,
           "CustomImage": {
-            "ImageURL": "http://cloud-3.steamusercontent.com/ugc/2093667512238528024/A2A261E7CC1C8377CDA8416E394E5FB2B72F46C9/",
+            "ImageURL": "http://cloud-3.steamusercontent.com/ugc/2093667512238527031/513D46D34361E9BBA183731078949457192A93B4/",
             "ImageSecondaryURL": "",
             "ImageScalar": 1.0,
             "WidthScale": 0.0,
@@ -12475,14 +11515,14 @@
           "XmlUI": ""
         },
         {
-          "GUID": "02d100",
+          "GUID": "d9107d",
           "Name": "Custom_Tile",
           "Transform": {
-            "posX": 7.14490175,
-            "posY": 1.69405591,
-            "posZ": 19.8898983,
+            "posX": 7.453438,
+            "posY": 1.70294392,
+            "posZ": 16.6574879,
             "rotX": 0,
-            "rotY": 270.014343,
+            "rotY": 180,
             "rotZ": 0,
             "scaleX": 0.432911634,
             "scaleY": 1.0,
@@ -12490,7 +11530,7 @@
           },
           "Nickname": "",
           "Description": "",
-          "GMNotes": "skirmishB",
+          "GMNotes": "battleForImperialBasinNew",
           "AltLookAngle": {
             "x": 0.0,
             "y": 0.0,
@@ -12498,248 +11538,8 @@
           },
           "ColorDiffuse": {
             "r": 0.854901969,
-            "g": 0.09802722,
-            "b": 0.0941047
-          },
-          "Tags": [
-            "VictoryPointToken"
-          ],
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": false,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": false,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": false,
-          "Hands": true,
-          "CustomImage": {
-            "ImageURL": "http://cloud-3.steamusercontent.com/ugc/2093667512238528024/A2A261E7CC1C8377CDA8416E394E5FB2B72F46C9/",
-            "ImageSecondaryURL": "",
-            "ImageScalar": 1.0,
-            "WidthScale": 0.0,
-            "CustomTile": {
-              "Type": 2,
-              "Thickness": 0.2,
-              "Stackable": false,
-              "Stretch": true
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        },
-        {
-          "GUID": "5b2481",
-          "Name": "Custom_Tile",
-          "Transform": {
-            "posX": 7.150636,
-            "posY": 1.91878617,
-            "posZ": 3.56086016,
-            "rotX": 11.80665,
-            "rotY": 267.807983,
-            "rotZ": 329.6619,
-            "scaleX": 0.432911634,
-            "scaleY": 1.0,
-            "scaleZ": 0.432911634
-          },
-          "Nickname": "",
-          "Description": "",
-          "GMNotes": "battleForSpiceRefinery",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 0.854901969,
-            "g": 0.0980273,
-            "b": 0.0941047445
-          },
-          "Tags": [
-            "VictoryPointToken"
-          ],
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": false,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": false,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": false,
-          "Hands": true,
-          "CustomImage": {
-            "ImageURL": "https://i.imgur.com/Sav3DSJ.jpg",
-            "ImageSecondaryURL": "",
-            "ImageScalar": 1.0,
-            "WidthScale": 0.0,
-            "CustomTile": {
-              "Type": 2,
-              "Thickness": 0.2,
-              "Stackable": false,
-              "Stretch": true
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        },
-        {
-          "GUID": "245391",
-          "Name": "Custom_Tile",
-          "Transform": {
-            "posX": 7.069604,
-            "posY": 2.45739913,
-            "posZ": 2.662557,
-            "rotX": 73.31465,
-            "rotY": 156.101471,
-            "rotZ": 237.509735,
-            "scaleX": 0.432911634,
-            "scaleY": 1.0,
-            "scaleZ": 0.432911634
-          },
-          "Nickname": "",
-          "Description": "",
-          "GMNotes": "battleForSpiceRefinery",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 0.854901969,
-            "g": 0.0980273,
-            "b": 0.0941047445
-          },
-          "Tags": [
-            "VictoryPointToken"
-          ],
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": false,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": false,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": false,
-          "Hands": true,
-          "CustomImage": {
-            "ImageURL": "https://i.imgur.com/Sav3DSJ.jpg",
-            "ImageSecondaryURL": "",
-            "ImageScalar": 1.0,
-            "WidthScale": 0.0,
-            "CustomTile": {
-              "Type": 2,
-              "Thickness": 0.2,
-              "Stackable": false,
-              "Stretch": true
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        },
-        {
-          "GUID": "b7f8bc",
-          "Name": "Custom_Tile",
-          "Transform": {
-            "posX": 7.144845,
-            "posY": 1.69961345,
-            "posZ": 7.437866,
-            "rotX": 0,
-            "rotY": 270.010254,
-            "rotZ": 0,
-            "scaleX": 0.432911634,
-            "scaleY": 1.0,
-            "scaleZ": 0.432911634
-          },
-          "Nickname": "",
-          "Description": "",
-          "GMNotes": "battleForArrakeenNew",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 0.854901969,
-            "g": 0.0980273,
-            "b": 0.0941047445
-          },
-          "Tags": [
-            "VictoryPointToken"
-          ],
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": false,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": false,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": false,
-          "Hands": true,
-          "CustomImage": {
-            "ImageURL": "https://i.imgur.com/Sav3DSJ.jpg",
-            "ImageSecondaryURL": "",
-            "ImageScalar": 1.0,
-            "WidthScale": 0.0,
-            "CustomTile": {
-              "Type": 2,
-              "Thickness": 0.2,
-              "Stackable": false,
-              "Stretch": true
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": ""
-        },
-        {
-          "GUID": "d378e5",
-          "Name": "Custom_Tile",
-          "Transform": {
-            "posX": 7.14489937,
-            "posY": 1.69783735,
-            "posZ": 6.479685,
-            "rotX": 0,
-            "rotY": 270.010681,
-            "rotZ": 0,
-            "scaleX": 0.432911634,
-            "scaleY": 1.0,
-            "scaleZ": 0.432911634
-          },
-          "Nickname": "",
-          "Description": "",
-          "GMNotes": "battleForArrakeenNew",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 0.854901969,
-            "g": 0.0980273,
-            "b": 0.0941047445
+            "g": 0.09802727,
+            "b": 0.09410473
           },
           "Tags": [
             "VictoryPointToken"
@@ -12778,11 +11578,11 @@
           "GUID": "d86b3d",
           "Name": "Custom_Tile",
           "Transform": {
-            "posX": 7.14489937,
-            "posY": 1.69783735,
-            "posZ": 5.52181244,
+            "posX": 8.71585,
+            "posY": 1.70294392,
+            "posZ": 16.4541149,
             "rotX": 0,
-            "rotY": 270.010681,
+            "rotY": 180,
             "rotZ": 0,
             "scaleX": 0.432911634,
             "scaleY": 1.0,
@@ -12798,8 +11598,8 @@
           },
           "ColorDiffuse": {
             "r": 0.854901969,
-            "g": 0.0980273,
-            "b": 0.0941047445
+            "g": 0.09802727,
+            "b": 0.09410473
           },
           "Tags": [
             "VictoryPointToken"
@@ -12835,14 +11635,14 @@
           "XmlUI": ""
         },
         {
-          "GUID": "d9107d",
+          "GUID": "d378e5",
           "Name": "Custom_Tile",
           "Transform": {
-            "posX": 7.144899,
-            "posY": 1.69783735,
-            "posZ": 4.56394,
+            "posX": 2.93201184,
+            "posY": 1.70294428,
+            "posZ": 17.3143635,
             "rotX": 0,
-            "rotY": 270.010681,
+            "rotY": 180,
             "rotZ": 0,
             "scaleX": 0.432911634,
             "scaleY": 1.0,
@@ -12850,7 +11650,7 @@
           },
           "Nickname": "",
           "Description": "",
-          "GMNotes": "battleForImperialBasinNew",
+          "GMNotes": "battleForArrakeenNew",
           "AltLookAngle": {
             "x": 0.0,
             "y": 0.0,
@@ -12858,8 +11658,1388 @@
           },
           "ColorDiffuse": {
             "r": 0.854901969,
-            "g": 0.0980273,
-            "b": 0.0941047445
+            "g": 0.09802727,
+            "b": 0.09410473
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": false,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": false,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": true,
+          "CustomImage": {
+            "ImageURL": "https://i.imgur.com/Sav3DSJ.jpg",
+            "ImageSecondaryURL": "",
+            "ImageScalar": 1.0,
+            "WidthScale": 0.0,
+            "CustomTile": {
+              "Type": 2,
+              "Thickness": 0.2,
+              "Stackable": false,
+              "Stretch": true
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "b7f8bc",
+          "Name": "Custom_Tile",
+          "Transform": {
+            "posX": 3.91435552,
+            "posY": 1.70290554,
+            "posZ": 17.30435,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 0,
+            "scaleX": 0.432911634,
+            "scaleY": 1.0,
+            "scaleZ": 0.432911634
+          },
+          "Nickname": "",
+          "Description": "",
+          "GMNotes": "battleForArrakeenNew",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.854901969,
+            "g": 0.09802727,
+            "b": 0.09410473
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": false,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": false,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": true,
+          "CustomImage": {
+            "ImageURL": "https://i.imgur.com/Sav3DSJ.jpg",
+            "ImageSecondaryURL": "",
+            "ImageScalar": 1.0,
+            "WidthScale": 0.0,
+            "CustomTile": {
+              "Type": 2,
+              "Thickness": 0.2,
+              "Stackable": false,
+              "Stretch": true
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "245391",
+          "Name": "Custom_Tile",
+          "Transform": {
+            "posX": 6.422369,
+            "posY": 1.90294409,
+            "posZ": 18.9635448,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 180,
+            "scaleX": 0.432911634,
+            "scaleY": 1.0,
+            "scaleZ": 0.432911634
+          },
+          "Nickname": "",
+          "Description": "",
+          "GMNotes": "battleForSpiceRefinery",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.854901969,
+            "g": 0.09802727,
+            "b": 0.09410473
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": false,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": false,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": true,
+          "CustomImage": {
+            "ImageURL": "https://i.imgur.com/Sav3DSJ.jpg",
+            "ImageSecondaryURL": "",
+            "ImageScalar": 1.0,
+            "WidthScale": 0.0,
+            "CustomTile": {
+              "Type": 2,
+              "Thickness": 0.2,
+              "Stackable": false,
+              "Stretch": true
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "5b2481",
+          "Name": "Custom_Tile",
+          "Transform": {
+            "posX": 6.71582842,
+            "posY": 1.70294213,
+            "posZ": 20.1459332,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 0,
+            "scaleX": 0.432911634,
+            "scaleY": 1.0,
+            "scaleZ": 0.432911634
+          },
+          "Nickname": "",
+          "Description": "",
+          "GMNotes": "battleForSpiceRefinery",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.854901969,
+            "g": 0.09802727,
+            "b": 0.09410473
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": false,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": false,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": true,
+          "CustomImage": {
+            "ImageURL": "https://i.imgur.com/Sav3DSJ.jpg",
+            "ImageSecondaryURL": "",
+            "ImageScalar": 1.0,
+            "WidthScale": 0.0,
+            "CustomTile": {
+              "Type": 2,
+              "Thickness": 0.2,
+              "Stackable": false,
+              "Stretch": true
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "02d100",
+          "Name": "Custom_Tile",
+          "Transform": {
+            "posX": 11.1498747,
+            "posY": 1.70811081,
+            "posZ": 8.107133,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 0,
+            "scaleX": 0.432911634,
+            "scaleY": 1.0,
+            "scaleZ": 0.432911634
+          },
+          "Nickname": "",
+          "Description": "",
+          "GMNotes": "skirmishB",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.854901969,
+            "g": 0.09802719,
+            "b": 0.09410467
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": false,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": false,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": true,
+          "CustomImage": {
+            "ImageURL": "http://cloud-3.steamusercontent.com/ugc/2093667512238528024/A2A261E7CC1C8377CDA8416E394E5FB2B72F46C9/",
+            "ImageSecondaryURL": "",
+            "ImageScalar": 1.0,
+            "WidthScale": 0.0,
+            "CustomTile": {
+              "Type": 2,
+              "Thickness": 0.2,
+              "Stackable": false,
+              "Stretch": true
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "63791b",
+          "Name": "Custom_Tile",
+          "Transform": {
+            "posX": 12.6783085,
+            "posY": 2.19616747,
+            "posZ": 8.131358,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 0,
+            "scaleX": 0.432911634,
+            "scaleY": 1.0,
+            "scaleZ": 0.432911634
+          },
+          "Nickname": "",
+          "Description": "",
+          "GMNotes": "skirmishA",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.854901969,
+            "g": 0.09802719,
+            "b": 0.09410467
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": false,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": false,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": true,
+          "CustomImage": {
+            "ImageURL": "http://cloud-3.steamusercontent.com/ugc/2093667512238528024/A2A261E7CC1C8377CDA8416E394E5FB2B72F46C9/",
+            "ImageSecondaryURL": "",
+            "ImageScalar": 1.0,
+            "WidthScale": 0.0,
+            "CustomTile": {
+              "Type": 2,
+              "Thickness": 0.2,
+              "Stackable": false,
+              "Stretch": true
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "2d469b",
+          "Name": "Custom_Tile",
+          "Transform": {
+            "posX": 12.5935612,
+            "posY": 2.19616747,
+            "posZ": 11.1413755,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 0,
+            "scaleX": 0.432911634,
+            "scaleY": 1.0,
+            "scaleZ": 0.432911634
+          },
+          "Nickname": "",
+          "Description": "",
+          "GMNotes": "secureImperialBasin",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.854901969,
+            "g": 0.09802722,
+            "b": 0.0941047
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": false,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": false,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": true,
+          "CustomImage": {
+            "ImageURL": "http://cloud-3.steamusercontent.com/ugc/2093667512238528276/B111228D9429BCF8E49AA73C88FBE6C9B5D84B39/",
+            "ImageSecondaryURL": "",
+            "ImageScalar": 1.0,
+            "WidthScale": 0.0,
+            "CustomTile": {
+              "Type": 2,
+              "Thickness": 0.2,
+              "Stackable": false,
+              "Stretch": false
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "8b658c",
+          "Name": "Custom_Tile",
+          "Transform": {
+            "posX": 4.236589,
+            "posY": 1.70294392,
+            "posZ": 15.989604,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 0,
+            "scaleX": 0.432911634,
+            "scaleY": 1.0,
+            "scaleZ": 0.432911634
+          },
+          "Nickname": "",
+          "Description": "",
+          "GMNotes": "battleForArrakeen",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.854901969,
+            "g": 0.09802722,
+            "b": 0.0941047
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": false,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": false,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": true,
+          "CustomImage": {
+            "ImageURL": "http://cloud-3.steamusercontent.com/ugc/2093667512238527031/513D46D34361E9BBA183731078949457192A93B4/",
+            "ImageSecondaryURL": "",
+            "ImageScalar": 1.0,
+            "WidthScale": 0.0,
+            "CustomTile": {
+              "Type": 2,
+              "Thickness": 0.2,
+              "Stackable": false,
+              "Stretch": true
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "d61804",
+          "Name": "Custom_Tile",
+          "Transform": {
+            "posX": 9.468831,
+            "posY": 1.70924127,
+            "posZ": 11.1813841,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 0,
+            "scaleX": 0.432911634,
+            "scaleY": 1.0,
+            "scaleZ": 0.432911634
+          },
+          "Nickname": "",
+          "Description": "",
+          "GMNotes": "terriblePurpose",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.854901969,
+            "g": 0.09802722,
+            "b": 0.0941047
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": false,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": false,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": true,
+          "CustomImage": {
+            "ImageURL": "http://cloud-3.steamusercontent.com/ugc/2093667512238528276/B111228D9429BCF8E49AA73C88FBE6C9B5D84B39/",
+            "ImageSecondaryURL": "",
+            "ImageScalar": 1.0,
+            "WidthScale": 0.0,
+            "CustomTile": {
+              "Type": 2,
+              "Thickness": 0.2,
+              "Stackable": false,
+              "Stretch": false
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "11076b",
+          "Name": "Custom_Tile",
+          "Transform": {
+            "posX": 10.9495468,
+            "posY": 1.70924139,
+            "posZ": 11.3196592,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 0,
+            "scaleX": 0.432911634,
+            "scaleY": 1.0,
+            "scaleZ": 0.432911634
+          },
+          "Nickname": "",
+          "Description": "",
+          "GMNotes": "desertPower",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.854901969,
+            "g": 0.09802722,
+            "b": 0.0941047
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": false,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": false,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": true,
+          "CustomImage": {
+            "ImageURL": "http://cloud-3.steamusercontent.com/ugc/2093667512238528276/B111228D9429BCF8E49AA73C88FBE6C9B5D84B39/",
+            "ImageSecondaryURL": "",
+            "ImageScalar": 1.0,
+            "WidthScale": 0.0,
+            "CustomTile": {
+              "Type": 2,
+              "Thickness": 0.2,
+              "Stackable": false,
+              "Stretch": false
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "6047f9",
+          "Name": "Custom_Tile",
+          "Transform": {
+            "posX": 12.9589844,
+            "posY": 2.19616747,
+            "posZ": 15.2202063,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 0,
+            "scaleX": 0.432911634,
+            "scaleY": 1.0,
+            "scaleZ": 0.432911634
+          },
+          "Nickname": "",
+          "Description": "",
+          "GMNotes": "economicSupremacy",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.854901969,
+            "g": 0.09802727,
+            "b": 0.09410473
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": false,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": false,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": true,
+          "CustomImage": {
+            "ImageURL": "https://i.imgur.com/Sav3DSJ.jpg",
+            "ImageSecondaryURL": "",
+            "ImageScalar": 1.0,
+            "WidthScale": 0.0,
+            "CustomTile": {
+              "Type": 2,
+              "Thickness": 0.2,
+              "Stackable": false,
+              "Stretch": true
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "4f428d",
+          "Name": "Custom_Tile",
+          "Transform": {
+            "posX": 11.3141413,
+            "posY": 1.96280551,
+            "posZ": 15.1716251,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 321.399078,
+            "scaleX": 0.432911634,
+            "scaleY": 1.0,
+            "scaleZ": 0.432911634
+          },
+          "Nickname": "",
+          "Description": "",
+          "GMNotes": "economicSupremacy",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.854901969,
+            "g": 0.09802727,
+            "b": 0.09410473
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": false,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": false,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": true,
+          "CustomImage": {
+            "ImageURL": "https://i.imgur.com/Sav3DSJ.jpg",
+            "ImageSecondaryURL": "",
+            "ImageScalar": 1.0,
+            "WidthScale": 0.0,
+            "CustomTile": {
+              "Type": 2,
+              "Thickness": 0.2,
+              "Stackable": false,
+              "Stretch": true
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "29a66c",
+          "Name": "Custom_Tile",
+          "Transform": {
+            "posX": 4.283505,
+            "posY": 1.70924139,
+            "posZ": 8.923018,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 0,
+            "scaleX": 0.432911634,
+            "scaleY": 1.0,
+            "scaleZ": 0.432911634
+          },
+          "Nickname": "",
+          "Description": "",
+          "GMNotes": "siegeOfArrakeen",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.854901969,
+            "g": 0.09802722,
+            "b": 0.0941047
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": false,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": false,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": true,
+          "CustomImage": {
+            "ImageURL": "http://cloud-3.steamusercontent.com/ugc/2093667512238528276/B111228D9429BCF8E49AA73C88FBE6C9B5D84B39/",
+            "ImageSecondaryURL": "",
+            "ImageScalar": 1.0,
+            "WidthScale": 0.0,
+            "CustomTile": {
+              "Type": 2,
+              "Thickness": 0.2,
+              "Stackable": false,
+              "Stretch": false
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "ba1a77",
+          "Name": "Custom_Tile",
+          "Transform": {
+            "posX": 16.0601959,
+            "posY": 2.19616747,
+            "posZ": 14.7911978,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 0,
+            "scaleX": 0.432911634,
+            "scaleY": 1.0,
+            "scaleZ": 0.432911634
+          },
+          "Nickname": "",
+          "Description": "",
+          "GMNotes": "economicSupremacy",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.854901969,
+            "g": 0.09802727,
+            "b": 0.09410473
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": false,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": false,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": true,
+          "CustomImage": {
+            "ImageURL": "https://i.imgur.com/Sav3DSJ.jpg",
+            "ImageSecondaryURL": "",
+            "ImageScalar": 1.0,
+            "WidthScale": 0.0,
+            "CustomTile": {
+              "Type": 2,
+              "Thickness": 0.2,
+              "Stackable": false,
+              "Stretch": true
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "e25f79",
+          "Name": "Custom_Tile",
+          "Transform": {
+            "posX": 3.23932886,
+            "posY": 1.70294392,
+            "posZ": 15.7896566,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 0,
+            "scaleX": 0.432911634,
+            "scaleY": 1.0,
+            "scaleZ": 0.432911634
+          },
+          "Nickname": "",
+          "Description": "",
+          "GMNotes": "battleForArrakeen",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.854901969,
+            "g": 0.09802722,
+            "b": 0.0941047
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": false,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": false,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": true,
+          "CustomImage": {
+            "ImageURL": "http://cloud-3.steamusercontent.com/ugc/2093667512238527031/513D46D34361E9BBA183731078949457192A93B4/",
+            "ImageSecondaryURL": "",
+            "ImageScalar": 1.0,
+            "WidthScale": 0.0,
+            "CustomTile": {
+              "Type": 2,
+              "Thickness": 0.2,
+              "Stackable": false,
+              "Stretch": true
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "ff1ce6",
+          "Name": "Custom_Tile",
+          "Transform": {
+            "posX": 8.579041,
+            "posY": 1.709241,
+            "posZ": 15.1319113,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 0,
+            "scaleX": 0.432911634,
+            "scaleY": 1.0,
+            "scaleZ": 0.432911634
+          },
+          "Nickname": "",
+          "Description": "",
+          "GMNotes": "battleForImperialBasin",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.854901969,
+            "g": 0.09802722,
+            "b": 0.0941047
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": false,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": false,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": true,
+          "CustomImage": {
+            "ImageURL": "http://cloud-3.steamusercontent.com/ugc/2093667512238527031/513D46D34361E9BBA183731078949457192A93B4/",
+            "ImageSecondaryURL": "",
+            "ImageScalar": 1.0,
+            "WidthScale": 0.0,
+            "CustomTile": {
+              "Type": 2,
+              "Thickness": 0.2,
+              "Stackable": false,
+              "Stretch": true
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "e123ce",
+          "Name": "Custom_Tile",
+          "Transform": {
+            "posX": 6.613596,
+            "posY": 1.74090827,
+            "posZ": 22.49978,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 0,
+            "scaleX": 0.432911634,
+            "scaleY": 1.0,
+            "scaleZ": 0.432911634
+          },
+          "Nickname": "",
+          "Description": "",
+          "GMNotes": "battleForCarthag",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.854901969,
+            "g": 0.09802722,
+            "b": 0.0941047
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": false,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": false,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": true,
+          "CustomImage": {
+            "ImageURL": "http://cloud-3.steamusercontent.com/ugc/2093667512238527031/513D46D34361E9BBA183731078949457192A93B4/",
+            "ImageSecondaryURL": "",
+            "ImageScalar": 1.0,
+            "WidthScale": 0.0,
+            "CustomTile": {
+              "Type": 2,
+              "Thickness": 0.2,
+              "Stackable": false,
+              "Stretch": true
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "905a58",
+          "Name": "Custom_Tile",
+          "Transform": {
+            "posX": 7.31950569,
+            "posY": 1.70924127,
+            "posZ": 15.1368895,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 0,
+            "scaleX": 0.432911634,
+            "scaleY": 1.0,
+            "scaleZ": 0.432911634
+          },
+          "Nickname": "",
+          "Description": "",
+          "GMNotes": "battleForImperialBasin",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.854901969,
+            "g": 0.09802722,
+            "b": 0.0941047
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": false,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": false,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": true,
+          "CustomImage": {
+            "ImageURL": "http://cloud-3.steamusercontent.com/ugc/2093667512238527031/513D46D34361E9BBA183731078949457192A93B4/",
+            "ImageSecondaryURL": "",
+            "ImageScalar": 1.0,
+            "WidthScale": 0.0,
+            "CustomTile": {
+              "Type": 2,
+              "Thickness": 0.2,
+              "Stackable": false,
+              "Stretch": true
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "f131f2",
+          "Name": "Custom_Tile",
+          "Transform": {
+            "posX": 4.35638237,
+            "posY": 1.70924056,
+            "posZ": 10.6677084,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 0,
+            "scaleX": 0.432911634,
+            "scaleY": 1.0,
+            "scaleZ": 0.432911634
+          },
+          "Nickname": "",
+          "Description": "",
+          "GMNotes": "siegeOfCarthag",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.854901969,
+            "g": 0.09802722,
+            "b": 0.0941047
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": false,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": false,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": true,
+          "CustomImage": {
+            "ImageURL": "http://cloud-3.steamusercontent.com/ugc/2093667512238528276/B111228D9429BCF8E49AA73C88FBE6C9B5D84B39/",
+            "ImageSecondaryURL": "",
+            "ImageScalar": 1.0,
+            "WidthScale": 0.0,
+            "CustomTile": {
+              "Type": 2,
+              "Thickness": 0.2,
+              "Stackable": false,
+              "Stretch": false
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "364302",
+          "Name": "Custom_Tile",
+          "Transform": {
+            "posX": 5.15018129,
+            "posY": 1.70924139,
+            "posZ": 12.6607122,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 0,
+            "scaleX": 0.432911634,
+            "scaleY": 1.0,
+            "scaleZ": 0.432911634
+          },
+          "Nickname": "",
+          "Description": "",
+          "GMNotes": "spiceFreighters",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.854901969,
+            "g": 0.09802722,
+            "b": 0.0941047
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": false,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": false,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": true,
+          "CustomImage": {
+            "ImageURL": "http://cloud-3.steamusercontent.com/ugc/2093667512238528276/B111228D9429BCF8E49AA73C88FBE6C9B5D84B39/",
+            "ImageSecondaryURL": "",
+            "ImageScalar": 1.0,
+            "WidthScale": 0.0,
+            "CustomTile": {
+              "Type": 2,
+              "Thickness": 0.2,
+              "Stackable": false,
+              "Stretch": false
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "c38946",
+          "Name": "Custom_Tile",
+          "Transform": {
+            "posX": 14.4289455,
+            "posY": 2.19616747,
+            "posZ": 15.0210485,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 0,
+            "scaleX": 0.432911634,
+            "scaleY": 1.0,
+            "scaleZ": 0.432911634
+          },
+          "Nickname": "",
+          "Description": "",
+          "GMNotes": "economicSupremacy",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.854901969,
+            "g": 0.09802727,
+            "b": 0.09410473
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": false,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": false,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": true,
+          "CustomImage": {
+            "ImageURL": "https://i.imgur.com/Sav3DSJ.jpg",
+            "ImageSecondaryURL": "",
+            "ImageScalar": 1.0,
+            "WidthScale": 0.0,
+            "CustomTile": {
+              "Type": 2,
+              "Thickness": 0.2,
+              "Stackable": false,
+              "Stretch": true
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "60b2df",
+          "Name": "Custom_Tile",
+          "Transform": {
+            "posX": 3.91496682,
+            "posY": 1.70924139,
+            "posZ": 12.8178129,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 0,
+            "scaleX": 0.432911634,
+            "scaleY": 1.0,
+            "scaleZ": 0.432911634
+          },
+          "Nickname": "",
+          "Description": "",
+          "GMNotes": "spiceFreighters",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.854901969,
+            "g": 0.09802722,
+            "b": 0.0941047
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": false,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": false,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": true,
+          "CustomImage": {
+            "ImageURL": "http://cloud-3.steamusercontent.com/ugc/2093667512238528276/B111228D9429BCF8E49AA73C88FBE6C9B5D84B39/",
+            "ImageSecondaryURL": "",
+            "ImageScalar": 1.0,
+            "WidthScale": 0.0,
+            "CustomTile": {
+              "Type": 2,
+              "Thickness": 0.2,
+              "Stackable": false,
+              "Stretch": false
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "90c73c",
+          "Name": "Custom_Tile",
+          "Transform": {
+            "posX": 8.125114,
+            "posY": 1.702944,
+            "posZ": 20.1201077,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 0,
+            "scaleX": 0.432911634,
+            "scaleY": 1.0,
+            "scaleZ": 0.432911634
+          },
+          "Nickname": "",
+          "Description": "",
+          "GMNotes": "battleForSpiceRefinery",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.854901969,
+            "g": 0.09802727,
+            "b": 0.09410473
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": false,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": false,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": true,
+          "CustomImage": {
+            "ImageURL": "https://i.imgur.com/Sav3DSJ.jpg",
+            "ImageSecondaryURL": "",
+            "ImageScalar": 1.0,
+            "WidthScale": 0.0,
+            "CustomTile": {
+              "Type": 2,
+              "Thickness": 0.2,
+              "Stackable": false,
+              "Stretch": true
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "3fc8af",
+          "Name": "Custom_Tile",
+          "Transform": {
+            "posX": 7.98366356,
+            "posY": 1.702944,
+            "posZ": 18.930109,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 0,
+            "scaleX": 0.432911634,
+            "scaleY": 1.0,
+            "scaleZ": 0.432911634
+          },
+          "Nickname": "",
+          "Description": "",
+          "GMNotes": "battleForSpiceRefinery",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.854901969,
+            "g": 0.09802727,
+            "b": 0.09410473
           },
           "Tags": [
             "VictoryPointToken"
@@ -13219,9 +13399,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.1994265,
-        "g": 0.0555199757,
-        "b": 0.297890663
+        "r": 0.199426472,
+        "g": 0.0555199534,
+        "b": 0.297890633
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -13357,7 +13537,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 5.9997983,
-        "posY": 1.5925231,
+        "posY": 1.59252334,
         "posZ": 24.99995,
         "rotX": 0,
         "rotY": 180,
@@ -13375,9 +13555,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.44295457,
-        "g": 0.230954558,
-        "b": 0.08996303
+        "r": 0.44295454,
+        "g": 0.230954528,
+        "b": 0.08996301
       },
       "Tags": [
         "VictoryPointToken"
@@ -13435,9 +13615,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.442956418,
-        "g": 0.2309564,
-        "b": 0.0899645463
+        "r": 0.4429564,
+        "g": 0.230956376,
+        "b": 0.08996453
       },
       "Tags": [
         "VictoryPointToken"
@@ -13477,7 +13657,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 5.00013542,
-        "posY": 1.59252334,
+        "posY": 1.59252322,
         "posZ": 26.00005,
         "rotX": 0,
         "rotY": 180,
@@ -13495,9 +13675,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.4429564,
-        "g": 0.230956376,
-        "b": 0.08996453
+        "r": 0.442956358,
+        "g": 0.230956346,
+        "b": 0.08996449
       },
       "Tags": [
         "VictoryPointToken"
@@ -13795,9 +13975,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.442956269,
-        "g": 0.230956256,
-        "b": 0.08996441
+        "r": 0.442956239,
+        "g": 0.230956227,
+        "b": 0.08996438
       },
       "Tags": [
         "VictoryPointToken"
@@ -13837,7 +14017,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 4.99998236,
-        "posY": 1.5925231,
+        "posY": 1.59252322,
         "posZ": 24.9999962,
         "rotX": 0,
         "rotY": 180,
@@ -13855,9 +14035,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.4429545,
-        "g": 0.2309545,
-        "b": 0.08996298
+        "r": 0.442954481,
+        "g": 0.230954468,
+        "b": 0.08996295
       },
       "Tags": [
         "VictoryPointToken"
@@ -14632,7 +14812,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171995819
+        "b": 0.171995789
       },
       "Tags": [
         "TleilaxuToken",
@@ -14691,9 +14871,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191995829,
+        "r": 0.1919958,
         "g": 0.701,
-        "b": 0.167995811
+        "b": 0.167995781
       },
       "Tags": [
         "Green",
@@ -14752,7 +14932,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117997371,
+        "r": 0.117997341,
         "g": 0.53,
         "b": 1.0
       },
@@ -14814,8 +14994,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.09999695,
-        "b": 0.09399692
+        "g": 0.0999969,
+        "b": 0.09399689
       },
       "Tags": [
         "Red",
@@ -14874,9 +15054,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191995829,
+        "r": 0.1919958,
         "g": 0.701,
-        "b": 0.167995811
+        "b": 0.167995781
       },
       "Tags": [
         "Green",
@@ -14937,7 +15117,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171995819
+        "b": 0.171995789
       },
       "Tags": [
         "ResearchToken",
@@ -14996,7 +15176,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117997371,
+        "r": 0.117997341,
         "g": 0.53,
         "b": 1.0
       },
@@ -15058,8 +15238,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.09999695,
-        "b": 0.09399692
+        "g": 0.0999969,
+        "b": 0.09399689
       },
       "Tags": [
         "Red",
@@ -15119,8 +15299,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.09997793,
-        "b": 0.09397786
+        "g": 0.09997787,
+        "b": 0.09397782
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -15172,7 +15352,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171991676
+        "b": 0.171991616
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -15222,9 +15402,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191991687,
+        "r": 0.191991627,
         "g": 0.701,
-        "b": 0.167991668
+        "b": 0.167991608
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -15274,7 +15454,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117991246,
+        "r": 0.117991187,
         "g": 0.53,
         "b": 1.0
       },
@@ -15569,8 +15749,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.0999957845,
-        "b": 0.09399574
+        "g": 0.09999574,
+        "b": 0.09399573
       },
       "Tags": [
         "Red",
@@ -15618,8 +15798,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.0999957845,
-        "b": 0.09399574
+        "g": 0.09999574,
+        "b": 0.09399573
       },
       "Tags": [
         "Red",
@@ -15667,8 +15847,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.0999957845,
-        "b": 0.09399574
+        "g": 0.09999574,
+        "b": 0.09399573
       },
       "Tags": [
         "Red",
@@ -15715,7 +15895,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117995612,
+        "r": 0.117995583,
         "g": 0.53,
         "b": 1.0
       },
@@ -15764,7 +15944,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117995612,
+        "r": 0.117995583,
         "g": 0.53,
         "b": 1.0
       },
@@ -15813,7 +15993,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117995612,
+        "r": 0.117995583,
         "g": 0.53,
         "b": 1.0
       },
@@ -15862,9 +16042,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191995829,
+        "r": 0.1919958,
         "g": 0.701,
-        "b": 0.167995811
+        "b": 0.167995781
       },
       "Tags": [
         "Green",
@@ -15911,9 +16091,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191995829,
+        "r": 0.1919958,
         "g": 0.701,
-        "b": 0.167995811
+        "b": 0.167995781
       },
       "Tags": [
         "Green",
@@ -15960,9 +16140,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191995829,
+        "r": 0.1919958,
         "g": 0.701,
-        "b": 0.167995811
+        "b": 0.167995781
       },
       "Tags": [
         "Green",
@@ -16011,7 +16191,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171995819
+        "b": 0.171995789
       },
       "Tags": [
         "Troop",
@@ -16060,7 +16240,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171995819
+        "b": 0.171995789
       },
       "Tags": [
         "Troop",
@@ -16109,7 +16289,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171995819
+        "b": 0.171995789
       },
       "Tags": [
         "Troop",
@@ -19020,9 +19200,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.412882656,
-        "g": 0.40132007,
-        "b": 0.379073858
+        "r": 0.412882566,
+        "g": 0.40132,
+        "b": 0.3790738
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -19562,9 +19742,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.412888,
-        "g": 0.401325434,
-        "b": 0.379079223
+        "r": 0.412887961,
+        "g": 0.4013254,
+        "b": 0.3790792
       },
       "Tags": [
         "Brown",
@@ -19623,7 +19803,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.386805952,
+        "r": 0.386805922,
         "g": 0.6184682,
         "b": 0.6184682
       },
@@ -20130,9 +20310,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.412888,
-        "g": 0.401325434,
-        "b": 0.379079223
+        "r": 0.412887961,
+        "g": 0.4013254,
+        "b": 0.3790792
       },
       "Tags": [
         "Brown",
@@ -20173,7 +20353,7 @@
       "Name": "Custom_Token",
       "Transform": {
         "posX": 17.6,
-        "posY": 2.52116776,
+        "posY": 2.521168,
         "posZ": 1.75000072,
         "rotX": 0,
         "rotY": 0,
@@ -20191,9 +20371,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.412888,
-        "g": 0.401325434,
-        "b": 0.379079223
+        "r": 0.412887961,
+        "g": 0.4013254,
+        "b": 0.3790792
       },
       "Tags": [
         "Brown",
@@ -20254,7 +20434,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171995819
+        "b": 0.171995789
       },
       "Tags": [
         "Spy",
@@ -20315,7 +20495,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171995819
+        "b": 0.171995789
       },
       "Tags": [
         "Spy",
@@ -20376,7 +20556,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171995819
+        "b": 0.171995789
       },
       "Tags": [
         "Spy",
@@ -20435,9 +20615,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191995829,
+        "r": 0.1919958,
         "g": 0.701,
-        "b": 0.167995811
+        "b": 0.167995781
       },
       "Tags": [
         "Green",
@@ -20496,9 +20676,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191995829,
+        "r": 0.1919958,
         "g": 0.701,
-        "b": 0.167995811
+        "b": 0.167995781
       },
       "Tags": [
         "Green",
@@ -20557,9 +20737,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191995829,
+        "r": 0.1919958,
         "g": 0.701,
-        "b": 0.167995811
+        "b": 0.167995781
       },
       "Tags": [
         "Green",
@@ -20619,8 +20799,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.09999695,
-        "b": 0.09399692
+        "g": 0.0999969,
+        "b": 0.09399689
       },
       "Tags": [
         "Red",
@@ -20680,8 +20860,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.09999695,
-        "b": 0.09399692
+        "g": 0.0999969,
+        "b": 0.09399689
       },
       "Tags": [
         "Red",
@@ -20722,8 +20902,8 @@
       "Name": "Custom_Token",
       "Transform": {
         "posX": -19.15,
-        "posY": 2.52385354,
-        "posZ": 1.75000179,
+        "posY": 2.5238533,
+        "posZ": 1.75000191,
         "rotX": 0,
         "rotY": 0,
         "rotZ": 0,
@@ -20740,7 +20920,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.386805952,
+        "r": 0.386805922,
         "g": 0.6184682,
         "b": 0.6184682
       },
@@ -20783,8 +20963,8 @@
       "Name": "Custom_Token",
       "Transform": {
         "posX": -17.65,
-        "posY": 2.5238533,
-        "posZ": 1.75000119,
+        "posY": 2.52385354,
+        "posZ": 1.75000131,
         "rotX": 0,
         "rotY": 0,
         "rotZ": 0,
@@ -20801,7 +20981,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.386805952,
+        "r": 0.386805922,
         "g": 0.6184682,
         "b": 0.6184682
       },
@@ -20845,7 +21025,7 @@
       "Transform": {
         "posX": -16.15,
         "posY": 2.52385354,
-        "posZ": 1.74999988,
+        "posZ": 1.75,
         "rotX": 0,
         "rotY": 0,
         "rotZ": 0,
@@ -20862,7 +21042,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.386805952,
+        "r": 0.386805922,
         "g": 0.6184682,
         "b": 0.6184682
       },
@@ -20923,7 +21103,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117997371,
+        "r": 0.117997341,
         "g": 0.53,
         "b": 1.0
       },
@@ -20984,7 +21164,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117997371,
+        "r": 0.117997341,
         "g": 0.53,
         "b": 1.0
       },
@@ -21045,7 +21225,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117997371,
+        "r": 0.117997341,
         "g": 0.53,
         "b": 1.0
       },
@@ -21107,8 +21287,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.09999695,
-        "b": 0.09399692
+        "g": 0.0999969,
+        "b": 0.09399689
       },
       "Tags": [
         "Red",
@@ -21167,9 +21347,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191991687,
+        "r": 0.191991627,
         "g": 0.701,
-        "b": 0.167991668
+        "b": 0.167991608
       },
       "Tags": [
         "Agent",
@@ -21208,8 +21388,8 @@
       "Name": "Custom_Token",
       "Transform": {
         "posX": 19.1,
-        "posY": 2.521168,
-        "posZ": 1.75000072,
+        "posY": 2.52116776,
+        "posZ": 1.7500006,
         "rotX": 0,
         "rotY": 0,
         "rotZ": 0,
@@ -21226,9 +21406,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.412888,
-        "g": 0.401325434,
-        "b": 0.379079223
+        "r": 0.412887961,
+        "g": 0.4013254,
+        "b": 0.3790792
       },
       "Tags": [
         "Brown",
@@ -21287,7 +21467,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.386800617,
+        "r": 0.386800557,
         "g": 0.6184682,
         "b": 0.6184682
       },
@@ -24815,7 +24995,7 @@
       "ColorDiffuse": {
         "r": 0.6045295,
         "g": 0.487625778,
-        "b": 0.409679234
+        "b": 0.409679174
       },
       "Tags": [
         "Worm"
@@ -26634,7 +26814,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.388230562,
+        "r": 0.388230532,
         "g": 0.619607747,
         "b": 0.619607747
       },
@@ -26695,9 +26875,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.411759973,
-        "g": 0.399995267,
-        "b": 0.3803874
+        "r": 0.411759943,
+        "g": 0.399995238,
+        "b": 0.380387366
       },
       "Tags": [
         "Brown",
@@ -27839,7 +28019,7 @@
       "Name": "Custom_Token",
       "Transform": {
         "posX": -16.15,
-        "posY": 2.29885244,
+        "posY": 2.29885268,
         "posZ": 2.50000048,
         "rotX": 0,
         "rotY": 180,
@@ -28448,7 +28628,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 10.0,
-        "posY": 1.59252322,
+        "posY": 1.5925231,
         "posZ": 28.0000153,
         "rotX": 0,
         "rotY": 180,
@@ -28466,9 +28646,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.442957252,
-        "g": 0.23095727,
-        "b": 0.08996523
+        "r": 0.442957222,
+        "g": 0.23095724,
+        "b": 0.08996522
       },
       "Tags": [
         "VictoryPointToken"
@@ -29192,9 +29372,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.442957252,
-        "g": 0.23095727,
-        "b": 0.08996523
+        "r": 0.442957222,
+        "g": 0.23095724,
+        "b": 0.08996522
       },
       "Tags": [
         "VictoryPointToken"
@@ -29234,7 +29414,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 9.0,
-        "posY": 1.592523,
+        "posY": 1.5925231,
         "posZ": 28.0,
         "rotX": 0,
         "rotY": 180,
@@ -29252,9 +29432,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.442957252,
-        "g": 0.23095727,
-        "b": 0.08996523
+        "r": 0.442957222,
+        "g": 0.23095724,
+        "b": 0.08996522
       },
       "Tags": [
         "VictoryPointToken"
@@ -32039,9 +32219,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191995829,
+        "r": 0.1919958,
         "g": 0.701,
-        "b": 0.167995811
+        "b": 0.167995781
       },
       "Tags": [
         "Brown",
@@ -32101,8 +32281,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.09999695,
-        "b": 0.09399692
+        "g": 0.0999969,
+        "b": 0.09399689
       },
       "Tags": [
         "Brown",
@@ -32161,7 +32341,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.388230562,
+        "r": 0.388230532,
         "g": 0.619607747,
         "b": 0.619607747
       },
@@ -32222,9 +32402,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.411759973,
-        "g": 0.399995267,
-        "b": 0.3803874
+        "r": 0.411759943,
+        "g": 0.399995238,
+        "b": 0.380387366
       },
       "Tags": [
         "Brown",
@@ -32285,7 +32465,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171995819
+        "b": 0.171995789
       },
       "Tags": [
         "Brown",
@@ -32344,7 +32524,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117997371,
+        "r": 0.117997341,
         "g": 0.53,
         "b": 1.0
       },
@@ -92512,9 +92692,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.188235074,
+        "r": 0.188235044,
         "g": 0.698039234,
-        "b": 0.164705753,
+        "b": 0.164705724,
         "a": 0.0
       },
       "LayoutGroupSortIndex": 0,
@@ -92560,7 +92740,7 @@
       "ColorDiffuse": {
         "r": 0.901960731,
         "g": 0.8941174,
-        "b": 0.168627381,
+        "b": 0.168627352,
         "a": 0.0
       },
       "LayoutGroupSortIndex": 0,
@@ -92604,7 +92784,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.11764688,
+        "r": 0.117646851,
         "g": 0.529411733,
         "b": 1.0,
         "a": 0.0

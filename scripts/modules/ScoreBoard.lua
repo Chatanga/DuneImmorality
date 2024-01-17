@@ -55,8 +55,7 @@ function ScoreBoard.onLoad(state)
             waterBag = "0c4ca1",
             spiceBag = "2fd6f0",
         },
-        -- Not simply "ix" here.
-        riseOfIx = {
+        ix = {
             detonationDevicesBag = "7b3fa2",
             ixianEngineerBag = "3371d8",
             flagship = "366237",
@@ -77,42 +76,44 @@ end
 
 ---
 function ScoreBoard.setUp(settings)
+    local activateCategories = {
+        base = true,
+        legacy = settings.legacy,
+        hagal = settings.numberOfPlayers <= 2,
+        ix = settings.riseOfIx,
+        immortality = settings.immortality,
+    }
 
-    for _, extension in ipairs({ "legacy", "riseOfIx", "immortality" }) do
-        if settings[extension] then
-            Helper.forEachRecursively(ScoreBoard.tokens[extension], function (name, token)
+    for _, category in ipairs({ "base", "legacy", "hagal", "ix", "immortality" }) do
+        if activateCategories[category] then
+            Helper.forEachRecursively(ScoreBoard.tokens[category], function (name, token)
                 assert(token)
                 token.setName(I18N(Helper.getID(token)))
-
-                -- Clumsy workaround to name items in a bag.
-                if token.type == "Bag" then
-                    --log("Renaming in " .. name)
-                    local count = #token.getObjects()
-                    for i = 1, count do
-                        local innerToken = token.takeObject({ position = token.getPosition() + Vector(0, i * 0.5, 0) })
-                        innerToken.setLock(true)
-                        Helper.onceTimeElapsed(0.5).doAfter(function ()
-                            innerToken.setName(I18N(Helper.getID(innerToken)))
-                            innerToken.setLock(false)
-                        end)
+                if false then
+                    -- Clumsy workaround to name items in a bag.
+                    -- TODO Recreate the bag?
+                    if token.type == "Bag" then
+                        --log("Renaming in " .. name)
+                        local count = #token.getObjects()
+                        for i = 1, count do
+                            local innerToken = token.takeObject({ position = token.getPosition() + Vector(0, i * 0.5, 0) })
+                            innerToken.setLock(true)
+                            Helper.onceTimeElapsed(0.5).doAfter(function ()
+                                innerToken.setName(I18N(Helper.getID(innerToken)))
+                                innerToken.setLock(false)
+                            end)
+                        end
+                    elseif token.type == "Infinite" then
+                        -- TODO
                     end
-                elseif token.type == "Infinite" then
-                    -- TODO
                 end
             end)
         else
-            Helper.forEach(ScoreBoard.tokens[extension], function (_, token)
+            Helper.forEach(ScoreBoard.tokens[category], function (_, token)
                 token.destruct()
             end)
-            ScoreBoard.tokens[extension] = nil
+            ScoreBoard.tokens[category] = nil
         end
-    end
-
-    if settings.numberOfPlayers > 2 then
-        Helper.forEach(ScoreBoard.tokens.hagal, function (_, token)
-            token.destruct()
-        end)
-        ScoreBoard.tokens.hagal = nil
     end
 
     ScoreBoard._transientSetUp(settings)
