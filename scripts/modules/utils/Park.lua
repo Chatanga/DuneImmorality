@@ -20,7 +20,7 @@ function Park.createCommonPark(tags, slots, margins, rotation, rotationSnap, zon
         true)
 
     local p = slots[1]:copy()
-    p:setAt("y", 1)
+    p:setAt("y", 1+1)
     Helper.createTransientAnchor(name .. "Park", p).doAfter(function (anchor)
         park.anchor = anchor
         local snapPoints = {}

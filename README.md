@@ -34,8 +34,6 @@ __All__
 - Automatiser le gain de 2 solaris pour un contrat si le module n'est pas actif (ou s'il n'y a plus de contrats).
 - Ajouter des boutons d'acquisition sur les contrats de Shaddam ?
 
-- Créer le jeton d’objectif manquant (le "?").
-- Ajouter un bouton "Réclamer les PV" pour convertir les paires en PV.
 - Sortir automatiquement un jeton d'objectif (nommé) pour les conflits.
 - Automatiser le bannières en se basant sur les jetons d’objectif (oublier la compatibilité anciens conflits).
 

@@ -458,12 +458,12 @@ function PlayBoard.rebuild()
 
         local c0 = 1
         local positions = {
-            Green = Vector(24, 1, 14.2 + c0),
-            Yellow = Vector(24, 1, -24.2 + c0),
-            Red = Vector(-24, 1, 14.2 + c0),
-            Blue = Vector(-24, 1, -24.2 + c0),
-            Teal = Vector(-24, 1, -5 + c0),
-            Brown = Vector(24, 1, -5 + c0),
+            Green = Vector(24, 2, 14.2 + c0),
+            Yellow = Vector(24, 2, -24.2 + c0),
+            Red = Vector(-24, 2, 14.2 + c0),
+            Blue = Vector(-24, 2, -24.2 + c0),
+            Teal = Vector(-24, 2, -5 + c0),
+            Brown = Vector(24, 2, -5 + c0),
         }
         local position = positions[color]
 
@@ -553,7 +553,7 @@ function PlayBoard.rebuild()
                 scale = { 1.1, 1.1, 1.1 },
             },
             {
-                name = "Krys Objective Slot",
+                name = "Crysknife Objective Slot",
                 url = "http://cloud-3.steamusercontent.com/ugc/2285077174179797013/7D1043073C71821322CA599EA4B8D5B4AA7C34F3/",
                 position = symmetric2(-4.8, 0.2, 0),
                 rotation = { 90, 180, 0 },
@@ -566,15 +566,13 @@ function PlayBoard.rebuild()
                 rotation = { 90, 180, 0 },
                 scale = { 1.1, 1.1, 1.1 },
             },
-            --[[
             {
                 name = "Joker Objective Slot",
-                url = "",
+                url = "http://cloud-3.steamusercontent.com/ugc/2285080980001125361/384109878E6ED179516CE638CE97167E12698A54/",
                 position = symmetric2(-7.6, 0.2, 0),
                 rotation = { 90, 180, 0 },
                 scale = { 1, 1, 1 },
             },
-            ]]
         }
 
         layoutGrid(3, 1, function (x, y)
@@ -911,8 +909,9 @@ function PlayBoard.new(color, unresolvedContent, state, subState)
 
     if not Commander.isCommander(color) then
         table.insert(snapPoints, { position = playBoard:_newSymmetricBoardPosition(-3.4, 0.2, 0), rotation_snap = true, tags = { "MuadDibObjectiveToken" } })
-        table.insert(snapPoints, { position = playBoard:_newSymmetricBoardPosition(-4.8, 0.2, 0), rotation_snap = true, tags = { "KrysObjectiveToken" } })
+        table.insert(snapPoints, { position = playBoard:_newSymmetricBoardPosition(-4.8, 0.2, 0), rotation_snap = true, tags = { "CrysknifeObjectiveToken" } })
         table.insert(snapPoints, { position = playBoard:_newSymmetricBoardPosition(-6.2, 0.2, 0), rotation_snap = true, tags = { "OrnithopterObjectiveToken" } })
+        table.insert(snapPoints, { position = playBoard:_newSymmetricBoardPosition(-7.6, 0.2, 0), rotation_snap = true, tags = { "JokerObjectiveToken" } })
     end
 
     playBoard.content.board.setSnapPoints(snapPoints)
@@ -2001,6 +2000,58 @@ function PlayBoard:_createButtons()
     })
 
     self:_createNukeButton()
+end
+
+---
+function PlayBoard.onObjectDrop(color, object)
+    PlayBoard.convertObjectiveTokenPairsIntoVictoryPoints(object)
+end
+
+---
+function PlayBoard.convertObjectiveTokenPairsIntoVictoryPoints(object)
+    local objectiveTags = {
+        "MuadDibObjectiveToken",
+        "CrysknifeObjectiveToken",
+        "OrnithopterObjectiveToken",
+    }
+    for _, objectiveTag in ipairs(objectiveTags) do
+        if object.hasTag(objectiveTag) then
+            for color, playBoard in pairs(PlayBoard.playBoards) do
+                local board = playBoard.content.board
+                for _, snapPoint in ipairs(board.getSnapPoints()) do
+                    if Helper.isElementOf(objectiveTag, snapPoint.tags) then
+                        local absoluteSnapPointPosition = board.positionToWorld(snapPoint.position)
+                        local d = Vector.sqrDistance(object.getPosition(), absoluteSnapPointPosition)
+                        if d < 1.5 then
+
+                            local radius = 0.5
+                            local hits = Physics.cast({
+                                origin = absoluteSnapPointPosition,
+                                direction = Vector(0, 1, 0),
+                                type = 2,
+                                size = Vector(radius, radius, radius),
+                                max_distance = 2,
+                            })
+
+                            local hitTokens = Helper.filter(Helper.mapValues(hits, Helper.field("hit_object")), function (hitObject)
+                                return hitObject.hasTag(objectiveTag)
+                            end)
+
+                            while #hitTokens >= 2 do
+                                for _ = 1, 2 do
+                                    hitTokens[1].destruct()
+                                    table.remove(hitTokens, 1)
+                                end
+                                PlayBoard.getLeader(color).gainVictoryPoint(color, "objective")
+                            end
+
+                            break
+                        end
+                    end
+                end
+            end
+        end
+    end
 end
 
 ---

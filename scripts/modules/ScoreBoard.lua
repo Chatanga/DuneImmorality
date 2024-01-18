@@ -34,7 +34,7 @@ function ScoreBoard.onLoad(state)
             smugglerHaven = "8243d3",
             corrinthCity = "46f6f2",
             junctionHeadquarters = "c799ba",
-            objective = "f346be",
+            objectiveBag = "f346be",
             priorityContracts = "5e061e",
             deliveryAgreement = "d081dd",
             strategicStockpiling1 = "3b1328",
