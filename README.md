@@ -24,7 +24,6 @@ __Bugs__
 
 __All__
 
-- Marquer par décalcos les positions de départ des maîtres d'armes -> mieux : modifier le test.
 - Doubler tous les jetons de PV de combat, ajouter faux PV pour C et A, refaire TSMF -> Asmodius.
 - Revoir le contexte d’action pour les logs -> Asmodius.
 - Mode libre pour la sélection des dirigeants.

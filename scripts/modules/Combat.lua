@@ -152,7 +152,7 @@ function Combat._processSnapPoints(settings)
         }))
     end
 
-    MainBoard.collectSnapPointsEverywhere(settings, {
+    MainBoard.collectSnapPointsOnAllBoards(settings, {
 
         conflictDeck = function (_, position)
             Combat.conflictDeckZone = createZone(position, Vector(2, 1, 3))

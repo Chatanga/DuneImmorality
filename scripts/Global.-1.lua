@@ -19,7 +19,6 @@ local constructionModeEnabled = false
 local autoLoadedSettings = nil
 
 --[[
-]]
 autoLoadedSettings = {
     language = "fr",
     hotSeat = true,
@@ -43,6 +42,7 @@ autoLoadedSettings = {
     playedCardDetection = true,
     soundEnabled = true,
 }
+]]
 
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")

@@ -48,7 +48,6 @@ local PlayBoard = Helper.createClass(nil, {
                 Helper.getHardcodedPositionFromGUID('afa978', -17.65, 2.1972215200000003, 21.7)
             },
             swordmaster = "ed3490",
-            swordmasterInitialPosition = Helper.getHardcodedPositionFromGUID('ed3490', -2.31130552, 1.590892136, 7.91),
             swordmasterBonusToken = "db91e0",
             spies = {
                 "fdecae",
@@ -112,7 +111,6 @@ local PlayBoard = Helper.createClass(nil, {
                 Helper.getHardcodedPositionFromGUID('106d8b', -17.65, 2.1972215200000003, -16.7)
             },
             swordmaster = "a78ad7",
-            swordmasterInitialPosition = Helper.getHardcodedPositionFromGUID('a78ad7', -1.31110787, 1.5908921999999999, 7.910757),
             swordmasterBonusToken = "28ec54",
             spies = {
                 "7d7083",
@@ -176,7 +174,6 @@ local PlayBoard = Helper.createClass(nil, {
                 Helper.getHardcodedPositionFromGUID('ee412b', 17.6, 2.1945360000000003, 21.7)
             },
             swordmaster = "fb1629",
-            swordmasterInitialPosition = Helper.getHardcodedPositionFromGUID('fb1629', 0.6700001, 1.590892136, 7.91075754),
             swordmasterBonusToken = "f5bfa8",
             spies = {
                 "ed1748",
@@ -240,7 +237,6 @@ local PlayBoard = Helper.createClass(nil, {
                 Helper.getHardcodedPositionFromGUID('67b476', 17.6, 2.1945360000000003, -16.7)
             },
             swordmaster = "635c49",
-            swordmasterInitialPosition = Helper.getHardcodedPositionFromGUID('635c49', -0.311252445, 1.5908921999999999, 7.91076469),
             swordmasterBonusToken = "e160d9",
             spies = {
                 "94ffec",
@@ -299,7 +295,6 @@ local PlayBoard = Helper.createClass(nil, {
                 Helper.getHardcodedPositionFromGUID('14a2ac', -17.65, 2.2988525600000003, 2.5)
             },
             swordmaster = "83a527",
-            swordmasterInitialPosition = Helper.getHardcodedPositionFromGUID('83a527', 1.67, 1.692523241, 7.91),
             swordmasterBonusToken = "a456bf",
             spies = {
                 "96bbc4",
@@ -335,7 +330,6 @@ local PlayBoard = Helper.createClass(nil, {
                 Helper.getHardcodedPositionFromGUID('d23b8f', 17.6, 2.29616714, 2.5)
             },
             swordmaster = "cc393c",
-            swordmasterInitialPosition = Helper.getHardcodedPositionFromGUID('cc393c', -3.31000066, 1.692523241, 7.91),
             swordmasterBonusToken = "aa9a39",
             spies = {
                 "e5b04d",
@@ -779,7 +773,6 @@ function PlayBoard.onSave(state)
             initialPositions = {
                 dreadnoughtInitialPositions = playBoard.content.dreadnoughtInitialPositions,
                 agentInitialPositions = playBoard.content.agentInitialPositions,
-                swordmasterInitialPosition = playBoard.content.swordmasterInitialPosition,
                 spyInitialPositions = playBoard.content.spyInitialPositions,
                 tleilaxTokenInitalPosition = playBoard.content.tleilaxTokenInitalPosition,
                 researchTokenInitalPosition = playBoard.content.researchTokenInitalPosition,
@@ -873,7 +866,6 @@ function PlayBoard.new(color, unresolvedContent, state, subState)
             playBoard.content.dreadnoughtInitialPositions = Helper.mapValues(subState.initialPositions.dreadnoughtInitialPositions, Helper.toVector)
         end
         playBoard.content.agentInitialPositions = Helper.mapValues(subState.initialPositions.agentInitialPositions, Helper.toVector)
-        playBoard.content.swordmasterInitialPosition = Helper.toVector(subState.initialPositions.swordmasterInitialPosition)
         playBoard.content.spyInitialPositions = Helper.mapValues(subState.initialPositions.spyInitialPositions, Helper.toVector)
         playBoard.content.tleilaxTokenInitalPosition = Helper.toVector(subState.initialPositions.tleilaxTokenInitalPosition)
         playBoard.content.researchTokenInitalPosition = Helper.toVector(subState.initialPositions.researchTokenInitalPosition)
@@ -2752,7 +2744,8 @@ function PlayBoard.hasSwordmaster(color)
     if TurnControl.getPlayerCount() == 6 then
         return content.swordmasterBonusToken and content.swordmasterBonusToken.getPosition():distance(PlayBoard.swordmasterBonusPositions[color]) < 1
     else
-        return content.swordmaster and content.swordmaster.getPosition():distance(content.swordmasterInitialPosition) > 10
+        -- TODO Take extension boards into account.
+        return PlayBoard.isInside(color, content.swordmaster) or MainBoard.isInside(content.swordmaster)
     end
 end
 
@@ -2972,6 +2965,14 @@ function PlayBoard:trash(object)
         object.setLock(false)
         object.setPosition(self.content.trash.getPosition() + Vector(0, 1 + height * 0.5, 0))
     end)
+end
+
+---
+function PlayBoard.isInside(color, object)
+    local position = object.getPosition()
+    local center = PlayBoard.getPlayBoard(color).content.board.getPosition()
+    local offset = position - center
+    return math.abs(offset.x) < 12 and math.abs(offset.z) < 10
 end
 
 return PlayBoard

@@ -99,7 +99,7 @@ end
 function ChoamContractMarket._processSnapPoints(settings)
     ChoamContractMarket.contractSlots = {}
 
-    MainBoard.collectSnapPointsEverywhere(settings, {
+    MainBoard.collectSnapPointsOnAllBoards(settings, {
 
         contract = function (name, position)
             local zone = spawnObject({

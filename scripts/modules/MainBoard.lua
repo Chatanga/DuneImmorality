@@ -181,10 +181,10 @@ end
 ---
 function MainBoard._mutateMainBoards()
     local boards = {
-        board4P = { guid = "483a1a", url = "http://cloud-3.steamusercontent.com/ugc/2305342013587677822/8DBDCE4796B52A64AE78D5F95A1CD0B87A87F66D/" },
-        board6P = { guid = "21cc52", url = "http://cloud-3.steamusercontent.com/ugc/2306470076750286375/5674BB27C821E484B2B85671604BBB1263D024A3/" },
-        emperorBoard = { guid = "4cb9ba", url = "http://cloud-3.steamusercontent.com/ugc/2306470076750293188/C43A9E3E725E49800D2C1952117537CD15F5E058/" },
-        fremenBoard = { guid = "01c575", url = "http://cloud-3.steamusercontent.com/ugc/2306470076750293361/0829FF264AB7DA8B456AB07C4F7522203CB969F3/" },
+        board4P = { name = "board", guid = "483a1a", url = "http://cloud-3.steamusercontent.com/ugc/2305342013587677822/8DBDCE4796B52A64AE78D5F95A1CD0B87A87F66D/" },
+        board6P = { name = "board", guid = "21cc52", url = "http://cloud-3.steamusercontent.com/ugc/2306470076750286375/5674BB27C821E484B2B85671604BBB1263D024A3/" },
+        emperorBoard = { name = "emperorBoard", guid = "4cb9ba", url = "http://cloud-3.steamusercontent.com/ugc/2306470076750293188/C43A9E3E725E49800D2C1952117537CD15F5E058/" },
+        fremenBoard = { name = "fremenBoard", guid = "01c575", url = "http://cloud-3.steamusercontent.com/ugc/2306470076750293361/0829FF264AB7DA8B456AB07C4F7522203CB969F3/" },
     }
 
     for name, boardInfo in pairs(boards) do
@@ -194,7 +194,7 @@ function MainBoard._mutateMainBoards()
             local parameters = board.getCustomObject()
             parameters.image = boardInfo.url
             board.setCustomObject(parameters)
-            board.reload()
+            MainBoard[boardInfo.name] = board.reload()
         end
     end
 end
@@ -276,7 +276,7 @@ function MainBoard._processSnapPoints(settings)
     MainBoard.observationPosts = {}
     MainBoard.banners = {}
 
-    MainBoard.collectSnapPointsEverywhere(settings, {
+    MainBoard.collectSnapPointsOnAllBoards(settings, {
 
         seat = function (name, position)
             local str = name:sub(12)
@@ -344,16 +344,24 @@ function MainBoard._processSnapPoints(settings)
 end
 
 ---
-function MainBoard.collectSnapPointsEverywhere(settings, net)
+function MainBoard._getAllBoards(settings)
+    local boards = {
+        MainBoard.board
+    }
     if settings.numberOfPlayers == 6 then
-        Helper.collectSnapPoints(getObjectFromGUID("21cc52"), net)
-        Helper.collectSnapPoints(getObjectFromGUID("4cb9ba"), net)
-        Helper.collectSnapPoints(getObjectFromGUID("01c575"), net)
-    else
-        Helper.collectSnapPoints(getObjectFromGUID("483a1a"), net)
+        table.insert(boards, MainBoard.emperorBoard)
+        table.insert(boards, MainBoard.fremenBoard)
     end
     if settings.riseOfIx then
-        Helper.collectSnapPoints(TechMarket.board, net)
+        table.insert(boards, TechMarket.board)
+    end
+    return boards
+end
+
+---
+function MainBoard.collectSnapPointsOnAllBoards(settings, net)
+    for _, board in ipairs(MainBoard._getAllBoards(settings)) do
+        Helper.collectSnapPoints(board, net)
     end
 end
 
@@ -1659,6 +1667,14 @@ function MainBoard.trash(object)
         object.setLock(false)
         object.setPosition(getObjectFromGUID('ef8614').getPosition() + Vector(0, 1 + height * 0.5, 0))
     end)
+end
+
+---
+function MainBoard.isInside(object)
+    local position = object.getPosition()
+    local center = MainBoard.board.getPosition()
+    local offset = position - center
+    return math.abs(offset.x) < 11 and math.abs(offset.z) < 11
 end
 
 return MainBoard

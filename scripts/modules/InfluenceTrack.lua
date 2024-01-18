@@ -137,7 +137,7 @@ function InfluenceTrack._processSnapPoints(settings, firstTime)
         end
     end
 
-    MainBoard.collectSnapPointsEverywhere(settings, {
+    MainBoard.collectSnapPointsOnAllBoards(settings, {
 
         faction = function (faction, position)
             InfluenceTrack.influenceTokens[faction] = {}
