@@ -2015,6 +2015,10 @@ function PlayBoard.convertObjectiveTokenPairsIntoVictoryPoints(object)
                         local absoluteSnapPointPosition = board.positionToWorld(snapPoint.position)
                         local d = Vector.sqrDistance(object.getPosition(), absoluteSnapPointPosition)
                         if d < 1.5 then
+                            local leader = PlayBoard.getLeader(color)
+                            if not leader then
+                                return
+                            end
 
                             local radius = 0.5
                             local hits = Physics.cast({
@@ -2034,7 +2038,7 @@ function PlayBoard.convertObjectiveTokenPairsIntoVictoryPoints(object)
                                     hitTokens[1].destruct()
                                     table.remove(hitTokens, 1)
                                 end
-                                PlayBoard.getLeader(color).gainVictoryPoint(color, "objective")
+                                leader.gainVictoryPoint(color, "objective")
                             end
 
                             break
