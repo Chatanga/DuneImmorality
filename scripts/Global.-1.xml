@@ -1,13 +1,33 @@
+<!--
+
+To Rogerio and everyone else who needs to plug in their auxiliary UI:
+
+Simply add your panel(s) here, either by hand or procedurally in code (using
+setXml/setXmlTable, ideally in the YourModule.onLoad method) and keep the two
+following constraints in mind:
+
+1 -	The setup UI relies heavily on setXmlTable to dynamically update its
+	contents, erasing any live changes made to any other UI. So don't try to
+	update your UI during setup.
+
+2 -	After the setup, other modules may have a live UI that cannot be properly
+	preserved via a pair of getXml/setXml calls. So, update your UI only using
+	targeted setAttribute/setValue calls.
+
+More generally, take a look at the Example.lua file to see how your code might
+be integrated to this mod in a standard way.
+
+-->
 <Panel position="0 -90" width="450" height="450" color="#000000" id="setupPane" rotation="0 0 0" outline="#2e200f" outlineSize="1"
 	active="False" allowDragging="True" returnToOriginalPositionWhenReleased="False" _visibility="Host">
 	<Defaults>
 		<Text class="primary" color="#000000" fontSize="20" fontStyle="bold" alignment="MiddleLeft"/>
 		<Text class="secondary" color="#000000" fontSize="14" fontStyle="bold" alignment="MiddleLeft"/>
 		<Text class="epigraph" color="#1e170f" fontSize="14" fontStyle="italic" alignment="MiddleCenter"/>
-		<Dropdown itemBackgroundColors="#2e200f44|#df9730|#ffffff|#361441" textColor="#2e200f" fontSize="12" itemTextColor="#2e200f" fontStyle="bold"/>
-		<InputField colors="#00000000|#2e200f44|#2e200f" textColor="#2e200f" fontSize="14" fontStyle="bold"/>
-		<Toggle colors="#9e907e|#ffd60b|#6d5e4c|#222222" textColor="#000000" fontSize="14" fontStyle="bold"/>
-		<Button colors="#406f2e|#30281f|#df9730|#222222" textColor="#ffd60b" fontSize="14" outline="#30281f" outlineSize="3 3"/>
+		<Dropdown class="setUp" itemBackgroundColors="#2e200f44|#df9730|#ffffff|#361441" textColor="#2e200f" fontSize="12" itemTextColor="#2e200f" fontStyle="bold"/>
+		<InputField class="setUp" colors="#00000000|#2e200f44|#2e200f" textColor="#2e200f" fontSize="14" fontStyle="bold"/>
+		<Toggle class="setUp" colors="#9e907e|#ffd60b|#6d5e4c|#222222" textColor="#000000" fontSize="14" fontStyle="bold"/>
+		<Button class="setUp" colors="#406f2e|#30281f|#df9730|#222222" textColor="#ffd60b" fontSize="14" outline="#30281f" outlineSize="3 3"/>
 		<Image raycastTarget="true"/>
 	</Defaults>
 	<VerticalLayout>
@@ -19,7 +39,7 @@
 
 			<HorizontalLayout>
 				<Text class="primary" key="language"/>
-				<Dropdown id="language" onValueChanged="Global/setLanguage">
+				<Dropdown class="setUp" id="language" onValueChanged="Global/setLanguage">
 					<Option></Option>
 				</Dropdown>
 			</HorizontalLayout>
@@ -40,8 +60,8 @@
 			-->
 
 			<HorizontalLayout>
-				<Text class="primary" key="leaderSelection"/>
-				<Dropdown id="leaderSelection" flexibleWidth="4" onValueChanged="Global/setLeaderSelection">
+				<Text class="primary" key="leaderSelection" id="zag"/>
+				<Dropdown class="setUp" id="leaderSelection" flexibleWidth="4" onValueChanged="Global/setLeaderSelection">
 					<Option></Option>
 				</Dropdown>
 			</HorizontalLayout>
@@ -50,20 +70,20 @@
 					<Text class="secondary" id="defaultLeaderPoolSizeLabel"/>
 					<Slider id="defaultLeaderPoolSize" flexibleWidth="2" onValueChanged="setDefaultLeaderPoolSize" wholeNumbers="True" minValue="6" maxValue="12" value="8" />
 				</HorizontalLayout>
-				<Toggle id="tweakLeaderSelection" onValueChanged="Global/setTweakLeaderSelection" isOn="False" key="tweakLeaderSelection"/>
+				<Toggle class="setUp" id="tweakLeaderSelection" onValueChanged="Global/setTweakLeaderSelection" isOn="False" key="tweakLeaderSelection"/>
 			</VerticalLayout>
 
 			<HorizontalLayout>
 				<Text class="primary" key="players"/>
 			</HorizontalLayout>
 			<VerticalLayout padding="25 0 0 0">
-				<Toggle id="randomizePlayerPositions" onValueChanged="Global/setRandomizePlayerPositions" isOn="True" key="randomizePlayersPositions"/>
+				<Toggle class="setUp" id="randomizePlayerPositions" onValueChanged="Global/setRandomizePlayerPositions" isOn="True" key="randomizePlayersPositions"/>
 				<HorizontalLayout>
-					<Toggle id="virtualHotSeat" onValueChanged="Global/setVirtualHotSeat" isOn="False" key="virtualHotSeat"/>
-					<Dropdown id="virtualHotSeatMode" onValueChanged="Global/setVirtualHotSeatMode" flexibleWidth="2.5" active="False">
+					<Toggle class="setUp" id="virtualHotSeat" onValueChanged="Global/setVirtualHotSeat" isOn="False" key="virtualHotSeat"/>
+					<Dropdown class="setUp" id="virtualHotSeatMode" onValueChanged="Global/setVirtualHotSeatMode" flexibleWidth="2.5" active="False">
 						<Option></Option>
 					</Dropdown>
-					<Dropdown id="difficulty" onValueChanged="Global/setDifficulty" flexibleWidth="3" active="False">
+					<Dropdown class="setUp" id="difficulty" onValueChanged="Global/setDifficulty" flexibleWidth="3" active="False">
 						<Option></Option>
 					</Dropdown>
 				</HorizontalLayout>
@@ -73,13 +93,13 @@
 				<Text class="primary" key="miscellanous"/>
 			</HorizontalLayout>
 			<VerticalLayout padding="25 0 0 0">
-				<Toggle id="horizontalHandLayout" onValueChanged="Global/setHorizontalHandLayout" isOn="True" key="horizontalHandLayout"/>
-				<Toggle id="soundEnabled" onValueChanged="Global/setSoundEnabled" isOn="True" key="soundEnabled"/>
+				<Toggle class="setUp" id="horizontalHandLayout" onValueChanged="Global/setHorizontalHandLayout" isOn="True" key="horizontalHandLayout"/>
+				<Toggle class="setUp" id="soundEnabled" onValueChanged="Global/setSoundEnabled" isOn="True" key="soundEnabled"/>
 			</VerticalLayout>
 
 		</VerticalLayout>
 		<HorizontalLayout padding="100 100 0 20">
-			<Button id="setUpButton" minHeight="26" onClick="Global/setUpFromUI" key="setup"/>
+			<Button class="setUp" id="setUpButton" minHeight="26" onClick="Global/setUpFromUI" key="setup"/>
 		</HorizontalLayout>
 	</VerticalLayout>
 	<Image position="0 325" width="450" height="230" image="http://cloud-3.steamusercontent.com/ugc/2178113508631057252/0DBB449E130AC23B875A07AE447E074C03B8926D/"/>

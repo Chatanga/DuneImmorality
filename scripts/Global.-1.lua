@@ -49,6 +49,7 @@ local Helper = require("utils.Helper")
 local XmlUI = require("utils.XmlUI")
 local AcquireCard = require("utils.AcquireCard")
 local I18N = require("utils.I18N")
+local Dialog = require("utils.Dialog")
 
 --[[
     Remember that 'require' must have a literal parameter, since it is not a
@@ -146,6 +147,7 @@ function onLoad(scriptState)
         --allModules.PlayBoard.rebuild()
         --allModules.Deck.rebuildPreloadAreas()
     else
+        Dialog.loadStaticUI()
         -- The destroyed objects need one frame to disappear and not interfere
         -- with the mod.
         Helper.onceFramesPassed(1).doAfter(function ()

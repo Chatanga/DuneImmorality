@@ -38,6 +38,7 @@ __All__
 
 __6P__
 
+- Ajouter l’image plateau à la zone de cache.
 - Compteur global PV équipe.
 - Echange de ressources.
 
