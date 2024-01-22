@@ -178,6 +178,7 @@ function asyncOnLoad(scriptState)
         { name = "Deck", module = allModules.Deck },
         { name = "ScoreBoard", module = allModules.ScoreBoard },
         { name = "Hagal", module = allModules.Hagal },
+        { name = "Commander", module = allModules.Commander },
         { name = "PlayBoard", module = allModules.PlayBoard },
         { name = "MainBoard", module = allModules.MainBoard },
         { name = "Combat", module = allModules.Combat },
@@ -201,6 +202,7 @@ function asyncOnLoad(scriptState)
     for i, moduleInfo in ipairs(allModules.ordered) do
         --Helper.dump(tostring(i) .. ". Loading " .. moduleInfo.name)
         moduleInfo.module.onLoad(state)
+        Helper.emitEvent("loaded", moduleInfo.name)
     end
     --Helper.dump("Done loading all modules")
 

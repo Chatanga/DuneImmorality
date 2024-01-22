@@ -54,8 +54,18 @@ function Module.lazyRequire(name)
         end
         if meta.module then
             local item = meta.module[key]
-            if item and type(item) ~= "function" then
-                log("Accessing inner field: " .. name .. "." .. key .. " (" .. type(item) .. ")")
+            if item then
+                if type(item) ~= "function" then
+                    if key ~= "__loaded" then
+                        log("Accessing inner field: " .. name .. "." .. key .. " (" .. type(item) .. ")")
+                    end
+                elseif key == "onLoad" then
+                    meta.module.__loaded = true
+                elseif key:sub(1, 1) == "_" then
+                    log("Accessing private function: " .. name .. "." .. key)
+                elseif not meta.module.__loaded and meta.module['onLoad'] ~= nil then
+                    log("Accessing unloaded module: " .. name .. "." .. key)
+                end
             end
             return item
         else

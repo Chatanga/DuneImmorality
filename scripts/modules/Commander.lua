@@ -9,6 +9,12 @@ local Commander = Helper.createClass(Action, {
 })
 
 ---
+function Commander.onLoad()
+    -- Need to be called to be marked as such in Module, but we don't want
+    -- Action.onLoad to be called instead. Hence this empty overload.
+end
+
+---
 function Commander.isCommander(color)
     return color == "Brown" or color == "Teal"
 end

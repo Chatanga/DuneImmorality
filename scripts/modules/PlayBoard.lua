@@ -927,7 +927,6 @@ function PlayBoard.new(color, unresolvedContent, state, subState)
     playBoard.scorePark = playBoard:_createPlayerScorePark()
     playBoard.techPark = playBoard:_createTechPark()
 
-    playBoard:_createButtons()
     Helper.registerEventListener("locale", function ()
         playBoard:_createButtons()
     end)
@@ -1022,6 +1021,15 @@ end
 function PlayBoard._transientSetUp(settings)
     PlayBoard.assistedRevealEnabled = settings.assistedRevelation or isDeluxeEdition()
     PlayBoard.playedCardDetection = settings.playedCardDetection or isDeluxeEdition()
+
+    -- I don't like it, but at least things are now explicit.
+    Helper.registerEventListener("loaded", function (moduleName)
+        if moduleName == "TurnControl" then
+            for _, playBoard in pairs(PlayBoard._getPlayBoards(true)) do
+                playBoard:_createButtons()
+            end
+        end
+    end)
 
     Helper.registerEventListener("phaseStart", function (phase, firstPlayer)
         if phase == "leaderSelection" or phase == "roundStart" then

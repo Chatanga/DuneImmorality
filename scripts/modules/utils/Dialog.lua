@@ -140,7 +140,7 @@ function Dialog._bindStaticUI(color, title, options, callback)
 
     for i, option in ipairs(options) do
         local optionButtonId = Dialog._optionButtonId(options, i)
-        Helper.dumpFunction("UI.setValue", optionButtonId, option)
+        --Helper.dumpFunction("UI.setValue", optionButtonId, option)
         -- Using the "text" attribute instead of the value is necessary here (that's weird).
         UI.setAttribute(optionButtonId, "text", option)
         UI.setAttribute(optionButtonId, "onClick", Helper.registerGlobalCallback(function (player)
