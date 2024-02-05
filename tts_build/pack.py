@@ -1,13 +1,11 @@
 import json
+import os
 import sys
-from datetime import datetime
 
-tts_tmp_dir = '/tmp/TabletopSimulator/Tabletop Simulator Lua'
+def inject_script_and_UI(tts_tmp_dir, name, id, element):
+    file_name = os.path.join(tts_tmp_dir, name + '.' + str(id))
 
-def inject_script_and_UI(name, id, element):
-    file_name = tts_tmp_dir + '/' + name + '.' + str(id)
-
-    if element['LuaScript'] == '...':
+    if element.get('LuaScript') == '...':
         try:
             with open(file_name + '.ttslua', 'r') as script_file:
                 element['LuaScript'] = script_file.read()
@@ -15,7 +13,7 @@ def inject_script_and_UI(name, id, element):
             print("Script Lua", file_name, "introuvable.", file = sys.stderr)
             element.pop('LuaScript')
 
-    if element['XmlUI'] == '...':
+    if element.get('XmlUI') == '...':
         try:
             with open(file_name + '.xml', 'r') as script_file:
                 element['XmlUI'] = script_file.read()
@@ -23,12 +21,12 @@ def inject_script_and_UI(name, id, element):
             print("Description UI XML", file_name, "introuvable.", file = sys.stderr)
             element.pop('XmlUI')
 
-def pack_save(save_file_name):
+def pack_save(tts_tmp_dir, input_save_file_name, output_save_file_name, date):
     save = None
-    with open(save_file_name, 'r') as save_file:
+    with open(input_save_file_name, 'r') as save_file:
         save = json.load(save_file)
 
-    inject_script_and_UI('Global', -1, save)
+    inject_script_and_UI(tts_tmp_dir, 'Global', -1, save)
 
     object_states = save['ObjectStates']
 
@@ -36,18 +34,15 @@ def pack_save(save_file_name):
         name = object_state['Nickname']
         if not name:
             name = object_state['Name']
-        inject_script_and_UI(name, object_state['GUID'], object_state)
+        inject_script_and_UI(tts_tmp_dir, name, object_state['GUID'], object_state)
         if 'States' in object_state:
             for _, state in object_state['States'].items():
                 name = state['Nickname']
                 if not name:
                     name = state['Name']
-                inject_script_and_UI(name, state['GUID'], state)
+                inject_script_and_UI(tts_tmp_dir, name, state['GUID'], state)
 
-    date = datetime.now().strftime("%m/%d/%Y %I:%M:%S %p")
     save['Date'] = date
 
-    print(json.dumps(save, indent = 2))
-
-assert len(sys.argv) == 2
-pack_save(sys.argv[1])
+    with open(output_save_file_name, 'w') as save_file:
+        print(json.dumps(save, indent = 2), file = save_file)
