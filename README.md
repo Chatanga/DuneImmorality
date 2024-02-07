@@ -1,40 +1,33 @@
-# Dune Uprising TTS Mod
+# Rakis Rising TTS Mod
 
 Features:
 
 - Base game 3-4P
 - Base game 6P
-- (Rise of Ix extension)
-- (Immortality extension)
-- (Legacy as an extension)
-- (Hagal House)
+- Rise of Ix extension
+- Immortality extension
+- Legacy Dune as an extension
+- Hagal House
 
 Supported langages:
 
 - English
 - French
-- (Portugese)
 
 ## TODO
 
-__Bugs__
-
-- Le compteur de AcquireCard ne voit que les arrivées / départs de Card, pas de Deck.
-- Lutter contre la corruption en remplaçant les états et mutations par des instances multiples ?
-
 __All__
 
-- Doubler tous les jetons de PV de combat, ajouter faux PV pour C et A, refaire TSMF -> Asmodius.
-- Revoir le contexte d’action pour les logs -> Asmodius.
+- Ajouter faux PV pour C et A, (re)refaire TSMF.
+- Revoir le contexte d’action pour les logs.
+
 - Mode libre pour la sélection des dirigeants.
-- Déverrouiller la révélation assistée.
 
 - Automatiser les contrats.
 - Automatiser le gain de 2 solaris pour un contrat si le module n'est pas actif (ou s'il n'y a plus de contrats).
 - Ajouter des boutons d'acquisition sur les contrats de Shaddam ?
 
-- Sortir automatiquement un jeton d'objectif (nommé) pour les conflits.
-- Automatiser le bannières en se basant sur les jetons d’objectif (oublier la compatibilité anciens conflits).
+- Séparer en 4 la zone de combat.
 
 __6P__
 
@@ -43,17 +36,13 @@ __6P__
 
 __Extensions__
 
-- Rétablir TechCard.
-- Patch Ix (avec postes d'observation) pour le plateau principal -> Asmodius.
-- Patch Immortality pour le plateau principal -> Asmodius.
-- Considérer base/core/legacy comme une extension.
+- Plateau Ix (avec postes d'observation).
+- Patch Ix (avec postes d'observation) pour le plateau principal.
+- Patch Immortality (avec postes d'observation) pour le plateau principal.
+
 - Incorporer la variante de Paul Dennen.
 
 __2P / Solo__
-
-- Récupérer un paquet Hagal à jour -> Asmodius.
-- Récupérer les cartes de rivaux -> Asmodius.
-- Tirage de cartes et prise en compte des épées, mais aucune automatisation sinon.
 
 __Aesthetic__
 
@@ -63,6 +52,28 @@ __Aesthetic__
 - Prendre en considération les crans de zoom, préconfigurer les caméras ?
 - Snaps jetons factions 6J empereur/fremen trop hauts.
 - Élargir les bordures colorées des plateaux (retirer complétement les trigger effects dans la foulée).
+
+## Claim your Victory
+
+Attention : que ce passe-t-il si plusieurs joueurs tentent d'ouvrir simultanément un tel menu ?
+
+    Claim your Victory:
+        ([ ] Endgame)
+        ([ ] All / Possible)
+            Category
+                Clickable (Image / Requirement)
+            Objectives
+                Muad-Dib                0/2
+                Ornithopter             2/2
+                Crysknife               1/2
+            Cards
+                Junction
+                Smugglers' Haven        4 spice units
+            Tech tiles
+            Intrigues
+            Rival
+
+Note: put your card and/or intrigues in play to make the matching action visible.
 
 ## Build Process
 
@@ -103,6 +114,7 @@ Modules relies on the Luabundler tool, but also on utils.Modules.
 - __Resource.lua__ - A class handling the resources tokens (spice, solaris, etc.) on the various boards.
 - __ScoreBoard.lua__ - A facade to retrieve the VP tokens from their various locations on the maiboard and player boards. Badly named actually, since it doesn't handle the shared VP track.
 - __ShipmentTrack.lua__ - Handle the shipping track and its freighters from the Ix extension.
+- __TechCard.lua__ - Describes all the Tech tiles, mainly their costs and acquisition bonuses.
 - __TechMarket.lua__ - Handles the tech market (and its "tiles" which are cards actually) from the Ix extension.
 - __ThroneRow.lua__ - Manages the Throne row for the 6P mode.
 - __TleilaxuResearch.lua__ - Manages the whole Tleilax board from the Immortality extension : 2D research track, Tleilax track and specimen space.

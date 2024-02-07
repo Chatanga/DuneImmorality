@@ -27,7 +27,7 @@ end
 ---
 function Intrigue.setUp(settings)
     local continuation = Helper.createContinuation("Intrigue.setUp")
-    Deck.generateIntrigueDeck(Intrigue.deckZone, settings.useContracts, settings.riseOfIx, settings.immortality).doAfter(function (deck)
+    Deck.generateIntrigueDeck(Intrigue.deckZone, settings.useContracts, settings.riseOfIx, settings.immortality, settings.legacy).doAfter(function (deck)
         Helper.shuffleDeck(deck)
         Intrigue._transientSetUp(settings)
         continuation.run()
@@ -37,8 +37,8 @@ end
 
 ---
 function Intrigue._transientSetUp(settings)
-    AcquireCard.new(Intrigue.deckZone, "Intrigue", PlayBoard.withLeader(Intrigue._acquireIntrigueCard), nil, Deck.getAcquireCardDecalUrl("generic"))
-    AcquireCard.new(Intrigue.discardZone, "Intrigue", nil, nil, Deck.getAcquireCardDecalUrl("generic"))
+    AcquireCard.new(Intrigue.deckZone, "Intrigue", PlayBoard.withLeader(Intrigue._acquireIntrigueCard), Deck.getAcquireCardDecalUrl("generic"))
+    AcquireCard.new(Intrigue.discardZone, "Intrigue", nil, Deck.getAcquireCardDecalUrl("generic"))
 end
 
 ---
@@ -50,9 +50,9 @@ end
 ---
 function Intrigue.drawIntrigue(color, amount)
     Types.assertIsPositiveInteger(amount)
-    local spaceInfo = Intrigue._getSpaceInfo(color)
+    local orientedPosition = PlayBoard.getHandOrientedPosition(color)
     Helper.onceTimeElapsed(0.25, amount).doAfter(function ()
-        Helper.moveCardFromZone(Intrigue.deckZone, spaceInfo.position, spaceInfo.rotation, false, true)
+        Helper.moveCardFromZone(Intrigue.deckZone, orientedPosition.position, orientedPosition.rotation, false, true)
     end)
 end
 
@@ -66,34 +66,17 @@ function Intrigue.stealIntrigue(color, otherColor, amount)
 
     Helper.shuffle(intrigues)
 
-    local spaceInfo = Intrigue._getSpaceInfo(color)
+    local orientedPosition = PlayBoard.getHandOrientedPosition(color)
     Helper.onceTimeElapsed(0.25, realAmount).doAfter(function () -- Why?
         local card = table.remove(intrigues, 1)
-        card.setPosition(spaceInfo.position)
-        card.setRotation(spaceInfo.rotation)
+        card.setPosition(orientedPosition.position)
+        card.setRotation(orientedPosition.rotation)
         log(Helper.getID(card))
         log(I18N(Helper.getID(card)))
         local cardName = I18N(Helper.getID(card))
         log(I18N("stealIntrigue", { victim = victimName, card = cardName }))
         Action.secretLog(I18N("stealIntrigue", { victim = victimName, card = cardName }), color)
     end)
-end
-
----
-function Intrigue._getSpaceInfo(color)
-    -- Add an offset to put the card on the left side of the player's hand.
-    local handTransform = Player[color].getHandTransform()
-    local position = handTransform.position
-    if handTransform.rotation == Vector(0, 0, 0) then
-        position = position + Vector(-5, 0, 0)
-    else
-        position = position + Vector(0, 0, -5)
-    end
-    local rotation = handTransform.rotation + Vector(0, 180, 0)
-    return {
-        position = position,
-        rotation = rotation
-    }
 end
 
 ---

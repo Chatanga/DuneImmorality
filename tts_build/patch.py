@@ -62,7 +62,7 @@ def patch_save(input_path, output_path):
     with open(input_path, 'r') as save_file:
         save = json.load(save_file)
 
-    save['SaveName'] = "Dune Uprising - Prototype"
+    save['SaveName'] = "Rakis Rising - Prototype"
 
     save['CameraStates'][0] = {
         "Position": {

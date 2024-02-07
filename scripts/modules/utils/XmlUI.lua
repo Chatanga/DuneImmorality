@@ -5,9 +5,19 @@ local XmlUI = Helper.createClass()
 
 ---
 function XmlUI.new(holder, id, fields)
+    --[[
+        Important:
+            UI.setXmlTable(xml)
+            assert(UI.getXmlTable() == xml) -- Not Ok
+            -- Wait at least 1 frame.
+            assert(UI.getXmlTable() == xml) -- Ok
+
+        Changes made  directly by the user (e.g. checking a box)
+        won't be reflected in the retrieved XML though.
+    ]]
     local xmlUI = Helper.createClassInstance(XmlUI, {
         holder = holder,
-        xml = holder.UI.getXmlTable(), -- Why the retrieved XML is always stale (even after some time)?
+        xml = holder.UI.getXmlTable(),
         id = id,
         active = false,
         fields = fields

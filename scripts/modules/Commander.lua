@@ -2,6 +2,7 @@ local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 
 local Action = Module.lazyRequire("Action")
+local PlayBoard = Module.lazyRequire("PlayBoard")
 
 local Commander = Helper.createClass(Action, {
     leaders = {},
@@ -126,6 +127,7 @@ function Commander.newCommander(color, leader)
     assert(Commander.isCommander(color))
     local commander = Helper.createClassInstance(Commander, {})
     Commander.leaders[color] = leader
+    Commander.name = leader.name
     return commander
 end
 
@@ -154,14 +156,14 @@ end
 
 ---
 function Commander.callSandworm(color, count)
-    return Action.callSandworm(Commander.getActivatedAlly(color), count)
+    return Commander._forwardToActivatedAlly(color, "callSandworm", count)
 end
 
 ---
 function Commander.influence(color, faction, amount, forced)
     Helper.dumpFunction("Commander.influence", color, faction, amount)
     if Helper.isElementOf(faction, { "greatHouses", "spacingGuild", "beneGesserit", "fringeWorlds" }) then
-        return Action.influence(Commander.getActivatedAlly(color), faction, amount)
+        return Commander._forwardToActivatedAlly(color, "influence", faction, amount)
     elseif forced then
         return Action.influence(color, faction, amount)
     else
@@ -174,37 +176,44 @@ end
 
 ---
 function Commander.troops(color, from, to, amount)
-    return Action.troops(Commander.getActivatedAlly(color), from, to, amount)
+    return Commander._forwardToActivatedAlly(color, "troops", from, to, amount)
 end
 
 ---
 function Commander.advanceFreighter(color, positiveAmount)
-    return Action.advanceFreighter(Commander.getActivatedAlly(color), positiveAmount)
+    return Commander._forwardToActivatedAlly(color, "advanceFreighter", positiveAmount)
 end
 
 ---
 function Commander.recallFreighter(color)
-    return Action.recallFreighter(Commander.getActivatedAlly(color))
+    return Commander._forwardToActivatedAlly(color, "recallFreighter")
 end
 
 ---
 function Commander.shipments(color, amount)
-    return Action.shipments(Commander.getActivatedAlly(color), amount)
+    return Commander._forwardToActivatedAlly(color, "shipments", amount)
 end
 
 ---
 function Commander.dreadnought(color, from, to, amount)
-    return Action.dreadnought(Commander.getActivatedAlly(color), from, to, amount)
+    return Commander._forwardToActivatedAlly(color, "dreadnought", from, to, amount)
 end
 
 ---
 function Commander.research(color, jump)
-    return Action.dreadnought(Commander.getActivatedAlly(color), jump)
+    return Commander._forwardToActivatedAlly(color, "dreadnought", jump)
 end
 
 ---
 function Commander.beetle(color, jump)
-    return Action.beetle(Commander.getActivatedAlly(color), jump)
+    return Commander._forwardToActivatedAlly(color, "beetle", jump)
+end
+
+---
+function Commander._forwardToActivatedAlly(color, functionName, ...)
+    local ally = Commander.getActivatedAlly(color)
+    local leader = PlayBoard.getLeader(ally)
+    return leader[functionName](ally, ...)
 end
 
 return Commander

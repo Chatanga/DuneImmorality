@@ -87,11 +87,6 @@ function Types.isVictoryPointToken(object)
 end
 
 ---
-function Types.isLeader(object)
-    return object.hasTag("Leader")
-end
-
----
 function Types.isImperiumCard(object)
     return object.hasTag("Imperium")
 end

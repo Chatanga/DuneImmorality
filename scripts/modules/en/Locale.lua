@@ -12,11 +12,12 @@ return {
     prolog = "\"A setup is a very delicate time...\"",
     language = "Language",
     players = "Players",
-    virtualHotSeat = "Solo / Hotseat",
+    virtualHotSeat = "Special / Hotseat",
     randomizePlayersPositions = "Randomize players' positions",
     extensions = "Extensions",
     useContracts = "CHOAM contracts",
-    riseOfIx = "Rise of Ix (unsupported)",
+    legacy = "Dune: Imperium",
+    riseOfIx = "Rise of Ix",
     epicMode = "Epic mode",
     immortality = "Immortality",
     goTo11 = "Go to 11",
@@ -24,7 +25,6 @@ return {
     leaderPoolSize = "Leader pool size",
     defaultLeaderPoolSizeLabel = "Leader pool size ({value})",
     tweakLeaderSelection = "Tweak leader pool",
-    fanmadeLeaders = "Fanmade leaders",
     variants = "Variants",
     miscellanous = "Miscellanous",
     horizontalHandLayout = "Horizontal hands layout with 4 players",
@@ -49,6 +49,7 @@ return {
     -- Card
     acquireButton = "Acquire",
     notFremenCard = "Attempting to add a filthy Fremen to the Throne room!",
+    noEnoughSpecimen = "You don't have enough specimens!",
 
     -- Playboard
     noTouch = "Don't touch this button!",
@@ -93,6 +94,8 @@ return {
     leaderSelectionExclude = "You can flip out (or delete) any leader you want to exclude.\nOnce satisfied, hit the 'Start' button.",
     start = "Start",
     claimLeader = "Claim {leader} as leader",
+    incompatibleLeader = "Not a human leader!",
+    incompatibleRivalLeader = "Not a rival leader!",
 
     -- Resource
     spiceAmount = "Spice",
@@ -321,7 +324,7 @@ return {
     margotFenring = "Lady Margot Fenring",
     irulanCorrino = "Princess Irulan",
     reverendMotherJessica = "Reverend Mother Jessica",
-    jessicaAtreides = "Lady Jessica",
+    jessica = "Lady Jessica",
     feydRauthaHarkonnen = "Feyd-Rautha Harkonnen",
     shaddamCorrino = "Shaddam IV",
     muadDib = "Muad'Dib",
@@ -352,8 +355,8 @@ return {
     smuggling = "Smuggling",
     interstellarShipping = "Interstellar Shipping",
     techNegotiation = "Tech Negotiation",
-    techNegotiation_1 = "Buy Tech",
-    techNegotiation_2 = "Send Negotiator",
+    techNegotiation_Buy = "Buy Tech",
+    techNegotiation_Negotiate = "Send Negotiator",
     dreadnought = "Dreadnought",
 
     fremkit = "Fremkit",
@@ -395,6 +398,25 @@ return {
     habbanyaErg = "Habbanya Erg",
     desertMastery = "Desert Mastery",
     vastWealth = "Vast Wealth",
+
+    -- Hagal
+    placeSpyYellow = "Place Spy",
+    placeSpyBlue = "Place Spy",
+    placeSpyGreen = "Place Spy",
+    deliverSuppliesAndHeighliner = "Deliver Supplies / Heighliner",
+    gatherSupport1 = "Gather Support",
+    gatherSupport2 = "Gather Support",
+    acceptContractAndShipping1 = "Accept Contract / Shipping",
+    acceptContractAndShipping2 = "Accept Contract / Shipping",
+    haggaBasinAndImperialBasin = "Hagga Basin / Imperial Basin",
+    reshuffle = "Reshuffle",
+    deliverSuppliesAndInterstellarShipping = "Deliver Supplies / Interstellar Shipping",
+    smugglingAndInterstellarShipping = "Smuggling / Interstellar Shipping",
+    dreadnought1p = "Dreadnought",
+    dreadnought2p = "Dreadnought",
+    tleilaxuBonus1 = "Tleilaxu Bonus",
+    tleilaxuBonus2 = "Tleilaxu Bonus",
+    tleilaxuBonus3 = "Tleilaxu Bonus",
 
     -- Objective cards
     --crysknife = "",

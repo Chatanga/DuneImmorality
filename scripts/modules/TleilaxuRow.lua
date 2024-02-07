@@ -9,6 +9,7 @@ local PlayBoard = Module.lazyRequire("PlayBoard")
 local TleilaxuResearch = Module.lazyRequire("TleilaxuResearch")
 local MainBoard = Module.lazyRequire("MainBoard")
 local ImperiumCard = Module.lazyRequire("ImperiumCard")
+local Commander = Module.lazyRequire("Commander")
 
 local TleilaxuRow = {}
 
@@ -82,7 +83,12 @@ function TleilaxuRow.acquireTleilaxuCard(indexInRow, color)
     assert(price, "Unknown tleilaxu card: " .. cardName)
     assert((cardName == "reclaimedForces") == (indexInRow == 3))
 
-    if card and TleilaxuResearch.getSpecimenCount(color) >= price then
+    local specimenSupplierColor = color
+    if Commander.isCommander(color) then
+        specimenSupplierColor = Commander.getActivatedAlly(color)
+    end
+
+    if TleilaxuResearch.getSpecimenCount(specimenSupplierColor) >= price then
         local leader = PlayBoard.getLeader(color)
         if cardName == "reclaimedForces" then
             local options = {
@@ -109,6 +115,7 @@ function TleilaxuRow.acquireTleilaxuCard(indexInRow, color)
 
         return true
     else
+        Dialog.broadcastToColor(I18N("noEnoughSpecimen"), color, "Purple")
         return false
     end
 end

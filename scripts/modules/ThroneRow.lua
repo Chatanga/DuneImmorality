@@ -48,7 +48,7 @@ function ThroneRow._transientSetUp()
             else
                 Dialog.broadcastToColor(I18N('notShaddamTeam'), color, "Purple")
             end
-        end), nil, Deck.getAcquireCardDecalUrl("corrino"))
+        end), Deck.getAcquireCardDecalUrl("corrino"))
         table.insert(ThroneRow.acquireCards, acquireCard)
     end
 end

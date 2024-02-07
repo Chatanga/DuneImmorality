@@ -16,8 +16,6 @@ local Deck = {
         imperiumFoldedSpace = { "http://cloud-3.steamusercontent.com/ugc/2093667512238503304/AE481C2ED19B085E2669F22420FD282982FD11A9/", 3, 2 },
         imperiumArrakisLiasion = { "http://cloud-3.steamusercontent.com/ugc/2093667512238504363/D7411DB495E6EB13D6B64F5E46CCF69FF322039F/", 4, 2 },
         imperiumTheSpiceMustFlow = { "http://cloud-3.steamusercontent.com/ugc/2093667512238504759/B6E08F8328DB699C60A8F058E88AA6443BA2F716/", 5, 2 },
-        -- new release card
-        newImperium = { "http://cloud-3.steamusercontent.com/ugc/2027231506426140597/EED43686A0319F3C194702074F2D2B3E893642F7/", 1 , 1 },
         -- ix without control the spice, but with Boundless Ambition
         ixImperium = { "http://cloud-3.steamusercontent.com/ugc/2093667512238503692/C54BCAB79869547E728509123AC47EDB32E79BF5/", 6, 6 },
         ixImperiumControlTheSpice = { "http://cloud-3.steamusercontent.com/ugc/2093667512238505114/DD5ED3E5FD12F0A1C4F42750E766E83564248E07/", 1, 1 },
@@ -53,17 +51,10 @@ local Deck = {
         uprisingConflict = { "http://cloud-3.steamusercontent.com/ugc/2305342013587686145/AB1D6A865796D30CD1035C9DEB28002091881B14/", 2, 2 },
     },
     hagal = {
-        hagal = { "http://cloud-3.steamusercontent.com/ugc/2093668799785647713/66020C11E4FEA2D22744020D27465DCC2BB02BBE/", 7, 2 },
-        hagal_wealth = { "http://cloud-3.steamusercontent.com/ugc/2093668799785647456/46014D79D2E1D2F68F4BF5740A0A9E1FED6E540D/", 1, 1 },
-        hagal_arrakeen2p = { "http://cloud-3.steamusercontent.com/ugc/2093668799785647086/8C2F363EFD82AB1A80A01A3E527E6A4ACE369643/", 1, 1 },
-        ixHagal_dreadnought1p = { "http://cloud-3.steamusercontent.com/ugc/2093668799785646315/5E6323692811F0530FB83FAE286162BDF6010E47/", 1, 1, Vector(0.88, 1, 0.83) },
-        ixHagal_dreadnought2p = { "http://cloud-3.steamusercontent.com/ugc/2093668799785646835/1A8E52049F9853C42DA1D0A2E26AF50F7B503773/", 1, 1, Vector(0.9, 1, 0.83) },
-        ixHagal_techNegogiation1p = { "http://cloud-3.steamusercontent.com/ugc/2093668799785646585/5A6FB1D7F4148F22FEF453500A6627132379BD6B/", 1, 1, Vector(0.9, 1, 0.83) },
-        ixHagal_interstellarShipping = { "http://cloud-3.steamusercontent.com/ugc/2093668799785646691/E595B3E111F6E8A0C057C99FF03BB18FFA1327B7/", 1, 1, Vector(0.9, 1, 0.83) },
-        ixHagal_foldspaceAndInterstellarShipping = { "http://cloud-3.steamusercontent.com/ugc/2093668799785647605/D7FAA1F3EB842A0EB4A2966F134EB58ACD966AFC/", 1, 1, Vector(0.9, 1, 0.83) },
-        ixHagal_smugglingAndInterstellarShipping = { "http://cloud-3.steamusercontent.com/ugc/2093668799785646429/978923957A87E0CB3DFAA25DF543FD863DA1EC95/", 1, 1, Vector(0.9, 1, 0.83) },
-        imortalityHagal = { "http://cloud-3.steamusercontent.com/ugc/2120691978813601622/36ABA3AD7A540FF6960527C1E77565F10BB2C6CB/", 2, 2 },
-        hagal_churn = { "http://cloud-3.steamusercontent.com/ugc/2093668799785647209/43CA7B78F12F01CED26D1B57D3E62CAC912D846C/", 1, 1 },
+        base = { "http://cloud-3.steamusercontent.com/ugc/2291837013341414524/BB90DF7F9C97680FE16C4D91A1AF0871B2462CB9/", 5, 5 },
+        reshuffle = { "http://cloud-3.steamusercontent.com/ugc/2093668799785647713/66020C11E4FEA2D22744020D27465DCC2BB02BBE/", 7, 2 },
+        ix = { "http://cloud-3.steamusercontent.com/ugc/2291837013341435538/E181DED96F81A27405E57F0CF398575C20D73D12/", 2, 3 },
+        immortality = { "http://cloud-3.steamusercontent.com/ugc/2291837013341433170/56E0015597F27AB50451E026A8BD95512FA1CE27/", 2, 2 },
     },
     tech = {
         windtraps = { "http://cloud-3.steamusercontent.com/ugc/2093667512238535499/4AD548281EE3633601185ECDE6461BD5E6E67D12/", 1, 1 },
@@ -93,7 +84,6 @@ local Deck = {
         arrakeenSpy = { "http://cloud-3.steamusercontent.com/ugc/2220898342984577284/4CB29CF8FC8D0BF9A5B575B3E05B31774E59F3CD/", 1, 1 },
         arrakeenWater = { "http://cloud-3.steamusercontent.com/ugc/2220898342984583351/926CFC63532C4D7BC6AA6B9151AFF0221A553B44/", 1, 1 },
         espionage = { "http://cloud-3.steamusercontent.com/ugc/2305342013587694928/48A8C33B4ABEB9C61E8C5EF82218E15368DAC56B/", 1, 1 },
-        --espionage = { "http://cloud-3.steamusercontent.com/ugc/2305342013587694928/48A8C33B4ABEB9C61E8C5EF82218E15368DAC56B/", 1, 1 },
         sardaukarRecall = { "http://cloud-3.steamusercontent.com/ugc/2305342013595062838/E5463C7FFA3426E57F5B07A0DE91602798170C69/", 1, 1 },
         sardaukarCard = { "http://cloud-3.steamusercontent.com/ugc/2220898342984611356/1711DFB19987B48883EF6B53E1CD62739D70E1A2/", 1, 1 },
         highCouncilSolari = { "http://cloud-3.steamusercontent.com/ugc/2305342013587695906/1C0C3DEEFFF62306A3988CE9128E2A283BDE03DF/", 1, 1 },
@@ -104,7 +94,6 @@ local Deck = {
         deliverSupplies = { "http://cloud-3.steamusercontent.com/ugc/2305342013587694756/AE2085FF98F6A4384DA2213AD1F555D9E341B203/", 1, 1 },
         acquire = { "http://cloud-3.steamusercontent.com/ugc/2305342013587694579/6D085EC459F3C659F3B43376C96B1CB607448136/", 1, 1 },
         harvest = { "http://cloud-3.steamusercontent.com/ugc/2305342013587695282/BADC52B8C0982FFA0DFF095040D3973436AA3149/", 1, 1 },
-        --harvest = { "http://cloud-3.steamusercontent.com/ugc/2305342013587695282/BADC52B8C0982FFA0DFF095040D3973436AA3149/", 1, 1 },
         harvestMore = { "http://cloud-3.steamusercontent.com/ugc/2305342013587695096/1E5DF874101D6B6A70DE17B2E1A1DB4119290AAA/", 1, 1 },
     },
     leader = {
@@ -129,15 +118,20 @@ local Deck = {
         gurneyHalleck = { "http://cloud-3.steamusercontent.com/ugc/2305342013587699512/09C5E2F178B9F48ED577C7E74FC58C53D7698D7D/", 1, 1 },
         margotFenring = { "http://cloud-3.steamusercontent.com/ugc/2305342013587700118/A3381C2EF2869950BD00E6AE7ADB5B662F883764/", 1, 1 },
         irulanCorrino = { "http://cloud-3.steamusercontent.com/ugc/2305342013587699637/5D95D6143B4407029C8665AF8E10B20634FEE3A3/", 1, 1 },
-        jessicaAtreides = { "http://cloud-3.steamusercontent.com/ugc/2305342013587699760/4CB1D17A9AA19831A1C2925FB431DCFDA1EE10B8/", 1, 1, Vector(1.12, 1, 1.12), "http://cloud-3.steamusercontent.com/ugc/2305342013587699895/171F9173728A3E031830C1AF989B9B0BAFAA5DAF/" },
+        jessica = { "http://cloud-3.steamusercontent.com/ugc/2305342013587699760/4CB1D17A9AA19831A1C2925FB431DCFDA1EE10B8/", 1, 1, Vector(1.12, 1, 1.12),
+            "http://cloud-3.steamusercontent.com/ugc/2305342013587699895/171F9173728A3E031830C1AF989B9B0BAFAA5DAF/" },
         feydRauthaHarkonnen = { "http://cloud-3.steamusercontent.com/ugc/2305342013587699389/996AAC7E5AC098A6804153865E8116754B19DDDB/", 1, 1 },
         shaddamCorrino = { "http://cloud-3.steamusercontent.com/ugc/2305342013587701053/D307B7C2139EC0E0B999900940DC6F5827EB68A8/", 1, 1 },
         muadDib = { "http://cloud-3.steamusercontent.com/ugc/2305342013587700874/BA1804DF868BF77175777B0FB5B1D109B46E13A9/", 1, 1 },
+    },
+    rivalLeader = {
+        uprising = { "http://cloud-3.steamusercontent.com/ugc/2291837013341168508/811BF7142774932C8C2FAD7C10BA104F8DAD4299/", 4, 3 },
     },
 }
 
 ---
 function Deck.load(loader, cards, category, customDeckName, startLuaIndex, cardNames)
+    assert(Deck[category], "Unknown category: " .. category)
     local desc = Deck[category][customDeckName]
     assert(desc, "No descriptor for: " .. category .. "." .. customDeckName)
     local customDeck
@@ -174,7 +168,8 @@ function Deck.loadCustomDecks(loader)
         conflict = {},
         hagal = {},
         tech = {},
-        leaders = {}
+        leaders = {},
+        rivalLeaders = {},
     }
 
     Deck.load(loader, cards.objective, "objective", "uprisingObjective", 1, {
@@ -264,9 +259,6 @@ function Deck.loadCustomDecks(loader)
         "gunThopter", "",
         "arrakisRecruiter", "",
         "duncanLoyalBlade",
-    })
-    Deck.load(loader, cards.imperium, "imperium", "newImperium", 1, {
-        "thumper"
     })
     Deck.load(loader, cards.imperium, "imperium", "ixImperium", 1, {
         "appropriate",
@@ -604,54 +596,47 @@ function Deck.loadCustomDecks(loader)
         "battleForSpiceRefinery",
     })
 
-    Deck.load(loader, cards.hagal, "hagal", "hagal", 1, {
-        "harvestSpice",
-        "hardyWarriors",
-        "stillsuits",
-        "rallyTroops",
-        "foldspace",
-        "conspire",
-        "selectiveBreeding",
-        "secrets",
+    Deck.load(loader, cards.hagal, "hagal", "base", 1, {
+        "churn",
+        "placeSpyYellow",
+        "placeSpyBlue",
+        "placeSpyGreen",
+        "sardaukar",
+        "dutifulService",
         "heighliner",
-        "reshuffle",
-        "arrakeen1p",
-        "carthag",
-        "hallOfOratory",
-        "back"
-    })
-    Deck.load(loader, cards.hagal, "hagal", "hagal_wealth", 1, {
-        "wealth"
-    })
-    Deck.load(loader, cards.hagal, "hagal", "hagal_arrakeen2p", 1, {
-        "arrakeen2p"
-    })
-    Deck.load(loader, cards.hagal, "hagal", "ixHagal_dreadnought1p", 1, {
-        "dreadnought1p"
-    })
-    Deck.load(loader, cards.hagal, "hagal", "ixHagal_dreadnought2p", 1, {
-        "dreadnought2p"
-    })
-    Deck.load(loader, cards.hagal, "hagal", "ixHagal_techNegogiation1p", 1, {
-        "techNegotiation"
-    })
-    Deck.load(loader, cards.hagal, "hagal", "ixHagal_interstellarShipping", 1, {
-        "interstellarShipping"
-    })
-    Deck.load(loader, cards.hagal, "hagal", "ixHagal_foldspaceAndInterstellarShipping", 1, {
-        "foldspaceAndInterstellarShipping"
-    })
-    Deck.load(loader, cards.hagal, "hagal", "ixHagal_smugglingAndInterstellarShipping", 1, {
-        "smugglingAndInterstellarShipping"
-    })
-    Deck.load(loader, cards.hagal, "hagal", "imortalityHagal", 1, {
+        "deliverSuppliesAndHeighliner",
+        "espionage",
+        "secrets",
+        "desertTactics",
+        "fremkit",
+        "assemblyHall",
+        "gatherSupport1",
+        "gatherSupport2",
+        "acceptContractAndShipping1",
+        "acceptContractAndShipping2",
         "researchStation",
-        "carthag1",
-        "carthag2",
-        "carthag3"
+        "spiceRefinery",
+        "arrakeen",
+        "sietchTabr",
+        "haggaBasinAndImperialBasin",
+        "deepDesert",
     })
-    Deck.load(loader, cards.hagal, "hagal", "hagal_churn", 1, {
-        "churn"
+    Deck.load(loader, cards.hagal, "hagal", "reshuffle", 10, {
+        "reshuffle"
+    })
+    Deck.load(loader, cards.hagal, "hagal", "ix", 1, {
+        "interstellarShipping",
+        "deliverSuppliesAndInterstellarShipping",
+        "smugglingAndInterstellarShipping",
+        "techNegotiation",
+        "dreadnought1p",
+        "dreadnought2p",
+    })
+    Deck.load(loader, cards.hagal, "hagal", "immortality", 1, {
+        "researchStationImmortality",
+        "tleilaxuBonus1",
+        "tleilaxuBonus2",
+        "tleilaxuBonus3",
     })
 
     -- One tech per custom deck.
@@ -663,6 +648,19 @@ function Deck.loadCustomDecks(loader)
     for leaderName, _ in pairs(Deck.leader) do
         Deck.load(loader, cards.leaders, "leader", leaderName, 1, { leaderName })
     end
+
+    Deck.load(loader, cards.rivalLeaders, "rivalLeader", "uprising", 1, {
+        "vladimirHarkonnen",
+        "muadDib",
+        "jessica",
+        "feydRauthaHarkonnen",
+        "margotFenring",
+        "stabanTuek",
+        "amberMetulli",
+        "irulanCorrino",
+        "gurneyHalleck",
+        "glossuRabban",
+    })
 
     return cards
 end

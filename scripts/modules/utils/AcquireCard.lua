@@ -6,10 +6,11 @@ local AcquireCard = Helper.createClass(nil, {
 })
 
 ---
-function AcquireCard.new(zone, tag, acquire, cardHeight, decalUrl)
+function AcquireCard.new(zone, tag, acquire, decalUrl)
     local acquireCard = Helper.createClassInstance(AcquireCard, {
         zone = zone,
-        cardHeight = cardHeight or 0.01,
+        groundHeight = 1.65,
+        cardHeight = 0.01,
         anchor = nil
     })
 
@@ -77,11 +78,19 @@ function AcquireCard.onObjectLeaveScriptingZone(...)
 end
 
 function AcquireCard:_createButton(acquire)
-    local cardCount = Helper.getCardCount(Helper.getDeckOrCard(self.zone))
-    local objectCount = #self.zone.getObjects()
-    local count = math.max(cardCount, objectCount)
+
+    local count = 0
+    for _, object in ipairs(self.zone.getObjects()) do
+        local cardCount = Helper.getCardCount(object)
+        if cardCount > 0 then
+            count = count + cardCount
+        else
+            count = count + 1
+        end
+    end
+
     if count > 0 then
-        local height = 1.65 + count * self.cardHeight
+        local height = self.groundHeight + count * self.cardHeight
         local label = I18N("acquireButton") .. " (" .. tostring(count) .. ")"
         Helper.createExperimentalAreaButton(self.zone, self.anchor, height, label, function (_, color)
             if not self.disabled then

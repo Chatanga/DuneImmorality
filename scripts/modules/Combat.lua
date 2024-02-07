@@ -11,16 +11,18 @@ local Types = Module.lazyRequire("Types")
 local TurnControl = Module.lazyRequire("TurnControl")
 local MainBoard = Module.lazyRequire("MainBoard")
 local Music = Module.lazyRequire("Music")
+local ConflictCard = Module.lazyRequire("ConflictCard")
 
 local Combat = {
     -- Temporary structure (set to nil *after* loading).
     unresolvedContent = {
         victoryPointTokenBag = "d9a457",
         protoSandworm = "14b25e",
-        objectiveTokens = {
+        objectiveTokenBags = {
             muadDib = "a17bcb",
             ornithopter = "bd4b71",
             crysknife = "85f9b6",
+            joker = "99ecfe",
         },
     },
     origins = {
@@ -40,8 +42,8 @@ function Combat.onLoad(state)
     Helper.append(Combat, Helper.resolveGUIDs(false, Combat.unresolvedContent))
 
     Helper.noPhysicsNorPlay(Combat.protoSandworm)
-    for _, objectiveToken in pairs(Combat.objectiveTokens) do
-        Helper.noPhysics(objectiveToken)
+    for _, objectiveTokenBag in pairs(Combat.objectiveTokenBags) do
+        Helper.noPhysics(objectiveTokenBag)
     end
 
     if state.settings then
@@ -95,8 +97,8 @@ function Combat._transientSetUp(settings)
             TurnControl.overridePhaseTurnSequence(turnSequence)
             Combat.showRanking(turnSequence, Combat.ranking)
         elseif phase == "recall" then
-            if Combat.victoryPointTokenZone then
-                for _, object in ipairs(Combat.victoryPointTokenZone.getObjects()) do
+            if Combat.rewardTokenZone then
+                for _, object in ipairs(Combat.rewardTokenZone.getObjects()) do
                     if Types.isVictoryPointToken(object) then
                         MainBoard.trash(object)
                     end
@@ -118,8 +120,7 @@ function Combat._transientSetUp(settings)
     end)
 
     Helper.registerEventListener("phaseEnd", function (phase)
-        -- TODO Originally "combatEnd"...
-        if phase == "recall" then
+        if phase == "combatEnd" then
             for _, bannerZone in ipairs(MainBoard.getBannerZones()) do
                 local dreadnought = MainBoard.getControllingDreadnought(bannerZone)
                 -- Only recall locked controlling dreadnoughts.
@@ -195,7 +196,7 @@ function Combat._processSnapPoints(settings)
         end,
 
         victoryTokenRoom = function (name, position)
-            Combat.victoryPointTokenZone = createZone(position, Vector(5, 2, 1))
+            Combat.rewardTokenZone = createZone(position, Vector(7, 2, 1))
         end,
 
         combatMarkerRoom = function (name, position)
@@ -210,7 +211,6 @@ function Combat._processSnapPoints(settings)
             end
         end,
     })
-
 end
 
 ---
@@ -228,7 +228,7 @@ function Combat._setUpConflict()
         for _, token in pairs(tokens) do
             assert(token)
             if cardName == Helper.getID(token) then
-                local origin = Combat.victoryPointTokenZone.getPosition()
+                local origin = Combat.rewardTokenZone.getPosition()
                 local position = origin + Vector(0.5 - (i % 2), 0.5 + math.floor(i / 2), 0)
                 i = i + 1
                 Combat.victoryPointTokenBag.takeObject({
@@ -240,21 +240,46 @@ function Combat._setUpConflict()
             end
         end
 
-        for _, controlableSpaceName in ipairs({ "imperialBasin", "arrakeen", "spiceRefinery" }) do
-            if cardName:find(controlableSpaceName:gsub("^%l", string.upper)) then
-                local controlableSpace = MainBoard.findControlableSpace(controlableSpaceName)
-                assert(controlableSpace)
-                if controlableSpace then
-                    local color = MainBoard.getControllingPlayer(controlableSpace)
-                    if color then
-                        Park.transfert(1, PlayBoard.getSupplyPark(color), Combat.getBattlegroundPark())
-                    end
+        local objective = ConflictCard.getObjective(cardName)
+        if objective then
+            local bag = Combat.objectiveTokenBags[objective]
+            assert(bag, objective)
+            local origin = Combat.rewardTokenZone.getPosition()
+            local position = origin + Vector(0.5 - 3, 0.5, 0)
+            bag.takeObject({
+                position = position,
+                rotation = Vector(0, 180, 0),
+                smooth = true,
+                callback_function = function (token)
+                    token.setGMNotes(cardName)
+                    token.setName(I18N(cardName))
                 end
+            })
+        end
+
+        local controlableSpace = Combat.findControlableSpace(cardName)
+        if controlableSpace then
+            local color = MainBoard.getControllingPlayer(controlableSpace)
+            if color then
+                Park.transfert(1, PlayBoard.getSupplyPark(color), Combat.getBattlegroundPark())
             end
         end
 
         broadcastToAll(I18N("announceCombat", { combat = I18N(Helper.getID(card)) }), "Orange")
     end)
+end
+
+---
+function Combat.findControlableSpace(conflictName)
+    Helper.dumpFunction("Combat.findControlableSpace", conflictName)
+    for _, controlableSpaceName in ipairs({ "imperialBasin", "arrakeen", "spiceRefinery" }) do
+        if conflictName:find(controlableSpaceName:gsub("^%l", string.upper)) then
+            local controlableSpace = MainBoard.findControlableSpace(controlableSpaceName)
+            assert(controlableSpace)
+            return controlableSpace
+        end
+    end
+    return nil
 end
 
 ---
@@ -486,11 +511,9 @@ end
 ---
 function Combat._calculateCombatForces()
     local forces = {}
-
     for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
         forces[color] = Combat.calculateCombatForce(color)
     end
-
     return forces
 end
 
@@ -598,8 +621,8 @@ function Combat.gainVictoryPoint(color, name)
         end)
     end
 
-    if Combat.victoryPointTokenZone then
-        for _, object in ipairs(Combat.victoryPointTokenZone.getObjects()) do
+    if Combat.rewardTokenZone then
+        for _, object in ipairs(Combat.rewardTokenZone.getObjects()) do
             if Types.isVictoryPointToken(object) and Helper.getID(object) == name and not Combat.grantedTokens[object] then
                 Combat.grantedTokens[object] = true
                 PlayBoard.grantScoreToken(color, object)
@@ -608,6 +631,39 @@ function Combat.gainVictoryPoint(color, name)
         end
     end
     return false
+end
+
+---
+function Combat.gainObjective(color, objective)
+    local continuation = Helper.createContinuation("Combat.gainObjective")
+
+    Helper.dumpFunction("Combat.gainObjective", color, objective)
+    local position = PlayBoard.getObjectiveStackPosition(color, objective)
+
+    local tag = Helper.toPascalCase(objective, "ObjectiveToken")
+
+    for _, object in ipairs(Combat.rewardTokenZone.getObjects()) do
+        if object.hasTag(tag) then
+            object.setPositionSmooth(position + Vector(0, 1, 0))
+            Helper.onceMotionless(object).doAfter(function (o)
+                continuation.run(o)
+            end)
+            return continuation
+        end
+    end
+
+    local bag = Combat.objectiveTokenBags[objective]
+    assert(bag, objective)
+    bag.takeObject({
+        position = position + Vector(0, 1, 0),
+        rotation = Vector(0, 180, 0),
+        smooth = true,
+        callback_function = function (token)
+            Helper.onceMotionless(token).doAfter(continuation.run)
+        end
+    })
+
+    return continuation
 end
 
 ---
@@ -655,8 +711,32 @@ function Combat.callSandworm(color, count)
 end
 
 ---
+function Combat.hasSandworms(color)
+    local battlegroundPark = Combat.getBattlegroundPark()
+    for _, object in ipairs(Park.getObjects(battlegroundPark)) do
+        if Types.isSandworm(object, color) then
+            return true
+        end
+    end
+    return false
+end
+
+---
 function Combat.getCombatCenterZone()
     return Combat.combatCenterZone
+end
+
+---
+function Combat.getTurnConflictName()
+    local deckOrCard = Helper.getDeckOrCard(Combat.conflictDiscardZone)
+    if deckOrCard then
+        if deckOrCard.type == "Deck" then
+            return Helper.getID(deckOrCard.getObjects()[1])
+        else
+            return Helper.getID(deckOrCard)
+        end
+    end
+    return nil
 end
 
 return Combat

@@ -34,7 +34,7 @@ end
 ---
 function ImperiumRow.setUp(settings)
     local continuation = Helper.createContinuation("ImperiumRow.setUp")
-    Deck.generateImperiumDeck(ImperiumRow.deckZone, settings.useContracts, settings.riseOfIx, settings.immortality).doAfter(function (deck)
+    Deck.generateImperiumDeck(ImperiumRow.deckZone, settings.useContracts, settings.riseOfIx, settings.immortality, settings.legacy).doAfter(function (deck)
         Helper.shuffleDeck(deck)
         for _, zone in ipairs(ImperiumRow.slotZones) do
             Helper.moveCardFromZone(ImperiumRow.deckZone, zone.getPosition(), Vector(0, 180, 0))
@@ -51,13 +51,13 @@ function ImperiumRow._transientSetUp()
         AcquireCard.new(zone, "Imperium", PlayBoard.withLeader(function (_, color)
             local leader = PlayBoard.getLeader(color)
             leader.acquireImperiumCard(color, i)
-        end), nil, Deck.getAcquireCardDecalUrl("generic"))
+        end), Deck.getAcquireCardDecalUrl("generic"))
     end
 
     AcquireCard.new(ImperiumRow.reservationSlotZone, "Imperium", PlayBoard.withLeader(function (_, color)
         local leader = PlayBoard.getLeader(color)
         leader.acquireReservedImperiumCard(color)
-    end), nil, Deck.getAcquireCardDecalUrl("generic"))
+    end), Deck.getAcquireCardDecalUrl("generic"))
 
     Helper.registerEventListener("phaseStart", function (phase)
         if phase == "recall" then

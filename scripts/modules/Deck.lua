@@ -21,6 +21,7 @@ local Deck = {
         objectiveCardBack = "http://cloud-3.steamusercontent.com/ugc/2220898342999519816/02A61DC439DF213EA61A8CCEC1F545F4D369F2E8/",
         hagalCardBack = "http://cloud-3.steamusercontent.com/ugc/2093668799785646965/26E28590801800D852F4BCA53E959AAFAAFC8FF3/",
         leaderCardBack = "http://cloud-3.steamusercontent.com/ugc/2093668799785645356/005244DAC0A29EE68CFF741FC06564969563E8CF/",
+        rivalLeaderCardBack = "http://cloud-3.steamusercontent.com/ugc/2291837013341174770/EB5ECE9F5373F0B132E93CD5825B89E7F023E9A2/",
     },
     sources = {},
     starter = {
@@ -37,10 +38,12 @@ local Deck = {
         epic = {
             controlTheSpice = 1,
         },
+        --[[ Not used when Immortality is combined with Uprising.
         immortality = {
             duneTheDesertPlanet = Helper.ERASE,
             experimentation = 2,
         },
+        ]]
         emperor = {
             emperorConvincingArgument = 1,
             emperorCorrinoMight = 1,
@@ -65,7 +68,7 @@ local Deck = {
         },
     },
     imperium = {
-        base = {
+        legacy = {
             jessicaOfArrakis = 1, -- release promo
             sardaukarLegion = 2,
             drYueh = 1,
@@ -77,7 +80,7 @@ local Deck = {
             scout = 2,
             imperialSpy = 2,
             beneGesseritSister = 3,
-            missionariaProtectiva = 2, -- First released fixed in Rise of Ix
+            missionariaProtectiva = 2, -- First release fixed in Rise of Ix
             spiceHunter = 2,
             spiceSmugglers = 2,
             feydakinDeathCommando = 2,
@@ -111,7 +114,6 @@ local Deck = {
             reverendMotherMohiam = 1,
             powerPlay = 3,
             duncanLoyalBlade = 1, -- Deluxe upgrade pack release promo
-            thumper = 1, -- New realease promo
         },
         ix = {
             boundlessAmbition = 1, -- Rise of Ix release promo
@@ -235,7 +237,7 @@ local Deck = {
         },
     },
     special = {
-        base = {
+        legacy = {
             foldspace = 6,
             arrakisLiaison = 8,
             theSpiceMustFlow = 10,
@@ -270,7 +272,7 @@ local Deck = {
         usurp = 1
     },
     intrigue = {
-        base = {
+        legacy = {
             bribery = 1,
             refocus = 1,
             ambush = 2,
@@ -384,7 +386,7 @@ local Deck = {
     },
     conflict = {
         level1 = {
-            base = {
+            legacy = {
                 skirmishA = 1,
                 skirmishB = 1,
                 skirmishC = 1,
@@ -401,7 +403,7 @@ local Deck = {
             },
         },
         level2 = {
-            base = {
+            legacy = {
                 desertPower = 1,
                 raidStockpiles = 1,
                 cloakAndDagger = 1,
@@ -429,7 +431,7 @@ local Deck = {
             },
         },
         level3 = {
-            base = {
+            legacy = {
                 battleForImperialBasin = 1,
                 grandVision = 1,
                 battleForCarthag = 1,
@@ -448,38 +450,45 @@ local Deck = {
     },
     hagal = {
         base = {
-            other = {
-                -- FIXME
-                churn = 2,
-            },
-            core = {
-                conspire = 2,
-                wealth = 1,
+            common = {
+                --churn = 2,
+                placeSpyYellow = 1,
+                placeSpyBlue = 1,
+                placeSpyGreen = 1,
+                sardaukar = 2,
+                dutifulService = 1,
                 heighliner = 1,
-                foldspace = 2,
-                selectiveBreeding = 2,
+                deliverSuppliesAndHeighliner = 2,
+                espionage = 2,
                 secrets = 1,
-                hardyWarriors = 1,
-                stillsuits = 2,
-                rallyTroops = 2,
-                hallOfOratory = 2,
-                carthag = 3,
-                harvestSpice = 5,
+                desertTactics = 2,
+                fremkit = 2,
+                assemblyHall = 1,
+                gatherSupport1 = 1, -- 1 troop
+                gatherSupport2 = 1, -- 2 infl
+                acceptContractAndShipping1 = 1,
+                acceptContractAndShipping2 = 1, -- 3 infl
+                researchStation = 2,
+                spiceRefinery= 3,
+                arrakeen = 2,
+                sietchTabr = 3,
+                haggaBasinAndImperialBasin = 4,
+                deepDesert = 2,
             },
-            solo = {
-                arrakeen1p = 3,
-            },
+            solo = {},
             twoPlayers = {
                 reshuffle = 1,
-                arrakeen2p = 3,
             }
         },
         ix = {
-            core = {
-                rallyTroops = Helper.ERASE,
-                hallOfOratory = Helper.ERASE,
+            common = {
+                assemblyHall = Helper.ERASE,
+                gatherSupport1 = Helper.ERASE,
+                gatherSupport2 = Helper.ERASE,
+                acceptContractAndShipping1 = Helper.ERASE,
+                acceptContractAndShipping2 = Helper.ERASE,
                 interstellarShipping = 1,
-                foldspaceAndInterstellarShipping = 1,
+                deliverSuppliesAndInterstellarShipping = 1, -- ex foldspaceAndInterstellarShipping
                 smugglingAndInterstellarShipping = 1,
             },
             solo = {
@@ -491,13 +500,14 @@ local Deck = {
             }
         },
         immortality = {
-            core = {},
+            common = {},
             solo = {
                 researchStation = 1,
+                researchStationImmortality = 1,
                 carthag = Helper.ERASE,
-                carthag1 = 1,
-                carthag2 = 1,
-                carthag3 = 1,
+                tleilaxuBonus1 = 1, -- ex Carthag
+                tleilaxuBonus2 = 1, -- ex Carthag
+                tleilaxuBonus3 = 1, -- ex Carthag
             },
             twoPlayers = {}
         }
@@ -525,7 +535,7 @@ local Deck = {
         },
     },
     leaders = {
-        base = {
+        legacy = {
             vladimirHarkonnen = 1,
             glossuRabban = 1,
             ilbanRichese = 1,
@@ -549,14 +559,25 @@ local Deck = {
             gurneyHalleck = 1,
             margotFenring = 1,
             irulanCorrino = 1,
-            jessicaAtreides = 1,
+            jessica = 1,
             feydRauthaHarkonnen = 1,
             shaddamCorrino = 1,
             muadDib = 1,
         },
-        uprisingAlt = {
-            reverendMotherJessica = 1,
-        }
+    },
+    rivalLeaders = {
+        uprising = {
+            vladimirHarkonnen = 1,
+            glossuRabban = 1,
+            stabanTuek = 1,
+            amberMetulli = 1,
+            gurneyHalleck = 1,
+            margotFenring = 1,
+            irulanCorrino = 1,
+            jessica = 1,
+            feydRauthaHarkonnen = 1,
+            muadDib = 1,
+        },
     },
 }
 
@@ -568,10 +589,8 @@ function Deck.rebuildPreloadAreas()
         fr = require("fr.Deck"),
     }
 
-    for _, guid in ipairs({ "a5a2e6", "db4507" }) do
-        local zone = getObjectFromGUID(guid)
-        assert(zone)
-        for _, object in ipairs(zone.getObjects()) do
+    for _, prebuildZone in pairs(Deck.prebuildZones) do
+        for _, object in ipairs(prebuildZone.getObjects()) do
             if object.type == "Deck" then
                 object.destruct()
             end
@@ -590,36 +609,39 @@ function Deck.rebuildPreloadAreas()
             local origin = areas[1].getPosition()
 
             local i = 0
-            local getPosition = function ()
-                local p = origin + Vector(math.floor(i / 9) * 4 - 2, 0, 4 * (i % 9) - 16)
+            local getNextPosition = function ()
+                local p = origin + Vector(math.floor(i / 9) * 4 - 2, 2, 4 * (i % 9) - 16)
                 i = i + 1
                 return p
             end
 
-            Deck._generateStaticStarterDeck(getPosition())
-            Deck._generateStaticEmperorStarterDeck(getPosition())
-            Deck._generateStaticMuadDibStarterDeck(getPosition())
-            Deck._generateStaticImperiumDeck(getPosition())
-            Deck._generateStaticSpecialDeck(getPosition())
-            Deck._generateStaticTleilaxuDeck(getPosition())
-            Deck._generateStaticIntrigueDeck(getPosition())
-            Deck._generateStaticObjectiveDeck(getPosition())
-            Deck._generateStaticTechDeck(getPosition())
-            Deck._generateStaticConflictDeck(getPosition())
-            Deck._generateStaticHagalDeck(getPosition())
-            Deck._generateStaticLeaderDeck(getPosition())
+            Deck._prebuildStarterDeck(getNextPosition())
+            Deck._prebuildEmperorStarterDeck(getNextPosition())
+            Deck._prebuildMuadDibStarterDeck(getNextPosition())
+            Deck._prebuildImperiumDeck(getNextPosition())
+            Deck._prebuildSpecialDeck(getNextPosition())
+            Deck._prebuildTleilaxuDeck(getNextPosition())
+            Deck._prebuildIntrigueDeck(getNextPosition())
+            Deck._prebuildObjectiveDeck(getNextPosition())
+            Deck._prebuildTechDeck(getNextPosition())
+            Deck._prebuildConflictDeck(getNextPosition())
+            Deck._prebuildHagalDeck(getNextPosition())
+            Deck._prebuildLeaderDeck(getNextPosition())
+            Deck._prebuildRivalLeaderDeck(getNextPosition())
         end
     end)
 end
 
 ---
 function Deck.onLoad()
-    for _, guid in ipairs({ "a5a2e6", "db4507" }) do
-        local zone = getObjectFromGUID(guid)
-        if zone then
-            for _, object in ipairs(zone.getObjects()) do
-                object.setInvisibleTo(Player.getColors())
-            end
+    Deck.prebuildZones = Helper.resolveGUIDs(true, {
+        en = "a5a2e6",
+        fr = "db4507",
+    })
+
+    for _, prebuildZone in pairs(Deck.prebuildZones) do
+        for _, object in ipairs(prebuildZone.getObjects()) do
+            object.setInvisibleTo(Player.getColors())
         end
     end
 end
@@ -627,17 +649,22 @@ end
 ---
 function Deck.setUp(settings)
     --Helper.dumpFunction("Deck.setUp")
-    local support
 
-    if settings.language == "en" then
-        support = require("en.Deck")
-    elseif settings.language == "fr" then
-        support = require("fr.Deck")
-    else
-        error("Unsupported language: " .. settings.language)
+    -- Not needed anymore since we are relying on prebuild decks now.
+    -- (But deck sources are still needed in "rebuildPreloadAreas".)
+    if false then
+        local support
+
+        if settings.language == "en" then
+            support = require("en.Deck")
+        elseif settings.language == "fr" then
+            support = require("fr.Deck")
+        else
+            error("Unsupported language: " .. settings.language)
+        end
+
+        Deck.sources = support.loadCustomDecks(Deck)
     end
-
-    Deck.sources = support.loadCustomDecks(Deck)
 end
 
 function Deck.getAcquireCardDecalUrl(name)
@@ -717,12 +744,12 @@ function Deck.generateStarterDiscard(deckZone, immortality, epic)
 end
 
 ---
-function Deck.generateImperiumDeck(deckZone, contracts, ix, immortality)
+function Deck.generateImperiumDeck(deckZone, contracts, ix, immortality, legacy)
     --Helper.dump("generateImperiumDeck")
     assert(deckZone)
     assert(deckZone.getPosition)
     local continuation = Helper.createContinuation("Deck.generateImperiumDeck")
-    local contributions = Deck._mergeStandardContributionSets(Deck.imperium, ix, immortality)
+    local contributions = Deck._mergeStandardContributionSets(Deck.imperium, ix, immortality, legacy)
     if contracts then
         contributions = Deck._mergeContributionSets({ contributions, Deck.imperium.uprisingContract })
     end
@@ -757,12 +784,12 @@ function Deck.generateTleilaxuDeck(deckZone)
 end
 
 ---
-function Deck.generateIntrigueDeck(deckZone, contracts, ix, immortality)
+function Deck.generateIntrigueDeck(deckZone, contracts, ix, immortality, legacy)
     --Helper.dump("generateIntrigueDeck")
     assert(deckZone)
     assert(deckZone.getPosition)
     local continuation = Helper.createContinuation("Deck.generateIntrigueDeck")
-    local contributions = Deck._mergeStandardContributionSets(Deck.intrigue, ix, immortality)
+    local contributions = Deck._mergeStandardContributionSets(Deck.intrigue, ix, immortality, legacy)
     if contracts then
         contributions = Deck._mergeContributionSets({ contributions, Deck.intrigue.uprisingContract })
     end
@@ -824,10 +851,11 @@ function Deck.generateConflictDeck(deckZone, ix, epic, playerCount)
     for level = 3, 1, -1 do
         local cardCount = cardCounts[level]
         if cardCount > 0 then
-            local levelContributions = Deck._mergeStandardContributionSets(Deck.conflict["level" .. tostring(level)], ix, false)
+            local levelContributions = Deck._mergeStandardContributionSets(Deck.conflict["level" .. tostring(level)], ix and level == 3, false)
             local cardNames = Helper.getKeys(levelContributions)
+            assert(#cardNames >= cardCount, "Not enough level " .. tostring(level) .. " conflict cards!")
             Helper.shuffle(cardNames)
-            for i = 1, cardCounts[level] do
+            for i = 1, cardCount do
                 contributions[cardNames[i]] = 1
             end
         end
@@ -857,7 +885,7 @@ function Deck.generateHagalDeck(deckZone, ix, immortality, playerCount)
     local contributionSets = {}
     for _, contributionSetName in ipairs(contributionSetNames) do
         local root = Deck.hagal[contributionSetName]
-        table.insert(contributionSets, root.core)
+        table.insert(contributionSets, root.common)
         if not playerCount or playerCount == 1 then
             table.insert(contributionSets, root.solo)
         elseif not playerCount or playerCount == 2 then
@@ -871,35 +899,41 @@ function Deck.generateHagalDeck(deckZone, ix, immortality, playerCount)
 end
 
 ---
-function Deck.generateLeaderDeck(deckZone, contracts, ix, immortality, fanmadeLeaders)
+function Deck.generateLeaderDeck(deckZone, contracts, ix, immortality, legacy)
     --Helper.dump("generateLeaderDeck")
     assert(deckZone)
     assert(deckZone.getPosition)
     local continuation = Helper.createContinuation("Deck.generateLeaderDeck")
-    local contributions = Deck._mergeStandardContributionSets(Deck.leaders, ix, immortality)
+    local contributions = Deck._mergeStandardContributionSets(Deck.leaders, ix, immortality, legacy)
     if not contracts then
         contributions.shaddamCorrino = nil
-    end
-    if fanmadeLeaders then
-        local locale = I18N.getLocale()
-        if locale == 'fr' then
-            contributions = Deck._mergeContributionSets({ contributions, Deck._mergeStandardContributionSets(Deck.leaders.fanmade.arkhane, ix, immortality) })
-        elseif locale == 'en' then
-            contributions = Deck._mergeStandardContributionSets(Deck.leaders.fanmade.retienne, ix, immortality)
-        end
     end
     Deck._generateDeck("Leader", deckZone, contributions, Deck.sources.leaders).doAfter(continuation.run)
     return continuation
 end
 
 ---
-function Deck._mergeStandardContributionSets(root, ix, immortality)
+function Deck.generateRivalLeaderDeck(deckZone, ix, immortality, legacy)
+    --Helper.dump("generateRivalLeaderDeck")
+    assert(deckZone)
+    assert(deckZone.getPosition)
+    local continuation = Helper.createContinuation("Deck.generateRivalLeaderDeck")
+    local contributions = Deck._mergeStandardContributionSets(Deck.rivalLeaders, ix, immortality, legacy)
+    Deck._generateDeck("RivalLeader", deckZone, contributions, Deck.sources.rivalLeaders).doAfter(continuation.run)
+    return continuation
+end
+
+---
+function Deck._mergeStandardContributionSets(root, ix, immortality, legacy)
     local contributionSets = { root.uprising }
     if ix then
         table.insert(contributionSets, root.ix)
     end
     if immortality then
         table.insert(contributionSets, root.immortality)
+    end
+    if legacy then
+        table.insert(contributionSets, root.legacy)
     end
     return Deck._mergeContributionSets(contributionSets)
 end
@@ -1018,11 +1052,11 @@ end
 function Deck._generateDeck(deckType, deckZone, contributions, sources, spacing)
     --Helper.dumpFunction("Deck._generateDeck", deckType, "_", #Helper.getKeys(contributions), "_")
     assert(deckZone.getPosition)
-    return Deck._generateStaticDeck(deckType, deckZone, contributions, sources, spacing)
+    return Deck._generateFromPrebuildDeck(deckType, deckZone, contributions, sources, spacing)
 end
 
 --- Add 2 back cards such as to always have a deck to take cards from.
-function Deck._generateDynamicDeck2(deckType, position, contributions, sources)
+function Deck._generateDynamicDeckWithTwoBackCards(deckType, position, contributions, sources)
     local contributions2 = Helper.shallowCopy(contributions)
     contributions2.back = 2
     local sources2 = Helper.shallowCopy(sources)
@@ -1034,7 +1068,7 @@ function Deck._generateDynamicDeck2(deckType, position, contributions, sources)
         customDeck = creator(backUrl, 1, 1),
         luaIndex = 1
     }
-    Deck._generateDynamicDeck(deckType, position, contributions2, sources2)
+    return Deck._generateDynamicDeck(deckType, position, contributions2, sources2)
 end
 
 ---
@@ -1148,7 +1182,7 @@ function Deck._nextCustomDeckId()
 end
 
 ---
-function Deck._generateStaticObjectiveDeck(deckPosition)
+function Deck._prebuildObjectiveDeck(deckPosition)
     local contributions = {
         muadDibFirstPlayer = 1,
         muadDib4to6p = 1,
@@ -1156,80 +1190,81 @@ function Deck._generateStaticObjectiveDeck(deckPosition)
         crysknife = 1,
         ornithopter1to3p = 1,
     }
-    Deck._generateDynamicDeck2("Objective", deckPosition, contributions, Deck.sources.objective)
+    Deck._generateDynamicDeckWithTwoBackCards("Objective", deckPosition, contributions, Deck.sources.objective)
 end
 
 ---
-function Deck._generateStaticStarterDeck(deckPosition)
+function Deck._prebuildStarterDeck(deckPosition)
     local contributionSets = {
         Deck.starter.base,
-        Deck.starter.immortality,
         Deck.starter.epic,
     }
     local contributions = Deck._mergeContributionSets(contributionSets, true)
     contributions = Helper.map(contributions, function (_, cardinality)
         return cardinality * 4
     end)
-    Deck._generateDynamicDeck2("Imperium", deckPosition, contributions, Deck.sources.imperium)
+    Deck._generateDynamicDeckWithTwoBackCards("Imperium", deckPosition, contributions, Deck.sources.imperium)
 end
 
 ---
-function Deck._generateStaticEmperorStarterDeck(deckPosition)
-    Deck._generateDynamicDeck2("Imperium", deckPosition, Deck.starter.emperor, Deck.sources.imperium)
+function Deck._prebuildEmperorStarterDeck(deckPosition)
+    Deck._generateDynamicDeckWithTwoBackCards("Imperium", deckPosition, Deck.starter.emperor, Deck.sources.imperium)
 end
 
 ---
-function Deck._generateStaticMuadDibStarterDeck(deckPosition)
-    Deck._generateDynamicDeck2("Imperium", deckPosition, Deck.starter.muadDib, Deck.sources.imperium)
+function Deck._prebuildMuadDibStarterDeck(deckPosition)
+    Deck._generateDynamicDeckWithTwoBackCards("Imperium", deckPosition, Deck.starter.muadDib, Deck.sources.imperium)
 end
 
 ---
-function Deck._generateStaticImperiumDeck(deckPosition)
+function Deck._prebuildImperiumDeck(deckPosition)
     local contributionSets = {
-        Deck.imperium.uprising,
+        Deck.imperium.legacy,
         Deck.imperium.ix,
         Deck.imperium.immortality,
+        Deck.imperium.uprising,
         Deck.imperium.uprisingContract,
     }
     local contributions = Deck._mergeContributionSets(contributionSets, true)
-    Deck._generateDynamicDeck2("Imperium", deckPosition, contributions, Deck.sources.imperium)
+    Deck._generateDynamicDeckWithTwoBackCards("Imperium", deckPosition, contributions, Deck.sources.imperium)
 end
 
 ---
-function Deck._generateStaticSpecialDeck(deckPosition)
+function Deck._prebuildSpecialDeck(deckPosition)
     local contributionSets = {
-        Deck.special.base,
+        Deck.special.legacy,
         Deck.special.immortality,
         Deck.special.uprising,
     }
     local contributions = Deck._mergeContributionSets(contributionSets, true)
-    Deck._generateDynamicDeck2("Imperium", deckPosition, contributions, Deck.sources.special)
+    Deck._generateDynamicDeckWithTwoBackCards("Imperium", deckPosition, contributions, Deck.sources.special)
 end
 
 ---
-function Deck._generateStaticTleilaxuDeck(deckPosition)
-    Deck._generateDynamicDeck2("Imperium", deckPosition, Deck.tleilaxu, Deck.sources.tleilaxu)
+function Deck._prebuildTleilaxuDeck(deckPosition)
+    Deck._generateDynamicDeckWithTwoBackCards("Imperium", deckPosition, Deck.tleilaxu, Deck.sources.tleilaxu)
 end
 
 ---
-function Deck._generateStaticIntrigueDeck(deckPosition)
+function Deck._prebuildIntrigueDeck(deckPosition)
     local contributionSets = {
+        Deck.intrigue.legacy,
         Deck.intrigue.ix,
         Deck.intrigue.immortality,
         Deck.intrigue.uprising,
         Deck.intrigue.uprisingContract,
     }
     local contributions = Deck._mergeContributionSets(contributionSets, true)
-    Deck._generateDynamicDeck2("Intrigue", deckPosition, contributions, Deck.sources.intrigue)
+    Deck._generateDynamicDeckWithTwoBackCards("Intrigue", deckPosition, contributions, Deck.sources.intrigue)
 end
 
 ---
-function Deck._generateStaticTechDeck(deckPosition)
-    Deck._generateDynamicDeck2("Tech", deckPosition, Deck.tech.ix, Deck.sources.tech)
+function Deck._prebuildTechDeck(deckPosition)
+    Deck._generateDynamicDeckWithTwoBackCards("Tech", deckPosition, Deck.tech.ix, Deck.sources.tech)
 end
 
 --
-function Deck._generateStaticConflictDeck(deckPosition)
+function Deck._prebuildConflictDeck(deckPosition)
     local contributionSets = {}
     for i = 1, 3 do
         for _, extension in ipairs({ "uprising", "ix", "immortality" }) do
@@ -1241,36 +1276,44 @@ function Deck._generateStaticConflictDeck(deckPosition)
         end
     end
     local contributions = Deck._mergeContributionSets(contributionSets, true)
-    Deck._generateDynamicDeck2("Conflict", deckPosition, contributions, Deck.sources.conflict)
+    Deck._generateDynamicDeckWithTwoBackCards("Conflict", deckPosition, contributions, Deck.sources.conflict)
 end
 
 ---
-function Deck._generateStaticHagalDeck(deckPosition)
+function Deck._prebuildHagalDeck(deckPosition)
     local contributionSets = {}
     for _, extension in ipairs({ "base", "ix", "immortality" }) do
-        for _, players in ipairs({ "root", "solo", "twoPlayers" }) do
+        for _, players in ipairs({ "common", "solo", "twoPlayers" }) do
             table.insert(contributionSets, Deck.hagal[extension][players])
         end
     end
     local contributions = Deck._mergeContributionSets(contributionSets, true)
-    Deck._generateDynamicDeck2("Hagal", deckPosition, contributions, Deck.sources.hagal)
+    Deck._generateDynamicDeckWithTwoBackCards("Hagal", deckPosition, contributions, Deck.sources.hagal)
 end
 
 ---
-function Deck._generateStaticLeaderDeck(deckPosition)
+function Deck._prebuildLeaderDeck(deckPosition)
     local contributionSets = {
-        Deck.leaders.base,
+        Deck.leaders.legacy,
         Deck.leaders.ix,
         Deck.leaders.uprising,
-        --Deck.leaders.uprisingAlt,
     }
     local contributions = Deck._mergeContributionSets(contributionSets, true)
-    Deck._generateDynamicDeck2("Leader", deckPosition, contributions, Deck.sources.leaders)
+    Deck._generateDynamicDeckWithTwoBackCards("Leader", deckPosition, contributions, Deck.sources.leaders)
 end
 
 ---
-function Deck._generateStaticDeck(deckType, deckZone, contributions, _, spacing)
-    --Helper.dumpFunction("Deck._generateStaticDeck", deckType)
+function Deck._prebuildRivalLeaderDeck(deckPosition)
+    local contributionSets = {
+        Deck.rivalLeaders.uprising,
+    }
+    local contributions = Deck._mergeContributionSets(contributionSets, true)
+    Deck._generateDynamicDeckWithTwoBackCards("RivalLeader", deckPosition, contributions, Deck.sources.rivalLeaders)
+end
+
+---
+function Deck._generateFromPrebuildDeck(deckType, deckZone, contributions, _, spacing)
+    --Helper.dumpFunction("Deck._prebuildDeck", deckType)
     assert(deckType)
     assert(deckZone)
     assert(#deckZone.getTags() == 0 or deckZone.hasTag(deckType),
@@ -1278,13 +1321,12 @@ function Deck._generateStaticDeck(deckType, deckZone, contributions, _, spacing)
         "Trying to generate a static deck in an incompatibly tagged zone will trigger the dreaded 'Unknown Error'.")
     assert(contributions)
 
-    local continuation = Helper.createContinuation("Deck._generateStaticDeck")
+    local continuation = Helper.createContinuation("Deck._prebuildDeck")
 
     local sources = {}
 
-    -- FIXME
-    local zone = getObjectFromGUID(I18N.getLocale() == "en" and "a5a2e6" or "db4507")
-    for _, object in ipairs(zone.getObjects()) do
+    local prebuildZone = Deck.prebuildZones[I18N.getLocale()]
+    for _, object in ipairs(prebuildZone.getObjects()) do
         if object.hasTag(deckType) then
             assert(object.type == "Deck")
             for _, card in ipairs(object.getObjects()) do
@@ -1388,6 +1430,11 @@ end
 ---
 function Deck.createLeaderCustomDeck(faceUrl, width, height)
     return Deck.createCustomDeck(Deck.backs.leaderCardBack, faceUrl, width, height, Vector(1.12, 1, 1.12))
+end
+
+---
+function Deck.createRivalLeaderCustomDeck(faceUrl, width, height)
+    return Deck.createCustomDeck(Deck.backs.rivalLeaderCardBack, faceUrl, width, height, Vector(1.05, 1, 1.05))
 end
 
 ---

@@ -32,7 +32,7 @@ def build():
 		app_dir = os.path.join(os.environ['HOME'], '.local', 'share')
 		luabundler = 'luabundler'
 	elif platform_system == 'Windows':
-		app_dir = os.path.join(os.environ['USERPROFILE'],'OneDrive', 'Documents', 'My Games')
+		app_dir = os.path.join(os.environ['USERPROFILE'], 'OneDrive', 'Documents', 'My Games')
 		luabundler = 'luabundler.cmd'
 	else:
 		print('Unknown os: ' + platform_system, file = sys.stderr)
@@ -40,10 +40,10 @@ def build():
 
 	tts_save_dir = os.path.join(app_dir, 'Tabletop Simulator', 'Saves')
 
-	# The 200 -> 201 pair is arbitrary.
+	# The 202 -> 203 pair is arbitrary.
 	# TODO Add some kind of --input/output parameters saved in "build.rc".
-	input_save = os.path.join(tts_save_dir, 'TS_Save_200.json')
-	output_save = os.path.join(tts_save_dir, 'TS_Save_201.json')
+	input_save = os.path.join(tts_save_dir, 'TS_Save_202.json')
+	output_save = os.path.join(tts_save_dir, 'TS_Save_203.json')
 
 	parser = argparse.ArgumentParser(
 		prog = 'TSS Build Tool',
@@ -168,7 +168,7 @@ def exportSave(output_save):
 	shutil.copyfile(os.path.join('tmp', 'mod.patched.json'), output_save)
 	output_png_file = output_save.replace('.json', '.png')
 	if not os.path.exists(output_png_file):
-		shutil.copyfile('uprising.png', output_png_file)
+		shutil.copyfile('icon.png', output_png_file)
 
 def upload():
 	print("[upload]")

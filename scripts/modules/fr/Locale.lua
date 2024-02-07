@@ -12,11 +12,12 @@ return {
     prolog = "« Une mise en place est toujours un moment très délicat. »",
     language = "Langue",
     players = "Joueurs",
-    virtualHotSeat = "Solo / Hotseat",
+    virtualHotSeat = "Spécial / Hotseat",
     randomizePlayersPositions = "Mélanger les positions des joueurs",
     extensions = "Extensions",
     useContracts = "Contrats de la CHOM",
-    riseOfIx = "L’Avènement de Ix (non supporté)",
+    legacy = "Dune : Imperium",
+    riseOfIx = "L’Avènement de Ix",
     epicMode = "Mode épique",
     immortality = "Immortalité",
     goTo11 = "Jusqu’à 11",
@@ -24,7 +25,6 @@ return {
     leaderPoolSize = "Taille de la sélection",
     defaultLeaderPoolSizeLabel = "Nombre de dirigeants ({value})",
     tweakLeaderSelection = "Personnaliser les dirigeants",
-    fanmadeLeaders = "Dirigeants par les fans",
     variants = "Variantes",
     miscellanous = "Divers",
     horizontalHandLayout = "Mains à l’horizontale à 4 joueurs",
@@ -51,6 +51,7 @@ return {
     -- Card
     acquireButton = "Acquérir",
     notFremenCard = "Tentative d’ajout d’un pouilleux de Fremen dans la salle du trône !",
+    noEnoughSpecimen = "Vous n’avez pas assez de spécimens !",
 
     -- Playboards
     noTouch = "Ne touchez pas à ce bouton !",
@@ -93,6 +94,8 @@ return {
     leaderSelectionExclude = "Vous pouvez retourner (ou détruire) n’importe quel dirigeant pour l’exclure.\nUne fois satisfait, appuyez sur le bouton « Démarrer ».",
     start = "Démarrer",
     claimLeader = "Prendre {leader} comme dirigeant",
+    incompatibleLeader = "Ce n’est pas un dirigeant pour un humain !",
+    incompatibleRivalLeader = "Ce n’est pas un dirigeant pour un rival !",
 
     -- Resource
     spiceAmount = "Épice",
@@ -203,7 +206,7 @@ return {
 
     goTechNegotiation = "Sélectionnez une option.",
     sendNegotiatorOption = "Négociateur",
-    buyTechWithDiscont1Option = "Tech. au rabais",
+    buyTechWithDiscont1Option = "Tech. avec un rabais",
     buyTechSelection = "Selectionnez votre option d’achat de tech.",
     freighterTechBuyOption = "piste d’expédition",
     techNegotiationTechBuyOption = "Négociation tech.",
@@ -321,7 +324,7 @@ return {
     margotFenring = "Dame Margot Fenring",
     irulanCorrino = "Princesse Irulan",
     reverendMotherJessica = "Révérende Mère Jessica",
-    jessicaAtreides = "Dame Jessica",
+    jessica = "Dame Jessica",
     feydRauthaHarkonnen = "Feyd-Rautha Harkonnen",
     shaddamCorrino = "Shaddam IV",
     muadDib = "Muad’Dib",
@@ -352,8 +355,8 @@ return {
     smuggling = "Contrebande",
     interstellarShipping = "Livraison interstellaire",
     techNegotiation = "Négociation tech.",
-    techNegotiation_1 = "Négociation tech.",
-    techNegotiation_2 = "Négociation tech.",
+    techNegotiation_Buy = "Acheter une tech.",
+    techNegotiation_Negotiate = "Envoyer un négociateur.",
     dreadnought = "Cuirassé",
 
     fremkit = "Fremkit",
@@ -395,6 +398,25 @@ return {
     habbanyaErg = "Erg de la Habbanya",
     desertMastery = "Desert Mastery",
     vastWealth = "Vaste richesse",
+
+    -- Hagal
+    placeSpyYellow = "Placer un espion",
+    placeSpyBlue = "Placer un espion",
+    placeSpyGreen = "Placer un espion",
+    deliverSuppliesAndHeighliner = "Livrer des fournitures / Long-courrier",
+    gatherSupport1 = "Rassembler du soutien",
+    gatherSupport2 = "Rassembler du soutien",
+    acceptContractAndShipping1 = "Accepter un contract / Expédition",
+    acceptContractAndShipping2 = "Accepter un contract / Expédition",
+    haggaBasinAndImperialBasin = "Bassin de Hagga / Bassin imperial",
+    reshuffle = "Rémélanger",
+    deliverSuppliesAndInterstellarShipping = "Livrer des fournitures / Livraison interstellaire",
+    smugglingAndInterstellarShipping = "Contrebande / Livraison interstellaire",
+    dreadnought1p = "Cuirassé",
+    dreadnought2p = "Cuirassé",
+    tleilaxuBonus1 = "Bonus Tleilaxu",
+    tleilaxuBonus2 = "Bonus Tleilaxu",
+    tleilaxuBonus3 = "Bonus Tleilaxu",
 
     -- Objective cards
     --crysknife = "",
@@ -723,7 +745,7 @@ return {
     choamSecurity = "Sécurité de la CHOM",
     spiceFreighters = "Camtars d’épice",
     siegeOfArrakeenNew = "Siège d’Arrakeen",
-    seizeSpiceRefinery = "Prendre la raffinerie d’épice",
+    seizeSpiceRefinery = "Capturer la raffinerie d’épice",
     testOfLoyalty = "Test de loyauté",
     shadowContest = "Épreuve de l’ombre",
     secureImperialBasinNew = "Sécuriser le bassin impérial",

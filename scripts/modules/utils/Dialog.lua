@@ -17,6 +17,20 @@ function Dialog.loadStaticUI()
     end
     UI.setXmlTable(xmlRoots)
     Dialog.staticDialogUsed = true
+    -- 10 instead of just 1, better be safe than sorry.
+    return Helper.onceFramesPassed(10)
+end
+
+---
+function Dialog.showInfoDialog(color, title)
+    if Dialog.nativeDialogUsed then
+        Player[color].showInfoDialog(title)
+    else
+        local options = {
+            I18N("ok"),
+        }
+        Dialog._showOptionsAndCancelDialog(color, title, options, function (_) end)
+    end
 end
 
 ---
@@ -114,8 +128,10 @@ end
 ---
 function Dialog._showOptionsAndCancelDialog(color, title, options, callback)
     if Dialog.staticDialogUsed then
+        Helper.dumpFunction("Dialog._bindStaticUI", color, title, options)
         Dialog._bindStaticUI(color, title, options, callback)
     else
+        Helper.dumpFunction("Dialog._generateDialogUI", color, title, options)
         local ui = Dialog._generateDialogUI(color, title, options, callback)
         UI.setXmlTable({ ui })
     end
@@ -124,6 +140,8 @@ end
 ---
 function Dialog._bindStaticUI(color, title, options, callback)
     local dialogId = Dialog._dialogId(options)
+    Dialog._checkExistence(dialogId)
+
     UI.setAttribute(dialogId, "active", true)
     UI.setAttribute(dialogId, "visibility", color)
     UI.setValue(Dialog._titleId(options), title)
@@ -147,6 +165,13 @@ function Dialog._bindStaticUI(color, title, options, callback)
             closingCallback(i)
         end))
     end
+end
+
+---
+function Dialog._checkExistence(dialogId)
+    local color = UI.getAttribute(dialogId, "color")
+    --Helper.dump("color:", dialogId, "->", color, type(color))
+    assert(color and type(color) == "string" and color:len() > 0, "Missing static dialogs!")
 end
 
 ---

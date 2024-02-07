@@ -40,16 +40,16 @@ function Reserve._transientSetUp()
         Reserve.foldspace = AcquireCard.new(Reserve.foldspaceSlotZone, "Imperium", PlayBoard.withLeader(function (_, color)
             local leader = PlayBoard.getLeader(color)
             leader.acquireFoldspace(color)
-        end), nil, Deck.getAcquireCardDecalUrl("generic"))
+        end), Deck.getAcquireCardDecalUrl("generic"))
     end
     Reserve.prepareTheWay = AcquireCard.new(Reserve.prepareTheWaySlotZone, "Imperium", PlayBoard.withLeader(function (_, color)
         local leader = PlayBoard.getLeader(color)
         leader.acquirePrepareTheWay(color)
-    end), nil, Deck.getAcquireCardDecalUrl("generic"))
+    end), Deck.getAcquireCardDecalUrl("generic"))
     Reserve.theSpiceMustFlow = AcquireCard.new(Reserve.theSpiceMustFlowSlotZone, "Imperium", PlayBoard.withLeader(function (_, color)
         local leader = PlayBoard.getLeader(color)
         leader.acquireTheSpiceMustFlow(color)
-    end), nil, Deck.getAcquireCardDecalUrl("generic"))
+    end), Deck.getAcquireCardDecalUrl("generic"))
 end
 
 ---

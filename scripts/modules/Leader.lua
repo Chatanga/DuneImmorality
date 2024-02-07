@@ -10,17 +10,13 @@ local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local Combat = Module.lazyRequire("Combat")
 local ChoamContractMarket = Module.lazyRequire("ChoamContractMarket")
+local Deck = Module.lazyRequire("Deck")
 
 local Leader = Helper.createClass(Action)
 
 ---
 function Leader.newLeader(name)
     local LeaderClass = Leader[name]
-    if not LeaderClass then
-        -- Fanmade leader?
-        LeaderClass = Helper.createClass(Leader, {})
-    end
-    assert(LeaderClass or name ~= "Hagal", "Active player must not choose the Green seat in test mode.")
     assert(LeaderClass, "Unknown leader: " .. tostring(name))
     LeaderClass.name = name
     return Helper.createClassInstance(LeaderClass)
@@ -149,6 +145,11 @@ Leader.paulAtreides = Helper.createClass(Leader, {
 
     --- Prescience
     setUp = function (color, settings)
+        Leader.paulAtreides.transientSetUp(color, settings)
+    end,
+
+    --- Prescience
+    transientSetUp = function (color, settings)
         local prescience = function (_, otherColor)
             if otherColor == color then
                 local cardOrDeck = PlayBoard.getDrawDeck(color)
@@ -241,6 +242,16 @@ Leader.armandEcaz = Helper.createClass(Leader, {
 })
 
 Leader.ilesaEcaz = Helper.createClass(Leader, {
+
+    setUp = function (color, settings)
+        local zone = PlayBoard.getPlayBoard(color).content.leaderZone
+        -- Temporary tag to avoid counting the leader card.
+        zone.addTag("Imperium")
+        Deck.generateSpecialDeck(zone, "legacy", "foldspace").doAfter(function (deck)
+            zone.removeTag("Imperium")
+            deck.flip()
+        end)
+    end,
 
     --- Guild contacts
     signetRing = function (color)
@@ -358,6 +369,21 @@ Leader.hundroMoritani = Helper.createClass(Leader, {
 
 Leader.stabanTuek = Helper.createClass(Leader, {
 
+    -- Smuggle spice
+    setUp = function (color, settings)
+        Leader.stabanTuek.transientSetUp(color, settings)
+    end,
+
+    transientSetUp = function (color, settings)
+        Helper.registerEventListener("agentSent", function (otherColor, spaceName)
+            if otherColor ~= color and MainBoard.isDesertSpace(spaceName) and MainBoard.isSpying(spaceName, color) then
+                Action.log(I18N("stabanSpiceSmuggling"), color)
+                local leader = PlayBoard.getLeader(color)
+                leader.resources(color, "spice", 1)
+            end
+        end)
+    end,
+
     --- Limited allies
     prepare = function (color, settings)
         Action.prepare(color, settings)
@@ -377,17 +403,6 @@ Leader.stabanTuek = Helper.createClass(Leader, {
                 end
             end
         end
-    end,
-
-    -- Smuggle spice
-    setUp = function (color, settings)
-        Helper.registerEventListener("agentSent", function (otherColor, spaceName)
-            if otherColor ~= color and MainBoard.isDesertSpace(spaceName) and MainBoard.isSpying(spaceName, color) then
-                Action.log(I18N("stabanSpiceSmuggling"), color)
-                local leader = PlayBoard.getLeader(color)
-                leader.resources(color, "spice", 1)
-            end
-        end)
     end
 })
 
@@ -398,6 +413,10 @@ Leader.gurneyHalleck = Helper.createClass(Leader, {
 
     --- Always smiling
     setUp = function (color, settings)
+        Leader.gurneyHalleck.transientSetUp(color, settings)
+    end,
+
+    transientSetUp = function (color, settings)
         Helper.registerEventListener("reveal", function (otherColor)
             if color == otherColor then
                 local threshold = settings.numberOfPlayers == 6 and 10 or 6
@@ -438,7 +457,7 @@ Leader.irulanCorrino = Helper.createClass(Leader, {
 
     --- Imperial Bitchright
     influence = function (color, faction, amount)
-        if faction == "emperor" then
+        if Helper.isElementOf(faction, { "emperor", "greatHouses" }) then
             local continuation = Helper.createContinuation("Leader.irulanCorrino.influence")
             local noFriendshipBefore = not InfluenceTrack.hasFriendship(color, faction)
             Action.influence(color, faction, amount).doAfter(function (...)
@@ -458,16 +477,20 @@ Leader.irulanCorrino = Helper.createClass(Leader, {
 })
 
 -- FIXME Just "Jessica" actually.
-Leader.jessicaAtreides = Helper.createClass(Leader, {
+Leader.jessica = Helper.createClass(Leader, {
 
     --- Other memories
     setUp = function (color, settings)
+        Leader.jessica.transientSetUp(color, settings)
+    end,
+
+    transientSetUp = function (color, settings)
         local leaderCard = PlayBoard.findLeaderCard(color)
 
         local otherMemories = function ()
-            Leader.jessicaAtreides.name = "reverendMotherJessica"
-            leaderCard.setGMNotes(Leader.jessicaAtreides.name)
-            leaderCard.setName(I18N(Leader.jessicaAtreides.name))
+            Leader.jessica.name = "reverendMotherJessica"
+            leaderCard.setGMNotes(Leader.jessica.name)
+            leaderCard.setName(I18N(Leader.jessica.name))
             leaderCard.setRotation(Vector(0, 180, 180))
             broadcastToAll(I18N("otherMemoriesUsed"), color)
         end
@@ -528,7 +551,7 @@ Leader.feydRauthaHarkonnen = Helper.createClass(Leader, {
 
         local leaderCard = PlayBoard.findLeaderCard(color)
         local marker = getObjectFromGUID("505c31")
-        marker.setPosition(leaderCard.positionToWorld(Leader.feydRauthaHarkonnen.positions[1]))
+        marker.setPosition(leaderCard.positionToWorld(Leader.feydRauthaHarkonnen.positions[1]) + Vector(0, 0.5, 0))
     end
 })
 

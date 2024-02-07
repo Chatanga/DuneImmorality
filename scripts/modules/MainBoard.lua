@@ -7,9 +7,9 @@ local Dialog = require("utils.Dialog")
 local Types = Module.lazyRequire("Types")
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
+local ShippingTrack = Module.lazyRequire("ShippingTrack")
 local TechMarket = Module.lazyRequire("TechMarket")
 local Combat = Module.lazyRequire("Combat")
-local Hagal = Module.lazyRequire("Hagal")
 local Resource = Module.lazyRequire("Resource")
 local Action = Module.lazyRequire("Action")
 local TurnControl = Module.lazyRequire("TurnControl")
@@ -45,18 +45,17 @@ local MainBoard = {
         assemblyHall = { group = "landsraad", posts = { "landsraadCouncil2" } },
         gatherSupport = { group = "landsraad", posts = { "landsraadCouncil2" } },
 
-        techNegotiation = { group = "ix", posts = {} },
-        dreadnought = { group = "ix", posts = {} },
+        techNegotiation = { group = "ix", posts = { "ix" } },
+        dreadnought = { group = "ix", posts = { "ix" } },
 
         shipping = { group = "choam", posts = { "choam" } },
         acceptContract = { group = "choam", posts = { "choam" } },
 
-        smuggling = { group = "choam", posts = {} },
-        interstellarShipping = { group = "choam", posts = {} },
+        smuggling = { group = "choam", posts = { "ixChoam" } },
+        interstellarShipping = { group = "choam", posts = { "ixChoam" } },
 
         sietchTabr = { group = "city", combat = true, posts = { "sietchTabrResearchStation" } },
         researchStation = { group = "city", combat = true, posts = { "sietchTabrResearchStation", "researchStationSpiceRefinery" } },
-        researchStationImmortality = { group = "city", combat = true, posts = {} },
         spiceRefinery = { group = "city", combat = true, posts = { "researchStationSpiceRefinery", "spiceRefineryArrakeen" } },
         arrakeen = { group = "city", combat = true, posts = { "spiceRefineryArrakeen" } },
         carthag = { group = "city", combat = true, posts = { "carthag" } },
@@ -73,10 +72,11 @@ function MainBoard.onLoad(state)
     --Helper.dumpFunction("MainBoard.onLoad")
 
     Helper.append(MainBoard, Helper.resolveGUIDs(false, {
-        board = "483a1a", -- 4P
-        --board = "21cc52", -- 6P
+        board4P = "483a1a",
+        board6P = "21cc52",
         emperorBoard = "4cb9ba",
         fremenBoard = "01c575",
+        immortalityPatch = "6cf62a",
         factions = {
             emperor = {
                 alliance = "13e990",
@@ -122,6 +122,8 @@ function MainBoard.onLoad(state)
     }))
     MainBoard.spiceBonuses = {}
 
+    MainBoard.board = MainBoard.board4P or MainBoard.board6P
+
     Helper.noPhysicsNorPlay(MainBoard.board)
     Helper.forEachValue(MainBoard.spiceBonusTokens, Helper.noPhysicsNorPlay)
 
@@ -153,8 +155,14 @@ function MainBoard.setUp(settings)
     if settings.numberOfPlayers == 6 then
         MainBoard.board.setState(2)
         Helper.onceTimeElapsed(2).doAfter(function ()
+            -- Why do I have to reload it now to get the snap points?
+            MainBoard.board = getObjectFromGUID("21cc52")
             continuation.run()
         end)
+        if settings.immortality then
+            local position = MainBoard.immortalityPatch.getPosition()
+            MainBoard.immortalityPatch.setPosition(position + Vector(1.6, 0, -1.9))
+        end
     else
         MainBoard.emperorBoard.destruct()
         MainBoard.emperorBoard = nil
@@ -164,6 +172,12 @@ function MainBoard.setUp(settings)
         MainBoard.spiceBonusTokens.habbanyaErg = nil
         --MainBoard.board.setState(1)
         continuation.run()
+    end
+
+    if settings.immortality then
+    else
+        MainBoard.immortalityPatch.destruct()
+        MainBoard.immortalityPatch = nil
     end
 
     local nextContinuation = Helper.createContinuation("MainBoard.setUp.next")
@@ -286,10 +300,34 @@ function MainBoard._processSnapPoints(settings)
         end,
 
         space = function (name, position)
+            if settings.riseOfIx then
+                local ignoredSpaceNames = {
+                    "assemblyHall",
+                    "gatherSupport",
+                    "shipping",
+                    "acceptContract",
+                }
+                for _, ignoredSpaceName in ipairs(ignoredSpaceNames) do
+                    if Helper.startsWith(name, ignoredSpaceName) then
+                        return
+                    end
+                end
+            end
             MainBoard.spaces[name] = { name = name, position = position }
         end,
 
         post = function (name, position)
+            if settings.riseOfIx then
+                local ignoredSpaceNames = {
+                    "choam",
+                    "landsraadCouncil2"
+                }
+                for _, ignoredSpaceName in ipairs(ignoredSpaceNames) do
+                    if Helper.startsWith(name, ignoredSpaceName) then
+                        return
+                    end
+                end
+            end
             MainBoard.observationPosts[name] = { name = name, position = position }
         end,
 
@@ -345,15 +383,19 @@ end
 
 ---
 function MainBoard._getAllBoards(settings)
+    assert(MainBoard.board)
     local boards = {
         MainBoard.board
     }
     if settings.numberOfPlayers == 6 then
+        assert(MainBoard.emperorBoard)
         table.insert(boards, MainBoard.emperorBoard)
+        assert(MainBoard.fremenBoard)
         table.insert(boards, MainBoard.fremenBoard)
     end
     if settings.riseOfIx then
-        table.insert(boards, TechMarket.board)
+        table.insert(boards, ShippingTrack.getBoard())
+        table.insert(boards, TechMarket.getBoard())
     end
     return boards
 end
@@ -372,6 +414,8 @@ end
 
 ---
 function MainBoard.occupy(controlableSpace, color)
+    Helper.dumpFunction("MainBoard.occupy", controlableSpace, color)
+
     for _, object in ipairs(controlableSpace.getObjects()) do
         for _, otherColor in ipairs(PlayBoard.getActivePlayBoardColors()) do
             if Types.isControlMarker(object, otherColor) then
@@ -389,7 +433,7 @@ function MainBoard.occupy(controlableSpace, color)
     local p = controlableSpace.getPosition()
     PlayBoard.getControlMarkerBag(color).takeObject({
         -- Position is adjusted so as to insert the token below any dreadnought.
-        position = Vector(p.x, 0.78, p.z),
+        position = Vector(p.x, 1.79, p.z),
         rotation = Vector(0, 180, 0),
         smooth = false,
         callback_function = function (controlMarker)
@@ -591,21 +635,40 @@ end
 
 ---
 function MainBoard.sendSpy(color, observationPostName)
-    local continuation = Helper.createContinuation("MainBoard.sendSpy")
-
     local observationPost = MainBoard.observationPosts[observationPostName]
+    assert(observationPost, observationPostName)
 
-    if not Park.isEmpty(PlayBoard.getSpyPark(color)) then
-        local spyPark = PlayBoard.getSpyPark(color)
+    local spyPark = PlayBoard.getSpyPark(color)
+    if not Park.isEmpty(spyPark) then
         Helper.emitEvent("spySent", color, observationPostName)
         --log("Park.transfert(1, agentPark, parentSpace.park)")
         Park.transfert(1, spyPark, observationPost.park)
-        continuation.run(true)
+        return true
     else
-        continuation.run(false)
+        return false
     end
+end
 
-    return continuation
+---
+function MainBoard.recallSpy(color, observationPostName)
+    local observationPost = MainBoard.observationPosts[observationPostName]
+    assert(observationPost, observationPostName)
+
+    local spyPark = PlayBoard.getSpyPark(color)
+    return Park.transfert(1, observationPost.park, spyPark) > 0
+end
+
+---
+function MainBoard.findRecallableSpies(color)
+    local recallableSpies = {}
+    for observationPostName, observationPost in pairs(MainBoard.observationPosts) do
+        for _, spy in ipairs(Park.getObjects(observationPost.park)) do
+            if spy.hasTag(color) then
+                table.insert(recallableSpies, observationPostName)
+            end
+        end
+    end
+    return recallableSpies
 end
 
 ---
@@ -708,6 +771,7 @@ end
 ---
 function MainBoard.sendRivalAgent(color, spaceName)
     local space = MainBoard.spaces[spaceName]
+    assert(space, spaceName)
     if not Park.isEmpty(PlayBoard.getAgentPark(color)) then
         local agentPark = PlayBoard.getAgentPark(color)
         Helper.emitEvent("agentSent", color, spaceName)
@@ -726,6 +790,10 @@ end
 
 ---
 function MainBoard._checkGenericAccess(color, leader, requirements)
+    if PlayBoard.isRival(color) then
+        return true
+    end
+
     for requirement, value in pairs(requirements) do
         if Helper.isElementOf(requirement, { "spice", "water", "solari" }) then
             if not MainBoard._hasResource(leader, color, requirement, value) then
@@ -733,9 +801,21 @@ function MainBoard._checkGenericAccess(color, leader, requirements)
                 return false
             end
         elseif requirement == "friendship" then
-            if PlayBoard.hasPlayedThisTurn(color, "undercoverAsset") then
-                return true
-            elseif not InfluenceTrack.hasFriendship(color, value) then
+            local infiltrationCards = {
+                "kwisatzHaderach",
+                "guildAccord",
+                "choamDelegate",
+                "bountyHunter",
+                "embeddedAgent",
+                "tleilaxuInfiltrator",
+                "undercoverAsset",
+            }
+            for _, cardName in ipairs(infiltrationCards) do
+                if PlayBoard.hasPlayedThisTurn(color, cardName) then
+                    return true
+                end
+            end
+            if not InfluenceTrack.hasFriendship(color, value) then
                 Dialog.broadcastToColor(I18N("noFriendship", { withFaction = I18N(Helper.toCamelCase("with", value)) }), color, "Purple")
                 return false
             end
@@ -1123,7 +1203,11 @@ function MainBoard._goResearchStation(color, leader, continuation)
     if MainBoard._checkGenericAccess(color, leader, { water = 2 }) then
         continuation.run(function ()
             leader.resources(color, "water", -2)
-            leader.troops(color, "supply", "garrison", 2)
+            if MainBoard.immortalityPatch then
+                leader.research(color, 2)
+            else
+                leader.troops(color, "supply", "garrison", 2)
+            end
             leader.drawImperiumCards(color, 2)
         end)
     else
@@ -1365,85 +1449,70 @@ function MainBoard.getControllingDreadnought(bannerZone)
     return nil
 end
 
--- *** --
-
---[[ Immortality stuff
-
 ---
-function MainBoard._goResearchStationImmortality(color, leader)
-    if leader.resources(color, "water", -2) then
-        leader.drawImperiumCards(color, 2)
-        --leader.research(color, ...)
-        return true
-    else
-        return false
-    end
-end
-]]
-
---[[ Ix stuff
-
----
-function MainBoard._goSmuggling(color, leader)
-    leader.resources(color, "solari", 1)
-    leader.shipments(color, 1)
-    return true
+function MainBoard._goSmuggling(color, leader, continuation)
+    continuation.run(function ()
+        leader.resources(color, "solari", 1)
+        leader.shipments(color, 1)
+    end)
 end
 
 ---
-function MainBoard._goInterstellarShipping(color, leader)
-    if (InfluenceTrack.hasFriendship(color, "spacingGuild")) then
-        leader.shipments(color, 2)
-        return true
+function MainBoard._goInterstellarShipping(color, leader, continuation)
+    if MainBoard._checkGenericAccess(color, leader, { friendship = "spacingGuild" }) then
+        continuation.run(function ()
+            leader.shipments(color, 1)
+        end)
     else
-        return false
+        continuation.run()
     end
 end
 
-function MainBoard._asyncGoTechNegotiation(color, leader)
-    local continuation = Helper.createContinuation("MainBoard._asyncGoTechNegotiation")
+function MainBoard._goTechNegotiation(color, leader, continuation)
+    Helper.dumpFunction("MainBoard._goTechNegotiation", color)
     local options = {
         I18N("sendNegotiatorOption"),
         I18N("buyTechWithDiscont1Option"),
     }
     Dialog.showOptionsAndCancelDialog(color, I18N("goTechNegotiation"), options, continuation, function (index)
-        local success = true
         if index == 1 then
-            MainBoard._goTechNegotiation_1(color, leader)
+            MainBoard._goTechNegotiation_Negotiate(color, leader, continuation)
         elseif index == 2 then
-            MainBoard._goTechNegotiation_2(color, leader)
+            MainBoard._goTechNegotiation_Buy(color, leader, continuation)
         else
-            success = false
+            assert(index == 0)
+            continuation.run()
         end
-        continuation.run(success)
     end)
     return continuation
 end
 
-function MainBoard._goTechNegotiation_1(color, leader)
-    leader.resources(color, "persuasion", 1)
-    leader.troops(color, "supply", "negotiation", 1)
-    return true
+function MainBoard._goTechNegotiation_Buy(color, leader, continuation)
+    continuation.run(function ()
+        leader.resources(color, "persuasion", 1)
+        TechMarket.registerAcquireTechOption(color, "techNegotiationTechBuyOption", "spice", 1)
+    end)
 end
 
-function MainBoard._goTechNegotiation_2(color, leader)
-    leader.resources(color, "persuasion", 1)
-    TechMarket.registerAcquireTechOption(color, "techNegotiationTechBuyOption", "spice", 1)
-    return true
+function MainBoard._goTechNegotiation_Negotiate(color, leader, continuation)
+    continuation.run(function ()
+        leader.resources(color, "persuasion", 1)
+        leader.troops(color, "supply", "negotiation", 1)
+    end)
 end
 
 ---
-function MainBoard._goDreadnought(color, leader)
-    if leader.resources(color, "solari", -3) then
-        TechMarket.registerAcquireTechOption(color, "dreadnoughtTechBuyOption", "spice", 0)
-        Park.transfert(1, PlayBoard.getDreadnoughtPark(color), Combat.getDreadnoughtPark(color))
-        return true
+function MainBoard._goDreadnought(color, leader, continuation)
+    if MainBoard._checkGenericAccess(color, leader, { solari = 3 }) then
+        continuation.run(function ()
+            leader.resources(color, "solari", -3)
+            TechMarket.registerAcquireTechOption(color, "dreadnoughtTechBuyOption", "spice", 0)
+            Park.transfert(1, PlayBoard.getDreadnoughtPark(color), Combat.getDreadnoughtPark(color))
+        end)
     else
-        return false
+        continuation.run()
     end
 end
-
-]]
 
 ---
 function MainBoard.blowUpShieldWall(color, skipConfirmation)
@@ -1465,6 +1534,11 @@ function MainBoard.blowUpShieldWall(color, skipConfirmation)
     end
 end
 
+---
+function MainBoard.shieldWallIsStanding()
+    return MainBoard.shieldWallToken ~= nil
+end
+
 --- The color could be nil (the same way it could be nil with Types.isAgent)
 function MainBoard.hasAgentInSpace(spaceName, color)
     local space = MainBoard.spaces[spaceName]
@@ -1484,6 +1558,18 @@ end
 function MainBoard.hasEnemyAgentInSpace(spaceName, color)
     for _, otherColor in ipairs(PlayBoard.getActivePlayBoardColors()) do
         if otherColor ~= color and MainBoard.hasAgentInSpace(spaceName, otherColor) then
+            return true
+        end
+    end
+    return false
+end
+
+---
+function MainBoard.observationPostIsOccupied(observationPostName, color)
+    local observationPost = MainBoard.observationPosts[observationPostName]
+    assert(observationPost, observationPostName)
+    for _, spy in ipairs(Park.getObjects(observationPost.park)) do
+        if not color or spy.hasTag(color) then
             return true
         end
     end
@@ -1627,7 +1713,7 @@ end
 ---
 function MainBoard.addSpaceBonus(spaceName, bonuses)
     local space = MainBoard.spaces[spaceName]
-    assert(space, "Unknow space: " .. spaceName)
+    assert(space, "Unknown space: " .. spaceName)
 end
 
 ---
@@ -1637,19 +1723,30 @@ function MainBoard.getSnooperTrackPosition(faction)
         local p = Vector(0, 0, 0)
         local count = 0
         for _, spaceName in ipairs(spaceNames) do
-            p = p + MainBoard.spaces[spaceName].zone.getPosition()
+            local space = MainBoard.spaces[spaceName]
+            assert(space, spaceName)
+            p = p + space.zone.getPosition()
             count = count + 1
         end
         return p * (1 / count)
     end
 
-    error("TODO")
-    local positions = {
-        emperor = getAveragePosition({ "conspire", "wealth" }),
-        spacingGuild = getAveragePosition({ "heighliner", "foldspace" }),
-        beneGesserit = getAveragePosition({ "selectiveBreeding", "secrets" }),
-        fremen = getAveragePosition({ "hardyWarriors", "stillsuits" }),
-    }
+    local positions
+    if TurnControl.getPlayerCount() == 6 then
+        positions = {
+            emperor = getAveragePosition({ "militarySupport", "economicSupport" }),
+            spacingGuild = getAveragePosition({ "heighliner", "deliverSupplies" }),
+            beneGesserit = getAveragePosition({ "espionage", "secrets" }),
+            fremen = getAveragePosition({ "controversialTechnology", "expedition" }),
+        }
+    else
+        positions = {
+            emperor = getAveragePosition({ "sardaukar", "dutifulService" }),
+            spacingGuild = getAveragePosition({ "heighliner", "deliverSupplies" }),
+            beneGesserit = getAveragePosition({ "espionage", "secrets" }),
+            fremen = getAveragePosition({ "desertTactics", "fremkit" }),
+        }
+    end
 
     return positions[faction]
 end

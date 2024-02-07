@@ -233,7 +233,7 @@ end
 ---@param rotation Vector?
 ---@param smooth boolean?
 ---@param flipAtTheEnd boolean?
----@return Continuation? A continuation run once the object is spawned.
+---@return Continuation A continuation run once the object is spawned.
 function Helper.moveCardFromZone(zone, position, rotation, smooth, flipAtTheEnd)
     assert(zone.type == "Scripting")
     --Helper.dumpFunction("Helper.moveCardFromZone", zone, position, rotation, smooth, flipAtTheEnd)
@@ -1485,15 +1485,28 @@ end
 
 ---
 function Helper.toCamelCase(...)
-    local chameauString
+    local camelString
     for i, str in ipairs({...}) do
         if i > 1 then
-            chameauString = chameauString .. str:gsub("^%l", string.upper)
+            camelString = camelString .. str:gsub("^%l", string.upper)
         else
-            chameauString = str:gsub("^%u", string.lower)
+            camelString = str:gsub("^%u", string.lower)
         end
     end
-    return chameauString
+    return camelString
+end
+
+---
+function Helper.toPascalCase(...)
+    local pascalString
+    for i, str in ipairs({...}) do
+        if i > 1 then
+            pascalString = pascalString .. str:gsub("^%l", string.upper)
+        else
+            pascalString = str:gsub("^%l", string.upper)
+        end
+    end
+    return pascalString
 end
 
 ---
@@ -1891,7 +1904,7 @@ end
 function Helper.mapValues(elements, f)
     assert(elements)
     local newElements = {}
-    for k, v in ipairs(elements) do
+    for k, v in pairs(elements) do
         newElements[k] = f(v)
     end
     return newElements
@@ -1979,15 +1992,33 @@ function Helper.endsWith(str, ending)
     return ending == "" or str:sub(-#ending) == ending
 end
 
-function Helper.splitString(inputstr, sep)
-    if sep == nil then
-       sep = "%s"
+---
+function Helper.splitString(str, sep)
+    local tokens = {}
+    for token in string.gmatch(str, "([^" .. (sep or "%s") .. "]+)") do
+        table.insert(tokens, token)
     end
-    local t={}
-    for str in string.gmatch(inputstr, "([^"..sep.."]+)") do
-       table.insert(t, str)
+    return tokens
+end
+
+---
+function Helper.chopName(name, n)
+    local choppedName = ""
+    local i = 0
+    for _, token in ipairs(Helper.splitString(name, " ")) do
+        if token:len() > 2 then
+            i = i + 1
+        end
+        if i <= n then
+            if choppedName:len() > 0 then
+                choppedName = choppedName .. " "
+            end
+            choppedName = choppedName .. token
+        else
+            break
+        end
     end
-    return t
- end
+    return choppedName
+end
 
 return Helper

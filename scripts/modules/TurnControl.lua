@@ -53,7 +53,7 @@ function TurnControl.onLoad(state)
             TurnControl.customTurnSequence = state.TurnControl.customTurnSequence
 
             if TurnControl.currentPlayerLuaIndex then
-                Helper.onceTimeElapsed(2).doAfter(TurnControl._notifyPlayerTurn)
+                Helper.onceTimeElapsed(2).doAfter(Helper.partialApply(TurnControl._notifyPlayerTurn, true))
             else
                 TurnControl._createMakersAndRecallButton()
             end
@@ -84,14 +84,7 @@ function TurnControl.setUp(settings, activeOpponents)
     TurnControl.players = TurnControl.toCanonicallyOrderedPlayerList(activeOpponents)
     TurnControl.scoreGoal = settings.epicMode and 12 or 10
 
-    if settings.numberOfPlayers == 1 then
-        for i, player in ipairs(TurnControl.players) do
-            if PlayBoard.isHuman(player) then
-                TurnControl.firstPlayerLuaIndex = TurnControl._getNextPlayer(i)
-                break
-            end
-        end
-    elseif settings.numberOfPlayers == 2 then
+    if settings.numberOfPlayers == 2 then
         for i, player in ipairs(TurnControl.players) do
             if PlayBoard.isRival(player) then
                 TurnControl.firstPlayerLuaIndex = TurnControl._getNextPlayer(i, math.random() > 0)
@@ -105,8 +98,9 @@ function TurnControl.setUp(settings, activeOpponents)
             TurnControl.firstPlayerLuaIndex = math.random(#TurnControl.players)
             firstPlayer = TurnControl.players[TurnControl.firstPlayerLuaIndex]
         until not Commander.isCommander(firstPlayer)
-        TurnControl._assignObjectives()
     end
+
+    TurnControl._assignObjectives()
 end
 
 --- Return the (colors of the) active opponents in the mod canonical order,
@@ -131,9 +125,16 @@ end
 --- but the two have been kept separated for historical reasons.
 --- FIXME Way too convoluted!
 function TurnControl._assignObjectives()
+    local objectiveCards = {}
+
     local cardNames = { "crysknife" }
     if #TurnControl.players == 3 then
-        table.insert(cardNames, "ornithopter1to3p")
+        local rivals = Helper.filter(TurnControl.players, PlayBoard.isRival)
+        if #rivals == 1 then
+            objectiveCards[rivals[1]] = "ornithopter1to3p"
+        else
+            table.insert(cardNames, "ornithopter1to3p")
+        end
     elseif #TurnControl.players >= 4 then
         table.insert(cardNames, "muadDib4to6p")
         table.insert(cardNames, "crysknife4to6p")
@@ -142,12 +143,11 @@ function TurnControl._assignObjectives()
     end
     Helper.shuffle(cardNames)
 
-    local objectiveCards = {}
     for i, color in ipairs(TurnControl.players) do
         if not Commander.isCommander(color) then
             if i == TurnControl.firstPlayerLuaIndex then
                 objectiveCards[color] = "muadDibFirstPlayer"
-            else
+            elseif not objectiveCards[color] then
                 objectiveCards[color] = cardNames[1]
                 table.remove(cardNames, 1)
             end
@@ -189,7 +189,7 @@ function TurnControl._assignObjectives()
         assert(Helper.getDeckOrCard(someUntaggedZone) == deck)
         local reversedPlayers = Helper.shallowCopy(TurnControl.players)
         Helper.reverse(reversedPlayers)
-        for i, color in ipairs(reversedPlayers) do
+        for _, color in ipairs(reversedPlayers) do
             if not Commander.isCommander(color) then
                 PlayBoard.giveObjectiveCardFromZone(color, someUntaggedZone)
             end
@@ -276,7 +276,7 @@ function TurnControl._startPhase(phase)
     TurnControl.currentPhase = phase
     TurnControl.customTurnSequence = nil
     if phase == "leaderSelection" and TurnControl.counterClockWise then
-        TurnControl.currentPlayerLuaIndex = TurnControl._getNextPlayer(TurnControl.firstPlayerLuaIndex, TurnControl.counterClockWise)
+        TurnControl.currentPlayerLuaIndex = getNextPlayer()
     else
         TurnControl.currentPlayerLuaIndex = TurnControl.firstPlayerLuaIndex
     end
@@ -300,7 +300,7 @@ function TurnControl._startPhase(phase)
 end
 
 ---
-function TurnControl.endOfTurn()
+function TurnControl.endOfTurn(i)
     Helper.onceStabilized().doAfter(function ()
         TurnControl._next(TurnControl._getNextPlayer(TurnControl.currentPlayerLuaIndex, TurnControl.counterClockWise))
     end)
@@ -369,12 +369,12 @@ function TurnControl._createMakersAndRecallButton()
 end
 
 ---
-function TurnControl._notifyPlayerTurn()
+function TurnControl._notifyPlayerTurn(refreshing)
     local playerColor = TurnControl.players[TurnControl.currentPlayerLuaIndex]
     local player = Helper.findPlayerByColor(playerColor)
     --Helper.dump(playerColor, "is", player.seated and "seated" or "not seated")
     if player then
-        if not player.seated and (not TurnControl.hotSeat or not TurnControl._assumeDirectControl(playerColor)) then
+        if not player.seated and (not TurnControl.hotSeat or not TurnControl.assumeDirectControl(playerColor)) then
             broadcastToAll(I18N("noSeatedPlayer", { color = I18N(playerColor) }), Color.fromString("Pink"))
         end
         Helper.onceFramesPassed(1).doAfter(function ()
@@ -384,12 +384,12 @@ function TurnControl._notifyPlayerTurn()
                 Turns.enable = #Turns.order > 0
             end
             Helper.dump(">> Turn:", playerColor)
-            Helper.emitEvent("playerTurns", TurnControl.currentPhase, playerColor)
+            Helper.emitEvent("playerTurn", TurnControl.currentPhase, playerColor, refreshing)
         end)
     end
 end
 
-function TurnControl._assumeDirectControl(color)
+function TurnControl.assumeDirectControl(color)
     local legitimatePlayers = TurnControl.getLegitimatePlayers(color)
     if not Helper.isEmpty(legitimatePlayers) then
         legitimatePlayers[1].changeColor(color)
@@ -448,7 +448,9 @@ function TurnControl._getNextPlayer(playerLuaIndex, counterClockWise)
     if TurnControl.customTurnSequence then
         for i, otherPlayerLuaIndex in ipairs(TurnControl.customTurnSequence) do
             if otherPlayerLuaIndex == playerLuaIndex then
-                return TurnControl.customTurnSequence[(i % #TurnControl.customTurnSequence) + 1]
+                local nextPlayerLuaIndex = TurnControl.customTurnSequence[(i % #TurnControl.customTurnSequence) + 1]
+                --Helper.dump("custom turn sequence ->", nextPlayerLuaIndex)
+                return nextPlayerLuaIndex
             end
         end
         error("Incorrect custom turn sequence")
@@ -461,7 +463,7 @@ function TurnControl._getNextPlayer(playerLuaIndex, counterClockWise)
             nextPlayerLuaIndex = (playerLuaIndex % n) + 1
         end
         assert(nextPlayerLuaIndex)
-        --Helper.dump("->", nextPlayerLuaIndex)
+        --Helper.dump("default turn sequence ->", nextPlayerLuaIndex)
         return nextPlayerLuaIndex
     end
 end
@@ -477,8 +479,7 @@ function TurnControl._getNextPhase(phase)
     elseif phase == 'playerTurns' then
         return 'combat'
     elseif phase == 'combat' then
-        -- return 'combatEnd' -- Skipped
-        return 'makers'
+        return 'combatEnd'
     elseif phase == 'combatEnd' then
         return 'makers'
     elseif phase == 'makers' then
@@ -550,6 +551,11 @@ end
 ---
 function TurnControl.getCurrentRound()
     return TurnControl.currentRound
+end
+
+---
+function TurnControl.getCurrentPhase()
+    return TurnControl.currentPhase
 end
 
 ---

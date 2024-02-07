@@ -1,13 +1,16 @@
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local AcquireCard = require("utils.AcquireCard")
+local Park = require("utils.Park")
 
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local MainBoard = Module.lazyRequire("MainBoard")
+local Commander = Module.lazyRequire("Commander")
 
 local ChoamContractMarket = {
     -- Unused
-    contract = {
+    -- http://cloud-3.steamusercontent.com/ugc/2190499045494153971/2F050419ADB34BC59FEBF5B5A483F9A315F41D8A/
+    contracts = {
         harvest_1 = 1,
         harvest_2 = 1,
         harvest_3 = 1,
@@ -29,6 +32,20 @@ local ChoamContractMarket = {
         spiceRefinery_2 = 1,
         arrakeen_1 = 1,
         arrakeen_2 = 1,
+    },
+    -- Unused
+    -- http://cloud-3.steamusercontent.com/ugc/2190499045495011713/25CD19C82AA59A349CAB24DCC69EAEDF7F5BED3E/
+    ixContracts = {
+        dreadnought = 1,
+        techNegotiation = 1,
+        highCouncil = 1,
+        interstellarShipping = 1,
+        harvest_1 = 1,
+        harvest_2 = 1,
+        smuggling = 1,
+        heighliner = 1,
+        espionage = 1,
+        secrets = 1,
     },
     acquireCards = {},
     contractSlots = {},
@@ -57,6 +74,44 @@ function ChoamContractMarket.setUp(settings)
 
         Helper.shuffleDeck(ChoamContractMarket.contractBag)
         Helper.onceShuffled(ChoamContractMarket.contractBag).doAfter(function ()
+
+            local ixContratCountForEachPlayer = {}
+            if settings.riseOfIx then
+                for _, color in ipairs(PlayBoard.getActivePlayBoardColors(true)) do
+                    if not Commander.isCommander(color) then
+                        ixContratCountForEachPlayer[color] = 2
+                    end
+                end
+            end
+
+            local trashHeight = 1
+            for _, object in ipairs(ChoamContractMarket.contractBag.getObjects()) do
+                if Helper.isElementOf("IxContract", object.tags) then
+                    local taken = false
+                    for color, count in pairs(ixContratCountForEachPlayer) do
+                        if count > 0 then
+                            ixContratCountForEachPlayer[color] = count - 1
+                            local emptySlots = Park.findEmptySlots(PlayBoard.getRevealCardPark(color))
+                            ChoamContractMarket.contractBag.takeObject({
+                                position = emptySlots[count],
+                                rotation = Vector(0, 180, 0),
+                                guid = object.guid,
+                            })
+                            taken = true
+                            break
+                        end
+                    end
+                    if not taken then
+                        ChoamContractMarket.contractBag.takeObject({
+                            position = getObjectFromGUID('ef8614').getPosition() + Vector(0, trashHeight * 0.5, 0),
+                            rotation = Vector(0, 180, 0),
+                            guid = object.guid,
+                        })
+                        trashHeight = trashHeight + 1
+                    end
+                end
+            end
+
             for i, _ in ipairs(ChoamContractMarket.contractSlots) do
                 ChoamContractMarket._replenish(i)
             end
@@ -85,14 +140,18 @@ function ChoamContractMarket._transientSetUp(settings)
 
     for i, zone in ipairs(ChoamContractMarket.contractSlots) do
         local callback = PlayBoard.withLeader(ChoamContractMarket["_acquireContract" .. tostring(i)])
-        local acquireCard = AcquireCard.new(zone, "Contract", callback, 0.3)
+        local acquireCard = AcquireCard.new(zone, "Contract", callback)
+        acquireCard.groundHeight = acquireCard.groundHeight + 0.1
+        acquireCard.cardHeight = 0.2
         table.insert(ChoamContractMarket.acquireCards, acquireCard)
     end
 end
 
 ---
 function ChoamContractMarket._tearDown()
-    -- NOP
+    for _, bag in pairs(ChoamContractMarket.contractBags) do
+        bag.destruct()
+    end
 end
 
 ---
@@ -160,7 +219,7 @@ function ChoamContractMarket.takeAnySardaukarContract(position)
 
     for _, object in ipairs(ChoamContractMarket.contractBag.getObjects()) do
         assert(object.guid)
-        if Helper.isElementOf("SardaukarContract",  object.tags) then
+        if Helper.isElementOf("SardaukarContract", object.tags) then
             ChoamContractMarket.contractBag.takeObject({
                 position = position,
                 rotation = Vector(0, 180, 0),

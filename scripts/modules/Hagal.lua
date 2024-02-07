@@ -6,38 +6,33 @@ local Deck = Module.lazyRequire("Deck")
 local TurnControl = Module.lazyRequire("TurnControl")
 local LeaderSelection = Module.lazyRequire("LeaderSelection")
 local PlayBoard = Module.lazyRequire("PlayBoard")
-local Action = Module.lazyRequire("Action")
 local HagalCard = Module.lazyRequire("HagalCard")
 local Combat = Module.lazyRequire("Combat")
-local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
-local ShipmentTrack = Module.lazyRequire("ShipmentTrack")
-local TechMarket = Module.lazyRequire("TechMarket")
 local MainBoard = Module.lazyRequire("MainBoard")
-local Intrigue = Module.lazyRequire("Intrigue")
-local Types = Module.lazyRequire("Types")
+local ConflictCard = Module.lazyRequire("ConflictCard")
+local Rival = Module.lazyRequire("Rival")
 
-local Hagal = Helper.createClass(Action, {
+--[[
+    Prendre en compte les niveaux de difficultés.
+    Vérifier absence gain bonus alliance.
+    Attention à  bien marquer les troupes gagnées durant le tour mais pas encore déployées en raison du multi-cartisme !
+
+    automated:
+        [] 1P -> Churn
+        [] 2P -> Difficulté streamlined Rivals (=> Rival Leader selection reduced to 2)
+        [] Brutal Escalation (auto-selected if >= Mentat + 1J)
+        [] Expert Deployment (auto-selected if >= Mentat + 1J)
+        [] Smart Politics (auto-selected if >= Mentat + 1J)
+]]
+
+local Hagal = {
     difficulties = {
-        novice = { name = "Mercenary", swordmasterArrivalTurn = 5 },
-        veteran = { name = "Sardaukar", swordmasterArrivalTurn = 4 },
-        expert = { name = "Mentat", swordmasterArrivalTurn = 3 },
-        expertPlus = { name = "Kwisatz", swordmasterArrivalTurn = 3 },
-    },
-    compatibleLeaders = {
-        vladimirHarkonnen = 1,
-        glossuRabban = 1,
-        ilbanRichese = 1,
-        letoAtreides = 1,
-        arianaThorvald = 1,
-        memnonThorvald = 1,
-        rhomburVernius = 1,
-        hundroMoritani = 1,
+        novice = { name = "Mercenary" },
+        veteran = { name = "Sardaukar" },
+        expert = { name = "Mentat" },
+        expertPlus = { name = "Kwisatz" },
     }
-})
-
-local Rival = Helper.createClass(Action, {
-    rivals = {}
-})
+}
 
 ---
 function Hagal.onLoad(state)
@@ -62,6 +57,9 @@ end
 ---
 function Hagal.setUp(settings)
     if settings.numberOfPlayers < 3 then
+        Deck.generateHagalDeck(Hagal.deckZone, settings.riseOfIx, settings.immortality, settings.numberOfPlayers).doAfter(function (deck)
+            Helper.shuffleDeck(deck)
+        end)
         Hagal._transientSetUp(settings)
     else
         Hagal._tearDown()
@@ -74,27 +72,13 @@ function Hagal._transientSetUp(settings)
     Hagal.difficulty = settings.difficulty
     Hagal.riseOfIx = settings.riseOfIx
 
-    Deck.generateHagalDeck(Hagal.deckZone, settings.riseOfIx, settings.immortality, settings.numberOfPlayers).doAfter(function (deck)
-        Helper.shuffleDeck(deck)
-    end)
-
     Hagal.selectedDifficulty = settings.difficulty
 
     Helper.registerEventListener("phaseStart", function (phase)
         if phase == "combat" then
-            for color, _ in pairs(Rival.rivals) do
-                if Combat.isInCombat(color) then
+            for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
+                if PlayBoard.isRival(color) and Combat.isInCombat(color) then
                     Hagal._setStrengthFromFirstValidCard(color)
-                end
-            end
-        elseif phase == "recall" then
-            if Hagal.getRivalCount() == 2 then
-                local turn = TurnControl.getCurrentRound()
-                local arrivalTurn = Hagal.difficulties[Hagal.selectedDifficulty].swordmasterArrivalTurn
-                if turn + 1 == arrivalTurn then
-                    for color, rival in pairs(Rival.rivals) do
-                        rival.recruitSwordmaster(color)
-                    end
                 end
             end
         end
@@ -107,37 +91,23 @@ function Hagal._tearDown()
 end
 
 ---
-function Hagal.getMentatSpaceCost()
-    if Hagal.getRivalCount() == 2 and Helper.isElementOf(Hagal.selectedDifficulty, {"veteran", "expert"}) then
-        return 5
-    else
-        return 2
-    end
-end
-
----
-function Hagal.newRival(color, leader)
-    local rival = Helper.createClassInstance(Rival, {
-        leader = leader or Hagal
-    })
-    assert((Hagal.getRivalCount() == 1) == (leader == nil))
-    if not leader then
-        rival.recruitSwordmaster(color)
-    end
-    Rival.rivals[color] = rival
-    return rival
+function Hagal.newRival(name)
+    return Rival.newRival(name)
 end
 
 ---
 function Hagal.activate(phase, color)
-    Helper.dumpFunction("Hagal.activate", phase, color)
+    --Helper.dumpFunction("Hagal.activate", phase, color)
     -- A delay before and after the action, to let the human(s) see the progress.
     Helper.onceTimeElapsed(1).doAfter(function ()
         Hagal._lateActivate(phase, color).doAfter(function ()
-            if Hagal.getRivalCount() == 1 then
-                Helper.onceTimeElapsed(1).doAfter(TurnControl.endOfTurn)
-            else
-                PlayBoard.createEndOfTurnButton(color)
+            -- The leader selection already has an automatic end of turn when a leader is picked.
+            if phase ~= "leaderSelection" then
+                if Hagal.getRivalCount() == 1 and Hagal.automated then
+                    Helper.onceTimeElapsed(1).doAfter(Helper.partialApply(TurnControl.endOfTurn, 1))
+                else
+                    PlayBoard.createEndOfTurnButton(color)
+                end
             end
         end)
     end)
@@ -145,10 +115,10 @@ end
 
 ---
 function Hagal._lateActivate(phase, color)
+    Helper.dumpFunction("Hagal._lateActivate", phase, color)
     local continuation = Helper.createContinuation("Hagal._lateActivate")
 
     if phase == "leaderSelection" then
-        Hagal.pickAnyCompatibleLeader(color)
         continuation.run()
     elseif phase == "gameStart" then
         continuation.run()
@@ -159,11 +129,7 @@ function Hagal._lateActivate(phase, color)
     elseif phase == "combat" then
         continuation.run()
     elseif phase == "combatEnd" then
-        if Hagal.getRivalCount() == 2 then
-            Hagal._collectReward(color).doAfter(continuation.run)
-        else
-            continuation.run()
-        end
+        Hagal._collectReward(color).doAfter(continuation.run)
     elseif phase == "endgame" then
         continuation.run()
     else
@@ -182,11 +148,13 @@ end
 
 ---
 function Hagal._collectReward(color)
+    Helper.dumpFunction("Hagal._collectReward", color)
     local continuation = Helper.createContinuation("Hagal._collectReward")
     Helper.onceFramesPassed(1).doAfter(function ()
         local conflictName = Combat.getCurrentConflictName()
         local rank = Combat.getRank(color).value
-        ConflictCard.collectReward(color, conflictName, rank)
+        local hasSandworms = Combat.hasSandworms(color)
+        ConflictCard.collectReward(color, conflictName, rank, hasSandworms)
         if rank == 1 then
             local leader = PlayBoard.getLeader(color)
             if PlayBoard.hasTech(color, "windtraps") then
@@ -263,6 +231,7 @@ function Hagal._doActivateFirstValidCard(color, action, n, continuation)
             if Helper.getID(card) == "reshuffle" then
                 Hagal._reshuffleDeck(color, action, n, continuation)
             elseif action(card) then
+                HagalCard.flushTurnActions(color)
                 continuation.run(card)
             else
                 Hagal._doActivateFirstValidCard(color, action, n + 1, continuation)
@@ -276,12 +245,18 @@ end
 ---
 function Hagal._reshuffleDeck(color, action, n, continuation)
     --Helper.dump("Reshuffling Hagal deck.")
+    local i = 1
     for _, object in ipairs(getObjects()) do
         if object.hasTag("Hagal") and (object.type == "Deck" or object.type == "Card") then
             if not object.is_face_down then
                 object.flip()
             end
-            object.setPosition(Hagal.deckZone.getPosition())
+            object.setPosition(Hagal.deckZone.getPosition() + Vector(0, i, 0))
+            i = i + 1
+            -- For some weird reason, the reformed deck is invisible, some part of
+            -- it seeming to remembering having been pulled from a hidden deck at
+            -- startup...
+            object.setInvisibleTo({})
         end
     end
     Helper.onceTimeElapsed(2).doAfter(function ()
@@ -303,261 +278,14 @@ function Hagal.getRivalCount()
 end
 
 ---
-function Hagal.isLeaderCompatible(leader)
-    assert(leader)
-    --[[
-    for _, compatibleLeader in ipairs(Helper.getKeys(Hagal.compatibleLeaders)) do
-        if compatibleLeader == Helper.getID(leader) then
-            return true
-        end
+function Hagal.pickAnyRivalLeader(color)
+    --Helper.dumpFunction("Hagal.pickAnyRivalLeader", color)
+    local leaders = {}
+    for _, leader in ipairs(LeaderSelection.getSelectableLeaders(true)) do
+        table.insert(leaders , leader)
     end
-    return false
-    ]]
-    return true
-end
-
----
-function Hagal.pickAnyCompatibleLeader(color)
-    Helper.dumpFunction("Hagal.pickAnyCompatibleLeader", color)
-    if Hagal.getRivalCount() == 1 then
-        local pseudoLeader = Helper.getDeck(Hagal.deckZone)
-        assert(pseudoLeader, "Missing Hagal deck!")
-        Hagal.deckZone = PlayBoard.getContent(color).leaderZone
-        PlayBoard.setLeader(color, pseudoLeader)
-    else
-        local leaders = {}
-        for _, leader in ipairs(LeaderSelection.getSelectableLeaders()) do
-            if Hagal.isLeaderCompatible(leader) then
-                table.insert(leaders , leader)
-            end
-        end
-        assert(#leaders > 0, "No leader left for Hagal!")
-        LeaderSelection.claimLeader(color, Helper.pickAny(leaders))
-    end
-end
-
----
-function Rival.prepare(color, settings)
-    if Hagal.numberOfPlayers == 1 then
-        Action.resources(color, "water", 1)
-        if settings.difficulty ~= "novice" then
-            Action.troops(color, "supply", "garrison", 3)
-            Action.drawIntrigues(color, 1)
-        end
-    -- https://boardgamegeek.com/thread/2570879/article/36734124#36734124
-    elseif Hagal.numberOfPlayers == 2 then
-        Action.resources(color, "water", 1)
-        Action.troops(color, "supply", "garrison", 3)
-    end
-end
-
----
-function Rival.influence(color, faction, amount)
-    local finalFaction = faction
-    if not finalFaction then
-        local factions = { "emperor", "spacingGuild", "beneGesserit", "fremen" }
-        Helper.shuffle(factions)
-        table.sort(factions, function (f1, f2)
-            local i1 = InfluenceTrack.getInfluence(f1, color)
-            local i2 = InfluenceTrack.getInfluence(f2, color)
-            return i1 > i2
-        end)
-        finalFaction = factions[1]
-    end
-    return Action.influence(color, finalFaction, amount)
-end
-
----
-function Rival.shipments(color, amount)
-    Helper.repeatChainedAction(amount, function ()
-        local level = ShipmentTrack.getFreighterLevel(color)
-        if level < 2 then
-            Rival.advanceFreighter(color, 1)
-        else
-            Rival.recallFreighter(color)
-            Rival.influence(nil, 1)
-            if PlayBoard.hasTech(color, "troopTransports") then
-                Rival.troops(color, "supply", "combat", 3)
-            else
-                Rival.troops(color, "supply", "garrison", 2)
-            end
-            Rival.resources(color, "solari", 5)
-            for _, otherColor in ipairs(PlayBoard.getActivePlayBoardColors()) do
-                if otherColor ~= color then
-                    local otherLeader = PlayBoard.getLeader(otherColor)
-                    otherLeader.resources(otherColor, "solari", 1)
-                end
-            end
-        end
-        -- FIXME
-        return Helper.onceTimeElapsed(0.5)
-    end)
-    return true
-end
-
----
-function Rival.acquireTech(color, stackIndex, discount)
-
-    local finalStackIndex  = stackIndex
-    if not finalStackIndex then
-        local spiceBudget = PlayBoard.getResource(color, "spice"):get()
-
-        local bestTechIndex
-        local bestTech
-        for otherStackIndex = 1, 3 do
-            local tech = TechMarket.getTopCardDetails(otherStackIndex)
-            if tech.hagal and tech.cost <= spiceBudget + discount and (not bestTech or bestTech.cost < tech.cost) then
-                bestTechIndex = otherStackIndex
-                bestTech = tech
-            end
-        end
-
-        if bestTech then
-            Rival.resources(color, "spice", -bestTech.cost)
-            finalStackIndex = bestTechIndex
-        else
-            return false
-        end
-    end
-
-    local tech = TechMarket.getTopCardDetails(finalStackIndex)
-    if Action.acquireTech(color, finalStackIndex, discount) then
-        if tech.name == "trainingDrones" then
-            if PlayBoard.useTech(color, "trainingDrones") then
-                Rival.troops(color, "supply", "garrison", 1)
-            end
-        end
-        return true
-    else
-        return false
-    end
-end
-
----
-function Rival.choose(color, topic)
-    --Helper.dumpFunction("Rival.choose", color, topic)
-
-    local function pickTwoBestFactions()
-        local factions = { "emperor", "spacingGuild", "beneGesserit", "fremen" }
-        for _ = 1, 2 do
-            Helper.shuffle(factions)
-            table.sort(factions, function (f1, f2)
-                local i1 = InfluenceTrack.getInfluence(f1, color)
-                local i2 = InfluenceTrack.getInfluence(f2, color)
-                return i1 > i2
-            end)
-            local faction = factions[1]
-            table.remove(factions, 1)
-
-            return Rival.influence(color, faction, 1)
-        end
-    end
-
-    if topic == "shuttleFleet" then
-        pickTwoBestFactions()
-        return true
-    elseif topic == "machinations" then
-        pickTwoBestFactions()
-        return true
-    else
-        return false
-    end
-end
-
----
-function Rival.resources(color, nature, amount)
-    if Hagal.getRivalCount() == 2 then
-        if Action.resources(color, nature, amount) then
-            local resource = PlayBoard.getResource(color, nature)
-            if nature == "spice" then
-                if Hagal.riseOfIx then
-                    local tech = PlayBoard.getTech(color, "spySatellites")
-                    if tech and nature == "spice" and resource:get() >= 3 then
-                        MainBoard.trash(tech)
-                        Rival.gainVictoryPoint(color, "spySatellites")
-                    end
-                else
-                    if resource:get() >= 7 then
-                        resource:change(-7)
-                        Rival.gainVictoryPoint(color, "spice")
-                    end
-                end
-            elseif nature == "water" then
-                if resource:get() >= 3 then
-                    resource:change(-3)
-                    Rival.gainVictoryPoint(color, "water")
-                end
-            elseif nature == "solari" then
-                if resource:get() >= 7 then
-                    resource:change(-7)
-                    Rival.gainVictoryPoint(color, "solari")
-                end
-            end
-            return true
-        end
-    elseif Hagal.getRivalCount() == 1 and nature == "strength"  then
-        return Action.resources(color, nature, amount)
-    end
-    return false
-end
-
----
-function Rival.beetle(color, jump)
-    Types.assertIsPlayerColor(color)
-    Types.assertIsInteger(jump)
-    if Hagal.getRivalCount() == 2 then
-        return Action.beetle(color, jump)
-    else
-        return false
-    end
-end
-
----
-function Rival.drawIntrigues(color, amount)
-    if Action.drawIntrigues(color, amount) then
-        Helper.onceTimeElapsed(1).doAfter(function ()
-            local intrigues = PlayBoard.getIntrigues(color)
-            if #intrigues >= 3 then
-                for i = 1, 3 do
-                    -- Not smooth to avoid being recaptured by the hand zone.
-                    intrigues[i].setPosition(Intrigue.discardZone.getPosition() + Vector(0, 1, 0))
-                end
-                Rival.gainVictoryPoint(color, "intrigue")
-            end
-        end)
-        return true
-    else
-        return false
-    end
-end
-
----
-function Rival.troops(color, from, to, amount)
-    local finalTo = to
-    if to == "garrison" and (Action.checkContext({ troopTransports = true }) or Action.checkContext({ hagalCard = HagalCard.isCombatCard })) then
-        finalTo = "combat"
-    end
-    return Action.troops(color, from, finalTo, amount)
-end
-
----
-function Rival.gainVictoryPoint(color, name)
-    -- We make an exception for alliance token to make it clear that the rival owns it.
-    if Hagal.getRivalCount() == 2 or Helper.endsWith(name, "Alliance") then
-        return Action.gainVictoryPoint(color, name)
-    else
-        return false
-    end
-end
-
----
-function Rival.signetRing(color)
-    -- FIXME Fix Park instead!
-    Helper.onceTimeElapsed(0.25).doAfter(function ()
-        -- We don't redispatch to the leader in other cases, because rivals ignore their passive abilities.
-        local leader = Rival.rivals[color].leader
-        return leader.signetRing(color)
-    end)
+    assert(#leaders > 0, "No rival leaders left!")
+    LeaderSelection.claimLeader(color, Helper.pickAny(leaders))
 end
 
 return Hagal

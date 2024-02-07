@@ -22,24 +22,41 @@ local autoLoadedSettings = nil
 autoLoadedSettings = {
     language = "fr",
     hotSeat = true,
+    numberOfPlayers = 1,
+    randomizePlayerPositions = false,
+    useContracts = true,
+    legacy = false,
+    riseOfIx = false,
+    epicMode = false,
+    immortality = false,
+    goTo11 = false,
+    leaderSelection = {
+        Green = "jessica",
+        Yellow = "gurneyHalleck",
+        Red = "feydRauthaHarkonnen",
+    },
+    horizontalHandLayout = true,
+    soundEnabled = true,
+}
+
+autoLoadedSettings = {
+    language = "fr",
+    hotSeat = true,
     numberOfPlayers = 4,
     randomizePlayerPositions = false,
     useContracts = true,
+    legacy = true,
     riseOfIx = true,
     epicMode = true,
     immortality = true,
-    goTo11 = true,
+    goTo11 = false,
     leaderSelection = {
-        Green = "jessicaAtreides",
+        Green = "jessica",
         Yellow = "gurneyHalleck",
-        Red = "stabanTuek",
-        Blue = "irulanCorrino",
-        Teal = "muadDib",
-        Brown = "shaddamCorrino",
+        Red = "feydRauthaHarkonnen",
+        Blue = "hundroMoritani"
     },
     horizontalHandLayout = true,
-    assistedRevelation = true,
-    playedCardDetection = true,
     soundEnabled = true,
 }
 ]]
@@ -64,7 +81,8 @@ local allModules = Module.registerModules({
     ChoamContractMarket = require("ChoamContractMarket"),
     Combat = require("Combat"),
     Commander = require("Commander"),
-    ShipmentTrack = require("ShipmentTrack"),
+    ConflictCard = require("ConflictCard"),
+    ShippingTrack = require("ShippingTrack"),
     Deck = require("Deck"),
     ScoreBoard = require("ScoreBoard"),
     Hagal = require("Hagal"),
@@ -82,7 +100,9 @@ local allModules = Module.registerModules({
     PlayBoard = require("PlayBoard"),
     Reserve = require("Reserve"),
     Resource = require("Resource"),
+    Rival = require("Rival"),
     TechMarket = require("TechMarket"),
+    TechCard = require("TechCard"),
     TleilaxuResearch = require("TleilaxuResearch"),
     TleilaxuRow = require("TleilaxuRow"),
     ThroneRow = require("ThroneRow"),
@@ -101,11 +121,11 @@ local Controller = {
             en = "English",
             fr = "Français",
         },
-        language = "en",
+        language = "fr",
         virtualHotSeat = false,
         virtualHotSeatMode_all = {
-            --"1 (+2)",
-            --"2 (+1)",
+            "1 (+2)",
+            "2 (+1)",
             "3",
             "4",
             "2 x 3"
@@ -115,6 +135,7 @@ local Controller = {
         difficulty_all = Helper.mapValues(allModules.Hagal.getDifficulties(), function (v) return v.name end),
         difficulty = {},
         useContracts = true,
+        legacy = false,
         riseOfIx = false,
         epicMode = {},
         immortality = false,
@@ -136,7 +157,7 @@ local settings
 
 --- TTS event handler.
 function onLoad(scriptState)
-    log("--------< Dune Uprising - " .. BUILD .. " >--------")
+    log("--------< Rakis Rising - " .. BUILD .. " >--------")
 
     -- All transient objects (mostly anchors, but also some zones) are destroyed
     -- at startup, then recreated in the 'onLoad' functions (and 'staticSetup'
@@ -144,14 +165,21 @@ function onLoad(scriptState)
     Helper.destroyTransientObjects()
 
     if constructionModeEnabled then
-        --allModules.PlayBoard.rebuild()
-        --allModules.Deck.rebuildPreloadAreas()
+        -- Edit the player boards in a procedural way.
+        if false then
+            allModules.PlayBoard.rebuild()
+        end
+        -- Regenerate the decks in the localized cached areas.
+        if false then
+            allModules.Deck.rebuildPreloadAreas()
+        end
     else
-        Dialog.loadStaticUI()
         -- The destroyed objects need one frame to disappear and not interfere
         -- with the mod.
         Helper.onceFramesPassed(1).doAfter(function ()
-            asyncOnLoad(scriptState)
+            Dialog.loadStaticUI().doAfter(function ()
+                asyncOnLoad(scriptState)
+            end)
         end)
     end
 end
@@ -180,13 +208,13 @@ function asyncOnLoad(scriptState)
         { name = "Hagal", module = allModules.Hagal },
         { name = "Commander", module = allModules.Commander },
         { name = "PlayBoard", module = allModules.PlayBoard },
+        { name = "ShippingTrack", module = allModules.ShippingTrack },
+        { name = "TechMarket", module = allModules.TechMarket },
         { name = "MainBoard", module = allModules.MainBoard },
         { name = "Combat", module = allModules.Combat },
-        { name = "ShipmentTrack", module = allModules.ShipmentTrack },
-        { name = "TechMarket", module = allModules.TechMarket },
         { name = "ChoamContractMarket", module = allModules.ChoamContractMarket },
-        { name = "Intrigue", module = allModules.Intrigue },
         { name = "InfluenceTrack", module = allModules.InfluenceTrack },
+        { name = "Intrigue", module = allModules.Intrigue },
         { name = "ImperiumRow", module = allModules.ImperiumRow },
         { name = "Reserve", module = allModules.Reserve },
         { name = "TleilaxuResearch", module = allModules.TleilaxuResearch },
@@ -306,11 +334,6 @@ function runSetUp(index, activeOpponents)
     end
 end
 
----
-function isDeluxeEdition()
-    return getObjectFromGUID('a7fd90') ~= nil
-end
-
 --- TTS event handler.
 function onPlayerChangeColor()
     Controller.updateSetupButton()
@@ -376,6 +399,11 @@ end
 
 --- UI callback (cf. XML).
 function setUseContracts(player, value, id)
+    Controller.ui:fromUI(player, value, id)
+end
+
+--- UI callback (cf. XML).
+function setLegacy(player, value, id)
     Controller.ui:fromUI(player, value, id)
 end
 
@@ -455,8 +483,6 @@ function setUpFromUI()
         defaultLeaderPoolSize = tonumber(Controller.fields.defaultLeaderPoolSize),
         tweakLeaderSelection = Controller.fields.tweakLeaderSelection,
         horizontalHandLayout = Controller.fields.horizontalHandLayout,
-        assistedRevelation = false,
-        playedCardDetection = false,
         soundEnabled = Controller.fields.soundEnabled,
     })
 end
@@ -536,7 +562,7 @@ function Controller.applyVirtualHotSeatMode()
 
     local numberOfPlayers = Controller.getNumberOfPlayers(Controller.fields.virtualHotSeatMode)
 
-    if Controller.isUndefined(Controller.fields.virtualHotSeatMode) or numberOfPlayers > 2 then
+    if Controller.isUndefined(Controller.fields.virtualHotSeatMode) or numberOfPlayers > 1 then
         Controller.fields.difficulty = {}
     else
         Controller.fields.difficulty = "novice"
@@ -559,8 +585,7 @@ function Controller.getNumberOfPlayers(virtualHotSeatMode)
     if Controller.isUndefined(virtualHotSeatMode) then
         numberOfPlayers = math.min(6, #Controller.getProperlySeatedPlayers())
     else
-        --local toNumberOfPlayers = { 1, 2, 3, 4, 6 }
-        local toNumberOfPlayers = { 3, 4, 6 }
+        local toNumberOfPlayers = { 1, 2, 3, 4, 6 }
         numberOfPlayers = toNumberOfPlayers[virtualHotSeatMode]
     end
     --Helper.dump("numberOfPlayers:", numberOfPlayers)

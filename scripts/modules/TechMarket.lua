@@ -10,33 +10,12 @@ local Deck = Module.lazyRequire("Deck")
 local MainBoard = Module.lazyRequire("MainBoard")
 local Types = Module.lazyRequire("Types")
 local Commander = Module.lazyRequire("Commander")
+local TechCard = Module.lazyRequire("TechCard")
+local ShippingTrack = Module.lazyRequire("ShippingTrack")
 
 local TechMarket = {
     negotiationParks = {},
     acquireTechOptions = {},
-}
-
--- Featureless mock
-local TechCard = {
-
-    isHagal = function (card)
-        return true
-    end,
-
-    applyBuyEffect = function (color, card)
-    end,
-
-    getCost = function (card)
-        return 0
-    end,
-
-    getDetails = function (card)
-        return {
-            hagal = true,
-            cost = 0,
-            name = "?"
-        }
-    end
 }
 
 ---
@@ -57,6 +36,7 @@ function TechMarket.onLoad(state)
 
     if state.settings and state.settings.riseOfIx then
         TechMarket.hagalSoloModeEnabled = state.TechMarket.hagalSoloModeEnabled
+        TechMarket._transientSetUp(state.settings)
     end
 end
 
@@ -72,14 +52,24 @@ end
 function TechMarket.setUp(settings)
     if settings.riseOfIx then
         TechMarket.hagalSoloModeEnabled = settings.numberOfPlayers == 1
-        TechMarket._transientSetUp()
+        Deck.generateTechDeck(TechMarket.techSlots).doAfter(function (decks)
+            for _, deck in ipairs(decks) do
+                deck.interactable = false
+            end
+
+            if TechMarket.hagalSoloModeEnabled then
+                Helper.onceTimeElapsed(1).doAfter(TechMarket.pruneStacksForSoloMode)
+            end
+
+            TechMarket._transientSetUp(settings)
+        end)
     else
         TechMarket._tearDown()
     end
 end
 
 ---
-function TechMarket._transientSetUp()
+function TechMarket._transientSetUp(settings)
     for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
         if not Commander.isCommander(color) then
             TechMarket.negotiationParks[color] = TechMarket._createNegotiationPark(color)
@@ -89,18 +79,11 @@ function TechMarket._transientSetUp()
 
     TechMarket.acquireCards = {}
     for i, zone in ipairs(TechMarket.techSlots) do
-        table.insert(TechMarket.acquireCards, AcquireCard.new(zone, "Tech", PlayBoard.withLeader(TechMarket["_acquireTech" .. tostring(i)])))
+        local callback = PlayBoard.withLeader(TechMarket["_acquireTech" .. tostring(i)])
+        local acquireCard = AcquireCard.new(zone, "Tech", callback)
+        acquireCard.groundHeight = acquireCard.groundHeight + 0.2
+        table.insert(TechMarket.acquireCards, acquireCard)
     end
-
-    Deck.generateTechDeck(TechMarket.techSlots).doAfter(function (decks)
-        for _, deck in ipairs(decks) do
-            deck.interactable = false
-        end
-
-        if TechMarket.hagalSoloModeEnabled then
-            Helper.onceTimeElapsed(1).doAfter(TechMarket.pruneStacksForSoloMode)
-        end
-    end)
 
     Helper.registerEventListener("agentSent", function (color, spaceName)
         TechMarket.acquireTechOptions = {}
@@ -110,9 +93,115 @@ end
 ---
 function TechMarket._tearDown()
     TechMarket.board.destruct()
+    TechMarket.board = nil
     TechMarket.negotiationZone.destruct()
     for _, techSlot in ipairs(TechMarket.techSlots) do
         techSlot.destruct()
+    end
+end
+
+---
+function TechMarket.getBoard()
+    return TechMarket.board
+end
+
+---
+function TechMarket._processSnapPoints(settings)
+    local highCouncilSeats = {}
+    TechMarket.spaces = {}
+    TechMarket.observationPosts = {}
+    TechMarket.banners = {}
+
+    for _, board in ipairs({ TechMarket.board, ShippingTrack.getBoard() }) do
+        Helper.collectSnapPoints(settings, {
+
+            seat = function (name, position)
+                local str = name:sub(12)
+                local index = tonumber(str)
+                assert(index, "Not a number: " .. str)
+                highCouncilSeats[index] = position
+            end,
+
+            space = function (name, position)
+                if settings.riseOfIx then
+                    local ignoredSpaceNames = {
+                        "assemblyHall",
+                        "gatherSupport",
+                        "shipping",
+                        "acceptContract",
+                    }
+                    for _, ignoredSpaceName in ipairs(ignoredSpaceNames) do
+                        if Helper.startsWith(name, ignoredSpaceName) then
+                            return
+                        end
+                    end
+                end
+                MainBoard.spaces[name] = { name = name, position = position }
+            end,
+
+            post = function (name, position)
+                if settings.riseOfIx then
+                    local ignoredSpaceNames = {
+                        "choam",
+                        "landsraadCouncil2"
+                    }
+                    for _, ignoredSpaceName in ipairs(ignoredSpaceNames) do
+                        if Helper.startsWith(name, ignoredSpaceName) then
+                            return
+                        end
+                    end
+                end
+                MainBoard.observationPosts[name] = { name = name, position = position }
+            end,
+
+            spice = function (name, position)
+                local token = MainBoard.spiceBonusTokens[name]
+                token.setPosition(position + Vector(0, -0.05, 0))
+                Helper.noPhysics(token)
+                if not MainBoard.spiceBonuses[name] then
+                    MainBoard.spiceBonuses[name] = Resource.new(token, nil, "spice", 0, name)
+                end
+            end,
+
+            flag = function (name, position)
+                local zone = spawnObject({
+                    type = 'ScriptingTrigger',
+                    position = position,
+                    scale = { 0.8, 1, 0.8 },
+                })
+                Helper.markAsTransient(zone)
+                MainBoard.banners[name .. "BannerZone"] = zone
+            end
+        })
+    end
+
+    assert(#highCouncilSeats > 0)
+    MainBoard.highCouncilPark = Park.createPark(
+        "HighCouncil",
+        highCouncilSeats,
+        Vector(0, 0, 0),
+        { Park.createTransientBoundingZone(0, Vector(0.5, 1, 0.5), highCouncilSeats) },
+        { "HighCouncilSeatToken" },
+        nil,
+        true,
+        true)
+
+    -- A trick to ensure that parent space are created before
+    -- their child spaces (which always have a longer name).
+    local orderedSpaces = Helper.getValues(MainBoard.spaces)
+    table.sort(orderedSpaces, function (s1, s2)
+        return s1.name:len() < s2.name:len()
+    end)
+    for _, space in ipairs(orderedSpaces) do
+        MainBoard._createSpaceButton(space)
+    end
+
+    for _, observationPost in pairs(MainBoard.observationPosts) do
+        MainBoard._createObservationPostButton(observationPost)
+    end
+
+    for _, bannerZone in pairs(MainBoard.banners) do
+        MainBoard._createBannerSpace(bannerZone)
     end
 end
 
@@ -196,7 +285,7 @@ end
 
 ---
 function TechMarket._doAcquireTech(stackIndex, color)
-    --Helper.dumpFunction("TechMarket._doAcquireTech", stackIndex, color)
+    Helper.dumpFunction("TechMarket._doAcquireTech", stackIndex, color)
     local continuation = Helper.createContinuation("TechMarket._doAcquireTech")
     local acquireCard = TechMarket.acquireCards[stackIndex]
 
@@ -205,12 +294,8 @@ function TechMarket._doAcquireTech(stackIndex, color)
 
         local innerContinuation = Helper.createContinuation("TechMarket._doAcquireTech#inner")
         innerContinuation.doAfter(function (success)
-            if success then
-                if color then
-                    PlayBoard.grantTechTile(color, techTileStack.topCard)
-                    TechCard.applyBuyEffect(color, techTileStack.topCard)
-                end
-
+            if success and color and PlayBoard.grantTechTile(color, techTileStack.topCard) then
+                TechCard.applyBuyEffect(color, techTileStack.topCard)
                 Helper.onceTimeElapsed(0.5).doAfter(function ()
                     if techTileStack.otherCards then
                         local above = acquireCard.zone.getPosition() + Vector(0, 1, 0)
@@ -422,6 +507,18 @@ function TechMarket.removeNegotiator(color)
     local supply = PlayBoard.getSupplyPark()
     local negotiation = TechMarket.negotiationParks[color]
     return Park.transfert(1, negotiation, supply) > 0
+end
+
+--- In TechMarket for convenience, but it could also be in MainBoard.
+function TechMarket.isInside(object)
+    if TechMarket.board then
+        local position = object.getPosition()
+        local center = TechMarket.board.getPosition()
+        local offset = position - center
+        return math.abs(offset.x) < 3.5 and math.abs(offset.z) < 4
+    else
+        return false
+    end
 end
 
 return TechMarket

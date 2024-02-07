@@ -1,6 +1,7 @@
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local I18N = require("utils.I18N")
+local Dialog = require("utils.Dialog")
 
 local Deck = Module.lazyRequire("Deck")
 local TurnControl = Module.lazyRequire("TurnControl")
@@ -62,43 +63,69 @@ end
 function LeaderSelection.setUp(settings, activeOpponents)
     LeaderSelection.leaderSelectionPoolSize = settings.defaultLeaderPoolSize
 
-    Deck.generateLeaderDeck(LeaderSelection.deckZone, settings.useContracts, settings.riseOfIx, settings.immortality, settings.fanmadeLeaders).doAfter(function (deck)
-        local numberOfLeaders = deck.getQuantity()
-        local continuation = Helper.createContinuation("LeaderSelection.setUp")
-        local count = numberOfLeaders
-
-        -- Layout all the leader cards on the secondary table.
-        LeaderSelection._layoutLeaders(numberOfLeaders, function (_, position)
-            deck.takeObject({
-                position = position,
-                flip = true,
-                callback_function = function (card)
-                    count = count - 1
-                    if count == 0 then
-                        Helper.onceTimeElapsed(1).doAfter(continuation.run)
-                    end
-                end
-            })
+    local preContinuation = Helper.createContinuation("LeaderSelection.setUp.preContinuation")
+    if settings.numberOfPlayers > 2 then
+        preContinuation.run()
+    else
+        Deck.generateRivalLeaderDeck(LeaderSelection.deckZone, settings.riseOfIx, settings.immortality, settings.legacy).doAfter(function (deck)
+            LeaderSelection._layoutLeaderDeck(deck, 0, preContinuation)
         end)
+    end
 
-        continuation.doAfter(function ()
-            local testSetUp = type(settings.leaderSelection) == "table"
+    local postContinuation = Helper.createContinuation("LeaderSelection.setUp.postContinuation")
 
-            -- The commander's leaders are always the same. It is not enforced
-            -- in a test set up, but it won't work with different leaders.
-            if settings.numberOfPlayers == 6 and not testSetUp then
-                local leaders = LeaderSelection._grabLeaders()
+    preContinuation.doAfter(function ()
+        -- Temporary tag to avoid counting the rival leader cards.
+        LeaderSelection.deckZone.addTag("Leader")
+        Deck.generateLeaderDeck(LeaderSelection.deckZone, settings.useContracts, settings.riseOfIx, settings.immortality, settings.legacy).doAfter(function (deck)
+            LeaderSelection.deckZone.removeTag("Leader")
 
-                PlayBoard.setLeader("Teal", leaders["muadDib"])
-                PlayBoard.setLeader("Brown", leaders["shaddamCorrino"])
-            end
+            local continuation = Helper.createContinuation("LeaderSelection.setUp")
+            local start = settings.numberOfPlayers > 2 and 0 or 12
+            LeaderSelection._layoutLeaderDeck(deck, start, continuation)
 
-            -- Give minimal time to the 2 leaders above to exit the zone.
-            Helper.onceFramesPassed(1).doAfter(function ()
-                local players = TurnControl.toCanonicallyOrderedPlayerList(activeOpponents)
-                LeaderSelection._transientSetUp(settings, players, Stage.INITIALIZED)
+            continuation.doAfter(function ()
+                local testSetUp = type(settings.leaderSelection) == "table"
+
+                -- The commander's leaders are always the same. It is not enforced
+                -- in a test set up, but it won't work with different leaders.
+                if settings.numberOfPlayers == 6 and not testSetUp then
+                    local leaders = LeaderSelection._grabLeaders()
+
+                    PlayBoard.setLeader("Teal", leaders["muadDib"])
+                    PlayBoard.setLeader("Brown", leaders["shaddamCorrino"])
+                end
+
+                -- Give minimal time to the 2 leaders above to exit the zone.
+                Helper.onceFramesPassed(1).doAfter(function ()
+                    local players = TurnControl.toCanonicallyOrderedPlayerList(activeOpponents)
+                    LeaderSelection._transientSetUp(settings, players, Stage.INITIALIZED)
+                end)
+
+                postContinuation.run()
             end)
         end)
+    end)
+
+    return postContinuation
+end
+
+---
+function LeaderSelection._layoutLeaderDeck(deck, start, continuation)
+    local numberOfLeaders = deck.getQuantity()
+    local count = numberOfLeaders
+
+    LeaderSelection._layoutLeaders(start, numberOfLeaders, function (_, position)
+        deck.takeObject({
+            position = position,
+            flip = true,
+            callback_function = function (card)
+                count = count - 1
+                if count == 0 then
+                    Helper.onceTimeElapsed(1).doAfter(continuation.run)
+                end
+            end
+        })
     end)
 end
 
@@ -156,12 +183,12 @@ function LeaderSelection._transientSetUp(settings, players, stage)
 end
 
 ---
-function LeaderSelection._layoutLeaders(count, callback)
+function LeaderSelection._layoutLeaders(start, count, callback)
     local w = LeaderSelection.deckZone.getScale().x
     local h = LeaderSelection.deckZone.getScale().z
     local colCount = 6
     local origin = LeaderSelection.deckZone.getPosition() - Vector((colCount / 2 - 0.5) * 5, 0, h / 2 - 10)
-    for i = 0, count - 1 do
+    for i = start, start + count - 1 do
         local x = (i % colCount) * 5
         local y = math.floor(i / colCount) * 4
         callback(i + 1, origin + Vector(x, 1, y))
@@ -169,10 +196,10 @@ function LeaderSelection._layoutLeaders(count, callback)
 end
 
 --- Return all the leaders laid out on the secondary table.
-function LeaderSelection._grabLeaders()
+function LeaderSelection._grabLeaders(rival)
     local leaders = {}
     for _, object in ipairs(LeaderSelection.deckZone.getObjects()) do
-        if object.hasTag("Leader") then
+        if (not rival and object.hasTag("Leader")) or (rival and object.hasTag("RivalLeader")) then
             leaders[Helper.getID(object)] = object
         end
     end
@@ -181,20 +208,23 @@ end
 
 ---
 function LeaderSelection._setUpTest(players, leaderNames)
-    local leaders = LeaderSelection._grabLeaders()
+    local leaders = LeaderSelection._grabLeaders(false)
+    local rivals = LeaderSelection._grabLeaders(true)
 
     for _, color in pairs(players) do
         assert(leaderNames[color], "No leader for color " .. color)
         assert(#LeaderSelection.deckZone.getObjects(), "No leader to select")
-        local leaderName = leaderNames[color]
-        if leaderName == "hagal" then
-            assert(Hagal.getRivalCount() == 1, "Only one rival (house Hagal) expected!")
-            Hagal.pickAnyCompatibleLeader(color)
+        local leader
+        if PlayBoard.isRival(color) then
+            local leaderName = leaderNames[color]
+            leader = rivals[leaderName]
+            assert(leader, "Unknown rival leader " .. leaderName)
         else
-            local leader = leaders[leaderName]
+            local leaderName = leaderNames[color]
+            leader = leaders[leaderName]
             assert(leader, "Unknown leader " .. leaderName)
-            PlayBoard.setLeader(color, leader)
         end
+        PlayBoard.setLeader(color, leader)
     end
 
     LeaderSelection.stage = Stage.DONE
@@ -218,7 +248,7 @@ function LeaderSelection._setUpPicking(autoStart, random, hidden)
             })
 
             local adjustValue = function (value)
-                local numberOfLeaders = #LeaderSelection._grabLeaders()
+                local numberOfLeaders = #Helper.getKeys(LeaderSelection._grabLeaders())
                 local minValue = #LeaderSelection.players
                 local maxValue = numberOfLeaders
                 LeaderSelection.leaderSelectionPoolSize = math.max(minValue, math.min(maxValue, value))
@@ -316,12 +346,10 @@ function LeaderSelection._setUpPicking(autoStart, random, hidden)
     end
 
     if random then
-        assert(LeaderSelection.stage == Stage.STARTED)
-        Helper.registerEventListener("playerTurns", function (phase, color)
+        Helper.registerEventListener("playerTurn", function (phase, color)
             if phase == 'leaderSelection' then
                 if PlayBoard.isRival(color) then
-                    -- Always auto and random in fact.
-                    Hagal.pickAnyCompatibleLeader(color)
+                    Hagal.pickAnyRivalLeader(color)
                 elseif PlayBoard.isHuman(color) then
                     local leaders = LeaderSelection.getSelectableLeaders()
                     local leader = Helper.pickAny(leaders)
@@ -332,7 +360,7 @@ function LeaderSelection._setUpPicking(autoStart, random, hidden)
     end
 
     if hidden then
-        Helper.registerEventListener("playerTurns", function (phase, color)
+        Helper.registerEventListener("playerTurn", function (phase, color)
             if phase == 'leaderSelection' then
                 local remainingLeaders = {}
                 for leader, selected in pairs(LeaderSelection.dynamicLeaderSelection) do
@@ -342,7 +370,7 @@ function LeaderSelection._setUpPicking(autoStart, random, hidden)
                     end
                 end
                 Helper.shuffle(remainingLeaders)
-                LeaderSelection._layoutLeaders(#remainingLeaders, function (i, position)
+                LeaderSelection._layoutLeaders(0, #remainingLeaders, function (i, position)
                     remainingLeaders[i].setPosition(position)
                 end)
             end
@@ -382,7 +410,7 @@ end
 function LeaderSelection._getVisibleLeaders()
     local leaders = {}
     for _, object in ipairs(LeaderSelection.deckZone.getObjects()) do
-        if object.hasTag("Leader") then
+        if object.hasTag("Leader") or object.hasTag("RivalLeader") then
             if not object.is_face_down then
                 table.insert(leaders, object)
             end
@@ -394,7 +422,7 @@ end
 function LeaderSelection._prepareVisibleLeaders(hidden)
     local leaders = {}
     for _, object in ipairs(LeaderSelection.deckZone.getObjects()) do
-        if object.hasTag("Leader") then
+        if object.hasTag("Leader") or object.hasTag("RivalLeader") then
             if object.is_face_down then
                 LeaderSelection._destructLeader(object)
             else
@@ -409,9 +437,11 @@ function LeaderSelection._prepareVisibleLeaders(hidden)
 end
 
 function LeaderSelection._createDynamicLeaderSelection(leaders)
+    --Helper.dumpFunction("LeaderSelection._createDynamicLeaderSelection", leaders)
     Helper.shuffle(leaders)
 
     for i, leader in ipairs(leaders) do
+        -- TODO Rework to better accomodate the human/rival leader mix.
         if i <= LeaderSelection.leaderSelectionPoolSize then
             LeaderSelection.dynamicLeaderSelection[leader] = false
             local position = leader.getPosition()
@@ -437,11 +467,13 @@ function LeaderSelection._createDynamicLeaderSelection(leaders)
 end
 
 ---
-function LeaderSelection.getSelectableLeaders()
+function LeaderSelection.getSelectableLeaders(rivalLeader)
     local selectableLeaders = {}
     for leader, selected in pairs(LeaderSelection.dynamicLeaderSelection) do
         if not selected then
-            table.insert(selectableLeaders, leader)
+            if (rivalLeader and leader.hasTag("RivalLeader")) or (not rivalLeader and leader.hasTag("Leader")) then
+                table.insert(selectableLeaders, leader)
+            end
         end
     end
     return selectableLeaders
@@ -449,11 +481,19 @@ end
 
 ---
 function LeaderSelection.claimLeader(color, leader)
+    if PlayBoard.isRival(color) and not leader.hasTag("RivalLeader") then
+        Dialog.broadcastToColor(I18N("incompatibleRivalLeader"), color, "Purple")
+        return
+    end
+
+    if not PlayBoard.isRival(color) and not leader.hasTag("Leader") then
+        Dialog.broadcastToColor(I18N("incompatibleLeader"), color, "Purple")
+        return
+    end
+
     Helper.clearButtons(leader)
     LeaderSelection.dynamicLeaderSelection[leader] = true
-    if PlayBoard.setLeader(color, leader) then
-        TurnControl.endOfTurn()
-    end
+    PlayBoard.setLeader(color, leader).doAfter(Helper.partialApply(TurnControl.endOfTurn, 2))
 end
 
 ---

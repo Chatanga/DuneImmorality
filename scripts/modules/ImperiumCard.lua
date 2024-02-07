@@ -65,7 +65,7 @@ local ImperiumCard = {
     -- starter: immortality
     experimentation = {agentIcons = {'yellow'}, reveal = {persuasion(1), specimen(1)}, starter = true},
     -- reserve
-    arrakisLiaison = {factions = {'fremen'}, cost = 2, agentsIcons = {'blue'}, reveal = {persuasion(2)}},
+    arrakisLiaison = {factions = {'fremen'}, cost = 2, agentIcons = {'blue'}, reveal = {persuasion(2)}},
     foldspace = {cost = 0, agentIcons = {'emperor', 'spacingGuild', 'beneGesserit', 'fremen', 'green', 'blue', 'yellow'}},
     theSpiceMustFlow = {cost = 9, acquireBonus = {vp(1)}, reveal = {spice(1)}},
     -- base

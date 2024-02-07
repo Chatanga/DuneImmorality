@@ -13,7 +13,7 @@ local Reserve = Module.lazyRequire("Reserve")
 local MainBoard = Module.lazyRequire("MainBoard")
 local TechMarket = Module.lazyRequire("TechMarket")
 local ImperiumRow = Module.lazyRequire("ImperiumRow")
-local ShipmentTrack = Module.lazyRequire("ShipmentTrack")
+local ShippingTrack = Module.lazyRequire("ShippingTrack")
 local TleilaxuRow = Module.lazyRequire("TleilaxuRow")
 local ScoreBoard = Module.lazyRequire("ScoreBoard")
 local ThroneRow = Module.lazyRequire("ThroneRow")
@@ -32,7 +32,7 @@ function Action.onLoad(state)
         }
     end)
 
-    Helper.registerEventListener("playerTurns", function (phase, color)
+    Helper.registerEventListener("playerTurn", function (phase, color)
         Action.context = {
             phase = phase,
             color = color
@@ -250,6 +250,7 @@ end
 ---@param amount integer
 ---@return Continuation
 function Action.influence(color, faction, amount)
+    --Helper.dumpFunction("Action.influence", color, faction, amount)
     Types.assertIsPlayerColor(color)
     Types.assertIsInteger(amount)
     local continuation = Helper.createContinuation("Action.influence")
@@ -273,6 +274,7 @@ end
 ---@param baseCount integer
 ---@return integer
 function Action.troops(color, from, to, baseCount)
+    --Helper.dumpFunction("Action.troops", color, from, to, baseCount)
     Types.assertIsPlayerColor(color)
     Types.assertIsTroopLocation(from)
     Types.assertIsTroopLocation(to)
@@ -396,7 +398,7 @@ function Action.advanceFreighter(color, positiveAmount)
     Types.assertIsPlayerColor(color)
     Types.assertIsPositiveInteger(positiveAmount)
     for _ = 1, positiveAmount do
-        if not ShipmentTrack.freighterUp(color) then
+        if not ShippingTrack.freighterUp(color) then
             return false
         else
             Action.log(I18N("advanceFreighter"), color)
@@ -408,7 +410,7 @@ end
 ---
 function Action.recallFreighter(color)
     Types.assertIsPlayerColor(color)
-    if ShipmentTrack.freighterReset(color) then
+    if ShippingTrack.freighterReset(color) then
         Action.log(I18N("recallFreighter"), color)
         return true
     else
@@ -535,6 +537,18 @@ function Action.gainVictoryPoint(color, name)
 end
 
 ---
+function Action.gainObjective(color, objective)
+    Types.assertIsPlayerColor(color)
+    return PlayBoard.gainObjective(color, objective)
+end
+
+---
+function Action.control(color, spaceName)
+    Helper.dumpFunction("Action.control", color, spaceName)
+    MainBoard.occupy(MainBoard.findControlableSpace(spaceName), color)
+end
+
+---
 function Action.acquireTech(color, stackIndex, discount)
     Types.assertIsPlayerColor(color)
     if stackIndex then
@@ -546,15 +560,20 @@ function Action.acquireTech(color, stackIndex, discount)
 end
 
 ---
+function Action.pickContract(color)
+    Types.assertIsPlayerColor(color)
+    return false
+end
+
+---
 function Action.choose(color, topic)
-    return true
 end
 
 ---
 function Action.decide(color, topic)
     -- Any reason to disable this for human players,
     -- since optional rewards are always desirable VPs?
-    return true
+    return false
 end
 
 return Action

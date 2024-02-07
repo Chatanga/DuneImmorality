@@ -18,7 +18,7 @@ More generally, take a look at the Example.lua file to see how your code might
 be integrated to this mod in a standard way.
 
 -->
-<Panel position="0 -90" width="450" height="450" color="#000000" id="setupPane" rotation="0 0 0" outline="#2e200f" outlineSize="1"
+<Panel position="0 -90" width="450" height="625" color="#000000" id="setupPane" rotation="0 0 0" outline="#2e200f" outlineSize="1"
 	active="False" allowDragging="True" returnToOriginalPositionWhenReleased="False" _visibility="Host">
 	<Defaults>
 		<Text class="primary" color="#000000" fontSize="20" fontStyle="bold" alignment="MiddleLeft"/>
@@ -44,20 +44,19 @@ be integrated to this mod in a standard way.
 				</Dropdown>
 			</HorizontalLayout>
 
-			<!--
 			<Text class="primary" key="extensions"/>
 			<VerticalLayout padding="25 0 0 0">
-				<Toggle id="useContracts" onValueChanged="Global/setUseContracts" isOn="True" key="useContracts"/>
-				<Toggle id="riseOfIx" isOn="True" onValueChanged="Global/setRiseOfIx" key="riseOfIx"/>
+				<Toggle class="setUp" id="useContracts" onValueChanged="Global/setUseContracts" isOn="True" key="useContracts"/>
+				<Toggle class="setUp" id="legacy" isOn="True" onValueChanged="Global/setLegacy" key="legacy"/>
+				<Toggle class="setUp" id="riseOfIx" isOn="True" onValueChanged="Global/setRiseOfIx" key="riseOfIx"/>
 				<VerticalLayout padding="25 0 0 0">
-					<Toggle id="epicMode" isOn="False" onValueChanged="Global/setEpicMode" key="epicMode"/>
+					<Toggle class="setUp" id="epicMode" isOn="False" onValueChanged="Global/setEpicMode" key="epicMode"/>
 				</VerticalLayout>
-				<Toggle id="immortality" isOn="True" onValueChanged="Global/setImmortality" key="immortality"/>
+				<Toggle class="setUp" id="immortality" isOn="True" onValueChanged="Global/setImmortality" key="immortality"/>
 				<VerticalLayout padding="25 0 0 0">
-					<Toggle id="goTo11" isOn="False" onValueChanged="Global/setGoTo11" key="goTo11"/>
+					<Toggle class="setUp" id="goTo11" isOn="False" onValueChanged="Global/setGoTo11" key="goTo11"/>
 				</VerticalLayout>
 			</VerticalLayout>
-			-->
 
 			<HorizontalLayout>
 				<Text class="primary" key="leaderSelection" id="zag"/>
@@ -102,5 +101,5 @@ be integrated to this mod in a standard way.
 			<Button class="setUp" id="setUpButton" minHeight="26" onClick="Global/setUpFromUI" key="setup"/>
 		</HorizontalLayout>
 	</VerticalLayout>
-	<Image position="0 325" width="450" height="230" image="http://cloud-3.steamusercontent.com/ugc/2178113508631057252/0DBB449E130AC23B875A07AE447E074C03B8926D/"/>
+	<Image position="0 410" width="450" height="230" image="http://cloud-3.steamusercontent.com/ugc/2178113508631057252/0DBB449E130AC23B875A07AE447E074C03B8926D/"/>
 </Panel>

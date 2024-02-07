@@ -1,6 +1,7 @@
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local I18N = require("utils.I18N")
+local Dialog = require("utils.Dialog")
 
 local Types = Module.lazyRequire("Types")
 local PlayBoard = Module.lazyRequire("PlayBoard")
@@ -227,7 +228,7 @@ function InfluenceTrack.recallSnooper(faction, color)
             local leader = PlayBoard.getLeader(color)
             if snooperRank == 1 then
                 broadcastToAll(I18N("firstSnooperRecall", parameters), color)
-                Player[color].showInfoDialog(I18N("firstSnooperRecallEffectInfo"))
+                Dialog.showInfoDialog(color, I18N("firstSnooperRecallEffectInfo"))
             elseif snooperRank == 2 then
                 broadcastToAll(I18N("secondSnooperRecall", parameters), color)
                 InfluenceTrack._gainAllianceBonus(faction, color)
@@ -424,6 +425,26 @@ function InfluenceTrack._challengeAlliance(faction)
             end
         end
     end
+end
+
+---
+function InfluenceTrack.getAllianceCost(color, faction)
+    local rank = InfluenceTrack.getInfluence(faction, color, true)
+    for _, otherColor in ipairs(PlayBoard.getActivePlayBoardColors()) do
+        if InfluenceTrack.hasAlliance(otherColor, faction) then
+            if otherColor == color then
+                return 0
+            else
+                local otherRank = InfluenceTrack.getInfluence(faction, otherColor, true)
+                if otherRank == 6 then
+                    return -1
+                else
+                    return otherRank - rank + 1
+                end
+            end
+        end
+    end
+    return 4 - rank
 end
 
 ---

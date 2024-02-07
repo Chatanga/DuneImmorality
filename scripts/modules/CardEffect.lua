@@ -82,7 +82,7 @@ function CardEffect._dispatch(selector, expression)
             local name = leader.name or "?"
             if leader[method] then
                 --Helper.dump(name, "has a method", method)
-                leader[method](...)
+                return leader[method](...)
             else
                 --Helper.dump(name, "has no method", method)
                 return false
@@ -135,6 +135,20 @@ function CardEffect._dispatch(selector, expression)
             else
                 return false
             end
+        elseif selector == "spy" then
+            assert(type(value) == "number")
+            if value >= 0 then
+                for _ = 1, value do
+                    call("sendSpy", color)
+                end
+                return true
+            else
+                -- TODO
+                return false
+            end
+        elseif selector == "contract" then
+            assert(not value or value == 1, tostring(value))
+            return call("pickContract", color, value)
         else
             error("Unknown selector: " .. tostring(selector))
         end
@@ -222,15 +236,11 @@ function CardEffect.control(space)
 end
 
 function CardEffect.spy(expression)
-    return function (expression)
-        return CardEffect._dispatch('spy', expression)
-    end
+    return CardEffect._dispatch('spy', expression)
 end
 
 function CardEffect.contract(expression)
-    return function (expression)
-        return CardEffect._dispatch('contract', expression)
-    end
+    return CardEffect._dispatch('contract', expression)
 end
 
 -- Functors
@@ -297,20 +307,14 @@ end
 
 function CardEffect.choice(n, options)
     return function (context)
-        if not PlayBoard.getLeader(context.color).choose(context.color) then
-            local shuffledOptions = Helper.shallowCopy(options)
-            Helper.shuffle(shuffledOptions)
-            for i = 1, n do
-                shuffledOptions[i](context)
-            end
-        end
+        PlayBoard.getLeader(context.color).choose(context.color, context.cardName)
         return true
     end
 end
 
 function CardEffect.optional(options)
     return function (context)
-        if not PlayBoard.getLeader(context.color).decide(context.color) then
+        if PlayBoard.getLeader(context.color).decide(context.color, context.cardName) then
             for  _, option in ipairs(options) do
                 if not option(context) then
                     return false

@@ -7,6 +7,7 @@ local Dialog = require("utils.Dialog")
 local Resource = Module.lazyRequire("Resource")
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local Commander = Module.lazyRequire("Commander")
+local TurnControl = Module.lazyRequire("TurnControl")
 
 local TleilaxuResearch = {
     --[[
@@ -203,7 +204,7 @@ function TleilaxuResearch._generateResearchButtons()
     end
 
     Helper.createAnchoredAreaButton(TleilaxuResearch.twoHelicesZone, 1.6, 0.1, I18N("progressAfterResearchTrack"), PlayBoard.withLeader(function (_, color, _)
-        if TleilaxuResearch.hasReachedOneHelix(color) then
+        if TleilaxuResearch.hasReachedTwoHelices(color) then
             local leader = PlayBoard.getLeader(color)
             local specialJump = Vector(1, 0, 0)
             leader.research(color, specialJump)
@@ -278,11 +279,12 @@ function TleilaxuResearch._advanceResearch(color, jump, withBenefits)
                 end
 
                 if researchCellBenefits.solariToBeetle then
-                    Dialog.showConfirmDialog(color, I18N("confirmSolarisToBeetles"), function ()
-                        if leader.resources(color, "solari", -7) then
+                    if PlayBoard.getResource(color, "solari"):get() >= 7 then
+                        Dialog.showConfirmDialog(color, I18N("confirmSolarisToBeetles"), function ()
+                            leader.resources(color, "solari", -7)
                             leader.beetle(color, 2)
-                        end
-                    end)
+                        end)
+                    end
                 end
             end)
 
@@ -293,12 +295,25 @@ end
 
 ---
 function TleilaxuResearch.hasReachedOneHelix(color)
-    return TleilaxuResearch.getTokenCellPosition(color).x >= 4
+    return TleilaxuResearch.getBestResearch(color) >= 4
 end
 
 ---
 function TleilaxuResearch.hasReachedTwoHelices(color)
-    return TleilaxuResearch.getTokenCellPosition(color).x == 8
+    return TleilaxuResearch.getBestResearch(color) == 8
+end
+
+---
+function TleilaxuResearch.getBestResearch(color)
+    local bestResearch = 0
+    if Commander.isCommander(color) then
+        for _, otherColor in ipairs(Commander.getAllies(color)) do
+            bestResearch = math.max(bestResearch, TleilaxuResearch.getTokenCellPosition(otherColor).x)
+        end
+    else
+        bestResearch = TleilaxuResearch.getTokenCellPosition(color).x
+    end
+    return bestResearch
 end
 
 ---
