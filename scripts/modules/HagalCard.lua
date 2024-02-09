@@ -307,8 +307,8 @@ end
 
 function HagalCard._activateAcceptContractAndShipping1(color, rival)
     if InfluenceTrack.hasFriendship(color, "spacingGuild") then
-        if HagalCard._spaceIsFree(color, "interstellarShipping") then
-            HagalCard._sendRivalAgent(color, rival, "interstellarShipping")
+        if HagalCard._spaceIsFree(color, "shipping") then
+            HagalCard._sendRivalAgent(color, rival, "shipping")
             rival.resources(color, "solari", 2)
             return true
         else
@@ -328,8 +328,8 @@ end
 
 function HagalCard._activateAcceptContractAndShipping2(color, rival)
     if InfluenceTrack.hasFriendship(color, "spacingGuild") then
-        if HagalCard._spaceIsFree(color, "interstellarShipping") then
-            HagalCard._sendRivalAgent(color, rival, "interstellarShipping")
+        if HagalCard._spaceIsFree(color, "shipping") then
+            HagalCard._sendRivalAgent(color, rival, "shipping")
             rival.resources(color, "solari", 2)
             return true
         else
@@ -418,7 +418,7 @@ function HagalCard._activateHaggaBasinAndImperialBasin(color, rival)
         MainBoard.getSpiceBonus(bestDesertSpace):set(0)
         MainBoard.blowUpShieldWall(color, true)
         HagalCard.acquireTroops(color, 0, true)
-        if bestDesertSpace == "haggaBasin" then
+        if bestDesertSpace == "haggaBasin" and PlayBoard.hasMakerHook(color) then
             rival.resources(color, "spice", bestSpiceBonus)
             rival.callSandworm(color, 1)
         else
@@ -436,7 +436,7 @@ function HagalCard._activateDeepDesert(color, rival)
         HagalCard._sendRivalAgent(color, rival, "deepDesert")
         MainBoard.getSpiceBonus("deepDesert"):set(0)
         HagalCard.acquireTroops(color, 0, true)
-        if not MainBoard.shieldWallIsStanding() then
+        if not MainBoard.shieldWallIsStanding() and PlayBoard.hasMakerHook(color) then
             rival.resources(color, "spice", spiceBonus)
             rival.callSandworm(color, 1)
         else

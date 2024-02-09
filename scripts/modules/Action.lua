@@ -17,6 +17,7 @@ local ShippingTrack = Module.lazyRequire("ShippingTrack")
 local TleilaxuRow = Module.lazyRequire("TleilaxuRow")
 local ScoreBoard = Module.lazyRequire("ScoreBoard")
 local ThroneRow = Module.lazyRequire("ThroneRow")
+local ChoamContractMarket = Module.lazyRequire("ChoamContractMarket")
 
 local Action = Helper.createClass(nil, {
     context = {}
@@ -148,8 +149,12 @@ end
 
 ---
 function Action.sendSpy(color, observationPostName)
-    Action.context.observationPost = observationPostName
-    return MainBoard.sendSpy(color, observationPostName)
+    if observationPostName then
+        Action.context.observationPost = observationPostName
+        return MainBoard.sendSpy(color, observationPostName)
+    else
+        return false
+    end
 end
 
 ---
@@ -560,9 +565,14 @@ function Action.acquireTech(color, stackIndex, discount)
 end
 
 ---
-function Action.pickContract(color)
+function Action.pickContract(color, stackIndex)
     Types.assertIsPlayerColor(color)
-    return false
+    if stackIndex then
+        ChoamContractMarket.acquireContract(stackIndex, color)
+        return true
+    else
+        return false
+    end
 end
 
 ---

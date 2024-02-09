@@ -228,14 +228,16 @@ function Hagal._doActivateFirstValidCard(color, action, n, continuation)
 
     Helper.moveCardFromZone(Hagal.deckZone, emptySlots[2] + Vector(0, 1 + 0.4 * n, 0), Vector(0, 180, 0)).doAfter(function (card)
         if card then
-            if Helper.getID(card) == "reshuffle" then
-                Hagal._reshuffleDeck(color, action, n, continuation)
-            elseif action(card) then
-                HagalCard.flushTurnActions(color)
-                continuation.run(card)
-            else
-                Hagal._doActivateFirstValidCard(color, action, n + 1, continuation)
-            end
+            Helper.onceMotionless(card).doAfter(function ()
+                if Helper.getID(card) == "reshuffle" then
+                    Hagal._reshuffleDeck(color, action, n, continuation)
+                elseif action(card) then
+                    HagalCard.flushTurnActions(color)
+                    continuation.run(card)
+                else
+                    Hagal._doActivateFirstValidCard(color, action, n + 1, continuation)
+                end
+            end)
         else
             Hagal._reshuffleDeck(color, action, n, continuation)
         end
@@ -244,19 +246,19 @@ end
 
 ---
 function Hagal._reshuffleDeck(color, action, n, continuation)
-    --Helper.dump("Reshuffling Hagal deck.")
     local i = 1
     for _, object in ipairs(getObjects()) do
         if object.hasTag("Hagal") and (object.type == "Deck" or object.type == "Card") then
-            if not object.is_face_down then
-                object.flip()
+            for _, otherColor in ipairs(PlayBoard.getActivePlayBoardColors()) do
+                if (PlayBoard.isInside(otherColor, object)) then
+                    if not object.is_face_down then
+                        object.flip()
+                    end
+                    object.setPosition(Hagal.deckZone.getPosition() + Vector(0, i, 0))
+                    i = i + 1
+                    break
+                end
             end
-            object.setPosition(Hagal.deckZone.getPosition() + Vector(0, i, 0))
-            i = i + 1
-            -- For some weird reason, the reformed deck is invisible, some part of
-            -- it seeming to remembering having been pulled from a hidden deck at
-            -- startup...
-            object.setInvisibleTo({})
         end
     end
     Helper.onceTimeElapsed(2).doAfter(function ()

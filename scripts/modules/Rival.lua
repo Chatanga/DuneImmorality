@@ -115,7 +115,7 @@ function Rival.acquireTech(color, stackIndex, discount)
 end
 
 ---
-function Rival.pickContract(color)
+function Rival.pickContract(color, stackIndex)
     local rival = PlayBoard.getLeader(color)
     rival.resources(color, "solari", 2)
     return true
@@ -155,18 +155,26 @@ end
 
 ---
 function Rival.resources(color, nature, amount)
+    local rival = PlayBoard.getLeader(color)
+    local hasSwordmaster = PlayBoard.hasSwordmaster(color)
+
+    if amount > 0 and hasSwordmaster and Helper.isElementOf(rival, { Rival.glossuRabban, Rival.amberMetulli }) then
+        return false
+    end
+
     if Action.resources(color, nature, amount) then
-        local rival = PlayBoard.getLeader(color)
-        local hasSwordmaster = PlayBoard.hasSwordmaster(color)
-        if nature == "solari" and not hasSwordmaster and Action.resources(color, "solari", -rival.swordmasterCost) then
-            rival.recruitSwordmaster(color)
-            hasSwordmaster = true
-        end
-        if hasSwordmaster then
-            Rival._buyVictoryPoints(color)
+        if amount > 0 then
+            if nature == "solari" and not hasSwordmaster and Action.resources(color, "solari", -rival.swordmasterCost) then
+                rival.recruitSwordmaster(color)
+                hasSwordmaster = true
+            end
+            if hasSwordmaster then
+                Rival._buyVictoryPoints(color)
+            end
         end
         return true
     end
+
     return false
 end
 
@@ -311,6 +319,10 @@ Rival.glossuRabban = Helper.createClass(Rival, {
 
     gainVictoryPoint = function (color, name)
         return false
+    end,
+
+    gainObjective = function (color, objective)
+        return false
     end
 })
 
@@ -354,6 +366,10 @@ Rival.amberMetulli = Helper.createClass(Rival, {
     end,
 
     gainVictoryPoint = function (color, name)
+        return false
+    end,
+
+    gainObjective = function (color, objective)
         return false
     end
 })
@@ -491,7 +507,7 @@ Rival.muadDib = Helper.createClass(Rival, {
 
     signetRing = function (color)
         Rival.takeMakerHook(color)
-        MainBoard.blowUpShieldWall(color)
+        MainBoard.blowUpShieldWall(color, true)
         Rival.drawIntrigues(color, 1)
     end
 })

@@ -339,8 +339,8 @@ end
 function Combat._createDreadnoughtPark(color, position)
     local dir = PlayBoard.isLeft(color) and -1 or 1
     local slots = {
-        position + Vector(1.3 * dir, 0.2, 0.9),
-        position + Vector(1.3 * dir, 0.2, -0.9),
+        position + Vector(0.3 * dir, 0.2, -1.0),
+        position + Vector(0.9 * dir, 0.2, -1.0),
     }
 
     local zone = Park.createTransientBoundingZone(0, Vector(0.5, 2, 0.5), slots)

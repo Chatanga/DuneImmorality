@@ -1,6 +1,6 @@
 <!--
 
-To Rogerio and everyone else who needs to plug in their auxiliary UI:
+How to add an auxiliary UI:
 
 Simply add your panel(s) here, either by hand or procedurally in code (using
 setXml/setXmlTable, ideally in the YourModule.onLoad method) and keep the two

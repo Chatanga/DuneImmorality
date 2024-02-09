@@ -38,12 +38,10 @@ local Deck = {
         epic = {
             controlTheSpice = 1,
         },
-        --[[ Not used when Immortality is combined with Uprising.
         immortality = {
             duneTheDesertPlanet = Helper.ERASE,
             experimentation = 2,
         },
-        ]]
         emperor = {
             emperorConvincingArgument = 1,
             emperorCorrinoMight = 1,
@@ -588,6 +586,11 @@ function Deck.rebuildPreloadAreas()
         en = require("en.Deck"),
         fr = require("fr.Deck"),
     }
+
+    Deck.prebuildZones = Helper.resolveGUIDs(true, {
+        en = "a5a2e6",
+        fr = "db4507",
+    })
 
     for _, prebuildZone in pairs(Deck.prebuildZones) do
         for _, object in ipairs(prebuildZone.getObjects()) do
@@ -1198,6 +1201,7 @@ function Deck._prebuildStarterDeck(deckPosition)
     local contributionSets = {
         Deck.starter.base,
         Deck.starter.epic,
+        Deck.starter.immortality,
     }
     local contributions = Deck._mergeContributionSets(contributionSets, true)
     contributions = Helper.map(contributions, function (_, cardinality)

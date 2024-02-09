@@ -79,8 +79,10 @@ function TechMarket._transientSetUp(settings)
 
     TechMarket.acquireCards = {}
     for i, zone in ipairs(TechMarket.techSlots) do
-        local callback = PlayBoard.withLeader(TechMarket["_acquireTech" .. tostring(i)])
-        local acquireCard = AcquireCard.new(zone, "Tech", callback)
+        local acquireCard = AcquireCard.new(zone, "Tech", PlayBoard.withLeader(function (_, color)
+            local leader = PlayBoard.getLeader(color)
+            leader.acquireTech(color, i)
+        end))
         acquireCard.groundHeight = acquireCard.groundHeight + 0.2
         table.insert(TechMarket.acquireCards, acquireCard)
     end
@@ -243,21 +245,6 @@ function TechMarket._createNegotiationButton()
             leader.troops(color, "supply", "negotiation", 1)
         end
     end))
-end
-
----
-function TechMarket._acquireTech1(_, color)
-    TechMarket.acquireTech(1, color)
-end
-
----
-function TechMarket._acquireTech2(_, color)
-    TechMarket.acquireTech(2, color)
-end
-
----
-function TechMarket._acquireTech3(_, color)
-    TechMarket.acquireTech(3, color)
 end
 
 ---

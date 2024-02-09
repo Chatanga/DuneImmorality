@@ -139,8 +139,10 @@ function ChoamContractMarket._transientSetUp(settings)
     ChoamContractMarket._processSnapPoints(settings)
 
     for i, zone in ipairs(ChoamContractMarket.contractSlots) do
-        local callback = PlayBoard.withLeader(ChoamContractMarket["_acquireContract" .. tostring(i)])
-        local acquireCard = AcquireCard.new(zone, "Contract", callback)
+        local acquireCard = AcquireCard.new(zone, "Contract", PlayBoard.withLeader(function (_, color)
+            local leader = PlayBoard.getLeader(color)
+            leader.pickContract(color, i)
+        end))
         acquireCard.groundHeight = acquireCard.groundHeight + 0.1
         acquireCard.cardHeight = 0.2
         table.insert(ChoamContractMarket.acquireCards, acquireCard)
@@ -173,18 +175,6 @@ function ChoamContractMarket._processSnapPoints(settings)
             end
         end,
     })
-end
-
----
-function ChoamContractMarket._acquireContract1(_, color)
-    -- TODO Introduce the usual indirection player -> action -> ChoamContractMarket.
-    ChoamContractMarket.acquireContract(1, color)
-end
-
----
-function ChoamContractMarket._acquireContract2(_, color)
-    -- TODO Introduce the usual indirection player -> action -> ChoamContractMarket.
-    ChoamContractMarket.acquireContract(2, color)
 end
 
 ---
