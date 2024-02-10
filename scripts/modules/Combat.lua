@@ -16,7 +16,7 @@ local ConflictCard = Module.lazyRequire("ConflictCard")
 local Combat = {
     -- Temporary structure (set to nil *after* loading).
     unresolvedContent = {
-        victoryPointTokenBag = "d9a457",
+        victoryPointTokenBag = "86dc4e",
         protoSandworm = "14b25e",
         objectiveTokenBags = {
             muadDib = "a17bcb",
@@ -97,11 +97,9 @@ function Combat._transientSetUp(settings)
             TurnControl.overridePhaseTurnSequence(turnSequence)
             Combat.showRanking(turnSequence, Combat.ranking)
         elseif phase == "recall" then
-            if Combat.rewardTokenZone then
-                for _, object in ipairs(Combat.rewardTokenZone.getObjects()) do
-                    if Types.isVictoryPointToken(object) then
-                        MainBoard.trash(object)
-                    end
+            for _, object in ipairs(Combat.rewardTokenZone.getObjects()) do
+                if Types.isVictoryPointToken(object) then
+                    MainBoard.trash(object)
                 end
             end
             -- Recalling units (troops, dreadnoughts and sandworms) in the combat (not in a controlable space).
@@ -621,15 +619,14 @@ function Combat.gainVictoryPoint(color, name)
         end)
     end
 
-    if Combat.rewardTokenZone then
-        for _, object in ipairs(Combat.rewardTokenZone.getObjects()) do
-            if Types.isVictoryPointToken(object) and Helper.getID(object) == name and not Combat.grantedTokens[object] then
-                Combat.grantedTokens[object] = true
-                PlayBoard.grantScoreToken(color, object)
-                return true
-            end
+    for _, object in ipairs(Combat.rewardTokenZone.getObjects()) do
+        if Types.isVictoryPointToken(object) and Helper.getID(object) == name and not Combat.grantedTokens[object] then
+            Combat.grantedTokens[object] = true
+            PlayBoard.grantScoreToken(color, object)
+            return true
         end
     end
+
     return false
 end
 

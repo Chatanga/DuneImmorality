@@ -576,6 +576,17 @@ function Action.pickContract(color, stackIndex)
 end
 
 ---
+function Action.pickVoice(color)
+    Types.assertIsPlayerColor(color)
+    local voiceToken = ScoreBoard.getFreeVoiceToken()
+    if voiceToken then
+        return PlayBoard.acquireVoice(color, voiceToken)
+    else
+        return false
+    end
+end
+
+---
 function Action.choose(color, topic)
 end
 

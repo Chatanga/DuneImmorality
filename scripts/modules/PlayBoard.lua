@@ -22,6 +22,7 @@ local ImperiumCard = Module.lazyRequire("ImperiumCard")
 local Commander = Module.lazyRequire("Commander")
 --local IntrigueCard = Module.lazyRequire("IntrigueCard")
 local ConflictCard = Module.lazyRequire("ConflictCard")
+local ScoreBoard = Module.lazyRequire("ScoreBoard")
 
 local PlayBoard = Helper.createClass(nil, {
     ALL_RESOURCE_NAMES = { "spice", "water", "solari", "strength", "persuasion" },
@@ -931,6 +932,8 @@ end
 
 ---
 function PlayBoard.setUp(settings, activeOpponents)
+    local sequentialActions = {}
+
     for color, playBoard in pairs(PlayBoard.playBoards) do
         playBoard:_cleanUp(false, not settings.riseOfIx, not settings.immortality, settings.numberOfPlayers ~= 6)
 
@@ -983,10 +986,15 @@ function PlayBoard.setUp(settings, activeOpponents)
                     playBoard.content.fourPlayerVictoryToken.destruct()
                     playBoard.content.fourPlayerVictoryToken = nil
                 end
-                if settings.numberOfPlayers == 6 and Commander.isTeamShaddam(color) then
-                    playBoard.content.makerHook.destruct()
-                    playBoard.content.makerHook = nil
+                if settings.numberOfPlayers == 6 then
+                    if Commander.isTeamShaddam(color) then
+                        playBoard.content.makerHook.destruct()
+                        playBoard.content.makerHook = nil
+                    end
+                    table.insert(sequentialActions, Helper.partialApply(ScoreBoard.gainVictoryPoint, color, "ally"))
                 end
+            else
+                table.insert(sequentialActions, 1, Helper.partialApply(ScoreBoard.gainVictoryPoint, color, "commander", 4))
             end
 
             Helper.onceFramesPassed(1).doAfter(function ()
@@ -996,6 +1004,15 @@ function PlayBoard.setUp(settings, activeOpponents)
             playBoard:_tearDown()
         end
     end
+
+    -- The score track for VP tokens is fragile and doesn't handle too well the
+    -- token collisions happening when multiples scores are updated at the same
+    -- time.
+    Helper.repeatChainedAction(#sequentialActions, function ()
+        sequentialActions[1]()
+        table.remove(sequentialActions, 1)
+        return Helper.onceTimeElapsed(1)
+    end)
 
     PlayBoard._transientSetUp(settings)
 
@@ -2008,7 +2025,12 @@ end
 
 ---
 function PlayBoard._convertObjectiveTokenPairsIntoVictoryPoints(object)
-    Helper.dumpFunction("PlayBoard.convertObjectiveTokenPairsIntoVictoryPoints", Helper.getID(object))
+    local tagToName = {
+        MuadDibObjectiveToken = "muadDibVictoryPoint",
+        OrnithopterObjectiveToken = "ornithopterVictoryPoint",
+        CrysknifeObjectiveToken = "crysknifeVictoryPoint",
+        JokerObjectiveToken = "jokerVictoryPoint",
+    }
     local objectiveTag = object.getTags()[1]
     for color, playBoard in pairs(PlayBoard.playBoards) do
         local board = playBoard.content.board
@@ -2040,7 +2062,7 @@ function PlayBoard._convertObjectiveTokenPairsIntoVictoryPoints(object)
                             hitTokens[1].destruct()
                             table.remove(hitTokens, 1)
                         end
-                        leader.gainVictoryPoint(color, "objective")
+                        leader.gainVictoryPoint(color, tagToName[objectiveTag])
                     end
 
                     break
@@ -2533,6 +2555,7 @@ end
 
 ---
 function PlayBoard.getLeader(color)
+    assert(color)
     return PlayBoard.getPlayBoard(color).leader
 end
 
@@ -2598,15 +2621,6 @@ function PlayBoard:getScore()
                 score = score + 1
             end
         end
-
-        if TurnControl.getPlayerCount() == 6 then
-            if Commander.isCommander(self.color) then
-                score = score + 4
-            else
-                score = score + 1
-            end
-        end
-
     else
         log("Missing score park for player " .. self.color)
     end
@@ -2630,12 +2644,13 @@ end
 
 ---
 function PlayBoard.grantScoreToken(color, token)
+    token.setInvisibleTo({})
     return Park.putObject(token, PlayBoard.getPlayBoard(color).scorePark)
 end
 
 ---
-function PlayBoard.grantScoreTokenFromBag(color, tokenBag)
-    return Park.putObjectFromBag(tokenBag, PlayBoard.getPlayBoard(color).scorePark)
+function PlayBoard.grantScoreTokenFromBag(color, tokenBag, count)
+    return Park.putObjectFromBag(tokenBag, PlayBoard.getPlayBoard(color).scorePark, count)
 end
 
 ---
@@ -3021,6 +3036,15 @@ function PlayBoard.getHandOrientedPosition(color)
         position = position,
         rotation = rotation
     }
+end
+
+---
+function PlayBoard.acquireVoice(color, voiceToken)
+    Types.assertIsPlayerColor(color)
+    assert(voiceToken)
+    local position = PlayBoard.getPlayBoard(color).content.firstPlayerInitialPosition
+    voiceToken.setPositionSmooth(position + Vector(0, 1, -1.8))
+    return true
 end
 
 return PlayBoard

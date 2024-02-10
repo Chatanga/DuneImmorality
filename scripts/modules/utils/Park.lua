@@ -119,9 +119,13 @@ function Park.putObjects(objects, toPark)
 end
 
 ---
-function Park.putObjectFromBag(objectBag, toPark)
+function Park.putObjectFromBag(objectBag, toPark, count)
     assert(objectBag, "No object bag provided.")
-    return Park._putHolders({{bag = objectBag}}, toPark) > 0
+    local holders = {}
+    for _ = 1, (count or 1) do
+        table.insert(holders, {bag = objectBag})
+    end
+    return Park._putHolders(holders, toPark) == (count or 1)
 end
 
 ---

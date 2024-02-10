@@ -28,6 +28,7 @@ local mentat = CardEffect.mentat
 local control = CardEffect.control
 local spy = CardEffect.spy
 local contract = CardEffect.contract
+local voice = CardEffect.voice
 local perDreadnoughtInConflict = CardEffect.perDreadnoughtInConflict
 local perSwordCard = CardEffect.perSwordCard
 local perFremen = CardEffect.perFremen
@@ -108,7 +109,7 @@ local ImperiumCard = {
     spiceSmugglers = {factions = {'spacingGuild'}, cost = 2, agentIcons = {'blue'}, reveal = {persuasion(1), sword(1)}},
     stilgar = {factions = {'fremen'}, cost = 5, agentIcons = {'fremen', 'blue', 'yellow'}, reveal = {persuasion(2), sword(3)}},
     testOfHumanity = {factions = {'beneGesserit'}, cost = 3, agentIcons = {'beneGesserit', 'green', 'blue'}, reveal = {persuasion(2)}},
-    theVoice = {factions = {'beneGesserit'}, cost = 2, agentIcons = {'blue', 'yellow'}, reveal = {persuasion(2)}},
+    theVoice = {factions = {'beneGesserit'}, cost = 2, acquireBonus = {voice()}, agentIcons = {'blue', 'yellow'}, reveal = {persuasion(2)}},
     thufirHawat = {cost = 5, agentIcons = {'emperor', 'spacingGuild', 'beneGesserit', 'fremen', 'blue', 'yellow'}, reveal = {persuasion(1), intrigue(1)}},
     wormRiders = {factions = {'fremen'}, cost = 6, agentIcons = {'blue', 'yellow'}, reveal = {sword(fremenFriendship(4)), sword(fremenAlliance(2))}},
     opulence = {factions = {'emperor'}, cost = 6, agentIcons = {'emperor'}, reveal = {persuasion(1), optional({solari(-6), vp(1)})}},

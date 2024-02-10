@@ -782,14 +782,14 @@ return {
     invasionShips = "Vaisseaux d’invasion",
 
     -- Specific victory tokens
+    endgame = "Carte de fin de partie",
     endgameTech = "Tech. de fin de partie",
-    endgameCard = "Carte de fin de partie",
     combat = "Combat",
     rivalIntrigue = "Rival - Intrigue",
     rivalSolari = "Rival - Solari",
     rivalWater = "Rival - Eau",
     rivalSpice = "Rival - Épice",
-    beneTleilax = "Bene Tleilax",
+    --beneTleilax = "Bene Tleilax",
     objective = "Objectif",
     priorityContract = "Contrat prioritaire",
     strategicStockpiling1 = "Stocks stratégiques (épice)",

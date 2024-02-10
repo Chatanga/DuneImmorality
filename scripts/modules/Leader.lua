@@ -552,6 +552,7 @@ Leader.feydRauthaHarkonnen = Helper.createClass(Leader, {
         local leaderCard = PlayBoard.findLeaderCard(color)
         local marker = getObjectFromGUID("505c31")
         marker.setPosition(leaderCard.positionToWorld(Leader.feydRauthaHarkonnen.positions[1]) + Vector(0, 0.5, 0))
+        marker.setInvisibleTo({})
     end
 })
 

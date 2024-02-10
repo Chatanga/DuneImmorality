@@ -18,7 +18,6 @@ Supported langages:
 
 __All__
 
-- Ajouter faux PV pour C et A, (re)refaire TSMF.
 - Revoir le contexte d’action pour les logs.
 
 - Mode libre pour la sélection des dirigeants.
@@ -46,16 +45,16 @@ __2P / Solo__
 
 __Aesthetic__
 
-- Réorganiser les éléments de jeu en 4J et 6J.
+- Réorganiser les éléments de jeu en 4J et 6J ?
 - Revoir les décalcos tech / contrat.
-- Ranger les goodies (fouineurs, baron, feyd, voix à donner en bonus, bonus maîtres d'armes) dans une zone invisible ?
 - Prendre en considération les crans de zoom, préconfigurer les caméras ?
 - Snaps jetons factions 6J empereur/fremen trop hauts.
 - Élargir les bordures colorées des plateaux (retirer complétement les trigger effects dans la foulée).
+- Refaire les agents des commandants.
 
 ## Claim your Victory
 
-Attention : que ce passe-t-il si plusieurs joueurs tentent d'ouvrir simultanément un tel menu ?
+Note: put your card and/or intrigues in play to make the matching action visible.
 
     Claim your Victory:
         ([ ] Endgame)
@@ -72,8 +71,6 @@ Attention : que ce passe-t-il si plusieurs joueurs tentent d'ouvrir simultanéme
             Tech tiles
             Intrigues
             Rival
-
-Note: put your card and/or intrigues in play to make the matching action visible.
 
 ## Build Process
 

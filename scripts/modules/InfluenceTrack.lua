@@ -14,7 +14,7 @@ local InfluenceTrack = {
     influenceTokenInitialPositions = {},
     allianceTokenInitialPositions = {},
     influenceLevels = {},
-    actionsLocked = {
+    lockedActions = {
         emperor = {},
         spacingGuild = {},
         beneGesserit = {},
@@ -36,18 +36,18 @@ function InfluenceTrack.onLoad(state)
             fremen = "b10897",
         },
         friendshipBags = {
-            emperor = "6a4186",
-            spacingGuild = "400d45",
-            beneGesserit = "e763f6",
-            fremen = "8bcfe7",
-            greatHouses = '95926b',
-            fringeWorlds = 'a43ec0',
+            emperor = "7007df",
+            spacingGuild = "af9795",
+            beneGesserit = "3ebbd7",
+            fremen = "f5a7af",
+            greatHouses = "07e49b",
+            fringeWorlds = "ff38f9",
         },
         allianceTokens = {}
     }))
 
     for _, bag in pairs(InfluenceTrack.friendshipBags) do
-        bag.interactable = false
+        --bag.interactable = false
     end
 
     if state.settings then
@@ -97,12 +97,12 @@ function InfluenceTrack._transientSetUp(settings, firstTime)
             Helper.createTransientAnchor(faction .. "Rank" .. tostring(i), levelPosition).doAfter(function (anchor)
                 local actionName = I18N("progressOnInfluenceTrack", { withFaction = I18N(Helper.toCamelCase("with", faction)) })
                 Helper.createSizedAreaButton(1000, 400, anchor, 1.75, actionName, PlayBoard.withLeader(function (_, color, _)
-                    if not InfluenceTrack.actionsLocked[faction][color] then
+                    if not InfluenceTrack.lockedActions[faction][color] then
                         if InfluenceTrack.hasAccess(color, faction) then
                             local rank = InfluenceTrack._getInfluenceTracksRank(faction, color)
-                            InfluenceTrack.actionsLocked[faction][color] = true
+                            InfluenceTrack.lockedActions[faction][color] = true
                             PlayBoard.getLeader(color).influence(color, faction, i - rank, true).doAfter(function ()
-                                InfluenceTrack.actionsLocked[faction][color] = false
+                                InfluenceTrack.lockedActions[faction][color] = false
                             end)
                         end
                     end
@@ -122,7 +122,7 @@ function InfluenceTrack._processSnapPoints(settings, firstTime)
     local influenceTokens = {}
     for _, object in ipairs(getObjects()) do
         if object.hasTag("AllianceToken") then
-            for faction, _ in pairs(InfluenceTrack.actionsLocked) do
+            for faction, _ in pairs(InfluenceTrack.lockedActions) do
                 if object.hasTag(faction) then
                     InfluenceTrack.allianceTokens[faction] = object
                     break
@@ -176,7 +176,9 @@ function InfluenceTrack._processSnapPoints(settings, firstTime)
             local allianceTokenInitialPosition = position + Vector(-0.02, 0, 2.32)
             InfluenceTrack.allianceTokenInitialPositions[faction] = allianceTokenInitialPosition
             if firstTime then
-                InfluenceTrack.allianceTokens[faction].setPositionSmooth(allianceTokenInitialPosition)
+                local token = InfluenceTrack.allianceTokens[faction]
+                token.setInvisibleTo({})
+                token.setPositionSmooth(allianceTokenInitialPosition)
             end
         end
     })
@@ -187,6 +189,7 @@ function InfluenceTrack.setUpSnoopers()
     for faction, snooper in pairs(InfluenceTrack.snoopers) do
         local position = MainBoard.getSnooperTrackPosition(faction)
         snooper.setPositionSmooth(position, false, false)
+        snooper.setInvisibleTo({})
         snooper.setRotationSmooth(Vector(0, 90, 0))
         Helper.onceTimeElapsed(3).doAfter(function ()
             snooper.setLock(true)
@@ -378,13 +381,14 @@ end
 function InfluenceTrack._gainFriendship(faction, color)
     Types.assertIsFaction(faction)
     Types.assertIsPlayerColor(color)
-    local token = InfluenceTrack.friendshipBags[faction]
-    assert(token)
-    PlayBoard.getLeader(color).gainVictoryPoint(color, Helper.getID(token))
+    local friendshipTokenName = faction .. "Friendship"
+    PlayBoard.getLeader(color).gainVictoryPoint(color, friendshipTokenName)
 end
 
 ---
 function InfluenceTrack._loseFriendship(faction, color)
+    Types.assertIsFaction(faction)
+    Types.assertIsPlayerColor(color)
     local friendshipTokenName = faction .. "Friendship"
     for _, scoreToken in ipairs(PlayBoard.getScoreTokens(color)) do
         if Helper.getID(scoreToken) == friendshipTokenName then

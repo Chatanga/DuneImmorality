@@ -19,26 +19,7 @@ local constructionModeEnabled = false
 local autoLoadedSettings = nil
 
 --[[
-autoLoadedSettings = {
-    language = "fr",
-    hotSeat = true,
-    numberOfPlayers = 1,
-    randomizePlayerPositions = false,
-    useContracts = true,
-    legacy = false,
-    riseOfIx = false,
-    epicMode = false,
-    immortality = false,
-    goTo11 = false,
-    leaderSelection = {
-        Green = "jessica",
-        Yellow = "gurneyHalleck",
-        Red = "feydRauthaHarkonnen",
-    },
-    horizontalHandLayout = true,
-    soundEnabled = true,
-}
-
+]]
 autoLoadedSettings = {
     language = "fr",
     hotSeat = true,
@@ -59,7 +40,6 @@ autoLoadedSettings = {
     horizontalHandLayout = true,
     soundEnabled = true,
 }
-]]
 
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")

@@ -781,14 +781,14 @@ return {
     invasionShips = "Invasion Ships",
 
     -- Specific victory tokens
+    endgame = "Endgame Card",
     endgameTech = "Endgame Tech",
-    endgameCard = "Endgame Card",
     combat = "Combat",
     rivalIntrigue = "Rival - Intrigue",
     rivalSolari = "Rival - Solari",
     rivalWater = "Rival - Water",
     rivalSpice = "Rival - Spice",
-    beneTleilax = "Bene Tleilax",
+    --beneTleilax = "Bene Tleilax",
     objective = "Objective",
     priorityContract = "Priority Contract",
     strategicStockpiling1 = "Strategic Stockpiling (Spice)",

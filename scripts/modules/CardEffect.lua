@@ -43,6 +43,10 @@ local vp = CardEffect.vp
 local draw = CardEffect.draw
 local shipment = CardEffect.shipment
 local mentat = CardEffect.mentat
+local control = CardEffect.control
+local spy = CardEffect.spy
+local contract = CardEffect.contract
+local voice = CardEffect.voice
 local perDreadnoughtInConflict = CardEffect.perDreadnoughtInConflict
 local perSwordCard = CardEffect.perSwordCard
 local perFremen = CardEffect.perFremen
@@ -60,6 +64,9 @@ local anyAlliance = CardEffect.anyAlliance
 local oneHelix = CardEffect.oneHelix
 local twoHelices = CardEffect.twoHelices
 local winner = CardEffect.winner
+local twoSpies = CardEffect.twoSpies
+local spyMakerSpace = CardEffect.spyMakerSpace
+local swordmaster = CardEffect.swordmaster
 ]]
 
 ---@param context Context
@@ -149,6 +156,9 @@ function CardEffect._dispatch(selector, expression)
         elseif selector == "contract" then
             assert(not value or value == 1, tostring(value))
             return call("pickContract", color, value)
+        elseif selector == "voice" then
+            assert(not value, tostring(value))
+            return call("pickVoice", color)
         else
             error("Unknown selector: " .. tostring(selector))
         end
@@ -241,6 +251,10 @@ end
 
 function CardEffect.contract(expression)
     return CardEffect._dispatch('contract', expression)
+end
+
+function CardEffect.voice(expression)
+    return CardEffect._dispatch('voice', expression)
 end
 
 -- Functors

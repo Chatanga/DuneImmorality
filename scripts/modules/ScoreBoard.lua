@@ -12,7 +12,13 @@ local ScoreBoard = {
 
 ---
 function ScoreBoard.onLoad(state)
-    --Helper.dumpFunction("ScoreBoard.onLoad")
+    Helper.dumpFunction("ScoreBoard.onLoad")
+
+    ScoreBoard.hiddenZone = Helper.resolveGUIDs(true, "3848a9")
+
+    for _, object in ipairs(ScoreBoard.hiddenZone.getObjects()) do
+        object.setInvisibleTo(Player.getColors())
+    end
 
     --[[
         4 players tokens -> PlayBoard
@@ -20,52 +26,63 @@ function ScoreBoard.onLoad(state)
         others -> here
     ]]
     ScoreBoard.tokens = Helper.resolveGUIDs(false, {
+        friendship = {
+            emperorBag = "7007df",
+            spacingGuildBag = "af9795",
+            beneGesseritBag = "3ebbd7",
+            fremenBag = "f5a7af",
+            greatHousesBag = "07e49b",
+            fringeWorldsBag = "ff38f9",
+        },
         base = {
-            theSpiceMustFlowBag = "43c7b5",
-            combatVictoryPointBag = "d9a457",
-            emperorFriendshipBag = "6a4186",
-            spacingGuildFriendshipBag = "400d45",
-            beneGesseritFriendshipBag = "e763f6",
-            fremenFriendshipBag = "8bcfe7",
-            greatHousesFriendshipBag = "95926b",
-            fringeWorldsFriendshipBag = "a43ec0",
-            endgameCardBag = "cfe0cb",
+            fourPlayerBag = "c2290f",
+            allyBag = "5140a0",
+            commanderBag = "1a42dd",
             --
-            smugglerHaven = "8243d3",
-            corrinthCity = "46f6f2",
-            junctionHeadquarters = "c799ba",
-            objectiveBag = "f346be",
-            priorityContracts = "5e061e",
-            deliveryAgreement = "d081dd",
-            strategicStockpiling1 = "3b1328",
-            strategicStockpiling2 = "227ee4",
-            opportunism = "5785d5",
+            theSpiceMustFlowNewBag= "a7e06b",
+            combatVictoryPointBag = "86dc4e",
+            muadDibVictoryPointBag = "9aad55",
+            ornithopterVictoryPointBag = "600a38",
+            crysknifeVictoryPointBag = "779feb",
+            jokerVictoryPointBag = "ab479e",
+            endgameCardBag = "182475",
+            --
+            smugglerHavenBag = "fe7d43",
+            corrinthCityBag = "4e150b",
+            junctionHeadquartersBag = "2ff2dc",
+            objectiveBag = "fd4468",
+            priorityContracts = "732faa",
+            deliveryAgreement = "93c9bd",
+            strategicStockpiling1 = "008432",
+            strategicStockpiling2 = "c070b2",
+            opportunism = "504094",
         },
         legacy = {
-            guildAmbassadorBag = "4bdbd5",
-            sayyadinaBag = "4575f3",
-            opulenceBag = "67fbba",
-            theSleeperMustAwaken = "946ca1",
-            choamShares = "c530e6",
-            stagedIncident = "bee42f",
+            theSpiceMustFlowBag = "7bd6f8",
+            guildAmbassadorBag = "912d75",
+            sayyadinaBag = "9193f5",
+            opulenceBag = "c22e46",
+            theSleeperMustAwaken = "9bfd65",
+            choamShares = "2da115",
+            stagedIncident = "1f98e2",
         },
         hagal = {
-            intrigueBag = "f9bc89",
-            solariBag = "61c242",
-            waterBag = "0c4ca1",
-            spiceBag = "2fd6f0",
+            intrigueBag = "772594",
+            solariBag = "266448",
+            waterBag = "3963f0",
+            spiceBag = "19c977",
         },
         ix = {
-            detonationDevicesBag = "7b3fa2",
-            ixianEngineerBag = "3371d8",
-            flagship = "366237",
-            spySatellites = "73a68f",
-            endgameTechBag = "1d3e4f",
+            detonationDevicesBag = "4cc3d5",
+            ixianEngineerBag = "4ae3de",
+            flagship = "692480",
+            spySatellites = "c94718",
+            techEndgameBag = "3e2ce6",
         },
         immortality = {
-            scientificBreakthrough = "d22031",
-            tleilaxBag = "082e07",
-            forHumanityBag = "71c0c8"
+            scientificBreakthrough = "b56adc",
+            beetleBag = "37ceab",
+            forHumanityBag = "6e2a13"
         },
     })
 
@@ -88,7 +105,10 @@ function ScoreBoard.setUp(settings)
         if activateCategories[category] then
             Helper.forEachRecursively(ScoreBoard.tokens[category], function (name, token)
                 assert(token)
-                token.setName(I18N(Helper.getID(token)))
+                local key = Helper.getID(token)
+                if key and key:len() > 0 then
+                    token.setName(I18N(key))
+                end
                 if false then
                     -- Clumsy workaround to name items in a bag.
                     -- TODO Recreate the bag?
@@ -124,12 +144,9 @@ function ScoreBoard._transientSetUp(settings)
     -- NOP
 end
 
-function ScoreBoard.gainVictoryPoint(color, name)
-    -- FIXME Ugly workaround!
-    if name == "theSpiceMustFlowNew" then
-        name = "theSpiceMustFlow"
-    end
-
+---
+function ScoreBoard.gainVictoryPoint(color, name, count)
+    Helper.dumpFunction("ScoreBoard.gainVictoryPoint", color, name, count)
     local holder = {
         success = false
     }
@@ -140,7 +157,7 @@ function ScoreBoard.gainVictoryPoint(color, name)
             holder.success = true
         elseif name .. "Bag" == victoryPointName then
             --Helper.dump("Found VP in a top area bag.")
-            PlayBoard.grantScoreTokenFromBag(color, victoryPointSource)
+            PlayBoard.grantScoreTokenFromBag(color, victoryPointSource, count)
             holder.success = true
         end
     end)
@@ -155,6 +172,17 @@ function ScoreBoard.gainVictoryPoint(color, name)
     else
         return false
     end
+end
+
+--- TODO Find a better place and implementation.
+function ScoreBoard.getFreeVoiceToken()
+    for _, object in ipairs(ScoreBoard.hiddenZone.getObjects()) do
+        if Helper.isElementOf(object.getGUID(), { "516df5", "cc0eda" }) then
+            object.setInvisibleTo({})
+            return object
+        end
+    end
+    return nil
 end
 
 return ScoreBoard
