@@ -85,7 +85,7 @@ local IntrigueCard = {
     finesse = {categories = {'combat', 'plot'}, combat = {"2 swords"}, plot = {"-1 influence ? -> +1 influence ?"}},
     advancedWeaponry = {categories = {'combat'}, plot = {"-3 solari -> +1 dreadnought"}, combat = {"If you have 3 tech: +4 sword."}},
     grandConspiracy = {categorise = {'endgame'}, plot = {"If you have (2 dread, 1 SMF, 4 inf on 2 tracks, council): 3 = 1 VP, 4 = 2 VP"}},
-    strongArm = {categories = {'plot'}, plot = {"Lose a troop -> +1 influece on track where you placed an agent this turn"}},
+    strongarm = {categories = {'plot'}, plot = {"Lose a troop -> +1 influence on track where you placed an agent this turn"}},
     ixianProbe = {categories = {'plot'}, plot = {"2x discard -> 2x draw"}},
     cull = {categories = {'plot'}, plot = {"-1 Solari -> 1x trash"}},
     secretForces = {categories = {'plot'}, plot = {"+2 troops if you have a seat on high council"}},
