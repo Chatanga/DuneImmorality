@@ -194,7 +194,9 @@ return {
     goSpiceRefinery = "Select an option.",
     noSpiceOption = "0 spice unit",
     withSpiceOption = "1 spice unit",
+    reclaimRewards = "Reclaim Rewards",
     makersAndRecall = "Makers + Recall",
+    doublingConflictRewards = "Double rewards",
 
     goDeepDesert = "Select an option.",
     fourSpicesOption = "4 spice units",
@@ -203,6 +205,7 @@ return {
     twoSpicesOption = "2 spice units",
     onWormOption = "1 sandworm",
     noMakerHook = "You don't have a maker's hook!",
+    shieldWallIsStanding = "The Shield Wall is still standing!",
 
     goTechNegotiation = "Select an option.",
     sendNegotiatorOption = "Negotiator",

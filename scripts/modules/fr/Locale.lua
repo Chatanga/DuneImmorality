@@ -194,7 +194,9 @@ return {
     goSpiceRefinery = "Selectionnez une option.",
     noSpiceOption = "Pas d’épice",
     withSpiceOption = "1 épice",
+    reclaimRewards = "Réclamer les récompenses",
     makersAndRecall = "Faiseurs + Rappel",
+    doublingConflictRewards = "Récompenses doublées",
 
     goDeepDesert = "Selectionnez une option.",
     fourSpicesOption = "4 épices",
@@ -203,6 +205,7 @@ return {
     twoSpicesOption = "2 épices",
     onWormOption = "1 ver des sables",
     noMakerHook = "Vous ne possédez pas de hameçon à faiseur!",
+    shieldWallIsStanding = "The Mur du Bouclier est toujours debout !",
 
     goTechNegotiation = "Sélectionnez une option.",
     sendNegotiatorOption = "Négociateur",

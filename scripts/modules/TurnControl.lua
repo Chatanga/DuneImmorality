@@ -55,7 +55,7 @@ function TurnControl.onLoad(state)
             if TurnControl.currentPlayerLuaIndex then
                 Helper.onceTimeElapsed(2).doAfter(Helper.partialApply(TurnControl._notifyPlayerTurn, true))
             else
-                TurnControl._createMakersAndRecallButton()
+                TurnControl._createReclaimRewardsButton()
             end
         end
     end
@@ -337,13 +337,14 @@ function TurnControl._next(startPlayerLuaIndex)
         TurnControl._notifyPlayerTurn()
     else
         if TurnControl.currentPhase == "combat" then
-            TurnControl._createMakersAndRecallButton()
+            TurnControl._createReclaimRewardsButton()
         else
             TurnControl.endOfPhase()
         end
     end
 end
 
+--@deprecated
 function TurnControl._createMakersAndRecallButton()
     local fromIntRGB = function (r, g, b)
         return Color(r / 255, g / 255, b / 255)
@@ -361,6 +362,30 @@ function TurnControl._createMakersAndRecallButton()
         label = I18N("makersAndRecall"),
         position = primaryTable.getPosition() + Vector(3.5, 1.8, -15.8),
         width = 2600,
+        height = 420,
+        font_size = 300,
+        color = fromIntRGB(128, 77, 0),
+        font_color = fromIntRGB(204, 153, 0),
+    })
+end
+
+function TurnControl._createReclaimRewardsButton()
+    local fromIntRGB = function (r, g, b)
+        return Color(r / 255, g / 255, b / 255)
+    end
+
+    Turns.order = {}
+    Turns.enable = false
+
+    local primaryTable = getObjectFromGUID("2b4b92")
+    Helper.createAbsoluteButtonWithRoundness(primaryTable, 1, false, {
+        click_function = Helper.registerGlobalCallback(function ()
+            primaryTable.clearButtons()
+            TurnControl.endOfPhase()
+        end),
+        label = I18N("reclaimRewards"),
+        position = primaryTable.getPosition() + Vector(3.5, 1.8, -15.8),
+        width = 3500,
         height = 420,
         font_size = 300,
         color = fromIntRGB(128, 77, 0),

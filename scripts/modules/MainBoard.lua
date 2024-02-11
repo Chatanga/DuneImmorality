@@ -1314,12 +1314,14 @@ end
 
 ---
 function MainBoard._goDeepDesert_WormsIfHook(color, leader, continuation)
-    if PlayBoard.hasMakerHook(color) then
+    if not PlayBoard.hasMakerHook(color) then
+        Dialog.broadcastToColor(I18N("noMakerHook"), color, "Purple")
+    elseif MainBoard.shieldWallIsStanding() and Combat.isCurrentConflictBehindTheWall() then
+        Dialog.broadcastToColor(I18N("shieldWallIsStanding"), color, "Purple")
+    else
         MainBoard._anySpiceSpace(color, leader, 3, 0, MainBoard.spiceBonuses.deepDesert, continuation, function ()
             leader.callSandworm(color, 2)
         end)
-    else
-        Dialog.broadcastToColor(I18N("noMakerHook"), color, "Purple")
     end
 end
 
@@ -1360,13 +1362,14 @@ end
 
 ---
 function MainBoard._goHaggaBasin_WormIfHook(color, leader, continuation)
-    if PlayBoard.hasMakerHook(color) then
+    if not PlayBoard.hasMakerHook(color) then
+        Dialog.broadcastToColor(I18N("noMakerHook"), color, "Purple")
+    elseif MainBoard.shieldWallIsStanding() and Combat.isCurrentConflictBehindTheWall() then
+        Dialog.broadcastToColor(I18N("shieldWallIsStanding"), color, "Purple")
+    else
         MainBoard._anySpiceSpace(color, leader, 1, 0, MainBoard.spiceBonuses.haggaBasin, continuation, function ()
             leader.callSandworm(color, 1)
         end)
-    else
-        Dialog.broadcastToColor(I18N("noMakerHook"), color, "Purple")
-        continuation.run()
     end
 end
 

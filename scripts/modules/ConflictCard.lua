@@ -1,4 +1,5 @@
 local Helper = require("utils.Helper")
+local I18N = require("utils.I18N")
 
 -- Exceptional Immediate require for the sake of aliasing.
 local PlayBoard = require("PlayBoard")
@@ -72,7 +73,7 @@ local ConflictCard = {
     siegeOfCarthag = {level = 2, legacy = true, rewards = {{vp(1), control("carthag")}, {intrigue(1), spice(1)}, {spice(1)}}},
     secureImperialBasin = {level = 2, legacy = true, rewards = {{vp(1), control("imperialBasin")}, {water(2)}, {water(1)}}},
     tradeMonopoly = {level = 2, ix = true, rewards = {{shipment(2), troop(1)}, {intrigue(1), water(1)}, {choice(1, {intrigue(1), water(1)})}}},
-    choamSecurity = {level = 2, uprising = true, objective = "crysknife", rewards = {{influence(2, "spacingGuild"), contract(1), troop(1)}, {water(2), solari(2), troop(2)}, {intrigue(1), troop(1)}}},
+    choamSecurity = {level = 2, uprising = true, objective = "crysknife", rewards = {{influence(2, "spacingGuild"), contract(), troop(1)}, {water(2), solari(2), troop(2)}, {intrigue(1), troop(1)}}},
     spiceFreighters = {level = 2, uprising = true, objective = "crysknife", rewards = {{ influence(1), optional({spice(-3), vp(1)})}, {water(1), spice(1), troop(1)}, {spice(1), troop(1)}}},
     siegeOfArrakeenNew = {level = 2, uprising = true, objective = "ornithopter", rewards = {{control("arrakeen"), solari(2), troop(2)}, {solari(4), troop(1)}, {solari(3)}}},
     seizeSpiceRefinery = {level = 2, uprising = true, objective = "crysknife", rewards = {{control("spiceRefinery"), spy(1), spice(2)}, {intrigue(1), spice(1), troop(1)}, {spice(2)}}},
@@ -80,7 +81,7 @@ local ConflictCard = {
     shadowContest = {level = 2, uprising = true, objective = "ornithopter", rewards = {{influence(1, "beneGesserit"), intrigue(1)}, {intrigue(1), spice(1), troop(1)}, {spice(1), troop(1)}}},
     secureImperialBasinNew = {level = 2, uprising = true, objective = "muadDib", rewards = {{control("imperialBasin"), spice(2), troop(1)}, {water(2), troop(1)}, {water(1), troop(1)}}},
     protectTheSietches = {level = 2, uprising = true, objective = "muadDib", rewards = {{influence(1, "fremen"), water(1), troop(1)}, {spice(3), troop(1)}, {spice(2)}}},
-    tradeDispute = {level = 2, uprising = true, objective = "muadDib", rewards = {{contract(1), water(1), trash(1)}, {water(1), spice(1), trash(1)}, {water(1), troop(1)}}},
+    tradeDispute = {level = 2, uprising = true, objective = "muadDib", rewards = {{contract(), water(1), trash(1)}, {water(1), spice(1), trash(1)}, {water(1), troop(1)}}},
     battleForImperialBasin = {level = 3, legacy = true, rewards = {{vp(2), control("imperialBasin")}, {spice(5)}, {spice(3)}}},
     grandVision = {level = 3, legacy = true, rewards = {{influence(2), intrigue(1)}, {intrigue(1), spice(3)}, {spice(3)}}},
     battleForCarthag = {level = 3, legacy = true, rewards = {{vp(2), control("carthag")}, {intrigue(1), spice(3)}, {spice(3)}}},
@@ -114,14 +115,13 @@ function ConflictCard.collectReward(color, conflictName, rank, doubleRewards)
         context.player.gainObjective(context.color, conflict.objective)
     end
 
-    --Helper.dump("Collecting rewards for conflict", conflictName, "at rank", rank, "...")
-    for _, reward in ipairs(rewards) do
-        CardEffect.evaluate(context, reward)
-        if doubleRewards then
-            CardEffect.evaluate(context, reward)
-        end
+    for _ = 1, (doubleRewards and 2 or 1) do
+        Helper.onceTimeElapsed(1).doAfter(function ()
+            for _, reward in ipairs(rewards) do
+                CardEffect.evaluate(context, reward)
+            end
+        end)
     end
-    --Helper.dump("... end")
 end
 
 function ConflictCard.getLevel(conflictName)
@@ -129,6 +129,18 @@ function ConflictCard.getLevel(conflictName)
     local conflict = ConflictCard[conflictName]
     assert(conflict, conflictName)
     return conflict.level
+end
+
+function ConflictCard.isBehindTheWall(conflictName)
+    local behindTheWallConflictCards = {
+        siegeOfArrakeenNew = "arrakeen",
+        seizeSpiceRefinery = "spiceRefinery",
+        secureImperialBasinNew = "imperialBasin",
+        battleForImperialBasinNew = "imperialBasin",
+        battleForArrakeenNew = "arrakeen",
+        battleForSpiceRefinery = "spiceRefinery",
+    }
+    return Helper.isElementOf(conflictName, Helper.getKeys(behindTheWallConflictCards))
 end
 
 return ConflictCard

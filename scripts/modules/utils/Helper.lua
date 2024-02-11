@@ -856,7 +856,7 @@ function Helper.createContinuation(name)
         assert(type(action) == 'function')
         if continuation.done then
             if not continuation.canceled then
-                action(table.unpack(continuation.parameters))
+                action(table.unpack(continuation.parameters, 1, continuation.parameters.n))
             end
         else
             table.insert(continuation.actions, action)
@@ -864,7 +864,7 @@ function Helper.createContinuation(name)
     end
 
     continuation.next = function (...)
-        continuation.parameters = {...}
+        continuation.parameters = table.pack(...)
         for _, action in ipairs(continuation.actions) do
             action(...)
         end
@@ -1647,11 +1647,13 @@ end
 ---
 function Helper.dump(...)
     local str = ""
-    for i, element in ipairs({...}) do
+    local args = table.pack(...)
+    for i = 1, args.n do
         if i > 1 then
             str = str .. " "
         end
-        str = str .. Helper.toString(element ~= nil and element or "<nil>")
+        local arg = args[i]
+        str = str .. Helper.toString(arg and arg or "<nil>")
     end
     log(str)
 end
@@ -1959,12 +1961,14 @@ end
 ---
 function Helper.partialApply(f, ...)
     assert(f)
-    local args = {...}
+    local args = table.pack(...)
     return function (...)
-        for _, arg in ipairs({...}) do
-            table.insert(args, arg)
+        local appendedArgs = table.pack(...)
+        for i = 1, appendedArgs.n do
+            table.insert(args, appendedArgs[i])
         end
-        return f(table.unpack(args))
+        args.n = args.n + appendedArgs.n
+        return f(table.unpack(args, 1, args.n))
     end
 end
 

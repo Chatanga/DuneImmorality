@@ -494,13 +494,17 @@ function Combat._calculateRanking(forces)
             rank = rank + 1
         end
 
-        for _, color in ipairs(rankWinners) do
-            ranking[color] = { value = rank, exAequo = #rankWinners }
-            potentialWinnerCount = potentialWinnerCount - 1
-            remainingForces[color] = nil
-        end
+        if potentialWinnerCount >= #rankWinners then
+            for _, color in ipairs(rankWinners) do
+                ranking[color] = { value = rank, exAequo = #rankWinners }
+                potentialWinnerCount = potentialWinnerCount - 1
+                remainingForces[color] = nil
+            end
 
-        rank = rank + 1
+            rank = rank + 1
+        else
+            break
+        end
     end
 
     return ranking
@@ -606,6 +610,12 @@ function Combat.getCurrentConflictName()
     else
         return Helper.getID(deckOrCard)
     end
+end
+
+---
+function Combat.isCurrentConflictBehindTheWall()
+    local conflictName = Combat.getCurrentConflictName()
+    return ConflictCard.isBehindTheWall(conflictName)
 end
 
 ---
