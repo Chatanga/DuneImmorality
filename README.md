@@ -19,14 +19,13 @@ Supported langages:
 __All__
 
 - Revoir le contexte d’action pour les logs.
-
 - Mode libre pour la sélection des dirigeants.
+- Séparer en 4 la zone de combat.
+- Réintroduire IntrigueCard ?
 
 - Automatiser les contrats.
 - Automatiser le gain de 2 solaris pour un contrat si le module n'est pas actif (ou s'il n'y a plus de contrats).
 - Ajouter des boutons d'acquisition sur les contrats de Shaddam ?
-
-- Séparer en 4 la zone de combat.
 
 __6P__
 
@@ -38,7 +37,6 @@ __Extensions__
 - Plateau Ix (avec postes d'observation).
 - Patch Ix (avec postes d'observation) pour le plateau principal.
 - Patch Immortality (avec postes d'observation) pour le plateau principal.
-
 - Incorporer la variante de Paul Dennen.
 
 __2P / Solo__

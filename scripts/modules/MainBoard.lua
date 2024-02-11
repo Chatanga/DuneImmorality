@@ -553,23 +553,27 @@ function MainBoard.sendAgent(color, spaceName, recallSpy)
 
         goSpace(color, leader, innerContinuation)
         innerContinuation.doAfter(function (action)
-            -- The innerContinuation never cancels (but return nil) to allow
-            -- us to cancel the root continuation.
+            -- The innerContinuation never cancels (but returns nil) to allow us to cancel the root continuation.
             if action then
-                MainBoard._manageIntelligenceAndInfiltrate(color, parentSpaceName, recallSpy).doAfter(function (goAhead, spy, recallMode)
+                MainBoard._manageIntelligenceAndInfiltrate(color, parentSpaceName, recallSpy).doAfter(function (goAhead, spy, otherSpy, recallMode)
                     if goAhead then
                         local innerInnerContinuation = Helper.createContinuation("MainBoard." .. parentSpaceName .. ".goAhead")
                         Helper.emitEvent("agentSent", color, parentSpaceName)
                         Action.setContext("agentSent", parentSpaceName)
                         Park.putObject(agent, parentSpace.park)
                         if spy then
+                            -- TODO Create Action.recallSpy(color) as some kind of subaction for sendAgent (only really needed for Hagal)?
                             Park.putObject(spy, PlayBoard.getSpyPark(color))
-                            if recallMode == "infiltrate" then
+                            if recallMode == "infiltrateAndIntelligence" then
+                                Park.putObject(otherSpy, PlayBoard.getSpyPark(color))
+                                Dialog.broadcastToColor(I18N("infiltrateWithSpy"), color, "Purple")
+                                leader.drawImperiumCards(color, 1, true).doAfter(innerInnerContinuation.run)
+                                broadcastToAll(" └─> " .. I18N("gatherIntelligenceWithSpy"), color)
+                            elseif recallMode == "infiltrate" then
                                 Dialog.broadcastToColor(I18N("infiltrateWithSpy"), color, "Purple")
                                 innerInnerContinuation.run()
                             elseif recallMode == "intelligence" then
                                 leader.drawImperiumCards(color, 1, true).doAfter(innerInnerContinuation.run)
-                                -- TODO Create Action.recallSpy(color) as some kind of subaction for sendAgent (only really needed for Hagal)?
                                 broadcastToAll(" └─> " .. I18N("gatherIntelligenceWithSpy"), color)
                             else
                                 error("Unexpected mode: " .. tostring(recallMode))
@@ -671,7 +675,8 @@ function MainBoard.findRecallableSpies(color)
     return recallableSpies
 end
 
----
+---@param recallSpy boolean? Explicitly require the action and fail if it cannot be executed.
+---In the case of the "infiltrate + gather intelligence" combo , only applies to the first.
 function MainBoard._manageIntelligenceAndInfiltrate(color, spaceName, recallSpy)
     --Helper.dumpFunction("MainBoard._manageIntelligenceAndInfiltrate", color, spaceName, recallSpy)
     local continuation = Helper.createContinuation("MainBoard._manageIntelligenceAndInfiltrate")
@@ -688,7 +693,7 @@ function MainBoard._manageIntelligenceAndInfiltrate(color, spaceName, recallSpy)
     -- so any remaining agent must be an enemy.
     local enemyAgentPresent = MainBoard.hasAgentInSpace(spaceName)
 
-    if enemyAgentPresent == false then
+    if not enemyAgentPresent then
         if #recallableSpies == 0 or not hasCardsToDraw then
             if recallSpy then
                 Dialog.broadcastToColor(I18N('noSpyToRecallOrCardToDraw'), color, "Purple")
@@ -711,6 +716,14 @@ function MainBoard._manageIntelligenceAndInfiltrate(color, spaceName, recallSpy)
         if #recallableSpies == 0 then
             Dialog.broadcastToColor(I18N("noSpyToInfiltrate"), color, "Purple")
             continuation.run(false)
+        elseif #recallableSpies > 1 and hasCardsToDraw then
+            Dialog.showYesOrNoDialog(color, I18N("confirmSpyRecall"), continuation, function (confirmed)
+                if confirmed then
+                    MainBoard._recallSpy(color, recallableSpies, continuation, "infiltrateAndIntelligence")
+                else
+                    MainBoard._recallSpy(color, recallableSpies, continuation, "infiltrate")
+                end
+            end)
         else
             MainBoard._recallSpy(color, recallableSpies, continuation, "infiltrate")
         end
@@ -720,15 +733,20 @@ function MainBoard._manageIntelligenceAndInfiltrate(color, spaceName, recallSpy)
 end
 
 function MainBoard._recallSpy(color, recallableSpies, continuation, recallMode)
-    if #recallableSpies == 1 then
-        continuation.run(true, recallableSpies[1].spy, recallMode)
+    if recallMode == "infiltrateAndIntelligence" then
+        -- Choosing 2 spies among 3 or more, or choosing twice in a row,
+        -- is inconvenient. Good thing it can't happen.
+        assert(#recallableSpies == 2)
+        continuation.run(true, recallableSpies[1].spy, recallableSpies[2].spy, recallMode)
+    elseif #recallableSpies == 1 then
+        continuation.run(true, recallableSpies[1].spy, nil, recallMode)
     else
         local options = Helper.mapValues(recallableSpies, function (recallableSpy)
             return I18N(recallableSpy.toSpaceName)
         end)
         Dialog.showOptionsAndCancelDialog(color, I18N("selectSpyToRecall"), options, continuation, function (index)
             if index > 0 then
-                continuation.run(true, recallableSpies[index].spy, recallMode)
+                continuation.run(true, recallableSpies[index].spy, nil, recallMode)
             else
                 continuation.run(false)
             end
