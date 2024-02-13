@@ -60,13 +60,22 @@ after an initial call to `import + unpack + unbundle + patch + store`, we simply
 python3 build.py
 ```
 
-If you have a TTS instance running your target save, you can also use the `upload` path instead of `pack + export`
-The two Python scripts `upload.py` and `listen.py` are a new addition to take advantage of the TTS Editor API.
-The second is especially useful to translate the error message locations into ctrl-clickable links.
-When using this path, the `bundle + pack + export` sequence above becomes `bundle + upload`:
+## TTS Editor API
+
+While the scripts above don't rely on TTS to work and simply change the save files it uses,
+it also possible to take advantage of the TTS Editor API.
+
+When you have a running TTS instance, you can use the alternate `upload` path instead of `pack + export` by simply adding the `--upload` option.
+It doesn't update the physical save file, but directly patches the loaded save instead.
+
+```bash
+python3 build.py --upload
+```
+
+You can also launch the `listen.py` script in another terminal to collect all the logs from TTS.
+It is especially useful to translate the error message locations into ctrl-clickable links (in VS Code),
+the script taking care of translating them into something usable.
 
 ```bash
 python3 listen.py
 ```
-
-Having launched `listen.py` in another terminal will provide you with an immediate feedback from TTS.
