@@ -22,19 +22,21 @@ local autoLoadedSettings = nil
 autoLoadedSettings = {
     language = "fr",
     hotSeat = true,
-    numberOfPlayers = 4,
+    numberOfPlayers = 6,
     randomizePlayerPositions = false,
     useContracts = true,
-    legacy = true,
-    riseOfIx = true,
-    epicMode = true,
-    immortality = true,
+    legacy = false,
+    riseOfIx = false,
+    epicMode = false,
+    immortality = false,
     goTo11 = false,
     leaderSelection = {
         Green = "jessica",
         Yellow = "gurneyHalleck",
         Red = "feydRauthaHarkonnen",
-        Blue = "hundroMoritani"
+        Blue = "irulanCorrino",
+        White = "muadDib",
+        Purple = "shaddamCorrino"
     },
     horizontalHandLayout = true,
     soundEnabled = true,
@@ -475,7 +477,7 @@ end
 --- Later, in opponents (not activeOppenents), Player instances and "puppet" are
 --- replaced by the "human" string.
 function Controller.findActiveOpponents(properlySeatedPlayers, numberOfPlayers)
-    local colorsByPreference = { "Green", "Red", "Yellow", "Blue", "Brown", "Teal" }
+    local colorsByPreference = { "Green", "Red", "Yellow", "Blue", "Purple", "White" }
 
     local activeOpponents = {}
     for i, color in ipairs(properlySeatedPlayers) do
@@ -524,8 +526,8 @@ function Controller.getProperlySeatedPlayers()
         Yellow = true,
         Blue = true,
         Red = true,
-        Brown = #seatedPlayers == 6,
-        Teal = #seatedPlayers == 6,
+        Purple = #seatedPlayers == 6,
+        White = #seatedPlayers == 6,
     }
 
     local properlySeatedPlayers = {}

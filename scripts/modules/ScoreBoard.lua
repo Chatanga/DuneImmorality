@@ -12,7 +12,7 @@ local ScoreBoard = {
 
 ---
 function ScoreBoard.onLoad(state)
-    Helper.dumpFunction("ScoreBoard.onLoad")
+    --Helper.dumpFunction("ScoreBoard.onLoad")
 
     ScoreBoard.hiddenZone = Helper.resolveGUIDs(true, "3848a9")
 
@@ -146,7 +146,7 @@ end
 
 ---
 function ScoreBoard.gainVictoryPoint(color, name, count)
-    Helper.dumpFunction("ScoreBoard.gainVictoryPoint", color, name, count)
+    --Helper.dumpFunction("ScoreBoard.gainVictoryPoint", color, name, count)
     local holder = {
         success = false
     }

@@ -117,7 +117,7 @@ end
 function InfluenceTrack._processSnapPoints(settings, firstTime)
     -- TODO Get rid of the *InitialPositions variables
 
-    local allColors = { "Green", "Yellow", "Blue", "Red", "Teal", "Brown" }
+    local allColors = { "Green", "Yellow", "Blue", "Red", "White", "Purple" }
 
     local influenceTokens = {}
     for _, object in ipairs(getObjects()) do
@@ -157,8 +157,8 @@ function InfluenceTrack._processSnapPoints(settings, firstTime)
                                 Red = -0.22,
                                 Green = 0.22,
                                 Yellow = 0.66,
-                                Teal = 0,
-                                Brown = 0,
+                                White = 0,
+                                Purple = 0,
                             }
                             local influenceTokenInitialPosition = position + Vector(xOffsets[color], 0, -1.6)
                             InfluenceTrack.influenceTokenInitialPositions[faction][color] = influenceTokenInitialPosition

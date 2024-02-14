@@ -48,7 +48,6 @@ __Aesthetic__
 - Prendre en considération les crans de zoom, préconfigurer les caméras ?
 - Snaps jetons factions 6J empereur/fremen trop hauts.
 - Élargir les bordures colorées des plateaux (retirer complétement les trigger effects dans la foulée).
-- Refaire les agents des commandants.
 
 ## Claim your Victory
 

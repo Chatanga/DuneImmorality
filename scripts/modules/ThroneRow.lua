@@ -46,7 +46,7 @@ function ThroneRow._transientSetUp()
             if Commander.isTeamShaddam(color) then
                 PlayBoard.getLeader(color).acquireThroneCard(color, i)
             else
-                Dialog.broadcastToColor(I18N('notShaddamTeam'), color, "Purple")
+                Dialog.broadcastToColor(I18N('notShaddamTeam'), color, "White")
             end
         end), Deck.getAcquireCardDecalUrl("corrino"))
         table.insert(ThroneRow.acquireCards, acquireCard)
@@ -60,7 +60,7 @@ function ThroneRow.onObjectEnterScriptingZone(zone, object)
             if acquireCard.zone == zone then
                 if object.type == "Card" then
                     if ImperiumCard.isFactionCard(object, "fremen") then
-                        broadcastToAll(I18N('notFremenCard'), "Purple")
+                        broadcastToAll(I18N('notFremenCard'), "White")
                     end
                 end
             end

@@ -2,10 +2,10 @@ local Helper = require("utils.Helper")
 
 ---@alias PlayerColor
 ---| 'Green'
----| 'Brown'
+---| 'Purple'
 ---| 'Yellow'
 ---| 'Blue'
----| 'Teal'
+---| 'White'
 ---| 'Red'
 
 ---@alias Faction
@@ -109,10 +109,10 @@ end
 ---
 function Types.assertIsPlayerColor(color)
     assert(color == "Green"
-        or color == "Brown"
+        or color == "Purple"
         or color == "Yellow"
         or color == "Blue"
-        or color == "Teal"
+        or color == "White"
         or color == "Red",
         "Not a player color: " .. tostring(color))
 end

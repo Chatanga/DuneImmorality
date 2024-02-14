@@ -5,8 +5,8 @@ return {
     Yellow = "jaune",
     Blue = "bleu",
     Red = "rouge",
-    Brown = "marron",
-    Teal = "sarcelle",
+    Purple = "marron",
+    White = "sarcelle",
 
     -- Setup UI
     prolog = "« Une mise en place est toujours un moment très délicat. »",

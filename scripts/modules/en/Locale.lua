@@ -5,8 +5,8 @@ return {
     Yellow = "yellow",
     Blue = "blue",
     Red = "red",
-    Brown = "brown",
-    Teal = "teal",
+    Purple = "purple",
+    White = "white",
 
     -- Setup UI
     prolog = "\"A setup is a very delicate time...\"",

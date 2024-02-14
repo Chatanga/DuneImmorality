@@ -106,7 +106,7 @@ end
 --- Return the (colors of the) active opponents in the mod canonical order,
 --- starting from Green and progressing clockwise.
 function TurnControl.toCanonicallyOrderedPlayerList(activeOpponents)
-    local orderedColors = { "Green", "Brown", "Yellow", "Blue", "Teal", "Red" }
+    local orderedColors = { "Green", "Purple", "Yellow", "Blue", "White", "Red" }
 
     local players = {}
     for _, color in ipairs(orderedColors) do
@@ -209,7 +209,7 @@ function TurnControl._createExclusiveCallback(innerCallback)
                 innerCallback()
             end
         else
-            Dialog.broadcastToColor(I18N('noTouch'), color, "Brown")
+            Dialog.broadcastToColor(I18N('noTouch'), color, "Purple")
         end
     end)
 end
@@ -415,6 +415,7 @@ function TurnControl._notifyPlayerTurn(refreshing)
 end
 
 function TurnControl.assumeDirectControl(color)
+    --Helper.dumpFunction("TurnControl.assumeDirectControl", color)
     local legitimatePlayers = TurnControl.getLegitimatePlayers(color)
     if not Helper.isEmpty(legitimatePlayers) then
         legitimatePlayers[1].changeColor(color)

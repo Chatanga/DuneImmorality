@@ -908,14 +908,14 @@ function Helper.onceStabilized(timeout)
         continuation.run(success)
     end, function ()
         local duration = os.time() - start
-        success = Helper.isStabilized(delayed or duration <= 2)
+        success = Helper.isStabilized(delayed or duration <= 4)
         if not success then
-            if not delayed and duration > 2 then
-                log(duration)
+            if not delayed and duration > 4 then
+                --log(duration)
                 delayed = true
                 broadcastToAll("Delaying transition (see system log)...")
             end
-            if duration > (timeout or 10) then
+            if duration > (timeout or 12) then
                 return true
             end
         end

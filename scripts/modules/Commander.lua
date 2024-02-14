@@ -17,7 +17,7 @@ end
 
 ---
 function Commander.isCommander(color)
-    return color == "Brown" or color == "Teal"
+    return color == "Purple" or color == "White"
 end
 
 ---
@@ -27,9 +27,9 @@ end
 
 ---
 function Commander.getAllies(color)
-    if color == "Brown" then
+    if color == "Purple" then
         return { "Blue", "Red" }
-    elseif color == "Teal" then
+    elseif color == "White" then
         return { "Yellow", "Green" }
     else
         return nil
@@ -38,9 +38,9 @@ end
 
 ---
 function Commander.getLeftSeatedAlly(color)
-    if color == "Brown" then
+    if color == "Purple" then
         return "Blue"
-    elseif color == "Teal" then
+    elseif color == "White" then
         return "Green"
     else
         return nil
@@ -49,9 +49,9 @@ end
 
 ---
 function Commander.getRightSeatedAlly(color)
-    if color == "Brown" then
+    if color == "Purple" then
         return "Red"
-    elseif color == "Teal" then
+    elseif color == "White" then
         return "Yellow"
     else
         return nil
@@ -76,9 +76,9 @@ end
 ---
 function Commander.getCommander(color)
     if Helper.isElementOf(color, { "Blue", "Red" }) then
-        return "Brown"
+        return "Purple"
     elseif Helper.isElementOf(color, { "Yellow", "Green" }) then
-        return "Teal"
+        return "White"
     else
         return nil
     end
@@ -86,32 +86,32 @@ end
 
 ---
 function Commander.isShaddam(color)
-    return color == "Brown"
+    return color == "Purple"
 end
 
 ---
 function Commander.isTeamShaddam(color)
-    return color == "Red" or color == "Blue" or color == "Brown"
+    return color == "Red" or color == "Blue" or color == "Purple"
 end
 
 ---
 function Commander.getShaddamTeam()
-    return { "Brown", "Red", "Blue" }
+    return { "Purple", "Red", "Blue" }
 end
 
 ---
 function Commander.isMuadDib(color)
-    return color == "Teal"
+    return color == "White"
 end
 
 ---
 function Commander.isTeamMuabDib(color)
-    return color == "Green" or color == "Yellow" or color == "Teal"
+    return color == "Green" or color == "Yellow" or color == "White"
 end
 
 ---
 function Commander.getMuadDibTeam()
-    return { "Teal", "Green", "Yellow" }
+    return { "White", "Green", "Yellow" }
 end
 
 ---

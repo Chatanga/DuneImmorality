@@ -473,7 +473,7 @@ function MainBoard._createSpaceButton(space)
             if TurnControl.getCurrentPlayer() == color then
                 leader.sendAgent(color, space.name, altClick)
             else
-                Dialog.broadcastToColor(I18N('notYourTurn'), color, "Purple")
+                Dialog.broadcastToColor(I18N('notYourTurn'), color, "White")
             end
         end))
     end)
@@ -542,10 +542,10 @@ function MainBoard.sendAgent(color, spaceName, recallSpy)
     local parentSpaceName = parentSpace.name
 
     if not agent then
-        Dialog.broadcastToColor(I18N("noAgent"), color, "Purple")
+        Dialog.broadcastToColor(I18N("noAgent"), color, "White")
         continuation.cancel()
     elseif MainBoard.hasAgentInSpace(parentSpaceName, color) then
-        Dialog.broadcastToColor(I18N("agentAlreadyPresent"), color, "Purple")
+        Dialog.broadcastToColor(I18N("agentAlreadyPresent"), color, "White")
         continuation.cancel()
     else
         local leader = PlayBoard.getLeader(color)
@@ -566,11 +566,11 @@ function MainBoard.sendAgent(color, spaceName, recallSpy)
                             Park.putObject(spy, PlayBoard.getSpyPark(color))
                             if recallMode == "infiltrateAndIntelligence" then
                                 Park.putObject(otherSpy, PlayBoard.getSpyPark(color))
-                                Dialog.broadcastToColor(I18N("infiltrateWithSpy"), color, "Purple")
+                                Dialog.broadcastToColor(I18N("infiltrateWithSpy"), color, "White")
                                 leader.drawImperiumCards(color, 1, true).doAfter(innerInnerContinuation.run)
                                 broadcastToAll(" └─> " .. I18N("gatherIntelligenceWithSpy"), color)
                             elseif recallMode == "infiltrate" then
-                                Dialog.broadcastToColor(I18N("infiltrateWithSpy"), color, "Purple")
+                                Dialog.broadcastToColor(I18N("infiltrateWithSpy"), color, "White")
                                 innerInnerContinuation.run()
                             elseif recallMode == "intelligence" then
                                 leader.drawImperiumCards(color, 1, true).doAfter(innerInnerContinuation.run)
@@ -696,7 +696,7 @@ function MainBoard._manageIntelligenceAndInfiltrate(color, spaceName, recallSpy)
     if not enemyAgentPresent then
         if #recallableSpies == 0 or not hasCardsToDraw then
             if recallSpy then
-                Dialog.broadcastToColor(I18N('noSpyToRecallOrCardToDraw'), color, "Purple")
+                Dialog.broadcastToColor(I18N('noSpyToRecallOrCardToDraw'), color, "White")
                 continuation.run(false)
             else
                 continuation.run(true)
@@ -714,7 +714,7 @@ function MainBoard._manageIntelligenceAndInfiltrate(color, spaceName, recallSpy)
         end
     else
         if #recallableSpies == 0 then
-            Dialog.broadcastToColor(I18N("noSpyToInfiltrate"), color, "Purple")
+            Dialog.broadcastToColor(I18N("noSpyToInfiltrate"), color, "White")
             continuation.run(false)
         elseif #recallableSpies > 1 and hasCardsToDraw then
             Dialog.showYesOrNoDialog(color, I18N("confirmSpyRecall"), continuation, function (confirmed)
@@ -815,7 +815,7 @@ function MainBoard._checkGenericAccess(color, leader, requirements)
     for requirement, value in pairs(requirements) do
         if Helper.isElementOf(requirement, { "spice", "water", "solari" }) then
             if not MainBoard._hasResource(leader, color, requirement, value) then
-                Dialog.broadcastToColor(I18N("noResource", { resource = I18N(requirement .. "Amount") }), color, "Purple")
+                Dialog.broadcastToColor(I18N("noResource", { resource = I18N(requirement .. "Amount") }), color, "White")
                 return false
             end
         elseif requirement == "friendship" then
@@ -834,7 +834,7 @@ function MainBoard._checkGenericAccess(color, leader, requirements)
                 end
             end
             if not InfluenceTrack.hasFriendship(color, value) then
-                Dialog.broadcastToColor(I18N("noFriendship", { withFaction = I18N(Helper.toCamelCase("with", value)) }), color, "Purple")
+                Dialog.broadcastToColor(I18N("noFriendship", { withFaction = I18N(Helper.toCamelCase("with", value)) }), color, "White")
                 return false
             end
         end
@@ -935,7 +935,7 @@ function MainBoard._goSardaukar(color, leader, continuation)
             continuation.run()
         end
     else
-        Dialog.broadcastToColor(I18N("forbiddenAccess"), color, "Purple")
+        Dialog.broadcastToColor(I18N("forbiddenAccess"), color, "White")
         continuation.run()
     end
 end
@@ -954,7 +954,7 @@ function MainBoard._goVastWealth(color, leader, continuation)
             leader.influence(color, "emperor", 1, true)
         end)
     else
-        Dialog.broadcastToColor(I18N("forbiddenAccess"), color, "Purple")
+        Dialog.broadcastToColor(I18N("forbiddenAccess"), color, "White")
         continuation.run()
     end
 end
@@ -1008,7 +1008,7 @@ end
 function MainBoard._goHardyWarriors(color, leader, continuation)
     assert(TurnControl.getPlayerCount() == 6)
     if not Commander.isMuadDib(color) then
-        Dialog.broadcastToColor(I18N("forbiddenAccess"), color, "Purple")
+        Dialog.broadcastToColor(I18N("forbiddenAccess"), color, "White")
         continuation.run()
     elseif MainBoard._checkGenericAccess(color, leader, { water = 1 }) then
         continuation.run(function ()
@@ -1030,7 +1030,7 @@ function MainBoard._goDesertMastery(color, leader, continuation)
             leader.influence(color, "fremen", 1, true)
         end)
     else
-        Dialog.broadcastToColor(I18N("forbiddenAccess"), color, "Purple")
+        Dialog.broadcastToColor(I18N("forbiddenAccess"), color, "White")
         continuation.run()
     end
 end
@@ -1068,7 +1068,7 @@ end
 ---
 function MainBoard._goSwordmaster(color, leader, continuation)
     if PlayBoard.hasSwordmaster(color) then
-        Dialog.broadcastToColor(I18N("alreadyHaveSwordmaster"), color, "Purple")
+        Dialog.broadcastToColor(I18N("alreadyHaveSwordmaster"), color, "White")
         continuation.run()
     elseif MainBoard._checkGenericAccess(color, leader, { solari = MainBoard._getSwordmasterCost() }) then
         continuation.run(function ()
@@ -1315,9 +1315,9 @@ end
 ---
 function MainBoard._goDeepDesert_WormsIfHook(color, leader, continuation)
     if not PlayBoard.hasMakerHook(color) then
-        Dialog.broadcastToColor(I18N("noMakerHook"), color, "Purple")
+        Dialog.broadcastToColor(I18N("noMakerHook"), color, "White")
     elseif MainBoard.shieldWallIsStanding() and Combat.isCurrentConflictBehindTheWall() then
-        Dialog.broadcastToColor(I18N("shieldWallIsStanding"), color, "Purple")
+        Dialog.broadcastToColor(I18N("shieldWallIsStanding"), color, "White")
     else
         MainBoard._anySpiceSpace(color, leader, 3, 0, MainBoard.spiceBonuses.deepDesert, continuation, function ()
             leader.callSandworm(color, 2)
@@ -1363,9 +1363,9 @@ end
 ---
 function MainBoard._goHaggaBasin_WormIfHook(color, leader, continuation)
     if not PlayBoard.hasMakerHook(color) then
-        Dialog.broadcastToColor(I18N("noMakerHook"), color, "Purple")
+        Dialog.broadcastToColor(I18N("noMakerHook"), color, "White")
     elseif MainBoard.shieldWallIsStanding() and Combat.isCurrentConflictBehindTheWall() then
-        Dialog.broadcastToColor(I18N("shieldWallIsStanding"), color, "Purple")
+        Dialog.broadcastToColor(I18N("shieldWallIsStanding"), color, "White")
     else
         MainBoard._anySpiceSpace(color, leader, 1, 0, MainBoard.spiceBonuses.haggaBasin, continuation, function ()
             leader.callSandworm(color, 1)
@@ -1540,7 +1540,7 @@ function MainBoard.blowUpShieldWall(color, skipConfirmation)
     if MainBoard.shieldWallToken then
         local kaBoom = function (_)
             Music.play("atomics")
-            broadcastToAll(I18N('blowUpShieldWall', { leader = PlayBoard.getLeaderName(color) }), color, "Purple")
+            broadcastToAll(I18N('blowUpShieldWall', { leader = PlayBoard.getLeaderName(color) }), color, "White")
             Helper.onceTimeElapsed(3).doAfter(function ()
                 MainBoard.trash(MainBoard.shieldWallToken)
                 MainBoard.shieldWallToken = nil

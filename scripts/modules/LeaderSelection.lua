@@ -92,8 +92,8 @@ function LeaderSelection.setUp(settings, activeOpponents)
                 if settings.numberOfPlayers == 6 and not testSetUp then
                     local leaders = LeaderSelection._grabLeaders()
 
-                    PlayBoard.setLeader("Teal", leaders["muadDib"])
-                    PlayBoard.setLeader("Brown", leaders["shaddamCorrino"])
+                    PlayBoard.setLeader("White", leaders["muadDib"])
+                    PlayBoard.setLeader("Purple", leaders["shaddamCorrino"])
                 end
 
                 -- Give minimal time to the 2 leaders above to exit the zone.
@@ -482,12 +482,12 @@ end
 ---
 function LeaderSelection.claimLeader(color, leader)
     if PlayBoard.isRival(color) and not leader.hasTag("RivalLeader") then
-        Dialog.broadcastToColor(I18N("incompatibleRivalLeader"), color, "Purple")
+        Dialog.broadcastToColor(I18N("incompatibleRivalLeader"), color, "White")
         return
     end
 
     if not PlayBoard.isRival(color) and not leader.hasTag("Leader") then
-        Dialog.broadcastToColor(I18N("incompatibleLeader"), color, "Purple")
+        Dialog.broadcastToColor(I18N("incompatibleLeader"), color, "White")
         return
     end
 

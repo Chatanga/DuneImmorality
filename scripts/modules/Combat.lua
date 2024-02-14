@@ -269,7 +269,7 @@ end
 
 ---
 function Combat.findControlableSpace(conflictName)
-    Helper.dumpFunction("Combat.findControlableSpace", conflictName)
+    --Helper.dumpFunction("Combat.findControlableSpace", conflictName)
     for _, controlableSpaceName in ipairs({ "imperialBasin", "arrakeen", "spiceRefinery" }) do
         if conflictName:find(controlableSpaceName:gsub("^%l", string.upper)) then
             local controlableSpace = MainBoard.findControlableSpace(controlableSpaceName)
@@ -642,11 +642,10 @@ end
 
 ---
 function Combat.gainObjective(color, objective)
+    --Helper.dumpFunction("Combat.gainObjective", color, objective)
+
     local continuation = Helper.createContinuation("Combat.gainObjective")
-
-    Helper.dumpFunction("Combat.gainObjective", color, objective)
     local position = PlayBoard.getObjectiveStackPosition(color, objective)
-
     local tag = Helper.toPascalCase(objective, "ObjectiveToken")
 
     for _, object in ipairs(Combat.rewardTokenZone.getObjects()) do

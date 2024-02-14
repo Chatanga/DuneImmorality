@@ -209,7 +209,7 @@ function TleilaxuResearch._generateResearchButtons()
             local specialJump = Vector(1, 0, 0)
             leader.research(color, specialJump)
         else
-            Dialog.broadcastToColor(I18N('noTouch'), color, "Purple")
+            Dialog.broadcastToColor(I18N('noTouch'), color, "White")
         end
     end))
 end

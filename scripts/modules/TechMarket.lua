@@ -262,7 +262,7 @@ function TechMarket.acquireTech(stackIndex, color)
                 TechMarket.frozen = false
             end
             if not card then
-                Dialog.broadcastToColor(I18N('notAffordableOption'), color, "Purple")
+                Dialog.broadcastToColor(I18N('notAffordableOption'), color, "White")
             end
         end)
     else
@@ -308,7 +308,7 @@ function TechMarket._doAcquireTech(stackIndex, color)
                 innerContinuation.run(true)
             end
         else
-            printToAll(I18N("pruneTechCard", { card = Helper.getID(techTileStack.topCard) }), "White")
+            printToAll(I18N("pruneTechCard", { card = Helper.getID(techTileStack.topCard) }), "Purple")
             MainBoard.trash(techTileStack.topCard)
             innerContinuation.run(true)
         end
