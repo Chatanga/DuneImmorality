@@ -1399,7 +1399,7 @@ end
 ---
 function PlayBoard.collectReward(color)
     Helper.dumpFunction("PlayBoard.collectReward", color)
-    local conflictName = Combat.getCurrentConflictName()
+    local conflictName = Combat.getTurnConflictName()
     local rank = Combat.getRank(color).value
     local hasSandworms = Combat.hasSandworms(color)
     ConflictCard.collectReward(color, conflictName, rank, hasSandworms).doAfter(function ()

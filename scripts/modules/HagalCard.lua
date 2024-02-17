@@ -8,9 +8,8 @@ local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
 local TleilaxuRow = Module.lazyRequire("TleilaxuRow")
 local Types = Module.lazyRequire("Types")
 local Combat = Module.lazyRequire("Combat")
-local ConflictCard = Module.lazyRequire("ConflictCard")
 local TurnControl = Module.lazyRequire("TurnControl")
-local Action = Module.lazyRequire("Action")
+local Hagal = Module.lazyRequire("Hagal")
 
 local HagalCard = {
     cards = {
@@ -76,30 +75,52 @@ function HagalCard.activate(color, card, riseOfIx)
     return final
 end
 
-function HagalCard.flushTurnActions(color)
-    Helper.dumpFunction("HagalCard.flushTurnActions", color)
+function HagalCard.flushTurnActions(color, deploymentLimit)
+    --Helper.dumpFunction("HagalCard.flushTurnActions", color)
     HagalCard.acquiredTroopCount = HagalCard.acquiredTroopCount or 0
     local rival = PlayBoard.getLeader(color)
     assert(rival, color)
+
     if HagalCard.inCombat then
+        Helper.dump("deploymentLimit:", deploymentLimit)
+
+        local garrisonedTroopCount = #Park.getObjects(Combat.getGarrisonPark(color))
+        local inSupplyTroopCount = #Park.getObjects(PlayBoard.getSupplyPark(color))
+
+        local fromGarrison = math.min(2, garrisonedTroopCount)
+        local fromSupply = HagalCard.acquiredTroopCount
+
         if HagalCard.riseOfIx then
+            -- Dreadnoughts are free and implicit.
             local count = rival.dreadnought(color, "garrison", "combat", 2)
-            rival.troops(color, "garrison", "combat", 2 - count)
-            rival.troops(color, "supply", "combat", HagalCard.acquiredTroopCount)
+            fromGarrison = math.max(0, fromGarrison - count)
 
-            if PlayBoard.hasTech(color, "flagship") then
-                local solari = PlayBoard.getResource(color, "solari")
-                local supply = PlayBoard.getSupplyPark(color)
-                local leader = PlayBoard.getLeader(color)
-
-                if PlayBoard.hasTech(color, "flagship") and solari:get() >= 4 and #Park.getObjects(supply) >= 3 then
-                    leader.resources(color, "solari", 4)
-                    leader.troops(color, "supply", "combat", 3)
-                end
+            -- Flagship tech.
+            if  PlayBoard.hasTech(color, "flagship") and
+                deploymentLimit - fromGarrison - fromSupply > 0 and
+                inSupplyTroopCount - fromSupply >= 3 and
+                rival.resources(color, "solari", -4)
+            then
+                fromSupply = fromSupply + 3
             end
-        else
-            rival.troops(color, "garrison", "combat", 2)
-            rival.troops(color, "supply", "combat", HagalCard.acquiredTroopCount)
+        end
+
+        if deploymentLimit > 0 then
+            local realFromSupply = math.min(fromSupply, deploymentLimit)
+            deploymentLimit = deploymentLimit - realFromSupply
+            if realFromSupply > 0 then
+                rival.troops(color, "supply", "combat", realFromSupply)
+            end
+            if fromSupply > realFromSupply then
+                rival.troops(color, "supply", "garrison", fromSupply - realFromSupply)
+            end
+        end
+
+        if deploymentLimit > 0 then
+            local realFromGarrison = math.min(fromGarrison, deploymentLimit)
+            if realFromGarrison > 0 then
+                rival.troops(color, "garrison", "combat", realFromGarrison)
+            end
         end
 
         HagalCard.inCombat = false
@@ -186,7 +207,7 @@ function HagalCard._activateSardaukar(color, rival)
 end
 
 function HagalCard._activateDutifulService(color, rival)
-    if HagalCard._spaceIsFree(color, "dutifulService") then
+    if HagalCard._spaceIsFree(color, "dutifulService") and Hagal.isSmartPolitics(color, "emperor") then
         HagalCard._sendRivalAgent(color, rival, "dutifulService")
         rival.influence(color, "emperor", 1)
         return true
@@ -207,10 +228,8 @@ function HagalCard._activateHeighliner(color, rival)
 end
 
 function HagalCard._activateDeliverSuppliesAndHeighliner(color, rival)
-    local conflictName = Combat.getTurnConflictName()
-    assert(conflictName, "No conflict!")
-    if ConflictCard.getLevel(conflictName) < 3 then
-        if HagalCard._spaceIsFree(color, "deliverSupplies") then
+    if Combat.getTurnConflictLevel() < 3 then
+        if HagalCard._spaceIsFree(color, "deliverSupplies") and Hagal.isSmartPolitics(color, "spacingGuild") then
             HagalCard._sendRivalAgent(color, rival, "deliverSupplies")
             rival.influence(color, "spacingGuild", 1)
             return true
@@ -238,7 +257,7 @@ end
 
 function HagalCard._activateSecrets(color, rival)
     Helper.dumpFunction("HagalCard._activateSecrets", color, rival)
-    if HagalCard._spaceIsFree(color, "secrets") then
+    if HagalCard._spaceIsFree(color, "secrets") and Hagal.isSmartPolitics(color, "beneGesserit") then
         HagalCard._sendRivalAgent(color, rival, "secrets")
         rival.influence(color, "beneGesserit", 1)
         for _, otherColor in ipairs(PlayBoard.getActivePlayBoardColors()) do
@@ -267,7 +286,7 @@ function HagalCard._activateDesertTactics(color, rival)
 end
 
 function HagalCard._activateFremkit(color, rival)
-    if HagalCard._spaceIsFree(color, "fremkit") then
+    if HagalCard._spaceIsFree(color, "fremkit") and Hagal.isSmartPolitics(color, "fremen") then
         HagalCard._sendRivalAgent(color, rival, "fremkit")
         rival.influence(color, "fremen", 1)
         HagalCard.acquireTroops(color, 0, true)

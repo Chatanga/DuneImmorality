@@ -506,7 +506,7 @@ function InfluenceTrack._gainAllianceBonus(faction, color)
             elseif faction == "fremen" then
                 leader.resources(color, "water", 1)
             else
-                error("Unknown faction: ", faction)
+                error("Unknown faction: " .. tostring(faction))
             end
         end
     end

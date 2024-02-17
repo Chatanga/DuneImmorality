@@ -60,6 +60,7 @@ function Rival.triggerHagalReaction(color)
 
         continuation.run()
 
+        -- FIXME Too soon?
         return 1
     end)
     startLuaCoroutine(Global, coroutineHolder.coroutine)
@@ -78,17 +79,15 @@ function Rival._buyVictoryPoints(color)
         return
     end
 
-    local intrigues = PlayBoard.getIntrigues(color)
-    local done
-    repeat
-        done = true
-
+    while true do
+        local intrigues = PlayBoard.getIntrigues(color)
         if #intrigues >= 3 then
             for i = 1, 3 do
                 -- Not smooth to avoid being recaptured by the hand zone.
-                intrigues[i].setPosition(Intrigue.discardZone.getPosition() + Vector(0, 1, 0))
+                intrigues[i].setPosition(Intrigue.discardZone.getPosition() + Vector(0, i, 0))
             end
             Rival.gainVictoryPoint(color, "intrigue")
+            goto continue
         end
 
         if Hagal.riseOfIx then
@@ -96,29 +95,29 @@ function Rival._buyVictoryPoints(color)
             if tech and Action.resources(color, "spice", -3) then
                 MainBoard.trash(tech)
                 Rival.gainVictoryPoint(color, "spySatellites")
-                done = false
+                goto continue
             end
         else
             if Action.resources(color, "spice", -7) then
                 Rival.gainVictoryPoint(color, "spice")
-                done = false
+                goto continue
             end
         end
 
         if Action.resources(color, "water", -3) then
             Rival.gainVictoryPoint(color, "water")
-            done = false
+            goto continue
         end
 
         if Action.resources(color, "solari", -7) then
             Rival.gainVictoryPoint(color, "solari")
-            done = false
+            goto continue
         end
 
-        if not done then
-            Helper.sleep(1)
-        end
-    until done
+        break
+        ::continue::
+        Helper.sleep(1.5)
+    end
 end
 
 ---

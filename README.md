@@ -37,9 +37,12 @@ __Extensions__
 - Plateau Ix (avec postes d'observation).
 - Patch Ix (avec postes d'observation) pour le plateau principal.
 - Patch Immortality (avec postes d'observation) pour le plateau principal.
-- Incorporer la variante de Paul Dennen.
+- Incorporer la [variante de Paul Dennen](https://boardgamegeek.com/thread/3213458/merakons-house-blend/page/1).
 
 __2P / Solo__
+
+- Rectifier Churn, Shuffle et Back.
+- Isoler les Streamlined Rivals.
 
 __Aesthetic__
 
@@ -48,26 +51,6 @@ __Aesthetic__
 - Prendre en considération les crans de zoom, préconfigurer les caméras ?
 - Snaps jetons factions 6J empereur/fremen trop hauts.
 - Élargir les bordures colorées des plateaux (retirer complétement les trigger effects dans la foulée).
-
-## Claim your Victory
-
-Note: put your card and/or intrigues in play to make the matching action visible.
-
-    Claim your Victory:
-        ([ ] Endgame)
-        ([ ] All / Possible)
-            Category
-                Clickable (Image / Requirement)
-            Objectives
-                Muad-Dib                0/2
-                Ornithopter             2/2
-                Crysknife               1/2
-            Cards
-                Junction
-                Smugglers' Haven        4 spice units
-            Tech tiles
-            Intrigues
-            Rival
 
 ## Build Process
 

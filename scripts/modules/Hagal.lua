@@ -11,19 +11,7 @@ local Combat = Module.lazyRequire("Combat")
 local MainBoard = Module.lazyRequire("MainBoard")
 local ConflictCard = Module.lazyRequire("ConflictCard")
 local Rival = Module.lazyRequire("Rival")
-
---[[
-    Prendre en compte les niveaux de difficultés.
-    Vérifier absence gain bonus alliance.
-    Attention à  bien marquer les troupes gagnées durant le tour mais pas encore déployées en raison du multi-cartisme !
-
-    automated:
-        [] 1P -> Churn
-        [] 2P -> Difficulté streamlined Rivals (=> Rival Leader selection reduced to 2)
-        [] Brutal Escalation (auto-selected if >= Mentat + 1J)
-        [] Expert Deployment (auto-selected if >= Mentat + 1J)
-        [] Smart Politics (auto-selected if >= Mentat + 1J)
-]]
+local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
 
 local Hagal = {
     difficulties = {
@@ -133,7 +121,7 @@ function Hagal._lateActivate(phase, color)
     elseif phase == "endgame" then
         continuation.run()
     else
-        error("Unknown phase: " .. phase)
+        error("Unknown phase: " .. tostring(phase))
     end
 
     return continuation
@@ -152,7 +140,7 @@ function Hagal._collectReward(color)
     local continuation = Helper.createContinuation("Hagal._collectReward")
     Helper.onceFramesPassed(1).doAfter(function ()
         local rank = Combat.getRank(color).value
-        local conflictName = Combat.getCurrentConflictName()
+        local conflictName = Combat.getTurnConflictName()
         local hasSandworms = Combat.hasSandworms(color)
         local postAction = Helper.partialApply(Rival.triggerHagalReaction, color)
         ConflictCard.collectReward(color, conflictName, rank, hasSandworms, postAction).doAfter(function ()
@@ -210,9 +198,66 @@ end
 
 ---
 function Hagal._setStrengthFromFirstValidCard(color)
+    local level3Conflict = Combat.getTurnConflictLevel() == 3
+    local mentatOrHigher = Helper.isElementOf(Hagal.selectedDifficulty, { "expert", "expertPlus "})
+
+    -- Brutal Escalation
+    local n = level3Conflict and mentatOrHigher and 2 or 1
+
     return Hagal._activateFirstValidCard(color, function (card)
-        return HagalCard.setStrength(color, card)
+        if HagalCard.setStrength(color, card) then
+            n = n - 1
+            return n == 0
+        else
+            return false
+        end
     end)
+end
+
+---
+function Hagal._getExpertDeploymentLimit(color)
+    local level3Conflict = Combat.getTurnConflictLevel() == 3
+    local mentatOrHigher = Helper.isElementOf(Hagal.selectedDifficulty, { "expert", "expertPlus "})
+
+    if not level3Conflict and mentatOrHigher then
+        local colorUnitCount = 0
+        local otherColorMaxUnitCount = 0
+        for otherColor, unitCount in pairs(Combat.getUnitCounts()) do
+            if otherColor == color then
+                colorUnitCount = unitCount
+            else
+                otherColorMaxUnitCount = math.max(otherColorMaxUnitCount, unitCount)
+            end
+        end
+        return math.max(0, 3 + otherColorMaxUnitCount - colorUnitCount)
+    else
+        return 12
+    end
+end
+
+---
+function Hagal.isSmartPolitics(color, faction)
+    local mentatOrHigher = Helper.isElementOf(Hagal.selectedDifficulty, { "expert", "expertPlus "})
+
+    if mentatOrHigher then
+        local colorRank = 0
+        local otherColorMaxRank = 0
+        for _, otherColor in ipairs(PlayBoard.getActivePlayBoardColors()) do
+            local rank = InfluenceTrack.getInfluence(faction, otherColor, true)
+            if otherColor == color then
+                colorRank = rank
+            else
+                otherColorMaxRank = math.max(otherColorMaxRank, rank)
+            end
+        end
+        local leadMargin = colorRank - otherColorMaxRank
+
+        return
+            (not InfluenceTrack.hasAlliance(color, faction) or leadMargin < 1) and
+            (not InfluenceTrack.hasFriendship(color, faction) or leadMargin < 2)
+    end
+
+    return true
 end
 
 ---
@@ -240,9 +285,11 @@ function Hagal._doActivateFirstValidCard(color, action, n, continuation)
                     Hagal._reshuffleDeck(color, action, n, continuation)
                 elseif action(card) then
                     Rival.triggerHagalReaction(color).doAfter(function ()
-                        HagalCard.flushTurnActions(color)
+                        HagalCard.flushTurnActions(color, Hagal._getExpertDeploymentLimit(color))
                         continuation.run(card)
                     end)
+                    HagalCard.flushTurnActions(color, Hagal._getExpertDeploymentLimit(color))
+                    continuation.run(card)
                 else
                     Rival.triggerHagalReaction(color).doAfter(function ()
                         Hagal._doActivateFirstValidCard(color, action, n + 1, continuation)

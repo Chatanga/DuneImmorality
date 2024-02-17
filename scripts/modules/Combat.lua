@@ -85,7 +85,7 @@ function Combat._transientSetUp(settings)
         if phase == "roundStart" then
             Combat._setUpConflict()
         elseif phase == "combat" then
-            Action.setContext("combat", Combat.getCurrentConflictName())
+            Action.setContext("combat", Combat.getTurnConflictName())
             -- A small delay to avoid being erased by the player turn sound.
             Helper.onceTimeElapsed(1).doAfter(function ()
                 Music.play("battle")
@@ -511,6 +511,20 @@ function Combat._calculateRanking(forces)
 end
 
 ---
+function Combat.getUnitCounts()
+    local unitCounts = {}
+    for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
+        unitCounts[color] = 0
+        for _, object in ipairs(Combat.combatCenterZone.getObjects()) do
+            if Types.isUnit(object, color) then
+                unitCounts[color] = unitCounts[color] + 1
+            end
+        end
+    end
+    return unitCounts
+end
+
+---
 function Combat._calculateCombatForces()
     local forces = {}
     for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
@@ -601,7 +615,7 @@ function Combat.getDreadnoughtsInConflict(color)
 end
 
 ---
-function Combat.getCurrentConflictName()
+function Combat.getTurnConflictName()
     local deckOrCard = Helper.getDeckOrCard(Combat.conflictDiscardZone)
     assert(deckOrCard)
     if deckOrCard.type == "Deck" then
@@ -614,8 +628,13 @@ end
 
 ---
 function Combat.isCurrentConflictBehindTheWall()
-    local conflictName = Combat.getCurrentConflictName()
+    local conflictName = Combat.getTurnConflictLevel()
     return ConflictCard.isBehindTheWall(conflictName)
+end
+
+---
+function Combat.getTurnConflictLevel()
+    return ConflictCard.getLevel(Combat.getTurnConflictName())
 end
 
 ---
@@ -730,19 +749,6 @@ end
 ---
 function Combat.getCombatCenterZone()
     return Combat.combatCenterZone
-end
-
----
-function Combat.getTurnConflictName()
-    local deckOrCard = Helper.getDeckOrCard(Combat.conflictDiscardZone)
-    if deckOrCard then
-        if deckOrCard.type == "Deck" then
-            return Helper.getID(deckOrCard.getObjects()[1])
-        else
-            return Helper.getID(deckOrCard)
-        end
-    end
-    return nil
 end
 
 return Combat

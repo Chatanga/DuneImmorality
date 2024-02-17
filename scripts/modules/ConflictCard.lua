@@ -96,14 +96,14 @@ local ConflictCard = {
 
 function ConflictCard.getObjective(conflictName)
     local conflict = ConflictCard[conflictName]
-    assert(conflict, "Unknown conflict: ", conflictName)
+    assert(conflict, "Unknown conflict: " .. tostring(conflictName))
     return conflict.objective
 end
 
 function ConflictCard.collectReward(color, conflictName, rank, doubleRewards, postAction)
     Types.assertIsInRange(1, 3, rank)
     local conflict = ConflictCard[conflictName]
-    assert(conflict, "Unknown conflict: ", conflictName)
+    assert(conflict, "Unknown conflict: " .. tostring(conflictName))
     local rewards = conflict.rewards[rank]
 
     local context = {

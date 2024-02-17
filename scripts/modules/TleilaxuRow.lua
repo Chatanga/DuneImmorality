@@ -80,7 +80,7 @@ function TleilaxuRow.acquireTleilaxuCard(indexInRow, color)
     assert(card)
     local price = ImperiumCard.getTleilaxuCardCost(card)
     local cardName = Helper.getID(card)
-    assert(price, "Unknown tleilaxu card: " .. cardName)
+    assert(price, "Unknown tleilaxu card: " .. tostring(cardName))
     assert((cardName == "reclaimedForces") == (indexInRow == 3))
 
     local specimenSupplierColor = color
@@ -127,7 +127,7 @@ function TleilaxuRow.trash(indexInRow)
     assert(card)
     local price = ImperiumCard.getTleilaxuCardCost(card)
     local cardName = Helper.getID(card)
-    assert(price, "Unknown tleilaxu card: " .. cardName)
+    assert(price, "Unknown tleilaxu card: " .. tostring(cardName))
     assert((cardName == "reclaimedForces") == (indexInRow == 3))
 
     MainBoard.trash(card)

@@ -148,7 +148,7 @@ function Helper.resolveGUIDs(reportUnresolvedGUIDs, data)
             -- NOP
         else
             -- Not a problem per se, but still unexpected in our use cases.
-            log("[resolveGUIDs] Unknown type: " .. t)
+            log("[resolveGUIDs] Unknown type: " .. tostring(t))
             -- NOP
         end
     end
@@ -753,7 +753,7 @@ function Helper.unregisterGlobalCallback(uniqueName)
     --Helper.dumpFunction("Helper.unregisterGlobalCallback", uniqueName)
     if uniqueName ~= "generatedCallback0" then
         local callback = Global.getVar(uniqueName)
-        assert(callback, "Unknown global callback: " .. uniqueName)
+        assert(callback, "Unknown global callback: " .. tostring(uniqueName))
         --Global.setVar(uniqueName, nil)
         table.insert(Helper.uniqueNamePool, uniqueName)
     end
@@ -1171,7 +1171,6 @@ function Helper.randomizePlayerPositions()
 
     -- Start shuffling players.
 
-
     local coroutineHolder = {}
     coroutineHolder.registeredCallback = Helper.registerGlobalCallback(function ()
         Helper.unregisterGlobalCallback(coroutineHolder.registeredCallback)
@@ -1188,7 +1187,7 @@ function Helper.randomizePlayerPositions()
                             --print("Moving player ".. myC)
                             Player[myC]:changeColor(v.target)
                             while Player[myC].seated and not Player[v.target].seated do
-                                coroutine.yield()
+                                coroutine.yield(0)
                             end
                             v.myColour = v.target
                             v.moved = true
@@ -1221,7 +1220,7 @@ function Helper.randomizePlayerPositions()
                     Player[lastPlayer.myColour]:changeColor("Black")
                     lastPlayer.myColour = "Black"
                     while not Player["Black"].seated do
-                        coroutine.yield()
+                        coroutine.yield(0)
                     end
                 end
             end
@@ -1242,7 +1241,7 @@ function Helper.randomizePlayerPositions()
                 v.prevMoved = v.moved
             end
 
-            coroutine.yield()
+            coroutine.yield(0)
         end
 
         Helper.sleep(2)
@@ -1250,7 +1249,6 @@ function Helper.randomizePlayerPositions()
 
         return 1
     end)
-
     startLuaCoroutine(Global, coroutineHolder.registeredCallback)
 
     return continuation
@@ -1265,7 +1263,7 @@ function Helper.changePlayerColorInCoroutine(player, newColor)
     local function seatPlayer(sourceColor, targetColor)
         Player[sourceColor]:changeColor(targetColor)
         while Player[sourceColor].seated and not Player[targetColor].seated do
-            coroutine.yield()
+            coroutine.yield(0)
         end
     end
 
@@ -1410,9 +1408,10 @@ end
 
 --- Intended to be called from a coroutine.
 function Helper.sleep(durationInSeconds)
+    assert(durationInSeconds)
     local Time = os.clock() + durationInSeconds
     while os.clock() < Time do
-        coroutine.yield()
+        coroutine.yield(0)
     end
 end
 
@@ -1678,7 +1677,7 @@ function Helper.dumpFunction(...)
             assert(type(arg) == "string")
             str = arg .. "("
         else
-            str = str .. Helper.toString(args[i])
+            str = str .. Helper.toString(args[i], true)
         end
 
         if i == args.n then
@@ -1691,7 +1690,7 @@ function Helper.dumpFunction(...)
 end
 
 ---
-function Helper.toString(object)
+function Helper.toString(object, quoted)
     if object ~= nil then
         local objectType = type(object)
         if objectType == "table" then
@@ -1702,7 +1701,7 @@ function Helper.toString(object)
                     if i > 1 then
                         str = str .. ", "
                     end
-                    str = str .. Helper.toString(element)
+                    str = str .. Helper.toString(element, quoted)
                 end
                 str = str .. "]"
             else
@@ -1713,7 +1712,7 @@ function Helper.toString(object)
                     if i > 1 then
                         str = str .. ", "
                     end
-                    str = str .. Helper.toString(key) .. " -> " .. Helper.toString(value)
+                    str = str .. Helper.toString(key, quoted) .. " -> " .. Helper.toString(value, quoted)
                 end
                 str = str .. "}"
             end
@@ -1721,7 +1720,7 @@ function Helper.toString(object)
         elseif objectType == "function" then
             return "<function>"
         elseif objectType == "string" then
-            return '"' .. object .. '"'
+            return quoted and '"' .. object .. '"' or object
         else
             return tostring(object)
         end

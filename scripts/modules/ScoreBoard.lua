@@ -146,17 +146,17 @@ end
 
 ---
 function ScoreBoard.gainVictoryPoint(color, name, count)
-    --Helper.dumpFunction("ScoreBoard.gainVictoryPoint", color, name, count)
+    Helper.dumpFunction("ScoreBoard.gainVictoryPoint", color, name, count)
     local holder = {
         success = false
     }
     Helper.forEachRecursively(ScoreBoard.tokens, function (victoryPointName, victoryPointSource)
         if name == victoryPointName then
-            --Helper.dump("Found VP in top area.")
+            Helper.dump("Found VP in top area.")
             PlayBoard.grantScoreToken(color, victoryPointSource)
             holder.success = true
         elseif name .. "Bag" == victoryPointName then
-            --Helper.dump("Found VP in a top area bag.")
+            Helper.dump("Found VP in a top area bag.")
             PlayBoard.grantScoreTokenFromBag(color, victoryPointSource, count)
             holder.success = true
         end
@@ -164,10 +164,10 @@ function ScoreBoard.gainVictoryPoint(color, name, count)
     if holder.success then
         return true
     elseif Combat.gainVictoryPoint(color, name) then
-        --Helper.dump("Found VP from the combat.")
+        Helper.dump("Found VP from the combat.")
         return true
     elseif InfluenceTrack.gainVictoryPoint(color, name) then
-        --Helper.dump("Found VP from the influence track.")
+        Helper.dump("Found VP from the influence track.")
         return true
     else
         return false

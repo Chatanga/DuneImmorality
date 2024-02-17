@@ -122,7 +122,7 @@ local Deck = {
 
 ---
 function Deck.load(loader, cards, category, customDeckName, startLuaIndex, cardNames)
-    assert(Deck[category], "Unknown category: " .. category)
+    assert(Deck[category], "Unknown category: " .. tostring(category))
     local desc = Deck[category][customDeckName]
     assert(desc, "No descriptor for: " .. category .. "." .. customDeckName)
     local customDeck

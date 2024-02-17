@@ -520,7 +520,7 @@ function TurnControl._getNextPhase(phase)
     elseif phase == TurnControl.specialPhase then
         return 'playerTurns'
     else
-        error("Unknown phase: ", phase)
+        error("Unknown phase: " .. tostring(phase))
     end
 end
 

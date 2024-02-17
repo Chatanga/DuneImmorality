@@ -218,11 +218,11 @@ function LeaderSelection._setUpTest(players, leaderNames)
         if PlayBoard.isRival(color) then
             local leaderName = leaderNames[color]
             leader = rivals[leaderName]
-            assert(leader, "Unknown rival leader " .. leaderName)
+            assert(leader, "Unknown rival leader " .. tostring(leaderName))
         else
             local leaderName = leaderNames[color]
             leader = leaders[leaderName]
-            assert(leader, "Unknown leader " .. leaderName)
+            assert(leader, "Unknown leader " .. tostring(leaderName))
         end
         PlayBoard.setLeader(color, leader)
     end

@@ -1752,7 +1752,7 @@ end
 ---
 function MainBoard.addSpaceBonus(spaceName, bonuses)
     local space = MainBoard.spaces[spaceName]
-    assert(space, "Unknown space: " .. spaceName)
+    assert(space, "Unknown space: " .. tostring(spaceName))
 end
 
 ---
