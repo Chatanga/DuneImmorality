@@ -303,13 +303,17 @@ function LeaderSelection._setUpPicking(autoStart, random, hidden)
         })
 
         local start = function ()
-            if #LeaderSelection._getVisibleLeaders() >= #LeaderSelection.players then
+            local availableLeaderCount = #LeaderSelection._getVisibleLeaders()
+            local requiredLeaderCount = #LeaderSelection.players
+            if availableLeaderCount >= requiredLeaderCount then
                 local visibleLeaders = LeaderSelection._prepareVisibleLeaders(hidden)
                 LeaderSelection._createDynamicLeaderSelection(visibleLeaders)
                 Helper.clearButtons(LeaderSelection.secondaryTable)
                 LeaderSelection.stage = Stage.STARTED
                 TurnControl.start()
             else
+                Helper.dump("availableLeaderCount:", availableLeaderCount)
+                Helper.dump("requiredLeaderCount:", requiredLeaderCount)
                 error("Not enough leaders left!")
             end
         end
@@ -482,12 +486,12 @@ end
 ---
 function LeaderSelection.claimLeader(color, leader)
     if PlayBoard.isRival(color) and not leader.hasTag("RivalLeader") then
-        Dialog.broadcastToColor(I18N("incompatibleRivalLeader"), color, "White")
+        Dialog.broadcastToColor(I18N("incompatibleRivalLeader"), color, "Purple")
         return
     end
 
     if not PlayBoard.isRival(color) and not leader.hasTag("Leader") then
-        Dialog.broadcastToColor(I18N("incompatibleLeader"), color, "White")
+        Dialog.broadcastToColor(I18N("incompatibleLeader"), color, "Purple")
         return
     end
 

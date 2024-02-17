@@ -1167,7 +1167,7 @@ function PlayBoard._transientSetUp(settings)
             width = 0,
             height = 0,
             font_size = 400,
-            font_color = "Purple"
+            font_color = "White"
         })
         PlayBoard._updateBagCounts(playBoard.content.completedContractBag)
     end
@@ -1285,15 +1285,14 @@ end
 
 ---
 function PlayBoard:_createEndOfTurnButton()
+    Helper.dumpFunction("PlayBoard:_createEndOfTurnButton", self.color)
     Helper.clearButtons(self.content.endTurnButton)
     local action = function ()
         self.content.endTurnButton.AssetBundle.playTriggerEffect(0)
         TurnControl.endOfTurn(3)
         Helper.clearButtons(self.content.endTurnButton)
     end
-    local callback = TurnControl.isHotSeatEnabled()
-        and self:_createSharedCallback(action)
-        or  self:_createExclusiveCallback(action)
+    local callback = self:_createExclusiveCallback(action)
     self.content.endTurnButton.createButton({
         click_function = callback,
         position = Vector(0, 0.6, 0),
@@ -1389,10 +1388,10 @@ function PlayBoard.withLeader(action)
                 -- Replace the source by the leader.
                 action(leader, color, ...)
             else
-                Dialog.broadcastToColor(I18N('noAlly'), color, "White")
+                Dialog.broadcastToColor(I18N('noAlly'), color, "Purple")
             end
         else
-            Dialog.broadcastToColor(I18N('noLeader'), color, "White")
+            Dialog.broadcastToColor(I18N('noLeader'), color, "Purple")
         end
     end
 end
@@ -1403,18 +1402,19 @@ function PlayBoard.collectReward(color)
     local conflictName = Combat.getCurrentConflictName()
     local rank = Combat.getRank(color).value
     local hasSandworms = Combat.hasSandworms(color)
-    ConflictCard.collectReward(color, conflictName, rank, hasSandworms)
-    if rank == 1 then
-        local leader = PlayBoard.getLeader(color)
-        if PlayBoard.hasTech(color, "windtraps") then
-            leader.resources(color, "water", 1)
-        end
+    ConflictCard.collectReward(color, conflictName, rank, hasSandworms).doAfter(function ()
+        if rank == 1 then
+            local leader = PlayBoard.getLeader(color)
+            if PlayBoard.hasTech(color, "windtraps") then
+                leader.resources(color, "water", 1)
+            end
 
-        local dreadnoughts = Combat.getDreadnoughtsInConflict(color)
-        if #dreadnoughts > 0 then
-            Player[color].showInfoDialog(I18N("dreadnoughtMandatoryOccupation"))
+            local dreadnoughts = Combat.getDreadnoughtsInConflict(color)
+            if #dreadnoughts > 0 then
+                Player[color].showInfoDialog(I18N("dreadnoughtMandatoryOccupation"))
+            end
         end
-    end
+    end)
 end
 
 ---
@@ -1839,7 +1839,7 @@ function PlayBoard:_createExclusiveCallback(innerCallback)
                 innerCallback(object, self.color, altClick)
             end
         else
-            Dialog.broadcastToColor(I18N('noTouch'), color, "White")
+            Dialog.broadcastToColor(I18N('noTouch'), color, "Purple")
         end
     end)
 end
@@ -1847,9 +1847,9 @@ end
 ---
 function PlayBoard:_createSharedCallback(innerCallback)
     return Helper.registerGlobalCallback(function (object, color, altClick)
-        local legitimateColors = Helper.mapValues(TurnControl.getLegitimatePlayers(self.color), function (player)
-            return player.color
-        end)
+        local legitimateColors = Helper.mapValues(
+            TurnControl.getLegitimatePlayers(self.color),
+            Helper.field("color"))
         if Helper.isElementOf(color, legitimateColors) then
             if not self.buttonsDisabled then
                 self.buttonsDisabled = true
@@ -1859,7 +1859,7 @@ function PlayBoard:_createSharedCallback(innerCallback)
                 innerCallback(object, color, altClick)
             end
         else
-            Dialog.broadcastToColor(I18N('noTouch'), color, "White")
+            Dialog.broadcastToColor(I18N('noTouch'), color, "Purple")
         end
     end)
 end

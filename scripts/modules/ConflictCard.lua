@@ -1,11 +1,12 @@
+local Module = require("utils.Module")
 local Helper = require("utils.Helper")
-local I18N = require("utils.I18N")
 
 -- Exceptional Immediate require for the sake of aliasing.
-local PlayBoard = require("PlayBoard")
-
 local CardEffect = require("CardEffect")
-local Types = require("Types")
+
+local PlayBoard = Module.lazyRequire("PlayBoard")
+local Types = Module.lazyRequire("Types")
+local Action = Module.lazyRequire("Action")
 
 -- Function aliasing for a more readable code.
 local persuasion = CardEffect.persuasion
@@ -99,7 +100,7 @@ function ConflictCard.getObjective(conflictName)
     return conflict.objective
 end
 
-function ConflictCard.collectReward(color, conflictName, rank, doubleRewards)
+function ConflictCard.collectReward(color, conflictName, rank, doubleRewards, postAction)
     Types.assertIsInRange(1, 3, rank)
     local conflict = ConflictCard[conflictName]
     assert(conflict, "Unknown conflict: ", conflictName)
@@ -111,17 +112,39 @@ function ConflictCard.collectReward(color, conflictName, rank, doubleRewards)
         cardName = conflictName,
     }
 
+    Action.setContext("combatEnded")
+
     if rank == 1 and conflict.objective then
         context.player.gainObjective(context.color, conflict.objective)
     end
 
-    for _ = 1, (doubleRewards and 2 or 1) do
-        Helper.onceTimeElapsed(1).doAfter(function ()
-            for _, reward in ipairs(rewards) do
-                CardEffect.evaluate(context, reward)
+    local continuation = Helper.createContinuation("ConflictCard.collectReward")
+
+    local functionHolder = {}
+    functionHolder.i = 1
+    functionHolder.f = function ()
+        printToAll("-------------------------[collect rewards / " .. tostring(functionHolder.i) .. "]", color)
+        for _, reward in ipairs(rewards) do
+            CardEffect.evaluate(context, reward)
+        end
+
+        local innerContinuation = postAction and postAction() or Helper.fakeContinuation()
+        innerContinuation.doAfter(function ()
+            Action.flushTroopTransfer()
+            if doubleRewards and functionHolder.i == 1 then
+                Helper.onceTimeElapsed(2).doAfter(function ()
+                    functionHolder.i = functionHolder.i + 1
+                    functionHolder.f()
+                end)
+            else
+                continuation.run()
             end
         end)
     end
+
+    functionHolder.f()
+
+    return continuation
 end
 
 function ConflictCard.getLevel(conflictName)

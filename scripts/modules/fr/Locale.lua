@@ -154,6 +154,7 @@ return {
     buyTechCard= "■ Acquisition tech. pour {amount} {resource} : « {card} »",
     sendingAgent = "■ Envoi d’un agent vers : {space}",
     stealIntrigue = "■ Vol de « {card} » à {victim}",
+    gainVictoryPoint = '■ Gain de PV : « {name} »',
 
     -- Shield Wall
     confirmShieldWallDestruction = "Confirmez-vous cette violation flagrante de la Grande Convention ?",

@@ -1360,7 +1360,7 @@ function Deck._generateFromPrebuildDeck(deckType, deckZone, contributions, _, sp
                     source.deck.takeObject({
                         guid = firstGuid,
                         -- Stacking is needed to preserve input order.
-                        position = deckZone.getPosition() + Vector(0, cardCount * (spacing or 0.1), 0),
+                        position = deckZone.getPosition() + Vector(0, 1 + cardCount * (spacing or 0.1), 0),
                         smooth = false,
                     })
                     cardCount = cardCount + 1

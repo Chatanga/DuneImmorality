@@ -1,10 +1,11 @@
+local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 
 -- Exceptional Immediate require for the sake of aliasing.
-local PlayBoard = require("PlayBoard")
-
 local CardEffect = require("CardEffect")
-local Types = require("Types")
+
+local PlayBoard = Module.lazyRequire("PlayBoard")
+local Types = Module.lazyRequire("Types")
 
 -- Function aliasing for a more readable code.
 local persuasion = CardEffect.persuasion

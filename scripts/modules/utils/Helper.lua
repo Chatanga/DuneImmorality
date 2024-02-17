@@ -894,6 +894,13 @@ function Helper.createContinuation(name)
     return continuation
 end
 
+---@return Continuation
+function Helper.fakeContinuation(...)
+    local fakeContinuation = Helper.createContinuation("Helper.alwaysContinuation")
+    fakeContinuation.run(...)
+    return fakeContinuation
+end
+
 ---@param timeout number?
 ---@return Continuation
 function Helper.onceStabilized(timeout)
@@ -1164,7 +1171,10 @@ function Helper.randomizePlayerPositions()
 
     -- Start shuffling players.
 
-    local registeredCallback = Helper.registerGlobalCallback(function ()
+
+    local coroutineHolder = {}
+    coroutineHolder.registeredCallback = Helper.registerGlobalCallback(function ()
+        Helper.unregisterGlobalCallback(coroutineHolder.registeredCallback)
 
         for timeout = 1, 50 do
 
@@ -1235,13 +1245,13 @@ function Helper.randomizePlayerPositions()
             coroutine.yield()
         end
 
-        Helper._sleep(2)
+        Helper.sleep(2)
         continuation.run()
 
         return 1
     end)
 
-    startLuaCoroutine(Global, registeredCallback)
+    startLuaCoroutine(Global, coroutineHolder.registeredCallback)
 
     return continuation
 end
@@ -1399,7 +1409,7 @@ function Helper.getSharedTable(tableName)
 end
 
 --- Intended to be called from a coroutine.
-function Helper._sleep(durationInSeconds)
+function Helper.sleep(durationInSeconds)
     local Time = os.clock() + durationInSeconds
     while os.clock() < Time do
         coroutine.yield()
@@ -1652,47 +1662,30 @@ function Helper.dump(...)
         if i > 1 then
             str = str .. " "
         end
-        local arg = args[i]
-        str = str .. Helper.toString(arg and arg or "<nil>")
+        str = str .. Helper.toString(args[i])
     end
     log(str)
 end
 
 ---
 function Helper.dumpFunction(...)
-    local args = {...}
+    local args = table.pack(...)
     local str
-    local notNilArgCount = #Helper.getKeys(args)
-    local argCount = notNilArgCount
-    local i = 1
-    while i <= argCount do
-        local element = args[i]
-        if element == nil and i < argCount then
-            argCount = argCount + 1
-        end
+    for i = 1, args.n do
+        local arg = args[i]
 
         if i == 1 then
-            assert(type(element) == "string")
-            str = element .. "("
+            assert(type(arg) == "string")
+            str = arg .. "("
         else
-            local strElement
-            if type(element) == "string" then
-                strElement = '"' .. Helper.toString(element) .. '"'
-            elseif type(element) == "function" then
-                strElement = '<func>'
-            else
-                strElement = Helper.toString(element) or "?"
-            end
-            str = str .. strElement
+            str = str .. Helper.toString(args[i])
         end
 
-        if i == argCount then
+        if i == args.n then
             str = str .. ")"
         elseif i > 1 then
             str = str .. ", "
         end
-
-        i = i + 1
     end
     log(str)
 end
@@ -1700,7 +1693,8 @@ end
 ---
 function Helper.toString(object)
     if object ~= nil then
-        if type(object) == "table" then
+        local objectType = type(object)
+        if objectType == "table" then
             local str
             if #object > 0 then
                 str = "["
@@ -1708,7 +1702,7 @@ function Helper.toString(object)
                     if i > 1 then
                         str = str .. ", "
                     end
-                    str = str .. Helper.toString(element or "<nil>")
+                    str = str .. Helper.toString(element)
                 end
                 str = str .. "]"
             else
@@ -1724,13 +1718,18 @@ function Helper.toString(object)
                 str = str .. "}"
             end
             return str
+        elseif objectType == "function" then
+            return "<function>"
+        elseif objectType == "string" then
+            return '"' .. object .. '"'
         else
             return tostring(object)
         end
     else
-        return "nil"
+        return "<nil>"
     end
 end
+
 ---
 function Helper.concatTables(...)
     local result = {}

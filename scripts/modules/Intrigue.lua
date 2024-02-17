@@ -58,6 +58,7 @@ end
 
 ---
 function Intrigue.stealIntrigue(color, otherColor, amount)
+    Helper.dumpFunction("Intrigue.stealIntrigue", color, otherColor, amount)
     Types.assertIsPositiveInteger(amount)
     local victimName = PlayBoard.getLeaderName(otherColor)
 

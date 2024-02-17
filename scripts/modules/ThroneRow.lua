@@ -46,7 +46,7 @@ function ThroneRow._transientSetUp()
             if Commander.isTeamShaddam(color) then
                 PlayBoard.getLeader(color).acquireThroneCard(color, i)
             else
-                Dialog.broadcastToColor(I18N('notShaddamTeam'), color, "White")
+                Dialog.broadcastToColor(I18N('notShaddamTeam'), color, "Purple")
             end
         end), Deck.getAcquireCardDecalUrl("corrino"))
         table.insert(ThroneRow.acquireCards, acquireCard)

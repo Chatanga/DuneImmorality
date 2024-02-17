@@ -305,7 +305,7 @@ end
 
 ---
 function InfluenceTrack._getInfluenceTracksRank(faction, color)
-    --Helper.dumpFunction("InfluenceTrack._getInfluenceTracksRank", faction, color)
+    Helper.dumpFunction("InfluenceTrack._getInfluenceTracksRank", faction, color)
     local influenceLevels = InfluenceTrack.influenceLevels[faction][color]
     local token = InfluenceTrack.influenceTokens[faction][color]
     if token then

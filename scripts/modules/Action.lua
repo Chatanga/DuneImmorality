@@ -108,10 +108,15 @@ end
 
 ---
 function Action.setContext(key, value)
-    if key == "agentSent" and Action.transfetCoalescentQueue then
-        Action.transfetCoalescentQueue.flush()
+    if key == "agentSent" and Action.troopTransferCoalescentQueue then
+        Action.flushTroopTransfer()
     end
     Action.context[key] = value
+end
+
+---
+function Action.flushTroopTransfer()
+    Action.troopTransferCoalescentQueue.flush()
 end
 
 ---
@@ -255,7 +260,7 @@ end
 ---@param amount integer
 ---@return Continuation
 function Action.influence(color, faction, amount)
-    --Helper.dumpFunction("Action.influence", color, faction, amount)
+    Helper.dumpFunction("Action.influence", color, faction, amount)
     Types.assertIsPlayerColor(color)
     Types.assertIsInteger(amount)
     local continuation = Helper.createContinuation("Action.influence")
@@ -286,7 +291,7 @@ function Action.troops(color, from, to, baseCount)
     Types.assertIsInteger(baseCount)
     local count = Park.transfert(baseCount, Action._getTroopPark(color, from), Action._getTroopPark(color, to))
 
-    if not Action.transfetCoalescentQueue then
+    if not Action.troopTransferCoalescentQueue then
 
         local function coalesce(t1, t2)
             if t1.color == t2.color then
@@ -322,10 +327,10 @@ function Action.troops(color, from, to, baseCount)
             end
         end
 
-        Action.transfetCoalescentQueue = Helper.createCoalescentQueue(1, coalesce, handle)
+        Action.troopTransferCoalescentQueue = Helper.createCoalescentQueue(1, coalesce, handle)
     end
 
-    Action.transfetCoalescentQueue.submit({
+    Action.troopTransferCoalescentQueue.submit({
         color = color,
         count = count,
         from = from,
@@ -538,7 +543,12 @@ end
 ---
 function Action.gainVictoryPoint(color, name)
     Types.assertIsPlayerColor(color)
-    return ScoreBoard.gainVictoryPoint(color, name)
+    if ScoreBoard.gainVictoryPoint(color, name) then
+        Action.log(I18N("gainVictoryPoint", { name = I18N(name) }), color)
+        return true
+    else
+        return false
+    end
 end
 
 ---

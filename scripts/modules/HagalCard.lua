@@ -9,6 +9,8 @@ local TleilaxuRow = Module.lazyRequire("TleilaxuRow")
 local Types = Module.lazyRequire("Types")
 local Combat = Module.lazyRequire("Combat")
 local ConflictCard = Module.lazyRequire("ConflictCard")
+local TurnControl = Module.lazyRequire("TurnControl")
+local Action = Module.lazyRequire("Action")
 
 local HagalCard = {
     cards = {
@@ -75,7 +77,7 @@ function HagalCard.activate(color, card, riseOfIx)
 end
 
 function HagalCard.flushTurnActions(color)
-    --Helper.dumpFunction("HagalCard.flushTurnActions", color)
+    Helper.dumpFunction("HagalCard.flushTurnActions", color)
     HagalCard.acquiredTroopCount = HagalCard.acquiredTroopCount or 0
     local rival = PlayBoard.getLeader(color)
     assert(rival, color)
@@ -108,8 +110,13 @@ function HagalCard.flushTurnActions(color)
 end
 
 function HagalCard.acquireTroops(color, n, inCombat)
-    HagalCard.inCombat = HagalCard.inCombat or inCombat
-    HagalCard.acquiredTroopCount = (HagalCard.acquiredTroopCount or 0) + n
+    if TurnControl.getCurrentPhase() == "playerTurns" then
+        HagalCard.inCombat = HagalCard.inCombat or inCombat
+        HagalCard.acquiredTroopCount = (HagalCard.acquiredTroopCount or 0) + n
+    else
+        local rival = PlayBoard.getLeader(color)
+        rival.troops(color, "supply", "garrison", n)
+    end
 end
 
 function HagalCard._activatePlaceSpyYellow(color, rival, riseOfIx)
@@ -218,7 +225,7 @@ end
 function HagalCard._activateEspionage(color, rival)
     local freeFactionObservationPosts = Helper.filter(
         { "emperor", "spacingGuild", "beneGesserit", "fremen" },
-        MainBoard.observationPostIsOccupied)
+        Helper.negate(MainBoard.observationPostIsOccupied))
     if HagalCard._spaceIsFree(color, "espionage") and not Helper.isEmpty(freeFactionObservationPosts) then
         HagalCard._sendRivalAgent(color, rival, "espionage")
         rival.influence(color, "beneGesserit", 1)
@@ -230,6 +237,7 @@ function HagalCard._activateEspionage(color, rival)
 end
 
 function HagalCard._activateSecrets(color, rival)
+    Helper.dumpFunction("HagalCard._activateSecrets", color, rival)
     if HagalCard._spaceIsFree(color, "secrets") then
         HagalCard._sendRivalAgent(color, rival, "secrets")
         rival.influence(color, "beneGesserit", 1)
@@ -297,7 +305,7 @@ function HagalCard._activateGatherSupport2(color, rival)
         HagalCard._sendRivalAgent(color, rival, "gatherSupport")
         HagalCard.acquireTroops(color, 1)
         if InfluenceTrack.hasFriendship(color, "emperor") then
-            rival.influence(color, 1, 2)
+            rival.influence(color, 2, 1)
         end
         return true
     else
@@ -307,18 +315,18 @@ end
 
 function HagalCard._activateAcceptContractAndShipping1(color, rival)
     if InfluenceTrack.hasFriendship(color, "spacingGuild") then
-        if HagalCard._spaceIsFree(color, "shipping") then
-            HagalCard._sendRivalAgent(color, rival, "shipping")
+        if HagalCard._spaceIsFree(color, "acceptContract") then
+            HagalCard._sendRivalAgent(color, rival, "acceptContract")
             rival.resources(color, "solari", 2)
+            rival.influence(color, 3, 1)
             return true
         else
             return false
         end
     else
-        if HagalCard._spaceIsFree(color, "acceptContract") then
-            HagalCard._sendRivalAgent(color, rival, "acceptContract")
+        if HagalCard._spaceIsFree(color, "shipping") then
+            HagalCard._sendRivalAgent(color, rival, "shipping")
             rival.resources(color, "solari", 2)
-            rival.influence(color, 1, 3)
             return true
         else
             return false
@@ -328,18 +336,18 @@ end
 
 function HagalCard._activateAcceptContractAndShipping2(color, rival)
     if InfluenceTrack.hasFriendship(color, "spacingGuild") then
-        if HagalCard._spaceIsFree(color, "shipping") then
-            HagalCard._sendRivalAgent(color, rival, "shipping")
+        if HagalCard._spaceIsFree(color, "acceptContract") then
+            HagalCard._sendRivalAgent(color, rival, "acceptContract")
             rival.resources(color, "solari", 2)
+            rival.influence(color, 1, 1)
             return true
         else
             return false
         end
     else
-        if HagalCard._spaceIsFree(color, "acceptContract") then
-            HagalCard._sendRivalAgent(color, rival, "acceptContract")
+        if HagalCard._spaceIsFree(color, "shipping") then
+            HagalCard._sendRivalAgent(color, rival, "shipping")
             rival.resources(color, "solari", 2)
-            rival.influence(color, 1, 1)
             return true
         else
             return false
@@ -362,6 +370,7 @@ function HagalCard._activateSpiceRefinery(color, rival)
         HagalCard._sendRivalAgent(color, rival, "spiceRefinery")
         HagalCard.acquireTroops(color, 0, true)
         rival.signetRing(color)
+        MainBoard.applyControlOfAnySpace("spiceRefinery")
         return true
     else
         return false
@@ -373,6 +382,7 @@ function HagalCard._activateArrakeen(color, rival)
         HagalCard._sendRivalAgent(color, rival, "arrakeen")
         rival.signetRing(color)
         HagalCard.acquireTroops(color, 1, true)
+        MainBoard.applyControlOfAnySpace("arrakeen")
         return true
     else
         return false
@@ -421,6 +431,9 @@ function HagalCard._activateHaggaBasinAndImperialBasin(color, rival)
         if bestDesertSpace == "haggaBasin" and PlayBoard.hasMakerHook(color) then
             rival.resources(color, "spice", bestSpiceBonus)
             rival.callSandworm(color, 1)
+        elseif bestDesertSpace == "imperialBasin" then
+            rival.resources(color, "spice", bestTotalSpice)
+            MainBoard.applyControlOfAnySpace(bestDesertSpace)
         else
             rival.resources(color, "spice", bestTotalSpice)
         end

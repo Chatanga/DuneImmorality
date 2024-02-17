@@ -262,7 +262,7 @@ function TechMarket.acquireTech(stackIndex, color)
                 TechMarket.frozen = false
             end
             if not card then
-                Dialog.broadcastToColor(I18N('notAffordableOption'), color, "White")
+                Dialog.broadcastToColor(I18N('notAffordableOption'), color, "Purple")
             end
         end)
     else

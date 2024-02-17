@@ -154,16 +154,16 @@ Leader.paulAtreides = Helper.createClass(Leader, {
             if otherColor == color then
                 local cardOrDeck = PlayBoard.getDrawDeck(color)
                 if cardOrDeck == nil then
-                    Dialog.broadcastToColor(I18N("prescienceVoid"), color, "White")
+                    Dialog.broadcastToColor(I18N("prescienceVoid"), color, "Purple")
                 elseif cardOrDeck.type == "Card" then
                     --broadcastToAll(I18N("prescienceUsed"), color)
-                    Dialog.broadcastToColor(I18N("prescienceManual"), color, "White")
+                    Dialog.broadcastToColor(I18N("prescienceManual"), color, "Purple")
                 else
                     cardOrDeck.Container.search(color, 1)
                     --broadcastToAll(I18N("prescienceUsed"), color)
                 end
             else
-                Dialog.broadcastToColor(I18N("noTouch"), otherColor, "White")
+                Dialog.broadcastToColor(I18N("noTouch"), otherColor, "Purple")
             end
         end
 
@@ -180,7 +180,7 @@ Leader.paulAtreides = Helper.createClass(Leader, {
                 font_size = 200,
                 scale = Vector(1, 1, 1),
                 color = { 0, 0, 0, 1 },
-                font_color = Color.fromString("Purple"),
+                font_color = Color.fromString("White"),
                 tooltip = I18N("prescienceTooltip"),
             })
         end)
@@ -512,7 +512,7 @@ Leader.jessica = Helper.createClass(Leader, {
                 font_size = 120,
                 scale = Vector(1, 1, 1),
                 color = { 0, 0, 0, 1 },
-                font_color = Color.fromString("Purple"),
+                font_color = Color.fromString("White"),
                 tooltip = I18N("otherMemoriesTooltip"),
             })
         end)

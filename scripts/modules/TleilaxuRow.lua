@@ -115,7 +115,7 @@ function TleilaxuRow.acquireTleilaxuCard(indexInRow, color)
 
         return true
     else
-        Dialog.broadcastToColor(I18N("noEnoughSpecimen"), color, "White")
+        Dialog.broadcastToColor(I18N("noEnoughSpecimen"), color, "Purple")
         return false
     end
 end

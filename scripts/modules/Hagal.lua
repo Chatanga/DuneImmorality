@@ -151,53 +151,61 @@ function Hagal._collectReward(color)
     Helper.dumpFunction("Hagal._collectReward", color)
     local continuation = Helper.createContinuation("Hagal._collectReward")
     Helper.onceFramesPassed(1).doAfter(function ()
-        local conflictName = Combat.getCurrentConflictName()
         local rank = Combat.getRank(color).value
+        local conflictName = Combat.getCurrentConflictName()
         local hasSandworms = Combat.hasSandworms(color)
-        ConflictCard.collectReward(color, conflictName, rank, hasSandworms)
-        if rank == 1 then
-            local leader = PlayBoard.getLeader(color)
-            if PlayBoard.hasTech(color, "windtraps") then
-                leader.resources(color, "water", 1)
-            end
-
-            local dreadnoughts = Combat.getDreadnoughtsInConflict(color)
-
-            if #dreadnoughts > 0 and PlayBoard.hasTech(color, "detonationDevices") then
-                Park.putObject(dreadnoughts[1], PlayBoard.getDreadnoughtPark(color))
-                table.remove(dreadnoughts, 1)
-                leader.gainVictoryPoint(color, "detonationDevices")
-            end
-
-            if #dreadnoughts > 0 then
-                local bestValue
-                local bestBannerZone
-                -- Already properly ordered (CCW from Imperial Basin).
-                for i, bannerZone in ipairs(MainBoard.getBannerZones()) do
-                    if not MainBoard.getControllingDreadnought(bannerZone) then
-                        local owner = MainBoard.getControllingPlayer(bannerZone)
-                        local value
-                        if not owner then
-                            value = 10
-                        elseif owner ~= color then
-                            value = 20
-                        else
-                            value = 0
-                        end
-                        value = value + i
-                        if not bestValue or bestValue < value then
-                            bestValue = value
-                            bestBannerZone = bannerZone
-                        end
-                    end
+        local postAction = Helper.partialApply(Rival.triggerHagalReaction, color)
+        ConflictCard.collectReward(color, conflictName, rank, hasSandworms, postAction).doAfter(function ()
+            if rank == 1 then
+                local leader = PlayBoard.getLeader(color)
+                if PlayBoard.hasTech(color, "windtraps") then
+                    leader.resources(color, "water", 1)
                 end
-                assert(bestBannerZone)
-                dreadnoughts[1].setPositionSmooth(bestBannerZone.getPosition())
+
+                local dreadnoughts = Combat.getDreadnoughtsInConflict(color)
+
+                if #dreadnoughts > 0 and PlayBoard.hasTech(color, "detonationDevices") then
+                    Park.putObject(dreadnoughts[1], PlayBoard.getDreadnoughtPark(color))
+                    table.remove(dreadnoughts, 1)
+                    leader.gainVictoryPoint(color, "detonationDevices")
+                end
+
+                if #dreadnoughts > 0 then
+                    local bestBannerZone = Hagal._findBestBannerZone(color)
+                    dreadnoughts[1].setPositionSmooth(bestBannerZone.getPosition())
+                end
             end
-        end
-        continuation.run()
+            continuation.run()
+        end)
     end)
     return continuation
+end
+
+---
+function Hagal._findBestBannerZone(color)
+    local bestValue
+    local bestBannerZone
+    -- Already properly ordered (CCW from Imperial Basin).
+    for i, bannerZone in ipairs(MainBoard.getBannerZones()) do
+        if not MainBoard.getControllingDreadnought(bannerZone) then
+            local owner = MainBoard.getControllingPlayer(bannerZone)
+            local value
+            if not owner then
+                value = 10
+            elseif owner ~= color then
+                value = 20
+            else
+                value = 0
+            end
+            value = value + i
+            if not bestValue or bestValue < value then
+                bestValue = value
+                bestBannerZone = bannerZone
+            end
+        end
+    end
+    assert(bestBannerZone)
+    return bestBannerZone
 end
 
 ---
@@ -221,21 +229,24 @@ end
 
 ---
 function Hagal._doActivateFirstValidCard(color, action, n, continuation)
+    Helper.dumpFunction("Hagal._doActivateFirstValidCard", color, "<action>", n, "<continuation>")
     local emptySlots = Park.findEmptySlots(PlayBoard.getRevealCardPark(color))
     assert(emptySlots and #emptySlots > 0)
-
     assert(n < 10, "Something is not right!")
-
     Helper.moveCardFromZone(Hagal.deckZone, emptySlots[2] + Vector(0, 1 + 0.4 * n, 0), Vector(0, 180, 0)).doAfter(function (card)
         if card then
-            Helper.onceMotionless(card).doAfter(function ()
+            Helper.onceTimeElapsed(1).doAfter(function ()
                 if Helper.getID(card) == "reshuffle" then
                     Hagal._reshuffleDeck(color, action, n, continuation)
                 elseif action(card) then
-                    HagalCard.flushTurnActions(color)
-                    continuation.run(card)
+                    Rival.triggerHagalReaction(color).doAfter(function ()
+                        HagalCard.flushTurnActions(color)
+                        continuation.run(card)
+                    end)
                 else
-                    Hagal._doActivateFirstValidCard(color, action, n + 1, continuation)
+                    Rival.triggerHagalReaction(color).doAfter(function ()
+                        Hagal._doActivateFirstValidCard(color, action, n + 1, continuation)
+                    end)
                 end
             end)
         else
