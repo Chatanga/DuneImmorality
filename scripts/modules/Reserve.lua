@@ -9,8 +9,6 @@ local Reserve = {}
 
 ---
 function Reserve.onLoad(state)
-    --Helper.dumpFunction("Reserve.onLoad")
-
     Helper.append(Reserve, Helper.resolveGUIDs(false, {
         foldspaceSlotZone = "6b62e0",
         prepareTheWaySlotZone = "cbcd9a",

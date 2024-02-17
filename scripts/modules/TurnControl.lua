@@ -38,7 +38,6 @@ local TurnControl = {
 }
 
 function TurnControl.onLoad(state)
-    --Helper.dumpFunction("TurnControl.onLoad")
     if state.settings then
         if state.TurnControl then
             TurnControl.hotSeat = state.TurnControl.hotSeat
@@ -62,7 +61,6 @@ function TurnControl.onLoad(state)
 end
 
 function TurnControl.onSave(state)
-    --Helper.dumpFunction("TurnControl.onSave")
     state.TurnControl = {
         hotSeat = TurnControl.hotSeat,
         players = TurnControl.players,
@@ -232,7 +230,6 @@ end
 
 ---
 function TurnControl.overridePhaseTurnSequence(turnSequence)
-    --Helper.dumpFunction("TurnControl.overridePhaseTurnSequence:", turnSequence)
     TurnControl.customTurnSequence = {}
     for _, color in ipairs(turnSequence) do
         for playerLuaIndex, otherColor in ipairs(TurnControl.players) do
@@ -397,7 +394,6 @@ end
 function TurnControl._notifyPlayerTurn(refreshing)
     local playerColor = TurnControl.players[TurnControl.currentPlayerLuaIndex]
     local player = Helper.findPlayerByColor(playerColor)
-    --Helper.dump(playerColor, "is", player.seated and "seated" or "not seated")
     if player then
         if not player.seated and (not TurnControl.hotSeat or not TurnControl.assumeDirectControl(playerColor)) then
             broadcastToAll(I18N("noSeatedPlayer", { color = I18N(playerColor) }), Color.fromString("Pink"))
@@ -415,7 +411,6 @@ function TurnControl._notifyPlayerTurn(refreshing)
 end
 
 function TurnControl.assumeDirectControl(color)
-    --Helper.dumpFunction("TurnControl.assumeDirectControl", color)
     local legitimatePlayers = TurnControl.getLegitimatePlayers(color)
     if not Helper.isEmpty(legitimatePlayers) then
         legitimatePlayers[1].changeColor(color)
@@ -452,30 +447,25 @@ end
 
 ---
 function TurnControl._findActivePlayer(startPlayerLuaIndex)
-    --Helper.dumpFunction("TurnControl._findActivePlayer", startPlayerLuaIndex)
     assert(startPlayerLuaIndex)
     local playerLuaIndex = startPlayerLuaIndex
     local n = TurnControl.getPlayerCount()
     for _ = 1, n do
         if TurnControl._isPlayerActive(playerLuaIndex) then
-            --Helper.dump("->", playerLuaIndex)
             return playerLuaIndex
         end
         playerLuaIndex = TurnControl._getNextPlayer(playerLuaIndex, TurnControl.counterClockWise)
     end
-    --Helper.dump("-> -")
     return nil
 end
 
 ---
 function TurnControl._getNextPlayer(playerLuaIndex, counterClockWise)
-    --Helper.dumpFunction("TurnControl._getNextPlayer", playerLuaIndex, counterClockWise)
     assert(playerLuaIndex)
     if TurnControl.customTurnSequence then
         for i, otherPlayerLuaIndex in ipairs(TurnControl.customTurnSequence) do
             if otherPlayerLuaIndex == playerLuaIndex then
                 local nextPlayerLuaIndex = TurnControl.customTurnSequence[(i % #TurnControl.customTurnSequence) + 1]
-                --Helper.dump("custom turn sequence ->", nextPlayerLuaIndex)
                 return nextPlayerLuaIndex
             end
         end
@@ -489,7 +479,6 @@ function TurnControl._getNextPlayer(playerLuaIndex, counterClockWise)
             nextPlayerLuaIndex = (playerLuaIndex % n) + 1
         end
         assert(nextPlayerLuaIndex)
-        --Helper.dump("default turn sequence ->", nextPlayerLuaIndex)
         return nextPlayerLuaIndex
     end
 end

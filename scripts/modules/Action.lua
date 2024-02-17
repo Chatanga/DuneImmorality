@@ -25,8 +25,6 @@ local Action = Helper.createClass(nil, {
 
 ---
 function Action.onLoad(state)
-    --Helper.dumpFunction("Action.onLoad")
-
     Helper.registerEventListener("phaseStart", function (phase, _)
         Action.context = {
             phase = phase
@@ -49,7 +47,6 @@ end
 
 ---
 function Action.onSave(state)
-    --Helper.dumpFunction("Action.onSave")
     state.Action = {
         context = Action.context
     }
@@ -74,7 +71,6 @@ end
 function Action.checkContext(attributes)
     for name, expectedValue in pairs(attributes) do
         local value = Action.context and Action.context[name] or nil
-        --Helper.dump("Checking", name, "with value", value or "nil")
         local valid
         if type(expectedValue) == "function" then
             valid = expectedValue(value)
@@ -260,7 +256,6 @@ end
 ---@param amount integer
 ---@return Continuation
 function Action.influence(color, faction, amount)
-    Helper.dumpFunction("Action.influence", color, faction, amount)
     Types.assertIsPlayerColor(color)
     Types.assertIsInteger(amount)
     local continuation = Helper.createContinuation("Action.influence")
@@ -284,7 +279,6 @@ end
 ---@param baseCount integer
 ---@return integer
 function Action.troops(color, from, to, baseCount)
-    --Helper.dumpFunction("Action.troops", color, from, to, baseCount)
     Types.assertIsPlayerColor(color)
     Types.assertIsTroopLocation(from)
     Types.assertIsTroopLocation(to)
@@ -342,7 +336,6 @@ end
 
 ---
 function Action._getTroopPark(color, parkName)
-    --Helper.dumpFunction("Action._getTroopPark", color, parkName)
     if parkName == "supply" then
         return PlayBoard.getSupplyPark(color)
     elseif parkName == "garrison" then
@@ -559,7 +552,6 @@ end
 
 ---
 function Action.control(color, spaceName)
-    Helper.dumpFunction("Action.control", color, spaceName)
     MainBoard.occupy(MainBoard.findControlableSpace(spaceName), color)
 end
 

@@ -71,19 +71,15 @@ function HagalCard.activate(color, card, riseOfIx)
     local actionName = Helper.toCamelCase("_activate", cardName)
     assert(HagalCard[actionName], actionName)
     local final = HagalCard[actionName](color, rival, riseOfIx)
-    Helper.dump("Activating Hagal card:", cardName, "->", final and "yes" or "no")
     return final
 end
 
 function HagalCard.flushTurnActions(color, deploymentLimit)
-    --Helper.dumpFunction("HagalCard.flushTurnActions", color)
     HagalCard.acquiredTroopCount = HagalCard.acquiredTroopCount or 0
     local rival = PlayBoard.getLeader(color)
     assert(rival, color)
 
     if HagalCard.inCombat then
-        Helper.dump("deploymentLimit:", deploymentLimit)
-
         local garrisonedTroopCount = #Park.getObjects(Combat.getGarrisonPark(color))
         local inSupplyTroopCount = #Park.getObjects(PlayBoard.getSupplyPark(color))
 
@@ -256,7 +252,6 @@ function HagalCard._activateEspionage(color, rival)
 end
 
 function HagalCard._activateSecrets(color, rival)
-    Helper.dumpFunction("HagalCard._activateSecrets", color, rival)
     if HagalCard._spaceIsFree(color, "secrets") and Hagal.isSmartPolitics(color, "beneGesserit") then
         HagalCard._sendRivalAgent(color, rival, "secrets")
         rival.influence(color, "beneGesserit", 1)

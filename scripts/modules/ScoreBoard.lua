@@ -12,7 +12,6 @@ local ScoreBoard = {
 
 ---
 function ScoreBoard.onLoad(state)
-    --Helper.dumpFunction("ScoreBoard.onLoad")
 
     ScoreBoard.hiddenZone = Helper.resolveGUIDs(true, "3848a9")
 

@@ -86,12 +86,9 @@ function CardEffect._dispatch(selector, expression)
         local value = CardEffect.evaluate(context, expression)
         local leader = context.player
         local call = function (method, ...)
-            local name = leader.name or "?"
             if leader[method] then
-                --Helper.dump(name, "has a method", method)
                 return leader[method](...)
             else
-                --Helper.dump(name, "has no method", method)
                 return false
             end
         end

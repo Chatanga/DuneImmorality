@@ -639,7 +639,6 @@ end
 ---
 ---@param position Vector
 function PlayBoard:moveAt(position, isRelative, horizontalHandLayout)
-    --Helper.dumpFunction("PlayBoard:moveAt", position, isRelative)
 
     local toBeMoved = Helper.shallowCopy(self.content)
     local offset = isRelative and position or (position - toBeMoved.board.getPosition())
@@ -733,7 +732,6 @@ end
 
 ---
 function PlayBoard.onLoad(state)
-    --Helper.dumpFunction("PlayBoard.onLoad")
     for color, unresolvedContent in pairs(PlayBoard.unresolvedContentByColor) do
         local alive = true
         local subState = nil
@@ -754,7 +752,6 @@ end
 
 ---
 function PlayBoard.onSave(state)
-    --Helper.dumpFunction("PlayBoard.onSave")
     state.PlayBoard = Helper.map(PlayBoard.playBoards, function (color, playBoard)
         local resourceValues = {}
         for _, resourceName in ipairs(PlayBoard.ALL_RESOURCE_NAMES) do
@@ -1120,12 +1117,10 @@ function PlayBoard._transientSetUp(settings)
     end)
 
     Helper.registerEventListener("agentSent", function (color, spaceName)
-        --Helper.dump("PlayBoard.isHuman(", color, ") =", PlayBoard.isHuman(color))
         if PlayBoard.isHuman(color) then
             -- Do it after the clean up done in TechMarket.
             Helper.onceFramesPassed(1).doAfter(function ()
                 local cards = PlayBoard._getCardsPlayedThisTurn(color)
-                Helper.dump("cards played this turn:", Helper.mapValues(cards, Helper.getID))
                 for _, card in ipairs(cards) do
                     local cardName = Helper.getID(card)
                     if cardName == "appropriate" then
@@ -1228,7 +1223,6 @@ end
 
 ---
 function PlayBoard._setActivePlayer(phase, color, refreshing)
-    --Helper.dumpFunction("PlayBoard._setActivePlayer", phase, color)
     local indexedColors = { "Green", "Yellow", "Blue", "Red", "White", "Purple" }
     for i, otherColor in ipairs(indexedColors) do
         local playBoard = PlayBoard.playBoards[otherColor]
@@ -1261,7 +1255,6 @@ end
 
 ---
 function PlayBoard._updateControlButtons()
-    --Helper.dumpFunction("PlayBoard._updateControlButtons")
     for color, playBoard  in pairs(PlayBoard._getPlayBoards()) do
         if color == TurnControl.getCurrentPlayer() then
             local player = Helper.findPlayerByColor(color)
@@ -1285,7 +1278,6 @@ end
 
 ---
 function PlayBoard:_createEndOfTurnButton()
-    Helper.dumpFunction("PlayBoard:_createEndOfTurnButton", self.color)
     Helper.clearButtons(self.content.endTurnButton)
     local action = function ()
         self.content.endTurnButton.AssetBundle.playTriggerEffect(0)
@@ -1331,7 +1323,6 @@ end
 function PlayBoard.acceptTurn(phase, color)
     assert(color)
     local playBoard = PlayBoard.getPlayBoard(color)
-    --Helper.dump("PlayBoard.acceptTurn", phase, color, playBoard.lastPhase)
     local accepted = false
 
     if phase == 'leaderSelection' then
@@ -1398,7 +1389,6 @@ end
 
 ---
 function PlayBoard.collectReward(color)
-    Helper.dumpFunction("PlayBoard.collectReward", color)
     local conflictName = Combat.getTurnConflictName()
     local rank = Combat.getRank(color).value
     local hasSandworms = Combat.hasSandworms(color)
@@ -2339,7 +2329,6 @@ end
 
 ---
 function PlayBoard:drawCards(count)
-    --Helper.dumpFunction("PlayBoard:drawCards", count)
     Types.assertIsInteger(count)
 
     local continuation = Helper.createContinuation("PlayBoard:drawCards")
@@ -2859,7 +2848,6 @@ end
 
 ---
 function PlayBoard.giveObjectiveCardFromZone(color, zone)
-    --Helper.dumpFunction("PlayBoard.giveObjectiveCardFromZone")
     Types.assertIsPlayerColor(color)
     local content = PlayBoard.getContent(color)
     assert(content)
@@ -2893,7 +2881,6 @@ end
 
 ---
 function PlayBoard.getObjectiveStackPosition(color, objective)
-    --Helper.dumpFunction("PlayBoard.getObjectiveStackPosition", color, objective)
     local tag = Helper.toPascalCase(objective, "ObjectiveToken")
     local board = PlayBoard.getPlayBoard(color).content.board
     for _, snapPoint in ipairs(board.getSnapPoints()) do
@@ -3024,7 +3011,6 @@ end
 
 ---
 function PlayBoard.getHandOrientedPosition(color)
-    --Helper.dumpFunction("PlayBoard.getHandOrientedPosition", color)
     -- Add an offset to put the card on the left side of the player's hand.
     local handTransform = Player[color].getHandTransform()
     local position = handTransform.position

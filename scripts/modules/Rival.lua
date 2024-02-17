@@ -24,7 +24,6 @@ end
 
 ---
 function Rival.triggerHagalReaction(color)
-    Helper.dumpFunction("Rival.triggerHagalReaction", color)
     local continuation = Helper.createContinuation("Rival.triggerHagalReaction")
 
     local coroutineHolder = {}
@@ -33,7 +32,6 @@ function Rival.triggerHagalReaction(color)
         Helper.unregisterGlobalCallback(coroutineHolder.coroutine)
 
         Helper.sleep(1)
-        printToAll("-------------------------[rival reaction]", color)
 
         local rival = PlayBoard.getLeader(color)
 
@@ -60,7 +58,6 @@ function Rival.triggerHagalReaction(color)
 
         continuation.run()
 
-        -- FIXME Too soon?
         return 1
     end)
     startLuaCoroutine(Global, coroutineHolder.coroutine)
@@ -72,7 +69,6 @@ end
 function Rival._buyVictoryPoints(color)
     -- Do not use Rival.resources inside this function!
 
-    Helper.dumpFunction("Rival._buyVictoryPoints", color)
     local rival = PlayBoard.getLeader(color)
 
     if Helper.isElementOf(rival.name, { "glossuRabban", "amberMetulli" }) then
@@ -122,13 +118,13 @@ end
 
 ---
 function Rival.prepare(color, settings)
-    if Hagal.numberOfPlayers == 1 then
+    if Hagal.getRivalCount() == 1 then
         Action.resources(color, "water", 1)
         if settings.difficulty ~= "novice" then
             Action.troops(color, "supply", "garrison", 3)
             Action.drawIntrigues(color, 1)
         end
-    elseif Hagal.numberOfPlayers == 2 then
+    else
         Action.resources(color, "water", 1)
         Action.troops(color, "supply", "garrison", 3)
     end
@@ -136,7 +132,6 @@ end
 
 ---
 function Rival.influence(color, faction, amount)
-    Helper.dumpFunction("Rival.influence", color, faction, amount)
     local finalFaction = faction
     local rival = PlayBoard.getLeader(color)
     if not finalFaction then
@@ -222,7 +217,6 @@ end
 
 ---
 function Rival.choose(color, topic)
-    --Helper.dumpFunction("Rival.choose", color, topic)
 
     local function pickTwoBestFactions()
         local factions = { "emperor", "spacingGuild", "beneGesserit", "fremen" }
@@ -278,14 +272,13 @@ function Rival.sendSpy(color, observationPostName)
         end
     end
     if finalObservationPostName then
-        Helper.dump("Sending spy to", finalObservationPostName)
         local recallableSpies = MainBoard.findRecallableSpies(color)
         if Action.sendSpy(color, finalObservationPostName) then
             rival.recallableSpies = recallableSpies
             return true
         end
     else
-        Helper.dump("No free observation post!")
+        log("No free observation post!")
     end
     return false
 end

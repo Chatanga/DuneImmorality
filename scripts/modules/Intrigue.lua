@@ -12,7 +12,6 @@ local Intrigue = {}
 
 ---
 function Intrigue.onLoad(state)
-    --Helper.dumpFunction("Intrigue.onLoad")
 
     Helper.append(Intrigue, Helper.resolveGUIDs(false, {
         deckZone = 'a377d8',
@@ -58,7 +57,6 @@ end
 
 ---
 function Intrigue.stealIntrigue(color, otherColor, amount)
-    Helper.dumpFunction("Intrigue.stealIntrigue", color, otherColor, amount)
     Types.assertIsPositiveInteger(amount)
     local victimName = PlayBoard.getLeaderName(otherColor)
 

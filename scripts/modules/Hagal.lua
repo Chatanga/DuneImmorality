@@ -24,8 +24,6 @@ local Hagal = {
 
 ---
 function Hagal.onLoad(state)
-    --Helper.dumpFunction("Hagal.onLoad")
-
     if not state.settings or state.settings.numberOfPlayers < 3 then
         Helper.append(Hagal, Helper.resolveGUIDs(true, {
             deckZone = "8f49e3",
@@ -85,7 +83,6 @@ end
 
 ---
 function Hagal.activate(phase, color)
-    --Helper.dumpFunction("Hagal.activate", phase, color)
     -- A delay before and after the action, to let the human(s) see the progress.
     Helper.onceTimeElapsed(1).doAfter(function ()
         Hagal._lateActivate(phase, color).doAfter(function ()
@@ -103,7 +100,6 @@ end
 
 ---
 function Hagal._lateActivate(phase, color)
-    Helper.dumpFunction("Hagal._lateActivate", phase, color)
     local continuation = Helper.createContinuation("Hagal._lateActivate")
 
     if phase == "leaderSelection" then
@@ -136,7 +132,6 @@ end
 
 ---
 function Hagal._collectReward(color)
-    Helper.dumpFunction("Hagal._collectReward", color)
     local continuation = Helper.createContinuation("Hagal._collectReward")
     Helper.onceFramesPassed(1).doAfter(function ()
         local rank = Combat.getRank(color).value
@@ -274,7 +269,6 @@ end
 
 ---
 function Hagal._doActivateFirstValidCard(color, action, n, continuation)
-    Helper.dumpFunction("Hagal._doActivateFirstValidCard", color, "<action>", n, "<continuation>")
     local emptySlots = Park.findEmptySlots(PlayBoard.getRevealCardPark(color))
     assert(emptySlots and #emptySlots > 0)
     assert(n < 10, "Something is not right!")
@@ -339,7 +333,6 @@ end
 
 ---
 function Hagal.pickAnyRivalLeader(color)
-    --Helper.dumpFunction("Hagal.pickAnyRivalLeader", color)
     local leaders = {}
     for _, leader in ipairs(LeaderSelection.getSelectableLeaders(true)) do
         table.insert(leaders , leader)

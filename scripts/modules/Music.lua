@@ -9,7 +9,6 @@ local Music = {
 
 ---
 function Music.onLoad(state)
-    --Helper.dumpFunction("Music.onLoad")
     if state.settings then
         Music.enabled = state.settings.soundEnabled
     end

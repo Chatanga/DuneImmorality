@@ -35,7 +35,6 @@ end
 
 ---
 function LeaderSelection.onLoad(state)
-    --Helper.dumpFunction("LeaderSelection.onLoad")
 
     Helper.append(LeaderSelection, Helper.resolveGUIDs(false, {
         deckZone = "23f2b5",
@@ -52,7 +51,6 @@ end
 
 ---
 function LeaderSelection.onSave(state)
-    --Helper.dumpFunction("LeaderSelection.onSave")
     state.LeaderSelection = {
         players = LeaderSelection.players,
         stage = LeaderSelection.stage,
@@ -156,7 +154,7 @@ function LeaderSelection._transientSetUp(settings, players, stage)
                 if #turnSequence == 4 then
                     Helper.swap(turnSequence, 4, 3)
                 else
-                    Helper.dump("Skipping 4 <-> 3 for less than 4 players.")
+                    log("Skipping 4 <-> 3 for less than 4 players.")
                 end
             end
 
@@ -312,8 +310,6 @@ function LeaderSelection._setUpPicking(autoStart, random, hidden)
                 LeaderSelection.stage = Stage.STARTED
                 TurnControl.start()
             else
-                Helper.dump("availableLeaderCount:", availableLeaderCount)
-                Helper.dump("requiredLeaderCount:", requiredLeaderCount)
                 error("Not enough leaders left!")
             end
         end
@@ -441,7 +437,6 @@ function LeaderSelection._prepareVisibleLeaders(hidden)
 end
 
 function LeaderSelection._createDynamicLeaderSelection(leaders)
-    --Helper.dumpFunction("LeaderSelection._createDynamicLeaderSelection", leaders)
     Helper.shuffle(leaders)
 
     for i, leader in ipairs(leaders) do

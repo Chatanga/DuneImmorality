@@ -210,11 +210,9 @@ function asyncOnLoad(scriptState)
     -- because the order matter, now that we reload with "staticSetUp" (for the
     -- same reason setUp is ordered too).
     for i, moduleInfo in ipairs(allModules.ordered) do
-        --Helper.dump(tostring(i) .. ". Loading " .. moduleInfo.name)
         moduleInfo.module.onLoad(state)
         Helper.emitEvent("loaded", moduleInfo.name)
     end
-    --Helper.dump("Done loading all modules")
 
     -- List the TTS events we want to make available in the modules.
     Module.registerModuleRedirections({
@@ -245,7 +243,6 @@ end
 
 --- TTS event handler.
 function onSave()
-    --Helper.dumpFunction("onSave")
     if constructionModeEnabled then
         return
     end
@@ -304,7 +301,6 @@ end
 function runSetUp(index, activeOpponents)
     local moduleInfo = allModules.ordered[index]
     if moduleInfo then
-        --Helper.dump(tostring(index) .. ". Setting " .. moduleInfo.name)
         local nextContinuation = moduleInfo.module.setUp(settings, activeOpponents)
         if not nextContinuation then
             nextContinuation = Helper.createContinuation("runSetUp")
@@ -312,7 +308,6 @@ function runSetUp(index, activeOpponents)
         end
         nextContinuation.doAfter(Helper.partialApply(runSetUp, index + 1, activeOpponents))
     else
-        --Helper.dump("Done setting all modules")
     end
 end
 
@@ -350,7 +345,6 @@ end
 
 --- UI callback (cf. XML).
 function setVirtualHotSeat(player, value, id)
-    --Helper.dumpFunction("setVirtualHotSeat", player, value, id)
     Controller.ui:fromUI(player, value, id)
     if value == "True" then
         Controller.fields.virtualHotSeatMode = 1
@@ -434,7 +428,6 @@ end
 
 --- UI callback (cf. XML).
 function setTweakLeaderSelection(player, value, id)
-    Helper.dumpFunction("setTweakLeaderSelection", player, value, id)
     Controller.ui:fromUI(player, value, id)
 end
 
@@ -570,7 +563,6 @@ function Controller.getNumberOfPlayers(virtualHotSeatMode)
         local toNumberOfPlayers = { 1, 2, 3, 4, 6 }
         numberOfPlayers = toNumberOfPlayers[virtualHotSeatMode]
     end
-    --Helper.dump("numberOfPlayers:", numberOfPlayers)
     return numberOfPlayers
 end
 

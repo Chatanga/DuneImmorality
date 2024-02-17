@@ -16,7 +16,6 @@ local ShippingTrack = {
 
 ---
 function ShippingTrack.onLoad(state)
-    --Helper.dumpFunction("ShippingTrack.onLoad")
 
     Helper.append(ShippingTrack, Helper.resolveGUIDs(false, {
         board = "0b9dfe",

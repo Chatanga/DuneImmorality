@@ -26,7 +26,6 @@ local InfluenceTrack = {
 
 ---
 function InfluenceTrack.onLoad(state)
-    --Helper.dumpFunction("InfluenceTrack.onLoad")
 
     Helper.append(InfluenceTrack, Helper.resolveGUIDs(false, {
         snoopers = {
@@ -163,7 +162,6 @@ function InfluenceTrack._processSnapPoints(settings, firstTime)
                             local influenceTokenInitialPosition = position + Vector(xOffsets[color], 0, -1.6)
                             InfluenceTrack.influenceTokenInitialPositions[faction][color] = influenceTokenInitialPosition
                             if firstTime then
-                                --Helper.dump("Influence token", faction, color)
                                 influenceToken.setPosition(influenceTokenInitialPosition)
                                 Helper.noPhysicsNorPlay(influenceToken)
                             end
@@ -275,7 +273,6 @@ end
 
 ---
 function InfluenceTrack.getInfluence(faction, color, direct)
-    --Helper.dumpFunction("InfluenceTrack.getInfluence", faction, color)
     if TurnControl.getPlayerCount() == 6 and not direct then
         if Commander.isCommander(color) then
             local bestInfluence = 0
@@ -305,7 +302,6 @@ end
 
 ---
 function InfluenceTrack._getInfluenceTracksRank(faction, color)
-    Helper.dumpFunction("InfluenceTrack._getInfluenceTracksRank", faction, color)
     local influenceLevels = InfluenceTrack.influenceLevels[faction][color]
     local token = InfluenceTrack.influenceTokens[faction][color]
     if token then
@@ -323,7 +319,6 @@ end
 
 ---
 function InfluenceTrack._changeInfluenceTracksRank(color, faction, change)
-    --Helper.dumpFunction("InfluenceTrack._changeInfluenceTracksRank", color, faction, change)
     Types.assertIsPlayerColor(color)
     Types.assertIsFaction(faction)
     Types.assertIsInteger(change)
@@ -478,7 +473,6 @@ function InfluenceTrack._gainAlliance(faction, color)
     Types.assertIsPlayerColor(color)
     local token = InfluenceTrack.allianceTokens[faction]
     assert(token)
-    --Helper.dump(Helper.getID(token), "=", token.getGUID())
     PlayBoard.getLeader(color).gainVictoryPoint(color, Helper.getID(token))
 end
 

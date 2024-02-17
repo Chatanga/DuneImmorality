@@ -53,8 +53,6 @@ local ChoamContractMarket = {
 
 ---
 function ChoamContractMarket.onLoad(state)
-    --Helper.dumpFunction("ChoamContractMarket.onLoad")
-
     Helper.append(ChoamContractMarket, Helper.resolveGUIDs(false, {
         contractBags = {
             en = "099d8b",
@@ -205,7 +203,6 @@ end
 
 ---
 function ChoamContractMarket.takeAnySardaukarContract(position)
-    --Helper.dumpFunction("ChoamContractMarket.takeAnySardaukarContract", position)
 
     for _, object in ipairs(ChoamContractMarket.contractBag.getObjects()) do
         assert(object.guid)

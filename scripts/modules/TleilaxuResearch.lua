@@ -53,7 +53,6 @@ local TleilaxuResearch = {
 
 ---
 function TleilaxuResearch.onLoad(state)
-    --Helper.dumpFunction("TleilaxuResearch.onLoad")
 
     Helper.append(TleilaxuResearch, Helper.resolveGUIDs(false, {
         board = "d5c2db",
@@ -87,7 +86,6 @@ end
 
 ---
 function TleilaxuResearch.onSave(state)
-    --Helper.dumpFunction("TleilaxuResearch.onSave")
     if TleilaxuResearch.board then
         state.TleilaxuResearch = {
             spiceBonus = TleilaxuResearch.spiceBonus:get(),
@@ -363,7 +361,6 @@ end
 ---@param jump integer
 ---@return Continuation
 function TleilaxuResearch.advanceTleilax(color, jump)
-    --Helper.dumpFunction("TleilaxuResearch.advanceTleilax", color, jump)
     if jump >= 1 then
         return Helper.repeatChainedAction(jump, function ()
             return TleilaxuResearch._advanceTleilax(color, 1, true)

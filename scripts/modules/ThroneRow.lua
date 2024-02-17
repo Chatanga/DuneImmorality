@@ -13,8 +13,6 @@ local ThroneRow = {}
 
 ---
 function ThroneRow.onLoad(state)
-    --Helper.dumpFunction("ThroneRow.onLoad")
-
     Helper.append(ThroneRow, Helper.resolveGUIDs(false, {
         slotZones = {
             '7cceb1',
@@ -77,7 +75,6 @@ end
 
 ---
 function ThroneRow.acquireThroneCard(color, indexInRow)
-    Helper.dumpFunction("ThroneRow.acquireThroneCard", indexInRow, color)
     local acquireCard = ThroneRow.acquireCards[indexInRow]
     PlayBoard.giveCardFromZone(color, acquireCard.zone)
     return true

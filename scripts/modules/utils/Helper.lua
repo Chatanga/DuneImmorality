@@ -194,7 +194,6 @@ end
 ---@param flipAtTheEnd? boolean
 ---@return Continuation A continuation run once the object is motionless.
 function Helper._moveObject(object, position, rotation, smooth, flipAtTheEnd)
-    --Helper.dumpFunction("Helper._moveObject", object, position, rotation, smooth, flipAtTheEnd)
     assert(object)
 
     local continuation = Helper.createContinuation("Helper._moveObject")
@@ -236,7 +235,6 @@ end
 ---@return Continuation A continuation run once the object is spawned.
 function Helper.moveCardFromZone(zone, position, rotation, smooth, flipAtTheEnd)
     assert(zone.type == "Scripting")
-    --Helper.dumpFunction("Helper.moveCardFromZone", zone, position, rotation, smooth, flipAtTheEnd)
     local continuation = Helper.createContinuation("Helper.moveCardFromZone")
     local deckOrCard = Helper.getDeckOrCard(zone)
     if deckOrCard then
@@ -695,7 +693,6 @@ end
 
 ---
 function Helper.collectSnapPoints(object, net)
-    --Helper.dumpFunction("Helper.collectSnapPoints", object and object.getGUID() or "nil")
     if not object then
         return
     end
@@ -703,7 +700,6 @@ function Helper.collectSnapPoints(object, net)
     for _, snapPoint in ipairs(snapPoints) do
         --assert(snapPoint.tags and #snapPoint.tags == 1)
         if snapPoint.tags then
-            --Helper.dump("Snap:", snapPoint.tags)
             for _, tag in ipairs(snapPoint.tags) do
                 for prefix, collector in pairs(net) do
                     if Helper.startsWith(tag, prefix) then
@@ -1256,8 +1252,6 @@ end
 
 ---
 function Helper.changePlayerColorInCoroutine(player, newColor)
-    --Helper.dumpFunction("Helper.changePlayerColorInCoroutine", player, newColor)
-
     local neutralColor = "Black"
 
     local function seatPlayer(sourceColor, targetColor)

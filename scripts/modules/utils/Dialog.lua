@@ -128,10 +128,8 @@ end
 ---
 function Dialog._showOptionsAndCancelDialog(color, title, options, callback)
     if Dialog.staticDialogUsed then
-        Helper.dumpFunction("Dialog._bindStaticUI", color, title, options)
         Dialog._bindStaticUI(color, title, options, callback)
     else
-        Helper.dumpFunction("Dialog._generateDialogUI", color, title, options)
         local ui = Dialog._generateDialogUI(color, title, options, callback)
         UI.setXmlTable({ ui })
     end
@@ -158,7 +156,6 @@ function Dialog._bindStaticUI(color, title, options, callback)
 
     for i, option in ipairs(options) do
         local optionButtonId = Dialog._optionButtonId(options, i)
-        --Helper.dumpFunction("UI.setValue", optionButtonId, option)
         -- Using the "text" attribute instead of the value is necessary here (that's weird).
         UI.setAttribute(optionButtonId, "text", option)
         UI.setAttribute(optionButtonId, "onClick", Helper.registerGlobalCallback(function (player)
@@ -170,7 +167,6 @@ end
 ---
 function Dialog._checkExistence(dialogId)
     local color = UI.getAttribute(dialogId, "color")
-    --Helper.dump("color:", dialogId, "->", color, type(color))
     assert(color and type(color) == "string" and color:len() > 0, "Missing static dialogs!")
 end
 

@@ -161,7 +161,6 @@ end
 
 ---
 function Commander.influence(color, faction, amount, forced)
-    Helper.dumpFunction("Commander.influence", color, faction, amount)
     if Helper.isElementOf(faction, { "greatHouses", "spacingGuild", "beneGesserit", "fringeWorlds" }) then
         return Commander._forwardToActivatedAlly(color, "influence", faction, amount)
     elseif forced then

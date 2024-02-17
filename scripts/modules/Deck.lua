@@ -651,8 +651,6 @@ end
 
 ---
 function Deck.setUp(settings)
-    --Helper.dumpFunction("Deck.setUp")
-
     -- Not needed anymore since we are relying on prebuild decks now.
     -- (But deck sources are still needed in "rebuildPreloadAreas".)
     if false then
@@ -678,7 +676,6 @@ end
 
 ---
 function Deck.generateObjectiveDeck(deckZone, cardNames)
-    --Helper.dump("generateObjectiveDeck", cardNames)
     assert(deckZone)
     assert(deckZone.getPosition)
     local continuation = Helper.createContinuation("Deck.generateObjectiveDeck")
@@ -688,7 +685,6 @@ end
 
 ---
 function Deck.generateStarterDeck(deckZone, immortality, epic)
-    --Helper.dump("generateStarterDeck")
     assert(deckZone)
     assert(deckZone.getPosition)
     local continuation = Helper.createContinuation("Deck.generateStarterDeck")
@@ -707,7 +703,6 @@ end
 
 ---
 function Deck.generateEmperorStarterDeck(deckZone)
-    --Helper.dump("generateEmperorStarterDeck")
     assert(deckZone)
     assert(deckZone.getPosition)
     local continuation = Helper.createContinuation("Deck.generateEmperorStarterDeck")
@@ -719,7 +714,6 @@ end
 
 ---
 function Deck.generateMuadDibStarterDeck(deckZone)
-    --Helper.dump("generateMuadDibStarterDeck")
     assert(deckZone)
     assert(deckZone.getPosition)
     local continuation = Helper.createContinuation("Deck.generateMuadDibStarterDeck")
@@ -731,7 +725,6 @@ end
 
 ---
 function Deck.generateStarterDiscard(deckZone, immortality, epic)
-    --Helper.dump("generateStarterDiscard")
     assert(deckZone)
     assert(deckZone.getPosition)
     local continuation = Helper.createContinuation("Deck.generateStarterDiscard")
@@ -748,7 +741,6 @@ end
 
 ---
 function Deck.generateImperiumDeck(deckZone, contracts, ix, immortality, legacy)
-    --Helper.dump("generateImperiumDeck")
     assert(deckZone)
     assert(deckZone.getPosition)
     local continuation = Helper.createContinuation("Deck.generateImperiumDeck")
@@ -762,7 +754,6 @@ end
 
 ---
 function Deck.generateSpecialDeck(deckZone, parent, name)
-    --Helper.dump("generateSpecialDeck")
     assert(deckZone, name)
     assert(deckZone.getPosition)
     local continuation = Helper.createContinuation("Deck.generateSpecialDeck")
@@ -778,7 +769,6 @@ end
 
 ---
 function Deck.generateTleilaxuDeck(deckZone)
-    --Helper.dump("generateTleilaxuDeck")
     assert(deckZone)
     assert(deckZone.getPosition)
     local continuation = Helper.createContinuation("Deck.generateTleilaxuDeck")
@@ -788,7 +778,6 @@ end
 
 ---
 function Deck.generateIntrigueDeck(deckZone, contracts, ix, immortality, legacy)
-    --Helper.dump("generateIntrigueDeck")
     assert(deckZone)
     assert(deckZone.getPosition)
     local continuation = Helper.createContinuation("Deck.generateIntrigueDeck")
@@ -802,7 +791,6 @@ end
 
 ---
 function Deck.generateTechDeck(deckZones)
-    --Helper.dump("generateTechDeck")
     assert(deckZones)
     assert(#deckZones == 3)
     local continuation = Helper.createContinuation("Deck.generateTechDeck")
@@ -836,7 +824,6 @@ end
 
 --
 function Deck.generateConflictDeck(deckZone, ix, epic, playerCount)
-    --Helper.dump("generateConflictDeck")
     assert(deckZone)
     assert(deckZone.getPosition)
     local continuation = Helper.createContinuation("Deck.generateConflictDeck")
@@ -871,7 +858,6 @@ end
 
 ---
 function Deck.generateHagalDeck(deckZone, ix, immortality, playerCount)
-    --Helper.dump("generateHagalDeck")
     assert(deckZone)
     assert(deckZone.getPosition)
     assert(not playerCount or playerCount == 1 or playerCount == 2)
@@ -903,7 +889,6 @@ end
 
 ---
 function Deck.generateLeaderDeck(deckZone, contracts, ix, immortality, legacy)
-    --Helper.dump("generateLeaderDeck")
     assert(deckZone)
     assert(deckZone.getPosition)
     local continuation = Helper.createContinuation("Deck.generateLeaderDeck")
@@ -917,7 +902,6 @@ end
 
 ---
 function Deck.generateRivalLeaderDeck(deckZone, ix, immortality, legacy)
-    --Helper.dump("generateRivalLeaderDeck")
     assert(deckZone)
     assert(deckZone.getPosition)
     local continuation = Helper.createContinuation("Deck.generateRivalLeaderDeck")
@@ -976,7 +960,6 @@ end
 ---@param startLuaIndex any The Lua start index for the card names.
 ---@param cardNames any An list of card names matching those in the custon deck.
 function Deck.loadCustomDeck(cards, customDeck, startLuaIndex, cardNames)
-    --Helper.dumpFunction("Deck.loadCustomDeck", cards, customDeck, startLuaIndex, cardNames)
     assert(cards)
     assert(customDeck)
     assert(startLuaIndex and startLuaIndex > 0)
@@ -1053,7 +1036,6 @@ end
 
 ---
 function Deck._generateDeck(deckType, deckZone, contributions, sources, spacing)
-    --Helper.dumpFunction("Deck._generateDeck", deckType, "_", #Helper.getKeys(contributions), "_")
     assert(deckZone.getPosition)
     return Deck._generateFromPrebuildDeck(deckType, deckZone, contributions, sources, spacing)
 end
@@ -1134,8 +1116,6 @@ function Deck._generateDynamicDeck(deckType, position, contributions, sources)
     local knownCustomDecks = {}
 
     for name, cardinality in pairs(contributions) do
-
-        --Helper.dump(name, "->", cardinality)
         local source = sources[name]
         if source then
             assert(source.customDeck, name)
@@ -1317,7 +1297,6 @@ end
 
 ---
 function Deck._generateFromPrebuildDeck(deckType, deckZone, contributions, _, spacing)
-    --Helper.dumpFunction("Deck._prebuildDeck", deckType)
     assert(deckType)
     assert(deckZone)
     assert(#deckZone.getTags() == 0 or deckZone.hasTag(deckType),
@@ -1349,14 +1328,12 @@ function Deck._generateFromPrebuildDeck(deckType, deckZone, contributions, _, sp
 
     local cardCount = 0
     for name, cardinality in pairs(contributions) do
-        --Helper.dump(name, "->", cardinality)
         local source = sources[name]
         if source then
             for _ = 1, cardinality do
                 local firstGuid = source.instances[1]
                 table.remove(source.instances, 1)
                 if source.deck then
-                    --Helper.dump(name, "-> from deck:", firstGuid)
                     source.deck.takeObject({
                         guid = firstGuid,
                         -- Stacking is needed to preserve input order.

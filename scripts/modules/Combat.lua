@@ -37,8 +37,6 @@ local Combat = {
 }
 
 function Combat.onLoad(state)
-    --Helper.dumpFunction("Combat.onLoad")
-
     Helper.append(Combat, Helper.resolveGUIDs(false, Combat.unresolvedContent))
 
     Helper.noPhysicsNorPlay(Combat.protoSandworm)
@@ -55,7 +53,6 @@ end
 
 ---
 function Combat.onSave(state)
-    --Helper.dumpFunction("Combat.onSave")
     state.Combat = {
         dreadnoughtStrengths = Combat.dreadnoughtStrengths,
         ranking = Combat.ranking,
@@ -269,7 +266,6 @@ end
 
 ---
 function Combat.findControlableSpace(conflictName)
-    --Helper.dumpFunction("Combat.findControlableSpace", conflictName)
     for _, controlableSpaceName in ipairs({ "imperialBasin", "arrakeen", "spiceRefinery" }) do
         if conflictName:find(controlableSpaceName:gsub("^%l", string.upper)) then
             local controlableSpace = MainBoard.findControlableSpace(controlableSpaceName)
@@ -447,7 +443,6 @@ function Combat._calculateOutcomeTurnSequence(ranking)
     local distinctRanking = {}
     for i, color in ipairs(TurnControl.getPhaseTurnSequence()) do
         local rank = ranking[color]
-        --Helper.dump("ranking[",color,"]",rank)
         if rank then
             distinctRanking[color] = rank.value + i * 0.1
         end
@@ -661,8 +656,6 @@ end
 
 ---
 function Combat.gainObjective(color, objective)
-    --Helper.dumpFunction("Combat.gainObjective", color, objective)
-
     local continuation = Helper.createContinuation("Combat.gainObjective")
     local position = PlayBoard.getObjectiveStackPosition(color, objective)
     local tag = Helper.toPascalCase(objective, "ObjectiveToken")

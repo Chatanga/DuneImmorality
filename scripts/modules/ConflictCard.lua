@@ -148,7 +148,6 @@ function ConflictCard.collectReward(color, conflictName, rank, doubleRewards, po
 end
 
 function ConflictCard.getLevel(conflictName)
-    Helper.dumpFunction("ConflictCard.getLevel", conflictName)
     local conflict = ConflictCard[conflictName]
     assert(conflict, conflictName)
     return conflict.level

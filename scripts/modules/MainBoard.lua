@@ -69,7 +69,6 @@ local MainBoard = {
 
 ---
 function MainBoard.onLoad(state)
-    --Helper.dumpFunction("MainBoard.onLoad")
 
     Helper.append(MainBoard, Helper.resolveGUIDs(false, {
         board4P = "483a1a",
@@ -141,7 +140,6 @@ end
 
 ---
 function MainBoard.onSave(state)
-    --Helper.dumpFunction("MainBoard.onSave")
     state.MainBoard = {
         spiceBonuses = Helper.map(MainBoard.spiceBonuses, function (_, resource)
             return resource:get()
@@ -204,7 +202,6 @@ function MainBoard._mutateMainBoards()
     for name, boardInfo in pairs(boards) do
         local board = getObjectFromGUID(boardInfo.guid)
         if board then
-            --Helper.dump("Mutating board " .. name)
             local parameters = board.getCustomObject()
             parameters.image = boardInfo.url
             board.setCustomObject(parameters)
@@ -270,7 +267,6 @@ function MainBoard._transientSetUp(settings)
                                     if settings.numberOfPlayers == 6 and object.hasTag("Swordmaster") then
                                         PlayBoard.destroySwordmaster(color)
                                     else
-                                        --Helper.dump("Recalling a", color, "agent ->", PlayBoard.getAgentPark(color).name)
                                         Park.putObject(object, PlayBoard.getAgentPark(color))
                                     end
                                 end
@@ -414,8 +410,6 @@ end
 
 ---
 function MainBoard.occupy(controlableSpace, color)
-    Helper.dumpFunction("MainBoard.occupy", controlableSpace, color)
-
     for _, object in ipairs(controlableSpace.getObjects()) do
         for _, otherColor in ipairs(PlayBoard.getActivePlayBoardColors()) do
             if Types.isControlMarker(object, otherColor) then
@@ -678,7 +672,6 @@ end
 ---@param recallSpy boolean? Explicitly require the action and fail if it cannot be executed.
 ---In the case of the "infiltrate + gather intelligence" combo , only applies to the first.
 function MainBoard._manageIntelligenceAndInfiltrate(color, spaceName, recallSpy)
-    --Helper.dumpFunction("MainBoard._manageIntelligenceAndInfiltrate", color, spaceName, recallSpy)
     local continuation = Helper.createContinuation("MainBoard._manageIntelligenceAndInfiltrate")
 
     local recallableSpies = MainBoard.getRecallableSpies(color, spaceName)
@@ -1508,7 +1501,6 @@ function MainBoard._goInterstellarShipping(color, leader, continuation)
 end
 
 function MainBoard._goTechNegotiation(color, leader, continuation)
-    Helper.dumpFunction("MainBoard._goTechNegotiation", color)
     local options = {
         I18N("sendNegotiatorOption"),
         I18N("buyTechWithDiscont1Option"),
@@ -1656,7 +1648,6 @@ end
 
 --
 function MainBoard.isSpying(spaceName, color)
-    --Helper.dumpFunction("MainBoard.isSpying", spaceName, color)
     local spaceDetail = MainBoard.spaceDetails[spaceName]
     for _, observationPostName in ipairs(spaceDetail.posts) do
         local observationPost = MainBoard.observationPosts[observationPostName]
@@ -1725,7 +1716,6 @@ end
 
 --- aka Maker space
 function MainBoard.isDesertSpace(spaceName)
-    --Helper.dump("MainBoard.isDesertSpace", spaceName)
     return MainBoard.spaceDetails[spaceName].group == "desert"
 end
 
