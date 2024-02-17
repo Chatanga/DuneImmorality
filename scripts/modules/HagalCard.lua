@@ -390,12 +390,10 @@ function HagalCard.sendUpToTwoUnits(color, rival)
         end
 
         if PlayBoard.hasTech(color, "flagship") then
-            local solari = PlayBoard.getResource(color, "solari")
             local supply = PlayBoard.getSupplyPark(color)
             local leader = PlayBoard.getLeader(color)
 
-            if PlayBoard.hasTech(color, "flagship") and solari:get() >= 4 and #Park.getObjects(supply) >= 3 then
-                leader.resources(color, "solari", 4)
+            if PlayBoard.hasTech(color, "flagship") and #Park.getObjects(supply) >= 3 and leader.resources(color, "solari", -4) then
                 leader.troops(color, "supply", "combat", 3)
             end
         end
@@ -417,7 +415,6 @@ function HagalCard.spaceIsFree(color, spaceName)
 end
 
 function HagalCard.isCombatCard(card)
-    assert(card)
     local cardData = card and HagalCard.cards[Helper.getID(card)]
     return cardData and cardData.combat
 end
