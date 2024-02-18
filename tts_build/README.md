@@ -13,7 +13,7 @@
 python3 build.py
 ```
 
-You should now have a new save 201 in TTS.
+You should now have a new save XXX in TTS.
 
 **You've only changed the scripts, but don't have a running TTS instance with a loaded save:**
 
@@ -31,7 +31,7 @@ It directly updates the scripts to your live save.
 
 **You've changed the save in TSS:**
 
-Overwrite the save 200 with it, then `python3 build.py --full` and finally reload the save 201.
+Overwrite the save YYY with it, then `python3 build.py --full` and finally reload the save XXX.
 
 **You want to change the save outside TSS:**
 
@@ -39,7 +39,7 @@ Edit the local `skeleton.json` file, then `python3 build.py` and reload the save
 
 ## Notes
 
-Using 'TS_Save_200.json' and 'TS_Save_201.json' as our working saves is arbitrary and could be changed in the top `build.py` file.
+Using 'TS_Save_YYY.json' and 'TS_Save_XXX.json' as our working saves is arbitrary and could be changed in the top `build.properties` file.
 In fact, the two could be the same, it's just safer to separate the two of them.
 
 ## Internals

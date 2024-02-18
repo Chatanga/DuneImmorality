@@ -9,52 +9,29 @@ def rectify_rotation(object):
             c = 0
         object['Transform'][coordinate] = c
 
-def patch_object(object, componentTagCounts):
+def register_tags(object, component_tag_counts):
+
+    def register_tag(tag_type):
+        if not tag in component_tag_counts:
+            print("Undeclared " + tag_type + ": " + tag)
+            component_tag_counts[tag] = 0
+        component_tag_counts[tag] += 1
+
+    if 'Tags' in object:
+        for tag in object['Tags']:
+            register_tag("tag")
+
+    if 'AttachedSnapPoints' in object:
+        for snap_point in object['AttachedSnapPoints']:
+            if 'Tags' in snap_point:
+                for tag in snap_point['Tags']:
+                    register_tag("snappoint tag")
+
+def patch_object(object, component_tag_counts):
     rectify_rotation(object)
-
-    #object['Transform']['posY'] += 1
-
+    register_tags(object, component_tag_counts)
     object['LuaScript'] = ''
-    #object['LuaScriptState'] = ''
-
-    if False:
-        url_mapping = {
-            # Shared
-            'http://cloud-3.steamusercontent.com/ugc/2200632144681138003/0BC7C82FC8DEE649252E2B3411BB65CA48C80DDB/': 'http://cloud-3.steamusercontent.com/ugc/2228780365505979502/6B5133415732C568628AC323E473BA675B726F5B/',
-            # Main
-            'http://cloud-3.steamusercontent.com/ugc/2200632144681138497/ED1913436FCC12CF7706C10D316EC730B0DCA97A/': 'http://cloud-3.steamusercontent.com/ugc/2228780277328373783/67EAFA3C92B61B92F5540F95625B9333123EBE16/',
-            # Left
-            'http://cloud-3.steamusercontent.com/ugc/2200632144681225598/49C8793F8A1EE35B0A4BEF16EFC2B34F94FB0740/': 'http://cloud-3.steamusercontent.com/ugc/2228780365505978362/59DB3B9719C7494308C7883944C75F4E0EAED3AE/',
-            # Right
-            'http://cloud-3.steamusercontent.com/ugc/2200632144681226075/382A12611480DC7E0664A2FE86F29466D5F5B931/': 'http://cloud-3.steamusercontent.com/ugc/2228780365505977002/3615093D810350824B76D3E57244FE888F0CE844/',
-        }
-        for key in ['AssetbundleURL', 'AssetbundleSecondaryURL']:
-            if 'CustomAssetbundle' in object and key in object['CustomAssetbundle']:
-                url = object['CustomAssetbundle'][key]
-                if url in url_mapping:
-                    object['CustomAssetbundle'][key] = url_mapping[url]
-                    print("Patching URL: " + url)
-
-    if False:
-        for interestingContent in ['Decal', 'AttachedSnapPoints', 'States', 'ContainedObjects']:
-            if interestingContent in object:
-                print("{} ({}) has {}".format(object['Name'], object['GUID'], interestingContent))
-
-    if True:
-        if 'Tags' in object:
-            for tag in object['Tags']:
-                if not tag in componentTagCounts:
-                    print("Undeclared tag: " + tag)
-                    componentTagCounts[tag] = 0
-                componentTagCounts[tag] += 1
-        if 'AttachedSnapPoints' in object:
-            for snapPoint in object['AttachedSnapPoints']:
-                if 'Tags' in snapPoint:
-                    for tag in snapPoint['Tags']:
-                        if not tag in componentTagCounts:
-                            print("Undeclared snap tag: " + tag)
-                            componentTagCounts[tag] = 0
-                        componentTagCounts[tag] += 1
+    object['LuaScriptState'] = ''
 
 def patch_save(input_path, output_path):
 
@@ -62,34 +39,14 @@ def patch_save(input_path, output_path):
     with open(input_path, 'r') as save_file:
         save = json.load(save_file)
 
-    save['SaveName'] = "Dune Immorality - Alpha"
+    save['SaveName'] = save['GameMode']
 
-    save['CameraStates'][0] = {
-        "Position": {
-            "x": 0,
-            "y": 0,
-            "z": -10
-        },
-        "Rotation": {
-            "x": 45,
-            "y": 0,
-            "z": 0
-        },
-        "Distance": 50,
-        "Zoomed": False,
-        "AbsolutePosition": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-        }
-    }
-
-    componentTags = {}
-    componentTagCounts = {}
+    component_tags = {}
+    component_tag_counts = {}
     for tag in save['ComponentTags']['labels']:
-        #print(tag['displayed'], "->", tag['normalized'])
-        componentTags[tag['displayed']] = tag['normalized']
-        componentTagCounts[tag['displayed']] = 0
+        displayed_tag_name = tag['displayed']
+        component_tags[displayed_tag_name] = tag['normalized']
+        component_tag_counts[displayed_tag_name] = 0
 
     objects = save['ObjectStates']
     new_objects = []
@@ -99,30 +56,31 @@ def patch_save(input_path, output_path):
     for object in objects:
         if 'States' in object:
             for _, state in object['States'].items():
-                patch_object(state, componentTagCounts)
+                patch_object(state, component_tag_counts)
 
         if 'ContainedObjects' in object:
             for child in object['ContainedObjects']:
-                patch_object(child, componentTagCounts)
+                patch_object(child, component_tag_counts)
 
         guid = object['GUID']
         object_by_guid[guid] = object
 
-        patch_object(object, componentTagCounts)
+        patch_object(object, component_tag_counts)
 
         new_objects.append(object)
 
-    newLabels = []
-    for tag in componentTagCounts.items():
+    new_labels = []
+    for tag in component_tag_counts.items():
         if tag[1] > 0:
-            if tag[0] in componentTags:
-                newLabels.append({
-                    'displayed': tag[0],
-                    'normalized': componentTags[tag[0]],
+            if tag[0] in component_tags:
+                displayed_tag_name = tag[0]
+                new_labels.append({
+                    'displayed': displayed_tag_name,
+                    'normalized': component_tags[displayed_tag_name],
                 })
         else:
             print("Orphan tag:", tag[0])
-    save['ComponentTags']['labels'] = newLabels
+    save['ComponentTags']['labels'] = new_labels
 
     save['ObjectStates'] = new_objects
 

@@ -1,5 +1,5 @@
 {
-  "SaveName": "Dune Immorality - Alpha",
+  "SaveName": "Dune Immorality",
   "EpochTime": 1707164151,
   "Date": "2/5/2024 9:15:51 PM",
   "VersionNumber": "v13.2.2",
@@ -363,21 +363,21 @@
   "CameraStates": [
     {
       "Position": {
-        "x": 0,
-        "y": 0,
-        "z": -10
+        "x": 0.375594556,
+        "y": -2.5,
+        "z": -4.09827566
       },
       "Rotation": {
-        "x": 45,
-        "y": 0,
-        "z": 0
+        "x": 53.00481,
+        "y": 359.594757,
+        "z": 0.0
       },
-      "Distance": 50,
+      "Distance": 41.1156845,
       "Zoomed": false,
       "AbsolutePosition": {
-        "x": 0,
-        "y": 0,
-        "z": 0
+        "x": 0.550582051,
+        "y": 30.3385239,
+        "z": -28.8389435
       }
     },
     {
@@ -17451,7 +17451,7 @@
         }
       },
       "LuaScript": "",
-      "LuaScriptState": "{\"axlotlTanksZoneGUIDs\":{\"Blue\":\"9ab93f\",\"Green\":\"7908a3\",\"Red\":\"90ae59\",\"Yellow\":\"59349c\"},\"researchConducted\":{\"Blue\":[],\"Green\":[],\"Red\":[],\"Yellow\":[]}}",
+      "LuaScriptState": "",
       "XmlUI": ""
     },
     {
@@ -17565,7 +17565,7 @@
         }
       },
       "LuaScript": "",
-      "LuaScriptState": "{\"negotiationZoneGUIDs\":{\"Blue\":\"f681c5\",\"Green\":\"5c4959\",\"Red\":\"df2969\",\"Yellow\":\"7c9932\"},\"techSlotZoneGUIDs\":[\"7c2066\",\"b0575b\",\"41f440\"]}",
+      "LuaScriptState": "",
       "XmlUI": ""
     },
     {
@@ -19680,7 +19680,7 @@
         "LoopingEffectIndex": 0
       },
       "LuaScript": "",
-      "LuaScriptState": "{\"alive\":true,\"orbitZoneGUID\":\"7a0bb8\",\"scoreboardZoneGUID\":\"9c855b\"}",
+      "LuaScriptState": "",
       "XmlUI": "",
       "AttachedSnapPoints": [
         {
@@ -19794,7 +19794,7 @@
         "LoopingEffectIndex": 0
       },
       "LuaScript": "",
-      "LuaScriptState": "{\"alive\":true,\"orbitZoneGUID\":\"cec11f\",\"scoreboardZoneGUID\":\"34639e\"}",
+      "LuaScriptState": "",
       "XmlUI": "",
       "AttachedSnapPoints": [
         {
@@ -19908,7 +19908,7 @@
         "LoopingEffectIndex": 0
       },
       "LuaScript": "",
-      "LuaScriptState": "{\"alive\":true,\"orbitZoneGUID\":\"e3f0d9\",\"scoreboardZoneGUID\":\"7ce9da\"}",
+      "LuaScriptState": "",
       "XmlUI": "",
       "AttachedSnapPoints": [
         {
@@ -20022,7 +20022,7 @@
         "LoopingEffectIndex": 0
       },
       "LuaScript": "",
-      "LuaScriptState": "{\"alive\":true,\"orbitZoneGUID\":\"47b589\",\"scoreboardZoneGUID\":\"488470\"}",
+      "LuaScriptState": "",
       "XmlUI": "",
       "AttachedSnapPoints": [
         {
