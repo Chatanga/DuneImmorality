@@ -1,5 +1,5 @@
 {
-  "SaveName": "Rakis Rising - Prototype",
+  "SaveName": "Dune Uprising",
   "EpochTime": 1707916705,
   "Date": "2/14/2024 2:18:25 PM",
   "VersionNumber": "v13.2.2",
@@ -919,21 +919,21 @@
   "CameraStates": [
     {
       "Position": {
-        "x": 0,
-        "y": 0,
-        "z": -10
+        "x": 0.0,
+        "y": 0.0,
+        "z": -10.0
       },
       "Rotation": {
-        "x": 45,
-        "y": 0,
-        "z": 0
+        "x": 45.0,
+        "y": 0.0,
+        "z": 0.0
       },
-      "Distance": 50,
+      "Distance": 50.0,
       "Zoomed": false,
       "AbsolutePosition": {
-        "x": 0,
-        "y": 0,
-        "z": 0
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
       }
     },
     {
