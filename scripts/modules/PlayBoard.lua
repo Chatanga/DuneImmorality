@@ -1120,7 +1120,7 @@ function PlayBoard._transientSetUp(settings)
         if PlayBoard.isHuman(color) then
             -- Do it after the clean up done in TechMarket.
             Helper.onceFramesPassed(1).doAfter(function ()
-                local cards = PlayBoard._getCardsPlayedThisTurn(color)
+                local cards = PlayBoard.getCardsPlayedThisTurn(color)
                 for _, card in ipairs(cards) do
                     local cardName = Helper.getID(card)
                     if cardName == "appropriate" then
@@ -1142,7 +1142,7 @@ function PlayBoard._transientSetUp(settings)
 
     Helper.registerEventListener("influence", function (faction, color, newRank)
         if PlayBoard.isHuman(color) then
-            local cards = PlayBoard._getCardsPlayedThisTurn(color)
+            local cards = PlayBoard.getCardsPlayedThisTurn(color)
             for _, card in ipairs(cards) do
                 local cardName = Helper.getID(card)
                 if cardName == "appropriate" then
@@ -1334,24 +1334,13 @@ function PlayBoard.acceptTurn(phase, color)
     elseif phase == 'playerTurns' then
         accepted = PlayBoard.couldSendAgentOrReveal(color)
     elseif phase == 'combat' then
-        --[[
-        if Combat.isInCombat(color) then
-            accepted = PlayBoard.combatPassCountdown > 0 and not PlayBoard.isRival(color) and #PlayBoard.getIntrigues(color) > 0
-            PlayBoard.combatPassCountdown = PlayBoard.combatPassCountdown - 1
-        end
-        ]]
         accepted = false
     elseif phase == 'combatEnd' then
-        --[[
-        -- TODO Player is victorious and the combat provided a reward (auto?) or
-        -- a dreadnought needs to be placed or a combat card remains to be played.
-        accepted = playBoard.lastPhase ~= phase and Combat.getRank(color) ~= nil
-        ]]
-        if ConflictCard and playBoard.lastPhase ~= phase then
+        if playBoard.lastPhase ~= phase then
             accepted = true
             -- Rival collect their reward their own way.
             if PlayBoard.isHuman(color) then
-                PlayBoard.collectReward(color)
+                Helper.onceFramesPassed(1).doAfter(Helper.partialApply(PlayBoard.collectReward, color))
             end
         else
             return false
@@ -2000,15 +1989,6 @@ function PlayBoard.onObjectDrop(color, object)
     for _, objectiveTag in ipairs(objectiveTags) do
         if object.hasTag(objectiveTag) then
             PlayBoard._convertObjectiveTokenPairsIntoVictoryPoints(object)
-
-            -- Done through CardEffect with ConflictCard.
-            --[[
-            local controlableSpace = Combat.findControlableSpace(Helper.getID(object))
-            if controlableSpace then
-                MainBoard.occupy(controlableSpace, color)
-            end
-            ]]
-
             break
         end
     end
@@ -2258,7 +2238,7 @@ function PlayBoard:stillHavePlayableAgents()
 end
 
 ---
-function PlayBoard._getCardsPlayedThisTurn(color)
+function PlayBoard.getCardsPlayedThisTurn(color)
     local playBoard = PlayBoard.getPlayBoard(color)
 
     local playedCards = Helper.filter(Park.getObjects(playBoard.agentCardPark), function (card)
@@ -2270,7 +2250,7 @@ end
 
 ---
 function PlayBoard.hasPlayedThisTurn(color, cardName)
-    for _, card in ipairs(PlayBoard._getCardsPlayedThisTurn(color)) do
+    for _, card in ipairs(PlayBoard.getCardsPlayedThisTurn(color)) do
         if Helper.getID(card) == cardName then
             return true
         end

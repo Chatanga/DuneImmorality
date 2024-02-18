@@ -123,7 +123,6 @@ function ConflictCard.collectReward(color, conflictName, rank, doubleRewards, po
     local functionHolder = {}
     functionHolder.i = 1
     functionHolder.f = function ()
-        printToAll("-------------------------[collect rewards / " .. tostring(functionHolder.i) .. "]", color)
         for _, reward in ipairs(rewards) do
             CardEffect.evaluate(context, reward)
         end

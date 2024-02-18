@@ -462,7 +462,7 @@ function MainBoard._createSpaceButton(space)
             space.zone = Park.createTransientBoundingZone(0, Vector(0.75, 1, 0.75), { space.position })
         end
 
-        local tooltip = I18N("sendAgentTo", { space = I18N(space.name)})
+        local tooltip = I18N("sendAgentTo", { space = I18N(space.name) })
         Helper.createAreaButton(space.zone, anchor, 1.75, tooltip, PlayBoard.withLeader(function (leader, color, altClick)
             if TurnControl.getCurrentPlayer() == color then
                 leader.sendAgent(color, space.name, altClick)
@@ -553,22 +553,22 @@ function MainBoard.sendAgent(color, spaceName, recallSpy)
                     if goAhead then
                         local innerInnerContinuation = Helper.createContinuation("MainBoard." .. parentSpaceName .. ".goAhead")
                         Helper.emitEvent("agentSent", color, parentSpaceName)
-                        Action.setContext("agentSent", parentSpaceName)
+                        Action.setContext("agentSent", { space = parentSpaceName, cards = PlayBoard.getCardsPlayedThisTurn(color) })
                         Park.putObject(agent, parentSpace.park)
                         if spy then
                             -- TODO Create Action.recallSpy(color) as some kind of subaction for sendAgent (only really needed for Hagal)?
                             Park.putObject(spy, PlayBoard.getSpyPark(color))
                             if recallMode == "infiltrateAndIntelligence" then
                                 Park.putObject(otherSpy, PlayBoard.getSpyPark(color))
-                                Dialog.broadcastToColor(I18N("infiltrateWithSpy"), color, "Purple")
+                                Action.log(I18N("infiltrateWithSpy"), color)
+                                Action.log(I18N("gatherIntelligenceWithSpy"), color)
                                 leader.drawImperiumCards(color, 1, true).doAfter(innerInnerContinuation.run)
-                                broadcastToAll(" └─> " .. I18N("gatherIntelligenceWithSpy"), color)
                             elseif recallMode == "infiltrate" then
-                                Dialog.broadcastToColor(I18N("infiltrateWithSpy"), color, "Purple")
+                                Action.log(I18N("infiltrateWithSpy"), color)
                                 innerInnerContinuation.run()
                             elseif recallMode == "intelligence" then
+                                Action.log(I18N("gatherIntelligenceWithSpy"), color)
                                 leader.drawImperiumCards(color, 1, true).doAfter(innerInnerContinuation.run)
-                                broadcastToAll(" └─> " .. I18N("gatherIntelligenceWithSpy"), color)
                             else
                                 error("Unexpected mode: " .. tostring(recallMode))
                                 innerInnerContinuation.run()
@@ -786,6 +786,7 @@ function MainBoard.sendRivalAgent(color, spaceName)
     if not Park.isEmpty(PlayBoard.getAgentPark(color)) then
         local agentPark = PlayBoard.getAgentPark(color)
         Helper.emitEvent("agentSent", color, spaceName)
+        Action.setContext("agentSent", { space = spaceName })
         Park.transfert(1, agentPark, space.park)
         return true
     else

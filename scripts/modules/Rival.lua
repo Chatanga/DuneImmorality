@@ -39,9 +39,10 @@ function Rival.triggerHagalReaction(color)
             for _, otherObservationPostName in ipairs(rival.recallableSpies) do
                 MainBoard.recallSpy(color, otherObservationPostName)
             end
-            Action.setContext("schemeTriggered")
+            Action.setContext("schemeTriggered", true)
             rival.scheme(color)
             Helper.sleep(2)
+            Action.setContext("schemeTriggered", nil)
         end
 
         local hasSwordmaster = PlayBoard.hasSwordmaster(color)

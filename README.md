@@ -18,7 +18,6 @@ Supported langages:
 
 __All__
 
-- Revoir le contexte d’action pour les logs.
 - Mode libre pour la sélection des dirigeants.
 - Séparer en 4 la zone de combat.
 - Réintroduire IntrigueCard ?

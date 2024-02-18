@@ -375,8 +375,8 @@ function TechMarket._doBuyTech(techTileStack, option, color)
 
         TechMarket.acquireTechOptions[option] = nil
 
-        printToAll(I18N("buyTechCard", {
-            card = I18N(Helper.getID(techTileStack.topCard)),
+        printToAll(I18N("buyTech", {
+            name = I18N(Helper.getID(techTileStack.topCard)),
             amount = adjustedTechCost,
             resource =  I18N.agree(adjustedTechCost, optionDetails.resourceType) }),
         color)

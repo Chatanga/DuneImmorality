@@ -147,14 +147,16 @@ return {
     recruitSwordmaster = "■ Recrutement du maître d’armes.",
     takeHighCouncilSeat = "■ Prise de siège au Haut-Conseil.",
     takeMakerHook = "■ Acquisition d’un hameçon à faiseur.",
-    gainInfluence = "■ +{amount} influence auprès {withFaction}",
-    loseInfluence = "■ -{amount} influence auprès {withFaction}",
-    acquireTleilaxuCard = "■ Acquisition carte tleilaxu : « {card} »",
-    acquireImperiumCard = "■ Acquisition carte Imperium : « {card} »",
-    buyTechCard= "■ Acquisition tech. pour {amount} {resource} : « {card} »",
-    sendingAgent = "■ Envoi d’un agent vers : {space}",
-    stealIntrigue = "■ Vol de « {card} » à {victim}",
-    gainVictoryPoint = '■ Gain de PV : « {name} »',
+    gainInfluence = "■ +{amount} influence auprès {withFaction}.",
+    loseInfluence = "■ -{amount} influence auprès {withFaction}.",
+    acquireTleilaxuCard = "■ Acquisition carte tleilaxu : « {card} ».",
+    acquireImperiumCard = "■ Acquisition carte Imperium : « {card} ».",
+    buyTech = "■ Acquisition pour {amount} {resource} de la tech. : « {name} ».",
+    acquireContract = "■ Prise du contrat : « {name} ».",
+    sendingAgent = "■ Envoi d’un agent vers : {space} ({cards}).",
+    triggeringScheme = "■ Triggering rival scheme.",
+    stealIntrigue = "■ Vol de « {card} » à {victim}.",
+    gainVictoryPoint = "■ Gain de PV ({name}).",
 
     -- Shield Wall
     confirmShieldWallDestruction = "Confirmez-vous cette violation flagrante de la Grande Convention ?",
@@ -299,27 +301,27 @@ return {
 
     prescienceButton = "Prescience",
     prescienceTooltip = "Inspecter facilement la prochaine carte de votre pioche.",
-    prescienceUsed = "Paul Atreides utilise sa prescience used his prescience pour entrevoir l’avenir.",
+    prescienceUsed = "↯ Paul Atreides utilise sa prescience used his prescience pour entrevoir l’avenir.",
     prescienceVoid = "Difficile d’entrevoir l’avenir quand on ne voit même pas son deck correctement…",
     prescienceManual = "Vous devez inspecter manuellement votre pioche (ALT + SHIFT), car elle se résume à une unique carte.",
 
     otherMemoriesButton = "Mémoire seconde",
     otherMemoriesTooltip = "Utilisez votre mémoire seconde.",
-    otherMemoriesUsed = "Dame Jessica a utilisée sa mémoire seconde.",
+    otherMemoriesUsed = "↯ Dame Jessica a utilisée sa mémoire seconde.",
 
-    firstSnooperRecall = "Tessia Vernius a rappelé son premier fouineur {withFaction}.",
-    secondSnooperRecall = "Tessia Vernius a rappelé son second fouineur {withFaction}.",
-    thirdSnooperRecall = "Tessia Vernius a rappelé son troisième fouineur {withFaction}.",
-    fourthSnooperRecall = "Tessia Vernius a rappelé son quatrième fouineur {withFaction}.",
+    firstSnooperRecall = "↯ Tessia Vernius a rappelé son premier fouineur {withFaction}.",
+    secondSnooperRecall = "↯ Tessia Vernius a rappelé son second fouineur {withFaction}.",
+    thirdSnooperRecall = "↯ Tessia Vernius a rappelé son troisième fouineur {withFaction}.",
+    fourthSnooperRecall = "↯ Tessia Vernius a rappelé son quatrième fouineur {withFaction}.",
     firstSnooperRecallEffectInfo = "Ayant rappelé votre premier fouineur, vous pouvez défausser une carte pour gagne 1 mesure d’épice.",
 
-    gurneySmile = "Gurney montre ses dents.",
+    gurneySmile = "↯ Gurney montre ses dents.",
 
-    imperialBirthright = "Irulan exerce son droit de naissance.",
+    imperialBirthright = "↯ Irulan exerce son droit de naissance.",
 
-    loyalty = "Margot récolte les fruits de sa loyauté",
+    loyalty = "↯ Margot récolte les fruits de sa loyauté",
 
-    stabanSpiceSmuggling = "Staban détourne sa part d’épice.",
+    stabanSpiceSmuggling = "↯ Staban détourne sa part d’épice.",
 
     -- Uprising leaders
     stabanTuek = "Staban Tuek",
@@ -784,6 +786,26 @@ return {
     troopTransports = "Transports de troupes",
     holtzmanEngine = "Moteur Holtzman",
     invasionShips = "Vaisseaux d’invasion",
+
+    -- Contracts
+    --deliverSupplies = "Livrer des fournitures",
+    immediat = "Immédiat",
+    arrakeenWithWater = "Arrakeen (eau)",
+    heighlinerWithTroops = "Long-courrier (troupes)",
+    espionnage = "Espionage",
+    --researchStation = "Station de recherche",
+    harvest3orMore = "Récolter 3+",
+    sardaukarWithCards = "Sardaukar (cartes)",
+    spiceRefineryWithCards = "Raffinerie d’épice (cartes)",
+    heighlinerWithWater = "Long-courrier (eau)",
+    arrakiinWithSpy = "Arrakeen (espion)",
+    harvest4orMore = "Récolter 4+",
+    highCouncilWithInfluence = "Haut-Conseil (influence)",
+    researchStationWithSpy = "Station de recheche (espion)",
+    spiceRefineryWithWater = "Raffinerie d’épice (eau)",
+    highCouncilWithSolaris = "Haut-Conseil (solaris)",
+    sardaukarWithRecall = "Sardaukar (rappel)",
+    acquireTheSpiceMustFlow = 'Acquérir « l’épice doit couler »',
 
     -- Specific victory tokens
     endgame = "Carte de fin de partie",

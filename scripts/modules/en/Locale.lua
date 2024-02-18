@@ -9,7 +9,7 @@ return {
     White = "white",
 
     -- Setup UI
-    prolog = "\"A setup is a very delicate time...\"",
+    prolog = '"A setup is a very delicate time..."',
     language = "Language",
     players = "Players",
     virtualHotSeat = "Special / Hotseat",
@@ -115,7 +115,7 @@ return {
     strengths = "Swords",
     spendManually = "▲ {leader} spent {amount} {resource} manually.",
     receiveManually = "▼ {leader} received {amount} {resource} manually.",
-    fixManually = "Fixed {amount} {resource} manually ({location})\".",
+    fixManually = "Fixed {amount} {resource} manually ({location}).",
     influence = "influence",
     beetle = "beetle",
     beetles = "beetles",
@@ -147,14 +147,16 @@ return {
     recruitSwordmaster = "■ Recruit Swordmaster.",
     takeHighCouncilSeat = "■ Take High-Council seat.",
     takeMakerHook = "■ Learn to use a Maker hook.",
-    gainInfluence = "■ +{amount} influence with {withFaction}",
-    loseInfluence = "■ -{amount} influence with {withFaction}",
-    acquireTleilaxuCard = "■ Acquire Tleixlaxu card: \"{card}\"",
-    acquireImperiumCard = "■ Acquire Imperium card: \"{card}\"",
-    buyTechCard= "■ Acquire tech for {amount} {resource}: \"{card}\"",
-    sendingAgent = "■ Sending an agent to: {space}",
-    stealIntrigue = '■ Stealing "{card}" from {victim}',
-    gainVictoryPoint = '■ Gaining VP: "{name}"',
+    gainInfluence = "■ +{amount} influence with {withFaction}.",
+    loseInfluence = "■ -{amount} influence with {withFaction}.",
+    acquireTleilaxuCard = '■ Acquire Tleixlaxu card: "{card}".',
+    acquireImperiumCard = '■ Acquire Imperium card: "{card}".',
+    buyTech= '■ Acquire tech for {amount} {resource}: "{name}".',
+    acquireContract = '■ Pick contract: "{name}".',
+    sendingAgent = "■ Sending an agent to: {space} ({cards}).",
+    triggeringScheme = "■ Triggering rival scheme.",
+    stealIntrigue = '■ Stealing "{card}" from {victim}.',
+    gainVictoryPoint = "■ Gaining VP ({name}).",
 
     -- Shield Wall
     confirmShieldWallDestruction = "Do you really want not to obey the forms of the Great Convention?",
@@ -162,7 +164,7 @@ return {
     explosion = "Kaboom!",
 
     -- Combat
-    announceCombat = "Round combat is: \"{combat}\"",
+    announceCombat = 'Round combat is: "{combat}"',
     dreadnoughtMandatoryOccupation = "Reminder: you must sent a dreadnought and occupy a space.",
     troopEdit = "Troops: ±1",
 
@@ -221,7 +223,7 @@ return {
     rhomburVerniusTechBuyOption = "Rhombur Vernius' ring",
     manuallyBuyTech = "Manually acquiring a tech at no cost?",
     notAffordableOption = "You can't afford this buying option!",
-    pruneTechCard = "Pruning tech tile: \"{card}\"",
+    pruneTechCard = 'Pruning tech tile: "{card}"',
 
     -- Arrakeen Scouts
     joinCommittee = "Join the subcommittee: {committee}",
@@ -299,27 +301,27 @@ return {
 
     prescienceButton = "Prescience",
     prescienceTooltip = "Look at top card of your deck easily with this.",
-    prescienceUsed = "Paul Atreides used his prescience to look into the future.",
+    prescienceUsed = "↯ Paul Atreides used his prescience to look into the future.",
     prescienceVoid = "All you see is the void ! (Your deck it empty actually…)",
     prescienceManual = "You need to peek manually (ALT + SHIFT) because there is only one card in your deck.",
 
     otherMemoriesButton = "Other Memories",
     otherMemoriesTooltip = "Use your memories.",
-    otherMemoriesUsed = "Lady Jessica used her memories.",
+    otherMemoriesUsed = "↯ Lady Jessica used her memories.",
 
-    firstSnooperRecall = "Tessia Vernius has recalled her first snooper from {withFaction}.",
-    secondSnooperRecall = "Tessia Vernius has recalled her second snooper from {withFaction}.",
-    thirdSnooperRecall = "Tessia Vernius has recalled her third snooper from {withFaction}.",
-    fourthSnooperRecall = "Tessia Vernius has recalled her fourth snooper from {withFaction}.",
+    firstSnooperRecall = "↯ Tessia Vernius has recalled her first snooper from {withFaction}.",
+    secondSnooperRecall = "↯ Tessia Vernius has recalled her second snooper from {withFaction}.",
+    thirdSnooperRecall = "↯ Tessia Vernius has recalled her third snooper from {withFaction}.",
+    fourthSnooperRecall = "↯ Tessia Vernius has recalled her fourth snooper from {withFaction}.",
     firstSnooperRecallEffectInfo = "Having recalled your first snooper, you may discard a card to get 1 spice unit.",
 
-    gurneySmile = "Gurney is showing his teeths.",
+    gurneySmile = "↯ Gurney is showing his teeths.",
 
-    imperialBirthright = "Irulan exercises his imperial birthright.",
+    imperialBirthright = "↯ Irulan exercises his imperial birthright.",
 
-    loyalty = "Margot reaps the rewards of her loyalty",
+    loyalty = "↯ Margot reaps the rewards of her loyalty",
 
-    stabanSpiceSmuggling = "Staban smuggles away some spice.",
+    stabanSpiceSmuggling = "↯ Staban smuggles away some spice.",
 
     -- Uprising leaders
     stabanTuek = "Staban Tuek",
@@ -783,6 +785,26 @@ return {
     troopTransports = "Troop Transports",
     holtzmanEngine = "Holtzman Engine",
     invasionShips = "Invasion Ships",
+
+    -- Contracts
+    --deliverSupplies = "Deliver Supplies",
+    immediat = "Immediat",
+    arrakeenWithWater = "Arrakeen (water)",
+    heighlinerWithTroops = "Heighliner (troops)",
+    espionnage = "Espionnage",
+    --researchStation = "Research Station",
+    harvest3orMore = "Harvest 3+",
+    sardaukarWithCards = "Sardaukar (cards)",
+    spiceRefineryWithCards = "Spice Refinery (cards)",
+    heighlinerWithWater = "Heighliner (water)",
+    arrakiinWithSpy = "Arrakeen (spy)",
+    harvest4orMore = "Harvest 4+",
+    highCouncilWithInfluence = "High Council (influence)",
+    researchStationWithSpy = "Research Station (spy)",
+    spiceRefineryWithWater = "Spice Refinery (water)",
+    highCouncilWithSolaris = "High Council (solaris)",
+    sardaukarWithRecall = "Sardaukar (recall)",
+    acquireTheSpiceMustFlow = 'Acquire "The Spice Must Flow"',
 
     -- Specific victory tokens
     endgame = "Endgame Card",

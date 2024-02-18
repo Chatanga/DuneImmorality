@@ -105,6 +105,7 @@ end
 ---
 function Action.setContext(key, value)
     if key == "agentSent" and Action.troopTransferCoalescentQueue then
+        Action.newContext = true
         Action.flushTroopTransfer()
     end
     Action.context[key] = value
@@ -116,25 +117,44 @@ function Action.flushTroopTransfer()
 end
 
 ---
-function Action.log(message, color)
-    local agentSentValue = Action.context["agentSent"]
+function Action.log(message, color, isSecret)
+    local logContextPrinters = {
+        agentSent = function (value)
+            local cards = ""
+            for i, card in pairs(value.cards or {}) do
+                if i > 1 then
+                    cards = cards .. ", "
+                end
+                cards = cards .. I18N(Helper.getID(card))
+            end
+            return I18N("sendingAgent", { space = I18N(value.space), cards = cards })
+        end,
+        schemeTriggered = function (_)
+            return I18N("triggeringScheme")
+        end,
+    }
     local prefix = ""
-    if agentSentValue then
-        printToAll(I18N("sendingAgent", { space = I18N(agentSentValue) }), color)
-        prefix = " └─> "
+    for logContext, printer in pairs(logContextPrinters) do
+        local value = Action.context[logContext]
+        if value then
+            if Action.newContext then
+                printToAll(printer(value), color)
+                Action.newContext = false
+            end
+            prefix = " └─ "
+            break
+        end
     end
-    printToAll(prefix .. message, color)
+    if isSecret then
+        printToColor(prefix .. message, color, "Grey")
+    else
+        printToAll(prefix .. message, color)
+    end
 end
 
 ---
 function Action.secretLog(message, color)
-    local agentSentValue = Action.context["agentSent"]
-    local prefix = ""
-    if agentSentValue then
-        printToColor(I18N("sendingAgent", { space = I18N(agentSentValue) }), color, "Grey")
-        prefix = " └─> "
-    end
-    printToColor(prefix .. message, color, "Grey")
+    Action.log(message, color, true)
 end
 
 ---
@@ -570,8 +590,7 @@ end
 function Action.pickContract(color, stackIndex)
     Types.assertIsPlayerColor(color)
     if stackIndex then
-        ChoamContractMarket.acquireContract(stackIndex, color)
-        return true
+        return ChoamContractMarket.acquireContract(stackIndex, color)
     else
         return false
     end

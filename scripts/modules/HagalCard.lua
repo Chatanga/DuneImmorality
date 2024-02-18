@@ -12,39 +12,39 @@ local TurnControl = Module.lazyRequire("TurnControl")
 local Hagal = Module.lazyRequire("Hagal")
 
 local HagalCard = {
-    cards = {
-        placeSpyYellow = { draw = true, strength = 2 },
-        placeSpyBlue = { draw = true, strength = 2 },
-        placeSpyGreen = { draw = true, strength = 2 },
-        sardaukar = { strength = 4 },
-        dutifulService = { strength = 2 },
-        heighliner = { combat = true, strength = 5 },
-        deliverSuppliesAndHeighliner = { combat = true, strength = 1 }, -- combat...
-        espionage = { strength = 2 },
-        secrets = { strength = 1 },
-        desertTactics = { combat = true, strength = 3 },
-        fremkit = { combat = true, strength = 1 },
-        assemblyHall = { strength = 0 },
-        gatherSupport1 = { strength = 0 },
-        gatherSupport2 = { strength = 2 },
-        acceptContractAndShipping1 = { strength = 2 },
-        acceptContractAndShipping2 = { strength = 2 },
-        researchStation = { combat = true, strength = 2 },
-        spiceRefinery = { combat = true, strength = 1 },
-        arrakeen = { combat = true, strength = 1 },
-        sietchTabr = { combat = true, strength = 3 },
-        haggaBasinAndImperialBasin = { combat = true, strength = 2 },
-        deepDesert = { combat = true, strength = 2 },
-        interstellarShipping = { strength = 3 },
-        deliverSuppliesAndInterstellarShipping = { strength = 0 },
-        smugglingAndInterstellarShipping = { strength = 2 },
-        techNegotiation = { strength = 0 },
-        dreadnought1p = { strength = 3 },
-        dreadnought2p = { strength = 3 },
-        researchStationImmortality = { combat = true, strength = 0 },
-        carthag1 = { draw = true, strength = 0 },
-        carthag2 = { draw = true, strength = 0 },
-        carthag3 = { draw = true, strength = 0 },
+    cardStrengths = {
+        placeSpyYellow = 2,
+        placeSpyBlue = 2,
+        placeSpyGreen = 2,
+        sardaukar = 4,
+        dutifulService = 2,
+        heighliner = 5,
+        deliverSuppliesAndHeighliner = 1,
+        espionage = 2,
+        secrets = 1,
+        desertTactics = 3,
+        fremkit = 1,
+        assemblyHall = 0,
+        gatherSupport1 = 0,
+        gatherSupport2 = 2,
+        acceptContractAndShipping1 = 2,
+        acceptContractAndShipping2 = 2,
+        researchStation = 2,
+        spiceRefinery = 1,
+        arrakeen = 1,
+        sietchTabr = 3,
+        haggaBasinAndImperialBasin = 2,
+        deepDesert = 2,
+        interstellarShipping = 3,
+        deliverSuppliesAndInterstellarShipping = 0,
+        smugglingAndInterstellarShipping = 2,
+        techNegotiation = 0,
+        dreadnought1p = 3,
+        dreadnought2p = 3,
+        researchStationImmortality = 0,
+        tleilaxuBonus1 = 0,
+        tleilaxuBonus2 = 0,
+        tleilaxuBonus3 = 0,
     }
 }
 
@@ -52,7 +52,7 @@ function HagalCard.setStrength(color, card)
     Types.assertIsPlayerColor(color)
     assert(card)
     local rival = PlayBoard.getLeader(color)
-    local strength = HagalCard.cards[Helper.getID(card)].strength
+    local strength = HagalCard.cardStrengths[Helper.getID(card)]
     if strength then
         rival.resources(color, "strength", strength)
         return true

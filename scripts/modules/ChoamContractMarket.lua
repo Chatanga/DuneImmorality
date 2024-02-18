@@ -2,6 +2,7 @@ local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local AcquireCard = require("utils.AcquireCard")
 local Park = require("utils.Park")
+local I18N = require("utils.I18N")
 
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local MainBoard = Module.lazyRequire("MainBoard")
@@ -180,7 +181,9 @@ function ChoamContractMarket.acquireContract(indexInRow, color)
     local acquireCard = ChoamContractMarket.acquireCards[indexInRow]
     local objects = acquireCard.zone.getObjects()
     if #objects > 0 then
-        PlayBoard.grantContractTile(color, objects[1], false)
+        local contract = objects[1]
+        printToAll(I18N("acquireContract", { name = I18N(Helper.getID(contract)) }), color)
+        PlayBoard.grantContractTile(color, contract, false)
         ChoamContractMarket._replenish(indexInRow)
         return true
     else
