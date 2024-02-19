@@ -2,7 +2,7 @@ local BUILD = 'TBD'
 
 -- Do not load anything. Appropriate to work on the mod content without
 -- interference.
-local constructionModeEnabled = false
+local constructionModeEnabled = true
 
 -- For test purposes.
 local autoLoadedSettings
@@ -218,7 +218,7 @@ local settings
 
 ---
 function onLoad(scriptState)
-    log("--------< Dune Immorality - " .. BUILD .. " >--------")
+    log("--------< Dune Immorality - Alpha - " .. BUILD .. " >--------")
     Helper.destroyTransientObjects()
 
     if constructionModeEnabled then

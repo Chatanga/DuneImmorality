@@ -1,4 +1,4 @@
-# Dune Immorality TTS Mod
+# Dune Immorality - Alpha TTS Mod
 
 ![Capture](resources/capture-1.jpg)
 
