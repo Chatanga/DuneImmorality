@@ -1,0 +1,1 @@
+../../scripts/i18n.lua

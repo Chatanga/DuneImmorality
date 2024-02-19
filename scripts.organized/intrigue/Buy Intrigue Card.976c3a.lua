@@ -1,0 +1,1 @@
+../../scripts/Buy Intrigue Card.976c3a.lua

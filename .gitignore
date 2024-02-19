@@ -1,5 +1,4 @@
 /tmp/
-/misc/
-/old/
-/resources/
-/doc/
+/resources/*/
+/resources/*.tar.gz
+/resources/mapping.lst
