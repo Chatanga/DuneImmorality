@@ -1,6 +1,6 @@
 # Dune Immorality - Alpha TTS Mod
 
-![Capture](resources/capture-1.jpg)
+![Capture](doc/capture-1.jpg)
 
 Features:
 - Base game

@@ -1,6 +1,7 @@
 #! /usr/bin/python3
 
 import argparse
+import configparser
 import os
 import platform
 import re
@@ -16,8 +17,8 @@ import tts_build.unpack
 import tts_build.upload
 
 # Same folder as the one used by the Atom plugin for historical reasons.
-# Any other location would be fine.
 #tts_tmp_dir='/tmp/TabletopSimulator/Tabletop Simulator Lua/'
+# Any other location would be fine.
 tts_tmp_dir='tmp/scripts.bundled/'
 
 # Requirements:
@@ -40,10 +41,13 @@ def build():
 
 	tts_save_dir = os.path.join(app_dir, 'Tabletop Simulator', 'Saves')
 
-	# The 204 -> 205 pair is arbitrary.
-	# TODO Add some kind of --input/output parameters saved in "build.rc".
-	input_save = os.path.join(tts_save_dir, 'TS_Save_204.json')
-	output_save = os.path.join(tts_save_dir, 'TS_Save_205.json')
+	config = configparser.ConfigParser()
+	config.read('build.properties')
+	save_input_index = config.get("save", "input_index")
+	save_output_index = config.get("save", "output_index")
+
+	input_save = os.path.join(tts_save_dir, f'TS_Save_{save_input_index}.json')
+	output_save = os.path.join(tts_save_dir, f'TS_Save_{save_output_index}.json')
 
 	parser = argparse.ArgumentParser(
 		prog = 'TSS Build Tool',
@@ -98,14 +102,16 @@ def unbundle(luabundler):
 		if os.path.isfile(full_path) and f.endswith('.ttslua'):
 			filename = re.sub(r'\.ttslua$', '.lua', f)
 			print("Unbundle " + f + "...")
-			exitCode = subprocess.call([
-				luabundler, 'unbundle', full_path,
-				'-m', os.path.join(target, 'modules'),
-				'-o', os.path.join(target, filename)])
-			if exitCode == 0:
+			try:
+				exitCode = subprocess.call([
+					luabundler, 'unbundle', full_path,
+					'-m', os.path.join(target, 'modules'),
+					'-o', os.path.join(target, filename)])
+				if exitCode != 0:
+					sys.exit(1)
+			except:
+				print('Skipping unbundle error.', file = sys.stderr)
 				shutil.copyfile(full_path, os.path.join(target, filename))
-			else:
-				sys.exit(1)
 
 def patch():
 	print("[patch]")
@@ -141,7 +147,6 @@ def bundle(luabundler, timestamp):
 				luabundler, 'bundle', full_path,
 				'-p', os.path.join('scripts', 'modules', '?.lua'),
 				'-o', os.path.join(tts_tmp_dir, filename + '.ttslua')])
-
 			if exitCode == 0:
 				if os.path.exists(os.path.join('scripts', filename + '.xml')):
 					shutil.copyfile(os.path.join('scripts', filename + '.xml'), os.path.join(tts_tmp_dir, filename + '.xml'))
