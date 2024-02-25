@@ -1,17 +1,17 @@
-<Panel position="0 -50" width="450" height="750" color="#000000" id="setupPane" rotation="0 0 0" outline="#6c3892" outlineSize="1"
+<Panel position="0 -50" width="450" height="750" color="#000000" id="setupPane" rotation="0 0 0" outline="#61712c" outlineSize="1"
 	active="False" allowDragging="True" returnToOriginalPositionWhenReleased="False" visibility="Host">
 	<Defaults>
 		<Text class="primary" color="#8e5ab4" fontSize="16" alignment="MiddleLeft"/>
 		<Text class="secondary" color="#efd9ff" alignment="MiddleRight"/>
 		<Text class="epigraph" color="#df9730" fontSize="12" fontStyle="italic" alignment="MiddleCenter"/>
-		<Dropdown itemBackgroundColors="#6c389244|#df9730|#FFFFFF|#361441" textColor="#6c3892" itemTextColor="#6c3892" fontStyle="bold"/>
-		<InputField colors="#00000000|#6c389244|#6c3892" textColor="#efd9ff" fontStyle="bold"/>
+		<Dropdown itemBackgroundColors="#61712c44|#df9730|#FFFFFF|#361441" textColor="#61712c" itemTextColor="#61712c" fontStyle="bold"/>
+		<InputField colors="#00000000|#61712c44|#61712c" textColor="#efd9ff" fontStyle="bold"/>
 		<Toggle colors="#efd9ff|#ffd60b|#efd9ff|#222222" textColor="#efd9ff"/>
-		<Button colors="#6c3892|#df9730|#361441|#222222" textColor="#ffd60b"  fontSize="16" outline="#efd9ff" outlineSize="3 3"/>
+		<Button colors="#61712c|#df9730|#361441|#222222" textColor="#ffd60b"  fontSize="16" outline="#efd9ff" outlineSize="3 3"/>
 		<Image raycastTarget="true"/>
 	</Defaults>
 	<VerticalLayout>
-		<Image ignoreLayout="True" image="http://cloud-3.steamusercontent.com/ugc/2093668799785646039/D9B4C518F1CC8DB3B299B6552E439410D9346C33/"/>
+		<Image ignoreLayout="True" image="http://cloud-3.steamusercontent.com/ugc/2509137691632252238/B918137D800EBB27B1C1055E98B6253B034D6F31/"/>
 		<VerticalLayout padding="40 40 150 50">
 			<VerticalLayout padding="0 0 0 20">
 				<Text class="epigraph" key="prolog"/>
@@ -79,5 +79,5 @@
 			<Button id="setUpButton" minHeight="26" onClick="Global/setUpFromUI" key="setup"/>
 		</HorizontalLayout>
 	</VerticalLayout>
-	<Image position="0 375" width="256" height="256" image="http://cloud-3.steamusercontent.com/ugc/2093668799785645605/02244A1CFA3B51ABC56CDC512A9DDF383D09CA2A/"/>
+	<Image position="0 375" width="256" height="256" image="http://cloud-3.steamusercontent.com/ugc/2509137691632252874/EFDF07DCBBC243A851842278C9AF2BD6CCCB2197/"/>
 </Panel>
