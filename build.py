@@ -91,7 +91,11 @@ def unpack():
 def unbundle(luabundler):
 	print("[unbundle]")
 
-	target = os.path.join('tmp', 'scripts')
+	if os.path.exists('scripts'):
+		target = os.path.join('tmp', 'scripts')
+	else:
+		print('Import directly into the source script directory since one does not exist.')
+		target = 'scripts'
 
 	if os.path.exists(target) and os.path.isdir(target):
 		shutil.rmtree(target)
@@ -110,7 +114,8 @@ def unbundle(luabundler):
 				if exitCode != 0:
 					sys.exit(1)
 			except:
-				print('Skipping unbundle error.', file = sys.stderr)
+				print('    (An error is ok if the script does not use require directives.)')
+				shutil.copyfile(full_path, os.path.join(target, filename))
 
 def patch():
 	print("[patch]")

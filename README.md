@@ -1,4 +1,4 @@
-# Dune Immorality Mod for Tabletop Simulator
+# Dune Immorality mod for Tabletop Simulator
 
 The original mod adapted by [Murphy Zlaw](https://steamcommunity.com/profiles/76561197967411263/myworkshopfiles/?appid=286160), completed by [Asmodius](https://steamcommunity.com/profiles/76561197960555432/myworkshopfiles/?appid=286160) to support Rise of Ix and Immorality, then slightly modified by [me](https://steamcommunity.com/profiles/76561197978597744/myworkshopfiles/?appid=286160) to introduce aesthetic changes (mainly 3D boards), multiple languages, tech acquisition and other niceties.
 

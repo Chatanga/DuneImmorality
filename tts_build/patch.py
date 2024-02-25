@@ -63,7 +63,6 @@ def is_transient_zone(object):
 
 def patch_object(object):
     rectify_rotation(object)
-    #object['LuaScript'] = ''
     object['LuaScriptState'] = ''
 
 def patch_save(input_path, output_path):
