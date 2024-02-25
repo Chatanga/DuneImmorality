@@ -7,6 +7,16 @@
 
 ## Build & Deploy
 
+In any case, you must first populate the `build.properties` files with the input index (XXX) and output index (YYY) of the two TTS saves you want to use to build the mod.
+Depending on the context, one must exist while the other will be created/overwritten.
+The two indexes may actually be the same, but this is not necessarily a good idea.
+
+```
+[save]
+input_index = 900
+output_index = 901
+```
+
 **First time:**
 
 ```bash
@@ -37,10 +47,11 @@ Overwrite the save YYY with it, then `python3 build.py --full` and finally reloa
 
 Edit the local `skeleton.json` file, then `python3 build.py` and reload the save.
 
-## Notes
+**You want to import an existing save:**
 
-Using 'TS_Save_YYY.json' and 'TS_Save_XXX.json' as our working saves is arbitrary and could be changed in the top `build.properties` file.
-In fact, the two could be the same, it's just safer to separate the two of them.
+Simply copy the save and its content in the TTS Save directory and rename them to match your input index, then ```python3 build.py --full```.
+If it doesn't exist, the `scripts` directory will be created.
+Otherwise, the imported scripts will be available in `tmp\scripts`.
 
 ## Internals
 

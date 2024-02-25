@@ -1,4 +1,4 @@
-# Dune Immorality - Alpha TTS Mod
+# Dune Immorality mod for Tabletop Simulator - Alpha test version
 
 ![Capture](doc/capture-1.jpg)
 
