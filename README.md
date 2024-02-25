@@ -1,4 +1,4 @@
-# Dune Immorality mod for Tabletop Simulator - Alpha test version
+# Dune Immorality - Alpha Test mod for Tabletop Simulator
 
 ![Capture](doc/capture-1.jpg)
 
@@ -19,7 +19,14 @@ Supported langages:
 ## Links :
 
 - Steam: https://steamcommunity.com/sharedfiles/filedetails/?id=3043517751
-- Mod: 3043517751
+
+## Build Process
+
+cf. [tts_build/README.md](tts_build/README.md)
+
+## Disclaimer
+
+This repository contains the JSON skeletons and Lua scripts of various mods for Dune Imperium/Uprising (referenced resources are not included). With the exception of the "immorality" branch, all other branches contain code exclusively written by me under the "Unlicense" license. That means you can do whatever you want with it, you have my blessing. Things are obviously not so simple regarding the referenced resources which are no more than a collection of illegal images and 3D models. If my contributions are freely usable (e.g. 3D boards), I cannot speak on behalf of any other contributors.
 
 ## FIXME
 
@@ -56,7 +63,3 @@ Supported langages:
 - Mentat washing when crossing its zone.
 - Finer playable intrigue detection in solo.
 - Accumulation and immediate acquisition by Helena.
-
-## Build Process
-
-cf. [tts_build/README.md](tts_build/README.md)
