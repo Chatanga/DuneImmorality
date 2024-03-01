@@ -116,9 +116,7 @@ function CardEffect._dispatch(selector, expression)
             end
             return call("influence", color, faction, value)
         elseif selector == "vp" then
-            for _ = 1, value do
-                call("gainVictoryPoint", color, context.cardName)
-            end
+            call("gainVictoryPoint", color, context.cardName, value)
             return true
         elseif selector == "control" then
             return call("control", color, expression)
@@ -147,8 +145,15 @@ function CardEffect._dispatch(selector, expression)
                 end
                 return true
             else
-                -- TODO
-                return false
+                local recallableSpies = MainBoard.findRecallableSpies(color)
+                if #recallableSpies >= -value then
+                    for _, otherObservationPostName in ipairs(recallableSpies) do
+                        MainBoard.recallSpy(color, otherObservationPostName)
+                    end
+                    return true
+                else
+                    return false
+                end
             end
         elseif selector == "contract" then
             assert(not value or value == 1, tostring(value))

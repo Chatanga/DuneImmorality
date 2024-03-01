@@ -764,7 +764,7 @@ return {
     economicSupremacy = "Suprémacie économique",
     propaganda = "Propagande",
     battleForImperialBasinNew = "Bataille pour le bassin impérial",
-    battleForArrakeenNew = "Battaille pour Arrakeen",
+    battleForArrakeenNew = "Bataille pour Arrakeen",
     battleForSpiceRefinery = "Bataille pour la raffinerie d’épice",
 
     -- Techs

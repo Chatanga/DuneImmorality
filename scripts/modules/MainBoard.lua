@@ -553,7 +553,7 @@ function MainBoard.sendAgent(color, spaceName, recallSpy)
                     if goAhead then
                         local innerInnerContinuation = Helper.createContinuation("MainBoard." .. parentSpaceName .. ".goAhead")
                         Helper.emitEvent("agentSent", color, parentSpaceName)
-                        Action.setContext("agentSent", { space = parentSpaceName, cards = PlayBoard.getCardsPlayedThisTurn(color) })
+                        Action.setContext("agentSent", { space = parentSpaceName, cards = Helper.mapValues(PlayBoard.getCardsPlayedThisTurn(color), Helper.getID) })
                         Park.putObject(agent, parentSpace.park)
                         if spy then
                             -- TODO Create Action.recallSpy(color) as some kind of subaction for sendAgent (only really needed for Hagal)?
@@ -649,6 +649,7 @@ end
 
 ---
 function MainBoard.recallSpy(color, observationPostName)
+    Helper.dumpFunction("MainBoard.recallSpy", color, observationPostName)
     local observationPost = MainBoard.observationPosts[observationPostName]
     assert(observationPost, observationPostName)
 
@@ -666,6 +667,7 @@ function MainBoard.findRecallableSpies(color)
             end
         end
     end
+    Helper.dumpFunction("MainBoard.findRecallableSpies", color, "->", recallableSpies)
     return recallableSpies
 end
 

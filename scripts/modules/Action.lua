@@ -125,7 +125,7 @@ function Action.log(message, color, isSecret)
                 if i > 1 then
                     cards = cards .. ", "
                 end
-                cards = cards .. I18N(Helper.getID(card))
+                cards = cards .. card
             end
             return I18N("sendingAgent", { space = I18N(value.space), cards = cards })
         end,
@@ -497,14 +497,18 @@ end
 ---
 function Action.research(color, jump)
     Types.assertIsPlayerColor(color)
-    TleilaxuResearch.advanceResearch(color, jump).doAfter(function (finalJump)
-        if finalJump.x > 0 then
-            Action.log(I18N("researchAdvance", { count = jump }), color)
-        elseif finalJump.x < 0 then
-            Action.log(I18N("researchRollback"), color)
-        end
-    end)
-    return true
+    if jump then
+        TleilaxuResearch.advanceResearch(color, jump).doAfter(function (finalJump)
+            if finalJump.x > 0 then
+                Action.log(I18N("researchAdvance", { count = jump }), color)
+            elseif finalJump.x < 0 then
+                Action.log(I18N("researchRollback"), color)
+            end
+        end)
+        return true
+    else
+        return false
+    end
 end
 
 ---

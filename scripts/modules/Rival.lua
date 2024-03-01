@@ -36,9 +36,11 @@ function Rival.triggerHagalReaction(color)
         local rival = PlayBoard.getLeader(color)
 
         if rival.recallableSpies and #rival.recallableSpies == 2 then
+            Helper.dump("rival.recallableSpies:", rival.recallableSpies)
             for _, otherObservationPostName in ipairs(rival.recallableSpies) do
                 MainBoard.recallSpy(color, otherObservationPostName)
             end
+            -- FIXME Not enough for troop transfers?
             Action.setContext("schemeTriggered", true)
             rival.scheme(color)
             Helper.sleep(2)

@@ -214,6 +214,7 @@ function Hagal._getExpertDeploymentLimit(color)
     local level3Conflict = Combat.getTurnConflictLevel() == 3
     local mentatOrHigher = Helper.isElementOf(Hagal.selectedDifficulty, { "expert", "expertPlus "})
 
+    local n
     if not level3Conflict and mentatOrHigher then
         local colorUnitCount = 0
         local otherColorMaxUnitCount = 0
@@ -224,10 +225,13 @@ function Hagal._getExpertDeploymentLimit(color)
                 otherColorMaxUnitCount = math.max(otherColorMaxUnitCount, unitCount)
             end
         end
-        return math.max(0, 3 + otherColorMaxUnitCount - colorUnitCount)
+        n = math.max(0, 3 + otherColorMaxUnitCount - colorUnitCount)
     else
-        return 12
+        n = 666
     end
+    Helper.dump("level3Conflict:", level3Conflict)
+    Helper.dump("n:", n)
+    return n
 end
 
 ---
