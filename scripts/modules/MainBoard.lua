@@ -580,7 +580,7 @@ function MainBoard.sendAgent(color, spaceName, recallSpy)
                             action()
                             -- FIXME We are cheating here...
                             Helper.onceTimeElapsed(1).doAfter(function ()
-                                Action.setContext("agentSent", nil)
+                                Action.unsetContext("agentSent")
                             end)
                             continuation.run()
                         end)

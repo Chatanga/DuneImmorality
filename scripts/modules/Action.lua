@@ -105,7 +105,6 @@ end
 ---
 function Action.setContext(key, value)
     if key == "agentSent" and Action.troopTransferCoalescentQueue then
-        Action.newContext = true
         Action.flushTroopTransfer()
     end
     Action.context[key] = value
@@ -118,8 +117,12 @@ end
 
 ---
 function Action.log(message, color, isSecret)
+    -- Order matters here.
     local logContextPrinters = {
-        agentSent = function (value)
+        { name = "schemeTriggered", print = function (_)
+            return I18N("triggeringScheme")
+        end },
+        { name = "agentSent", print = function (value)
             local cards = ""
             for i, card in pairs(value.cards or {}) do
                 if i > 1 then
@@ -128,18 +131,15 @@ function Action.log(message, color, isSecret)
                 cards = cards .. card
             end
             return I18N("sendingAgent", { space = I18N(value.space), cards = cards })
-        end,
-        schemeTriggered = function (_)
-            return I18N("triggeringScheme")
-        end,
+        end },
     }
     local prefix = ""
-    for logContext, printer in pairs(logContextPrinters) do
-        local value = Action.context[logContext]
+    for _, namedPrinter in ipairs(logContextPrinters) do
+        local value = Action.context[namedPrinter.name]
         if value then
-            if Action.newContext then
-                printToAll(printer(value), color)
-                Action.newContext = false
+            if Action.lastContext ~= namedPrinter.name then
+                Action.lastContext = namedPrinter.name
+                printToAll(namedPrinter.print(value), color)
             end
             prefix = " └─ "
             break

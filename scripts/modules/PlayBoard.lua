@@ -932,6 +932,7 @@ function PlayBoard.setUp(settings, activeOpponents)
     local sequentialActions = {}
 
     for color, playBoard in pairs(PlayBoard.playBoards) do
+        Helper.dumpFunction("setUp", color)
         playBoard:_cleanUp(false, not settings.riseOfIx, not settings.immortality, settings.numberOfPlayers ~= 6)
 
         PlayBoard:_pruneHandsInExcess(playBoard.color, settings.numberOfPlayers <= 4 and settings.horizontalHandLayout)
@@ -961,6 +962,7 @@ function PlayBoard.setUp(settings, activeOpponents)
 
         if activeOpponents[color] then
             playBoard.opponent = activeOpponents[color]
+            Helper.dump("playBoard.opponent:", playBoard.opponent)
             if playBoard.opponent ~= "rival" then
                 playBoard.opponent = "human"
                 if color == "White" then
@@ -993,6 +995,8 @@ function PlayBoard.setUp(settings, activeOpponents)
             else
                 table.insert(sequentialActions, 1, Helper.partialApply(ScoreBoard.gainVictoryPoint, color, "commander", 4))
             end
+
+            playBoard:_createButtons()
 
             Helper.onceFramesPassed(1).doAfter(function ()
                 playBoard:_updatePlayerScore()
@@ -1861,6 +1865,9 @@ end
 
 ---
 function PlayBoard:_createButtons()
+    Helper.dumpFunction(self.color .. ":_createButtons")
+    Helper.dump("isRival:", PlayBoard.isRival(self.color))
+    Helper.dump("playerBoard.opponent:", self.opponent)
     self:_clearButtons()
 
     local chromae = {

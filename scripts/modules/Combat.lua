@@ -128,7 +128,7 @@ function Combat._transientSetUp(settings)
                     end
                 end
             end
-            Action.setContext("combat", nil)
+            Action.unsetContext("combat")
         end
     end)
 end

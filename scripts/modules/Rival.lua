@@ -36,15 +36,12 @@ function Rival.triggerHagalReaction(color)
         local rival = PlayBoard.getLeader(color)
 
         if rival.recallableSpies and #rival.recallableSpies == 2 then
-            Helper.dump("rival.recallableSpies:", rival.recallableSpies)
             for _, otherObservationPostName in ipairs(rival.recallableSpies) do
                 MainBoard.recallSpy(color, otherObservationPostName)
             end
-            -- FIXME Not enough for troop transfers?
-            Action.setContext("schemeTriggered", true)
+            rival.recallableSpies = {}
             rival.scheme(color)
             Helper.sleep(2)
-            Action.setContext("schemeTriggered", nil)
         end
 
         local hasSwordmaster = PlayBoard.hasSwordmaster(color)
@@ -121,7 +118,7 @@ end
 
 ---
 function Rival.prepare(color, settings)
-    if Hagal.getRivalCount() == 1 then
+    if Hagal.getRivalCount() == 2 then
         Action.resources(color, "water", 1)
         if settings.difficulty ~= "novice" then
             Action.troops(color, "supply", "garrison", 3)
@@ -237,9 +234,7 @@ function Rival.choose(color, topic)
         end
     end
 
-    if topic == "shuttleFleet" then
-        pickTwoBestFactions()
-    elseif topic == "machinations" then
+    if Helper.isElementOf(topic, { "shuttleFleet", "machinations", "propaganda" }) then
         pickTwoBestFactions()
     end
 end
@@ -328,17 +323,24 @@ Rival.glossuRabban = Helper.createClass(Rival, {
             local cost = InfluenceTrack.getAllianceCost(color, faction)
             if cost == 1 or cost == 2 then
                 Rival.influence(color, faction, 2)
+                break
             end
         end
     end,
 
     gainVictoryPoint = function (color, name)
-        return false
+        if Helper.endsWith(name, "Alliance") then
+            return Action.gainVictoryPoint(color, name)
+        else
+            return false
+        end
     end,
 
+    --[[
     gainObjective = function (color, objective)
         return false
     end,
+    ]]
 })
 
 Rival.stabanTuek = Helper.createClass(Rival, {
@@ -384,9 +386,11 @@ Rival.amberMetulli = Helper.createClass(Rival, {
         return false
     end,
 
+    --[[
     gainObjective = function (color, objective)
         return false
     end,
+    ]]
 })
 
 Rival.gurneyHalleck = Helper.createClass(Rival, {
@@ -476,6 +480,7 @@ Rival.jessica = Helper.createClass(Rival, {
             local cost = InfluenceTrack.getAllianceCost(color, faction)
             if cost == 1 then
                 Rival.influence(color, faction, 1)
+                break
             end
         end
     end,

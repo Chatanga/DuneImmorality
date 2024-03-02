@@ -58,7 +58,7 @@ function Hagal._transientSetUp(settings)
     Hagal.difficulty = settings.difficulty
     Hagal.riseOfIx = settings.riseOfIx
 
-    Hagal.selectedDifficulty = settings.difficulty
+    Hagal.selectedDifficulty = Hagal.numberOfPlayers == 1 and settings.difficulty or nil
 
     Helper.registerEventListener("phaseStart", function (phase)
         if phase == "combat" then
@@ -88,7 +88,7 @@ function Hagal.activate(phase, color)
         Hagal._lateActivate(phase, color).doAfter(function ()
             -- The leader selection already has an automatic end of turn when a leader is picked.
             if phase ~= "leaderSelection" then
-                if Hagal.getRivalCount() == 1 and Hagal.automated then
+                if Hagal.getRivalCount() == 1 and false then
                     Helper.onceTimeElapsed(1).doAfter(Helper.partialApply(TurnControl.endOfTurn, 1))
                 else
                     PlayBoard.createEndOfTurnButton(color)
@@ -227,10 +227,9 @@ function Hagal._getExpertDeploymentLimit(color)
         end
         n = math.max(0, 3 + otherColorMaxUnitCount - colorUnitCount)
     else
-        n = 666
+        n = 12
     end
-    Helper.dump("level3Conflict:", level3Conflict)
-    Helper.dump("n:", n)
+    Helper.dump("level3Conflict:", level3Conflict, "/ mentatOrHigher:", mentatOrHigher, "/ expertDeploymentLimit:", n)
     return n
 end
 

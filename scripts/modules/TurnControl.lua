@@ -392,10 +392,14 @@ end
 
 ---
 function TurnControl._notifyPlayerTurn(refreshing)
+    Helper.dumpFunction("TurnControl._notifyPlayerTurn", refreshing)
     local playerColor = TurnControl.players[TurnControl.currentPlayerLuaIndex]
     local player = Helper.findPlayerByColor(playerColor)
     if player then
-        if not player.seated and (not TurnControl.hotSeat or not TurnControl.assumeDirectControl(playerColor)) then
+        if  not player.seated and
+            (not PlayBoard.isRival(playerColor) or TurnControl.currentPhase == "leaderSelection") and
+            not TurnControl.assumeDirectControl(playerColor)
+        then
             broadcastToAll(I18N("noSeatedPlayer", { color = I18N(playerColor) }), Color.fromString("Pink"))
         end
         Helper.onceFramesPassed(1).doAfter(function ()
@@ -412,6 +416,7 @@ end
 
 function TurnControl.assumeDirectControl(color)
     local legitimatePlayers = TurnControl.getLegitimatePlayers(color)
+    Helper.dump("legitimatePlayers:", legitimatePlayers)
     if not Helper.isEmpty(legitimatePlayers) then
         legitimatePlayers[1].changeColor(color)
         return true
