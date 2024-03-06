@@ -5,9 +5,19 @@ local XmlUI = Helper.createClass()
 
 ---
 function XmlUI.new(holder, id, fields)
+    --[[
+        Important:
+            UI.setXmlTable(xml)
+            assert(UI.getXmlTable() == xml) -- Not Ok
+            -- Wait at least 1 frame.
+            assert(UI.getXmlTable() == xml) -- Ok
+
+        Changes made  directly by the user (e.g. checking a box)
+        won't be reflected in the retrieved XML though.
+    ]]
     local xmlUI = Helper.createClassInstance(XmlUI, {
         holder = holder,
-        xml = holder.UI.getXmlTable(), -- Why the retrieved XML is always stale (even after some time)?
+        xml = holder.UI.getXmlTable(),
         id = id,
         active = false,
         fields = fields
@@ -33,7 +43,7 @@ end
 ---
 function XmlUI:setButton(id, label, interactable)
     local element = XmlUI._findXmlElement(self.xml, id)
-    assert(element, "Unknown id: " .. id)
+    assert(element, "Unknown id: " .. tostring(id))
     XmlUI._setXmlButton(element, label)
     XmlUI._setXmlInteractable(element, interactable)
 end
@@ -41,7 +51,7 @@ end
 ---
 function XmlUI:setButtonI18N(id, key, interactable)
     local element = XmlUI._findXmlElement(self.xml, id)
-    assert(element, "Unknown id: " .. id)
+    assert(element, "Unknown id: " .. tostring(id))
     XmlUI._setXmlButtonI18N(element, key)
     XmlUI._setXmlInteractable(element, interactable)
 end
@@ -56,32 +66,43 @@ function XmlUI:fromUI(player, value, id)
                 return
             end
         end
-    else
+    elseif value == "False" or value == "True" then
         local on = value == "True"
         self.fields[id] = on
         return
+    else
+        self.fields[id] = value
+        return
     end
-    error("Unknown value: " ..tostring(value))
+    error("Unknown value: " .. tostring(value))
 end
 
 function XmlUI:toUI()
     local root =  XmlUI._findXmlElement(self.xml, self.id)
-    assert(root, "Unknown id: " .. self.id)
+    assert(root, "Unknown id: " .. tostring(self.id))
     root.attributes.active = self.active
     for name, value in pairs(self.fields) do
-        if not XmlUI._isEnumeration(name) then
+        if not XmlUI._isEnumeration(name) and not XmlUI._isRange(name) then
             local element = XmlUI._findXmlElement(self.xml, name)
-            assert(element, "Unknown id: " .. name)
-            if XmlUI._isActive(value) then
-                local values = self:_getEnumeration(name)
-                if values then
-                    XmlUI._setXmlDropdownOptions(element, values, value)
+            if element then
+                if XmlUI._isActive(value) then
+                    local values = self:_getEnumeration(name)
+                    local range = self:_getRange(name)
+                    if values then
+                        XmlUI._setXmlDropdownOptions(element, values, value)
+                    elseif range then
+                        XmlUI._setXmlSlider(element, range, value)
+                    elseif element.tag == "Toggle" then
+                        XmlUI._setXmlToggle(element, value)
+                    elseif element.tag == "Text" then
+                        XmlUI._setXmlText(element, value)
+                    end
+                    XmlUI._setXmlInteractable(element, true)
                 else
-                    XmlUI._setXmlToggle(element, value)
+                    XmlUI._setXmlInteractable(element, false)
                 end
-                XmlUI._setXmlInteractable(element, true)
             else
-                XmlUI._setXmlInteractable(element, false)
+                --log("Unknown id: " .. tostring(name))
             end
         end
     end
@@ -97,6 +118,16 @@ end
 ---
 function XmlUI:_getEnumeration(name)
     return self.fields[name .. "_all"]
+end
+
+---
+function XmlUI._isRange(name)
+    return name:sub(-6) == "_range"
+end
+
+---
+function XmlUI:_getRange(name)
+    return self.fields[name .. "_range"]
 end
 
 ---
@@ -136,10 +167,26 @@ function XmlUI._setXmlDropdownOptions(dropdown, optionValues, default)
 end
 
 ---
+function XmlUI._setXmlText(text, value)
+    assert(text)
+    assert(text.tag == "Text", text.tag)
+    text.value = value
+end
+
+---
 function XmlUI._setXmlToggle(toggle, on)
     assert(toggle)
     assert(toggle.tag == "Toggle", toggle.tag)
-    toggle.attributes.isOn = on and "True" or "False"
+    toggle.attributes.isOn = XmlUI._toBool(on)
+end
+
+---
+function XmlUI._setXmlSlider(slider, range, value)
+    assert(slider)
+    assert(slider.tag == "Slider", slider.tag)
+    slider.attributes.minValue = range.min
+    slider.attributes.maxValue = range.max
+    slider.attributes.value = value
 end
 
 ---
@@ -159,17 +206,17 @@ end
 ---
 function XmlUI._setXmlActive(xml, active)
     assert(xml)
-    xml.attributes.active = active and "True" or "False"
+    xml.attributes.active = XmlUI._toBool(active)
 end
 
 ---
 function XmlUI._setXmlInteractable(xml, interactable)
     assert(xml)
-    if xml.tag == "Dropdown" then
+    if xml.tag == "Dropdown" or xml.tag == "Slider" then
         -- FIXME Bidouille esthétique.
-        xml.attributes.active = interactable and "True" or "False"
+        xml.attributes.active = XmlUI._toBool(interactable)
     else
-        xml.attributes.interactable = interactable and "True" or "False"
+        xml.attributes.interactable = XmlUI._toBool(interactable)
     end
 end
 
@@ -190,6 +237,11 @@ function XmlUI._translate(node)
             XmlUI._translate(child)
         end
     end
+end
+
+---
+function XmlUI._toBool(value)
+    return value and "True" or "False"
 end
 
 return XmlUI

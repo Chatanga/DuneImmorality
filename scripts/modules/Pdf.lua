@@ -11,13 +11,13 @@ local Pdf = {
 }
 
 ---
-function Pdf.onLoad(state)
+function Pdf.onLoad()
     Pdf.fr = require("fr.Pdf")
     Pdf.en = require("en.Pdf")
 end
 
 ---
-function Pdf.setUp(settings)
+function Pdf.setUp()
     local locale = I18N.getLocale()
 
     if locale == "en" then
@@ -31,54 +31,14 @@ function Pdf.setUp(settings)
             Pdf._mututateBook(bookName, bookInfo, bookUrl)
         end)
     end
-
-    -- TODO better?
-    if (locale == "fr") then
-        getObjectFromGUID("e43180").flip()
-    end
 end
 
-function Pdf._mututateBook(bookName, info, url)
+function Pdf._mututateBook(_, info, url)
     --- We cannot create PDF ex nihilo, but need an existing PDF to be mutated.
-    getObjectFromGUID(info.guid).destruct()
-
-    local data = {
-        GUID = info.guid,
-        Name = "Custom_PDF",
-        Transform = {
-            posX = info.position.x,
-            posY = info.position.y,
-            posZ = info.position.z,
-            rotX = 0,
-            rotY = 180,
-            rotZ = 0,
-            scaleX = info.scale.x,
-            scaleY = info.scale.y,
-            scaleZ = info.scale.z,
-        },
-        GMNotes = bookName,
-        LayoutGroupSortIndex = 0,
-        Value = 0,
-        Locked = true,
-        Grid = true,
-        Snap = true,
-        IgnoreFoW = false,
-        MeasureMovement = false,
-        DragSelectable = true,
-        Autoraise = true,
-        Sticky = true,
-        Tooltip = true,
-        GridProjection = false,
-        HideWhenFaceDown = false,
-        Hands = false,
-        CustomPDF = {
-            PDFUrl = url,
-            PDFPassword = "",
-            PDFPage = 0,
-            PDFPageOffset = 0
-        },
-    }
-
+    local book = getObjectFromGUID(info.guid)
+    local data = book.getData()
+    data.CustomPDF.PDFUrl = url
+    book.destruct()
     spawnObjectData({ data = data })
 end
 

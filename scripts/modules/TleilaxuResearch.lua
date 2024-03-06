@@ -2,10 +2,11 @@ local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local Park = require("utils.Park")
 local I18N = require("utils.I18N")
+local Dialog = require("utils.Dialog")
 
 local Resource = Module.lazyRequire("Resource")
 local PlayBoard = Module.lazyRequire("PlayBoard")
-local DynamicBonus = Module.lazyRequire("DynamicBonus")
+local TurnControl = Module.lazyRequire("TurnControl")
 
 local TleilaxuResearch = {
     --[[
@@ -52,7 +53,8 @@ local TleilaxuResearch = {
 
 ---
 function TleilaxuResearch.onLoad(state)
-    Helper.append(TleilaxuResearch, Helper.resolveGUIDs(true, {
+
+    Helper.append(TleilaxuResearch, Helper.resolveGUIDs(false, {
         board = "d5c2db",
         TanksZone = "f5de09",
         tleilaxSpiceBonusToken = "46cd6b",
@@ -70,41 +72,46 @@ function TleilaxuResearch.onLoad(state)
         twoHelicesZone = "03e529"
     }))
 
-    Helper.noPhysicsNorPlay(TleilaxuResearch.board)
+    if TleilaxuResearch.board then
+        Helper.noPhysicsNorPlay(TleilaxuResearch.board)
 
-    local value = state.MainBoard and state.TleilaxuResearch.tleilaxSpiceBonusToken or 2
-    TleilaxuResearch.spiceBonus = Resource.new(TleilaxuResearch.tleilaxSpiceBonusToken, nil, "spice", value, "tleilaxTrack")
+        local value = (state and state.TleilaxuResearch and state.TleilaxuResearch.tleilaxSpiceBonusToken) or 2
+        TleilaxuResearch.spiceBonus = Resource.new(TleilaxuResearch.tleilaxSpiceBonusToken, nil, "spice", value)
+    end
 
     if state.settings and state.settings.immortality then
-        TleilaxuResearch._staticSetUp()
+        TleilaxuResearch._transientSetUp()
     end
 end
 
 ---
 function TleilaxuResearch.onSave(state)
-    state.TleilaxuResearch = {
-        spiceBonus = TleilaxuResearch.spiceBonus:get(),
-    }
+    if TleilaxuResearch.board then
+        state.TleilaxuResearch = {
+            spiceBonus = TleilaxuResearch.spiceBonus:get(),
+        }
+    end
 end
 
 ---
 function TleilaxuResearch.setUp(settings)
     if settings.immortality then
-        TleilaxuResearch._staticSetUp()
+        TleilaxuResearch._transientSetUp()
     else
         TleilaxuResearch._tearDown()
     end
 end
 
 ---
-function TleilaxuResearch._staticSetUp()
+function TleilaxuResearch._transientSetUp()
+
     TleilaxuResearch.researchTokenOrigin = TleilaxuResearch._getAveragePosition("researchTokenInitalPosition")
     TleilaxuResearch._generateResearchButtons()
 
     TleilaxuResearch.tleilaxTokenOrigin = TleilaxuResearch._getAveragePosition("tleilaxTokenInitalPosition")
     TleilaxuResearch._generateTleilaxButtons()
 
-    for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
+    for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
         TleilaxuResearch.tanksParks[color] = TleilaxuResearch._createTanksPark(color)
     end
     TleilaxuResearch._createTanksButton()
@@ -150,7 +157,7 @@ end
 function TleilaxuResearch._getAveragePosition(positionField)
     local p = Vector(0, 0, 0)
     local count = 0
-    for _, color in pairs(PlayBoard.getPlayBoardColors()) do
+    for _, color in pairs(PlayBoard.getActivePlayBoardColors()) do
         p = p + PlayBoard.getContent(color)[positionField]
         count = count + 1
     end
@@ -183,7 +190,7 @@ function TleilaxuResearch._generateResearchButtons()
             if jump.x == 1 and math.abs(jump.z) <= 1 then
                 leader.research(color, jump)
             else
-                Player[color].showConfirmDialog(I18N("forbiddenMove"), function()
+                Dialog.showConfirmDialog(color, I18N("forbiddenMove"), function ()
                     leader.research(color, jump)
                 end)
             end
@@ -191,12 +198,12 @@ function TleilaxuResearch._generateResearchButtons()
     end
 
     Helper.createAnchoredAreaButton(TleilaxuResearch.twoHelicesZone, 0.6, 0.1, I18N("progressAfterResearchTrack"), PlayBoard.withLeader(function (_, color, _)
-        if TleilaxuResearch.hasReachedOneHelix(color) then
+        if TleilaxuResearch.hasReachedTwoHelices(color) then
             local leader = PlayBoard.getLeader(color)
             local specialJump = Vector(1, 0, 0)
             leader.research(color, specialJump)
         else
-            broadcastToColor(I18N('noTouch'), color, "Purple")
+            Dialog.broadcastToColor(I18N('noTouch'), color, "Purple")
         end
     end))
 end
@@ -266,11 +273,12 @@ function TleilaxuResearch._advanceResearch(color, jump, withBenefits)
                 end
 
                 if researchCellBenefits.solariToBeetle then
-                    Player[color].showConfirmDialog(I18N("confirmSolarisToBeetles"), function()
-                        if leader.resources(color, "solari", -7) then
+                    if PlayBoard.getResource(color, "solari"):get() >= 7 then
+                        Dialog.showConfirmDialog(color, I18N("confirmSolarisToBeetles"), function ()
+                            leader.resources(color, "solari", -7)
                             leader.beetle(color, 2)
-                        end
-                    end)
+                        end)
+                    end
                 end
             end)
 
@@ -288,12 +296,19 @@ end
 
 ---
 function TleilaxuResearch.hasReachedOneHelix(color)
-    return TleilaxuResearch.getTokenCellPosition(color).x >= 4
+    return TleilaxuResearch.getBestResearch(color) >= 4
 end
 
 ---
 function TleilaxuResearch.hasReachedTwoHelices(color)
-    return TleilaxuResearch.getTokenCellPosition(color).x == 8
+    return TleilaxuResearch.getBestResearch(color) == 8
+end
+
+---
+function TleilaxuResearch.getBestResearch(color)
+    local bestResearch = 0
+    bestResearch = TleilaxuResearch.getTokenCellPosition(color).x
+    return bestResearch
 end
 
 ---
@@ -327,7 +342,7 @@ function TleilaxuResearch._generateTleilaxButtons()
             local jump = math.min(1, level - tokenLevel)
 
             if jump < 0 then
-                Player[color].showConfirmDialog(I18N("forbiddenMove"), function()
+                Dialog.showConfirmDialog(color, I18N("forbiddenMove"), function ()
                     TleilaxuResearch._advanceTleilax(color, jump, false).doAfter(function ()
                         leader.beetle(color, jump)
                     end)
@@ -343,7 +358,6 @@ end
 ---@param jump integer
 ---@return Continuation
 function TleilaxuResearch.advanceTleilax(color, jump)
-    --Helper.dumpFunction("TleilaxuResearch.advanceTleilax", color, jump)
     if jump >= 1 then
         return Helper.repeatChainedAction(jump, function ()
             return TleilaxuResearch._advanceTleilax(color, 1, true)
@@ -451,13 +465,13 @@ function TleilaxuResearch._createTanksPark(color)
         end
     end
 
-    local zone = Park.createBoundingZone(0, Vector(0.25, 0.25, 0.25), slots)
+    local zone = Park.createTransientBoundingZone(0, Vector(0.25, 0.25, 0.25), slots)
 
     return Park.createPark(
         color .. "Tanks",
         slots,
         Vector(0, 0, 0),
-        zone,
+        { zone },
         { "Troop", color },
         nil,
         false,

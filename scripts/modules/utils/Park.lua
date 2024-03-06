@@ -4,30 +4,33 @@ local Helper = require("utils.Helper")
 local Park = {}
 
 ---
-function Park.createCommonPark(tags, slots, margins, rotation)
-    local zone = Park.createBoundingZone(0, margins, slots)
+function Park.createCommonPark(tags, slots, margins, rotation, rotationSnap, zones)
+    assert(#slots > 0)
+    local finalZones = (zones and #zones > 0) and zones or { Park.createTransientBoundingZone(0, margins, slots) }
+    local name = Helper.stringConcat(tags) .. "_" .. finalZones[1].getGUID()
 
-    local name = Helper.stringConcat(tags)
-
-    local p = slots[1]:copy()
-    p:setAt("y", 1)
-    Helper.createTransientAnchor(name .. "Park", p).doAfter(function (anchor)
-        local snapPoints = {}
-        for _, slot in ipairs(slots) do
-            table.insert(snapPoints, Helper.createRelativeSnapPoint(anchor, slot, false, tags))
-        end
-        anchor.setSnapPoints(snapPoints)
-    end)
-
-    return Park.createPark(
+    local park = Park.createPark(
         name,
         slots,
-        rotation or Vector(0, 0, 0),
-        zone,
+        rotation,
+        finalZones,
         tags,
         nil,
         false,
         true)
+
+    local p = slots[1]:copy()
+    p:setAt("y", 1+1)
+    Helper.createTransientAnchor(name .. "Park", p).doAfter(function (anchor)
+        park.anchor = anchor
+        local snapPoints = {}
+        for _, slot in ipairs(slots) do
+            table.insert(snapPoints, Helper.createRelativeSnapPoint(anchor, slot, rotationSnap or false, tags))
+        end
+        anchor.setSnapPoints(snapPoints)
+    end)
+
+    return park
 end
 
 --[[
@@ -39,15 +42,15 @@ end
     name: a unique name for the park.
     slots: the slot positions.
     rotation: the optional rotation to apply to parked objects.
-    zone: a zone to test if an object is in the park.
+    zones: one or more zones to test if an object is in the park.
     tags: restriction on the park content.
     description: an optional restriction on the park content.
     locked: should the park content be locked?
 ]]
 ---
-function Park.createPark(name, slots, rotation, zone, tags, description, locked, smooth)
+function Park.createPark(name, slots, rotation, zones, tags, description, locked, smooth)
     assert(#slots > 0, "No slot provided for new park.")
-    assert(zone, "No park zone provided.")
+    assert(zones and #zones > 0, "No park zones provided.")
 
     Helper.setSharedTable(name, {})
 
@@ -57,7 +60,7 @@ function Park.createPark(name, slots, rotation, zone, tags, description, locked,
         name = name,
         slots = slots,
         rotation = rotation,
-        zone = zone,
+        zones = zones,
         tags = tags,
         tagUnion = false,
         description = description,
@@ -116,9 +119,13 @@ function Park.putObjects(objects, toPark)
 end
 
 ---
-function Park.putObjectFromBag(objectBag, toPark)
+function Park.putObjectFromBag(objectBag, toPark, count)
     assert(objectBag, "No object bag provided.")
-    return Park._putHolders({{bag = objectBag}}, toPark) > 0
+    local holders = {}
+    for _ = 1, (count or 1) do
+        table.insert(holders, {bag = objectBag})
+    end
+    return Park._putHolders(holders, toPark) == (count or 1)
 end
 
 ---
@@ -174,7 +181,7 @@ end
 ---
 function Park.waitStabilisation(park)
     local continuation = Helper.createContinuation("Park.waitStabilisation")
-    Wait.condition(continuation.run, function()
+    Wait.condition(continuation.run, function ()
         continuation.tick()
         local objectsInTransit = Helper.getSharedTable(park.name)
         return #objectsInTransit == 0
@@ -183,17 +190,29 @@ function Park.waitStabilisation(park)
 end
 
 ---
+function Park.getZones(park, zone)
+    return park.zones
+end
+
+---
+function Park.getPosition(park)
+    return park.zones[1].getPosition()
+end
+
+---
 function Park.getObjects(park)
     assert(park)
     local objects = {}
-    for _, object in ipairs(park.zone.getObjects()) do
-        local objectsInTransit = Helper.getSharedTable(park.name)
-        if not Helper.tableContains(objectsInTransit, object) then
-            local isOneOfThem =
-                (park.tagUnion and Helper.hasAnyTag(object, park.tags) or Helper.hasAllTags(object, park.tags)) and
-                (not Helper.getID(park) or Helper.getID(park) == Helper.getID(object))
-            if isOneOfThem then
-                table.insert(objects, object)
+    for _, zone in ipairs(park.zones) do
+        for _, object in ipairs(zone.getObjects()) do
+            local objectsInTransit = Helper.getSharedTable(park.name)
+            if not Helper.tableContains(objectsInTransit, object) then
+                local isOneOfThem =
+                    (park.tagUnion and Helper.hasAnyTag(object, park.tags) or Helper.hasAllTags(object, park.tags)) and
+                    (not Helper.getID(park) or Helper.getID(park) == Helper.getID(object))
+                if isOneOfThem then
+                    table.insert(objects, object)
+                end
             end
         end
     end
@@ -224,9 +243,11 @@ function Park._instantTidyUp(park, newObjectsInTransit)
     local freeObjects = {}
     local freeObjectCount = 0
     for _, object in ipairs(Park.getObjects(park)) do
-        freeObjects[object] = true
-        freeObjectCount = freeObjectCount + 1
-        newObjectsInTransit[object] = nil
+        if object.resting then
+            freeObjects[object] = true
+            freeObjectCount = freeObjectCount + 1
+            newObjectsInTransit[object] = nil
+        end
     end
 
     while freeSlotCount > 0 and freeObjectCount > 0 do
@@ -263,7 +284,9 @@ function Park._instantTidyUp(park, newObjectsInTransit)
                 freeObjectCount = freeObjectCount - 1
 
                 nearestObject.setPosition(slot)
-                nearestObject.setRotation(park.rotation:copy())
+                if park.rotation then
+                    nearestObject.setRotation(park.rotation:copy())
+                end
                 nearestObject.setLock(park.locked)
             end
         end
@@ -327,7 +350,7 @@ function Park.findEmptySlots(park)
     return freeSlots
 end
 
---- TODO Unify with Helper.deepCopy which doesn't use copy?
+--- TODO Unify with Helper.deepCopy which doesn't use copy?
 function Park.deepCopy(c)
     local copy = {}
     for i, e in ipairs(c) do
@@ -337,7 +360,7 @@ function Park.deepCopy(c)
 end
 
 ---
-function Park.createBoundingZone(rotationAroundY, margins, points)
+function Park.createTransientBoundingZone(rotationAroundY, margins, points)
     assert(#points > 0)
 
     local barycenter = nil
@@ -378,9 +401,9 @@ function Park.createBoundingZone(rotationAroundY, margins, points)
         position = barycenter,
         rotation = Vector(0, rotationAroundY, 0),
         scale = {
-            math.max(1, sx + margins.x),
-            math.max(1, sy + margins.y),
-            math.max(1, sz + margins.z)}
+            math.max(0.1, sx + margins.x),
+            math.max(0.1, sy + margins.y),
+            math.max(0.1, sz + margins.z)}
     })
 
     Helper.markAsTransient(zone)

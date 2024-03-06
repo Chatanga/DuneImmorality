@@ -43,6 +43,8 @@ local vp = CardEffect.vp
 local draw = CardEffect.draw
 local shipment = CardEffect.shipment
 local mentat = CardEffect.mentat
+local control = CardEffect.control
+local voice = CardEffect.voice
 local perDreadnoughtInConflict = CardEffect.perDreadnoughtInConflict
 local perSwordCard = CardEffect.perSwordCard
 local perFremen = CardEffect.perFremen
@@ -60,6 +62,7 @@ local anyAlliance = CardEffect.anyAlliance
 local oneHelix = CardEffect.oneHelix
 local twoHelices = CardEffect.twoHelices
 local winner = CardEffect.winner
+local swordmaster = CardEffect.swordmaster
 ]]
 
 ---@param context Context
@@ -79,12 +82,9 @@ function CardEffect._dispatch(selector, expression)
         local value = CardEffect.evaluate(context, expression)
         local leader = context.player
         local call = function (method, ...)
-            local name = leader.name or "?"
             if leader[method] then
-                --Helper.dump(name, "has a method", method)
-                leader[method](...)
+                return leader[method](...)
             else
-                --Helper.dump(name, "has no method", method)
                 return false
             end
         end
@@ -112,9 +112,7 @@ function CardEffect._dispatch(selector, expression)
             end
             return call("influence", color, faction, value)
         elseif selector == "vp" then
-            for _ = 1, value do
-                call("gainVictoryPoint", color, context.cardName)
-            end
+            call("gainVictoryPoint", color, context.cardName, value)
             return true
         elseif selector == "control" then
             return call("control", color, expression)
@@ -135,6 +133,9 @@ function CardEffect._dispatch(selector, expression)
             else
                 return false
             end
+        elseif selector == "voice" then
+            assert(not value, tostring(value))
+            return call("pickVoice", color)
         else
             error("Unknown selector: " .. tostring(selector))
         end
@@ -221,6 +222,10 @@ function CardEffect.control(space)
     return CardEffect._dispatch('control', space)
 end
 
+function CardEffect.voice(expression)
+    return CardEffect._dispatch('voice', expression)
+end
+
 -- Functors
 
 function CardEffect.perDreadnoughtInConflict(expression)
@@ -266,20 +271,14 @@ end
 
 function CardEffect.choice(n, options)
     return function (context)
-        if not PlayBoard.getLeader(context.color).choose(context.color) then
-            local shuffledOptions = Helper.shallowCopy(options)
-            Helper.shuffle(shuffledOptions)
-            for i = 1, n do
-                shuffledOptions[i](context)
-            end
-        end
+        PlayBoard.getLeader(context.color).choose(context.color, context.cardName)
         return true
     end
 end
 
 function CardEffect.optional(options)
     return function (context)
-        if not PlayBoard.getLeader(context.color).decide(context.color) then
+        if PlayBoard.getLeader(context.color).decide(context.color, context.cardName) then
             for  _, option in ipairs(options) do
                 if not option(context) then
                     return false
@@ -294,52 +293,44 @@ end
 
 -- Filter
 
-function CardEffect.seat(expression)
+function CardEffect._filter(expression, predicate)
     return function (context)
-        return PlayBoard.hasHighCouncilSeat(context.color) and expression or 0
+        return predicate(context) and CardEffect.evaluate(context, expression) or 0
     end
+end
+
+function CardEffect.seat(expression)
+    return CardEffect._filter(expression, function (context)
+        return PlayBoard.hasHighCouncilSeat(context.color)
+    end)
 end
 
 function CardEffect.fremenBond(expression)
-    return function (context)
+    return CardEffect._filter(expression, function (context)
         for _, card in ipairs(Helper.concatTables(context.playedCards, context.revealedCards)) do
             if card ~= context.card and card.factions and Helper.isElementOf("fremen", card.factions) then
-                return CardEffect.evaluate(context, expression)
+                return true
             end
         end
-        return 0
-    end
+        return false
+    end)
 end
 
 function CardEffect.agentInEmperorSpace(expression)
-    return function (context)
+    return CardEffect._filter(expression, function (context)
         for _, space in ipairs(MainBoard.getEmperorSpaces()) do
             if MainBoard.hasAgentInSpace(space, context.color) then
-                return CardEffect.evaluate(context, expression)
+                return true
             end
         end
-        return 0
-    end
+        return false
+    end)
 end
 
 function CardEffect._alliance(faction, expression)
-    return function (context)
-        if InfluenceTrack.hasAlliance(context.color, faction) then
-            return CardEffect.evaluate(context, expression)
-        else
-            return 0
-        end
-    end
-end
-
-function CardEffect._friendShip(faction, expression)
-    return function (context)
-        if InfluenceTrack.hasFriendship(context.color, faction) then
-            return CardEffect.evaluate(context, expression)
-        else
-            return 0
-        end
-    end
+    return CardEffect._filter(expression, function (context)
+        return InfluenceTrack.hasAlliance(context.color, faction)
+    end)
 end
 
 function CardEffect.emperorAlliance(expression)
@@ -358,6 +349,12 @@ function CardEffect.fremenAlliance(expression)
     return CardEffect._alliance("fremen", expression)
 end
 
+function CardEffect._friendShip(faction, expression)
+    return CardEffect._filter(expression, function (context)
+        return InfluenceTrack.hasFriendship(context.color, faction)
+    end)
+end
+
 function CardEffect.fremenFriendship(expression)
     return CardEffect._friendShip("fremen", expression)
 end
@@ -370,29 +367,27 @@ function CardEffect.anyAlliance(expression)
 end
 
 function CardEffect.oneHelix(expression)
-    return function (context)
-        if TleilaxuResearch.hasReachedOneHelix(context.color) then
-            return CardEffect.evaluate(context, expression)
-        else
-            return 0
-        end
-    end
+    return CardEffect._filter(expression, function (context)
+        return TleilaxuResearch.hasReachedOneHelix(context.color)
+    end)
 end
 
 function CardEffect.twoHelices(expression)
-    return function (context)
-        if TleilaxuResearch.hasReachedTwoHelices(context.color) then
-            return CardEffect.evaluate(context, expression)
-        else
-            return 0
-        end
-    end
+    return CardEffect._filter(expression, function (context)
+        return TleilaxuResearch.hasReachedTwoHelices(context.color)
+    end)
 end
 
 function CardEffect.winner(expression)
     return function ()
         error("TODO")
     end
+end
+
+function CardEffect.swordmaster(expression)
+    return CardEffect._filter(expression, function (context)
+        return PlayBoard.hasSwordmaster(context.color)
+    end)
 end
 
 return CardEffect

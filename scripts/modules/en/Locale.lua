@@ -145,7 +145,7 @@ return {
     sendAgentTo = "Send agent to ➤ {space}",
     progressOnInfluenceTrack = "Progress on {withFaction} influence track",
     recallYourFreighter = "Recall your freighter",
-    progressOnShipmentTrack = "Progress on the shipment track",
+    progressOnShippingTrack = "Progress on the shipment track",
     pickBonus = "Pick your bonus: {bonus}",
     troopsAndInfluence = "troops and influnce",
     forbiddenMove = "Forbidden move. Do you confirm it neverless?",

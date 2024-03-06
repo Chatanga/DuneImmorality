@@ -4,9 +4,9 @@ local Helper = require("utils.Helper")
 -- Exceptional Immediate require for the sake of aliasing.
 local CardEffect = require("CardEffect")
 
-local Types = Module.lazyRequire("Types")
 local PlayBoard = Module.lazyRequire("PlayBoard")
-local MainBoard = Module.lazyRequire("MainBoard")
+local Types = Module.lazyRequire("Types")
+local Action = Module.lazyRequire("Action")
 
 -- Function aliasing for a more readable code.
 local persuasion = CardEffect.persuasion
@@ -45,6 +45,7 @@ local anyAlliance = CardEffect.anyAlliance
 local oneHelix = CardEffect.oneHelix
 local twoHelices = CardEffect.twoHelices
 local winner = CardEffect.winner
+local swordmaster = CardEffect.swordmaster
 
 local ConflictCard = {
     skirmishA = {level = 1, base = true, rewards = {{vp(1)}, {intrigue(1), solari(2)}, {solari(2)}}},
@@ -76,7 +77,7 @@ local ConflictCard = {
 function ConflictCard.collectReward(color, conflictName, rank)
     Types.assertIsInRange(1, 3, rank)
     local conflict = ConflictCard[conflictName]
-    assert(conflict, "Unknown conflict: ", conflictName)
+    assert(conflict, "Unknown conflict: " .. tostring(conflictName))
     local rewards = conflict.rewards[rank]
 
     local context = {
@@ -85,12 +86,16 @@ function ConflictCard.collectReward(color, conflictName, rank)
         cardName = conflictName,
     }
 
-    Helper.dump("Collecting rewards for conflict", conflictName, "at rank", rank, "...")
     for _, reward in ipairs(rewards) do
         log(reward)
         CardEffect.evaluate(context, reward)
     end
-    Helper.dump("... end")
+end
+
+function ConflictCard.getLevel(conflictName)
+    local conflict = ConflictCard[conflictName]
+    assert(conflict, conflictName)
+    return conflict.level
 end
 
 function ConflictCard.cleanUpConflict(color, conflictName)

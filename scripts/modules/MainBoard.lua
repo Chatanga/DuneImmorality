@@ -2,11 +2,13 @@ local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local Park = require("utils.Park")
 local I18N = require("utils.I18N")
+local Dialog = require("utils.Dialog")
 
 local Resource = Module.lazyRequire("Resource")
 local Types = Module.lazyRequire("Types")
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
+local ShippingTrack = Module.lazyRequire("ShippingTrack")
 local TechMarket = Module.lazyRequire("TechMarket")
 local Combat = Module.lazyRequire("Combat")
 local Hagal = Module.lazyRequire("Hagal")
@@ -16,8 +18,9 @@ local MainBoard = {}
 
 ---
 function MainBoard.onLoad(state)
-    Helper.append(MainBoard, Helper.resolveGUIDs(true, {
-        board = "483a1a", -- Inner state: "21cc52"
+    Helper.append(MainBoard, Helper.resolveGUIDs(false, {
+        board = "483a1a",
+        otherBoard = "21cc52",
         factions = {
             emperor = {
                 alliance = "13e990",
@@ -158,7 +161,7 @@ function MainBoard.onLoad(state)
         MainBoard.spaces = Helper.map(state.MainBoard.spaceGUIDs, function (_, guid)
             return { zone = getObjectFromGUID(guid) }
         end)
-        MainBoard._staticSetUp(state.MainBoard.settings)
+        MainBoard._transientSetUp(state.MainBoard.settings)
     end
 end
 
@@ -222,7 +225,7 @@ function MainBoard.setUp(settings)
 end
 
 ---
-function MainBoard._staticSetUp(settings)
+function MainBoard._transientSetUp(settings)
     MainBoard.highCouncilPark = MainBoard:_createHighCouncilPark(MainBoard.highCouncilZone)
 
     for name, space in pairs(MainBoard.spaces) do
@@ -273,7 +276,7 @@ function MainBoard._staticSetUp(settings)
             -- Recalling dreadnoughts in controlable spaces.
             for _, bannerZone in pairs(MainBoard.banners) do
                 for _, dreadnought in ipairs(Helper.filter(bannerZone.getObjects(), Types.isDreadnought)) do
-                    for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
+                    for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
                         if dreadnought.hasTag(color) then
                             if dreadnought.hasTag("toBeRecalled") then
                                 dreadnought.removeTag("toBeRecalled")

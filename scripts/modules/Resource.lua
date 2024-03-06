@@ -1,8 +1,10 @@
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local I18N = require("utils.I18N")
+local Dialog = require("utils.Dialog")
 
 local PlayBoard = Module.lazyRequire("PlayBoard")
+local Types = Module.lazyRequire("Types")
 
 local Resource = Helper.createClass(nil, {
     MIN_VALUE = 0,
@@ -12,6 +14,10 @@ local Resource = Helper.createClass(nil, {
 
 ---
 function Resource.new(token, color, resourceName, value, location)
+    assert(token)
+    Types.assertIsResourceName(resourceName)
+    Types.assertIsPositiveInteger(value)
+
     token.interactable = false
 
     local resource = Helper.createClassInstance(Resource, {
@@ -120,7 +126,7 @@ end
 ---
 function Resource:_changeValue(color, altClick)
     if self.color and color ~= self.color then
-        broadcastToColor(I18N("noTouch"), color, color)
+        Dialog.broadcastToColor(I18N("noTouch"), color, color)
         return
     end
 
@@ -135,7 +141,7 @@ function Resource:_changeValue(color, altClick)
             Wait.stop(self.laggingUpdate)
         end
 
-        self.laggingUpdate = Wait.time(function()
+        self.laggingUpdate = Wait.time(function ()
             local delta = self.value - self.laggingValue
 
             if self.color then

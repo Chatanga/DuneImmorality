@@ -5,7 +5,7 @@ local I18N = require("utils.I18N")
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local TechMarket = Module.lazyRequire("TechMarket")
 
-local ShipmentTrack = {
+local ShippingTrack = {
     initialFreighterPositions = {
         Yellow = Helper.getHardcodedPositionFromGUID('8fa76f', 8.999577, 0.664093435, 2.85036969),
         Green = Helper.getHardcodedPositionFromGUID('34281d', 8.449565, 0.6641097, 2.85037446),
@@ -15,8 +15,8 @@ local ShipmentTrack = {
 }
 
 ---
-function ShipmentTrack.onLoad(state)
-    Helper.append(ShipmentTrack, Helper.resolveGUIDs(true, {
+function ShippingTrack.onLoad(state)
+    Helper.append(ShippingTrack, Helper.resolveGUIDs(true, {
         levelSlots = {
             "1eeba7",
             "4c40e8",
@@ -34,54 +34,54 @@ function ShipmentTrack.onLoad(state)
     }))
 
     if state.settings and state.settings.riseOfIx then
-        ShipmentTrack._staticSetUp()
+        ShippingTrack._transientSetUp(state.settings)
     end
 end
 
 ---
-function ShipmentTrack.setUp(settings)
+function ShippingTrack.setUp(settings)
     if settings.riseOfIx then
-        ShipmentTrack._staticSetUp()
+        ShippingTrack._transientSetUp(settings)
     else
-        ShipmentTrack._tearDown()
+        ShippingTrack._tearDown()
     end
 end
 
 ---
-function ShipmentTrack._staticSetUp()
-    for i, levelSlot in ipairs(ShipmentTrack.levelSlots) do
-        ShipmentTrack._createLevelButton(i - 1, levelSlot)
+function ShippingTrack._transientSetUp(settings)
+    for i, levelSlot in ipairs(ShippingTrack.levelSlots) do
+        ShippingTrack._createLevelButton(i - 1, levelSlot)
     end
 
-    for bonusName, bonusSlot in pairs(ShipmentTrack.bonusSlots) do
-        ShipmentTrack._createBonusButton(bonusName, bonusSlot)
+    for bonusName, bonusSlot in pairs(ShippingTrack.bonusSlots) do
+        ShippingTrack._createBonusButton(bonusName, bonusSlot)
     end
 end
 
 ---
-function ShipmentTrack._tearDown()
-    for _, levelSlot in ipairs(ShipmentTrack.levelSlots) do
+function ShippingTrack._tearDown()
+    for _, levelSlot in ipairs(ShippingTrack.levelSlots) do
         levelSlot.destruct()
     end
 
-    for _, bonusSlot in pairs(ShipmentTrack.bonusSlots) do
+    for _, bonusSlot in pairs(ShippingTrack.bonusSlots) do
         bonusSlot.destruct()
     end
 
-    for _, bonusSlot in pairs(ShipmentTrack.ignoredBonusSlots) do
+    for _, bonusSlot in pairs(ShippingTrack.ignoredBonusSlots) do
         bonusSlot.destruct()
     end
 end
 
 ---
-function ShipmentTrack._createLevelButton(level, levelSlot)
+function ShippingTrack._createLevelButton(level, levelSlot)
     local tooltip = level == 0
         and I18N("recallYourFreighter")
         or I18N("progressOnShipmentTrack")
-    local ground = levelSlot.getPosition().y - 0.5
+    local ground = levelSlot.getPosition().y- 0.1
     Helper.createAnchoredAreaButton(levelSlot, ground, 0.2, tooltip, PlayBoard.withLeader(function (_, color, _)
         local leader = PlayBoard.getLeader(color)
-        local freighterLevel = ShipmentTrack.getFreighterLevel(color)
+        local freighterLevel = ShippingTrack.getFreighterLevel(color)
         if freighterLevel < level then
             leader.advanceFreighter(color, level - freighterLevel)
         elseif level == 0 then
@@ -91,11 +91,11 @@ function ShipmentTrack._createLevelButton(level, levelSlot)
 end
 
 ---
-function ShipmentTrack._createBonusButton(bonusName, bonusSlot)
+function ShippingTrack._createBonusButton(bonusName, bonusSlot)
     local tooltip = I18N("pickBonus", { bonus = I18N(bonusName) })
     local ground = bonusSlot.getPosition().y - 0.5
     local callbackName = Helper.toCamelCase("_pick", bonusName, "bonus")
-    local callback = ShipmentTrack[callbackName]
+    local callback = ShippingTrack[callbackName]
     assert(callback, "No callback named " .. callbackName)
     Helper.createAnchoredAreaButton(bonusSlot, ground, 0.2, tooltip, PlayBoard.withLeader(function (_, color, _)
         callback(color)
@@ -103,31 +103,31 @@ function ShipmentTrack._createBonusButton(bonusName, bonusSlot)
 end
 
 ---
-function ShipmentTrack.getFreighterLevel(color)
+function ShippingTrack.getFreighterLevel(color)
     local p = PlayBoard.getContent(color).freighter.getPosition()
-    return math.floor((p.z - ShipmentTrack.initialFreighterPositions[color].z) / 1.1 + 0.5)
+    return math.floor((p.z - ShippingTrack.initialFreighterPositions[color].z) / 1.1 + 0.5)
 end
 
 ---
-function ShipmentTrack._setFreighterPositionSmooth(color, level)
-    local p = ShipmentTrack.initialFreighterPositions[color]:copy()
+function ShippingTrack._setFreighterPositionSmooth(color, level)
+    local p = ShippingTrack.initialFreighterPositions[color]:copy()
     p:setAt('z', p.z + 1.1 * level)
     PlayBoard.getContent(color).freighter.setPositionSmooth(p, false, true)
 end
 
 ---
-function ShipmentTrack._freighterGoUp(color, count)
+function ShippingTrack._freighterGoUp(color, count)
     Helper.repeatMovingAction(PlayBoard.getContent(color).freighter, count, function ()
-        ShipmentTrack.freighterUp(color)
+        ShippingTrack.freighterUp(color)
     end)
 end
 
 ---
-function ShipmentTrack.freighterUp(color, baseCount)
-    local level = ShipmentTrack.getFreighterLevel(color)
+function ShippingTrack.freighterUp(color, baseCount)
+    local level = ShippingTrack.getFreighterLevel(color)
     local count = math.min(baseCount or 1, 3 - level)
     if count > 0 then
-        ShipmentTrack._setFreighterPositionSmooth(color, level + count)
+        ShippingTrack._setFreighterPositionSmooth(color, level + count)
         return true
     else
         return false
@@ -135,10 +135,10 @@ function ShipmentTrack.freighterUp(color, baseCount)
 end
 
 ---
-function ShipmentTrack.freighterReset(color)
-    local level = ShipmentTrack.getFreighterLevel(color)
+function ShippingTrack.freighterReset(color)
+    local level = ShippingTrack.getFreighterLevel(color)
     if level > 0 then
-        ShipmentTrack._setFreighterPositionSmooth(color, 0)
+        ShippingTrack._setFreighterPositionSmooth(color, 0)
         if level >= 3 then
             TechMarket.registerAcquireTechOption(color, "freighterTechBuyOption", "spice", 2)
         end
@@ -149,10 +149,10 @@ function ShipmentTrack.freighterReset(color)
 end
 
 ---
-function ShipmentTrack._pickSolariBonus(color)
+function ShippingTrack._pickSolarisBonus(color)
     local leader = PlayBoard.getLeader(color)
     leader.resources(color, "solari", 5)
-    for _, otherColor in ipairs(PlayBoard.getPlayBoardColors()) do
+    for _, otherColor in ipairs(PlayBoard.getActivePlayBoardColors()) do
         if otherColor ~= color then
             local otherLeader = PlayBoard.getLeader(otherColor)
             otherLeader.resources(otherColor, "solari", 1)
@@ -161,13 +161,13 @@ function ShipmentTrack._pickSolariBonus(color)
 end
 
 ---
-function ShipmentTrack._pickSpiceBonus(color)
+function ShippingTrack._pickSpiceBonus(color)
     local leader = PlayBoard.getLeader(color)
     leader.resources(color, "spice", 2)
 end
 
 ---
-function ShipmentTrack._pickTroopsAndInfluenceBonus(color)
+function ShippingTrack._pickTroopsAndInfluenceBonus(color)
     local leader = PlayBoard.getLeader(color)
     local troopAmount = 2
     if PlayBoard.hasTech(color, "troopTransports") then
@@ -178,4 +178,4 @@ function ShipmentTrack._pickTroopsAndInfluenceBonus(color)
     leader.unsetContext("troopTransports")
 end
 
-return ShipmentTrack
+return ShippingTrack

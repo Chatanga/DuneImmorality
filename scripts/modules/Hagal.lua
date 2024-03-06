@@ -11,7 +11,7 @@ local Action = Module.lazyRequire("Action")
 local HagalCard = Module.lazyRequire("HagalCard")
 local Combat = Module.lazyRequire("Combat")
 local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
-local ShipmentTrack = Module.lazyRequire("ShipmentTrack")
+local ShippingTrack = Module.lazyRequire("ShippingTrack")
 local TechMarket = Module.lazyRequire("TechMarket")
 local ConflictCard = Module.lazyRequire("ConflictCard")
 local MainBoard = Module.lazyRequire("MainBoard")
@@ -148,11 +148,14 @@ function Hagal.activate(phase, color)
     -- A delay before and after the action, to let the human(s) see the progress.
     Helper.onceTimeElapsed(1).doAfter(function ()
         Hagal._lateActivate(phase, color).doAfter(function ()
-            if Hagal.getRivalCount() == 1 then
-                Helper.onceTimeElapsed(1).doAfter(TurnControl.endOfTurn)
-            else
-                PlayBoard.createEndOfTurnButton(color)
-            end
+            -- The leader selection already has an automatic end of turn when a leader is picked.
+            if phase ~= "leaderSelection" then
+		    if Hagal.getRivalCount() == 1 then
+		        Helper.onceTimeElapsed(1).doAfter(TurnControl.endOfTurn)
+		    else
+		        PlayBoard.createEndOfTurnButton(color)
+		    end
+		end
         end)
     end)
 end
@@ -181,7 +184,7 @@ function Hagal._lateActivate(phase, color)
     elseif phase == "endgame" then
         continuation.run()
     else
-        error("Unknown phase: " .. phase)
+        error("Unknown phase: " .. tostring(phase))
     end
 
     return continuation
@@ -198,8 +201,8 @@ end
 function Hagal._collectReward(color)
     local continuation = Helper.createContinuation("Hagal._collectReward")
     Helper.onceFramesPassed(1).doAfter(function ()
-        local conflictName = Combat.getCurrentConflictName()
         local rank = Combat.getRank(color).value
+        local conflictName = Combat.getTurnConflictName()
         ConflictCard.collectReward(color, conflictName, rank)
         if rank == 1 then
             local leader = PlayBoard.getLeader(color)
@@ -283,9 +286,7 @@ end
 function Hagal._doActivateFirstValidCard(color, action, n, continuation)
     local emptySlots = Park.findEmptySlots(PlayBoard.getRevealCardPark(color))
     assert(emptySlots and #emptySlots > 0)
-
     assert(n < 10, "Something is not right!")
-
     Helper.moveCardFromZone(Hagal.deckZone, emptySlots[2] + Vector(0, 1 + 0.4 * n, 0), Vector(0, 180, 0)).doAfter(function (card)
         if card then
             if Helper.getID(card) == "reshuffle" then
@@ -394,7 +395,7 @@ end
 ---
 function Rival.shipments(color, amount)
     Helper.repeatChainedAction(amount, function ()
-        local level = ShipmentTrack.getFreighterLevel(color)
+        local level = ShippingTrack.getFreighterLevel(color)
         if level < 2 then
             Rival.advanceFreighter(color, 1)
         else

@@ -1,10 +1,11 @@
+local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 
 -- Exceptional Immediate require for the sake of aliasing.
-local PlayBoard = require("PlayBoard")
-
 local CardEffect = require("CardEffect")
-local Types = require("Types")
+
+local PlayBoard = Module.lazyRequire("PlayBoard")
+local Types = Module.lazyRequire("Types")
 
 -- Function aliasing for a more readable code.
 local persuasion = CardEffect.persuasion
@@ -26,6 +27,7 @@ local draw = CardEffect.draw
 local shipment = CardEffect.shipment
 local mentat = CardEffect.mentat
 local control = CardEffect.control
+local voice = CardEffect.voice
 local perDreadnoughtInConflict = CardEffect.perDreadnoughtInConflict
 local perSwordCard = CardEffect.perSwordCard
 local perFremen = CardEffect.perFremen
@@ -43,6 +45,7 @@ local anyAlliance = CardEffect.anyAlliance
 local oneHelix = CardEffect.oneHelix
 local twoHelices = CardEffect.twoHelices
 local winner = CardEffect.winner
+local swordmaster = CardEffect.swordmaster
 
 local ImperiumCard = {
     -- starter: base
@@ -58,7 +61,7 @@ local ImperiumCard = {
     -- starter: immortality
     experimentation = {agentIcons = {'yellow'}, reveal = {persuasion(1), specimen(1)}, starter = true},
     -- reserve
-    arrakisLiaison = {factions = {'fremen'}, cost = 2, agentsIcons = {'blue'}, reveal = {persuasion(2)}},
+    arrakisLiaison = {factions = {'fremen'}, cost = 2, agentIcons = {'blue'}, reveal = {persuasion(2)}},
     foldspace = {cost = 0, agentIcons = {'emperor', 'spacingGuild', 'beneGesserit', 'fremen', 'green', 'blue', 'yellow'}},
     theSpiceMustFlow = {cost = 9, acquireBonus = {vp(1)}, reveal = {spice(1)}},
     -- base
@@ -101,7 +104,7 @@ local ImperiumCard = {
     spiceSmugglers = {factions = {'spacingGuild'}, cost = 2, agentIcons = {'blue'}, reveal = {persuasion(1), sword(1)}},
     stilgar = {factions = {'fremen'}, cost = 5, agentIcons = {'fremen', 'blue', 'yellow'}, reveal = {persuasion(2), sword(3)}},
     testOfHumanity = {factions = {'beneGesserit'}, cost = 3, agentIcons = {'beneGesserit', 'green', 'blue'}, reveal = {persuasion(2)}},
-    theVoice = {factions = {'beneGesserit'}, cost = 2, agentIcons = {'blue', 'yellow'}, reveal = {persuasion(2)}},
+    theVoice = {factions = {'beneGesserit'}, cost = 2, acquireBonus = {voice()}, agentIcons = {'blue', 'yellow'}, reveal = {persuasion(2)}},
     thufirHawat = {cost = 5, agentIcons = {'emperor', 'spacingGuild', 'beneGesserit', 'fremen', 'blue', 'yellow'}, reveal = {persuasion(1), intrigue(1)}},
     wormRiders = {factions = {'fremen'}, cost = 6, agentIcons = {'blue', 'yellow'}, reveal = {sword(fremenFriendship(4)), sword(fremenAlliance(2))}},
     opulence = {factions = {'emperor'}, cost = 6, agentIcons = {'emperor'}, reveal = {persuasion(1), optional({solari(-6), vp(1)})}},
@@ -185,7 +188,6 @@ local ImperiumCard = {
     boundlessAmbition = {cost = 5, agentIcons = {'emperor', 'spacingGuild', 'beneGesserit', 'fremen'}, reveal = {'Acquire a card that costs 5 or less'}},
     duncanLoyalBlade = {cost = 5, agentIcons = {'fremen', 'blue'}, reveal = {persuasion(1), sword(2), 'trash this--> deploy/retreat any # of troops'}},
     jessicaOfArrakis = {factions = {'beneGesserit'}, cost = 3, agentIcons = {'yellow'}, reveal = {persuasion(1), sword(2)}},
-    thumper = {factions = {'fremen'}, cost = 3, agentIcons = {'yellow'}, reveal = {persuasion(1), spice(1)}},
     piterGeniusAdvisor = {cost = 3, tleilaxu = true, agentIcons = {'green', 'yellow'}, reveal = {persuasion(1), sword(1)}},
 }
 
@@ -278,6 +280,14 @@ end
 function ImperiumCard.isStarterCard(card)
     local cardInfo = ImperiumCard._resolveCard(card)
     return cardInfo.starter or false
+end
+
+function ImperiumCard.isFactionCard(card, faction)
+    if faction then
+        Types.assertIsFaction(faction)
+    end
+    local cardInfo = ImperiumCard._resolveCard(card)
+    return cardInfo.factions and (not faction or Helper.isElementOf(faction, cardInfo.factions))
 end
 
 return ImperiumCard

@@ -9,14 +9,14 @@ local Reserve = {}
 
 ---
 function Reserve.onLoad(state)
-    Helper.append(Reserve, Helper.resolveGUIDs(true, {
+    Helper.append(Reserve, Helper.resolveGUIDs(false, {
         foldspaceSlotZone = "6b62e0",
         arrakisLiaisonSlotZone = "cbcd9a",
         theSpiceMustFlowSlotZone = "c087d2"
     }))
 
     if state.settings then
-        Reserve._staticSetUp()
+        Reserve._transientSetUp()
     end
 end
 
@@ -25,11 +25,11 @@ function Reserve.setUp()
     Deck.generateSpecialDeck("foldspace", Reserve.foldspaceSlotZone)
     Deck.generateSpecialDeck("arrakisLiaison", Reserve.arrakisLiaisonSlotZone)
     Deck.generateSpecialDeck("theSpiceMustFlow", Reserve.theSpiceMustFlowSlotZone)
-    Reserve._staticSetUp()
+    Reserve._transientSetUp()
 end
 
 ---
-function Reserve._staticSetUp()
+function Reserve._transientSetUp()
     Reserve.foldspace = AcquireCard.new(Reserve.foldspaceSlotZone, "Imperium", PlayBoard.withLeader(function (_, color)
         local leader = PlayBoard.getLeader(color)
         leader.acquireFoldspace(color)
@@ -37,11 +37,11 @@ function Reserve._staticSetUp()
     Reserve.arrakisLiaison = AcquireCard.new(Reserve.arrakisLiaisonSlotZone, "Imperium", PlayBoard.withLeader(function (_, color)
         local leader = PlayBoard.getLeader(color)
         leader.acquireArrakisLiaison(color)
-    end))
+    end), Deck.getAcquireCardDecalUrl("generic"))
     Reserve.theSpiceMustFlow = AcquireCard.new(Reserve.theSpiceMustFlowSlotZone, "Imperium", PlayBoard.withLeader(function (_, color)
         local leader = PlayBoard.getLeader(color)
         leader.acquireTheSpiceMustFlow(color)
-    end))
+    end), Deck.getAcquireCardDecalUrl("generic"))
 end
 
 ---

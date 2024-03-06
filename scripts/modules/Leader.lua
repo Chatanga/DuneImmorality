@@ -1,13 +1,16 @@
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local I18N = require("utils.I18N")
+local Dialog = require("utils.Dialog")
 
 local Action = Module.lazyRequire("Action")
 local MainBoard = Module.lazyRequire("MainBoard")
 local ImperiumRow = Module.lazyRequire("ImperiumRow")
 local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
-local Combat = Module.lazyRequire("Combat")
 local PlayBoard = Module.lazyRequire("PlayBoard")
+local Combat = Module.lazyRequire("Combat")
+local ChoamContractMarket = Module.lazyRequire("ChoamContractMarket")
+local Deck = Module.lazyRequire("Deck")
 
 local Leader = Helper.createClass(Action)
 
@@ -46,7 +49,7 @@ Leader.vladimirHarkonnen = Helper.createClass(Leader, {
         end)
     end,
 
-    tearDown = function()
+    tearDown = function ()
         local tokenBag = getObjectFromGUID('f89231')
         tokenBag.destruct()
     end,
@@ -68,7 +71,7 @@ Leader.vladimirHarkonnen = Helper.createClass(Leader, {
     signetRing = function (color)
         local leader = PlayBoard.getLeader(color)
         return leader.resources(color, "solari", -1) and Action.drawIntrigues(color, 1)
-    end,
+    end
 })
 
 Leader.glossuRabban = Helper.createClass(Leader, {
@@ -159,23 +162,26 @@ Leader.letoAtreides = Helper.createClass(Leader, {
 Leader.paulAtreides = Helper.createClass(Leader, {
 
     --- Prescience
-    prepare = function (color, settings)
-        Action.prepare(color, settings)
+    setUp = function (color, settings)
+        Leader.paulAtreides.transientSetUp(color, settings)
+    end,
 
+    --- Prescience
+    transientSetUp = function (color, settings)
         local prescience = function (_, otherColor)
             if otherColor == color then
                 local cardOrDeck = PlayBoard.getDrawDeck(color)
                 if cardOrDeck == nil then
-                    broadcastToColor(I18N("prescienceVoid"), color, "Purple")
+                    Dialog.broadcastToColor(I18N("prescienceVoid"), color, "Purple")
                 elseif cardOrDeck.type == "Card" then
                     --broadcastToAll(I18N("prescienceUsed"), color)
-                    broadcastToColor(I18N("prescienceManual"), color, "Purple")
+                    Dialog.broadcastToColor(I18N("prescienceManual"), color, "Purple")
                 else
                     cardOrDeck.Container.search(color, 1)
                     --broadcastToAll(I18N("prescienceUsed"), color)
                 end
             else
-                broadcastToColor(I18N("noTouch"), otherColor, "Purple")
+                Dialog.broadcastToColor(I18N("noTouch"), otherColor, "Purple")
             end
         end
 
@@ -196,13 +202,13 @@ Leader.paulAtreides = Helper.createClass(Leader, {
                 tooltip = I18N("prescienceTooltip"),
             })
         end)
-   end,
+    end,
 
     --- Discipline
     signetRing = function (color)
         local leader = PlayBoard.getLeader(color)
         return leader.drawImperiumCards(color, 1)
-    end,
+    end
 })
 
 Leader.arianaThorvald = Helper.createClass(Leader, {
@@ -247,7 +253,7 @@ Leader.memnonThorvald = Helper.createClass(Leader, {
     signetRing = function (color, spaceName)
         local leader = PlayBoard.getLeader(color)
         return leader.resources(color, "spice", 1)
-    end,
+    end
 })
 
 Leader.armandEcaz = Helper.createClass(Leader, {
@@ -255,24 +261,21 @@ Leader.armandEcaz = Helper.createClass(Leader, {
 
 Leader.ilesaEcaz = Helper.createClass(Leader, {
 
+    setUp = function (color, settings)
+        local zone = PlayBoard.getPlayBoard(color).content.leaderZone
+        -- Temporary tag to avoid counting the leader card.
+        zone.addTag("Imperium")
+        Deck.generateSpecialDeck(zone, "legacy", "foldspace").doAfter(function (deck)
+            zone.removeTag("Imperium")
+            deck.flip()
+        end)
+    end,
+
     --- Guild contacts
     signetRing = function (color)
         local leader = PlayBoard.getLeader(color)
         return leader.resources(color, "solari", -1) and Action.acquireFoldspace(color)
-    end,
-
-    --- One step ahead
-    instruct = function (phase, isActivePlayer)
-        if phase == "roundStart" then
-            if isActivePlayer then
-                return I18N("gameStartActiveInstructionForIlesaEcaz")
-            else
-                return I18N("gameStartInactiveInstructionForIlesaEcaz")
-            end
-        else
-            return Leader.instruct(phase, isActivePlayer)
-        end
-    end,
+    end
 })
 
 Leader.rhomburVernius = Helper.createClass(Leader, {
@@ -286,12 +289,7 @@ Leader.rhomburVernius = Helper.createClass(Leader, {
 
 Leader.tessiaVernius = Helper.createClass(Leader, {
 
-    --- Careful observation
-    prepare = function (color, settings)
-        Action.prepare(color, settings)
-
-        InfluenceTrack.setUpSnoopers()
-
+    setUp = function (color, settings)
         local leaderCard = PlayBoard.findLeaderCard(color)
         local snapPoints = {}
         for i = 1, 4 do
@@ -304,19 +302,23 @@ Leader.tessiaVernius = Helper.createClass(Leader, {
         leaderCard.setSnapPoints(snapPoints)
     end,
 
+    --- Careful observation
+    prepare = function (color, settings)
+        Action.prepare(color, settings)
+        InfluenceTrack.setUpSnoopers()
+    end,
+
     tearDown = function ()
         InfluenceTrack.tearDownSnoopers()
     end,
 
     --- Careful observation
     influence = function (color, faction, amount)
-        Helper.dump("-influence-", color, faction, amount)
         if faction then
             local continuation = Helper.createContinuation("Leader.tessiaVernius.influence")
             local noFriendshipBefore = not InfluenceTrack.hasFriendship(color, faction)
             Action.influence(color, faction, amount).doAfter(function (...)
                 local friendshipAfter = InfluenceTrack.hasFriendship(color, faction)
-                Helper.dump(faction, noFriendshipBefore, friendshipAfter)
                 if noFriendshipBefore and friendshipAfter then
                     InfluenceTrack.recallSnooper(faction, color)
                 end
@@ -333,8 +335,7 @@ Leader.tessiaVernius = Helper.createClass(Leader, {
         local leader = PlayBoard.getLeader(color)
         leader.influence(color, nil, -1)
         leader.influence(color, nil, 1)
-    end,
-
+    end
 })
 
 Leader.yunaMoritani = Helper.createClass(Leader, {
@@ -362,7 +363,7 @@ Leader.yunaMoritani = Helper.createClass(Leader, {
             and leader.influence(color, nil, 1)
             and leader.troop(color, "supply", "garrison", 1)
             and leader.resources(color, "spice", 1)
-    end,
+    end
 })
 
 Leader.hundroMoritani = Helper.createClass(Leader, {

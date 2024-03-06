@@ -13,7 +13,7 @@ local Reserve = Module.lazyRequire("Reserve")
 local MainBoard = Module.lazyRequire("MainBoard")
 local TechMarket = Module.lazyRequire("TechMarket")
 local ImperiumRow = Module.lazyRequire("ImperiumRow")
-local ShipmentTrack = Module.lazyRequire("ShipmentTrack")
+local ShippingTrack = Module.lazyRequire("ShippingTrack")
 local TleilaxuRow = Module.lazyRequire("TleilaxuRow")
 local ScoreBoard = Module.lazyRequire("ScoreBoard")
 
@@ -28,26 +28,25 @@ function Action.onLoad(state)
             phase = phase
         }
     end)
-    Helper.registerEventListener("playerTurns", function (phase, color)
+
+    Helper.registerEventListener("playerTurn", function (phase, color)
         Action.context = {
             phase = phase,
             color = color
         }
-        printToAll(I18N("playerTurn", { leader = PlayBoard.getLeaderName(color) }), color)
+        Action.log(I18N("playerTurn", { leader = PlayBoard.getLeaderName(color) }), color)
     end)
 
     if state.settings then
-        if state.Action then
-            --Action.context = state.Action.context
-        end
+        assert(state.Action)
+        Action.context = state.Action.context
     end
 end
 
 ---
 function Action.onSave(state)
     state.Action = {
-        -- FIXME Unserialisable things such as cards in the context!
-        --context = Action.context
+        context = Action.context
     }
 end
 
@@ -85,6 +84,11 @@ function Action.checkContext(attributes)
 end
 
 ---
+function Action.setUp(color, settings)
+    -- NOP
+end
+
+---
 function Action.instruct(phase, isActivePlayer)
     local availablePhaseInstructions = {
         leaderSelection = true,
@@ -105,15 +109,12 @@ function Action.instruct(phase, isActivePlayer)
     end
 end
 
----
 function Action.prepare(color, settings)
     Action.resources(color, "water", 1)
     if settings.epicMode then
-        Action.troops(color, "supply", "garrison", 5)
         Action.drawIntrigues(color, 1)
-    else
-        Action.troops(color, "supply", "garrison", 3)
     end
+    Action.troops(color, "supply", "garrison", settings.epicMode and 5 or 3)
 end
 
 ---
@@ -122,7 +123,57 @@ end
 
 ---
 function Action.setContext(key, value)
-    Action.context[key] = value or true
+    if key == "agentSent" and Action.troopTransferCoalescentQueue then
+        Action.flushTroopTransfer()
+    end
+    Action.context[key] = value
+end
+
+---
+function Action.flushTroopTransfer()
+    Action.troopTransferCoalescentQueue.flush()
+end
+
+---
+function Action.log(message, color, isSecret)
+    -- Order matters here.
+    local logContextPrinters = {
+        { name = "schemeTriggered", print = function (_)
+            return I18N("triggeringScheme")
+        end },
+        { name = "agentSent", print = function (value)
+            local cards = ""
+            for i, card in pairs(value.cards or {}) do
+                if i > 1 then
+                    cards = cards .. ", "
+                end
+                cards = cards .. card
+            end
+            return I18N("sendingAgent", { space = I18N(value.space), cards = cards })
+        end },
+    }
+    local prefix = ""
+    for _, namedPrinter in ipairs(logContextPrinters) do
+        local value = Action.context[namedPrinter.name]
+        if value then
+            if Action.lastContext ~= namedPrinter.name then
+                Action.lastContext = namedPrinter.name
+                printToAll(namedPrinter.print(value), color)
+            end
+            prefix = " └─ "
+            break
+        end
+    end
+    if isSecret then
+        printToColor(prefix .. message, color, "Grey")
+    else
+        printToAll(prefix .. message, color)
+    end
+end
+
+---
+function Action.secretLog(message, color)
+    Action.log(message, color, true)
 end
 
 ---
@@ -140,7 +191,7 @@ end
 function Action.takeMentat(color)
     local mentat = MainBoard.getMentat()
     if mentat then
-        printToAll(I18N("takeMentat"), color)
+        Action.log(I18N("takeMentat"), color)
         return Park.putObject(mentat, PlayBoard.getAgentPark(color))
     else
         return false
@@ -150,7 +201,7 @@ end
 ---
 function Action.recruitSwordmaster(color)
     if PlayBoard.recruitSwordmaster(color) then
-        printToAll(I18N("recruitSwordmaster"), color)
+        Action.log(I18N("recruitSwordmaster"), color)
         return true
     else
         return false
@@ -160,7 +211,7 @@ end
 ---
 function Action.takeHighCouncilSeat(color)
     if PlayBoard.takeHighCouncilSeat(color) then
-        printToAll(I18N("takeHighCouncilSeat"), color)
+        Action.log(I18N("takeHighCouncilSeat"), color)
         return true
     else
         return false
@@ -180,7 +231,7 @@ function Action.resources(color, resourceName, amount)
     if resource:get() >= -amount then
         if amount ~= 0 then
             resource:change(amount)
-            printToAll(I18N(amount > 0 and "credit" or "debit", {
+            Action.log(I18N(amount > 0 and "credit" or "debit", {
                 what = I18N.agree(math.abs(amount), resourceName),
                 amount = math.abs(amount),
             }), color)
@@ -192,10 +243,21 @@ function Action.resources(color, resourceName, amount)
 end
 
 ---
-function Action.drawImperiumCards(color, amount)
+function Action.drawImperiumCards(color, amount, forced)
     Types.assertIsPlayerColor(color)
-    PlayBoard.getPlayBoard(color):tryToDrawCards(amount)
-    return true
+    local playBoard = PlayBoard.getPlayBoard(color)
+    local continuation
+    if forced then
+        continuation = playBoard:drawCards(amount)
+    else
+        continuation = playBoard:tryToDrawCards(amount)
+    end
+    continuation.doAfter(function (dealCardCount)
+        if dealCardCount > 0 then
+            Action.log(I18N("drawObjects", { amount = dealCardCount, object = I18N.agree(dealCardCount, "imperiumCard") }), color)
+        end
+    end)
+    return continuation
 end
 
 ---@param color PlayerColor
@@ -208,7 +270,7 @@ function Action.influence(color, faction, amount)
     local continuation = Helper.createContinuation("Action.influence")
     if faction then
         InfluenceTrack.change(color, faction, amount).doAfter(function (realAmount)
-            printToAll(I18N(amount > 0 and "gainInfluence" or "loseInfluence", {
+            Action.log(I18N(amount > 0 and "gainInfluence" or "loseInfluence", {
                 withFaction = I18N(Helper.toCamelCase("with", faction)),
                 amount = math.abs(amount),
             }), color)
@@ -232,7 +294,7 @@ function Action.troops(color, from, to, baseCount)
     Types.assertIsInteger(baseCount)
     local count = Park.transfert(baseCount, Action._getTroopPark(color, from), Action._getTroopPark(color, to))
 
-    if not Action.transfetCoalescentQueue then
+    if not Action.troopTransferCoalescentQueue then
 
         local function coalesce(t1, t2)
             if t1.color == t2.color then
@@ -259,7 +321,7 @@ function Action.troops(color, from, to, baseCount)
 
         local function handle(t)
             if t.count ~= 0 then
-                printToAll(I18N("transfer", {
+                Action.log(I18N("transfer", {
                     count = t.count,
                     what = I18N.agree(t.count, "troop"),
                     from = I18N(t.from .. "Park"),
@@ -268,10 +330,10 @@ function Action.troops(color, from, to, baseCount)
             end
         end
 
-        Action.transfetCoalescentQueue = Helper.createCoalescentQueue(1, coalesce, handle)
+        Action.troopTransferCoalescentQueue = Helper.createCoalescentQueue(1, coalesce, handle)
     end
 
-    Action.transfetCoalescentQueue.submit({
+    Action.troopTransferCoalescentQueue.submit({
         color = color,
         count = count,
         from = from,
@@ -341,10 +403,10 @@ function Action.advanceFreighter(color, positiveAmount)
     Types.assertIsPlayerColor(color)
     Types.assertIsPositiveInteger(positiveAmount)
     for _ = 1, positiveAmount do
-        if not ShipmentTrack.freighterUp(color) then
+        if not ShippingTrack.freighterUp(color) then
             return false
         else
-            printToAll(I18N("advanceFreighter"), color)
+            Action.log(I18N("advanceFreighter"), color)
         end
     end
     return true
@@ -353,8 +415,8 @@ end
 ---
 function Action.recallFreighter(color)
     Types.assertIsPlayerColor(color)
-    if ShipmentTrack.freighterReset(color) then
-        printToAll(I18N("recallFreighter"), color)
+    if ShippingTrack.freighterReset(color) then
+        Action.log(I18N("recallFreighter"), color)
         return true
     else
         return false
@@ -377,7 +439,7 @@ function Action.dreadnought(color, from, to, amount)
     local count = Park.transfert(amount, Action._getDreadnoughtPark(color, from), Action._getDreadnoughtPark(color, to))
 
     if count > 0 then
-        printToAll(I18N("transfer", {
+        Action.log(I18N("transfer", {
             count = count,
             what = I18N.agree(count, "dreadnought"),
             from = I18N(from .. "Park"),
@@ -417,14 +479,18 @@ end
 ---
 function Action.research(color, jump)
     Types.assertIsPlayerColor(color)
-    TleilaxuResearch.advanceResearch(color, jump).doAfter(function (finalJump)
-        if finalJump.x > 0 then
-            printToAll(I18N("researchAdvance", { count = jump }), color)
-        elseif finalJump.x < 0 then
-            printToAll(I18N("researchRollback"), color)
-        end
-    end)
-    return true
+    if jump then
+        TleilaxuResearch.advanceResearch(color, jump).doAfter(function (finalJump)
+            if finalJump.x > 0 then
+                Action.log(I18N("researchAdvance", { count = jump }), color)
+            elseif finalJump.x < 0 then
+                Action.log(I18N("researchRollback"), color)
+            end
+        end)
+        return true
+    else
+        return false
+    end
 end
 
 ---
@@ -433,9 +499,9 @@ function Action.beetle(color, jump)
     Types.assertIsInteger(jump)
     TleilaxuResearch.advanceTleilax(color, jump).doAfter(function (finalJump)
         if finalJump > 0 then
-            printToAll(I18N("beetleAdvance", { count = jump }), color)
+            Action.log(I18N("beetleAdvance", { count = jump }), color)
         elseif finalJump < 0 then
-            printToAll(I18N("beetleRollback", { count = math.abs(jump) }), color)
+            Action.log(I18N("beetleRollback", { count = math.abs(jump) }), color)
         end
     end)
     return true
@@ -445,7 +511,7 @@ end
 function Action.atomics(color)
     Types.assertIsPlayerColor(color)
     ImperiumRow.nuke(color)
-    printToAll(I18N("atomics"), color)
+    Action.log(I18N("atomics"), color)
     return true
 end
 
@@ -454,7 +520,7 @@ function Action.drawIntrigues(color, amount)
     Types.assertIsPlayerColor(color)
     Types.assertIsInteger(amount)
     Intrigue.drawIntrigue(color, amount)
-    printToAll(I18N("drawObjects", { amount = amount, object = I18N.agree(amount, "intrigueCard") }), color)
+    Action.log(I18N("drawObjects", { amount = amount, object = I18N.agree(amount, "intrigueCard") }), color)
     return true
 end
 
@@ -476,14 +542,8 @@ end
 ---
 function Action.gainVictoryPoint(color, name)
     Types.assertIsPlayerColor(color)
-    return ScoreBoard.gainVictoryPoint(color, name)
-end
-
----
-function Action.acquireTech(color, stackIndex, discount)
-    Types.assertIsPlayerColor(color)
-    if stackIndex then
-        TechMarket.acquireTech(stackIndex, color)
+    if ScoreBoard.gainVictoryPoint(color, name) then
+        Action.log(I18N("gainVictoryPoint", { name = I18N(name) }), color)
         return true
     else
         return false
@@ -492,56 +552,14 @@ end
 
 ---
 function Action.choose(color, topic)
-    return true
+    return false
 end
 
 ---
 function Action.decide(color, topic)
     -- Any reason to disable this for human players,
     -- since optional rewards are always desirable VPs?
-    return true
+    return false
 end
-
---[[
----
-function Action.voiceForbid(color, space)
-end
-
----
-function Action.dreadnoughtControl(color, space)
-end
-
----
-function Action.acquireTechWithSolari(color, name)
-end
-
----
-function Action.destroyTech(color, name)
-end
-
----
-function Action.techEffect(color, name)
-end
-
----
-function Action.recallSnooper(color, faction)
-end
-
----
-function Action.trashImperiumCard(name)
-end
-
----
-function Action.reveal(color)
-end
-
----
-function Action.discardImperiumCard(name)
-end
-
----
-function Action.discardIntrigueCard(name)
-end
-]]
 
 return Action

@@ -288,7 +288,7 @@ function ArrakeenScouts._staticSetUp()
         end
     end)
 
-    Helper.registerEventListener("playerTurns", function (color)
+    Helper.registerEventListener("playerTurn", function (color)
         ArrakeenScouts.committeeAccess = {}
     end)
 

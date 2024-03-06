@@ -4,10 +4,10 @@
 		<Text class="primary" color="#8e5ab4" fontSize="16" alignment="MiddleLeft"/>
 		<Text class="secondary" color="#efd9ff" alignment="MiddleRight"/>
 		<Text class="epigraph" color="#df9730" fontSize="12" fontStyle="italic" alignment="MiddleCenter"/>
-		<Dropdown itemBackgroundColors="#61712c44|#df9730|#FFFFFF|#361441" textColor="#61712c" itemTextColor="#61712c" fontStyle="bold"/>
-		<InputField colors="#00000000|#61712c44|#61712c" textColor="#efd9ff" fontStyle="bold"/>
-		<Toggle colors="#efd9ff|#ffd60b|#efd9ff|#222222" textColor="#efd9ff"/>
-		<Button colors="#61712c|#df9730|#361441|#222222" textColor="#ffd60b"  fontSize="16" outline="#efd9ff" outlineSize="3 3"/>
+		<Dropdown class="setUp" itemBackgroundColors="#61712c44|#df9730|#FFFFFF|#361441" textColor="#61712c" itemTextColor="#61712c" fontStyle="bold"/>
+		<InputField class="setUp" colors="#00000000|#61712c44|#61712c" textColor="#efd9ff" fontStyle="bold"/>
+		<Toggle class="setUp" colors="#efd9ff|#ffd60b|#efd9ff|#222222" textColor="#efd9ff"/>
+		<Button class="setUp" colors="#61712c|#df9730|#361441|#222222" textColor="#ffd60b"  fontSize="16" outline="#efd9ff" outlineSize="3 3"/>
 		<Image raycastTarget="true"/>
 	</Defaults>
 	<VerticalLayout>
@@ -19,7 +19,7 @@
 
 			<HorizontalLayout>
 				<Text class="primary" key="language"/>
-				<Dropdown id="language" onValueChanged="Global/setLanguage">
+				<Dropdown class="setUp" id="language" onValueChanged="Global/setLanguage">
 					<Option></Option>
 				</Dropdown>
 			</HorizontalLayout>
@@ -40,29 +40,29 @@
 
 			<Text class="primary" key="extensions"/>
 			<VerticalLayout padding="25 0 0 0">
-				<Toggle id="riseOfIx" isOn="True" onValueChanged="Global/setRiseOfIx" key="riseOfIx"/>
+				<Toggle class="setUp" id="riseOfIx" isOn="True" onValueChanged="Global/setRiseOfIx" key="riseOfIx"/>
 				<VerticalLayout padding="25 0 0 0">
-					<Toggle id="epicMode" isOn="False" onValueChanged="Global/setEpicMode" key="epicMode"/>
+					<Toggle class="setUp" id="epicMode" isOn="False" onValueChanged="Global/setEpicMode" key="epicMode"/>
 				</VerticalLayout>
-				<Toggle id="immortality" isOn="True" onValueChanged="Global/setImmortality" key="immortality"/>
+				<Toggle class="setUp" id="immortality" isOn="True" onValueChanged="Global/setImmortality" key="immortality"/>
 				<VerticalLayout padding="25 0 0 0">
-					<Toggle id="goTo11" isOn="False" onValueChanged="Global/setGoTo11" key="goTo11"/>
+					<Toggle class="setUp" id="goTo11" isOn="False" onValueChanged="Global/setGoTo11" key="goTo11"/>
 				</VerticalLayout>
 			</VerticalLayout>
 
 			<HorizontalLayout>
 				<Text class="primary" key="leaderSelection"/>
-				<Dropdown id="leaderSelection" flexibleWidth="4" onValueChanged="Global/setLeaderSelection">
+				<Dropdown class="setUp" id="leaderSelection" flexibleWidth="4" onValueChanged="Global/setLeaderSelection">
 					<Option></Option>
 				</Dropdown>
 			</HorizontalLayout>
 			<VerticalLayout padding="25 0 0 0">
-				<Toggle id="fanmadeLeaders" isOn="False" onValueChanged="Global/setFanMadeLeaders" key="fanmadeLeaders"/>
+				<Toggle class="setUp" id="fanmadeLeaders" isOn="False" onValueChanged="Global/setFanMadeLeaders" key="fanmadeLeaders"/>
 			</VerticalLayout>
 
 			<HorizontalLayout>
-				<Text class="primary" key="variants"/>
-				<Dropdown id="variant" flexibleWidth="1.5" onValueChanged="Global/setVariant">
+				<Text class="setUp" class="primary" key="variants"/>
+				<Dropdown class="setUp" id="variant" flexibleWidth="1.5" onValueChanged="Global/setVariant">
 					<Option></Option>
 				</Dropdown>
 			</HorizontalLayout>
@@ -71,13 +71,13 @@
 				<Text class="primary" key="miscellanous"/>
 			</HorizontalLayout>
 			<VerticalLayout padding="25 0 0 0">
-				<Toggle id="soundEnabled" onValueChanged="Global/setSoundEnabled" isOn="True" key="soundEnabled"/>
+				<Toggle class="setUp" id="soundEnabled" onValueChanged="Global/setSoundEnabled" isOn="True" key="soundEnabled"/>
 			</VerticalLayout>
 
 		</VerticalLayout>
 		<HorizontalLayout padding="100 100 0 20">
-			<Button id="setUpButton" minHeight="26" onClick="Global/setUpFromUI" key="setup"/>
+			<Button class="setUp" id="setUpButton" minHeight="26" onClick="Global/setUpFromUI" key="setup"/>
 		</HorizontalLayout>
 	</VerticalLayout>
-	<Image position="0 375" width="256" height="256" image="http://cloud-3.steamusercontent.com/ugc/2509137691632252874/EFDF07DCBBC243A851842278C9AF2BD6CCCB2197/"/>
+	<Image position="0 375" width="256" height="256" image="http://cloud-3.steamusercontent.com/ugc/2446088472674518343/CF9B50D1B8D4DA1C868DC4EDF6DD9AFBA14D7074/"/>
 </Panel>

@@ -3,6 +3,7 @@ local Helper = require("utils.Helper")
 local Park = require("utils.Park")
 local I18N = require("utils.I18N")
 local Set = require("utils.Set")
+local Dialog = require("utils.Dialog")
 
 local Resource = Module.lazyRequire("Resource")
 local TleilaxuResearch = Module.lazyRequire("TleilaxuResearch")
@@ -13,15 +14,15 @@ local MainBoard = Module.lazyRequire("MainBoard")
 local Hagal = Module.lazyRequire("Hagal")
 local Leader = Module.lazyRequire("Leader")
 local Combat = Module.lazyRequire("Combat")
-local ImperiumCard = Module.lazyRequire("ImperiumCard")
-local IntrigueCard = Module.lazyRequire("IntrigueCard")
 local Intrigue = Module.lazyRequire("Intrigue")
 local Reserve = Module.lazyRequire("Reserve")
-local Action = Module.lazyRequire("Action")
-local Music = Module.lazyRequire("Music")
-local ConflictCard = Module.lazyRequire("ConflictCard")
 local TechMarket = Module.lazyRequire("TechMarket")
 local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
+local ImperiumCard = Module.lazyRequire("ImperiumCard")
+local Commander = Module.lazyRequire("Commander")
+--local IntrigueCard = Module.lazyRequire("IntrigueCard")
+local ConflictCard = Module.lazyRequire("ConflictCard")
+local ScoreBoard = Module.lazyRequire("ScoreBoard")
 
 local PlayBoard = Helper.createClass(nil, {
     ALL_RESOURCE_NAMES = { "spice", "water", "solari", "persuasion", "strength" },
@@ -251,13 +252,13 @@ function PlayBoard.onLoad(state)
             alive = subState ~= nil
         end
         if alive then
-            PlayBoard.playBoards[color] = PlayBoard.new(color, unresolvedContent, subState)
+            PlayBoard.playBoards[color] = PlayBoard.new(color, unresolvedContent, state, subState)
         end
     end
     PlayBoard.unresolvedContentByColor = nil
 
     if state.settings then
-        PlayBoard._staticSetUp(state.settings)
+        PlayBoard._transientSetUp(state.settings)
     end
 end
 
@@ -269,18 +270,32 @@ function PlayBoard.onSave(state)
             for _, resourceName in ipairs(PlayBoard.ALL_RESOURCE_NAMES) do
                 resourceValues[resourceName] = playBoard[resourceName]:get()
             end
-            return resourceValues
         end)
+        return {
+            opponent = playBoard.opponent,
+            resources = resourceValues,
+            leader = playBoard.leader and playBoard.leader.name,
+            lastPhase = playBoard.lastPhase,
+            revealed = playBoard.revealed,
+            initialPositions = {
+                dreadnoughtInitialPositions = playBoard.content.dreadnoughtInitialPositions,
+                agentInitialPositions = playBoard.content.agentInitialPositions,
+                spyInitialPositions = playBoard.content.spyInitialPositions,
+                tleilaxTokenInitalPosition = playBoard.content.tleilaxTokenInitalPosition,
+                researchTokenInitalPosition = playBoard.content.researchTokenInitalPosition,
+                firstPlayerInitialPosition = playBoard.content.firstPlayerInitialPosition,
+            },
+        }
 end
 
 ---
-function PlayBoard.new(color, unresolvedContent, subState)
+function PlayBoard.new(color, unresolvedContent, state, subState)
     local playBoard = Helper.createClassInstance(PlayBoard, {
         color = color,
         score = 0,
         scorePositions = {},
     })
-    playBoard.content = Helper.resolveGUIDs(true, unresolvedContent)
+    playBoard.content = Helper.resolveGUIDs(false, unresolvedContent)
 
     playBoard.content.board.interactable = false
     playBoard.content.startEndTurnButton.interactable = false
@@ -332,6 +347,8 @@ end
 
 ---
 function PlayBoard.setUp(settings, activeOpponents)
+    local sequentialActions = {}
+
     for color, playBoard in pairs(PlayBoard.playBoards) do
         playBoard:_cleanUp(false, not settings.riseOfIx, not settings.immortality)
         if activeOpponents[color] then
@@ -361,11 +378,11 @@ function PlayBoard.setUp(settings, activeOpponents)
         end
     end
 
-    PlayBoard._staticSetUp(settings)
+    PlayBoard._transientSetUp(settings)
 end
 
 ---
-function PlayBoard._staticSetUp(settings)
+function PlayBoard._transientSetUp(settings)
     Helper.registerEventListener("phaseStart", function (phase, firstPlayer)
         if phase == "leaderSelection" or phase == "roundStart" then
             local playBoard = PlayBoard.getPlayBoard(firstPlayer)
@@ -395,6 +412,7 @@ function PlayBoard._staticSetUp(settings)
     Helper.registerEventListener("phaseEnd", function (phase)
         if phase == "leaderSelection" then
             for color, playBoard in pairs(PlayBoard._getPlayBoards()) do
+                playBoard.leader.setUp(color, settings)
                 playBoard.leader.prepare(color, settings)
             end
         elseif phase == "endgame" then
@@ -406,7 +424,7 @@ function PlayBoard._staticSetUp(settings)
         PlayBoard._setActivePlayer(nil, nil)
     end)
 
-    Helper.registerEventListener("playerTurns", function (phase, color)
+    Helper.registerEventListener("playerTurn", function (phase, color, refreshing)
         --Helper.dumpFunction("PlayBoard.turnCallback", phase, color)
         local playBoard = PlayBoard.getPlayBoard(color)
 
@@ -444,8 +462,7 @@ function PlayBoard._staticSetUp(settings)
             end
         end
 
-        PlayBoard._setActivePlayer(phase, color)
-        --Music.play("turn")
+        PlayBoard._setActivePlayer(phase, color, refreshing)
     end)
 
     Helper.registerEventListener("combatUpdate", function (forces)
@@ -459,7 +476,7 @@ function PlayBoard._staticSetUp(settings)
         if PlayBoard.isHuman(color) then
             -- Do it after the clean up done in TechMarket.
             Helper.onceFramesPassed(1).doAfter(function ()
-                local cards = PlayBoard._getCardsPlayedThisTurn(color)
+                local cards = PlayBoard.getCardsPlayedThisTurn(color)
                 for _, card in ipairs(cards) do
                     local cardName = Helper.getID(card)
                     if cardName == "appropriate" then
@@ -481,7 +498,7 @@ function PlayBoard._staticSetUp(settings)
 
     Helper.registerEventListener("influence", function (faction, color, newRank)
         if PlayBoard.isHuman(color) then
-            local cards = PlayBoard._getCardsPlayedThisTurn(color)
+            local cards = PlayBoard.getCardsPlayedThisTurn(color)
             for _, card in ipairs(cards) do
                 local cardName = Helper.getID(card)
                 if cardName == "appropriate" then
@@ -540,76 +557,100 @@ function PlayBoard:_recall()
 
     -- Flip any used tech.
     for _, techTile in ipairs(Park.getObjects(self.techPark)) do
-        if techTile.is_face_down then
+        if techTile.hasTag("Tech") and techTile.is_face_down then
             techTile.flip()
         end
     end
 end
 
 ---
-function PlayBoard._setActivePlayer(phase, color)
-    local indexedColors = {"Green", "Yellow", "Blue", "Red"}
+function PlayBoard._setActivePlayer(phase, color, refreshing)
+    local indexedColors = { "Green", "Yellow", "Blue", "Red" }
     for i, otherColor in ipairs(indexedColors) do
         local playBoard = PlayBoard.playBoards[otherColor]
         if playBoard then
             local effectIndex = 0 -- black index (no color actually)
             if otherColor == color then
                 effectIndex = i
-                if playBoard.opponent == "rival" then
+                if playBoard.opponent == "rival" and not refreshing then
                     Hagal.activate(phase, color)
-                else
-                    if phase ~= "leaderSelection" and phase ~= "arrakeenScouts" then
-                        playBoard:_createEndOfTurnButton()
-                    end
-                    PlayBoard._movePlayerIfNeeded(color)
                 end
-            else
-                Helper.clearButtons(playBoard.content.startEndTurnButton)
             end
             local board = playBoard.content.board
             board.AssetBundle.playTriggerEffect(effectIndex)
+            -- TODO
+            --playBoard.content.colorband.setColorTint(effectIndex > 0 and indexedColors[effectIndex] or "Black")
+        end
+    end
+
+    if phase ~= "leaderSelection" then
+        PlayBoard._updateControlButtons()
+    end
+end
+
+---
+function PlayBoard._updateControlButtons()
+    for color, playBoard  in pairs(PlayBoard._getPlayBoards()) do
+        if color == TurnControl.getCurrentPlayer() then
+            local player = Helper.findPlayerByColor(color)
+            if player and player.seated then
+                playBoard:_createEndOfTurnButton()
+            else
+                playBoard:_createTakePlaceButton()
+            end
+        elseif TurnControl.isHotSeatEnabled() then
+            playBoard:_createTakePlaceButton()
+        else
+            Helper.clearButtons(playBoard.content.endTurnButton)
         end
     end
 end
 
---- Hotseat (FIXME Unreliable with randomization?)
-function PlayBoard._movePlayerIfNeeded(color)
-    local hostPlayer = nil
-    for _, player in ipairs(Player.getPlayers()) do
-        if player.color == color then
-            return
-        elseif player.host then
-            hostPlayer = player
-        end
-    end
-    if hostPlayer then
-        PlayBoard.getPlayBoard(hostPlayer.color).opponent = "puppet"
-        PlayBoard.getPlayBoard(color).opponent = hostPlayer
-        Helper.onceFramesPassed(1).doAfter(function ()
-            hostPlayer.changeColor(color)
-        end)
-    end
-end
-
+---
 function PlayBoard.createEndOfTurnButton(color)
     PlayBoard.playBoards[color]:_createEndOfTurnButton()
 end
 
 ---
 function PlayBoard:_createEndOfTurnButton()
-    Helper.clearButtons(self.content.startEndTurnButton)
-    self.content.startEndTurnButton.createButton({
-        click_function = self:_createExclusiveCallback(function ()
-            self.content.startEndTurnButton.AssetBundle.playTriggerEffect(0)
-            TurnControl.endOfTurn()
-        end),
+    Helper.clearButtons(self.content.endTurnButton)
+    local action = function ()
+        self.content.endTurnButton.AssetBundle.playTriggerEffect(0)
+        TurnControl.endOfTurn(3)
+        Helper.clearButtons(self.content.endTurnButton)
+    end
+    local callback = self:_createExclusiveCallback(action)
+    self.content.endTurnButton.createButton({
+        click_function = callback,
         position = Vector(0, 0.6, 0),
-        label = I18N("endOfTurn"),
+        label = I18N("endTurn"),
         width = 1500,
         height = 1500,
         color = { 0, 0, 0, 0 },
         font_size = 450,
-        font_color = Helper.concatTables(self:getFontColor(), { 100 })
+        font_color = Helper.concatTables(PlayBoard._getTextColor(self.color), { 100 })
+    })
+end
+
+---
+function PlayBoard:_createTakePlaceButton()
+    Helper.clearButtons(self.content.endTurnButton)
+    self.content.endTurnButton.createButton({
+        click_function = self:_createSharedCallback(function (_, color, _)
+            self.content.endTurnButton.AssetBundle.playTriggerEffect(0)
+            local player = Helper.findPlayerByColor(color)
+            if player then
+                player.changeColor(self.color)
+                Helper.onceFramesPassed(1).doAfter(PlayBoard._updateControlButtons)
+            end
+        end),
+        position = Vector(0, 0.6, 0),
+        label = I18N("takePlace"),
+        width = 1500,
+        height = 1500,
+        color = { 0, 0, 0, 0 },
+        font_size = 450,
+        font_color = Helper.concatTables(PlayBoard._getTextColor(self.color), { 100 })
     })
 end
 
@@ -664,14 +705,14 @@ function PlayBoard.withLeader(action)
             -- Replace the source by the leader.
             action(leader, color, ...)
         else
-            broadcastToColor(I18N('noLeader'), color, "Purple")
+            Dialog.broadcastToColor(I18N('noLeader'), color, "Purple")
         end
     end
 end
 
 ---
 function PlayBoard.collectReward(color)
-    local conflictName = Combat.getCurrentConflictName()
+    local conflictName = Combat.getTurnConflictName()
     local rank = Combat.getRank(color).value
     ConflictCard.collectReward(color, conflictName, rank)
     if rank == 1 then
@@ -711,7 +752,7 @@ function PlayBoard._getPlayBoards(filterOutRival)
 end
 
 ---
-function PlayBoard.getPlayBoardColors(filterOutRival)
+function PlayBoard.getActivePlayBoardColors(filterOutRival)
     return Helper.getKeys(PlayBoard._getPlayBoards(filterOutRival))
 end
 
@@ -924,15 +965,29 @@ end
 
 ---
 function PlayBoard:_tearDown()
-    self:_cleanUp(true, true, true)
+    self:_cleanUp(true, true, true, true)
     PlayBoard.playBoards[self.color] = nil
 end
 
 ---
-function PlayBoard:_cleanUp(base, ix, immortality)
+function PlayBoard:_cleanUp(base, ix, immortality, full)
     local content = self.content
 
     local toBeRemoved = {}
+
+    local collect = function (childName)
+        local child = content[childName]
+        if child then
+            if type(child) == "table" then
+                for _, leafChild in ipairs(child) do
+                    table.insert(toBeRemoved, leafChild)
+                end
+            else
+                table.insert(toBeRemoved, child)
+            end
+            content[childName] = nil
+        end
+    end
 
     if base then
         Helper.addAll(toBeRemoved, {
@@ -966,6 +1021,14 @@ function PlayBoard:_cleanUp(base, ix, immortality)
             object.destruct()
         end
     end
+
+    for _, object in ipairs(toBeRemoved) do
+        assert(object)
+        object.interactable = true
+        object.destruct()
+    end
+
+    content = {}
 end
 
 ---
@@ -980,19 +1043,47 @@ end
 
 ---
 function PlayBoard:_createExclusiveCallback(innerCallback)
-    return Helper.registerGlobalCallback(function (_, color, _)
-        if self.color == color or PlayBoard.isRival(self.color) then
+    return Helper.registerGlobalCallback(function (object, color, altClick)
+        if self.color == color or PlayBoard.isRival(self.color) or TurnControl.isHotSeatEnabled() then
             if not self.buttonsDisabled then
                 self.buttonsDisabled = true
                 Helper.onceTimeElapsed(0.5).doAfter(function ()
                     self.buttonsDisabled = false
                 end)
-                innerCallback()
+                innerCallback(object, self.color, altClick)
             end
         else
-            broadcastToColor(I18N('noTouch'), color, "Purple")
+            Dialog.broadcastToColor(I18N('noTouch'), color, "Purple")
         end
     end)
+end
+
+---
+function PlayBoard:_createSharedCallback(innerCallback)
+    return Helper.registerGlobalCallback(function (object, color, altClick)
+        local legitimateColors = Helper.mapValues(
+            TurnControl.getLegitimatePlayers(self.color),
+            Helper.field("color"))
+        if Helper.isElementOf(color, legitimateColors) then
+            if not self.buttonsDisabled then
+                self.buttonsDisabled = true
+                Helper.onceTimeElapsed(0.5).doAfter(function ()
+                    self.buttonsDisabled = false
+                end)
+                innerCallback(object, color, altClick)
+            end
+        else
+            Dialog.broadcastToColor(I18N('noTouch'), color, "Purple")
+        end
+    end)
+end
+
+---
+function PlayBoard:_clearButtons()
+    Helper.clearButtons(self.content.board)
+    if self.content.atomicsToken then
+        Helper.clearButtons(self.content.atomicsToken)
+    end
 end
 
 ---
@@ -1002,13 +1093,6 @@ function PlayBoard:getFontColor()
         fontColor = { 0.1, 0.1, 0.1 }
     end
     return fontColor
-end
-
-function PlayBoard:_clearButtons()
-    Helper.clearButtons(self.content.board)
-    if self.content.atomicsToken then
-        Helper.clearButtons(self.content.atomicsToken)
-    end
 end
 
 ---
@@ -1116,7 +1200,7 @@ end
 function PlayBoard:onRevealHand()
     local currentPlayer = TurnControl.getCurrentPlayer()
     if currentPlayer and currentPlayer ~= self.color then
-        broadcastToColor(I18N("revealNotTurn"), self.color, "Pink")
+        Dialog.broadcastToColor(I18N("revealNotTurn"), self.color, "Pink")
     else
         if not self.revealed and self:stillHavePlayableAgents() then
             self:tryRevealHandEarly()
@@ -1134,7 +1218,7 @@ function PlayBoard:tryRevealHandEarly()
 
     local indexHolder = {}
 
-    local function _cleanUp()
+    local function reset()
         Helper.removeButtons(board, Helper.getValues(indexHolder))
     end
 
@@ -1152,7 +1236,7 @@ function PlayBoard:tryRevealHandEarly()
 
     indexHolder.validateButtonIndex = Helper.createButton(board, {
         click_function = self:_createExclusiveCallback(function ()
-            _cleanUp()
+            reset()
             self:revealHand()
         end),
         label = I18N('yes'),
@@ -1166,7 +1250,7 @@ function PlayBoard:tryRevealHandEarly()
     })
 
     indexHolder.cancelButtonIndex = Helper.createButton(board, {
-        click_function = self:_createExclusiveCallback(_cleanUp),
+        click_function = self:_createExclusiveCallback(reset),
         label = I18N('no'),
         position = origin + Vector(1, 0, 1),
         width = 1000,
@@ -1241,6 +1325,16 @@ function PlayBoard._getCardsPlayedThisTurn(color)
 end
 
 ---
+function PlayBoard.hasPlayedThisTurn(color, cardName)
+    for _, card in ipairs(PlayBoard.getCardsPlayedThisTurn(color)) do
+        if Helper.getID(card) == cardName then
+            return true
+        end
+    end
+    return false
+end
+
+---
 function PlayBoard.couldSendAgentOrReveal(color)
     local playBoard = PlayBoard.getPlayBoard(color)
     if playBoard.opponent == "rival" then
@@ -1252,6 +1346,8 @@ end
 
 ---
 function PlayBoard:tryToDrawCards(count, message)
+    local continuation = Helper.createContinuation("PlayBoard:tryToDrawCards")
+
     local content = self.content
     local deck = Helper.getDeckOrCard(content.drawDeckZone)
     local discard = Helper.getDeckOrCard(content.discardZone)
@@ -1260,49 +1356,63 @@ function PlayBoard:tryToDrawCards(count, message)
     local availableCardCount = Helper.getCardCount(deck) + Helper.getCardCount(discard)
     local notEnoughCards = availableCardCount < count
 
-    if needDiscardReset or notEnoughCards then
+    if availableCardCount == 0 then
+        continuation.run(0)
+    elseif needDiscardReset or notEnoughCards then
         local leaderName = PlayBoard.getLeaderName(self.color)
         broadcastToAll(I18N("isDecidingToDraw", { leader = leaderName }), "Pink")
         local maxCount = math.min(count, availableCardCount)
-        Player[self.color].showConfirmDialog(
+        Dialog.showConfirmOrCancelDialog(
+            self.color,
             I18N("warningBeforeDraw", { count = count, maxCount = maxCount }),
-            function(_)
-                if message then
-                    broadcastToAll(message, self.color)
+            nil,
+            function (confirmed)
+                if confirmed then
+                    if message then
+                        broadcastToAll(message, self.color)
+                    end
+                    self:drawCards(count).doAfter(continuation.run)
+                else
+                    continuation.run(0)
                 end
-                self:drawCards(count)
             end)
     else
-        self:drawCards(count)
+        self:drawCards(count).doAfter(continuation.run)
     end
+
+    return continuation
 end
 
 ---
 function PlayBoard:drawCards(count)
     Types.assertIsInteger(count)
-    local remainingCardToDrawCount = count
+
+    local continuation = Helper.createContinuation("PlayBoard:drawCards")
 
     local deckOrCard = Helper.getDeckOrCard(self.content.drawDeckZone)
     local drawableCardCount = Helper.getCardCount(deckOrCard)
 
-    local dealCardCount = math.min(remainingCardToDrawCount, drawableCardCount)
+    local dealCardCount = math.min(count, drawableCardCount)
     -- The getCardCount function is ok with nil arg, but we add a check for the sake of VS Code.
     if deckOrCard and dealCardCount > 0 then
         deckOrCard.deal(dealCardCount, self.color)
-        -- FIXME Should be in Action.
-        printToAll(I18N("drawObjects", { amount = dealCardCount, object = I18N.agree(dealCardCount, "imperiumCard") }), self.color)
     end
-
-    remainingCardToDrawCount = remainingCardToDrawCount - dealCardCount
 
     -- Dealing cards take an unknown amout of time.
     Helper.onceTimeElapsed(0.5).doAfter(function ()
+        local remainingCardToDrawCount = count - dealCardCount
         if remainingCardToDrawCount > 0 then
-            self:_resetDiscard().doAfter(function()
-                self:drawCards(remainingCardToDrawCount)
+            self:_resetDiscard().doAfter(function ()
+                self:drawCards(remainingCardToDrawCount).doAfter(function (dealOfOtherCardCount)
+                    continuation.run(dealCardCount + dealOfOtherCardCount)
+                end)
             end)
+        else
+            continuation.run(dealCardCount)
         end
     end)
+
+    return continuation
 end
 
 ---
@@ -1333,7 +1443,7 @@ function PlayBoard:_nukeConfirm()
     local token = self.content.atomicsToken
     Helper.clearButtons(token)
 
-    local function _cleanUp()
+    local function reset()
         Helper.clearButtons(token)
         self:_createNukeButton()
     end
@@ -1352,7 +1462,7 @@ function PlayBoard:_nukeConfirm()
 
     Helper.createButton(token, {
         click_function = self:_createExclusiveCallback(function ()
-            _cleanUp()
+            reset()
             self.leader.atomics(self.color)
             self.content.atomicsToken.destruct()
             self.content.atomicsToken = nil
@@ -1369,7 +1479,7 @@ function PlayBoard:_nukeConfirm()
 
     Helper.createButton(token, {
         click_function = self:_createExclusiveCallback(function ()
-            _cleanUp()
+            reset()
         end),
         label = I18N('no'),
         position = Vector(5, 0, 0),
@@ -1473,13 +1583,8 @@ end
 
 ---
 function PlayBoard.getLeaderName(color)
-    if true then
-        local leader = PlayBoard.getLeader(color)
-        return (leader and leader.name and I18N(leader.name)) or "?"
-    else
-        local leaderCard = PlayBoard.findLeaderCard(color)
-        return leaderCard and leaderCard.getName() or "?"
-    end
+    local leaderCard = PlayBoard.findLeaderCard(color)
+    return leaderCard and leaderCard.getName() or "?"
 end
 
 ---
@@ -1539,7 +1644,7 @@ end
 
 ---
 function PlayBoard.grantTechTile(color, techTile)
-    Park.putObject(techTile, PlayBoard.getPlayBoard(color).techPark)
+    return Park.putObject(techTile, PlayBoard.getPlayBoard(color).techPark)
 end
 
 ---
@@ -1549,12 +1654,13 @@ end
 
 ---
 function PlayBoard.grantScoreToken(color, token)
-    Park.putObject(token, PlayBoard.getPlayBoard(color).scorePark)
+    token.setInvisibleTo({})
+    return Park.putObject(token, PlayBoard.getPlayBoard(color).scorePark)
 end
 
 ---
-function PlayBoard.grantScoreTokenFromBag(color, tokenBag)
-    Park.putObjectFromBag(tokenBag, PlayBoard.getPlayBoard(color).scorePark)
+function PlayBoard.grantScoreTokenFromBag(color, tokenBag, count)
+    return Park.putObjectFromBag(tokenBag, PlayBoard.getPlayBoard(color).scorePark, count)
 end
 
 ---
@@ -1564,7 +1670,7 @@ end
 
 ---
 function PlayBoard.getTech(color, techName)
-    local techs = PlayBoard.getPlayBoard(color).techPark.zone.getObjects()
+    local techs = Park.getObjects(PlayBoard.getPlayBoard(color).techPark)
     for _, tech in ipairs(techs) do
         if Helper.getID(tech) == techName then
             return tech
@@ -1652,9 +1758,10 @@ function PlayBoard.giveCard(color, card, isTleilaxuCard)
 
     -- Move it on the top of the content deck if possible and wanted.
     if (isTleilaxuCard and TleilaxuResearch.hasReachedOneHelix(color)) or PlayBoard.hasTech(color, "spaceport") then
-        Player[color].showConfirmDialog(
+        Dialog.showConfirmDialog(
+            color,
             I18N("dialogCardAbove"),
-            function(_)
+            function ()
                 Helper.moveCardFromZone(content.discardZone, content.drawDeckZone.getPosition(), Vector(0, 180, 180))
             end)
     end
@@ -1677,10 +1784,11 @@ function PlayBoard.giveCardFromZone(color, zone, isTleilaxuCard)
 
     -- Move it on the top of the player deck if possible and wanted.
     if (isTleilaxuCard and TleilaxuResearch.hasReachedOneHelix(color)) or PlayBoard.hasTech(color, "spaceport") then
-        Player[color].showConfirmDialog(
+        Dialog.showConfirmDialog(
+            color,
             I18N("dialogCardAbove"),
-            function(_)
-                Helper.moveCardFromZone(content.discardZone, content.drawDeckZone.getPosition(), Vector(0, 180, 180))
+            function ()
+                Helper.moveCardFromZone(content.discardZone, content.drawDeckZone.getPosition() + Vector(0, 1, 0), Vector(0, 180, 180))
             end)
     end
 end
@@ -1689,6 +1797,13 @@ end
 function PlayBoard.getDrawDeck(color)
     local playBoard = PlayBoard.getPlayBoard(color)
     local deckOrCard = Helper.getDeckOrCard(playBoard.content.drawDeckZone)
+    return deckOrCard
+end
+
+---
+function PlayBoard.getDiscard(color)
+    local playBoard = PlayBoard.getPlayBoard(color)
+    local deckOrCard = Helper.getDeckOrCard(playBoard.content.discardZone)
     return deckOrCard
 end
 
@@ -1737,7 +1852,7 @@ end
 
 ---
 function PlayBoard:_newSymmetricBoardPosition(x, y, z)
-    if self.color == "Red" or self.color == "Blue" then
+    if PlayBoard.isLeft(self.color) then
         return self:_newBoardPosition(-x, y, z)
     else
         return self:_newBoardPosition(x, y, z)
@@ -1746,7 +1861,7 @@ end
 
 ---
 function PlayBoard:_newSymmetricBoardRotation(x, y, z)
-    if self.color == "Red" or self.color == "Blue" then
+    if PlayBoard.isLeft(self.color) then
         return self:_newBoardPosition(x, -y, z)
     else
         return self:_newBoardPosition(x, y, z)
@@ -1755,8 +1870,8 @@ end
 
 ---
 function PlayBoard:_newOffsetedBoardPosition(x, y, z)
-    if self.color == "Red" or self.color == "Blue" then
-        return self:_newBoardPosition(17 + x, y, z)
+    if PlayBoard.isLeft(self.color) then
+        return self:_newBoardPosition(12.75 + x, y, z)
     else
         return self:_newBoardPosition(x, y, z)
     end
@@ -1764,7 +1879,61 @@ end
 
 ---
 function PlayBoard:_newBoardPosition(x, y, z)
-    return Vector(x, y + 0.7, -z)
+    return Vector(x, y, -z)
+end
+
+--- Relative to the board, not a commander.
+function PlayBoard.isLeft(color)
+    return color == "Red" or color == "White" or color == "Blue"
+end
+
+--- Relative to the board, not a commander.
+function PlayBoard.isRight(color)
+    return color == "Green" or color == "Purple" or color == "Yellow"
+end
+
+---
+function PlayBoard:trash(object)
+    self.trashQueue = self.trashQueue or Helper.createSpaceQueue()
+    self.trashQueue.submit(function (height)
+        object.interactable = true
+        object.setLock(false)
+        object.setPosition(self.content.trash.getPosition() + Vector(0, 1 + height * 0.5, 0))
+    end)
+end
+
+---
+function PlayBoard.isInside(color, object)
+    local position = object.getPosition()
+    local center = PlayBoard.getPlayBoard(color).content.board.getPosition()
+    local offset = position - center
+    return math.abs(offset.x) < 12 and math.abs(offset.z) < 10
+end
+
+---
+function PlayBoard.getHandOrientedPosition(color)
+    -- Add an offset to put the card on the left side of the player's hand.
+    local handTransform = Player[color].getHandTransform()
+    local position = handTransform.position
+    if handTransform.rotation == Vector(0, 0, 0) then
+        position = position + Vector(-5, 0, 0)
+    else
+        position = position + Vector(0, 0, -5)
+    end
+    local rotation = handTransform.rotation + Vector(0, 180, 0)
+    return {
+        position = position,
+        rotation = rotation
+    }
+end
+
+---
+function PlayBoard.acquireVoice(color, voiceToken)
+    Types.assertIsPlayerColor(color)
+    assert(voiceToken)
+    local position = PlayBoard.getPlayBoard(color).content.firstPlayerInitialPosition
+    voiceToken.setPositionSmooth(position + Vector(0, 1, -1.8))
+    return true
 end
 
 return PlayBoard

@@ -1,5 +1,6 @@
 local Module = {
-    modulesByName = {}
+    modulesByName = {},
+    registeredModuleRedirections = {},
 }
 
 ---
@@ -47,14 +48,24 @@ function Module.lazyRequire(name)
     local meta = {
         module = nil
     }
-    meta.__index = function(_, key)
+    meta.__index = function (_, key)
         if not meta.module then
             meta.module = Module._resolveModule(name)
         end
         if meta.module then
             local item = meta.module[key]
-            if item and type(item) ~= "function" then
-                log("Accessing inner field: " .. name .. "." .. key .. " (" .. type(item) .. ")")
+            if item then
+                if type(item) ~= "function" then
+                    if key ~= "__loaded" then
+                        log("Accessing inner field: " .. name .. "." .. key .. " (" .. type(item) .. ")")
+                    end
+                elseif key == "onLoad" then
+                    meta.module.__loaded = true
+                elseif key:sub(1, 1) == "_" then
+                    log("Accessing private function: " .. name .. "." .. key)
+                elseif not meta.module.__loaded and meta.module['onLoad'] ~= nil then
+                    log("Accessing unloaded module: " .. name .. "." .. key)
+                end
             end
             return item
         else
@@ -100,7 +111,7 @@ end
 function Module.registerModuleRedirections(functionNames)
     for _, functionName in ipairs(functionNames) do
         local originalGlobalFunction = Global.getVar(functionName)
-        Global.setVar(functionName, function (...)
+        local globalFunction = function (...)
             if originalGlobalFunction then
                 originalGlobalFunction(...)
             end
@@ -109,7 +120,9 @@ function Module.registerModuleRedirections(functionNames)
                     module[functionName](...)
                 end
             end
-        end)
+        end
+        Module.registeredModuleRedirections[functionName] = globalFunction
+        Global.setVar(functionName, globalFunction)
     end
 end
 
@@ -119,6 +132,13 @@ function Module.callOnAllRegisteredModules(functionName, ...)
         if module[functionName] then
             module[functionName](...)
         end
+    end
+end
+
+---
+function Module.unregisterAllModuleRedirections()
+    for functionName, _ in pairs(Module.registeredModuleRedirections) do
+        Global.setVar(functionName, nil)
     end
 end
 

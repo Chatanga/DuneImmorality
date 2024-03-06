@@ -10,6 +10,7 @@ local Types = Module.lazyRequire("Types")
 local TurnControl = Module.lazyRequire("TurnControl")
 local MainBoard = Module.lazyRequire("MainBoard")
 local Music = Module.lazyRequire("Music")
+local ConflictCard = Module.lazyRequire("ConflictCard")
 
 local Combat = {
     -- Temporary structure (set to nil *after* loading).
@@ -33,7 +34,7 @@ local Combat = {
 }
 
 function Combat.onLoad(state)
-    Helper.append(Combat, Helper.resolveGUIDs(true, Combat.unresolvedContent))
+    Helper.append(Combat, Helper.resolveGUIDs(false, Combat.unresolvedContent))
 
     local origin = Combat.combatTokenZone.getPosition()
     Combat.noCombatForcePositions = Vector(origin.x, 0.66, origin.z)
@@ -47,7 +48,7 @@ function Combat.onLoad(state)
     end
 
     if state.settings then
-        Combat._staticSetUp(state.settings)
+        Combat._transientSetUp(state.settings)
         Combat.dreadnoughtStrengths = state.Combat.dreadnoughtStrengths
         Combat.ranking = state.Combat.ranking
     end
@@ -63,12 +64,13 @@ end
 
 ---
 function Combat.setUp(settings)
-    Deck.generateConflictDeck(Combat.conflictDeckZone, settings.riseOfIx, settings.epicMode)
-    Combat._staticSetUp(settings)
+    Combat._transientSetUp(settings)
+    assert(Combat.conflictDeckZone)
+    return Deck.generateConflictDeck(Combat.conflictDeckZone, settings.riseOfIx, settings.epicMode, settings.numberOfPlayers)
 end
 
 ---
-function Combat._staticSetUp(settings)
+function Combat._transientSetUp(settings)
     Combat.garrisonParks = {}
     for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
         Combat.garrisonParks[color] = Combat._createGarrisonPark(color)
@@ -91,7 +93,7 @@ function Combat._staticSetUp(settings)
         if phase == "roundStart" then
             Combat._setUpConflict()
         elseif phase == "combat" then
-            Action.setContext("combat", Combat.getCurrentConflictName())
+            Action.setContext("combat", Combat.getTurnConflictName())
             -- A small delay to avoid being erased by the player turn sound.
             Helper.onceTimeElapsed(1).doAfter(function ()
                 Music.play("battle")
@@ -110,11 +112,10 @@ function Combat._staticSetUp(settings)
             end
             -- Recalling units (troops and dreadnoughts) in the combat (not in a controlable space).
             for _, object in ipairs(Combat.combatCenterZone.getObjects()) do
-                for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
+                for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
                     if Types.isTroop(object, color) then
                         Park.putObject(object, PlayBoard.getSupplyPark(color))
                     elseif Types.isDreadnought(object, color) then
-                        --Helper.dump("Recalling", color, "dreadnought")
                         Park.putObject(object, Combat.dreadnoughtParks[color])
                     end
                 end
@@ -129,28 +130,34 @@ function Combat._staticSetUp(settings)
                 -- Only recall locked controlling dreadnoughts.
                 if dreadnought and dreadnought.getLock() then
                     dreadnought.setLock(false)
-                    for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
+                    for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
                         if dreadnought.hasTag(color) then
                             Park.putObject(dreadnought, Combat.dreadnoughtParks[color])
                         end
                     end
                 end
             end
-            Action.setContext("combat", nil)
+            Action.unsetContext("combat")
         end
     end)
 end
 
 ---
 function Combat._setUpConflict()
+    if Helper.getCardCount(Helper.getDeckOrCard(Combat.conflictDeckZone)) == 0 then
+        return
+    end
+
     Helper.moveCardFromZone(Combat.conflictDeckZone, Combat.conflictDiscardZone.getPosition() + Vector(0, 1, 0), nil, true, true).doAfter(function (card)
         assert(card)
+        local cardName = Helper.getID(card)
+
         local i = 0
         local tokens = Combat.victoryPointTokenBag.getObjects()
         for _, token in pairs(tokens) do
             assert(token)
-            if Helper.getID(card) == Helper.getID(token) then
-                local origin = Combat.victoryPointTokenZone.getPosition()
+            if cardName == Helper.getID(token) then
+                local origin = Combat.rewardTokenZone.getPosition()
                 local position = origin + Vector(0.5 - (i % 2), 0.5 + math.floor(i / 2), 0)
                 i = i + 1
                 local victoryPointToken = Combat.victoryPointTokenBag.takeObject({
@@ -169,9 +176,31 @@ function Combat._setUpConflict()
                 end
             end
         end
-        --Helper.dump("Found", i, "matching VP for conflict:", Helper.getID(card))
+
+        --[[
+        local controlableSpace = Combat.findControlableSpace(cardName)
+        if controlableSpace then
+            local color = MainBoard.getControllingPlayer(controlableSpace)
+            if color then
+                Park.transfert(1, PlayBoard.getSupplyPark(color), Combat.getBattlegroundPark())
+            end
+        end
+        ]]
+
         broadcastToAll(I18N("announceCombat", { combat = I18N(Helper.getID(card)) }), "Orange")
     end)
+end
+
+---
+function Combat.findControlableSpace(conflictName)
+    for _, controlableSpaceName in ipairs({ "imperialBasin", "arrakeen", "spiceRefinery" }) do
+        if conflictName:find(controlableSpaceName:gsub("^%l", string.upper)) then
+            local controlableSpace = MainBoard.findControlableSpace(controlableSpaceName)
+            assert(controlableSpace)
+            return controlableSpace
+        end
+    end
+    return nil
 end
 
 ---
@@ -200,7 +229,11 @@ function Combat._createGarrisonPark(color)
         end
     end
 
-    local zone = Park.createBoundingZone(0, Vector(0.35, 0.35, 0.35), slots)
+    local zone = Helper.markAsTransient(spawnObject({
+        type = 'ScriptingTrigger',
+        position = position,
+        scale = Vector(2.3, 1, 2.3),
+    }))
 
     local park = Park.createPark(
         color .. "Garrison",
@@ -212,10 +245,8 @@ function Combat._createGarrisonPark(color)
         false,
         true)
 
-    local p = zone.getPosition()
     -- FIXME Hardcoded height, use an existing parent anchor.
-    p:setAt('y', 0.65)
-    Helper.createTransientAnchor("Garrison anchor", p).doAfter(function (anchor)
+    Helper.createTransientAnchor("Garrison anchor", Vector(position.x, 0.6, position.z)).doAfter(function (anchor)
         park.anchor = anchor
         anchor.locked = true
         anchor.interactable = true
@@ -229,19 +260,19 @@ end
 function Combat._createDreadnoughtPark(color)
     local origin = Combat.origins[color]
     local center = Helper.getCenter(Helper.getValues(Combat.origins))
-    local dir = Helper.signum((origin - center).x)
+    local dir = PlayBoard.isLeft(color) and -1 or 1
     local slots = {
         origin + Vector(1.3 * dir, 0, 0.9),
         origin + Vector(1.3 * dir, 0, -0.9),
     }
 
-    local zone = Park.createBoundingZone(0, Vector(0.25, 3, 0.25), slots)
+    local zone = Park.createTransientBoundingZone(0, Vector(0.5, 3, 0.5), slots)
 
     local park = Park.createPark(
         color .. "DreadnoughtGarrison",
         slots,
         Vector(0, 0, 0),
-        zone,
+        { zone },
         { "Dreadnought", color },
         nil,
         false,
@@ -268,8 +299,8 @@ function Combat._createBattlegroundPark()
     local park = Park.createPark(
         "Battleground",
         slots,
-        Vector(0, 0, 0),
-        zone,
+        nil,
+        { Combat.combatCenterZone },
         { "Troop", "Dreadnought" },
         nil,
         false,
@@ -337,14 +368,13 @@ function Combat._calculateOutcomeTurnSequence(ranking)
     local distinctRanking = {}
     for i, color in ipairs(TurnControl.getPhaseTurnSequence()) do
         local rank = ranking[color]
-        --Helper.dump("ranking[",color,"]",rank)
         if rank then
             distinctRanking[color] = rank.value + i * 0.1
         end
     end
 
     local combatEndTurnSequence = Helper.getKeys(ranking)
-    table.sort(combatEndTurnSequence, function(c1, c2)
+    table.sort(combatEndTurnSequence, function (c1, c2)
         return distinctRanking[c1] < distinctRanking[c2]
     end)
 
@@ -367,7 +397,7 @@ function Combat._calculateRanking(forces)
     while potentialWinnerCount > 0 do
         local rankWinners = {}
         local maxForce = 1
-        for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
+        for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
             if remainingForces[color] then
                 if remainingForces[color] > maxForce then
                     rankWinners = { color }
@@ -384,44 +414,65 @@ function Combat._calculateRanking(forces)
             rank = rank + 1
         end
 
-        for _, color in ipairs(rankWinners) do
-            ranking[color] = { value = rank, exAequo = #rankWinners }
-            potentialWinnerCount = potentialWinnerCount - 1
-            remainingForces[color] = nil
-        end
+        if potentialWinnerCount >= #rankWinners then
+            for _, color in ipairs(rankWinners) do
+                ranking[color] = { value = rank, exAequo = #rankWinners }
+                potentialWinnerCount = potentialWinnerCount - 1
+                remainingForces[color] = nil
+            end
 
-        rank = rank + 1
+            rank = rank + 1
+        else
+            break
+        end
     end
 
     return ranking
 end
 
 ---
-function Combat._calculateCombatForces()
-    local forces = {}
-
-    for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
-        local force = 0
+function Combat.getUnitCounts()
+    local unitCounts = {}
+    for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
+        unitCounts[color] = 0
         for _, object in ipairs(Combat.combatCenterZone.getObjects()) do
             if Types.isUnit(object, color) then
-                if Types.isTroop(object, color) then
-                    force = force + 2
-                elseif Types.isDreadnought(object, color) then
-                    force = force + (Combat.dreadnoughtStrengths[color] or 3)
-                else
-                    error("Unknown unit type: " .. object.getGUID())
-                end
+                unitCounts[color] = unitCounts[color] + 1
             end
         end
+    end
+    return unitCounts
+end
 
-        if force > 0 then
-            force = force + PlayBoard.getResource(color, "strength"):get()
+---
+function Combat._calculateCombatForces()
+    local forces = {}
+    for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
+        forces[color] = Combat.calculateCombatForce(color)
+    end
+    return forces
+end
+
+---
+function Combat.calculateCombatForce(color)
+    local force = 0
+    for _, object in ipairs(Combat.combatCenterZone.getObjects()) do
+        if Types.isUnit(object, color) then
+            if Types.isTroop(object, color) then
+                force = force + 2
+            elseif Types.isDreadnought(object, color) then
+                force = force + (Combat.dreadnoughtStrengths[color] or 3)
+            else
+                error("Unknown unit type: " .. object.getGUID())
+            end
         end
-
-        forces[color] = force
     end
 
-    return forces
+    if force > 0 then
+        force = force + PlayBoard.getResource(color, "strength"):get()
+    end
+
+    return force
 end
 
 ---
@@ -474,7 +525,7 @@ function Combat.getDreadnoughtsInConflict(color)
 end
 
 ---
-function Combat.getCurrentConflictName()
+function Combat.getTurnConflictName()
     local deckOrCard = Helper.getDeckOrCard(Combat.conflictDiscardZone)
     assert(deckOrCard)
     if deckOrCard.type == "Deck" then
@@ -483,6 +534,17 @@ function Combat.getCurrentConflictName()
     else
         return Helper.getID(deckOrCard)
     end
+end
+
+---
+function Combat.isCurrentConflictBehindTheWall()
+    local conflictName = Combat.getTurnConflictLevel()
+    return ConflictCard.isBehindTheWall(conflictName)
+end
+
+---
+function Combat.getTurnConflictLevel()
+    return ConflictCard.getLevel(Combat.getTurnConflictName())
 end
 
 ---
@@ -497,12 +559,13 @@ function Combat.gainVictoryPoint(color, name)
     end
 
     for _, object in ipairs(Combat.victoryPointTokenZone.getObjects()) do
-        if object.hasTag("victoryPointToken") and Helper.getID(object) == name and not Combat.grantedTokens[object] then
+        if Types.isVictoryPointToken(object) and Helper.getID(object) == name and not Combat.grantedTokens[object] then
             Combat.grantedTokens[object] = true
             PlayBoard.grantScoreToken(color, object)
             return true
         end
     end
+
     return false
 end
 
@@ -514,6 +577,11 @@ function Combat.showRanking(turnSequence, ranking)
         local key = rankNames[rank.value] .. (rank.exAequo > 1 and "ExAequo" or "") .. "InCombat"
         printToAll(I18N(key, { leader = PlayBoard.getLeaderName(color) }), color)
     end
+end
+
+---
+function Combat.getCombatCenterZone()
+    return Combat.combatCenterZone
 end
 
 return Combat

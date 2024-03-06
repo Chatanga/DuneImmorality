@@ -2,57 +2,63 @@ local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local AcquireCard = require("utils.AcquireCard")
 local I18N = require("utils.I18N")
+local Dialog = require("utils.Dialog")
 
 local Deck = Module.lazyRequire("Deck")
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local TleilaxuResearch = Module.lazyRequire("TleilaxuResearch")
 local DynamicBonus = Module.lazyRequire("DynamicBonus")
-local ImperiumCard = Module.lazyRequire("ImperiumCard")
 local MainBoard = Module.lazyRequire("MainBoard")
+local ImperiumCard = Module.lazyRequire("ImperiumCard")
 
 local TleilaxuRow = {}
 
 ---
 function TleilaxuRow.onLoad(state)
-    Helper.append(TleilaxuRow, Helper.resolveGUIDs(true, {
+    Helper.append(TleilaxuRow, Helper.resolveGUIDs(false, {
         deckZone = "14b2ca",
         slotZones = {
             'e5ba35',
             '1e5a32',
-            '965fea'
+            '965fea',
         }
     }))
 
     if state.settings and state.settings.immortality then
-        TleilaxuRow._staticSetUp()
+        TleilaxuRow._transientSetUp()
     end
 end
 
 ---
 function TleilaxuRow.setUp(settings)
+    local continuation = Helper.createContinuation("TleilaxuRow.setUp")
     if settings.immortality then
-        TleilaxuRow._staticSetUp()
+        Deck.generateSpecialDeck(TleilaxuRow.slotZones[3], "immortality", "reclaimedForces")
+        Deck.generateTleilaxuDeck(TleilaxuRow.deckZone).doAfter(function (deck)
+            Helper.shuffleDeck(deck)
+            Helper.onceShuffled(deck).doAfter(function ()
+                for i = 1, 2 do
+                    local zone = TleilaxuRow.slotZones[i]
+                    Helper.moveCardFromZone(TleilaxuRow.deckZone, zone.getPosition(), Vector(0, 180, 0))
+                end
+            end)
+            TleilaxuRow._transientSetUp()
+            continuation.run()
+        end)
     else
         TleilaxuRow._tearDown()
+        continuation.run()
     end
+    return continuation
 end
 
 ---
-function TleilaxuRow._staticSetUp()
-    Deck.generateTleilaxuDeck(TleilaxuRow.deckZone).doAfter(function (deck)
-        Helper.shuffleDeck(deck)
-        for i = 1, 2 do
-            local zone = TleilaxuRow.slotZones[i]
-            Helper.moveCardFromZone(TleilaxuRow.deckZone, zone.getPosition(), Vector(0, 180, 0))
-        end
-    end)
-    Deck.generateSpecialDeck("reclaimedForces", TleilaxuRow.slotZones[3])
-
+function TleilaxuRow._transientSetUp()
     TleilaxuRow.acquireCards = {}
     for i, zone in ipairs(TleilaxuRow.slotZones) do
         local acquireCard = AcquireCard.new(zone, "Imperium", PlayBoard.withLeader(function (_, color)
             PlayBoard.getLeader(color).acquireTleilaxuCard(color, i)
-        end))
+        end), nil, Deck.getAcquireCardDecalUrl("generic"))
         table.insert(TleilaxuRow.acquireCards, acquireCard)
     end
 end
@@ -72,17 +78,22 @@ function TleilaxuRow.acquireTleilaxuCard(indexInRow, color)
     assert(card)
     local price = ImperiumCard.getTleilaxuCardCost(card)
     local cardName = Helper.getID(card)
-    assert(price, "Unknown tleilaxu card: " .. cardName)
+    assert(price, "Unknown tleilaxu card: " .. tostring(cardName))
     assert((cardName == "reclaimedForces") == (indexInRow == 3))
 
-    if card and TleilaxuResearch.getSpecimenCount(color) >= price then
+    local specimenSupplierColor = color
+    if Commander.isCommander(color) then
+        specimenSupplierColor = Commander.getActivatedAlly(color)
+    end
+
+    if TleilaxuResearch.getSpecimenCount(specimenSupplierColor) >= price then
         local leader = PlayBoard.getLeader(color)
         if cardName == "reclaimedForces" then
             local options = {
                 I18N("troops"),
                 I18N("beetle"),
             }
-            Player[color].showOptionsDialog(I18N("reclaimedForces"), options, 1, function (_, index, _)
+            Dialog.showOptionsDialog(color, I18N("reclaimedForces"), options, function (index)
                 if index == 1 then
                     leader.troops(color, "tanks", "supply", price)
                     leader.troops(color, "supply", "garrison", 2)
@@ -106,6 +117,7 @@ function TleilaxuRow.acquireTleilaxuCard(indexInRow, color)
 
         return true
     else
+        Dialog.broadcastToColor(I18N("noEnoughSpecimen"), color, "Purple")
         return false
     end
 end
@@ -117,7 +129,7 @@ function TleilaxuRow.trash(indexInRow)
     assert(card)
     local price = ImperiumCard.getTleilaxuCardCost(card)
     local cardName = Helper.getID(card)
-    assert(price, "Unknown tleilaxu card: " .. cardName)
+    assert(price, "Unknown tleilaxu card: " .. tostring(cardName))
     assert((cardName == "reclaimedForces") == (indexInRow == 3))
 
     MainBoard.trash(card)

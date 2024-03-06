@@ -6,9 +6,9 @@
 local Helper = {
     sharedTables = {},
     eventListenersByTopic = {},
-    areaButtonColor = { 0, 0, 0, 0 },
     uniqueNamePool = {},
 
+    MINIMAL_DURATION = 1/30,
     AREA_BUTTON_COLOR = { 0, 0, 0, 0 },
     ERASE = function ()
         return "__erase__"
@@ -125,7 +125,7 @@ function Helper.resolveGUIDs(reportUnresolvedGUIDs, data)
         local t = type(data)
         if t == "string" then
             -- FIXME Doesn't Lua support more elaborate regex?
-            if string.match(data, "[a-z0-9][a-z0-9][a-z0-9][a-z0-9][a-z0-9][a-z0-9]") then
+            if data:match("[a-z0-9][a-z0-9][a-z0-9][a-z0-9][a-z0-9][a-z0-9]") then
                 newData = getObjectFromGUID(data)
                 if not newData and reportUnresolvedGUIDs then
                     log("[resolveGUIDs] Unknow GUID: '" .. data .. "'")
@@ -148,7 +148,7 @@ function Helper.resolveGUIDs(reportUnresolvedGUIDs, data)
             -- NOP
         else
             -- Not a problem per se, but still unexpected in our use cases.
-            log("[resolveGUIDs] Unknown type: " .. t)
+            log("[resolveGUIDs] Unknown type: " .. tostring(t))
             -- NOP
         end
     end
@@ -212,12 +212,15 @@ function Helper._moveObject(object, position, rotation, smooth, flipAtTheEnd)
         end
     end
 
-    Helper.onceMotionless(object).doAfter(function ()
-        if flipAtTheEnd then
+    if flipAtTheEnd then
+        -- Dangerous. An "unknown error" could occur with a card sent to another or a deck.
+        Helper.onceMotionless(object).doAfter(function ()
             object.flip()
-        end
+            continuation.run(object)
+        end)
+    else
         continuation.run(object)
-    end)
+    end
 
     return continuation
 end
@@ -229,9 +232,9 @@ end
 ---@param rotation Vector?
 ---@param smooth boolean?
 ---@param flipAtTheEnd boolean?
----@return Continuation? A continuation run once the object is spawned.
+---@return Continuation A continuation run once the object is spawned.
 function Helper.moveCardFromZone(zone, position, rotation, smooth, flipAtTheEnd)
-    --Helper.dumpFunction("Helper.moveCardFromZone", zone, position, rotation, smooth, flipAtTheEnd)
+    assert(zone.type == "Scripting")
     local continuation = Helper.createContinuation("Helper.moveCardFromZone")
     local deckOrCard = Helper.getDeckOrCard(zone)
     if deckOrCard then
@@ -250,11 +253,8 @@ function Helper.moveCardFromZone(zone, position, rotation, smooth, flipAtTheEnd)
             end
             deckOrCard.takeObject(parameters)
         elseif deckOrCard.type == "Card" then
-            -- FIXME Moving a single card to another or a deck will raise an "Unknown Error" (at least for the reserve decks). Why?
             local safePosition = position + Vector(0, 1, 0)
-            Helper._moveObject(deckOrCard, safePosition, rotation, smooth, flipAtTheEnd).doAfter(function (card)
-                continuation.run(card)
-            end)
+            Helper._moveObject(deckOrCard, safePosition, rotation, smooth, flipAtTheEnd).doAfter(continuation.run)
         else
             error("Unexpected type: " .. deckOrCard.type)
         end
@@ -311,8 +311,9 @@ end
 function Helper.getDeckOrCard(zone)
     assert(zone)
     assert(type(zone) ~= 'string', tostring(zone) .. ' looks like a GUID, not a zone')
-    for _, object in ipairs(zone.getObjects()) do
-        if not object.held_by_color and (object.type == "Card" or object.type == "Deck") then
+    -- It is pairs, not ipairs!
+    for _, object in pairs(zone.getObjects()) do
+        if object.type and not object.held_by_color and (object.type == "Card" or object.type == "Deck") then
             return object
         end
     end
@@ -432,6 +433,7 @@ end
 function Helper.markAsTransient(object)
     -- Tagging is not usable on a zone without filtering its content.
     object.setGMNotes("Transient")
+    return object
 end
 
 ---
@@ -449,10 +451,10 @@ function Helper.destroyTransientObjects()
             count = count + 1
         end
     end
-    -- log("Destroyed " .. tostring(count) .. " anchors.")
+    --log("Destroyed " .. tostring(count) .. " anchors.")
 end
 
--- *** Snapoints and anchored buttons ***
+-- *** Snappoints and anchored buttons ***
 
 --[[
     Create a snapPoint relative to a parent centered on the provided zone, but
@@ -495,6 +497,20 @@ function Helper.createAreaButton(zone, anchor, altitude, tooltip, callback)
 
     local width = zoneScale.x * sizeFactor
     local height = zoneScale.z * sizeFactor
+
+    return Helper.createSizedAreaButton(width, height, anchor, altitude, tooltip, callback)
+end
+
+---
+function Helper.createExperimentalAreaButton(zone, anchor, altitude, tooltip, callback)
+    assert(zone)
+    assert(anchor)
+    assert(altitude)
+
+    local zoneScale = zone.getScale()
+
+    local width = zoneScale.x * 450
+    local height = zoneScale.z * 200
 
     return Helper.createSizedAreaButton(width, height, anchor, altitude, tooltip, callback)
 end
@@ -675,6 +691,29 @@ function Helper._createAbsoluteWidgetWithRoundnessParameters(object, roundness, 
     return parameters
 end
 
+---
+function Helper.collectSnapPoints(object, net)
+    if not object then
+        return
+    end
+    local snapPoints = object.getSnapPoints()
+    for _, snapPoint in ipairs(snapPoints) do
+        --assert(snapPoint.tags and #snapPoint.tags == 1)
+        if snapPoint.tags then
+            for _, tag in ipairs(snapPoint.tags) do
+                for prefix, collector in pairs(net) do
+                    if Helper.startsWith(tag, prefix) then
+                        local name = tag:sub(prefix:len() + 1):gsub("^%u", string.lower)
+                        collector(name, object.positionToWorld(snapPoint.position))
+                    end
+                end
+            end
+        else
+            Helper.dump("Unexpected snap tags:", snapPoint.tags)
+        end
+    end
+end
+
 -- *** Dynamic (button) callbacks ***
 
 ---
@@ -710,7 +749,7 @@ function Helper.unregisterGlobalCallback(uniqueName)
     --Helper.dumpFunction("Helper.unregisterGlobalCallback", uniqueName)
     if uniqueName ~= "generatedCallback0" then
         local callback = Global.getVar(uniqueName)
-        assert(callback, "Unknown global callback: " .. uniqueName)
+        assert(callback, "Unknown global callback: " .. tostring(uniqueName))
         --Global.setVar(uniqueName, nil)
         table.insert(Helper.uniqueNamePool, uniqueName)
     end
@@ -758,7 +797,7 @@ end
 ---
 function Helper.removeButtons(object, indexes)
     local orderedIndexes = indexes
-    table.sort(orderedIndexes, function(a, b) return a > b end)
+    table.sort(orderedIndexes, function (a, b) return a > b end)
     local previousIndex
     for _, index in ipairs(indexes) do
         assert(not previousIndex or previousIndex > index)
@@ -787,10 +826,14 @@ function Helper.createContinuation(name)
     ---@field finish function
     ---@field run function
     ---@field cancel function
+    ---@field forget function
 
     local continuation = {
         name = name,
         start = Time.time,
+        canceled = false,
+        done = false,
+        actions = {},
         what = function ()
             return "continuation"
         end
@@ -805,21 +848,21 @@ function Helper.createContinuation(name)
         end
     end
 
-    continuation.actions = {}
-
     continuation.doAfter = function (action)
         assert(type(action) == 'function')
         if continuation.done then
-            action(continuation.parameters)
+            if not continuation.canceled then
+                action(table.unpack(continuation.parameters, 1, continuation.parameters.n))
+            end
         else
             table.insert(continuation.actions, action)
         end
     end
 
-    continuation.next = function (parameters)
-        continuation.parameters = parameters
+    continuation.next = function (...)
+        continuation.parameters = table.pack(...)
         for _, action in ipairs(continuation.actions) do
-            action(parameters)
+            action(...)
         end
     end
 
@@ -828,13 +871,18 @@ function Helper.createContinuation(name)
         continuation.done = true
     end
 
-    continuation.run = function (parameters)
-        continuation.next(parameters)
+    continuation.run = function (...)
+        continuation.next(...)
         continuation.finish()
     end
 
     continuation.cancel = function ()
+        continuation.canceled = true
         continuation.finish()
+    end
+
+    continuation.forget = function ()
+        Helper.pendingContinuations[continuation] = nil
     end
 
     Helper.pendingContinuations[continuation] = true
@@ -842,11 +890,18 @@ function Helper.createContinuation(name)
     return continuation
 end
 
+---@return Continuation
+function Helper.fakeContinuation(...)
+    local fakeContinuation = Helper.createContinuation("Helper.alwaysContinuation")
+    fakeContinuation.run(...)
+    return fakeContinuation
+end
+
 ---@param timeout number?
 ---@return Continuation
 function Helper.onceStabilized(timeout)
     local continuation = Helper.createContinuation("Helper.onceStabilized")
-    Helper.pendingContinuations[continuation] = nil
+    continuation.forget()
 
     local start = os.time()
     local delayed = false
@@ -856,14 +911,14 @@ function Helper.onceStabilized(timeout)
         continuation.run(success)
     end, function ()
         local duration = os.time() - start
-        success = Helper.isStabilized(delayed or duration <= 2)
+        success = Helper.isStabilized(delayed or duration <= 4)
         if not success then
-            if not delayed and duration > 2 then
-                log(duration)
+            if not delayed and duration > 4 then
+                --log(duration)
                 delayed = true
                 broadcastToAll("Delaying transition (see system log)...")
             end
-            if duration > (timeout or 10) then
+            if duration > (timeout or 12) then
                 return true
             end
         end
@@ -876,35 +931,38 @@ end
 ---@return boolean
 function Helper.isStabilized(beQuiet)
     local count = 0
-    for continuation, _ in pairs(Helper.pendingContinuations) do
-        if continuation then
-            if not beQuiet then
-                log("Pending continuation: " .. continuation.name)
-                continuation.tick(function ()
-                    log("Forgetting the pending continuation on timeout")
-                    Helper.pendingContinuations[continuation] = nil
-                end)
+    if Helper.pendingContinuations then
+        for continuation, _ in pairs(Helper.pendingContinuations) do
+            if continuation then
+                if not beQuiet then
+                    log("Pending continuation: " .. continuation.name)
+                    continuation.tick(function ()
+                        log("Forgetting the pending continuation on timeout")
+                        continuation.forget()
+                    end)
+                end
+                count = count + 1
             end
-            count = count + 1
         end
     end
     return count == 0
 end
 
+--- Beware of card being swallowed up in a deck at the end of its move.
 ---@return Continuation
 function Helper.onceMotionless(object)
     local continuation = Helper.createContinuation("Helper.onceMotionless")
     -- Wait 1 frame for the movement to start.
-    Wait.frames(function ()
-        Wait.condition(function()
-            Wait.frames(function ()
+    Wait.time(function ()
+        Wait.condition(function ()
+            Wait.time(function ()
                 continuation.run(object)
-            end, 1)
-        end, function()
+            end, Helper.MINIMAL_DURATION)
+        end, function ()
             continuation.tick()
             return object.resting
         end)
-    end, 1)
+    end, Helper.MINIMAL_DURATION)
     return continuation
 end
 
@@ -937,9 +995,10 @@ end
 ---@return Continuation
 function Helper.onceFramesPassed(count)
     local continuation = Helper.createContinuation("Helper.onceFramesPassed")
-    Wait.frames(function ()
+    -- Wait.frames is unreliable with players with high FPS configurations.
+    Wait.time(function ()
         continuation.run()
-    end, count)
+    end, count * Helper.MINIMAL_DURATION)
     return continuation
 end
 
@@ -958,9 +1017,9 @@ function Helper.onceOneDeck(zone)
         maxCardCount = math.max(maxCardCount, Helper.getCardCount(deckOrCard))
     end
 
-    Wait.condition(function()
+    Wait.condition(function ()
         continuation.run(Helper.getDeck(zone))
-    end, function()
+    end, function ()
         local deckOrCards = getDecksOrCards()
         if #deckOrCards == 1 then
             local deckOrCard = deckOrCards[1]
@@ -1059,64 +1118,159 @@ function Helper._getNopCallback()
     return uniqueName
 end
 
--- *** Experimental player color suppor ***
-
----
-function Helper.getPlayerColor(player)
-    return player.color
-end
-
----
-function Helper._getPlayerColor(player)
-    --Helper.dumpFunction("Helper._getPlayerColor", player)
-    local color = Helper.cachedPlayers and Helper.cachedPlayers[player.steam_id] or nil
-    if not color then
-        color = player.color
-        assert(Player[player.color].steam_id == player.steam_id)
-    end
-    --Helper.dump(player, "color is", color, "and", player.color)
-    return color
-end
+-- *** player color support ***
 
 ---
 function Helper.findPlayerByColor(color)
-    --Helper.dumpFunction("Helper.findPlayerByColor", color)
-    for _, player in ipairs(Player.getPlayers()) do
-        if Helper._getPlayerColor(player) == color then
-            return player
+    return Player[color]
+end
+
+--- Colour shuffler script, developed by markimus on steam.
+function Helper.randomizePlayerPositions()
+    local continuation = Helper.createContinuation("Helper.randomizePlayerPositions")
+
+    if #getSeatedPlayers() <= 1 then
+        printToAll("There must be more than one player for shuffling to work.", "Red")
+        continuation.run()
+        return continuation
+    end
+    if Player["Black"].seated then
+        printToAll("Please remove Player Black for shuffling to work.", "Red")
+        continuation.run()
+        return continuation
+    end
+
+    local randomColours = {}
+
+    -- Insert the colours.
+
+    for _, v in pairs(getSeatedPlayers()) do
+        table.insert(randomColours, v)
+    end
+
+    Helper.shuffle(randomColours)
+
+    local seatedPlayers = {}
+    for i, v in pairs(getSeatedPlayers()) do
+        seatedPlayers[v] = {}
+        seatedPlayers[v].target = randomColours[i]
+        seatedPlayers[v].myColour = v
+        --printToAll(Player[v].steam_name .. "(".. v ..") -> ".. ranColours[i], {1, 1, 1})
+        if seatedPlayers[v].target == v then
+            seatedPlayers[v].prevMoved = true
+            seatedPlayers[v].moved = true
+        else
+            seatedPlayers[v].prevMoved = false
+            seatedPlayers[v].moved = false
         end
     end
-    return nil
+
+    -- Start shuffling players.
+
+    local coroutineHolder = {}
+    coroutineHolder.registeredCallback = Helper.registerGlobalCallback(function ()
+        Helper.unregisterGlobalCallback(coroutineHolder.registeredCallback)
+
+        for timeout = 1, 50 do
+
+            -- Go through seated players. if they haven't moved, check if they can be moved.
+            for i, v in pairs(seatedPlayers) do
+                --print("Test")
+                if v.moved == false then
+                    if not Player[v.target].seated then
+                        local myC = v.myColour
+                        if Player[myC].seated then
+                            --print("Moving player ".. myC)
+                            Player[myC]:changeColor(v.target)
+                            while Player[myC].seated and not Player[v.target].seated do
+                                coroutine.yield(0)
+                            end
+                            v.myColour = v.target
+                            v.moved = true
+                        else
+                            table.remove(seatedPlayers, i)
+                        end
+                    end
+                end
+            end
+
+            local checkIfSame = true
+            for _, v in pairs(seatedPlayers) do
+                if v.prevMoved ~= v.moved then
+                    checkIfSame = false
+                    break
+                end
+            end
+
+            if checkIfSame then
+                --print("Is same.")
+                local allNonMovedPlayers = {}
+                for i, v in pairs(seatedPlayers) do
+                    if not v.moved then
+                        table.insert(allNonMovedPlayers, v)
+                    end
+                end
+
+                if #allNonMovedPlayers ~= 0 then
+                    local lastPlayer = allNonMovedPlayers[#allNonMovedPlayers]
+                    Player[lastPlayer.myColour]:changeColor("Black")
+                    lastPlayer.myColour = "Black"
+                    while not Player["Black"].seated do
+                        coroutine.yield(0)
+                    end
+                end
+            end
+
+            local count1, count2 = 0, 0
+            for _, v in pairs(seatedPlayers) do
+                count1 = count1 + 1
+                if v.moved then
+                    count2 = count2 + 1
+                end
+            end
+
+            if count1 == count2 then
+                break
+            end
+
+            for _, v in pairs(seatedPlayers) do
+                v.prevMoved = v.moved
+            end
+
+            coroutine.yield(0)
+        end
+
+        Helper.sleep(2)
+        continuation.run()
+
+        return 1
+    end)
+    startLuaCoroutine(Global, coroutineHolder.registeredCallback)
+
+    return continuation
 end
 
 ---
 function Helper.changePlayerColorInCoroutine(player, newColor)
-    --Helper.dumpFunction("Helper.changePlayerColorInCoroutine", player, newColor)
-
     local neutralColor = "Black"
 
-    local function seatPlayer(p, color)
-        p:changeColor(color)
-        if not Helper.cachedPlayers then
-            Helper.cachedPlayers = {}
+    local function seatPlayer(sourceColor, targetColor)
+        Player[sourceColor]:changeColor(targetColor)
+        while Player[sourceColor].seated and not Player[targetColor].seated do
+            coroutine.yield(0)
         end
-        Helper.cachedPlayers[p.steam_id] = color
-        Helper._sleep(0.5)
     end
 
     local oldColor = Helper._getPlayerColor(player)
-    local otherPlayer = Helper.findPlayerByColor(newColor)
     if oldColor ~= newColor then
+        local otherPlayer = Helper.findPlayerByColor(newColor)
         if not Helper.findPlayerByColor(neutralColor) then
             if otherPlayer then
                 seatPlayer(otherPlayer, neutralColor)
             end
             seatPlayer(player, newColor)
-            if otherPlayer then
-                seatPlayer(otherPlayer, oldColor)
-            end
         else
-            log("Skipping player color change")
+            log("Black player is seated! Skipping player color change.")
         end
     end
 end
@@ -1180,23 +1334,25 @@ end
 ---
 function Helper.createCoalescentQueue(separationDelay, coalesce, handle)
     local cq = {
-        separationDelay = separationDelay,
-        continuation = nil
+        separationDelay = separationDelay or 1,
     }
 
     function cq.handleLater()
+        assert(cq.lastEvent)
         if cq.delayedHandler then
             Wait.stop(cq.delayedHandler)
+            cq.delayedHandler = nil
             cq.continuation.cancel()
         end
         cq.continuation = Helper.createContinuation("Helper.createCoalescentQueue")
-        cq.delayedHandler = Wait.time(cq.continuation.run, 1)
-        cq.continuation.doAfter(function()
+        cq.continuation.doAfter(function ()
             assert(cq.lastEvent)
+            cq.delayedHandler = nil
             local event = cq.lastEvent
             cq.lastEvent = nil
             handle(event)
         end)
+        cq.delayedHandler = Wait.time(cq.continuation.run, cq.separationDelay)
     end
 
     function cq.submit(event)
@@ -1213,6 +1369,18 @@ function Helper.createCoalescentQueue(separationDelay, coalesce, handle)
             cq.lastEvent = event
         end
         cq.handleLater()
+    end
+
+    function cq.flush()
+        if cq.delayedHandler then
+            assert(cq.lastEvent)
+            Wait.stop(cq.delayedHandler)
+            cq.delayedHandler = nil
+            cq.continuation.cancel()
+            local event = cq.lastEvent
+            cq.lastEvent = nil
+            handle(event)
+        end
     end
 
     return cq
@@ -1233,10 +1401,11 @@ function Helper.getSharedTable(tableName)
 end
 
 --- Intended to be called from a coroutine.
-function Helper._sleep(durationInSeconds)
+function Helper.sleep(durationInSeconds)
+    assert(durationInSeconds)
     local Time = os.clock() + durationInSeconds
     while os.clock() < Time do
-        coroutine.yield()
+        coroutine.yield(0)
     end
 end
 
@@ -1313,16 +1482,34 @@ end
 -- *** Lua miscellaneous ***
 
 ---
+function Helper.isEmpty(table)
+    return #table == 0 and #Helper.getKeys(table) == 0
+end
+
+---
 function Helper.toCamelCase(...)
-    local chameauString = ""
+    local camelString
     for i, str in ipairs({...}) do
         if i > 1 then
-            chameauString = chameauString .. str:gsub("^%l", string.upper)
+            camelString = camelString .. str:gsub("^%l", string.upper)
         else
-            chameauString = chameauString .. str
+            camelString = str:gsub("^%u", string.lower)
         end
     end
-    return chameauString
+    return camelString
+end
+
+---
+function Helper.toPascalCase(...)
+    local pascalString
+    for i, str in ipairs({...}) do
+        if i > 1 then
+            pascalString = pascalString .. str:gsub("^%l", string.upper)
+        else
+            pascalString = str:gsub("^%l", string.upper)
+        end
+    end
+    return pascalString
 end
 
 ---
@@ -1343,10 +1530,14 @@ function Helper.toVector(data)
     if not data then
         log("nothing to vectorize")
         return Vector(0, 0, 0)
+    elseif type(data) ~= "table" then
+        error("Can't vectorize back a " .. type(data) .. " (" .. tostring(data) .. ")")
     elseif Helper._isSomeKindOfObject(data) then
         return data
-    else
+    elseif #data > 0 then
         return Vector(data[1], data[2], data[3])
+    else
+        return Vector(data.x, data.y, data.z)
     end
 end
 
@@ -1355,6 +1546,7 @@ function Helper.addAll(objects, otherObjects)
     assert(objects)
     assert(otherObjects)
     for _, object in ipairs(otherObjects) do
+        assert(object)
         table.insert(objects, object)
     end
 end
@@ -1458,52 +1650,77 @@ end
 ---
 function Helper.dump(...)
     local str = ""
-    for i, element in ipairs({...}) do
+    local args = table.pack(...)
+    for i = 1, args.n do
         if i > 1 then
             str = str .. " "
         end
-        str = str .. tostring(element or "<nil>")
+        str = str .. Helper.toString(args[i])
     end
     log(str)
 end
 
 ---
 function Helper.dumpFunction(...)
-    local args = {...}
+    local args = table.pack(...)
     local str
-    local notNilArgCount = #Helper.getKeys(args)
-    local argCount = notNilArgCount
-    local i = 1
-    while i <= argCount do
-        local element = args[i]
-        if element == nil and i < argCount then
-            argCount = argCount + 1
-        end
+    for i = 1, args.n do
+        local arg = args[i]
 
         if i == 1 then
-            assert(type(element) == "string")
-            str = element .. "("
+            assert(type(arg) == "string")
+            str = arg .. "("
         else
-            local strElement
-            if type(element) == "string" then
-                strElement = '"' .. tostring(element) .. '"'
-            elseif type(element) == "function" then
-                strElement = '<func>'
-            else
-                strElement = tostring(element) or "?"
-            end
-            str = str .. strElement
+            str = str .. Helper.toString(args[i], true)
         end
 
-        if i == argCount then
+        if i == args.n then
             str = str .. ")"
         elseif i > 1 then
             str = str .. ", "
         end
-
-        i = i + 1
     end
     log(str)
+end
+
+---
+function Helper.toString(object, quoted)
+    if object ~= nil then
+        local objectType = type(object)
+        if objectType == "table" then
+            local str
+            if #object > 0 then
+                str = "["
+                for i, element in ipairs(object) do
+                    if i > 1 then
+                        str = str .. ", "
+                    end
+                    str = str .. Helper.toString(element, quoted)
+                end
+                str = str .. "]"
+            else
+                str = "{"
+                local i = 0
+                for key, value in pairs(object) do
+                    i = i + 1
+                    if i > 1 then
+                        str = str .. ", "
+                    end
+                    str = str .. Helper.toString(key, quoted) .. " -> " .. Helper.toString(value, quoted)
+                end
+                str = str .. "}"
+            end
+            return str
+        elseif objectType == "function" then
+            return "<function>"
+        elseif objectType == "string" then
+            return quoted and '"' .. object .. '"' or object
+        else
+            return tostring(object)
+        end
+    else
+        return "<nil>"
+    end
 end
 
 ---
@@ -1590,6 +1807,8 @@ end
 
 ---
 function Helper.indexOf(table, element)
+    assert(table)
+    assert(element)
     for i, existingElement in ipairs(table) do
         if existingElement == element then
             return i
@@ -1600,6 +1819,7 @@ end
 
 ---
 function Helper.swap(elements, i, j)
+    assert(elements)
     if i ~= j then
         local tmp = elements[i]
         elements[i] = elements[j]
@@ -1609,6 +1829,7 @@ end
 
 ---
 function Helper.reverse(elements)
+    assert(elements)
     local count = #elements
     for i = 1, count do
         local j = count + 1 - i
@@ -1622,6 +1843,7 @@ end
 
 ---
 function Helper.cycle(elements)
+    assert(elements)
     local count = #elements
     local first = elements[1]
     for i = 1, count do
@@ -1640,6 +1862,7 @@ end
 
 ---
 function Helper.filter(elements, p)
+    assert(elements)
     local filteredElements = {}
     for _, element in ipairs(elements) do
         if p(element) then
@@ -1651,6 +1874,7 @@ end
 
 ---
 function Helper.count(elements, p)
+    assert(elements)
     local count = 0
     for k, v in pairs(elements) do
         if p(k, v) then
@@ -1662,6 +1886,7 @@ end
 
 ---
 function Helper.map(elements, f)
+    assert(elements)
     local newElements = {}
     for k, v in pairs(elements) do
         newElements[k] = f(k, v)
@@ -1671,8 +1896,9 @@ end
 
 ---
 function Helper.mapValues(elements, f)
+    assert(elements)
     local newElements = {}
-    for k, v in ipairs(elements) do
+    for k, v in pairs(elements) do
         newElements[k] = f(v)
     end
     return newElements
@@ -1684,6 +1910,15 @@ function Helper.forEach(elements, f)
     assert(f)
     for k, v in pairs(elements) do
         f(k, v)
+    end
+end
+
+---
+function Helper.forEachValue(elements, f)
+    assert(elements)
+    assert(f)
+    for _, v in ipairs(elements) do
+        f(v)
     end
 end
 
@@ -1718,12 +1953,21 @@ end
 ---
 function Helper.partialApply(f, ...)
     assert(f)
-    local args = {...}
+    local args = table.pack(...)
     return function (...)
-        for _, arg in ipairs({...}) do
-            table.insert(args, arg)
+        local appendedArgs = table.pack(...)
+        for i = 1, appendedArgs.n do
+            table.insert(args, appendedArgs[i])
         end
-        return f(table.unpack(args))
+        args.n = args.n + appendedArgs.n
+        return f(table.unpack(args, 1, args.n))
+    end
+end
+
+---
+function Helper.field(name)
+    return function (object)
+        return object[name]
     end
 end
 
@@ -1742,6 +1986,35 @@ end
 --- http://lua-users.org/wiki/StringRecipes
 function Helper.endsWith(str, ending)
     return ending == "" or str:sub(-#ending) == ending
+end
+
+---
+function Helper.splitString(str, sep)
+    local tokens = {}
+    for token in string.gmatch(str, "([^" .. (sep or "%s") .. "]+)") do
+        table.insert(tokens, token)
+    end
+    return tokens
+end
+
+---
+function Helper.chopName(name, n)
+    local choppedName = ""
+    local i = 0
+    for _, token in ipairs(Helper.splitString(name, " ")) do
+        if token:len() > 2 then
+            i = i + 1
+        end
+        if i <= n then
+            if choppedName:len() > 0 then
+                choppedName = choppedName .. " "
+            end
+            choppedName = choppedName .. token
+        else
+            break
+        end
+    end
+    return choppedName
 end
 
 return Helper
