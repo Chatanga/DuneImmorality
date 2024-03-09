@@ -59,7 +59,6 @@ function ScoreBoard.onLoad(state)
         legacy = {
             theSpiceMustFlowBag = "7bd6f8",
             guildAmbassadorBag = "912d75",
-            sayyadinaBag = "9193f5",
             opulenceBag = "c22e46",
             theSleeperMustAwaken = "9bfd65",
             choamShares = "2da115",
@@ -72,6 +71,7 @@ function ScoreBoard.onLoad(state)
             spiceBag = "19c977",
         },
         ix = {
+            sayyadinaBag = "9193f5",
             detonationDevicesBag = "4cc3d5",
             ixianEngineerBag = "4ae3de",
             flagship = "692480",

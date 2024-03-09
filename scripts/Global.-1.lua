@@ -450,6 +450,7 @@ function setUpFromUI()
         randomizePlayerPositions = Controller.fields.randomizePlayerPositions == true,
         difficulty = Controller.fields.difficulty,
         useContracts = Controller.fields.useContracts == true or numberOfPlayers == 6,
+        legacy = Controller.fields.legacy == true,
         riseOfIx = Controller.fields.riseOfIx == true,
         epicMode = Controller.fields.epicMode == true,
         immortality = Controller.fields.immortality == true,
