@@ -112,7 +112,9 @@ end
 
 ---
 function Action.flushTroopTransfer()
-    Action.troopTransferCoalescentQueue.flush()
+    if Action.troopTransferCoalescentQueue then
+        Action.troopTransferCoalescentQueue.flush()
+    end
 end
 
 ---

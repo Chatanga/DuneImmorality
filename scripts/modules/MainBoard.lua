@@ -76,40 +76,6 @@ function MainBoard.onLoad(state)
         emperorBoard = "4cb9ba",
         fremenBoard = "01c575",
         immortalityPatch = "6cf62a",
-        factions = {
-            emperor = {
-                alliance = "13e990",
-                twoInfluencesBag = "6a4186",
-                Green = "d7c9ba",
-                Yellow = "489871",
-                Blue = "426a23",
-                Red = "acfcef"
-            },
-            spacingGuild = {
-                alliance = "ad1aae",
-                twoInfluencesBag = "400d45",
-                Green = "89da7d",
-                Yellow = "9d0075",
-                Blue = "4069d8",
-                Red = "be464e"
-            },
-            beneGesserit = {
-                alliance = "33452e",
-                twoInfluencesBag = "e763f6",
-                Green = "2dc980",
-                Yellow = "a3729e",
-                Blue = "2a88a6",
-                Red = "713eae"
-            },
-            fremen = {
-                alliance = "4c2bcc",
-                twoInfluencesBag = "8bcfe7",
-                Green = "d390dc",
-                Yellow = "77d7c8",
-                Blue = "0e6e41",
-                Red = "088f51"
-            }
-        },
         spiceBonusTokens = {
             deepDesert = "116807",
             haggaBasin = "c24705",

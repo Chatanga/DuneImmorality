@@ -1242,9 +1242,9 @@ function PlayBoard._setActivePlayer(phase, color, refreshing)
                 if  not refreshing
                     and TurnControl.getPlayerCount() == 6
                     and not Commander.isCommander(otherColor)
-                    and playBoard.revealed and
-                    not Combat.isInCombat(otherColor) then
-
+                    and playBoard.revealed
+                    and not Combat.isInCombat(otherColor)
+                then
                     playBoard.strength:set(0)
                 end
             end
@@ -1394,7 +1394,7 @@ function PlayBoard.collectReward(color)
 
             local dreadnoughts = Combat.getDreadnoughtsInConflict(color)
             if #dreadnoughts > 0 then
-                Player[color].showInfoDialog(I18N("dreadnoughtMandatoryOccupation"))
+                Dialog.showInfoDialog(color, I18N("dreadnoughtMandatoryOccupation"))
             end
         end
     end)
@@ -2790,9 +2790,7 @@ function PlayBoard.giveCard(color, card, isTleilaxuCard)
     -- Acquire the card (not smoothly to avoid being grabbed by a player hand zone).
     card.setPosition(content.discardZone.getPosition())
     printToAll(I18N(isTleilaxuCard and "acquireTleilaxuCard" or "acquireImperiumCard", { card = I18N(Helper.getID(card)) }), color)
-    if ImperiumCard then
-        ImperiumCard.applyAcquireEffect(color, card)
-    end
+    ImperiumCard.applyAcquireEffect(color, card)
 
     -- Move it on the top of the content deck if possible and wanted.
     if (isTleilaxuCard and TleilaxuResearch.hasReachedOneHelix(color)) or PlayBoard.hasTech(color, "spaceport") then
@@ -2817,9 +2815,7 @@ function PlayBoard.giveCardFromZone(color, zone, isTleilaxuCard)
         assert(card)
         local cardName = I18N(Helper.getID(card))
         printToAll(I18N(isTleilaxuCard and "acquireTleilaxuCard" or "acquireImperiumCard", { card = cardName }), color)
-        if ImperiumCard then
-            ImperiumCard.applyAcquireEffect(color, card)
-        end
+        ImperiumCard.applyAcquireEffect(color, card)
     end)
 
     -- Move it on the top of the player deck if possible and wanted.
