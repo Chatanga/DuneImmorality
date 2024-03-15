@@ -148,7 +148,7 @@ function Helper.resolveGUIDs(reportUnresolvedGUIDs, data)
             -- NOP
         else
             -- Not a problem per se, but still unexpected in our use cases.
-            log("[resolveGUIDs] Unknown type: " .. tostring(t))
+            log("[resolveGUIDs] Unknown type: " .. t)
             -- NOP
         end
     end

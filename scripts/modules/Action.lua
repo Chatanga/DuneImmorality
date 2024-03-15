@@ -25,6 +25,7 @@ local Action = Helper.createClass(nil, {
 
 ---
 function Action.onLoad(state)
+
     Helper.registerEventListener("phaseStart", function (phase, _)
         Action.context = {
             phase = phase

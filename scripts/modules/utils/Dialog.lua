@@ -136,10 +136,15 @@ function Dialog._showOptionsAndCancelDialog(color, title, options, callback)
 end
 
 ---
+function Dialog._checkExistence(dialogId)
+    local color = UI.getAttribute(dialogId, "color")
+    assert(color and type(color) == "string" and color:len() > 0, "Missing static dialogs!" .. dialogId)
+end
+
+---
 function Dialog._bindStaticUI(color, title, options, callback)
     local dialogId = Dialog._dialogId(options)
     Dialog._checkExistence(dialogId)
-
     UI.setAttribute(dialogId, "active", true)
     UI.setAttribute(dialogId, "visibility", color)
     UI.setValue(Dialog._titleId(options), title)
@@ -162,12 +167,6 @@ function Dialog._bindStaticUI(color, title, options, callback)
             closingCallback(i)
         end))
     end
-end
-
----
-function Dialog._checkExistence(dialogId)
-    local color = UI.getAttribute(dialogId, "color")
-    assert(color and type(color) == "string" and color:len() > 0, "Missing static dialogs!")
 end
 
 ---

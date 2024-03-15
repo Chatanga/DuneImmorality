@@ -14,7 +14,6 @@ function AcquireCard.new(zone, tag, acquire, decalUrl)
         anchor = nil
     })
 
-    --assert(#zone.getTags() == 0)
     zone.addTag(tag)
 
     local position = zone.getPosition() - Vector(0, 0.5, 0)
@@ -78,7 +77,6 @@ function AcquireCard.onObjectLeaveScriptingZone(...)
 end
 
 function AcquireCard:_createButton(acquire)
-
     local count = 0
     for _, object in ipairs(self.zone.getObjects()) do
         local cardCount = Helper.getCardCount(object)

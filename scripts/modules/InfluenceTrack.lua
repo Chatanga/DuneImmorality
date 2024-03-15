@@ -26,7 +26,6 @@ local InfluenceTrack = {
 
 ---
 function InfluenceTrack.onLoad(state)
-
     Helper.append(InfluenceTrack, Helper.resolveGUIDs(false, {
         snoopers = {
             emperor = "a58ce8",

@@ -7,7 +7,6 @@ local Dialog = require("utils.Dialog")
 local Resource = Module.lazyRequire("Resource")
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local Commander = Module.lazyRequire("Commander")
-local TurnControl = Module.lazyRequire("TurnControl")
 
 local TleilaxuResearch = {
     --[[
@@ -53,7 +52,6 @@ local TleilaxuResearch = {
 
 ---
 function TleilaxuResearch.onLoad(state)
-
     Helper.append(TleilaxuResearch, Helper.resolveGUIDs(false, {
         board = "d5c2db",
         TanksZone = "f5de09",
@@ -186,23 +184,27 @@ function TleilaxuResearch._generateResearchButtons()
         })
         Helper.markAsTransient(cellZone)
         Helper.createAnchoredAreaButton(cellZone, 1.6, 0.1, I18N("progressOnResearchTrack"), PlayBoard.withLeader(function (_, color, _)
-            local leader = PlayBoard.getLeader(color)
-            local token = PlayBoard.getContent(color).researchToken
-            local tokenCellPosition = TleilaxuResearch._worlPositionToResearchSpace(token.getPosition())
-            local jump = cellPosition - tokenCellPosition
+            if not PlayBoard.isRival(color) then
+                local leader = PlayBoard.getLeader(color)
+                local token = PlayBoard.getContent(color).researchToken
+                local tokenCellPosition = TleilaxuResearch._worlPositionToResearchSpace(token.getPosition())
+                local jump = cellPosition - tokenCellPosition
 
-            if jump.x == 1 and math.abs(jump.z) <= 1 then
-                leader.research(color, jump)
-            else
-                Dialog.showConfirmDialog(color, I18N("forbiddenMove"), function ()
+                if jump.x == 1 and math.abs(jump.z) <= 1 then
                     leader.research(color, jump)
-                end)
+                else
+                    Dialog.showConfirmDialog(color, I18N("forbiddenMove"), function ()
+                        leader.research(color, jump)
+                    end)
+                end
+            else
+                Dialog.broadcastToColor(I18N('noTouch'), color, "Purple")
             end
         end))
     end
 
     Helper.createAnchoredAreaButton(TleilaxuResearch.twoHelicesZone, 1.6, 0.1, I18N("progressAfterResearchTrack"), PlayBoard.withLeader(function (_, color, _)
-        if TleilaxuResearch.hasReachedTwoHelices(color) then
+        if not PlayBoard.isRival(color) and TleilaxuResearch.hasReachedTwoHelices(color) then
             local leader = PlayBoard.getLeader(color)
             local specialJump = Vector(1, 0, 0)
             leader.research(color, specialJump)

@@ -305,7 +305,7 @@ function TechMarket._doAcquireTech(stackIndex, color)
                 innerContinuation.run(true)
             end
         else
-            printToAll(I18N("pruneTechCard", { card = Helper.getID(techTileStack.topCard) }), "Purple")
+            printToAll(I18N("pruneTechCard", { card = Helper.getID(techTileStack.topCard) }), "White")
             MainBoard.trash(techTileStack.topCard)
             innerContinuation.run(true)
         end
@@ -365,7 +365,6 @@ function TechMarket._doBuyTech(techTileStack, option, color)
         adjustedTechCost = math.max(0, techCost - discountAmount)
         recalledNegociatorCount = 0
     end
-
 
     local leader = PlayBoard.getLeader(color)
     if leader.resources(color, optionDetails.resourceType, -adjustedTechCost) then

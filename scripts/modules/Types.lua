@@ -1,5 +1,3 @@
-local Helper = require("utils.Helper")
-
 ---@alias PlayerColor
 ---| 'Green'
 ---| 'Purple'

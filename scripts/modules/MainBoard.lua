@@ -69,7 +69,6 @@ local MainBoard = {
 
 ---
 function MainBoard.onLoad(state)
-
     Helper.append(MainBoard, Helper.resolveGUIDs(false, {
         board4P = "483a1a",
         board6P = "21cc52",
@@ -513,7 +512,8 @@ function MainBoard.sendAgent(color, spaceName, recallSpy)
 
         goSpace(color, leader, innerContinuation)
         innerContinuation.doAfter(function (action)
-            -- The innerContinuation never cancels (but returns nil) to allow us to cancel the root continuation.
+            -- The innerContinuation never cancels (but returns nil) to allow
+            -- us to cancel the root continuation.
             if action then
                 MainBoard._manageIntelligenceAndInfiltrate(color, parentSpaceName, recallSpy).doAfter(function (goAhead, spy, otherSpy, recallMode)
                     if goAhead then

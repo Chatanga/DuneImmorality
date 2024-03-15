@@ -12,7 +12,6 @@ local Intrigue = {}
 
 ---
 function Intrigue.onLoad(state)
-
     Helper.append(Intrigue, Helper.resolveGUIDs(false, {
         deckZone = 'a377d8',
         discardZone = '80642b'

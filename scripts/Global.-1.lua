@@ -210,9 +210,11 @@ function asyncOnLoad(scriptState)
     -- because the order matter, now that we reload with "staticSetUp" (for the
     -- same reason setUp is ordered too).
     for i, moduleInfo in ipairs(allModules.ordered) do
+        --Helper.dump(tostring(i) .. ". Loading " .. moduleInfo.name)
         moduleInfo.module.onLoad(state)
         Helper.emitEvent("loaded", moduleInfo.name)
     end
+    --Helper.dump("Done loading all modules")
 
     -- List the TTS events we want to make available in the modules.
     Module.registerModuleRedirections({
@@ -301,6 +303,7 @@ end
 function runSetUp(index, activeOpponents)
     local moduleInfo = allModules.ordered[index]
     if moduleInfo then
+        --Helper.dump(tostring(index) .. ". Setting " .. moduleInfo.name)
         local nextContinuation = moduleInfo.module.setUp(settings, activeOpponents)
         if not nextContinuation then
             nextContinuation = Helper.createContinuation("runSetUp")
@@ -308,6 +311,7 @@ function runSetUp(index, activeOpponents)
         end
         nextContinuation.doAfter(Helper.partialApply(runSetUp, index + 1, activeOpponents))
     else
+        --Helper.dump("Done setting all modules")
     end
 end
 

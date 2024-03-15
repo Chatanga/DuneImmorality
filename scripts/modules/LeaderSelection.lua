@@ -35,7 +35,6 @@ end
 
 ---
 function LeaderSelection.onLoad(state)
-
     Helper.append(LeaderSelection, Helper.resolveGUIDs(false, {
         deckZone = "23f2b5",
         secondaryTable = "662ced",
@@ -154,7 +153,7 @@ function LeaderSelection._transientSetUp(settings, players, stage)
                 if #turnSequence == 4 then
                     Helper.swap(turnSequence, 4, 3)
                 else
-                    log("Skipping 4 <-> 3 for less than 4 players.")
+                    Helper.dump("Skipping 4 <-> 3 for less than 4 players.")
                 end
             end
 

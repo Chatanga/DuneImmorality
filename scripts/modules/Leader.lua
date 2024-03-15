@@ -134,11 +134,15 @@ Leader.letoAtreides = Helper.createClass(Leader, {
     --- Landsraad popularity
     bargain = function (color, resourceName, amount)
         local finalAmount = amount
-        if resourceName == "solari" and amount < 0 and Action.checkContext({ phase = "playerTurns", color = color, space = MainBoard.isLandsraadSpace }) then
-            finalAmount = amount + 1
+        if resourceName == "solari" and amount > 0 and Action.checkContext({ phase = "playerTurns", color = color, space = MainBoard.isLandsraadSpace }) then
+            finalAmount = amount - 1
         end
         return finalAmount
-    end
+    end,
+
+    resources = function (color, resourceName, amount)
+        return Action.resources(color, resourceName, -Leader.letoAtreides.bargain(color, resourceName, -amount))
+    end,
 })
 
 Leader.paulAtreides = Helper.createClass(Leader, {
@@ -343,7 +347,7 @@ Leader.yunaMoritani = Helper.createClass(Leader, {
         local leader = PlayBoard.getLeader(color)
         return leader.resources(color, "solari", -7)
             and leader.influence(color, nil, 1)
-            and leader.troop(color, "supply", "garrison", 1)
+            and leader.troops(color, "supply", "garrison", 1)
             and leader.resources(color, "spice", 1)
     end
 })
@@ -476,7 +480,6 @@ Leader.irulanCorrino = Helper.createClass(Leader, {
     end
 })
 
--- FIXME Just "Jessica" actually.
 Leader.jessica = Helper.createClass(Leader, {
 
     --- Other memories
@@ -495,29 +498,33 @@ Leader.jessica = Helper.createClass(Leader, {
             broadcastToAll(I18N("otherMemoriesUsed"), color)
         end
 
-        Helper.createTransientAnchor("OtherMemoriesAnchor", leaderCard.getPosition() + Vector(0, -0.5, 0)).doAfter(function (anchor)
-            Helper.createAbsoluteButtonWithRoundness(anchor, 1, false, {
-                click_function = Helper.registerGlobalCallback(function (_, otherColor)
-                    if otherColor == color then
-                        otherMemories()
-                        anchor.destruct()
-                    else
-                        Dialog.broadcastToColor(I18N("noTouch"), otherColor, "White")
-                    end
-                end),
-                label = I18N("otherMemoriesButton"),
-                position = anchor.getPosition() + Vector(0, 0.6, -1.8),
-                width = 1000,
-                height = 200,
-                font_size = 120,
-                scale = Vector(1, 1, 1),
-                color = { 0, 0, 0, 1 },
-                font_color = Color.fromString("White"),
-                tooltip = I18N("otherMemoriesTooltip"),
-            })
-        end)
+        if leaderCard.getGMNotes() ~= "reverendMotherJessica" then
+            Helper.createTransientAnchor("OtherMemoriesAnchor", leaderCard.getPosition() + Vector(0, -0.5, 0)).doAfter(function (anchor)
+                Helper.createAbsoluteButtonWithRoundness(anchor, 1, false, {
+                    click_function = Helper.registerGlobalCallback(function (_, otherColor)
+                        if otherColor == color then
+                            otherMemories()
+                            anchor.destruct()
+                        else
+                            Dialog.broadcastToColor(I18N("noTouch"), otherColor, "Purple")
+                        end
+                    end),
+                    label = I18N("otherMemoriesButton"),
+                    position = anchor.getPosition() + Vector(0, 0.6, -1.8),
+                    width = 1000,
+                    height = 200,
+                    font_size = 120,
+                    scale = Vector(1, 1, 1),
+                    color = { 0, 0, 0, 1 },
+                    font_color = Color.fromString("White"),
+                    tooltip = I18N("otherMemoriesTooltip"),
+                })
+            end)
+        end
    end
 })
+
+Leader.reverendMotherJessica = Leader.jessica
 
 Leader.feydRauthaHarkonnen = Helper.createClass(Leader, {
 
