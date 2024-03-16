@@ -106,106 +106,6 @@ function TechMarket.getBoard()
 end
 
 ---
-function TechMarket._processSnapPoints(settings)
-    local highCouncilSeats = {}
-    TechMarket.spaces = {}
-    TechMarket.observationPosts = {}
-    TechMarket.banners = {}
-
-    for _, board in ipairs({ TechMarket.board, ShippingTrack.getBoard() }) do
-        Helper.collectSnapPoints(settings, {
-
-            seat = function (name, position)
-                local str = name:sub(12)
-                local index = tonumber(str)
-                assert(index, "Not a number: " .. str)
-                highCouncilSeats[index] = position
-            end,
-
-            space = function (name, position)
-                if settings.riseOfIx then
-                    local ignoredSpaceNames = {
-                        "assemblyHall",
-                        "gatherSupport",
-                        "shipping",
-                        "acceptContract",
-                    }
-                    for _, ignoredSpaceName in ipairs(ignoredSpaceNames) do
-                        if Helper.startsWith(name, ignoredSpaceName) then
-                            return
-                        end
-                    end
-                end
-                MainBoard.spaces[name] = { name = name, position = position }
-            end,
-
-            post = function (name, position)
-                if settings.riseOfIx then
-                    local ignoredSpaceNames = {
-                        "choam",
-                        "landsraadCouncil2"
-                    }
-                    for _, ignoredSpaceName in ipairs(ignoredSpaceNames) do
-                        if Helper.startsWith(name, ignoredSpaceName) then
-                            return
-                        end
-                    end
-                end
-                MainBoard.observationPosts[name] = { name = name, position = position }
-            end,
-
-            spice = function (name, position)
-                local token = MainBoard.spiceBonusTokens[name]
-                token.setPosition(position + Vector(0, -0.05, 0))
-                Helper.noPhysics(token)
-                if not MainBoard.spiceBonuses[name] then
-                    MainBoard.spiceBonuses[name] = Resource.new(token, nil, "spice", 0, name)
-                end
-            end,
-
-            flag = function (name, position)
-                local zone = spawnObject({
-                    type = 'ScriptingTrigger',
-                    position = position,
-                    scale = { 0.8, 1, 0.8 },
-                })
-                Helper.markAsTransient(zone)
-                MainBoard.banners[name .. "BannerZone"] = zone
-            end
-        })
-    end
-
-    assert(#highCouncilSeats > 0)
-    MainBoard.highCouncilPark = Park.createPark(
-        "HighCouncil",
-        highCouncilSeats,
-        Vector(0, 0, 0),
-        { Park.createTransientBoundingZone(0, Vector(0.5, 1, 0.5), highCouncilSeats) },
-        { "HighCouncilSeatToken" },
-        nil,
-        true,
-        true)
-
-    -- A trick to ensure that parent space are created before
-    -- their child spaces (which always have a longer name).
-    local orderedSpaces = Helper.getValues(MainBoard.spaces)
-    table.sort(orderedSpaces, function (s1, s2)
-        return s1.name:len() < s2.name:len()
-    end)
-    for _, space in ipairs(orderedSpaces) do
-        MainBoard._createSpaceButton(space)
-    end
-
-    for _, observationPost in pairs(MainBoard.observationPosts) do
-        MainBoard._createObservationPostButton(observationPost)
-    end
-
-    for _, bannerZone in pairs(MainBoard.banners) do
-        MainBoard._createBannerSpace(bannerZone)
-    end
-end
-
----
 function TechMarket.pruneStacksForSoloMode()
     local highestHeightIndex
     local highestHeight
@@ -278,8 +178,11 @@ function TechMarket._doAcquireTech(stackIndex, color)
 
         local innerContinuation = Helper.createContinuation("TechMarket._doAcquireTech#inner")
         innerContinuation.doAfter(function (success)
-            if success and color and PlayBoard.grantTechTile(color, techTileStack.topCard) then
-                TechCard.applyBuyEffect(color, techTileStack.topCard)
+            if success then
+                if color then
+                    PlayBoard.grantTechTile(color, techTileStack.topCard)
+                    TechCard.applyBuyEffect(color, techTileStack.topCard)
+                end
                 Helper.onceTimeElapsed(0.5).doAfter(function ()
                     if techTileStack.otherCards then
                         local above = acquireCard.zone.getPosition() + Vector(0, 1, 0)
