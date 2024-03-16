@@ -3,6 +3,7 @@ local Helper = require("utils.Helper")
 
 local Action = Module.lazyRequire("Action")
 local PlayBoard = Module.lazyRequire("PlayBoard")
+local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
 
 local Commander = Helper.createClass(Action, {
     leaders = {},
@@ -160,16 +161,11 @@ function Commander.callSandworm(color, count)
 end
 
 ---
-function Commander.influence(color, faction, amount, forced)
-    if Helper.isElementOf(faction, { "greatHouses", "spacingGuild", "beneGesserit", "fringeWorlds" }) then
-        return Commander._forwardToActivatedAlly(color, "influence", faction, amount)
-    elseif forced then
+function Commander.influence(color, faction, amount)
+    if InfluenceTrack.hasAccess(color, faction) then
         return Action.influence(color, faction, amount)
     else
-        -- To be chosen...
-        local continuation = Helper.createContinuation("Commander.influence")
-        continuation.cancel()
-        return continuation
+        return Commander._forwardToActivatedAlly(color, "influence", faction, amount)
     end
 end
 

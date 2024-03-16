@@ -157,7 +157,7 @@ function CardEffect._dispatch(selector, expression)
             end
         elseif selector == "contract" then
             assert(not value or value == 1, tostring(value))
-            return call("pickContract", color, value)
+            return call("pickContract", color)
         elseif selector == "voice" then
             assert(not value, tostring(value))
             return call("pickVoice", color)

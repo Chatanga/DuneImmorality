@@ -1606,7 +1606,7 @@ function PlayBoard:_generatePlayerScoreboardPositions()
     for i = 0, 14 do
         self.scorePositions[i] = {
             origin.x,
-            1 + heights[self.color],
+            3 + heights[self.color],
             origin.z + i * 1.185
         }
     end
@@ -1865,9 +1865,9 @@ end
 
 ---
 function PlayBoard:_createButtons()
-    Helper.dumpFunction(self.color .. ":_createButtons")
-    Helper.dump("isRival:", PlayBoard.isRival(self.color))
-    Helper.dump("playerBoard.opponent:", self.opponent)
+    --Helper.dumpFunction(self.color .. ":_createButtons")
+    --Helper.dump("isRival:", PlayBoard.isRival(self.color))
+    --Helper.dump("playerBoard.opponent:", self.opponent)
     self:_clearButtons()
 
     local chromae = {

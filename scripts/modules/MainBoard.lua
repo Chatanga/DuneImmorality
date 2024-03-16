@@ -808,7 +808,7 @@ end
 function MainBoard._goFremkit(color, leader, continuation)
     continuation.run(function ()
         leader.drawImperiumCards(color, 1)
-        leader.influence(color, "fremen", 1, true)
+        leader.influence(color, "fremen", 1)
     end)
 end
 
@@ -818,7 +818,7 @@ function MainBoard._goDesertTactics(color, leader, continuation)
         continuation.run(function ()
             leader.resources(color, "water", -1)
             leader.troops(color, "supply", "garrison", 1)
-            leader.influence(color, "fremen", 1, true)
+            leader.influence(color, "fremen", 1)
         end)
     else
         continuation.run()
@@ -878,7 +878,7 @@ end
 function MainBoard._goDutifulService(color, leader, continuation)
     assert(TurnControl.getPlayerCount() < 6)
     continuation.run(function ()
-        leader.influence(color, "emperor", 1, true)
+        leader.influence(color, "emperor", 1)
     end)
 end
 
@@ -891,7 +891,7 @@ function MainBoard._goSardaukar(color, leader, continuation)
                 leader.resources(color, "spice", -MainBoard.getSardaukarCost())
                 leader.troops(color, "supply", "garrison", 4)
                 leader.drawIntrigues(color, 1)
-                leader.influence(color, "emperor", 1, true)
+                leader.influence(color, "emperor", 1)
             end)
         else
             continuation.run()
@@ -913,7 +913,7 @@ function MainBoard._goVastWealth(color, leader, continuation)
     if Commander.isShaddam(color) then
         continuation.run(function ()
             leader.resources(color, "solari", 3)
-            leader.influence(color, "emperor", 1, true)
+            leader.influence(color, "emperor", 1)
         end)
     else
         Dialog.broadcastToColor(I18N("forbiddenAccess"), color, "Purple")
@@ -976,7 +976,7 @@ function MainBoard._goHardyWarriors(color, leader, continuation)
         continuation.run(function ()
             leader.resources(color, "water", -1)
             leader.troops(color, "supply", "garrison", 2)
-            leader.influence(color, "fremen", 1, true)
+            leader.influence(color, "fremen", 1)
         end)
     else
         continuation.run()
@@ -989,7 +989,7 @@ function MainBoard._goDesertMastery(color, leader, continuation)
         continuation.run(function ()
             leader.drawImperiumCards(color, 1)
             leader.resources(color, "spice", 1)
-            leader.influence(color, "fremen", 1, true)
+            leader.influence(color, "fremen", 1)
         end)
     else
         Dialog.broadcastToColor(I18N("forbiddenAccess"), color, "Purple")

@@ -281,7 +281,7 @@ return {
     withBeneGesserit = "du Bene Gesserit",
     withFremen = "des Fremens",
     withGreatHouses = "des maisons majeures",
-    withFringeWorlds = "des mondes de la bordure",
+    withFringeWorlds = "des mondes de l'autre côté du périph",
 
     -- Leaders
     vladimirHarkonnen = "Baron Vladimir Harkonnen",
@@ -481,7 +481,7 @@ return {
     gurneyHalleck = "Gurney Halleck",
     thufirHawat = "Thufir Hawat",
     otherMemory = "Mémoire seconde",
-    --lietKynes = "Liet Kynes",
+    lietKynes = "Liet Kynes",
     wormRiders = "Chevaucheurs de ver",
     reverendMotherMohiam = "Révérende mère Mohiam",
     powerPlay = "Jeu de pouvoir",
@@ -724,6 +724,7 @@ return {
     desertMouse = "Souris du désert",
     ornithopter = "Ornithoptère",
     --crysknife = "Krys",
+    joker = "Joker",
     shadowAlliance = "Alliance de l'ombre",
     secureSpiceTrade = "Sécuriser le commerce de l'épice",
 
@@ -821,4 +822,16 @@ return {
     strategicStockpiling1 = "Stocks stratégiques (épice)",
     strategicStockpiling2 = "Stocks stratégiques (eau)",
     --opportunism = "Opportunisme",
+    emperorAlliance = "Alliance avec l’Empereur",
+    emperorFriendship = "Amitié avec l’Empereur",
+    greatHousesAlliance = "Alliance avec les grandes maisons",
+    greatHousesFriendship = "Amitié avec les grandes maisons",
+    spacingGuildAlliance = "Alliance avec la Guilde spatiale",
+    spacingGuildFriendship = "Amitié avec la Guilde spatiale",
+    beneGesseritAlliance = "Alliance avec le Bene Gesserit",
+    beneGesseritFriendship = "Amitié avec le Bene Gesserit",
+    fringeWorldsAlliance = "Alliance avec les mondes périphériques",
+    fringeWorldsFriendship = "Amitié avec les mondes périphériques",
+    fremenAlliance = "Alliance avec les Fremens",
+    fremenFriendship = "Amitié avec les Fremens",
 }
