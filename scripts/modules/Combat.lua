@@ -95,7 +95,7 @@ function Combat._transientSetUp(settings)
             Combat.showRanking(turnSequence, Combat.ranking)
         elseif phase == "recall" then
             for _, object in ipairs(Combat.rewardTokenZone.getObjects()) do
-                if Types.isVictoryPointToken(object) then
+                if Types.isVictoryPointToken(object) or Types.isObjectiveToken(object) then
                     MainBoard.trash(object)
                 end
             end

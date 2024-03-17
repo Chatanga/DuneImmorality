@@ -85,6 +85,16 @@ function Types.isVictoryPointToken(object)
 end
 
 ---
+function Types.isObjectiveToken(object)
+    for _, prefix in ipairs({ "MuadDib", "Ornithopter", "Crysknife", "Joker" }) do
+        if object.hasTag(prefix .. "ObjectiveToken") then
+            return true
+        end
+    end
+    return false
+end
+
+---
 function Types.isImperiumCard(object)
     return object.hasTag("Imperium")
 end

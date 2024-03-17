@@ -536,7 +536,7 @@ function Deck.loadCustomDecks(loader)
         "protectTheSietches",
         "tradeDispute",
     })
-    Deck.load(loader, cards.conflict, "conflict3", "conflict", 1, {
+    Deck.load(loader, cards.conflict, "conflict3", "conflict", 5, {
         "economicSupremacy",
     })
     Deck.load(loader, cards.conflict, "conflict3", "uprisingConflict", 1, {
