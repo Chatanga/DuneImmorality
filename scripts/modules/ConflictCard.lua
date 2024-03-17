@@ -54,15 +54,9 @@ local spyMakerSpace = CardEffect.spyMakerSpace
 local swordmaster = CardEffect.swordmaster
 
 local ConflictCard = {
-    skirmishA = {level = 1, legacy = true, rewards = {{vp(1)}, {intrigue(1), solari(2)}, {solari(2)}}},
-    skirmishB = {level = 1, legacy = true, rewards = {{vp(1)}, {water(1)}, {spice(1)}}},
-    skirmishC = {level = 1, legacy = true, rewards = {{influence(1), spice(1)}, {spice(2)}, {spice(1)}}},
-    skirmishD = {level = 1, legacy = true, rewards = {{influence(1), solari(2)}, {solari(3)}, {solari(2)}}},
-    skirmishE = {level = 1, ix = true, rewards = {{shipment(1), spice(1)}, {solari(3)}, {solari(2)}}},
-    skirmishF = {level = 1, ix = true, rewards = {{shipment(1), troop(1)}, {spice(2)}, {spice(1)}}},
-    skirmishG = {level = 1, uprising = true, objective = "crysknife", rewards = {{influence(1)}, {intrigue(1), spice(1)}, {spice(1)}}},
-    skirmishH = {level = 1, uprising = true, objective = "ornithopter", rewards = {{intrigue(1), solari(1)}, {intrigue(1), solari(2)}, {intrigue(1)}}},
-    skirmishI = {level = 1, uprising = true, objective = "muadDib", rewards = {{solari(2)}, {solari(3)}, {solari(2)}}},
+    skirmishA = {level = 1, uprising = true, objective = "crysknife", rewards = {{influence(1)}, {intrigue(1), spice(1)}, {spice(1)}}},
+    skirmishB = {level = 1, uprising = true, objective = "ornithopter", rewards = {{intrigue(1), solari(1)}, {intrigue(1), solari(2)}, {intrigue(1)}}},
+    skirmishC = {level = 1, uprising = true, objective = "muadDib", rewards = {{solari(2)}, {solari(3)}, {solari(2)}}},
     desertPower = {level = 2, legacy = true, rewards = {{vp(1), water(1)}, {water(1), spice(1)}, {spice(1)}}},
     raidStockpiles = {level = 2, legacy = true, rewards = {{intrigue(1), spice(3)}, {spice(2)}, {spice(1)}}},
     cloakAndDagger = {level = 2, legacy = true, rewards = {{influence(1), intrigue(2)}, {intrigue(1), spice(1)}, {choice(1, {intrigue(1), spice(1)})}}},
@@ -76,11 +70,11 @@ local ConflictCard = {
     tradeMonopoly = {level = 2, ix = true, rewards = {{shipment(2), troop(1)}, {intrigue(1), water(1)}, {choice(1, {intrigue(1), water(1)})}}},
     choamSecurity = {level = 2, uprising = true, objective = "crysknife", rewards = {{influence(2, "spacingGuild"), contract(), troop(1)}, {water(2), solari(2), troop(2)}, {intrigue(1), troop(1)}}},
     spiceFreighters = {level = 2, uprising = true, objective = "crysknife", rewards = {{ influence(1), optional({spice(-3), vp(1)})}, {water(1), spice(1), troop(1)}, {spice(1), troop(1)}}},
-    siegeOfArrakeenNew = {level = 2, uprising = true, objective = "ornithopter", rewards = {{control("arrakeen"), solari(2), troop(2)}, {solari(4), troop(1)}, {solari(3)}}},
+    siegeOfArrakeen = {level = 2, uprising = true, objective = "ornithopter", rewards = {{control("arrakeen"), solari(2), troop(2)}, {solari(4), troop(1)}, {solari(3)}}},
     seizeSpiceRefinery = {level = 2, uprising = true, objective = "crysknife", rewards = {{control("spiceRefinery"), spy(1), spice(2)}, {intrigue(1), spice(1), troop(1)}, {spice(2)}}},
     testOfLoyalty = {level = 2, uprising = true, objective = "ornithopter", rewards = {{influence(1, "emperor"), spy(1), solari(2)}, {solari(4), troop(1)}, {solari(3)}}},
     shadowContest = {level = 2, uprising = true, objective = "ornithopter", rewards = {{influence(1, "beneGesserit"), intrigue(1)}, {intrigue(1), spice(1), troop(1)}, {spice(1), troop(1)}}},
-    secureImperialBasinNew = {level = 2, uprising = true, objective = "muadDib", rewards = {{control("imperialBasin"), spice(2), troop(1)}, {water(2), troop(1)}, {water(1), troop(1)}}},
+    secureImperialBasin = {level = 2, uprising = true, objective = "muadDib", rewards = {{control("imperialBasin"), spice(2), troop(1)}, {water(2), troop(1)}, {water(1), troop(1)}}},
     protectTheSietches = {level = 2, uprising = true, objective = "muadDib", rewards = {{influence(1, "fremen"), water(1), troop(1)}, {spice(3), troop(1)}, {spice(2)}}},
     tradeDispute = {level = 2, uprising = true, objective = "muadDib", rewards = {{contract(), water(1), trash(1)}, {water(1), spice(1), trash(1)}, {water(1), troop(1)}}},
     battleForImperialBasin = {level = 3, legacy = true, rewards = {{vp(2), control("imperialBasin")}, {spice(5)}, {spice(3)}}},
@@ -89,8 +83,8 @@ local ConflictCard = {
     battleForArrakeen = {level = 3, legacy = true, rewards = {{vp(2), control("arrakeen")}, {choice(2, {intrigue(1), spice(2), solari(3)})}, {intrigue(1), solari(2)}}},
     economicSupremacy = {level = 3, ix = true, rewards = {{vp(1), optional({solari(-6), vp(1)}), optional({spice(-4), vp(1)})}, {vp(1)}, {spice(2), solari(2)}}},
     propaganda = {level = 3, uprising = true, objective = "joker", rewards = {{choice(2, {influence(1, "emperor"), influence(1, "spacingGuild"), influence(1, "beneGesserit"), influence(1, "fremen")})}, {intrigue(1), spice(3)}, {spice(3)}}},
-    battleForImperialBasinNew = {level = 3, uprising = true, objective = "ornithopter", rewards = {{vp(1), control("imperialBasin"), optional({spice(-4), vp(1)})}, {spice(5)}, {spice(3)}}},
-    battleForArrakeenNew = {level = 3, uprising = true, objective = "crysknife", rewards = {{vp(1), control("arrakeen"), optional({spy(-2), vp(1)})}, {intrigue(1), spice(1), solari(3)}, {spice(2), solari(2)}}},
+    battleForImperialBasin = {level = 3, uprising = true, objective = "ornithopter", rewards = {{vp(1), control("imperialBasin"), optional({spice(-4), vp(1)})}, {spice(5)}, {spice(3)}}},
+    battleForArrakeen = {level = 3, uprising = true, objective = "crysknife", rewards = {{vp(1), control("arrakeen"), optional({spy(-2), vp(1)})}, {intrigue(1), spice(1), solari(3)}, {spice(2), solari(2)}}},
     battleForSpiceRefinery = {level = 3, uprising = true, objective = "muadDib", rewards = {{vp(1), control("spiceRefinery"), optional({solari(-6), vp(1)})}, {intrigue(1), spice(3)}, {spice(3)}}},
 }
 
@@ -154,11 +148,11 @@ end
 
 function ConflictCard.isBehindTheWall(conflictName)
     local behindTheWallConflictCards = {
-        siegeOfArrakeenNew = "arrakeen",
+        siegeOfArrakeen = "arrakeen",
         seizeSpiceRefinery = "spiceRefinery",
-        secureImperialBasinNew = "imperialBasin",
-        battleForImperialBasinNew = "imperialBasin",
-        battleForArrakeenNew = "arrakeen",
+        secureImperialBasin = "imperialBasin",
+        battleForImperialBasin = "imperialBasin",
+        battleForArrakeen = "arrakeen",
         battleForSpiceRefinery = "spiceRefinery",
     }
     return Helper.isElementOf(conflictName, Helper.getKeys(behindTheWallConflictCards))

@@ -30,11 +30,9 @@ local Deck = {
         uprisingIntrigue_contract = { "http://cloud-3.steamusercontent.com/ugc/2220898342999370142/4633F67F86EB0AFAE82F5C075A16FE2FF6E2AD96/", 2 , 2 },
     },
     conflict1 = {
-        conflict = { "http://cloud-3.steamusercontent.com/ugc/2093667512238536892/F1C0913A589ADB0A0532DFB8FAA7E9D7942CF6CB/", 3, 2 },
         uprisingConflict = { "http://cloud-3.steamusercontent.com/ugc/2220898342999571486/658FE46691E92A3A5A67D11CB09BE85492BAFE87/", 2, 2 },
     },
     conflict2 = {
-        conflict = { "http://cloud-3.steamusercontent.com/ugc/2093667512238537279/B1CD3F41933A9DD44522934B5F6CF3C5FF77A51C/", 6, 2 },
         uprisingConflict = { "http://cloud-3.steamusercontent.com/ugc/2220898342999635952/60D88BD461A98569E77321BAC643C6938DBB292E/", 5, 2 },
     },
     conflict3 = {
@@ -377,8 +375,6 @@ function Deck.loadCustomDecks(loader)
     })
     Deck.load(loader, cards.special, "imperium", "imperium", 5, {
         "foldspace",
-        "arrakisLiaison",
-        "theSpiceMustFlow",
     })
     Deck.load(loader, cards.special, "imperium", "tleilaxResearch", 11, {
         "reclaimedForces",
@@ -387,7 +383,7 @@ function Deck.loadCustomDecks(loader)
         "prepareTheWay",
     })
     Deck.load(loader, cards.special, "imperium", "uprisingImperium_theSpiceMustFlow", 10, {
-        "theSpiceMustFlowNew",
+        "theSpiceMustFlow",
     })
     Deck.load(loader, cards.tleilaxu, "imperium", "tleilaxResearch", 1, {
         "beguilingPheromones",
@@ -524,54 +520,29 @@ function Deck.loadCustomDecks(loader)
         "choamProfits",
     })
 
-    Deck.load(loader, cards.conflict, "conflict1", "conflict", 1, {
+    Deck.load(loader, cards.conflict, "conflict1", "uprisingConflict", 1, {
         "skirmishA",
         "skirmishB",
         "skirmishC",
-        "skirmishD",
-        "skirmishE",
-        "skirmishF",
-    })
-    Deck.load(loader, cards.conflict, "conflict1", "uprisingConflict", 1, {
-        "skirmishG",
-        "skirmishH",
-        "skirmishI",
-    })
-    Deck.load(loader, cards.conflict, "conflict2", "conflict", 1, {
-        "desertPower",
-        "raidStockpiles",
-        "cloakAndDagger",
-        "machinations",
-        "sortThroughTheChaos",
-        "terriblePurpose",
-        "guildBankRaid",
-        "siegeOfArrakeen",
-        "siegeOfCarthag",
-        "secureImperialBasin",
-        "tradeMonopoly",
     })
     Deck.load(loader, cards.conflict, "conflict2", "uprisingConflict", 1, {
         "choamSecurity",
         "spiceFreighters",
-        "siegeOfArrakeenNew",
+        "siegeOfArrakeen",
         "seizeSpiceRefinery",
         "testOfLoyalty",
         "shadowContest",
-        "secureImperialBasinNew",
+        "secureImperialBasin",
         "protectTheSietches",
         "tradeDispute",
     })
     Deck.load(loader, cards.conflict, "conflict3", "conflict", 1, {
-        "battleForImperialBasin",
-        "grandVision",
-        "battleForCarthag",
-        "battleForArrakeen",
         "economicSupremacy",
     })
     Deck.load(loader, cards.conflict, "conflict3", "uprisingConflict", 1, {
         "propaganda",
-        "battleForImperialBasinNew",
-        "battleForArrakeenNew",
+        "battleForImperialBasin",
+        "battleForArrakeen",
         "battleForSpiceRefinery",
     })
 

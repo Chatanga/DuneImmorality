@@ -28,7 +28,7 @@ function Reserve.setUp()
         Reserve.foldspaceSlotZone.destruct()
     end
     Deck.generateSpecialDeck(Reserve.prepareTheWaySlotZone, "uprising", "prepareTheWay")
-    Deck.generateSpecialDeck(Reserve.theSpiceMustFlowSlotZone, "uprising", "theSpiceMustFlowNew")
+    Deck.generateSpecialDeck(Reserve.theSpiceMustFlowSlotZone, "uprising", "theSpiceMustFlow")
     Reserve._transientSetUp()
 end
 

@@ -237,15 +237,13 @@ local Deck = {
     special = {
         legacy = {
             foldspace = 6,
-            arrakisLiaison = 8,
-            theSpiceMustFlow = 10,
         },
         immortality = {
             reclaimedForces = 1,
         },
         uprising = {
             prepareTheWay = 8,
-            theSpiceMustFlowNew = 10,
+            theSpiceMustFlow = 10,
         },
     },
     tleilaxu = {
@@ -384,64 +382,33 @@ local Deck = {
     },
     conflict = {
         level1 = {
-            legacy = {
+            uprising = {
                 skirmishA = 1,
                 skirmishB = 1,
                 skirmishC = 1,
-                skirmishD = 1,
-            },
-            ix = {
-                skirmishE = 1,
-                skirmishF = 1,
-            },
-            uprising = {
-                skirmishG = 1,
-                skirmishH = 1,
-                skirmishI = 1,
             },
         },
         level2 = {
-            legacy = {
-                desertPower = 1,
-                raidStockpiles = 1,
-                cloakAndDagger = 1,
-                machinations = 1,
-                sortThroughTheChaos = 1,
-                terriblePurpose = 1,
-                guildBankRaid = 1,
-                siegeOfArrakeen = 1,
-                siegeOfCarthag = 1,
-                secureImperialBasin = 1,
-            },
-            ix = {
-                tradeMonopoly = 1,
-            },
             uprising = {
                 choamSecurity = 1,
                 spiceFreighters = 1,
-                siegeOfArrakeenNew = 1,
+                siegeOfArrakeen = 1,
                 seizeSpiceRefinery = 1,
                 testOfLoyalty = 1,
                 shadowContest = 1,
-                secureImperialBasinNew = 1,
+                secureImperialBasin = 1,
                 protectTheSietches = 1,
                 tradeDispute = 1,
             },
         },
         level3 = {
-            legacy = {
-                battleForImperialBasin = 1,
-                grandVision = 1,
-                battleForCarthag = 1,
-                battleForArrakeen = 1,
-            },
             ix = {
                 economicSupremacy = 1,
             },
             uprising = {
                 propaganda = 1,
-                battleForImperialBasinNew = 1,
-                battleForArrakeenNew = 1,
+                battleForImperialBasin = 1,
+                battleForArrakeen = 1,
                 battleForSpiceRefinery = 1,
             }
         },

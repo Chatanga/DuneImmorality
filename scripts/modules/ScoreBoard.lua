@@ -38,7 +38,7 @@ function ScoreBoard.onLoad(state)
             allyBag = "5140a0",
             commanderBag = "1a42dd",
             --
-            theSpiceMustFlowNewBag= "a7e06b",
+            theSpiceMustFlowBag= "a7e06b",
             combatVictoryPointBag = "86dc4e",
             muadDibVictoryPointBag = "9aad55",
             ornithopterVictoryPointBag = "600a38",
@@ -57,7 +57,6 @@ function ScoreBoard.onLoad(state)
             opportunism = "504094",
         },
         legacy = {
-            theSpiceMustFlowBag = "7bd6f8",
             guildAmbassadorBag = "912d75",
             opulenceBag = "c22e46",
             theSleeperMustAwaken = "9bfd65",

@@ -67,9 +67,9 @@ local ImperiumCard = {
     -- starter: immortality
     experimentation = {agentIcons = {'yellow'}, reveal = {persuasion(1), specimen(1)}, starter = true},
     -- reserve
-    arrakisLiaison = {factions = {'fremen'}, cost = 2, agentIcons = {'blue'}, reveal = {persuasion(2)}},
     foldspace = {cost = 0, agentIcons = {'emperor', 'spacingGuild', 'beneGesserit', 'fremen', 'green', 'blue', 'yellow'}},
-    theSpiceMustFlow = {cost = 9, acquireBonus = {vp(1)}, reveal = {spice(1)}},
+    prepareTheWay = {factions = {'beneGesserit'}, cost = 2, agentIcons = {'green', 'blue'}, reveal = {persuasion(2)}},
+    theSpiceMustFlow  = {factions = {'spacingGuild'}, cost = 9, acquireBonus = {vp(1)}, reveal = {spice(1)}},
     -- base
     arrakisRecruiter = {cost = 2, agentIcons = {'blue'}, reveal = {persuasion(1), sword(1)}},
     assassinationMission = {cost = 1, reveal = {sword(1), solari(1)}},
@@ -254,9 +254,6 @@ local ImperiumCard = {
     deliveryAgreement = {factions = {'spacingGuild'}, cost = 5, agentIcons = {'blue'}, reveal = {choice(1, {spice(1), 'contract(4), trash --> vp(1)'})}},
     priorityContracts = {factions = {'spacingGuild'}, cost = 6, agentIcons = {'green', 'yellow'}, reveal = {choice(1, {spice(2), 'contract(4), trash --> vp(1)'})}},
     interstellarTrade = {factions = {'spacingGuild'}, cost = 7, acquireBonus = {contract(1)}, agentIcons = {'green', 'blue', 'yellow'}, reveal = {persuasion(perFulfilledContract(1))}},
-    -- reserve
-    prepareTheWay = {factions = {'beneGesserit'}, cost = 2, agentIcons = {'green', 'blue'}, reveal = {persuasion(2)}},
-    theSpiceMustFlowNew  = {factions = {'spacingGuild'}, cost = 9, acquireBonus = {vp(1)}, reveal = {spice(1)}},
     -- commander
     emperorConvincingArgument = {reveal = {persuasion(2)}},
     emperorCorrinoMight = {factions = {'emperor'}, agentIcons = {'green'}, reveal = {sword(1), 'spice(3), trash --> troop(2) / ally'}},

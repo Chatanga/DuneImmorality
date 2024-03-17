@@ -14,8 +14,6 @@ local Deck = {
         -- base without foldspace, nor liasion, nor the spice must flow, but with Jessica of Arrakis and Duncan Loyal Blade
         imperium = { "http://cloud-3.steamusercontent.com/ugc/2093667512238504179/CC2D301CA075930201B3883D82F4C6E1A0837273/", 10, 7 },
         imperiumFoldedSpace = { "http://cloud-3.steamusercontent.com/ugc/2093667512238503304/AE481C2ED19B085E2669F22420FD282982FD11A9/", 3, 2 },
-        imperiumArrakisLiasion = { "http://cloud-3.steamusercontent.com/ugc/2093667512238504363/D7411DB495E6EB13D6B64F5E46CCF69FF322039F/", 4, 2 },
-        imperiumTheSpiceMustFlow = { "http://cloud-3.steamusercontent.com/ugc/2093667512238504759/B6E08F8328DB699C60A8F058E88AA6443BA2F716/", 5, 2 },
         -- ix without control the spice, but with Boundless Ambition
         ixImperium = { "http://cloud-3.steamusercontent.com/ugc/2093667512238503692/C54BCAB79869547E728509123AC47EDB32E79BF5/", 6, 6 },
         ixImperiumControlTheSpice = { "http://cloud-3.steamusercontent.com/ugc/2093667512238505114/DD5ED3E5FD12F0A1C4F42750E766E83564248E07/", 1, 1 },
@@ -39,11 +37,9 @@ local Deck = {
         uprisingIntrigue_contract = { "http://cloud-3.steamusercontent.com/ugc/2305342013584425562/BFDA5F7ABDF2A97F17019C1715DE0F41BF2BF649/", 2 , 2 },
     },
     conflict1 = {
-        conflict = { "http://cloud-3.steamusercontent.com/ugc/2093667512238536892/F1C0913A589ADB0A0532DFB8FAA7E9D7942CF6CB/", 3, 2 },
         uprisingConflict = { "http://cloud-3.steamusercontent.com/ugc/2305342013587685602/288CBFF505CD4CE7E283BF2158A816517DD365C1/", 2, 2 },
     },
     conflict2 = {
-        conflict = { "http://cloud-3.steamusercontent.com/ugc/2093667512238537279/B1CD3F41933A9DD44522934B5F6CF3C5FF77A51C/", 6, 2 },
         uprisingConflict = { "http://cloud-3.steamusercontent.com/ugc/2305342013587685809/D5CD3A18CBB9DCE0C305AE999213B504F5F3890D/", 5, 2 },
     },
     conflict3 = {
@@ -414,19 +410,11 @@ function Deck.loadCustomDecks(loader)
         "foldspace",
         -- +5
     })
-    Deck.load(loader, cards.special, "imperium", "imperiumArrakisLiasion", 1, {
-        "arrakisLiaison",
-        -- +7
-    })
-    Deck.load(loader, cards.special, "imperium", "imperiumTheSpiceMustFlow", 1, {
-        "theSpiceMustFlow",
-        -- +9
-    })
     Deck.load(loader, cards.special, "imperium", "uprisingImperium_prepareTheWay", 8, {
         "prepareTheWay",
     })
     Deck.load(loader, cards.special, "imperium", "uprisingImperium_theSpiceMustFlow", 10, {
-        "theSpiceMustFlowNew",
+        "theSpiceMustFlow",
     })
     Deck.load(loader, cards.special, "imperium", "tleilaxResearchReclaimedForces", 11, {
         "reclaimedForces",
@@ -545,54 +533,29 @@ function Deck.loadCustomDecks(loader)
         "choamProfits",
     })
 
-    Deck.load(loader, cards.conflict, "conflict1", "conflict", 1, {
+    Deck.load(loader, cards.conflict, "conflict1", "uprisingConflict", 1, {
         "skirmishA",
         "skirmishB",
         "skirmishC",
-        "skirmishD",
-        "skirmishE",
-        "skirmishF"
-    })
-    Deck.load(loader, cards.conflict, "conflict1", "uprisingConflict", 1, {
-        "skirmishG",
-        "skirmishH",
-        "skirmishI",
-    })
-    Deck.load(loader, cards.conflict, "conflict2", "conflict", 1, {
-        "desertPower",
-        "raidStockpiles",
-        "cloakAndDagger",
-        "machinations",
-        "sortThroughTheChaos",
-        "terriblePurpose",
-        "guildBankRaid",
-        "siegeOfArrakeen",
-        "siegeOfCarthag",
-        "secureImperialBasin",
-        "tradeMonopoly"
     })
     Deck.load(loader, cards.conflict, "conflict2", "uprisingConflict", 1, {
         "choamSecurity",
         "spiceFreighters",
-        "siegeOfArrakeenNew",
+        "siegeOfArrakeen",
         "seizeSpiceRefinery",
         "testOfLoyalty",
         "shadowContest",
-        "secureImperialBasinNew",
+        "secureImperialBasin",
         "protectTheSietches",
         "tradeDispute",
     })
     Deck.load(loader, cards.conflict, "conflict3", "conflict", 1, {
-        "battleForImperialBasin",
-        "grandVision",
-        "battleForCarthag",
-        "battleForArrakeen",
         "economicSupremacy"
     })
     Deck.load(loader, cards.conflict, "conflict3", "uprisingConflict", 1, {
         "propaganda",
-        "battleForImperialBasinNew",
-        "battleForArrakeenNew",
+        "battleForImperialBasin",
+        "battleForArrakeen",
         "battleForSpiceRefinery",
     })
 

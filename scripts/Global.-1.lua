@@ -152,7 +152,7 @@ function onLoad(scriptState)
             allModules.PlayBoard.rebuild()
         end
         -- Regenerate the decks in the localized cached areas.
-        if false then
+        if true then
             allModules.Deck.rebuildPreloadAreas()
         end
     else
