@@ -9,9 +9,7 @@ local PlayBoard = Module.lazyRequire("PlayBoard")
 local Deck = Module.lazyRequire("Deck")
 local MainBoard = Module.lazyRequire("MainBoard")
 local Types = Module.lazyRequire("Types")
-local Commander = Module.lazyRequire("Commander")
 local TechCard = Module.lazyRequire("TechCard")
-local ShippingTrack = Module.lazyRequire("ShippingTrack")
 
 local TechMarket = {
     negotiationParks = {},
@@ -21,7 +19,7 @@ local TechMarket = {
 ---
 function TechMarket.onLoad(state)
 
-    Helper.append(TechMarket, Helper.resolveGUIDs(false, {
+    Helper.append(TechMarket, Helper.resolveGUIDs(true, {
         board = "d75455",
         negotiationZone = "2253fa",
         techSlots = {
@@ -157,9 +155,6 @@ function TechMarket.acquireTech(stackIndex, color)
             else
                 TechMarket.frozen = false
             end
-            if not card then
-                Dialog.broadcastToColor(I18N('notAffordableOption'), color, "Purple")
-            end
         end)
     else
         log("Still frozen...")
@@ -176,8 +171,11 @@ function TechMarket._doAcquireTech(stackIndex, color)
 
         local innerContinuation = Helper.createContinuation("TechMarket._doAcquireTech#inner")
         innerContinuation.doAfter(function (success)
-            if success and color and PlayBoard.grantTechTile(color, techTileStack.topCard) then
-                TechCard.applyBuyEffect(color, techTileStack.topCard)
+            if success then
+                if color then
+                    PlayBoard.grantTechTile(color, techTileStack.topCard)
+                    TechCard.applyBuyEffect(color, techTileStack.topCard)
+                end
                 Helper.onceTimeElapsed(0.5).doAfter(function ()
                     if techTileStack.otherCards then
                         local above = acquireCard.zone.getPosition() + Vector(0, 1, 0)

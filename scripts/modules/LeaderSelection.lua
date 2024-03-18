@@ -62,7 +62,7 @@ function LeaderSelection.setUp(settings, activeOpponents)
 
     local postContinuation = Helper.createContinuation("LeaderSelection.setUp.postContinuation")
 
-    Deck.generateLeaderDeck(LeaderSelection.deckZone, settings.riseOfIx, settings.immortality).doAfter(function (deck)
+    Deck.generateLeaderDeck(LeaderSelection.deckZone, settings.riseOfIx, settings.immortality, settings.fanmadeLeaders).doAfter(function (deck)
         local continuation = Helper.createContinuation("LeaderSelection.setUp")
         local start = settings.numberOfPlayers > 2 and 0 or 12
         LeaderSelection._layoutLeaderDeck(deck, start, continuation)
@@ -181,9 +181,8 @@ function LeaderSelection._setUpTest(players, leaderNames)
     for _, color in pairs(players) do
         assert(leaderNames[color], "No leader for color " .. color)
         assert(#LeaderSelection.deckZone.getObjects(), "No leader to select")
-        local leader
         local leaderName = leaderNames[color]
-        leader = leaders[leaderName]
+        local leader = leaders[leaderName]
         assert(leader, "Unknown leader " .. tostring(leaderName))
         PlayBoard.setLeader(color, leader)
     end
@@ -311,9 +310,13 @@ function LeaderSelection._setUpPicking(autoStart, random, hidden)
     if random then
         Helper.registerEventListener("playerTurn", function (phase, color)
             if phase == 'leaderSelection' then
-                local leaders = LeaderSelection.getSelectableLeaders()
-                local leader = Helper.pickAny(leaders)
-                LeaderSelection.claimLeader(color, leader)
+                if PlayBoard.isHuman(color) then
+                    local leaders = LeaderSelection.getSelectableLeaders()
+                    local leader = Helper.pickAny(leaders)
+                    LeaderSelection.claimLeader(color, leader)
+                else
+                    Hagal.pickAnyCompatibleLeader(color)
+                end
             end
         end)
     end
@@ -436,6 +439,7 @@ end
 
 ---
 function LeaderSelection.claimLeader(color, leader)
+    assert(leader)
     Helper.clearButtons(leader)
     LeaderSelection.dynamicLeaderSelection[leader] = true
     PlayBoard.setLeader(color, leader).doAfter(Helper.partialApply(TurnControl.endOfTurn, 2))

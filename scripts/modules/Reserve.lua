@@ -9,7 +9,7 @@ local Reserve = {}
 
 ---
 function Reserve.onLoad(state)
-    Helper.append(Reserve, Helper.resolveGUIDs(false, {
+    Helper.append(Reserve, Helper.resolveGUIDs(true, {
         foldspaceSlotZone = "6b62e0",
         arrakisLiaisonSlotZone = "cbcd9a",
         theSpiceMustFlowSlotZone = "c087d2"
@@ -22,9 +22,9 @@ end
 
 ---
 function Reserve.setUp()
-    Deck.generateSpecialDeck("foldspace", Reserve.foldspaceSlotZone)
-    Deck.generateSpecialDeck("arrakisLiaison", Reserve.arrakisLiaisonSlotZone)
-    Deck.generateSpecialDeck("theSpiceMustFlow", Reserve.theSpiceMustFlowSlotZone)
+    Deck.generateSpecialDeck(Reserve.foldspaceSlotZone, "base", "foldspace")
+    Deck.generateSpecialDeck(Reserve.arrakisLiaisonSlotZone, "base", "arrakisLiaison")
+    Deck.generateSpecialDeck(Reserve.theSpiceMustFlowSlotZone, "base", "theSpiceMustFlow")
     Reserve._transientSetUp()
 end
 

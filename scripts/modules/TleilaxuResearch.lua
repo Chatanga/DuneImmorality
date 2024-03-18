@@ -6,7 +6,7 @@ local Dialog = require("utils.Dialog")
 
 local Resource = Module.lazyRequire("Resource")
 local PlayBoard = Module.lazyRequire("PlayBoard")
-local TurnControl = Module.lazyRequire("TurnControl")
+local DynamicBonus = Module.lazyRequire("DynamicBonus")
 
 local TleilaxuResearch = {
     --[[
@@ -54,7 +54,7 @@ local TleilaxuResearch = {
 ---
 function TleilaxuResearch.onLoad(state)
 
-    Helper.append(TleilaxuResearch, Helper.resolveGUIDs(false, {
+    Helper.append(TleilaxuResearch, Helper.resolveGUIDs(true, {
         board = "d5c2db",
         TanksZone = "f5de09",
         tleilaxSpiceBonusToken = "46cd6b",

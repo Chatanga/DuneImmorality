@@ -7,10 +7,10 @@ local TechMarket = Module.lazyRequire("TechMarket")
 
 local ShippingTrack = {
     initialFreighterPositions = {
-        Yellow = Helper.getHardcodedPositionFromGUID('8fa76f', 8.999577, 0.664093435, 2.85036969),
-        Green = Helper.getHardcodedPositionFromGUID('34281d', 8.449565, 0.6641097, 2.85037446),
-        Blue = Helper.getHardcodedPositionFromGUID('68e424', 7.34955263, 0.6641073, 2.854408),
-        Red = Helper.getHardcodedPositionFromGUID('e9096d', 7.89962149, 0.6641103, 2.853226)
+        Yellow = Helper.getHardcodedPositionFromGUID('8fa76f', 8.999569, 0.664116144, 2.85036254),
+        Green = Helper.getHardcodedPositionFromGUID('34281d', 8.44955349, 0.6641097, 2.850371),
+        Blue = Helper.getHardcodedPositionFromGUID('68e424', 7.34954357, 0.664107263, 2.85441518),
+        Red = Helper.getHardcodedPositionFromGUID('e9096d', 7.899618, 0.6641103, 2.853234)
     }
 }
 
@@ -25,7 +25,7 @@ function ShippingTrack.onLoad(state)
         },
         bonusSlots = {
             spice = "5bf4d1",
-            solari = "1cb928",
+            solaris = "1cb928",
             troopsAndInfluence = "69a137",
         },
         ignoredBonusSlots = {
@@ -77,8 +77,8 @@ end
 function ShippingTrack._createLevelButton(level, levelSlot)
     local tooltip = level == 0
         and I18N("recallYourFreighter")
-        or I18N("progressOnShipmentTrack")
-    local ground = levelSlot.getPosition().y- 0.1
+        or I18N("progressOnShippingTrack")
+    local ground = levelSlot.getPosition().y - 0.5
     Helper.createAnchoredAreaButton(levelSlot, ground, 0.2, tooltip, PlayBoard.withLeader(function (_, color, _)
         local leader = PlayBoard.getLeader(color)
         local freighterLevel = ShippingTrack.getFreighterLevel(color)

@@ -132,7 +132,7 @@ local ArrakeenScouts = {
 function ArrakeenScouts.onLoad(state)
     ArrakeenScouts.fr = require("fr.ArrakeenScouts")
     ArrakeenScouts.en = require("en.ArrakeenScouts")
-    Helper.append(ArrakeenScouts, Helper.resolveGUIDs(true, {
+    Helper.append(ArrakeenScouts, Helper.resolveGUIDs(false, {
         board = "54b5be",
         committeeZones = {
             "1d4471",
@@ -404,7 +404,7 @@ function ArrakeenScouts._createDialog(content)
     assert(createController, "No create controller function for content: " .. content)
 
     local playerPanes = {}
-    for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
+    for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
         local leaderName = PlayBoard.getLeaderName(color)
         if leaderName then
             local playerPane = {}
@@ -608,13 +608,13 @@ function ArrakeenScouts._setAsOptionPane(color, playerPane, secret, options, con
     }
 
     button.attributes.onClick = Helper.registerGlobalCallback(function (player)
-        if Helper.getPlayerColor(player) == color then
+        if player.color == color then
             Helper.unregisterGlobalCallback(dropdown.attributes.onValueChanged)
             Helper.unregisterGlobalCallback(button.attributes.onClick)
             controller.validate(color, holder.selectedOption)
         else
             --Helper.dump("color =", color)
-            --Helper.dump("Helper.getPlayerColor(player) = ", Helper.getPlayerColor(player))
+            --Helper.dump("player.color = ", player.color)
             broadcastToColor(I18N('noTouch'), color, "Purple")
         end
     end)
@@ -651,7 +651,8 @@ function ArrakeenScouts._setAsValidationPane(color, playerPane, secret, label, c
     }
 
     button.attributes.onClick = Helper.registerGlobalCallback(function (player)
-        if Helper.getPlayerColor(player) == color or ArrakeenScouts._debug then
+        log(player)
+        if player.color == color or ArrakeenScouts._debug then
             Helper.unregisterGlobalCallback(button.attributes.onClick)
             controller.validate(color)
         end
@@ -838,6 +839,7 @@ function ArrakeenScouts.joinCommitee(color, luaIndex)
         local newToken = token.clone({ position = committeeTile.getPosition() + Vector(-2.2, 0, 0 )})
         newToken.setScale(Vector(0.1, 1, 0.1 ))
         Helper.noPlay(newToken)
+        assert(ArrakeenScouts.committeeAnchors[luaIndex])
         Helper.clearButtons(ArrakeenScouts.committeeAnchors[luaIndex])
         ArrakeenScouts.committeeAccess[color] = false
 

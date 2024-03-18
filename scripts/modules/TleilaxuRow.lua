@@ -15,7 +15,7 @@ local TleilaxuRow = {}
 
 ---
 function TleilaxuRow.onLoad(state)
-    Helper.append(TleilaxuRow, Helper.resolveGUIDs(false, {
+    Helper.append(TleilaxuRow, Helper.resolveGUIDs(true, {
         deckZone = "14b2ca",
         slotZones = {
             'e5ba35',
@@ -58,7 +58,7 @@ function TleilaxuRow._transientSetUp()
     for i, zone in ipairs(TleilaxuRow.slotZones) do
         local acquireCard = AcquireCard.new(zone, "Imperium", PlayBoard.withLeader(function (_, color)
             PlayBoard.getLeader(color).acquireTleilaxuCard(color, i)
-        end), nil, Deck.getAcquireCardDecalUrl("generic"))
+        end), Deck.getAcquireCardDecalUrl("generic"))
         table.insert(TleilaxuRow.acquireCards, acquireCard)
     end
 end
@@ -82,9 +82,6 @@ function TleilaxuRow.acquireTleilaxuCard(indexInRow, color)
     assert((cardName == "reclaimedForces") == (indexInRow == 3))
 
     local specimenSupplierColor = color
-    if Commander.isCommander(color) then
-        specimenSupplierColor = Commander.getActivatedAlly(color)
-    end
 
     if TleilaxuResearch.getSpecimenCount(specimenSupplierColor) >= price then
         local leader = PlayBoard.getLeader(color)
@@ -93,7 +90,7 @@ function TleilaxuRow.acquireTleilaxuCard(indexInRow, color)
                 I18N("troops"),
                 I18N("beetle"),
             }
-            Dialog.showOptionsDialog(color, I18N("reclaimedForces"), options, function (index)
+            Dialog.showOptionsDialog(color, I18N("reclaimedForces"), options, nil, function (index)
                 if index == 1 then
                     leader.troops(color, "tanks", "supply", price)
                     leader.troops(color, "supply", "garrison", 2)

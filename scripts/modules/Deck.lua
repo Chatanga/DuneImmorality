@@ -18,9 +18,9 @@ local Deck = {
         conflict1CardBack = "http://cloud-3.steamusercontent.com/ugc/2093667512238537179/0423ECA84C0D71CCB38EBD60DEAE641EE72D7933/",
         conflict2CardBack = "http://cloud-3.steamusercontent.com/ugc/2093667512238537448/3B3F54DF65F76F0850D0EC683602524806A11E49/",
         conflict3CardBack = "http://cloud-3.steamusercontent.com/ugc/2093667512238537046/9E194557E37B5C4CA74C7A77CBFB6B8A36043916/",
-        objectiveCardBack = "http://cloud-3.steamusercontent.com/ugc/2220898342999519816/02A61DC439DF213EA61A8CCEC1F545F4D369F2E8/",
         hagalCardBack = "http://cloud-3.steamusercontent.com/ugc/2093668799785646965/26E28590801800D852F4BCA53E959AAFAAFC8FF3/",
         leaderCardBack = "http://cloud-3.steamusercontent.com/ugc/2093668799785645356/005244DAC0A29EE68CFF741FC06564969563E8CF/",
+        fanmadeLeaderCardBack = "http://cloud-3.steamusercontent.com/ugc/2093668799785649802/4C75C9A8CA6B890A6178B4B22B0F994B2F663D33/",
     },
     sources = {},
     starter = {
@@ -40,7 +40,7 @@ local Deck = {
         immortality = {
             duneTheDesertPlanet = Helper.ERASE,
             experimentation = 2,
-        }
+        },
     },
     imperium = {
         base = {
@@ -148,15 +148,17 @@ local Deck = {
             throneRoomPolitics = 1,
             tleilaxuMaster = 2,
             tleilaxuSurgeon = 1,
-        }
+        },
     },
     special = {
-        -- Base
-        foldspace = 6,
-        arrakisLiaison = 8,
-        theSpiceMustFlow = 10,
-        -- Immortality
-        reclaimedForces = 1
+        base = {
+            foldspace = 6,
+            arrakisLiaison = 8,
+            theSpiceMustFlow = 10,
+        },
+        immortality = {
+            reclaimedForces = 1,
+        },
     },
     tleilaxu = {
         piterGeniusAdvisor = 1, -- Immortality release promo
@@ -277,7 +279,7 @@ local Deck = {
             },
             ix = {
                 tradeMonopoly = 1,
-            }
+            },
         },
         level3 = {
             base = {
@@ -297,7 +299,7 @@ local Deck = {
                 -- FIXME
                 churn = 2,
             },
-            core = {
+            common = {
                 conspire = 2,
                 wealth = 1,
                 heighliner = 1,
@@ -320,7 +322,7 @@ local Deck = {
             }
         },
         ix = {
-            core = {
+            common = {
                 rallyTroops = Helper.ERASE,
                 hallOfOratory = Helper.ERASE,
                 interstellarShipping = 1,
@@ -336,7 +338,7 @@ local Deck = {
             }
         },
         immortality = {
-            core = {},
+            common = {},
             solo = {
                 researchStation = 1,
                 carthag = Helper.ERASE,
@@ -514,8 +516,8 @@ function Deck.rebuildPreloadAreas()
     }
 
     Deck.prebuildZones = Helper.resolveGUIDs(true, {
-        en = "a5a2e6",
-        fr = "db4507",
+        en = "cf9923",
+        fr = "95b3db",
     })
 
     for _, prebuildZone in pairs(Deck.prebuildZones) do
@@ -549,7 +551,6 @@ function Deck.rebuildPreloadAreas()
             Deck._prebuildSpecialDeck(getNextPosition())
             Deck._prebuildTleilaxuDeck(getNextPosition())
             Deck._prebuildIntrigueDeck(getNextPosition())
-            Deck._prebuildObjectiveDeck(getNextPosition())
             Deck._prebuildTechDeck(getNextPosition())
             Deck._prebuildConflictDeck(getNextPosition())
             Deck._prebuildHagalDeck(getNextPosition())
@@ -561,8 +562,8 @@ end
 ---
 function Deck.onLoad()
     Deck.prebuildZones = Helper.resolveGUIDs(true, {
-        en = "a5a2e6",
-        fr = "db4507",
+        en = "cf9923",
+        fr = "95b3db",
     })
 
     for _, prebuildZone in pairs(Deck.prebuildZones) do
@@ -642,13 +643,13 @@ function Deck.generateImperiumDeck(deckZone, ix, immortality)
 end
 
 ---
-function Deck.generateSpecialDeck(name, deckZone)
+function Deck.generateSpecialDeck(deckZone, parent, name)
     assert(deckZone, name)
     assert(deckZone.getPosition)
     local continuation = Helper.createContinuation("Deck.generateSpecialDeck")
     assert(name)
-    assert(Deck.special[name])
-    local contributions = { [name] = Deck.special[name] }
+    assert(Deck.special[parent][name], name)
+    local contributions = { [name] = Deck.special[parent][name] }
     Deck._generateDeck("Imperium", deckZone, contributions, Deck.sources.special).doAfter(function (deck)
         deck.flip()
         continuation.run(deck)
@@ -753,7 +754,7 @@ function Deck.generateHagalDeck(deckZone, ix, immortality, playerCount)
     local contributionSets = {}
     for _, contributionSetName in ipairs(contributionSetNames) do
         local root = Deck.hagal[contributionSetName]
-        table.insert(contributionSets, root.core)
+        table.insert(contributionSets, root.common)
         if not playerCount or playerCount == 1 then
             table.insert(contributionSets, root.solo)
         elseif not playerCount or playerCount == 2 then
@@ -1036,18 +1037,6 @@ function Deck._nextCustomDeckId()
 end
 
 ---
-function Deck._prebuildObjectiveDeck(deckPosition)
-    local contributions = {
-        muadDibFirstPlayer = 1,
-        muadDib4to6p = 1,
-        crysknife4to6p = 1,
-        crysknife = 1,
-        ornithopter1to3p = 1,
-    }
-    Deck._generateDynamicDeckWithTwoBackCards("Objective", deckPosition, contributions, Deck.sources.objective)
-end
-
----
 function Deck._prebuildStarterDeck(deckPosition)
     local contributionSets = {
         Deck.starter.base,
@@ -1074,11 +1063,9 @@ end
 ---
 function Deck._prebuildImperiumDeck(deckPosition)
     local contributionSets = {
-        Deck.imperium.legacy,
+        Deck.imperium.base,
         Deck.imperium.ix,
         Deck.imperium.immortality,
-        Deck.imperium.uprising,
-        Deck.imperium.uprisingContract,
     }
     local contributions = Deck._mergeContributionSets(contributionSets, true)
     Deck._generateDynamicDeckWithTwoBackCards("Imperium", deckPosition, contributions, Deck.sources.imperium)
@@ -1087,9 +1074,8 @@ end
 ---
 function Deck._prebuildSpecialDeck(deckPosition)
     local contributionSets = {
-        Deck.special.legacy,
+        Deck.special.base,
         Deck.special.immortality,
-        Deck.special.uprising,
     }
     local contributions = Deck._mergeContributionSets(contributionSets, true)
     Deck._generateDynamicDeckWithTwoBackCards("Imperium", deckPosition, contributions, Deck.sources.special)
@@ -1103,11 +1089,9 @@ end
 ---
 function Deck._prebuildIntrigueDeck(deckPosition)
     local contributionSets = {
-        Deck.intrigue.legacy,
+        Deck.intrigue.base,
         Deck.intrigue.ix,
         Deck.intrigue.immortality,
-        Deck.intrigue.uprising,
-        Deck.intrigue.uprisingContract,
     }
     local contributions = Deck._mergeContributionSets(contributionSets, true)
     Deck._generateDynamicDeckWithTwoBackCards("Intrigue", deckPosition, contributions, Deck.sources.intrigue)
@@ -1153,6 +1137,14 @@ function Deck._prebuildLeaderDeck(deckPosition)
         Deck.leaders.ix,
     }
     local contributions = Deck._mergeContributionSets(contributionSets, true)
+
+    local locale = I18N.getLocale()
+    if locale == 'fr' then
+        contributions = Deck._mergeContributionSets({ contributions, Deck._mergeStandardContributionSets(Deck.leaders.fanmade.arkhane, true, true) })
+    elseif locale == 'en' then
+        contributions = Deck._mergeStandardContributionSets(Deck.leaders.fanmade.retienne, true, true)
+    end
+
     Deck._generateDynamicDeckWithTwoBackCards("Leader", deckPosition, contributions, Deck.sources.leaders)
 end
 
@@ -1225,11 +1217,6 @@ function Deck._generateFromPrebuildDeck(deckType, deckZone, contributions, _, sp
 end
 
 ---
-function Deck.createObjectiveCustomDeck(faceUrl, width, height)
-    return Deck.createCustomDeck(Deck.backs.objectiveCardBack, faceUrl, width, height, Vector(1, 1, 1))
-end
-
----
 function Deck.createImperiumCustomDeck(faceUrl, width, height)
     return Deck.createCustomDeck(Deck.backs.imperiumCardBack, faceUrl, width, height, Vector(1.05, 1, 1.05))
 end
@@ -1275,8 +1262,8 @@ function Deck.createLeaderCustomDeck(faceUrl, width, height)
 end
 
 ---
-function Deck.createRivalLeaderCustomDeck(faceUrl, width, height)
-    return Deck.createCustomDeck(Deck.backs.rivalLeaderCardBack, faceUrl, width, height, Vector(1.05, 1, 1.05))
+function Deck.createFanmadeLeaderCustomDeck(faceUrl, width, height)
+    return Deck.createCustomDeck(Deck.backs.fanmadeLeaderCardBack, faceUrl, width, height, Vector(1.12, 1, 1.12))
 end
 
 ---

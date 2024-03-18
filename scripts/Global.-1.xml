@@ -1,5 +1,5 @@
 <Panel position="0 -50" width="450" height="750" color="#000000" id="setupPane" rotation="0 0 0" outline="#61712c" outlineSize="1"
-	active="False" allowDragging="True" returnToOriginalPositionWhenReleased="False" visibility="Host">
+	active="False" allowDragging="True" returnToOriginalPositionWhenReleased="False">
 	<Defaults>
 		<Text class="primary" color="#8e5ab4" fontSize="16" alignment="MiddleLeft"/>
 		<Text class="secondary" color="#efd9ff" alignment="MiddleRight"/>
@@ -26,13 +26,13 @@
 
 			<Text class="primary" key="players"/>
 			<VerticalLayout padding="25 0 0 0">
-				<Toggle id="randomizePlayerPositions" onValueChanged="Global/setRandomizePlayerPositions" isOn="True" key="randomizePlayersPositions"/>
+				<Toggle class="setUp" id="randomizePlayerPositions" onValueChanged="Global/setRandomizePlayerPositions" isOn="True" key="randomizePlayersPositions"/>
 				<HorizontalLayout>
-					<Toggle id="virtualHotSeat" onValueChanged="Global/setVirtualHotSeat" isOn="False" key="virtualHotSeat"/>
-					<Dropdown id="numberOfPlayers" onValueChanged="Global/setNumberOfPlayers" flexibleWidth="2.5" active="False">
+					<Toggle class="setUp" id="virtualHotSeat" onValueChanged="Global/setVirtualHotSeat" isOn="False" key="virtualHotSeat"/>
+					<Dropdown class="setUp" id="virtualHotSeatMode" onValueChanged="Global/setVirtualHotSeatMode" flexibleWidth="2.5" active="False">
 						<Option></Option>
 					</Dropdown>
-					<Dropdown id="difficulty" onValueChanged="Global/setDifficulty" flexibleWidth="3" active="False">
+					<Dropdown class="setUp" id="difficulty" onValueChanged="Global/setDifficulty" flexibleWidth="3" active="False">
 						<Option></Option>
 					</Dropdown>
 				</HorizontalLayout>
@@ -57,11 +57,11 @@
 				</Dropdown>
 			</HorizontalLayout>
 			<VerticalLayout padding="25 0 0 0">
-				<Toggle class="setUp" id="fanmadeLeaders" isOn="False" onValueChanged="Global/setFanMadeLeaders" key="fanmadeLeaders"/>
+				<Toggle class="setUp" id="fanmadeLeaders" isOn="False" onValueChanged="Global/setFanmadeLeaders" key="fanmadeLeaders"/>
 			</VerticalLayout>
 
 			<HorizontalLayout>
-				<Text class="setUp" class="primary" key="variants"/>
+				<Text class="primary" key="variants"/>
 				<Dropdown class="setUp" id="variant" flexibleWidth="1.5" onValueChanged="Global/setVariant">
 					<Option></Option>
 				</Dropdown>

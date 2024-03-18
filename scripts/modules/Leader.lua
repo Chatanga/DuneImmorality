@@ -9,7 +9,6 @@ local ImperiumRow = Module.lazyRequire("ImperiumRow")
 local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local Combat = Module.lazyRequire("Combat")
-local ChoamContractMarket = Module.lazyRequire("ChoamContractMarket")
 local Deck = Module.lazyRequire("Deck")
 
 local Leader = Helper.createClass(Action)
@@ -110,7 +109,7 @@ Leader.ilbanRichese = Helper.createClass(Leader, {
             leader.drawImperiumCards(color, 1)
         end
         return success
-    end,
+    end
 })
 
 Leader.helenaRichese = Helper.createClass(Leader, {
@@ -150,13 +149,13 @@ Leader.helenaRichese = Helper.createClass(Leader, {
 Leader.letoAtreides = Helper.createClass(Leader, {
 
     --- Landsraad popularity
-    resources = function (color, resourceName, amount)
+    bargain = function (color, resourceName, amount)
         local finalAmount = amount
         if resourceName == "solari" and amount < 0 and Action.checkContext({ phase = "playerTurns", color = color, space = MainBoard.isLandsraadSpace }) then
             finalAmount = amount + 1
         end
-        return Action.resources(color, resourceName, finalAmount)
-    end,
+        return finalAmount
+    end
 })
 
 Leader.paulAtreides = Helper.createClass(Leader, {
@@ -231,7 +230,7 @@ Leader.arianaThorvald = Helper.createClass(Leader, {
             continuation.run(success)
         end)
         return continuation
-    end,
+    end
 })
 
 Leader.memnonThorvald = Helper.createClass(Leader, {
@@ -260,16 +259,6 @@ Leader.armandEcaz = Helper.createClass(Leader, {
 })
 
 Leader.ilesaEcaz = Helper.createClass(Leader, {
-
-    setUp = function (color, settings)
-        local zone = PlayBoard.getPlayBoard(color).content.leaderZone
-        -- Temporary tag to avoid counting the leader card.
-        zone.addTag("Imperium")
-        Deck.generateSpecialDeck(zone, "legacy", "foldspace").doAfter(function (deck)
-            zone.removeTag("Imperium")
-            deck.flip()
-        end)
-    end,
 
     --- Guild contacts
     signetRing = function (color)

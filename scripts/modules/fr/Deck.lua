@@ -11,8 +11,6 @@ local Deck = {
         imperiumFoldedSpace = { "http://cloud-3.steamusercontent.com/ugc/2093667512238503304/AE481C2ED19B085E2669F22420FD282982FD11A9/", 3, 2 },
         imperiumArrakisLiasion = { "http://cloud-3.steamusercontent.com/ugc/2093667512238504363/D7411DB495E6EB13D6B64F5E46CCF69FF322039F/", 4, 2 },
         imperiumTheSpiceMustFlow = { "http://cloud-3.steamusercontent.com/ugc/2093667512238504759/B6E08F8328DB699C60A8F058E88AA6443BA2F716/", 5, 2 },
-        -- new release card
-        newImperium = { "http://cloud-3.steamusercontent.com/ugc/2027231506426140597/EED43686A0319F3C194702074F2D2B3E893642F7/", 1 , 1 },
         -- ix without control the spice, but with Boundless Ambition
         ixImperium = { "http://cloud-3.steamusercontent.com/ugc/2093667512238503692/C54BCAB79869547E728509123AC47EDB32E79BF5/", 6, 6 },
         ixImperiumControlTheSpice = { "http://cloud-3.steamusercontent.com/ugc/2093667512238505114/DD5ED3E5FD12F0A1C4F42750E766E83564248E07/", 1, 1 },
@@ -72,20 +70,21 @@ local Deck = {
         restrictedOrdnance = { "http://cloud-3.steamusercontent.com/ugc/2093667512238535614/80CE99F45AED6EF9A249C9BF13E03458D633E8E4/", 1, 1 },
     },
     leader = {
-        yunaMoritani = { "http://cloud-3.steamusercontent.com/ugc/2093667512238500769/CDAED205706CD8E32700B8A56C9BD387C5D72696/", 1, 1 },
-        hundroMoritani = { "http://cloud-3.steamusercontent.com/ugc/2093667512238499395/A64F2D77C6F482F31B12EC97C2DEEBBDF45AF3F9/", 1, 1 },
-        memnonThorvald = { "http://cloud-3.steamusercontent.com/ugc/2093667512238496955/36DB26EE194B780C9C879C74FC634C15433CE06A/", 1, 1 },
-        arianaThorvald = { "http://cloud-3.steamusercontent.com/ugc/2093667512238497102/3C1CA2B3506FB7AD8B1B40DB1414F7461F6974C8/", 1, 1 },
-        ilesaEcaz = { "http://cloud-3.steamusercontent.com/ugc/2093667512238497232/7A0FCC4CA1D0CAF19C8066776DC23A9631000997/", 1, 1 },
-        armandEcaz = { "http://cloud-3.steamusercontent.com/ugc/2093667512238498599/98401D1D00D15DB3512E48BBD63B9922EE17EF71/", 1, 1 },
-        paulAtreides = { "http://cloud-3.steamusercontent.com/ugc/2093667512238499852/008429F21B2898E4C2982EC7FB1AF422FDD85E24/", 1, 1 },
-        letoAtreides = { "http://cloud-3.steamusercontent.com/ugc/2093667512238500640/152B626A2D773B224CFFF878E35CEFDBB6F67505/", 1, 1 },
-        tessiaVernius = { "http://cloud-3.steamusercontent.com/ugc/2093667512238499203/6C34345ADF23EBD567DE0EE662B4920906F721F0/", 1, 1 },
-        rhomburVernius = { "http://cloud-3.steamusercontent.com/ugc/2093667512238497351/58A6CF3EB6EBDEAC4B5826C0D21408A3CC02E678/", 1, 1 },
         glossuRabban = { "http://cloud-3.steamusercontent.com/ugc/2093667512238498462/68A9DE7E06DA5857EE51ECB978E13E3921A15B1A/", 1, 1 },
         vladimirHarkonnen = { "http://cloud-3.steamusercontent.com/ugc/2093667512238497473/6F682C5E5C1ADE0B9B1B8FAC80B9525A6748C351/", 1, 1 },
+        memnonThorvald = { "http://cloud-3.steamusercontent.com/ugc/2093667512238496955/36DB26EE194B780C9C879C74FC634C15433CE06A/", 1, 1 },
+        arianaThorvald = { "http://cloud-3.steamusercontent.com/ugc/2093667512238497102/3C1CA2B3506FB7AD8B1B40DB1414F7461F6974C8/", 1, 1 },
+        paulAtreides = { "http://cloud-3.steamusercontent.com/ugc/2093667512238499852/008429F21B2898E4C2982EC7FB1AF422FDD85E24/", 1, 1 },
+        letoAtreides = { "http://cloud-3.steamusercontent.com/ugc/2093667512238500640/152B626A2D773B224CFFF878E35CEFDBB6F67505/", 1, 1 },
         ilbanRichese = { "http://cloud-3.steamusercontent.com/ugc/2093667512238498742/F0F052CCAB7005F4D30879BF639AFACEDFF70A80/", 1, 1 },
         helenaRichese = { "http://cloud-3.steamusercontent.com/ugc/2093667512238499726/A069B3ECF1B4E9C42D2453E28EA13257F397B3F3/", 1, 1 },
+        -- Ix
+        yunaMoritani = { "http://cloud-3.steamusercontent.com/ugc/2093667512238500769/CDAED205706CD8E32700B8A56C9BD387C5D72696/", 1, 1 },
+        hundroMoritani = { "http://cloud-3.steamusercontent.com/ugc/2093667512238499395/A64F2D77C6F482F31B12EC97C2DEEBBDF45AF3F9/", 1, 1 },
+        ilesaEcaz = { "http://cloud-3.steamusercontent.com/ugc/2093667512238497232/7A0FCC4CA1D0CAF19C8066776DC23A9631000997/", 1, 1 },
+        armandEcaz = { "http://cloud-3.steamusercontent.com/ugc/2093667512238498599/98401D1D00D15DB3512E48BBD63B9922EE17EF71/", 1, 1 },
+        tessiaVernius = { "http://cloud-3.steamusercontent.com/ugc/2093667512238499203/6C34345ADF23EBD567DE0EE662B4920906F721F0/", 1, 1 },
+        rhomburVernius = { "http://cloud-3.steamusercontent.com/ugc/2093667512238497351/58A6CF3EB6EBDEAC4B5826C0D21408A3CC02E678/", 1, 1 },
     },
     fanmadeLeader = {
         arkhane = {
@@ -126,16 +125,24 @@ local Deck = {
 
 ---
 function Deck.load(loader, cards, category, customDeckName, startLuaIndex, cardNames)
+    assert(Deck[category], "Unknown category: " .. category)
     local desc = Deck[category][customDeckName]
     assert(desc, "No descriptor for: " .. category .. "." .. customDeckName)
-    local functionName = Helper.toCamelCase("create", category, "CustomDeck")
-    assert(loader[functionName], "No loader for: " .. functionName )
-    local customDeck = loader[functionName](desc[1], desc[2], desc[3], desc[4])
+    local customDeck
+    if desc[5] then
+        customDeck = loader.createCustomDeck(desc[5], desc[1], desc[2], desc[3], desc[4])
+    else
+        local functionName = Helper.toCamelCase("create", category, "CustomDeck")
+        assert(loader[functionName], "No loader for: " .. functionName )
+        customDeck = loader[functionName](desc[1], desc[2], desc[3], desc[4])
+    end
     return loader.loadCustomDeck(cards, customDeck, startLuaIndex, cardNames)
 end
 
 ---
 function Deck.loadWithSubCategory(loader, cards, category, subCategory, customDeckName, startLuaIndex, cardNames)
+    assert(Deck[category], "No category: " .. category)
+    assert(Deck[category][subCategory], "No sub category: " .. category .. "." .. subCategory)
     local desc = Deck[category][subCategory][customDeckName]
     assert(desc, "No descriptor for: " .. category .. "." .. customDeckName)
     local functionName = Helper.toCamelCase("create", category, "CustomDeck")
@@ -154,7 +161,7 @@ function Deck.loadCustomDecks(loader)
         conflict = {},
         hagal = {},
         tech = {},
-        leaders = {}
+        leaders = {},
     }
 
     Deck.load(loader, cards.imperium, "imperium", "starter", 1, {
@@ -214,9 +221,6 @@ function Deck.loadCustomDecks(loader)
         "gunThopter", "",
         "arrakisRecruiter", "",
         "duncanLoyalBlade",
-    })
-    Deck.load(loader, cards.imperium, "imperium", "newImperium", 1, {
-        "thumper"
     })
     Deck.load(loader, cards.imperium, "imperium", "ixImperium", 1, {
         "appropriate",

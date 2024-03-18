@@ -26,6 +26,11 @@
         "onSave",
         "onPlayerChangeColor",
         "onPlayerConnect",
-        "onPlayerDisconnect"
-    ]
+        "onPlayerDisconnect",
+        "Hands",
+        "printToColor",
+        "Physics",
+        "onDestroy",
+        "WebRequest"
+   ]
 }

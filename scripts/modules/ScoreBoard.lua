@@ -13,7 +13,7 @@ local ScoreBoard = {
 ---
 function ScoreBoard.onLoad(state)
 
-    ScoreBoard.hiddenZone = Helper.resolveGUIDs(true, "3848a9")
+    ScoreBoard.hiddenZone = Helper.resolveGUIDs(true, "2edb38")
 
     for _, object in ipairs(ScoreBoard.hiddenZone.getObjects()) do
         object.setInvisibleTo(Player.getColors())
@@ -24,44 +24,42 @@ function ScoreBoard.onLoad(state)
         alliance / friendship -> InfluenceTrack
         others -> here
     ]]
-    ScoreBoard.tokens = Helper.resolveGUIDs(false, {
+    ScoreBoard.tokens = Helper.resolveGUIDs(true, {
         friendship = {
             emperorBag = "7007df",
             spacingGuildBag = "af9795",
             beneGesseritBag = "3ebbd7",
             fremenBag = "f5a7af",
-            greatHousesBag = "07e49b",
-            fringeWorldsBag = "ff38f9",
         },
         base = {
             fourPlayerBag = "c2290f",
-            theSpiceMustFlowBag = "43c7b5",
-            guildAmbassadorBag = "4bdbd5",
-            sayyadinaBag = "4575f3",
-            opulenceBag = "67fbba",
-            theSleeperMustAwaken = "946ca1",
-            choamShares = "c530e6",
-            stagedIncident = "bee42f",
-            endgameCardBag = "cfe0cb",
-            combatVictoryPointBag = "d9a457",
+            theSpiceMustFlowBag = "7bd6f8",
+            guildAmbassadorBag = "912d75",
+            opulenceBag = "c22e46",
+            theSleeperMustAwaken = "9bfd65",
+            choamShares = "2da115",
+            stagedIncident = "1f98e2",
+            endgameCardBag = "182475",
+            combatVictoryPointBag = "86dc4e",
         },
         hagal = {
-            intrigueBag = "f9bc89",
-            solariBag = "61c242",
-            waterBag = "0c4ca1",
-            spiceBag = "2fd6f0",
+            intrigueBag = "772594",
+            solariBag = "266448",
+            waterBag = "3963f0",
+            spiceBag = "19c977",
         },
         ix = {
-            detonationDevicesBag = "7b3fa2",
-            ixianEngineerBag = "3371d8",
-            flagship = "366237",
-            spySatellites = "73a68f",
-            techEndgameBag = "1d3e4f",
+            sayyadinaBag = "9193f5",
+            ixianEngineerBag = "4ae3de",
+            detonationDevicesBag = "4cc3d5",
+            flagship = "692480",
+            spySatellites = "c94718",
+            techEndgameBag = "3e2ce6",
         },
         immortality = {
-            scientificBreakthrough = "d22031",
-            beetleBag = "082e07",
-            forHumanityBag = "71c0c8"
+            scientificBreakthrough = "b56adc",
+            tleilaxBag = "37ceab",
+            forHumanityBag = "6e2a13"
         }
     })
 
@@ -141,7 +139,7 @@ function ScoreBoard.gainVictoryPoint(color, name, count)
     end)
     if holder.success then
         return true
-    elseif Combat.gainVictoryPoint(color, name) then
+    elseif Combat.gainVictoryPoint(color, name, count) then
         Helper.dump("Found VP from the combat.")
         return true
     elseif InfluenceTrack.gainVictoryPoint(color, name) then

@@ -93,10 +93,13 @@ function Dialog.showYesOrNoDialog(color, title, linkedContinuation, callback)
 end
 
 ---
-function Dialog.showOptionsDialog(color, title, options, callback)
+function Dialog.showOptionsDialog(color, title, options, linkedContinuation, callback)
     assert(options)
     assert(#options > 0)
     if Dialog.nativeDialogUsed then
+        if linkedContinuation then
+            linkedContinuation.forget()
+        end
         Player[color].showOptionsDialog(title, options, 1, function (_, index, _)
             callback(index)
         end)

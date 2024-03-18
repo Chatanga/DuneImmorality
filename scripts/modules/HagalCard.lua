@@ -54,10 +54,11 @@ end
 function HagalCard.activate(color, card, riseOfIx)
     Types.assertIsPlayerColor(color)
     assert(card)
-    Action.setContext("hagalCard", card)
+    local cardName = Helper.getID(card)
+    Action.setContext("hagalCard",  cardName)
     HagalCard.riseOfIx = riseOfIx
     local rival = PlayBoard.getLeader(color)
-    local actionName = Helper.toCamelCase("_activate", Helper.getID(card))
+    local actionName = Helper.toCamelCase("_activate", cardName)
     if HagalCard[actionName] then
         return HagalCard[actionName](color, rival)
     else
@@ -122,6 +123,13 @@ function HagalCard._activateSecrets(color, rival)
     if HagalCard.spaceIsFree(color, "secrets") then
         HagalCard.sendRivalAgent(color, rival, "secrets")
         rival.influence(color, "beneGesserit", 1)
+        for _, otherColor in ipairs(PlayBoard.getActivePlayBoardColors()) do
+            if otherColor ~= color then
+                if #PlayBoard.getIntrigues(otherColor) > 3 then
+                    rival.stealIntrigue(color, otherColor, 1)
+                end
+            end
+        end
         return true
     else
         return false

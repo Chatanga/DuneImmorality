@@ -1,6 +1,7 @@
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local I18N = require("utils.I18N")
+local Dialog = require("utils.Dialog")
 
 local Types = Module.lazyRequire("Types")
 local PlayBoard = Module.lazyRequire("PlayBoard")
@@ -44,13 +45,14 @@ local InfluenceTrack = {
         emperor = {},
         spacingGuild = {},
         beneGesserit = {},
-        fremen = {}
+        fremen = {},
     },
 }
 
 ---
 function InfluenceTrack.onLoad(state)
-    Helper.append(InfluenceTrack, Helper.resolveGUIDs(true, {
+
+    Helper.append(InfluenceTrack, Helper.resolveGUIDs(false, {
         snoopers = {
             emperor = "a58ce8",
             spacingGuild = "857f74",
@@ -84,16 +86,16 @@ function InfluenceTrack.onLoad(state)
             }
         },
         friendshipBags = {
-            emperor = "6a4186",
-            spacingGuild = "400d45",
-            beneGesserit = "e763f6",
-            fremen = "8bcfe7"
+            emperor = "7007df",
+            spacingGuild = "af9795",
+            beneGesserit = "3ebbd7",
+            fremen = "f5a7af",
         },
         allianceTokens = {
-            emperor = '13e990',
-            spacingGuild = 'ad1aae',
-            beneGesserit = '33452e',
-            fremen = '4c2bcc'
+            emperor = 'f7fff2',
+            spacingGuild = '8f7ee3',
+            beneGesserit = 'a4da94',
+            fremen = '1ca742',
         }
     }))
 
@@ -145,7 +147,7 @@ function InfluenceTrack._transientSetUp(settings, firstTime)
                     if not InfluenceTrack.lockedActions[faction][color] then
                         local rank = InfluenceTrack._getInfluenceTracksRank(faction, color)
                         InfluenceTrack.lockedActions[faction][color] = true
-                        PlayBoard.getLeader(color).influence(color, faction, i - rank).doAfter(function ()
+                        PlayBoard.getLeader(color).influence(color, faction, i - rank, true).doAfter(function ()
                             InfluenceTrack.lockedActions[faction][color] = false
                         end)
                     end
@@ -161,6 +163,7 @@ function InfluenceTrack.setUpSnoopers()
     for faction, snooper in pairs(InfluenceTrack.snoopers) do
         local position = MainBoard.getSnooperTrackPosition(faction)
         snooper.setPositionSmooth(position, false, false)
+        snooper.setInvisibleTo({})
         snooper.setRotationSmooth(Vector(0, 90, 0))
         Helper.onceTimeElapsed(3).doAfter(function ()
             snooper.setLock(true)
@@ -326,7 +329,7 @@ function InfluenceTrack._challengeAlliance(faction)
         if InfluenceTrack.hasAlliance(color, faction) then
             allianceOwner = color
         end
-        local rank = InfluenceTrack.getInfluence(faction, color, true)
+        local rank = InfluenceTrack.getInfluence(faction, color)
         if rank >= bestRank then
             if rank > bestRank then
                 bestRank = rank
@@ -393,7 +396,7 @@ function InfluenceTrack._gainAllianceBonus(faction, color)
         elseif faction == "fremen" then
             leader.resources(color, "water", 1)
         else
-            error("Unknown faction: ", faction)
+            error("Unknown faction: ", tostring(faction))
         end
     end
 end

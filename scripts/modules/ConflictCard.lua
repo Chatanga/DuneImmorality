@@ -1,5 +1,4 @@
 local Module = require("utils.Module")
-local Helper = require("utils.Helper")
 
 -- Exceptional Immediate require for the sake of aliasing.
 local CardEffect = require("CardEffect")
@@ -7,6 +6,8 @@ local CardEffect = require("CardEffect")
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local Types = Module.lazyRequire("Types")
 local Action = Module.lazyRequire("Action")
+local Combat = Module.lazyRequire("Combat")
+local MainBoard = Module.lazyRequire("MainBoard")
 
 -- Function aliasing for a more readable code.
 local persuasion = CardEffect.persuasion
@@ -86,6 +87,8 @@ function ConflictCard.collectReward(color, conflictName, rank)
         cardName = conflictName,
     }
 
+    Action.setContext("combatEnded")
+
     for _, reward in ipairs(rewards) do
         log(reward)
         CardEffect.evaluate(context, reward)
@@ -98,6 +101,7 @@ function ConflictCard.getLevel(conflictName)
     return conflict.level
 end
 
+-- Hagal house (in 2P) way of collecting rewards.
 function ConflictCard.cleanUpConflict(color, conflictName)
     local conflict = ConflictCard[conflictName]
     assert(conflict, "Unknown conflict: ", conflictName)
@@ -114,12 +118,10 @@ function ConflictCard.cleanUpConflict(color, conflictName)
         cardName = conflictName,
     }
 
-    Helper.dump("Cleaning conflict", conflictName, "...")
     for _, reward in ipairs(rewards) do
         log(reward)
         CardEffect.evaluate(context, reward)
     end
-    Helper.dump("... end")
 end
 
 return ConflictCard

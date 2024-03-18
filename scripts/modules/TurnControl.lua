@@ -1,9 +1,3 @@
---[[
-    Reify the turn sequence in interaction with the PlayBoard module (as well
-    as Hagal and Commander for the more specialized game modes), emitting events
-    along the way to offer a mean to other modules to activate when needed.
-]]
-
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local I18N = require("utils.I18N")
@@ -11,8 +5,6 @@ local Dialog = require("utils.Dialog")
 
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local Hagal = Module.lazyRequire("Hagal")
-local Deck = Module.lazyRequire("Deck")
-local Combat = Module.lazyRequire("Combat")
 
 local TurnControl = {
     phaseOrder = {
@@ -37,14 +29,6 @@ local TurnControl = {
 }
 
 function TurnControl.onLoad(state)
-    Helper.append(TurnControl, Helper.resolveGUIDs(true, {
-        forceEndOfTurnButton = "2d3ce4",
-        forceEndOfPhaseButton = "26b41d"
-    }))
-
-    Helper.noPlay(TurnControl.forceEndOfTurnButton)
-    Helper.noPlay(TurnControl.forceEndOfPhaseButton)
-
     if state.settings then
         if state.TurnControl then
             TurnControl.hotSeat = state.TurnControl.hotSeat
@@ -85,13 +69,13 @@ end
 --- Initialize the turn system with the provided players (or all the seated
 --- players) and start a new round.
 function TurnControl.setUp(settings, activeOpponents)
-    TurnControl.hotSeat = settings.hotSeat
+    TurnControl.hotSeat = settings.virtualHotSeatMode
     TurnControl.players = TurnControl.toCanonicallyOrderedPlayerList(activeOpponents)
     TurnControl.scoreGoal = settings.epicMode and 12 or 10
 
     if settings.numberOfPlayers == 1 then
         -- TODO To be confirmed.
-        for i, player in ipairs(players) do
+        for i, player in ipairs(TurnControl.players) do
             if PlayBoard.isHuman(player) then
                 TurnControl.firstPlayerLuaIndex = TurnControl._getNextPlayer(i)
                 break
@@ -106,15 +90,8 @@ function TurnControl.setUp(settings, activeOpponents)
         end
         assert(TurnControl.firstPlayerLuaIndex)
     else
-        local firstPlayer
-        repeat
-            TurnControl.firstPlayerLuaIndex = math.random(#TurnControl.players)
-            firstPlayer = TurnControl.players[TurnControl.firstPlayerLuaIndex]
-        until not Commander.isCommander(firstPlayer)
+        TurnControl.firstPlayerLuaIndex = math.random(#TurnControl.players)
     end
-
-    TurnControl._bindButton("Force\nend of\nTurn", TurnControl.forceEndOfTurnButton, TurnControl.endOfTurn)
-    TurnControl._bindButton("Force\nend of\nPhase", TurnControl.forceEndOfPhaseButton, TurnControl.endOfPhase)
 end
 
 --- Return the (colors of the) active opponents in the mod canonical order,
@@ -295,31 +272,6 @@ function TurnControl._next(startPlayerLuaIndex)
     end
 end
 
---@deprecated
-function TurnControl._createMakersAndRecallButton()
-    local fromIntRGB = function (r, g, b)
-        return Color(r / 255, g / 255, b / 255)
-    end
-
-    Turns.order = {}
-    Turns.enable = false
-
-    local primaryTable = getObjectFromGUID("2b4b92")
-    Helper.createAbsoluteButtonWithRoundness(primaryTable, 1, false, {
-        click_function = Helper.registerGlobalCallback(function ()
-            primaryTable.clearButtons()
-            TurnControl.endOfPhase()
-        end),
-        label = I18N("makersAndRecall"),
-        position = primaryTable.getPosition() + Vector(3.5, 1.8, -15.8),
-        width = 2600,
-        height = 420,
-        font_size = 300,
-        color = fromIntRGB(128, 77, 0),
-        font_color = fromIntRGB(204, 153, 0),
-    })
-end
-
 function TurnControl._createReclaimRewardsButton()
     local fromIntRGB = function (r, g, b)
         return Color(r / 255, g / 255, b / 255)
@@ -335,7 +287,7 @@ function TurnControl._createReclaimRewardsButton()
             TurnControl.endOfPhase()
         end),
         label = I18N("reclaimRewards"),
-        position = primaryTable.getPosition() + Vector(3.5, 1.8, -15.8),
+        position = primaryTable.getPosition() + Vector(5, 1.8, -15.8),
         width = 3500,
         height = 420,
         font_size = 300,
@@ -346,7 +298,7 @@ end
 
 ---
 function TurnControl._notifyPlayerTurn(refreshing)
-    Helper.dumpFunction("TurnControl._notifyPlayerTurn", refreshing)
+    --Helper.dumpFunction("TurnControl._notifyPlayerTurn", refreshing)
     local playerColor = TurnControl.players[TurnControl.currentPlayerLuaIndex]
     local player = Helper.findPlayerByColor(playerColor)
     if player then
@@ -383,16 +335,6 @@ function TurnControl.getLegitimatePlayers(color)
 
     local legitimatePlayers = {}
 
-    -- In 6P we add any seated player of the same team.
-    if TurnControl.getPlayerCount() == 6 then
-        for _, player in ipairs(Player.getPlayers()) do
-            if player.seated and Commander.inSameTeam(color, player.color) then
-                table.insert(legitimatePlayers, player)
-            end
-        end
-    end
-
-    -- Failing to find at least one, we take the host player.
     if Helper.isEmpty(legitimatePlayers) then
         for _, player in ipairs(Player.getPlayers()) do
             if player.host then

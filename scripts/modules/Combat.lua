@@ -19,8 +19,8 @@ local Combat = {
         conflictDiscardZone = "43f00f",
         combatCenterZone = "6d632e",
         combatTokenZone = "1d4424",
-        victoryPointTokenZone = "25b541",
-        victoryPointTokenBag = "d9a457"
+        rewardTokenZone = "25b541",
+        victoryPointTokenBag = "86dc4e"
     },
     origins = {
         Green = Vector(8.15, 0.85, -7.65),
@@ -72,13 +72,13 @@ end
 ---
 function Combat._transientSetUp(settings)
     Combat.garrisonParks = {}
-    for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
+    for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
         Combat.garrisonParks[color] = Combat._createGarrisonPark(color)
     end
 
     if settings.riseOfIx then
         Combat.dreadnoughtParks = {}
-        for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
+        for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
             Combat.dreadnoughtParks[color] = Combat._createDreadnoughtPark(color)
         end
     end
@@ -105,7 +105,7 @@ function Combat._transientSetUp(settings)
             TurnControl.overridePhaseTurnSequence(turnSequence)
             Combat.showRanking(turnSequence, Combat.ranking)
         elseif phase == "recall" then
-            for _, object in ipairs(Combat.victoryPointTokenZone.getObjects()) do
+            for _, object in ipairs(Combat.rewardTokenZone.getObjects()) do
                 if Types.isVictoryPointToken(object) then
                     MainBoard.trash(object)
                 end
@@ -160,47 +160,25 @@ function Combat._setUpConflict()
                 local origin = Combat.rewardTokenZone.getPosition()
                 local position = origin + Vector(0.5 - (i % 2), 0.5 + math.floor(i / 2), 0)
                 i = i + 1
-                local victoryPointToken = Combat.victoryPointTokenBag.takeObject({
+                Combat.victoryPointTokenBag.takeObject({
                     position = position,
                     rotation = Vector(0, 180, 0),
                     smooth = true,
                     guid = token.guid,
                 })
-
-                local controlableSpace = MainBoard.findControlableSpaceFromConflictName(Helper.getID(victoryPointToken))
-                if controlableSpace then
-                    local color = MainBoard.getControllingPlayer(controlableSpace)
-                    if color then
-                        Park.transfert(1, PlayBoard.getSupplyPark(color), Combat.getBattlegroundPark())
-                    end
-                end
             end
         end
 
-        --[[
-        local controlableSpace = Combat.findControlableSpace(cardName)
+        local controlableSpace = MainBoard.findControlableSpaceFromConflictName(cardName)
         if controlableSpace then
             local color = MainBoard.getControllingPlayer(controlableSpace)
             if color then
                 Park.transfert(1, PlayBoard.getSupplyPark(color), Combat.getBattlegroundPark())
             end
         end
-        ]]
 
         broadcastToAll(I18N("announceCombat", { combat = I18N(Helper.getID(card)) }), "Orange")
     end)
-end
-
----
-function Combat.findControlableSpace(conflictName)
-    for _, controlableSpaceName in ipairs({ "imperialBasin", "arrakeen", "spiceRefinery" }) do
-        if conflictName:find(controlableSpaceName:gsub("^%l", string.upper)) then
-            local controlableSpace = MainBoard.findControlableSpace(controlableSpaceName)
-            assert(controlableSpace)
-            return controlableSpace
-        end
-    end
-    return nil
 end
 
 ---
@@ -219,34 +197,31 @@ end
 
 ---
 function Combat._createGarrisonPark(color)
+    local position = Combat.origins[color]
     local slots = {}
     for j = 3, 1, -1 do
         for i = 1, 4 do
             local x = (i - 2.5) * 0.45
             local z = (j - 2) * 0.45
-            local slot = Combat.origins[color] + Vector(x, 0, z)
+            local slot = position + Vector(x, 0, z)
             table.insert(slots, slot)
         end
     end
 
-    local zone = Helper.markAsTransient(spawnObject({
-        type = 'ScriptingTrigger',
-        position = position,
-        scale = Vector(2.3, 1, 2.3),
-    }))
+    local zone = Park.createTransientBoundingZone(0, Vector(0.35, 0.35, 0.35), slots)
 
     local park = Park.createPark(
         color .. "Garrison",
         slots,
         Vector(0, 0, 0),
-        zone,
+        { zone },
         { "Troop", color },
         nil,
         false,
         true)
 
     -- FIXME Hardcoded height, use an existing parent anchor.
-    Helper.createTransientAnchor("Garrison anchor", Vector(position.x, 0.6, position.z)).doAfter(function (anchor)
+    Helper.createTransientAnchor("Garrison anchor", Vector(position.x, 0.65, position.z)).doAfter(function (anchor)
         park.anchor = anchor
         anchor.locked = true
         anchor.interactable = true
@@ -480,7 +455,7 @@ function Combat._updateCombatForces(forces)
     local occupations = {}
 
     -- TODO Better having a zone with filtering tags.
-    for _, color in ipairs(PlayBoard.getPlayBoardColors()) do
+    for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
         local force = forces[color]
 
         local minorForce = force > 0 and (force - 1) % 20 + 1 or 0
@@ -548,7 +523,7 @@ function Combat.getTurnConflictLevel()
 end
 
 ---
-function Combat.gainVictoryPoint(color, name)
+function Combat.gainVictoryPoint(color, name, count)
 
     -- We memoize the tokens granted in fast succession to avoid returning the same twice or more.
     if not Combat.grantedTokens then
@@ -558,11 +533,15 @@ function Combat.gainVictoryPoint(color, name)
         end)
     end
 
-    for _, object in ipairs(Combat.victoryPointTokenZone.getObjects()) do
+    local remaining = count or 1
+    for _, object in ipairs(Combat.rewardTokenZone.getObjects()) do
         if Types.isVictoryPointToken(object) and Helper.getID(object) == name and not Combat.grantedTokens[object] then
             Combat.grantedTokens[object] = true
             PlayBoard.grantScoreToken(color, object)
-            return true
+            remaining = remaining - 1
+            if remaining == 0 then
+                return true
+            end
         end
     end
 

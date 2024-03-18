@@ -2,7 +2,7 @@ return {
     ["?"] = "?",
 
     -- Setup UI
-    prolog = "\"A setup is a very delicate time...\"",
+    prolog = '"A setup is a very delicate time..."',
     language = "Language",
     players = "Players",
     randomizePlayersPositions = "Randomize players' positions",
@@ -14,6 +14,9 @@ return {
     goTo11 = "Go to 11",
     leaderSelection = "Leader selection",
     fanmadeLeaders = "Fanmade leaders",
+    leaderPoolSize = "Leader pool size",
+    defaultLeaderPoolSizeLabel = "Leader pool size ({value})",
+    tweakLeaderSelection = "Tweak leader pool",
     variants = "Variants",
     miscellanous = "Miscellanous",
     soundEnabled = "Sounds enabled",
@@ -35,10 +38,19 @@ return {
 
     -- Card
     acquireButton = "Acquire",
+    noEnoughSpecimen = "You don't have enough specimens!",
 
     -- Playboard
     noTouch = "Don't touch this button!",
     noLeader = "You don't have a leader yet!",
+    noAlly = "You haven't selected an ally!",
+    notYourTurn = "It's not your turn!",
+    noAgent = "You don't have any agent left",
+    agentAlreadyPresent = "You already have an agent present there!",
+    noFriendship = "You don't have enough influence with {withFaction}!",
+    alreadyHaveSwordmaster = "You already have a swordmaster!",
+    noResource = "You don't have enough {resource}!",
+    forbiddenAccess = "You cannot access this space!",
     drawOneCardButton = "Draw 1 Card",
     drawFiveCardsButton = "❰ Draw 5 Cards ❱",
     resetDiscardButton = "Discard ➤ Deck",
@@ -52,8 +64,15 @@ return {
     atomicsConfirm = "Confirm",
     yes = "Yes",
     no = "No",
+    ok = "Ok",
+    cancel = "Cancel",
     dialogCardAbove = "Do you want to put the card on top of your deck ? (Ok = yes, Cancel = No)",
-    endOfTurn = "End\nof\nTurn",
+    endTurn = "End\nTurn",
+    takeHighCouncilSeatByForce = "Take by force",
+    takeHighCouncilSeatByForceConfirm = "Taking High-Council seat by force?",
+    noSeatedPlayer = "The {color} player is missing!",
+    takePlace = "Take\nPlace",
+    forwardMessage = "To the {color} player: {message}",
 
     -- Leader selection
     leaderSelectionAdjust = "Adjust the number of leaders who will be randomly\nselected for the players to choose among:",
@@ -98,7 +117,7 @@ return {
     strengths = "Swords",
     spendManually = "▲ {leader} spent {amount} {resource} manually.",
     receiveManually = "▼ {leader} received {amount} {resource} manually.",
-    fixManually = "Fixed {amount} {resource} manually ({location})\".",
+    fixManually = "Fixed {amount} {resource} manually ({location}).",
     influence = "influence",
     beetle = "beetle",
     beetles = "beetles",
@@ -130,14 +149,22 @@ return {
     takeMentat = "■ Recruit Mentat.",
     recruitSwordmaster = "■ Recruit Swordmaster.",
     takeHighCouncilSeat = "■ Take High-Council seat.",
-    gainInfluence = "■ +{amount} influence with {withFaction}",
-    loseInfluence = "■ -{amount} influence with {withFaction}",
-    acquireTleilaxuCard = "■ Acquire Tleixlaxu card : \"{card}\"",
-    acquireImperiumCard = "■ Acquire Imperium card : \"{card}\"",
-    buyTechCard= "■ Acquire tech for {amount} {resource}: \"{card}\"",
+    gainInfluence = "■ +{amount} influence with {withFaction}.",
+    loseInfluence = "■ -{amount} influence with {withFaction}.",
+    acquireTleilaxuCard = '■ Acquire Tleixlaxu card: "{card}".',
+    acquireImperiumCard = '■ Acquire Imperium card: "{card}".',
+    buyTech= '■ Acquire tech for {amount} {resource}: "{name}".',
+    sendingAgent = "■ Sending an agent to: {space} ({cards}).",
+    stealIntrigue = '■ Stealing "{card}" from {victim}.',
+    gainVictoryPoint = "■ Gaining VP ({name}).",
+
+    -- Shield Wall
+    confirmShieldWallDestruction = "Do you really want not to obey the forms of the Great Convention?",
+    blowUpShieldWall = "{leader} is blowing up the Shield Wall!",
+    explosion = "Kaboom!",
 
     -- Combat
-    announceCombat = "Round combat is: \"{combat}\"",
+    announceCombat = 'Round combat is: "{combat}"',
     dreadnoughtMandatoryOccupation = "Reminder: you must sent a dreadnought and occupy a space.",
     troopEdit = "Troops: ±1",
 
@@ -155,9 +182,9 @@ return {
     progressAfterResearchTrack = "Progress beyond the research track",
     negotiatorEdit = "Negotiator: ±1",
     goSellMelange = "Select spice amount to be converted into solari.",
-    goTechNegotiation = "Select option.",
+    goTechNegotiation = "Select an option.",
     sendNegotiatorOption = "Negotiator",
-    buyTechWithDiscont1Option = "Discounted tech.",
+    buyTechWithDiscount1Option = "Discounted tech.",
     buyTechSelection = "Select which tech acquisition option you want to use.",
     freighterTechBuyOption = "shipment track",
     techNegotiationTechBuyOption = "Tech. negotiation",
@@ -168,7 +195,8 @@ return {
     rhomburVerniusTechBuyOption = "Rhombur Vernius' ring",
     manuallyBuyTech = "Manually acquiring a tech at no cost?",
     notAffordableOption = "You can't afford this buying option!",
-    pruneTechCard = "Pruning tech tile: \"{card}\"",
+    pruneTechCard = 'Pruning tech tile: "{card}"',
+    reclaimRewards = "Reclaim Rewards",
 
     -- Arrakeen Scouts
     joinCommittee = "Join the subcommittee: {committee}",
@@ -205,7 +233,7 @@ return {
     trashACard = "Trash a card",
     doAResearch = "Do a research",
     destroyACardFromYourHand = "Destroy a card from your hand",
-    spendOption = "spend {amount} {resource}",
+    spendOption = "Spend {amount} {resource}",
     amount = "{amount} {resource}",
 
     -- Ranking
@@ -247,14 +275,14 @@ return {
 
     prescienceButton = "Prescience",
     prescienceTooltip = "Look at top card of your deck easily with this.",
-    prescienceUsed = "Paul Atreides used his prescience to look into the future.",
+    prescienceUsed = "↯ Paul Atreides used his prescience to look into the future.",
     prescienceVoid = "All you see is the void ! (Your deck it empty actually…)",
     prescienceManual = "You need to peek manually (ALT + SHIFT) because there is only one card in your deck.",
 
-    firstSnooperRecall = "Tessia Vernius has recalled her first snooper from {withFaction}.",
-    secondSnooperRecall = "Tessia Vernius has recalled her second snooper from {withFaction}.",
-    thirdSnooperRecall = "Tessia Vernius has recalled her third snooper from {withFaction}.",
-    fourthSnooperRecall = "Tessia Vernius has recalled her fourth snooper from {withFaction}.",
+    firstSnooperRecall = "↯ Tessia Vernius has recalled her first snooper from {withFaction}.",
+    secondSnooperRecall = "↯ Tessia Vernius has recalled her second snooper from {withFaction}.",
+    thirdSnooperRecall = "↯ Tessia Vernius has recalled her third snooper from {withFaction}.",
+    fourthSnooperRecall = "↯ Tessia Vernius has recalled her fourth snooper from {withFaction}.",
     firstSnooperRecallEffectInfo = "Having recalled your first snooper, you may discard a card to get 1 spice unit.",
 
     -- Fanmade leaders
@@ -313,8 +341,8 @@ return {
     smuggling = "Smuggling",
     interstellarShipping = "Interstellar Shipping",
     techNegotiation = "Tech Negotiation",
-    techNegotiation_1 = "Tech Negotiation",
-    techNegotiation_2 = "Tech Negotiation",
+    techNegotiation_1 = "Buy Tech",
+    techNegotiation_2 = "Send Negotiator",
     dreadnought = "Dreadnought",
 
     -- Imperium cards

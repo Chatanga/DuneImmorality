@@ -22,17 +22,17 @@ local autoLoadedSettings = nil
 autoLoadedSettings = {
     language = "fr",
     hotSeat = true,
-    numberOfPlayers = 6,
+    numberOfPlayers = 3,
     randomizePlayerPositions = false,
-    riseOfIx = false,
+    riseOfIx = true,
     epicMode = false,
-    immortality = false,
+    immortality = true,
     goTo11 = false,
     leaderSelection = {
-        Green = "jessica",
-        Yellow = "gurneyHalleck",
-        Red = "feydRauthaHarkonnen",
-        Blue = "irulanCorrino",
+        Green = "yunaMoritani",
+        Yellow = "helenaRichese",
+        Red = "tessiaVernius",
+        Blue = "paulAtreides",
     },
     soundEnabled = true,
 }
@@ -57,12 +57,9 @@ local allModules = Module.registerModules({
     Action = require("Action"),
     ArrakeenScouts = require("ArrakeenScouts"),
     Combat = require("Combat"),
-    ShippingTrack = require("ShippingTrack"),
     ConflictCard = require("ConflictCard"),
-    ShippingTrack = require("ShippingTrack"),
     Deck = require("Deck"),
     DynamicBonus = require("DynamicBonus"),
-    ScoreBoard = require("ScoreBoard"),
     Hagal = require("Hagal"),
     HagalCard = require("HagalCard"),
     ImperiumCard = require("ImperiumCard"),
@@ -79,6 +76,9 @@ local allModules = Module.registerModules({
     PlayBoard = require("PlayBoard"),
     Reserve = require("Reserve"),
     Resource = require("Resource"),
+    Rival = require("Rival"),
+    ScoreBoard = require("ScoreBoard"),
+    ShippingTrack = require("ShippingTrack"),
     TechCard = require("TechCard"),
     TechMarket = require("TechMarket"),
     TleilaxuResearch = require("TleilaxuResearch"),
@@ -136,7 +136,7 @@ local settings
 
 --- TTS event handler.
 function onLoad(scriptState)
-    log("--------< Dune Immorality - Alpha - " .. BUILD .. " >--------")
+    log("--------< Space Flow - " .. BUILD .. " >--------")
 
     -- All transient objects (mostly anchors, but also some zones) are destroyed
     -- at startup, then recreated in the 'onLoad' functions (and 'staticSetup'
@@ -176,6 +176,7 @@ function asyncOnLoad(scriptState)
     allModules.ordered = {
         { name = "Locale", module = allModules.Locale },
         { name = "Action", module = allModules.Action },
+        { name = "ArrakeenScouts", module = allModules.ArrakeenScouts },
         { name = "Pdf", module = allModules.Pdf },
         { name = "Music", module = allModules.Music },
         { name = "Deck", module = allModules.Deck },
@@ -200,6 +201,7 @@ function asyncOnLoad(scriptState)
     -- because the order matter, now that we reload with "staticSetUp" (for the
     -- same reason setUp is ordered too).
     for i, moduleInfo in ipairs(allModules.ordered) do
+        --Helper.dump(i, " - Load module", moduleInfo.name)
         moduleInfo.module.onLoad(state)
         Helper.emitEvent("loaded", moduleInfo.name)
     end
@@ -291,6 +293,7 @@ end
 function runSetUp(index, activeOpponents)
     local moduleInfo = allModules.ordered[index]
     if moduleInfo then
+        --Helper.dump(index, " - Set up module", moduleInfo.name)
         local nextContinuation = moduleInfo.module.setUp(settings, activeOpponents)
         if not nextContinuation then
             nextContinuation = Helper.createContinuation("runSetUp")
@@ -364,16 +367,6 @@ function setHotSeat(player, value, id)
 end
 
 --- UI callback (cf. XML).
-function setUseContracts(player, value, id)
-    Controller.ui:fromUI(player, value, id)
-end
-
---- UI callback (cf. XML).
-function setLegacy(player, value, id)
-    Controller.ui:fromUI(player, value, id)
-end
-
---- UI callback (cf. XML).
 function setRiseOfIx(player, value, id)
     Controller.ui:fromUI(player, value, id)
     if value == "True" then
@@ -411,6 +404,11 @@ function setLeaderSelection(player, value, id)
 end
 
 --- UI callback (cf. XML).
+function setFanmadeLeaders(player, value, id)
+    Controller.ui:fromUI(player, value, id)
+end
+
+--- UI callback (cf. XML).
 function setDefaultLeaderPoolSize(player, value, id)
     Controller.ui:fromUI(player, value, id)
     Controller.updateDefaultLeaderPoolSizeLabel()
@@ -422,7 +420,7 @@ function setTweakLeaderSelection(player, value, id)
 end
 
 --- UI callback (cf. XML).
-function setHorizontalHandLayout(player, value, id)
+function setVariant(player, value, id)
     Controller.ui:fromUI(player, value, id)
 end
 
@@ -436,10 +434,9 @@ function setUpFromUI()
     setUp({
         language = Controller.fields.language,
         numberOfPlayers = numberOfPlayers,
-        hotSeat = not Controller.isUndefined(Controller.fields.virtualHotSeatMode),
+        virtualHotSeatMode = not Controller.isUndefined(Controller.fields.virtualHotSeatMode),
         randomizePlayerPositions = Controller.fields.randomizePlayerPositions == true,
         difficulty = Controller.fields.difficulty,
-        useContracts = Controller.fields.useContracts == true or numberOfPlayers == 6,
         riseOfIx = Controller.fields.riseOfIx == true,
         epicMode = Controller.fields.epicMode == true,
         immortality = Controller.fields.immortality == true,
@@ -447,7 +444,9 @@ function setUpFromUI()
         leaderSelection = Controller.fields.leaderSelection,
         defaultLeaderPoolSize = tonumber(Controller.fields.defaultLeaderPoolSize),
         tweakLeaderSelection = Controller.fields.tweakLeaderSelection,
+        fanmadeLeaders = Controller.fields.fanmadeLeaders,
         horizontalHandLayout = Controller.fields.horizontalHandLayout,
+        variant = Controller.fields.variant,
         soundEnabled = Controller.fields.soundEnabled,
     })
 end

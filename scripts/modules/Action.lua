@@ -147,7 +147,7 @@ function Action.log(message, color, isSecret)
                 if i > 1 then
                     cards = cards .. ", "
                 end
-                cards = cards .. card
+                cards = cards .. I18N(card)
             end
             return I18N("sendingAgent", { space = I18N(value.space), cards = cards })
         end },
@@ -240,6 +240,18 @@ function Action.resources(color, resourceName, amount)
     else
         return false
     end
+end
+
+---@param color PlayerColor
+---@param resourceName ResourceName
+---@param amount integer
+---@return integer
+function Action.bargain(color, resourceName, amount)
+    Types.assertIsPlayerColor(color)
+    Types.assertIsResourceName(resourceName)
+    Types.assertIsInteger(amount)
+
+    return amount
 end
 
 ---
@@ -540,11 +552,35 @@ function Action.signetRing(color)
 end
 
 ---
-function Action.gainVictoryPoint(color, name)
+function Action.gainVictoryPoint(color, name, count)
     Types.assertIsPlayerColor(color)
-    if ScoreBoard.gainVictoryPoint(color, name) then
-        Action.log(I18N("gainVictoryPoint", { name = I18N(name) }), color)
+    if ScoreBoard.gainVictoryPoint(color, name, count) then
+        for _ = 1, (count or 1) do
+            Action.log(I18N("gainVictoryPoint", { name = I18N(name) }), color)
+        end
         return true
+    else
+        return false
+    end
+end
+
+---
+function Action.acquireTech(color, stackIndex, discount)
+    Types.assertIsPlayerColor(color)
+    if stackIndex then
+        TechMarket.acquireTech(stackIndex, color)
+        return true
+    else
+        return false
+    end
+end
+
+---
+function Action.pickVoice(color)
+    Types.assertIsPlayerColor(color)
+    local voiceToken = ScoreBoard.getFreeVoiceToken()
+    if voiceToken then
+        return PlayBoard.acquireVoice(color, voiceToken)
     else
         return false
     end

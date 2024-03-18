@@ -9,7 +9,7 @@ local AcquireCard = Helper.createClass(nil, {
 function AcquireCard.new(zone, tag, acquire, decalUrl)
     local acquireCard = Helper.createClassInstance(AcquireCard, {
         zone = zone,
-        groundHeight = 1.65,
+        groundHeight = 0.65,
         cardHeight = 0.01,
         anchor = nil
     })
@@ -92,7 +92,7 @@ function AcquireCard:_createButton(acquire)
     if count > 0 then
         local height = self.groundHeight + count * self.cardHeight
         local label = I18N("acquireButton") .. " (" .. tostring(count) .. ")"
-        Helper.createExperimentalAreaButton(self.zone, self.anchor, height, label, function (_, color)
+        Helper.createExperimentalAreaButton(self.zone, self.anchor, height + 0.1, label, function (_, color)
             if not self.disabled then
                 local continuation = acquire(self, color)
                 if continuation then

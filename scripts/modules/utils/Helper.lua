@@ -1978,6 +1978,19 @@ function Helper.negate(predicate)
     end
 end
 
+---
+function Helper.takeWhile(predicate, elements)
+    local prefix = {}
+    for i, element in ipairs(elements) do
+        if predicate(i, element) then
+            table.insert(prefix, element)
+        else
+            break
+        end
+    end
+    return prefix
+end
+
 --- http://lua-users.org/wiki/StringRecipes
 function Helper.startsWith(str, start)
     return str:sub(1, #start) == start

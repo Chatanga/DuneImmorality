@@ -20,7 +20,7 @@ function Park.createCommonPark(tags, slots, margins, rotation, rotationSnap, zon
         true)
 
     local p = slots[1]:copy()
-    p:setAt("y", 1+1)
+    p:setAt("y", 1)
     Helper.createTransientAnchor(name .. "Park", p).doAfter(function (anchor)
         park.anchor = anchor
         local snapPoints = {}
@@ -190,7 +190,7 @@ function Park.waitStabilisation(park)
 end
 
 ---
-function Park.getZones(park, zone)
+function Park.getZones(park)
     return park.zones
 end
 
@@ -203,9 +203,9 @@ end
 function Park.getObjects(park)
     assert(park)
     local objects = {}
+    local objectsInTransit = Helper.getSharedTable(park.name)
     for _, zone in ipairs(park.zones) do
         for _, object in ipairs(zone.getObjects()) do
-            local objectsInTransit = Helper.getSharedTable(park.name)
             if not Helper.tableContains(objectsInTransit, object) then
                 local isOneOfThem =
                     (park.tagUnion and Helper.hasAnyTag(object, park.tags) or Helper.hasAllTags(object, park.tags)) and

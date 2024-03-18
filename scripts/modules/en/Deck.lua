@@ -6,8 +6,6 @@ local Deck = {
         starter = { "http://cloud-3.steamusercontent.com/ugc/2093667512238504518/BF3BA9C253ED953533B90D94DD56D0BAD4021B3C/", 4, 2 },
         -- base with foldspace, liasion, and the spice must flow
         imperium = { "http://cloud-3.steamusercontent.com/ugc/2093667512238501976/6F98BCE051343A3D07D58D6BC62A8FCA2C9AAE1A/", 8, 6 },
-        -- new release card
-        newImperium = { "http://cloud-3.steamusercontent.com/ugc/2027231506426140597/EED43686A0319F3C194702074F2D2B3E893642F7/", 1 , 1 },
         -- ix with control the spice
         ixImperium = { "http://cloud-3.steamusercontent.com/ugc/2093667512238502753/9DFCC56F20D09D60CF2B9D9050CB9640176F71B6/", 7, 5 },
         -- tleilax with experimentation
@@ -71,6 +69,7 @@ local Deck = {
         paulAtreides = { "http://cloud-3.steamusercontent.com/ugc/2120691978822941103/F597DBF1EB750EA14EA03F231D0EBCF07212A5AC/", 1, 1 },
         arianaThorvald = { "http://cloud-3.steamusercontent.com/ugc/2093667512238500886/2A9043877494A7174A32770C39147FAE941A39A2/", 1, 1 },
         memnonThorvald = { "http://cloud-3.steamusercontent.com/ugc/2120691978822940968/8431F61C545067A4EADC017E6295CB249A2BD813/", 1, 1 },
+        -- ix
         armandEcaz = { "http://cloud-3.steamusercontent.com/ugc/2093667512238498308/310C6B6E85920F9FC1A94896A335D34C3CFA6C15/", 1, 1 },
         ilesaEcaz = { "http://cloud-3.steamusercontent.com/ugc/2120691978822941275/94B1575474BEEF1F1E0FE0860051932398F47CA5/", 1, 1 },
         rhomburVernius = { "http://cloud-3.steamusercontent.com/ugc/2093667512238501024/0C06A30D74BD774D9B4F968C00AEC8C0817D4C77/", 1, 1 },
@@ -153,16 +152,24 @@ local Deck = {
 
 ---
 function Deck.load(loader, cards, category, customDeckName, startLuaIndex, cardNames)
+    assert(Deck[category], "Unknown category: " .. tostring(category))
     local desc = Deck[category][customDeckName]
     assert(desc, "No descriptor for: " .. category .. "." .. customDeckName)
-    local functionName = Helper.toCamelCase("create", category, "CustomDeck")
-    assert(loader[functionName], "No loader for: " .. functionName )
-    local customDeck = loader[functionName](desc[1], desc[2], desc[3], desc[4])
+    local customDeck
+    if desc[5] then
+        customDeck = loader.createCustomDeck(desc[5], desc[1], desc[2], desc[3], desc[4])
+    else
+        local functionName = Helper.toCamelCase("create", category, "CustomDeck")
+        assert(loader[functionName], "No loader for: " .. functionName )
+        customDeck = loader[functionName](desc[1], desc[2], desc[3], desc[4])
+    end
     return loader.loadCustomDeck(cards, customDeck, startLuaIndex, cardNames)
 end
 
 ---
 function Deck.loadWithSubCategory(loader, cards, category, subCategory, customDeckName, startLuaIndex, cardNames)
+    assert(Deck[category], "No category: " .. category)
+    assert(Deck[category][subCategory], "No sub category: " .. category .. "." .. subCategory)
     local desc = Deck[category][subCategory][customDeckName]
     assert(desc, "No descriptor for: " .. category .. "." .. customDeckName)
     local functionName = Helper.toCamelCase("create", category, "CustomDeck")
@@ -181,7 +188,7 @@ function Deck.loadCustomDecks(loader)
         conflict = {},
         hagal = {},
         tech = {},
-        leaders = {}
+        leaders = {},
     }
 
     Deck.load(loader, cards.imperium, "imperium", "starter", 1, {
@@ -191,7 +198,7 @@ function Deck.loadCustomDecks(loader)
         "convincingArgument",
         "seekAllies",
         "signetRing",
-        "diplomacy"
+        "diplomacy",
     })
     Deck.load(loader, cards.imperium, "imperium", "imperium", 1, {
         "sardaukarLegion",
@@ -239,10 +246,7 @@ function Deck.loadCustomDecks(loader)
         "lietKynes",
         "wormRiders",
         "reverendMotherMohiam",
-        "powerPlay"
-    })
-    Deck.load(loader, cards.imperium, "imperium", "newImperium", 1, {
-        "thumper"
+        "powerPlay",
     })
     Deck.load(loader, cards.imperium, "imperium", "ixImperium", 1, {
         "boundlessAmbition",
@@ -414,7 +418,7 @@ function Deck.loadCustomDecks(loader)
         "skirmishC",
         "skirmishD",
         "skirmishE",
-        "skirmishF"
+        "skirmishF",
     })
     Deck.load(loader, cards.conflict, "conflict2", "conflict", 1, {
         "desertPower",
@@ -427,14 +431,14 @@ function Deck.loadCustomDecks(loader)
         "siegeOfArrakeen",
         "siegeOfCarthag",
         "secureImperialBasin",
-        "tradeMonopoly"
+        "tradeMonopoly",
     })
     Deck.load(loader, cards.conflict, "conflict3", "conflict", 1, {
         "battleForImperialBasin",
         "grandVision",
         "battleForCarthag",
         "battleForArrakeen",
-        "economicSupremacy"
+        "economicSupremacy",
     })
 
     Deck.load(loader, cards.hagal, "hagal", "hagal", 1, {
@@ -451,7 +455,7 @@ function Deck.loadCustomDecks(loader)
         "arrakeen1p",
         "carthag",
         "hallOfOratory",
-        "back"
+        "back",
     })
     Deck.load(loader, cards.hagal, "hagal", "hagal_wealth", 1, {
         "wealth"
