@@ -119,7 +119,7 @@ local Controller = {
         defaultLeaderPoolSize_range = { min = 4, max = 12 },
         defaultLeaderPoolSize = 9,
         defaultLeaderPoolSizeLabel = "-",
-        tweakLeaderSelection = false,
+        tweakLeaderSelection = true,
         variant_all = {
             none = "None",
             blitz = "(Blitz!)",

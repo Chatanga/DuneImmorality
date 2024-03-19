@@ -12,7 +12,7 @@ Features:
 - (Blitz!)
 - Arrakeen Scouts
 - (Fanmade leaders)
-- (Reload support)
+- Reload support
 
 Supported langages:
 - French
@@ -35,4 +35,3 @@ This repository contains the JSON skeletons and Lua scripts of various mods for 
 - Fix mentat washing when crossing its zone.
 - Finer playable intrigue detection in solo.
 - Accumulation and immediate acquisition by Helena.
-- Port Uprising enhancements.
