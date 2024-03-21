@@ -211,7 +211,7 @@ return {
     dataAnalysis = "analyse des données",
     developmentProject = "projet de développement",
     tleilaxuRelations = "relations tleixlaxu",
-    committeeReminder = "Vous avez maintenant la possibilité de joindre un sous-comité ce tour-ci.",
+    committeeReminder = "Vous avez maintenant la possibilité de rejoindre un sous-comité ce tour-ci.",
     first = "1er",
     firstExAequo = "1er ex aequo",
     second = "2nd",

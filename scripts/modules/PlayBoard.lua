@@ -38,20 +38,20 @@ local PlayBoard = Helper.createClass(nil, {
             leaderZone = "66cdbb",
             dreadnoughts = {"1a3c82", "a8f306"},
             dreadnoughtPositions = {
-                Helper.getHardcodedPositionFromGUID('1a3c82', -26.3000832, 1.11260092, 18.6999569),
-                Helper.getHardcodedPositionFromGUID('a8f306', -28.7001133, 1.11260128, 18.6999683)
+                Helper.getHardcodedPositionFromGUID('1a3c82', -26.300087, 1.1126014, 18.6999569),
+                Helper.getHardcodedPositionFromGUID('a8f306', -28.7001171, 1.11260128, 18.6999683)
             },
             agents = {"7751c8", "afa978"},
             agentPositions = {
-                Helper.getHardcodedPositionFromGUID('7751c8', -17.0, 1.11060035, 20.3),
+                Helper.getHardcodedPositionFromGUID('7751c8', -17.0, 1.11060047, 20.3),
                 Helper.getHardcodedPositionFromGUID('afa978', -18.3, 1.11060047, 20.3)
             },
             swordmaster = "ed3490",
             councilToken = "f19a48",
             fourPlayerVictoryToken = "a6c2e0",
             fourPlayerVictoryTokenInitialPosition = Helper.getHardcodedPositionFromGUID('a6c2e0', -13.0, 1.31223142, 21.85),
-            scoreMarker = "4feaca",
-            scoreMarkerInitialPosition = Helper.getHardcodedPositionFromGUID('4feaca', 10.3997421, 1.19867384, -14.0),
+            scoreMarker = "175a0a",
+            scoreMarkerInitialPosition = Helper.getHardcodedPositionFromGUID('175a0a', 10.3999805, 1.16369891, -14.000104),
             controlMarkerBag = '61453d',
             troops = {
                 "8b2acc",
@@ -91,20 +91,20 @@ local PlayBoard = Helper.createClass(nil, {
             leaderZone = "681774",
             dreadnoughts = {"82789e", "60f208"},
             dreadnoughtPositions = {
-                Helper.getHardcodedPositionFromGUID('82789e', -26.3001213, 1.11260128, -4.30005455),
-                Helper.getHardcodedPositionFromGUID('60f208', -28.7001324, 1.11260116, -4.300067)
+                Helper.getHardcodedPositionFromGUID('82789e', -26.3001251, 1.11260128, -4.3000555),
+                Helper.getHardcodedPositionFromGUID('60f208', -28.7001362, 1.11260128, -4.300068)
             },
             agents = {"64d013", "106d8b"},
             agentPositions = {
-                Helper.getHardcodedPositionFromGUID('64d013', -17.0, 1.11060047, -2.70000482),
-                Helper.getHardcodedPositionFromGUID('106d8b', -18.3, 1.11060047, -2.7)
+                Helper.getHardcodedPositionFromGUID('64d013', -17.0, 1.11060059, -2.70000482),
+                Helper.getHardcodedPositionFromGUID('106d8b', -18.3, 1.11060035, -2.7)
             },
             swordmaster = "a78ad7",
             councilToken = "f5b14a",
             fourPlayerVictoryToken = "311255",
             fourPlayerVictoryTokenInitialPosition = Helper.getHardcodedPositionFromGUID('311255', -13.0, 1.11223137, -1.1499995),
-            scoreMarker = "1b1e76",
-            scoreMarkerInitialPosition = Helper.getHardcodedPositionFromGUID('1b1e76', 10.4, 1.4, -14.0),
+            scoreMarker = "7fa9a7",
+            scoreMarkerInitialPosition = Helper.getHardcodedPositionFromGUID('7fa9a7', 10.4000244, 1.363665, -14.0000944),
             controlMarkerBag = '8627e0',
             troops = {
                 "2a5276",
@@ -125,7 +125,7 @@ local PlayBoard = Helper.createClass(nil, {
             discardZone = "26bf8b",
             trash = "52a539",
             tleilaxToken = "96607f",
-            tleilaxTokenInitalPosition = Helper.getHardcodedPositionFromGUID('96607f', 0.5446169, 0.8800002, 22.75),
+            tleilaxTokenInitalPosition = Helper.getHardcodedPositionFromGUID('96607f', 0.544616938, 0.8800002, 22.75),
             researchToken = "292658",
             researchTokenInitalPosition = Helper.getHardcodedPositionFromGUID('292658', 0.369999766, 0.8775002, 18.9369965),
             freighter = "68e424",
@@ -144,8 +144,8 @@ local PlayBoard = Helper.createClass(nil, {
             leaderZone = "cf1486",
             dreadnoughts = {"a15087", "734250"},
             dreadnoughtPositions = {
-                Helper.getHardcodedPositionFromGUID('a15087', 26.2999172, 1.112601, 18.6999683),
-                Helper.getHardcodedPositionFromGUID('734250', 28.6998978, 1.11260128, 18.69996)
+                Helper.getHardcodedPositionFromGUID('a15087', 26.2999134, 1.112601, 18.6999683),
+                Helper.getHardcodedPositionFromGUID('734250', 28.6998959, 1.11260128, 18.69996)
             },
             agents = {"66ae45", "bceb0e"},
             agentPositions = {
@@ -155,9 +155,9 @@ local PlayBoard = Helper.createClass(nil, {
             swordmaster = "fb1629",
             councilToken = "a0028d",
             fourPlayerVictoryToken = "66444c",
-            fourPlayerVictoryTokenInitialPosition = Helper.getHardcodedPositionFromGUID('66444c', 13.0, 1.31223142, 21.85),
-            scoreMarker = "76039f",
-            scoreMarkerInitialPosition = Helper.getHardcodedPositionFromGUID('76039f', 10.4, 1.0, -13.9994183),
+            fourPlayerVictoryTokenInitialPosition = Helper.getHardcodedPositionFromGUID('66444c', 13.0, 1.3122313, 21.85),
+            scoreMarker = "7bae32",
+            scoreMarkerInitialPosition = Helper.getHardcodedPositionFromGUID('7bae32', 10.3998375, 0.9637382, -13.9999037),
             controlMarkerBag = 'ad6b92',
             troops = {
                 "167fd4",
@@ -180,7 +180,7 @@ local PlayBoard = Helper.createClass(nil, {
             tleilaxToken = "63d39f",
             tleilaxTokenInitalPosition = Helper.getHardcodedPositionFromGUID('63d39f', 1.24461615, 0.8800001, 22.05),
             researchToken = "658b17",
-            researchTokenInitalPosition = Helper.getHardcodedPositionFromGUID('658b17', 0.3699999, 0.877500236, 20.34),
+            researchTokenInitalPosition = Helper.getHardcodedPositionFromGUID('658b17', 0.369999856, 0.877500236, 20.34),
             freighter = "34281d",
             leaderPos = Helper.getHardcodedPositionFromGUID('cf1486', 19.0, 1.18726385, 17.5),
             firstPlayerPosition = Helper.getHardcodedPositionFromGUID('59523d', 14.0, 1.45146358, 19.7) + Vector(0, -0.4, 0),
@@ -197,8 +197,8 @@ local PlayBoard = Helper.createClass(nil, {
             leaderZone = "a677e0",
             dreadnoughts = {"5469fb", "71a414"},
             dreadnoughtPositions = {
-                Helper.getHardcodedPositionFromGUID('5469fb', 26.2998734, 1.11260128, -4.30002928),
-                Helper.getHardcodedPositionFromGUID('71a414', 28.6998768, 1.11260116, -4.3000536)
+                Helper.getHardcodedPositionFromGUID('5469fb', 26.29987, 1.11260128, -4.30003),
+                Helper.getHardcodedPositionFromGUID('71a414', 28.699873, 1.11260128, -4.30005455)
             },
             agents = {"5068c8", "67b476"},
             agentPositions = {
@@ -208,9 +208,9 @@ local PlayBoard = Helper.createClass(nil, {
             swordmaster = "635c49",
             councilToken = "1be491",
             fourPlayerVictoryToken = "4e8873",
-            fourPlayerVictoryTokenInitialPosition = Helper.getHardcodedPositionFromGUID('4e8873', 13.0, 1.31223154, -1.14999938),
-            scoreMarker = "20bbd1",
-            scoreMarkerInitialPosition = Helper.getHardcodedPositionFromGUID('20bbd1', 10.3983269, 0.8, -13.9993629),
+            fourPlayerVictoryTokenInitialPosition = Helper.getHardcodedPositionFromGUID('4e8873', 13.0, 1.31223142, -1.14999926),
+            scoreMarker = "f9ac91",
+            scoreMarkerInitialPosition = Helper.getHardcodedPositionFromGUID('f9ac91', 10.4006586, 0.763735, -13.9985342),
             controlMarkerBag = 'b92a4c',
             troops = {
                 "fbf8d2",
@@ -233,7 +233,7 @@ local PlayBoard = Helper.createClass(nil, {
             tleilaxToken = "d20bcf",
             tleilaxTokenInitalPosition = Helper.getHardcodedPositionFromGUID('d20bcf', 1.24461651, 0.880000234, 22.75),
             researchToken = "8988cf",
-            researchTokenInitalPosition = Helper.getHardcodedPositionFromGUID('8988cf', 0.369999975, 0.8775003, 19.6394081),
+            researchTokenInitalPosition = Helper.getHardcodedPositionFromGUID('8988cf', 0.369999975, 0.877500236, 19.6394081),
             freighter = "8fa76f",
             leaderPos = Helper.getHardcodedPositionFromGUID('a677e0', 19.0, 1.17902148, -5.5),
             firstPlayerPosition = Helper.getHardcodedPositionFromGUID('e9a44c', 14.0, 1.44851, -3.3) + Vector(0, -0.4, 0),
@@ -349,11 +349,12 @@ function PlayBoard.new(color, unresolvedContent, state, subState)
         playBoard.instructionTextAnchor = anchor
     end)
 
+    local startup = not subState
     playBoard.agentCardPark = playBoard:_createAgentCardPark(Vector(0, 0, 4))
     playBoard.revealCardPark = playBoard:_createAgentCardPark(Vector(0, 0, 0))
-    playBoard.agentPark = playBoard:_createAgentPark(unresolvedContent.agentPositions)
-    playBoard.dreadnoughtPark = playBoard:_createDreadnoughtPark(unresolvedContent.dreadnoughtPositions)
-    playBoard.supplyPark = playBoard:_createSupplyPark(centerPosition)
+    playBoard.agentPark = playBoard:_createAgentPark(unresolvedContent.agentPositions, startup)
+    playBoard.dreadnoughtPark = playBoard:_createDreadnoughtPark(unresolvedContent.dreadnoughtPositions, startup)
+    playBoard.supplyPark = playBoard:_createSupplyPark(centerPosition, startup)
     playBoard:_generatePlayerScoreboardPositions()
     playBoard.scorePark = playBoard:_createPlayerScorePark()
     playBoard.techPark = playBoard:_createTechPark(centerPosition)
@@ -368,11 +369,9 @@ end
 ---
 function PlayBoard.setUp(settings, activeOpponents)
     for color, playBoard in pairs(PlayBoard.playBoards) do
-        Helper.dumpFunction("setUp", color)
         playBoard:_cleanUp(false, not settings.riseOfIx, not settings.immortality)
         if activeOpponents[color] then
             playBoard.opponent = activeOpponents[color]
-            Helper.dump("playBoard.opponent:", playBoard.opponent)
             if playBoard.opponent ~= "rival" then
                 playBoard.opponent = "human"
                 Deck.generateStarterDeck(playBoard.content.drawDeckZone, settings.immortality, settings.epicMode).doAfter(Helper.shuffleDeck)
@@ -707,7 +706,7 @@ function PlayBoard.acceptTurn(phase, color)
         end
     elseif phase == 'combat' then
         if Combat.isInCombat(color) then
-            accepted = PlayBoard.combatPassCountdown > 0 and not PlayBoard.isRival(color) and #PlayBoard.getIntrigues(color) > 0
+            accepted = PlayBoard.combatPassCountdown > 0 and not PlayBoard.isRival(color) and #PlayBoard._getPotentialCombatIntrigues(color) > 0
             PlayBoard.combatPassCountdown = PlayBoard.combatPassCountdown - 1
         end
     elseif phase == 'combatEnd' then
@@ -822,7 +821,7 @@ function PlayBoard:_createAgentCardPark(globalOffset)
 end
 
 ---
-function PlayBoard:_createAgentPark(agentPositions)
+function PlayBoard:_createAgentPark(agentPositions, startup)
     -- Extrapolate two other positions (for the swordmaster and the mentat)
     -- from the positions of the two existing agents.
     assert(#agentPositions == 2)
@@ -836,23 +835,25 @@ function PlayBoard:_createAgentPark(agentPositions)
     }
 
     local park = Park.createCommonPark({ self.color, "Agent" }, slots, Vector(1, 3, 0.5))
-    for i, dreadnought in ipairs(self.content.agents) do
-        dreadnought.setPosition(slots[i])
+    for i, agent in ipairs(self.content.agents) do
+        agent.setPosition(slots[i])
     end
     return park
 end
 
 ---
-function PlayBoard:_createDreadnoughtPark(dreadnoughtPositions)
+function PlayBoard:_createDreadnoughtPark(dreadnoughtPositions, startup)
     local park = Park.createCommonPark({ self.color, "Dreadnought" }, dreadnoughtPositions, Vector(1, 3, 0.5))
-    for i, dreadnought in ipairs(self.content.dreadnoughts) do
-        dreadnought.setPosition(dreadnoughtPositions[i])
+    if startup then
+        for i, dreadnought in ipairs(self.content.dreadnoughts) do
+            dreadnought.setPosition(dreadnoughtPositions[i])
+        end
     end
     return park
 end
 
 ---
-function PlayBoard:_createSupplyPark(centerPosition)
+function PlayBoard:_createSupplyPark(centerPosition, startup)
     local allSlots = {}
     local slots = {}
     for i = 1, 4 do
@@ -869,10 +870,12 @@ function PlayBoard:_createSupplyPark(centerPosition)
 
     local supplyZone = Park.createTransientBoundingZone(45, Vector(0.4, 0.35, 0.4), allSlots)
 
-    for i, troop in ipairs(self.content.troops) do
-        troop.setLock(true)
-        troop.setPosition(slots[i])
-        troop.setRotation(Vector(0, 45, 0))
+    if startup then
+        for i, troop in ipairs(self.content.troops) do
+            troop.setLock(true)
+            troop.setPosition(slots[i])
+            troop.setRotation(Vector(0, 45, 0))
+        end
     end
 
     return Park.createPark(
@@ -1023,29 +1026,33 @@ function PlayBoard:_cleanUp(base, ix, immortality, full)
     end
 
     if base then
-        Helper.addAll(toBeRemoved, {
-            content.swordmaster,
-            content.councilToken,
-            content.scoreMarker,
-            content.controlMarkerBag,
-            content.forceMarker,
-            content.endTurnButton,
-            content.fourPlayerVictoryToken
-        })
-        Helper.addAll(toBeRemoved, content.agents)
-        Helper.addAll(toBeRemoved, content.troops)
+        collect("swordmaster")
+        collect("councilToken")
+        collect("scoreMarker")
+        collect("controlMarkerBag")
+        collect("forceMarker")
+        collect("endTurnButton")
+        collect("fourPlayerVictoryToken")
+        collect("agents")
+        collect("troops")
+        collect("spice")
+        collect("solari")
+        collect("water")
+        collect("strength")
+        collect("persuasion")
+        collect("trash")
     end
 
     if ix then
-        Helper.addAll(toBeRemoved, content.dreadnoughts)
-        table.insert(toBeRemoved, content.controlMarkerBag)
-        table.insert(toBeRemoved, content.freighter)
-        table.insert(toBeRemoved, content.atomicsToken)
+        collect("dreadnoughts")
+        collect("controlMarkerBag")
+        collect("freighter")
+        collect("atomicsToken")
     end
 
     if immortality then
-        table.insert(toBeRemoved, content.tleilaxToken)
-        table.insert(toBeRemoved, content.researchToken)
+        collect("tleilaxToken")
+        collect("researchToken")
     end
 
     for _, object in ipairs(toBeRemoved) do
@@ -1053,6 +1060,17 @@ function PlayBoard:_cleanUp(base, ix, immortality, full)
             object.interactable = true
             object.destruct()
         end
+    end
+
+    for _, object in ipairs(toBeRemoved) do
+        assert(object)
+        object.interactable = true
+        object.destruct()
+    end
+
+
+    if full then
+        self:_clearButtons()
     end
 
     for _, object in ipairs(toBeRemoved) do
@@ -1563,7 +1581,7 @@ function PlayBoard.setLeader(color, leaderCard)
                 log("Not a leader compatible with a rival: " .. Helper.getID(leaderCard))
                 return false
             end
-            playBoard.leader = Rival.newRival(color, Leader.newLeader(Helper.getID(leaderCard)))
+            playBoard.leader = Rival.newRival(color, Helper.getID(leaderCard))
         end
     else
         playBoard.leader = Leader.newLeader(Helper.getID(leaderCard))
@@ -1861,8 +1879,21 @@ function PlayBoard.getTrashedCards(color)
 end
 
 ---
-function PlayBoard.getIntrigues(color)
+function PlayBoard.getIntrigues(color, soloMode)
     return Helper.filter(Player[color].getHandObjects(), Types.isIntrigueCard)
+end
+
+---
+function PlayBoard._getPotentialCombatIntrigues(color)
+    local predicate
+    if Hagal.getRivalCount() == 2 then
+        predicate = function (card)
+            return Types.isIntrigueCard(card) and IntrigueCard.isCombatCard(card)
+        end
+    else
+        predicate = Types.isIntrigueCard
+    end
+    return Helper.filter(Player[color].getHandObjects(), predicate)
 end
 
 ---

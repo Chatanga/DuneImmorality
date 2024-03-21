@@ -122,7 +122,7 @@ local Controller = {
         tweakLeaderSelection = true,
         variant_all = {
             none = "None",
-            blitz = "(Blitz!)",
+            --blitz = "(Blitz!)",
             arrakeenScouts = "Arrakeen scouts"
         },
         variant = "none",
@@ -136,7 +136,7 @@ local settings
 
 --- TTS event handler.
 function onLoad(scriptState)
-    log("--------< Space Flow - " .. BUILD .. " >--------")
+    log("--------< Spice Flow - " .. BUILD .. " >--------")
 
     -- All transient objects (mostly anchors, but also some zones) are destroyed
     -- at startup, then recreated in the 'onLoad' functions (and 'staticSetup'

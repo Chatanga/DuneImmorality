@@ -36,14 +36,29 @@ local Hagal = Helper.createClass(Action, {
 
 ---
 function Hagal.onLoad(state)
-    Helper.append(Hagal, Helper.resolveGUIDs(true, {
+    Helper.append(Hagal, Helper.resolveGUIDs(false, {
         deckZone = "8f49e3",
         mentatSpaceCostPatch = "ba730f",
     }))
 
     if state.settings and state.settings.numberOfPlayers < 3 then
+        --Hagal.numberOfPlayers = state.Hagal.numberOfPlayers
+        --Hagal.difficulty = state.Hagal.difficulty
+        --Hagal.riseOfIx = state.Hagal.riseOfIx
+        --Hagal.selectedDifficulty = state.Hagal.selectedDifficulty
+
         Hagal._transientSetUp(state.settings)
     end
+end
+
+---
+function Hagal.onSave(state)
+    --state.Hagal = {
+    --    numberOfPlayers = Hagal.numberOfPlayers,
+    --    difficulty = Hagal.difficulty,
+    --    riseOfIx = Hagal.riseOfIx,
+    --    selectedDifficulty = Hagal.selectedDifficulty,
+    --}
 end
 
 ---

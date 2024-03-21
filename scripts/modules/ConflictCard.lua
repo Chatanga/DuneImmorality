@@ -90,7 +90,6 @@ function ConflictCard.collectReward(color, conflictName, rank)
     Action.setContext("combatEnded")
 
     for _, reward in ipairs(rewards) do
-        log(reward)
         CardEffect.evaluate(context, reward)
     end
 end
@@ -119,7 +118,6 @@ function ConflictCard.cleanUpConflict(color, conflictName)
     }
 
     for _, reward in ipairs(rewards) do
-        log(reward)
         CardEffect.evaluate(context, reward)
     end
 end

@@ -322,7 +322,7 @@ end
 
 function TurnControl.assumeDirectControl(color)
     local legitimatePlayers = TurnControl.getLegitimatePlayers(color)
-    Helper.dump("legitimatePlayers:", legitimatePlayers)
+    --Helper.dump("legitimatePlayers:", legitimatePlayers)
     if not Helper.isEmpty(legitimatePlayers) then
         legitimatePlayers[1].changeColor(color)
         return true

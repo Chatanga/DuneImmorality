@@ -3,6 +3,7 @@ local Helper = require("utils.Helper")
 local I18N = require("utils.I18N")
 local Park = require("utils.Park")
 local Set = require("utils.Set")
+local Dialog = require("utils.Dialog")
 
 local TurnControl = Module.lazyRequire("TurnControl")
 local PlayBoard = Module.lazyRequire("PlayBoard")
@@ -145,7 +146,7 @@ function ArrakeenScouts.onLoad(state)
 
     Helper.noPhysicsNorPlay(ArrakeenScouts.board)
 
-    if state.settings then
+    if state.settings and state.settings.variant == "arrakeenScouts" then
         ArrakeenScouts.selectedCommittees = state.selectedCommittees
         ArrakeenScouts.selectedContent = state.selectedContent
         ArrakeenScouts.numberOfPlayers = state.numberOfPlayers
@@ -294,7 +295,7 @@ function ArrakeenScouts._staticSetUp()
 
     Helper.registerEventListener("highCouncilSeatTaken", function (color)
         ArrakeenScouts.committeeAccess[color] = true
-        Player[color].showInfoDialog(I18N("committeeReminder"))
+        Dialog.showInfoDialog(color, I18N("committeeReminder"))
     end)
 end
 
@@ -552,7 +553,7 @@ function ArrakeenScouts._setAsOptionPane(color, playerPane, secret, options, con
     assert(controller)
 
     if #options == 0 then
-        log("Providing a default option.")
+        --log("Providing a default option.")
         options = {{ value = I18N("passOption") }}
     end
 
@@ -651,7 +652,6 @@ function ArrakeenScouts._setAsValidationPane(color, playerPane, secret, label, c
     }
 
     button.attributes.onClick = Helper.registerGlobalCallback(function (player)
-        log(player)
         if player.color == color or ArrakeenScouts._debug then
             Helper.unregisterGlobalCallback(button.attributes.onClick)
             controller.validate(color)
@@ -1096,7 +1096,7 @@ function ArrakeenScouts._createSequentialAuctionController(playerPanes, resource
         TurnControl.endOfTurn(color)
 
         if controller.bids[color] then
-            log("Doing nothing: already validated")
+            --log("Doing nothing: already validated")
             return
         end
 
@@ -2039,7 +2039,7 @@ function ArrakeenScouts._createSequentialChoiceController(playerPanes, getOption
         TurnControl.endOfTurn(color)
 
         if controller.options[color] then
-            log("Doing nothing: already validated")
+            --log("Doing nothing: already validated")
             return
         end
 

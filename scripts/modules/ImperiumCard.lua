@@ -205,7 +205,6 @@ function ImperiumCard._resolveCard(card)
 
         return instantiatedCardInfo
     else
-        log(card)
         error("No card info!")
     end
 end

@@ -9,7 +9,7 @@ local ShippingTrack = {
     initialFreighterPositions = {
         Yellow = Helper.getHardcodedPositionFromGUID('8fa76f', 8.999569, 0.664116144, 2.85036254),
         Green = Helper.getHardcodedPositionFromGUID('34281d', 8.44955349, 0.6641097, 2.850371),
-        Blue = Helper.getHardcodedPositionFromGUID('68e424', 7.34954357, 0.664107263, 2.85441518),
+        Blue = Helper.getHardcodedPositionFromGUID('68e424', 7.34954262, 0.6641074, 2.85441518),
         Red = Helper.getHardcodedPositionFromGUID('e9096d', 7.899618, 0.6641103, 2.853234)
     }
 }

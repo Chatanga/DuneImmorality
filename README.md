@@ -11,7 +11,7 @@ Features:
 - Hagal House
 - (Blitz!)
 - Arrakeen Scouts
-- (Fanmade leaders)
+- (Automated fanmade leaders)
 - Reload support
 
 Supported langages:
@@ -33,5 +33,4 @@ This repository contains the JSON skeletons and Lua scripts of various mods for 
 ## TODO
 
 - Fix mentat washing when crossing its zone.
-- Finer playable intrigue detection in solo.
 - Accumulation and immediate acquisition by Helena.

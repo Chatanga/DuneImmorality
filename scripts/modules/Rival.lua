@@ -11,20 +11,24 @@ local TechMarket = Module.lazyRequire("TechMarket")
 local Intrigue = Module.lazyRequire("Intrigue")
 local HagalCard = Module.lazyRequire("HagalCard")
 local Types = Module.lazyRequire("Types")
+local Leader = Module.lazyRequire("Leader")
 
 local Rival = Helper.createClass(Action, {
     rivals = {}
 })
 
 ---
-function Rival.newRival(color, leader)
+function Rival.newRival(color, leaderName)
+    --Helper.dumpFunction("Rival.newRival", color, leaderName)
     local rival = Helper.createClassInstance(Rival, {
-        leader = leader or Hagal,
+        leader = leaderName and Leader.newLeader(leaderName) or Hagal,
     })
     rival.name = rival.leader.name
-    assert((Hagal.getRivalCount() == 1) == (leader == nil))
-    if not leader then
+    if Hagal.getRivalCount() == 1 then
+        assert(leaderName == nil)
         rival.recruitSwordmaster(color)
+    else
+        assert(leaderName)
     end
     Rival.rivals[color] = rival
     return rival
