@@ -30,6 +30,7 @@ local PlayBoard = Helper.createClass(nil, {
     unresolvedContentByColor = {
         Red = {
             board = "adcd28",
+            colorband = "ecc723",
             spice = "3074d4",
             solari = "576ccd",
             water = "692c4d",
@@ -83,6 +84,7 @@ local PlayBoard = Helper.createClass(nil, {
         },
         Blue = {
             board = "77ca63",
+            colorband = "46abc5",
             spice = "9cc286",
             solari = "fa5236",
             water = "0afaeb",
@@ -136,6 +138,7 @@ local PlayBoard = Helper.createClass(nil, {
         },
         Green = {
             board = "0bbae1",
+            colorband = "c1aea4",
             spice = "22478f",
             solari = "e597dc",
             water = "fa9522",
@@ -189,6 +192,7 @@ local PlayBoard = Helper.createClass(nil, {
         },
         Yellow = {
             board = "fdd5f9",
+            colorband = "8523f2",
             spice = "78fb8a",
             solari = "c5c4ef",
             water = "f217d0",
@@ -596,6 +600,12 @@ end
 ---
 function PlayBoard._setActivePlayer(phase, color, refreshing)
     local indexedColors = { "Green", "Yellow", "Blue", "Red" }
+    local finalColors = {
+        Color(9 / 255, 194 / 255, 0 / 255),
+        Color(255 / 255, 247 / 255, 0 / 255),
+        Color(31 / 255, 135 / 255, 255 / 255),
+        Color(237 / 255, 0 / 255, 0 / 255),
+    }
     for i, otherColor in ipairs(indexedColors) do
         local playBoard = PlayBoard.playBoards[otherColor]
         if playBoard then
@@ -606,10 +616,7 @@ function PlayBoard._setActivePlayer(phase, color, refreshing)
                     Hagal.activate(phase, color)
                 end
             end
-            local board = playBoard.content.board
-            board.AssetBundle.playTriggerEffect(effectIndex)
-            -- TODO
-            --playBoard.content.colorband.setColorTint(effectIndex > 0 and indexedColors[effectIndex] or "Black")
+            playBoard.content.colorband.setColorTint(effectIndex > 0 and finalColors[effectIndex] or "Black")
         end
     end
 
