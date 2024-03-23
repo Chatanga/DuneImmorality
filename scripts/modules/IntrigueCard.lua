@@ -63,7 +63,7 @@ local IntrigueCard = {
     councilorsDispensation = {categories = {'plot'}, plot = {"+2 Spice if you have a seat on the high council"}},
     waterOfLife = {categories = {'plot'}, plot = {"-1 Water and -1 Spice -> 3x draw"}},
     charisma = {categories = {'plot'}, plot = {persuasion(2)}},
-    waterPeddlersUnion = {categories = {'plot'}, plot = {water(1)}},
+    waterPeedlersUnion = {categories = {'plot'}, plot = {water(1)}},
     refocus = {categories = {'plot'}, plot = {"Shuffle your discard into, then 1x draw"}},
     knowTheirWays = {categories = {'plot'}, plot = {influence(1, 'fremen')}},
     secretOfTheSisterhood = {categories = {'plot'}, plot = {influence(1, 'beneGesserit')}},
@@ -111,10 +111,13 @@ local IntrigueCard = {
 function IntrigueCard._resolveCard(card)
     assert(card)
     local cardName = Helper.getID(card)
-    local cardInfo = IntrigueCard[cardName]
-    assert(cardInfo, "Unknown card: " .. cardName)
-    cardInfo.name = cardName
-    return cardInfo
+    if cardName then
+        local cardInfo = IntrigueCard[cardName]
+        assert(cardInfo, "Unknown card (empty name usually means that the card is stacked with another): " .. tostring(cardName))
+        cardInfo.name = cardName
+    else
+        error("No card info!")
+    end
 end
 
 function IntrigueCard.evaluatePlot(color, playedCards)

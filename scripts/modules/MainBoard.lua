@@ -603,6 +603,7 @@ function MainBoard._goSecrets(color, leader, continuation)
             leader.drawIntrigues(color, 1)
             for _, otherColor in ipairs(PlayBoard.getActivePlayBoardColors()) do
                 if otherColor ~= color then
+                    Helper.dump(otherColor, "-»", #PlayBoard.getIntrigues(otherColor))
                     if #PlayBoard.getIntrigues(otherColor) > 3 then
                         leader.stealIntrigue(color, otherColor, 1)
                     end
@@ -827,8 +828,13 @@ function MainBoard._goMentat(color, leader, continuation)
     if MainBoard._checkGenericAccess(color, leader, { solari = mentatCost }) then
         continuation.run(function ()
             leader.resources(color, "solari", -mentatCost)
-            leader.takeMentat(color)
             leader.drawImperiumCards(color, 1)
+            -- Wait for the first agent sent to be marked as moving (not resting),
+            -- then move the swordmaster. Otherwise, the target agent park will
+            -- grab the first agent back to the park when tidying it up.
+            Helper.onceFramesPassed(1).doAfter(function ()
+                leader.takeMentat(color)
+            end)
         end)
     else
         continuation.run()

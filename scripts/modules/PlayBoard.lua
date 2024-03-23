@@ -712,7 +712,8 @@ function PlayBoard.acceptTurn(phase, color)
             accepted = not PlayBoard.playBoards[TurnControl.getFirstPlayer()].revealed
         end
     elseif phase == 'combat' then
-        if Combat.isInCombat(color) then
+        -- TODO Make it an option.
+        if Combat.isInCombat(color) and false then
             accepted = PlayBoard.combatPassCountdown > 0 and not PlayBoard.isRival(color) and #PlayBoard._getPotentialCombatIntrigues(color) > 0
             PlayBoard.combatPassCountdown = PlayBoard.combatPassCountdown - 1
         end
@@ -760,9 +761,9 @@ function PlayBoard.collectReward(color)
 
         local dreadnoughts = Combat.getDreadnoughtsInConflict(color)
 
-        --Helper.dump(color, "has", #dreadnoughts, "dreadnought(s)")
+        Helper.dump(color, "has", #dreadnoughts, "dreadnought(s)")
         if #dreadnoughts > 0 then
-            Dialog.showInfoDialog(I18N("dreadnoughtMandatoryOccupation"))
+            Dialog.showInfoDialog(color, I18N("dreadnoughtMandatoryOccupation"))
         end
     end
 end

@@ -313,7 +313,10 @@ end
 
 ---
 function TleilaxuResearch._tleilaxSpaceToWorldPosition(positionInTleilaxSpace)
-    return TleilaxuResearch.tleilaxuLevelZones[positionInTleilaxSpace].getPosition()
+    Helper.dumpFunction("TleilaxuResearch._tleilaxSpaceToWorldPosition", positionInTleilaxSpace)
+    Helper.dump("TleilaxuResearch.tleilaxuLevelZones[positionInTleilaxSpace]", TleilaxuResearch.tleilaxuLevelZones[positionInTleilaxSpace])
+    Helper.dump("TleilaxuResearch.tleilaxuLevelZones[positionInTleilaxSpace].getPosition()", TleilaxuResearch.tleilaxuLevelZones[positionInTleilaxSpace].getPosition())
+    return TleilaxuResearch.tleilaxuLevelZones[positionInTleilaxSpace].getPosition() -- FIXME scripts/modules/TleilaxuResearch.lua:316:5: attempt to index a nil value
 end
 
 ---

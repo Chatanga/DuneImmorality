@@ -253,7 +253,7 @@ end
 function Hagal._cleanUpConflict(color)
     local continuation = Helper.createContinuation("Hagal._cleanUpConflict")
     Helper.onceFramesPassed(1).doAfter(function ()
-        local conflictName = Combat.getCurrentConflictName()
+        local conflictName = Combat.getTurnConflictName()
         local rank = Combat.getRank(color).value
         if rank == 1 then
             ConflictCard.cleanUpConflict(color, conflictName)

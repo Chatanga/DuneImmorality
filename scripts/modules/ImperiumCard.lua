@@ -196,7 +196,7 @@ function ImperiumCard._resolveCard(card)
     local cardName = Helper.getID(card)
     if cardName then
         local cardInfo = ImperiumCard[cardName]
-        assert(cardInfo, "Unknown card: " .. tostring(cardName))
+        assert(cardInfo, "Unknown card (empty name usually means that the card is stacked with another): " .. tostring(cardName))
         cardInfo.name = cardName
 
         -- For identity tests.
