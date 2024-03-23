@@ -4,6 +4,8 @@ A complete rewrite of Dune Immorality from scratch to overcome the limitations o
 
 *Note: formely known as "Dune Immorality - Alpha Test".*
 
+![Capture](captures/capture-1.jpg)
+
 Features:
 - Base game
 - Rise of Ix extension
@@ -36,3 +38,4 @@ This repository contains the JSON skeletons and Lua scripts of various mods for 
 - Accumulation and immediate acquisition by Helena.
 - Fix High Council seat locations.
 - Fix influence token locations.
+- Refaire de deck Hagal.
