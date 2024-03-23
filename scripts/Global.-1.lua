@@ -13,7 +13,7 @@ local BUILD = 'TBD'
 
 -- Do not load anything. Appropriate to work on the mod content in TTS without
 -- interference from the scripts.
-local constructionModeEnabled = true
+local constructionModeEnabled = false
 
 -- For test purposes (the secondary table won't disappear as a side effect).
 local autoLoadedSettings = nil

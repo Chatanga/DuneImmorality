@@ -842,8 +842,8 @@ function MainBoard._goMentat(color, leader, continuation)
 end
 
 ---
-function MainBoard.getMentat()
-    if Vector.distance(MainBoard.mentat.getPosition(), MainBoard.mentatZone.getPosition()) < 1 then
+function MainBoard.getMentat(anywhere)
+    if anywhere or Vector.distance(MainBoard.mentat.getPosition(), MainBoard.mentatZone.getPosition()) < 1 then
         return MainBoard.mentat
     else
         return nil

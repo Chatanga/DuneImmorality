@@ -126,9 +126,9 @@ function CardEffect._dispatch(selector, expression)
         elseif selector == "beetle" then
             return call("beetle", color, value)
         elseif selector == "mentat" then
-            if call("takeMentat", color) then
+            if call("takeMentat", color, true) then
                 -- FIXME Do it elsewhere.
-                MainBoard.getMentat().addTag("notToBeRecalled")
+                MainBoard.getMentat(true).addTag("notToBeRecalled")
                 return true
             else
                 return false
@@ -212,14 +212,12 @@ function CardEffect.shipment(expression)
     return CardEffect._dispatch('shipment', expression)
 end
 
-function CardEffect.mentat()
-    return function (expression)
-        return CardEffect._dispatch('mentat', expression)
-    end
+function CardEffect.mentat(expression)
+    return CardEffect._dispatch('mentat', expression)
 end
 
-function CardEffect.control(space)
-    return CardEffect._dispatch('control', space)
+function CardEffect.control(expression)
+    return CardEffect._dispatch('control', expression)
 end
 
 function CardEffect.voice(expression)

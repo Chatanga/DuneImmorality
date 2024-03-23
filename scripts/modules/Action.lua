@@ -188,10 +188,9 @@ function Action.sendAgent(color, spaceName)
 end
 
 ---
-function Action.takeMentat(color)
-    local mentat = MainBoard.getMentat()
+function Action.takeMentat(color, anywhere)
+    local mentat = MainBoard.getMentat(anywhere)
     if mentat then
-        Action.log(I18N("takeMentat"), color)
         return Park.putObject(mentat, PlayBoard.getAgentPark(color))
     else
         return false

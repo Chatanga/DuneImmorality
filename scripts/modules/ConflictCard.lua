@@ -60,7 +60,7 @@ local ConflictCard = {
     raidStockpiles = {level = 2, base = true, rewards = {{intrigue(1), spice(3)}, {spice(2)}, {spice(1)}}},
     cloakAndDagger = {level = 2, base = true, rewards = {{influence(1), intrigue(2)}, {intrigue(1), spice(1)}, {choice(1, {intrigue(1), spice(1)})}}},
     machinations = {level = 2, base = true, rewards = {{choice(2, {influence(1, "emperor"), influence(1, "spacingGuild"), influence(1, "beneGesserit"), influence(1, "fremen")})}, {water(1), solari(2)}, {water(1)}}},
-    sortThroughTheChaos = {level = 2, base = true, rewards = {{mentat(1), intrigue(1), solari(2)}, {intrigue(1), solari(2)}, {solari(2)}}},
+    sortThroughTheChaos = {level = 2, base = true, rewards = {{mentat(), intrigue(1), solari(2)}, {intrigue(1), solari(2)}, {solari(2)}}},
     terriblePurpose = {level = 2, base = true, rewards = {{vp(1), trash(1)}, {water(1), spice(1)}, {spice(1)}}},
     guildBankRaid = {level = 2, base = true, rewards = {{solari(6)}, {solari(4)}, {solari(2)}}},
     siegeOfArrakeen = {level = 2, base = true, rewards = {{vp(1), control("arrakeen")}, {solari(4)}, {solari(2)}}},
