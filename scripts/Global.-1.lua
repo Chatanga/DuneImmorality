@@ -2,7 +2,7 @@ local BUILD = 'TBD'
 
 -- Do not load anything. Appropriate to work on the mod content without
 -- interference.
-local constructionModeEnabled = true
+local constructionModeEnabled = false
 
 -- For test purposes.
 local autoLoadedSettings
