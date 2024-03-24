@@ -63,7 +63,7 @@ local IntrigueCard = {
     councilorsDispensation = {categories = {'plot'}, plot = {"+2 Spice if you have a seat on the high council"}},
     waterOfLife = {categories = {'plot'}, plot = {"-1 Water and -1 Spice -> 3x draw"}},
     charisma = {categories = {'plot'}, plot = {persuasion(2)}},
-    waterPeedlersUnion = {categories = {'plot'}, plot = {water(1)}},
+    waterPeddlersUnion = {categories = {'plot'}, plot = {water(1)}},
     refocus = {categories = {'plot'}, plot = {"Shuffle your discard into, then 1x draw"}},
     knowTheirWays = {categories = {'plot'}, plot = {influence(1, 'fremen')}},
     secretOfTheSisterhood = {categories = {'plot'}, plot = {influence(1, 'beneGesserit')}},

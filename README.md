@@ -38,4 +38,4 @@ This repository contains the JSON skeletons and Lua scripts of various mods for 
 - Accumulation and immediate acquisition by Helena.
 - Fix High Council seat locations.
 - Fix influence token locations.
-- Refaire de deck Hagal.
+- Refaire le deck Hagal.

@@ -264,6 +264,19 @@ Leader.ilesaEcaz = Helper.createClass(Leader, {
     signetRing = function (color)
         local leader = PlayBoard.getLeader(color)
         return leader.resources(color, "solari", -1) and Action.acquireFoldspace(color)
+    end,
+
+    --- One step ahead
+    instruct = function (phase, isActivePlayer)
+        if phase == "roundStart" then
+            if isActivePlayer then
+                return I18N("gameStartActiveInstructionForIlesaEcaz")
+            else
+                return I18N("gameStartInactiveInstructionForIlesaEcaz")
+            end
+        else
+            return Leader.instruct(phase, isActivePlayer)
+        end
     end
 })
 
