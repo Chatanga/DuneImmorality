@@ -4,6 +4,7 @@ local I18N = require("utils.I18N")
 
 local Locale = Module.lazyRequire("Locale")
 
+-- Merakon's House Blend -> https://boardgamegeek.com/thread/3213458/merakons-house-blend
 local Deck = {
     decals = {
         corrinoAcquireCard = "http://cloud-3.steamusercontent.com/ugc/2286203878409177043/9E9986D0F348F5D23A16745A271FFD28958651FB/",
@@ -81,7 +82,7 @@ local Deck = {
             missionariaProtectiva = 2, -- First release fixed in Rise of Ix
             spiceHunter = 2,
             spiceSmugglers = 2,
-            feydakinDeathCommando = 2,
+            fedaykinDeathCommando = 2,
             geneManipulation = 2,
             guildBankers = 1,
             choamDirectorship = 1,
@@ -135,7 +136,7 @@ local Deck = {
             imperialBashar = 1,
             jamis = 1,
             landingRights = 1,
-            waterPeddlersUnion = 1,
+            waterPeddler = 1,
             treachery = 2,
             truthsayer = 2,
             spiceTrader = 1,
@@ -233,6 +234,50 @@ local Deck = {
             priorityContracts = 1,
             interstellarTrade = 1,
         },
+        merakon = {
+            -- Remove one copy of the following cards from the Uprising Imperium deck
+            -- (Uprising comes with 2 each of these cards, so there's still 1 copy left after the removals):
+            weirdingWoman = -1,
+            desertSurvival = -1,
+            makerKeeper = -1,
+            beneGesseritOperative = -1,
+            maulaPistol = -1,
+            treadInDarkness = -1,
+            -- Add the following cards:
+            -- Legacy
+            assassinationMission = 1,
+            sardaukarInfantry = 1,
+            missionariaProtectiva = 1,
+            guildAdministrator = 1,
+            imperialSpy = 1,
+            spiceHunter = 1,
+            spiceSmugglers = 1,
+            theVoice = 1,
+            beneGesseritSister = 1,
+            crysknife = 1,
+            fedaykinDeathCommando = 1,
+            guildBankers = 1,
+            spaceTravel = 1,
+            otherMemory = 1,
+            sietchReverendMother = 1,
+            gunThopter = 1,
+            powerPlay = 1,
+            thufirHawat = 1,
+            reverendMotherMohiam = 1,
+            -- Ix
+            waterPeddler = 1,
+            truthsayer = 1,
+            weirdingWay = 1,
+            fremenCamp = 1,
+            imperialBashar = 1,
+            negotiatedWithdrawal = 1,
+            spiceTrader = 1,
+            esmarTuek = 1,
+            satelliteBan = 1,
+            treachery = 1,
+            shaiHulud = 1,
+            -- 93 Imperium cards total (69-6+30) (No counting promo cards I guess?)
+        },
     },
     special = {
         legacy = {
@@ -299,7 +344,7 @@ local Deck = {
             theSleeperMustAwaken = 1,
             tiebreaker = 1,
             toTheVictor = 1,
-            waterPeedlersUnion = 1,
+            waterPeddlersUnion = 1,
             windfall = 1,
             waterOfLife = 1,
             urgentMission = 1,
@@ -378,7 +423,24 @@ local Deck = {
             backedByChoam = 1,
             reachAgreement = 1,
             choamProfits = 1,
-        }
+        },
+        merakon = {
+            -- No cuts from Uprising.
+            -- Add the following cards (all from DI):
+            alliedArmada = 1,
+            binduSuspension = 1,
+            bypassProtocol = 1,
+            councilorsDispensation = 1,
+            demandRespect = 1,
+            dispatchAnEnvoy = 1,
+            masterTactician = 1,
+            plansWithinPlans = 1,
+            poisonSnooper = 1,
+            reinforcements = 1,
+            stagedIncident = 1,
+            tiebreaker = 1,
+            -- 56 Intrigue cards total (44+12)
+        },
     },
     conflict = {
         level1 = {
@@ -528,6 +590,19 @@ local Deck = {
             feydRauthaHarkonnen = 1,
             shaddamCorrino = 1,
             muadDib = 1,
+        },
+        merakon = {
+            -- Legacy
+            vladimirHarkonnen = 1,
+            glossuRabban = 1,
+            ilbanRichese = 1,
+            arianaThorvald = 1,
+            memnonThorvald = 1,
+            armandEcaz = 1,
+            ilesaEcaz = 1,
+            -- Ix
+            tessiaVernius = 1,
+            yunaMoritani = 1,
         },
     },
     rivalLeaders = {
@@ -707,11 +782,11 @@ function Deck.generateStarterDiscard(deckZone, immortality, epic)
 end
 
 ---
-function Deck.generateImperiumDeck(deckZone, contracts, ix, immortality, legacy)
+function Deck.generateImperiumDeck(deckZone, contracts, ix, immortality, legacy, merakon)
     assert(deckZone)
     assert(deckZone.getPosition)
     local continuation = Helper.createContinuation("Deck.generateImperiumDeck")
-    local contributions = Deck._mergeStandardContributionSets(Deck.imperium, ix, immortality, legacy)
+    local contributions = Deck._mergeStandardContributionSets(Deck.imperium, ix, immortality, legacy, merakon)
     if contracts then
         contributions = Deck._mergeContributionSets({ contributions, Deck.imperium.uprisingContract })
     end
@@ -744,11 +819,11 @@ function Deck.generateTleilaxuDeck(deckZone)
 end
 
 ---
-function Deck.generateIntrigueDeck(deckZone, contracts, ix, immortality, legacy)
+function Deck.generateIntrigueDeck(deckZone, contracts, ix, immortality, legacy, merakon)
     assert(deckZone)
     assert(deckZone.getPosition)
     local continuation = Helper.createContinuation("Deck.generateIntrigueDeck")
-    local contributions = Deck._mergeStandardContributionSets(Deck.intrigue, ix, immortality, legacy)
+    local contributions = Deck._mergeStandardContributionSets(Deck.intrigue, ix, immortality, legacy, merakon)
     if contracts then
         contributions = Deck._mergeContributionSets({ contributions, Deck.intrigue.uprisingContract })
     end
@@ -855,11 +930,11 @@ function Deck.generateHagalDeck(deckZone, ix, immortality, playerCount)
 end
 
 ---
-function Deck.generateLeaderDeck(deckZone, contracts, ix, immortality, legacy)
+function Deck.generateLeaderDeck(deckZone, contracts, ix, immortality, legacy, merakon)
     assert(deckZone)
     assert(deckZone.getPosition)
     local continuation = Helper.createContinuation("Deck.generateLeaderDeck")
-    local contributions = Deck._mergeStandardContributionSets(Deck.leaders, ix, immortality, legacy)
+    local contributions = Deck._mergeStandardContributionSets(Deck.leaders, ix, immortality, legacy, merakon)
     if not contracts then
         contributions.shaddamCorrino = nil
     end
@@ -878,16 +953,20 @@ function Deck.generateRivalLeaderDeck(deckZone, ix, immortality, legacy)
 end
 
 ---
-function Deck._mergeStandardContributionSets(root, ix, immortality, legacy)
+function Deck._mergeStandardContributionSets(root, ix, immortality, legacy, merakon)
     local contributionSets = { root.uprising }
-    if ix then
-        table.insert(contributionSets, root.ix)
-    end
-    if immortality then
-        table.insert(contributionSets, root.immortality)
-    end
-    if legacy then
-        table.insert(contributionSets, root.legacy)
+    if merakon then
+        table.insert(contributionSets, root.merakon)
+    else
+        if ix then
+            table.insert(contributionSets, root.ix)
+        end
+        if immortality then
+            table.insert(contributionSets, root.immortality)
+        end
+        if legacy then
+            table.insert(contributionSets, root.legacy)
+        end
     end
     return Deck._mergeContributionSets(contributionSets)
 end
@@ -1296,24 +1375,19 @@ function Deck._generateFromPrebuildDeck(deckType, deckZone, contributions, _, sp
     local cardCount = 0
     for name, cardinality in pairs(contributions) do
         local source = sources[name]
-        if source then
-            for _ = 1, cardinality do
-                local firstGuid = source.instances[1]
-                table.remove(source.instances, 1)
-                if source.deck then
-                    source.deck.takeObject({
-                        guid = firstGuid,
-                        -- Stacking is needed to preserve input order.
-                        position = deckZone.getPosition() + Vector(0, 1 + cardCount * (spacing or 0.1), 0),
-                        smooth = false,
-                    })
-                    cardCount = cardCount + 1
-                else
-                    error("Should not happen! Source deck is not properly generated.")
-                end
-            end
-        else
-            error("No source for card '" .. deckType .. "." .. name .. "'")
+        assert(source, "No source for card '" .. deckType .. "." .. name .. "'")
+        for _ = 1, cardinality do
+            local firstGuid = source.instances[1]
+            assert(firstGuid, "Not enough instances of the card '" .. name .. "'")
+            table.remove(source.instances, 1)
+            assert(source.deck, "Should not happen! Source deck is not properly generated.")
+            source.deck.takeObject({
+                guid = firstGuid,
+                -- Stacking is needed to preserve input order.
+                position = deckZone.getPosition() + Vector(0, 1 + cardCount * (spacing or 0.1), 0),
+                smooth = false,
+            })
+            cardCount = cardCount + 1
         end
     end
 

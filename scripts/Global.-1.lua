@@ -26,6 +26,7 @@ autoLoadedSettings = {
     randomizePlayerPositions = false,
     useContracts = true,
     legacy = false,
+    merakon = false,
     riseOfIx = false,
     epicMode = false,
     immortality = false,
@@ -118,6 +119,7 @@ local Controller = {
         difficulty = {},
         useContracts = true,
         legacy = false,
+        merakon = {},
         riseOfIx = false,
         epicMode = {},
         immortality = false,
@@ -385,6 +387,17 @@ end
 --- UI callback (cf. XML).
 function setLegacy(player, value, id)
     Controller.ui:fromUI(player, value, id)
+    if value == "True" then
+        Controller.fields.merakon = false
+    else
+        Controller.fields.merakon = {}
+    end
+    Controller.ui:toUI()
+end
+
+--- UI callback (cf. XML).
+function setMerakon(player, value, id)
+    Controller.ui:fromUI(player, value, id)
 end
 
 --- UI callback (cf. XML).
@@ -455,6 +468,7 @@ function setUpFromUI()
         difficulty = Controller.fields.difficulty,
         useContracts = Controller.fields.useContracts == true or numberOfPlayers == 6,
         legacy = Controller.fields.legacy == true,
+        merakon = Controller.fields.merakon == true,
         riseOfIx = Controller.fields.riseOfIx == true,
         epicMode = Controller.fields.epicMode == true,
         immortality = Controller.fields.immortality == true,

@@ -81,7 +81,7 @@ local ImperiumCard = {
     crysknife = {factions = {'fremen'}, cost = 3, agentIcons = {'fremen', 'yellow'}, reveal = {sword(1), influence(fremenBond(1), 'fremen')}},
     drYueh = {cost = 1, agentIcons = {'blue'}, reveal = {persuasion(1)}},
     duncanIdaho = {cost = 4, agentIcons = {'blue'}, reveal = {sword(2), water(1)}},
-    feydakinDeathCommando = {factions = {'fremen'}, cost = 3, agentIcons = {'blue', 'yellow'}, reveal = {persuasion(1), sword(fremenBond(3))}},
+    fedaykinDeathCommando = {factions = {'fremen'}, cost = 3, agentIcons = {'blue', 'yellow'}, reveal = {persuasion(1), sword(fremenBond(3))}},
     firmGrip = {factions = {'emperor'}, cost = 4, agentIcons = {'emperor', 'green'}, reveal = {persuasion(emperorAlliance(4))}},
     fremenCamp = {factions = {'fremen'}, cost = 4, agentIcons = {'yellow'}, reveal = {persuasion(2), sword(1)}},
     geneManipulation = {factions = {'beneGesserit'}, cost = 3, agentIcons = {'green', 'blue'}, reveal = {persuasion(2)}},
@@ -141,7 +141,7 @@ local ImperiumCard = {
     spiceTrader = {factions = {'fremen'}, cost = 4, agentIcons = {'blue', 'yellow'}, reveal = {persuasion(2), sword(1)}},
     treachery = {cost = 6, agentIcons = {'emperor', 'spacingGuild', 'beneGesserit', 'fremen'}, reveal = {'+2 troops and deploy them to conflict'}},
     truthsayer = {factions = {'emperor', 'beneGesserit'}, cost = 3, agentIcons = {'emperor', 'beneGesserit', 'green'}, reveal = {persuasion(1), sword(1)}},
-    waterPeddlersUnion = {cost = 1, acquireBonus = {water(1)}, reveal = {water(1)}},
+    waterPeddler = {cost = 1, acquireBonus = {water(1)}, reveal = {water(1)}},
     webOfPower = {factions = {'beneGesserit'}, cost = 4, agentIcons = {'beneGesserit'}, infiltrate = true, reveal = {persuasion(1), influence(1)}},
     weirdingWay = {factions = {'beneGesserit'}, cost = 3, agentIcons = {'blue', 'yellow'}, reveal = {persuasion(1), sword(2)}},
     -- immortality

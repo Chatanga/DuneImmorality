@@ -37,17 +37,20 @@ be integrated to this mod in a standard way.
 				<Text class="epigraph" key="prolog"/>
 			</VerticalLayout>
 
-			<HorizontalLayout>
+			<!--HorizontalLayout>
 				<Text class="primary" key="language"/>
 				<Dropdown class="setUp" id="language" onValueChanged="Global/setLanguage">
 					<Option></Option>
 				</Dropdown>
-			</HorizontalLayout>
+			</HorizontalLayout-->
 
 			<Text class="primary" key="extensions"/>
 			<VerticalLayout padding="25 0 0 0">
 				<Toggle class="setUp" id="useContracts" onValueChanged="Global/setUseContracts" isOn="True" key="useContracts"/>
 				<Toggle class="setUp" id="legacy" isOn="True" onValueChanged="Global/setLegacy" key="legacy"/>
+				<VerticalLayout padding="25 0 0 0">
+					<Toggle class="setUp" id="merakon" isOn="False" onValueChanged="Global/setMerakon" key="merakon"/>
+				</VerticalLayout>
 				<Toggle class="setUp" id="riseOfIx" isOn="True" onValueChanged="Global/setRiseOfIx" key="riseOfIx"/>
 				<VerticalLayout padding="25 0 0 0">
 					<Toggle class="setUp" id="epicMode" isOn="False" onValueChanged="Global/setEpicMode" key="epicMode"/>

@@ -32,7 +32,7 @@ end
 ---
 function ImperiumRow.setUp(settings)
     local continuation = Helper.createContinuation("ImperiumRow.setUp")
-    Deck.generateImperiumDeck(ImperiumRow.deckZone, settings.useContracts, settings.riseOfIx, settings.immortality, settings.legacy).doAfter(function (deck)
+    Deck.generateImperiumDeck(ImperiumRow.deckZone, settings.useContracts, settings.riseOfIx, settings.immortality, settings.legacy, settings.merakon).doAfter(function (deck)
         Helper.shuffleDeck(deck)
         for _, zone in ipairs(ImperiumRow.slotZones) do
             Helper.moveCardFromZone(ImperiumRow.deckZone, zone.getPosition(), Vector(0, 180, 0))

@@ -74,7 +74,7 @@ function LeaderSelection.setUp(settings, activeOpponents)
     preContinuation.doAfter(function ()
         -- Temporary tag to avoid counting the rival leader cards.
         LeaderSelection.deckZone.addTag("Leader")
-        Deck.generateLeaderDeck(LeaderSelection.deckZone, settings.useContracts, settings.riseOfIx, settings.immortality, settings.legacy).doAfter(function (deck)
+        Deck.generateLeaderDeck(LeaderSelection.deckZone, settings.useContracts, settings.riseOfIx, settings.immortality, settings.legacy, settings.merakon).doAfter(function (deck)
             LeaderSelection.deckZone.removeTag("Leader")
 
             local continuation = Helper.createContinuation("LeaderSelection.setUp")
