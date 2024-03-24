@@ -34,8 +34,6 @@ This repository contains the JSON skeletons and Lua scripts of various mods for 
 
 ## FIXME
 
-- Fix mentat washing when crossing its zone.
-- Accumulation and immediate acquisition by Helena.
-- Fix High Council seat locations.
 - Fix influence token locations.
-- Refaire le deck Hagal.
+- Rescan Hagal deck (en + fr).
+- Scan Arrakeen Scouts deck (en).

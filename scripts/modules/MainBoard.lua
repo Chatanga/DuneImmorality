@@ -236,7 +236,7 @@ end
 
 ---
 function MainBoard._transientSetUp(settings)
-    MainBoard.highCouncilPark = MainBoard:_createHighCouncilPark(MainBoard.highCouncilZone)
+    MainBoard.highCouncilPark = MainBoard:_createHighCouncilPark(MainBoard.highCouncilZone, settings.riseOfIx)
 
     for name, space in pairs(MainBoard.spaces) do
         space.name = name
@@ -308,12 +308,25 @@ function MainBoard._transientSetUp(settings)
 end
 
 ---
-function MainBoard:_createHighCouncilPark(zone)
-    local seats = {}
-    for i = 1, 4 do
-        local x = (i - 2.5) * zone.getScale().x / 4
-        local seat = Vector(x, 0, 0) + zone.getPosition()
-        table.insert(seats, seat)
+function MainBoard:_createHighCouncilPark(zone, ix)
+    local seats
+    local y = 0.79
+    if ix then
+        local z = 5.51
+        seats = {
+            Vector(-1.59, y, z),
+            Vector(-0.85, y, z),
+            Vector(0.81, y, z),
+            Vector(1.54, y, z),
+        }
+    else
+        local z = 5.70
+        seats = {
+            Vector(-1.77, y, z),
+            Vector(-1.04, y, z),
+            Vector(0.62, y, z),
+            Vector(1.36, y, z),
+        }
     end
 
     return Park.createPark(
@@ -1223,11 +1236,15 @@ end
 function MainBoard.onObjectEnterScriptingZone(zone, object)
     if zone == MainBoard.mentatZone then
         if Types.isMentat(object) then
-            for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
-                object.removeTag(color)
-            end
-            -- FIXME One case of whitewashing too many?
-            object.setColorTint(Color.fromString("White"))
+            -- Wait 1 second to see if the Mentat is still around and wasn't simply moving across the board.
+            Helper.onceTimeElapsed(1).doAfter(function ()
+                if Helper.contains(zone, object) then
+                    for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
+                        object.removeTag(color)
+                    end
+                    object.setColorTint(Color.fromString("White"))
+                end
+            end)
         end
     end
 end
