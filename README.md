@@ -36,4 +36,9 @@ This repository contains the JSON skeletons and Lua scripts of various mods for 
 
 - Fix influence token locations.
 - Rescan Hagal deck (en + fr).
-- Scan Arrakeen Scouts deck (en).
+- Arrakeen Scouts:
+    - Scan Arrakeen Scouts deck (en).
+    - Dialog soft conflicts.
+    - Image preloading (as cards).
+    - History (as cards).
+    - Incorrect _createArmedEscortController.

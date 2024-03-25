@@ -21,6 +21,7 @@ local Deck = {
         hagalCardBack = "http://cloud-3.steamusercontent.com/ugc/2093668799785646965/26E28590801800D852F4BCA53E959AAFAAFC8FF3/",
         leaderCardBack = "http://cloud-3.steamusercontent.com/ugc/2093668799785645356/005244DAC0A29EE68CFF741FC06564969563E8CF/",
         fanmadeLeaderCardBack = "http://cloud-3.steamusercontent.com/ugc/2093668799785649802/4C75C9A8CA6B890A6178B4B22B0F994B2F663D33/",
+        arrakeenScoutsCardBack = "http://cloud-3.steamusercontent.com/ugc/2435957455465064617/DE94B7602EB41EEB68DE4907DF1369CBEF2ADD55/",
     },
     sources = {},
     starter = {
@@ -504,6 +505,85 @@ local Deck = {
                 },
             }
         }
+    },
+    arrakeenScouts = {
+        committee = {
+            --[[
+            appropriations = 1,
+            development = 1,
+            information = 1,
+            investigation = 1,
+            joinForces = 1,
+            politicalAffairs = 1,
+            preparation = 1,
+            relations = 1,
+            supervision = 1,
+            dataAnalysis = 1,
+            developmentProject = 1,
+            tleilaxuRelations = 1,
+            ]]
+        },
+        auction = {
+            mentat1 = 1,
+            mentat2 = 1,
+            mercenaries1 = 1,
+            mercenaries2 = 1,
+            treachery1 = 1,
+            treachery2 = 1,
+            toTheHighestBidder1 = 1,
+            toTheHighestBidder2 = 1,
+            competitiveStudy1 = 1,
+            competitiveStudy2 = 1,
+        },
+        event = {
+            changeOfPlans = 1,
+            covertOperation = 1,
+            covertOperationReward = 1,
+            giftOfWater = 1,
+            desertGift = 1,
+            guildNegotiation = 1,
+            intriguingGift = 1,
+            testOfLoyalty = 1,
+            beneGesseritTreachery = 1,
+            emperorsTax = 1,
+            fremenExchange = 1,
+            politicalEquilibrium = 1,
+            waterForSpiceSmugglers = 1,
+            rotationgDoors = 1,
+            secretsForSale = 1,
+            noComingBack = 1,
+            tapIntoSpiceReserves = 1,
+            getBackInTheGoodGraces = 1,
+            treachery = 1,
+            newInnovations = 1,
+            offWordOperation = 1,
+            offWordOperationReward = 1,
+            ceaseAndDesistRequest = 1,
+        },
+        mission = {
+            secretsInTheDesert = 1,
+            stationedSupport = 1,
+            secretsInTheDesert_immortality = 1,
+            stationedSupport_immortality = 1,
+            geneticResearch = 1,
+            guildManipulations = 1,
+            spiceIncentive = 1,
+            strongarmedAlliance = 1,
+            saphoJuice = 1,
+            spaceTravelDeal = 1,
+            armedEscort = 1,
+            secretStash = 1,
+            stowaway = 1,
+            backstageAgreement = 1,
+            coordinationWithTheEmperor = 1,
+            sponsoredResearch = 1,
+            tleilaxuOffering = 1,
+        },
+        sale = {
+            fremenMercenaries = 1,
+            revealTheFuture = 1,
+            sooSooSookWaterPeddlers = 1,
+        }
     }
 }
 
@@ -555,6 +635,7 @@ function Deck.rebuildPreloadAreas()
             Deck._prebuildConflictDeck(getNextPosition())
             Deck._prebuildHagalDeck(getNextPosition())
             Deck._prebuildLeaderDeck(getNextPosition())
+            Deck._prebuildArrakeenScoutDeck(getNextPosition())
         end
     end)
 end
@@ -918,9 +999,9 @@ function Deck._generateDynamicDeckWithTwoBackCards(deckType, position, contribut
     contributions2.back = 2
     local sources2 = Helper.shallowCopy(sources)
     local backUrl = Deck.backs[Helper.toCamelCase(deckType, "CardBack")]
-    assert(backUrl)
+    assert(backUrl, deckType)
     local creator = Deck[Helper.toCamelCase("create", deckType, "CustomDeck")]
-    assert(creator)
+    assert(creator, deckType)
     sources2.back = {
         customDeck = creator(backUrl, 1, 1),
         luaIndex = 1
@@ -1149,6 +1230,19 @@ function Deck._prebuildLeaderDeck(deckPosition)
 end
 
 ---
+function Deck._prebuildArrakeenScoutDeck(deckPosition)
+    local contributionSets = {
+        Deck.arrakeenScouts.committee,
+        Deck.arrakeenScouts.auction,
+        Deck.arrakeenScouts.event,
+        Deck.arrakeenScouts.mission,
+        Deck.arrakeenScouts.sale,
+    }
+    local contributions = Deck._mergeContributionSets(contributionSets, true)
+    Deck._generateDynamicDeckWithTwoBackCards("ArrakeenScouts", deckPosition, contributions, Deck.sources.arrakeenScouts)
+end
+
+---
 function Deck._generateFromPrebuildDeck(deckType, deckZone, contributions, _, spacing)
     assert(deckType)
     assert(deckZone)
@@ -1264,6 +1358,11 @@ end
 ---
 function Deck.createFanmadeLeaderCustomDeck(faceUrl, width, height)
     return Deck.createCustomDeck(Deck.backs.fanmadeLeaderCardBack, faceUrl, width, height, Vector(1.12, 1, 1.12))
+end
+
+---
+function Deck.createArrakeenScoutsCustomDeck(faceUrl, width, height)
+    return Deck.createCustomDeck(Deck.backs.arrakeenScoutsCardBack, faceUrl, width, height, Vector(0.5, 1, 0.5))
 end
 
 ---

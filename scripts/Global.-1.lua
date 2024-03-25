@@ -13,7 +13,7 @@ local BUILD = 'TBD'
 
 -- Do not load anything. Appropriate to work on the mod content in TTS without
 -- interference from the scripts.
-local constructionModeEnabled = false
+local constructionModeEnabled = true
 
 -- For test purposes (the secondary table won't disappear as a side effect).
 local autoLoadedSettings = nil
@@ -145,7 +145,7 @@ function onLoad(scriptState)
 
     if constructionModeEnabled then
         -- Regenerate the decks in the localized cached areas.
-        if false then
+        if true then
             allModules.Deck.rebuildPreloadAreas()
         end
     else

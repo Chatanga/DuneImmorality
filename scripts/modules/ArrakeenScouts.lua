@@ -1837,15 +1837,13 @@ function ArrakeenScouts._createSpaceTravelDealController(playerPanes)
 end
 
 function ArrakeenScouts._createArmedEscortController(playerPanes)
-    local dreadnoughtParks = {}
-    local predicate = function (color)
-        dreadnoughtParks[color] = PlayBoard.getDreadnoughtPark(color)
-        return not Park.isEmpty(dreadnoughtParks[color])
-    end
     local resolve = function (color, _)
-        MainBoard.addSpaceBonus("dreadnought", { [color] = { combatDreadnought = { Park.getAnyObject(dreadnoughtParks[color]) }, spice = 1 } })
+        local dreadnoughtPark = PlayBoard.getDreadnoughtPark(color)
+        if not Park.isEmpty(dreadnoughtPark) then
+            MainBoard.addSpaceBonus("dreadnought", { [color] = { combatDreadnought = { Park.getAnyObject(dreadnoughtPark) }, spice = 1 } })
+        end
     end
-    ArrakeenScouts._createSequentialBinaryChoiceController(playerPanes, predicate, resolve)
+    ArrakeenScouts._createRandomValidationController(playerPanes, false, nil, resolve)
 end
 
 function ArrakeenScouts._createSecretStashController(playerPanes)

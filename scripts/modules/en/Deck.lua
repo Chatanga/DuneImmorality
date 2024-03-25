@@ -147,6 +147,84 @@ local Deck = {
             archdukeArmandEcaz = { "http://cloud-3.steamusercontent.com/ugc/2120691978822953173/BCC708B0333A967362DDFEDBF4A2C80E105CDB13/", 1, 1 },
             tylwythWaff = { "http://cloud-3.steamusercontent.com/ugc/2120691978822947690/9C33E4AEC5DB715AD825CC338A21DAB2D2AF7148/", 1, 1 },
         }
+    },
+    -- FIXME Everything is in french here for now.
+    arrakeenScouts = {
+        committee = {
+            appropriations = { "http://cloud-3.steamusercontent.com/ugc/2093668799785651884/F69DF9C9F34598DC456A51C1996247B0FBF93483/", 1, 1 },
+            development = { "http://cloud-3.steamusercontent.com/ugc/2093668799785652200/D59C1D80B198715305C5D17652E2A174733FD196/", 1, 1 },
+            information = { "http://cloud-3.steamusercontent.com/ugc/2093668799785652554/7BBC97BDD0EE0DD2C53B571875117304ADDA3E8F/", 1, 1 },
+            investigation = { "http://cloud-3.steamusercontent.com/ugc/2093668799785652464/C9604B54BDF9A78B8785166211A91C070824D5F0/", 1, 1 },
+            joinForces = { "http://cloud-3.steamusercontent.com/ugc/2093668799785652290/16FD82C4D9424774DE741F231103CDEC17D80B36/", 1, 1 },
+            politicalAffairs = { "http://cloud-3.steamusercontent.com/ugc/2093668799785652378/05E920F75AF0DCEFB5190120D9082D6C9EC4F570/", 1, 1 },
+            preparation = { "http://cloud-3.steamusercontent.com/ugc/2093668799785651797/DD38BE5DC44CE962443EC2EC6867FCE5EC75FA24/", 1, 1 },
+            relations = { "http://cloud-3.steamusercontent.com/ugc/2093668799785652084/E8613A1508F44750D3A1F38076A557D870741D04/", 1, 1 },
+            supervision = { "http://cloud-3.steamusercontent.com/ugc/2093668799785652742/A7276A42FADE5448D77D925C7AA6A3FD1E27DB58/", 1, 1 },
+            dataAnalysis = { "http://cloud-3.steamusercontent.com/ugc/2093668799785652839/DC9FA31A74F63551F7C17E31051757C2272565E3/", 1, 1 },
+            developmentProject = { "http://cloud-3.steamusercontent.com/ugc/2093668799785651968/17CF50CCFA8DBC0724B360A8F99A12099E574EE2/", 1, 1 },
+            tleilaxuRelations = { "http://cloud-3.steamusercontent.com/ugc/2093668799785652652/2D869B2CB2341BA989D90EFA561AC2B169198799/", 1, 1 },
+        },
+        auction = {
+            mentat1 = { "http://cloud-3.steamusercontent.com/ugc/2093668799785653884/F72AA83BB6AB9F2F08941BCDAE3241C00F596EBE/", 1, 1 },
+            mentat2 = { "http://cloud-3.steamusercontent.com/ugc/2093668799785653230/4F5C9891DC2471D1C256328D0E38BA796A7621F3/", 1, 1 },
+            mercenaries1 = { "http://cloud-3.steamusercontent.com/ugc/2093668799785653642/8E001F53191201BFF1C53464DE3A1FE63A4815A2/", 1, 1 },
+            mercenaries2 = { "http://cloud-3.steamusercontent.com/ugc/2093668799785653642/8E001F53191201BFF1C53464DE3A1FE63A4815A2/", 1, 1 },
+            treachery1 = { "http://cloud-3.steamusercontent.com/ugc/2093668799785653094/E3F630F9688D32DD7F55851E58484019FD469C15/", 1, 1 },
+            treachery2 = { "http://cloud-3.steamusercontent.com/ugc/2093668799785653453/808827CB65B9DABC4591175D0BA5D84C06187C59/", 1, 1 },
+            toTheHighestBidder1 = { "http://cloud-3.steamusercontent.com/ugc/2093668799785654377/5901005F3C640E694572FABE2320DB27019285F8/", 1, 1 },
+            toTheHighestBidder2 = { "http://cloud-3.steamusercontent.com/ugc/2093668799785654242/8F9B48106FE3B9517589B2309C818862F9D06C1D/", 1, 1 },
+            competitiveStudy1 = { "http://cloud-3.steamusercontent.com/ugc/2093668799785652985/7A8F9E67C3383F7C40EBAB2B33CB86031F8E402F/", 1, 1 },
+            competitiveStudy2 = { "http://cloud-3.steamusercontent.com/ugc/2093668799785654027/89B52FB52FD9E855C7D8BE12205E9925A4BEAB76/", 1, 1 },
+        },
+        event = {
+            changeOfPlans = { "http://cloud-3.steamusercontent.com/ugc/2093668799785655971/095FC496010C59907F3E3F7457DC57433D8BD939/", 1, 1 },
+            covertOperation = { "http://cloud-3.steamusercontent.com/ugc/2093668799785654631/99F8211476D8882E452445BDAE4447EE659A8698/", 1, 1 },
+            covertOperationReward = { "http://cloud-3.steamusercontent.com/ugc/2093668799785644209/4F515898E7866999F4DD37435D94A13125E93267/", 1, 1 },
+            giftOfWater = { "http://cloud-3.steamusercontent.com/ugc/2093668799785655135/69A9152B3C0DC6DC76FAE3A94008151289107031/", 1, 1 },
+            desertGift = { "http://cloud-3.steamusercontent.com/ugc/2093668799785655832/7CB69E34EE048D16A3BFF7913E392AEB0DCEC6C2/", 1, 1 },
+            guildNegotiation = { "http://cloud-3.steamusercontent.com/ugc/2093668799785655655/51D0668485DE3EAE70B687F29331FD0470145E83/", 1, 1 },
+            intriguingGift = { "http://cloud-3.steamusercontent.com/ugc/2093668799785657007/5EE0DE8384E4778B8B70A6613897A2B47CCDE2CE/", 1, 1 },
+            testOfLoyalty = { "http://cloud-3.steamusercontent.com/ugc/2093668799785656538/DFEB7C0670D75E7307AF7C1BD6941A5710F63B4D/", 1, 1 },
+            beneGesseritTreachery = { "http://cloud-3.steamusercontent.com/ugc/2093668799785657452/5D1B8E37D7B6C7C888AD65603639507F20276ED2/", 1, 1 },
+            emperorsTax = { "http://cloud-3.steamusercontent.com/ugc/2093668799785656719/C06E17FFF29E8DBBF85D7738F1D59191790E0334/", 1, 1 },
+            fremenExchange = { "http://cloud-3.steamusercontent.com/ugc/2093668799785654789/5892F8D10C622D85C62B7010CE36F8E67BC51E02/", 1, 1 },
+            politicalEquilibrium = { "http://cloud-3.steamusercontent.com/ugc/2093668799785656126/69577FA7291D25BF0CF68B9ED3B9CCAC7051BFC2/", 1, 1 },
+            waterForSpiceSmugglers = { "http://cloud-3.steamusercontent.com/ugc/2093668799785657126/58CC591E25E2F4C3404CB4310394BC37D9334D11/", 1, 1 },
+            rotationgDoors = { "http://cloud-3.steamusercontent.com/ugc/2093668799785656863/CDA4044F9F38C5AD1D17C0C7437E879E61B57059/", 1, 1 },
+            secretsForSale = { "http://cloud-3.steamusercontent.com/ugc/2093668799785654488/7D1F9302858882EE7A1980BAD4DD2C1980B91215/", 1, 1 },
+            noComingBack = { "http://cloud-3.steamusercontent.com/ugc/2093668799785657262/236D806E8A5B9B943B1F7E01BC37644921B064AB/", 1, 1 },
+            tapIntoSpiceReserves = { "http://cloud-3.steamusercontent.com/ugc/2093668799785655289/07F7EA8B9B3C6641847A1E03A2BE0BE076553A51/", 1, 1 },
+            getBackInTheGoodGraces = { "http://cloud-3.steamusercontent.com/ugc/2093668799785656403/B2F82AEC2D3EFC2855E035653C998C5DC4F302D2/", 1, 1 },
+            treachery = { "http://cloud-3.steamusercontent.com/ugc/2093668799785655522/63CF6C40B08EB44793C699112DC3F722A2512085/", 1, 1 },
+            newInnovations = { "http://cloud-3.steamusercontent.com/ugc/2093668799785654943/EB1D1100B923F7FB0126314B693B941BD652BEAF/", 1, 1 },
+            offWordOperation = { "http://cloud-3.steamusercontent.com/ugc/2093668799785643840/85D8885DDB7CFAF791E69F414975E7483EF9C8A8/", 1, 1 },
+            offWordOperationReward = { "http://cloud-3.steamusercontent.com/ugc/2093668799785644059/79790D0CA5F55D9AA802CCA504223295034CB5FE/", 1, 1 },
+            ceaseAndDesistRequest = { "http://cloud-3.steamusercontent.com/ugc/2093668799785656262/92AE163525F91F672B4A13DB175CF453CB7D9E1E/", 1, 1 },
+        },
+        mission = {
+            secretsInTheDesert = { "http://cloud-3.steamusercontent.com/ugc/2093668799785658570/F90746EC8C7E2025CE04B2A1D5E6176E4A913254/", 1, 1 },
+            stationedSupport = { "http://cloud-3.steamusercontent.com/ugc/2093668799785659151/1CDA34747EE9FD2937CF1DCF960478F6A179A96D/", 1, 1 },
+            secretsInTheDesert_immortality = { "http://cloud-3.steamusercontent.com/ugc/2093668799785660774/9A3D529D36E4F125BA3DC6D88CE849EBD9BEF40A/", 1, 1 },
+            stationedSupport_immortality = { "http://cloud-3.steamusercontent.com/ugc/2093668799785659912/1B31F6F097D6057948E82BFAC15355C90432A311/", 1, 1 },
+            geneticResearch = { "http://cloud-3.steamusercontent.com/ugc/2093668799785658298/6F312387525E60BED13B71E10757045D14B93F76/", 1, 1 },
+            guildManipulations = { "http://cloud-3.steamusercontent.com/ugc/2093668799785659428/3E560A1E8D7D99EBE8C8711CB7812492590C953C/", 1, 1 },
+            spiceIncentive = { "http://cloud-3.steamusercontent.com/ugc/2093668799785660636/D0B774822EE0CCCB032DC9B57BF7EFB199A116CA/", 1, 1 },
+            strongarmedAlliance = { "http://cloud-3.steamusercontent.com/ugc/2093668799785658159/768796FE3D06DAA11955D5FF91D38EB76151B8EB/", 1, 1 },
+            saphoJuice = { "http://cloud-3.steamusercontent.com/ugc/2093668799785658438/94F6C934FF41366B5600EA166717E82E2DEEC2FF/", 1, 1 },
+            spaceTravelDeal = { "http://cloud-3.steamusercontent.com/ugc/2093668799785659027/3B1CA18A133799F335F66899E12A21B7963E41CB/", 1, 1 },
+            armedEscort = { "http://cloud-3.steamusercontent.com/ugc/2093668799785660492/E8A3B5CFCF2F1CDD30C5CB6B7145E2E358C5B608/", 1, 1 },
+            secretStash = { "http://cloud-3.steamusercontent.com/ugc/2093668799785644444/26652FA770CB303BC0C43AC6C9FA869B681D2DBF/", 1, 1 },
+            stowaway = { "http://cloud-3.steamusercontent.com/ugc/2093668799785659285/58AB8846F503BCC0F1931EA9C9CB9613BFB2EF01/", 1, 1 },
+            backstageAgreement = { "http://cloud-3.steamusercontent.com/ugc/2093668799785658685/68674FFD485956CFC3A803CD854BD97AE16EB4FB/", 1, 1 },
+            coordinationWithTheEmperor = { "http://cloud-3.steamusercontent.com/ugc/2093668799785659606/642A795F33F35DC662D73536A9E27D2067875B65/", 1, 1 },
+            sponsoredResearch = { "http://cloud-3.steamusercontent.com/ugc/2093668799785660227/D0969541E9391570AE70C72B75D2AE8EFE7A5818/", 1, 1 },
+            tleilaxuOffering = { "http://cloud-3.steamusercontent.com/ugc/2093668799785658878/4FAC1C1E5D15FE6C814D6F48EE5124EA7C98A66F/", 1, 1 },
+        },
+        sale = {
+            fremenMercenaries = { "http://cloud-3.steamusercontent.com/ugc/2093668799785657613/46AD72BB93A35A122778BB78BDCDD922490E24D2/", 1, 1 },
+            revealTheFuture = { "http://cloud-3.steamusercontent.com/ugc/2093668799785658016/243F6620B8960AC7DBB0571BF72437729A7B3B6E/", 1, 1 },
+            sooSooSookWaterPeddlers = { "http://cloud-3.steamusercontent.com/ugc/2093668799785657820/C6C6AD8F57D00FD1B6AA07606962D6DEB63E8B52/", 1, 1 },
+        }
     }
 }
 
@@ -189,6 +267,7 @@ function Deck.loadCustomDecks(loader)
         hagal = {},
         tech = {},
         leaders = {},
+        arrakeenScouts = {},
     }
 
     Deck.load(loader, cards.imperium, "imperium", "starter", 1, {
@@ -504,6 +583,14 @@ function Deck.loadCustomDecks(loader)
     -- One leader per custom deck.
     for leaderName, _ in pairs(Deck.fanmadeLeader.retienne) do
         Deck.loadWithSubCategory(loader, cards.leaders, "fanmadeLeader", "retienne", leaderName, 1, { leaderName })
+    end
+
+    for category, cardNames in pairs(Deck.arrakeenScouts) do
+        if category ~= "committee" then
+            for cardName, _ in pairs(cardNames) do
+                Deck.loadWithSubCategory(loader, cards.arrakeenScouts, "arrakeenScouts", category, cardName, 1, { cardName })
+            end
+        end
     end
 
     return cards
