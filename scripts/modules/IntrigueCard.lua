@@ -115,6 +115,7 @@ function IntrigueCard._resolveCard(card)
         local cardInfo = IntrigueCard[cardName]
         assert(cardInfo, "Unknown card (empty name usually means that the card is stacked with another): " .. tostring(cardName))
         cardInfo.name = cardName
+        return cardInfo
     else
         error("No card info!")
     end
@@ -134,7 +135,7 @@ function IntrigueCard.evaluatePlot(color, playedCards)
     }
 
     for cardName, card in ipairs(context.playedCards) do
-        if card.plot then
+        if card.plot then -- Boom avec machineCulture.
             context.cardName = cardName
             context.card = card
             for _, effect in ipairs(card.plot) do
