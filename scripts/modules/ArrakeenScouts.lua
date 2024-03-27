@@ -127,7 +127,7 @@ local ArrakeenScouts = {
     pendingOperations = {},
 }
 
---ArrakeenScouts._debug = { "stationedSupport_immortality" }
+ArrakeenScouts._debug = { "armedEscort" }
 
 ---
 function ArrakeenScouts.onLoad(state)
@@ -770,13 +770,18 @@ end
 
 ---
 function ArrakeenScouts._refreshContent()
-    UI.setXmlTable({ ArrakeenScouts.ui })
+    local xmlRoots = UI.getXmlTable()
+    table.insert(xmlRoots, ArrakeenScouts.ui)
+    UI.setXmlTable(xmlRoots)
 end
 
 ---
 function ArrakeenScouts._endContent()
     Helper.onceTimeElapsed(2).doAfter(function ()
-        UI.setXmlTable({{}})
+        local xmlRoots = Helper.filter(UI.getXmlTable(), function (xmlRoot)
+            return xmlRoot.attributes.id ~= "arrakeenScoutPane"
+        end)
+        UI.setXmlTable(xmlRoots)
         ArrakeenScouts._nextContent()
     end)
 end
@@ -1837,11 +1842,12 @@ function ArrakeenScouts._createSpaceTravelDealController(playerPanes)
 end
 
 function ArrakeenScouts._createArmedEscortController(playerPanes)
-    local resolve = function (color, _)
+    local resolve = function (color, continuation)
         local dreadnoughtPark = PlayBoard.getDreadnoughtPark(color)
         if not Park.isEmpty(dreadnoughtPark) then
             MainBoard.addSpaceBonus("dreadnought", { [color] = { combatDreadnought = { Park.getAnyObject(dreadnoughtPark) }, spice = 1 } })
         end
+        continuation.run()
     end
     ArrakeenScouts._createRandomValidationController(playerPanes, false, nil, resolve)
 end

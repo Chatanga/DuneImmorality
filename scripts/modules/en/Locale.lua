@@ -66,7 +66,7 @@ return {
     no = "No",
     ok = "Ok",
     cancel = "Cancel",
-    dialogCardAbove = "Do you want to put the card on top of your deck ? (Ok = yes, Cancel = No)",
+    dialogCardAbove = "Do you want to put the card on top of your deck ?",
     endTurn = "End\nTurn",
     takeHighCouncilSeatByForce = "Take by force",
     takeHighCouncilSeatByForceConfirm = "Taking High-Council seat by force?",
@@ -79,6 +79,7 @@ return {
     leaderSelectionExclude = "You can flip out (or delete) any leader you want to exclude.\nOnce satisfied, hit the 'Start' button.",
     start = "Start",
     claimLeader = "Claim {leader} as leader",
+    uncompatibleLeaderForRival = "Not a leader compatible with a rival: {leader}",
 
     -- Instructions
     leaderSelectionActiveInstruction = "Select a leader\non the upper board",

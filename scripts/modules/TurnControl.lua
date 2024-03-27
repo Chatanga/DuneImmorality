@@ -228,7 +228,7 @@ function TurnControl._startPhase(phase)
 end
 
 ---
-function TurnControl.endOfTurn(i)
+function TurnControl.endOfTurn()
     Helper.onceStabilized().doAfter(function ()
         TurnControl._next(TurnControl._getNextPlayer(TurnControl.currentPlayerLuaIndex, TurnControl.counterClockWise))
     end)

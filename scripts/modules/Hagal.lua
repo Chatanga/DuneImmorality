@@ -343,7 +343,7 @@ function Hagal.pickAnyCompatibleLeader(color)
         local pseudoLeader = Helper.getDeck(Hagal.deckZone)
         assert(pseudoLeader, "Missing Hagal deck!")
         Hagal.deckZone = PlayBoard.getContent(color).leaderZone
-        PlayBoard.setLeader(color, pseudoLeader)
+        PlayBoard.setLeader(color, pseudoLeader).doAfter(TurnControl.endOfTurn)
     else
         local leaders = {}
         for _, leader in ipairs(LeaderSelection.getSelectableLeaders()) do

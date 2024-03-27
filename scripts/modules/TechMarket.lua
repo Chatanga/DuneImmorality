@@ -232,7 +232,7 @@ function TechMarket._buyTech(stackIndex, color)
                 continuation.run(TechMarket._doBuyTech(techTileStack, options[1], color))
             end
         else
-            Dialog.showConfirmOrCancelDialog(color, I18N("manuallyBuyTech"), continuation, function (confirmed)
+            Dialog.showYesOrNoDialog(color, I18N("manuallyBuyTech"), continuation, function (confirmed)
                 continuation.run(confirmed)
             end)
         end

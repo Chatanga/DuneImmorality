@@ -1,6 +1,7 @@
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local I18N = require("utils.I18N")
+local Dialog = require("utils.Dialog")
 
 local Deck = Module.lazyRequire("Deck")
 local TurnControl = Module.lazyRequire("TurnControl")
@@ -307,9 +308,10 @@ function LeaderSelection._setUpPicking(autoStart, random, hidden)
         error("Unexpected stage: " .. tostring(LeaderSelection.stage))
     end
 
-    if random then
-        Helper.registerEventListener("playerTurn", function (phase, color)
-            if phase == 'leaderSelection' then
+    Helper.registerEventListener("playerTurn", function (phase, color)
+        if phase == 'leaderSelection' then
+
+            if random then
                 if PlayBoard.isHuman(color) then
                     local leaders = LeaderSelection.getSelectableLeaders()
                     local leader = Helper.pickAny(leaders)
@@ -317,13 +319,11 @@ function LeaderSelection._setUpPicking(autoStart, random, hidden)
                 else
                     Hagal.pickAnyCompatibleLeader(color)
                 end
+            elseif PlayBoard.isRival(color) and Hagal.getRivalCount() == 1 then
+                Hagal.pickAnyCompatibleLeader(color)
             end
-        end)
-    end
 
-    if hidden then
-        Helper.registerEventListener("playerTurn", function (phase, color)
-            if phase == 'leaderSelection' then
+            if hidden then
                 local remainingLeaders = {}
                 for leader, selected in pairs(LeaderSelection.dynamicLeaderSelection) do
                     if not selected then
@@ -336,8 +336,8 @@ function LeaderSelection._setUpPicking(autoStart, random, hidden)
                     remainingLeaders[i].setPosition(position)
                 end)
             end
-        end)
-    end
+        end
+    end)
 
     Helper.registerEventListener("phaseEnd", function (phase)
         if phase == 'leaderSelection' then
@@ -440,9 +440,14 @@ end
 ---
 function LeaderSelection.claimLeader(color, leader)
     assert(leader)
-    Helper.clearButtons(leader)
-    LeaderSelection.dynamicLeaderSelection[leader] = true
-    PlayBoard.setLeader(color, leader).doAfter(Helper.partialApply(TurnControl.endOfTurn, 2))
+    local continuation = PlayBoard.setLeader(color, leader)
+    if continuation then
+        Helper.clearButtons(leader)
+        LeaderSelection.dynamicLeaderSelection[leader] = true
+        continuation.doAfter(TurnControl.endOfTurn)
+    else
+        Dialog.broadcastToColor(I18N("uncompatibleLeaderForRival", { leader = I18N(Helper.getID(leader)) }), color, "Purple")
+    end
 end
 
 ---

@@ -653,7 +653,7 @@ function PlayBoard:_createEndOfTurnButton()
     Helper.clearButtons(self.content.endTurnButton)
     local action = function ()
         self.content.endTurnButton.AssetBundle.playTriggerEffect(0)
-        TurnControl.endOfTurn(3)
+        TurnControl.endOfTurn()
         Helper.clearButtons(self.content.endTurnButton)
     end
     local callback = self:_createExclusiveCallback(action)
@@ -1390,8 +1390,44 @@ function PlayBoard.couldSendAgentOrReveal(color)
 end
 
 ---
-function PlayBoard:tryToDrawCards(count, message)
+function PlayBoard:tryToDrawCards(count)
     local continuation = Helper.createContinuation("PlayBoard:tryToDrawCards")
+
+    if not self.drawCardsCoalescentQueue then
+
+        self.pendingContinuations = {}
+
+        local function runAllContinuations(...)
+            for _, otherContinuation in ipairs(self.pendingContinuations) do
+                otherContinuation.run(...)
+            end
+            self.pendingContinuations = {}
+        end
+
+        local function coalesce(count1, count2)
+            return count1 + count2
+        end
+
+        local function handle(c)
+            if c > 0 then
+                self:_tryToDrawCards(c).doAfter(runAllContinuations)
+            else
+                runAllContinuations(0)
+            end
+        end
+
+        self.drawCardsCoalescentQueue = Helper.createCoalescentQueue(1, coalesce, handle)
+    end
+
+    table.insert(self.pendingContinuations, continuation)
+    self.drawCardsCoalescentQueue.submit(count)
+
+    return continuation
+end
+
+---
+function PlayBoard:_tryToDrawCards(count)
+    local continuation = Helper.createContinuation("PlayBoard:_tryToDrawCards")
 
     local content = self.content
     local deck = Helper.getDeckOrCard(content.drawDeckZone)
@@ -1407,15 +1443,12 @@ function PlayBoard:tryToDrawCards(count, message)
         local leaderName = PlayBoard.getLeaderName(self.color)
         broadcastToAll(I18N("isDecidingToDraw", { leader = leaderName }), "Pink")
         local maxCount = math.min(count, availableCardCount)
-        Dialog.showConfirmOrCancelDialog(
+        Dialog.showYesOrNoDialog(
             self.color,
             I18N("warningBeforeDraw", { count = count, maxCount = maxCount }),
-            nil,
+            continuation,
             function (confirmed)
                 if confirmed then
-                    if message then
-                        broadcastToAll(message, self.color)
-                    end
                     self:drawCards(count).doAfter(continuation.run)
                 else
                     continuation.run(0)
@@ -1582,14 +1615,14 @@ function PlayBoard.setLeader(color, leaderCard)
 
     local playBoard = PlayBoard.getPlayBoard(color)
     if playBoard.opponent == "rival" then
+        Helper.dump("Hagal.getRivalCount() =", Hagal.getRivalCount())
         if Hagal.getRivalCount() == 1 then
             playBoard.leader = Rival.newRival(color)
-        else
-            if not Hagal.isLeaderCompatible(leaderCard) then
-                log("Not a leader compatible with a rival: " .. Helper.getID(leaderCard))
-                return false
-            end
+        elseif Hagal.isLeaderCompatible(leaderCard) then
             playBoard.leader = Rival.newRival(color, Helper.getID(leaderCard))
+        else
+            log("Not a leader compatible with a rival: " .. Helper.getID(leaderCard))
+            return nil
         end
     else
         playBoard.leader = Leader.newLeader(Helper.getID(leaderCard))
@@ -1602,7 +1635,7 @@ function PlayBoard.setLeader(color, leaderCard)
 
     local continuation = Helper.onceMotionless(leaderCard)
 
-    Helper.onceMotionless(leaderCard).doAfter(function ()
+    continuation.doAfter(function ()
         -- Do not lock the Hagal deck.
         if playBoard.opponent ~= "rival" or Hagal.getRivalCount() > 1 then
             Helper.noPhysics(leaderCard)
@@ -1812,11 +1845,14 @@ function PlayBoard.giveCard(color, card, isTleilaxuCard)
 
     -- Move it on the top of the content deck if possible and wanted.
     if (isTleilaxuCard and TleilaxuResearch.hasReachedOneHelix(color)) or PlayBoard.hasTech(color, "spaceport") then
-        Dialog.showConfirmDialog(
+        Dialog.showYesOrNoDialog(
             color,
             I18N("dialogCardAbove"),
-            function ()
-                Helper.moveCardFromZone(content.discardZone, content.drawDeckZone.getPosition(), Vector(0, 180, 180))
+            nil,
+            function (confirmed)
+                if confirmed then
+                    Helper.moveCardFromZone(content.discardZone, content.drawDeckZone.getPosition(), Vector(0, 180, 180))
+                end
             end)
     end
 end
@@ -1838,11 +1874,14 @@ function PlayBoard.giveCardFromZone(color, zone, isTleilaxuCard)
 
     -- Move it on the top of the player deck if possible and wanted.
     if (isTleilaxuCard and TleilaxuResearch.hasReachedOneHelix(color)) or PlayBoard.hasTech(color, "spaceport") then
-        Dialog.showConfirmDialog(
+        Dialog.showYesOrNoDialog(
             color,
             I18N("dialogCardAbove"),
-            function ()
-                Helper.moveCardFromZone(content.discardZone, content.drawDeckZone.getPosition() + Vector(0, 1, 0), Vector(0, 180, 180))
+            nil,
+            function (confirmed)
+                if confirmed then
+                    Helper.moveCardFromZone(content.discardZone, content.drawDeckZone.getPosition() + Vector(0, 1, 0), Vector(0, 180, 180))
+                end
             end)
     end
 end

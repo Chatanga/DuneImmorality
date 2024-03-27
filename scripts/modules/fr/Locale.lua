@@ -67,7 +67,7 @@ return {
     no = "Non",
     ok = "Ok",
     cancel = "Annuler",
-    dialogCardAbove = "Voulez-vous mettre la carte sur le dessus de votre paquet ? (Ok = oui, Cancel = non)",
+    dialogCardAbove = "Voulez-vous mettre la carte sur le dessus de votre paquet ?",
     endTurn = "Finir\ntour",
     noSeatedPlayer = "Le joueur {color} est absent !",
     takePlace = "Piquer\nla\nplace",
@@ -78,6 +78,7 @@ return {
     leaderSelectionExclude = "Vous pouvez retourner (ou détruire) n’importe quel dirigeant pour l’exclure.\nUne fois satisfait, appuyez sur le bouton « Démarrer ».",
     start = "Démarrer",
     claimLeader = "Prendre {leader} comme dirigeant",
+    uncompatibleLeaderForRival = "Dirigeant incompatible avec un rival : {leader}",
 
     -- Instructions
     leaderSelectionActiveInstruction = "Sélectionnez un dirigeant\nsur le plateau supérieur.",

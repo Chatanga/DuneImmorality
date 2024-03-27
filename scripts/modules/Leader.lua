@@ -151,11 +151,15 @@ Leader.letoAtreides = Helper.createClass(Leader, {
     --- Landsraad popularity
     bargain = function (color, resourceName, amount)
         local finalAmount = amount
-        if resourceName == "solari" and amount < 0 and Action.checkContext({ phase = "playerTurns", color = color, space = MainBoard.isLandsraadSpace }) then
-            finalAmount = amount + 1
+        if resourceName == "solari" and amount > 0 and Action.checkContext({ phase = "playerTurns", color = color, space = MainBoard.isLandsraadSpace }) then
+            finalAmount = amount - 1
         end
         return finalAmount
-    end
+    end,
+
+    resources = function (color, resourceName, amount)
+        return Action.resources(color, resourceName, -Leader.letoAtreides.bargain(color, resourceName, -amount))
+    end,
 })
 
 Leader.paulAtreides = Helper.createClass(Leader, {

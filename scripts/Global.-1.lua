@@ -13,7 +13,7 @@ local BUILD = 'TBD'
 
 -- Do not load anything. Appropriate to work on the mod content in TTS without
 -- interference from the scripts.
-local constructionModeEnabled = true
+local constructionModeEnabled = false
 
 -- For test purposes (the secondary table won't disappear as a side effect).
 local autoLoadedSettings = nil
@@ -29,8 +29,8 @@ autoLoadedSettings = {
     immortality = true,
     goTo11 = false,
     leaderSelection = {
-        Green = "yunaMoritani",
-        Yellow = "helenaRichese",
+        Green = "ilbanRichese",
+        Yellow = "arianaThorvald",
         Red = "tessiaVernius",
         Blue = "paulAtreides",
     },
@@ -122,7 +122,6 @@ local Controller = {
         tweakLeaderSelection = true,
         variant_all = {
             none = "None",
-            --blitz = "(Blitz!)",
             arrakeenScouts = "Arrakeen scouts"
         },
         variant = "none",
@@ -145,7 +144,7 @@ function onLoad(scriptState)
 
     if constructionModeEnabled then
         -- Regenerate the decks in the localized cached areas.
-        if true then
+        if false then
             allModules.Deck.rebuildPreloadAreas()
         end
     else
@@ -530,10 +529,19 @@ function Controller.applyVirtualHotSeatMode()
         Controller.fields.difficulty = "novice"
     end
 
-    Controller.fields.leaderSelection_all = allModules.LeaderSelection.getSelectionMethods(numberOfPlayers)
+    if numberOfPlayers > 2 then
+        Controller.fields.variant_all = {
+            none = "None",
+            arrakeenScouts = "Arrakeen scouts"
+        }
+    else
+        Controller.fields.variant_all = {
+            none = "None",
+        }
+        Controller.fields.variant = "none"
+    end
 
     Controller.updateSetupButton()
-    Controller.ui:toUI()
 end
 
 ---

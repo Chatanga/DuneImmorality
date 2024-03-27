@@ -36,16 +36,16 @@ end
 
 ---
 function Rival.prepare(color, settings)
-    if Hagal.numberOfPlayers == 1 then
+    -- https://boardgamegeek.com/thread/2570879/article/36734124#36734124
+    if Hagal.getRivalCount() == 1 then
+        Action.resources(color, "water", 1)
+        Action.troops(color, "supply", "garrison", 3)
+    elseif Hagal.numberOfPlayers == 2 then
         Action.resources(color, "water", 1)
         if settings.difficulty ~= "novice" then
             Action.troops(color, "supply", "garrison", 3)
             Action.drawIntrigues(color, 1)
         end
-    -- https://boardgamegeek.com/thread/2570879/article/36734124#36734124
-    elseif Hagal.numberOfPlayers == 2 then
-        Action.resources(color, "water", 1)
-        Action.troops(color, "supply", "garrison", 3)
     end
 end
 
