@@ -1346,6 +1346,11 @@ function PlayBoard:revealHand()
         (imperiumCardContributions.strength or 0) +
         ((restrictedOrdnance and councilSeat) and 4 or 0))
 
+    if false then
+        self.leader.troops(self.color, "supply", "tanks",
+            imperiumCardContributions.specimens or 0)
+    end
+
     Park.putObjects(revealedCards, self.revealCardPark)
 
     Helper.emitEvent("reveal", self.color)
@@ -1395,22 +1400,23 @@ function PlayBoard:tryToDrawCards(count)
 
     if not self.drawCardsCoalescentQueue then
 
-        self.pendingContinuations = {}
-
-        local function runAllContinuations(...)
-            for _, otherContinuation in ipairs(self.pendingContinuations) do
-                otherContinuation.run(...)
-            end
-            self.pendingContinuations = {}
-        end
-
-        local function coalesce(count1, count2)
-            return count1 + count2
+        local function coalesce(c1, c2)
+            return {
+                continuations = Helper.concatTables(c1.continuations, c2.continuations),
+                count = c1.count + c2.count
+            }
         end
 
         local function handle(c)
-            if c > 0 then
-                self:_tryToDrawCards(c).doAfter(runAllContinuations)
+            local runAllContinuations = function (...)
+                Helper.dump("COUNT:", #c.continuations)
+                for _, otherContinuation in ipairs(c.continuations) do
+                    otherContinuation.run(...)
+                end
+            end
+
+            if c.count > 0 then
+                self:_tryToDrawCards(c.count).doAfter(runAllContinuations)
             else
                 runAllContinuations(0)
             end
@@ -1419,8 +1425,10 @@ function PlayBoard:tryToDrawCards(count)
         self.drawCardsCoalescentQueue = Helper.createCoalescentQueue(1, coalesce, handle)
     end
 
-    table.insert(self.pendingContinuations, continuation)
-    self.drawCardsCoalescentQueue.submit(count)
+    self.drawCardsCoalescentQueue.submit({
+        continuations = { continuation },
+        count = count
+    })
 
     return continuation
 end

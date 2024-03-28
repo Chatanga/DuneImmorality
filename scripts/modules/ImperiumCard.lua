@@ -229,6 +229,12 @@ function ImperiumCard.evaluateReveal2(color, playedCards, revealedCards, artille
         player = {
             resources = function (_, resourceName, amount)
                 result[resourceName] = (result[resourceName] or 0) + amount
+            end,
+
+            troops = function (_, from, to, amount)
+                if from == "supply" and to == "tanks" then
+                    result.specimens = (result.specimens or 0) + amount
+                end
             end
         }
     }
