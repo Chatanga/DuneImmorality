@@ -229,8 +229,13 @@ end
 
 ---
 function XmlUI._translate(node)
-    if node.attributes and node.attributes.key then
-        node.value = I18N(node.attributes.key)
+    if node.attributes then
+        if node.attributes.key then
+            node.value = I18N(node.attributes.key)
+        end
+        if node.attributes.tooltipKey then
+            node.attributes.tooltip = I18N(node.attributes.tooltipKey)
+        end
     end
     if node.children then
         for _, child in ipairs(node.children) do

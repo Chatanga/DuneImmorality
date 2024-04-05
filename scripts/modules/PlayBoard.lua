@@ -389,7 +389,7 @@ function PlayBoard.setUp(settings, activeOpponents)
                 end
             end
 
-            if settings.numberOfPlayers < 4 then
+            if settings.numberOfPlayers < 4 or settings.goTo11 then
                 playBoard.content.fourPlayerVictoryToken.destruct()
                 playBoard.content.fourPlayerVictoryToken = nil
             end
@@ -712,8 +712,8 @@ function PlayBoard.acceptTurn(phase, color)
             accepted = not PlayBoard.playBoards[TurnControl.getFirstPlayer()].revealed
         end
     elseif phase == 'combat' then
-        -- TODO Make it an option.
-        if Combat.isInCombat(color) and false then
+        if Combat.isInCombat(color) and Combat.isFormalCombatPhaseEnabled() then
+            Helper.dump(color, "->", PlayBoard.combatPassCountdown, "/", #PlayBoard._getPotentialCombatIntrigues(color))
             accepted = PlayBoard.combatPassCountdown > 0 and not PlayBoard.isRival(color) and #PlayBoard._getPotentialCombatIntrigues(color) > 0
             PlayBoard.combatPassCountdown = PlayBoard.combatPassCountdown - 1
         end

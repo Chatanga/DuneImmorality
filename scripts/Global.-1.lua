@@ -23,7 +23,6 @@ autoLoadedSettings = {
     language = "fr",
     hotSeat = true,
     numberOfPlayers = 3,
-    randomizePlayerPositions = false,
     riseOfIx = true,
     epicMode = false,
     immortality = true,
@@ -34,6 +33,7 @@ autoLoadedSettings = {
         Red = "tessiaVernius",
         Blue = "paulAtreides",
     },
+    formalCombatPhase = true,
     soundEnabled = true,
 }
 ]]
@@ -125,6 +125,7 @@ local Controller = {
             arrakeenScouts = "Arrakeen scouts"
         },
         variant = "none",
+        formalCombatPhase = false,
         soundEnabled = true,
     }
 }
@@ -424,6 +425,16 @@ function setVariant(player, value, id)
 end
 
 --- UI callback (cf. XML).
+function setFormalCombatPhase(player, value, id)
+    Controller.ui:fromUI(player, value, id)
+end
+
+--- UI callback (cf. XML).
+function setSoundEnabled(player, value, id)
+    Controller.ui:fromUI(player, value, id)
+end
+
+--- UI callback (cf. XML).
 function setUpFromUI()
     Controller.ui:hide()
     Controller.ui = nil
@@ -446,6 +457,7 @@ function setUpFromUI()
         fanmadeLeaders = Controller.fields.fanmadeLeaders,
         horizontalHandLayout = Controller.fields.horizontalHandLayout,
         variant = Controller.fields.variant,
+        formalCombatPhase = Controller.fields.formalCombatPhase,
         soundEnabled = Controller.fields.soundEnabled,
     })
 end

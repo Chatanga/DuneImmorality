@@ -253,6 +253,8 @@ function MainBoard._transientSetUp(settings)
         MainBoard._createSpaceButton(space, p, slots)
     end
 
+    MainBoard._createRoundIndicator()
+
     Helper.registerEventListener("phaseStart", function (phase)
         if phase == "makers" then
             for desert, _ in pairs(MainBoard.spiceBonusTokens) do
@@ -305,6 +307,43 @@ function MainBoard._transientSetUp(settings)
             end
         end
     end)
+end
+
+function MainBoard._createRoundIndicator()
+    local primaryTable = getObjectFromGUID("2b4b92")
+
+    Helper.createAbsoluteButtonWithRoundness(primaryTable, 1, false, {
+        click_function = Helper.registerGlobalCallback(),
+        label = I18N("roundNumber"),
+        position = primaryTable.getPosition() + Vector(4.5, 1.8, -18),
+        width = 1000,
+        height = 200,
+        font_size = 140,
+        color = { 0, 0, 0, 0 },
+        font_color = { 1, 1, 1, 80 },
+    })
+
+    Helper.createAbsoluteButtonWithRoundness(primaryTable, 1, false, {
+        click_function = Helper.registerGlobalCallback(),
+        position = primaryTable.getPosition() + Vector(4.5, 1.8, -19),
+        width = 1000,
+        height = 1000,
+        font_size = 700,
+        color = { 0, 0, 0, 0 },
+        font_color = { 1, 1, 1, 80 },
+    })
+
+    local function updateContent()
+        primaryTable.editButton({ index = 1, label = tostring(TurnControl.getCurrentRound()) })
+    end
+
+    Helper.registerEventListener("phaseStart", function (phase)
+        if phase == "roundStart" then
+            updateContent()
+        end
+    end)
+
+    Helper.onceTimeElapsed(1).doAfter(updateContent)
 end
 
 ---
@@ -444,10 +483,10 @@ function MainBoard.sendAgent(color, spaceName)
 
     if not agent then
         Dialog.broadcastToColor(I18N("noAgent"), color, "Purple")
-        continuation.cancel()
+        continuation.run(false)
     elseif MainBoard.hasAgentInSpace(parentSpaceName, color) then
         Dialog.broadcastToColor(I18N("agentAlreadyPresent"), color, "Purple")
-        continuation.cancel()
+        continuation.run(false)
     else
         local leader = PlayBoard.getLeader(color)
         local innerContinuation = Helper.createContinuation("MainBoard." .. parentSpaceName)
@@ -465,9 +504,9 @@ function MainBoard.sendAgent(color, spaceName)
                 Helper.onceTimeElapsed(1).doAfter(function ()
                     Action.unsetContext("agentSent")
                 end)
-                continuation.run()
+                continuation.run(true)
             else
-                continuation.cancel()
+                continuation.run(false)
             end
         end)
     end

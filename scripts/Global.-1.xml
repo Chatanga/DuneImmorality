@@ -1,4 +1,4 @@
-<Panel position="0 -50" width="450" height="750" color="#000000" id="setupPane" rotation="0 0 0" outline="#61712c" outlineSize="1"
+<Panel position="0 -50" width="450" height="760" color="#000000" id="setupPane" rotation="0 0 0" outline="#61712c" outlineSize="1"
 	active="False" allowDragging="True" returnToOriginalPositionWhenReleased="False">
 	<Defaults>
 		<Text class="primary" color="#8e5ab4" fontSize="16" alignment="MiddleLeft"/>
@@ -6,7 +6,7 @@
 		<Text class="epigraph" color="#df9730" fontSize="12" fontStyle="italic" alignment="MiddleCenter"/>
 		<Dropdown class="setUp" itemBackgroundColors="#61712c44|#df9730|#FFFFFF|#361441" textColor="#61712c" itemTextColor="#61712c" fontStyle="bold"/>
 		<InputField class="setUp" colors="#00000000|#61712c44|#61712c" textColor="#efd9ff" fontStyle="bold"/>
-		<Toggle class="setUp" colors="#efd9ff|#ffd60b|#efd9ff|#222222" textColor="#efd9ff"/>
+		<Toggle class="setUp" colors="#efd9ff|#ffd60b|#efd9ff|#222222" textColor="#efd9ff" tooltipPosition="Left" tooltipBackgroundColor="#000000"/>
 		<Button class="setUp" colors="#61712c|#df9730|#361441|#222222" textColor="#ffd60b"  fontSize="16" outline="#efd9ff" outlineSize="3 3"/>
 		<Image raycastTarget="true"/>
 	</Defaults>
@@ -28,7 +28,7 @@
 			<VerticalLayout padding="25 0 0 0">
 				<Toggle class="setUp" id="randomizePlayerPositions" onValueChanged="Global/setRandomizePlayerPositions" isOn="True" key="randomizePlayersPositions"/>
 				<HorizontalLayout>
-					<Toggle class="setUp" id="virtualHotSeat" onValueChanged="Global/setVirtualHotSeat" isOn="False" key="virtualHotSeat"/>
+					<Toggle class="setUp" id="virtualHotSeat" onValueChanged="Global/setVirtualHotSeat" isOn="False" key="virtualHotSeat" tooltipKey="virtualHotSeatTooltip"/>
 					<Dropdown class="setUp" id="virtualHotSeatMode" onValueChanged="Global/setVirtualHotSeatMode" flexibleWidth="2.5" active="False">
 						<Option></Option>
 					</Dropdown>
@@ -71,6 +71,7 @@
 				<Text class="primary" key="miscellanous"/>
 			</HorizontalLayout>
 			<VerticalLayout padding="25 0 0 0">
+				<Toggle class="setUp" id="formalCombatPhase" onValueChanged="Global/setFormalCombatPhase" isOn="False" key="formalCombatPhase" tooltipKey="formalCombatPhaseTooltip"/>
 				<Toggle class="setUp" id="soundEnabled" onValueChanged="Global/setSoundEnabled" isOn="True" key="soundEnabled"/>
 			</VerticalLayout>
 

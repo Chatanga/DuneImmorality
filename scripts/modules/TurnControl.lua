@@ -7,17 +7,6 @@ local PlayBoard = Module.lazyRequire("PlayBoard")
 local Hagal = Module.lazyRequire("Hagal")
 
 local TurnControl = {
-    phaseOrder = {
-        'leaderSelection',
-        'gameStart',
-        'roundStart',
-        'playerTurns',
-        'combat',
-        'combatEnd',
-        'makers',
-        'recall',
-        'endgame',
-    },
     hotSeat = false,
     players = {},
     firstPlayerLuaIndex = nil,
@@ -174,7 +163,7 @@ end
 ---
 function TurnControl.start()
     assert(TurnControl.firstPlayerLuaIndex, "A setup failure is highly probable!")
-    TurnControl._startPhase(TurnControl.phaseOrder[1])
+    TurnControl._startPhase("leaderSelection")
 end
 
 ---
@@ -211,7 +200,7 @@ function TurnControl._startPhase(phase)
 
     local firstPlayer = TurnControl.players[TurnControl.firstPlayerLuaIndex]
     Helper.dump("> Round:", TurnControl.getCurrentRound(), "- Phase:", phase, "- first player:", firstPlayer)
-    broadcastToAll(I18N(Helper.toCamelCase("phase", phase)), Color.fromString("Pink"))
+    broadcastToAll(I18N(Helper.toCamelCase("phase", phase), { round = TurnControl.currentRound }), Color.fromString("Pink"))
     Helper.emitEvent("phaseStart", TurnControl.currentPhase, firstPlayer)
 
     Helper.onceFramesPassed(1).doAfter(function ()
@@ -235,7 +224,7 @@ function TurnControl.endOfTurn()
 end
 
 ---
-function TurnControl.endOfPhase()
+function TurnControl.endOfPhase(haltAfter)
     local bestTrigger
     local heavyPhases = { "recall" }
     if Helper.isElementOf(TurnControl.currentPhase, heavyPhases) then
@@ -249,13 +238,20 @@ function TurnControl.endOfPhase()
             Helper.emitEvent("phaseEnd", TurnControl.currentPhase)
         end
 
-        local nextPhase = TurnControl._getNextPhase(TurnControl.currentPhase)
-        if nextPhase then
-            TurnControl._startPhase(nextPhase)
-        else
-            TurnControl.currentPhase = nil
+        if not haltAfter then
+            TurnControl._nextPhase()
         end
     end)
+end
+
+---
+function TurnControl._nextPhase()
+    local nextPhase = TurnControl._getNextPhase(TurnControl.currentPhase)
+    if nextPhase then
+        TurnControl._startPhase(nextPhase)
+    else
+        TurnControl.currentPhase = nil
+    end
 end
 
 ---
@@ -266,10 +262,30 @@ function TurnControl._next(startPlayerLuaIndex)
     else
         if TurnControl.currentPhase == "combat" then
             TurnControl._createReclaimRewardsButton()
+            TurnControl.endOfPhase(true)
+        elseif TurnControl.currentPhase == "combatEnd" and TurnControl._endgameGoalReached() and TurnControl.currentRound < 10 then
+            TurnControl._createNextRoundButton()
+            TurnControl.endOfPhase(true)
         else
             TurnControl.endOfPhase()
         end
     end
+end
+
+function TurnControl._getButtonAnchor()
+    local primaryTable = getObjectFromGUID("2b4b92")
+
+    local continuation = Helper.createContinuation("TurnControl._createReclaimRewardsButton")
+    if not TurnControl.buttonAnchor then
+        Helper.createTransientAnchor("AgentPark", primaryTable.getPosition() + Vector(5, 1.3, -15.8)).doAfter(function (anchor)
+            TurnControl.buttonAnchor = anchor
+            continuation.run(TurnControl.buttonAnchor)
+        end)
+    else
+        continuation.run(TurnControl.buttonAnchor)
+    end
+
+    return continuation
 end
 
 function TurnControl._createReclaimRewardsButton()
@@ -280,20 +296,46 @@ function TurnControl._createReclaimRewardsButton()
     Turns.order = {}
     Turns.enable = false
 
-    local primaryTable = getObjectFromGUID("2b4b92")
-    Helper.createAbsoluteButtonWithRoundness(primaryTable, 1, false, {
-        click_function = Helper.registerGlobalCallback(function ()
-            primaryTable.clearButtons()
-            TurnControl.endOfPhase()
-        end),
-        label = I18N("reclaimRewards"),
-        position = primaryTable.getPosition() + Vector(5, 1.8, -15.8),
-        width = 3500,
-        height = 420,
-        font_size = 300,
-        color = fromIntRGB(128, 77, 0),
-        font_color = fromIntRGB(204, 153, 0),
-    })
+    TurnControl._getButtonAnchor().doAfter(function (anchor)
+        Helper.createAbsoluteButtonWithRoundness(anchor, 1, false, {
+            click_function = Helper.registerGlobalCallback(function ()
+                anchor.clearButtons()
+                TurnControl._nextPhase()
+            end),
+            label = I18N("reclaimRewards"),
+            position = anchor.getPosition() + Vector(0, 0.5, 0),
+            width = 3500,
+            height = 420,
+            font_size = 300,
+            color = fromIntRGB(128, 77, 0),
+            font_color = fromIntRGB(204, 153, 0),
+        })
+    end)
+end
+
+function TurnControl._createNextRoundButton()
+    local fromIntRGB = function (r, g, b)
+        return Color(r / 255, g / 255, b / 255)
+    end
+
+    Turns.order = {}
+    Turns.enable = false
+
+    TurnControl._getButtonAnchor().doAfter(function (anchor)
+        Helper.createAbsoluteButtonWithRoundness(anchor, 1, false, {
+            click_function = Helper.registerGlobalCallback(function ()
+                anchor.clearButtons()
+                TurnControl._nextPhase()
+            end),
+            label = I18N("doYouWantAnotherRound"),
+            position = anchor.getPosition() + Vector(0, 0.5, 0),
+            width = 3500,
+            height = 420,
+            font_size = 300,
+            color = fromIntRGB(128, 77, 0),
+            font_color = fromIntRGB(204, 153, 0),
+        })
+    end)
 end
 
 ---

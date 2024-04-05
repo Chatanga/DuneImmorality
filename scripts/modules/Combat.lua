@@ -71,6 +71,8 @@ end
 
 ---
 function Combat._transientSetUp(settings)
+    Combat.formalCombatPhase = settings.formalCombatPhase
+
     Combat.garrisonParks = {}
     for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
         Combat.garrisonParks[color] = Combat._createGarrisonPark(color)
@@ -124,7 +126,11 @@ function Combat._transientSetUp(settings)
     end)
 
     Helper.registerEventListener("phaseEnd", function (phase)
-        if phase == "combatEnd" then
+        if phase == "combat" then
+            if Combat.isFormalCombatPhaseEnabled() then
+                Music.play("turn")
+            end
+        elseif phase == "combatEnd" then
             for _, bannerZone in ipairs(MainBoard.getBannerZones()) do
                 local dreadnought = MainBoard.getControllingDreadnought(bannerZone)
                 -- Only recall locked controlling dreadnoughts.
@@ -140,6 +146,11 @@ function Combat._transientSetUp(settings)
             Action.unsetContext("combat")
         end
     end)
+end
+
+---
+function Combat.isFormalCombatPhaseEnabled()
+    return Combat.formalCombatPhase
 end
 
 ---
@@ -509,12 +520,6 @@ function Combat.getTurnConflictName()
     else
         return Helper.getID(deckOrCard)
     end
-end
-
----
-function Combat.isCurrentConflictBehindTheWall()
-    local conflictName = Combat.getTurnConflictLevel()
-    return ConflictCard.isBehindTheWall(conflictName)
 end
 
 ---

@@ -1223,7 +1223,7 @@ function Deck._prebuildLeaderDeck(deckPosition)
     if locale == 'fr' then
         contributions = Deck._mergeContributionSets({ contributions, Deck._mergeStandardContributionSets(Deck.leaders.fanmade.arkhane, true, true) })
     elseif locale == 'en' then
-        contributions = Deck._mergeStandardContributionSets(Deck.leaders.fanmade.retienne, true, true)
+        contributions = Deck._mergeContributionSets({ contributions, Deck._mergeStandardContributionSets(Deck.leaders.fanmade.retienne, true, true) })
     end
 
     Deck._generateDynamicDeckWithTwoBackCards("Leader", deckPosition, contributions, Deck.sources.leaders)

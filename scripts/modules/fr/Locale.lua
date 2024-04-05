@@ -7,11 +7,12 @@ return {
     players = "Joueurs",
     randomizePlayersPositions = "Mélanger les positions des joueurs",
     virtualHotSeat = "1 ou 2 joueurs",
+    virtualHotSeatTooltip = "Permet de jouer en solo, à 2 joueurs ou\nbien en « hotseat » pour les autres modes.",
     extensions = "Extensions",
     riseOfIx = "L’Avènement de Ix",
     epicMode = "Mode épique",
     immortality = "Immortalité",
-    goTo11 = "Jusqu’à 11",
+    goTo11 = "Pousser jusqu’à 11",
     leaderSelection = "Sélection dirigeants",
     fanmadeLeaders = "Dirigeants fanmade",
     leaderPoolSize = "Taille de la sélection",
@@ -20,13 +21,15 @@ return {
     variants = "Variantes",
     miscellanous = "Divers",
     soundEnabled = "Sons activés",
+    formalCombatPhase = "Phase de combat formelle",
+    formalCombatPhaseTooltip = "Les joueurs possédant une ou plusieurs cartes\nd’intrigue doivent explicitement finir leur tour\naprès en avoir joué une ou pour passer.",
     setup = "Mise en place",
     notEnoughPlayers = "Pas assez de joueurs",
 
     -- Phases
     phaseLeaderSelection = "Phase : sélection des dirigeants",
     phaseGameStart = "Phase : début du jeu",
-    phaseRoundStart = "Phase : début de la manche",
+    phaseRoundStart = "Phase : début de la manche n°{round}\n══════════════════════════════",
     phasePlayerTurns = "Phase : tours des joueurs",
     phaseCombat = "Phase : combat",
     phaseCombatEnd = "Phase : fin du combat",
@@ -197,6 +200,8 @@ return {
     notAffordableOption = "Vous n’avez pas les moyens d’utiliser cette option d’achat !",
     pruneTechCard = "Retrait de la tuile tech. : « {card} »",
     reclaimRewards = "Réclamer les récompenses",
+    roundNumber = "Manche n°",
+    doYouWantAnotherRound = "Jouer encore une manche ?",
 
     -- Arrakeen Scouts
     joinCommittee = "Rejoindre le sous-comité : {committee}",
@@ -596,4 +601,16 @@ return {
     rivalWater = "Rival - Eau",
     rivalSpice = "Rival - Épice",
     beneTleilax = "Bene Tleilax",
+
+    -- Hagal
+    harvestSpice = "Récolter l’épice",
+    arrakeen1p = "Arrakeen 1J",
+    arrakeen2p = "Arrakeen 2J",
+    foldspaceAndInterstellarShipping = "Replier l’espace et Livraison interstellaire",
+    smugglingAndInterstellarShipping = "Contrebande et Livraison interstellaire",
+    dreadnought1p = "Cuirasser 1J",
+    dreadnought2p = "Cuirasser 2J",
+    carthag1 = "Carthag 1",
+    carthag2 = "Carthag 2",
+    carthag3 = "Carthag 3",
 }

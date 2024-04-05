@@ -148,15 +148,15 @@ function IntrigueCard.evaluatePlot(color, playedCards)
 end
 
 function IntrigueCard.isPlotCard(card)
-    return Helper.isElementOf(IntrigueCard._resolveCard(card).categories, "plot")
+    return Helper.isElementOf("plot", IntrigueCard._resolveCard(card).categories)
 end
 
 function IntrigueCard.isCombatCard(card)
-    return Helper.isElementOf(IntrigueCard._resolveCard(card).categories, "combat")
+    return Helper.isElementOf("combat", IntrigueCard._resolveCard(card).categories)
 end
 
 function IntrigueCard.isEndgameCard(card)
-    return Helper.isElementOf(IntrigueCard._resolveCard(card).categories, "endgame")
+    return Helper.isElementOf("endgame", IntrigueCard._resolveCard(card).categories)
 end
 
 return IntrigueCard

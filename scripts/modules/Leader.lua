@@ -226,6 +226,7 @@ Leader.arianaThorvald = Helper.createClass(Leader, {
     sendAgent = function (color, spaceName)
         local continuation = Helper.createContinuation("Leader.arianaThorvald.sendAgent")
         Action.sendAgent(color, spaceName).doAfter(function (success)
+            Helper.dump("success:", success)
             if success and MainBoard.isDesertSpace(spaceName) then
                 local leader = PlayBoard.getLeader(color)
                 leader.resources(color, "spice", -1)

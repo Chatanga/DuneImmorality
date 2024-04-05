@@ -7,6 +7,7 @@ return {
     players = "Players",
     randomizePlayersPositions = "Randomize players' positions",
     virtualHotSeat = "1 or 2 players",
+    virtualHotSeatTooltip = "Allows you to play solo, with 2 players\nor in “hotseat” for the other modes.",
     extensions = "Extensions",
     riseOfIx = "Rise of Ix",
     epicMode = "Epic mode",
@@ -20,13 +21,15 @@ return {
     variants = "Variants",
     miscellanous = "Miscellanous",
     soundEnabled = "Sounds enabled",
+    formalCombatPhase = "Formal combat phase",
+    formalCombatPhaseTooltip = "Players with one or more plot cards\nmust explicitly end their turn after\nplaying one or to pass.",
     setup = "Setup",
     notEnoughPlayers = "Not enough players",
 
     -- Phases
     phaseLeaderSelection = "Phase: leader selection",
     phaseGameStart = "Phase: game start",
-    phaseRoundStart = "Phase: round start",
+    phaseRoundStart = "Phase: round start #{round}\n══════════════════════════════",
     phasePlayerTurns = "Phase: player turns",
     phaseCombat = "Phase: combat",
     phaseCombatEnd = "Phase: combat end",
@@ -198,6 +201,8 @@ return {
     notAffordableOption = "You can't afford this buying option!",
     pruneTechCard = 'Pruning tech tile: "{card}"',
     reclaimRewards = "Reclaim Rewards",
+    roundNumber = "Round #",
+    doYouWantAnotherRound = "Play another round?",
 
     -- Arrakeen Scouts
     joinCommittee = "Join the subcommittee: {committee}",
@@ -598,4 +603,16 @@ return {
     rivalWater = "Rival - Water",
     rivalSpice = "Rival - Spice",
     beneTleilax = "Bene Tleilax",
+
+    -- Hagal
+    harvestSpice = "Harvest Spice",
+    arrakeen1p = "Arrakeen 1P",
+    arrakeen2p = "Arrakeen 2P",
+    foldspaceAndInterstellarShipping = "Foldspace and Interstellar Shipping",
+    smugglingAndInterstellarShipping = "Smuggling and Interstellar Shipping",
+    dreadnought1p = "Dreadnought 1P",
+    dreadnought2p = "Dreadnought 2P",
+    carthag1 = "Carthag 1",
+    carthag2 = "Carthag 2",
+    carthag3 = "Carthag 3",
 }
