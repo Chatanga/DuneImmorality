@@ -136,11 +136,8 @@ end
 
 ---
 function Action.log(message, color, isSecret)
-    -- Order matters here.
+    -- Order matters here (but there is only one option with this mod).
     local logContextPrinters = {
-        { name = "schemeTriggered", print = function (_)
-            return I18N("triggeringScheme")
-        end },
         { name = "agentSent", print = function (value)
             local cards = ""
             for i, card in pairs(value.cards or {}) do
@@ -155,9 +152,10 @@ function Action.log(message, color, isSecret)
     local prefix = ""
     for _, namedPrinter in ipairs(logContextPrinters) do
         local value = Action.context[namedPrinter.name]
+        Helper.dump(namedPrinter.name, "->", value ~= nil)
         if value then
-            if Action.lastContext ~= namedPrinter.name then
-                Action.lastContext = namedPrinter.name
+            if Action.lastContext ~= color .. namedPrinter.name then
+                Action.lastContext = color .. namedPrinter.name
                 printToAll(namedPrinter.print(value), color)
             end
             prefix = " └─ "
