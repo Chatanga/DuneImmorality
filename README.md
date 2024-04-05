@@ -50,7 +50,6 @@ __Extensions__
 - Plateau Ix (avec postes d'observation).
 - Patch Ix (avec postes d'observation) pour le plateau principal.
 - Patch Immortality (avec postes d'observation) pour le plateau principal.
-- Incorporer la [variante de Paul Dennen](https://boardgamegeek.com/thread/3213458/merakons-house-blend/page/1).
 
 __2P / Solo__
 

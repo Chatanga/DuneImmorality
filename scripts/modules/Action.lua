@@ -131,7 +131,7 @@ function Action.log(message, color, isSecret)
                 if i > 1 then
                     cards = cards .. ", "
                 end
-                cards = cards .. card
+                cards = cards .. I18N(card)
             end
             return I18N("sendingAgent", { space = I18N(value.space), cards = cards })
         end },
@@ -139,9 +139,10 @@ function Action.log(message, color, isSecret)
     local prefix = ""
     for _, namedPrinter in ipairs(logContextPrinters) do
         local value = Action.context[namedPrinter.name]
+        Helper.dump(namedPrinter.name, "->", value ~= nil)
         if value then
-            if Action.lastContext ~= namedPrinter.name then
-                Action.lastContext = namedPrinter.name
+            if Action.lastContext ~= color .. namedPrinter.name then
+                Action.lastContext = color .. namedPrinter.name
                 printToAll(namedPrinter.print(value), color)
             end
             prefix = " └─ "
