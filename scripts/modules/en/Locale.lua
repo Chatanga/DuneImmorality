@@ -6,6 +6,7 @@ return {
     language = "Language",
     players = "Players",
     randomizePlayersPositions = "Randomize players' positions",
+    randomizePlayersPositionTooltip = "No player must use the black seat while\nthe player positions are shuffled.",
     virtualHotSeat = "1 or 2 players",
     virtualHotSeatTooltip = "Allows you to play solo, with 2 players\nor in “hotseat” for the other modes.",
     extensions = "Extensions",

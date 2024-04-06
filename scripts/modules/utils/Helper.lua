@@ -148,7 +148,7 @@ function Helper.resolveGUIDs(reportUnresolvedGUIDs, data)
             -- NOP
         else
             -- Not a problem per se, but still unexpected in our use cases.
-            log("[resolveGUIDs] Unknown type: " .. tostring(t))
+            log("[resolveGUIDs] Unknown type: " .. t)
             -- NOP
         end
     end
@@ -698,7 +698,6 @@ function Helper.collectSnapPoints(object, net)
     end
     local snapPoints = object.getSnapPoints()
     for _, snapPoint in ipairs(snapPoints) do
-        --assert(snapPoint.tags and #snapPoint.tags == 1)
         if snapPoint.tags then
             for _, tag in ipairs(snapPoint.tags) do
                 for prefix, collector in pairs(net) do
@@ -727,16 +726,12 @@ function Helper.registerGlobalCallback(callback)
             table.remove(Helper.uniqueNamePool, 1)
         else
             local nextIndex = Global.getVar(GLOBAL_COUNTER_NAME) or 1
-            --assert(nextIndex < 300, "Probably a callback leak (or are you too greedy ?).")
             if nextIndex >= 300 then
                 Helper.dump("Alarming dynamic global callback count:", nextIndex)
             end
-            --Helper.dumpFunction("Global.setVar", GLOBAL_COUNTER_NAME, nextIndex + 1)
             Global.setVar(GLOBAL_COUNTER_NAME, nextIndex + 1)
-            --log("Global callback count: " .. tostring(nextIndex))
             uniqueName = "generatedCallback" .. tostring(nextIndex)
         end
-        --Helper.dumpFunction("Global.setVar", uniqueName)
         Global.setVar(uniqueName, callback)
         return uniqueName
     else
@@ -746,10 +741,9 @@ end
 
 ---
 function Helper.unregisterGlobalCallback(uniqueName)
-    --Helper.dumpFunction("Helper.unregisterGlobalCallback", uniqueName)
     if uniqueName ~= "generatedCallback0" then
         local callback = Global.getVar(uniqueName)
-        assert(callback, "Unknown global callback: " .. tostring(uniqueName))
+        assert(callback, "Unknown global callback: " .. uniqueName)
         --Global.setVar(uniqueName, nil)
         table.insert(Helper.uniqueNamePool, uniqueName)
     end
@@ -890,13 +884,6 @@ function Helper.createContinuation(name)
     return continuation
 end
 
----@return Continuation
-function Helper.fakeContinuation(...)
-    local fakeContinuation = Helper.createContinuation("Helper.alwaysContinuation")
-    fakeContinuation.run(...)
-    return fakeContinuation
-end
-
 ---@param timeout number?
 ---@return Continuation
 function Helper.onceStabilized(timeout)
@@ -911,14 +898,14 @@ function Helper.onceStabilized(timeout)
         continuation.run(success)
     end, function ()
         local duration = os.time() - start
-        success = Helper.isStabilized(delayed or duration <= 4)
+        success = Helper.isStabilized(delayed or duration <= 2)
         if not success then
-            if not delayed and duration > 4 then
-                --log(duration)
+            if not delayed and duration > 2 then
+                log(duration)
                 delayed = true
                 broadcastToAll("Delaying transition (see system log)...")
             end
-            if duration > (timeout or 12) then
+            if duration > (timeout or 10) then
                 return true
             end
         end
@@ -1126,10 +1113,10 @@ function Helper.findPlayerByColor(color)
 end
 
 --- Colour shuffler script, developed by markimus on steam.
-function Helper.randomizePlayerPositions()
+function Helper.randomizePlayerPositions(colors)
     local continuation = Helper.createContinuation("Helper.randomizePlayerPositions")
 
-    if #getSeatedPlayers() <= 1 then
+    if #colors <= 1 then
         printToAll("There must be more than one player for shuffling to work.", "Red")
         continuation.run()
         return continuation
@@ -1144,14 +1131,14 @@ function Helper.randomizePlayerPositions()
 
     -- Insert the colours.
 
-    for _, v in pairs(getSeatedPlayers()) do
+    for _, v in pairs(colors) do
         table.insert(randomColours, v)
     end
 
     Helper.shuffle(randomColours)
 
     local seatedPlayers = {}
-    for i, v in pairs(getSeatedPlayers()) do
+    for i, v in pairs(colors) do
         seatedPlayers[v] = {}
         seatedPlayers[v].target = randomColours[i]
         seatedPlayers[v].myColour = v
@@ -1167,9 +1154,7 @@ function Helper.randomizePlayerPositions()
 
     -- Start shuffling players.
 
-    local coroutineHolder = {}
-    coroutineHolder.registeredCallback = Helper.registerGlobalCallback(function ()
-        Helper.unregisterGlobalCallback(coroutineHolder.registeredCallback)
+    local registeredCallback = Helper.registerGlobalCallback(function ()
 
         for timeout = 1, 50 do
 
@@ -1183,7 +1168,7 @@ function Helper.randomizePlayerPositions()
                             --print("Moving player ".. myC)
                             Player[myC]:changeColor(v.target)
                             while Player[myC].seated and not Player[v.target].seated do
-                                coroutine.yield(0)
+                                coroutine.yield()
                             end
                             v.myColour = v.target
                             v.moved = true
@@ -1216,7 +1201,7 @@ function Helper.randomizePlayerPositions()
                     Player[lastPlayer.myColour]:changeColor("Black")
                     lastPlayer.myColour = "Black"
                     while not Player["Black"].seated do
-                        coroutine.yield(0)
+                        coroutine.yield()
                     end
                 end
             end
@@ -1237,15 +1222,16 @@ function Helper.randomizePlayerPositions()
                 v.prevMoved = v.moved
             end
 
-            coroutine.yield(0)
+            coroutine.yield()
         end
 
-        Helper.sleep(2)
+        Helper._sleep(2)
         continuation.run()
 
         return 1
     end)
-    startLuaCoroutine(Global, coroutineHolder.registeredCallback)
+
+    startLuaCoroutine(Global, registeredCallback)
 
     return continuation
 end
@@ -1257,7 +1243,7 @@ function Helper.changePlayerColorInCoroutine(player, newColor)
     local function seatPlayer(sourceColor, targetColor)
         Player[sourceColor]:changeColor(targetColor)
         while Player[sourceColor].seated and not Player[targetColor].seated do
-            coroutine.yield(0)
+            coroutine.yield()
         end
     end
 
@@ -1401,11 +1387,10 @@ function Helper.getSharedTable(tableName)
 end
 
 --- Intended to be called from a coroutine.
-function Helper.sleep(durationInSeconds)
-    assert(durationInSeconds)
+function Helper._sleep(durationInSeconds)
     local Time = os.clock() + durationInSeconds
     while os.clock() < Time do
-        coroutine.yield(0)
+        coroutine.yield()
     end
 end
 
@@ -1978,19 +1963,6 @@ function Helper.negate(predicate)
     end
 end
 
----
-function Helper.takeWhile(predicate, elements)
-    local prefix = {}
-    for i, element in ipairs(elements) do
-        if predicate(i, element) then
-            table.insert(prefix, element)
-        else
-            break
-        end
-    end
-    return prefix
-end
-
 --- http://lua-users.org/wiki/StringRecipes
 function Helper.startsWith(str, start)
     return str:sub(1, #start) == start
@@ -2001,16 +1973,17 @@ function Helper.endsWith(str, ending)
     return ending == "" or str:sub(-#ending) == ending
 end
 
----
 function Helper.splitString(str, sep)
+    if sep == nil then
+       sep = "%s"
+    end
     local tokens = {}
-    for token in string.gmatch(str, "([^" .. (sep or "%s") .. "]+)") do
-        table.insert(tokens, token)
+    for token in string.gmatch(str, "([^" .. sep .. "]+)") do
+       table.insert(tokens, token)
     end
     return tokens
 end
 
----
 function Helper.chopName(name, n)
     local choppedName = ""
     local i = 0

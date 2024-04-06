@@ -6,6 +6,7 @@ return {
     language = "Langue",
     players = "Joueurs",
     randomizePlayersPositions = "Mélanger les positions des joueurs",
+    randomizePlayersPositionTooltip = "Aucun joueur ne doit utiliser le siège noir pendant\nque les positions des joueurs sont mélangées.",
     virtualHotSeat = "1 ou 2 joueurs",
     virtualHotSeatTooltip = "Permet de jouer en solo, à 2 joueurs ou\nbien en « hotseat » pour les autres modes.",
     extensions = "Extensions",
