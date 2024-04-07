@@ -465,8 +465,9 @@ function PlayBoard._transientSetUp(settings)
 
         if PlayBoard.isHuman(color) and not refreshing then
             -- FIXME To naive, won't work for multiple agents in a single turn (weirding way).
+            -- FIXME Cards put down too early (hidden).
             playBoard.alreadyPlayedCards = Helper.filter(Park.getObjects(playBoard.agentCardPark), function (card)
-                return Types.isImperiumCard(card) or Types.isIntrigueCard(card)
+                return (Types.isImperiumCard(card) or Types.isIntrigueCard(card)) and not card.is_face_down
             end)
         end
 

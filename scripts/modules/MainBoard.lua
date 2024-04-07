@@ -612,9 +612,10 @@ end
 
 ---
 function MainBoard._goHeighliner(color, leader, continuation)
-    if MainBoard._checkGenericAccess(color, leader, { spice = 6 }) then
+    local spiceCost = PlayBoard.hasPlayedThisTurn(color, "guildAccord") and 4 or 6
+    if MainBoard._checkGenericAccess(color, leader, { spice = spiceCost }) then
         continuation.run(function ()
-            leader.resources(color, "spice", -6)
+            leader.resources(color, "spice", -spiceCost)
             leader.resources(color, "water", 2)
             leader.troops(color, "supply", "garrison", 5)
             leader.influence(color, "spacingGuild", 1)
