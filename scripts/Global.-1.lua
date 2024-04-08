@@ -283,7 +283,7 @@ function setUp(newSettings)
 
     local continuation = Helper.createContinuation("setUp")
     if newSettings.randomizePlayerPositions then
-        Helper.randomizePlayerPositions().doAfter(continuation.run)
+        Helper.randomizePlayerPositions(Controller.getProperlySeatedPlayers()).doAfter(continuation.run)
     else
         continuation.run()
     end

@@ -117,7 +117,7 @@ function Hagal._lateActivate(phase, color)
     elseif phase == "endgame" then
         continuation.run()
     else
-        error("Unknown phase: " .. tostring(phase))
+        error("Unknown phase: " .. phase)
     end
 
     return continuation
@@ -135,7 +135,7 @@ function Hagal._collectReward(color)
     local continuation = Helper.createContinuation("Hagal._collectReward")
     Helper.onceFramesPassed(1).doAfter(function ()
         local rank = Combat.getRank(color).value
-        local conflictName = Combat.getTurnConflictName()
+        local conflictName = Combat.getCurrentConflictName()
         local hasSandworms = Combat.hasSandworms(color)
         local postAction = Helper.partialApply(Rival.triggerHagalReaction, color)
         ConflictCard.collectReward(color, conflictName, rank, hasSandworms, postAction).doAfter(function ()
@@ -193,7 +193,7 @@ end
 
 ---
 function Hagal._setStrengthFromFirstValidCard(color)
-    local level3Conflict = Combat.getTurnConflictLevel() == 3
+    local level3Conflict = Combat.getCurrentConflictLevel() == 3
     local mentatOrHigher = Helper.isElementOf(Hagal.selectedDifficulty, { "expert", "expertPlus "})
 
     -- Brutal Escalation
@@ -211,7 +211,7 @@ end
 
 ---
 function Hagal._getExpertDeploymentLimit(color)
-    local level3Conflict = Combat.getTurnConflictLevel() == 3
+    local level3Conflict = Combat.getCurrentConflictLevel() == 3
     local mentatOrHigher = Helper.isElementOf(Hagal.selectedDifficulty, { "expert", "expertPlus "})
 
     local n
@@ -275,6 +275,7 @@ function Hagal._doActivateFirstValidCard(color, action, n, continuation)
     local emptySlots = Park.findEmptySlots(PlayBoard.getRevealCardPark(color))
     assert(emptySlots and #emptySlots > 0)
     assert(n < 10, "Something is not right!")
+
     Helper.moveCardFromZone(Hagal.deckZone, emptySlots[2] + Vector(0, 1 + 0.4 * n, 0), Vector(0, 180, 0)).doAfter(function (card)
         if card then
             Helper.onceTimeElapsed(1).doAfter(function ()

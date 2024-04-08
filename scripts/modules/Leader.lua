@@ -100,7 +100,8 @@ Leader.helenaRichese = Helper.createClass(Leader, {
     --- Eyes everywhere
     sendAgent = function (color, spaceName, recallSpy)
         -- TODO Manage accesses
-        local force = MainBoard.isLandsraadSpace(spaceName) or MainBoard.isSpiceTradeSpace(spaceName)
+        local parentSpaceName = MainBoard.findParentSpaceName(spaceName)
+        local force = MainBoard.isLandsraadSpace(parentSpaceName) or MainBoard.isSpiceTradeSpace(parentSpaceName)
         return Action.sendAgent(color, spaceName, recallSpy)
     end,
 
@@ -207,14 +208,13 @@ Leader.arianaThorvald = Helper.createClass(Leader, {
 
     --- Spice addict
     sendAgent = function (color, spaceName, recallSpy)
-        local continuation = Helper.createContinuation("Leader.arianaThorvald.sendAgent")
-        Action.sendAgent(color, spaceName, recallSpy).doAfter(function ()
-            if MainBoard.isDesertSpace(spaceName) then
+        local continuation = Action.sendAgent(color, spaceName, recallSpy)
+        continuation.doAfter(function ()
+            if MainBoard.isDesertSpace(MainBoard.findParentSpaceName(spaceName)) then
                 local leader = PlayBoard.getLeader(color)
                 leader.resources(color, "spice", -1)
                 leader.drawImperiumCards(color, 1)
             end
-            continuation.run()
         end)
         return continuation
     end
@@ -224,13 +224,12 @@ Leader.memnonThorvald = Helper.createClass(Leader, {
 
     --- Connections
     sendAgent = function (color, spaceName, recallSpy)
-        local continuation = Helper.createContinuation("Leader.memnonThorvald.sendAgent")
-        Action.sendAgent(color, spaceName, recallSpy).doAfter(function ()
+        local continuation = Action.sendAgent(color, spaceName, recallSpy)
+        continuation.doAfter(function ()
             if spaceName == "highCouncil" then
                 local leader = PlayBoard.getLeader(color)
                 leader.influence(color, nil, 1)
             end
-            continuation.run()
         end)
         return continuation
     end,
@@ -301,14 +300,13 @@ Leader.tessiaVernius = Helper.createClass(Leader, {
     --- Careful observation
     influence = function (color, faction, amount)
         if faction then
-            local continuation = Helper.createContinuation("Leader.tessiaVernius.influence")
             local noFriendshipBefore = not InfluenceTrack.hasFriendship(color, faction)
-            Action.influence(color, faction, amount).doAfter(function (...)
+            local continuation = Action.influence(color, faction, amount)
+            continuation.doAfter(function ()
                 local friendshipAfter = InfluenceTrack.hasFriendship(color, faction)
                 if noFriendshipBefore and friendshipAfter then
                     InfluenceTrack.recallSnooper(faction, color)
                 end
-                continuation.run(...)
             end)
             return continuation
         else
@@ -380,7 +378,8 @@ Leader.stabanTuek = Helper.createClass(Leader, {
 
     transientSetUp = function (color, settings)
         Helper.registerEventListener("agentSent", function (otherColor, spaceName)
-            if otherColor ~= color and MainBoard.isDesertSpace(spaceName) and MainBoard.isSpying(spaceName, color) then
+            local parentSpaceName = MainBoard.findParentSpaceName(spaceName)
+            if otherColor ~= color and MainBoard.isDesertSpace(parentSpaceName) and MainBoard.isSpying(parentSpaceName, color) then
                 Action.log(I18N("stabanSpiceSmuggling"), color)
                 local leader = PlayBoard.getLeader(color)
                 leader.resources(color, "spice", 1)
@@ -439,7 +438,6 @@ Leader.margotFenring = Helper.createClass(Leader, {
     --- Loyalty
     influence = function (color, faction, amount)
         if faction == "beneGesserit" then
-            local continuation = Helper.createContinuation("Leader.margotFenring.influence")
             local noFriendshipBefore = not InfluenceTrack.hasFriendship(color, faction)
             Action.influence(color, faction, amount).doAfter(function (...)
                 local friendshipAfter = InfluenceTrack.hasFriendship(color, faction)
@@ -448,7 +446,6 @@ Leader.margotFenring = Helper.createClass(Leader, {
                     Action.log(I18N("loyalty"), color)
                     leader.resources(color, "spice", 2)
                 end
-                continuation.run(...)
             end)
             return continuation
         else
@@ -459,19 +456,18 @@ Leader.margotFenring = Helper.createClass(Leader, {
 
 Leader.irulanCorrino = Helper.createClass(Leader, {
 
-    --- Imperial Bitchright
+    --- Imperial Birthright
     influence = function (color, faction, amount)
         if Helper.isElementOf(faction, { "emperor", "greatHouses" }) then
-            local continuation = Helper.createContinuation("Leader.irulanCorrino.influence")
             local noFriendshipBefore = not InfluenceTrack.hasFriendship(color, faction)
-            Action.influence(color, faction, amount).doAfter(function (...)
+            local continuation = Action.influence(color, faction, amount)
+            continuation.doAfter(function ()
                 local friendshipAfter = InfluenceTrack.hasFriendship(color, faction)
                 if noFriendshipBefore and friendshipAfter then
                     local leader = PlayBoard.getLeader(color)
                     Action.log(I18N("imperialBirthright"), color)
                     leader.drawIntrigues(color, 1)
                 end
-                continuation.run(...)
             end)
             return continuation
         else

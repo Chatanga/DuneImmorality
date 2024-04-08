@@ -16,17 +16,6 @@ local Deck = Module.lazyRequire("Deck")
 local Combat = Module.lazyRequire("Combat")
 
 local TurnControl = {
-    phaseOrder = {
-        'leaderSelection',
-        'gameStart',
-        'roundStart',
-        'playerTurns',
-        'combat',
-        'combatEnd',
-        'makers',
-        'recall',
-        'endgame',
-    },
     hotSeat = false,
     players = {},
     firstPlayerLuaIndex = nil,
@@ -43,7 +32,6 @@ function TurnControl.onLoad(state)
             TurnControl.hotSeat = state.TurnControl.hotSeat
             TurnControl.players = state.TurnControl.players
             TurnControl.scoreGoal = state.TurnControl.scoreGoal
-            TurnControl.specialPhase = state.TurnControl.specialPhase
             TurnControl.firstPlayerLuaIndex = state.TurnControl.firstPlayerLuaIndex
             TurnControl.counterClockWise = state.TurnControl.counterClockWise
             TurnControl.currentRound = state.TurnControl.currentRound
@@ -65,7 +53,6 @@ function TurnControl.onSave(state)
         hotSeat = TurnControl.hotSeat,
         players = TurnControl.players,
         scoreGoal = TurnControl.scoreGoal,
-        specialPhase = TurnControl.specialPhase,
         firstPlayerLuaIndex = TurnControl.firstPlayerLuaIndex,
         counterClockWise = TurnControl.counterClockWise,
         currentRound = TurnControl.currentRound,
@@ -213,11 +200,6 @@ function TurnControl._createExclusiveCallback(innerCallback)
 end
 
 ---
-function TurnControl.registerSpecialPhase(specialPhase)
-    TurnControl.specialPhase = specialPhase
-end
-
----
 function TurnControl.getPhaseTurnSequence()
     local turnSequence = {}
     local playerLuaIndex = TurnControl.firstPlayerLuaIndex
@@ -243,7 +225,7 @@ end
 ---
 function TurnControl.start()
     assert(TurnControl.firstPlayerLuaIndex, "A setup failure is highly probable!")
-    TurnControl._startPhase(TurnControl.phaseOrder[1])
+    TurnControl._startPhase('leaderSelection')
 end
 
 ---
@@ -392,7 +374,6 @@ end
 
 ---
 function TurnControl._notifyPlayerTurn(refreshing)
-    Helper.dumpFunction("TurnControl._notifyPlayerTurn", refreshing)
     local playerColor = TurnControl.players[TurnControl.currentPlayerLuaIndex]
     local player = Helper.findPlayerByColor(playerColor)
     if player then
@@ -416,7 +397,6 @@ end
 
 function TurnControl.assumeDirectControl(color)
     local legitimatePlayers = TurnControl.getLegitimatePlayers(color)
-    Helper.dump("legitimatePlayers:", legitimatePlayers)
     if not Helper.isEmpty(legitimatePlayers) then
         legitimatePlayers[1].changeColor(color)
         return true
@@ -495,7 +475,7 @@ function TurnControl._getNextPhase(phase)
     elseif phase == 'gameStart' then
         return 'roundStart'
     elseif phase == 'roundStart' then
-        return TurnControl.specialPhase or 'playerTurns'
+        return 'playerTurns'
     elseif phase == 'playerTurns' then
         return 'combat'
     elseif phase == 'combat' then
@@ -511,10 +491,8 @@ function TurnControl._getNextPhase(phase)
         return TurnControl._endgameGoalReached(true) and 'endgame' or 'roundStart'
     elseif phase == 'endgame' then
         return nil
-    elseif phase == TurnControl.specialPhase then
-        return 'playerTurns'
     else
-        error("Unknown phase: " .. tostring(phase))
+        error("Unknown phase: ", phase)
     end
 end
 

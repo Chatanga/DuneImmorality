@@ -82,7 +82,7 @@ function Combat._transientSetUp(settings)
         if phase == "roundStart" then
             Combat._setUpConflict()
         elseif phase == "combat" then
-            Action.setContext("combat", Combat.getTurnConflictName())
+            Action.setContext("combat", Combat.getCurrentConflictName())
             -- A small delay to avoid being erased by the player turn sound.
             Helper.onceTimeElapsed(1).doAfter(function ()
                 Music.play("battle")
@@ -610,7 +610,7 @@ function Combat.getDreadnoughtsInConflict(color)
 end
 
 ---
-function Combat.getTurnConflictName()
+function Combat.getCurrentConflictName()
     local deckOrCard = Helper.getDeckOrCard(Combat.conflictDiscardZone)
     assert(deckOrCard)
     if deckOrCard.type == "Deck" then
@@ -623,13 +623,13 @@ end
 
 ---
 function Combat.isCurrentConflictBehindTheWall()
-    local conflictName = Combat.getTurnConflictLevel()
+    local conflictName = Combat.getCurrentConflictLevel()
     return ConflictCard.isBehindTheWall(conflictName)
 end
 
 ---
-function Combat.getTurnConflictLevel()
-    return ConflictCard.getLevel(Combat.getTurnConflictName())
+function Combat.getCurrentConflictLevel()
+    return ConflictCard.getLevel(Combat.getCurrentConflictName())
 end
 
 ---

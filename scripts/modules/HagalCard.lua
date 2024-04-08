@@ -224,7 +224,7 @@ function HagalCard._activateHeighliner(color, rival)
 end
 
 function HagalCard._activateDeliverSuppliesAndHeighliner(color, rival)
-    if Combat.getTurnConflictLevel() < 3 then
+    if Combat.getCurrentConflictLevel() < 3 then
         if HagalCard._spaceIsFree(color, "deliverSupplies") and Hagal.isSmartPolitics(color, "spacingGuild") then
             HagalCard._sendRivalAgent(color, rival, "deliverSupplies")
             rival.influence(color, "spacingGuild", 1)

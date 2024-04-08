@@ -43,7 +43,7 @@ end
 ---
 function XmlUI:setButton(id, label, interactable)
     local element = XmlUI._findXmlElement(self.xml, id)
-    assert(element, "Unknown id: " .. tostring(id))
+    assert(element, "Unknown id: " .. id)
     XmlUI._setXmlButton(element, label)
     XmlUI._setXmlInteractable(element, interactable)
 end
@@ -51,7 +51,7 @@ end
 ---
 function XmlUI:setButtonI18N(id, key, interactable)
     local element = XmlUI._findXmlElement(self.xml, id)
-    assert(element, "Unknown id: " .. tostring(id))
+    assert(element, "Unknown id: " .. id)
     XmlUI._setXmlButtonI18N(element, key)
     XmlUI._setXmlInteractable(element, interactable)
 end
@@ -79,7 +79,7 @@ end
 
 function XmlUI:toUI()
     local root =  XmlUI._findXmlElement(self.xml, self.id)
-    assert(root, "Unknown id: " .. tostring(self.id))
+    assert(root, "Unknown id: " .. self.id)
     root.attributes.active = self.active
     for name, value in pairs(self.fields) do
         if not XmlUI._isEnumeration(name) and not XmlUI._isRange(name) then
@@ -102,7 +102,7 @@ function XmlUI:toUI()
                     XmlUI._setXmlInteractable(element, false)
                 end
             else
-                --log("Unknown id: " .. tostring(name))
+                --log("Unknown id: " .. name)
             end
         end
     end

@@ -53,21 +53,6 @@ function Action.onSave(state)
     }
 end
 
---[[
-    space(name)
-    imperium_card(name) (< signet)
-    intrigue_card(name)
-    leader_ability
-    influence_track_bonus(faction, level)
-    commercial_track_bonus(level)
-    research_track_bonus
-    tleilaxu_track_bonus
-    imperium_card_bonus(card)
-    tech_tile_bonus(tech)
-    tech_tile_effect(tech)
-    conflict_reward(conflict, position)
-    flag_control(space)
-]]
 ---
 function Action.checkContext(attributes)
     for name, expectedValue in pairs(attributes) do
@@ -139,7 +124,6 @@ function Action.log(message, color, isSecret)
     local prefix = ""
     for _, namedPrinter in ipairs(logContextPrinters) do
         local value = Action.context[namedPrinter.name]
-        Helper.dump(namedPrinter.name, "->", value ~= nil)
         if value then
             if Action.lastContext ~= color .. namedPrinter.name then
                 Action.lastContext = color .. namedPrinter.name
@@ -501,18 +485,13 @@ end
 ---
 function Action.research(color, jump)
     Types.assertIsPlayerColor(color)
-    if jump then
-        TleilaxuResearch.advanceResearch(color, jump).doAfter(function (finalJump)
-            if finalJump.x > 0 then
-                Action.log(I18N("researchAdvance", { count = jump }), color)
-            elseif finalJump.x < 0 then
-                Action.log(I18N("researchRollback"), color)
-            end
-        end)
-        return true
-    else
-        return false
-    end
+    return TleilaxuResearch.advanceResearch(color, jump).doAfter(function (finalJump)
+        if finalJump.x > 0 then
+            Action.log(I18N("researchAdvance", { count = jump }), color)
+        elseif finalJump.x < 0 then
+            Action.log(I18N("researchRollback"), color)
+        end
+    end)
 end
 
 ---

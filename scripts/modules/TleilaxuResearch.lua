@@ -228,9 +228,17 @@ end
 ---@param jump Vector
 function TleilaxuResearch.advanceResearch(color, jump)
     local continuation = Helper.createContinuation("TleilaxuResearch.advanceResearch")
-    local legit = jump.x == 1 and math.abs(jump.z) <= 1
-    TleilaxuResearch._advanceResearch(color, jump, legit)
-    continuation.run(jump)
+    local finalJump = jump
+    if not finalJump and TleilaxuResearch.hasReachedTwoHelices(color) then
+        finalJump = Vector(1, 0, 0)
+    end
+    if finalJump then
+        local legit = finalJump.x == 1 and math.abs(finalJump.z) <= 1
+        TleilaxuResearch._advanceResearch(color, finalJump, legit)
+        continuation.run(finalJump)
+    else
+        continuation.cancel()
+    end
     return continuation
 end
 

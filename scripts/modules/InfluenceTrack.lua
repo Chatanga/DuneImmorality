@@ -339,7 +339,6 @@ end
 
 ---
 function InfluenceTrack._changeInfluenceTracksRank(color, faction, change)
-    Helper.dumpFunction("InfluenceTrack._changeInfluenceTracksRank", color, faction, change)
     Types.assertIsPlayerColor(color)
     Types.assertIsFaction(faction)
     Types.assertIsInteger(change)
@@ -355,9 +354,7 @@ function InfluenceTrack._changeInfluenceTracksRank(color, faction, change)
     local continuation = Helper.createContinuation("InfluenceTrack._changeInfluenceTracksRank")
 
     Helper.repeatMovingAction(token, math.abs(realChange), function (_)
-        assert(token)
         local position = token.getPosition()
-        assert(position)
         position.z = position.z + levels.step * direction
         token.setPositionSmooth(position, false, false)
     end).doAfter(function (_)

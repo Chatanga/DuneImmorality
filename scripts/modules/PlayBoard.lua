@@ -639,7 +639,6 @@ end
 ---
 ---@param position Vector
 function PlayBoard:moveAt(position, isRelative, horizontalHandLayout)
-
     local toBeMoved = Helper.shallowCopy(self.content)
     local offset = isRelative and position or (position - toBeMoved.board.getPosition())
 
@@ -841,6 +840,7 @@ function PlayBoard.new(color, unresolvedContent, state, subState)
         Helper.onceFramesPassed(1).doAfter(function ()
             playBoard.leaderCard = Helper.getDeckOrCard(playBoard.content.leaderZone)
             if playBoard.leaderCard then
+                assert(subState.leader)
                 if playBoard.opponent == "rival" then
                     playBoard.leader = Hagal.newRival(subState.leader)
                 else
@@ -932,7 +932,6 @@ function PlayBoard.setUp(settings, activeOpponents)
     local sequentialActions = {}
 
     for color, playBoard in pairs(PlayBoard.playBoards) do
-        Helper.dumpFunction("setUp", color)
         playBoard:_cleanUp(false, not settings.riseOfIx, not settings.immortality, settings.numberOfPlayers ~= 6)
 
         PlayBoard:_pruneHandsInExcess(playBoard.color, settings.numberOfPlayers <= 4 and settings.horizontalHandLayout)
@@ -962,7 +961,6 @@ function PlayBoard.setUp(settings, activeOpponents)
 
         if activeOpponents[color] then
             playBoard.opponent = activeOpponents[color]
-            Helper.dump("playBoard.opponent:", playBoard.opponent)
             if playBoard.opponent ~= "rival" then
                 playBoard.opponent = "human"
                 if color == "White" then
@@ -1382,7 +1380,7 @@ end
 
 ---
 function PlayBoard.collectReward(color)
-    local conflictName = Combat.getTurnConflictName()
+    local conflictName = Combat.getCurrentConflictName()
     local rank = Combat.getRank(color).value
     local hasSandworms = Combat.hasSandworms(color)
     ConflictCard.collectReward(color, conflictName, rank, hasSandworms).doAfter(function ()
@@ -1865,9 +1863,6 @@ end
 
 ---
 function PlayBoard:_createButtons()
-    --Helper.dumpFunction(self.color .. ":_createButtons")
-    --Helper.dump("isRival:", PlayBoard.isRival(self.color))
-    --Helper.dump("playerBoard.opponent:", self.opponent)
     self:_clearButtons()
 
     local chromae = {
@@ -2276,8 +2271,46 @@ function PlayBoard.couldSendAgentOrReveal(color)
 end
 
 ---
-function PlayBoard:tryToDrawCards(count, message)
+function PlayBoard:tryToDrawCards(count)
     local continuation = Helper.createContinuation("PlayBoard:tryToDrawCards")
+
+    if not self.drawCardsCoalescentQueue then
+
+        local function coalesce(c1, c2)
+            return {
+                parameteredContinuations = Helper.concatTables(c1.parameteredContinuations, c2.parameteredContinuations),
+                count = c1.count + c2.count
+            }
+        end
+
+        local function handle(c)
+            local runAllContinuations = function (_)
+                for _, parameteredContinuation in ipairs(c.parameteredContinuations) do
+                    parameteredContinuation.continuation.run(parameteredContinuation.parameter)
+                end
+            end
+
+            if c.count > 0 then
+                self:_tryToDrawCards(c.count).doAfter(runAllContinuations)
+            else
+                runAllContinuations(0)
+            end
+        end
+
+        self.drawCardsCoalescentQueue = Helper.createCoalescentQueue(1, coalesce, handle)
+    end
+
+    self.drawCardsCoalescentQueue.submit({
+        parameteredContinuations = { { continuation = continuation, parameter = count } },
+        count = count
+    })
+
+    return continuation
+end
+
+---
+function PlayBoard:_tryToDrawCards(count)
+    local continuation = Helper.createContinuation("PlayBoard:_tryToDrawCards")
 
     local content = self.content
     local deck = Helper.getDeckOrCard(content.drawDeckZone)
@@ -2299,9 +2332,6 @@ function PlayBoard:tryToDrawCards(count, message)
             nil,
             function (confirmed)
                 if confirmed then
-                    if message then
-                        broadcastToAll(message, self.color)
-                    end
                     self:drawCards(count).doAfter(continuation.run)
                 else
                     continuation.run(0)
@@ -2522,7 +2552,6 @@ end
 ---
 function PlayBoard.findLeaderCard(color)
     local leaderZone = PlayBoard.getContent(color).leaderZone
-    -- FIXME Why counter-filtering here?
     for _, object in ipairs(leaderZone.getObjects(true)) do
         if object.hasTag("Leader") or object.hasTag("RivalLeader") then
             return object
@@ -2533,7 +2562,6 @@ end
 
 ---
 function PlayBoard.getLeader(color)
-    assert(color)
     return PlayBoard.getPlayBoard(color).leader
 end
 

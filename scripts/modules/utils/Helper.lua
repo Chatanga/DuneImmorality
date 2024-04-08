@@ -698,7 +698,6 @@ function Helper.collectSnapPoints(object, net)
     end
     local snapPoints = object.getSnapPoints()
     for _, snapPoint in ipairs(snapPoints) do
-        --assert(snapPoint.tags and #snapPoint.tags == 1)
         if snapPoint.tags then
             for _, tag in ipairs(snapPoint.tags) do
                 for prefix, collector in pairs(net) do
@@ -727,16 +726,12 @@ function Helper.registerGlobalCallback(callback)
             table.remove(Helper.uniqueNamePool, 1)
         else
             local nextIndex = Global.getVar(GLOBAL_COUNTER_NAME) or 1
-            --assert(nextIndex < 300, "Probably a callback leak (or are you too greedy ?).")
             if nextIndex >= 300 then
                 Helper.dump("Alarming dynamic global callback count:", nextIndex)
             end
-            --Helper.dumpFunction("Global.setVar", GLOBAL_COUNTER_NAME, nextIndex + 1)
             Global.setVar(GLOBAL_COUNTER_NAME, nextIndex + 1)
-            --log("Global callback count: " .. tostring(nextIndex))
             uniqueName = "generatedCallback" .. tostring(nextIndex)
         end
-        --Helper.dumpFunction("Global.setVar", uniqueName)
         Global.setVar(uniqueName, callback)
         return uniqueName
     else
@@ -746,10 +741,9 @@ end
 
 ---
 function Helper.unregisterGlobalCallback(uniqueName)
-    --Helper.dumpFunction("Helper.unregisterGlobalCallback", uniqueName)
     if uniqueName ~= "generatedCallback0" then
         local callback = Global.getVar(uniqueName)
-        assert(callback, "Unknown global callback: " .. tostring(uniqueName))
+        assert(callback, "Unknown global callback: " .. uniqueName)
         --Global.setVar(uniqueName, nil)
         table.insert(Helper.uniqueNamePool, uniqueName)
     end
@@ -911,14 +905,14 @@ function Helper.onceStabilized(timeout)
         continuation.run(success)
     end, function ()
         local duration = os.time() - start
-        success = Helper.isStabilized(delayed or duration <= 4)
+        success = Helper.isStabilized(delayed or duration <= 2)
         if not success then
-            if not delayed and duration > 4 then
-                --log(duration)
+            if not delayed and duration > 2 then
+                log(duration)
                 delayed = true
                 broadcastToAll("Delaying transition (see system log)...")
             end
-            if duration > (timeout or 12) then
+            if duration > (timeout or 10) then
                 return true
             end
         end
@@ -1126,10 +1120,10 @@ function Helper.findPlayerByColor(color)
 end
 
 --- Colour shuffler script, developed by markimus on steam.
-function Helper.randomizePlayerPositions()
+function Helper.randomizePlayerPositions(colors)
     local continuation = Helper.createContinuation("Helper.randomizePlayerPositions")
 
-    if #getSeatedPlayers() <= 1 then
+    if #colors <= 1 then
         printToAll("There must be more than one player for shuffling to work.", "Red")
         continuation.run()
         return continuation
@@ -1144,14 +1138,14 @@ function Helper.randomizePlayerPositions()
 
     -- Insert the colours.
 
-    for _, v in pairs(getSeatedPlayers()) do
+    for _, v in pairs(colors) do
         table.insert(randomColours, v)
     end
 
     Helper.shuffle(randomColours)
 
     local seatedPlayers = {}
-    for i, v in pairs(getSeatedPlayers()) do
+    for i, v in pairs(colors) do
         seatedPlayers[v] = {}
         seatedPlayers[v].target = randomColours[i]
         seatedPlayers[v].myColour = v
@@ -1402,7 +1396,6 @@ end
 
 --- Intended to be called from a coroutine.
 function Helper.sleep(durationInSeconds)
-    assert(durationInSeconds)
     local Time = os.clock() + durationInSeconds
     while os.clock() < Time do
         coroutine.yield(0)

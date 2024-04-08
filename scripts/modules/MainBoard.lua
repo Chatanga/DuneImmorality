@@ -474,16 +474,19 @@ function MainBoard._createBannerSpace(bannerZone)
     end)
 end
 
---- TODO Rename "parent" to "root" since it's absolute, not relative.
 function MainBoard._findParentSpace(space)
-    local parentSpace = space
-    local underscoreIndex = space.name:find("_")
+    return MainBoard.spaces[MainBoard.findParentSpaceName(space.name)]
+end
+
+function MainBoard.findParentSpaceName(spaceName)
+    assert(MainBoard.spaces[spaceName], "No space named: " .. spaceName)
+    local parentSpaceName = spaceName
+    local underscoreIndex = spaceName:find("_")
     if underscoreIndex then
-        local parentSpaceName = space.name:sub(1, underscoreIndex - 1)
-        parentSpace = MainBoard.spaces[parentSpaceName]
-        assert(parentSpace, "No parent space name named: " .. parentSpaceName)
+        parentSpaceName = spaceName:sub(1, underscoreIndex - 1)
+        assert(MainBoard.spaces[parentSpaceName], "No parent space named: " .. parentSpaceName)
     end
-    return parentSpace
+    return parentSpaceName
 end
 
 ---
@@ -492,12 +495,12 @@ function MainBoard.sendAgent(color, spaceName, recallSpy)
 
     local agent = MainBoard._findProperAgent(color)
 
-    local buttonSpace = MainBoard.spaces[spaceName]
-    local functionSpaceName = Helper.toCamelCase("_go", buttonSpace.name)
+    local space = MainBoard.spaces[spaceName]
+    local functionSpaceName = Helper.toCamelCase("_go", space.name)
     local goSpace = MainBoard[functionSpaceName]
     assert(goSpace, "Unknow go space function: " .. functionSpaceName)
 
-    local parentSpace = MainBoard._findParentSpace(buttonSpace)
+    local parentSpace = MainBoard._findParentSpace(space)
     local parentSpaceName = parentSpace.name
 
     if not agent then
@@ -508,7 +511,7 @@ function MainBoard.sendAgent(color, spaceName, recallSpy)
         continuation.cancel()
     else
         local leader = PlayBoard.getLeader(color)
-        local innerContinuation = Helper.createContinuation("MainBoard." .. parentSpaceName)
+        local innerContinuation = Helper.createContinuation("MainBoard." .. spaceName)
 
         goSpace(color, leader, innerContinuation)
         innerContinuation.doAfter(function (action)
@@ -517,7 +520,7 @@ function MainBoard.sendAgent(color, spaceName, recallSpy)
             if action then
                 MainBoard._manageIntelligenceAndInfiltrate(color, parentSpaceName, recallSpy).doAfter(function (goAhead, spy, otherSpy, recallMode)
                     if goAhead then
-                        local innerInnerContinuation = Helper.createContinuation("MainBoard." .. parentSpaceName .. ".goAhead")
+                        local innerInnerContinuation = Helper.createContinuation("MainBoard." .. spaceName .. ".goAhead")
                         Helper.emitEvent("agentSent", color, parentSpaceName)
                         Action.setContext("agentSent", { space = parentSpaceName, cards = Helper.mapValues(PlayBoard.getCardsPlayedThisTurn(color), Helper.getID) })
                         Park.putObject(agent, parentSpace.park)
@@ -545,7 +548,7 @@ function MainBoard.sendAgent(color, spaceName, recallSpy)
                         innerInnerContinuation.doAfter(function ()
                             action()
                             -- FIXME We are cheating here...
-                            Helper.onceTimeElapsed(1).doAfter(function ()
+                            Helper.onceTimeElapsed(2).doAfter(function ()
                                 Action.unsetContext("agentSent")
                             end)
                             continuation.run()
@@ -605,7 +608,6 @@ function MainBoard.sendSpy(color, observationPostName)
     local spyPark = PlayBoard.getSpyPark(color)
     if not Park.isEmpty(spyPark) then
         Helper.emitEvent("spySent", color, observationPostName)
-        --log("Park.transfert(1, agentPark, parentSpace.park)")
         Park.transfert(1, spyPark, observationPost.park)
         return true
     else
@@ -615,7 +617,6 @@ end
 
 ---
 function MainBoard.recallSpy(color, observationPostName)
-    Helper.dumpFunction("MainBoard.recallSpy", color, observationPostName)
     local observationPost = MainBoard.observationPosts[observationPostName]
     assert(observationPost, observationPostName)
 
@@ -633,7 +634,6 @@ function MainBoard.findRecallableSpies(color)
             end
         end
     end
-    Helper.dumpFunction("MainBoard.findRecallableSpies", color, "->", recallableSpies)
     return recallableSpies
 end
 
@@ -750,7 +750,6 @@ end
 ---
 function MainBoard.sendRivalAgent(color, spaceName)
     local space = MainBoard.spaces[spaceName]
-    assert(space, spaceName)
     if not Park.isEmpty(PlayBoard.getAgentPark(color)) then
         local agentPark = PlayBoard.getAgentPark(color)
         Helper.emitEvent("agentSent", color, spaceName)
@@ -1183,12 +1182,12 @@ function MainBoard._goResearchStation(color, leader, continuation)
     if MainBoard._checkGenericAccess(color, leader, { water = 2 }) then
         continuation.run(function ()
             leader.resources(color, "water", -2)
+            leader.drawImperiumCards(color, 2)
             if MainBoard.immortalityPatch then
-                leader.research(color, 2)
+                leader.research(color, nil)
             else
                 leader.troops(color, "supply", "garrison", 2)
             end
-            leader.drawImperiumCards(color, 2)
         end)
     else
         continuation.run()
@@ -1278,8 +1277,10 @@ end
 function MainBoard._goDeepDesert_WormsIfHook(color, leader, continuation)
     if not PlayBoard.hasMakerHook(color) then
         Dialog.broadcastToColor(I18N("noMakerHook"), color, "Purple")
+        continuation.run()
     elseif MainBoard.shieldWallIsStanding() and Combat.isCurrentConflictBehindTheWall() then
         Dialog.broadcastToColor(I18N("shieldWallIsStanding"), color, "Purple")
+        continuation.run()
     else
         MainBoard._anySpiceSpace(color, leader, 3, 0, MainBoard.spiceBonuses.deepDesert, continuation, function ()
             leader.callSandworm(color, 2)
@@ -1326,8 +1327,10 @@ end
 function MainBoard._goHaggaBasin_WormIfHook(color, leader, continuation)
     if not PlayBoard.hasMakerHook(color) then
         Dialog.broadcastToColor(I18N("noMakerHook"), color, "Purple")
+        continuation.run()
     elseif MainBoard.shieldWallIsStanding() and Combat.isCurrentConflictBehindTheWall() then
         Dialog.broadcastToColor(I18N("shieldWallIsStanding"), color, "Purple")
+        continuation.run()
     else
         MainBoard._anySpiceSpace(color, leader, 1, 0, MainBoard.spiceBonuses.haggaBasin, continuation, function ()
             leader.callSandworm(color, 1)
