@@ -312,7 +312,7 @@ end
 function MainBoard._createRoundIndicator()
     local primaryTable = getObjectFromGUID("2b4b92")
 
-    Helper.createAbsoluteButtonWithRoundness(primaryTable, 1, false, {
+    Helper.createAbsoluteButtonWithRoundness(primaryTable, 1, {
         click_function = Helper.registerGlobalCallback(),
         label = I18N("roundNumber"),
         position = primaryTable.getPosition() + Vector(4.5, 1.8, -18),
@@ -323,7 +323,7 @@ function MainBoard._createRoundIndicator()
         font_color = { 1, 1, 1, 80 },
     })
 
-    Helper.createAbsoluteButtonWithRoundness(primaryTable, 1, false, {
+    Helper.createAbsoluteButtonWithRoundness(primaryTable, 1, {
         click_function = Helper.registerGlobalCallback(),
         position = primaryTable.getPosition() + Vector(4.5, 1.8, -19),
         width = 1000,
@@ -444,10 +444,16 @@ function MainBoard._createSpaceButton(space, position, slots)
             anchor.setSnapPoints(snapPoints)
         end
 
+        local lastActivation = 0
+
         local tooltip = I18N("sendAgentTo", { space = I18N(space.name)})
         Helper.createAreaButton(space.zone, anchor, 0.7, tooltip, PlayBoard.withLeader(function (leader, color, _)
             if TurnControl.getCurrentPlayer() == color then
-                leader.sendAgent(color, space.name)
+                local cooldown = os.time() - lastActivation
+                if cooldown > 2 then
+                    lastActivation = os.time()
+                    leader.sendAgent(color, space.name)
+                end
             else
                 Dialog.broadcastToColor(I18N('notYourTurn'), color, "Purple")
             end
@@ -455,7 +461,6 @@ function MainBoard._createSpaceButton(space, position, slots)
     end)
 end
 
---- TODO Rename "parent" to "root" since it's absolute, not relative.
 function MainBoard._findParentSpace(space)
     local parentSpace = space
     local underscoreIndex = space.name:find("_")
@@ -473,20 +478,20 @@ function MainBoard.sendAgent(color, spaceName)
 
     local agent = MainBoard._findProperAgent(color)
 
-    local buttonSpace = MainBoard.spaces[spaceName]
-    local functionSpaceName = Helper.toCamelCase("_go", buttonSpace.name)
+    local space = MainBoard.spaces[spaceName]
+    local functionSpaceName = Helper.toCamelCase("_go", space.name)
     local goSpace = MainBoard[functionSpaceName]
     assert(goSpace, "Unknow go space function: " .. functionSpaceName)
 
-    local parentSpace = MainBoard._findParentSpace(buttonSpace)
+    local parentSpace = MainBoard._findParentSpace(space)
     local parentSpaceName = parentSpace.name
 
     if not agent then
         Dialog.broadcastToColor(I18N("noAgent"), color, "Purple")
-        continuation.run(false)
+        continuation.cancel()
     elseif MainBoard.hasAgentInSpace(parentSpaceName, color) then
         Dialog.broadcastToColor(I18N("agentAlreadyPresent"), color, "Purple")
-        continuation.run(false)
+        continuation.cancel()
     else
         local leader = PlayBoard.getLeader(color)
         local innerContinuation = Helper.createContinuation("MainBoard." .. parentSpaceName)
@@ -501,12 +506,12 @@ function MainBoard.sendAgent(color, spaceName)
                 action()
                 MainBoard.collectExtraBonuses(color, leader, spaceName)
                 -- FIXME We are cheating here...
-                Helper.onceTimeElapsed(1).doAfter(function ()
+                Helper.onceTimeElapsed(2).doAfter(function ()
                     Action.unsetContext("agentSent")
                 end)
-                continuation.run(true)
+                continuation.run()
             else
-                continuation.run(false)
+                continuation.cancel()
             end
         end)
     end
@@ -561,25 +566,13 @@ function MainBoard._checkGenericAccess(color, leader, requirements)
                 return false
             end
         elseif requirement == "friendship" then
-            local infiltrationCards = {
-                "kwisatzHaderach",
-                "guildAccord",
-                "choamDelegate",
-                "bountyHunter",
-                "embeddedAgent",
-                "tleilaxuInfiltrator",
-            }
-            for _, cardName in ipairs(infiltrationCards) do
-                if PlayBoard.hasPlayedThisTurn(color, cardName) then
-                    return true
-                end
-            end
             if not InfluenceTrack.hasFriendship(color, value) then
                 Dialog.broadcastToColor(I18N("noFriendship", { withFaction = I18N(Helper.toCamelCase("with", value)) }), color, "Purple")
                 return false
             end
         end
     end
+
     return true
 end
 

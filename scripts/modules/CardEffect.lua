@@ -126,7 +126,7 @@ function CardEffect._dispatch(selector, expression)
         elseif selector == "beetle" then
             return call("beetle", color, value)
         elseif selector == "mentat" then
-            if call("takeMentat", color, true) then
+            if call("takeMentat", color) then
                 -- FIXME Do it elsewhere.
                 MainBoard.getMentat(true).addTag("notToBeRecalled")
                 return true

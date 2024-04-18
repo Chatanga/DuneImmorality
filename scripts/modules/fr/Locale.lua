@@ -1,6 +1,11 @@
 return {
     ["?"] = "?",
 
+    Green = "vert",
+    Yellow = "jaune",
+    Blue = "bleu",
+    Red = "rouge",
+
     -- Setup UI
     prolog = "« Une mise en place est toujours un moment très délicat. »",
     language = "Langue",
@@ -82,7 +87,7 @@ return {
     leaderSelectionExclude = "Vous pouvez retourner (ou détruire) n’importe quel dirigeant pour l’exclure.\nUne fois satisfait, appuyez sur le bouton « Démarrer ».",
     start = "Démarrer",
     claimLeader = "Prendre {leader} comme dirigeant",
-    uncompatibleLeaderForRival = "Dirigeant incompatible avec un rival : {leader}",
+    incompatibleLeaderForRival = "Dirigeant incompatible avec un rival : {leader}",
 
     -- Instructions
     leaderSelectionActiveInstruction = "Sélectionnez un dirigeant\nsur le plateau supérieur.",
@@ -594,6 +599,14 @@ return {
     invasionShips = "Vaisseaux d’invasion",
 
     -- Specific victory tokens
+    emperorFriendship = "Amitié avec l’Empereur",
+    emperorAlliance = "Alliance avec l’Empereur",
+    spacingGuildFriendship = "Amitié avec la Guilde spatiale",
+    spacingGuildAlliance = "Alliance avec la Guilde spatiale",
+    beneGesseritFriendship = "Amitié avec le Bene Gesserit",
+    beneGesseritAlliance = "Alliance le Bene Gesserit",
+    fremenFriendship = "Amitié avec les Fremens",
+    fremenAlliance = "Alliance avec les Fremens",
     endgameTech = "Tech. de fin de partie",
     endgameCard = "Carte de fin de partie",
     combat = "Combat",

@@ -128,7 +128,7 @@ end
 
 ---
 function Module.callOnAllRegisteredModules(functionName, ...)
-    for moduleName, module in pairs(Module.modulesByName) do
+    for _, module in pairs(Module.modulesByName) do
         if module[functionName] then
             module[functionName](...)
         end

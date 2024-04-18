@@ -95,7 +95,7 @@ function Combat._transientSetUp(settings)
         if phase == "roundStart" then
             Combat._setUpConflict()
         elseif phase == "combat" then
-            Action.setContext("combat", Combat.getTurnConflictName())
+            Action.setContext("combat", Combat.getCurrentConflictName())
             -- A small delay to avoid being erased by the player turn sound.
             Helper.onceTimeElapsed(1).doAfter(function ()
                 Music.play("battle")
@@ -234,8 +234,6 @@ function Combat._createGarrisonPark(color)
     -- FIXME Hardcoded height, use an existing parent anchor.
     Helper.createTransientAnchor("Garrison anchor", Vector(position.x, 0.65, position.z)).doAfter(function (anchor)
         park.anchor = anchor
-        anchor.locked = true
-        anchor.interactable = true
         Combat._createButton(color, park)
     end)
 
@@ -301,7 +299,7 @@ function Combat._createButton(color, park)
     local position = park.anchor.getPosition()
     local areaColor = Color.fromString(color)
     areaColor:setAt('a', 0.3)
-    Helper.createAbsoluteButtonWithRoundness(park.anchor, 7, false, {
+    Helper.createAbsoluteButtonWithRoundness(park.anchor, 7, {
         click_function = Helper.registerGlobalCallback(function (_, playerColor, altClick)
             if playerColor == color then
                 if altClick then
@@ -511,7 +509,7 @@ function Combat.getDreadnoughtsInConflict(color)
 end
 
 ---
-function Combat.getTurnConflictName()
+function Combat.getCurrentConflictName()
     local deckOrCard = Helper.getDeckOrCard(Combat.conflictDiscardZone)
     assert(deckOrCard)
     if deckOrCard.type == "Deck" then
@@ -523,8 +521,8 @@ function Combat.getTurnConflictName()
 end
 
 ---
-function Combat.getTurnConflictLevel()
-    return ConflictCard.getLevel(Combat.getTurnConflictName())
+function Combat.getCurrentConflictLevel()
+    return ConflictCard.getLevel(Combat.getCurrentConflictName())
 end
 
 ---

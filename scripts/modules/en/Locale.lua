@@ -1,6 +1,11 @@
 return {
     ["?"] = "?",
 
+    Green = "green",
+    Yellow = "yellow",
+    Blue = "blue",
+    Red = "red",
+
     -- Setup UI
     prolog = '"A setup is a very delicate time..."',
     language = "Language",
@@ -70,7 +75,7 @@ return {
     no = "No",
     ok = "Ok",
     cancel = "Cancel",
-    dialogCardAbove = "Do you want to put the card on top of your deck ?",
+    dialogCardAbove = "Do you want to put the card on top of your deck?",
     endTurn = "End\nTurn",
     takeHighCouncilSeatByForce = "Take by force",
     takeHighCouncilSeatByForceConfirm = "Taking High-Council seat by force?",
@@ -83,7 +88,7 @@ return {
     leaderSelectionExclude = "You can flip out (or delete) any leader you want to exclude.\nOnce satisfied, hit the 'Start' button.",
     start = "Start",
     claimLeader = "Claim {leader} as leader",
-    uncompatibleLeaderForRival = "Not a leader compatible with a rival: {leader}",
+    incompatibleLeaderForRival = "Not a leader compatible with a rival: {leader}",
 
     -- Instructions
     leaderSelectionActiveInstruction = "Select a leader\non the upper board",
@@ -596,6 +601,14 @@ return {
     invasionShips = "Invasion Ships",
 
     -- Specific victory tokens
+    emperorFriendship = "Friendship with the Emperor",
+    emperorAlliance = "Alliance with the Emperor",
+    spacingGuildFriendship = "Friendship with the Spacing Guild",
+    spacingGuildAlliance = "Alliance with the Spacing Guild",
+    beneGesseritFriendship = "Friendship with the Bene Gesserit",
+    beneGesseritAlliance = "Alliance with the Bene Gesserit",
+    fremenFriendship = "Friendship with the Fremens",
+    fremenAlliance = "Alliance with the Fremens",
     endgameTech = "Endgame Tech",
     endgameCard = "Endgame Card",
     combat = "Combat",

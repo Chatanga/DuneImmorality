@@ -12,7 +12,6 @@ local Intrigue = {}
 
 ---
 function Intrigue.onLoad(state)
-
     Helper.append(Intrigue, Helper.resolveGUIDs(false, {
         deckZone = 'a377d8',
         discardZone = '80642b'
@@ -57,7 +56,6 @@ end
 
 ---
 function Intrigue.stealIntrigue(color, otherColor, amount)
-    Helper.dumpFunction("Intrigue.stealIntrigue", color, otherColor, amount)
     Types.assertIsPositiveInteger(amount)
     local victimName = PlayBoard.getLeaderName(otherColor)
 
@@ -73,6 +71,15 @@ function Intrigue.stealIntrigue(color, otherColor, amount)
         card.setRotation(orientedPosition.rotation)
         local cardName = I18N(Helper.getID(card))
         Action.secretLog(I18N("stealIntrigue", { victim = victimName, card = cardName }), color)
+    end)
+end
+
+---
+function Intrigue.discard(card)
+    Intrigue.discardQueue = Intrigue.discardQueue or Helper.createSpaceQueue()
+    Intrigue.discardQueue.submit(function (height)
+        -- Not smooth to avoid being recaptured by the hand zone.
+        card.setPosition(Intrigue.discardZone.getPosition() + Vector(0, 1 + height * 0.5, 0))
     end)
 end
 

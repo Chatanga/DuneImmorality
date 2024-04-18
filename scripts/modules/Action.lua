@@ -16,6 +16,8 @@ local ImperiumRow = Module.lazyRequire("ImperiumRow")
 local ShippingTrack = Module.lazyRequire("ShippingTrack")
 local TleilaxuRow = Module.lazyRequire("TleilaxuRow")
 local ScoreBoard = Module.lazyRequire("ScoreBoard")
+local Hagal = Module.lazyRequire("Hagal")
+local TurnControl = Module.lazyRequire("TurnControl")
 
 local Action = Helper.createClass(nil, {
     context = {}
@@ -23,6 +25,7 @@ local Action = Helper.createClass(nil, {
 
 ---
 function Action.onLoad(state)
+
     Helper.registerEventListener("phaseStart", function (phase, _)
         Action.context = {
             phase = phase
@@ -50,26 +53,10 @@ function Action.onSave(state)
     }
 end
 
---[[
-    space(name)
-    imperium_card(name) (< signet)
-    intrigue_card(name)
-    leader_ability
-    influence_track_bonus(faction, level)
-    commercial_track_bonus(level)
-    research_track_bonus
-    tleilaxu_track_bonus
-    imperium_card_bonus(card)
-    tech_tile_bonus(tech)
-    tech_tile_effect(tech)
-    conflict_reward(conflict, position)
-    flag_control(space)
-]]
 ---
 function Action.checkContext(attributes)
     for name, expectedValue in pairs(attributes) do
         local value = Action.context and Action.context[name] or nil
-        --Helper.dump("Checking", name, "with value", value or "nil")
         local valid
         if type(expectedValue) == "function" then
             valid = expectedValue(value)
@@ -110,6 +97,11 @@ function Action.instruct(phase, isActivePlayer)
 end
 
 function Action.prepare(color, settings)
+    if Hagal.getRivalCount() == 2 and settings.difficulty == "novice" then
+        Action.resources(color, "solari", 1)
+        Action.resources(color, "spice", 1)
+    end
+
     Action.resources(color, "water", 1)
     if settings.epicMode then
         Action.drawIntrigues(color, 1)
@@ -131,7 +123,9 @@ end
 
 ---
 function Action.flushTroopTransfer()
-    Action.troopTransferCoalescentQueue.flush()
+    if Action.troopTransferCoalescentQueue then
+        Action.troopTransferCoalescentQueue.flush()
+    end
 end
 
 ---
@@ -152,11 +146,11 @@ function Action.log(message, color, isSecret)
     local prefix = ""
     for _, namedPrinter in ipairs(logContextPrinters) do
         local value = Action.context[namedPrinter.name]
-        Helper.dump(namedPrinter.name, "->", value ~= nil)
         if value then
-            if Action.lastContext ~= color .. namedPrinter.name then
-                Action.lastContext = color .. namedPrinter.name
-                printToAll(namedPrinter.print(value), color)
+            local turnColor = TurnControl.getCurrentPlayer() or "White"
+            if Action.lastContext ~= turnColor .. namedPrinter.name then
+                Action.lastContext = turnColor .. namedPrinter.name
+                printToAll(namedPrinter.print(value), turnColor)
             end
             prefix = " └─ "
             break
@@ -488,18 +482,13 @@ end
 ---
 function Action.research(color, jump)
     Types.assertIsPlayerColor(color)
-    if jump then
-        TleilaxuResearch.advanceResearch(color, jump).doAfter(function (finalJump)
-            if finalJump.x > 0 then
-                Action.log(I18N("researchAdvance", { count = jump }), color)
-            elseif finalJump.x < 0 then
-                Action.log(I18N("researchRollback"), color)
-            end
-        end)
-        return true
-    else
-        return false
-    end
+    return TleilaxuResearch.advanceResearch(color, jump).doAfter(function (finalJump)
+        if finalJump.x > 0 then
+            Action.log(I18N("researchAdvance", { count = jump }), color)
+        elseif finalJump.x < 0 then
+            Action.log(I18N("researchRollback"), color)
+        end
+    end)
 end
 
 ---
@@ -562,7 +551,7 @@ function Action.gainVictoryPoint(color, name, count)
 end
 
 ---
-function Action.acquireTech(color, stackIndex, discount)
+function Action.acquireTech(color, stackIndex)
     Types.assertIsPlayerColor(color)
     if stackIndex then
         TechMarket.acquireTech(stackIndex, color)

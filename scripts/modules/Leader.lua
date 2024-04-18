@@ -9,7 +9,7 @@ local ImperiumRow = Module.lazyRequire("ImperiumRow")
 local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local Combat = Module.lazyRequire("Combat")
-local Deck = Module.lazyRequire("Deck")
+local TechMarket = Module.lazyRequire("TechMarket")
 
 local Leader = Helper.createClass(Action)
 
@@ -20,8 +20,7 @@ function Leader.newLeader(name)
         -- Fanmade leader?
         LeaderClass = Helper.createClass(Leader, {})
     end
-    assert(LeaderClass or name ~= "Hagal", "Active player must not choose the Green seat in test mode.")
-    assert(LeaderClass, "Unknown leader: " .. tostring(name))
+    --assert(LeaderClass, "Unknown leader: " .. tostring(name))
     LeaderClass.name = name
     return Helper.createClassInstance(LeaderClass)
 end
@@ -116,8 +115,8 @@ Leader.helenaRichese = Helper.createClass(Leader, {
 
     --- Eyes everywhere
     sendAgent = function (color, spaceName)
-        -- TODO Manage accesses
-        local force = MainBoard.isLandsraadSpace(spaceName) or MainBoard.isSpiceTradeSpace(spaceName)
+        -- We don't care since it's simpler to let the player apply the rules.
+        --local force = MainBoard.isLandsraadSpace(spaceName) or MainBoard.isSpiceTradeSpace(spaceName)
         return Action.sendAgent(color, spaceName)
     end,
 
@@ -160,6 +159,43 @@ Leader.letoAtreides = Helper.createClass(Leader, {
     resources = function (color, resourceName, amount)
         return Action.resources(color, resourceName, -Leader.letoAtreides.bargain(color, resourceName, -amount))
     end,
+
+    --- Prudent Diplomacy
+    signetRing = function (color)
+
+        local getPotentialFactions = function ()
+            local potentialFactions = {}
+            for _, faction in ipairs({ "emperor", "spacingGuild", "beneGesserit", "fremen" }) do
+                local ownInfluence = InfluenceTrack.getInfluence(faction, color)
+                if ownInfluence < 6 then
+                    local possible = false
+                    for _, otherColor in ipairs(PlayBoard.getActivePlayBoardColors()) do
+                        if otherColor ~= color then
+                            if InfluenceTrack.getInfluence(faction, otherColor) > ownInfluence then
+                                possible = true
+                                break
+                            end
+                        end
+                    end
+                    if possible then
+                        table.insert(potentialFactions, faction)
+                    end
+                end
+            end
+            return potentialFactions
+        end
+
+        local leader = PlayBoard.getLeader(color)
+        if PlayBoard.getResource(color, "spice"):get() >= 1 then
+            local potentialFactions = getPotentialFactions()
+            if #potentialFactions > 0 then
+                leader.resources(color, "spice", -1)
+                leader.influence(color, potentialFactions, 1)
+                return true
+            end
+        end
+        return false
+    end
 })
 
 Leader.paulAtreides = Helper.createClass(Leader, {
@@ -192,7 +228,7 @@ Leader.paulAtreides = Helper.createClass(Leader, {
 
         -- FIXME The leader card position is a bit weird.
         Helper.createTransientAnchor("PrescienceAnchor", leaderCard.getPosition() + Vector(0, -0.5, 0)).doAfter(function (anchor)
-            Helper.createAbsoluteButtonWithRoundness(anchor, 1, false, {
+            Helper.createAbsoluteButtonWithRoundness(anchor, 1, {
                 click_function = Helper.registerGlobalCallback(prescience),
                 label = I18N("prescienceButton"),
                 position = anchor.getPosition() + Vector(0, 0.55, -1.75),
@@ -207,7 +243,7 @@ Leader.paulAtreides = Helper.createClass(Leader, {
         end)
     end,
 
-    --- Discipline
+    --- Discipline (never used)
     signetRing = function (color)
         local leader = PlayBoard.getLeader(color)
         return leader.drawImperiumCards(color, 1)
@@ -223,16 +259,14 @@ Leader.arianaThorvald = Helper.createClass(Leader, {
     end,
 
     --- Spice addict
-    sendAgent = function (color, spaceName)
-        local continuation = Helper.createContinuation("Leader.arianaThorvald.sendAgent")
-        Action.sendAgent(color, spaceName).doAfter(function (success)
-            Helper.dump("success:", success)
-            if success and MainBoard.isDesertSpace(spaceName) then
+    sendAgent = function (color, spaceName, recallSpy)
+        local continuation = Action.sendAgent(color, spaceName, recallSpy)
+        continuation.doAfter(function ()
+            if MainBoard.isDesertSpace(spaceName) then
                 local leader = PlayBoard.getLeader(color)
                 leader.resources(color, "spice", -1)
                 leader.drawImperiumCards(color, 1)
             end
-            continuation.run(success)
         end)
         return continuation
     end
@@ -241,14 +275,13 @@ Leader.arianaThorvald = Helper.createClass(Leader, {
 Leader.memnonThorvald = Helper.createClass(Leader, {
 
     --- Connections
-    sendAgent = function (color, spaceName)
-        local continuation = Helper.createContinuation("Leader.memnonThorvald.sendAgent")
-        Action.sendAgent(color, spaceName).doAfter(function (success)
-            if success and spaceName == "highCouncil" then
+    sendAgent = function (color, spaceName, recallSpy)
+        local continuation = Action.sendAgent(color, spaceName, recallSpy)
+        continuation.doAfter(function ()
+            if spaceName == "highCouncil" then
                 local leader = PlayBoard.getLeader(color)
                 leader.influence(color, nil, 1)
             end
-            continuation.run(success)
         end)
         return continuation
     end,
@@ -265,7 +298,7 @@ Leader.armandEcaz = Helper.createClass(Leader, {
 
 Leader.ilesaEcaz = Helper.createClass(Leader, {
 
-    --- Guild contacts
+    --- Guild contacts (never used)
     signetRing = function (color)
         local leader = PlayBoard.getLeader(color)
         return leader.resources(color, "solari", -1) and Action.acquireFoldspace(color)
@@ -291,6 +324,27 @@ Leader.rhomburVernius = Helper.createClass(Leader, {
     prepare = function (color, settings)
         Action.prepare(color, settings)
         Combat.setDreadnoughtStrength(color, 4)
+    end,
+
+    --- Guild contacts (for a human)
+    sendAgent = function (color, spaceName)
+        local continuation = Action.sendAgent(color, spaceName)
+        continuation.doAfter(function ()
+            if PlayBoard.hasPlayedThisTurn(color, "signetRing") or PlayBoard.hasPlayedThisTurn(color, "boundlessAmbition") then
+                TechMarket.registerAcquireTechOption(color, "rhomburVerniusTechBuyOption", "spice", 0)
+            end
+        end)
+        return continuation
+    end,
+
+    --- Guild contacts (for a rival)
+    signetRing = function (color)
+        TechMarket.registerAcquireTechOption(color, "rhomburVerniusTechBuyOption", "spice", 0)
+        local leader = PlayBoard.getLeader(color)
+        if not leader.acquireTech(color, nil) then
+            leader.troops(color, "supply", "negotiation", 1)
+        end
+        return true
     end
 })
 
@@ -322,14 +376,13 @@ Leader.tessiaVernius = Helper.createClass(Leader, {
     --- Careful observation
     influence = function (color, faction, amount)
         if faction then
-            local continuation = Helper.createContinuation("Leader.tessiaVernius.influence")
             local noFriendshipBefore = not InfluenceTrack.hasFriendship(color, faction)
-            Action.influence(color, faction, amount).doAfter(function (...)
+            local continuation = Action.influence(color, faction, amount)
+            continuation.doAfter(function ()
                 local friendshipAfter = InfluenceTrack.hasFriendship(color, faction)
                 if noFriendshipBefore and friendshipAfter then
                     InfluenceTrack.recallSnooper(faction, color)
                 end
-                continuation.run(...)
             end)
             return continuation
         else
@@ -337,7 +390,7 @@ Leader.tessiaVernius = Helper.createClass(Leader, {
         end
     end,
 
-    --- Duplicity
+    --- Duplicity (never used)
     signetRing = function (color)
         local leader = PlayBoard.getLeader(color)
         leader.influence(color, nil, -1)
@@ -363,12 +416,12 @@ Leader.yunaMoritani = Helper.createClass(Leader, {
         return Action.resources(color, resourceName, finalAmount)
     end,
 
-    --- Final delivery
+    --- Final delivery (never used)
     signetRing = function (color)
         local leader = PlayBoard.getLeader(color)
         return leader.resources(color, "solari", -7)
             and leader.influence(color, nil, 1)
-            and leader.troop(color, "supply", "garrison", 1)
+            and leader.troops(color, "supply", "garrison", 1)
             and leader.resources(color, "spice", 1)
     end
 })

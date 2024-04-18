@@ -51,7 +51,6 @@ local InfluenceTrack = {
 
 ---
 function InfluenceTrack.onLoad(state)
-
     Helper.append(InfluenceTrack, Helper.resolveGUIDs(false, {
         snoopers = {
             emperor = "a58ce8",
@@ -302,7 +301,7 @@ function InfluenceTrack._gainFriendship(faction, color)
     Types.assertIsFaction(faction)
     Types.assertIsPlayerColor(color)
     local friendshipTokenName = faction .. "Friendship"
-    PlayBoard.getLeader(color).gainVictoryPoint(color, friendshipTokenName)
+    PlayBoard.getLeader(color).gainVictoryPoint(color, friendshipTokenName, 1)
 end
 
 ---
@@ -378,7 +377,7 @@ function InfluenceTrack._gainAlliance(faction, color)
     Types.assertIsPlayerColor(color)
     local token = InfluenceTrack.allianceTokens[faction]
     assert(token)
-    PlayBoard.getLeader(color).gainVictoryPoint(color, Helper.getID(token))
+    PlayBoard.getLeader(color).gainVictoryPoint(color, Helper.getID(token), 1)
 end
 
 ---
@@ -394,7 +393,7 @@ function InfluenceTrack._gainAllianceBonus(faction, color)
         elseif faction == "fremen" then
             leader.resources(color, "water", 1)
         else
-            error("Unknown faction: ", tostring(faction))
+            error("Unknown faction: " .. tostring(faction))
         end
     end
 end
@@ -405,7 +404,8 @@ function InfluenceTrack._loseAlliance(faction, color)
     InfluenceTrack.allianceTokens[faction].setPositionSmooth(position, false, false)
 end
 
-function InfluenceTrack.gainVictoryPoint(color, name)
+function InfluenceTrack.gainVictoryPoint(color, name, count)
+    assert(count == 1)
     for _, friendshipTokenBag in pairs(InfluenceTrack.friendshipBags) do
         if Helper.getID(friendshipTokenBag) == name then
             PlayBoard.grantScoreTokenFromBag(color, friendshipTokenBag)

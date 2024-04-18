@@ -78,7 +78,7 @@ local PlayBoard = Helper.createClass(nil, {
             researchTokenInitalPosition = Helper.getHardcodedPositionFromGUID('39e0f3', 0.369999915, 0.880000353, 18.2351761),
             freighter = "e9096d",
             leaderPos = Helper.getHardcodedPositionFromGUID('66cdbb', -19.0, 1.25, 17.5),
-            firstPlayerPosition = Helper.getHardcodedPositionFromGUID('346e0d', -14.0, 1.5, 19.7) + Vector(0, -0.4, 0),
+            firstPlayerInitialPosition = Helper.getHardcodedPositionFromGUID('346e0d', -14.0, 1.5, 19.7) + Vector(0, -0.4, 0),
             endTurnButton = "895594",
             atomicsToken = "d5ff47",
         },
@@ -132,7 +132,7 @@ local PlayBoard = Helper.createClass(nil, {
             researchTokenInitalPosition = Helper.getHardcodedPositionFromGUID('292658', 0.369999766, 0.8775002, 18.9369965),
             freighter = "68e424",
             leaderPos = Helper.getHardcodedPositionFromGUID('681774', -19.0, 1.25506675, -5.5),
-            firstPlayerPosition = Helper.getHardcodedPositionFromGUID('1fc559', -14.0, 1.501278, -3.3) + Vector(0, -0.4, 0),
+            firstPlayerInitialPosition = Helper.getHardcodedPositionFromGUID('1fc559', -14.0, 1.501278, -3.3) + Vector(0, -0.4, 0),
             endTurnButton = "9eeccd",
             atomicsToken = "700023",
         },
@@ -186,7 +186,7 @@ local PlayBoard = Helper.createClass(nil, {
             researchTokenInitalPosition = Helper.getHardcodedPositionFromGUID('658b17', 0.369999856, 0.877500236, 20.34),
             freighter = "34281d",
             leaderPos = Helper.getHardcodedPositionFromGUID('cf1486', 19.0, 1.18726385, 17.5),
-            firstPlayerPosition = Helper.getHardcodedPositionFromGUID('59523d', 14.0, 1.45146358, 19.7) + Vector(0, -0.4, 0),
+            firstPlayerInitialPosition = Helper.getHardcodedPositionFromGUID('59523d', 14.0, 1.45146358, 19.7) + Vector(0, -0.4, 0),
             endTurnButton = "96aa58",
             atomicsToken = "0a22ec",
         },
@@ -240,7 +240,7 @@ local PlayBoard = Helper.createClass(nil, {
             researchTokenInitalPosition = Helper.getHardcodedPositionFromGUID('8988cf', 0.369999975, 0.877500236, 19.6394081),
             freighter = "8fa76f",
             leaderPos = Helper.getHardcodedPositionFromGUID('a677e0', 19.0, 1.17902148, -5.5),
-            firstPlayerPosition = Helper.getHardcodedPositionFromGUID('e9a44c', 14.0, 1.44851, -3.3) + Vector(0, -0.4, 0),
+            firstPlayerInitialPosition = Helper.getHardcodedPositionFromGUID('e9a44c', 14.0, 1.44851, -3.3) + Vector(0, -0.4, 0),
             endTurnButton = "3d1b90",
             atomicsToken = "7e10a9",
         }
@@ -419,7 +419,7 @@ function PlayBoard._transientSetUp(settings)
     Helper.registerEventListener("phaseStart", function (phase, firstPlayer)
         if phase == "leaderSelection" or phase == "roundStart" then
             local playBoard = PlayBoard.getPlayBoard(firstPlayer)
-            MainBoard.getFirstPlayerMarker().setPositionSmooth(playBoard.content.firstPlayerPosition, false, false)
+            MainBoard.getFirstPlayerMarker().setPositionSmooth(playBoard.content.firstPlayerInitialPosition, false, false)
         end
 
         if phase == "roundStart" then
@@ -427,10 +427,9 @@ function PlayBoard._transientSetUp(settings)
                 if playBoard.opponent ~= "rival" then
                     local cardAmount = PlayBoard.hasTech(color, "holtzmanEngine") and 6 or 5
                     playBoard:drawCards(cardAmount)
-
-                    if PlayBoard.hasTech(color, "shuttleFleet") then
-                        playBoard.leader.resources(color, "solari", 2)
-                    end
+                end
+                if PlayBoard.hasTech(color, "shuttleFleet") then
+                    playBoard.leader.resources(color, "solari", 2)
                 end
             end
         end
@@ -476,7 +475,7 @@ function PlayBoard._transientSetUp(settings)
                 local instruction = (playBoard.leader or Action).instruct(phase, color == otherColor) or "-"
                 if otherPlayBoard.instructionTextAnchor then
                     Helper.clearButtons(otherPlayBoard.instructionTextAnchor)
-                    Helper.createAbsoluteButtonWithRoundness(otherPlayBoard.instructionTextAnchor, 1, false, {
+                    Helper.createAbsoluteButtonWithRoundness(otherPlayBoard.instructionTextAnchor, 1, {
                         click_function = Helper.registerGlobalCallback(),
                         label = instruction,
                         position = otherPlayBoard.instructionTextAnchor.getPosition() + Vector(0, 0.5, 0),
@@ -522,9 +521,6 @@ function PlayBoard._transientSetUp(settings)
                         TechMarket.registerAcquireTechOption(color, cardName .. "TechBuyOption", "spice", 0)
                     elseif cardName == "machineCulture" then
                         TechMarket.registerAcquireTechOption(color, cardName .. "TechBuyOption", "spice", 0)
-                    -- FIXME Find some way to push this into Leader.
-                    elseif cardName == "signetRing" and PlayBoard.getLeader(color).name == "rhomburVernius" then
-                        TechMarket.registerAcquireTechOption(color, "rhomburVerniusTechBuyOption", "spice", 0)
                     end
                 end
             end)
@@ -568,7 +564,7 @@ function PlayBoard:_recall()
     Helper.forEach(Helper.filter(Park.getObjects(self.agentCardPark), Types.isImperiumCard), function (_, card)
         local cardName = Helper.getID(card)
         if cardName == "foldspace" then
-            card.setPosition(Reserve.foldspaceSlotZone.getPosition())
+            Reserve.recycleFoldspaceCard(card)
         elseif Helper.isElementOf(cardName, {"seekAllies", "powerPlay", "treachery"}) then
             MainBoard.trash(card)
         else
@@ -587,7 +583,7 @@ function PlayBoard:_recall()
         Helper.filter(Park.getObjects(self.revealCardPark), Types.isIntrigueCard)
     )
     Helper.forEach(playedIntrigueCards, function (i, card)
-        card.setPosition(Intrigue.discardZone.getPosition())
+        Intrigue.discard(card)
     end)
 
     -- Flip any used tech.
@@ -719,8 +715,6 @@ function PlayBoard.acceptTurn(phase, color)
             PlayBoard.combatPassCountdown = PlayBoard.combatPassCountdown - 1
         end
     elseif phase == 'combatEnd' then
-        -- TODO Player is victorious and the combat provied a reward (auto?) or
-        -- a dreadnought needs to be placed or a combat card remains to be played.
         accepted = playBoard.lastPhase ~= phase and Combat.getRank(color) ~= nil
     elseif phase == 'makers' then
         accepted = false
@@ -751,7 +745,7 @@ end
 
 ---
 function PlayBoard.collectReward(color)
-    local conflictName = Combat.getTurnConflictName()
+    local conflictName = Combat.getCurrentConflictName()
     local rank = Combat.getRank(color).value
     ConflictCard.collectReward(color, conflictName, rank)
     if rank == 1 then
@@ -761,8 +755,6 @@ function PlayBoard.collectReward(color)
         end
 
         local dreadnoughts = Combat.getDreadnoughtsInConflict(color)
-
-        Helper.dump(color, "has", #dreadnoughts, "dreadnought(s)")
         if #dreadnoughts > 0 then
             Dialog.showInfoDialog(color, I18N("dreadnoughtMandatoryOccupation"))
         end
@@ -1076,7 +1068,6 @@ function PlayBoard:_cleanUp(base, ix, immortality, full)
         object.interactable = true
         object.destruct()
     end
-
 
     if full then
         self:_clearButtons()
@@ -1403,16 +1394,15 @@ function PlayBoard:tryToDrawCards(count)
 
         local function coalesce(c1, c2)
             return {
-                continuations = Helper.concatTables(c1.continuations, c2.continuations),
+                parameteredContinuations = Helper.concatTables(c1.parameteredContinuations, c2.parameteredContinuations),
                 count = c1.count + c2.count
             }
         end
 
         local function handle(c)
-            local runAllContinuations = function (...)
-                Helper.dump("COUNT:", #c.continuations)
-                for _, otherContinuation in ipairs(c.continuations) do
-                    otherContinuation.run(...)
+            local runAllContinuations = function (_)
+                for _, parameteredContinuation in ipairs(c.parameteredContinuations) do
+                    parameteredContinuation.continuation.run(parameteredContinuation.parameter)
                 end
             end
 
@@ -1427,7 +1417,7 @@ function PlayBoard:tryToDrawCards(count)
     end
 
     self.drawCardsCoalescentQueue.submit({
-        continuations = { continuation },
+        parameteredContinuations = { { continuation = continuation, parameter = count } },
         count = count
     })
 
@@ -1624,7 +1614,6 @@ function PlayBoard.setLeader(color, leaderCard)
 
     local playBoard = PlayBoard.getPlayBoard(color)
     if playBoard.opponent == "rival" then
-        Helper.dump("Hagal.getRivalCount() =", Hagal.getRivalCount())
         if Hagal.getRivalCount() == 1 then
             playBoard.leader = Rival.newRival(color)
         elseif Hagal.isLeaderCompatible(leaderCard) then
@@ -1668,7 +1657,6 @@ end
 
 ---
 function PlayBoard.getLeader(color)
-    assert(color)
     return PlayBoard.getPlayBoard(color).leader
 end
 
@@ -1797,7 +1785,7 @@ function PlayBoard.takeHighCouncilSeat(color)
     local token = PlayBoard.getCouncilToken(color)
     if not PlayBoard.hasHighCouncilSeat(color) then
         if Park.putObject(token, MainBoard.getHighCouncilSeatPark()) then
-            token.interactable = false
+            token.interactable = true
             local playBoard = PlayBoard.getPlayBoard(color)
             playBoard.persuasion:change(2)
             if PlayBoard.hasTech(color, "restrictedOrdnance") then
@@ -2044,7 +2032,7 @@ end
 function PlayBoard.acquireVoice(color, voiceToken)
     Types.assertIsPlayerColor(color)
     assert(voiceToken)
-    local position = PlayBoard.getPlayBoard(color).content.firstPlayerPosition
+    local position = PlayBoard.getPlayBoard(color).content.firstPlayerInitialPosition
     voiceToken.setPositionSmooth(position + Vector(0, 1, -2.8))
     return true
 end

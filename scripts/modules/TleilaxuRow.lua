@@ -15,7 +15,7 @@ local TleilaxuRow = {}
 
 ---
 function TleilaxuRow.onLoad(state)
-    Helper.append(TleilaxuRow, Helper.resolveGUIDs(true, {
+    Helper.append(TleilaxuRow, Helper.resolveGUIDs(false, {
         deckZone = "14b2ca",
         slotZones = {
             'e5ba35',

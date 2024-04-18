@@ -8,6 +8,7 @@ local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
 local TleilaxuRow = Module.lazyRequire("TleilaxuRow")
 local Action = Module.lazyRequire("Action")
 local Types = Module.lazyRequire("Types")
+local TechMarket = Module.lazyRequire("TechMarket")
 
 local HagalCard = {
     cards = {
@@ -123,13 +124,6 @@ function HagalCard._activateSecrets(color, rival)
     if HagalCard.spaceIsFree(color, "secrets") then
         HagalCard.sendRivalAgent(color, rival, "secrets")
         rival.influence(color, "beneGesserit", 1)
-        for _, otherColor in ipairs(PlayBoard.getActivePlayBoardColors()) do
-            if otherColor ~= color then
-                if #PlayBoard.getIntrigues(otherColor) > 3 then
-                    rival.stealIntrigue(color, otherColor, 1)
-                end
-            end
-        end
         return true
     else
         return false
@@ -213,8 +207,8 @@ function HagalCard._activateHarvestSpice(color, rival)
     end
 
     if bestDesertSpace then
-        rival.resources(color, "spice", bestTotalSpice)
         HagalCard.sendRivalAgent(color, rival, bestDesertSpace)
+        rival.resources(color, "spice", bestTotalSpice)
         MainBoard.getSpiceBonus(bestDesertSpace):set(0)
         HagalCard.sendUpToTwoUnits(color, rival)
         return true
@@ -299,7 +293,8 @@ end
 function HagalCard._activateTechNegotiation(color, rival)
     if HagalCard.spaceIsFree(color, "techNegotiation") then
         HagalCard.sendRivalAgent(color, rival, "techNegotiation")
-        if not rival.acquireTech(color, nil, 1) then
+        TechMarket.registerAcquireTechOption(color, "techNegotiationTechBuyOption", "spice", 1)
+        if not rival.acquireTech(color, nil) then
             rival.troops(color, "supply", "negotiation", 1)
         end
         return true
@@ -312,7 +307,8 @@ function HagalCard._activateDreadnought1p(color, rival)
     if HagalCard.spaceIsFree(color, "dreadnought") and PlayBoard.getAquiredDreadnoughtCount(color) < 2 then
         HagalCard.sendRivalAgent(color, rival, "dreadnought")
         rival.dreadnought(color, "supply", "garrison", 1)
-        rival.acquireTech(color, nil, 0)
+        TechMarket.registerAcquireTechOption(color, "dreadnoughtTechBuyOption", "spice", 0)
+        rival.acquireTech(color, nil)
         return true
     else
         return false

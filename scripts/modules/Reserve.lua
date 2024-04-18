@@ -64,4 +64,9 @@ function Reserve.acquireTheSpiceMustFlow(color, toItsHand)
     end
 end
 
+---
+function Reserve.recycleFoldspaceCard(card)
+    card.setPosition(Reserve.foldspaceSlotZone.getPosition())
+end
+
 return Reserve

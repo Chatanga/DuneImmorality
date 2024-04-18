@@ -53,8 +53,7 @@ local TleilaxuResearch = {
 
 ---
 function TleilaxuResearch.onLoad(state)
-
-    Helper.append(TleilaxuResearch, Helper.resolveGUIDs(true, {
+    Helper.append(TleilaxuResearch, Helper.resolveGUIDs(false, {
         board = "d5c2db",
         TanksZone = "f5de09",
         tleilaxSpiceBonusToken = "46cd6b",
@@ -222,9 +221,17 @@ end
 ---@param jump Vector
 function TleilaxuResearch.advanceResearch(color, jump)
     local continuation = Helper.createContinuation("TleilaxuResearch.advanceResearch")
-    local legit = jump.x == 1 and math.abs(jump.z) <= 1
-    TleilaxuResearch._advanceResearch(color, jump, legit)
-    continuation.run(jump)
+    local finalJump = jump
+    if not finalJump and TleilaxuResearch.hasReachedTwoHelices(color) then
+        finalJump = Vector(1, 0, 0)
+    end
+    if finalJump then
+        local legit = finalJump.x == 1 and math.abs(finalJump.z) <= 1
+        TleilaxuResearch._advanceResearch(color, finalJump, legit)
+        continuation.run(finalJump)
+    else
+        continuation.cancel()
+    end
     return continuation
 end
 
@@ -313,10 +320,7 @@ end
 
 ---
 function TleilaxuResearch._tleilaxSpaceToWorldPosition(positionInTleilaxSpace)
-    --Helper.dumpFunction("TleilaxuResearch._tleilaxSpaceToWorldPosition", positionInTleilaxSpace)
-    --Helper.dump("TleilaxuResearch.tleilaxuLevelZones[positionInTleilaxSpace]", TleilaxuResearch.tleilaxuLevelZones[positionInTleilaxSpace])
-    --Helper.dump("TleilaxuResearch.tleilaxuLevelZones[positionInTleilaxSpace].getPosition()", TleilaxuResearch.tleilaxuLevelZones[positionInTleilaxSpace].getPosition())
-    return TleilaxuResearch.tleilaxuLevelZones[positionInTleilaxSpace].getPosition() -- FIXME scripts/modules/TleilaxuResearch.lua:316:5: attempt to index a nil value
+    return TleilaxuResearch.tleilaxuLevelZones[positionInTleilaxSpace].getPosition()
 end
 
 ---
@@ -402,7 +406,7 @@ function TleilaxuResearch._advanceTleilax(color, jump, withBenefits)
                 end
 
                 if researchLevelBenefits.victoryToken then
-                    leader.gainVictoryPoint(color, "tleilax")
+                    leader.gainVictoryPoint(color, "tleilax", 1)
                 end
 
                 if researchLevelBenefits.spiceBonus then

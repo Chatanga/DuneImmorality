@@ -534,7 +534,7 @@ function Helper.createSizedAreaButton(width, height, anchor, altitude, tooltip, 
     }
 
     -- 0.75 | 10 ?
-    Helper.createAbsoluteButtonWithRoundness(anchor, 0.75, false, parameters)
+    Helper.createAbsoluteButtonWithRoundness(anchor, 0.75, parameters)
 
     return parameters.click_function
 end
@@ -587,21 +587,21 @@ end
 ]]
 ---
 function Helper._createAbsoluteButton(object, parameters)
-    return Helper.createAbsoluteButtonWithRoundness(object, 0.25, false, parameters)
+    return Helper.createAbsoluteButtonWithRoundness(object, 0.25, parameters)
 end
 
 ---
-function Helper.createAbsoluteButtonWithRoundness(object, roundness, quirk, parameters)
-    return Helper.createButton(object, Helper._createAbsoluteWidgetWithRoundnessParameters(object, roundness, quirk, parameters))
+function Helper.createAbsoluteButtonWithRoundness(object, roundness, parameters)
+    return Helper.createButton(object, Helper._createAbsoluteWidgetWithRoundnessParameters(object, roundness, parameters))
 end
 
 ---
-function Helper._createAbsoluteInputWithRoundness(object, roundness, quirk, parameters)
-    return Helper.createInput(object, Helper._createAbsoluteWidgetWithRoundnessParameters(object, roundness, quirk, parameters))
+function Helper._createAbsoluteInputWithRoundness(object, roundness, parameters)
+    return Helper.createInput(object, Helper._createAbsoluteWidgetWithRoundnessParameters(object, roundness, parameters))
 end
 
 ---
-function Helper._createAbsoluteWidgetWithRoundnessParameters(object, roundness, quirk, parameters)
+function Helper._createAbsoluteWidgetWithRoundnessParameters(object, roundness, parameters)
     assert(object)
     assert(roundness >= 0, "Zero or negative roundness won't work as intended.")
     assert(roundness <= 10, "Roundness beyond 10 won't work as intended.")
@@ -631,20 +631,10 @@ function Helper._createAbsoluteWidgetWithRoundnessParameters(object, roundness, 
     if p then
         p = Helper.toVector(p)
         -- Inverting the X coordinate comes from our global 180° rotation around Y.
-        -- TODO Get rid of this quirk.
-        if quirk then
-            p = Vector(-p.x, p.y, p.z)
-        else
-            p = Vector(p.x, p.y, p.z)
-        end
+        p = Vector(p.x, p.y, p.z)
 
         p = p - object.getPosition()
-
-        if quirk then
-            p = Vector(p.x, p.y, p.z)
-        else
-            p = Vector(-p.x, p.y, p.z)
-        end
+        p = Vector(-p.x, p.y, p.z)
 
         p:scale(invScale)
 
@@ -884,6 +874,13 @@ function Helper.createContinuation(name)
     return continuation
 end
 
+---@return Continuation
+function Helper.fakeContinuation(...)
+    local fakeContinuation = Helper.createContinuation("Helper.alwaysContinuation")
+    fakeContinuation.run(...)
+    return fakeContinuation
+end
+
 ---@param timeout number?
 ---@return Continuation
 function Helper.onceStabilized(timeout)
@@ -898,10 +895,9 @@ function Helper.onceStabilized(timeout)
         continuation.run(success)
     end, function ()
         local duration = os.time() - start
-        success = Helper.isStabilized(delayed or duration <= 2)
+        success = Helper.isStabilized(delayed or duration <= 5)
         if not success then
-            if not delayed and duration > 2 then
-                log(duration)
+            if not delayed and duration > 5 then
                 delayed = true
                 broadcastToAll("Delaying transition (see system log)...")
             end
@@ -956,9 +952,10 @@ end
 ---@return Continuation
 function Helper.onceShuffled(container)
     local continuation = Helper.createContinuation("Helper.onceShuffled")
+    -- TODO Is there a better way?
     Wait.time(function ()
         continuation.run(container)
-    end, 2) -- TODO Search for a better way.
+    end, 2)
     return continuation
 end
 
@@ -1154,7 +1151,9 @@ function Helper.randomizePlayerPositions(colors)
 
     -- Start shuffling players.
 
-    local registeredCallback = Helper.registerGlobalCallback(function ()
+    local coroutineHolder = {}
+    coroutineHolder.registeredCallback = Helper.registerGlobalCallback(function ()
+        Helper.unregisterGlobalCallback(coroutineHolder.registeredCallback)
 
         for timeout = 1, 50 do
 
@@ -1168,7 +1167,7 @@ function Helper.randomizePlayerPositions(colors)
                             --print("Moving player ".. myC)
                             Player[myC]:changeColor(v.target)
                             while Player[myC].seated and not Player[v.target].seated do
-                                coroutine.yield()
+                                coroutine.yield(0)
                             end
                             v.myColour = v.target
                             v.moved = true
@@ -1201,7 +1200,7 @@ function Helper.randomizePlayerPositions(colors)
                     Player[lastPlayer.myColour]:changeColor("Black")
                     lastPlayer.myColour = "Black"
                     while not Player["Black"].seated do
-                        coroutine.yield()
+                        coroutine.yield(0)
                     end
                 end
             end
@@ -1222,16 +1221,15 @@ function Helper.randomizePlayerPositions(colors)
                 v.prevMoved = v.moved
             end
 
-            coroutine.yield()
+            coroutine.yield(0)
         end
 
-        Helper._sleep(2)
+        Helper.sleep(2)
         continuation.run()
 
         return 1
     end)
-
-    startLuaCoroutine(Global, registeredCallback)
+    startLuaCoroutine(Global, coroutineHolder.registeredCallback)
 
     return continuation
 end
@@ -1243,7 +1241,7 @@ function Helper.changePlayerColorInCoroutine(player, newColor)
     local function seatPlayer(sourceColor, targetColor)
         Player[sourceColor]:changeColor(targetColor)
         while Player[sourceColor].seated and not Player[targetColor].seated do
-            coroutine.yield()
+            coroutine.yield(0)
         end
     end
 
@@ -1387,10 +1385,10 @@ function Helper.getSharedTable(tableName)
 end
 
 --- Intended to be called from a coroutine.
-function Helper._sleep(durationInSeconds)
+function Helper.sleep(durationInSeconds)
     local Time = os.clock() + durationInSeconds
     while os.clock() < Time do
-        coroutine.yield()
+        coroutine.yield(0)
     end
 end
 
@@ -1973,17 +1971,16 @@ function Helper.endsWith(str, ending)
     return ending == "" or str:sub(-#ending) == ending
 end
 
+---
 function Helper.splitString(str, sep)
-    if sep == nil then
-       sep = "%s"
-    end
     local tokens = {}
-    for token in string.gmatch(str, "([^" .. sep .. "]+)") do
-       table.insert(tokens, token)
+    for token in string.gmatch(str, "([^" .. (sep or "%s") .. "]+)") do
+        table.insert(tokens, token)
     end
     return tokens
 end
 
+---
 function Helper.chopName(name, n)
     local choppedName = ""
     local i = 0

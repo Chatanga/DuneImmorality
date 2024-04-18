@@ -18,8 +18,7 @@ local Rival = Helper.createClass(Action, {
 })
 
 ---
-function Rival.newRival(color, leaderName)
-    --Helper.dumpFunction("Rival.newRival", color, leaderName)
+function Rival.newRival(color, leaderName, riseOfIx)
     local rival = Helper.createClassInstance(Rival, {
         leader = leaderName and Leader.newLeader(leaderName) or Hagal,
     })
@@ -36,11 +35,14 @@ end
 
 ---
 function Rival.prepare(color, settings)
+    Rival.riseOfIx = settings.riseOfIx
     -- https://boardgamegeek.com/thread/2570879/article/36734124#36734124
-    if Hagal.getRivalCount() == 1 then
+    local rivalCount = Hagal.getRivalCount()
+    if rivalCount == 1 then
         Action.resources(color, "water", 1)
         Action.troops(color, "supply", "garrison", 3)
-    elseif Hagal.numberOfPlayers == 2 then
+    else
+        assert(rivalCount == 2)
         Action.resources(color, "water", 1)
         if settings.difficulty ~= "novice" then
             Action.troops(color, "supply", "garrison", 3)
@@ -52,8 +54,11 @@ end
 ---
 function Rival.influence(color, faction, amount)
     local finalFaction = faction
-    if not finalFaction then
-        local factions = { "emperor", "spacingGuild", "beneGesserit", "fremen" }
+    if not finalFaction or type(finalFaction) == "table" then
+        local factions = faction
+        if not factions then
+            factions = { "emperor", "spacingGuild", "beneGesserit", "fremen" }
+        end
         Helper.shuffle(factions)
         table.sort(factions, function (f1, f2)
             local i1 = InfluenceTrack.getInfluence(f1, color)
@@ -94,24 +99,24 @@ function Rival.shipments(color, amount)
 end
 
 ---
-function Rival.acquireTech(color, stackIndex, discount)
+function Rival.acquireTech(color, stackIndex)
 
     local finalStackIndex  = stackIndex
     if not finalStackIndex then
+        local discount = TechMarket.getRivalSpiceDiscount()
         local spiceBudget = PlayBoard.getResource(color, "spice"):get()
 
         local bestTechIndex
         local bestTech
         for otherStackIndex = 1, 3 do
             local tech = TechMarket.getTopCardDetails(otherStackIndex)
-            if tech.hagal and tech.cost <= spiceBudget + discount and (not bestTech or bestTech.cost < tech.cost) then
+            if tech and tech.hagal and tech.cost <= spiceBudget + discount and (not bestTech or bestTech.cost < tech.cost) then
                 bestTechIndex = otherStackIndex
                 bestTech = tech
             end
         end
 
         if bestTech then
-            Rival.resources(color, "spice", -bestTech.cost)
             finalStackIndex = bestTechIndex
         else
             return false
@@ -119,7 +124,7 @@ function Rival.acquireTech(color, stackIndex, discount)
     end
 
     local techDetails = TechMarket.getTopCardDetails(finalStackIndex)
-    if Action.acquireTech(color, finalStackIndex, discount) then
+    if Action.acquireTech(color, finalStackIndex) then
         if techDetails.name == "trainingDrones" then
             if PlayBoard.useTech(color, "trainingDrones") then
                 Rival.troops(color, "supply", "garrison", 1)
@@ -133,21 +138,19 @@ end
 
 ---
 function Rival.choose(color, topic)
-    --Helper.dumpFunction("Rival.choose", color, topic)
 
     local function pickTwoBestFactions()
         local factions = { "emperor", "spacingGuild", "beneGesserit", "fremen" }
-        for _ = 1, 2 do
-            Helper.shuffle(factions)
-            table.sort(factions, function (f1, f2)
-                local i1 = InfluenceTrack.getInfluence(f1, color)
-                local i2 = InfluenceTrack.getInfluence(f2, color)
-                return i1 > i2
-            end)
+        Helper.shuffle(factions)
+        table.sort(factions, function (f1, f2)
+            local i1 = InfluenceTrack.getInfluence(f1, color)
+            local i2 = InfluenceTrack.getInfluence(f2, color)
+            return i1 < i2
+        end)
+        for i = 1, 2 do
             local faction = factions[1]
             table.remove(factions, 1)
-
-            return Rival.influence(color, faction, 1)
+            Rival.influence(color, faction, 1)
         end
     end
 
@@ -168,27 +171,27 @@ function Rival.resources(color, nature, amount)
         if Action.resources(color, nature, amount) then
             local resource = PlayBoard.getResource(color, nature)
             if nature == "spice" then
-                if Hagal.riseOfIx then
+                if Rival.riseOfIx then
                     local tech = PlayBoard.getTech(color, "spySatellites")
                     if tech and nature == "spice" and resource:get() >= 3 then
                         MainBoard.trash(tech)
-                        Rival.gainVictoryPoint(color, "spySatellites")
+                        Rival.gainVictoryPoint(color, "spySatellites", 1)
                     end
                 else
                     if resource:get() >= 7 then
                         resource:change(-7)
-                        Rival.gainVictoryPoint(color, "spice")
+                        Rival.gainVictoryPoint(color, "spice", 1)
                     end
                 end
             elseif nature == "water" then
                 if resource:get() >= 3 then
                     resource:change(-3)
-                    Rival.gainVictoryPoint(color, "water")
+                    Rival.gainVictoryPoint(color, "water", 1)
                 end
             elseif nature == "solari" then
                 if resource:get() >= 7 then
                     resource:change(-7)
-                    Rival.gainVictoryPoint(color, "solari")
+                    Rival.gainVictoryPoint(color, "solari", 1)
                 end
             end
             return true
@@ -217,10 +220,9 @@ function Rival.drawIntrigues(color, amount)
             local intrigues = PlayBoard.getIntrigues(color)
             if #intrigues >= 3 then
                 for i = 1, 3 do
-                    -- Not smooth to avoid being recaptured by the hand zone.
-                    intrigues[i].setPosition(Intrigue.discardZone.getPosition() + Vector(0, 1, 0))
+                    Intrigue.discard(intrigues[i])
                 end
-                Rival.gainVictoryPoint(color, "intrigue")
+                Rival.gainVictoryPoint(color, "intrigue", 1)
             end
         end)
         return true
@@ -239,10 +241,10 @@ function Rival.troops(color, from, to, amount)
 end
 
 ---
-function Rival.gainVictoryPoint(color, name)
-    -- We make an exception for alliance token to make it clear that the rival owns it.
+function Rival.gainVictoryPoint(color, name, count)
+    -- We make an exception for alliance token to make it clear that the Hagal House owns it.
     if Hagal.getRivalCount() == 2 or Helper.endsWith(name, "Alliance") then
-        return Action.gainVictoryPoint(color, name)
+        return Action.gainVictoryPoint(color, name, count)
     else
         return false
     end
@@ -252,7 +254,6 @@ end
 function Rival.signetRing(color)
     -- FIXME Fix Park instead!
     Helper.onceTimeElapsed(0.25).doAfter(function ()
-        -- We don't redispatch to the leader in other cases, because rivals ignore their passive abilities.
         local leader = Rival.rivals[color].leader
         return leader.signetRing(color)
     end)

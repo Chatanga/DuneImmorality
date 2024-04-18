@@ -935,7 +935,8 @@ function ArrakeenScouts._createMentatController(playerPanes, resourceName, level
         leader.resources(color, resourceName, -amount)
         if rank.level == 1 then
             if not leader.takeMentat(color) then
-                -- TODO Take 1 influence instead.
+                -- TODO I18N
+                Dialog.showInfoDialog(color, "Take 1 influence instead")
             end
             if level == 2 then
                 leader.drawImperiumCards(color, 1)
@@ -1169,7 +1170,7 @@ end
 function ArrakeenScouts._createCovertOperationController(playerPanes)
     local getOptions = function (_)
         return {
-            --TODO I18N
+            -- TODO I18N
             { index = 1, roundCount = 1, reward = "+2 solari", value = "+2 solari dans 1 manche" },
             { index = 2, roundCount = 1, reward = "+1 Empereur", value = "+1 Empereur dans 1 manche" },
             { index = 3, roundCount = 1, reward = "+1 Guilde Spatiale", value = "+1 Guilde Spatiale dans 1 manche" },

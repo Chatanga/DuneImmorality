@@ -58,12 +58,11 @@ end
 --- Initialize the turn system with the provided players (or all the seated
 --- players) and start a new round.
 function TurnControl.setUp(settings, activeOpponents)
-    TurnControl.hotSeat = settings.virtualHotSeatMode
+    TurnControl.hotSeat = settings.hotSeat
     TurnControl.players = TurnControl.toCanonicallyOrderedPlayerList(activeOpponents)
     TurnControl.scoreGoal = settings.epicMode and 12 or 10
 
     if settings.numberOfPlayers == 1 then
-        -- TODO To be confirmed.
         for i, player in ipairs(TurnControl.players) do
             if PlayBoard.isHuman(player) then
                 TurnControl.firstPlayerLuaIndex = TurnControl._getNextPlayer(i)
@@ -199,7 +198,7 @@ function TurnControl._startPhase(phase)
     end
 
     local firstPlayer = TurnControl.players[TurnControl.firstPlayerLuaIndex]
-    Helper.dump("> Round:", TurnControl.getCurrentRound(), "- Phase:", phase, "- first player:", firstPlayer)
+    Helper.dump("> Round:", TurnControl.getCurrentRound(), "- Phase:", phase)
     broadcastToAll(I18N(Helper.toCamelCase("phase", phase), { round = TurnControl.currentRound }), Color.fromString("Pink"))
     Helper.emitEvent("phaseStart", TurnControl.currentPhase, firstPlayer)
 
@@ -297,7 +296,7 @@ function TurnControl._createReclaimRewardsButton()
     Turns.enable = false
 
     TurnControl._getButtonAnchor().doAfter(function (anchor)
-        Helper.createAbsoluteButtonWithRoundness(anchor, 1, false, {
+        Helper.createAbsoluteButtonWithRoundness(anchor, 1, {
             click_function = Helper.registerGlobalCallback(function ()
                 anchor.clearButtons()
                 TurnControl._nextPhase()
@@ -322,7 +321,7 @@ function TurnControl._createNextRoundButton()
     Turns.enable = false
 
     TurnControl._getButtonAnchor().doAfter(function (anchor)
-        Helper.createAbsoluteButtonWithRoundness(anchor, 1, false, {
+        Helper.createAbsoluteButtonWithRoundness(anchor, 1, {
             click_function = Helper.registerGlobalCallback(function ()
                 anchor.clearButtons()
                 TurnControl._nextPhase()
@@ -340,7 +339,6 @@ end
 
 ---
 function TurnControl._notifyPlayerTurn(refreshing)
-    --Helper.dumpFunction("TurnControl._notifyPlayerTurn", refreshing)
     local playerColor = TurnControl.players[TurnControl.currentPlayerLuaIndex]
     local player = Helper.findPlayerByColor(playerColor)
     if player then
@@ -364,7 +362,6 @@ end
 
 function TurnControl.assumeDirectControl(color)
     local legitimatePlayers = TurnControl.getLegitimatePlayers(color)
-    --Helper.dump("legitimatePlayers:", legitimatePlayers)
     if not Helper.isEmpty(legitimatePlayers) then
         legitimatePlayers[1].changeColor(color)
         return true

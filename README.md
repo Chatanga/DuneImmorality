@@ -6,16 +6,6 @@ A complete rewrite of Dune Immorality from scratch to overcome the limitations o
 
 ![Capture](captures/capture-1.jpg)
 
-Features:
-- Base game
-- Rise of Ix extension
-- Immortality extension
-- Hagal House
-- (Blitz!)
-- Arrakeen Scouts
-- (Automated fanmade leaders)
-- Reload support
-
 Supported langages:
 - French
 - English
@@ -34,7 +24,8 @@ This repository contains the JSON skeletons and Lua scripts of various mods for 
 
 ## TODO
 
-- Fix influence token locations.
-- Rescan Hagal deck (en + fr).
 - Scan Arrakeen Scouts deck (en).
 - Arrakeen Scouts history (as cards).
+
+- Rescan Hagal deck (en + fr).
+- Rival expert deployment / brutal escalation / churn.

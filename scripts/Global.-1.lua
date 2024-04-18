@@ -23,6 +23,7 @@ autoLoadedSettings = {
     language = "fr",
     hotSeat = true,
     numberOfPlayers = 3,
+    randomizePlayerPositions = false,
     riseOfIx = true,
     epicMode = false,
     immortality = true,
@@ -34,6 +35,47 @@ autoLoadedSettings = {
         Blue = "paulAtreides",
     },
     formalCombatPhase = true,
+    soundEnabled = true,
+}
+
+autoLoadedSettings = {
+    language = "fr",
+    hotSeat = true,
+    numberOfPlayers = 1,
+    difficulty = "novice",
+    randomizePlayerPositions = false,
+    riseOfIx = true,
+    epicMode = false,
+    immortality = true,
+    goTo11 = false,
+    leaderSelection = {
+        Green = "yunaMoritani",
+        -- vladimirHarkonnen
+        -- glossuRabban
+        -- ilbanRichese
+        -- helenaRichese
+        -- letoAtreides
+        -- paulAtreides
+        -- arianaThorvald
+        -- memnonThorvald
+        -- armandEcaz
+        -- ilesaEcaz
+        -- rhomburVernius
+        -- tessiaVernius
+        -- yunaMoritani
+        -- hundroMoritani
+        Yellow = "arianaThorvald",
+        Red = "memnonThorvald",
+        -- vladimirHarkonnen
+        -- glossuRabban
+        -- ilbanRichese
+        -- letoAtreides
+        -- arianaThorvald
+        -- memnonThorvald
+        -- rhomburVernius
+        -- hundroMoritani
+    },
+    formalCombatPhase = false,
     soundEnabled = true,
 }
 ]]
@@ -107,8 +149,8 @@ local Controller = {
             "4 (hotseat)"
         },
         virtualHotSeatMode = {},
-        randomizePlayerPositions = false,
-        difficulty_all = Helper.mapValues(allModules.Hagal.getDifficulties(), function (v) return v.name end),
+        randomizePlayerPositions = true,
+        difficulty_all = Helper.mapValues(allModules.Hagal.getDifficulties(), Helper.field("name")),
         difficulty = {},
         riseOfIx = true,
         epicMode = false,
@@ -205,6 +247,7 @@ function asyncOnLoad(scriptState)
         moduleInfo.module.onLoad(state)
         Helper.emitEvent("loaded", moduleInfo.name)
     end
+    --Helper.dump("Done loading all modules")
 
     -- List the TTS events we want to make available in the modules.
     Module.registerModuleRedirections({
@@ -301,6 +344,7 @@ function runSetUp(index, activeOpponents)
         end
         nextContinuation.doAfter(Helper.partialApply(runSetUp, index + 1, activeOpponents))
     else
+        --Helper.dump("Done setting all modules")
     end
 end
 
@@ -444,7 +488,7 @@ function setUpFromUI()
     setUp({
         language = Controller.fields.language,
         numberOfPlayers = numberOfPlayers,
-        virtualHotSeatMode = not Controller.isUndefined(Controller.fields.virtualHotSeatMode),
+        hotSeat = not Controller.isUndefined(Controller.fields.virtualHotSeatMode),
         randomizePlayerPositions = Controller.fields.randomizePlayerPositions == true,
         difficulty = Controller.fields.difficulty,
         riseOfIx = Controller.fields.riseOfIx == true,
@@ -554,6 +598,7 @@ function Controller.applyVirtualHotSeatMode()
     end
 
     Controller.updateSetupButton()
+    Controller.ui:toUI()
 end
 
 ---

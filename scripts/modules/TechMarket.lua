@@ -10,6 +10,7 @@ local Deck = Module.lazyRequire("Deck")
 local MainBoard = Module.lazyRequire("MainBoard")
 local Types = Module.lazyRequire("Types")
 local TechCard = Module.lazyRequire("TechCard")
+local Action = Module.lazyRequire("Action")
 
 local TechMarket = {
     negotiationParks = {},
@@ -18,8 +19,7 @@ local TechMarket = {
 
 ---
 function TechMarket.onLoad(state)
-
-    Helper.append(TechMarket, Helper.resolveGUIDs(true, {
+    Helper.append(TechMarket, Helper.resolveGUIDs(false, {
         board = "d75455",
         negotiationZone = "2253fa",
         techSlots = {
@@ -155,6 +155,9 @@ function TechMarket.acquireTech(stackIndex, color)
             else
                 TechMarket.frozen = false
             end
+            if not card then
+                Dialog.broadcastToColor(I18N('notAffordableOption'), color, "Purple")
+            end
         end)
     else
         log("Still frozen...")
@@ -195,13 +198,9 @@ function TechMarket._doAcquireTech(stackIndex, color)
         end)
 
         if color then
-            if PlayBoard.isHuman(color) then
-                TechMarket._buyTech(stackIndex, color).doAfter(innerContinuation.run)
-            else
-                innerContinuation.run(true)
-            end
+            TechMarket._buyTech(stackIndex, color).doAfter(innerContinuation.run)
         else
-            printToAll(I18N("pruneTechCard", { card = Helper.getID(techTileStack.topCard) }), "Purple")
+            printToAll(I18N("pruneTechCard", { card = I18N(Helper.getID(techTileStack.topCard)) }), "Purple")
             MainBoard.trash(techTileStack.topCard)
             innerContinuation.run(true)
         end
@@ -262,7 +261,6 @@ function TechMarket._doBuyTech(techTileStack, option, color)
         recalledNegociatorCount = 0
     end
 
-
     local leader = PlayBoard.getLeader(color)
     if leader.resources(color, optionDetails.resourceType, -adjustedTechCost) then
 
@@ -271,11 +269,11 @@ function TechMarket._doBuyTech(techTileStack, option, color)
 
         TechMarket.acquireTechOptions[option] = nil
 
-        printToAll(I18N("buyTech", {
-            name = I18N(Helper.getID(techTileStack.topCard)),
-            amount = adjustedTechCost,
-            resource =  I18N.agree(adjustedTechCost, optionDetails.resourceType) }),
-        color)
+        Action.log(I18N("buyTech", {
+                name = I18N(Helper.getID(techTileStack.topCard)),
+                amount = adjustedTechCost,
+                resource =  I18N.agree(adjustedTechCost, optionDetails.resourceType) }),
+            color)
 
         return true
     else
@@ -324,6 +322,14 @@ function TechMarket.registerAcquireTechOption(color, source, resourceType, amoun
         resourceType = resourceType,
         amount = amount
     }
+end
+
+function TechMarket.getRivalSpiceDiscount()
+    local options = Helper.getValues(TechMarket.acquireTechOptions)
+    assert(#options == 1)
+    local option = options[1]
+    assert(option.resourceType == "spice")
+    return option.amount
 end
 
 ---

@@ -11,7 +11,6 @@ local HagalCard = Module.lazyRequire("HagalCard")
 local Combat = Module.lazyRequire("Combat")
 local ConflictCard = Module.lazyRequire("ConflictCard")
 local MainBoard = Module.lazyRequire("MainBoard")
-local Rival = Module.lazyRequire("Rival")
 
 -- Enlighting clarifications: https://boardgamegeek.com/thread/2578561/summarizing-automa-2p-and-1p-similarities-and-diff
 local Hagal = Helper.createClass(Action, {
@@ -42,23 +41,8 @@ function Hagal.onLoad(state)
     }))
 
     if state.settings and state.settings.numberOfPlayers < 3 then
-        --Hagal.numberOfPlayers = state.Hagal.numberOfPlayers
-        --Hagal.difficulty = state.Hagal.difficulty
-        --Hagal.riseOfIx = state.Hagal.riseOfIx
-        --Hagal.selectedDifficulty = state.Hagal.selectedDifficulty
-
         Hagal._transientSetUp(state.settings)
     end
-end
-
----
-function Hagal.onSave(state)
-    --state.Hagal = {
-    --    numberOfPlayers = Hagal.numberOfPlayers,
-    --    difficulty = Hagal.difficulty,
-    --    riseOfIx = Hagal.riseOfIx,
-    --    selectedDifficulty = Hagal.selectedDifficulty,
-    --}
 end
 
 ---
@@ -78,8 +62,9 @@ function Hagal.setUp(settings)
             Hagal.mentatSpaceCostPatch.destruct()
         elseif  Hagal.getRivalCount() == 2 then
             if Hagal.getMentatSpaceCost() == 5 then
-                Hagal.mentatSpaceCostPatch.setLock(true)
                 Hagal.mentatSpaceCostPatch.setPosition(Vector(-3.98, 0.57, 3.43))
+                Hagal.mentatSpaceCostPatch.setInvisibleTo({})
+                Hagal.mentatSpaceCostPatch.setLock(true)
             else
                 Hagal.mentatSpaceCostPatch.destruct()
             end
@@ -91,7 +76,7 @@ end
 
 ---
 function Hagal.getMentatSpaceCost()
-    if Hagal.getRivalCount() == 2 and Helper.isElementOf(Hagal.selectedDifficulty, {"veteran", "expert"}) then
+    if Hagal.getRivalCount() == 2 and Helper.isElementOf(Hagal.difficulty, {"veteran", "expert"}) then
         return 5
     else
         return 2
@@ -100,11 +85,11 @@ end
 
 ---
 function Hagal._transientSetUp(settings)
+    assert((settings.numberOfPlayers == 1) ~= (settings.difficulty == nil))
+
     Hagal.numberOfPlayers = settings.numberOfPlayers
     Hagal.difficulty = settings.difficulty
     Hagal.riseOfIx = settings.riseOfIx
-
-    Hagal.selectedDifficulty = Hagal.numberOfPlayers == 1 and settings.difficulty or nil
 
     Helper.registerEventListener("phaseStart", function (phase)
         if phase == "combat" then
@@ -116,10 +101,10 @@ function Hagal._transientSetUp(settings)
         elseif phase == "recall" then
             if Hagal.getRivalCount() == 2 then
                 local turn = TurnControl.getCurrentRound()
-                local arrivalTurn = Hagal.difficulties[Hagal.selectedDifficulty].swordmasterArrivalTurn
+                local arrivalTurn = Hagal.difficulties[Hagal.difficulty].swordmasterArrivalTurn
                 if turn + 1 == arrivalTurn then
                     for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
-                        if PlayBoard.isRival(color) and Combat.isInCombat(color) then
+                        if PlayBoard.isRival(color) then
                             local leader = PlayBoard.getLeader(color)
                             leader.recruitSwordmaster(color)
                         end
@@ -158,8 +143,6 @@ function Hagal._lateActivate(phase, color)
     local continuation = Helper.createContinuation("Hagal._lateActivate")
 
     if phase == "leaderSelection" then
-        -- TODO To be confirmed.
-        --Hagal.pickAnyCompatibleLeader(color)
         continuation.run()
     elseif phase == "gameStart" then
         continuation.run()
@@ -196,7 +179,7 @@ function Hagal._collectReward(color)
     local continuation = Helper.createContinuation("Hagal._collectReward")
     Helper.onceFramesPassed(1).doAfter(function ()
         local rank = Combat.getRank(color).value
-        local conflictName = Combat.getTurnConflictName()
+        local conflictName = Combat.getCurrentConflictName()
         ConflictCard.collectReward(color, conflictName, rank)
         if rank == 1 then
             local leader = PlayBoard.getLeader(color)
@@ -209,7 +192,7 @@ function Hagal._collectReward(color)
             if #dreadnoughts > 0 and PlayBoard.hasTech(color, "detonationDevices") then
                 Park.putObject(dreadnoughts[1], PlayBoard.getDreadnoughtPark(color))
                 table.remove(dreadnoughts, 1)
-                leader.gainVictoryPoint(color, "detonationDevices")
+                leader.gainVictoryPoint(color, "detonationDevices", 1)
             end
 
             if #dreadnoughts > 0 then
@@ -253,7 +236,7 @@ end
 function Hagal._cleanUpConflict(color)
     local continuation = Helper.createContinuation("Hagal._cleanUpConflict")
     Helper.onceFramesPassed(1).doAfter(function ()
-        local conflictName = Combat.getTurnConflictName()
+        local conflictName = Combat.getCurrentConflictName()
         local rank = Combat.getRank(color).value
         if rank == 1 then
             ConflictCard.cleanUpConflict(color, conflictName)
@@ -287,6 +270,7 @@ function Hagal._doActivateFirstValidCard(color, action, n, continuation)
     local emptySlots = Park.findEmptySlots(PlayBoard.getRevealCardPark(color))
     assert(emptySlots and #emptySlots > 0)
     assert(n < 10, "Something is not right!")
+
     Helper.moveCardFromZone(Hagal.deckZone, emptySlots[2] + Vector(0, 1 + 0.4 * n, 0), Vector(0, 180, 0)).doAfter(function (card)
         if card then
             if Helper.getID(card) == "reshuffle" then

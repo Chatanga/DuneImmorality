@@ -1,6 +1,6 @@
 local Helper = require("utils.Helper")
 
--- TODO Make it a class (and upgrade createPark into newPark).
+-- Make it a class (and upgrade createPark into newPark)?
 local Park = {}
 
 ---
@@ -350,7 +350,7 @@ function Park.findEmptySlots(park)
     return freeSlots
 end
 
---- TODO Unify with Helper.deepCopy which doesn't use copy?
+--- Unify with Helper.deepCopy which doesn't use copy?
 function Park.deepCopy(c)
     local copy = {}
     for i, e in ipairs(c) do

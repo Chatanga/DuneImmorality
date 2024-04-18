@@ -147,12 +147,14 @@ end
 
 ---
 function Types.assertIsString(str)
-    assert(type(str) == "string", "Not a string: " .. tostring(str))
+    -- Disabled since it doesn't help at all without a proper stacktrace.
+    --assert(type(str) == "string", "Not a string: " .. tostring(str))
 end
 
 ---
 function Types.assertIsBoolean(b)
-    assert(type(b) == "boolean", "Not a boolean: " .. tostring(b))
+    -- Disabled since it doesn't help at all without a proper stacktrace.
+    --assert(type(b) == "boolean", "Not a boolean: " .. tostring(b))
 end
 
 ---
@@ -162,17 +164,20 @@ end
 
 ---
 function Types.assertIsInteger(n)
-    assert(Types.isInteger(n), "Not an integer: " .. tostring(n))
+    -- Disabled since it doesn't help at all without a proper stacktrace.
+    --assert(Types.isInteger(n), "Not an integer: " .. tostring(n))
 end
 
 ---
 function Types.assertIsPositiveInteger(n)
-    assert(Types.isInteger(n) and n >= 0, "Not a positive integer: " .. tostring(n))
+    -- Disabled since it doesn't help at all without a proper stacktrace.
+    --assert(Types.isInteger(n) and n >= 0, "Not a positive integer: " .. tostring(n))
 end
 
 ---
 function Types.assertIsStrictlyPositive(n)
-    assert(Types.isInteger(n) and n > 0, "Not a strictly positive integer: " .. tostring(n))
+    -- Disabled since it doesn't help at all without a proper stacktrace.
+    --assert(Types.isInteger(n) and n > 0, "Not a strictly positive integer: " .. tostring(n))
 end
 
 ---
