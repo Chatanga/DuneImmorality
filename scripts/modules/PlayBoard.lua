@@ -381,8 +381,6 @@ function PlayBoard.setUp(settings, activeOpponents)
                 Deck.generateStarterDeck(playBoard.content.drawDeckZone, settings.immortality, settings.epicMode).doAfter(Helper.shuffleDeck)
                 Deck.generateStarterDiscard(playBoard.content.discardZone, settings.immortality, settings.epicMode)
             else
-                playBoard.content.researchToken.destruct()
-                playBoard.content.researchToken = nil
                 if Hagal.getRivalCount() == 1 then
                     playBoard.content.scoreMarker.destruct()
                     playBoard.content.scoreMarker = nil
@@ -1046,7 +1044,6 @@ function PlayBoard:_cleanUp(base, ix, immortality, full)
 
     if ix then
         collect("dreadnoughts")
-        collect("controlMarkerBag")
         collect("freighter")
         collect("atomicsToken")
     end

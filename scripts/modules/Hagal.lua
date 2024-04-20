@@ -85,7 +85,8 @@ end
 
 ---
 function Hagal._transientSetUp(settings)
-    assert((settings.numberOfPlayers == 1) ~= (settings.difficulty == nil))
+    Helper.dumpFunction("Hagal._transientSetUp", settings)
+    assert((settings.numberOfPlayers ~= 1) ~= Hagal.difficulties[settings.difficulty])
 
     Hagal.numberOfPlayers = settings.numberOfPlayers
     Hagal.difficulty = settings.difficulty

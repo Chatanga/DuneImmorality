@@ -296,10 +296,6 @@ local Deck = {
     },
     hagal = {
         base = {
-            other = {
-                -- FIXME
-                churn = 2,
-            },
             common = {
                 conspire = 2,
                 wealth = 1,

@@ -355,6 +355,7 @@ function HagalCard._activateCarthag2(color, rival)
         HagalCard.sendRivalAgent(color, rival, "carthag")
         rival.troops(color, "supply", "combat", 1)
         rival.beetle(color, 1)
+        TleilaxuRow.trash(2)
         HagalCard.sendUpToTwoUnits(color, rival)
         return true
     else
@@ -367,7 +368,6 @@ function HagalCard._activateCarthag3(color, rival)
         HagalCard.sendRivalAgent(color, rival, "carthag")
         rival.troops(color, "supply", "combat", 1)
         rival.beetle(color, 1)
-        TleilaxuRow.trash(2)
         HagalCard.sendUpToTwoUnits(color, rival)
         return true
     else

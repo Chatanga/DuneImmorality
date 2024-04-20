@@ -28,17 +28,7 @@ local Deck = {
         conflict = { "http://cloud-3.steamusercontent.com/ugc/2093667512238537756/F1BEAE6266E75B7A2F5DE511DB4FEB25A2CD486B/", 3, 2 },
     },
     hagal = {
-        hagal = { "http://cloud-3.steamusercontent.com/ugc/2093668799785647713/66020C11E4FEA2D22744020D27465DCC2BB02BBE/", 7, 2 },
-        hagal_wealth = { "http://cloud-3.steamusercontent.com/ugc/2093668799785647456/46014D79D2E1D2F68F4BF5740A0A9E1FED6E540D/", 1, 1 },
-        hagal_arrakeen2p = { "http://cloud-3.steamusercontent.com/ugc/2093668799785647086/8C2F363EFD82AB1A80A01A3E527E6A4ACE369643/", 1, 1 },
-        ixHagal_dreadnought1p = { "http://cloud-3.steamusercontent.com/ugc/2093668799785646315/5E6323692811F0530FB83FAE286162BDF6010E47/", 1, 1, Vector(0.88, 1, 0.83) },
-        ixHagal_dreadnought2p = { "http://cloud-3.steamusercontent.com/ugc/2093668799785646835/1A8E52049F9853C42DA1D0A2E26AF50F7B503773/", 1, 1, Vector(0.9, 1, 0.83) },
-        ixHagal_techNegogiation1p = { "http://cloud-3.steamusercontent.com/ugc/2093668799785646585/5A6FB1D7F4148F22FEF453500A6627132379BD6B/", 1, 1, Vector(0.9, 1, 0.83) },
-        ixHagal_interstellarShipping = { "http://cloud-3.steamusercontent.com/ugc/2093668799785646691/E595B3E111F6E8A0C057C99FF03BB18FFA1327B7/", 1, 1, Vector(0.9, 1, 0.83) },
-        ixHagal_foldspaceAndInterstellarShipping = { "http://cloud-3.steamusercontent.com/ugc/2093668799785647605/D7FAA1F3EB842A0EB4A2966F134EB58ACD966AFC/", 1, 1, Vector(0.9, 1, 0.83) },
-        ixHagal_smugglingAndInterstellarShipping = { "http://cloud-3.steamusercontent.com/ugc/2093668799785646429/978923957A87E0CB3DFAA25DF543FD863DA1EC95/", 1, 1, Vector(0.9, 1, 0.83) },
-        imortalityHagal = { "http://cloud-3.steamusercontent.com/ugc/2120691978813601622/36ABA3AD7A540FF6960527C1E77565F10BB2C6CB/", 2, 2 },
-        hagal_churn = { "http://cloud-3.steamusercontent.com/ugc/2093668799785647209/43CA7B78F12F01CED26D1B57D3E62CAC912D846C/", 1, 1 },
+        hagal = { "http://cloud-3.steamusercontent.com/ugc/2492254803030882505/0E14FB1C5D64FF860D10450760BD6F976535BFBA/", 5, 5 },
     },
     tech = {
         windtraps = { "http://cloud-3.steamusercontent.com/ugc/2093667512238534366/1357A12AE8B805DDA4B35054C7A042EB60ED8D93/", 1, 1 },
@@ -521,53 +511,31 @@ function Deck.loadCustomDecks(loader)
     })
 
     Deck.load(loader, cards.hagal, "hagal", "hagal", 1, {
-        "harvestSpice",
-        "hardyWarriors",
-        "stillsuits",
-        "rallyTroops",
-        "foldspace",
-        "conspire",
-        "selectiveBreeding",
-        "secrets",
-        "heighliner",
-        "reshuffle",
         "arrakeen1p",
+        "arrakeen2p",
         "carthag",
+        "conspire",
+        "foldspace",
         "hallOfOratory",
-        "back",
-    })
-    Deck.load(loader, cards.hagal, "hagal", "hagal_wealth", 1, {
-        "wealth"
-    })
-    Deck.load(loader, cards.hagal, "hagal", "hagal_arrakeen2p", 1, {
-        "arrakeen2p"
-    })
-    Deck.load(loader, cards.hagal, "hagal", "ixHagal_dreadnought1p", 1, {
-        "dreadnought1p"
-    })
-    Deck.load(loader, cards.hagal, "hagal", "ixHagal_dreadnought2p", 1, {
-        "dreadnought2p"
-    })
-    Deck.load(loader, cards.hagal, "hagal", "ixHagal_techNegogiation1p", 1, {
-        "techNegotiation"
-    })
-    Deck.load(loader, cards.hagal, "hagal", "ixHagal_interstellarShipping", 1, {
-        "interstellarShipping"
-    })
-    Deck.load(loader, cards.hagal, "hagal", "ixHagal_foldspaceAndInterstellarShipping", 1, {
-        "foldspaceAndInterstellarShipping"
-    })
-    Deck.load(loader, cards.hagal, "hagal", "ixHagal_smugglingAndInterstellarShipping", 1, {
-        "smugglingAndInterstellarShipping"
-    })
-    Deck.load(loader, cards.hagal, "hagal", "imortalityHagal", 1, {
-        "researchStation",
+        "hardyWarriors",
+        "heighliner",
+        "rallyTroops",
+        "secrets",
+        "selectiveBreeding",
+        "stillsuits",
+        "wealth",
+        "harvestSpice",
+        "reshuffle",
+        "dreadnought1p",
+        "dreadnought2p",
+        "foldspaceAndInterstellarShipping",
+        "interstellarShipping",
+        "smugglingAndInterstellarShipping",
+        "techNegotiation",
         "carthag1",
         "carthag2",
-        "carthag3"
-    })
-    Deck.load(loader, cards.hagal, "hagal", "hagal_churn", 1, {
-        "churn"
+        "carthag3",
+        "researchStation",
     })
 
     -- One tech per custom deck.

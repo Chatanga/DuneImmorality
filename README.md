@@ -26,6 +26,4 @@ This repository contains the JSON skeletons and Lua scripts of various mods for 
 
 - Scan Arrakeen Scouts deck (en).
 - Arrakeen Scouts history (as cards).
-
-- Rescan Hagal deck (en + fr).
 - Rival expert deployment / brutal escalation / churn.

@@ -581,7 +581,7 @@ function Controller.applyVirtualHotSeatMode()
 
     if Controller.isUndefined(Controller.fields.virtualHotSeatMode) or numberOfPlayers > 1 then
         Controller.fields.difficulty = {}
-    else
+    else Controller.isUndefined(Controller.fields.difficulty)
         Controller.fields.difficulty = "novice"
     end
 
@@ -658,5 +658,5 @@ end
 
 ---
 function Controller.isUndefined(value)
-    return not value or type(value) == "table"
+    return value == nil or type(value) == "table"
 end
