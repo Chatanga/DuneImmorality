@@ -13,7 +13,9 @@ return {
     language = "Language",
     players = "Players",
     virtualHotSeat = "Special / Hotseat",
+    virtualHotSeatTooltip = "Allows you to play solo, with 2 players\nor in “hotseat” for the other modes.",
     randomizePlayersPositions = "Randomize players' positions",
+    randomizePlayersPositionTooltip = "No player must use the black seat while\nthe player positions are shuffled.",
     extensions = "Extensions",
     useContracts = "CHOAM contracts",
     legacy = "Dune: Imperium",
@@ -31,13 +33,15 @@ return {
     horizontalHandLayout = "Horizontal hands layout with 4 players",
     assistedRevelation = "Assisted revelation",
     soundEnabled = "Sounds enabled",
+    formalCombatPhase = "Formal combat phase",
+    formalCombatPhaseTooltip = "Players with one or more plot cards\nmust explicitly end their turn after\nplaying one or to pass.",
     setup = "Setup",
     notEnoughPlayers = "Not enough players",
 
     -- Phases
     phaseLeaderSelection = "Phase: leader selection",
     phaseGameStart = "Phase: game start",
-    phaseRoundStart = "Phase: round start",
+    phaseRoundStart = "Phase: round start #{round}\n══════════════════════════════",
     phasePlayerTurns = "Phase: player turns",
     phaseCombat = "Phase: combat",
     phaseCombatEnd = "Phase: combat end",
@@ -81,7 +85,7 @@ return {
     no = "No",
     ok = "Ok",
     cancel = "Cancel",
-    dialogCardAbove = "Do you want to put the card on top of your deck ? (Ok = yes, Cancel = No)",
+    dialogCardAbove = "Do you want to put the card on top of your deck?",
     endTurn = "End\nTurn",
     takeHighCouncilSeatByForce = "Take by force",
     takeHighCouncilSeatByForceConfirm = "Taking High-Council seat by force?",
@@ -152,7 +156,7 @@ return {
     loseInfluence = "■ -{amount} influence with {withFaction}.",
     acquireTleilaxuCard = '■ Acquire Tleixlaxu card: "{card}".',
     acquireImperiumCard = '■ Acquire Imperium card: "{card}".',
-    buyTech= '■ Acquire tech for {amount} {resource}: "{name}".',
+    buyTech = '■ Acquire tech for {amount} {resource}: "{name}".',
     acquireContract = '■ Pick contract: "{name}".',
     sendingAgent = "■ Sending an agent to: {space} ({cards}).",
     triggeringScheme = "■ Triggering rival scheme.",
@@ -225,6 +229,9 @@ return {
     manuallyBuyTech = "Manually acquiring a tech at no cost?",
     notAffordableOption = "You can't afford this buying option!",
     pruneTechCard = 'Pruning tech tile: "{card}"',
+    reclaimRewards = "Reclaim Rewards",
+    roundNumber = "Round #",
+    doYouWantAnotherRound = "Play another round?",
 
     -- Arrakeen Scouts
     joinCommittee = "Join the subcommittee: {committee}",
@@ -262,6 +269,7 @@ return {
     doAResearch = "Do a research",
     destroyACardFromYourHand = "Destroy a card from your hand",
     spendOption = "Spend {amount} {resource}",
+    amount = "{amount} {resource}",
 
     -- Ranking
     firstInCombat = "★ 1st: {leader}",
@@ -623,7 +631,7 @@ return {
     priorityContracts = "Priority Contracts",
     interstellarTrade = "Interstellar Trade",
     prepareTheWay = "Prepare the Way",
-    theSpiceMustFlow  = "The Spice must Flow",
+    theSpiceMustFlow = "The Spice must Flow",
 
     -- Intrigue
     bribery = "Bribery",
@@ -811,4 +819,7 @@ return {
     fringeWorldsFriendship = "Fringe Worlds Friendship",
     fremenAlliance = "Fremen Alliance",
     fremenFriendship = "Fremen Friendship",
+    muadDibVictoryPoint = "Muad'Dib Objective",
+    crysknifeDibVictoryPoint = "Crysknife Objective",
+    ornithopterVictoryPoint = "Ornithopter Objective",
 }

@@ -43,7 +43,7 @@ end
 ---
 function XmlUI:setButton(id, label, interactable)
     local element = XmlUI._findXmlElement(self.xml, id)
-    assert(element, "Unknown id: " .. id)
+    assert(element, "Unknown id: " .. tostring(id))
     XmlUI._setXmlButton(element, label)
     XmlUI._setXmlInteractable(element, interactable)
 end
@@ -51,7 +51,7 @@ end
 ---
 function XmlUI:setButtonI18N(id, key, interactable)
     local element = XmlUI._findXmlElement(self.xml, id)
-    assert(element, "Unknown id: " .. id)
+    assert(element, "Unknown id: " .. tostring(id))
     XmlUI._setXmlButtonI18N(element, key)
     XmlUI._setXmlInteractable(element, interactable)
 end
@@ -79,7 +79,7 @@ end
 
 function XmlUI:toUI()
     local root =  XmlUI._findXmlElement(self.xml, self.id)
-    assert(root, "Unknown id: " .. self.id)
+    assert(root, "Unknown id: " .. tostring(self.id))
     root.attributes.active = self.active
     for name, value in pairs(self.fields) do
         if not XmlUI._isEnumeration(name) and not XmlUI._isRange(name) then
@@ -102,7 +102,7 @@ function XmlUI:toUI()
                     XmlUI._setXmlInteractable(element, false)
                 end
             else
-                --log("Unknown id: " .. name)
+                --log("Unknown id: " .. tostring(name))
             end
         end
     end
@@ -229,8 +229,13 @@ end
 
 ---
 function XmlUI._translate(node)
-    if node.attributes and node.attributes.key then
-        node.value = I18N(node.attributes.key)
+    if node.attributes then
+        if node.attributes.key then
+            node.value = I18N(node.attributes.key)
+        end
+        if node.attributes.tooltipKey then
+            node.attributes.tooltip = I18N(node.attributes.tooltipKey)
+        end
     end
     if node.children then
         for _, child in ipairs(node.children) do

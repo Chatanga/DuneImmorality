@@ -13,7 +13,9 @@ return {
     language = "Langue",
     players = "Joueurs",
     virtualHotSeat = "Spécial / Hotseat",
+    virtualHotSeatTooltip = "Permet de jouer en solo, à 2 joueurs ou\nbien en « hotseat » pour les autres modes.",
     randomizePlayersPositions = "Mélanger les positions des joueurs",
+    randomizePlayersPositionTooltip = "Aucun joueur ne doit utiliser le siège noir pendant\nque les positions des joueurs sont mélangées.",
     extensions = "Extensions",
     useContracts = "Contrats de la CHOM",
     legacy = "Dune : Imperium",
@@ -21,7 +23,7 @@ return {
     riseOfIx = "L’Avènement de Ix",
     epicMode = "Mode épique",
     immortality = "Immortalité",
-    goTo11 = "Jusqu’à 11",
+    goTo11 = "Pousser jusqu’à 11",
     leaderSelection = "Sélection dirigeants",
     leaderPoolSize = "Taille de la sélection",
     defaultLeaderPoolSizeLabel = "Nombre de dirigeants ({value})",
@@ -31,13 +33,15 @@ return {
     horizontalHandLayout = "Mains à l’horizontale à 4 joueurs",
     assistedRevelation = "Révélation assistée",
     soundEnabled = "Sons activés",
+    formalCombatPhase = "Phase de combat formelle",
+    formalCombatPhaseTooltip = "Les joueurs possédant une ou plusieurs cartes\nd’intrigue doivent explicitement finir leur tour\naprès en avoir joué une ou pour passer.",
     setup = "Mise en place",
     notEnoughPlayers = "Pas assez de joueurs",
 
     -- Phases
     phaseLeaderSelection = "Phase : sélection des dirigeants",
     phaseGameStart = "Phase : début du jeu",
-    phaseRoundStart = "Phase : début de la manche",
+    phaseRoundStart = "Phase : début de la manche n°{round}\n══════════════════════════════",
     phasePlayerTurns = "Phase : tours des joueurs",
     phaseCombat = "Phase : combat",
     phaseCombatEnd = "Phase : fin du combat",
@@ -83,7 +87,7 @@ return {
     no = "Non",
     ok = "Ok",
     cancel = "Annuler",
-    dialogCardAbove = "Voulez-vous mettre la carte sur le dessus de votre paquet ? (Ok = oui, Cancel = non)",
+    dialogCardAbove = "Voulez-vous mettre la carte sur le dessus de votre paquet ?",
     endTurn = "Finir\ntour",
     activatedAlly = "⬍ Allié activé",
     noSeatedPlayer = "Le joueur {color} est absent !",
@@ -225,6 +229,9 @@ return {
     manuallyBuyTech = "Acquérir manuellement une tech sans en payer le prix ?",
     notAffordableOption = "Vous n’avez pas les moyens d’utiliser cette option d’achat !",
     pruneTechCard = "Retrait de la tuile tech. : « {card} »",
+    reclaimRewards = "Réclamer les récompenses",
+    roundNumber = "Manche n°",
+    doYouWantAnotherRound = "Jouer encore une manche ?",
 
     -- Arrakeen Scouts
     joinCommittee = "Rejoindre le sous-comité : {committee}",
@@ -240,15 +247,15 @@ return {
     dataAnalysis = "analyse des données",
     developmentProject = "projet de développement",
     tleilaxuRelations = "relations tleixlaxu",
-    committeeReminder = "Vous avez maintenant la possibilité de joindre un sous-comité ce tour-ci.",
+    committeeReminder = "Vous avez maintenant la possibilité de rejoindre un sous-comité ce tour-ci.",
     first = "1er",
     firstExAequo = "1er ex aequo",
     second = "2nd",
     secondExAequo = "2nd ex aequo",
-    third = "3éme",
-    thirdExAequo = "3éme ex aequo",
-    fourth = "4éme",
-    fourthExAequo = "4éme ex aequo",
+    third = "3ème",
+    thirdExAequo = "3ème ex aequo",
+    fourth = "4ème",
+    fourthExAequo = "4ème ex aequo",
     lose = "perdu",
     passOption = "Passer",
     waitOption = "Attendre",
@@ -262,6 +269,7 @@ return {
     doAResearch = "Réaliser une recherche",
     destroyACardFromYourHand = "Détruire 1 carte de sa main",
     spendOption = "Dépenser {amount} {resource}",
+    amount = "{amount} {resource}",
 
     -- Ranking
     firstInCombat = "★ 1er : {leader}",
@@ -275,6 +283,7 @@ return {
 
     -- Tleilax board
     confirmSolarisToBeetles = "Voulez-vous payer 7 solaris pour avancer deux fois sur la piste Tleilaxu ?",
+    tleilaxTrack = "Piste du Tleilax",
 
     -- Factions
     withEmperor = "de l’Empereur",
@@ -618,7 +627,6 @@ return {
     longLiveTheFighters = "Vive les combattants",
     overthrow = "Renversement",
     steersman = "Timonier",
-
     cargoRunner = "Convoyeur de fret",
     deliveryAgreement = "Accords de livraison",
     priorityContracts = "Contrats prioritaires",
@@ -812,4 +820,7 @@ return {
     fringeWorldsFriendship = "Amitié avec les mondes périphériques",
     fremenAlliance = "Alliance avec les Fremens",
     fremenFriendship = "Amitié avec les Fremens",
+    muadDibVictoryPoint = "Objectif Muad'Dib",
+    crysknifeDibVictoryPoint = "Objective krys",
+    ornithopterVictoryPoint = "Objective ornithoptère",
 }

@@ -25,7 +25,6 @@ local influence = CardEffect.influence
 local vp = CardEffect.vp
 local draw = CardEffect.draw
 local shipment = CardEffect.shipment
-local mentat = CardEffect.mentat
 local control = CardEffect.control
 local spy = CardEffect.spy
 local contract = CardEffect.contract
@@ -280,7 +279,7 @@ function ImperiumCard._resolveCard(card)
     local cardName = Helper.getID(card)
     if cardName then
         local cardInfo = ImperiumCard[cardName]
-        assert(cardInfo, "Unknown card: " .. tostring(cardName))
+        assert(cardInfo, "Unknown card (empty name usually means that the card is stacked with another): " .. tostring(cardName))
         cardInfo.name = cardName
 
         -- For identity tests.
@@ -289,7 +288,6 @@ function ImperiumCard._resolveCard(card)
 
         return instantiatedCardInfo
     else
-        log(card)
         error("No card info!")
     end
 end
@@ -314,6 +312,12 @@ function ImperiumCard.evaluateReveal2(color, playedCards, revealedCards, artille
         player = {
             resources = function (_, resourceName, amount)
                 result[resourceName] = (result[resourceName] or 0) + amount
+            end,
+
+            troops = function (_, from, to, amount)
+                if from == "supply" and to == "tanks" then
+                    result.specimens = (result.specimens or 0) + amount
+                end
             end
         }
     }

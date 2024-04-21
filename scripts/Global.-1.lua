@@ -115,7 +115,7 @@ local Controller = {
         },
         virtualHotSeatMode = {},
         randomizePlayerPositions = false,
-        difficulty_all = Helper.mapValues(allModules.Hagal.getDifficulties(), function (v) return v.name end),
+        difficulty_all = Helper.mapValues(allModules.Hagal.getDifficulties(), Helper.field("name")),
         difficulty = {},
         useContracts = true,
         legacy = false,
@@ -131,6 +131,7 @@ local Controller = {
         defaultLeaderPoolSizeLabel = "-",
         tweakLeaderSelection = false,
         horizontalHandLayout = true,
+        formalCombatPhase = false,
         soundEnabled = true,
     }
 }
@@ -212,7 +213,7 @@ function asyncOnLoad(scriptState)
     -- because the order matter, now that we reload with "staticSetUp" (for the
     -- same reason setUp is ordered too).
     for i, moduleInfo in ipairs(allModules.ordered) do
-        --Helper.dump(tostring(i) .. ". Loading " .. moduleInfo.name)
+        --Helper.dump(i, " - Load module", moduleInfo.name)
         moduleInfo.module.onLoad(state)
         Helper.emitEvent("loaded", moduleInfo.name)
     end
@@ -305,7 +306,7 @@ end
 function runSetUp(index, activeOpponents)
     local moduleInfo = allModules.ordered[index]
     if moduleInfo then
-        --Helper.dump(tostring(index) .. ". Setting " .. moduleInfo.name)
+        --Helper.dump(index, " - Set up module", moduleInfo.name)
         local nextContinuation = moduleInfo.module.setUp(settings, activeOpponents)
         if not nextContinuation then
             nextContinuation = Helper.createContinuation("runSetUp")
@@ -454,6 +455,16 @@ function setHorizontalHandLayout(player, value, id)
 end
 
 --- UI callback (cf. XML).
+function setFormalCombatPhase(player, value, id)
+    Controller.ui:fromUI(player, value, id)
+end
+
+--- UI callback (cf. XML).
+function setSoundEnabled(player, value, id)
+    Controller.ui:fromUI(player, value, id)
+end
+
+--- UI callback (cf. XML).
 function setUpFromUI()
     Controller.ui:hide()
     Controller.ui = nil
@@ -477,6 +488,7 @@ function setUpFromUI()
         defaultLeaderPoolSize = tonumber(Controller.fields.defaultLeaderPoolSize),
         tweakLeaderSelection = Controller.fields.tweakLeaderSelection,
         horizontalHandLayout = Controller.fields.horizontalHandLayout,
+        formalCombatPhase = Controller.fields.formalCombatPhase,
         soundEnabled = Controller.fields.soundEnabled,
     })
 end
@@ -558,14 +570,14 @@ function Controller.applyVirtualHotSeatMode()
 
     if Controller.isUndefined(Controller.fields.virtualHotSeatMode) or numberOfPlayers > 1 then
         Controller.fields.difficulty = {}
-    else
+    else Controller.isUndefined(Controller.fields.difficulty)
         Controller.fields.difficulty = "novice"
     end
 
     Controller.fields.leaderSelection_all = allModules.LeaderSelection.getSelectionMethods(numberOfPlayers)
     if numberOfPlayers == 6 then
         Controller.fields.useContracts = {}
-    else
+    elseif Controller.isUndefined(Controller.fields.useContracts) then
         Controller.fields.useContracts = true
     end
 
@@ -630,5 +642,5 @@ end
 
 ---
 function Controller.isUndefined(value)
-    return not value or type(value) == "table"
+    return value == nil or type(value) == "table"
 end

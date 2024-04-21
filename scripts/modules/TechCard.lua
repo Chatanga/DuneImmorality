@@ -7,7 +7,6 @@ local CardEffect = require("CardEffect")
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local Types = Module.lazyRequire("Types")
 
-
 -- Function aliasing for a more readable code.
 local persuasion = CardEffect.persuasion
 local sword = CardEffect.sword
@@ -26,7 +25,6 @@ local influence = CardEffect.influence
 local vp = CardEffect.vp
 local draw = CardEffect.draw
 local shipment = CardEffect.shipment
-local mentat = CardEffect.mentat
 local control = CardEffect.control
 local spy = CardEffect.spy
 local contract = CardEffect.contract

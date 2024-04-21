@@ -22,6 +22,7 @@ end
 
 ---
 function Reserve.setUp()
+    -- TODO Detect Ilesa Ecaz?
     if false then
         Deck.generateSpecialDeck(Reserve.foldspaceSlotZone, "base", "foldspace")
     else
@@ -34,6 +35,7 @@ end
 
 ---
 function Reserve._transientSetUp()
+    -- TODO Detect Ilesa Ecaz?
     if false then
         Reserve.foldspace = AcquireCard.new(Reserve.foldspaceSlotZone, "Imperium", PlayBoard.withLeader(function (_, color)
             local leader = PlayBoard.getLeader(color)
@@ -52,11 +54,7 @@ end
 
 ---
 function Reserve.acquireFoldspace(color)
-    if false then
-        PlayBoard.giveCardFromZone(color, Reserve.foldspace.zone, false)
-    else
-        error("TODO")
-    end
+    PlayBoard.giveCardFromZone(color, Reserve.foldspace.zone, false)
 end
 
 ---

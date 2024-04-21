@@ -58,7 +58,7 @@ function TleilaxuRow._transientSetUp()
     for i, zone in ipairs(TleilaxuRow.slotZones) do
         local acquireCard = AcquireCard.new(zone, "Imperium", PlayBoard.withLeader(function (_, color)
             PlayBoard.getLeader(color).acquireTleilaxuCard(color, i)
-        end), nil, Deck.getAcquireCardDecalUrl("generic"))
+        end), Deck.getAcquireCardDecalUrl("generic"))
         table.insert(TleilaxuRow.acquireCards, acquireCard)
     end
 end
@@ -78,7 +78,7 @@ function TleilaxuRow.acquireTleilaxuCard(indexInRow, color)
     assert(card)
     local price = ImperiumCard.getTleilaxuCardCost(card)
     local cardName = Helper.getID(card)
-    assert(price, "Unknown tleilaxu card: " .. cardName)
+    assert(price, "Unknown tleilaxu card: " .. tostring(cardName))
     assert((cardName == "reclaimedForces") == (indexInRow == 3))
 
     local specimenSupplierColor = color
@@ -93,7 +93,7 @@ function TleilaxuRow.acquireTleilaxuCard(indexInRow, color)
                 I18N("troops"),
                 I18N("beetle"),
             }
-            Dialog.showOptionsDialog(color, I18N("reclaimedForces"), options, function (index)
+            Dialog.showOptionsDialog(color, I18N("reclaimedForces"), options, nil, function (index)
                 if index == 1 then
                     leader.troops(color, "tanks", "supply", price)
                     leader.troops(color, "supply", "garrison", 2)
@@ -125,7 +125,7 @@ function TleilaxuRow.trash(indexInRow)
     assert(card)
     local price = ImperiumCard.getTleilaxuCardCost(card)
     local cardName = Helper.getID(card)
-    assert(price, "Unknown tleilaxu card: " .. cardName)
+    assert(price, "Unknown tleilaxu card: " .. tostring(cardName))
     assert((cardName == "reclaimedForces") == (indexInRow == 3))
 
     MainBoard.trash(card)

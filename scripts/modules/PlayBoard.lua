@@ -988,7 +988,7 @@ function PlayBoard.setUp(settings, activeOpponents)
                         playBoard.content.makerHook.destruct()
                         playBoard.content.makerHook = nil
                     end
-                    table.insert(sequentialActions, Helper.partialApply(ScoreBoard.gainVictoryPoint, color, "ally"))
+                    table.insert(sequentialActions, Helper.partialApply(ScoreBoard.gainVictoryPoint, color, "ally", 1))
                 end
             else
                 table.insert(sequentialActions, 1, Helper.partialApply(ScoreBoard.gainVictoryPoint, color, "commander", 4))
@@ -1212,7 +1212,7 @@ function PlayBoard:_recall()
         Helper.filter(Park.getObjects(self.revealCardPark), Types.isIntrigueCard)
     )
     Helper.forEach(playedIntrigueCards, function (i, card)
-        card.setPosition(Intrigue.discardZone.getPosition())
+        Intrigue.discard(card)
     end)
 
     -- Flip any used tech.
@@ -1283,7 +1283,7 @@ function PlayBoard:_createEndOfTurnButton()
     Helper.clearButtons(self.content.endTurnButton)
     local action = function ()
         self.content.endTurnButton.AssetBundle.playTriggerEffect(0)
-        TurnControl.endOfTurn(3)
+        TurnControl.endOfTurn()
         Helper.clearButtons(self.content.endTurnButton)
     end
     local callback = self:_createExclusiveCallback(action)
@@ -1336,7 +1336,13 @@ function PlayBoard.acceptTurn(phase, color)
     elseif phase == 'playerTurns' then
         accepted = PlayBoard.couldSendAgentOrReveal(color)
     elseif phase == 'combat' then
-        accepted = false
+        Helper.dump("Combat.isInCombat(", color, ") =", Combat.isInCombat(color))
+        Helper.dump("Combat.isFormalCombatPhaseEnabled() =", Combat.isFormalCombatPhaseEnabled())
+        if Combat.isInCombat(color) and Combat.isFormalCombatPhaseEnabled() then
+            Helper.dump(color, "->", PlayBoard.combatPassCountdown, "/", #PlayBoard._getPotentialCombatIntrigues(color))
+            accepted = PlayBoard.combatPassCountdown > 0 and not PlayBoard.isRival(color) and #PlayBoard._getPotentialCombatIntrigues(color) > 0
+            PlayBoard.combatPassCountdown = PlayBoard.combatPassCountdown - 1
+        end
     elseif phase == 'combatEnd' then
         if playBoard.lastPhase ~= phase then
             accepted = true
@@ -1403,7 +1409,7 @@ function PlayBoard.getPlayBoard(color)
     assert(color)
     assert(#Helper.getKeys(PlayBoard.playBoards) > 0, "No playBoard at all: too soon!")
     local playBoard = PlayBoard.playBoards[color]
-    --assert(playBoard, "No playBoard for color " .. tostring(color))
+    assert(playBoard, "No playBoard for color " .. tostring(color))
     return playBoard
 end
 
@@ -1845,6 +1851,7 @@ function PlayBoard:_createSharedCallback(innerCallback)
     end)
 end
 
+---
 function PlayBoard:_clearButtons()
     Helper.clearButtons(self.content.board)
     if self.content.atomicsToken then
@@ -1902,22 +1909,24 @@ function PlayBoard:_createButtons()
 
         if not PlayBoard.hasHighCouncilSeat(self.color) then
             Helper.clearButtons(self.content.councilToken)
-            self.content.councilToken.createButton({
-                click_function = self:_createExclusiveCallback(function ()
-                    Dialog.showConfirmDialog(
-                        self.color,
-                        I18N("takeHighCouncilSeatByForceConfirm"),
-                        function ()
-                            local leader = PlayBoard.getLeader(self.color)
-                            leader.takeHighCouncilSeat(self.color)
-                        end)
-                end),
-                position = Vector(0, 0, 0),
-                tooltip = I18N("takeHighCouncilSeatByForce"),
-                width = 1500,
-                height = 1500,
-                color = { 0, 0, 0, 0 },
-            })
+            if PlayBoard.isHuman(self.color) then
+                self.content.councilToken.createButton({
+                    click_function = self:_createExclusiveCallback(function ()
+                        Dialog.showConfirmDialog(
+                            self.color,
+                            I18N("takeHighCouncilSeatByForceConfirm"),
+                            function ()
+                                local leader = PlayBoard.getLeader(self.color)
+                                leader.takeHighCouncilSeat(self.color)
+                            end)
+                    end),
+                    position = Vector(0, 0, 0),
+                    tooltip = I18N("takeHighCouncilSeatByForce"),
+                    width = 1500,
+                    height = 1500,
+                    color = { 0, 0, 0, 0 },
+                })
+            end
         end
     end
 
@@ -2035,7 +2044,7 @@ function PlayBoard._convertObjectiveTokenPairsIntoVictoryPoints(object)
                             hitTokens[1].destruct()
                             table.remove(hitTokens, 1)
                         end
-                        leader.gainVictoryPoint(color, tagToName[objectiveTag])
+                        leader.gainVictoryPoint(color, tagToName[objectiveTag], 1)
                     end
 
                     break
@@ -2326,10 +2335,10 @@ function PlayBoard:_tryToDrawCards(count)
         local leaderName = PlayBoard.getLeaderName(self.color)
         broadcastToAll(I18N("isDecidingToDraw", { leader = leaderName }), "Pink")
         local maxCount = math.min(count, availableCardCount)
-        Dialog.showConfirmOrCancelDialog(
+        Dialog.showYesOrNoDialog(
             self.color,
             I18N("warningBeforeDraw", { count = count, maxCount = maxCount }),
-            nil,
+            continuation,
             function (confirmed)
                 if confirmed then
                     self:drawCards(count).doAfter(continuation.run)
@@ -2409,19 +2418,6 @@ function PlayBoard:_nukeConfirm()
         self:_createNukeButton()
     end
 
-    if false then
-        Helper.createButton(token, {
-            click_function = Helper.registerGlobalCallback(),
-            label = I18N("atomicsConfirm"),
-            position = Vector(0, 0, 3.5),
-            width = 0,
-            height = 0,
-            scale = Vector(3, 3, 3),
-            font_size = 260,
-            font_color = {1, 0, 0, 100},
-            color = {0, 0, 0, 0}
-        })
-    end
 
     Helper.createButton(token, {
         click_function = self:_createExclusiveCallback(function ()
@@ -2462,7 +2458,7 @@ function PlayBoard:_createAllySelector()
     local p = self.content.board.getPosition() + self:_newSymmetricBoardPosition(0.5, 0, -3)
     Helper.createTransientAnchor(self.color .. "AllySelector", p).doAfter(function (anchor)
 
-        Helper.createAbsoluteButtonWithRoundness(anchor, 1, false, {
+        Helper.createAbsoluteButtonWithRoundness(anchor, 1, {
             click_function = Helper.registerGlobalCallback(),
             label = I18N("activatedAlly"),
             position = anchor.getPosition() + Vector(0, 0.2, 0),
@@ -2475,7 +2471,7 @@ function PlayBoard:_createAllySelector()
 
         -- FIXME For some reason the lower button has unclickable rows of pixels (depends on the distance and angle though).
         for i, allyColor in ipairs(Commander.getAllies(self.color)) do
-            Helper.createAbsoluteButtonWithRoundness(anchor, 1, false, {
+            Helper.createAbsoluteButtonWithRoundness(anchor, 1, {
                 click_function = self:_createExclusiveCallback(function ()
                     Commander.setActivatedAlly(self.color, allyColor)
                 end),
@@ -2541,7 +2537,7 @@ function PlayBoard.setLeader(color, leaderCard)
 
     local continuation = Helper.onceMotionless(leaderCard)
 
-    Helper.onceMotionless(leaderCard).doAfter(function ()
+    continuation.doAfter(function ()
         Helper.noPhysics(leaderCard)
         playBoard:_createButtons()
     end)
@@ -2688,8 +2684,8 @@ end
 
 ---
 function PlayBoard.hasHighCouncilSeat(color)
+    local token = PlayBoard._getCouncilToken(color)
     for _, zone in ipairs(Park.getZones(MainBoard.getHighCouncilSeatPark())) do
-        local token = PlayBoard._getCouncilToken(color)
         if Helper.contains(zone, token) then
             return true
         end
@@ -2822,11 +2818,14 @@ function PlayBoard.giveCard(color, card, isTleilaxuCard)
 
     -- Move it on the top of the content deck if possible and wanted.
     if (isTleilaxuCard and TleilaxuResearch.hasReachedOneHelix(color)) or PlayBoard.hasTech(color, "spaceport") then
-        Dialog.showConfirmDialog(
+        Dialog.showYesOrNoDialog(
             color,
             I18N("dialogCardAbove"),
-            function ()
-                Helper.moveCardFromZone(content.discardZone, content.drawDeckZone.getPosition(), Vector(0, 180, 180))
+            nil,
+            function (confirmed)
+                if confirmed then
+                    Helper.moveCardFromZone(content.discardZone, content.drawDeckZone.getPosition(), Vector(0, 180, 180))
+                end
             end)
     end
 end
@@ -2848,11 +2847,14 @@ function PlayBoard.giveCardFromZone(color, zone, isTleilaxuCard)
 
     -- Move it on the top of the player deck if possible and wanted.
     if (isTleilaxuCard and TleilaxuResearch.hasReachedOneHelix(color)) or PlayBoard.hasTech(color, "spaceport") then
-        Dialog.showConfirmDialog(
+        Dialog.showYesOrNoDialog(
             color,
             I18N("dialogCardAbove"),
-            function ()
-                Helper.moveCardFromZone(content.discardZone, content.drawDeckZone.getPosition() + Vector(0, 1, 0), Vector(0, 180, 180))
+            nil,
+            function (confirmed)
+                if confirmed then
+                    Helper.moveCardFromZone(content.discardZone, content.drawDeckZone.getPosition() + Vector(0, 1, 0), Vector(0, 180, 180))
+                end
             end)
     end
 end
@@ -2945,6 +2947,19 @@ end
 ---
 function PlayBoard.getIntrigues(color)
     return Helper.filter(Player[color].getHandObjects(), Types.isIntrigueCard)
+end
+
+---
+function PlayBoard._getPotentialCombatIntrigues(color)
+    local predicate
+    if Hagal.getRivalCount() == 2 then
+        predicate = function (card)
+            return Types.isIntrigueCard(card) -- and IntrigueCard.isCombatCard(card)
+        end
+    else
+        predicate = Types.isIntrigueCard
+    end
+    return Helper.filter(Player[color].getHandObjects(), predicate)
 end
 
 ---

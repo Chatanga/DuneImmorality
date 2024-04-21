@@ -93,10 +93,13 @@ function Dialog.showYesOrNoDialog(color, title, linkedContinuation, callback)
 end
 
 ---
-function Dialog.showOptionsDialog(color, title, options, callback)
+function Dialog.showOptionsDialog(color, title, options, linkedContinuation, callback)
     assert(options)
     assert(#options > 0)
     if Dialog.nativeDialogUsed then
+        if linkedContinuation then
+            linkedContinuation.forget()
+        end
         Player[color].showOptionsDialog(title, options, 1, function (_, index, _)
             callback(index)
         end)
@@ -127,7 +130,7 @@ end
 
 ---
 function Dialog._showOptionsAndCancelDialog(color, title, options, callback)
-    if Dialog.staticDialogUsed then
+    if Dialog.staticDialogUsed and Dialog._checkExistence(options) then
         Dialog._bindStaticUI(color, title, options, callback)
     else
         local ui = Dialog._generateDialogUI(color, title, options, callback)
@@ -136,15 +139,9 @@ function Dialog._showOptionsAndCancelDialog(color, title, options, callback)
 end
 
 ---
-function Dialog._checkExistence(dialogId)
-    local color = UI.getAttribute(dialogId, "color")
-    assert(color and type(color) == "string" and color:len() > 0, "Missing static dialogs!" .. dialogId)
-end
-
----
 function Dialog._bindStaticUI(color, title, options, callback)
     local dialogId = Dialog._dialogId(options)
-    Dialog._checkExistence(dialogId)
+
     UI.setAttribute(dialogId, "active", true)
     UI.setAttribute(dialogId, "visibility", color)
     UI.setValue(Dialog._titleId(options), title)
@@ -167,6 +164,13 @@ function Dialog._bindStaticUI(color, title, options, callback)
             closingCallback(i)
         end))
     end
+end
+
+---
+function Dialog._checkExistence(options)
+    local dialogId = Dialog._dialogId(options)
+    local color = UI.getAttribute(dialogId, "color")
+    return color and type(color) == "string" and color:len() > 0
 end
 
 ---

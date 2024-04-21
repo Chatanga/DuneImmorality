@@ -7,7 +7,7 @@
 
 ## Build & Deploy
 
-In any case, you must first populate the `build.properties` files with the input index (XXX) and output index (YYY) of the two TTS saves you want to use to build the mod.
+You must first populate the `build.properties` files with the input index (XXX) and output index (YYY) of the two TTS saves you want to use to build the mod.
 Depending on the context, one must exist while the other will be created/overwritten.
 The two indexes may actually be the same, but this is not necessarily a good idea.
 
@@ -39,11 +39,11 @@ python3 build.py --upload
 
 It directly updates the scripts to your live save.
 
-**You've changed the save in TSS:**
+**You've changed the save in TTS:**
 
-Overwrite the save YYY with it, then `python3 build.py --full` and finally reload the save XXX.
+Overwrite the save XXX with it, then `python3 build.py --full` and finally reload the save YYY.
 
-**You want to change the save outside TSS:**
+**You want to change the save outside TTS:**
 
 Edit the local `skeleton.json` file, then `python3 build.py` and reload the save.
 

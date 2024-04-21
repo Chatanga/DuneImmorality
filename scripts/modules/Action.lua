@@ -18,6 +18,7 @@ local TleilaxuRow = Module.lazyRequire("TleilaxuRow")
 local ScoreBoard = Module.lazyRequire("ScoreBoard")
 local ThroneRow = Module.lazyRequire("ThroneRow")
 local ChoamContractMarket = Module.lazyRequire("ChoamContractMarket")
+local TurnControl = Module.lazyRequire("TurnControl")
 
 local Action = Helper.createClass(nil, {
     context = {}
@@ -125,9 +126,10 @@ function Action.log(message, color, isSecret)
     for _, namedPrinter in ipairs(logContextPrinters) do
         local value = Action.context[namedPrinter.name]
         if value then
-            if Action.lastContext ~= color .. namedPrinter.name then
-                Action.lastContext = color .. namedPrinter.name
-                printToAll(namedPrinter.print(value), color)
+            local turnColor = TurnControl.getCurrentPlayer() or "White"
+            if Action.lastContext ~= turnColor .. namedPrinter.name then
+                Action.lastContext = turnColor .. namedPrinter.name
+                printToAll(namedPrinter.print(value), turnColor)
             end
             prefix = " └─ "
             break
@@ -541,10 +543,12 @@ function Action.signetRing(color)
 end
 
 ---
-function Action.gainVictoryPoint(color, name)
+function Action.gainVictoryPoint(color, name, count)
     Types.assertIsPlayerColor(color)
-    if ScoreBoard.gainVictoryPoint(color, name) then
-        Action.log(I18N("gainVictoryPoint", { name = I18N(name) }), color)
+    if ScoreBoard.gainVictoryPoint(color, name, count) then
+        for _ = 1, (count or 1) do
+            Action.log(I18N("gainVictoryPoint", { name = I18N(name) }), color)
+        end
         return true
     else
         return false
@@ -596,6 +600,7 @@ end
 
 ---
 function Action.choose(color, topic)
+    return false
 end
 
 ---

@@ -157,9 +157,9 @@ function ScoreBoard.gainVictoryPoint(color, name, count)
     end)
     if holder.success then
         return true
-    elseif Combat.gainVictoryPoint(color, name) then
+    elseif Combat.gainVictoryPoint(color, name, count) then
         return true
-    elseif InfluenceTrack.gainVictoryPoint(color, name) then
+    elseif InfluenceTrack.gainVictoryPoint(color, name, count) then
         return true
     else
         return false

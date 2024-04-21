@@ -61,7 +61,7 @@ function ChoamContractMarket.onLoad(state)
         }
     }))
 
-    if state.settings then
+    if state.settings and state.settings.useContracts then
         ChoamContractMarket._transientSetUp(state.settings)
     end
 end

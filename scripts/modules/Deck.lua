@@ -1092,9 +1092,9 @@ function Deck._generateDynamicDeckWithTwoBackCards(deckType, position, contribut
     contributions2.back = 2
     local sources2 = Helper.shallowCopy(sources)
     local backUrl = Deck.backs[Helper.toCamelCase(deckType, "CardBack")]
-    assert(backUrl)
+    assert(backUrl, deckType)
     local creator = Deck[Helper.toCamelCase("create", deckType, "CustomDeck")]
-    assert(creator)
+    assert(creator, deckType)
     sources2.back = {
         customDeck = creator(backUrl, 1, 1),
         luaIndex = 1

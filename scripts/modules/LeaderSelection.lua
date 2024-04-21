@@ -43,6 +43,7 @@ function LeaderSelection.onLoad(state)
     if state.settings then
         LeaderSelection._transientSetUp(
             state.settings,
+            state.LeaderSelection.leaderSelectionPoolSize,
             state.LeaderSelection.players,
             state.LeaderSelection.stage)
     end
@@ -51,6 +52,7 @@ end
 ---
 function LeaderSelection.onSave(state)
     state.LeaderSelection = {
+        leaderSelectionPoolSize = LeaderSelection.leaderSelectionPoolSize,
         players = LeaderSelection.players,
         stage = LeaderSelection.stage,
     }
@@ -96,7 +98,7 @@ function LeaderSelection.setUp(settings, activeOpponents)
                 -- Give minimal time to the 2 leaders above to exit the zone.
                 Helper.onceFramesPassed(1).doAfter(function ()
                     local players = TurnControl.toCanonicallyOrderedPlayerList(activeOpponents)
-                    LeaderSelection._transientSetUp(settings, players, Stage.INITIALIZED)
+                    LeaderSelection._transientSetUp(settings, settings.defaultLeaderPoolSize, players, Stage.INITIALIZED)
                 end)
 
                 postContinuation.run()
@@ -127,7 +129,8 @@ function LeaderSelection._layoutLeaderDeck(deck, start, continuation)
 end
 
 ---
-function LeaderSelection._transientSetUp(settings, players, stage)
+function LeaderSelection._transientSetUp(settings, leaderSelectionPoolSize, players, stage)
+    LeaderSelection.leaderSelectionPoolSize = leaderSelectionPoolSize
     LeaderSelection.players = players
     LeaderSelection.stage = stage
 
@@ -153,7 +156,7 @@ function LeaderSelection._transientSetUp(settings, players, stage)
                 if #turnSequence == 4 then
                     Helper.swap(turnSequence, 4, 3)
                 else
-                    Helper.dump("Skipping 4 <-> 3 for less than 4 players.")
+                    log("Skipping 4 <-> 3 for less than 4 players.")
                 end
             end
 
@@ -234,7 +237,7 @@ function LeaderSelection._setUpPicking(autoStart, random, hidden)
 
     if LeaderSelection.stage == Stage.INITIALIZED then
         if not random then
-            Helper.createAbsoluteButtonWithRoundness(LeaderSelection.secondaryTable, 2, false, {
+            Helper.createAbsoluteButtonWithRoundness(LeaderSelection.secondaryTable, 2, {
                 click_function = Helper.registerGlobalCallback(),
                 label = I18N("leaderSelectionAdjust"),
                 position = LeaderSelection.secondaryTable.getPosition() + Vector(0, 1.8, -28),
@@ -252,7 +255,7 @@ function LeaderSelection._setUpPicking(autoStart, random, hidden)
                 LeaderSelection.secondaryTable.editButton({ index = 2, label = tostring(LeaderSelection.leaderSelectionPoolSize) })
             end
 
-            Helper.createAbsoluteButtonWithRoundness(LeaderSelection.secondaryTable, 2, false, {
+            Helper.createAbsoluteButtonWithRoundness(LeaderSelection.secondaryTable, 2, {
                 click_function = Helper.registerGlobalCallback(function ()
                     adjustValue(LeaderSelection.leaderSelectionPoolSize - 1)
                 end),
@@ -265,7 +268,7 @@ function LeaderSelection._setUpPicking(autoStart, random, hidden)
                 font_color = { 0, 0, 0, 1 }
             })
 
-            Helper.createAbsoluteButtonWithRoundness(LeaderSelection.secondaryTable, 1, false, {
+            Helper.createAbsoluteButtonWithRoundness(LeaderSelection.secondaryTable, 1, {
                 click_function = Helper.registerGlobalCallback(),
                 label = tostring(LeaderSelection.leaderSelectionPoolSize),
                 position = LeaderSelection.secondaryTable.getPosition() + Vector(0, 1.8, -29),
@@ -275,7 +278,7 @@ function LeaderSelection._setUpPicking(autoStart, random, hidden)
                 font_color = fontColor
             })
 
-            Helper.createAbsoluteButtonWithRoundness(LeaderSelection.secondaryTable, 2, false, {
+            Helper.createAbsoluteButtonWithRoundness(LeaderSelection.secondaryTable, 2, {
                 click_function = Helper.registerGlobalCallback(function ()
                     adjustValue(LeaderSelection.leaderSelectionPoolSize + 1)
                 end),
@@ -289,7 +292,7 @@ function LeaderSelection._setUpPicking(autoStart, random, hidden)
             })
         end
 
-        Helper.createAbsoluteButtonWithRoundness(LeaderSelection.secondaryTable, 2, false, {
+        Helper.createAbsoluteButtonWithRoundness(LeaderSelection.secondaryTable, 2, {
             click_function = Helper.registerGlobalCallback(),
             label = I18N("leaderSelectionExclude"),
             position = LeaderSelection.secondaryTable.getPosition() + Vector(0, 1.8, -30),
@@ -316,7 +319,7 @@ function LeaderSelection._setUpPicking(autoStart, random, hidden)
         if autoStart then
             start()
         else
-            Helper.createAbsoluteButtonWithRoundness(LeaderSelection.secondaryTable, 2, false, {
+            Helper.createAbsoluteButtonWithRoundness(LeaderSelection.secondaryTable, 2, {
                 click_function = Helper.registerGlobalCallback(start),
                 label = I18N("start"),
                 position = LeaderSelection.secondaryTable.getPosition() + Vector(0, 1.8, -32),
@@ -443,7 +446,7 @@ function LeaderSelection._createDynamicLeaderSelection(leaders)
         if i <= LeaderSelection.leaderSelectionPoolSize then
             LeaderSelection.dynamicLeaderSelection[leader] = false
             local position = leader.getPosition()
-            Helper.createAbsoluteButtonWithRoundness(leader, 1, false, {
+            Helper.createAbsoluteButtonWithRoundness(leader, 1, {
                 click_function = Helper.registerGlobalCallback(function (_, color, _)
                     if color == TurnControl.getCurrentPlayer() then
                         LeaderSelection.claimLeader(color, leader)
@@ -491,7 +494,7 @@ function LeaderSelection.claimLeader(color, leader)
 
     Helper.clearButtons(leader)
     LeaderSelection.dynamicLeaderSelection[leader] = true
-    PlayBoard.setLeader(color, leader).doAfter(Helper.partialApply(TurnControl.endOfTurn, 2))
+    PlayBoard.setLeader(color, leader).doAfter(TurnControl.endOfTurn)
 end
 
 ---

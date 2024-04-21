@@ -181,7 +181,7 @@ function MainBoard._transientSetUp(settings)
 
     if MainBoard.shieldWallToken then
         MainBoard.shieldWallToken.clearButtons()
-        Helper.createAbsoluteButtonWithRoundness(MainBoard.shieldWallToken, 7, false, {
+        Helper.createAbsoluteButtonWithRoundness(MainBoard.shieldWallToken, 7, {
             click_function = Helper.registerGlobalCallback(function (_, color, _)
                 MainBoard.blowUpShieldWall(color)
             end),
@@ -192,6 +192,8 @@ function MainBoard._transientSetUp(settings)
             tooltip = I18N("explosion")
         })
     end
+
+    MainBoard._createRoundIndicator()
 
     Helper.registerEventListener("phaseStart", function (phase)
         if phase == "makers" then
@@ -242,6 +244,43 @@ function MainBoard._transientSetUp(settings)
             end
         end
     end)
+end
+
+function MainBoard._createRoundIndicator()
+    local primaryTable = getObjectFromGUID("2b4b92")
+
+    Helper.createAbsoluteButtonWithRoundness(primaryTable, 1, {
+        click_function = Helper.registerGlobalCallback(),
+        label = I18N("roundNumber"),
+        position = primaryTable.getPosition() + Vector(-5, 1.8, -16.5),
+        width = 1000,
+        height = 200,
+        font_size = 140,
+        color = { 0, 0, 0, 0 },
+        font_color = { 1, 1, 1, 80 },
+    })
+
+    Helper.createAbsoluteButtonWithRoundness(primaryTable, 1, {
+        click_function = Helper.registerGlobalCallback(),
+        position = primaryTable.getPosition() + Vector(-5, 1.8, -17.5),
+        width = 1000,
+        height = 1000,
+        font_size = 700,
+        color = { 0, 0, 0, 0 },
+        font_color = { 1, 1, 1, 80 },
+    })
+
+    local function updateContent()
+        primaryTable.editButton({ index = 1, label = tostring(TurnControl.getCurrentRound()) })
+    end
+
+    Helper.registerEventListener("phaseStart", function (phase)
+        if phase == "roundStart" then
+            updateContent()
+        end
+    end)
+
+    Helper.onceTimeElapsed(1).doAfter(updateContent)
 end
 
 ---
@@ -511,12 +550,11 @@ function MainBoard.sendAgent(color, spaceName, recallSpy)
         continuation.cancel()
     else
         local leader = PlayBoard.getLeader(color)
-        local innerContinuation = Helper.createContinuation("MainBoard." .. spaceName)
+        local innerContinuation = Helper.createContinuation("MainBoard." .. parentSpaceName)
 
         goSpace(color, leader, innerContinuation)
         innerContinuation.doAfter(function (action)
-            -- The innerContinuation never cancels (but returns nil) to allow
-            -- us to cancel the root continuation.
+            -- The innerContinuation never cancels (but returns nil) to allow us to cancel the root continuation.
             if action then
                 MainBoard._manageIntelligenceAndInfiltrate(color, parentSpaceName, recallSpy).doAfter(function (goAhead, spy, otherSpy, recallMode)
                     if goAhead then
@@ -525,7 +563,6 @@ function MainBoard.sendAgent(color, spaceName, recallSpy)
                         Action.setContext("agentSent", { space = parentSpaceName, cards = Helper.mapValues(PlayBoard.getCardsPlayedThisTurn(color), Helper.getID) })
                         Park.putObject(agent, parentSpace.park)
                         if spy then
-                            -- TODO Create Action.recallSpy(color) as some kind of subaction for sendAgent (only really needed for Hagal)?
                             Park.putObject(spy, PlayBoard.getSpyPark(color))
                             if recallMode == "infiltrateAndIntelligence" then
                                 Park.putObject(otherSpy, PlayBoard.getSpyPark(color))
@@ -800,6 +837,7 @@ function MainBoard._checkGenericAccess(color, leader, requirements)
             end
         end
     end
+
     return true
 end
 
@@ -1136,7 +1174,6 @@ function MainBoard._goSietchTabr(color, leader, continuation)
             I18N("hookTroopWaterOption"),
             I18N("waterShieldWallOption"),
         }
-        -- FIXME Pending continuation if the dialog is canceled.
         Dialog.showOptionsAndCancelDialog(color, I18N("goSietchTabr"), options, continuation, function (index)
             if index == 1 then
                 MainBoard._goSietchTabr_HookTroopWater(color, leader, continuation)
@@ -1465,7 +1502,7 @@ end
 function MainBoard._goInterstellarShipping(color, leader, continuation)
     if MainBoard._checkGenericAccess(color, leader, { friendship = "spacingGuild" }) then
         continuation.run(function ()
-            leader.shipments(color, 1)
+            leader.shipments(color, 2)
         end)
     else
         continuation.run()

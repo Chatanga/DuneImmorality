@@ -534,7 +534,7 @@ function Helper.createSizedAreaButton(width, height, anchor, altitude, tooltip, 
     }
 
     -- 0.75 | 10 ?
-    Helper.createAbsoluteButtonWithRoundness(anchor, 0.75, false, parameters)
+    Helper.createAbsoluteButtonWithRoundness(anchor, 0.75, parameters)
 
     return parameters.click_function
 end
@@ -587,21 +587,21 @@ end
 ]]
 ---
 function Helper._createAbsoluteButton(object, parameters)
-    return Helper.createAbsoluteButtonWithRoundness(object, 0.25, false, parameters)
+    return Helper.createAbsoluteButtonWithRoundness(object, 0.25, parameters)
 end
 
 ---
-function Helper.createAbsoluteButtonWithRoundness(object, roundness, quirk, parameters)
-    return Helper.createButton(object, Helper._createAbsoluteWidgetWithRoundnessParameters(object, roundness, quirk, parameters))
+function Helper.createAbsoluteButtonWithRoundness(object, roundness, parameters)
+    return Helper.createButton(object, Helper._createAbsoluteWidgetWithRoundnessParameters(object, roundness, parameters))
 end
 
 ---
-function Helper._createAbsoluteInputWithRoundness(object, roundness, quirk, parameters)
-    return Helper.createInput(object, Helper._createAbsoluteWidgetWithRoundnessParameters(object, roundness, quirk, parameters))
+function Helper._createAbsoluteInputWithRoundness(object, roundness, parameters)
+    return Helper.createInput(object, Helper._createAbsoluteWidgetWithRoundnessParameters(object, roundness, parameters))
 end
 
 ---
-function Helper._createAbsoluteWidgetWithRoundnessParameters(object, roundness, quirk, parameters)
+function Helper._createAbsoluteWidgetWithRoundnessParameters(object, roundness, parameters)
     assert(object)
     assert(roundness >= 0, "Zero or negative roundness won't work as intended.")
     assert(roundness <= 10, "Roundness beyond 10 won't work as intended.")
@@ -631,20 +631,10 @@ function Helper._createAbsoluteWidgetWithRoundnessParameters(object, roundness, 
     if p then
         p = Helper.toVector(p)
         -- Inverting the X coordinate comes from our global 180° rotation around Y.
-        -- TODO Get rid of this quirk.
-        if quirk then
-            p = Vector(-p.x, p.y, p.z)
-        else
-            p = Vector(p.x, p.y, p.z)
-        end
+        p = Vector(p.x, p.y, p.z)
 
         p = p - object.getPosition()
-
-        if quirk then
-            p = Vector(p.x, p.y, p.z)
-        else
-            p = Vector(-p.x, p.y, p.z)
-        end
+        p = Vector(-p.x, p.y, p.z)
 
         p:scale(invScale)
 
@@ -905,10 +895,9 @@ function Helper.onceStabilized(timeout)
         continuation.run(success)
     end, function ()
         local duration = os.time() - start
-        success = Helper.isStabilized(delayed or duration <= 2)
+        success = Helper.isStabilized(delayed or duration <= 5)
         if not success then
-            if not delayed and duration > 2 then
-                log(duration)
+            if not delayed and duration > 5 then
                 delayed = true
                 broadcastToAll("Delaying transition (see system log)...")
             end
@@ -963,9 +952,10 @@ end
 ---@return Continuation
 function Helper.onceShuffled(container)
     local continuation = Helper.createContinuation("Helper.onceShuffled")
+    -- TODO Is there a better way?
     Wait.time(function ()
         continuation.run(container)
-    end, 2) -- TODO Search for a better way.
+    end, 2)
     return continuation
 end
 

@@ -42,7 +42,6 @@ local influence = CardEffect.influence
 local vp = CardEffect.vp
 local draw = CardEffect.draw
 local shipment = CardEffect.shipment
-local mentat = CardEffect.mentat
 local control = CardEffect.control
 local spy = CardEffect.spy
 local contract = CardEffect.contract
@@ -129,14 +128,6 @@ function CardEffect._dispatch(selector, expression)
             return false
         elseif selector == "beetle" then
             return call("beetle", color, value)
-        elseif selector == "mentat" then
-            if call("takeMentat", color) then
-                -- FIXME Do it elsewhere.
-                MainBoard.getMentat().addTag("notToBeRecalled")
-                return true
-            else
-                return false
-            end
         elseif selector == "spy" then
             assert(type(value) == "number")
             if value >= 0 then
@@ -237,14 +228,8 @@ function CardEffect.shipment(expression)
     return CardEffect._dispatch('shipment', expression)
 end
 
-function CardEffect.mentat()
-    return function (expression)
-        return CardEffect._dispatch('mentat', expression)
-    end
-end
-
-function CardEffect.control(space)
-    return CardEffect._dispatch('control', space)
+function CardEffect.control(expression)
+    return CardEffect._dispatch('control', expression)
 end
 
 function CardEffect.spy(expression)

@@ -2,6 +2,8 @@
 
 An evolution of Dune Uprising (a simplified and undisclosed port of Spice Flow) to bring back some advanced features of Spice Flow.
 
+![Capture](captures/capture-1.jpg)
+
 Features:
 
 - Base game 3-4P
@@ -18,7 +20,7 @@ Supported langages:
 
 ## Links :
 
-- Steam: TBC
+- Steam: https://steamcommunity.com/sharedfiles/filedetails/?id=3127748613
 
 ## Build Process
 
@@ -32,38 +34,27 @@ This repository contains the JSON skeletons and Lua scripts of various mods for 
 
 __All__
 
-- Mode libre pour la sélection des dirigeants.
-- Séparer en 4 la zone de combat.
-- Réintroduire IntrigueCard ?
-
-- Automatiser les contrats.
-- Automatiser le gain de 2 solaris pour un contrat si le module n'est pas actif (ou s'il n'y a plus de contrats).
-- Ajouter des boutons d'acquisition sur les contrats de Shaddam ?
+- Free selection of leaders.
+- Reintroduce IntrigueCard?
+- Automate contracts.
+- Automate the gain of 2 solaris for a contract if the module is not active (or if there are no more contracts).
 
 __6P__
 
-- Compteur global PV équipe.
-- Echange de ressources.
-
-__Extensions__
-
-- Plateau Ix (avec postes d'observation).
-- Patch Ix (avec postes d'observation) pour le plateau principal.
-- Patch Immortality (avec postes d'observation) pour le plateau principal.
+- Team PV counter.
+- Exchange of resources.
 
 __2P / Solo__
 
-- Rectifier Churn, Shuffle et Back.
-- Isoler les Streamlined Rivals.
+- Implemente Imperium raw churn.
+- Rework the selection of rivals / isolate "streamlined rivals".
+- Hagal cards in French.
 
 __Aesthetic__
 
-- Réorganiser les éléments de jeu en 4J et 6J ?
-- Revoir les décalcos tech / contrat.
-- Prendre en considération les crans de zoom, préconfigurer les caméras ?
-- Snaps jetons factions 6J empereur/fremen trop hauts.
-- Élargir les bordures colorées des plateaux (retirer complétement les trigger effects dans la foulée).
-
+- Review the tech/contract decals.
+- Snaps 6J Emperor/Fremen faction tokens too high.
+- Widen the colored borders of the boards (completely remove the trigger effects in the process).
 ## Lua sources
 
 ### scripts

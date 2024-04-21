@@ -80,9 +80,9 @@ function Rival._buyVictoryPoints(color)
         if #intrigues >= 3 then
             for i = 1, 3 do
                 -- Not smooth to avoid being recaptured by the hand zone.
-                intrigues[i].setPosition(Intrigue.discardZone.getPosition() + Vector(0, i, 0))
+                Intrigue.discard(intrigues[i])
             end
-            Rival.gainVictoryPoint(color, "intrigue")
+            Rival.gainVictoryPoint(color, "intrigue", 1)
             goto continue
         end
 
@@ -90,23 +90,23 @@ function Rival._buyVictoryPoints(color)
             local tech = PlayBoard.getTech(color, "spySatellites")
             if tech and Action.resources(color, "spice", -3) then
                 MainBoard.trash(tech)
-                Rival.gainVictoryPoint(color, "spySatellites")
+                Rival.gainVictoryPoint(color, "spySatellites", 1)
                 goto continue
             end
         else
             if Action.resources(color, "spice", -7) then
-                Rival.gainVictoryPoint(color, "spice")
+                Rival.gainVictoryPoint(color, "spice", 1)
                 goto continue
             end
         end
 
         if Action.resources(color, "water", -3) then
-            Rival.gainVictoryPoint(color, "water")
+            Rival.gainVictoryPoint(color, "water", 1)
             goto continue
         end
 
         if Action.resources(color, "solari", -7) then
-            Rival.gainVictoryPoint(color, "solari")
+            Rival.gainVictoryPoint(color, "solari", 1)
             goto continue
         end
 
@@ -328,9 +328,10 @@ Rival.glossuRabban = Helper.createClass(Rival, {
         end
     end,
 
-    gainVictoryPoint = function (color, name)
+    gainVictoryPoint = function (color, name, count)
         if Helper.endsWith(name, "Alliance") then
-            return Action.gainVictoryPoint(color, name)
+            assert(count == 1)
+            return Action.gainVictoryPoint(color, name, count)
         else
             return false
         end
@@ -382,7 +383,7 @@ Rival.amberMetulli = Helper.createClass(Rival, {
         HagalCard.acquireTroops(color, 3)
     end,
 
-    gainVictoryPoint = function (color, name)
+    gainVictoryPoint = function (color, name, count)
         return false
     end,
 

@@ -99,9 +99,9 @@ Leader.helenaRichese = Helper.createClass(Leader, {
 
     --- Eyes everywhere
     sendAgent = function (color, spaceName, recallSpy)
-        -- TODO Manage accesses
-        local parentSpaceName = MainBoard.findParentSpaceName(spaceName)
-        local force = MainBoard.isLandsraadSpace(parentSpaceName) or MainBoard.isSpiceTradeSpace(parentSpaceName)
+        -- We don't care since it's simpler to let the player apply the rules.
+        --local parentSpaceName = MainBoard.findParentSpaceName(spaceName)
+        --local force = MainBoard.isLandsraadSpace(parentSpaceName) or MainBoard.isSpiceTradeSpace(parentSpaceName)
         return Action.sendAgent(color, spaceName, recallSpy)
     end,
 
@@ -176,7 +176,7 @@ Leader.paulAtreides = Helper.createClass(Leader, {
 
         -- FIXME The leader card position is a bit weird.
         Helper.createTransientAnchor("PrescienceAnchor", leaderCard.getPosition() + Vector(0, -0.5, 0)).doAfter(function (anchor)
-            Helper.createAbsoluteButtonWithRoundness(anchor, 1, false, {
+            Helper.createAbsoluteButtonWithRoundness(anchor, 1, {
                 click_function = Helper.registerGlobalCallback(prescience),
                 label = I18N("prescienceButton"),
                 position = anchor.getPosition() + Vector(0, 0.55, -1.75),
@@ -191,7 +191,7 @@ Leader.paulAtreides = Helper.createClass(Leader, {
         end)
     end,
 
-    --- Discipline
+    --- Discipline (never used)
     signetRing = function (color)
         local leader = PlayBoard.getLeader(color)
         return leader.drawImperiumCards(color, 1)
@@ -256,7 +256,7 @@ Leader.ilesaEcaz = Helper.createClass(Leader, {
         end)
     end,
 
-    --- Guild contacts
+    --- Guild contacts (never used)
     signetRing = function (color)
         local leader = PlayBoard.getLeader(color)
         return leader.resources(color, "solari", -1) and Action.acquireFoldspace(color)
@@ -269,6 +269,17 @@ Leader.rhomburVernius = Helper.createClass(Leader, {
     prepare = function (color, settings)
         Action.prepare(color, settings)
         Combat.setDreadnoughtStrength(color, 4)
+    end,
+
+    --- Guild contacts
+    sendAgent = function (color, spaceName)
+        local continuation = Action.sendAgent(color, spaceName)
+        continuation.doAfter(function ()
+            if PlayBoard.hasPlayedThisTurn(color, "signetRing") or PlayBoard.hasPlayedThisTurn(color, "boundlessAmbition") then
+                TechMarket.registerAcquireTechOption(color, "rhomburVerniusTechBuyOption", "spice", 0)
+            end
+        end)
+        return continuation
     end
 })
 
@@ -314,7 +325,7 @@ Leader.tessiaVernius = Helper.createClass(Leader, {
         end
     end,
 
-    --- Duplicity
+    --- Duplicity (never used)
     signetRing = function (color)
         local leader = PlayBoard.getLeader(color)
         leader.influence(color, nil, -1)
@@ -340,7 +351,7 @@ Leader.yunaMoritani = Helper.createClass(Leader, {
         return Action.resources(color, resourceName, finalAmount)
     end,
 
-    --- Final delivery
+    --- Final delivery (never used)
     signetRing = function (color)
         local leader = PlayBoard.getLeader(color)
         return leader.resources(color, "solari", -7)
@@ -496,7 +507,7 @@ Leader.jessica = Helper.createClass(Leader, {
 
         if leaderCard.getGMNotes() ~= "reverendMotherJessica" then
             Helper.createTransientAnchor("OtherMemoriesAnchor", leaderCard.getPosition() + Vector(0, -0.5, 0)).doAfter(function (anchor)
-                Helper.createAbsoluteButtonWithRoundness(anchor, 1, false, {
+                Helper.createAbsoluteButtonWithRoundness(anchor, 1, {
                     click_function = Helper.registerGlobalCallback(function (_, otherColor)
                         if otherColor == color then
                             otherMemories()

@@ -68,6 +68,8 @@ end
 
 ---
 function Combat._transientSetUp(settings)
+    Combat.formalCombatPhase = settings.formalCombatPhase
+
     Combat._processSnapPoints(settings)
 
     Helper.registerEventListener("strengthValueChanged", function ()
@@ -115,7 +117,11 @@ function Combat._transientSetUp(settings)
     end)
 
     Helper.registerEventListener("phaseEnd", function (phase)
-        if phase == "combatEnd" then
+        if phase == "combat" then
+            if Combat.isFormalCombatPhaseEnabled() then
+                Music.play("turn")
+            end
+        elseif phase == "combatEnd" then
             for _, bannerZone in ipairs(MainBoard.getBannerZones()) do
                 local dreadnought = MainBoard.getControllingDreadnought(bannerZone)
                 -- Only recall locked controlling dreadnoughts.
@@ -206,6 +212,11 @@ function Combat._processSnapPoints(settings)
             end
         end,
     })
+end
+
+---
+function Combat.isFormalCombatPhaseEnabled()
+    return Combat.formalCombatPhase
 end
 
 ---
@@ -321,8 +332,6 @@ function Combat._createGarrisonPark(color, position)
     -- FIXME Hardcoded height, use an existing parent anchor.
     Helper.createTransientAnchor("Garrison anchor", Vector(position.x, 0.6, position.z)).doAfter(function (anchor)
         park.anchor = anchor
-        anchor.locked = true
-        anchor.interactable = true
         Combat._createButton(color, park)
     end)
 
@@ -390,7 +399,7 @@ function Combat._createButton(color, park)
     local position = park.anchor.getPosition()
     local areaColor = Color.fromString(color)
     areaColor:setAt('a', 0.3)
-    Helper.createAbsoluteButtonWithRoundness(park.anchor, 7, false, {
+    Helper.createAbsoluteButtonWithRoundness(park.anchor, 7, {
         click_function = Helper.registerGlobalCallback(function (_, playerColor, altClick)
             if playerColor == color then
                 if altClick then
@@ -633,7 +642,7 @@ function Combat.getCurrentConflictLevel()
 end
 
 ---
-function Combat.gainVictoryPoint(color, name)
+function Combat.gainVictoryPoint(color, name, count)
 
     -- We memoize the tokens granted in fast succession to avoid returning the same twice or more.
     if not Combat.grantedTokens then
@@ -643,11 +652,15 @@ function Combat.gainVictoryPoint(color, name)
         end)
     end
 
+    local remaining = count or 1
     for _, object in ipairs(Combat.rewardTokenZone.getObjects()) do
         if Types.isVictoryPointToken(object) and Helper.getID(object) == name and not Combat.grantedTokens[object] then
             Combat.grantedTokens[object] = true
             PlayBoard.grantScoreToken(color, object)
-            return true
+            remaining = remaining - 1
+            if remaining == 0 then
+                return true
+            end
         end
     end
 

@@ -29,6 +29,8 @@
         "onPlayerDisconnect",
         "Hands",
         "printToColor",
-        "Physics"
-    ]
+        "Physics",
+        "onDestroy",
+        "WebRequest"
+   ]
 }

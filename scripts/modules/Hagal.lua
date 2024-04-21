@@ -58,7 +58,7 @@ function Hagal._transientSetUp(settings)
     Hagal.difficulty = settings.difficulty
     Hagal.riseOfIx = settings.riseOfIx
 
-    Hagal.selectedDifficulty = Hagal.numberOfPlayers == 1 and settings.difficulty or nil
+    Hagal.difficulty = Hagal.numberOfPlayers == 1 and settings.difficulty or nil
 
     Helper.registerEventListener("phaseStart", function (phase)
         if phase == "combat" then
@@ -88,8 +88,8 @@ function Hagal.activate(phase, color)
         Hagal._lateActivate(phase, color).doAfter(function ()
             -- The leader selection already has an automatic end of turn when a leader is picked.
             if phase ~= "leaderSelection" then
-                if Hagal.getRivalCount() == 1 and false then
-                    Helper.onceTimeElapsed(1).doAfter(Helper.partialApply(TurnControl.endOfTurn, 1))
+                if Hagal.getRivalCount() == 1 then
+                    Helper.onceTimeElapsed(1).doAfter(TurnControl.endOfTurn)
                 else
                     PlayBoard.createEndOfTurnButton(color)
                 end
@@ -117,7 +117,7 @@ function Hagal._lateActivate(phase, color)
     elseif phase == "endgame" then
         continuation.run()
     else
-        error("Unknown phase: " .. phase)
+        error("Unknown phase: " .. tostring(phase))
     end
 
     return continuation
@@ -150,7 +150,7 @@ function Hagal._collectReward(color)
                 if #dreadnoughts > 0 and PlayBoard.hasTech(color, "detonationDevices") then
                     Park.putObject(dreadnoughts[1], PlayBoard.getDreadnoughtPark(color))
                     table.remove(dreadnoughts, 1)
-                    leader.gainVictoryPoint(color, "detonationDevices")
+                    leader.gainVictoryPoint(color, "detonationDevices", 1)
                 end
 
                 if #dreadnoughts > 0 then
@@ -194,7 +194,7 @@ end
 ---
 function Hagal._setStrengthFromFirstValidCard(color)
     local level3Conflict = Combat.getCurrentConflictLevel() == 3
-    local mentatOrHigher = Helper.isElementOf(Hagal.selectedDifficulty, { "expert", "expertPlus "})
+    local mentatOrHigher = Helper.isElementOf(Hagal.difficulty, { "expert", "expertPlus "})
 
     -- Brutal Escalation
     local n = level3Conflict and mentatOrHigher and 2 or 1
@@ -212,7 +212,7 @@ end
 ---
 function Hagal._getExpertDeploymentLimit(color)
     local level3Conflict = Combat.getCurrentConflictLevel() == 3
-    local mentatOrHigher = Helper.isElementOf(Hagal.selectedDifficulty, { "expert", "expertPlus "})
+    local mentatOrHigher = Helper.isElementOf(Hagal.difficulty, { "expert", "expertPlus "})
 
     local n
     if not level3Conflict and mentatOrHigher then
@@ -229,13 +229,13 @@ function Hagal._getExpertDeploymentLimit(color)
     else
         n = 12
     end
-    Helper.dump("level3Conflict:", level3Conflict, "/ mentatOrHigher:", mentatOrHigher, "/ expertDeploymentLimit:", n)
+    --Helper.dump("level3Conflict:", level3Conflict, "/ mentatOrHigher:", mentatOrHigher, "/ expertDeploymentLimit:", n)
     return n
 end
 
 ---
 function Hagal.isSmartPolitics(color, faction)
-    local mentatOrHigher = Helper.isElementOf(Hagal.selectedDifficulty, { "expert", "expertPlus "})
+    local mentatOrHigher = Helper.isElementOf(Hagal.difficulty, { "expert", "expertPlus "})
 
     if mentatOrHigher then
         local colorRank = 0

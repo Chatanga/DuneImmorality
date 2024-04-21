@@ -67,7 +67,6 @@ function HagalCard.activate(color, card, riseOfIx)
     local cardName = Helper.getID(card)
     HagalCard.riseOfIx = riseOfIx
     local rival = PlayBoard.getLeader(color)
-    assert(rival, color)
     local actionName = Helper.toCamelCase("_activate", cardName)
     assert(HagalCard[actionName], actionName)
     local final = HagalCard[actionName](color, rival, riseOfIx)
@@ -329,18 +328,18 @@ end
 
 function HagalCard._activateAcceptContractAndShipping1(color, rival)
     if InfluenceTrack.hasFriendship(color, "spacingGuild") then
-        if HagalCard._spaceIsFree(color, "acceptContract") then
-            HagalCard._sendRivalAgent(color, rival, "acceptContract")
+        if HagalCard._spaceIsFree(color, "shipping") then
+            HagalCard._sendRivalAgent(color, rival, "shipping")
             rival.resources(color, "solari", 2)
-            rival.influence(color, 3, 1)
             return true
         else
             return false
         end
     else
-        if HagalCard._spaceIsFree(color, "shipping") then
-            HagalCard._sendRivalAgent(color, rival, "shipping")
+        if HagalCard._spaceIsFree(color, "acceptContract") then
+            HagalCard._sendRivalAgent(color, rival, "acceptContract")
             rival.resources(color, "solari", 2)
+            rival.influence(color, 3, 1)
             return true
         else
             return false
@@ -350,18 +349,18 @@ end
 
 function HagalCard._activateAcceptContractAndShipping2(color, rival)
     if InfluenceTrack.hasFriendship(color, "spacingGuild") then
-        if HagalCard._spaceIsFree(color, "acceptContract") then
-            HagalCard._sendRivalAgent(color, rival, "acceptContract")
+        if HagalCard._spaceIsFree(color, "shipping") then
+            HagalCard._sendRivalAgent(color, rival, "shipping")
             rival.resources(color, "solari", 2)
-            rival.influence(color, 1, 1)
             return true
         else
             return false
         end
     else
-        if HagalCard._spaceIsFree(color, "shipping") then
-            HagalCard._sendRivalAgent(color, rival, "shipping")
+        if HagalCard._spaceIsFree(color, "acceptContract") then
+            HagalCard._sendRivalAgent(color, rival, "acceptContract")
             rival.resources(color, "solari", 2)
+            rival.influence(color, 1, 1)
             return true
         else
             return false

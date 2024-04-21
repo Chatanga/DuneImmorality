@@ -412,7 +412,7 @@ function TleilaxuResearch._advanceTleilax(color, jump, withBenefits)
                 end
 
                 if researchLevelBenefits.victoryToken then
-                    leader.gainVictoryPoint(color, "tleilax")
+                    leader.gainVictoryPoint(color, "tleilax", 1)
                 end
 
                 if researchLevelBenefits.spiceBonus then

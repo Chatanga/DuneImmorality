@@ -75,6 +75,15 @@ function Intrigue.stealIntrigue(color, otherColor, amount)
 end
 
 ---
+function Intrigue.discard(card)
+    Intrigue.discardQueue = Intrigue.discardQueue or Helper.createSpaceQueue()
+    Intrigue.discardQueue.submit(function (height)
+        -- Not smooth to avoid being recaptured by the hand zone.
+        card.setPosition(Intrigue.discardZone.getPosition() + Vector(0, 1 + height * 0.5, 0))
+    end)
+end
+
+---
 function Intrigue.getDiscardedIntrigues()
     local deckOrCard = Helper.getDeckOrCard(Intrigue.discardZone)
     return Helper.getCards(deckOrCard)
