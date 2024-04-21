@@ -1,7 +1,7 @@
 <Panel position="0 -50" width="450" height="760" color="#000000" id="setupPane" rotation="0 0 0" outline="#61712c" outlineSize="1"
 	active="False" allowDragging="True" returnToOriginalPositionWhenReleased="False">
 	<Defaults>
-		<Text class="primary" color="#8e5ab4" fontSize="16" alignment="MiddleLeft"/>
+		<Text class="primary" color="#e5c638" fontSize="16" alignment="MiddleLeft"/>
 		<Text class="secondary" color="#efd9ff" alignment="MiddleRight"/>
 		<Text class="epigraph" color="#df9730" fontSize="12" fontStyle="italic" alignment="MiddleCenter"/>
 		<Dropdown class="setUp" itemBackgroundColors="#61712c44|#df9730|#FFFFFF|#361441" textColor="#61712c" itemTextColor="#61712c" fontStyle="bold"/>

@@ -1920,7 +1920,7 @@ function PlayBoard.getTrashedCards(color)
 end
 
 ---
-function PlayBoard.getIntrigues(color, soloMode)
+function PlayBoard.getIntrigues(color)
     return Helper.filter(Player[color].getHandObjects(), Types.isIntrigueCard)
 end
 
