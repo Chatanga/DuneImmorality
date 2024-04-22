@@ -592,6 +592,21 @@ Leader.shaddamCorrino = Helper.createClass(Leader, {
 
 Leader.muadDib = Helper.createClass(Leader, {
 
+    --- Unpredictable foe
+    setUp = function (color, settings)
+        Leader.muadDib.transientSetUp(color, settings)
+    end,
+
+    transientSetUp = function (color, settings)
+        Helper.registerEventListener("reveal", function (otherColor)
+        if color == otherColor and PlayBoard.couldSendAgentOrReveal(color) and Combat.hasSandworms(color) then
+                local leader = PlayBoard.getLeader(color)
+                Action.log(I18N("muadDibBeingUnpredictable"), color)
+                leader.drawIntrigues(color, 1)
+            end
+        end)
+    end,
+
     prepare = function (color, settings, asCommander)
         if not asCommander then
             Action.prepare(color, settings)

@@ -333,6 +333,8 @@ return {
 
     stabanSpiceSmuggling = "↯ Staban détourne sa part d’épice.",
 
+    muadDibBeingUnpredictable = "↯ Muad'Dib devient un peu plus imprévisible.",
+
     -- Uprising leaders
     stabanTuek = "Staban Tuek",
     amberMetulli = "Dame Amber Metulli",
