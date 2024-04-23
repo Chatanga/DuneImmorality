@@ -823,6 +823,6 @@ return {
     fremenAlliance = "Alliance avec les Fremens",
     fremenFriendship = "Amitié avec les Fremens",
     muadDibVictoryPoint = "Objectif Muad'Dib",
-    crysknifeDibVictoryPoint = "Objective krys",
+    crysknifeVictoryPoint = "Objective krys",
     ornithopterVictoryPoint = "Objective ornithoptère",
 }

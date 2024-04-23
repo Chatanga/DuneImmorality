@@ -331,6 +331,7 @@ function HagalCard._activateAcceptContractAndShipping1(color, rival)
         if HagalCard._spaceIsFree(color, "shipping") then
             HagalCard._sendRivalAgent(color, rival, "shipping")
             rival.resources(color, "solari", 2)
+            rival.influence(color, 3, 1)
             return true
         else
             return false
@@ -339,7 +340,6 @@ function HagalCard._activateAcceptContractAndShipping1(color, rival)
         if HagalCard._spaceIsFree(color, "acceptContract") then
             HagalCard._sendRivalAgent(color, rival, "acceptContract")
             rival.resources(color, "solari", 2)
-            rival.influence(color, 3, 1)
             return true
         else
             return false
@@ -352,6 +352,7 @@ function HagalCard._activateAcceptContractAndShipping2(color, rival)
         if HagalCard._spaceIsFree(color, "shipping") then
             HagalCard._sendRivalAgent(color, rival, "shipping")
             rival.resources(color, "solari", 2)
+            rival.influence(color, 1, 1)
             return true
         else
             return false
@@ -360,7 +361,6 @@ function HagalCard._activateAcceptContractAndShipping2(color, rival)
         if HagalCard._spaceIsFree(color, "acceptContract") then
             HagalCard._sendRivalAgent(color, rival, "acceptContract")
             rival.resources(color, "solari", 2)
-            rival.influence(color, 1, 1)
             return true
         else
             return false
