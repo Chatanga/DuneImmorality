@@ -40,13 +40,52 @@ function Rival.triggerHagalReaction(color)
                 MainBoard.recallSpy(color, otherObservationPostName)
             end
             rival.recallableSpies = {}
+            -- Doesn't work well as a scheme.
+            --Action.setContext("schemeTriggered", {})
+            Action.log(I18N("triggeringScheme"), color)
             rival.scheme(color)
             Helper.sleep(2)
+            --Action.unsetContext("schemeTriggered")
         end
 
         local hasSwordmaster = PlayBoard.hasSwordmaster(color)
 
-        if not hasSwordmaster and Action.resources(color, "solari", -rival.swordmasterCost) then
+        local allResources = {
+            intrigues = PlayBoard.getIntrigues(color),
+            solari = PlayBoard.getResource(color, "solari"),
+            spice = PlayBoard.getResource(color, "spice"),
+            water = PlayBoard.getResource(color, "water"),
+        }
+
+        local reduceGenericResource = function (name, amount)
+            local realAmount
+            if name == "intrigues" then
+                realAmount = math.min(amount, #allResources.intrigues)
+                for i = 1, realAmount do
+                    -- Not smooth to avoid being recaptured by the hand zone.
+                    Intrigue.discard(allResources.intrigues[i])
+                end
+            else
+                realAmount = math.min(amount, allResources[name]:get())
+                Action.resources(color, name, -realAmount)
+            end
+            return realAmount
+        end
+
+        local capital =
+            #allResources.intrigues +
+            allResources.solari:get() +
+            allResources.spice:get() +
+            allResources.water:get()
+
+        if not hasSwordmaster and capital >= rival.swordmasterCost then
+            local remainder = rival.swordmasterCost
+            for _, name in ipairs({ "solari", "spice", "intrigues", "water" }) do
+                if remainder == 0 then
+                    break
+                end
+                remainder = remainder - reduceGenericResource(name, remainder)
+            end
             rival.recruitSwordmaster(color)
             hasSwordmaster = true
             Helper.sleep(1)
@@ -134,8 +173,22 @@ end
 function Rival.influence(color, faction, amount)
     local finalFaction = faction
     local rival = PlayBoard.getLeader(color)
-    if not finalFaction then
-        finalFaction = rival.factionPriorities[1]
+    if not finalFaction or type(finalFaction) == "table" then
+        local factions = faction
+        if not factions then
+            factions = { "emperor", "spacingGuild", "beneGesserit", "fremen" }
+        end
+        Helper.shuffle(factions)
+        table.sort(factions, function (f1, f2)
+            local i1 = InfluenceTrack.getInfluence(f1, color)
+            local i2 = InfluenceTrack.getInfluence(f2, color)
+            if i1 == i2 then
+                i1 = Helper.indexOf(rival.factionPriorities, f1)
+                i2 = Helper.indexOf(rival.factionPriorities, f2)
+            end
+            return i1 < i2
+        end)
+        finalFaction = factions[1]
     elseif type(finalFaction) == "number" then
         finalFaction = rival.factionPriorities[faction]
     end
@@ -318,14 +371,14 @@ Rival.glossuRabban = Helper.createClass(Rival, {
     end,
 
     scheme = function (color)
-        local rival = PlayBoard.getLeader(color)
-        for _, faction in ipairs(rival.factionPriorities) do
+        local factions = {}
+        for _, faction in ipairs({ "emperor", "spacingGuild", "beneGesserit", "fremen" }) do
             local cost = InfluenceTrack.getAllianceCost(color, faction)
             if cost == 1 or cost == 2 then
-                Rival.influence(color, faction, 2)
-                break
+                table.insert(factions, faction)
             end
         end
+        Rival.influence(color, #factions > 0 and factions or nil, 2)
     end,
 
     gainVictoryPoint = function (color, name, count)
@@ -336,12 +389,6 @@ Rival.glossuRabban = Helper.createClass(Rival, {
             return false
         end
     end,
-
-    --[[
-    gainObjective = function (color, objective)
-        return false
-    end,
-    ]]
 })
 
 Rival.stabanTuek = Helper.createClass(Rival, {
@@ -384,14 +431,13 @@ Rival.amberMetulli = Helper.createClass(Rival, {
     end,
 
     gainVictoryPoint = function (color, name, count)
-        return false
+        if Helper.endsWith(name, "Alliance") then
+            assert(count == 1)
+            return Action.gainVictoryPoint(color, name, count)
+        else
+            return false
+        end
     end,
-
-    --[[
-    gainObjective = function (color, objective)
-        return false
-    end,
-    ]]
 })
 
 Rival.gurneyHalleck = Helper.createClass(Rival, {
@@ -476,14 +522,14 @@ Rival.jessica = Helper.createClass(Rival, {
     },
 
     signetRing = function (color)
-        local rival = PlayBoard.getLeader(color)
-        for _, faction in ipairs(rival.factionPriorities) do
+        local factions = {}
+        for _, faction in ipairs({ "emperor", "spacingGuild", "beneGesserit", "fremen" }) do
             local cost = InfluenceTrack.getAllianceCost(color, faction)
             if cost == 1 then
-                Rival.influence(color, faction, 1)
-                break
+                table.insert(factions, faction)
             end
         end
+        Rival.influence(color, #factions > 0 and factions or nil, 1)
     end,
 
     scheme = function (color)

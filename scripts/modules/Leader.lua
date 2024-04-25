@@ -599,7 +599,7 @@ Leader.muadDib = Helper.createClass(Leader, {
 
     transientSetUp = function (color, settings)
         Helper.registerEventListener("reveal", function (otherColor)
-        if color == otherColor and PlayBoard.couldSendAgentOrReveal(color) and Combat.hasSandworms(color) then
+            if color == otherColor and PlayBoard.couldSendAgentOrReveal(color) and Combat.hasSandworms(color) then
                 local leader = PlayBoard.getLeader(color)
                 Action.log(I18N("muadDibBeingUnpredictable"), color)
                 leader.drawIntrigues(color, 1)
