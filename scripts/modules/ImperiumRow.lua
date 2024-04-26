@@ -1,6 +1,7 @@
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local AcquireCard = require("utils.AcquireCard")
+local I18N = require("utils.I18N")
 
 local Deck = Module.lazyRequire("Deck")
 local PlayBoard = Module.lazyRequire("PlayBoard")
@@ -122,6 +123,22 @@ function ImperiumRow.nuke(color)
             end
         end
     end)
+end
+
+---
+function ImperiumRow.churn()
+    local firstCardIndex = math.random(6)
+    local secondCardIndex = math.random(6)
+    local count = 0
+    for i, zone in ipairs(ImperiumRow.slotZones) do
+        if i == firstCardIndex or i == secondCardIndex then
+            local card = Helper.getCard(zone)
+            MainBoard.trash(card)
+            ImperiumRow._replenish(i)
+            count = count + 1
+        end
+    end
+    printToAll(I18N("churnImperiumRow", { count = count, card = I18N.agree(count, "card") }), "Pink")
 end
 
 ---

@@ -124,6 +124,8 @@ return {
     influence = "influence",
     beetle = "beetle",
     beetles = "beetles",
+    card = "card",
+    cards = "cards",
 
     -- Actions
     playerTurn = "■ Turn: {leader}",
@@ -427,6 +429,7 @@ return {
     acceptContractAndShipping2 = "Accept Contract / Shipping",
     haggaBasinAndImperialBasin = "Hagga Basin / Imperial Basin",
     reshuffle = "Reshuffle",
+    churnImperiumRow = "Imperium Row Churn ({count} {card})",
     deliverSuppliesAndInterstellarShipping = "Deliver Supplies / Interstellar Shipping",
     smugglingAndInterstellarShipping = "Smuggling / Interstellar Shipping",
     dreadnought1p = "Dreadnought",

@@ -124,6 +124,8 @@ return {
     influence = "influence",
     beetle = "scarabée",
     beetles = "scarabées",
+    card = "carte",
+    cards = "cartes",
 
     -- Actions
     playerTurn = "■ Tour : {leader}",
@@ -428,6 +430,7 @@ return {
     acceptContractAndShipping2 = "Accepter un contract / Expédition",
     haggaBasinAndImperialBasin = "Bassin de Hagga / Bassin imperial",
     reshuffle = "Rémélanger",
+    churnImperiumRow = "Barattage de la rangée de l’Imperium ({count} {card})",
     deliverSuppliesAndInterstellarShipping = "Livrer des fournitures / Livraison interstellaire",
     smugglingAndInterstellarShipping = "Contrebande / Livraison interstellaire",
     dreadnought1p = "Cuirassé",

@@ -12,6 +12,7 @@ local MainBoard = Module.lazyRequire("MainBoard")
 local ConflictCard = Module.lazyRequire("ConflictCard")
 local Rival = Module.lazyRequire("Rival")
 local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
+local ImperiumRow = Module.lazyRequire("ImperiumRow")
 
 local Hagal = {
     difficulties = {
@@ -67,6 +68,12 @@ function Hagal._transientSetUp(settings)
                     Hagal._setStrengthFromFirstValidCard(color)
                 end
             end
+        end
+    end)
+
+    Helper.registerEventListener("phaseEnd", function (phase)
+        if phase == "playerTurns" then
+            ImperiumRow.churn()
         end
     end)
 end

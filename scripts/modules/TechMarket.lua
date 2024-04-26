@@ -203,7 +203,7 @@ function TechMarket._doAcquireTech(stackIndex, color)
         if color then
             TechMarket._buyTech(stackIndex, color).doAfter(innerContinuation.run)
         else
-            printToAll(I18N("pruneTechCard", { card = I18N(Helper.getID(techTileStack.topCard)) }), "Purple")
+            printToAll(I18N("pruneTechCard", { card = I18N(Helper.getID(techTileStack.topCard)) }), "Pink")
             MainBoard.trash(techTileStack.topCard)
             innerContinuation.run(true)
         end
