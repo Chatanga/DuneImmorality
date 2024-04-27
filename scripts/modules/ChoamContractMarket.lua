@@ -9,45 +9,8 @@ local MainBoard = Module.lazyRequire("MainBoard")
 local Commander = Module.lazyRequire("Commander")
 
 local ChoamContractMarket = {
-    -- Unused
-    -- http://cloud-3.steamusercontent.com/ugc/2190499045494153971/2F050419ADB34BC59FEBF5B5A483F9A315F41D8A/
-    contracts = {
-        harvest_1 = 1,
-        harvest_2 = 1,
-        harvest_3 = 1,
-        harvest_4 = 1,
-        deliverSupplies = 1,
-        highCouncil_1 = 1,
-        highCouncil_2 = 1,
-        acquire = 1,
-        immediate = 1,
-        researchStation_1 = 1,
-        researchStation_2 = 1,
-        espionnage_1 = 1,
-        espionnage_2 = 1,
-        heighliner_1 = 1,
-        heighliner_2 = 1,
-        sardaukar_1 = 1,
-        sardaukar_2 = 1,
-        spiceRefinery_1 = 1,
-        spiceRefinery_2 = 1,
-        arrakeen_1 = 1,
-        arrakeen_2 = 1,
-    },
-    -- Unused
-    -- http://cloud-3.steamusercontent.com/ugc/2190499045495011713/25CD19C82AA59A349CAB24DCC69EAEDF7F5BED3E/
-    ixContracts = {
-        dreadnought = 1,
-        techNegotiation = 1,
-        highCouncil = 1,
-        interstellarShipping = 1,
-        harvest_1 = 1,
-        harvest_2 = 1,
-        smuggling = 1,
-        heighliner = 1,
-        espionage = 1,
-        secrets = 1,
-    },
+    contracts = {},
+    ixContracts = {},
     acquireCards = {},
     contractSlots = {},
 }
@@ -61,6 +24,41 @@ function ChoamContractMarket.onLoad(state)
         }
     }))
 
+    ChoamContractMarket.contracts = {
+        harvest3orMore = Helper.never(), -- MainBoard.isDesertSpace, -- x2
+        harvest4orMore = Helper.never(), -- MainBoard.isDesertSpace,
+        deliverSupplies = Helper.equal("deliverSupplies"),
+        highCouncilWithSolaris = Helper.equal("highCouncil"),
+        highCouncilWithInfluence = Helper.equal("highCouncil"),
+        acquireTheSpiceMustFlow = Helper.never(),
+        immediate = Helper.never(),
+        researchStation = Helper.equal("researchStation"), -- with just solaris
+        researchStationWithSpy = Helper.equal("researchStation"),
+        espionage = Helper.equal("espionage"), -- x2
+        heighlinerWithWater = Helper.equal("heighliner"),
+        heighlinerWithTroops = Helper.equal("heighliner"),
+        sardaukarWithCards = Helper.equal("sardaukar"),
+        sardaukarWithRecall = Helper.equal("sardaukar"),
+        spiceRefineryWithCards = Helper.equal("spiceRefinery"),
+        spiceRefineryWithWater = Helper.equal("spiceRefinery"),
+        arrakeenWithWater = Helper.equal("arrakeen"),
+        arrakeenWithSpy = Helper.equal("arrakeen"),
+    }
+
+    ChoamContractMarket.ixContracts = {
+        dreadnought = Helper.equal("dreadnought"),
+        techNegotiation = Helper.equal("techNegotiation"),
+        highCouncilWithTech = Helper.equal("highCouncil"),
+        interstellarShipping = Helper.equal("interstellarShipping"),
+        harvest3orMoreWithTech = Helper.never(), -- MainBoard.isDesertSpace,
+        harvest4orMoreWithTech = Helper.never(), -- MainBoard.isDesertSpace,
+        smuggling = Helper.equal("smuggling"),
+        heighlinerWithTech = Helper.equal("heighliner"),
+        espionageWithTech = Helper.equal("espionage"),
+        secretsWithTech = Helper.equal("secrets"),
+    }
+
+    ChoamContractMarket.enabled = false
     if state.settings and state.settings.useContracts then
         ChoamContractMarket._transientSetUp(state.settings)
     end
@@ -69,6 +67,7 @@ end
 ---
 function ChoamContractMarket.setUp(settings)
     if settings.useContracts then
+        ChoamContractMarket.enabled = true
         ChoamContractMarket._transientSetUp(settings)
 
         Helper.shuffleDeck(ChoamContractMarket.contractBag)
@@ -146,6 +145,19 @@ function ChoamContractMarket._transientSetUp(settings)
         acquireCard.cardHeight = 0.2
         table.insert(ChoamContractMarket.acquireCards, acquireCard)
     end
+
+    Helper.registerEventListener("agentSent", function (color, spaceName)
+        local parentSpaceName = MainBoard.findParentSpaceName(spaceName)
+        local contracts = PlayBoard.getOpenContracts(color)
+        for i, contract in ipairs(contracts) do
+            local contractName = Helper.getID(contract)
+            local contractLocator = ChoamContractMarket.contracts[contractName] or ChoamContractMarket.ixContracts[contractName]
+            assert(contractLocator, contractName)
+            if contractLocator(parentSpaceName) then
+                broadcastToAll(I18N("fulfilledContract", { contract = I18N(contractName) }), color)
+            end
+        end
+    end)
 end
 
 ---
@@ -153,6 +165,11 @@ function ChoamContractMarket._tearDown()
     for _, bag in pairs(ChoamContractMarket.contractBags) do
         bag.destruct()
     end
+end
+
+---
+function ChoamContractMarket.isEnabled()
+    return ChoamContractMarket.enabled
 end
 
 ---

@@ -1961,6 +1961,27 @@ function Helper.negate(predicate)
     end
 end
 
+---
+function Helper.equal(value)
+    return function (object)
+        return object == value
+    end
+end
+
+---
+function Helper.never()
+    return function ()
+        return false
+    end
+end
+
+---
+function Helper.always()
+    return function ()
+        return true
+    end
+end
+
 --- http://lua-users.org/wiki/StringRecipes
 function Helper.startsWith(str, start)
     return str:sub(1, #start) == start

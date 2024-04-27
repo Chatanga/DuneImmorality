@@ -582,6 +582,9 @@ function Action.pickContract(color, stackIndex)
     Types.assertIsPlayerColor(color)
     if stackIndex then
         return ChoamContractMarket.acquireContract(stackIndex, color)
+    elseif not ChoamContractMarket.isEnabled() then
+        Action.resources(color, "solari", 2)
+        return true
     else
         return false
     end

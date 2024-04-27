@@ -1217,7 +1217,7 @@ function PlayBoard:_recall()
 
     -- Flip any used tech.
     for _, techTile in ipairs(Park.getObjects(self.techPark)) do
-        if techTile.hasTag("Tech") and techTile.is_face_down then
+        if Types.isTech(techTile) and techTile.is_face_down then
             techTile.flip()
         end
     end
@@ -2059,6 +2059,18 @@ end
 ---
 function PlayBoard.onObjectLeaveContainer(container, object)
     PlayBoard._updateBagCounts(container)
+end
+
+---
+function PlayBoard.getOpenContracts(color)
+    local contracts = {}
+    local playBoard = PlayBoard.getPlayBoard(color)
+    for _, contractTile in ipairs(Park.getObjects(playBoard.techPark)) do
+        if Types.isContract(contractTile) and not contractTile.is_face_down then
+            table.insert(contracts, contractTile)
+        end
+    end
+    return contracts
 end
 
 ---

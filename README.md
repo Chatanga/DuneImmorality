@@ -35,8 +35,6 @@ This repository contains the JSON skeletons and Lua scripts of various mods for 
 __All__
 
 - Free selection of leaders.
-- Automate contracts.
-- Automate the gain of 2 solaris for a contract if the module is not active (or if there are no more contracts).
 
 __6P__
 
@@ -45,15 +43,14 @@ __6P__
 
 __2P / Solo__
 
-- Implement Imperium raw churn.
-- Rework the selection of rivals / isolate "streamlined rivals".
+- Rework the selection of rivals (and isolate "streamlined rivals").
 - Hagal cards in French.
 
 __Aesthetic__
 
 - Review the tech/contract decals.
 - Rectify the height of the 6J Emperor/Fremen faction tokens.
-- Widen the colored borders of the boards (completely remove the trigger effects in the process).
+- Widen the colored border of the boards (and remove the trigger effects in the process).
 
 ## Lua sources
 

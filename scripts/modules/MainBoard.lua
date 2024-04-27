@@ -164,7 +164,7 @@ function MainBoard._mutateMainBoards()
         fremenBoard = { name = "fremenBoard", guid = "01c575", url = "http://cloud-3.steamusercontent.com/ugc/2306470076750293361/0829FF264AB7DA8B456AB07C4F7522203CB969F3/" },
     }
 
-    for name, boardInfo in pairs(boards) do
+    for _, boardInfo in pairs(boards) do
         local board = getObjectFromGUID(boardInfo.guid)
         if board then
             local parameters = board.getCustomObject()
@@ -915,6 +915,7 @@ end
 function MainBoard._goDutifulService(color, leader, continuation)
     assert(TurnControl.getPlayerCount() < 6)
     continuation.run(function ()
+        leader.pickContract(color)
         leader.influence(color, "emperor", 1)
     end)
 end
@@ -1155,6 +1156,7 @@ end
 ---
 function MainBoard._goAcceptContract(color, leader, continuation)
     continuation.run(function ()
+        leader.pickContract(color)
         leader.drawImperiumCards(color, 1)
     end)
 end
