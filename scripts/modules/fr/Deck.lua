@@ -5,12 +5,12 @@ local Deck = {
         -- starter without dune planet
         starter = { "http://cloud-3.steamusercontent.com/ugc/2093667512238503531/D25AA65312D89EB7CEED36D451618E731A674BED/", 4, 2 },
         -- dune planet
-        starterDunePlanet = { "http://cloud-3.steamusercontent.com/ugc/2093667512238502926/98F5861E28F3167495D3F2890879072BF3A84E60/", 2, 2 },
+        starterDunePlanet = { "http://cloud-3.steamusercontent.com/ugc/2488878371133858871/98F5861E28F3167495D3F2890879072BF3A84E60/", 2, 2 },
         -- base without foldspace, nor liasion, nor the spice must flow, but with Jessica of Arrakis and Duncan Loyal Blade
         imperium = { "http://cloud-3.steamusercontent.com/ugc/2093667512238504179/CC2D301CA075930201B3883D82F4C6E1A0837273/", 10, 7 },
         imperiumFoldedSpace = { "http://cloud-3.steamusercontent.com/ugc/2093667512238503304/AE481C2ED19B085E2669F22420FD282982FD11A9/", 3, 2 },
         imperiumArrakisLiasion = { "http://cloud-3.steamusercontent.com/ugc/2093667512238504363/D7411DB495E6EB13D6B64F5E46CCF69FF322039F/", 4, 2 },
-        imperiumTheSpiceMustFlow = { "http://cloud-3.steamusercontent.com/ugc/2093667512238504759/B6E08F8328DB699C60A8F058E88AA6443BA2F716/", 5, 2 },
+        imperiumTheSpiceMustFlow = { "http://cloud-3.steamusercontent.com/ugc/2488878371133991358/B6E08F8328DB699C60A8F058E88AA6443BA2F716/", 5, 2 },
         -- ix without control the spice, but with Boundless Ambition
         ixImperium = { "http://cloud-3.steamusercontent.com/ugc/2093667512238503692/C54BCAB79869547E728509123AC47EDB32E79BF5/", 6, 6 },
         ixImperiumControlTheSpice = { "http://cloud-3.steamusercontent.com/ugc/2093667512238505114/DD5ED3E5FD12F0A1C4F42750E766E83564248E07/", 1, 1 },
@@ -52,7 +52,7 @@ local Deck = {
         spaceport = { "http://cloud-3.steamusercontent.com/ugc/2093667512238531566/40F797128394D598A460BD9C0CDA5ED2060635B5/", 1, 1 },
         minimicFilm = { "http://cloud-3.steamusercontent.com/ugc/2093667512238536779/EB6795F95B5EB16A3771985483452A16C03E4F85/", 1, 1 },
         holoprojectors = { "http://cloud-3.steamusercontent.com/ugc/2093667512238533483/BAE44C5A75C26C3D4021FCB1893B88C56A0C1799/", 1, 1 },
-        memocorders = { "http://cloud-3.steamusercontent.com/ugc/2093667512238534021/D2E97A26B1DDC4A451FD11678415ECD7DE990450/", 1, 1 },
+        memocorders = { "http://cloud-3.steamusercontent.com/ugc/2488878371133863964/D2E97A26B1DDC4A451FD11678415ECD7DE990450/", 1, 1 },
         disposalFacility = { "http://cloud-3.steamusercontent.com/ugc/2093667512238533054/6B8306BA918834279302EC16185756C49F852964/", 1, 1 },
         holtzmanEngine = { "http://cloud-3.steamusercontent.com/ugc/2093667512238534141/9069E14122F06892E95192C8E91C4792AA04FB33/", 1, 1 },
         trainingDrones = { "http://cloud-3.steamusercontent.com/ugc/2093667512238531952/CC314BFCA03F938FD40AA091A22BB0AD050CECCF/", 1, 1 },
