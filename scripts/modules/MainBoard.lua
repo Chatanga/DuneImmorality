@@ -158,10 +158,10 @@ end
 ---
 function MainBoard._mutateMainBoards()
     local boards = {
-        board4P = { name = "board", guid = "483a1a", url = "http://cloud-3.steamusercontent.com/ugc/2305342013587677822/8DBDCE4796B52A64AE78D5F95A1CD0B87A87F66D/" },
-        board6P = { name = "board", guid = "21cc52", url = "http://cloud-3.steamusercontent.com/ugc/2306470076750286375/5674BB27C821E484B2B85671604BBB1263D024A3/" },
-        emperorBoard = { name = "emperorBoard", guid = "4cb9ba", url = "http://cloud-3.steamusercontent.com/ugc/2306470076750293188/C43A9E3E725E49800D2C1952117537CD15F5E058/" },
-        fremenBoard = { name = "fremenBoard", guid = "01c575", url = "http://cloud-3.steamusercontent.com/ugc/2306470076750293361/0829FF264AB7DA8B456AB07C4F7522203CB969F3/" },
+        board4P = { name = "board", guid = "483a1a", url = "http://cloud-3.steamusercontent.com/ugc/2488878371133395673/8DBDCE4796B52A64AE78D5F95A1CD0B87A87F66D/" },
+        board6P = { name = "board", guid = "21cc52", url = "http://cloud-3.steamusercontent.com/ugc/2488878371133398124/5674BB27C821E484B2B85671604BBB1263D024A3/" },
+        emperorBoard = { name = "emperorBoard", guid = "4cb9ba", url = "http://cloud-3.steamusercontent.com/ugc/2488878371133395345/C43A9E3E725E49800D2C1952117537CD15F5E058/" },
+        fremenBoard = { name = "fremenBoard", guid = "01c575", url = "http://cloud-3.steamusercontent.com/ugc/2488878371133397612/0829FF264AB7DA8B456AB07C4F7522203CB969F3/" },
     }
 
     for _, boardInfo in pairs(boards) do

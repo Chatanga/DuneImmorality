@@ -638,6 +638,26 @@ return {
     prepareTheWay = "Préparer la voie",
     theSpiceMustFlow = "L’épice doit couler",
 
+    emperorConvincingArgument = "Argument convaincant",
+    emperorCorrinoMight = "Puissance des Corrino",
+    emperorCriticalShipments = "Livraisons critiques",
+    emperorDemandResults = "Exiger des résultats",
+    emperorDevastatingAssault = "Assaut dévastateur",
+    emperorImperialOrnithopter = "Ornithoptère impérial",
+    emperorSignetRing = "Chevalière",
+    emperorSeekAllies = "À la recherche d’alliés",
+    emperorImperialTent = "Tente impériale",
+
+    muadDibCommandRespect = "Imposer le respect",
+    muadDibConvincingArgument = "Argument convaincant",
+    muadDibDemandAttention = "Exiger de l'attention",
+    muadDibDesertCall = "Appel du désert",
+    muadDibLimitedLandsraadAccess = "Accès limité au Landsraad",
+    muadDibSeekAllies = "À la recherche d’alliés",
+    muadDibUsul = "Usul",
+    muadDibThreatenSpiceProduction = "Menacer la production d’épice",
+    muadDibSignetRing = "Chevalière",
+
     -- Intrigue
     bribery = "Pot-de-vin",
     refocus = "recentrage",

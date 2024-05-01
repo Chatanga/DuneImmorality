@@ -637,6 +637,26 @@ return {
     prepareTheWay = "Prepare the Way",
     theSpiceMustFlow = "The Spice must Flow",
 
+    emperorConvincingArgument = "Convincing Argument",
+    emperorCorrinoMight = "Corrino Might",
+    emperorCriticalShipments = "Critical Shipments",
+    emperorDemandResults = "Demand Results",
+    emperorDevastatingAssault = "Devastating Assault",
+    emperorImperialOrnithopter = "Imperial Ornithopter",
+    emperorSignetRing = "Signet Ring",
+    emperorSeekAllies = "Seek Allies",
+    emperorImperialTent = "Imperial Tent",
+
+    muadDibCommandRespect = "Command Respect",
+    muadDibConvincingArgument = "Convincing Argument",
+    muadDibDemandAttention = "Demand Attention",
+    muadDibDesertCall = "Desert Call",
+    muadDibLimitedLandsraadAccess = "Limited Landsraad Access",
+    muadDibSeekAllies = "Seek Allies",
+    muadDibUsul = "Usul",
+    muadDibThreatenSpiceProduction = "Threaten Spice Production",
+    muadDibSignetRing = "Signet Ring",
+
     -- Intrigue
     bribery = "Bribery",
     refocus = "Refocus",
