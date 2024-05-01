@@ -42,7 +42,7 @@ function worm.init()
     worm.pics["Duke Leto"] =
         "http://cloud-3.steamusercontent.com/ugc/2093667512238514409/CC72D93C394CB1ECD456DF514D0746BE252F8D14/"
     worm.pics["Viscount Hundro"] =
-        "http://cloud-3.steamusercontent.com/ugc/2093667512238511573/E06835C878941E36867616FC354BD9E1CE578B72/"
+        "http://cloud-3.steamusercontent.com/ugc/2488878371133860146/E06835C878941E36867616FC354BD9E1CE578B72/"
     worm.pics["Paul Atreides"] =
         "http://cloud-3.steamusercontent.com/ugc/2093667512238517132/8E702CE9D1470D280C4BA616B41FA9CEB0265EC0/"
     worm.pics["Princess Yuna"] =
@@ -564,7 +564,7 @@ function firstScoreBoardRender()
         else
             broadcastToAll('missing pic for ' .. leaderName, undefined)
             pic =
-                "http://cloud-3.steamusercontent.com/ugc/2093667512238519522/862A2819BDA92202E094E955AE465E9B0EBCAD4C/"
+                "http://cloud-3.steamusercontent.com/ugc/2488878371133861785/862A2819BDA92202E094E955AE465E9B0EBCAD4C/"
         end
 
         composedXml = composedXml .. [[
