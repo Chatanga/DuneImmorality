@@ -127,7 +127,7 @@ local ArrakeenScouts = {
     pendingOperations = {},
 }
 
-ArrakeenScouts._debug = { "armedEscort" }
+--ArrakeenScouts._debug = { "armedEscort" }
 
 ---
 function ArrakeenScouts.onLoad(state)
