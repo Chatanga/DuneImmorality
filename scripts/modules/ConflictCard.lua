@@ -69,7 +69,7 @@ local ConflictCard = {
     secureImperialBasin = {level = 2, legacy = true, rewards = {{vp(1), control("imperialBasin")}, {water(2)}, {water(1)}}},
     tradeMonopoly = {level = 2, ix = true, rewards = {{shipment(2), troop(1)}, {intrigue(1), water(1)}, {choice(1, {intrigue(1), water(1)})}}},
     ]]
-    choamSecurity = {level = 2, uprising = true, objective = "crysknife", rewards = {{influence(2, "spacingGuild"), contract(), troop(1)}, {water(2), solari(2), troop(2)}, {intrigue(1), troop(1)}}},
+    choamSecurity = {level = 2, uprising = true, objective = "crysknife", rewards = {{influence(2, "spacingGuild"), contract(), troop(1)}, {water(1), solari(2), troop(2)}, {intrigue(1), troop(1)}}},
     spiceFreighters = {level = 2, uprising = true, objective = "crysknife", rewards = {{ influence(1), optional({spice(-3), vp(1)})}, {water(1), spice(1), troop(1)}, {spice(1), troop(1)}}},
     siegeOfArrakeen = {level = 2, uprising = true, objective = "ornithopter", rewards = {{control("arrakeen"), solari(2), troop(2)}, {solari(4), troop(1)}, {solari(3)}}},
     seizeSpiceRefinery = {level = 2, uprising = true, objective = "crysknife", rewards = {{control("spiceRefinery"), spy(1), spice(2)}, {intrigue(1), spice(1), troop(1)}, {spice(2)}}},
