@@ -10,7 +10,7 @@ local Deck = {
         starterImperium_emperor = { "http://cloud-3.steamusercontent.com/ugc/2488878371133388485/6C2EBDBB0DA2CBC4EBE3C91970F4A6C66C4225FD/", 5, 2 },
         starterImperium_muadDib = { "http://cloud-3.steamusercontent.com/ugc/2488878371133535304/56225166A2ED9BD37EF06E0F83EEC329A35DB1CD/", 5, 2 },
         -- dune planet
-        starterDunePlanet = { "http://cloud-3.steamusercontent.com/ugc/2488878371133858871/98F5861E28F3167495D3F2890879072BF3A84E60/", 2, 2 },
+        starterDunePlanet = { "http://cloud-3.steamusercontent.com/ugc/2488878371149924429/98F5861E28F3167495D3F2890879072BF3A84E60/", 2, 2 },
         -- base without foldspace, nor liasion, nor the spice must flow, but with Jessica of Arrakis and Duncan Loyal Blade
         imperium = { "http://cloud-3.steamusercontent.com/ugc/2093667512238504179/CC2D301CA075930201B3883D82F4C6E1A0837273/", 10, 7 },
         imperiumFoldedSpace = { "http://cloud-3.steamusercontent.com/ugc/2093667512238503304/AE481C2ED19B085E2669F22420FD282982FD11A9/", 3, 2 },
