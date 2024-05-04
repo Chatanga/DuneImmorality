@@ -37,6 +37,7 @@ return {
     formalCombatPhaseTooltip = "Players with one or more plot cards\nmust explicitly end their turn after\nplaying one or to pass.",
     setup = "Setup",
     notEnoughPlayers = "Not enough players",
+    playerColorWarning = "(Brown and purple colors are only valid in 6P mode.)",
 
     -- Phases
     phaseLeaderSelection = "Phase: leader selection",

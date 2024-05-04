@@ -18,12 +18,13 @@ More generally, take a look at the Example.lua file to see how your code might
 be integrated to this mod in a standard way.
 
 -->
-<Panel position="0 -90" width="450" height="670" color="#000000" id="setupPane" rotation="0 0 0" outline="#2e200f" outlineSize="1"
+<Panel position="0 -90" width="450" height="690" color="#000000" id="setupPane" rotation="0 0 0" outline="#2e200f" outlineSize="1"
 	active="False" allowDragging="True" returnToOriginalPositionWhenReleased="False" _visibility="Host">
 	<Defaults>
 		<Text class="primary" color="#000000" fontSize="20" fontStyle="bold" alignment="MiddleLeft"/>
 		<Text class="secondary" color="#000000" fontSize="14" fontStyle="bold" alignment="MiddleLeft"/>
 		<Text class="epigraph" color="#1e170f" fontSize="14" fontStyle="italic" alignment="MiddleCenter"/>
+		<Text class="warning" color="#ffe71c" fontSize="12" fontStyle="italic" alignment="MiddleCenter"/>
 		<Dropdown class="setUp" itemBackgroundColors="#2e200f44|#df9730|#ffffff|#361441" textColor="#2e200f" fontSize="12" itemTextColor="#2e200f" fontStyle="bold"/>
 		<InputField class="setUp" colors="#00000000|#2e200f44|#2e200f" textColor="#2e200f" fontSize="14" fontStyle="bold"/>
 		<Toggle class="setUp" colors="#9e907e|#ffd60b|#6d5e4c|#222222" textColor="#000000" fontSize="14" fontStyle="bold" tooltipPosition="Left" tooltipBackgroundColor="#000000"/>
@@ -101,9 +102,12 @@ be integrated to this mod in a standard way.
 			</VerticalLayout>
 
 		</VerticalLayout>
-		<HorizontalLayout padding="100 100 0 20">
+		<HorizontalLayout padding="100 100 0 0">
 			<Button class="setUp" id="setUpButton" minHeight="26" onClick="Global/setUpFromUI" key="setup"/>
 		</HorizontalLayout>
+		<VerticalLayout padding="0 0 10 10">
+			<Text class="warning" key="playerColorWarning"/>
+		</VerticalLayout>
 	</VerticalLayout>
-	<Image position="0 430" width="450" height="230" image="http://cloud-3.steamusercontent.com/ugc/2178113508631057252/0DBB449E130AC23B875A07AE447E074C03B8926D/"/>
+	<Image position="0 440" width="450" height="230" image="http://cloud-3.steamusercontent.com/ugc/2178113508631057252/0DBB449E130AC23B875A07AE447E074C03B8926D/"/>
 </Panel>
