@@ -37,7 +37,7 @@ return {
     formalCombatPhaseTooltip = "Les joueurs possédant une ou plusieurs cartes\nd’intrigue doivent explicitement finir leur tour\naprès en avoir joué une ou pour passer.",
     setup = "Mise en place",
     notEnoughPlayers = "Pas assez de joueurs",
-    playerColorWarning = "(Les couleurs marron et violet ne sont valides que dans le mode à 6.)",
+    playerColorWarning = "(Les couleurs blanc et violet ne sont valides que dans le mode à 6.)",
 
     -- Phases
     phaseLeaderSelection = "Phase : sélection des dirigeants",
