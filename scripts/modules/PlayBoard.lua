@@ -30,6 +30,7 @@ local PlayBoard = Helper.createClass(nil, {
     unresolvedContentByColor = {
         Red = {
             board = "d47b92",
+            supportBoard = "7c5bb0",
             colorband = "643f4d",
             spice = "3074d4",
             solari = "576ccd",
@@ -93,6 +94,7 @@ local PlayBoard = Helper.createClass(nil, {
         },
         Blue = {
             board = "f23836",
+            supportBoard = "3d9589",
             colorband = "bca124",
             spice = "9cc286",
             solari = "fa5236",
@@ -156,6 +158,7 @@ local PlayBoard = Helper.createClass(nil, {
         },
         Green = {
             board = "2facfd",
+            supportBoard = "8a1a96",
             colorband = "a138eb",
             spice = "22478f",
             solari = "e597dc",
@@ -219,6 +222,7 @@ local PlayBoard = Helper.createClass(nil, {
         },
         Yellow = {
             board = "13b6cb",
+            supportBoard = "da264a",
             colorband = "9232e7",
             spice = "78fb8a",
             solari = "c5c4ef",
@@ -664,12 +668,14 @@ function PlayBoard:moveAt(position, isRelative, horizontalHandLayout)
 
     Helper.forEachRecursively(toBeMoved, function (name, object)
         assert(tostring(object) ~= "null", name)
-        if object.getPosition then
-            object[move](object.getPosition() + offset)
-        elseif object.x then
-            object.x = object.x + offset.x
-            object.y = object.y + offset.y
-            object.z = object.z + offset.z
+        if name ~= "supportBoard" then
+            if object.getPosition then
+                object[move](object.getPosition() + offset)
+            elseif object.x then
+                object.x = object.x + offset.x
+                object.y = object.y + offset.y
+                object.z = object.z + offset.z
+            end
         end
     end)
 
@@ -989,6 +995,13 @@ function PlayBoard.setUp(settings, activeOpponents)
                         playBoard.content.makerHook = nil
                     end
                     table.insert(sequentialActions, Helper.partialApply(ScoreBoard.gainVictoryPoint, color, "ally", 1))
+                end
+                if settings.numberOfPlayers == 6 or not settings.horizontalHandLayout then
+                    -- Support boards are hidden rectangles used to elevate the hand zones in 4 players configuration.
+                    -- Two of them are partially blocking mouse picking on the bottom Commander selector buttons in 6
+                    -- players configuration however.
+                    playBoard.content.supportBoard.destruct()
+                    playBoard.content.supportBoard = nil
                 end
             else
                 table.insert(sequentialActions, 1, Helper.partialApply(ScoreBoard.gainVictoryPoint, color, "commander", 4))
@@ -2482,7 +2495,6 @@ function PlayBoard:_createAllySelector()
             color = {0, 0, 0, 0}
         })
 
-        -- FIXME For some reason the lower button has unclickable rows of pixels (depends on the distance and angle though).
         for i, allyColor in ipairs(Commander.getAllies(self.color)) do
             Helper.createAbsoluteButtonWithRoundness(anchor, 1, {
                 click_function = self:_createExclusiveCallback(function ()
