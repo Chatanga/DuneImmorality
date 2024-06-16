@@ -201,6 +201,7 @@ return {
     withWaterOption = "2 solaris",
     goSietchTabr = "Selectionnez une option.",
     hookTroopWaterOption = "Hameçon à ver",
+    troopWaterOption = "Troupe",
     waterShieldWallOption = "Mur du Bouclier",
     goSpiceRefinery = "Selectionnez une option.",
     noSpiceOption = "Pas d’épice",

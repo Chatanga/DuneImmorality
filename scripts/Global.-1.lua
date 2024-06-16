@@ -37,7 +37,29 @@ autoLoadedSettings = {
         Red = "feydRauthaHarkonnen",
         Blue = "irulanCorrino",
         White = "muadDib",
-        Purple = "shaddamCorrino"
+        Purple = "shaddamCorrino",
+    },
+    horizontalHandLayout = true,
+    soundEnabled = true,
+}
+
+autoLoadedSettings = {
+    language = "fr",
+    hotSeat = true,
+    numberOfPlayers = 1,
+    virtualHotSeatMode = 1,
+    randomizePlayerPositions = false,
+    useContracts = true,
+    legacy = false,
+    merakon = false,
+    riseOfIx = false,
+    epicMode = false,
+    immortality = false,
+    goTo11 = false,
+    leaderSelection = {
+        Green = "jessica",
+        Yellow = "gurneyHalleck",
+        Red = "feydRauthaHarkonnen",
     },
     horizontalHandLayout = true,
     soundEnabled = true,
@@ -550,8 +572,8 @@ function Controller.getProperlySeatedPlayers()
         Yellow = true,
         Blue = true,
         Red = true,
-        Purple = #seatedPlayers == 6,
-        White = #seatedPlayers == 6,
+        Purple = #seatedPlayers == 6 or Controller.fields.virtualHotSeatMode == 5,
+        White = #seatedPlayers == 6 or Controller.fields.virtualHotSeatMode == 5,
     }
 
     local properlySeatedPlayers = {}

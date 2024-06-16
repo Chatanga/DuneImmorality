@@ -2749,23 +2749,40 @@ function PlayBoard.hasMakerHook(color)
 end
 
 ---
-function PlayBoard.takeMakerHook(color)
-    local makerHook = PlayBoard._getMakerHook(color)
-    if not PlayBoard.hasMakerHook(color) and (TurnControl.getPlayerCount() < 6 or (Commander.isTeamMuabDib(color) and Commander.isAlly(color))) then
-        makerHook.setPositionSmooth(Combat.getMakerHookPosition(color))
-        if TurnControl.getPlayerCount() == 6 then
-            Helper.onceMotionless(makerHook).doAfter(function ()
-                Helper.noPlay(makerHook)
-                Helper.emitEvent("makerHookTaken", color)
-                PlayBoard.getPlayBoard(color):_createButtons()
+function PlayBoard.canTakeMakerHook(color)
+    local normalOrAllyColor = color
+    if TurnControl.getPlayerCount() == 6 and Commander.isCommander(color) then
+        normalOrAllyColor = Commander.getActivatedAlly(color)
+    end
 
-                local otherColor = Commander.getOtherAlly(color)
-                assert(otherColor ~= color)
-                if not PlayBoard.hasMakerHook(otherColor) then
-                    PlayBoard.takeMakerHook(otherColor)
-                end
-            end)
+    return not PlayBoard.hasMakerHook(normalOrAllyColor) and (TurnControl.getPlayerCount() < 6 or Commander.isTeamMuabDib(normalOrAllyColor))
+end
+
+---
+function PlayBoard.takeMakerHook(color)
+    if PlayBoard.canTakeMakerHook(color) then
+        local normalOrAllyColor = color
+        if TurnControl.getPlayerCount() == 6 and Commander.isCommander(color) then
+            normalOrAllyColor = Commander.getActivatedAlly(color)
         end
+
+        local makerHook = PlayBoard._getMakerHook(normalOrAllyColor)
+        makerHook.setPositionSmooth(Combat.getMakerHookPosition(normalOrAllyColor))
+        Helper.onceMotionless(makerHook).doAfter(function ()
+            Helper.noPlay(makerHook)
+            Helper.emitEvent("makerHookTaken", normalOrAllyColor)
+            PlayBoard.getPlayBoard(normalOrAllyColor):_createButtons()
+
+            if TurnControl.getPlayerCount() == 6 then
+                assert(Commander.isTeamMuabDib(normalOrAllyColor))
+                local otherAllyColor = Commander.getOtherAlly(normalOrAllyColor)
+                assert(otherAllyColor ~= normalOrAllyColor)
+                if not PlayBoard.hasMakerHook(otherAllyColor) then
+                    local leader = PlayBoard.getLeader(otherAllyColor)
+                    leader.takeMakerHook(otherAllyColor)
+                end
+            end
+        end)
         return true
     end
     return false

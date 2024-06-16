@@ -1173,7 +1173,7 @@ end
 function MainBoard._goSietchTabr(color, leader, continuation)
     if MainBoard._checkGenericAccess(color, leader, { friendship = "fremen" }) then
         local options = {
-            I18N("hookTroopWaterOption"),
+            PlayBoard.canTakeMakerHook(color) and I18N("hookTroopWaterOption") or I18N("troopWaterOption"),
             I18N("waterShieldWallOption"),
         }
         Dialog.showOptionsAndCancelDialog(color, I18N("goSietchTabr"), options, continuation, function (index)

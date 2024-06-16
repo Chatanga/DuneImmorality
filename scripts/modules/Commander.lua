@@ -151,11 +151,6 @@ function Commander.prepare(color, settings)
 end
 
 ---
-function Commander.takeMakerHook(color)
-    return false
-end
-
----
 function Commander.callSandworm(color, count)
     return Commander._forwardToActivatedAlly(color, "callSandworm", count)
 end
