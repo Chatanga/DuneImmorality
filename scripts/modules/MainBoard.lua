@@ -248,11 +248,12 @@ end
 
 function MainBoard._createRoundIndicator()
     local primaryTable = getObjectFromGUID("2b4b92")
+    local origin = primaryTable.getPosition() + Vector(-3.7, 1.8, -16.5)
 
     Helper.createAbsoluteButtonWithRoundness(primaryTable, 1, {
         click_function = Helper.registerGlobalCallback(),
         label = I18N("roundNumber"),
-        position = primaryTable.getPosition() + Vector(-5, 1.8, -16.5),
+        position = origin,
         width = 1000,
         height = 200,
         font_size = 140,
@@ -262,7 +263,7 @@ function MainBoard._createRoundIndicator()
 
     Helper.createAbsoluteButtonWithRoundness(primaryTable, 1, {
         click_function = Helper.registerGlobalCallback(),
-        position = primaryTable.getPosition() + Vector(-5, 1.8, -17.5),
+        position = origin + Vector(0, 0, -1),
         width = 1000,
         height = 1000,
         font_size = 700,
