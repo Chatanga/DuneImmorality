@@ -464,7 +464,7 @@ function HagalCard._activateDeepDesert(color, rival)
         HagalCard.acquireTroops(color, 0, true)
         if not MainBoard.shieldWallIsStanding() and PlayBoard.hasMakerHook(color) then
             rival.resources(color, "spice", spiceBonus)
-            rival.callSandworm(color, 1)
+            rival.callSandworm(color, 2)
         else
             rival.resources(color, "spice", 4 + spiceBonus)
         end
