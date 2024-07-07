@@ -1349,10 +1349,10 @@ function PlayBoard.acceptTurn(phase, color)
     elseif phase == 'playerTurns' then
         accepted = PlayBoard.couldSendAgentOrReveal(color)
     elseif phase == 'combat' then
-        Helper.dumpFunction("color = ", color)
-        Helper.dump("PlayBoard.combatPassCountdown =", PlayBoard.combatPassCountdown)
-        Helper.dump("Combat.isInCombat =", Combat.isInCombat(color))
-        Helper.dump("#PlayBoard._getPotentialCombatIntrigues =", #PlayBoard._getPotentialCombatIntrigues(color))
+        --Helper.dumpFunction("color = ", color)
+        --Helper.dump("PlayBoard.combatPassCountdown =", PlayBoard.combatPassCountdown)
+        --Helper.dump("Combat.isInCombat =", Combat.isInCombat(color))
+        --Helper.dump("#PlayBoard._getPotentialCombatIntrigues =", #PlayBoard._getPotentialCombatIntrigues(color))
         if Combat.isInCombat(color) and Combat.isFormalCombatPhaseEnabled() then
             accepted = PlayBoard.combatPassCountdown > 0 and not PlayBoard.isRival(color) and #PlayBoard._getPotentialCombatIntrigues(color) > 0
             PlayBoard.combatPassCountdown = PlayBoard.combatPassCountdown - 1
