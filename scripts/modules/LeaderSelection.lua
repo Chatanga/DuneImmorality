@@ -441,9 +441,14 @@ end
 function LeaderSelection._createDynamicLeaderSelection(leaders)
     Helper.shuffle(leaders)
 
+    local notRivalLeaderCount = 0
     for i, leader in ipairs(leaders) do
-        -- TODO Rework to better accomodate the human/rival leader mix.
-        if i <= LeaderSelection.leaderSelectionPoolSize then
+        local ok = true
+        if not leader.hasTag("RivalLeader") then
+            notRivalLeaderCount = notRivalLeaderCount + 1
+            ok = notRivalLeaderCount <= LeaderSelection.leaderSelectionPoolSize
+        end
+        if ok then
             LeaderSelection.dynamicLeaderSelection[leader] = false
             local position = leader.getPosition()
             Helper.createAbsoluteButtonWithRoundness(leader, 1, {

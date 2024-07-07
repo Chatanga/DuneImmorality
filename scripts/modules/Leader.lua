@@ -34,6 +34,7 @@ Leader.vladimirHarkonnen = Helper.createClass(Leader, {
         for _ = 1, tokenCount do
             tokenBag.takeObject({
                 position = position,
+                smooth = false, -- To avoid hand interception.
                 callback_function = function (token)
                     token.flip()
                 end
