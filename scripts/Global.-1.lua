@@ -6,6 +6,9 @@
     That's all. When set up, the LeaderSelection module will proceed with the
     next step and finally call TurnControl.startGame to effectively start the
     game.
+
+    In case you don't know, the source code for this mod is available at:
+    https://github.com/Chatanga/DuneImmorality
 ]]
 
 -- Will be automatically replaced by the build timestamp.
