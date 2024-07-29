@@ -393,7 +393,7 @@ function Helper.createTransientAnchor(nickname, position)
         HideWhenFaceDown = false,
         Hands = false,
         CustomMesh = {
-            MeshURL = "http://cloud-3.steamusercontent.com/ugc/2042984592862608679/0383C231514AACEB52B88A2E503A90945A4E8143/",
+            MeshURL = "https://steamusercontent-a.akamaihd.net/ugc/2042984592862608679/0383C231514AACEB52B88A2E503A90945A4E8143/",
             DiffuseURL = "",
             NormalURL = "",
             ColliderURL = "",

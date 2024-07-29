@@ -95,6 +95,7 @@ function Rival.triggerHagalReaction(color)
             Rival._buyVictoryPoints(color)
         end
 
+        Helper.dump("Triggering " .. continuation.name);
         continuation.run()
 
         return 1

@@ -165,6 +165,7 @@ function Hagal._collectReward(color)
                     dreadnoughts[1].setPositionSmooth(bestBannerZone.getPosition())
                 end
             end
+            Helper.dump("Triggering " .. continuation.name);
             continuation.run()
         end)
     end)
