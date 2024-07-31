@@ -451,7 +451,8 @@ Leader.margotFenring = Helper.createClass(Leader, {
     influence = function (color, faction, amount)
         if faction == "beneGesserit" then
             local noFriendshipBefore = not InfluenceTrack.hasFriendship(color, faction)
-            Action.influence(color, faction, amount).doAfter(function (...)
+            local continuation = Action.influence(color, faction, amount)
+            continuation.doAfter(function (...)
                 local friendshipAfter = InfluenceTrack.hasFriendship(color, faction)
                 if noFriendshipBefore and friendshipAfter then
                     local leader = PlayBoard.getLeader(color)
