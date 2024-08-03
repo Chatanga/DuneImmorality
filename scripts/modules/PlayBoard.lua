@@ -834,8 +834,10 @@ function PlayBoard:_createAgentPark(agentPositions, startup)
     }
 
     local park = Park.createCommonPark({ self.color, "Agent" }, slots, Vector(1, 3, 0.5))
-    for i, agent in ipairs(self.content.agents) do
-        agent.setPosition(slots[i])
+    if startup then
+        for i, agent in ipairs(self.content.agents) do
+            agent.setPosition(slots[i])
+        end
     end
     return park
 end
