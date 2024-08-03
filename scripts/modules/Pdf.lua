@@ -20,8 +20,8 @@ end
 function Pdf.setUp()
     local locale = I18N.getLocale()
 
-    if locale == "en" then
-        -- Bail out since the base PDF are in english.
+    if locale == "fr" then
+        -- Bail out since the base PDF are in french.
         return
     end
 
