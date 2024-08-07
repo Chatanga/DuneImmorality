@@ -76,7 +76,7 @@ Modules relies on the Luabundler tool, but also on utils.Modules.
 - __ImperiumRow.lua__ - Everything related to the Imperium Row (which excludes the Reserve).
 - __InfluenceTrack.lua__ - Manages the 4/6 influences tracks.
 - __Intrigue.lua__ - Manages the intrigue deck (intrigues are not automated at all).
-- __Leader.lua__ - Provides a proxy for each Leader, used as an indirection to Action. Each leader ability is implemented as an alteration of an existing action or as an event handler.
+- __Leader.lua__ - Provides a proxy for each leader, used as an indirection to Leader then Action. Each leader ability is implemented as an alteration of an existing action or as an event handler.
 - __LeaderSelection.lua__ - Only used in the start up phase to offer various ways for each player to select its leader.
 - __Locale.lua__ - Configure the I18N module with the relevant content.
 - __MainBoard.lua__ - Creates the various actionable spaces on the 4P/6P boards based on their snappoints and provides the functions to resolve their effects on the active player's leader (which is a proxy on Action).
@@ -85,6 +85,7 @@ Modules relies on the Luabundler tool, but also on utils.Modules.
 - __PlayBoard.lua__ - The heaviest module around, but contrary to ArrakeenScouts, offers little game related functions. It's mostly here to manage the layout and the mod niceties related to each player's board with all their content.
 - __Reserve.lua__ - Handles the card reserve next to the ImperiumRow.
 - __Resource.lua__ - A class handling the resources tokens (spice, solaris, etc.) on the various boards.
+- __Rival.lua__ - Provides a proxy for each rival leader, used as an indirection to Rival then Action. Each leader ability is implemented as an alteration of an existing action or as an event handler. Contrary to the Leader class, mostly empty, the Rival class provides part of the "AI" for Solo/Hagal mode.
 - __ScoreBoard.lua__ - A facade to retrieve the VP tokens from their various locations on the maiboard and player boards. Badly named actually, since it doesn't handle the shared VP track.
 - __ShipmentTrack.lua__ - Handle the shipping track and its freighters from the Ix extension.
 - __TechCard.lua__ - Describes all the Tech tiles, mainly their costs and acquisition bonuses.

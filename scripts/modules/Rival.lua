@@ -171,27 +171,40 @@ function Rival.prepare(color, settings)
 end
 
 ---
-function Rival.influence(color, faction, amount)
-    local finalFaction = faction
+function Rival:_removeBestFaction(color, factions)
+    local function indexOf(faction)
+        for i, f in pairs(self.factionPriorities) do
+            if f == faction then
+                return i
+            end
+        end
+        assert(false)
+    end
+    table.sort(factions, function (f1, f2)
+        local i1 = InfluenceTrack.getInfluence(f1, color) * 10 + indexOf(f1)
+        local i2 = InfluenceTrack.getInfluence(f2, color) * 10 + indexOf(f2)
+        return i1 < i2
+    end)
+    local bestFaction = factions[1]
+    table.remove(factions, 1)
+    return bestFaction
+end
+
+---
+function Rival.influence(color, indexOrfactionOrFactions, amount)
+    local finalFaction
     local rival = PlayBoard.getLeader(color)
-    if not finalFaction or type(finalFaction) == "table" then
-        local factions = faction
+    if not indexOrfactionOrFactions or type(indexOrfactionOrFactions) == "table" then
+        local factions = indexOrfactionOrFactions
         if not factions then
             factions = { "emperor", "spacingGuild", "beneGesserit", "fremen" }
         end
-        Helper.shuffle(factions)
-        table.sort(factions, function (f1, f2)
-            local i1 = InfluenceTrack.getInfluence(f1, color)
-            local i2 = InfluenceTrack.getInfluence(f2, color)
-            if i1 == i2 then
-                i1 = Helper.indexOf(rival.factionPriorities, f1)
-                i2 = Helper.indexOf(rival.factionPriorities, f2)
-            end
-            return i1 < i2
-        end)
-        finalFaction = factions[1]
+        finalFaction = rival:_removeBestFaction(color, factions)
     elseif type(finalFaction) == "number" then
-        finalFaction = rival.factionPriorities[faction]
+        local index = indexOrfactionOrFactions
+        finalFaction = rival.factionPriorities[index]
+    else
+        finalFaction = indexOrfactionOrFactions
     end
     return Action.influence(color, finalFaction, amount)
 end
@@ -271,25 +284,11 @@ end
 
 ---
 function Rival.choose(color, topic)
-
-    local function pickTwoBestFactions()
-        local factions = { "emperor", "spacingGuild", "beneGesserit", "fremen" }
-        for _ = 1, 2 do
-            Helper.shuffle(factions)
-            table.sort(factions, function (f1, f2)
-                local i1 = InfluenceTrack.getInfluence(f1, color)
-                local i2 = InfluenceTrack.getInfluence(f2, color)
-                return i1 > i2
-            end)
-            local faction = factions[1]
-            table.remove(factions, 1)
-
-            return Rival.influence(color, faction, 1)
-        end
-    end
-
     if Helper.isElementOf(topic, { "shuttleFleet", "machinations", "propaganda" }) then
-        pickTwoBestFactions()
+        local factions = { "emperor", "spacingGuild", "beneGesserit", "fremen" }
+        Helper.repeatChainedAction(2, function ()
+            return Rival.influence(color, factions, 1)
+        end)
     end
 end
 
