@@ -200,7 +200,7 @@ function Rival.influence(color, indexOrfactionOrFactions, amount)
             factions = { "emperor", "spacingGuild", "beneGesserit", "fremen" }
         end
         finalFaction = rival:_removeBestFaction(color, factions)
-    elseif type(finalFaction) == "number" then
+    elseif type(indexOrfactionOrFactions) == "number" then
         local index = indexOrfactionOrFactions
         finalFaction = rival.factionPriorities[index]
     else
