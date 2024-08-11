@@ -47,32 +47,11 @@ def handleMessage(message):
     elif id == 2:
         # Messages could be received out of order compared to the ingame log, which is weird with a locale TCP connection...
         body = message['message']
-        info(body)
+        if not logException(body):
+            info(body)
     elif id == 3:
         errorMessage = message['error']
-        result = re.search('([^:]*):\((\d+),(\d+)-(\d+)(,(\d+))?\): (.*)', errorMessage)
-        if result:
-            try:
-                startLineNumber = int(result.group(2))
-                startColNumber = int(result.group(3)) + 1
-                if result.group(5):
-                    endLineNumber = int(result.group(4)) + 1
-                    endColNumber = int(result.group(6)) + 1
-                else:
-                    endLineNumber = startLineNumber
-                    endColNumber = int(result.group(4)) + 1
-                errorMessage = result.group(7)
-                startLocation = relocate(startLineNumber)
-            except:
-                for i in range(1, 7):
-                    print(i, '->', result.group(i))
-                startLocation = None
-        else:
-            startLocation = None
-        if startLocation:
-            file, lineNumber = startLocation
-            error(f'{file}:{lineNumber}:{startColNumber}: {errorMessage}')
-        else:
+        if not logException(errorMessage):
             error(errorMessage)
     elif id == 4:
         customMessage = message['customMessage']
@@ -103,6 +82,33 @@ def error(message):
     print('\033[31m', file = sys.stderr, end = '')
     print(message, file = sys.stderr, end = '')
     print('\033[0m', file = sys.stderr)
+
+def logException(message):
+    result = re.search('([^:]*):\((\d+),(\d+)-(\d+)(,(\d+))?\): (.*)', message)
+    if result:
+        try:
+            startLineNumber = int(result.group(2))
+            startColNumber = int(result.group(3)) + 1
+            if result.group(5):
+                endLineNumber = int(result.group(4)) + 1
+                endColNumber = int(result.group(6)) + 1
+            else:
+                endLineNumber = startLineNumber
+                endColNumber = int(result.group(4)) + 1
+            message = result.group(7)
+            startLocation = relocate(startLineNumber)
+        except:
+            for i in range(1, 7):
+                print(i, '->', result.group(i))
+            startLocation = None
+    else:
+        startLocation = None
+    if startLocation:
+        file, lineNumber = startLocation
+        error(f'{file}:{lineNumber}:{startColNumber}: {message}')
+        return True
+    else:
+        return False
 
 def relocate(lineNumber):
     file_origin = 0

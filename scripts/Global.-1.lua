@@ -169,6 +169,9 @@ local settings
 function onLoad(scriptState)
     log("--------< Rakis Rising - " .. BUILD .. " >--------")
 
+    -- Make it available to 'Helper.postError'.
+    Global.setVar("BUILD", BUILD);
+
     -- All transient objects (mostly anchors, but also some zones) are destroyed
     -- at startup, then recreated in the 'onLoad' functions (and 'staticSetup'
     -- methods in case the game has already been set up).
@@ -246,14 +249,9 @@ function asyncOnLoad(scriptState)
 
     -- List the TTS events we want to make available in the modules.
     Module.registerModuleRedirections({
-        "onObjectEnterScriptingZone",
-        "onObjectLeaveScriptingZone",
         "onPlayerChangeColor",
         "onPlayerConnect",
         "onPlayerDisconnect",
-        "onObjectEnterContainer",
-        "onObjectLeaveContainer",
-        "onObjectDrop",
     })
 
     if not state.settings then
@@ -340,6 +338,15 @@ function runSetUp(index, activeOpponents)
         nextContinuation.doAfter(Helper.partialApply(runSetUp, index + 1, activeOpponents))
     else
         --Helper.dump("Done setting all modules")
+
+        -- List the TTS events we want to make available in the modules.
+        Module.registerModuleRedirections({
+            "onObjectEnterScriptingZone",
+            "onObjectLeaveScriptingZone",
+            "onObjectEnterContainer",
+            "onObjectLeaveContainer",
+            "onObjectDrop",
+        })
     end
 end
 
