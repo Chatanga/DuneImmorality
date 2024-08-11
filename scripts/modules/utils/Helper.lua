@@ -17,6 +17,46 @@ local Helper = {
 
 math.randomseed(os.time())
 
+-- *** Exception handling ***
+
+---@param context string
+---@param callable function
+function Helper.wrapFailable(context, callable)
+    return function (...)
+        local ran, ret = pcall(callable, ...)
+        if not ran then
+            broadcastToAll("An error has happened in a script!", "Red")
+            log("Error in script (Global): " .. ret)
+            Helper._postError(Helper.functionToString(context, ...), ret)
+        end
+        return ret
+    end
+end
+
+---
+function Helper._postError(context, error)
+
+    local url = "https://hihan.org/tts-error-log/index.php"
+    local form = {
+        action = "add",
+        modname = "Spice Flow",
+        buildstamp = Global.getVar("BUILD"),
+        context = Helper.toString(context),
+        error = Helper.toString(error),
+    }
+
+    WebRequest.post(url, form, function(request)
+        if request.is_error then
+            Helper.dump("Request failed:", request.error)
+        else
+            local responseData = JSON.decode(request.text)
+            if not responseData.code or responseData.code ~= "0" then
+                Helper.dump("Response:", responseData)
+            end
+        end
+    end)
+end
+
 -- *** Event listeners ***
 
 function Helper.registerEventListener(topic, listener)
@@ -96,7 +136,7 @@ function Helper.emitEvent(topic, ...)
     local listenersWithPriority = Helper.eventListenersByTopic[topic]
     if listenersWithPriority then
         for _, listenerWithPriority in ipairs(Helper.shallowCopy(listenersWithPriority)) do
-            listenerWithPriority.listener(...)
+            Helper.wrapFailable("listener on " .. tostring(topic), listenerWithPriority.listener)(...)
         end
     end
 end
@@ -722,7 +762,7 @@ function Helper.registerGlobalCallback(callback)
             Global.setVar(GLOBAL_COUNTER_NAME, nextIndex + 1)
             uniqueName = "generatedCallback" .. tostring(nextIndex)
         end
-        Global.setVar(uniqueName, callback)
+        Global.setVar(uniqueName, Helper.wrapFailable(uniqueName, callback))
         return uniqueName
     else
         return Helper._getNopCallback()
@@ -734,7 +774,7 @@ function Helper.unregisterGlobalCallback(uniqueName)
     if uniqueName ~= "generatedCallback0" then
         local callback = Global.getVar(uniqueName)
         assert(callback, "Unknown global callback: " .. uniqueName)
-        --Global.setVar(uniqueName, nil)
+        Global.setVar(uniqueName, nil)
         table.insert(Helper.uniqueNamePool, uniqueName)
     end
 end
@@ -836,7 +876,8 @@ function Helper.createContinuation(name)
         assert(type(action) == 'function')
         if continuation.done then
             if not continuation.canceled then
-                action(table.unpack(continuation.parameters, 1, continuation.parameters.n))
+                local wrappedAction = Helper.wrapFailable("sync after " .. tostring(continuation.name), action)
+                wrappedAction(table.unpack(continuation.parameters, 1, continuation.parameters.n))
             end
         else
             table.insert(continuation.actions, action)
@@ -846,7 +887,8 @@ function Helper.createContinuation(name)
     continuation.next = function (...)
         continuation.parameters = table.pack(...)
         for _, action in ipairs(continuation.actions) do
-            action(...)
+            local wrappedAction = Helper.wrapFailable("async after " .. tostring(continuation.name), action)
+            wrappedAction(...)
         end
     end
 
@@ -1645,6 +1687,10 @@ end
 
 ---
 function Helper.dumpFunction(...)
+    log(Helper.functionToString(...))
+end
+
+function Helper.functionToString(...)
     local args = table.pack(...)
     local str
     for i = 1, args.n do
@@ -1663,7 +1709,7 @@ function Helper.dumpFunction(...)
             str = str .. ", "
         end
     end
-    log(str)
+    return str
 end
 
 ---
@@ -1698,6 +1744,8 @@ function Helper.toString(object, quoted)
             return "<function>"
         elseif objectType == "string" then
             return quoted and '"' .. object .. '"' or object
+        elseif objectType == "userdata" then
+            return tostring(object) .. "/" .. tostring(Helper.getID(object))
         else
             return tostring(object)
         end
