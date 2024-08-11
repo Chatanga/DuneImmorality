@@ -6,22 +6,22 @@ local Locale = Module.lazyRequire("Locale")
 
 local Deck = {
     decals = {
-        corrinoAcquireCard = "http://cloud-3.steamusercontent.com/ugc/2286203878409177043/9E9986D0F348F5D23A16745A271FFD28958651FB/",
-        genericAcquireCard = "http://cloud-3.steamusercontent.com/ugc/2286203878409243895/5F7C572489E5E03F3230B012DA0E01A84EDAABF8/",
+        corrinoAcquireCard = "https://steamusercontent-a.akamaihd.net/ugc/2286203878409177043/9E9986D0F348F5D23A16745A271FFD28958651FB/",
+        genericAcquireCard = "https://steamusercontent-a.akamaihd.net/ugc/2286203878409243895/5F7C572489E5E03F3230B012DA0E01A84EDAABF8/",
     },
     customDeckBaseId = 100,
     backs = {
-        imperiumCardBack = "http://cloud-3.steamusercontent.com/ugc/2093667512238502565/C3DC7A02CF378129569B414967C9BE25097C6E77/",
-        intrigueCardBack = "http://cloud-3.steamusercontent.com/ugc/2093667512238521846/D63B92C616541C84A7984026D757DB03E79532DD/",
-        techCardBack = "http://cloud-3.steamusercontent.com/ugc/2093667512238531825/1EA614EC832B16BC94811A7FE793344057850409/",
-        conflictCardBack = "http://cloud-3.steamusercontent.com/ugc/2093667512238537179/0423ECA84C0D71CCB38EBD60DEAE641EE72D7933/", -- a workaround
-        conflict1CardBack = "http://cloud-3.steamusercontent.com/ugc/2093667512238537179/0423ECA84C0D71CCB38EBD60DEAE641EE72D7933/",
-        conflict2CardBack = "http://cloud-3.steamusercontent.com/ugc/2093667512238537448/3B3F54DF65F76F0850D0EC683602524806A11E49/",
-        conflict3CardBack = "http://cloud-3.steamusercontent.com/ugc/2093667512238537046/9E194557E37B5C4CA74C7A77CBFB6B8A36043916/",
-        hagalCardBack = "http://cloud-3.steamusercontent.com/ugc/2093668799785646965/26E28590801800D852F4BCA53E959AAFAAFC8FF3/",
-        leaderCardBack = "http://cloud-3.steamusercontent.com/ugc/2093668799785645356/005244DAC0A29EE68CFF741FC06564969563E8CF/",
-        fanmadeLeaderCardBack = "http://cloud-3.steamusercontent.com/ugc/2093668799785649802/4C75C9A8CA6B890A6178B4B22B0F994B2F663D33/",
-        arrakeenScoutsCardBack = "http://cloud-3.steamusercontent.com/ugc/2435957455465064617/DE94B7602EB41EEB68DE4907DF1369CBEF2ADD55/",
+        imperiumCardBack = "https://steamusercontent-a.akamaihd.net/ugc/2093667512238502565/C3DC7A02CF378129569B414967C9BE25097C6E77/",
+        intrigueCardBack = "https://steamusercontent-a.akamaihd.net/ugc/2093667512238521846/D63B92C616541C84A7984026D757DB03E79532DD/",
+        techCardBack = "https://steamusercontent-a.akamaihd.net/ugc/2093667512238531825/1EA614EC832B16BC94811A7FE793344057850409/",
+        conflictCardBack = "https://steamusercontent-a.akamaihd.net/ugc/2093667512238537179/0423ECA84C0D71CCB38EBD60DEAE641EE72D7933/", -- a workaround
+        conflict1CardBack = "https://steamusercontent-a.akamaihd.net/ugc/2093667512238537179/0423ECA84C0D71CCB38EBD60DEAE641EE72D7933/",
+        conflict2CardBack = "https://steamusercontent-a.akamaihd.net/ugc/2093667512238537448/3B3F54DF65F76F0850D0EC683602524806A11E49/",
+        conflict3CardBack = "https://steamusercontent-a.akamaihd.net/ugc/2093667512238537046/9E194557E37B5C4CA74C7A77CBFB6B8A36043916/",
+        hagalCardBack = "https://steamusercontent-a.akamaihd.net/ugc/2093668799785646965/26E28590801800D852F4BCA53E959AAFAAFC8FF3/",
+        leaderCardBack = "https://steamusercontent-a.akamaihd.net/ugc/2093668799785645356/005244DAC0A29EE68CFF741FC06564969563E8CF/",
+        fanmadeLeaderCardBack = "https://steamusercontent-a.akamaihd.net/ugc/2093668799785649802/4C75C9A8CA6B890A6178B4B22B0F994B2F663D33/",
+        arrakeenScoutsCardBack = "https://steamusercontent-a.akamaihd.net/ugc/2435957455465064617/DE94B7602EB41EEB68DE4907DF1369CBEF2ADD55/",
     },
     sources = {},
     starter = {

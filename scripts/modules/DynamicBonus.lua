@@ -201,7 +201,7 @@ function DynamicBonus._createSpiceToken(position)
         HideWhenFaceDown = false,
         Hands = false,
         CustomImage = {
-            ImageURL = "http://cloud-3.steamusercontent.com/ugc/2093667512238516132/E7FD36CE3B3F6E6BF22E8ED1096644A381ECC426/",
+            ImageURL = "https://steamusercontent-a.akamaihd.net/ugc/2093667512238516132/E7FD36CE3B3F6E6BF22E8ED1096644A381ECC426/",
             ImageSecondaryURL = "",
             ImageScalar = 1.0,
             WidthScale = 0.0,
@@ -260,7 +260,7 @@ function DynamicBonus._createSolariToken(position)
         HideWhenFaceDown = false,
         Hands = false,
         CustomImage = {
-            ImageURL = "http://cloud-3.steamusercontent.com/ugc/2093667512238517475/CB54F21A0AF3E4CBFF3EC93D5E40D432CF6BC856/",
+            ImageURL = "https://steamusercontent-a.akamaihd.net/ugc/2093667512238517475/CB54F21A0AF3E4CBFF3EC93D5E40D432CF6BC856/",
             ImageSecondaryURL = "",
             ImageScalar = 1.0,
             WidthScale = 0.0,

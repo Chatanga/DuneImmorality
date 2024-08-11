@@ -11,7 +11,7 @@
 		<Image raycastTarget="true"/>
 	</Defaults>
 	<VerticalLayout>
-		<Image ignoreLayout="True" image="http://cloud-3.steamusercontent.com/ugc/2509137691632252238/B918137D800EBB27B1C1055E98B6253B034D6F31/"/>
+		<Image ignoreLayout="True" image="https://steamusercontent-a.akamaihd.net/ugc/2509137691632252238/B918137D800EBB27B1C1055E98B6253B034D6F31/"/>
 		<VerticalLayout padding="40 40 150 50">
 			<VerticalLayout padding="0 0 0 20">
 				<Text class="epigraph" key="prolog"/>
@@ -80,5 +80,5 @@
 			<Button class="setUp" id="setUpButton" minHeight="26" onClick="Global/setUpFromUI" key="setup"/>
 		</HorizontalLayout>
 	</VerticalLayout>
-	<Image position="0 375" width="256" height="256" image="http://cloud-3.steamusercontent.com/ugc/2492254803020933211/F1D935AF143A3EDAAF929A9585779CE4E7254B10/"/>
+	<Image position="0 375" width="256" height="256" image="https://steamusercontent-a.akamaihd.net/ugc/2492254803020933211/F1D935AF143A3EDAAF929A9585779CE4E7254B10/"/>
 </Panel>
