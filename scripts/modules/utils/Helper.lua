@@ -581,6 +581,7 @@ end
 
 ---
 function Helper.createButton(object, parameters)
+    --parameters.tooltip = (parameters.tooltip and parameters.tooltip .. " " or "") .. "(" .. tostring(parameters.click_function) .. ")"
     return Helper._createWidget("Button", object, parameters)
 end
 
@@ -773,9 +774,13 @@ end
 function Helper.unregisterGlobalCallback(uniqueName)
     if uniqueName ~= "generatedCallback0" then
         local callback = Global.getVar(uniqueName)
-        assert(callback, "Unknown global callback: " .. uniqueName)
-        Global.setVar(uniqueName, nil)
-        table.insert(Helper.uniqueNamePool, uniqueName)
+        --assert(callback, "Unknown global callback: " .. uniqueName)
+        if callback then
+            Global.setVar(uniqueName, nil)
+            table.insert(Helper.uniqueNamePool, uniqueName)
+        else
+            Helper.dump("Unknown global callback: " .. uniqueName)
+        end
     end
 end
 

@@ -300,13 +300,13 @@ function onSave()
     end
 end
 
---- Never called actually.
-function onDestroy()
-    Helper.dumpFunction("onDestroy")
-    Module.unregisterAllModuleRedirections()
-    Helper.dump("destroyTransientObjects")
-    Helper.destroyTransientObjects()
-    Helper.dump("done")
+--- TTS event handler.
+function onObjectDestroy(object)
+    if object.getGUID() == "2b4b92" then
+        --Module.unregisterAllModuleRedirections()
+        --Helper.destroyTransientObjects()
+        Helper.dump("Bye!")
+    end
 end
 
 --- Set up the game, an irreversible operation.
