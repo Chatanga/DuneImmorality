@@ -14,6 +14,7 @@ return {
     players = "Players",
     virtualHotSeat = "Special / Hotseat",
     virtualHotSeatTooltip = "Allows you to play solo, with 2 players\nor in “hotseat” for the other modes.",
+    firstPlayer = "First Player",
     randomizePlayersPositions = "Randomize players' positions",
     randomizePlayersPositionTooltip = "No player must use the black seat while\nthe player positions are shuffled.",
     extensions = "Extensions",

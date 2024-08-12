@@ -14,6 +14,7 @@ return {
     players = "Joueurs",
     virtualHotSeat = "Spécial / Hotseat",
     virtualHotSeatTooltip = "Permet de jouer en solo, à 2 joueurs ou\nbien en « hotseat » pour les autres modes.",
+    firstPlayer = "Premier joueur",
     randomizePlayersPositions = "Mélanger les positions des joueurs",
     randomizePlayersPositionTooltip = "Aucun joueur ne doit utiliser le siège noir pendant\nque les positions des joueurs sont mélangées.",
     extensions = "Extensions",
@@ -37,7 +38,7 @@ return {
     formalCombatPhaseTooltip = "Les joueurs possédant une ou plusieurs cartes\nd’intrigue doivent explicitement finir leur tour\naprès en avoir joué une ou pour passer.",
     setup = "Mise en place",
     notEnoughPlayers = "Pas assez de joueurs",
-    playerColorWarning = "(Les couleurs blanc et violet ne sont valides que dans le mode à 6.)",
+    playerColorWarning = "(Les couleurs blanche et violette ne sont valides que dans le mode à 6.)",
 
     -- Phases
     phaseLeaderSelection = "Phase : sélection des dirigeants",

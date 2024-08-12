@@ -139,6 +139,14 @@ local Controller = {
             "2 x 3"
         },
         virtualHotSeatMode = {},
+        firstPlayer = "1",
+        firstPlayer_all = {
+            "Random",
+            "Green",
+            "Yellow",
+            "Blue",
+            "Red",
+        },
         randomizePlayerPositions = false,
         difficulty_all = Helper.mapValues(allModules.Hagal.getDifficulties(), Helper.field("name")),
         difficulty = {},
@@ -292,13 +300,13 @@ function onSave()
     end
 end
 
---- Never called actually.
-function onDestroy()
-    Helper.dumpFunction("onDestroy")
-    Module.unregisterAllModuleRedirections()
-    Helper.dump("destroyTransientObjects")
-    Helper.destroyTransientObjects()
-    Helper.dump("done")
+--- TTS event handler.
+function onObjectDestroy(object)
+    if object.getGUID() == "2b4b92" then
+        --Module.unregisterAllModuleRedirections()
+        --Helper.destroyTransientObjects()
+        Helper.dump("Bye!")
+    end
 end
 
 --- Set up the game, an irreversible operation.
@@ -375,6 +383,11 @@ function setLanguage(player, value, id)
     I18N.setLocale(Controller.fields.language)
     Controller.ui:toUI()
     Controller.updateDefaultLeaderPoolSizeLabel()
+end
+
+--- UI callback (cf. XML).
+function setFirstPlayer(player, value, id)
+    Controller.ui:fromUI(player, value, id)
 end
 
 --- UI callback (cf. XML).
@@ -507,6 +520,7 @@ function setUpFromUI()
         language = Controller.fields.language,
         numberOfPlayers = numberOfPlayers,
         hotSeat = not Controller.isUndefined(Controller.fields.virtualHotSeatMode),
+        firstPlayer = Controller.fields.firstPlayer_all[Controller.fields.firstPlayer],
         randomizePlayerPositions = Controller.fields.randomizePlayerPositions == true,
         difficulty = Controller.fields.difficulty,
         useContracts = Controller.fields.useContracts == true or numberOfPlayers == 6,

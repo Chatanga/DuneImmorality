@@ -18,7 +18,7 @@ More generally, take a look at the Example.lua file to see how your code might
 be integrated to this mod in a standard way.
 
 -->
-<Panel position="0 -90" width="450" height="690" color="#000000" id="setupPane" rotation="0 0 0" outline="#2e200f" outlineSize="1"
+<Panel position="0 -90" width="450" height="720" color="#000000" id="setupPane" rotation="0 0 0" outline="#2e200f" outlineSize="1"
 	active="False" allowDragging="True" returnToOriginalPositionWhenReleased="False" _visibility="Host">
 	<Defaults>
 		<Text class="primary" color="#000000" fontSize="20" fontStyle="bold" alignment="MiddleLeft"/>
@@ -63,7 +63,7 @@ be integrated to this mod in a standard way.
 			</VerticalLayout>
 
 			<HorizontalLayout>
-				<Text class="primary" key="leaderSelection" id="zag"/>
+				<Text class="primary" key="leaderSelection"/>
 				<Dropdown class="setUp" id="leaderSelection" flexibleWidth="4" onValueChanged="Global/setLeaderSelection">
 					<Option></Option>
 				</Dropdown>
@@ -71,7 +71,7 @@ be integrated to this mod in a standard way.
 			<VerticalLayout padding="25 0 0 0">
 				<HorizontalLayout>
 					<Text class="secondary" id="defaultLeaderPoolSizeLabel"/>
-					<Slider id="defaultLeaderPoolSize" flexibleWidth="2" onValueChanged="setDefaultLeaderPoolSize" wholeNumbers="True" minValue="6" maxValue="12" value="8" />
+					<Slider id="defaultLeaderPoolSize" flexibleWidth="2" onValueChanged="setDefaultLeaderPoolSize" wholeNumbers="True" minValue="6" maxValue="12" value="8"/>
 				</HorizontalLayout>
 				<Toggle class="setUp" id="tweakLeaderSelection" onValueChanged="Global/setTweakLeaderSelection" isOn="False" key="tweakLeaderSelection"/>
 			</VerticalLayout>
@@ -80,6 +80,12 @@ be integrated to this mod in a standard way.
 				<Text class="primary" key="players"/>
 			</HorizontalLayout>
 			<VerticalLayout padding="25 0 0 0">
+				<HorizontalLayout>
+					<Text class="secondary" key="firstPlayer"/>
+					<Dropdown class="setUp" id="firstPlayer" onValueChanged="Global/setFirstPlayer" flexibleWidth="3" active="True" minHeight="20">
+						<Option></Option>
+					</Dropdown>
+				</HorizontalLayout>
 				<Toggle class="setUp" id="randomizePlayerPositions" onValueChanged="Global/setRandomizePlayerPositions" isOn="True" key="randomizePlayersPositions" tooltipKey="randomizePlayersPositionTooltip"/>
 				<HorizontalLayout>
 					<Toggle class="setUp" id="virtualHotSeat" onValueChanged="Global/setVirtualHotSeat" isOn="False" key="virtualHotSeat" tooltipKey="virtualHotSeatTooltip"/>

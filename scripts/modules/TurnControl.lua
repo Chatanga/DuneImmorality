@@ -77,11 +77,18 @@ function TurnControl.setUp(settings, activeOpponents)
         end
         assert(TurnControl.firstPlayerLuaIndex)
     else
-        local firstPlayer
-        repeat
-            TurnControl.firstPlayerLuaIndex = math.random(#TurnControl.players)
-            firstPlayer = TurnControl.players[TurnControl.firstPlayerLuaIndex]
-        until not Commander.isCommander(firstPlayer)
+        if settings.firstPlayer == "Random" then
+            local firstPlayer
+            repeat
+                TurnControl.firstPlayerLuaIndex = math.random(#TurnControl.players)
+                firstPlayer = TurnControl.players[TurnControl.firstPlayerLuaIndex]
+            until not Commander.isCommander(firstPlayer)
+        else
+            TurnControl.firstPlayerLuaIndex = 1
+            while TurnControl.firstPlayerLuaIndex < #TurnControl.players and TurnControl.players[TurnControl.firstPlayerLuaIndex] ~= settings.firstPlayer do
+                TurnControl.firstPlayerLuaIndex = TurnControl.firstPlayerLuaIndex + 1
+            end
+        end
     end
 
     TurnControl._assignObjectives()
