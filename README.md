@@ -48,8 +48,8 @@ __2P / Solo__
 
 __Aesthetic__
 
-- Review the tech/contract decals.
-- Rectify the height of the 6J Emperor/Fremen faction tokens.
+- Rework the tech/contract decals.
+- Rectify the height of the 6P Emperor/Fremen faction tokens.
 - Widen the colored border of the boards (and remove the trigger effects in the process).
 
 ## Lua sources
