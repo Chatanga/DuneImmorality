@@ -770,7 +770,10 @@ end
 
 ---
 function ArrakeenScouts._refreshContent()
-    local xmlRoots = UI.getXmlTable()
+    --local xmlRoots = UI.getXmlTable()
+    local xmlRoots = Helper.filter(UI.getXmlTable(), function (xmlRoot)
+        return xmlRoot.attributes.id ~= "arrakeenScoutPane"
+    end)
     table.insert(xmlRoots, ArrakeenScouts.ui)
     UI.setXmlTable(xmlRoots)
 end

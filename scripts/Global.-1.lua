@@ -268,6 +268,11 @@ function asyncOnLoad(scriptState)
         "onPlayerChangeColor",
         "onPlayerConnect",
         "onPlayerDisconnect",
+        "onObjectEnterScriptingZone",
+        "onObjectLeaveScriptingZone",
+        "onObjectEnterContainer",
+        "onObjectLeaveContainer",
+        "onObjectDrop",
     })
 
     if not state.settings then
@@ -354,15 +359,6 @@ function runSetUp(index, activeOpponents)
         nextContinuation.doAfter(Helper.partialApply(runSetUp, index + 1, activeOpponents))
     else
         --Helper.dump("Done setting all modules")
-
-        -- List the TTS events we want to make available in the modules.
-        Module.registerModuleRedirections({
-            "onObjectEnterScriptingZone",
-            "onObjectLeaveScriptingZone",
-            "onObjectEnterContainer",
-            "onObjectLeaveContainer",
-            "onObjectDrop",
-        })
     end
 end
 
