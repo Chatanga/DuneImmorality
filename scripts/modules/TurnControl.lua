@@ -77,8 +77,13 @@ function TurnControl.setUp(settings, activeOpponents)
             end
         end
         assert(TurnControl.firstPlayerLuaIndex)
-    else
+    elseif settings.firstPlayer == "Random" then
         TurnControl.firstPlayerLuaIndex = math.random(#TurnControl.players)
+    else
+        TurnControl.firstPlayerLuaIndex = 1
+        while TurnControl.firstPlayerLuaIndex < #TurnControl.players and TurnControl.players[TurnControl.firstPlayerLuaIndex] ~= settings.firstPlayer do
+            TurnControl.firstPlayerLuaIndex = TurnControl.firstPlayerLuaIndex + 1
+        end
     end
 end
 

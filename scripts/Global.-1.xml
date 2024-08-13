@@ -1,8 +1,8 @@
-<Panel position="0 -50" width="450" height="760" color="#000000" id="setupPane" rotation="0 0 0" outline="#61712c" outlineSize="1"
+<Panel position="0 -50" width="450" height="780" color="#000000" id="setupPane" rotation="0 0 0" outline="#61712c" outlineSize="1"
 	active="False" allowDragging="True" returnToOriginalPositionWhenReleased="False">
 	<Defaults>
 		<Text class="primary" color="#e5c638" fontSize="16" alignment="MiddleLeft"/>
-		<Text class="secondary" color="#efd9ff" alignment="MiddleRight"/>
+		<Text class="secondary" color="#efd9ff" alignment="MiddleLeft"/>
 		<Text class="epigraph" color="#df9730" fontSize="12" fontStyle="italic" alignment="MiddleCenter"/>
 		<Dropdown class="setUp" itemBackgroundColors="#61712c44|#df9730|#FFFFFF|#361441" textColor="#61712c" itemTextColor="#61712c" fontStyle="bold"/>
 		<InputField class="setUp" colors="#00000000|#61712c44|#61712c" textColor="#efd9ff" fontStyle="bold"/>
@@ -26,6 +26,12 @@
 
 			<Text class="primary" key="players"/>
 			<VerticalLayout padding="25 0 0 0">
+				<HorizontalLayout>
+					<Text class="secondary" key="firstPlayer"/>
+					<Dropdown class="setUp" id="firstPlayer" onValueChanged="Global/setFirstPlayer" flexibleWidth="3" active="True" minHeight="18">
+						<Option></Option>
+					</Dropdown>
+				</HorizontalLayout>
 				<Toggle class="setUp" id="randomizePlayerPositions" onValueChanged="Global/setRandomizePlayerPositions" isOn="True" key="randomizePlayersPositions" tooltipKey="randomizePlayersPositionTooltip"/>
 				<HorizontalLayout>
 					<Toggle class="setUp" id="virtualHotSeat" onValueChanged="Global/setVirtualHotSeat" isOn="False" key="virtualHotSeat" disabled.tooltipKey="virtualHotSeatTooltip"/>

@@ -152,6 +152,14 @@ local Controller = {
             "4 (hotseat)"
         },
         virtualHotSeatMode = {},
+        firstPlayer = "1",
+        firstPlayer_all = {
+            "Random",
+            "Green",
+            "Yellow",
+            "Blue",
+            "Red",
+        },
         randomizePlayerPositions = true,
         difficulty_all = Helper.mapValues(allModules.Hagal.getDifficulties(), Helper.field("name")),
         difficulty = {},
@@ -386,6 +394,11 @@ function setLanguage(player, value, id)
 end
 
 --- UI callback (cf. XML).
+function setFirstPlayer(player, value, id)
+    Controller.ui:fromUI(player, value, id)
+end
+
+--- UI callback (cf. XML).
 function setRandomizePlayerPositions(player, value, id)
     Controller.ui:fromUI(player, value, id)
 end
@@ -499,6 +512,7 @@ function setUpFromUI()
         language = Controller.fields.language,
         numberOfPlayers = numberOfPlayers,
         hotSeat = not Controller.isUndefined(Controller.fields.virtualHotSeatMode),
+        firstPlayer = Controller.fields.firstPlayer_all[Controller.fields.firstPlayer],
         randomizePlayerPositions = Controller.fields.randomizePlayerPositions == true,
         difficulty = Controller.fields.difficulty,
         riseOfIx = Controller.fields.riseOfIx == true,
