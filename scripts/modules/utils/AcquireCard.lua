@@ -2,8 +2,17 @@ local Helper = require("utils.Helper")
 local I18N = require("utils.I18N")
 
 local AcquireCard = Helper.createClass(nil, {
-    UPDATE_EVENT_NAME = "AcquireCard/objectEnterOrLeaveScriptingZone"
+    UPDATE_EVENT_NAME = "AcquireCard/objectEnterOrLeaveScriptingZone",
+    allInstances = {},
 })
+
+--[[
+    For some reason, we can't rely on Helper.emitEvent inside a TTS event callback.
+    The problem only occurs when returning to the main menu from a save, but it is
+    not clear why. Meanwhile, directly calling AcquireCard.allInstances from the
+    callback seems ok.
+]]
+local WORKAROUND = true
 
 ---
 function AcquireCard.new(zone, tag, acquire, decalUrl)
@@ -11,7 +20,9 @@ function AcquireCard.new(zone, tag, acquire, decalUrl)
         zone = zone,
         groundHeight = 1.65,
         cardHeight = 0.01,
-        anchor = nil
+        anchor = nil,
+        cardCount = -1,
+        acquire = acquire,
     })
 
     zone.addTag(tag)
@@ -31,12 +42,16 @@ function AcquireCard.new(zone, tag, acquire, decalUrl)
                 acquireCard:_createButton(acquire)
             end)
 
-            Helper.registerEventListener(AcquireCard.UPDATE_EVENT_NAME, function (otherZone)
-                if otherZone == zone then
-                    Helper.clearButtons(anchor)
-                    acquireCard:_createButton(acquire)
-                end
-            end)
+            if WORKAROUND then
+                table.insert(AcquireCard.allInstances, acquireCard)
+            else
+                Helper.registerEventListener(AcquireCard.UPDATE_EVENT_NAME, function (otherZone)
+                    if otherZone == zone then
+                        Helper.clearButtons(anchor)
+                        acquireCard:_createButton(acquire)
+                    end
+                end)
+            end
         end
 
         if decalUrl then
@@ -45,6 +60,14 @@ function AcquireCard.new(zone, tag, acquire, decalUrl)
     end)
 
     return acquireCard
+end
+
+---
+function AcquireCard:_updateButton(otherZone)
+    if otherZone == self.zone then
+        Helper.clearButtons(self.anchor)
+        self:_createButton(self.acquire)
+    end
 end
 
 ---
@@ -62,18 +85,29 @@ function AcquireCard:_setDecal(decalUrl)
 end
 
 ---
-function AcquireCard:delete()
-    Helper.clearButtons(self.anchor)
+function AcquireCard.onObjectEnterZone(...)
+    if WORKAROUND then
+        if AcquireCard then
+            for _, acquireCard in ipairs(AcquireCard.allInstances) do
+                acquireCard:_updateButton(...)
+            end
+        end
+    else
+        Helper.emitEvent(AcquireCard.UPDATE_EVENT_NAME, ...)
+    end
 end
 
 ---
-function AcquireCard.onObjectEnterScriptingZone(...)
-    Helper.emitEvent(AcquireCard.UPDATE_EVENT_NAME, ...)
-end
-
----
-function AcquireCard.onObjectLeaveScriptingZone(...)
-    Helper.emitEvent(AcquireCard.UPDATE_EVENT_NAME, ...)
+function AcquireCard.onObjectLeaveZone(...)
+    if WORKAROUND then
+        if AcquireCard then
+            for _, acquireCard in ipairs(AcquireCard.allInstances) do
+                acquireCard:_updateButton(...)
+            end
+        end
+    else
+        Helper.emitEvent(AcquireCard.UPDATE_EVENT_NAME, ...)
+    end
 end
 
 function AcquireCard:_createButton(acquire)
@@ -87,20 +121,23 @@ function AcquireCard:_createButton(acquire)
         end
     end
 
-    if count > 0 then
-        local height = self.groundHeight + count * self.cardHeight
-        local label = I18N("acquireButton") .. " (" .. tostring(count) .. ")"
-        Helper.createExperimentalAreaButton(self.zone, self.anchor, height, label, function (_, color)
-            if not self.disabled then
-                local continuation = acquire(self, color)
-                if continuation then
-                    self.disabled = true
-                    continuation.doAfter(function ()
-                        self.disabled = false
-                    end)
+    if self.cardCount ~= count then
+        self.cardCount = count
+        if count > 0 then
+            local height = self.groundHeight + count * self.cardHeight
+            local label = I18N("acquireButton") .. " (" .. tostring(count) .. ")"
+            Helper.createExperimentalAreaButton(self.zone, self.anchor, height, label, function (_, color)
+                if not self.disabled then
+                    local continuation = acquire(self, color)
+                    if continuation then
+                        self.disabled = true
+                        continuation.doAfter(function ()
+                            self.disabled = false
+                        end)
+                    end
                 end
-            end
-        end)
+            end)
+        end
     end
 end
 

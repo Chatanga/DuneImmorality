@@ -52,7 +52,7 @@ function ThroneRow._transientSetUp()
 end
 
 ---
-function ThroneRow.onObjectEnterScriptingZone(zone, object)
+function ThroneRow.onObjectEnterZone(zone, object)
     if ThroneRow.acquireCards then
         for _, acquireCard in ipairs(ThroneRow.acquireCards) do
             if acquireCard.zone == zone then

@@ -260,8 +260,8 @@ function asyncOnLoad(scriptState)
         "onPlayerChangeColor",
         "onPlayerConnect",
         "onPlayerDisconnect",
-        "onObjectEnterScriptingZone",
-        "onObjectLeaveScriptingZone",
+        "onObjectEnterZone",
+        "onObjectLeaveZone",
         "onObjectEnterContainer",
         "onObjectLeaveContainer",
         "onObjectDrop",
@@ -308,7 +308,7 @@ end
 --- TTS event handler.
 function onObjectDestroy(object)
     if object.getGUID() == "2b4b92" then
-        --Module.unregisterAllModuleRedirections()
+        Module.unregisterAllModuleRedirections()
         --Helper.destroyTransientObjects()
         Helper.dump("Bye!")
     end
