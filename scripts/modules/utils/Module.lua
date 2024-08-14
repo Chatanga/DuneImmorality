@@ -121,8 +121,15 @@ function Module.registerModuleRedirections(functionNames)
                 end
             end
         end
-        Module.registeredModuleRedirections[functionName] = globalFunction
-        Global.setVar(functionName, globalFunction)
+        local safeGlobalFunction = function (...)
+            local ran, ret = pcall(globalFunction, ...)
+            if not ran then
+                log(tostring(ret) .. "(error in redirection '" .. functionName .. "')")
+            end
+            return ret
+        end
+        Module.registeredModuleRedirections[functionName] = safeGlobalFunction
+        Global.setVar(functionName, safeGlobalFunction)
     end
 end
 

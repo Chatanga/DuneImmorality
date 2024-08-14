@@ -776,7 +776,9 @@ function Helper.unregisterGlobalCallback(uniqueName)
         local callback = Global.getVar(uniqueName)
         --assert(callback, "Unknown global callback: " .. uniqueName)
         if callback then
-            Global.setVar(uniqueName, nil)
+            Global.setVar(uniqueName, function ()
+                Helper.dump("Dead callback called:", uniqueName)
+            end)
             table.insert(Helper.uniqueNamePool, uniqueName)
         else
             Helper.dump("Unknown global callback: " .. uniqueName)

@@ -193,14 +193,14 @@ function Combat._setUpConflict()
 end
 
 ---
-function Combat.onObjectEnterScriptingZone(zone, object)
+function Combat.onObjectEnterZone(zone, object)
     if zone == Combat.combatCenterZone and Types.isUnit(object) then
         Combat._updateCombatForces(Combat._calculateCombatForces())
     end
 end
 
 ---
-function Combat.onObjectLeaveScriptingZone(zone, object)
+function Combat.onObjectLeaveZone(zone, object)
     if zone == Combat.combatCenterZone and Types.isUnit(object) then
         Combat._updateCombatForces(Combat._calculateCombatForces())
     end

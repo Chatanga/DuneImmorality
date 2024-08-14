@@ -1266,7 +1266,7 @@ function MainBoard.getBannerZones()
 end
 
 ---
-function MainBoard.onObjectEnterScriptingZone(zone, object)
+function MainBoard.onObjectEnterZone(zone, object)
     if zone == MainBoard.mentatZone then
         if Types.isMentat(object) then
             -- Wait 1 second to see if the Mentat is still around and wasn't simply moving across the board.

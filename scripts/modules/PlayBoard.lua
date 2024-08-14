@@ -965,7 +965,7 @@ function PlayBoard:updatePlayerScore()
 end
 
 ---
-function PlayBoard.onObjectEnterScriptingZone(zone, object)
+function PlayBoard.onObjectEnterZone(zone, object)
     for color, playBoard in pairs(PlayBoard.playBoards) do
         if playBoard.opponent then
             if Helper.isElementOf(zone, playBoard.scorePark.zones) then
@@ -988,7 +988,7 @@ function PlayBoard.onObjectEnterScriptingZone(zone, object)
 end
 
 ---
-function PlayBoard.onObjectLeaveScriptingZone(zone, object)
+function PlayBoard.onObjectLeaveZone(zone, object)
     for _, playBoard in pairs(PlayBoard.playBoards) do
         if playBoard.opponent then
             if Helper.isElementOf(zone, playBoard.scorePark.zones) then
