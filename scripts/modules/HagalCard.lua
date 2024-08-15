@@ -10,6 +10,7 @@ local Types = Module.lazyRequire("Types")
 local Combat = Module.lazyRequire("Combat")
 local TurnControl = Module.lazyRequire("TurnControl")
 local Hagal = Module.lazyRequire("Hagal")
+local TechMarket = Module.lazyRequire("TechMarket")
 
 local HagalCard = {
     cardStrengths = {
@@ -517,6 +518,7 @@ end
 function HagalCard._activateTechNegotiation(color, rival)
     if HagalCard._spaceIsFree(color, "techNegotiation") then
         HagalCard._sendRivalAgent(color, rival, "techNegotiation")
+        TechMarket.registerAcquireTechOption(color, "techNegotiationTechBuyOption", "spice", 1)
         if not rival.acquireTech(color, nil, 1) then
             rival.troops(color, "supply", "negotiation", 1)
         end
@@ -530,6 +532,7 @@ function HagalCard._activateDreadnought1p(color, rival)
     if HagalCard._spaceIsFree(color, "dreadnought") and PlayBoard.getAquiredDreadnoughtCount(color) < 2 then
         HagalCard._sendRivalAgent(color, rival, "dreadnought")
         rival.dreadnought(color, "supply", "garrison", 1)
+        TechMarket.registerAcquireTechOption(color, "dreadnoughtTechBuyOption", "spice", 0)
         rival.acquireTech(color, nil, 0)
         return true
     else

@@ -240,7 +240,7 @@ end
 ---
 function Rival.acquireTech(color, stackIndex, discount)
 
-    local finalStackIndex  = stackIndex
+    local finalStackIndex = stackIndex
     if not finalStackIndex then
         local spiceBudget = PlayBoard.getResource(color, "spice"):get()
 

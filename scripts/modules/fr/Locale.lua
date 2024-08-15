@@ -9,7 +9,7 @@ return {
     White = "blanc",
 
     -- Setup UI
-    prolog = "« Une mise en place est toujours un moment très délicat. »",
+    prolog = "« Buvez régulièrement et sans attendre d'avoir soif ! »",
     language = "Langue",
     players = "Joueurs",
     virtualHotSeat = "Spécial / Hotseat",

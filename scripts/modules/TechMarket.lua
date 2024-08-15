@@ -148,10 +148,6 @@ end
 function TechMarket.acquireTech(stackIndex, color)
     if not TechMarket.frozen then
         TechMarket.frozen = true
-        -- Pending continuation force us to this kind of simplification.
-        Helper.onceTimeElapsed(2).doAfter(function ()
-            TechMarket.frozen = false
-        end)
         TechMarket._doAcquireTech(stackIndex, color).doAfter(function (card)
             if card and TechMarket.hagalSoloModeEnabled then
                 TechMarket.pruneStacksForSoloMode()
@@ -208,7 +204,7 @@ function TechMarket._doAcquireTech(stackIndex, color)
             innerContinuation.run(true)
         end
     else
-        continuation.cancel()
+        continuation.run(nil)
     end
 
     return continuation
@@ -222,7 +218,6 @@ function TechMarket._buyTech(stackIndex, color)
         local options = Helper.getKeys(TechMarket.acquireTechOptions)
         if #options > 0 then
             if #options > 1 then
-                -- FIXME Pending continuation if the dialog is canceled.
                 Dialog.showOptionsAndCancelDialog(color, I18N("buyTechSelection"), Helper.mapValues(options, I18N), continuation, function (index)
                     if index > 0 then
                         continuation.run(index and TechMarket._doBuyTech(techTileStack, options[index], color))
@@ -233,10 +228,12 @@ function TechMarket._buyTech(stackIndex, color)
             else
                 continuation.run(TechMarket._doBuyTech(techTileStack, options[1], color))
             end
-        else
+        elseif not PlayBoard.isRival(color) then
             Dialog.showYesOrNoDialog(color, I18N("manuallyBuyTech"), continuation, function (confirmed)
                 continuation.run(confirmed)
             end)
+        else
+            continuation.run(false)
         end
     else
         continuation.run(false)

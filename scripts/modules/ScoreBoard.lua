@@ -5,6 +5,7 @@ local I18N = require("utils.I18N")
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local Combat = Module.lazyRequire("Combat")
 local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
+local TleilaxuResearch = Module.lazyRequire("TleilaxuResearch")
 
 local ScoreBoard = {
     tokens = {}
@@ -79,7 +80,7 @@ function ScoreBoard.onLoad(state)
         },
         immortality = {
             scientificBreakthrough = "b56adc",
-            beetleBag = "37ceab",
+            tleilaxBag = "37ceab",
             forHumanityBag = "6e2a13"
         },
     })
@@ -162,6 +163,7 @@ function ScoreBoard.gainVictoryPoint(color, name, count)
     elseif InfluenceTrack.gainVictoryPoint(color, name, count) then
         return true
     else
+        Helper.dump("No VP named", name)
         return false
     end
 end
