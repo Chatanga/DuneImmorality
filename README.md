@@ -1,6 +1,6 @@
 # Rakis Rising Mod for Tabletop Simulator
 
-An evolution of Dune Uprising (a simplified and undisclosed port of Spice Flow) to bring back some advanced features of Spice Flow.
+An evolution of Dune Uprising to bring back some advanced features of Spice Flow.
 
 ![Capture](captures/capture-1.jpg)
 
