@@ -111,7 +111,7 @@ local IntrigueCard = {
 function IntrigueCard._resolveCard(card)
     assert(card)
     local cardName = Helper.getID(card)
-    if cardName then
+    if cardName or true then
         local cardInfo = IntrigueCard[cardName]
         assert(cardInfo, "Unknown card (empty name usually means that the card is stacked with another): " .. tostring(cardName))
         cardInfo.name = cardName
