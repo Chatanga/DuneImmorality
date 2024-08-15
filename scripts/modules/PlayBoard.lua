@@ -2204,6 +2204,60 @@ end
 
 ---
 function PlayBoard:revealHand()
+    PlayBoard._onceCardParkSpread(self.agentCardPark).doAfter(function ()
+        PlayBoard._onceCardParkSpread(self.revealCardPark).doAfter(function ()
+            self:_revealHand()
+        end)
+    end)
+end
+
+---
+function PlayBoard._onceCardParkSpread(park)
+    local continuation = Helper.createContinuation("PlayBoard.spreadCardPark")
+    local holder = {
+        count = 0
+    }
+
+    local next = function ()
+        if holder.count == 0 then
+            Helper.onceFramesPassed(1).doAfter(continuation.run)
+        end
+    end
+
+    local freeSlots = Park.findEmptySlots(park)
+
+    for _, object in ipairs(Park.getObjects(park)) do
+        if object.type == "Deck" then
+            local cardCound = Helper.getCardCount(object)
+            for _ = 2, cardCound do
+                if holder.count >= #freeSlots then
+                    break
+                end
+                holder.count = holder.count + 1
+                local p = freeSlots[holder.count]
+                local parameters = {
+                    position = freeSlots[holder.count],
+                    smooth = false,
+                    -- It matters that the target position is not directly a deck or card.
+                    -- Otherwise, the taken card won't be created and the callback won't be
+                    -- called.
+                    callback_function = function ()
+                        holder.count = holder.count - 1
+                        next()
+                    end
+                }
+                object.takeObject(parameters)
+            end
+        end
+    end
+
+    next()
+
+    return continuation
+end
+
+---
+function PlayBoard:_revealHand()
     local playedIntrigues = Helper.filter(Park.getObjects(self.agentCardPark), Types.isIntrigueCard)
     local playedCards = Helper.filter(Park.getObjects(self.agentCardPark), Types.isImperiumCard)
 
