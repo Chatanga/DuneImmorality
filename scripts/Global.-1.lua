@@ -191,9 +191,6 @@ local settings
 function onLoad(scriptState)
     log("--------< Spice Flow - " .. BUILD .. " >--------")
 
-    -- Make it available to 'Helper.postError'.
-    Global.setVar("BUILD", BUILD);
-
     -- All transient objects (mostly anchors, but also some zones) are destroyed
     -- at startup, then recreated in the 'onLoad' functions (and 'staticSetup'
     -- methods in case the game has already been set up).
@@ -227,6 +224,13 @@ function asyncOnLoad(scriptState)
 
     local state = scriptState ~= "" and JSON.decode(scriptState) or {}
     settings = state.settings
+
+    -- Make it available to 'Helper.postError'.
+    Global.setVar("saveInfo", {
+        modname = "Spice Flow",
+        build = BUILD,
+        stable = state.stable or "prime",
+    });
 
     -- TODO Detail dependencies? An explicit graph would be useful.
     allModules.ordered = {
@@ -296,13 +300,10 @@ function onSave()
         return
     end
 
-    if false and not Helper.isStabilized() then
-        Helper.dump("Unstable save!")
-    end
-
     if settings then
         local savedState = {
-            settings = settings
+            settings = settings,
+            stable = Helper.isStabilized(true) and "stable" or "unstable",
         }
         -- FIXME Only call it for the same modules for which "onLoad" has been called.
         Module.callOnAllRegisteredModules("onSave", savedState)

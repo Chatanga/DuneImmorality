@@ -24,7 +24,7 @@ function ScoreBoard.onLoad(state)
         alliance / friendship -> InfluenceTrack
         others -> here
     ]]
-    ScoreBoard.tokens = Helper.resolveGUIDs(true, {
+    ScoreBoard.tokens = Helper.resolveGUIDs(false, {
         friendship = {
             emperorBag = "7007df",
             spacingGuildBag = "af9795",
