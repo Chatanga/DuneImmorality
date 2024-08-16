@@ -36,11 +36,17 @@ end
 ---
 function Helper._postError(context, error)
 
+    local saveInfo = Global.getVar("saveInfo")
+    if not saveInfo then
+        return
+    end
+
     local url = "https://hihan.org/tts-error-log/index.php"
     local form = {
         action = "add",
-        modname = "Rakis Rising",
-        buildstamp = Global.getVar("BUILD"),
+        modname = saveInfo.modname,
+        build = saveInfo.build,
+        stable = saveInfo.stable,
         context = Helper.toString(context),
         error = Helper.toString(error),
     }
