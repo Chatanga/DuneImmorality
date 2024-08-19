@@ -1094,7 +1094,7 @@ end
 ---
 function PlayBoard:_createExclusiveCallback(innerCallback)
     return Helper.registerGlobalCallback(function (object, color, altClick)
-        if self.color == color or PlayBoard.isRival(self.color) or TurnControl.isHotSeatEnabled() then
+        if self.leader and self.color == color or PlayBoard.isRival(self.color) or TurnControl.isHotSeatEnabled() then
             if not self.buttonsDisabled then
                 self.buttonsDisabled = true
                 Helper.onceTimeElapsed(0.5).doAfter(function ()

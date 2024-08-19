@@ -372,16 +372,21 @@ end
 
 ---
 function Combat._calculateRanking(forces)
+    return Combat.__calculateRanking(forces, PlayBoard.getActivePlayBoardColors())
+end
+
+---
+function Combat.__calculateRanking(forces, activeColors)
     local ranking = {}
 
     local remainingForces = Helper.shallowCopy(forces)
-    local potentialWinnerCount = #Helper.getKeys(forces) - 1
+    local potentialWinnerCount = #Helper.getKeys(activeColors) - 1
 
     local rank = 1
     while potentialWinnerCount > 0 do
         local rankWinners = {}
         local maxForce = 1
-        for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
+        for _, color in ipairs(activeColors) do
             if remainingForces[color] then
                 if remainingForces[color] > maxForce then
                     rankWinners = { color }
@@ -394,17 +399,16 @@ function Combat._calculateRanking(forces)
 
         if #rankWinners == 0 then
             break;
-        elseif (#rankWinners > 1) then
+        elseif #rankWinners > 1 then
             rank = rank + 1
         end
 
-        if potentialWinnerCount >= #rankWinners then
+        if rank < 4 then
             for _, color in ipairs(rankWinners) do
                 ranking[color] = { value = rank, exAequo = #rankWinners }
                 potentialWinnerCount = potentialWinnerCount - 1
                 remainingForces[color] = nil
             end
-
             rank = rank + 1
         else
             break
