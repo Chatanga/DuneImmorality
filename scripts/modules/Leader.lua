@@ -209,9 +209,11 @@ Leader.arianaThorvald = Helper.createClass(Leader, {
 
     --- Spice addict
     sendAgent = function (color, spaceName, recallSpy)
+        local oldSpiceStock = PlayBoard.getResource(color, "spice"):get()
         local continuation = Action.sendAgent(color, spaceName, recallSpy)
         continuation.doAfter(function ()
-            if MainBoard.isDesertSpace(MainBoard.findParentSpaceName(spaceName)) then
+            local newSpiceStock = PlayBoard.getResource(color, "spice"):get()
+            if MainBoard.isDesertSpace(MainBoard.findParentSpaceName(spaceName)) and newSpiceStock > oldSpiceStock then
                 local leader = PlayBoard.getLeader(color)
                 leader.resources(color, "spice", -1)
                 leader.drawImperiumCards(color, 1)
