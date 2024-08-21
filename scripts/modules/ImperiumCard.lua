@@ -76,7 +76,7 @@ local ImperiumCard = {
     beneGesseritSister = {factions = {'beneGesserit'}, cost = 3, agentIcons = {'beneGesserit', 'green'}, reveal = {'2 sword or 2 persuasion'}},
     carryall = {cost = 5, agentIcons = {'yellow'}, reveal = {persuasion(1), spice(1)}},
     chani = {factions = {'fremen'}, cost = 5, acquireBonus = {water(1)}, agentIcons = {'fremen', 'blue', 'yellow'}, reveal = {persuasion(2), 'Retreat any # of troops'}},
-    choamDirectorship = {cost = 8, acquireBonus = {'4x inf all'}, reveal = {solari(1)}},
+    choamDirectorship = {cost = 8, acquireBonus = {'4x inf all'}, reveal = {solari(3)}},
     crysknife = {factions = {'fremen'}, cost = 3, agentIcons = {'fremen', 'yellow'}, reveal = {sword(1), influence(fremenBond(1), 'fremen')}},
     drYueh = {cost = 1, agentIcons = {'blue'}, reveal = {persuasion(1)}},
     duncanIdaho = {cost = 4, agentIcons = {'blue'}, reveal = {sword(2), water(1)}},
@@ -314,9 +314,17 @@ function ImperiumCard.evaluateReveal2(color, playedCards, revealedCards, artille
                 result[resourceName] = (result[resourceName] or 0) + amount
             end,
 
+            drawIntrigues = function (_, amount)
+                result.intrigues = (result.intrigues or 0) + amount
+            end,
+
             troops = function (_, from, to, amount)
-                if from == "supply" and to == "tanks" then
-                    result.specimens = (result.specimens or 0) + amount
+                if from == "supply" then
+                    if to == "tanks" then
+                        result.specimens = (result.specimens or 0) + amount
+                    elseif to == "garrison" then
+                        result.troops = (result.troops or 0) + amount
+                    end
                 end
             end
         }

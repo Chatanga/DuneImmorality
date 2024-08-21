@@ -943,11 +943,17 @@ function Deck.generateLeaderDeck(deckZone, contracts, ix, immortality, legacy, m
 end
 
 ---
-function Deck.generateRivalLeaderDeck(deckZone, ix, immortality, legacy)
+function Deck.generateRivalLeaderDeck(deckZone, streamlined, ix, immortality, legacy)
     assert(deckZone)
     assert(deckZone.getPosition)
     local continuation = Helper.createContinuation("Deck.generateRivalLeaderDeck")
     local contributions = Deck._mergeStandardContributionSets(Deck.rivalLeaders, ix, immortality, legacy)
+    for rival, _ in pairs(contributions) do
+        local streamlinedRival = Helper.isElementOf(rival, { "amberMetulli", "glossuRabban" })
+        if streamlined ~= streamlinedRival then
+            contributions[rival] = nil
+        end
+    end
     Deck._generateDeck("RivalLeader", deckZone, contributions, Deck.sources.rivalLeaders).doAfter(continuation.run)
     return continuation
 end

@@ -95,6 +95,9 @@ be integrated to this mod in a standard way.
 					<Dropdown class="setUp" id="difficulty" onValueChanged="Global/setDifficulty" flexibleWidth="3" active="False">
 						<Option></Option>
 					</Dropdown>
+					<Dropdown class="setUp" id="rivalType" onValueChanged="Global/setRivalType" flexibleWidth="3" active="False">
+						<Option></Option>
+					</Dropdown>
 				</HorizontalLayout>
 			</VerticalLayout>
 

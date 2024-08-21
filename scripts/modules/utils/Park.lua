@@ -179,8 +179,8 @@ function Park._putHolders(holders, toPark)
 end
 
 ---
-function Park.waitStabilisation(park)
-    local continuation = Helper.createContinuation("Park.waitStabilisation")
+function Park.onceStabilized(park)
+    local continuation = Helper.createContinuation("Park.onceStabilized")
     Wait.condition(continuation.run, function ()
         continuation.tick()
         local objectsInTransit = Helper.getSharedTable(park.name)

@@ -15,6 +15,14 @@ local HagalCard = Module.lazyRequire("HagalCard")
 local Rival = Helper.createClass(Action)
 
 ---
+function Rival.getRivalTypes()
+    return {
+        normal = "normal",
+        streamlined = "streamlined",
+    }
+end
+
+---
 function Rival.newRival(name)
     local RivalClass = Rival[name]
     assert(RivalClass, "Unknown rival leader: " .. tostring(name))

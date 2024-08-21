@@ -1980,9 +1980,9 @@ function PlayBoard:_createButtons()
         })
 
         board.createButton({
-            click_function = self:_createExclusiveCallback(function ()
-                if PlayBoard.isHuman(self.color) then
-                    self:onRevealHand()
+            click_function = self:_createExclusiveCallback(function (_, _, altClick)
+                if PlayBoard.isHuman(self.color) and not self.revealing then
+                    self:onRevealHand(altClick)
                 end
             end),
             label = I18N("revealHandButton"),
@@ -2137,21 +2137,21 @@ function PlayBoard:_createNukeButton()
 end
 
 ---
-function PlayBoard:onRevealHand()
+function PlayBoard:onRevealHand(brutal)
     local currentPlayer = TurnControl.getCurrentPlayer()
     if currentPlayer and currentPlayer ~= self.color then
         Dialog.broadcastToColor(I18N("revealNotTurn"), self.color, "Pink")
     else
         if not self.revealed and self:stillHavePlayableAgents() then
-            self:tryRevealHandEarly()
+            self:tryRevealHandEarly(brutal)
         else
-            self:revealHand()
+            self:revealHand(brutal)
         end
     end
 end
 
 ---
-function PlayBoard:tryRevealHandEarly()
+function PlayBoard:tryRevealHandEarly(brutal)
     local origin = PlayBoard.getPlayBoard(self.color):_newSymmetricBoardPosition(-2, 0.2, -6.5)
 
     local board = self.content.board
@@ -2159,8 +2159,11 @@ function PlayBoard:tryRevealHandEarly()
     local indexHolder = {}
 
     local function reset()
+        self.revealing = false
         Helper.removeButtons(board, Helper.getValues(indexHolder))
     end
+
+    self.revealing = true
 
     indexHolder.messageButtonIndex = Helper.createButton(board, {
         click_function = Helper.registerGlobalCallback(),
@@ -2177,7 +2180,7 @@ function PlayBoard:tryRevealHandEarly()
     indexHolder.validateButtonIndex = Helper.createButton(board, {
         click_function = self:_createExclusiveCallback(function ()
             reset()
-            self:revealHand()
+            self:revealHand(brutal)
         end),
         label = I18N('yes'),
         position = origin + Vector(-1, 0, 1),
@@ -2203,10 +2206,10 @@ function PlayBoard:tryRevealHandEarly()
 end
 
 ---
-function PlayBoard:revealHand()
+function PlayBoard:revealHand(brutal)
     PlayBoard._onceCardParkSpread(self.agentCardPark).doAfter(function ()
         PlayBoard._onceCardParkSpread(self.revealCardPark).doAfter(function ()
-            self:_revealHand()
+            self:_revealHand(brutal)
         end)
     end)
 end
@@ -2257,7 +2260,7 @@ function PlayBoard._onceCardParkSpread(park)
 end
 
 ---
-function PlayBoard:_revealHand()
+function PlayBoard:_revealHand(brutal)
     local playedIntrigues = Helper.filter(Park.getObjects(self.agentCardPark), Types.isIntrigueCard)
     local playedCards = Helper.filter(Park.getObjects(self.agentCardPark), Types.isImperiumCard)
 
@@ -2311,6 +2314,27 @@ function PlayBoard:_revealHand()
         (imperiumCardContributions.strength or 0) +
         ((restrictedOrdnance and councilSeat) and 4 or 0) +
         (swordmasterBonus and 2 or 0))
+
+    --Helper.dump("imperiumCardContributions:", imperiumCardContributions)
+
+    if brutal and not self.revealed then
+        for _, resourceName in ipairs({ "spice", "solari", "water" }) do
+            local amount = imperiumCardContributions[resourceName]
+            if amount then
+                self.leader.resources(self.color, resourceName, amount)
+            end
+        end
+
+        local intrigues = imperiumCardContributions.intrigues
+        if intrigues then
+            self.leader.drawIntrigues(self.color, intrigues)
+        end
+
+        self.leader.troops(self.color, "supply", "tanks", imperiumCardContributions.specimens or 0)
+        Park.onceStabilized(self.supplyPark).doAfter(function ()
+            self.leader.troops(self.color, "supply", "garrison", imperiumCardContributions.troops or 0)
+        end)
+    end
 
     Park.putObjects(revealedCards, self.revealCardPark)
 

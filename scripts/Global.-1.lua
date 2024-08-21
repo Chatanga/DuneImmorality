@@ -126,30 +126,32 @@ local Controller = {
     -- corresponding 'xxx' field.
     fields = {
         language_all = {
-            en = "English",
-            fr = "Français",
+            en = "english",
+            fr = "french",
         },
         language = "fr",
         virtualHotSeat = false,
         virtualHotSeatMode_all = {
-            "1 (+2)",
-            "2 (+1)",
-            "3",
-            "4",
-            "2 x 3"
+            "onePlayerTwoRivals",
+            "twoPlayersOneRival",
+            "threePlayers",
+            "fourPlayers",
+            "twoTeams",
         },
         virtualHotSeatMode = {},
         firstPlayer = "1",
         firstPlayer_all = {
-            "Random",
+            "random",
             "Green",
             "Yellow",
             "Blue",
             "Red",
         },
         randomizePlayerPositions = false,
-        difficulty_all = Helper.mapValues(allModules.Hagal.getDifficulties(), Helper.field("name")),
+        difficulty_all = allModules.Hagal.getDifficulties(),
         difficulty = {},
+        rivalType_all = allModules.Rival.getRivalTypes(),
+        rivalType = {},
         useContracts = true,
         legacy = false,
         merakon = {},
@@ -421,6 +423,11 @@ function setDifficulty(player, value, id)
 end
 
 --- UI callback (cf. XML).
+function setRivalType(player, value, id)
+    Controller.ui:fromUI(player, value, id)
+end
+
+--- UI callback (cf. XML).
 function setHotSeat(player, value, id)
     Controller.ui:fromUI(player, value, id)
     Controller.updateSetupButton()
@@ -524,6 +531,7 @@ function setUpFromUI()
         firstPlayer = Controller.fields.firstPlayer_all[Controller.fields.firstPlayer],
         randomizePlayerPositions = Controller.fields.randomizePlayerPositions == true,
         difficulty = Controller.fields.difficulty,
+        streamlinedRivals = Controller.fields.rivalType == "streamlined",
         useContracts = Controller.fields.useContracts == true or numberOfPlayers == 6,
         legacy = Controller.fields.legacy == true,
         merakon = Controller.fields.merakon == true,
@@ -615,10 +623,16 @@ function Controller.applyVirtualHotSeatMode()
 
     local numberOfPlayers = Controller.getNumberOfPlayers(Controller.fields.virtualHotSeatMode)
 
-    if Controller.isUndefined(Controller.fields.virtualHotSeatMode) or numberOfPlayers > 1 then
+    if Controller.isUndefined(Controller.fields.virtualHotSeatMode) or numberOfPlayers ~= 1 then
         Controller.fields.difficulty = {}
     else Controller.isUndefined(Controller.fields.difficulty)
         Controller.fields.difficulty = "novice"
+    end
+
+    if Controller.isUndefined(Controller.fields.virtualHotSeatMode) or numberOfPlayers ~= 2 then
+        Controller.fields.rivalType = {}
+    else Controller.isUndefined(Controller.fields.rivalType)
+        Controller.fields.rivalType = "streamlined"
     end
 
     Controller.fields.leaderSelection_all = allModules.LeaderSelection.getSelectionMethods(numberOfPlayers)

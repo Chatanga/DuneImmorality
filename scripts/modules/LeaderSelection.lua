@@ -23,12 +23,12 @@ local Stage = {
 ---
 function LeaderSelection.getSelectionMethods(numberOfPlayers)
     local selectionMode = {
-        random = "Random",
-        reversePick = "Reverse pick",
-        reverseHiddenPick = "Reverse hidden pick",
+        random = "random",
+        reversePick = "reversePick",
+        reverseHiddenPick = "reverseHiddenPick",
     }
     if numberOfPlayers == 4 then
-        selectionMode.altHiddenPick = "4·3·1·2 hidden pick"
+        selectionMode.altHiddenPick = "altHiddenPick"
     end
     return selectionMode
 end
@@ -66,7 +66,7 @@ function LeaderSelection.setUp(settings, activeOpponents)
     if settings.numberOfPlayers > 2 then
         preContinuation.run()
     else
-        Deck.generateRivalLeaderDeck(LeaderSelection.deckZone, settings.riseOfIx, settings.immortality, settings.legacy).doAfter(function (deck)
+        Deck.generateRivalLeaderDeck(LeaderSelection.deckZone, settings.streamlinedRivals, settings.riseOfIx, settings.immortality, settings.legacy, settings.merakon).doAfter(function (deck)
             LeaderSelection._layoutLeaderDeck(deck, 0, preContinuation)
         end)
     end

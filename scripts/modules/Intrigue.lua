@@ -46,7 +46,7 @@ function Intrigue._acquireIntrigueCard(acquireCard, color)
 end
 
 ---
-function Intrigue.drawIntrigue(color, amount)
+function Intrigue.drawIntrigues(color, amount)
     Types.assertIsPositiveInteger(amount)
     local orientedPosition = PlayBoard.getHandOrientedPosition(color)
     Helper.onceTimeElapsed(0.25, amount).doAfter(function ()

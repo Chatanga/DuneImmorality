@@ -14,14 +14,7 @@ local Rival = Module.lazyRequire("Rival")
 local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
 local ImperiumRow = Module.lazyRequire("ImperiumRow")
 
-local Hagal = {
-    difficulties = {
-        novice = { name = "Mercenary" },
-        veteran = { name = "Sardaukar" },
-        expert = { name = "Mentat" },
-        expertPlus = { name = "Kwisatz" },
-    }
-}
+local Hagal = {}
 
 ---
 function Hagal.onLoad(state)
@@ -38,7 +31,12 @@ end
 
 ---
 function Hagal.getDifficulties()
-    return Hagal.difficulties
+    return {
+        novice = "novice",
+        veteran = "veteran",
+        expert = "expert",
+        expertPlus = "expertPlus",
+    }
 end
 
 ---

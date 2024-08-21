@@ -522,7 +522,7 @@ end
 function Action.drawIntrigues(color, amount)
     Types.assertIsPlayerColor(color)
     Types.assertIsInteger(amount)
-    Intrigue.drawIntrigue(color, amount)
+    Intrigue.drawIntrigues(color, amount)
     Action.log(I18N("drawObjects", { amount = amount, object = I18N.agree(amount, "intrigueCard") }), color)
     return true
 end
