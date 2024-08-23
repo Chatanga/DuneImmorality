@@ -21,7 +21,7 @@ function Pdf.setUp()
     local locale = I18N.getLocale()
 
     if locale == "fr" then
-        -- Bail out since the base PDF are in french.
+        -- Bail out since the starting PDFs are in french.
         return
     end
 

@@ -1089,6 +1089,28 @@ function Helper.repeatChainedAction(count, action)
     return continuation
 end
 
+---@param actions table
+---@return Continuation
+function Helper.chainActions(actions)
+    return Helper._chainActions(1, actions)
+end
+
+---@param actions table
+---@return Continuation
+function Helper._chainActions(i, actions)
+    local continuation = Helper.createContinuation("Helper._chainActions")
+    if i <= #actions then
+        local innerContinuation = actions[i]()
+        assert(innerContinuation and innerContinuation.doAfter, "Provided action must return a continuation!")
+        innerContinuation.doAfter(function ()
+            Helper._chainActions(i + 1, actions).doAfter(continuation.run)
+        end)
+    else
+        continuation.run()
+    end
+    return continuation
+end
+
 ---@return Continuation
 function Helper.repeatMovingAction(object, count, action)
     local continuation = Helper.createContinuation("Helper.repeatMovingAction")

@@ -14,6 +14,7 @@ local sword = CardEffect.sword
 local spice = CardEffect.spice
 local water = CardEffect.water
 local solari = CardEffect.solari
+local deploy = CardEffect.deploy
 local troop = CardEffect.troop
 local dreadnought = CardEffect.dreadnought
 local negotiator = CardEffect.negotiator

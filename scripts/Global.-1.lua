@@ -139,13 +139,13 @@ local Controller = {
             "twoTeams",
         },
         virtualHotSeatMode = {},
-        firstPlayer = "1",
+        firstPlayer = "random",
         firstPlayer_all = {
-            "random",
-            "Green",
-            "Yellow",
-            "Blue",
-            "Red",
+            random = "random",
+            Green = "Green",
+            Yellow = "Yellow",
+            Blue = "Blue",
+            Red = "Red",
         },
         randomizePlayerPositions = false,
         difficulty_all = allModules.Hagal.getDifficulties(),
@@ -519,6 +519,11 @@ end
 
 --- UI callback (cf. XML).
 function setUpFromUI()
+    if not Controller.ui then
+        Helper.dump("No UI. Bouncing button?")
+        return
+    end
+
     Controller.ui:hide()
     Controller.ui = nil
 
@@ -528,7 +533,7 @@ function setUpFromUI()
         language = Controller.fields.language,
         numberOfPlayers = numberOfPlayers,
         hotSeat = not Controller.isUndefined(Controller.fields.virtualHotSeatMode),
-        firstPlayer = Controller.fields.firstPlayer_all[Controller.fields.firstPlayer],
+        firstPlayer = Controller.fields.firstPlayer,
         randomizePlayerPositions = Controller.fields.randomizePlayerPositions == true,
         difficulty = Controller.fields.difficulty,
         streamlinedRivals = Controller.fields.rivalType == "streamlined",

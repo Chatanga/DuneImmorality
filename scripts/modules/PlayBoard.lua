@@ -23,6 +23,7 @@ local Commander = Module.lazyRequire("Commander")
 --local IntrigueCard = Module.lazyRequire("IntrigueCard")
 local ConflictCard = Module.lazyRequire("ConflictCard")
 local ScoreBoard = Module.lazyRequire("ScoreBoard")
+local Action = Module.lazyRequire("Action")
 
 local PlayBoard = Helper.createClass(nil, {
     ALL_RESOURCE_NAMES = { "spice", "water", "solari", "strength", "persuasion" },
@@ -2315,7 +2316,7 @@ function PlayBoard:_revealHand(brutal)
         ((restrictedOrdnance and councilSeat) and 4 or 0) +
         (swordmasterBonus and 2 or 0))
 
-    --Helper.dump("imperiumCardContributions:", imperiumCardContributions)
+    Helper.dump("imperiumCardContributions:", imperiumCardContributions)
 
     if brutal and not self.revealed then
         for _, resourceName in ipairs({ "spice", "solari", "water" }) do
@@ -2330,10 +2331,24 @@ function PlayBoard:_revealHand(brutal)
             self.leader.drawIntrigues(self.color, intrigues)
         end
 
-        self.leader.troops(self.color, "supply", "tanks", imperiumCardContributions.specimens or 0)
-        Park.onceStabilized(self.supplyPark).doAfter(function ()
-            self.leader.troops(self.color, "supply", "garrison", imperiumCardContributions.troops or 0)
-        end)
+        local createMove = function (category, to)
+            return function ()
+                local amount = imperiumCardContributions[category] or 0
+                if amount > 0 then
+                    self.leader.troops(self.color, "supply", to, amount)
+                    return Park.onceStabilized(Action._getTroopPark(self.color, to))
+                else
+                    return Helper.fakeContinuation()
+                end
+            end
+        end
+
+        Helper.chainActions({
+            createMove("troops", "garrison"),
+            createMove("fighters", "combat"),
+            createMove("negotiators", "negotiation"),
+            createMove("specimens", "tanks"),
+        })
     end
 
     Park.putObjects(revealedCards, self.revealCardPark)

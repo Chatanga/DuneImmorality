@@ -30,6 +30,7 @@ local sword = CardEffect.sword
 local spice = CardEffect.spice
 local water = CardEffect.water
 local solari = CardEffect.solari
+local deploy = CardEffect.deploy
 local troop = CardEffect.troop
 local dreadnought = CardEffect.dreadnought
 local negotiator = CardEffect.negotiator
@@ -92,7 +93,9 @@ function CardEffect._dispatch(selector, expression)
             end
         end
 
-        if selector == "troop" then
+        if selector == "deploy" then
+            return call("troops", color, "supply", "combat", value)
+        elseif selector == "troop" then
             return call("troops", color, "supply", "garrison", value)
         elseif selector == "negotiator" then
             return call("troops", color, "supply", "negotiation", value)
@@ -178,6 +181,10 @@ end
 
 function CardEffect.solari(expression)
     return CardEffect._dispatch('solari', expression)
+end
+
+function CardEffect.deploy(expression)
+    return CardEffect._dispatch('deploy', expression)
 end
 
 function CardEffect.troop(expression)
@@ -288,7 +295,7 @@ end
 function CardEffect.perEmperor(expression)
     return function (context)
         local count = 0
-        for _, card in ipairs(Helper.concatTables(context.playedCards, context.revealedCards)) do
+        for _, card in ipairs(Helper.concatTables(context.revealedCards)) do
             if card.factions and Helper.isElementOf("emperor", card.factions) then
                 count = count + 1
             end

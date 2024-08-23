@@ -87,8 +87,8 @@ function MainBoard.onLoad(state)
     MainBoard.spiceBonuses = {}
 
     MainBoard.board = MainBoard.board4P or MainBoard.board6P
-
     Helper.noPhysicsNorPlay(MainBoard.board)
+
     Helper.forEachValue(MainBoard.spiceBonusTokens, Helper.noPhysicsNorPlay)
 
     if state.settings then
@@ -114,14 +114,9 @@ end
 
 ---
 function MainBoard.setUp(settings)
-    local continuation = Helper.createContinuation("MainBoard.setUp")
     if settings.numberOfPlayers == 6 then
         MainBoard.board.setState(2)
-        Helper.onceTimeElapsed(2).doAfter(function ()
-            -- Why do I have to reload it now to get the snap points?
-            MainBoard.board = getObjectFromGUID("21cc52")
-            continuation.run()
-        end)
+        MainBoard.board = getObjectFromGUID("21cc52")
         if settings.immortality then
             local position = MainBoard.immortalityPatch.getPosition()
             MainBoard.immortalityPatch.setPosition(position + Vector(1.6, 0, -1.9))
@@ -134,7 +129,6 @@ function MainBoard.setUp(settings)
         MainBoard.spiceBonusTokens.habbanyaErg.destruct()
         MainBoard.spiceBonusTokens.habbanyaErg = nil
         --MainBoard.board.setState(1)
-        continuation.run()
     end
 
     if settings.immortality then
@@ -143,32 +137,38 @@ function MainBoard.setUp(settings)
         MainBoard.immortalityPatch = nil
     end
 
-    local nextContinuation = Helper.createContinuation("MainBoard.setUp.next")
-    continuation.doAfter(function ()
-        if settings.language == "fr" then
-            MainBoard._mutateMainBoards()
-        end
-        MainBoard._transientSetUp(settings)
-        nextContinuation.run()
-    end)
+    local continuation = Helper.createContinuation("MainBoard.setUp.next")
+    MainBoard._mutateMainBoards(settings.language)
+    MainBoard._transientSetUp(settings)
+    continuation.run()
 
-    return nextContinuation
+    return continuation
 end
 
 ---
-function MainBoard._mutateMainBoards()
-    local boards = {
-        board4P = { name = "board", guid = "483a1a", url = "https://steamusercontent-a.akamaihd.net/ugc/2488878371133395673/8DBDCE4796B52A64AE78D5F95A1CD0B87A87F66D/" },
-        board6P = { name = "board", guid = "21cc52", url = "https://steamusercontent-a.akamaihd.net/ugc/2488878371133398124/5674BB27C821E484B2B85671604BBB1263D024A3/" },
-        emperorBoard = { name = "emperorBoard", guid = "4cb9ba", url = "https://steamusercontent-a.akamaihd.net/ugc/2488878371133395345/C43A9E3E725E49800D2C1952117537CD15F5E058/" },
-        fremenBoard = { name = "fremenBoard", guid = "01c575", url = "https://steamusercontent-a.akamaihd.net/ugc/2488878371133397612/0829FF264AB7DA8B456AB07C4F7522203CB969F3/" },
+function MainBoard._mutateMainBoards(locale)
+    local Board = {
+        fr = require("fr.Board"),
+        en = require("en.Board"),
     }
 
-    for _, boardInfo in pairs(boards) do
+    if locale == "en" then
+        -- Bail out since the starting boards are in english.
+        return
+    end
+
+    local boards = {
+        board4P = { name = "board", guid = "483a1a" },
+        board6P = { name = "board", guid = "21cc52" },
+        emperorBoard = { name = "emperorBoard", guid = "4cb9ba" },
+        fremenBoard = { name = "fremenBoard", guid = "01c575" },
+    }
+
+    for boardName, boardInfo in pairs(boards) do
         local board = getObjectFromGUID(boardInfo.guid)
         if board then
             local parameters = board.getCustomObject()
-            parameters.image = boardInfo.url
+            parameters.image = Board[locale][boardName]
             board.setCustomObject(parameters)
             MainBoard[boardInfo.name] = board.reload()
         end
@@ -1740,6 +1740,17 @@ end
 ---
 function MainBoard.isCombatSpace(spaceName)
     return MainBoard.spaceDetails[spaceName].combat
+end
+
+---
+function MainBoard.getEmperorSpaces()
+    local emperorSpaces = {}
+    for space, details in pairs(MainBoard.spaceDetails) do
+        if Helper.isElementOf(details.group, { "emperor", "greatHouses" }) then
+            table.insert(emperorSpaces, space)
+        end
+    end
+    return emperorSpaces
 end
 
 ---
