@@ -273,7 +273,9 @@ function HagalCard._activateDesertTactics(color, rival)
         HagalCard._sendRivalAgent(color, rival, "desertTactics")
         rival.influence(color, "fremen", 1)
         HagalCard.acquireTroops(color, 1, true)
-        MainBoard.blowUpShieldWall(color, true)
+        if PlayBoard.hasMakerHook(color) then
+            MainBoard.blowUpShieldWall(color, true)
+        end
         return true
     else
         return false
@@ -440,7 +442,9 @@ function HagalCard._activateHaggaBasinAndImperialBasin(color, rival)
     if bestDesertSpace then
         HagalCard._sendRivalAgent(color, rival, bestDesertSpace)
         MainBoard.getSpiceBonus(bestDesertSpace):set(0)
-        MainBoard.blowUpShieldWall(color, true)
+        if PlayBoard.hasMakerHook(color) then
+            MainBoard.blowUpShieldWall(color, true)
+        end
         HagalCard.acquireTroops(color, 0, true)
         if bestDesertSpace == "haggaBasin" and PlayBoard.hasMakerHook(color) then
             rival.resources(color, "spice", bestSpiceBonus)
