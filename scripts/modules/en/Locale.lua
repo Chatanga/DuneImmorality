@@ -234,7 +234,7 @@ return {
     twoWormsOption = "2 sandworm",
     goHaggaBasin = "Select an option.",
     twoSpicesOption = "2 spice units",
-    onWormOption = "1 sandworm",
+    oneWormOption = "1 sandworm",
     noMakerHook = "You don't have a maker's hook!",
     shieldWallIsStanding = "The Shield Wall is still standing!",
 

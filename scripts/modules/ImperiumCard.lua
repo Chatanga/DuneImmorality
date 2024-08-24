@@ -52,6 +52,7 @@ local winner = CardEffect.winner
 local twoSpies = CardEffect.twoSpies
 local spyMakerSpace = CardEffect.spyMakerSpace
 local swordmaster = CardEffect.swordmaster
+local multiply = CardEffect.multiply
 
 local ImperiumCard = {
     -- starter: base
@@ -74,7 +75,7 @@ local ImperiumCard = {
     arrakisRecruiter = {cost = 2, agentIcons = {'blue'}, reveal = {persuasion(1), sword(1)}},
     assassinationMission = {cost = 1, reveal = {sword(1), solari(1)}},
     beneGesseritInitiate = {factions = {'beneGesserit'}, cost = 3, agentIcons = {'green', 'blue', 'yellow'}, reveal = {persuasion(1)}},
-    beneGesseritSister = {factions = {'beneGesserit'}, cost = 3, agentIcons = {'beneGesserit', 'green'}, reveal = {'2 sword or 2 persuasion'}},
+    beneGesseritSister = {factions = {'beneGesserit'}, cost = 3, agentIcons = {'beneGesserit', 'green'}, reveal = choice(1, {{sword(2)}, {persuasion(2)}})},
     carryall = {cost = 5, agentIcons = {'yellow'}, reveal = {persuasion(1), spice(1)}},
     chani = {factions = {'fremen'}, cost = 5, acquireBonus = {water(1)}, agentIcons = {'fremen', 'blue', 'yellow'}, reveal = {persuasion(2), 'Retreat any # of troops'}},
     choamDirectorship = {cost = 8, acquireBonus = {'4x inf all'}, reveal = {solari(3)}},
@@ -171,7 +172,7 @@ local ImperiumCard = {
     tleilaxuMaster = {cost = 5, agentIcons = {'green', 'yellow'}, reveal = {persuasion(1), research(2)}},
     tleilaxuSurgeon = {cost = 3, agentIcons = {'emperor', 'blue'}, reveal = {persuasion(2), 'Lose 2 Troops--> +2 Specimen'}},
     -- tleilaxu
-    reclaimedForces = {cost = 3, tleilaxu = true, acquireBonus = {'+2 troops or Beetle'}},
+    reclaimedForces = {cost = 3, tleilaxu = true, acquireBonus = choice(1, {{troop(2)}, {beetle(1)}})},
     usurp = {cost = 4, tleilaxu = true, reveal = {persuasion(1), sword(1), specimen(1)}},
     twistedMentat = {cost = 4, tleilaxu = true, agentIcons = {'green', 'blue'}, reveal = {persuasion(1), sword(1), specimen(1)}},
     beguilingPheromones = {cost = 3, tleilaxu = true, agentIcons = {'blue', 'yellow'}, reveal = {persuasion(1), sword(1)}},
@@ -209,7 +210,7 @@ local ImperiumCard = {
     imperialSpymaster = {factions = {'emperor'}, cost = 2, agentIcons = {'emperor'}, spy = true, reveal = {persuasion(1), sword(1)}},
     spyNetwork = {factions = {'emperor', 'spacingGuild'}, cost = 2, acquireBonus = {spy(1)}, reveal = {persuasion(2), sword(1), 'spy --> treachery if 2 spies on board'}},
     desertSurvival = {factions = {'fremen'}, cost = 2, agentIcons = {'yellow'}, reveal = {persuasion(1), sword(1)}},
-    undercoverAsset = {factions = {'emperor', 'spacingGuild'}, cost = 2, agentIcons = {'green', 'blue', 'yellow'}, reveal = {'spy(1) or sword(2)'}},
+    undercoverAsset = {factions = {'emperor', 'spacingGuild'}, cost = 2, agentIcons = {'green', 'blue', 'yellow'}, reveal = choice(1, {{spy(1)}, {sword(2)}})},
     beneGesseritOperative = {factions = {'beneGesserit'}, cost = 3, agentIcons = {'beneGesserit'}, reveal = {persuasion(1), persuasion(twoSpies(2))}},
     maulaPistol = {factions = {'fremen'}, cost = 3, agentIcons = {'blue', 'yellow'}, reveal = {persuasion(1), sword(1)}},
     thumper = {factions = {'fremen'}, cost = 3, agentIcons = {'yellow'}, reveal = {persuasion(1), spice(1)}},
@@ -226,7 +227,7 @@ local ImperiumCard = {
     theBeastSpoils = {factions = {'emperor'}, cost = 3, agentIcons = {'blue'}, reveal = {sword(3)}},
     smugglerHaven = {factions = {'spacingGuild'}, cost = 4, agentIcons = {'spacingGuild', 'yellow'}, reveal = {persuasion(1), spice(spyMakerSpace(2))}},
     shishakli = {factions = {'fremen'}, cost = 4, agentIcons = {'blue', 'yellow'}, reveal = {sword(2), influence(fremenBond(1), 'fremen')}},
-    paracompass = {cost = 4, agentIcons = {'blue'}, reveal = {persuasion(seat(2)), persuasion(swordmaster(1))}},
+    paracompass = {cost = 4, agentIcons = {'blue'}, reveal = {persuasion(seat(2)), persuasion(multiply(seat(1), swordmaster(1)))}},
     sardaukarCoordination = {factions = {'emperor'}, cost = 4, agentIcons = {'emperor', 'green'}, reveal = {persuasion(2), sword(perEmperor(1))}},
     truthtrance = {factions = {'beneGesserit'}, cost = 4, agentIcons = {'emperor', 'spacingGuild', 'beneGesserit', 'fremen'}, reveal = {persuasion(1)}},
     publicSpectable = {factions = {'emperor'}, cost = 4, spy = true, reveal = {persuasion(1), spy(1)}},

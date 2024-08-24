@@ -2272,11 +2272,19 @@ function PlayBoard:_revealHand(brutal)
                 We leave the cards with a choice (not an option) in the player's hand to simplify
                 things and make clear to the player that the card must be manually revealed.
             ]]
-            return not Helper.isElementOf(Helper.getID(card), {
+            local choiceOfferingCards = {
                 "beneGesseritSister",
                 "undercoverAsset",
-                "desertPower"
-            })
+                "desertPower",
+            }
+            if brutal then
+                choiceOfferingCards = Helper.concatTables(choiceOfferingCards, {
+                    "corrinthCity",
+                    "deliveryAgreement",
+                    "priorityContracts",
+                })
+            end
+            return not Helper.isElementOf(Helper.getID(card), choiceOfferingCards)
         else
             return false
         end
@@ -2336,7 +2344,7 @@ function PlayBoard:_revealHand(brutal)
                 local amount = imperiumCardContributions[category] or 0
                 if amount > 0 then
                     self.leader.troops(self.color, "supply", to, amount)
-                    return Park.onceStabilized(Action._getTroopPark(self.color, to))
+                    return Park.onceStabilized(Action.getTroopPark(self.color, to))
                 else
                     return Helper.fakeContinuation()
                 end

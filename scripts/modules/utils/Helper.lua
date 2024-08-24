@@ -19,17 +19,23 @@ math.randomseed(os.time())
 
 -- *** Exception handling ***
 
+--[[
+    Note: this function won't be able to catch any "<Unknow Error>",
+    because it happen inside the native code called by Lua.
+]]
 ---@param context string
 ---@param callable function
-function Helper.wrapFailable(context, callable)
+function Helper.wrapFailable(context, callable, defaultReturnValue)
     return function (...)
-        local ran, ret = pcall(callable, ...)
-        if not ran then
+        local ranSuccessfully, returnValue = pcall(callable, ...)
+        if ranSuccessfully then
+            return returnValue
+        else
             broadcastToAll("An error has happened in a script!", "Red")
-            log("Error in script (Global): " .. ret)
-            Helper._postError(Helper.functionToString(context, ...), ret)
+            log("Error in script (Global): " .. returnValue)
+            Helper._postError(Helper.functionToString(context, ...), returnValue)
+            return defaultReturnValue
         end
-        return ret
     end
 end
 

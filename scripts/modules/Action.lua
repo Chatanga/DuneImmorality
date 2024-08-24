@@ -293,7 +293,7 @@ function Action.troops(color, from, to, baseCount)
     Types.assertIsTroopLocation(from)
     Types.assertIsTroopLocation(to)
     Types.assertIsInteger(baseCount)
-    local count = Park.transfert(baseCount, Action._getTroopPark(color, from), Action._getTroopPark(color, to))
+    local count = Park.transfert(baseCount, Action.getTroopPark(color, from), Action.getTroopPark(color, to))
 
     if not Action.troopTransferCoalescentQueue then
 
@@ -345,7 +345,7 @@ function Action.troops(color, from, to, baseCount)
 end
 
 ---
-function Action._getTroopPark(color, parkName)
+function Action.getTroopPark(color, parkName)
     if parkName == "supply" then
         return PlayBoard.getSupplyPark(color)
     elseif parkName == "garrison" then
@@ -444,7 +444,7 @@ function Action.dreadnought(color, from, to, amount)
     Types.assertIsDreadnoughtLocation(to)
     Types.assertIsInteger(amount)
 
-    local count = Park.transfert(amount, Action._getDreadnoughtPark(color, from), Action._getDreadnoughtPark(color, to))
+    local count = Park.transfert(amount, Action.getDreadnoughtPark(color, from), Action.getDreadnoughtPark(color, to))
 
     if count > 0 then
         Action.log(I18N("transfer", {
@@ -459,7 +459,7 @@ function Action.dreadnought(color, from, to, amount)
 end
 
 ---
-function Action._getDreadnoughtPark(color, parkName)
+function Action.getDreadnoughtPark(color, parkName)
     if parkName == "supply" then
         return PlayBoard.getDreadnoughtPark(color)
     elseif parkName == "garrison" then

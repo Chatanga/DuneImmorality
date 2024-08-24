@@ -234,7 +234,7 @@ return {
     twoWormsOption = "2 vers des sables",
     goHaggaBasin = "Selectionnez une option.",
     twoSpicesOption = "2 épices",
-    onWormOption = "1 ver des sables",
+    oneWormOption = "1 ver des sables",
     noMakerHook = "Vous ne possédez pas de hameçon à faiseur!",
     shieldWallIsStanding = "The Mur du Bouclier est toujours debout !",
 

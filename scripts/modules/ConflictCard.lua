@@ -52,6 +52,7 @@ local winner = CardEffect.winner
 local twoSpies = CardEffect.twoSpies
 local spyMakerSpace = CardEffect.spyMakerSpace
 local swordmaster = CardEffect.swordmaster
+local multiply = CardEffect.multiply
 
 local ConflictCard = {
     skirmishA = {level = 1, uprising = true, objective = "crysknife", rewards = {{influence(1)}, {intrigue(1), spice(1)}, {spice(1)}}},

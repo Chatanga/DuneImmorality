@@ -67,6 +67,7 @@ local winner = CardEffect.winner
 local twoSpies = CardEffect.twoSpies
 local spyMakerSpace = CardEffect.spyMakerSpace
 local swordmaster = CardEffect.swordmaster
+local multiply = CardEffect.multiply
 ]]
 
 ---@param context Context
@@ -444,6 +445,17 @@ function CardEffect.swordmaster(expression)
     return CardEffect._filter(expression, function (context)
         return PlayBoard.hasSwordmaster(context.color)
     end)
+end
+
+function CardEffect.multiply(...)
+    local expressions = {...}
+    return function (context)
+        local result = 1
+        for _, expression in ipairs(expressions) do
+            result = result * CardEffect.evaluate(context, expression)
+        end
+        return result
+    end
 end
 
 return CardEffect

@@ -636,7 +636,7 @@ end
 
 ---
 function Combat.isCurrentConflictBehindTheWall()
-    local conflictName = Combat.getCurrentConflictLevel()
+    local conflictName = Combat.getCurrentConflictName()
     return ConflictCard.isBehindTheWall(conflictName)
 end
 

@@ -114,9 +114,14 @@ end
 
 ---
 function MainBoard.setUp(settings)
+    local continuation = Helper.createContinuation("MainBoard.setUp")
+
     if settings.numberOfPlayers == 6 then
         MainBoard.board.setState(2)
-        MainBoard.board = getObjectFromGUID("21cc52")
+        Helper.onceTimeElapsed(2).doAfter(function ()
+            MainBoard.board = getObjectFromGUID("21cc52")
+            continuation.run()
+        end)
         if settings.immortality then
             local position = MainBoard.immortalityPatch.getPosition()
             MainBoard.immortalityPatch.setPosition(position + Vector(1.6, 0, -1.9))
@@ -129,6 +134,7 @@ function MainBoard.setUp(settings)
         MainBoard.spiceBonusTokens.habbanyaErg.destruct()
         MainBoard.spiceBonusTokens.habbanyaErg = nil
         --MainBoard.board.setState(1)
+        continuation.run()
     end
 
     if settings.immortality then
@@ -137,12 +143,14 @@ function MainBoard.setUp(settings)
         MainBoard.immortalityPatch = nil
     end
 
-    local continuation = Helper.createContinuation("MainBoard.setUp.next")
-    MainBoard._mutateMainBoards(settings.language)
-    MainBoard._transientSetUp(settings)
-    continuation.run()
+    local nextContinuation = Helper.createContinuation("MainBoard.setUp.next")
+    continuation.doAfter(function ()
+        MainBoard._mutateMainBoards(settings.language)
+        MainBoard._transientSetUp(settings)
+        nextContinuation.run()
+    end)
 
-    return continuation
+    return nextContinuation
 end
 
 ---
@@ -158,11 +166,13 @@ function MainBoard._mutateMainBoards(locale)
     end
 
     local boards = {
-        board4P = { name = "board", guid = "483a1a" },
-        board6P = { name = "board", guid = "21cc52" },
-        emperorBoard = { name = "emperorBoard", guid = "4cb9ba" },
-        fremenBoard = { name = "fremenBoard", guid = "01c575" },
+        board4P = { target = "board", guid = "483a1a" },
+        board6P = { target = "board", guid = "21cc52" },
+        emperorBoard = { target = "emperorBoard", guid = "4cb9ba" },
+        fremenBoard = { target = "fremenBoard", guid = "01c575" },
     }
+
+    local originalBoardGuid = MainBoard.board.getGUID()
 
     for boardName, boardInfo in pairs(boards) do
         local board = getObjectFromGUID(boardInfo.guid)
@@ -170,9 +180,14 @@ function MainBoard._mutateMainBoards(locale)
             local parameters = board.getCustomObject()
             parameters.image = Board[locale][boardName]
             board.setCustomObject(parameters)
-            MainBoard[boardInfo.name] = board.reload()
+            MainBoard[boardInfo.target] = board.reload()
+            Helper.dump("|Bug Hunter| Board mutation:", boardName, boardInfo.guid, "->", MainBoard[boardInfo.target])
+        else
+            Helper.dump("|Bug Hunter| Board mutation:", boardName, boardInfo.guid, "== nil")
         end
     end
+
+    MainBoard.board = getObjectFromGUID(originalBoardGuid)
 end
 
 ---
@@ -1288,7 +1303,7 @@ end
 
 ---
 function MainBoard._goDeepDesert(color, leader, continuation)
-    if PlayBoard.hasMakerHook(color) then
+    if PlayBoard.hasMakerHook(color) and (not MainBoard.shieldWallIsStanding() or not Combat.isCurrentConflictBehindTheWall()) then
         local options = {
             I18N("fourSpicesOption"),
             I18N("twoWormsOption"),
@@ -1338,10 +1353,10 @@ end
 
 ---
 function MainBoard._goHaggaBasin(color, leader, continuation)
-    if PlayBoard.hasMakerHook(color) then
+    if PlayBoard.hasMakerHook(color) and (not MainBoard.shieldWallIsStanding() or not Combat.isCurrentConflictBehindTheWall()) then
         local options = {
             I18N("twoSpicesOption"),
-            I18N("onWormOption"),
+            I18N("oneWormOption"),
         }
         Dialog.showOptionsAndCancelDialog(color, I18N("goHaggaBasin"), options, continuation, function (index)
             if index == 1 then
