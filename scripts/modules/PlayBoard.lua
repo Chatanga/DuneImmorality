@@ -2218,6 +2218,7 @@ end
 ---
 function PlayBoard._onceCardParkSpread(park)
     local continuation = Helper.createContinuation("PlayBoard.spreadCardPark")
+    -- FIXME Useless indirection.
     local holder = {
         count = 0
     }

@@ -172,6 +172,7 @@ function MainBoard._mutateMainBoards(locale)
         fremenBoard = { target = "fremenBoard", guid = "01c575" },
     }
 
+    local originalBoardRef = MainBoard.board
     local originalBoardGuid = MainBoard.board.getGUID()
 
     for boardName, boardInfo in pairs(boards) do
@@ -187,6 +188,9 @@ function MainBoard._mutateMainBoards(locale)
         end
     end
 
+    if MainBoard.board == originalBoardRef then
+        Helper.dump("|Bug Hunter| Board not mutated!")
+    end
     MainBoard.board = getObjectFromGUID(originalBoardGuid)
 end
 

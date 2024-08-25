@@ -103,7 +103,6 @@ function Rival.triggerHagalReaction(color)
             Rival._buyVictoryPoints(color)
         end
 
-        Helper.dump("Triggering " .. continuation.name);
         continuation.run()
 
         return 1
@@ -337,7 +336,7 @@ function Rival.sendSpy(color, observationPostName)
             return true
         end
     else
-        log("No free observation post!")
+        Helper.dump("No free observation post!")
     end
     return false
 end

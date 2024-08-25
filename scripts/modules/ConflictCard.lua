@@ -135,7 +135,6 @@ function ConflictCard.collectReward(color, conflictName, rank, doubleRewards, po
                     functionHolder.f()
                 end)
             else
-                Helper.dump("Triggering " .. continuation.name);
                 continuation.run()
             end
         end)

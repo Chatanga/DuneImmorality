@@ -144,6 +144,7 @@ end
 
 ---
 function ScoreBoard.gainVictoryPoint(color, name, count)
+    -- FIXME Useless indirection.
     local holder = {
         success = false
     }

@@ -122,6 +122,7 @@ function Hagal._lateActivate(phase, color)
     elseif phase == "endgame" then
         continuation.run()
     else
+        continuation.cancel()
         error("Unknown phase: " .. tostring(phase))
     end
 
@@ -163,7 +164,6 @@ function Hagal._collectReward(color)
                     dreadnoughts[1].setPositionSmooth(bestBannerZone.getPosition())
                 end
             end
-            Helper.dump("Triggering " .. continuation.name);
             continuation.run()
         end)
     end)
@@ -292,8 +292,6 @@ function Hagal._doActivateFirstValidCard(color, action, n, continuation)
                         HagalCard.flushTurnActions(color, Hagal._getExpertDeploymentLimit(color))
                         continuation.run(card)
                     end)
-                    HagalCard.flushTurnActions(color, Hagal._getExpertDeploymentLimit(color))
-                    continuation.run(card)
                 else
                     Rival.triggerHagalReaction(color).doAfter(function ()
                         Hagal._doActivateFirstValidCard(color, action, n + 1, continuation)
