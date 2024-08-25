@@ -74,12 +74,14 @@ function HagalCard.activate(color, card, riseOfIx)
     return final
 end
 
-function HagalCard.flushTurnActions(color, deploymentLimit)
+function HagalCard.flushTurnActions(color)
     HagalCard.acquiredTroopCount = HagalCard.acquiredTroopCount or 0
     local rival = PlayBoard.getLeader(color)
     assert(rival, color)
 
     if HagalCard.inCombat then
+        local deploymentLimit = Hagal.getExpertDeploymentLimit(color)
+
         local garrisonedTroopCount = #Park.getObjects(Combat.getGarrisonPark(color))
         local inSupplyTroopCount = #Park.getObjects(PlayBoard.getSupplyPark(color))
 

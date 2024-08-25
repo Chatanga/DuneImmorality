@@ -15,6 +15,7 @@ local Action = Module.lazyRequire("Action")
 local TurnControl = Module.lazyRequire("TurnControl")
 local Commander = Module.lazyRequire("Commander")
 local Music = Module.lazyRequire("Music")
+local Hagal = Module.lazyRequire("Hagal")
 
 local MainBoard = {
     spaceDetails = {
@@ -1087,7 +1088,10 @@ end
 
 ---
 function MainBoard._goSwordmaster(color, leader, continuation)
-    if PlayBoard.hasSwordmaster(color) then
+    if not Hagal.isSwordmasterAvailable() then
+        Dialog.broadcastToColor(I18N("unavailableSwordmaster"), color, "Purple")
+        continuation.run()
+    elseif PlayBoard.hasSwordmaster(color) then
         Dialog.broadcastToColor(I18N("alreadyHaveSwordmaster"), color, "Purple")
         continuation.run()
     elseif MainBoard._checkGenericAccess(color, leader, { solari = MainBoard._getSwordmasterCost() }) then

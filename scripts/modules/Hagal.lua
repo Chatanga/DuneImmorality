@@ -1,6 +1,7 @@
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local Park = require("utils.Park")
+local I18N = require("utils.I18N")
 
 local Deck = Module.lazyRequire("Deck")
 local TurnControl = Module.lazyRequire("TurnControl")
@@ -13,6 +14,7 @@ local ConflictCard = Module.lazyRequire("ConflictCard")
 local Rival = Module.lazyRequire("Rival")
 local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
 local ImperiumRow = Module.lazyRequire("ImperiumRow")
+local Action = Module.lazyRequire("Action")
 
 local Hagal = {}
 
@@ -200,14 +202,17 @@ end
 ---
 function Hagal._setStrengthFromFirstValidCard(color)
     local level3Conflict = Combat.getCurrentConflictLevel() == 3
-    local mentatOrHigher = Helper.isElementOf(Hagal.difficulty, { "expert", "expertPlus "})
+    local mentatOrHigher = Helper.isElementOf(Hagal.difficulty, { "expert", "expertPlus" })
 
     -- Brutal Escalation
-    local n = level3Conflict and mentatOrHigher and 2 or 1
+    local n = (level3Conflict and mentatOrHigher) and 2 or 1
 
     return Hagal._activateFirstValidCard(color, function (card)
         if HagalCard.setStrength(color, card) then
             n = n - 1
+            if n > 0 then
+                Action.log(I18N("brutalEscalation"), color)
+            end
             return n == 0
         else
             return false
@@ -216,9 +221,9 @@ function Hagal._setStrengthFromFirstValidCard(color)
 end
 
 ---
-function Hagal._getExpertDeploymentLimit(color)
+function Hagal.getExpertDeploymentLimit(color)
     local level3Conflict = Combat.getCurrentConflictLevel() == 3
-    local mentatOrHigher = Helper.isElementOf(Hagal.difficulty, { "expert", "expertPlus "})
+    local mentatOrHigher = Helper.isElementOf(Hagal.difficulty, { "expert", "expertPlus" })
 
     local n
     if not level3Conflict and mentatOrHigher then
@@ -232,6 +237,7 @@ function Hagal._getExpertDeploymentLimit(color)
             end
         end
         n = math.max(0, 3 + otherColorMaxUnitCount - colorUnitCount)
+        Action.log(I18N("expertDeploymentLimit", { limit = n }), color)
     else
         n = 12
     end
@@ -241,7 +247,7 @@ end
 
 ---
 function Hagal.isSmartPolitics(color, faction)
-    local mentatOrHigher = Helper.isElementOf(Hagal.difficulty, { "expert", "expertPlus "})
+    local mentatOrHigher = Helper.isElementOf(Hagal.difficulty, { "expert", "expertPlus" })
 
     if mentatOrHigher then
         local colorRank = 0
@@ -256,9 +262,22 @@ function Hagal.isSmartPolitics(color, faction)
         end
         local leadMargin = colorRank - otherColorMaxRank
 
-        return
-            (not InfluenceTrack.hasAlliance(color, faction) or leadMargin < 1) and
-            (not InfluenceTrack.hasFriendship(color, faction) or leadMargin < 2)
+        local smart
+        if InfluenceTrack.hasAlliance(color, faction) then
+            smart = leadMargin < 1
+        elseif InfluenceTrack.hasFriendship(color, faction) then
+            smart = leadMargin > -2
+        else
+            smart = true
+        end
+
+        --Helper.dump("alliance:", InfluenceTrack.hasAlliance(color, faction), "/ friendship:", InfluenceTrack.hasFriendship(color, faction), "/ lead margin:", leadMargin)
+
+        if not smart then
+            Action.log(I18N("smartPolitics"), color)
+        end
+
+        return smart
     end
 
     return true
@@ -289,7 +308,7 @@ function Hagal._doActivateFirstValidCard(color, action, n, continuation)
                     Hagal._reshuffleDeck(color, action, n, continuation)
                 elseif action(card) then
                     Rival.triggerHagalReaction(color).doAfter(function ()
-                        HagalCard.flushTurnActions(color, Hagal._getExpertDeploymentLimit(color))
+                        HagalCard.flushTurnActions(color)
                         continuation.run(card)
                     end)
                 else
@@ -337,6 +356,11 @@ function Hagal.getRivalCount()
     else
         return 0
     end
+end
+
+---
+function Hagal.isSwordmasterAvailable()
+    return Hagal.difficulty ~= "expertPlus"
 end
 
 ---

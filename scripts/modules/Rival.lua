@@ -169,7 +169,6 @@ function Rival.prepare(color, settings)
         Action.resources(color, "water", 1)
         if settings.difficulty ~= "novice" then
             Action.troops(color, "supply", "garrison", 3)
-            Action.drawIntrigues(color, 1)
         end
     else
         Action.resources(color, "water", 1)

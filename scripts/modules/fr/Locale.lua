@@ -181,9 +181,14 @@ return {
     buyTech = "■ Acquisition pour {amount} {resource} de la tech. : « {name} ».",
     acquireContract = "■ Prise du contrat : « {name} ».",
     sendingAgent = "■ Envoi d’un agent vers : {space} ({cards}).",
-    triggeringScheme = "■ Triggering rival scheme.",
     stealIntrigue = "■ Vol de « {card} » à {victim}.",
     gainVictoryPoint = "■ Gain de PV ({name}).",
+
+    -- Rival Actions
+    triggeringScheme = "↯ Triggering rival scheme.",
+    brutalEscalation = "↯ Escalade brutale !",
+    smartPolitics = "↯ Applique une politique habile.",
+    expertDeploymentLimit = "↯ Limitation du déploiement de forces à {limit}.",
 
     -- Shield Wall
     confirmShieldWallDestruction = "Confirmez-vous cette violation flagrante de la Grande Convention ?",
@@ -228,6 +233,7 @@ return {
     reclaimRewards = "Réclamer les récompenses",
     makersAndRecall = "Faiseurs + Rappel",
     doublingConflictRewards = "Récompenses doublées",
+    unavailableSwordmaster = "Pas de maître d’armes avec ce niveau de difficulté !",
 
     goDeepDesert = "Selectionnez une option.",
     fourSpicesOption = "4 épices",
