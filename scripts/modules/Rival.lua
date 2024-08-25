@@ -448,7 +448,7 @@ Rival.amberMetulli = Helper.createClass(Rival, {
 
 Rival.gurneyHalleck = Helper.createClass(Rival, {
 
-    swordmasterCost = 6,
+    swordmasterCost = 8,
 
     factionPriorities = {
         "fremen",

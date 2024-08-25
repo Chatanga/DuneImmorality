@@ -11,6 +11,7 @@ local Combat = Module.lazyRequire("Combat")
 local TurnControl = Module.lazyRequire("TurnControl")
 local Hagal = Module.lazyRequire("Hagal")
 local TechMarket = Module.lazyRequire("TechMarket")
+local Action = Module.lazyRequire("Action")
 
 local HagalCard = {
     cardStrengths = {
@@ -103,22 +104,24 @@ function HagalCard.flushTurnActions(color)
             end
         end
 
-        if deploymentLimit > 0 then
-            local realFromSupply = math.min(fromSupply, deploymentLimit)
-            deploymentLimit = deploymentLimit - realFromSupply
-            if realFromSupply > 0 then
-                rival.troops(color, "supply", "combat", realFromSupply)
-            end
-            if fromSupply > realFromSupply then
+        local realFromSupply = math.min(fromSupply, deploymentLimit)
+        deploymentLimit = deploymentLimit - realFromSupply
+        local continuation = Helper.createContinuation("HagalCard.flushTurnActions")
+        if realFromSupply > 0 then
+            rival.troops(color, "supply", "combat", realFromSupply)
+            Park.onceStabilized(Action.getTroopPark(color, "combat")).doAfter(continuation.run)
+        else
+            continuation.run()
+        end
+        if fromSupply > realFromSupply then
+            continuation.doAfter(function ()
                 rival.troops(color, "supply", "garrison", fromSupply - realFromSupply)
-            end
+            end)
         end
 
-        if deploymentLimit > 0 then
-            local realFromGarrison = math.min(fromGarrison, deploymentLimit)
-            if realFromGarrison > 0 then
-                rival.troops(color, "garrison", "combat", realFromGarrison)
-            end
+        local realFromGarrison = math.min(fromGarrison, deploymentLimit)
+        if realFromGarrison > 0 then
+            rival.troops(color, "garrison", "combat", realFromGarrison)
         end
 
         HagalCard.inCombat = false
