@@ -118,7 +118,7 @@ local ImperiumCard = {
     -- ix
     appropriate = {factions = {'emperor'}, cost = 5, acquireBonus = {shipment(1)}, agentIcons = {'green', 'yellow'}, reveal = {persuasion(2)}},
     bountyHunter = {cost = 1, agentIcons = {'blue'}, infiltrate = true, reveal = {persuasion(1), sword(1)}},
-    choamDelegate = {cost = 1, agentIcons = {'yellow'}, infiltrate = true, reveal = {solari(1)}},
+    choamDelegate = {cost = 1, agentIcons = {'yellow'}, infiltrate = true, reveal = {solari(3)}},
     courtIntrigue = {factions = {'emperor'}, cost = 2, agentIcons = {'emperor'}, infiltrate = true, reveal = {persuasion(1), sword(1)}},
     desertAmbush = {factions = {'fremen'}, cost = 3, agentIcons = {'yellow'}, reveal = {persuasion(1), sword(1)}},
     embeddedAgent = {factions = {'beneGesserit'}, cost = 5, agentIcons = {'green'}, infiltrate = true, reveal = {persuasion(1), intrigue(1)}},

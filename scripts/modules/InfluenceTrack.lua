@@ -113,6 +113,7 @@ function InfluenceTrack._processSnapPoints(settings, firstTime)
     -- TODO Get rid of the *InitialPositions variables
 
     local allColors = { "Green", "Yellow", "Blue", "Red", "White", "Purple" }
+    local allActiveColors = PlayBoard.getActivePlayBoardColors()
 
     local influenceTokens = {}
     for _, object in ipairs(getObjects()) do
@@ -126,7 +127,11 @@ function InfluenceTrack._processSnapPoints(settings, firstTime)
         elseif object.hasTag("InfluenceTokens") then
             for _, color in ipairs(allColors) do
                 if object.hasTag(color) then
-                    table.insert(influenceTokens, object)
+                    if Helper.isElementOf(color, allActiveColors) then
+                        table.insert(influenceTokens, object)
+                    else
+                        object.destruct()
+                    end
                     break
                 end
             end
