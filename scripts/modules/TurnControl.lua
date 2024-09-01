@@ -45,6 +45,14 @@ function TurnControl.onLoad(state)
             end
         end
     end
+
+    Helper.registerEventListener("phaseEnd", function (phase)
+        if TurnControl.currentPhase == "combat" then
+            TurnControl._createReclaimRewardsButton()
+        elseif TurnControl.currentPhase == "combatEnd" and TurnControl._endgameGoalReached() and TurnControl.currentRound < 10 then
+            TurnControl._createNextRoundButton()
+        end
+    end)
 end
 
 function TurnControl.onSave(state)
@@ -284,11 +292,16 @@ function TurnControl.endOfPhase(haltAfter)
         bestTrigger = Helper.onceStabilized()
     end
 
-    bestTrigger.doAfter(function ()
-        if TurnControl.currentPhase then
-            Helper.emitEvent("phaseEnd", TurnControl.currentPhase)
-        end
+    -- Current phase could change meanwhile (not great though).
+    local phase = TurnControl.currentPhase
 
+    bestTrigger.doAfter(function ()
+        if phase ~= TurnControl.currentPhase then
+            Helper.dump(phase, "=/=", TurnControl.currentPhase)
+        end
+        if phase then
+            Helper.emitEvent("phaseEnd", phase)
+        end
         if not haltAfter then
             TurnControl._nextPhase()
         end
@@ -312,10 +325,8 @@ function TurnControl._next(startPlayerLuaIndex)
         TurnControl._notifyPlayerTurn()
     else
         if TurnControl.currentPhase == "combat" then
-            TurnControl._createReclaimRewardsButton()
             TurnControl.endOfPhase(true)
         elseif TurnControl.currentPhase == "combatEnd" and TurnControl._endgameGoalReached() and TurnControl.currentRound < 10 then
-            TurnControl._createNextRoundButton()
             TurnControl.endOfPhase(true)
         else
             TurnControl.endOfPhase()

@@ -2018,6 +2018,7 @@ end
 
 ---
 function PlayBoard._convertObjectiveTokenPairsIntoVictoryPoints(object)
+    Helper.dumpFunction("PlayBoard._convertObjectiveTokenPairsIntoVictoryPoints", object)
     local tagToName = {
         MuadDibObjectiveToken = "muadDibVictoryPoint",
         OrnithopterObjectiveToken = "ornithopterVictoryPoint",
@@ -2325,7 +2326,7 @@ function PlayBoard:_revealHand(brutal)
         ((restrictedOrdnance and councilSeat) and 4 or 0) +
         (swordmasterBonus and 2 or 0))
 
-    Helper.dump("imperiumCardContributions:", imperiumCardContributions)
+    --Helper.dump("imperiumCardContributions:", imperiumCardContributions)
 
     if brutal and not self.revealed then
         for _, resourceName in ipairs({ "spice", "solari", "water" }) do

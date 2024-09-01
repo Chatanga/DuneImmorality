@@ -950,7 +950,7 @@ function Deck.generateRivalLeaderDeck(deckZone, streamlined, ix, immortality, le
     local contributions = Deck._mergeStandardContributionSets(Deck.rivalLeaders, ix, immortality, legacy)
     for rival, _ in pairs(contributions) do
         local streamlinedRival = Helper.isElementOf(rival, { "amberMetulli", "glossuRabban" })
-        if streamlined ~= streamlinedRival then
+        if (streamlined == true) ~= streamlinedRival then
             contributions[rival] = nil
         end
     end

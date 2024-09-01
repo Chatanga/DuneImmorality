@@ -991,7 +991,7 @@ function Helper.isStabilized(beQuiet)
     return count == 0
 end
 
---- Beware of card being swallowed up in a deck at the end of its move.
+--- Beware of cards being swallowed up in a deck at the end of its move.
 ---@return Continuation
 function Helper.onceMotionless(object)
     local continuation = Helper.createContinuation("Helper.onceMotionless")
@@ -1722,12 +1722,12 @@ function Helper.dump(...)
         end
         str = str .. Helper.toString(args[i])
     end
-    log(str)
+    Helper._log(str)
 end
 
 ---
 function Helper.dumpFunction(...)
-    log(Helper.functionToString(...))
+    Helper._log(Helper.functionToString(...))
 end
 
 ---
@@ -1751,6 +1751,20 @@ function Helper.functionToString(...)
         end
     end
     return str
+end
+
+---
+function Helper._log(str)
+    if Helper.lastMessage ~= str then
+        if Helper.lastMessage and Helper.lastMessageCount > 0 then
+            log("[x" .. tostring(Helper.lastMessageCount) .. "] " .. Helper.lastMessage)
+        end
+        log(str)
+        Helper.lastMessage = str
+        Helper.lastMessageCount = 0
+    else
+        Helper.lastMessageCount = Helper.lastMessageCount + 1
+    end
 end
 
 ---

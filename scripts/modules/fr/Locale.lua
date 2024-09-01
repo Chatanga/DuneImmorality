@@ -185,7 +185,7 @@ return {
     gainVictoryPoint = "■ Gain de PV ({name}).",
 
     -- Rival Actions
-    triggeringScheme = "↯ Triggering rival scheme.",
+    triggeringScheme = "↯ Manigance de {leader} !",
     brutalEscalation = "↯ Escalade brutale !",
     smartPolitics = "↯ Applique une politique habile.",
     expertDeploymentLimit = "↯ Limitation du déploiement de forces à {limit}.",

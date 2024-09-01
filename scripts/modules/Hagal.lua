@@ -140,6 +140,7 @@ end
 
 ---
 function Hagal._collectReward(color)
+    Helper.dumpFunction("Hagal._collectReward", color)
     local continuation = Helper.createContinuation("Hagal._collectReward")
     Helper.onceFramesPassed(1).doAfter(function ()
         local rank = Combat.getRank(color).value

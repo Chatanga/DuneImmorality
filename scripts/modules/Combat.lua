@@ -680,9 +680,7 @@ function Combat.gainObjective(color, objective)
     for _, object in ipairs(Combat.rewardTokenZone.getObjects()) do
         if object.hasTag(tag) then
             object.setPositionSmooth(position + Vector(0, 1, 0))
-            Helper.onceMotionless(object).doAfter(function (o)
-                continuation.run(o)
-            end)
+            Helper.onceMotionless(object).doAfter(continuation.run)
             return continuation
         end
     end

@@ -24,8 +24,9 @@ local autoLoadedSettings = nil
 --[[
 autoLoadedSettings = {
     language = "fr",
-    hotSeat = true,
     numberOfPlayers = 6,
+    hotSeat = true,
+    firstPlayer = "random",
     randomizePlayerPositions = false,
     useContracts = true,
     legacy = false,
@@ -48,10 +49,12 @@ autoLoadedSettings = {
 
 autoLoadedSettings = {
     language = "fr",
-    hotSeat = true,
     numberOfPlayers = 1,
-    virtualHotSeatMode = 1,
+    hotSeat = true,
+    firstPlayer = "Green",
     randomizePlayerPositions = false,
+    difficulty = "expert",
+    streamlinedRivals = false,
     useContracts = true,
     legacy = false,
     merakon = false,
@@ -61,8 +64,8 @@ autoLoadedSettings = {
     goTo11 = false,
     leaderSelection = {
         Green = "jessica",
-        Yellow = "gurneyHalleck",
-        Red = "feydRauthaHarkonnen",
+        Yellow = "feydRauthaHarkonnen",
+        Red = "stabanTuek",
     },
     horizontalHandLayout = true,
     soundEnabled = true,
@@ -294,11 +297,8 @@ function onSave()
         return
     end
 
-    if false and not Helper.isStabilized() then
-        Helper.dump("Unstable save!")
-    end
-
     if settings then
+        Helper.dumpFunction("onSave")
         local savedState = {
             settings = settings,
             stable = Helper.isStabilized(true) and "stable" or "unstable",

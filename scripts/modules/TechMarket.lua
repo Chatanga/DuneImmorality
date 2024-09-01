@@ -159,7 +159,7 @@ function TechMarket.acquireTech(stackIndex, color)
             end
         end)
     else
-        log("Still frozen...")
+        Helper.dump("Still frozen...")
     end
 end
 

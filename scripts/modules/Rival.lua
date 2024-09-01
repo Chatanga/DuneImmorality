@@ -50,7 +50,7 @@ function Rival.triggerHagalReaction(color)
             rival.recallableSpies = {}
             -- Doesn't work well as a scheme.
             --Action.setContext("schemeTriggered", {})
-            Action.log(I18N("triggeringScheme"), color)
+            Action.log(I18N("triggeringScheme", { leader = PlayBoard.getLeaderName(color) }), color)
             rival.scheme(color)
             Helper.sleep(2)
             --Action.unsetContext("schemeTriggered")

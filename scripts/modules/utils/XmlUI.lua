@@ -234,7 +234,9 @@ function XmlUI._translate(node)
         if node.attributes.key then
             node.value = I18N(node.attributes.key)
         end
-        if node.attributes.tooltipKey then
+        -- Tooltip popups are disabled for now sice they tend
+        -- to hang around after their widget has been removed.
+        if node.attributes.tooltipKey and false then
             node.attributes.tooltip = I18N(node.attributes.tooltipKey)
         end
     end

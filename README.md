@@ -43,7 +43,6 @@ __6P__
 
 __2P / Solo__
 
-- Rework the selection of rivals (and isolate "streamlined rivals").
 - Hagal cards in French.
 
 __Aesthetic__
