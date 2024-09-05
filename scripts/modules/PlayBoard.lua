@@ -2018,7 +2018,6 @@ end
 
 ---
 function PlayBoard._convertObjectiveTokenPairsIntoVictoryPoints(object)
-    Helper.dumpFunction("PlayBoard._convertObjectiveTokenPairsIntoVictoryPoints", object)
     local tagToName = {
         MuadDibObjectiveToken = "muadDibVictoryPoint",
         OrnithopterObjectiveToken = "ornithopterVictoryPoint",

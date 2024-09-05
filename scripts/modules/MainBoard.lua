@@ -71,8 +71,6 @@ local MainBoard = {
 ---
 function MainBoard.onLoad(state)
     Helper.append(MainBoard, Helper.resolveGUIDs(false, {
-        board4P = "483a1a",
-        board6P = "21cc52",
         emperorBoard = "4cb9ba",
         fremenBoard = "01c575",
         immortalityPatch = "6cf62a",
@@ -87,8 +85,7 @@ function MainBoard.onLoad(state)
     }))
     MainBoard.spiceBonuses = {}
 
-    MainBoard.board = MainBoard.board4P or MainBoard.board6P
-    Helper.noPhysicsNorPlay(MainBoard.board)
+    Helper.noPhysics(MainBoard.getBoard())
 
     Helper.forEachValue(MainBoard.spiceBonusTokens, Helper.noPhysicsNorPlay)
 
@@ -118,11 +115,8 @@ function MainBoard.setUp(settings)
     local continuation = Helper.createContinuation("MainBoard.setUp")
 
     if settings.numberOfPlayers == 6 then
-        MainBoard.board.setState(2)
-        Helper.onceTimeElapsed(2).doAfter(function ()
-            MainBoard.board = getObjectFromGUID("21cc52")
-            continuation.run()
-        end)
+        MainBoard.getBoard().setState(2)
+        Helper.onceTimeElapsed(2).doAfter(continuation.run)
         if settings.immortality then
             local position = MainBoard.immortalityPatch.getPosition()
             MainBoard.immortalityPatch.setPosition(position + Vector(1.6, 0, -1.9))
@@ -134,7 +128,6 @@ function MainBoard.setUp(settings)
         MainBoard.fremenBoard = nil
         MainBoard.spiceBonusTokens.habbanyaErg.destruct()
         MainBoard.spiceBonusTokens.habbanyaErg = nil
-        --MainBoard.board.setState(1)
         continuation.run()
     end
 
@@ -167,14 +160,11 @@ function MainBoard._mutateMainBoards(locale)
     end
 
     local boards = {
-        board4P = { target = "board", guid = "483a1a" },
-        board6P = { target = "board", guid = "21cc52" },
+        board4P = { guid = "483a1a" },
+        board6P = { guid = "21cc52" },
         emperorBoard = { target = "emperorBoard", guid = "4cb9ba" },
         fremenBoard = { target = "fremenBoard", guid = "01c575" },
     }
-
-    local originalBoardRef = MainBoard.board
-    local originalBoardGuid = MainBoard.board.getGUID()
 
     for boardName, boardInfo in pairs(boards) do
         local board = getObjectFromGUID(boardInfo.guid)
@@ -182,17 +172,11 @@ function MainBoard._mutateMainBoards(locale)
             local parameters = board.getCustomObject()
             parameters.image = Board[locale][boardName]
             board.setCustomObject(parameters)
-            MainBoard[boardInfo.target] = board.reload()
-            Helper.dump("|Bug Hunter| Board mutation:", boardName, boardInfo.guid, "->", MainBoard[boardInfo.target])
-        else
-            Helper.dump("|Bug Hunter| Board mutation:", boardName, boardInfo.guid, "== nil")
+            if boardInfo.target then
+                MainBoard[boardInfo.target] = board.reload()
+            end
         end
     end
-
-    if MainBoard.board == originalBoardRef then
-        Helper.dump("|Bug Hunter| Board not mutated!")
-    end
-    MainBoard.board = getObjectFromGUID(originalBoardGuid)
 end
 
 ---
@@ -266,6 +250,7 @@ function MainBoard._transientSetUp(settings)
     end)
 end
 
+---
 function MainBoard._createRoundIndicator()
     local primaryTable = getObjectFromGUID("2b4b92")
     local origin = primaryTable.getPosition() + Vector(-3.7, 1.8, -16.5)
@@ -404,9 +389,8 @@ end
 
 ---
 function MainBoard._getAllBoards(settings)
-    assert(MainBoard.board)
     local boards = {
-        MainBoard.board
+        MainBoard.getBoard()
     }
     if settings.numberOfPlayers == 6 then
         assert(MainBoard.emperorBoard)
@@ -1844,9 +1828,17 @@ end
 ---
 function MainBoard.isInside(object)
     local position = object.getPosition()
-    local center = MainBoard.board.getPosition()
+    local center = MainBoard.getBoard().getPosition()
     local offset = position - center
     return math.abs(offset.x) < 11 and math.abs(offset.z) < 11
+end
+
+--- The main board has state, meaning the Lua reference get invalidated when it changes.
+--- (A collections of states works the same way as a bag.)
+function MainBoard.getBoard()
+    local board4P = getObjectFromGUID("483a1a")
+    local board6P = getObjectFromGUID("21cc52")
+    return board4P or board6P
 end
 
 return MainBoard
