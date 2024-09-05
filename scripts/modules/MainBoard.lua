@@ -21,40 +21,6 @@ local MainBoard = {}
 function MainBoard.onLoad(state)
 
     Helper.append(MainBoard, Helper.resolveGUIDs(false, {
-        board = "483a1a",
-        otherBoard = "21cc52",
-        --[[
-        factions = {
-            emperor = {
-                alliance = "f7fff2",
-                Green = "d7c9ba",
-                Yellow = "489871",
-                Blue = "426a23",
-                Red = "acfcef"
-            },
-            spacingGuild = {
-                alliance = "8f7ee3",
-                Green = "89da7d",
-                Yellow = "9d0075",
-                Blue = "4069d8",
-                Red = "be464e"
-            },
-            beneGesserit = {
-                alliance = "a4da94",
-                Green = "2dc980",
-                Yellow = "a3729e",
-                Blue = "2a88a6",
-                Red = "713eae"
-            },
-            fremen = {
-                alliance = "1ca742",
-                Green = "d390dc",
-                Yellow = "77d7c8",
-                Blue = "0e6e41",
-                Red = "088f51"
-            }
-        },
-        ]]
         spaces = {
             -- Factions
             conspire = { zone = "cd9386" },
@@ -137,19 +103,19 @@ function MainBoard.onLoad(state)
     }))
     MainBoard.spiceBonuses = {}
 
-    MainBoard.board = MainBoard.board or MainBoard.otherBoard
-
-    Helper.noPhysicsNorPlay(MainBoard.board)
+    Helper.noPhysics(MainBoard.getBoard())
     Helper.forEachValue(MainBoard.spiceBonusTokens, Helper.noPhysicsNorPlay)
+
+    MainBoard._addWarningDecal()
 
     for name, token in pairs(MainBoard.spiceBonusTokens) do
         MainBoard.spiceBonuses[name] = Resource.new(token, nil, "spice", 0, name)
     end
 
-    if state.settings then
+    if state.settings and state.MainBoard then
         for name, token in pairs(MainBoard.spiceBonusTokens) do
             if token then
-                local value = state.MainBoard and state.MainBoard.spiceBonuses[name] or 0
+                local value = state.MainBoard.spiceBonuses[name] or 0
                 MainBoard.spiceBonuses[name]:set(value)
             end
         end
@@ -162,6 +128,21 @@ function MainBoard.onLoad(state)
 
         MainBoard._transientSetUp(state.settings)
     end
+end
+
+---
+function MainBoard._addWarningDecal()
+    Helper.createTransientAnchor(nil, Vector(0, 0.5, 0)).doAfter(function (anchor)
+        anchor.setDecals({
+            {
+                name = "Warning Message",
+                url = "https://steamusercontent-a.akamaihd.net/ugc/2419083992958077795/51B7C00C79F3A3FE73B53D44B27BDDD2B8A01339/",
+                position = Vector(0, 0.1, 0),
+                rotation = { 90, 180, 0 },
+                scale = Vector.scale(Vector(16.67, 1, 1), 1),
+            }
+        })
+    end)
 end
 
 ---
@@ -187,18 +168,14 @@ function MainBoard.setUp(settings)
         MainBoard.highCouncilZone = MainBoard.highCouncilZones.ix
         MainBoard.mentatZones.base.destruct()
         MainBoard.mentatZone = MainBoard.mentatZones.ix
-        --MainBoard.board.setState(1)
         continuation.run()
     else
         MainBoard.highCouncilZones.ix.destruct()
         MainBoard.highCouncilZone = MainBoard.highCouncilZones.base
         MainBoard.mentatZones.ix.destruct()
         MainBoard.mentatZone = MainBoard.mentatZones.base
-        MainBoard.board.setState(2)
-        Helper.onceTimeElapsed(2).doAfter(function ()
-            MainBoard.board = getObjectFromGUID("21cc52")
-            continuation.run()
-        end)
+        MainBoard.getBoard().setState(2)
+        Helper.onceTimeElapsed(2).doAfter(continuation.run)
     end
 
     local enabledExtensions = {
@@ -1338,6 +1315,14 @@ function MainBoard.trash(object)
         object.setLock(false)
         object.setPosition(getObjectFromGUID('ef8614').getPosition() + Vector(0, 1 + height * 0.5, 0))
     end)
+end
+
+--- The main board has state, meaning the Lua reference get invalidated when it changes.
+--- (A collections of states works the same way as a bag.)
+function MainBoard.getBoard()
+    local board = getObjectFromGUID("483a1a")
+    local otherBoard = getObjectFromGUID("21cc52")
+    return board or otherBoard
 end
 
 return MainBoard

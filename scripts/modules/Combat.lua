@@ -47,7 +47,7 @@ function Combat.onLoad(state)
         )
     end
 
-    if state.settings then
+    if state.settings and state.Combat then
         Combat._transientSetUp(state.settings)
         Combat.dreadnoughtStrengths = state.Combat.dreadnoughtStrengths
         Combat.ranking = state.Combat.ranking

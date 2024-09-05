@@ -40,7 +40,7 @@ function LeaderSelection.onLoad(state)
         secondaryTable = "662ced",
     }))
 
-    if state.settings then
+    if state.settings and state.LeaderSelection then
         LeaderSelection._transientSetUp(
             state.settings,
             state.LeaderSelection.leaderSelectionPoolSize,
@@ -63,11 +63,8 @@ function LeaderSelection.setUp(settings, activeOpponents)
     local postContinuation = Helper.createContinuation("LeaderSelection.setUp.postContinuation")
 
     Deck.generateLeaderDeck(LeaderSelection.deckZone, settings.riseOfIx, settings.immortality, settings.fanmadeLeaders).doAfter(function (deck)
-        local continuation = Helper.createContinuation("LeaderSelection.setUp")
         local start = settings.numberOfPlayers > 2 and 0 or 12
-        LeaderSelection._layoutLeaderDeck(deck, start, continuation)
-
-        continuation.doAfter(function ()
+        LeaderSelection._layoutLeaderDeck(deck, start).doAfter(function ()
             local players = TurnControl.toCanonicallyOrderedPlayerList(activeOpponents)
             LeaderSelection._transientSetUp(settings, settings.defaultLeaderPoolSize, players, Stage.INITIALIZED)
             postContinuation.run()
@@ -78,7 +75,8 @@ function LeaderSelection.setUp(settings, activeOpponents)
 end
 
 ---
-function LeaderSelection._layoutLeaderDeck(deck, start, continuation)
+function LeaderSelection._layoutLeaderDeck(deck, start)
+    local continuation = Helper.createContinuation("LeaderSelection._layoutLeaderDeck")
     local numberOfLeaders = deck.getQuantity()
     local count = numberOfLeaders
 
@@ -94,6 +92,8 @@ function LeaderSelection._layoutLeaderDeck(deck, start, continuation)
             end
         })
     end)
+
+    return continuation
 end
 
 ---

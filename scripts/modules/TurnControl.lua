@@ -18,24 +18,22 @@ local TurnControl = {
 }
 
 function TurnControl.onLoad(state)
-    if state.settings then
-        if state.TurnControl then
-            TurnControl.hotSeat = state.TurnControl.hotSeat
-            TurnControl.players = state.TurnControl.players
-            TurnControl.scoreGoal = state.TurnControl.scoreGoal
-            TurnControl.specialPhase = state.TurnControl.specialPhase
-            TurnControl.firstPlayerLuaIndex = state.TurnControl.firstPlayerLuaIndex
-            TurnControl.counterClockWise = state.TurnControl.counterClockWise
-            TurnControl.currentRound = state.TurnControl.currentRound
-            TurnControl.currentPhase = state.TurnControl.currentPhase
-            TurnControl.currentPlayerLuaIndex = state.TurnControl.currentPlayerLuaIndex
-            TurnControl.customTurnSequence = state.TurnControl.customTurnSequence
+    if state.settings and state.TurnControl then
+        TurnControl.hotSeat = state.TurnControl.hotSeat
+        TurnControl.players = state.TurnControl.players
+        TurnControl.scoreGoal = state.TurnControl.scoreGoal
+        TurnControl.specialPhase = state.TurnControl.specialPhase
+        TurnControl.firstPlayerLuaIndex = state.TurnControl.firstPlayerLuaIndex
+        TurnControl.counterClockWise = state.TurnControl.counterClockWise
+        TurnControl.currentRound = state.TurnControl.currentRound
+        TurnControl.currentPhase = state.TurnControl.currentPhase
+        TurnControl.currentPlayerLuaIndex = state.TurnControl.currentPlayerLuaIndex
+        TurnControl.customTurnSequence = state.TurnControl.customTurnSequence
 
-            if TurnControl.currentPlayerLuaIndex then
-                Helper.onceTimeElapsed(2).doAfter(Helper.partialApply(TurnControl._notifyPlayerTurn, true))
-            else
-                TurnControl._createReclaimRewardsButton()
-            end
+        if TurnControl.currentPlayerLuaIndex then
+            Helper.onceTimeElapsed(2).doAfter(Helper.partialApply(TurnControl._notifyPlayerTurn, true))
+        else
+            TurnControl._createReclaimRewardsButton()
         end
     end
 end

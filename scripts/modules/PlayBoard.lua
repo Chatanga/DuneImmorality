@@ -265,7 +265,7 @@ function PlayBoard.onLoad(state)
     end
     PlayBoard.unresolvedContentByColor = nil
 
-    if state.settings then
+    if state.settings and state.PlayBoard then
         PlayBoard._transientSetUp(state.settings)
     end
 end

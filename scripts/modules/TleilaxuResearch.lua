@@ -78,7 +78,7 @@ function TleilaxuResearch.onLoad(state)
         TleilaxuResearch.spiceBonus = Resource.new(TleilaxuResearch.tleilaxSpiceBonusToken, nil, "spice", value)
     end
 
-    if state.settings and state.settings.immortality then
+    if state.settings and state.settings.immortality and state.TleilaxuResearch then
         TleilaxuResearch._transientSetUp()
     end
 end

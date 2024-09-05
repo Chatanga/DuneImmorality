@@ -447,6 +447,11 @@
   ],
   "DecalPallet": [
     {
+      "Name": "Warning Message",
+      "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2419083992958077795/51B7C00C79F3A3FE73B53D44B27BDDD2B8A01339/",
+      "Size": 1.0
+    },
+    {
       "Name": "First Player Token Slot",
       "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2042984592862621000/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
       "Size": 0.5

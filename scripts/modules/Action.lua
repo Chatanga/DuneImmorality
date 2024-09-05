@@ -40,8 +40,7 @@ function Action.onLoad(state)
         Action.log(I18N("playerTurn", { leader = PlayBoard.getLeaderName(color) }), color)
     end)
 
-    if state.settings then
-        assert(state.Action)
+    if state.settings and state.Action then
         Action.context = state.Action.context
     end
 end

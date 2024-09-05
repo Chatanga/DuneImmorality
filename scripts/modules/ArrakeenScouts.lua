@@ -146,10 +146,10 @@ function ArrakeenScouts.onLoad(state)
 
     Helper.noPhysicsNorPlay(ArrakeenScouts.board)
 
-    if state.settings and state.settings.variant == "arrakeenScouts" then
-        ArrakeenScouts.selectedCommittees = state.selectedCommittees
-        ArrakeenScouts.selectedContent = state.selectedContent
-        ArrakeenScouts.numberOfPlayers = state.numberOfPlayers
+    if state.settings and state.settings.variant == "arrakeenScouts" and state.ArrakeenScouts then
+        ArrakeenScouts.selectedCommittees = state.ArrakeenScouts.selectedCommittees
+        ArrakeenScouts.selectedContent = state.ArrakeenScouts.selectedContent
+        ArrakeenScouts.numberOfPlayers = state.ArrakeenScouts.numberOfPlayers
         ArrakeenScouts._staticSetUp()
     end
 end
