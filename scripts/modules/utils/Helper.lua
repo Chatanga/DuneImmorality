@@ -264,15 +264,13 @@ function Helper._moveObject(object, position, rotation, smooth, flipAtTheEnd)
         end
     end
 
-    if flipAtTheEnd then
-        -- Dangerous. An "unknown error" could occur with a card sent to another or a deck.
-        Helper.onceMotionless(object).doAfter(function ()
+    -- Dangerous. An "unknown error" could occur with a card sent to another or a deck.
+    Helper.onceMotionless(object).doAfter(function ()
+        if flipAtTheEnd then
             object.flip()
-            continuation.run(object)
-        end)
-    else
+        end
         continuation.run(object)
-    end
+    end)
 
     return continuation
 end
