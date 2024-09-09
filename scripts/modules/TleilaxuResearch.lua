@@ -320,7 +320,9 @@ end
 
 ---
 function TleilaxuResearch._tleilaxSpaceToWorldPosition(positionInTleilaxSpace)
-    return TleilaxuResearch.tleilaxuLevelZones[positionInTleilaxSpace].getPosition()
+    local tleilaxuLevelZone = TleilaxuResearch.tleilaxuLevelZones[positionInTleilaxSpace]
+    assert(tleilaxuLevelZone, "No zone at coordinates " .. tostring(positionInTleilaxSpace))
+    return tleilaxuLevelZone.getPosition()
 end
 
 ---
