@@ -246,10 +246,12 @@ function HagalCard._activateEspionage(color, rival)
     local freeFactionObservationPosts = Helper.filter(
         { "emperor", "spacingGuild", "beneGesserit", "fremen" },
         Helper.negate(MainBoard.observationPostIsOccupied))
-    if HagalCard._spaceIsFree(color, "espionage") and not Helper.isEmpty(freeFactionObservationPosts) then
+    if HagalCard._spaceIsFree(color, "espionage") then
         HagalCard._sendRivalAgent(color, rival, "espionage")
         rival.influence(color, "beneGesserit", 1)
-        rival.sendSpy(color)
+        if not Helper.isEmpty(freeFactionObservationPosts) then
+            rival.sendSpy(color)
+        end
         return true
     else
         return false
