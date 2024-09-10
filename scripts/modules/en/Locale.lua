@@ -169,6 +169,7 @@ return {
     combatPark = "battlefield",
     negotiationPark = "tech negotiation",
     tanksPark = "Axolotl tanks",
+    otherMemoriesPark = "Other Memories",
     advanceFreighter = "■ Progress on the shipment track.",
     recallFreighter = "■ Recall freighter.",
     recruitSwordmaster = "■ Recruit Swordmaster.",
@@ -342,9 +343,11 @@ return {
     prescienceVoid = "All you see is the void ! (Your deck it empty actually…)",
     prescienceManual = "You need to peek manually (ALT + SHIFT) because there is only one card in your deck.",
 
-    otherMemoriesButton = "Other Memories",
-    otherMemoriesTooltip = "Use your memories.",
-    otherMemoriesUsed = "↯ Lady Jessica used her memories.",
+    spiceAgonyButton = "Trigger the Spice Agony.",
+    confirmOtherMemories = "Use your Other Memories?",
+    otherMemoriesButton = "Activate your Other Memories",
+    otherMemoriesTooltip = "Use your Other Memories.",
+    otherMemoriesUsed = "↯ Lady Jessica used her Other Memories.",
 
     firstSnooperRecall = "↯ Tessia Vernius has recalled her first snooper from {withFaction}.",
     secondSnooperRecall = "↯ Tessia Vernius has recalled her second snooper from {withFaction}.",

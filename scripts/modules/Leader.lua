@@ -2,6 +2,7 @@ local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local I18N = require("utils.I18N")
 local Dialog = require("utils.Dialog")
+local Park = require("utils.Park")
 
 local Action = Module.lazyRequire("Action")
 local MainBoard = Module.lazyRequire("MainBoard")
@@ -501,35 +502,64 @@ Leader.jessica = Helper.createClass(Leader, {
     transientSetUp = function (color, settings)
         local leaderCard = PlayBoard.findLeaderCard(color)
 
+        local otherMemoriesPark = MainBoard.createOtherMemoriesPark(color)
+
+        local spiceAgony = function ()
+            local count = Park.transfert(1, PlayBoard.getSupplyPark(color), otherMemoriesPark)
+            Action.log(I18N("transfer", {
+                count = count,
+                what = I18N.agree(count, "troop"),
+                from = I18N("supplyPark"),
+                to = I18N("otherMemoriesPark"),
+            }), color)
+        end
+
         local otherMemories = function ()
             Leader.jessica.name = "reverendMotherJessica"
             leaderCard.setGMNotes(Leader.jessica.name)
             leaderCard.setName(I18N(Leader.jessica.name))
             leaderCard.setRotation(Vector(0, 180, 180))
             broadcastToAll(I18N("otherMemoriesUsed"), color)
+            local count = Park.transfert(12, otherMemoriesPark, PlayBoard.getSupplyPark(color))
+            Action.drawImperiumCards(color, count, true)
         end
 
-        if leaderCard.getGMNotes() ~= "reverendMotherJessica" then
-            Helper.createTransientAnchor("OtherMemoriesAnchor", leaderCard.getPosition() + Vector(0, -0.5, 0)).doAfter(function (anchor)
+        local createCardButton = function (anchors, name, tooltip, offset, action)
+            Helper.createTransientAnchor(name, leaderCard.getPosition() + Vector(0, -0.5, 0)).doAfter(function (anchor)
+                table.insert(anchors, anchor)
                 Helper.createAbsoluteButtonWithRoundness(anchor, 1, {
                     click_function = Helper.registerGlobalCallback(function (_, otherColor)
                         if otherColor == color then
-                            otherMemories()
-                            anchor.destruct()
+                            action(anchor)
                         else
                             Dialog.broadcastToColor(I18N("noTouch"), otherColor, "Purple")
                         end
                     end),
-                    label = I18N("otherMemoriesButton"),
-                    position = anchor.getPosition() + Vector(0, 0.6, -1.8),
+                    position = anchor.getPosition() + offset,
                     width = 1000,
-                    height = 200,
-                    font_size = 120,
+                    height = 380,
                     scale = Vector(1, 1, 1),
-                    color = { 0, 0, 0, 1 },
-                    font_color = Color.fromString("White"),
-                    tooltip = I18N("otherMemoriesTooltip"),
+                    color = { 0, 0, 0, 0 },
+                    font_color = { 0, 0, 0, 100 },
+                    tooltip = tooltip,
                 })
+            end)
+        end
+
+        if leaderCard.getGMNotes() ~= "reverendMotherJessica" then
+            local anchors = {}
+            createCardButton(anchors, "SpiceAgonyAnchor", I18N("spiceAgonyButton"), Vector(1.35, 0.6, -1.3), function ()
+                spiceAgony()
+            end)
+            createCardButton(anchors, "OtherMemoriesAnchor", I18N("otherMemoriesButton"), Vector(-1, 0.6, -1.3), function ()
+                Dialog.showYesOrNoDialog(color, I18N("confirmOtherMemories"), nil, function (confirmed)
+                    if confirmed then
+                        otherMemories()
+                        for _, anchor in ipairs(anchors) do
+                            anchor.destruct()
+                        end
+                    end
+                end)
             end)
         end
    end

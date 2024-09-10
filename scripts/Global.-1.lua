@@ -48,6 +48,29 @@ autoLoadedSettings = {
 }
 
 autoLoadedSettings = {
+    language = "en",
+    numberOfPlayers = 4,
+    hotSeat = true,
+    firstPlayer = "Green",
+    randomizePlayerPositions = false,
+    useContracts = true,
+    legacy = false,
+    merakon = false,
+    riseOfIx = false,
+    epicMode = false,
+    immortality = false,
+    goTo11 = false,
+    leaderSelection = {
+        Green = "jessica",
+        Yellow = "gurneyHalleck",
+        Red = "feydRauthaHarkonnen",
+        Blue = "irulanCorrino",
+    },
+    horizontalHandLayout = true,
+    soundEnabled = true,
+}
+
+autoLoadedSettings = {
     language = "fr",
     numberOfPlayers = 1,
     hotSeat = true,

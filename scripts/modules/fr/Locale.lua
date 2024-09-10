@@ -169,6 +169,7 @@ return {
     combatPark = "champ de bataille",
     negotiationPark = "négociation tech.",
     tanksPark = "cuves axolotls",
+    otherMemoriesPark = "mémoire seconde",
     advanceFreighter = "■ Progression sur la piste d’expédition.",
     recallFreighter = "■ Rappel de cargo.",
     recruitSwordmaster = "■ Recrutement du maître d’armes.",
@@ -343,7 +344,9 @@ return {
     prescienceVoid = "Difficile d’entrevoir l’avenir quand on ne voit même pas son deck correctement…",
     prescienceManual = "Vous devez inspecter manuellement votre pioche (ALT + SHIFT), car elle se résume à une unique carte.",
 
-    otherMemoriesButton = "Mémoire seconde",
+    spiceAgonyButton = "Déclencher l’agonie de l’épice",
+    confirmOtherMemories = "Utiliser votre mémoire seconde ?",
+    otherMemoriesButton = "Activer la mémoire seconde",
     otherMemoriesTooltip = "Utilisez votre mémoire seconde.",
     otherMemoriesUsed = "↯ Dame Jessica a utilisée sa mémoire seconde.",
 
