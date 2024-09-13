@@ -14,6 +14,8 @@
 -- Will be automatically replaced by the build timestamp.
 local BUILD = 'TBD'
 
+local MOD_NAME = 'Rakis Rising'
+
 -- Do not load anything. Appropriate to work on the mod content in TTS without
 -- interference from the scripts.
 local constructionModeEnabled = false
@@ -203,7 +205,7 @@ local settings
 
 --- TTS event handler.
 function onLoad(scriptState)
-    log("--------< Rakis Rising - " .. BUILD .. " >--------")
+    log("--------< " .. MOD_NAME .. " - " .. BUILD .. " >--------")
 
     -- All transient objects (mostly anchors, but also some zones) are destroyed
     -- at startup, then recreated in the 'onLoad' functions (and 'staticSetup'
@@ -245,7 +247,7 @@ function asyncOnLoad(scriptState)
 
     -- Make it available to 'Helper.postError'.
     Global.setVar("saveInfo", {
-        modname = "Rakis Rising",
+        modname = MOD_NAME,
         build = BUILD,
         stable = state.stable or "prime",
     });
