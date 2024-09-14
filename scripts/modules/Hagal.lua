@@ -15,11 +15,11 @@ local MainBoard = Module.lazyRequire("MainBoard")
 -- Enlighting clarifications: https://boardgamegeek.com/thread/2578561/summarizing-automa-2p-and-1p-similarities-and-diff
 local Hagal = Helper.createClass(Action, {
     name = "houseHagal",
-    difficulties = {
-        novice = { name = "Mercenary", swordmasterArrivalTurn = 5 },
-        veteran = { name = "Sardaukar", swordmasterArrivalTurn = 4 },
-        expert = { name = "Mentat", swordmasterArrivalTurn = 3 },
-        expertPlus = { name = "Kwisatz", swordmasterArrivalTurn = 3 },
+    swordmasterArrivalTurns = {
+        novice = 5,
+        veteran = 4,
+        expert = 3,
+        expertPlus = 3,
     },
     compatibleLeaders = {
         vladimirHarkonnen = 1,
@@ -47,7 +47,12 @@ end
 
 ---
 function Hagal.getDifficulties()
-    return Hagal.difficulties
+    return {
+        novice = "novice",
+        veteran = "veteran",
+        expert = "expert",
+        expertPlus = "expertPlus",
+    }
 end
 
 ---
@@ -85,23 +90,25 @@ end
 
 ---
 function Hagal._transientSetUp(settings)
-    assert((settings.numberOfPlayers ~= 1) ~= Hagal.difficulties[settings.difficulty])
-
     Hagal.numberOfPlayers = settings.numberOfPlayers
     Hagal.difficulty = settings.difficulty
     Hagal.riseOfIx = settings.riseOfIx
 
+    Hagal.difficulty = Hagal.numberOfPlayers == 1 and settings.difficulty or nil
+
     Helper.registerEventListener("phaseStart", function (phase)
         if phase == "combat" then
+            local actions = {}
             for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
                 if PlayBoard.isRival(color) and Combat.isInCombat(color) then
-                    Hagal._setStrengthFromFirstValidCard(color)
+                    table.insert(actions, Helper.partialApply(Hagal._setStrengthFromFirstValidCard, color))
                 end
             end
+            Helper.chainActions(actions)
         elseif phase == "recall" then
             if Hagal.getRivalCount() == 2 then
                 local turn = TurnControl.getCurrentRound()
-                local arrivalTurn = Hagal.difficulties[Hagal.difficulty].swordmasterArrivalTurn
+                local arrivalTurn = Hagal.swordmasterArrivalTurns[Hagal.difficulty]
                 if turn + 1 == arrivalTurn then
                     for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
                         if PlayBoard.isRival(color) then
@@ -161,6 +168,7 @@ function Hagal._lateActivate(phase, color)
     elseif phase == "endgame" then
         continuation.run()
     else
+        continuation.cancel()
         error("Unknown phase: " .. tostring(phase))
     end
 

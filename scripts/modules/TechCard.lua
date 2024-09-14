@@ -13,6 +13,7 @@ local sword = CardEffect.sword
 local spice = CardEffect.spice
 local water = CardEffect.water
 local solari = CardEffect.solari
+local deploy = CardEffect.deploy
 local troop = CardEffect.troop
 local dreadnought = CardEffect.dreadnought
 local negotiator = CardEffect.negotiator
@@ -44,6 +45,7 @@ local anyAlliance = CardEffect.anyAlliance
 local oneHelix = CardEffect.oneHelix
 local twoHelices = CardEffect.twoHelices
 local winner = CardEffect.winner
+local multiply = CardEffect.multiply
 
 local TechCard = {
     windtraps = {cost = 2, hagal = true, acquireBonus = {water(1)}},

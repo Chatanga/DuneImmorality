@@ -30,6 +30,7 @@ local sword = CardEffect.sword
 local spice = CardEffect.spice
 local water = CardEffect.water
 local solari = CardEffect.solari
+local deploy = CardEffect.deploy
 local troop = CardEffect.troop
 local dreadnought = CardEffect.dreadnought
 local negotiator = CardEffect.negotiator
@@ -63,6 +64,7 @@ local oneHelix = CardEffect.oneHelix
 local twoHelices = CardEffect.twoHelices
 local winner = CardEffect.winner
 local swordmaster = CardEffect.swordmaster
+local multiply = CardEffect.multiply
 ]]
 
 ---@param context Context
@@ -89,7 +91,9 @@ function CardEffect._dispatch(selector, expression)
             end
         end
 
-        if selector == "troop" then
+        if selector == "deploy" then
+            return call("troops", color, "supply", "combat", value)
+        elseif selector == "troop" then
             return call("troops", color, "supply", "garrison", value)
         elseif selector == "negotiator" then
             return call("troops", color, "supply", "negotiation", value)
@@ -162,6 +166,10 @@ end
 
 function CardEffect.solari(expression)
     return CardEffect._dispatch('solari', expression)
+end
+
+function CardEffect.deploy(expression)
+    return CardEffect._dispatch('deploy', expression)
 end
 
 function CardEffect.troop(expression)
@@ -386,6 +394,17 @@ function CardEffect.swordmaster(expression)
     return CardEffect._filter(expression, function (context)
         return PlayBoard.hasSwordmaster(context.color)
     end)
+end
+
+function CardEffect.multiply(...)
+    local expressions = {...}
+    return function (context)
+        local result = 1
+        for _, expression in ipairs(expressions) do
+            result = result * CardEffect.evaluate(context, expression)
+        end
+        return result
+    end
 end
 
 return CardEffect

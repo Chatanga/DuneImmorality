@@ -6,6 +6,14 @@ A complete rewrite of Dune Immorality from scratch to overcome the limitations o
 
 ![Capture](captures/capture-1.jpg)
 
+Features:
+
+- Base game 3-4P
+- Rise of Ix extension
+- Immortality extension
+- Hagal House
+- Arrakeen Scouts
+
 Supported langages:
 - French
 - English

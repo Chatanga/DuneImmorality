@@ -389,8 +389,8 @@ function TleilaxuResearch._advanceTleilax(color, jump, withBenefits)
 
 
     local finalJump = jump
-    finalJump = math.min(8, level + jump) - level
-    finalJump = math.max(0, level + jump) - level
+    finalJump = math.min(8, level + finalJump) - level
+    finalJump = math.max(0, level + finalJump) - level
 
     if finalJump ~= 0 then
         local newLevel = level + finalJump

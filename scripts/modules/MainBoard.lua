@@ -628,7 +628,7 @@ function MainBoard._goSecrets(color, leader, continuation)
                 if otherColor ~= color then
                     Helper.dump(otherColor, "-»", #PlayBoard.getIntrigues(otherColor))
                     if #PlayBoard.getIntrigues(otherColor) > 3 then
-                        leader.stealIntrigue(color, otherColor, 1)
+                        leader.stealIntrigues(color, otherColor, 1)
                     end
                 end
             end

@@ -121,6 +121,7 @@ end
 
 ---
 function ScoreBoard.gainVictoryPoint(color, name, count)
+    -- FIXME Useless indirection.
     local holder = {
         success = false
     }
@@ -140,6 +141,7 @@ function ScoreBoard.gainVictoryPoint(color, name, count)
     elseif InfluenceTrack.gainVictoryPoint(color, name, count) then
         return true
     else
+        Helper.dump("No VP named", name)
         return false
     end
 end

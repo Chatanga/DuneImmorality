@@ -19,17 +19,23 @@ math.randomseed(os.time())
 
 -- *** Exception handling ***
 
+--[[
+    Note: this function won't be able to catch any "<Unknow Error>",
+    because it happen inside the native code called by Lua.
+]]
 ---@param context string
 ---@param callable function
-function Helper.wrapFailable(context, callable)
+function Helper.wrapFailable(context, callable, defaultReturnValue)
     return function (...)
-        local ran, ret = pcall(callable, ...)
-        if not ran then
+        local ranSuccessfully, returnValue = pcall(callable, ...)
+        if ranSuccessfully then
+            return returnValue
+        else
             broadcastToAll("An error has happened in a script!", "Red")
-            log("Error in script (Global): " .. ret)
-            Helper._postError(Helper.functionToString(context, ...), ret)
+            log("Error in script (Global): " .. returnValue)
+            Helper._postError(Helper.functionToString(context, ...), returnValue)
+            return defaultReturnValue
         end
-        return ret
     end
 end
 
@@ -258,7 +264,6 @@ function Helper._moveObject(object, position, rotation, smooth, flipAtTheEnd)
         end
     end
 
-    -- Dangerous. An "unknown error" could occur with a card sent to another or a deck.
     Helper.onceMotionless(object).doAfter(function ()
         if flipAtTheEnd then
             object.flip()
@@ -585,7 +590,6 @@ end
 
 ---
 function Helper.createButton(object, parameters)
-    --parameters.tooltip = (parameters.tooltip and parameters.tooltip .. " " or "") .. "(" .. tostring(parameters.click_function) .. ")"
     return Helper._createWidget("Button", object, parameters)
 end
 
@@ -984,9 +988,9 @@ function Helper.isStabilized(beQuiet)
     return count == 0
 end
 
---- Beware of card being swallowed up in a deck at the end of its move.
 ---@return Continuation
 function Helper.onceMotionless(object)
+    local guid = object.getGUID()
     local continuation = Helper.createContinuation("Helper.onceMotionless")
     -- Wait 1 frame for the movement to start.
     Wait.time(function ()
@@ -996,7 +1000,9 @@ function Helper.onceMotionless(object)
             end, Helper.MINIMAL_DURATION)
         end, function ()
             continuation.tick()
-            return object.resting
+            --- Deal with a card/object being swallowed up in a deck/bag at the end of its move.
+            local objectHasDisappeared = getObjectFromGUID(guid) == nil
+            return objectHasDisappeared or object.resting
         end)
     end, Helper.MINIMAL_DURATION)
     return continuation
@@ -1084,6 +1090,28 @@ function Helper.repeatChainedAction(count, action)
         end)
     else
         continuation.run(count)
+    end
+    return continuation
+end
+
+---@param actions table
+---@return Continuation
+function Helper.chainActions(actions)
+    return Helper._chainActions(1, actions)
+end
+
+---@param actions table
+---@return Continuation
+function Helper._chainActions(i, actions)
+    local continuation = Helper.createContinuation("Helper._chainActions")
+    if i <= #actions then
+        local innerContinuation = actions[i]()
+        assert(innerContinuation and innerContinuation.doAfter, "Provided action must return a continuation!")
+        innerContinuation.doAfter(function ()
+            Helper._chainActions(i + 1, actions).doAfter(continuation.run)
+        end)
+    else
+        continuation.run()
     end
     return continuation
 end
@@ -1693,14 +1721,15 @@ function Helper.dump(...)
         end
         str = str .. Helper.toString(args[i])
     end
-    log(str)
+    Helper._log(str)
 end
 
 ---
 function Helper.dumpFunction(...)
-    log(Helper.functionToString(...))
+    Helper._log(Helper.functionToString(...))
 end
 
+---
 function Helper.functionToString(...)
     local args = table.pack(...)
     local str
@@ -1721,6 +1750,24 @@ function Helper.functionToString(...)
         end
     end
     return str
+end
+
+---
+function Helper._log(str)
+    if Helper.lastMessage ~= str then
+        if Helper.lastMessage then
+            if Helper.lastMessageCount > 1 then
+                log("[x" .. tostring(Helper.lastMessageCount) .. "] " .. Helper.lastMessage)
+            elseif Helper.lastMessageCount > 0 then
+                log(Helper.lastMessage)
+            end
+        end
+        log(str)
+        Helper.lastMessage = str
+        Helper.lastMessageCount = 0
+    else
+        Helper.lastMessageCount = Helper.lastMessageCount + 1
+    end
 end
 
 ---
@@ -2017,6 +2064,27 @@ end
 function Helper.negate(predicate)
     return function (...)
         return not predicate(...)
+    end
+end
+
+---
+function Helper.equal(value)
+    return function (object)
+        return object == value
+    end
+end
+
+---
+function Helper.never()
+    return function ()
+        return false
+    end
+end
+
+---
+function Helper.always()
+    return function ()
+        return true
     end
 end
 

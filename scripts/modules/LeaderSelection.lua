@@ -23,12 +23,12 @@ local Stage = {
 ---
 function LeaderSelection.getSelectionMethods(numberOfPlayers)
     local selectionMode = {
-        random = "Random",
-        reversePick = "Reverse pick",
-        reverseHiddenPick = "Reverse hidden pick",
+        random = "random",
+        reversePick = "reversePick",
+        reverseHiddenPick = "reverseHiddenPick",
     }
     if numberOfPlayers == 4 then
-        selectionMode.altHiddenPick = "4·3·1·2 hidden pick"
+        selectionMode.altHiddenPick = "altHiddenPick"
     end
     return selectionMode
 end
@@ -124,7 +124,7 @@ function LeaderSelection._transientSetUp(settings, leaderSelectionPoolSize, play
                 if #turnSequence == 4 then
                     Helper.swap(turnSequence, 4, 3)
                 else
-                    log("Skipping 4 <-> 3 for less than 4 players.")
+                    Helper.dump("Skipping 4 <-> 3 for less than 4 players.")
                 end
             end
 

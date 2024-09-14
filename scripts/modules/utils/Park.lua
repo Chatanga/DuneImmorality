@@ -141,31 +141,25 @@ function Park._putHolders(holders, toPark)
 
     local now = Time.time
 
-    local objectsInTransit = Helper.getSharedTable(toPark.name)
+    local objectsInTransit = Park._getRefreshedObjectsInTransit(toPark, now)
 
-    local newObjectsInTransit = {}
-    for object, transit in pairs(objectsInTransit) do
-        if now - transit < 3.0 then
-            newObjectsInTransit[object] = transit
-        end
-    end
-
-    Park._instantTidyUp(toPark, newObjectsInTransit)
+    Park._instantTidyUp(toPark, objectsInTransit)
 
     local emptySlots = Park.findEmptySlots(toPark)
 
-    -- Count *after* newObjectsInTransit (and it's a sparse table).
+    -- Count *after* objectsInTransit (and it's a sparse table).
     local skipCount = 0
-    for _, _ in pairs(newObjectsInTransit) do
+    for _, _ in pairs(objectsInTransit) do
         skipCount = skipCount + 1
     end
+    assert(skipCount == #Helper.getKeys(objectsInTransit))
     local count = math.max(0, math.min(#emptySlots - skipCount, #holders))
 
     for i = 1, count do
         local holder = holders[i]
         if holder.object then
             Park._moveObjectToPark(holder.object, emptySlots[i + skipCount], toPark)
-            newObjectsInTransit[holder.object] = now
+            objectsInTransit[holder.object] = now
         elseif holder.bag then
             Park._takeObjectToPark(holder.bag, emptySlots[i + skipCount], toPark)
             -- Can't really register anything for a transit and doing it
@@ -173,18 +167,32 @@ function Park._putHolders(holders, toPark)
         end
     end
 
-    Helper.setSharedTable(toPark.name, newObjectsInTransit)
+    Helper.setSharedTable(toPark.name, objectsInTransit)
 
     return count
 end
 
 ---
-function Park.waitStabilisation(park)
-    local continuation = Helper.createContinuation("Park.waitStabilisation")
+function Park._getRefreshedObjectsInTransit(toPark, now)
+    local objectsInTransit = Helper.getSharedTable(toPark.name)
+
+    local newObjectsInTransit = {}
+    for object, transit in pairs(objectsInTransit or {}) do
+        if now - transit < 2.0 then
+            newObjectsInTransit[object] = transit
+        end
+    end
+
+    return newObjectsInTransit
+end
+
+---
+function Park.onceStabilized(toPark)
+    local continuation = Helper.createContinuation("Park.onceStabilized")
     Wait.condition(continuation.run, function ()
         continuation.tick()
-        local objectsInTransit = Helper.getSharedTable(park.name)
-        return #objectsInTransit == 0
+        local objectsInTransit = Park._getRefreshedObjectsInTransit(toPark, Time.time)
+        return #Helper.getKeys(objectsInTransit) == 0
     end)
     return continuation
 end

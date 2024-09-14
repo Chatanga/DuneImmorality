@@ -14,6 +14,8 @@
 -- Will be automatically replaced by the build timestamp.
 local BUILD = 'TBD'
 
+local MOD_NAME = 'Spice Flow'
+
 -- Do not load anything. Appropriate to work on the mod content in TTS without
 -- interference from the scripts.
 local constructionModeEnabled = false
@@ -140,28 +142,28 @@ local Controller = {
     -- corresponding 'xxx' field.
     fields = {
         language_all = {
-            en = "English",
-            fr = "Français",
+            en = "english",
+            fr = "french",
         },
         language = "fr",
         virtualHotSeat = false,
         virtualHotSeatMode_all = {
-            "1 (+2)",
-            "2 (+1)",
-            "3 (hotseat)",
-            "4 (hotseat)"
+            "onePlayerTwoRivals",
+            "twoPlayersOneRival",
+            "threePlayers",
+            "fourPlayers",
         },
         virtualHotSeatMode = {},
-        firstPlayer = "1",
+        firstPlayer = "random",
         firstPlayer_all = {
-            "Random",
-            "Green",
-            "Yellow",
-            "Blue",
-            "Red",
+            random = "random",
+            Green = "Green",
+            Yellow = "Yellow",
+            Blue = "Blue",
+            Red = "Red",
         },
-        randomizePlayerPositions = true,
-        difficulty_all = Helper.mapValues(allModules.Hagal.getDifficulties(), Helper.field("name")),
+        randomizePlayerPositions = false,
+        difficulty_all = allModules.Hagal.getDifficulties(),
         difficulty = {},
         riseOfIx = true,
         epicMode = false,
@@ -174,8 +176,8 @@ local Controller = {
         defaultLeaderPoolSizeLabel = "-",
         tweakLeaderSelection = true,
         variant_all = {
-            none = "None",
-            arrakeenScouts = "Arrakeen scouts"
+            none = "none",
+            arrakeenScouts = "arrakeenScouts"
         },
         variant = "none",
         formalCombatPhase = false,
@@ -189,7 +191,7 @@ local settings
 
 --- TTS event handler.
 function onLoad(scriptState)
-    log("--------< Spice Flow - " .. BUILD .. " >--------")
+    log("--------< " .. MOD_NAME .. " - " .. BUILD .. " >--------")
 
     -- All transient objects (mostly anchors, but also some zones) are destroyed
     -- at startup, then recreated in the 'onLoad' functions (and 'staticSetup'
@@ -227,7 +229,7 @@ function asyncOnLoad(state)
 
     -- Make it available to 'Helper.postError'.
     Global.setVar("saveInfo", {
-        modname = "Spice Flow",
+        modname = MOD_NAME,
         build = BUILD,
         stable = state.stable or "prime",
     });
@@ -530,7 +532,7 @@ function setUpFromUI()
         language = Controller.fields.language,
         numberOfPlayers = numberOfPlayers,
         hotSeat = not Controller.isUndefined(Controller.fields.virtualHotSeatMode),
-        firstPlayer = Controller.fields.firstPlayer_all[Controller.fields.firstPlayer],
+        firstPlayer = Controller.fields.firstPlayer,
         randomizePlayerPositions = Controller.fields.randomizePlayerPositions == true,
         difficulty = Controller.fields.difficulty,
         riseOfIx = Controller.fields.riseOfIx == true,
@@ -629,12 +631,12 @@ function Controller.applyVirtualHotSeatMode()
 
     if numberOfPlayers > 2 then
         Controller.fields.variant_all = {
-            none = "None",
-            arrakeenScouts = "Arrakeen scouts"
+            none = "none",
+            arrakeenScouts = "arrakeenScouts"
         }
     else
         Controller.fields.variant_all = {
-            none = "None",
+            none = "none",
         }
         Controller.fields.variant = "none"
     end

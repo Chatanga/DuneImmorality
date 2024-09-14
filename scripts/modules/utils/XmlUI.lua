@@ -61,7 +61,7 @@ function XmlUI:fromUI(player, value, id)
     local values = self:_getEnumeration(id)
     if values then
         for key, knownValue in pairs(values) do
-            if value == knownValue then
+            if value == I18N(knownValue) then
                 self.fields[id] = key
                 return
             end
@@ -161,7 +161,8 @@ function XmlUI._setXmlDropdownOptions(dropdown, optionValues, default)
     for key, optionValue in pairs(optionValues) do
         local option = Helper.deepCopy(protoOption)
         option.attributes.selected = key == default
-        option.value = optionValue
+        option.attributes.key = optionValue
+        option.value = I18N(optionValue)
         table.insert(dropdown.children, option)
     end
 end
@@ -233,6 +234,8 @@ function XmlUI._translate(node)
         if node.attributes.key then
             node.value = I18N(node.attributes.key)
         end
+        -- Tooltip popups are disabled for now sice they tend
+        -- to hang around after their widget has been removed.
         if node.attributes.tooltipKey and false then
             node.attributes.tooltip = I18N(node.attributes.tooltipKey)
         end

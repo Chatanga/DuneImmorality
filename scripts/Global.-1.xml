@@ -1,4 +1,4 @@
-<Panel position="0 -50" width="450" height="780" color="#000000" id="setupPane" rotation="0 0 0" outline="#61712c" outlineSize="1"
+<Panel position="0 -50" width="460" height="780" color="#000000" id="setupPane" rotation="0 0 0" outline="#61712c" outlineSize="1"
 	active="False" allowDragging="True" returnToOriginalPositionWhenReleased="False">
 	<Defaults>
 		<Text class="primary" color="#e5c638" fontSize="16" alignment="MiddleLeft"/>
@@ -58,7 +58,7 @@
 
 			<HorizontalLayout>
 				<Text class="primary" key="leaderSelection"/>
-				<Dropdown class="setUp" id="leaderSelection" flexibleWidth="4" onValueChanged="Global/setLeaderSelection">
+				<Dropdown class="setUp" id="leaderSelection" flexibleWidth="8" onValueChanged="Global/setLeaderSelection">
 					<Option></Option>
 				</Dropdown>
 			</HorizontalLayout>

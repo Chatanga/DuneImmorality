@@ -2070,9 +2070,14 @@ function PlayBoard.getHandOrientedPosition(color)
     local handTransform = Player[color].getHandTransform()
     local position = handTransform.position
     if handTransform.rotation == Vector(0, 0, 0) then
-        position = position + Vector(-5, 0, 0)
+        position = position + Vector(-12.5, 0, 0)
+    elseif handTransform.rotation == Vector(0, 270, 0) then
+        position = position + Vector(0, 0, -8.5)
+    elseif handTransform.rotation == Vector(0, 90, 0) then
+        position = position + Vector(0, 0, 8.5)
     else
-        position = position + Vector(0, 0, -5)
+        -- Should not happen.
+        position = position + Vector(0, 0, 0)
     end
     local rotation = handTransform.rotation + Vector(0, 180, 0)
     return {

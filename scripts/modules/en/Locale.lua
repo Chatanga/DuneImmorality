@@ -32,6 +32,23 @@ return {
     formalCombatPhaseTooltip = "Players with one or more plot cards\nmust explicitly end their turn after\nplaying one or to pass.",
     setup = "Setup",
     notEnoughPlayers = "Not enough players",
+    english = "English",
+    french = "Français",
+    random = "random",
+    reversePick = "hidden pick",
+    reverseHiddenPick = "reverse hidden pick",
+    altHiddenPick = "4·3·1·2 hidden pick",
+    onePlayerTwoRivals = "1 (+2)",
+    twoPlayersOneRival = "2 (+1)",
+    threePlayers = "3",
+    fourPlayers = "4",
+    all = "all",
+    novice = "mercenary",
+    veteran = "sardaukar",
+    expert = "mentat",
+    expertPlus = "kwisatz",
+    none = "None",
+    arrakeenScouts = "Arrakeen Scouts",
 
     -- Phases
     phaseLeaderSelection = "Phase: leader selection",
@@ -166,7 +183,7 @@ return {
     acquireImperiumCard = '■ Acquire Imperium card: "{card}".',
     buyTech= '■ Acquire tech for {amount} {resource}: "{name}".',
     sendingAgent = "■ Sending an agent to: {space} ({cards}).",
-    stealIntrigue = '■ Stealing "{card}" from {victim}.',
+    stealIntrigues = '■ Stealing "{card}" from {victim}.',
     gainVictoryPoint = "■ Gaining VP ({name}).",
 
     -- Shield Wall
