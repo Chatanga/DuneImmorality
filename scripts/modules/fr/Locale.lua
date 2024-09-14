@@ -182,7 +182,7 @@ return {
     buyTech = "■ Acquisition pour {amount} {resource} de la tech. : « {name} ».",
     acquireContract = "■ Prise du contrat : « {name} ».",
     sendingAgent = "■ Envoi d’un agent vers : {space} ({cards}).",
-    stealIntrigue = "■ Vol de « {card} » à {victim}.",
+    stealIntrigues = "■ Vol de « {card} » à {victim}.",
     gainVictoryPoint = "■ Gain de PV ({name}).",
 
     -- Rival Actions
@@ -354,7 +354,7 @@ return {
 
     fillCoffersTooltip = "S’en mettre plein les poches",
 
-    warmasterTooltip = "Maître de guerre",
+    warmasterTooltip = "Pour survivre à la guerre, il faut devenir la guerre",
 
     spiceAgonyTooltip = "Déclencher l’agonie de l’épice",
     confirmOtherMemories = "Utiliser votre mémoire seconde ?",

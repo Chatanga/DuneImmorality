@@ -97,6 +97,28 @@ autoLoadedSettings = {
 }
 ]]
 
+autoLoadedSettings = {
+    language = "fr",
+    numberOfPlayers = 3,
+    hotSeat = true,
+    firstPlayer = "Green",
+    randomizePlayerPositions = false,
+    useContracts = true,
+    legacy = true,
+    merakon = false,
+    riseOfIx = true,
+    epicMode = false,
+    immortality = false,
+    goTo11 = false,
+    leaderSelection = {
+        Green = "ilesaEcaz",
+        Yellow = "gurneyHalleck",
+        Red = "feydRauthaHarkonnen",
+    },
+    horizontalHandLayout = true,
+    soundEnabled = true,
+}
+
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local XmlUI = require("utils.XmlUI")
@@ -323,11 +345,31 @@ function onSave()
     end
 
     if settings then
-        Helper.dumpFunction("onSave")
+        local stable = Helper.isStabilized(true)
+
+        --[[
+            TTS will ignore the ongoing save if:
+            - it has the same (serialized) value as the previous,
+            - the world hasn't physically changed meanwhile.
+            That's why we store the date and "shake" the world
+            when we detect an unstable save (ie. a save occuring
+            while one or more continuations are still alive).
+        ]]
+
+        if not stable then
+            -- Shake the world a bit.
+            Wait.time(function ()
+                local primaryTable = getObjectFromGUID("2b4b92")
+                primaryTable.setName(primaryTable.getName() == "" and "..." or "")
+            end, 0.5, 2)
+        end
+
         local savedState = {
+            date = os.time(),
             settings = settings,
-            stable = Helper.isStabilized(true) and "stable" or "unstable",
+            stable = stable and "stable" or "unstable",
         }
+
         -- FIXME Only call it for the same modules for which "onLoad" has been called.
         Module.callOnAllRegisteredModules("onSave", savedState)
         return JSON.encode(savedState)
@@ -653,7 +695,7 @@ function Controller.applyVirtualHotSeatMode()
 
     local numberOfPlayers = Controller.getNumberOfPlayers(Controller.fields.virtualHotSeatMode)
 
-    if Controller.isUndefined(Controller.fields.virtualHotSeatMode) or numberOfPlayers ~= 1 then
+    if Controller.isUndefined(Controller.fields.virtualHotSeatMode) or numberOfPlayers > 1 then
         Controller.fields.difficulty = {}
     else Controller.isUndefined(Controller.fields.difficulty)
         Controller.fields.difficulty = "novice"

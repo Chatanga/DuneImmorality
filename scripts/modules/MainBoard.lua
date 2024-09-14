@@ -874,7 +874,7 @@ function MainBoard._goSecrets(color, leader, continuation)
         for _, otherColor in ipairs(PlayBoard.getActivePlayBoardColors()) do
             if otherColor ~= color then
                 if #PlayBoard.getIntrigues(otherColor) > 3 then
-                    leader.stealIntrigue(color, otherColor, 1)
+                    leader.stealIntrigues(color, otherColor, 1)
                 end
             end
         end

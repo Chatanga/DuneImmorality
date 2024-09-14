@@ -182,7 +182,7 @@ return {
     buyTech = '■ Acquire tech for {amount} {resource}: "{name}".',
     acquireContract = '■ Pick contract: "{name}".',
     sendingAgent = "■ Sending an agent to: {space} ({cards}).",
-    stealIntrigue = '■ Stealing "{card}" from {victim}.',
+    stealIntrigues = '■ Stealing "{card}" from {victim}.',
     gainVictoryPoint = "■ Gaining VP ({name}).",
 
     -- Rival Actions

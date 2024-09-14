@@ -528,11 +528,11 @@ function Action.drawIntrigues(color, amount)
 end
 
 ---
-function Action.stealIntrigue(color, otherColor, amount)
+function Action.stealIntrigues(color, otherColor, amount)
     Types.assertIsPlayerColor(color)
     Types.assertIsPlayerColor(otherColor)
     Types.assertIsInteger(amount)
-    Intrigue.stealIntrigue(color, otherColor, amount)
+    Intrigue.stealIntrigues(color, otherColor, amount)
     return true
 end
 

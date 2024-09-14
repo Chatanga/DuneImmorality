@@ -265,7 +265,7 @@ function HagalCard._activateSecrets(color, rival)
         for _, otherColor in ipairs(PlayBoard.getActivePlayBoardColors()) do
             if otherColor ~= color then
                 if #PlayBoard.getIntrigues(otherColor) > 3 then
-                    rival.stealIntrigue(color, otherColor, 1)
+                    rival.stealIntrigues(color, otherColor, 1)
                 end
             end
         end

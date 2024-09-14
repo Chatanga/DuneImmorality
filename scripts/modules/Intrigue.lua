@@ -55,7 +55,7 @@ function Intrigue.drawIntrigues(color, amount)
 end
 
 ---
-function Intrigue.stealIntrigue(color, otherColor, amount)
+function Intrigue.stealIntrigues(color, otherColor, amount)
     Types.assertIsPositiveInteger(amount)
     local victimName = PlayBoard.getLeaderName(otherColor)
 
@@ -70,7 +70,7 @@ function Intrigue.stealIntrigue(color, otherColor, amount)
         card.setPosition(orientedPosition.position)
         card.setRotation(orientedPosition.rotation)
         local cardName = I18N(Helper.getID(card))
-        Action.secretLog(I18N("stealIntrigue", { victim = victimName, card = cardName }), color)
+        Action.secretLog(I18N("stealIntrigues", { victim = victimName, card = cardName }), color)
     end)
 end
 

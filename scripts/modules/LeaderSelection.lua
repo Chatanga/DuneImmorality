@@ -79,11 +79,8 @@ function LeaderSelection.setUp(settings, activeOpponents)
         Deck.generateLeaderDeck(LeaderSelection.deckZone, settings.useContracts, settings.riseOfIx, settings.immortality, settings.legacy, settings.merakon).doAfter(function (deck)
             LeaderSelection.deckZone.removeTag("Leader")
 
-            local continuation = Helper.createContinuation("LeaderSelection.setUp")
             local start = settings.numberOfPlayers > 2 and 0 or 12
-            LeaderSelection._layoutLeaderDeck(deck, start, continuation)
-
-            continuation.doAfter(function ()
+            LeaderSelection._layoutLeaderDeck(deck, start).doAfter(function ()
                 local testSetUp = type(settings.leaderSelection) == "table"
 
                 -- The commander's leaders are always the same. It is not enforced
@@ -110,7 +107,8 @@ function LeaderSelection.setUp(settings, activeOpponents)
 end
 
 ---
-function LeaderSelection._layoutLeaderDeck(deck, start, continuation)
+function LeaderSelection._layoutLeaderDeck(deck, start)
+    local continuation = Helper.createContinuation("LeaderSelection._layoutLeaderDeck")
     local numberOfLeaders = deck.getQuantity()
     local count = numberOfLeaders
 
@@ -126,6 +124,8 @@ function LeaderSelection._layoutLeaderDeck(deck, start, continuation)
             end
         })
     end)
+
+    return continuation
 end
 
 ---
