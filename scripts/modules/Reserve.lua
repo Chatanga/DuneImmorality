@@ -54,7 +54,9 @@ end
 
 ---
 function Reserve.acquireFoldspace(color)
-    PlayBoard.giveCardFromZone(color, Reserve.foldspace.zone, false)
+    if Reserve.foldspace.zone then
+        PlayBoard.giveCardFromZone(color, Reserve.foldspace.zone, false)
+    end
 end
 
 ---

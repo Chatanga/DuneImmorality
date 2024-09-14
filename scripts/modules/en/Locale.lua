@@ -337,17 +337,31 @@ return {
     yunaMoritani = '"Princess" Yuna Moritani',
     hundroMoritani = "Viscount Hundro Moritani",
 
-    prescienceButton = "Prescience",
+    schemeTooltip = "Scheme a plot",
+    brutalityTooltip = "Don't be gentle",
+    manufacturingTooltip = "Make a profit",
+
     prescienceTooltip = "Look at top card of your deck easily with this.",
     prescienceUsed = "↯ Paul Atreides used his prescience to look into the future.",
     prescienceVoid = "All you see is the void ! (Your deck it empty actually…)",
     prescienceManual = "You need to peek manually (ALT + SHIFT) because there is only one card in your deck.",
+    disciplineTooltip = "Draw a card.",
 
-    spiceAgonyButton = "Trigger the Spice Agony.",
+    hiddenReservoirTooltip = "Siphon your hidden reservoir",
+    spiceHoardTooltip = "Hoard spice",
+    guildContactsTooltip = "Use your contacts with the Guild",
+
+    fillCoffersTooltip = "Fill coffers",
+
+    warmasterTooltip = "Warmaster",
+
+    spiceAgonyTooltip = "Trigger the Spice Agony.",
     confirmOtherMemories = "Use your Other Memories?",
-    otherMemoriesButton = "Activate your Other Memories",
     otherMemoriesTooltip = "Use your Other Memories.",
     otherMemoriesUsed = "↯ Lady Jessica used her Other Memories.",
+    waterOfLifeTooltip = "Drink the Water of Life",
+
+    leadTheWayTooltip = "Lead the Way",
 
     firstSnooperRecall = "↯ Tessia Vernius has recalled her first snooper from {withFaction}.",
     secondSnooperRecall = "↯ Tessia Vernius has recalled her second snooper from {withFaction}.",

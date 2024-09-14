@@ -63,11 +63,13 @@ function Hagal._transientSetUp(settings)
 
     Helper.registerEventListener("phaseStart", function (phase)
         if phase == "combat" then
+            local actions = {}
             for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
                 if PlayBoard.isRival(color) and Combat.isInCombat(color) then
-                    Hagal._setStrengthFromFirstValidCard(color)
+                    table.insert(actions, Helper.partialApply(Hagal._setStrengthFromFirstValidCard, color))
                 end
             end
+            Helper.chainActions(actions)
         end
     end)
 
@@ -140,7 +142,6 @@ end
 
 ---
 function Hagal._collectReward(color)
-    Helper.dumpFunction("Hagal._collectReward", color)
     local continuation = Helper.createContinuation("Hagal._collectReward")
     Helper.onceFramesPassed(1).doAfter(function ()
         local rank = Combat.getRank(color).value

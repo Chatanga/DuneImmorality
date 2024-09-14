@@ -12,6 +12,7 @@ local PlayBoard = Module.lazyRequire("PlayBoard")
 local Combat = Module.lazyRequire("Combat")
 local ChoamContractMarket = Module.lazyRequire("ChoamContractMarket")
 local Deck = Module.lazyRequire("Deck")
+local TechMarket = Module.lazyRequire("TechMarket")
 
 local Leader = Helper.createClass(Action)
 
@@ -23,7 +24,50 @@ function Leader.newLeader(name)
     return Helper.createClassInstance(LeaderClass)
 end
 
+---
+
+function Leader._createRightCardButton(anchors, color, name, tooltip, action)
+    Leader._createCardButton(anchors, color, name, tooltip, Vector(1.35, 0.6, -1.3), action)
+end
+
+function Leader._createLeftCardButton(anchors, color, name, tooltip, action)
+    Leader._createCardButton(anchors, color, name, tooltip, Vector(-1, 0.6, -1.3), action)
+end
+
+function Leader._createCardButton(anchors, color, name, tooltip, offset, action)
+    local leaderCard = PlayBoard.findLeaderCard(color)
+    Helper.createTransientAnchor(name, leaderCard.getPosition() + Vector(0, -0.5, 0)).doAfter(function (anchor)
+        if anchors then
+            table.insert(anchors, anchor)
+        end
+        Helper.createAbsoluteButtonWithRoundness(anchor, 1, {
+            click_function = Helper.registerGlobalCallback(function (_, otherColor)
+                if otherColor == color then
+                    action(color, anchor)
+                else
+                    Dialog.broadcastToColor(I18N("noTouch"), otherColor, "Purple")
+                end
+            end),
+            position = anchor.getPosition() + offset,
+            width = 1000,
+            height = 380,
+            scale = Vector(1, 1, 1),
+            color = { 0, 0, 0, 0 },
+            font_color = { 0, 0, 0, 100 },
+            tooltip = tooltip,
+        })
+    end)
+end
+
 Leader.vladimirHarkonnen = Helper.createClass(Leader, {
+
+    setUp = function (color, settings)
+        Leader.vladimirHarkonnen.transientSetUp(color, settings)
+    end,
+
+    transientSetUp = function (color, settings)
+        Leader._createRightCardButton(nil, color, "SchemeAnchor", I18N("schemeTooltip"), Leader.vladimirHarkonnen.signetRing)
+    end,
 
     --- Masterstroke
     prepare = function (color, settings)
@@ -60,6 +104,14 @@ Leader.vladimirHarkonnen = Helper.createClass(Leader, {
 
 Leader.glossuRabban = Helper.createClass(Leader, {
 
+    setUp = function (color, settings)
+        Leader.glossuRabban.transientSetUp(color, settings)
+    end,
+
+    transientSetUp = function (color, settings)
+        Leader._createRightCardButton(nil, color, "BrutalityAnchor", I18N("brutalityTooltip"), Leader.glossuRabban.signetRing)
+    end,
+
     --- Arrakis fiefdom
     prepare = function (color, settings)
         Action.prepare(color, settings)
@@ -77,10 +129,18 @@ Leader.glossuRabban = Helper.createClass(Leader, {
 
 Leader.ilbanRichese = Helper.createClass(Leader, {
 
+    setUp = function (color, settings)
+        Leader.ilbanRichese.transientSetUp(color, settings)
+    end,
+
+    transientSetUp = function (color, settings)
+        Leader._createRightCardButton(nil, color, "ManufacturingAnchor", I18N("manufacturingTooltip"), Leader.ilbanRichese.signetRing)
+    end,
+
     --- Manufacturing
     signetRing = function (color)
         local leader = PlayBoard.getLeader(color)
-        leader.resources(color, "solari", 1)
+        return leader.resources(color, "solari", 1)
     end,
 
     --- Ruthless negotiator
@@ -150,57 +210,47 @@ Leader.letoAtreides = Helper.createClass(Leader, {
 
 Leader.paulAtreides = Helper.createClass(Leader, {
 
-    --- Prescience
     setUp = function (color, settings)
         Leader.paulAtreides.transientSetUp(color, settings)
     end,
 
     --- Prescience
     transientSetUp = function (color, settings)
-        local prescience = function (_, otherColor)
-            if otherColor == color then
-                local cardOrDeck = PlayBoard.getDrawDeck(color)
-                if cardOrDeck == nil then
-                    Dialog.broadcastToColor(I18N("prescienceVoid"), color, "Purple")
-                elseif cardOrDeck.type == "Card" then
-                    --broadcastToAll(I18N("prescienceUsed"), color)
-                    Dialog.broadcastToColor(I18N("prescienceManual"), color, "Purple")
-                else
-                    cardOrDeck.Container.search(color, 1)
-                    --broadcastToAll(I18N("prescienceUsed"), color)
-                end
+
+        local prescience = function (_)
+            local cardOrDeck = PlayBoard.getDrawDeck(color)
+            if cardOrDeck == nil then
+                Dialog.broadcastToColor(I18N("prescienceVoid"), color, "Purple")
+            elseif cardOrDeck.type == "Card" then
+                --broadcastToAll(I18N("prescienceUsed"), color)
+                Dialog.broadcastToColor(I18N("prescienceManual"), color, "Purple")
             else
-                Dialog.broadcastToColor(I18N("noTouch"), otherColor, "Purple")
+                cardOrDeck.Container.search(color, 1)
+                --broadcastToAll(I18N("prescienceUsed"), color)
             end
         end
 
-        local leaderCard = PlayBoard.findLeaderCard(color)
-
-        -- FIXME The leader card position is a bit weird.
-        Helper.createTransientAnchor("PrescienceAnchor", leaderCard.getPosition() + Vector(0, -0.5, 0)).doAfter(function (anchor)
-            Helper.createAbsoluteButtonWithRoundness(anchor, 1, {
-                click_function = Helper.registerGlobalCallback(prescience),
-                label = I18N("prescienceButton"),
-                position = anchor.getPosition() + Vector(0, 0.55, -1.75),
-                width = 1200,
-                height = 280,
-                font_size = 200,
-                scale = Vector(1, 1, 1),
-                color = { 0, 0, 0, 1 },
-                font_color = Color.fromString("White"),
-                tooltip = I18N("prescienceTooltip"),
-            })
-        end)
+        Leader._createLeftCardButton(nil, color, "PrescienceAnchor", I18N("prescienceTooltip"), prescience)
+        Leader._createRightCardButton(nil, color, "DisciplineAnchor", I18N("disciplineTooltip"), Leader.paulAtreides.signetRing)
     end,
 
-    --- Discipline (never used)
+    --- Discipline
     signetRing = function (color)
         local leader = PlayBoard.getLeader(color)
-        return leader.drawImperiumCards(color, 1)
+        return leader.drawImperiumCards(color, 1, true)
     end
 })
 
 Leader.arianaThorvald = Helper.createClass(Leader, {
+
+    setUp = function (color, settings)
+        Leader.arianaThorvald.transientSetUp(color, settings)
+    end,
+
+    --- Prescience
+    transientSetUp = function (color, settings)
+        Leader._createRightCardButton(nil, color, "HiddenReservoirAnchor", I18N("hiddenReservoirTooltip"), Leader.arianaThorvald.signetRing)
+    end,
 
     --- Hidden reservoir
     signetRing = function (color)
@@ -225,6 +275,14 @@ Leader.arianaThorvald = Helper.createClass(Leader, {
 })
 
 Leader.memnonThorvald = Helper.createClass(Leader, {
+
+    setUp = function (color, settings)
+        Leader.memnonThorvald.transientSetUp(color, settings)
+    end,
+
+    transientSetUp = function (color, settings)
+        Leader._createRightCardButton(nil, color, "SpiceHoardAnchor", I18N("spiceHoardTooltip"), Leader.memnonThorvald.signetRing)
+    end,
 
     --- Connections
     sendAgent = function (color, spaceName, recallSpy)
@@ -251,6 +309,10 @@ Leader.armandEcaz = Helper.createClass(Leader, {
 Leader.ilesaEcaz = Helper.createClass(Leader, {
 
     setUp = function (color, settings)
+        Leader.ilesaEcaz.transientSetUp(color, settings)
+    end,
+
+    transientSetUp = function (color, settings)
         local zone = PlayBoard.getPlayBoard(color).content.leaderZone
         -- Temporary tag to avoid counting the leader card.
         zone.addTag("Imperium")
@@ -258,9 +320,11 @@ Leader.ilesaEcaz = Helper.createClass(Leader, {
             zone.removeTag("Imperium")
             deck.flip()
         end)
+        -- TODO Add a specific place for Foldspace cards in Uprising.
+        -- Leader._createRightCardButton(nil, color, "GuildContactsAnchor", I18N("guildContactsTooltip"), Leader.ilesaEcaz.signetRing)
     end,
 
-    --- Guild contacts (never used)
+    --- Guild contacts (disabled)
     signetRing = function (color)
         local leader = PlayBoard.getLeader(color)
         return leader.resources(color, "solari", -1) and Action.acquireFoldspace(color)
@@ -290,6 +354,10 @@ Leader.rhomburVernius = Helper.createClass(Leader, {
 Leader.tessiaVernius = Helper.createClass(Leader, {
 
     setUp = function (color, settings)
+        Leader.tessiaVernius.transientSetUp(color, settings)
+    end,
+
+    transientSetUp = function (color, settings)
         local leaderCard = PlayBoard.findLeaderCard(color)
         local snapPoints = {}
         for i = 1, 4 do
@@ -329,7 +397,7 @@ Leader.tessiaVernius = Helper.createClass(Leader, {
         end
     end,
 
-    --- Duplicity (never used)
+    --- Duplicity (not used)
     signetRing = function (color)
         local leader = PlayBoard.getLeader(color)
         leader.influence(color, nil, -1)
@@ -355,7 +423,7 @@ Leader.yunaMoritani = Helper.createClass(Leader, {
         return Action.resources(color, resourceName, finalAmount)
     end,
 
-    --- Final delivery (never used)
+    --- Final delivery (not used)
     signetRing = function (color)
         local leader = PlayBoard.getLeader(color)
         return leader.resources(color, "solari", -7)
@@ -376,11 +444,10 @@ Leader.hundroMoritani = Helper.createClass(Leader, {
         end)
     end,
 
-    --- Couriers
+    --- Couriers (not used)
     signetRing = function (color)
         local leader = PlayBoard.getLeader(color)
-        return leader.resources(color, "spice", -1)
-            and leader.shipments(color, 1)
+        return leader.resources(color, "spice", -1) and leader.shipments(color, 1)
     end
 })
 
@@ -425,15 +492,33 @@ Leader.stabanTuek = Helper.createClass(Leader, {
 })
 
 Leader.amberMetulli = Helper.createClass(Leader, {
+
+    setUp = function (color, settings)
+        Leader.amberMetulli.transientSetUp(color, settings)
+    end,
+
+    transientSetUp = function (color, settings)
+        Leader._createRightCardButton(nil, color, "FillCoffersAnchor", I18N("fillCoffersTooltip"), Leader.amberMetulli.signetRing)
+    end,
+
+    --- Fill Coffers
+    signetRing = function (color)
+        local leader = PlayBoard.getLeader(color)
+        if InfluenceTrack.hasAnyAlliance(color) then
+            leader.resources(color, "spice", 1)
+        end
+        leader.resources(color, "solari", 1)
+        return true
+    end
 })
 
 Leader.gurneyHalleck = Helper.createClass(Leader, {
 
-    --- Always smiling
     setUp = function (color, settings)
         Leader.gurneyHalleck.transientSetUp(color, settings)
     end,
 
+    --- Always smiling
     transientSetUp = function (color, settings)
         Helper.registerEventListener("reveal", function (otherColor)
             if color == otherColor then
@@ -445,6 +530,13 @@ Leader.gurneyHalleck = Helper.createClass(Leader, {
                 end
             end
         end)
+        Leader._createRightCardButton(nil, color, "WarmasterAnchor", I18N("warmasterTooltip"), Leader.gurneyHalleck.signetRing)
+    end,
+
+    --- Warmaster
+    signetRing = function (color)
+        local leader = PlayBoard.getLeader(color)
+        return leader.troops(color, "supply", "garrison", 1)
     end
 })
 
@@ -494,25 +586,15 @@ Leader.irulanCorrino = Helper.createClass(Leader, {
 
 Leader.jessica = Helper.createClass(Leader, {
 
-    --- Other memories
     setUp = function (color, settings)
         Leader.jessica.transientSetUp(color, settings)
     end,
 
+    --- Other memories
     transientSetUp = function (color, settings)
         local leaderCard = PlayBoard.findLeaderCard(color)
 
-        local otherMemoriesPark = MainBoard.createOtherMemoriesPark(color)
-
-        local spiceAgony = function ()
-            local count = Park.transfert(1, PlayBoard.getSupplyPark(color), otherMemoriesPark)
-            Action.log(I18N("transfer", {
-                count = count,
-                what = I18N.agree(count, "troop"),
-                from = I18N("supplyPark"),
-                to = I18N("otherMemoriesPark"),
-            }), color)
-        end
+        Leader.jessica.otherMemoriesPark = MainBoard.createOtherMemoriesPark(color)
 
         local otherMemories = function ()
             Leader.jessica.name = "reverendMotherJessica"
@@ -520,38 +602,14 @@ Leader.jessica = Helper.createClass(Leader, {
             leaderCard.setName(I18N(Leader.jessica.name))
             leaderCard.setRotation(Vector(0, 180, 180))
             broadcastToAll(I18N("otherMemoriesUsed"), color)
-            local count = Park.transfert(12, otherMemoriesPark, PlayBoard.getSupplyPark(color))
+            local count = Park.transfert(12, Leader.jessica.otherMemoriesPark, PlayBoard.getSupplyPark(color))
             Action.drawImperiumCards(color, count, true)
-        end
-
-        local createCardButton = function (anchors, name, tooltip, offset, action)
-            Helper.createTransientAnchor(name, leaderCard.getPosition() + Vector(0, -0.5, 0)).doAfter(function (anchor)
-                table.insert(anchors, anchor)
-                Helper.createAbsoluteButtonWithRoundness(anchor, 1, {
-                    click_function = Helper.registerGlobalCallback(function (_, otherColor)
-                        if otherColor == color then
-                            action(anchor)
-                        else
-                            Dialog.broadcastToColor(I18N("noTouch"), otherColor, "Purple")
-                        end
-                    end),
-                    position = anchor.getPosition() + offset,
-                    width = 1000,
-                    height = 380,
-                    scale = Vector(1, 1, 1),
-                    color = { 0, 0, 0, 0 },
-                    font_color = { 0, 0, 0, 100 },
-                    tooltip = tooltip,
-                })
-            end)
         end
 
         if leaderCard.getGMNotes() ~= "reverendMotherJessica" then
             local anchors = {}
-            createCardButton(anchors, "SpiceAgonyAnchor", I18N("spiceAgonyButton"), Vector(1.35, 0.6, -1.3), function ()
-                spiceAgony()
-            end)
-            createCardButton(anchors, "OtherMemoriesAnchor", I18N("otherMemoriesButton"), Vector(-1, 0.6, -1.3), function ()
+
+            Leader._createLeftCardButton(anchors, color, "OtherMemoriesAnchor", I18N("otherMemoriesTooltip"), function ()
                 Dialog.showYesOrNoDialog(color, I18N("confirmOtherMemories"), nil, function (confirmed)
                     if confirmed then
                         otherMemories()
@@ -561,8 +619,34 @@ Leader.jessica = Helper.createClass(Leader, {
                     end
                 end)
             end)
+
+            Leader._createRightCardButton(nil, color, "SpiceAgonyAnchor", I18N("spiceAgonyTooltip"), Leader.jessica.signetRing)
+        else
+            Leader._createRightCardButton(nil, color, "WaterOfLifeAnchor", I18N("waterOfLifeTooltip"), Leader.jessica.signetRing)
         end
-   end
+   end,
+
+    --- Spice Agony / Water of Life
+    signetRing = function (color)
+        local leaderCard = PlayBoard.findLeaderCard(color)
+        if leaderCard.getGMNotes() ~= "reverendMotherJessica" then
+            if Action.resources(color, "spice", -1) then
+                Action.drawIntrigues(color, 1)
+                local count = Park.transfert(1, PlayBoard.getSupplyPark(color), Leader.jessica.otherMemoriesPark)
+                Action.log(I18N("transfer", {
+                    count = count,
+                    what = I18N.agree(count, "troop"),
+                    from = I18N("supplyPark"),
+                    to = I18N("otherMemoriesPark"),
+                }), color)
+                return true
+            else
+                return false
+            end
+        else
+            return Action.resources(color, "spice", -1) and Action.resources(color, "water", 1)
+        end
+    end
 })
 
 Leader.reverendMotherJessica = Leader.jessica
@@ -639,6 +723,13 @@ Leader.muadDib = Helper.createClass(Leader, {
                 leader.drawIntrigues(color, 1)
             end
         end)
+        Leader._createRightCardButton(nil, color, "LeadTheWayAnchor", I18N("leadTheWayTooltip"), Leader.muadDib.signetRing)
+    end,
+
+    --- Lead the Way
+    signetRing = function (color)
+        local leaderCard = PlayBoard.findLeaderCard(color)
+        return Action.drawImperiumCards(color, 1, true)
     end,
 
     prepare = function (color, settings, asCommander)

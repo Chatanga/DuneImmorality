@@ -305,7 +305,7 @@ function HagalCard._activateAssemblyHall(color, rival)
         HagalCard._sendRivalAgent(color, rival, "assemblyHall")
         rival.drawIntrigues(color, 1)
         if InfluenceTrack.hasFriendship(color, "emperor") then
-            rival.influence(color, "emperor", 1)
+            rival.influence(color, 1, 1)
         end
         return true
     else

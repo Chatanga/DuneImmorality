@@ -264,7 +264,6 @@ function Helper._moveObject(object, position, rotation, smooth, flipAtTheEnd)
         end
     end
 
-    -- Dangerous. An "unknown error" could occur with a card sent to another or a deck.
     Helper.onceMotionless(object).doAfter(function ()
         if flipAtTheEnd then
             object.flip()
@@ -989,9 +988,9 @@ function Helper.isStabilized(beQuiet)
     return count == 0
 end
 
---- Beware of cards being swallowed up in a deck at the end of its move.
 ---@return Continuation
 function Helper.onceMotionless(object)
+    local guid = object.getGUID()
     local continuation = Helper.createContinuation("Helper.onceMotionless")
     -- Wait 1 frame for the movement to start.
     Wait.time(function ()
@@ -1001,7 +1000,9 @@ function Helper.onceMotionless(object)
             end, Helper.MINIMAL_DURATION)
         end, function ()
             continuation.tick()
-            return object.resting
+            --- Deal with a card/object being swallowed up in a deck/bag at the end of its move.
+            local objectHasDisappeared = getObjectFromGUID(guid) == nil
+            return objectHasDisappeared or object.resting
         end)
     end, Helper.MINIMAL_DURATION)
     return continuation
@@ -1754,8 +1755,12 @@ end
 ---
 function Helper._log(str)
     if Helper.lastMessage ~= str then
-        if Helper.lastMessage and Helper.lastMessageCount > 0 then
-            log("[x" .. tostring(Helper.lastMessageCount) .. "] " .. Helper.lastMessage)
+        if Helper.lastMessage then
+            if Helper.lastMessageCount > 1 then
+                log("[x" .. tostring(Helper.lastMessageCount) .. "] " .. Helper.lastMessage)
+            elseif Helper.lastMessageCount > 0 then
+                log(Helper.lastMessage)
+            end
         end
         log(str)
         Helper.lastMessage = str

@@ -469,6 +469,7 @@ Rival.gurneyHalleck = Helper.createClass(Rival, {
             local rank = InfluenceTrack.getInfluence(faction, color)
             if not bestRank or bestRank < rank then
                 bestFaction = faction
+                bestRank = rank
             end
         end
         Rival.influence(color, bestFaction, 1)
