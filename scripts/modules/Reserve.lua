@@ -54,14 +54,18 @@ end
 
 ---
 function Reserve.acquireFoldspace(color)
-    if Reserve.foldspace.zone then
+    if Reserve.foldspace then
         PlayBoard.giveCardFromZone(color, Reserve.foldspace.zone, false)
+        return true
+    else
+        return false
     end
 end
 
 ---
 function Reserve.acquirePrepareTheWay(color)
     PlayBoard.giveCardFromZone(color, Reserve.prepareTheWay.zone, false)
+    return true
 end
 
 ---
@@ -72,6 +76,7 @@ function Reserve.acquireTheSpiceMustFlow(color, toItsHand)
     else
         PlayBoard.giveCardFromZone(color, Reserve.theSpiceMustFlow.zone, false, toItsHand)
     end
+    return true
 end
 
 return Reserve

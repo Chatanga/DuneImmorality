@@ -98,7 +98,7 @@ Leader.vladimirHarkonnen = Helper.createClass(Leader, {
     --- Scheme
     signetRing = function (color)
         local leader = PlayBoard.getLeader(color)
-        return leader.resources(color, "solari", -1) and Action.drawIntrigues(color, 1)
+        return leader.resources(color, "solari", -1) and leader.drawIntrigues(color, 1)
     end
 })
 
@@ -297,7 +297,7 @@ Leader.memnonThorvald = Helper.createClass(Leader, {
     end,
 
     --- Spice hoard
-    signetRing = function (color, spaceName)
+    signetRing = function (color)
         local leader = PlayBoard.getLeader(color)
         return leader.resources(color, "spice", 1)
     end
@@ -313,21 +313,43 @@ Leader.ilesaEcaz = Helper.createClass(Leader, {
     end,
 
     transientSetUp = function (color, settings)
-        local zone = PlayBoard.getPlayBoard(color).content.leaderZone
+        local content = PlayBoard.getPlayBoard(color).content
+        local zone = content.leaderZone
         -- Temporary tag to avoid counting the leader card.
         zone.addTag("Imperium")
         Deck.generateSpecialDeck(zone, "legacy", "foldspace").doAfter(function (deck)
-            zone.removeTag("Imperium")
-            deck.flip()
+            local cardCount = Helper.getCardCount(deck)
+            Helper.repeatChainedAction(cardCount, function ()
+                local continuation = Helper.createContinuation("Leader.ilesaEcaz.transientSetUp")
+                Helper.moveCardFromZone(zone, content.trash.getPosition() + Vector(0, 1, 0), nil, false, false).doAfter(function (card)
+                    Helper.onceSwallowedUp(card).doAfter(continuation.run)
+                end)
+                return continuation
+            end).doAfter(function ()
+                zone.removeTag("Imperium")
+            end)
         end)
-        -- TODO Add a specific place for Foldspace cards in Uprising.
-        -- Leader._createRightCardButton(nil, color, "GuildContactsAnchor", I18N("guildContactsTooltip"), Leader.ilesaEcaz.signetRing)
+
+        Leader._createRightCardButton(nil, color, "GuildContactsAnchor", I18N("guildContactsTooltip"), Leader.ilesaEcaz.signetRing)
     end,
 
-    --- Guild contacts (disabled)
+    --- Guild contacts
     signetRing = function (color)
-        local leader = PlayBoard.getLeader(color)
-        return leader.resources(color, "solari", -1) and Action.acquireFoldspace(color)
+        local content = PlayBoard.getPlayBoard(color).content
+        local availableFoldspaceCards = Helper.filter(content.trash.getObjects(), function (object)
+            return Helper.getID(object) == "foldspace"
+        end)
+
+        if #availableFoldspaceCards > 0 then
+            local leader = PlayBoard.getLeader(color)
+            if leader.resources(color, "solari", -1) then
+                PlayBoard.giveCardFromTrash(color, "foldspace")
+                return true
+            end
+        else
+            Dialog.broadcastToColor(I18N("noAvailableFoldspaceCards"), color, "Purple")
+        end
+        return false
     end
 })
 
@@ -628,10 +650,11 @@ Leader.jessica = Helper.createClass(Leader, {
 
     --- Spice Agony / Water of Life
     signetRing = function (color)
+        local leader = PlayBoard.getLeader(color)
         local leaderCard = PlayBoard.findLeaderCard(color)
         if leaderCard.getGMNotes() ~= "reverendMotherJessica" then
-            if Action.resources(color, "spice", -1) then
-                Action.drawIntrigues(color, 1)
+            if leader.resources(color, "spice", -1) then
+                leader.drawIntrigues(color, 1)
                 local count = Park.transfert(1, PlayBoard.getSupplyPark(color), Leader.jessica.otherMemoriesPark)
                 Action.log(I18N("transfer", {
                     count = count,
@@ -644,7 +667,7 @@ Leader.jessica = Helper.createClass(Leader, {
                 return false
             end
         else
-            return Action.resources(color, "spice", -1) and Action.resources(color, "water", 1)
+            return leader.resources(color, "spice", -1) and leader.resources(color, "water", 1)
         end
     end
 })
@@ -710,11 +733,11 @@ Leader.shaddamCorrino = Helper.createClass(Leader, {
 
 Leader.muadDib = Helper.createClass(Leader, {
 
-    --- Unpredictable foe
     setUp = function (color, settings)
         Leader.muadDib.transientSetUp(color, settings)
     end,
 
+    --- Unpredictable foe
     transientSetUp = function (color, settings)
         Helper.registerEventListener("reveal", function (otherColor)
             if color == otherColor and PlayBoard.couldSendAgentOrReveal(color) and Combat.hasSandworms(color) then
@@ -728,8 +751,8 @@ Leader.muadDib = Helper.createClass(Leader, {
 
     --- Lead the Way
     signetRing = function (color)
-        local leaderCard = PlayBoard.findLeaderCard(color)
-        return Action.drawImperiumCards(color, 1, true)
+        local leader = PlayBoard.getLeader(color)
+        return leader.drawImperiumCards(color, 1, true)
     end,
 
     prepare = function (color, settings, asCommander)

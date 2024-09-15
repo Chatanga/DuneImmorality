@@ -1207,7 +1207,8 @@ function PlayBoard:_recall()
     Helper.forEach(Helper.filter(Park.getObjects(self.agentCardPark), Types.isImperiumCard), function (_, card)
         local cardName = Helper.getID(card)
         if cardName == "foldspace" then
-            card.setPosition(Reserve.foldspaceSlotZone.getPosition())
+            --card.setPosition(Reserve.foldspaceSlotZone.getPosition())
+            self:trash(card)
         elseif Helper.isElementOf(cardName, {"seekAllies", "emperorSeekAllies", "muadDibSeekAllies", "powerPlay", "treachery", "dangerousRhetoric"}) then
             self:trash(card)
         else
@@ -3001,6 +3002,31 @@ function PlayBoard.giveCardFromZone(color, zone, isTleilaxuCard)
 end
 
 ---
+function PlayBoard.giveCardFromTrash(color, cardName)
+    Types.assertIsPlayerColor(color)
+
+    local content = PlayBoard.getContent(color)
+    assert(content)
+
+    local playBoard = PlayBoard.getPlayBoard(color)
+    for _, object in ipairs(playBoard.content.trash.getObjects()) do
+        if Helper.getID(object) == cardName then
+            local parameters = {
+                guid = object.guid,
+                position = content.discardZone.getPosition(),
+                smooth = false,
+                rotation = Vector(0, 180, 0),
+                callback_function = function (card)
+                    printToAll(I18N("acquireImperiumCard", { card = I18N(cardName) }), color)
+                end
+            }
+            playBoard.content.trash.takeObject(parameters)
+            break
+        end
+    end
+end
+
+---
 function PlayBoard.giveObjectiveCardFromZone(color, zone)
     Types.assertIsPlayerColor(color)
     local content = PlayBoard.getContent(color)
@@ -3077,12 +3103,6 @@ function PlayBoard.getDiscardedCardCount(color)
     local playBoard = PlayBoard.getPlayBoard(color)
     local deckOrCard = Helper.getDeckOrCard(playBoard.content.discardZone)
     return Helper.getCardCount(deckOrCard)
-end
-
---- Anything trashed (and filtering is hard considering the content is not spawned).
-function PlayBoard.getTrashedCards(color)
-    local playBoard = PlayBoard.getPlayBoard(color)
-    return playBoard.content.trash.getObjects()
 end
 
 ---

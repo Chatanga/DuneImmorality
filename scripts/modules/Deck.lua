@@ -804,7 +804,7 @@ function Deck.generateSpecialDeck(deckZone, parent, name)
     local contributions = { [name] = Deck.special[parent][name] }
     Deck._generateDeck("Imperium", deckZone, contributions, Deck.sources.special).doAfter(function (deck)
         deck.flip()
-        continuation.run(deck)
+        Helper.onceMotionless(deck).doAfter(continuation.run)
     end)
     return continuation
 end

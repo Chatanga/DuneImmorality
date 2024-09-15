@@ -1009,6 +1009,25 @@ function Helper.onceMotionless(object)
 end
 
 ---@return Continuation
+function Helper.onceSwallowedUp(object)
+    local guid = object.getGUID()
+    local continuation = Helper.createContinuation("Helper.onceSwallowedUp")
+    -- Wait 1 frame for the movement to start.
+    Wait.time(function ()
+        Wait.condition(function ()
+            Wait.time(function ()
+                continuation.run(object)
+            end, Helper.MINIMAL_DURATION)
+        end, function ()
+            continuation.tick()
+            local objectHasDisappeared = getObjectFromGUID(guid) == nil
+            return objectHasDisappeared
+        end)
+    end, Helper.MINIMAL_DURATION)
+    return continuation
+end
+
+---@return Continuation
 function Helper.onceShuffled(container)
     local continuation = Helper.createContinuation("Helper.onceShuffled")
     -- TODO Is there a better way?
