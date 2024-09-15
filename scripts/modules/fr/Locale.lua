@@ -364,6 +364,7 @@ return {
     thirdSnooperRecall = "↯ Tessia Vernius a rappelé son troisième fouineur {withFaction}.",
     fourthSnooperRecall = "↯ Tessia Vernius a rappelé son quatrième fouineur {withFaction}.",
     firstSnooperRecallEffectInfo = "Ayant rappelé votre premier fouineur, vous pouvez défausser une carte pour gagne 1 mesure d’épice.",
+    finalDeliveryTooltip = "Dernière livraison.",
     gurneySmile = "↯ Gurney montre ses dents.",
     imperialBirthright = "↯ Irulan exerce son droit de naissance.",
     loyalty = "↯ Margot récolte les fruits de sa loyauté",

@@ -97,28 +97,6 @@ autoLoadedSettings = {
 }
 ]]
 
-autoLoadedSettings = {
-    language = "fr",
-    numberOfPlayers = 3,
-    hotSeat = true,
-    firstPlayer = "Green",
-    randomizePlayerPositions = false,
-    useContracts = true,
-    legacy = true,
-    merakon = false,
-    riseOfIx = true,
-    epicMode = false,
-    immortality = false,
-    goTo11 = false,
-    leaderSelection = {
-        Green = "ilesaEcaz",
-        Yellow = "gurneyHalleck",
-        Red = "feydRauthaHarkonnen",
-    },
-    horizontalHandLayout = true,
-    soundEnabled = true,
-}
-
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local XmlUI = require("utils.XmlUI")

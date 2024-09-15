@@ -429,6 +429,14 @@ Leader.tessiaVernius = Helper.createClass(Leader, {
 
 Leader.yunaMoritani = Helper.createClass(Leader, {
 
+    setUp = function (color, settings)
+        Leader.yunaMoritani.transientSetUp(color, settings)
+    end,
+
+    transientSetUp = function (color, settings)
+        Leader._createRightCardButton(nil, color, "FinalDeliveryAnchor", I18N("finalDeliveryTooltip"), Leader.yunaMoritani.signetRing)
+    end,
+
     --- Smuggling operation
     prepare = function (color, settings)
         Action.prepare(color, settings)
@@ -445,7 +453,7 @@ Leader.yunaMoritani = Helper.createClass(Leader, {
         return Action.resources(color, resourceName, finalAmount)
     end,
 
-    --- Final delivery (not used)
+    --- Final delivery
     signetRing = function (color)
         local leader = PlayBoard.getLeader(color)
         return leader.resources(color, "solari", -7)
