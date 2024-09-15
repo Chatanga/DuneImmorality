@@ -3,16 +3,7 @@ local I18N = require("utils.I18N")
 
 local AcquireCard = Helper.createClass(nil, {
     UPDATE_EVENT_NAME = "AcquireCard/objectEnterOrLeaveScriptingZone",
-    allInstances = {},
 })
-
---[[
-    For some reason, we can't rely on Helper.emitEvent inside a TTS event callback.
-    The problem only occurs when returning to the main menu from a save, but it is
-    not clear why. Meanwhile, directly calling AcquireCard.allInstances from the
-    callback seems ok.
-]]
-local WORKAROUND = true
 
 ---
 function AcquireCard.new(zone, tag, acquire, decalUrl)
@@ -35,39 +26,43 @@ function AcquireCard.new(zone, tag, acquire, decalUrl)
         anchor.setSnapPoints({ snapPoint })
 
         if acquire then
-            acquireCard:_createButton(acquire)
+            acquireCard:_updateButton()
 
             Helper.registerEventListener("locale", function ()
-                Helper.clearButtons(anchor)
-                acquireCard:_createButton(acquire)
+                acquireCard:_updateButton()
             end)
 
-            if WORKAROUND then
-                table.insert(AcquireCard.allInstances, acquireCard)
-            else
-                Helper.registerEventListener(AcquireCard.UPDATE_EVENT_NAME, function (otherZone)
-                    if otherZone == zone then
-                        Helper.clearButtons(anchor)
-                        acquireCard:_createButton(acquire)
-                    end
-                end)
-            end
+            Helper.registerEventListener(AcquireCard.UPDATE_EVENT_NAME, function (otherZone)
+                if otherZone == zone then
+                    acquireCard:_updateButton()
+                end
+            end)
         end
 
         if decalUrl then
             acquireCard:_setDecal(decalUrl)
         end
     end)
-
     return acquireCard
 end
 
 ---
-function AcquireCard:_updateButton(otherZone)
-    if otherZone == self.zone then
-        Helper.clearButtons(self.anchor)
-        self:_createButton(self.acquire)
+function AcquireCard:_updateButton()
+    if not self.updateCoalescentQueue then
+
+        local function coalesce(_, _)
+            return true
+        end
+
+        local function handle(_)
+            Helper.clearButtons(self.anchor)
+            self:_createButton()
+        end
+
+        self.updateCoalescentQueue = Helper.createCoalescentQueue(0.5, coalesce, handle)
     end
+
+    self.updateCoalescentQueue.submit(true)
 end
 
 ---
@@ -86,39 +81,19 @@ end
 
 ---
 function AcquireCard.onObjectEnterZone(...)
-    if WORKAROUND then
-        if AcquireCard then
-            for _, acquireCard in ipairs(AcquireCard.allInstances) do
-                acquireCard:_updateButton(...)
-            end
-        end
-    else
-        Helper.emitEvent(AcquireCard.UPDATE_EVENT_NAME, ...)
-    end
+    Helper.emitEvent(AcquireCard.UPDATE_EVENT_NAME, ...)
 end
 
 ---
 function AcquireCard.onObjectLeaveZone(...)
-    if WORKAROUND then
-        if AcquireCard then
-            for _, acquireCard in ipairs(AcquireCard.allInstances) do
-                acquireCard:_updateButton(...)
-            end
-        end
-    else
-        Helper.emitEvent(AcquireCard.UPDATE_EVENT_NAME, ...)
-    end
+    Helper.emitEvent(AcquireCard.UPDATE_EVENT_NAME, ...)
 end
 
-function AcquireCard:_createButton(acquire)
+function AcquireCard:_createButton()
     local count = 0
     for _, object in ipairs(self.zone.getObjects()) do
         local cardCount = Helper.getCardCount(object)
-        if cardCount > 0 then
-            count = count + cardCount
-        else
-            count = count + 1
-        end
+        count = count + math.max(1, cardCount)
     end
 
     if self.cardCount ~= count then
@@ -128,7 +103,7 @@ function AcquireCard:_createButton(acquire)
             local label = I18N("acquireButton") .. " (" .. tostring(count) .. ")"
             Helper.createExperimentalAreaButton(self.zone, self.anchor, height, label, function (_, color)
                 if not self.disabled then
-                    local continuation = acquire(self, color)
+                    local continuation = self.acquire(self, color)
                     if continuation then
                         self.disabled = true
                         continuation.doAfter(function ()
