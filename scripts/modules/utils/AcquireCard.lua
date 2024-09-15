@@ -48,21 +48,23 @@ end
 
 ---
 function AcquireCard:_updateButton()
-    if not self.updateCoalescentQueue then
+    if false then
+        if not self.updateCoalescentQueue then
 
-        local function coalesce(_, _)
-            return true
+            local function coalesce(_, _)
+                return true
+            end
+
+            local function handle(_)
+                self:_createButton()
+            end
+
+            self.updateCoalescentQueue = Helper.createCoalescentQueue(0.5, coalesce, handle)
         end
-
-        local function handle(_)
-            Helper.clearButtons(self.anchor)
-            self:_createButton()
-        end
-
-        self.updateCoalescentQueue = Helper.createCoalescentQueue(0.5, coalesce, handle)
+        self.updateCoalescentQueue.submit(true)
+    else
+        self:_createButton()
     end
-
-    self.updateCoalescentQueue.submit(true)
 end
 
 ---
@@ -97,6 +99,7 @@ function AcquireCard:_createButton()
     end
 
     if self.cardCount ~= count then
+        Helper.clearButtons(self.anchor)
         self.cardCount = count
         if count > 0 then
             local height = self.groundHeight + count * self.cardHeight
@@ -110,6 +113,8 @@ function AcquireCard:_createButton()
                             self.disabled = false
                         end)
                     end
+                    -- The acquisition may not involve a smooth move.
+                    self:_updateButton()
                 end
             end)
         end
