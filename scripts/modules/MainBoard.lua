@@ -174,6 +174,8 @@ function MainBoard._mutateMainBoards(locale)
             board.setCustomObject(parameters)
             if boardInfo.target then
                 MainBoard[boardInfo.target] = board.reload()
+            else
+                board.reload()
             end
         end
     end

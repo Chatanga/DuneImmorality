@@ -24,9 +24,9 @@ local Deck = {
         tleilaxResearch = { "https://steamusercontent-a.akamaihd.net/ugc/2093667512238501306/639814906915DFA557375A3F7963C9DE53301D57/", 4, 5 },
         -- reclaimed forces
         tleilaxResearchReclaimedForces = { "https://steamusercontent-a.akamaihd.net/ugc/2093667512238501804/60812AEA733FF5558BA9190E47CBD474EBF38C94/", 1, 1 },
-        uprisingImperium = { "https://steamusercontent-a.akamaihd.net/ugc/2488878371133385486/208B1B1326B5A629C98BE345C9470D5AE5F4863A/", 10, 7 },
-        uprisingImperium_contract = { "https://steamusercontent-a.akamaihd.net/ugc/2286203878422516907/507108B99BF8CF1F4E9E7B5A6648D0CB8C92F541/", 2, 2 },
-        uprisingImperium_prepareTheWay = { "https://steamusercontent-a.akamaihd.net/ugc/2488878371133389475/4C366D975FAA25147144770955A7EBA0EFE6117B/", 4, 2 },
+        uprisingImperium = { "https://steamusercontent-a.akamaihd.net/ugc/2499024154440743964/4AFB30174B6A6A4A46E5CE946B8731403F267041/", 10, 7 },
+        uprisingImperium_contract = { "https://steamusercontent-a.akamaihd.net/ugc/2499024154440642198/52D339ECAB84AC2B60098B52BBE48F042F8C4BCC/", 2, 2 },
+        uprisingImperium_prepareTheWay = { "https://steamusercontent-a.akamaihd.net/ugc/2499024154440747917/72A71863DE41003FCC454F212FE183937C72C50F/", 1, 1 },
         uprisingImperium_theSpiceMustFlow = { "https://steamusercontent-a.akamaihd.net/ugc/2488878371133981081/35C76D798308EEA5D9BF50DB3F8B2E3159B14AF9/", 5, 2 },
     },
     intrigue = {
