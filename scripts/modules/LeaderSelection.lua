@@ -67,7 +67,7 @@ function LeaderSelection.setUp(settings, activeOpponents)
         preContinuation.run()
     else
         Deck.generateRivalLeaderDeck(LeaderSelection.deckZone, settings.streamlinedRivals, settings.riseOfIx, settings.immortality, settings.legacy, settings.merakon).doAfter(function (deck)
-            LeaderSelection._layoutLeaderDeck(deck, 0, preContinuation)
+            LeaderSelection._layoutLeaderDeck(deck, 0).doAfter(preContinuation.run)
         end)
     end
 
