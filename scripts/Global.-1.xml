@@ -7,7 +7,7 @@
 		<Dropdown class="setUp" itemBackgroundColors="#61712c44|#df9730|#FFFFFF|#361441" textColor="#61712c" itemTextColor="#61712c" fontStyle="bold"/>
 		<InputField class="setUp" colors="#00000000|#61712c44|#61712c" textColor="#efd9ff" fontStyle="bold"/>
 		<Toggle class="setUp" colors="#efd9ff|#ffd60b|#efd9ff|#222222" textColor="#efd9ff" tooltipPosition="Left" tooltipBackgroundColor="#000000"/>
-		<Button class="setUp" colors="#61712c|#df9730|#361441|#222222" textColor="#ffd60b"  fontSize="16" outline="#efd9ff" outlineSize="3 3"/>
+		<Button class="setUp" colors="#61712c|#df9730|#361441|#222222" textColor="#ffd60b" fontSize="16" outline="#efd9ff" outlineSize="3 3"/>
 		<Image raycastTarget="true"/>
 	</Defaults>
 	<VerticalLayout>
@@ -19,7 +19,7 @@
 
 			<HorizontalLayout>
 				<Text class="primary" key="language"/>
-				<Dropdown class="setUp" id="language" onValueChanged="Global/setLanguage">
+				<Dropdown class="setUp" id="language" onValueChanged="Global/setLanguage" minHeight="22">
 					<Option></Option>
 				</Dropdown>
 			</HorizontalLayout>
@@ -28,7 +28,7 @@
 			<VerticalLayout padding="25 0 0 0">
 				<HorizontalLayout>
 					<Text class="secondary" key="firstPlayer"/>
-					<Dropdown class="setUp" id="firstPlayer" onValueChanged="Global/setFirstPlayer" flexibleWidth="3" active="True" minHeight="18">
+					<Dropdown class="setUp" id="firstPlayer" onValueChanged="Global/setFirstPlayer" flexibleWidth="3" active="True" minHeight="20">
 						<Option></Option>
 					</Dropdown>
 				</HorizontalLayout>
@@ -58,7 +58,7 @@
 
 			<HorizontalLayout>
 				<Text class="primary" key="leaderSelection"/>
-				<Dropdown class="setUp" id="leaderSelection" flexibleWidth="8" onValueChanged="Global/setLeaderSelection">
+				<Dropdown class="setUp" id="leaderSelection" flexibleWidth="8" onValueChanged="Global/setLeaderSelection" minHeight="22">
 					<Option></Option>
 				</Dropdown>
 			</HorizontalLayout>
@@ -68,7 +68,7 @@
 
 			<HorizontalLayout>
 				<Text class="primary" key="variants"/>
-				<Dropdown class="setUp" id="variant" flexibleWidth="1.5" onValueChanged="Global/setVariant">
+				<Dropdown class="setUp" id="variant" flexibleWidth="1.5" onValueChanged="Global/setVariant" minHeight="22">
 					<Option></Option>
 				</Dropdown>
 			</HorizontalLayout>
