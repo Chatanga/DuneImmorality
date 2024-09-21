@@ -152,8 +152,7 @@ function ChoamContractMarket._transientSetUp(settings)
         for i, contract in ipairs(contracts) do
             local contractName = Helper.getID(contract)
             local contractLocator = ChoamContractMarket.contracts[contractName] or ChoamContractMarket.ixContracts[contractName]
-            assert(contractLocator, contractName)
-            if contractLocator(parentSpaceName) then
+            if contractLocator and contractLocator(parentSpaceName) then
                 broadcastToAll(I18N("fulfilledContract", { contract = I18N(contractName) }), color)
             end
         end

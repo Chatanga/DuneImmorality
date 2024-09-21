@@ -660,7 +660,7 @@ return {
     junctionHeadquarters = "Quartier général de Jonction",
     corrinthCity = "Corrinth",
     stilgarTheDevoted = "Stilgar, le dévoué",
-    --desertPower  = "La puissance du désert",
+    desertPower  = "La puissance du désert",
     arrakisRevolt = "La révolte d’Arrakis",
     priceIsNoObject = "L’argent n’est pas un problème",
     longLiveTheFighters = "Vive les combattants",
