@@ -286,6 +286,9 @@ end
 function TurnControl.endOfPhase(haltAfter)
     local bestTrigger
     local heavyPhases = { "recall" }
+    if TurnControl.getPlayerCount() < 3 then
+        table.insert(heavyPhases, "combat")
+    end
     if Helper.isElementOf(TurnControl.currentPhase, heavyPhases) then
         bestTrigger = Helper.onceTimeElapsed(2)
     else

@@ -1127,8 +1127,8 @@ function PlayBoard._transientSetUp(settings)
     end)
 
     Helper.registerEventListener("combatUpdate", function (forces)
-        PlayBoard.combatPassCountdown = Helper.count(forces, function (_, v)
-            return v > 0
+        PlayBoard.combatPassCountdown = Helper.count(forces, function (color, v)
+            return not PlayBoard.isRival(color) and v > 0
         end)
     end)
 

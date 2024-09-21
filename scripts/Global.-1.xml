@@ -80,22 +80,22 @@ be integrated to this mod in a standard way.
 				<Text class="primary" key="players"/>
 			</HorizontalLayout>
 			<VerticalLayout padding="25 0 0 0">
-				<HorizontalLayout>
+				<HorizontalLayout minHeight="22">
 					<Text class="secondary" key="firstPlayer"/>
-					<Dropdown class="setUp" id="firstPlayer" onValueChanged="Global/setFirstPlayer" flexibleWidth="3" minHeight="22" active="True">
+					<Dropdown class="setUp" id="firstPlayer" onValueChanged="Global/setFirstPlayer" flexibleWidth="3" active="True">
 						<Option></Option>
 					</Dropdown>
 				</HorizontalLayout>
 				<Toggle class="setUp" id="randomizePlayerPositions" onValueChanged="Global/setRandomizePlayerPositions" isOn="True" key="randomizePlayersPositions" tooltipKey="randomizePlayersPositionTooltip"/>
-				<HorizontalLayout>
+				<HorizontalLayout minHeight="22">
 					<Toggle class="setUp" id="virtualHotSeat" onValueChanged="Global/setVirtualHotSeat" isOn="False" key="virtualHotSeat" tooltipKey="virtualHotSeatTooltip"/>
-					<Dropdown class="setUp" id="virtualHotSeatMode" onValueChanged="Global/setVirtualHotSeatMode" flexibleWidth="2.5" minHeight="22" active="False">
+					<Dropdown class="setUp" id="virtualHotSeatMode" onValueChanged="Global/setVirtualHotSeatMode" flexibleWidth="2.5" active="False">
 						<Option></Option>
 					</Dropdown>
-					<Dropdown class="setUp" id="difficulty" onValueChanged="Global/setDifficulty" flexibleWidth="3" minHeight="22" active="False">
+					<Dropdown class="setUp" id="difficulty" onValueChanged="Global/setDifficulty" flexibleWidth="3" active="False">
 						<Option></Option>
 					</Dropdown>
-					<Dropdown class="setUp" id="rivalType" onValueChanged="Global/setRivalType" flexibleWidth="3" minHeight="22" active="False">
+					<Dropdown class="setUp" id="rivalType" onValueChanged="Global/setRivalType" flexibleWidth="3" active="False">
 						<Option></Option>
 					</Dropdown>
 				</HorizontalLayout>

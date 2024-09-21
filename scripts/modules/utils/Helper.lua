@@ -1446,8 +1446,9 @@ function Helper.createCoalescentQueue(separationDelay, coalesce, handle)
             if newEvent then
                 cq.lastEvent = newEvent
             else
-                handle(cq.lastEvent)
+                local oldEvent = cq.lastEvent
                 cq.lastEvent = event
+                handle(oldEvent)
             end
         else
             cq.lastEvent = event

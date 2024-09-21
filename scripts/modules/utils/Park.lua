@@ -35,9 +35,7 @@ end
 
 --[[
     A park is basically an open field bag with a fixed size and a visual
-    arrangement of its content. A park content is determined at each operation
-    (usually implying a tidy up on the way), so beware of the asynchronous
-    moves from park to park.
+    arrangement of its content.
 
     name: a unique name for the park.
     slots: the slot positions.
@@ -70,9 +68,7 @@ function Park.createPark(name, slots, rotation, zones, tags, description, locked
 end
 
 --[[
-    Transfert objects from a park to another. Beware that moves are asynchronous
-    and that chaining multiple calls to this function could be problematic. A
-    single call, whatever the amount transfered, is ok.
+    Transfert objects from a park to another.
 
     n: the number of objects to be transfered.
     fromParkName: the source park.
@@ -133,26 +129,14 @@ function Park._putHolders(holders, toPark)
     assert(holders, "No holders provided.")
     assert(toPark, "No destination park.")
 
-    --[[
-        Park objects usually come from other objects (one of them at least). As
-        such, it shall not be assigned (it is treated as a pure right value).
-        Copies must be made when needed (even for temporarily storing it).
-    ]]
-
     local now = Time.time
-
     local objectsInTransit = Park._getRefreshedObjectsInTransit(toPark, now)
 
     Park._instantTidyUp(toPark, objectsInTransit)
 
     local emptySlots = Park.findEmptySlots(toPark)
 
-    -- Count *after* objectsInTransit (and it's a sparse table).
-    local skipCount = 0
-    for _, _ in pairs(objectsInTransit) do
-        skipCount = skipCount + 1
-    end
-    assert(skipCount == #Helper.getKeys(objectsInTransit))
+    local skipCount = #Helper.getKeys(objectsInTransit)
     local count = math.max(0, math.min(#emptySlots - skipCount, #holders))
 
     for i = 1, count do
@@ -161,9 +145,12 @@ function Park._putHolders(holders, toPark)
             Park._moveObjectToPark(holder.object, emptySlots[i + skipCount], toPark)
             objectsInTransit[holder.object] = now
         elseif holder.bag then
-            Park._takeObjectToPark(holder.bag, emptySlots[i + skipCount], toPark)
-            -- Can't really register anything for a transit and doing it
-            -- asynchronously would be both too late and unsafe.
+            Park.uid = (Park.uid or 0) + 1
+            local uid = Park.uid
+            objectsInTransit[uid] = now
+            Park._takeObjectToPark(holder.bag, emptySlots[i + skipCount], toPark).doAfter(function (object)
+                Park._mutateObjectInTransit(toPark, uid, object)
+            end)
         end
     end
 
@@ -173,12 +160,38 @@ function Park._putHolders(holders, toPark)
 end
 
 ---
+function Park._mutateObjectInTransit(toPark, before, after)
+    local now = Time.time
+    local objectsInTransit = Park._getRefreshedObjectsInTransit(toPark, now)
+    local newObjectsInTransit = {}
+    for object, transit in pairs(objectsInTransit or {}) do
+        if object == before then
+            if after then
+                newObjectsInTransit[after] = transit
+            end
+        else
+            newObjectsInTransit[object] = transit
+        end
+    end
+    Helper.setSharedTable(toPark.name, newObjectsInTransit)
+end
+
+---
 function Park._getRefreshedObjectsInTransit(toPark, now)
     local objectsInTransit = Helper.getSharedTable(toPark.name)
 
+    local objectsAround = {}
+    for _, object in ipairs(Park.getObjects(toPark)) do
+        for _, slot in ipairs(toPark.slots) do
+            if Vector.sqrDistance(slot, object.getPosition()) < 0.1 then
+                objectsAround[object] = true
+            end
+        end
+    end
+
     local newObjectsInTransit = {}
     for object, transit in pairs(objectsInTransit or {}) do
-        if now - transit < 2.0 then
+        if now - transit < 2.0 and not objectsAround[object] then
             newObjectsInTransit[object] = transit
         end
     end
@@ -323,6 +336,7 @@ end
 
 ---
 function Park._takeObjectToPark(bag, slot, park)
+    local continuation = Helper.createContinuation("Park._takeObjectToPark/" .. park.name)
     local takeParameters = {}
     local offset = Vector(0, 0, 0)
     if not park.locked then
@@ -333,10 +347,12 @@ function Park._takeObjectToPark(bag, slot, park)
     if park.rotation then
         takeParameters.rotation = park.rotation
     end
-    takeParameters.callback_function = function ()
-        takeParameters.locked = park.locked
+    takeParameters.callback_function = function (object)
+        object.locked = park.locked
+        continuation.run(object)
     end
     bag.takeObject(takeParameters)
+    return continuation
 end
 
 ---
