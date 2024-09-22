@@ -355,7 +355,7 @@ return {
     warmasterTooltip = "Pour survivre à la guerre, il faut devenir la guerre",
     spiceAgonyTooltip = "Déclencher l’agonie de l’épice",
     confirmOtherMemories = "Utiliser votre mémoire seconde ?",
-    otherMemoriesButton = "Activer la mémoire seconde",
+    otherMemoriesTooltip = "Activer la mémoire seconde",
     otherMemoriesUsed = "↯ Dame Jessica a utilisée sa mémoire seconde.",
     waterOfLifeTooltip = "Boire l’eau de vie",
     leadTheWayTooltip = "Montrer la voie",

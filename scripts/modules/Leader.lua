@@ -628,9 +628,13 @@ Leader.jessica = Helper.createClass(Leader, {
 
         local otherMemories = function ()
             Leader.jessica.name = "reverendMotherJessica"
+            leaderCard.setLock(false)
             leaderCard.setGMNotes(Leader.jessica.name)
             leaderCard.setName(I18N(Leader.jessica.name))
             leaderCard.setRotation(Vector(0, 180, 180))
+            Helper.onceMotionless(leaderCard).doAfter(function ()
+                leaderCard.setLock(true)
+            end)
             broadcastToAll(I18N("otherMemoriesUsed"), color)
             local count = Park.transfert(12, Leader.jessica.otherMemoriesPark, PlayBoard.getSupplyPark(color))
             Action.drawImperiumCards(color, count, true)
