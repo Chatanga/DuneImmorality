@@ -79,4 +79,20 @@ function Reserve.acquireTheSpiceMustFlow(color, toItsHand)
     return true
 end
 
+--- Move a card out of a trash and back into the reserve if necessary.
+function Reserve.redirectUntrashableCards(trashBag, card)
+    -- The ID is stored in the 'GM Notes' property (the description and/or name
+    -- properties store an unpredictable I18N content).
+    local cardName = Helper.getID(card)
+    local acquireCard = Reserve[cardName]
+    if acquireCard then
+        trashBag.takeObject({
+            guid = card.guid,
+            position = acquireCard.zone.getPosition() + Vector(0, 1, 0),
+            rotation = Vector(0, 180, 0),
+            smooth = false,
+        })
+    end
+end
+
 return Reserve

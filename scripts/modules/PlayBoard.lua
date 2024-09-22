@@ -1503,6 +1503,8 @@ function PlayBoard:_createAgentPark(firstTime)
     }
 
     local park = Park.createCommonPark({ "Agent" }, slots, Vector(0.75, 3, 0.75))
+    -- Helping psychorigid players migrate from immorality.
+    park.locked = true
     if firstTime then
         for i, agent in ipairs(self.content.agents) do
             agent.setPosition(slots[i])
@@ -2066,9 +2068,22 @@ function PlayBoard._convertObjectiveTokenPairsIntoVictoryPoints(object)
     end
 end
 
----
+--- The global event handler 'onObjectEnterContainer' automatically calls every
+--- '<Module>.onObjectEnterContainer' function thanks to 'Module.registerModuleRedirections'
+--- (see asyncOnLoad in Global.-1.lua).
 function PlayBoard.onObjectEnterContainer(container, object)
     PlayBoard._updateBagCounts(container)
+
+    if object.type == "Card" then
+        for color, playBoard in pairs(PlayBoard._getPlayBoards()) do
+            if container == playBoard.content.trash then
+                -- The dump function actually accepts any number of arguments and is able to format each of them.
+                -- Since everything is a string here, simply concatenating things produces the same output (save the additional spaces).
+                --Helper.dump("The card '" .. Helper.getID(object) .. "'has been trashed in the " .. color .. "trash.")
+                Reserve.redirectUntrashableCards(container, object)
+            end
+        end
+    end
 end
 
 ---

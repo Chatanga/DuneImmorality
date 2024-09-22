@@ -147,11 +147,10 @@ function InfluenceTrack._processSnapPoints(settings, firstTime)
             for _, influenceToken in ipairs(influenceTokens) do
                 local tokenPosition = influenceToken.getPosition()
                 local dz = tokenPosition.z - position.z
-                    if -2 < dz and dz < 3.5 then
+                if -2 < dz and dz < 3.5 then
                     for _, color in ipairs(allColors) do
                         if influenceToken.hasTag(color) then
                             InfluenceTrack.influenceTokens[faction][color] = influenceToken
-
                             local xOffsets = {
                                 Blue = -0.66,
                                 Red = -0.22,
@@ -161,6 +160,8 @@ function InfluenceTrack._processSnapPoints(settings, firstTime)
                                 Purple = 0,
                             }
                             local influenceTokenInitialPosition = position + Vector(xOffsets[color], 0, -1.6)
+                            -- Snap point height is weird, so we just keep the natural token position.
+                            influenceTokenInitialPosition.y = influenceToken.getPosition().y
                             InfluenceTrack.influenceTokenInitialPositions[faction][color] = influenceTokenInitialPosition
                             if firstTime then
                                 influenceToken.setPosition(influenceTokenInitialPosition)
