@@ -834,6 +834,8 @@ function PlayBoard:_createAgentPark(agentPositions, startup)
     }
 
     local park = Park.createCommonPark({ self.color, "Agent" }, slots, Vector(1, 3, 0.5))
+    -- Helping psychorigid players migrate from immorality.
+    park.locked = true
     if startup then
         for i, agent in ipairs(self.content.agents) do
             agent.setPosition(slots[i])
