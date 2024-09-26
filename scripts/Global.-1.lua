@@ -47,6 +47,7 @@ autoLoadedSettings = {
     },
     horizontalHandLayout = true,
     soundEnabled = true,
+    submitGameRankedGame = false,
 }
 
 autoLoadedSettings = {
@@ -70,6 +71,7 @@ autoLoadedSettings = {
     },
     horizontalHandLayout = true,
     soundEnabled = true,
+    submitGameRankedGame = true,
 }
 
 autoLoadedSettings = {
@@ -94,6 +96,7 @@ autoLoadedSettings = {
     },
     horizontalHandLayout = true,
     soundEnabled = true,
+    submitGameRankedGame = true,
 }
 ]]
 
@@ -144,6 +147,7 @@ local allModules = Module.registerModules({
     ThroneRow = require("ThroneRow"),
     TurnControl = require("TurnControl"),
     Types = require("Types"),
+    SubmitGame = require("SubmitGame"),
 })
 
 local Controller = {
@@ -196,6 +200,7 @@ local Controller = {
         horizontalHandLayout = true,
         formalCombatPhase = false,
         soundEnabled = true,
+        submitGameRankedGame = false,
     }
 }
 
@@ -277,6 +282,7 @@ function asyncOnLoad(scriptState)
         { name = "ThroneRow", module = allModules.ThroneRow },
         { name = "TurnControl", module = allModules.TurnControl },
         { name = "LeaderSelection", module = allModules.LeaderSelection },
+        { name = "SubmitGame", module = allModules.SubmitGame },
     }
 
     -- We cannot use Module.callOnAllRegisteredModules("onLoad", state),
@@ -301,8 +307,10 @@ function asyncOnLoad(scriptState)
         "onObjectDrop",
     })
 
+    local uiAlreadySetUp = false
     if not state.settings then
         if autoLoadedSettings then
+            I18N.setLocale(autoLoadedSettings.language or "en")
             Helper.onceFramesPassed(1).doAfter(function ()
                 setUp(autoLoadedSettings)
             end)
@@ -312,7 +320,13 @@ function asyncOnLoad(scriptState)
             I18N.setLocale(Controller.fields.language)
             Controller.updateDefaultLeaderPoolSizeLabel()
             Controller.updateSetupButton()
+            uiAlreadySetUp = true
         end
+    end
+    if not uiAlreadySetUp then
+        -- Force the translation of the whole UI (not restricted to the "setupPane" actually)
+        -- since the other panels are also used after the setup.
+        XmlUI.new(Global)
     end
 end
 
@@ -563,6 +577,26 @@ function setSoundEnabled(player, value, id)
 end
 
 --- UI callback (cf. XML).
+function submitGameRankedGame(player, value, id)
+    Controller.ui:fromUI(player, value, id)
+    local seatedPlayers = getSeatedPlayers()
+    if #seatedPlayers <= 3 then
+        Controller.fields.submitGameRankedGame = false
+        broadcastToAll(I18N("need4Players"), Color.fromString("White"))
+    end
+    Controller.ui:toUI()
+end
+
+--- UI callback (cf. XML).
+function submitGameTournament(player, value, id)
+    Controller.ui:fromUI(player, value, id)
+    if value == "True" then
+        Controller.fields.submitGameRankedGame = false
+    end
+    Controller.ui:toUI()
+end
+
+--- UI callback (cf. XML).
 function setUpFromUI()
     if not Controller.ui then
         Helper.dump("No UI. Bouncing button?")
@@ -595,6 +629,7 @@ function setUpFromUI()
         horizontalHandLayout = Controller.fields.horizontalHandLayout,
         formalCombatPhase = Controller.fields.formalCombatPhase,
         soundEnabled = Controller.fields.soundEnabled,
+        submitGameRankedGame = Controller.fields.submitGameRankedGame,
     })
 end
 
