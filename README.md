@@ -48,7 +48,6 @@ __2P / Solo__
 __Aesthetic__
 
 - Rework the tech/contract decals.
-- Rectify the height of the 6P Emperor/Fremen faction tokens.
 - Widen the colored border of the boards (and remove the trigger effects in the process).
 
 ## Lua sources
@@ -63,6 +62,7 @@ __Aesthetic__
 Modules relies on the Luabundler tool, but also on utils.Modules.
 
 - __Action.lua__ - All atomic actions (or effets): spending spice, deploying a troop, drawing a card...
+- __Board.lua__ - The board static cloning mechanism, an alternative to the former mutation approach, is implemented here.
 - __CardEffect.lua__ - Small framework to describe most card effects. Heavily used by the fully automated Hagal house, but also by the assisted revelation, among others.
 - __ChoamContractMarket.lua__ - Everything related to the CHOAM contract module.
 - __Combat.lua__ - Manage the mainboard content related to combat, conflict cards included.
@@ -97,12 +97,14 @@ Modules relies on the Luabundler tool, but also on utils.Modules.
 
 ### scripts/modules/en
 
+- __Board.lua__ - English content for Board.
 - __Deck.lua__ - English content for Deck.
 - __Locale.lua__ - English translations.
 - __Pdf.lua__ - English manuals.
 
 ### scripts/modules/fr
 
+- __Board.lua__ - French content for Board.
 - __Deck.lua__ - French content for Deck.
 - __Locale.lua__ - French translations.
 - __Pdf.lua__ - French manuals.

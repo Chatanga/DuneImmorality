@@ -16,6 +16,7 @@ local TurnControl = Module.lazyRequire("TurnControl")
 local Commander = Module.lazyRequire("Commander")
 local Music = Module.lazyRequire("Music")
 local Hagal = Module.lazyRequire("Hagal")
+local Board = Module.lazyRequire("Board")
 
 local MainBoard = {
     spaceDetails = {
@@ -71,8 +72,6 @@ local MainBoard = {
 ---
 function MainBoard.onLoad(state)
     Helper.append(MainBoard, Helper.resolveGUIDs(false, {
-        emperorBoard = "4cb9ba",
-        fremenBoard = "01c575",
         immortalityPatch = "6cf62a",
         spiceBonusTokens = {
             deepDesert = "116807",
@@ -85,8 +84,6 @@ function MainBoard.onLoad(state)
     }))
     MainBoard.spiceBonuses = {}
 
-    Helper.noPhysics(MainBoard.getBoard())
-
     Helper.forEachValue(MainBoard.spiceBonusTokens, Helper.noPhysicsNorPlay)
 
     if state.settings then
@@ -96,6 +93,10 @@ function MainBoard.onLoad(state)
                 MainBoard.spiceBonuses[name] = Resource.new(token, nil, "spice", value, name)
             end
         end
+
+        MainBoard.mainBoard = Board.getBoard("mainBoard4P") or Board.getBoard("mainBoard6P")
+        MainBoard.emperorBoard = Board.getBoard("emperorBoard")
+        MainBoard.fremenBoard = Board.getBoard("fremenBoard")
 
         MainBoard._transientSetUp(state.settings)
     end
@@ -115,21 +116,26 @@ function MainBoard.setUp(settings)
     local continuation = Helper.createContinuation("MainBoard.setUp")
 
     if settings.numberOfPlayers == 6 then
-        MainBoard.getBoard().setState(2)
-        Helper.onceTimeElapsed(2).doAfter(continuation.run)
+        MainBoard.mainBoard = Board.selectBoard("mainBoard6P", settings.language)
+        MainBoard.emperorBoard = Board.selectBoard("emperorBoard", settings.language)
+        MainBoard.fremenBoard = Board.selectBoard("fremenBoard", settings.language)
+        continuation.run()
         if settings.immortality then
             local position = MainBoard.immortalityPatch.getPosition()
             MainBoard.immortalityPatch.setPosition(position + Vector(1.6, 0, -1.9))
         end
     else
-        MainBoard.emperorBoard.destruct()
+        MainBoard.mainBoard = Board.selectBoard("mainBoard4P", settings.language)
+        Board.destructBoard("emperorBoard")
         MainBoard.emperorBoard = nil
-        MainBoard.fremenBoard.destruct()
+        Board.destructBoard("fremenBoard")
         MainBoard.fremenBoard = nil
         MainBoard.spiceBonusTokens.habbanyaErg.destruct()
         MainBoard.spiceBonusTokens.habbanyaErg = nil
         continuation.run()
     end
+
+    Board.destructInactiveBoards()
 
     if settings.immortality then
     else
@@ -139,46 +145,11 @@ function MainBoard.setUp(settings)
 
     local nextContinuation = Helper.createContinuation("MainBoard.setUp.next")
     continuation.doAfter(function ()
-        MainBoard._mutateMainBoards(settings.language)
         MainBoard._transientSetUp(settings)
         nextContinuation.run()
     end)
 
     return nextContinuation
-end
-
----
-function MainBoard._mutateMainBoards(locale)
-    local Board = {
-        fr = require("fr.Board"),
-        en = require("en.Board"),
-    }
-
-    if locale == "en" then
-        -- Bail out since the starting boards are in english.
-        return
-    end
-
-    local boards = {
-        board4P = { guid = "483a1a" },
-        board6P = { guid = "21cc52" },
-        emperorBoard = { target = "emperorBoard", guid = "4cb9ba" },
-        fremenBoard = { target = "fremenBoard", guid = "01c575" },
-    }
-
-    for boardName, boardInfo in pairs(boards) do
-        local board = getObjectFromGUID(boardInfo.guid)
-        if board then
-            local parameters = board.getCustomObject()
-            parameters.image = Board[locale][boardName]
-            board.setCustomObject(parameters)
-            if boardInfo.target then
-                MainBoard[boardInfo.target] = board.reload()
-            else
-                board.reload()
-            end
-        end
-    end
 end
 
 ---
@@ -391,19 +362,20 @@ end
 
 ---
 function MainBoard._getAllBoards(settings)
-    local boards = {
-        MainBoard.getBoard()
-    }
+    local boards = { MainBoard.mainBoard }
+
     if settings.numberOfPlayers == 6 then
         assert(MainBoard.emperorBoard)
         table.insert(boards, MainBoard.emperorBoard)
         assert(MainBoard.fremenBoard)
         table.insert(boards, MainBoard.fremenBoard)
     end
+
     if settings.riseOfIx then
         table.insert(boards, ShippingTrack.getBoard())
         table.insert(boards, TechMarket.getBoard())
     end
+
     return boards
 end
 
@@ -593,6 +565,7 @@ function MainBoard.sendAgent(color, spaceName, recallSpy)
                             action()
                             -- FIXME We are cheating here...
                             Helper.onceTimeElapsed(2).doAfter(function ()
+                                Action.log(nil, color)
                                 Action.unsetContext("agentSent")
                             end)
                             continuation.run()
@@ -1830,17 +1803,13 @@ end
 ---
 function MainBoard.isInside(object)
     local position = object.getPosition()
-    local center = MainBoard.getBoard().getPosition()
+    local center = MainBoard.mainBoard.getPosition()
     local offset = position - center
     return math.abs(offset.x) < 11 and math.abs(offset.z) < 11
 end
 
---- The main board has state, meaning the Lua reference get invalidated when it changes.
---- (A collections of states works the same way as a bag.)
-function MainBoard.getBoard()
-    local board4P = getObjectFromGUID("483a1a")
-    local board6P = getObjectFromGUID("21cc52")
-    return board4P or board6P
+function MainBoard.getMainBoard()
+    return MainBoard.mainBoard
 end
 
 ---

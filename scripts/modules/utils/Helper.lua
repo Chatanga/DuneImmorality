@@ -1844,6 +1844,17 @@ function Helper.concatTables(...)
 end
 
 ---
+function Helper.mergeSets(...)
+    local result = {}
+    for _, s in ipairs({...}) do
+        for key, value in pairs(s) do
+            result[key] = value
+        end
+    end
+    return result
+end
+
+---
 function Helper.shallowCopy(elements)
     local copy = {}
     for k, v in pairs(elements) do

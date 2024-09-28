@@ -86,7 +86,7 @@ function ShippingTrack._createLevelButton(level, levelSlot)
     local tooltip = level == 0
         and I18N("recallYourFreighter")
         or I18N("progressOnShipmentTrack")
-    local ground = levelSlot.getPosition().y- 0.1
+    local ground = levelSlot.getPosition().y - 0.1
     Helper.createAnchoredAreaButton(levelSlot, ground, 0.2, tooltip, PlayBoard.withLeader(function (_, color, _)
         local leader = PlayBoard.getLeader(color)
         local freighterLevel = ShippingTrack.getFreighterLevel(color)

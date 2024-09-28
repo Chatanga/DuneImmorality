@@ -487,6 +487,7 @@ end
 
 ---
 function LeaderSelection.claimLeader(color, leader)
+    Helper.dumpFunction("LeaderSelection.claimLeader", color, leader)
     if PlayBoard.isRival(color) and not leader.hasTag("RivalLeader") then
         Dialog.broadcastToColor(I18N("incompatibleRivalLeader"), color, "Purple")
         return

@@ -934,6 +934,20 @@ function Deck.generateLeaderDeck(deckZone, contracts, ix, immortality, legacy, m
     assert(deckZone)
     assert(deckZone.getPosition)
     local continuation = Helper.createContinuation("Deck.generateLeaderDeck")
+
+    local fuzzyLeaders = Deck.leaders.uprising
+    fuzzyLeaders = Helper.concatTables(fuzzyLeaders, Deck.leaders.legacy)
+    if ix then
+        fuzzyLeaders = Helper.concatTables(fuzzyLeaders, Deck.leaders.ix)
+    else
+        fuzzyLeaders = Helper.concatTables(fuzzyLeaders, {
+            armandEcaz = 1,
+            ilesaEcaz = 1,
+            tessiaVernius = 1,
+            yunaMoritani = 1,
+        })
+    end
+
     local contributions = Deck._mergeStandardContributionSets(Deck.leaders, ix, immortality, legacy, merakon)
     if not contracts then
         contributions.shaddamCorrino = nil

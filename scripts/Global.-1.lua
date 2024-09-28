@@ -114,6 +114,7 @@ local Dialog = require("utils.Dialog")
 local allModules = Module.registerModules({
     AcquireCard, -- To take advantage of Module.registerModuleRedirections.
     Action = require("Action"),
+    Board = require("Board"),
     ChoamContractMarket = require("ChoamContractMarket"),
     Combat = require("Combat"),
     Commander = require("Commander"),
@@ -221,6 +222,10 @@ function onLoad(scriptState)
         if false then
             allModules.Deck.rebuildPreloadAreas()
         end
+        -- Regenerate the boards for each language.
+        if false then
+            allModules.Board.rebuildPreloadAreas()
+        end
     else
         -- The destroyed objects need one frame to disappear and not interfere
         -- with the mod.
@@ -256,6 +261,7 @@ function asyncOnLoad(scriptState)
     allModules.ordered = {
         { name = "Locale", module = allModules.Locale },
         { name = "Action", module = allModules.Action },
+        { name = "Board", module = allModules.Board },
         { name = "Pdf", module = allModules.Pdf },
         { name = "Music", module = allModules.Music },
         { name = "Deck", module = allModules.Deck },

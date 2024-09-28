@@ -834,26 +834,6 @@ return {
     invasionShips = "Vaisseaux d’invasion",
 
     -- Contracts
-    ----deliverSupplies = "Livrer des fournitures",
-    --immediat = "Immédiat",
-    --arrakeenWithWater = "Arrakeen (eau)",
-    --heighlinerWithTroops = "Long-courrier (troupes)",
-    ----espionage = "Espionnage",
-    ----researchStation = "Station de recherche",
-    --harvest3orMore = "Récolter 3+",
-    --sardaukarWithCards = "Sardaukar (cartes)",
-    --spiceRefineryWithCards = "Raffinerie d’épice (cartes)",
-    --heighlinerWithWater = "Long-courrier (eau)",
-    --arrakeenWithSpy = "Arrakeen (espion)",
-    --harvest4orMore = "Récolter 4+",
-    --highCouncilWithInfluence = "Haut-Conseil (influence)",
-    --researchStationWithSpy = "Station de recherche (espion)",
-    --spiceRefineryWithWater = "Raffinerie d’épice (eau)",
-    --highCouncilWithSolaris = "Haut-Conseil (solaris)",
-    --sardaukarWithRecall = "Sardaukar (rappel)",
-    --acquireTheSpiceMustFlow = "Acquérir « l’épice doit couler »",
-
-    -- Contracts
     fulfilledContract = "Contrat « {contract} » rempli.",
     harvest3orMore = "Récolter 3+",
     harvest4orMore = "Récolter 4+",
