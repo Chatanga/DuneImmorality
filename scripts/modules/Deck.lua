@@ -604,6 +604,32 @@ local Deck = {
             tessiaVernius = 1,
             yunaMoritani = 1,
         },
+        free = {
+            -- Legacy
+            vladimirHarkonnen = 0.5,
+            glossuRabban = 0.5,
+            ilbanRichese = 0.5,
+            helenaRichese = 0.5,
+            letoAtreides = 0.5,
+            paulAtreides = 0.5,
+            arianaThorvald = 0.5,
+            memnonThorvald = 0.5,
+            -- Ix
+            armandEcaz = 0.5,
+            ilesaEcaz = 0.5,
+            tessiaVernius = 0.5,
+            yunaMoritani = 0.5,
+            -- Uprising
+            stabanTuek = 0.5,
+            amberMetulli = 0.5,
+            gurneyHalleck = 0.5,
+            margotFenring = 0.5,
+            irulanCorrino = 0.5,
+            jessica = 0.5,
+            feydRauthaHarkonnen = 0.5,
+            shaddamCorrino = 0.5,
+            muadDib = 0.5,
+        }
     },
     rivalLeaders = {
         uprising = {
@@ -930,25 +956,14 @@ function Deck.generateHagalDeck(deckZone, ix, immortality, playerCount)
 end
 
 ---
-function Deck.generateLeaderDeck(deckZone, contracts, ix, immortality, legacy, merakon)
+function Deck.generateLeaderDeck(deckZone, contracts, ix, immortality, legacy, merakon, free)
     assert(deckZone)
     assert(deckZone.getPosition)
     local continuation = Helper.createContinuation("Deck.generateLeaderDeck")
-
-    local fuzzyLeaders = Deck.leaders.uprising
-    fuzzyLeaders = Helper.concatTables(fuzzyLeaders, Deck.leaders.legacy)
-    if ix then
-        fuzzyLeaders = Helper.concatTables(fuzzyLeaders, Deck.leaders.ix)
-    else
-        fuzzyLeaders = Helper.concatTables(fuzzyLeaders, {
-            armandEcaz = 1,
-            ilesaEcaz = 1,
-            tessiaVernius = 1,
-            yunaMoritani = 1,
-        })
-    end
-
-    local contributions = Deck._mergeStandardContributionSets(Deck.leaders, ix, immortality, legacy, merakon)
+    local contributions = Deck._mergeStandardContributionSets(Deck.leaders, ix, immortality, legacy, merakon, free)
+    contributions = Helper.mapValues(contributions, function (cardinality)
+        return math.min(cardinality, 1)
+    end)
     if not contracts then
         contributions.shaddamCorrino = nil
     end
@@ -973,7 +988,7 @@ function Deck.generateRivalLeaderDeck(deckZone, streamlined, ix, immortality, le
 end
 
 ---
-function Deck._mergeStandardContributionSets(root, ix, immortality, legacy, merakon)
+function Deck._mergeStandardContributionSets(root, ix, immortality, legacy, merakon, free)
     local contributionSets = { root.uprising }
     if merakon then
         table.insert(contributionSets, root.merakon)
@@ -986,6 +1001,9 @@ function Deck._mergeStandardContributionSets(root, ix, immortality, legacy, mera
         end
         if legacy then
             table.insert(contributionSets, root.legacy)
+        end
+        if free then
+            table.insert(contributionSets, root.free)
         end
     end
     return Deck._mergeContributionSets(contributionSets)
@@ -1396,7 +1414,7 @@ function Deck._generateFromPrebuildDeck(deckType, deckZone, contributions, _, sp
     for name, cardinality in pairs(contributions) do
         local source = sources[name]
         assert(source, "No source for card '" .. deckType .. "." .. name .. "'")
-        for _ = 1, cardinality do
+        for i = 1, math.ceil(cardinality) do
             local firstGuid = source.instances[1]
             assert(firstGuid, "Not enough instances of the card '" .. name .. "'")
             table.remove(source.instances, 1)
@@ -1406,6 +1424,11 @@ function Deck._generateFromPrebuildDeck(deckType, deckZone, contributions, _, sp
                 -- Stacking is needed to preserve input order.
                 position = deckZone.getPosition() + Vector(0, 1 + cardCount * (spacing or 0.1), 0),
                 smooth = false,
+                callback_function = function (card)
+                    if cardinality - i < 0 then
+                        card.setTags(Helper.concatTables(card.getTags(), { "Unselected" }))
+                    end
+                end
             })
             cardCount = cardCount + 1
         end

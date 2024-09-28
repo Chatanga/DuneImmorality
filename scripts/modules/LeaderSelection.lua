@@ -66,17 +66,34 @@ function LeaderSelection.setUp(settings, activeOpponents)
     if settings.numberOfPlayers > 2 then
         preContinuation.run()
     else
-        Deck.generateRivalLeaderDeck(LeaderSelection.deckZone, settings.streamlinedRivals, settings.riseOfIx, settings.immortality, settings.legacy, settings.merakon).doAfter(function (deck)
+        Deck.generateRivalLeaderDeck(
+            LeaderSelection.deckZone,
+            settings.streamlinedRivals,
+            settings.riseOfIx,
+            settings.immortality,
+            settings.legacy,
+            settings.merakon
+        ).doAfter(function (deck)
             LeaderSelection._layoutLeaderDeck(deck, 0).doAfter(preContinuation.run)
         end)
     end
 
     local postContinuation = Helper.createContinuation("LeaderSelection.setUp.postContinuation")
 
+    local free = settings.tweakLeaderSelection and not settings.merakon
+
     preContinuation.doAfter(function ()
         -- Temporary tag to avoid counting the rival leader cards.
         LeaderSelection.deckZone.addTag("Leader")
-        Deck.generateLeaderDeck(LeaderSelection.deckZone, settings.useContracts, settings.riseOfIx, settings.immortality, settings.legacy, settings.merakon).doAfter(function (deck)
+        Deck.generateLeaderDeck(
+            LeaderSelection.deckZone,
+            settings.useContracts,
+            settings.riseOfIx,
+            settings.immortality,
+            settings.legacy,
+            settings.merakon,
+            free
+        ).doAfter(function (deck)
             LeaderSelection.deckZone.removeTag("Leader")
 
             local start = settings.numberOfPlayers > 2 and 0 or 12
@@ -117,6 +134,9 @@ function LeaderSelection._layoutLeaderDeck(deck, start)
             position = position,
             flip = true,
             callback_function = function (card)
+                if card.hasTag("Unselected") then
+                    card.flip()
+                end
                 count = count - 1
                 if count == 0 then
                     Helper.onceTimeElapsed(1).doAfter(continuation.run)
