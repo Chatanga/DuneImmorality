@@ -15,6 +15,7 @@ Features:
 - Arrakeen Scouts
 
 Supported langages:
+
 - French
 - English
 
@@ -35,3 +36,5 @@ This repository contains the JSON skeletons and Lua scripts of various mods for 
 - Scan Arrakeen Scouts deck (en).
 - Arrakeen Scouts history (as cards).
 - Rival expert deployment / brutal escalation / churn.
+- Main board in French.
+- Fix Research Station bound to Ix extension.
