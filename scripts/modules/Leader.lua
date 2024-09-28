@@ -309,10 +309,6 @@ Leader.armandEcaz = Helper.createClass(Leader, {
 Leader.ilesaEcaz = Helper.createClass(Leader, {
 
     setUp = function (color, settings)
-        Leader.ilesaEcaz.transientSetUp(color, settings)
-    end,
-
-    transientSetUp = function (color, settings)
         local content = PlayBoard.getPlayBoard(color).content
         local zone = content.leaderZone
         -- Temporary tag to avoid counting the leader card.
@@ -330,6 +326,10 @@ Leader.ilesaEcaz = Helper.createClass(Leader, {
             end)
         end)
 
+        Leader.ilesaEcaz.transientSetUp(color, settings)
+    end,
+
+    transientSetUp = function (color, settings)
         Leader._createRightCardButton(nil, color, "GuildContactsAnchor", I18N("guildContactsTooltip"), Leader.ilesaEcaz.signetRing)
     end,
 
