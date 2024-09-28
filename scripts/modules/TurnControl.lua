@@ -277,7 +277,6 @@ end
 
 ---
 function TurnControl.endOfTurn()
-    Helper.dumpFunction("TurnControl.endOfTurn")
     Helper.onceStabilized().doAfter(function ()
         TurnControl._next(TurnControl._getNextPlayer(TurnControl.currentPlayerLuaIndex, TurnControl.counterClockWise))
     end)

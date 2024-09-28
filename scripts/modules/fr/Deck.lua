@@ -25,7 +25,7 @@ local Deck = {
         -- reclaimed forces
         tleilaxResearchReclaimedForces = { "https://steamusercontent-a.akamaihd.net/ugc/2093667512238501804/60812AEA733FF5558BA9190E47CBD474EBF38C94/", 1, 1 },
         uprisingImperium = { "https://steamusercontent-a.akamaihd.net/ugc/2499024154440743964/4AFB30174B6A6A4A46E5CE946B8731403F267041/", 10, 7 },
-        uprisingImperium_contract = { "https://steamusercontent-a.akamaihd.net/ugc/2499024154440642198/52D339ECAB84AC2B60098B52BBE48F042F8C4BCC/", 2, 2 },
+        uprisingImperium_contract = { "https://steamusercontent-a.akamaihd.net/ugc/2499024154440742919/F29889245831593A62B3E914EAD5DBC4904BCEE7/", 2, 2 },
         uprisingImperium_prepareTheWay = { "https://steamusercontent-a.akamaihd.net/ugc/2499024154440747917/72A71863DE41003FCC454F212FE183937C72C50F/", 1, 1 },
         uprisingImperium_theSpiceMustFlow = { "https://steamusercontent-a.akamaihd.net/ugc/2488878371133981081/35C76D798308EEA5D9BF50DB3F8B2E3159B14AF9/", 5, 2 },
     },
