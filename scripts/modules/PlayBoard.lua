@@ -1632,7 +1632,7 @@ end
 
 ---
 function PlayBoard:_createPlayerScorePark()
-    local origin = self:_newSymmetricBoardPosition(-11.2, 0.41, -8.10) + self.content.board.getPosition()
+    local origin = self:_newSymmetricBoardPosition(-11.2, 0.20, -8.10) + self.content.board.getPosition()
 
     local direction = 1
     if PlayBoard.isLeft(self.color) then
