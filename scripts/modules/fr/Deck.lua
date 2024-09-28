@@ -21,7 +21,7 @@ local Deck = {
         immortalityImperium = { "https://steamusercontent-a.akamaihd.net/ugc/2093667512238503969/142F50245296C2EE1F5ABAD8CE93982AC0592110/", 6, 5 },
         immortalityImperiumExperimentation = { "https://steamusercontent-a.akamaihd.net/ugc/2093667512238504928/BF6DF4E8EF5B8C8F5BB6952166C559694A61BA04/", 2, 2 },
         -- tleilax without reclaimed forces
-        tleilaxResearch = { "https://steamusercontent-a.akamaihd.net/ugc/2093667512238501306/639814906915DFA557375A3F7963C9DE53301D57/", 4, 5 },
+        tleilaxResearch = { "https://steamusercontent-a.akamaihd.net/ugc/2496772988156029020/2399494577B270989873BC3A2002B8D99E33E001/", 4, 5 },
         -- reclaimed forces
         tleilaxResearchReclaimedForces = { "https://steamusercontent-a.akamaihd.net/ugc/2093667512238501804/60812AEA733FF5558BA9190E47CBD474EBF38C94/", 1, 1 },
         uprisingImperium = { "https://steamusercontent-a.akamaihd.net/ugc/2499024154440743964/4AFB30174B6A6A4A46E5CE946B8731403F267041/", 10, 7 },

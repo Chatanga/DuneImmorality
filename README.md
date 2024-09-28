@@ -18,7 +18,7 @@ Supported langages:
 - English
 - French
 
-## Links :
+## Links
 
 - Steam: https://steamcommunity.com/sharedfiles/filedetails/?id=3127748613
 
