@@ -155,10 +155,12 @@ function Action.log(message, color, isSecret)
             break
         end
     end
-    if isSecret then
-        printToColor(prefix .. message, color, "Grey")
-    else
-        printToAll(prefix .. message, color)
+    if message then
+        if isSecret then
+            printToColor(prefix .. message, color, "Grey")
+        else
+            printToAll(prefix .. message, color)
+        end
     end
 end
 

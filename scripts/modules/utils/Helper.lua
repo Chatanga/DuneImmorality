@@ -1009,6 +1009,25 @@ function Helper.onceMotionless(object)
 end
 
 ---@return Continuation
+function Helper.onceSwallowedUp(object)
+    local guid = object.getGUID()
+    local continuation = Helper.createContinuation("Helper.onceSwallowedUp")
+    -- Wait 1 frame for the movement to start.
+    Wait.time(function ()
+        Wait.condition(function ()
+            Wait.time(function ()
+                continuation.run(object)
+            end, Helper.MINIMAL_DURATION)
+        end, function ()
+            continuation.tick()
+            local objectHasDisappeared = getObjectFromGUID(guid) == nil
+            return objectHasDisappeared
+        end)
+    end, Helper.MINIMAL_DURATION)
+    return continuation
+end
+
+---@return Continuation
 function Helper.onceShuffled(container)
     local continuation = Helper.createContinuation("Helper.onceShuffled")
     -- TODO Is there a better way?
@@ -1427,8 +1446,9 @@ function Helper.createCoalescentQueue(separationDelay, coalesce, handle)
             if newEvent then
                 cq.lastEvent = newEvent
             else
-                handle(cq.lastEvent)
+                local oldEvent = cq.lastEvent
                 cq.lastEvent = event
+                handle(oldEvent)
             end
         else
             cq.lastEvent = event
@@ -1818,6 +1838,17 @@ function Helper.concatTables(...)
     for _, t in ipairs({...}) do
         for _, element in ipairs(t) do
             table.insert(result, element)
+        end
+    end
+    return result
+end
+
+---
+function Helper.mergeSets(...)
+    local result = {}
+    for _, s in ipairs({...}) do
+        for key, value in pairs(s) do
+            result[key] = value
         end
     end
     return result

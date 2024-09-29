@@ -17,4 +17,12 @@ function Locale.setUp(settings)
     I18N.setLocale(settings.language)
 end
 
+---
+function Locale.getAllLocales()
+    return {
+        "en",
+        "fr"
+    }
+end
+
 return Locale
