@@ -137,7 +137,10 @@ function Action.log(message, color, isSecret)
     end
     if message then
         if isSecret then
-            printToColor(prefix .. message, color, "Grey")
+            local player = Helper.findPlayerByColor(color)
+            if player and player.seated then
+                printToColor(prefix .. message, color, "Grey")
+            end
         else
             printToAll(prefix .. message, color)
         end
