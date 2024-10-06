@@ -87,6 +87,7 @@ Modules relies on the Luabundler tool, but also on utils.Modules.
 - __Rival.lua__ - Provides a proxy for each rival leader, used as an indirection to Rival then Action. Each leader ability is implemented as an alteration of an existing action or as an event handler. Contrary to the Leader class, mostly empty, the Rival class provides part of the "AI" for Solo/Hagal mode.
 - __ScoreBoard.lua__ - A facade to retrieve the VP tokens from their various locations on the maiboard and player boards. Badly named actually, since it doesn't handle the shared VP track.
 - __ShipmentTrack.lua__ - Handle the shipping track and its freighters from the Ix extension.
+- __SubmitGame.lua__ - Rogerio's contribution to ranked play (includes dedicated global UI part).
 - __TechCard.lua__ - Describes all the Tech tiles, mainly their costs and acquisition bonuses.
 - __TechMarket.lua__ - Handles the tech market (and its "tiles" which are cards actually) from the Ix extension.
 - __ThroneRow.lua__ - Manages the Throne row for the 6P mode.

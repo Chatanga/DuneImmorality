@@ -70,8 +70,8 @@ be integrated to this mod in a standard way.
 			</HorizontalLayout>
 			<VerticalLayout padding="25 0 0 0">
 				<HorizontalLayout>
-					<Text class="secondary" id="defaultLeaderPoolSizeLabel"/>
-					<Slider id="defaultLeaderPoolSize" flexibleWidth="2" onValueChanged="setDefaultLeaderPoolSize" wholeNumbers="True" minValue="6" maxValue="12" value="8"/>
+					<Text class="secondary" id="leaderPoolSizeLabel"/>
+					<Slider id="leaderPoolSize" flexibleWidth="2" onValueChanged="setLeaderPoolSize" wholeNumbers="True" minValue="6" maxValue="12" value="8"/>
 				</HorizontalLayout>
 				<Toggle class="setUp" id="tweakLeaderSelection" onValueChanged="Global/setTweakLeaderSelection" isOn="False" key="tweakLeaderSelection"/>
 			</VerticalLayout>

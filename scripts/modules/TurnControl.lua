@@ -101,7 +101,8 @@ function TurnControl.setUp(settings, activeOpponents)
             end
         end
     end
-    if TurnControl.firstPlayerOfTheGame == nil then
+
+    if not TurnControl.firstPlayerOfTheGame then
         TurnControl.firstPlayerOfTheGame = TurnControl.players[TurnControl.firstPlayerLuaIndex]
     end
 

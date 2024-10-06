@@ -60,7 +60,7 @@ end
 
 ---
 function LeaderSelection.setUp(settings, activeOpponents)
-    LeaderSelection.leaderSelectionPoolSize = settings.defaultLeaderPoolSize
+    LeaderSelection.leaderSelectionPoolSize = settings.leaderPoolSize
 
     local preContinuation = Helper.createContinuation("LeaderSelection.setUp.preContinuation")
     if settings.numberOfPlayers > 2 then
@@ -112,7 +112,7 @@ function LeaderSelection.setUp(settings, activeOpponents)
                 -- Give minimal time to the 2 leaders above to exit the zone.
                 Helper.onceFramesPassed(1).doAfter(function ()
                     local players = TurnControl.toCanonicallyOrderedPlayerList(activeOpponents)
-                    LeaderSelection._transientSetUp(settings, settings.defaultLeaderPoolSize, players, Stage.INITIALIZED)
+                    LeaderSelection._transientSetUp(settings, settings.leaderPoolSize, players, Stage.INITIALIZED)
                 end)
 
                 postContinuation.run()

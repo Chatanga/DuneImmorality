@@ -194,9 +194,9 @@ local Controller = {
         goTo11 = {},
         leaderSelection_all = allModules.LeaderSelection.getSelectionMethods(4),
         leaderSelection = "reversePick",
-        defaultLeaderPoolSize_range = { min = 4, max = 12 },
-        defaultLeaderPoolSize = 9,
-        defaultLeaderPoolSizeLabel = "-",
+        leaderPoolSize_range = { min = 4, max = 12 },
+        leaderPoolSize = 9,
+        leaderPoolSizeLabel = "-",
         tweakLeaderSelection = false,
         horizontalHandLayout = true,
         formalCombatPhase = false,
@@ -324,7 +324,7 @@ function asyncOnLoad(scriptState)
             Controller.ui = XmlUI.new(Global, "setupPane", Controller.fields)
             Controller.ui:show()
             I18N.setLocale(Controller.fields.language)
-            Controller.updateDefaultLeaderPoolSizeLabel()
+            Controller.updateLeaderPoolSizeLabel()
             Controller.updateSetupButton()
             uiAlreadySetUp = true
         end
@@ -450,7 +450,7 @@ function setLanguage(player, value, id)
     -- The locale is changed in real time by the UI, but not the test mode.
     I18N.setLocale(Controller.fields.language)
     Controller.ui:toUI()
-    Controller.updateDefaultLeaderPoolSizeLabel()
+    Controller.updateLeaderPoolSizeLabel()
 end
 
 --- UI callback (cf. XML).
@@ -557,9 +557,9 @@ function setLeaderSelection(player, value, id)
 end
 
 --- UI callback (cf. XML).
-function setDefaultLeaderPoolSize(player, value, id)
+function setLeaderPoolSize(player, value, id)
     Controller.ui:fromUI(player, value, id)
-    Controller.updateDefaultLeaderPoolSizeLabel()
+    Controller.updateLeaderPoolSizeLabel()
 end
 
 --- UI callback (cf. XML).
@@ -630,7 +630,7 @@ function setUpFromUI()
         immortality = Controller.fields.immortality == true,
         goTo11 = Controller.fields.goTo11 == true,
         leaderSelection = Controller.fields.leaderSelection,
-        defaultLeaderPoolSize = tonumber(Controller.fields.defaultLeaderPoolSize),
+        leaderPoolSize = tonumber(Controller.fields.leaderPoolSize),
         tweakLeaderSelection = Controller.fields.tweakLeaderSelection,
         horizontalHandLayout = Controller.fields.horizontalHandLayout,
         formalCombatPhase = Controller.fields.formalCombatPhase,
@@ -784,11 +784,11 @@ function Controller.updateSetupButton()
 end
 
 ---
-function Controller.updateDefaultLeaderPoolSizeLabel()
-    local value = Controller.fields.defaultLeaderPoolSize
-    Controller.fields.defaultLeaderPoolSizeLabel = I18N("defaultLeaderPoolSizeLabel", { value = value } )
+function Controller.updateLeaderPoolSizeLabel()
+    local value = Controller.fields.leaderPoolSize
+    Controller.fields.leaderPoolSizeLabel = I18N("leaderPoolSizeLabel", { value = value } )
     -- Do not use Controller.ui:toUI() to avoid breaking the current UI operation.
-    self.UI.setValue("defaultLeaderPoolSizeLabel", Controller.fields.defaultLeaderPoolSizeLabel)
+    self.UI.setValue("leaderPoolSizeLabel", Controller.fields.leaderPoolSizeLabel)
 end
 
 ---

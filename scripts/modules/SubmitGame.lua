@@ -15,7 +15,7 @@ local INELIGIBLE_COLORS = {"Black", "Gray"}
 local SubmitGame = Helper.createClass(nil, {
     ui = nil,  -- The view
     fields = {  -- The model
-        startTime = os.date("!%m/%d/%Y %H:%M:%S", os.time(os.date("!*t"))),
+        startTime = nil,
         token = nil,
         players = {},
         firstPlayerColor = nil,
@@ -38,6 +38,8 @@ local SubmitGame = Helper.createClass(nil, {
 })
 
 function SubmitGame.onLoad(state)
+    SubmitGame.fields.startTime = SubmitGame._currentTimestamp()
+
     if state.TurnControl then
         SubmitGame.fields = state.SubmitGame.fields
         if SubmitGame.fields.token ~= nil then
@@ -90,9 +92,6 @@ function SubmitGame.setUp(settings)
     for _, fieldName in ipairs(fieldNames) do
         SubmitGame.fields[fieldName] = settings[fieldName]
     end
-
-    -- leaderPoolSize is a special case, it uses a different key in settings
-    SubmitGame.fields.leaderPoolSize = settings.defaultLeaderPoolSize
 
     SubmitGame.generateToken()
     SubmitGame._staticSetUp(settings)
@@ -149,17 +148,9 @@ function SubmitGame.openSubmitScreen()
         end
     end
     SubmitGame.fields.players = playerData
-    SubmitGame.updateSubmitGameConfirm(playerWith10VP)
+    UI.setAttributes("submitGameConfirm", {key = "submitGame", interactable = playerWith10VP})
     SubmitGame.displayAllData()
     UI.setAttributes("submitScreenPanel", {active = true})
-end
-
-function SubmitGame.updateSubmitGameConfirm(playerWith10VP)
-    if playerWith10VP then
-        UI.setAttributes("submitGameConfirm", {key = "submitGame", interactable = true})
-    else
-        UI.setAttributes("submitGameConfirm", {key = "submitGame", interactable = false})
-    end
 end
 
 function SubmitGame.displayAllData()
@@ -193,7 +184,7 @@ function SubmitGame.displayAllData()
         for attribute, value in pairs(attributes) do
             local placementCellIndex = "cell_placement_" .. i
             UI.setAttributes(placementCellIndex, {color = player.color})
-            
+
             local placementIndex = "placement_" .. i .. attribute
             UI.setAttribute(placementIndex, "text", value)
 
@@ -214,7 +205,7 @@ end
 
 function SubmitGame.handleWebRequestToken(request)
     if request.is_error then
-        Helper.dump("SubmitGame.handleWebRequestToken: Error: " .. request.text)
+        Helper.dump("SubmitGame.handleWebRequestToken: Error:", request.text)
         SubmitGame.fields.token = 0
     else
         SubmitGame.fields.token = request.text
@@ -223,7 +214,7 @@ end
 
 function SubmitGame.handleWebRequestGame(request)
     if request.is_error then
-        Helper.dump("SubmitGame.handleWebRequestGame: Error: " .. request.text)
+        Helper.dump("SubmitGame.handleWebRequestGame: Error:", request.text)
     else
         broadcastToAll(request.text, "White")
     end
@@ -231,7 +222,7 @@ end
 
 function SubmitGame.handleGameSubmitSheet(request)
     if request.is_error then
-        Helper.dump("SubmitGame.handleGameSubmitSheet: Error: " .. request.text)
+        Helper.dump("SubmitGame.handleGameSubmitSheet: Error:", request.text)
     else
         broadcastToAll(I18N("gameSubmitted"), "Red")
     end
@@ -246,9 +237,7 @@ function SubmitGame.makeWebRequest(url, method, body, callback)
 
     local jsonString = JSON.encode(body)
 
-    WebRequest.custom(url, method, true, jsonString, headers, function(request)
-        callback(request)
-    end)
+    WebRequest.custom(url, method, true, jsonString, headers, callback)
 end
 
 function SubmitGame.generateToken()
@@ -266,8 +255,8 @@ function SubmitGame.generateToken()
             table.insert(body.playersList, playerInfo)
         end
     end
-    firstPlayer = TurnControl.getFirstPlayerOfTheGame()
-    Helper.dump("The First player is: " .. firstPlayer)
+    local firstPlayer = TurnControl.getFirstPlayerOfTheGame()
+    Helper.dump("The First player is:", firstPlayer)
 
     SubmitGame.fields.players = body.playersList
 
@@ -291,13 +280,13 @@ function SubmitGame.submitGame()
         tournament = SubmitGame.fields.submitGameTournament,
         playerData = SubmitGame.fields.players,
         startTime = SubmitGame.fields.startTime,
-        endTime = os.date("!%m/%d/%Y %H:%M:%S", os.time(os.date("!*t"))),
+        endTime = SubmitGame._currentTimestamp(),
         turn = TurnControl.getCurrentRound()
     }
 
     local infoTable = {
         ["entry.1366590140"] = SubmitGame.fields.startTime, -- startTime
-        ["entry.1761818302"] = os.date("!%m/%d/%Y %H:%M:%S", os.time(os.date("!*t"))), -- endTime
+        ["entry.1761818302"] = SubmitGame._currentTimestamp(), -- endTime
         ["entry.754082197"] = SubmitGame.fields.submitGameRankedGame, -- rankedGame
         ["entry.1220354769"] = SubmitGame.fields.submitGameTournament, -- tournament
 
@@ -341,6 +330,11 @@ function SubmitGame.submitGame()
         UI.setAttributes("submitGameConfirm", {key = "gameSubmitted", interactable = false})
         SubmitGame.fields.gameSubmitted = true
     end
+end
+
+function SubmitGame._currentTimestamp()
+    -- Weird: osdateparam != string|osdate...
+    return os.date("!%m/%d/%Y %H:%M:%S", os.time(os.date("!*t")))
 end
 
 return SubmitGame

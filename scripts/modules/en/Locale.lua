@@ -27,7 +27,7 @@ return {
     goTo11 = "Go to 11",
     leaderSelection = "Leader selection",
     leaderPoolSize = "Leader pool size",
-    defaultLeaderPoolSizeLabel = "Leader pool size ({value})",
+    leaderPoolSizeLabel = "Leader pool size ({value})",
     tweakLeaderSelection = "Tweak leader pool",
     variants = "Variants",
     miscellanous = "Miscellanous",

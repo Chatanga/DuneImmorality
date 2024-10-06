@@ -27,7 +27,7 @@ return {
     goTo11 = "Pousser jusqu’à 11",
     leaderSelection = "Dirigeants",
     leaderPoolSize = "Taille de la sélection",
-    defaultLeaderPoolSizeLabel = "Nombre de dirigeants ({value})",
+    leaderPoolSizeLabel = "Nombre de dirigeants ({value})",
     tweakLeaderSelection = "Personnaliser les dirigeants",
     variants = "Variantes",
     miscellanous = "Divers",
