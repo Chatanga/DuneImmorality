@@ -18,7 +18,7 @@ More generally, take a look at the Example.lua file to see how your code might
 be integrated to this mod in a standard way.
 
 -->
-<Panel position="0 -90" width="450" height="720" color="#000000" id="setupPane" rotation="0 0 0" outline="#2e200f" outlineSize="1"
+<Panel position="0 -90" width="450" height="730" color="#000000" id="setupPane" rotation="0 0 0" outline="#2e200f" outlineSize="1"
 	active="False" allowDragging="True" returnToOriginalPositionWhenReleased="False" _visibility="Host">
 	<Defaults>
 		<Text class="primary" color="#000000" fontSize="20" fontStyle="bold" alignment="MiddleLeft"/>
