@@ -34,9 +34,9 @@ be integrated to this mod in a standard way.
 	<VerticalLayout>
 		<Image ignoreLayout="True" image="https://steamusercontent-a.akamaihd.net/ugc/2178113508631611749/173703C80CC9894291106BFFF74C5D28619FE03F/"/>
 		<VerticalLayout padding="40 40 40 40">
-			<VerticalLayout padding="0 0 0 20">
+			<!--VerticalLayout padding="0 0 0 20">
 				<Text class="epigraph" key="prolog"/>
-			</VerticalLayout>
+			</VerticalLayout-->
 
 			<HorizontalLayout>
 				<Text class="primary" key="language"/>
@@ -126,7 +126,7 @@ be integrated to this mod in a standard way.
 			<Text class="warning" key="playerColorWarning"/>
 		</VerticalLayout>
 	</VerticalLayout>
-	<Image position="0 440" width="450" height="230" image="https://steamusercontent-a.akamaihd.net/ugc/2488878371149491453/F45EE24DE14C81CE4D22FFF72465DC2B588CC761/"/>
+	<Image position="0 460" width="450" height="230" image="https://steamusercontent-a.akamaihd.net/ugc/2488878371149491453/F45EE24DE14C81CE4D22FFF72465DC2B588CC761/"/>
 </Panel>
 
 <Panel id="openSubmitScreenPanel" class="Window" active="false" width="200" height="40" rectAlignment="LowerRight" offsetXY="-60,10">
@@ -145,7 +145,7 @@ be integrated to this mod in a standard way.
         <Text class="setUp" key="submitGameMessage" color="#DDDDDDFF" fontSize="18"/>
 	</VerticalLayout>
 	<VerticalLayout>
-		<TableLayout padding="50 50 310 0" columnWidths="70 200 200 50 100 100 100" childAlignment="MiddleCenter" >
+		<TableLayout padding="50 50 310 0" columnWidths="80 200 200 80 80 80 80" childAlignment="MiddleCenter" >
 			<Row>
 				<Cell><Text class="setUp" color="#FFFFFF" key="placement"/></Cell>
 				<Cell><Text class="setUp" color="#FFFFFF" key="name"/></Cell>

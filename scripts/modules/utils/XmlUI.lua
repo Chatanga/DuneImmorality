@@ -78,32 +78,65 @@ function XmlUI:fromUI(player, value, id)
     error("Unknown value: " .. tostring(value))
 end
 
-function XmlUI:toUI()
-    if self.id then
-        local root =  XmlUI._findXmlElement(self.xml, self.id)
-        assert(root, "Unknown id: " .. self.id)
-        root.attributes.active = self.active
-        for name, value in pairs(self.fields) do
-            if not XmlUI._isEnumeration(name) and not XmlUI._isRange(name) then
-                local element = XmlUI._findXmlElement(self.xml, name)
-                if element then
-                    if XmlUI._isActive(value) then
-                        local values = self:_getEnumeration(name)
-                        local range = self:_getRange(name)
-                        if values then
-                            XmlUI._setXmlDropdownOptions(element, values, value)
-                        elseif range then
-                            XmlUI._setXmlSlider(element, range, value)
-                        elseif element.tag == "Toggle" then
-                            XmlUI._setXmlToggle(element, value)
-                        elseif element.tag == "Text" then
-                            XmlUI._setXmlText(element, value)
-                        end
-                        XmlUI._setXmlInteractable(element, true)
-                    else
-                        --log("Unknown id: " .. name)
+function XmlUI:__toUI()
+    --if self.id then
+    local root =  XmlUI._findXmlElement(self.xml, self.id)
+    assert(root, "Unknown id: " .. self.id)
+    root.attributes.active = self.active
+    for name, value in pairs(self.fields) do
+        if not XmlUI._isEnumeration(name) and not XmlUI._isRange(name) then
+            local element = XmlUI._findXmlElement(self.xml, name)
+            if element then
+                if XmlUI._isActive(value) then
+                    local values = self:_getEnumeration(name)
+                    local range = self:_getRange(name)
+                    if values then
+                        XmlUI._setXmlDropdownOptions(element, values, value)
+                    elseif range then
+                        XmlUI._setXmlSlider(element, range, value)
+                    elseif element.tag == "Toggle" then
+                        XmlUI._setXmlToggle(element, value)
+                    elseif element.tag == "Text" then
+                        XmlUI._setXmlText(element, value)
                     end
+                    XmlUI._setXmlInteractable(element, true)
+                else
+                    --log("Unknown id: " .. name)
                 end
+            end
+        end
+    end
+    --end
+    XmlUI._translateContent(self.xml)
+    self.holder.UI.setXmlTable(self.xml)
+end
+
+function XmlUI:toUI()
+    local root =  XmlUI._findXmlElement(self.xml, self.id)
+    assert(root, "Unknown id: " .. tostring(self.id))
+    root.attributes.active = self.active
+    for name, value in pairs(self.fields) do
+        if not XmlUI._isEnumeration(name) and not XmlUI._isRange(name) then
+            local element = XmlUI._findXmlElement(self.xml, name)
+            if element then
+                if XmlUI._isActive(value) then
+                    local values = self:_getEnumeration(name)
+                    local range = self:_getRange(name)
+                    if values then
+                        XmlUI._setXmlDropdownOptions(element, values, value)
+                    elseif range then
+                        XmlUI._setXmlSlider(element, range, value)
+                    elseif element.tag == "Toggle" then
+                        XmlUI._setXmlToggle(element, value)
+                    elseif element.tag == "Text" then
+                        XmlUI._setXmlText(element, value)
+                    end
+                    XmlUI._setXmlInteractable(element, true)
+                else
+                    XmlUI._setXmlInteractable(element, false)
+                end
+            else
+                --log("Unknown id: " .. tostring(name))
             end
         end
     end

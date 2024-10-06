@@ -711,7 +711,6 @@ end
 
 ---
 function Controller.applyVirtualHotSeatMode()
-
     local numberOfPlayers = Controller.getNumberOfPlayers(Controller.fields.virtualHotSeatMode)
 
     if Controller.isUndefined(Controller.fields.virtualHotSeatMode) or numberOfPlayers > 1 then

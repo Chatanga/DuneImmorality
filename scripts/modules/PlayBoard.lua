@@ -1996,7 +1996,8 @@ function PlayBoard:_createButtons()
             height = 320,
             font_size = 280,
             color = chroma,
-            font_color = fontColor
+            font_color = fontColor,
+            tooltip = I18N("revealHandTooltip")
         })
 
         self:_createNukeButton()
