@@ -304,17 +304,24 @@ return {
     hundroMoritani = "Viscount Hundro Moritani",
     houseHagal = "House Hagal",
 
-    prescienceButton = "Prescience",
+    -- Leader abilities
+    schemeTooltip = "Scheme a plot",
+    brutalityTooltip = "Don't be gentle",
+    manufacturingTooltip = "Make a profit",
     prescienceTooltip = "Look at top card of your deck easily with this.",
     prescienceUsed = "↯ Paul Atreides used his prescience to look into the future.",
     prescienceVoid = "All you see is the void ! (Your deck it empty actually…)",
     prescienceManual = "You need to peek manually (ALT + SHIFT) because there is only one card in your deck.",
-
+    disciplineTooltip = "Draw a card.",
+    hiddenReservoirTooltip = "Siphon your hidden reservoir",
+    spiceHoardTooltip = "Hoard spice",
+    guildContactsTooltip = "Use your contacts with the Guild",
     firstSnooperRecall = "↯ Tessia Vernius has recalled her first snooper from {withFaction}.",
     secondSnooperRecall = "↯ Tessia Vernius has recalled her second snooper from {withFaction}.",
     thirdSnooperRecall = "↯ Tessia Vernius has recalled her third snooper from {withFaction}.",
     fourthSnooperRecall = "↯ Tessia Vernius has recalled her fourth snooper from {withFaction}.",
     firstSnooperRecallEffectInfo = "Having recalled your first snooper, you may discard a card to get 1 spice unit.",
+    finalDeliveryTooltip = "Final Delivery.",
 
     -- Fanmade leaders
     abulurdHarkonnen = "Abulurd Harkonnen",

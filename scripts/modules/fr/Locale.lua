@@ -306,17 +306,24 @@ return {
     hundroMoritani = "Vicomte Hundro Moritani",
     houseHagal = "Maison Hagal",
 
-    prescienceButton = "Prescience",
+    -- Leader abilities
+    schemeTooltip = "Manigancer un sale tour de derrière les fagots",
+    brutalityTooltip = "Faut r'connaître c'est du brutal",
+    manufacturingTooltip = "Faire des profits",
     prescienceTooltip = "Inspecter facilement la prochaine carte de votre pioche.",
     prescienceUsed = "↯ Paul Atreides utilise sa prescience used his prescience pour entrevoir l’avenir.",
     prescienceVoid = "Difficile d’entrevoir l’avenir quand on ne voit même pas son deck correctement…",
     prescienceManual = "Vous devez inspecter manuellement votre pioche (ALT + SHIFT), car elle se résume à une unique carte.",
-
+    disciplineTooltip = "Piocher une carte de votre pioche.",
+    hiddenReservoirTooltip = "Siphonner votre réservoir caché",
+    spiceHoardTooltip = "Amasser de l’épice",
+    guildContactsTooltip = "Faire jouer ses contacts auprès de la Guilde",
     firstSnooperRecall = "↯ Tessia Vernius a rappelé son premier fouineur {withFaction}.",
     secondSnooperRecall = "↯ Tessia Vernius a rappelé son second fouineur {withFaction}.",
     thirdSnooperRecall = "↯ Tessia Vernius a rappelé son troisième fouineur {withFaction}.",
     fourthSnooperRecall = "↯ Tessia Vernius a rappelé son quatrième fouineur {withFaction}.",
     firstSnooperRecallEffectInfo = "Ayant rappelé votre premier fouineur, vous pouvez défausser une carte pour gagne 1 mesure d’épice.",
+    finalDeliveryTooltip = "Dernière livraison.",
 
     -- Fanmade leaders
     abulurdHarkonnen = "Abulurd Harkonnen",
