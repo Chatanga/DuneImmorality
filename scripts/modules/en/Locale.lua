@@ -892,4 +892,20 @@ return {
     muadDibVictoryPoint = "Muad'Dib Objective",
     crysknifeVictoryPoint = "Crysknife Objective",
     ornithopterVictoryPoint = "Ornithopter Objective",
+
+    -- Submit game
+    submitGame = "Submit Game",
+    submitGameRankedGame = "Ranked game",
+    submitGameTournament = "Tournament game",
+    openSubmitScreen = "Open submit screen",
+    placement = "Ranking",
+    victoryPoints = "Victory Points",
+    name = "Name",
+    leaderName = "Leader Name",
+    submitGameMessage = "Ensure all adjustments are made before submission. Errors in scores cannot be modified after submission!",
+    close = "Close",
+    noPlayerMetEndGameCondition = "No player met the end game condition.",
+    gameSubmitted = "Game submitted to Google Sheets",
+    gameAlreadySubmitted = "Game already submited - Doing nothing",
+    need4Players = "Need 4 players to submit a game",
 }
