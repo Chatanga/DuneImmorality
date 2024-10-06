@@ -27,35 +27,29 @@ end
 ---
 
 function Leader._createRightCardButton(anchors, color, name, tooltip, action)
-    Leader._createCardButton(anchors, color, name, tooltip, Vector(1.35, 0.6, -1.3), action)
+    Leader._createCardButton(anchors, color, name, tooltip, Vector(1.35, 0, -1.3), action)
 end
 
 function Leader._createLeftCardButton(anchors, color, name, tooltip, action)
-    Leader._createCardButton(anchors, color, name, tooltip, Vector(-1, 0.6, -1.3), action)
+    Leader._createCardButton(anchors, color, name, tooltip, Vector(-1, 0, -1.3), action)
 end
 
 function Leader._createCardButton(anchors, color, name, tooltip, offset, action)
     local leaderCard = PlayBoard.findLeaderCard(color)
-    Helper.createTransientAnchor(name, leaderCard.getPosition() + Vector(0, -0.5, 0)).doAfter(function (anchor)
+    local origin = leaderCard.getPosition() + offset
+    Helper.createTransientAnchor(name, origin + Vector(0, -0.5, 0)).doAfter(function (anchor)
         if anchors then
             table.insert(anchors, anchor)
         end
-        Helper.createAbsoluteButtonWithRoundness(anchor, 1, {
-            click_function = Helper.registerGlobalCallback(function (_, otherColor)
-                if otherColor == color then
-                    action(color, anchor)
-                else
-                    Dialog.broadcastToColor(I18N("noTouch"), otherColor, "Purple")
-                end
-            end),
-            position = anchor.getPosition() + offset,
-            width = 1000,
-            height = 380,
-            scale = Vector(1, 1, 1),
-            color = { 0, 0, 0, 0 },
-            font_color = { 0, 0, 0, 100 },
-            tooltip = tooltip,
-        })
+        local y = (anchor.getPosition() + offset).y
+        Helper.dump("y:", y)
+        Helper.createSizedAreaButton(1000, 380, anchor, origin.y + 0.1, tooltip, function (_, otherColor)
+            if otherColor == color then
+                action(color, anchor)
+            else
+                Dialog.broadcastToColor(I18N("noTouch"), otherColor, "Purple")
+            end
+        end)
     end)
 end
 

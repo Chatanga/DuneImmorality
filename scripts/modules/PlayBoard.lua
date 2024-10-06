@@ -20,7 +20,6 @@ local TechMarket = Module.lazyRequire("TechMarket")
 local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
 local ImperiumCard = Module.lazyRequire("ImperiumCard")
 local Commander = Module.lazyRequire("Commander")
---local IntrigueCard = Module.lazyRequire("IntrigueCard")
 local ConflictCard = Module.lazyRequire("ConflictCard")
 local ScoreBoard = Module.lazyRequire("ScoreBoard")
 local Action = Module.lazyRequire("Action")
@@ -2324,15 +2323,9 @@ function PlayBoard:_revealHand(brutal)
     local artillery = PlayBoard.hasTech(self.color, "artillery")
     local swordmasterBonus = TurnControl.getPlayerCount() == 6 and PlayBoard.hasSwordmaster(self.color)
 
-    local intrigueCardContributions = {}
-    local imperiumCardContributions = {}
-    if IntrigueCard then
-        intrigueCardContributions = IntrigueCard.evaluatePlot(self.color, playedIntrigues, allRevealedCards, artillery)
-    end
-    imperiumCardContributions = ImperiumCard.evaluateReveal(self.color, playedCards, allRevealedCards, artillery)
+    local imperiumCardContributions = ImperiumCard.evaluateReveal(self.color, playedCards, allRevealedCards, artillery)
 
     self.persuasion:set(
-        (intrigueCardContributions.persuasion or 0) +
         (imperiumCardContributions.persuasion or 0) +
         (techNegotiation and 1 or 0) +
         (assemblyHall and 1 or 0) +
@@ -3131,7 +3124,7 @@ function PlayBoard._getPotentialCombatIntrigues(color)
     local predicate
     if Hagal.getRivalCount() == 2 then
         predicate = function (card)
-            return Types.isIntrigueCard(card) -- and IntrigueCard.isCombatCard(card)
+            return Types.isIntrigueCard(card)
         end
     else
         predicate = Types.isIntrigueCard

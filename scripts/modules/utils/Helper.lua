@@ -43,7 +43,7 @@ end
 function Helper._postError(context, error)
 
     local saveInfo = Global.getVar("saveInfo")
-    if not saveInfo or saveInfo.build == "TBD" then
+    if not saveInfo then
         return
     end
 
