@@ -893,4 +893,20 @@ return {
     muadDibVictoryPoint = "Objectif Muad'Dib",
     crysknifeVictoryPoint = "Objective krys",
     ornithopterVictoryPoint = "Objective ornithoptère",
+
+    -- Submit game
+    submitGame = "Soumettre la partie",
+    submitGameRankedGame = "Partie classée",
+    submitGameTournament = "Partie de tournoi",
+    openSubmitScreen = "Ouvrir l’écran de soumission",
+    placement = "Classement",
+    victoryPoints = "PV",
+    name = "Nom",
+    leaderName = "Nom du dirigeant",
+    submitGameMessage = "Assurez-vous que tous les ajustements sont effectués avant la soumission.\nLes erreurs dans les scores ne pourront plus être modifiées après la soumission !",
+    close = "Fermer",
+    noPlayerMetEndGameCondition = "Aucun joueur n’a rempli la condition de fin de partie.",
+    gameSubmitted = "Partie soumise dans Google Sheets",
+    gameAlreadySubmitted = "Jeu déjà soumis - Rien a faire.",
+    need4Players = "Il faut 4 joueurs pour soumettre une partie.",
 }

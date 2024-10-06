@@ -18,6 +18,7 @@ local TurnControl = {
     hotSeat = false,
     players = {},
     firstPlayerLuaIndex = nil,
+    firstPlayerOfTheGame = nil,
     counterClockWise = false,
     currentRound = 0,
     currentPhase = nil,
@@ -32,6 +33,7 @@ function TurnControl.onLoad(state)
             TurnControl.players = state.TurnControl.players
             TurnControl.scoreGoal = state.TurnControl.scoreGoal
             TurnControl.firstPlayerLuaIndex = state.TurnControl.firstPlayerLuaIndex
+            TurnControl.firstPlayerOfTheGame = state.TurnControl.firstPlayerOfTheGame
             TurnControl.counterClockWise = state.TurnControl.counterClockWise
             TurnControl.currentRound = state.TurnControl.currentRound
             TurnControl.currentPhase = state.TurnControl.currentPhase
@@ -61,6 +63,7 @@ function TurnControl.onSave(state)
         players = TurnControl.players,
         scoreGoal = TurnControl.scoreGoal,
         firstPlayerLuaIndex = TurnControl.firstPlayerLuaIndex,
+        firstPlayerOfTheGame = TurnControl.firstPlayerOfTheGame,
         counterClockWise = TurnControl.counterClockWise,
         currentRound = TurnControl.currentRound,
         currentPhase = TurnControl.currentPhase,
@@ -97,6 +100,9 @@ function TurnControl.setUp(settings, activeOpponents)
                 TurnControl.firstPlayerLuaIndex = TurnControl.firstPlayerLuaIndex + 1
             end
         end
+    end
+    if TurnControl.firstPlayerOfTheGame == nil then
+        TurnControl.firstPlayerOfTheGame = TurnControl.players[TurnControl.firstPlayerLuaIndex]
     end
 
     TurnControl._assignObjectives()
@@ -575,6 +581,11 @@ end
 ---
 function TurnControl.getFirstPlayer()
     return TurnControl.players[TurnControl.firstPlayerLuaIndex]
+end
+
+---
+function TurnControl.getFirstPlayerOfTheGame()
+    return TurnControl.firstPlayerOfTheGame
 end
 
 ---
