@@ -59,7 +59,7 @@ function AcquireCard:_updateButton()
                 self:_createButton()
             end
 
-            self.updateCoalescentQueue = Helper.createCoalescentQueue(0.5, coalesce, handle)
+            self.updateCoalescentQueue = Helper.createCoalescentQueue("acquire", 0.5, coalesce, handle)
         end
         self.updateCoalescentQueue.submit(true)
     else

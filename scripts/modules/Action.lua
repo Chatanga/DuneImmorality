@@ -336,7 +336,7 @@ function Action.troops(color, from, to, baseCount)
             end
         end
 
-        Action.troopTransferCoalescentQueue = Helper.createCoalescentQueue(1, coalesce, handle)
+        Action.troopTransferCoalescentQueue = Helper.createCoalescentQueue("troop", 1, coalesce, handle)
     end
 
     Action.troopTransferCoalescentQueue.submit({

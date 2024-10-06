@@ -2448,7 +2448,7 @@ function PlayBoard:tryToDrawCards(count)
             end
         end
 
-        self.drawCardsCoalescentQueue = Helper.createCoalescentQueue(1, coalesce, handle)
+        self.drawCardsCoalescentQueue = Helper.createCoalescentQueue("draw", 1, coalesce, handle)
     end
 
     self.drawCardsCoalescentQueue.submit({

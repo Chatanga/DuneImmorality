@@ -43,7 +43,7 @@ end
 function Helper._postError(context, error)
 
     local saveInfo = Global.getVar("saveInfo")
-    if not saveInfo then
+    if not saveInfo or saveInfo.build == "TBD" then
         return
     end
 
@@ -1416,7 +1416,7 @@ function Helper.createSpaceQueue()
 end
 
 ---
-function Helper.createCoalescentQueue(separationDelay, coalesce, handle)
+function Helper.createCoalescentQueue(name, separationDelay, coalesce, handle)
     local cq = {
         separationDelay = separationDelay or 1,
     }
@@ -1428,7 +1428,7 @@ function Helper.createCoalescentQueue(separationDelay, coalesce, handle)
             cq.delayedHandler = nil
             cq.continuation.cancel()
         end
-        cq.continuation = Helper.createContinuation("Helper.createCoalescentQueue")
+        cq.continuation = Helper.createContinuation("Helper.createCoalescentQueue/" .. name)
         cq.continuation.doAfter(function ()
             assert(cq.lastEvent)
             cq.delayedHandler = nil
