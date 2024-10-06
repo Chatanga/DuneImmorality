@@ -191,6 +191,9 @@ function SubmitGame.displayAllData()
         }
 
         for attribute, value in pairs(attributes) do
+            local placementCellIndex = "cell_placement_" .. i
+            UI.setAttributes(placementCellIndex, {color = player.color})
+            
             local placementIndex = "placement_" .. i .. attribute
             UI.setAttribute(placementIndex, "text", value)
 

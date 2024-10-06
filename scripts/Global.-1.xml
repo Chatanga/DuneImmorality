@@ -138,7 +138,7 @@ be integrated to this mod in a standard way.
 		<Cell dontUseTableCellBackground="true" width="1" style="Solid"/>
 	</Defaults>
 	<VerticalLayout childForceExpandWidth="false" childForceExpandHeight="false">
-		<Image class="setUp" image="http://cloud-3.steamusercontent.com/ugc/2437082539731785306/2B270A53CD2A3EC8703F738937ABA09788EC3B89/" preferredWidth="900" preferredHeight="300"/>
+		<Image class="setUp" image="https://steamusercontent-a.akamaihd.net/ugc/2437082539731785306/2B270A53CD2A3EC8703F738937ABA09788EC3B89/" preferredWidth="900" preferredHeight="300"/>
 	</VerticalLayout>
 	<Image class="setUp" position="0 270" color="#000000AA" width="900" height="60"/>
     <VerticalLayout childForceExpandWidth="true" childForceExpandHeight="false" padding="20 20 10 10">
