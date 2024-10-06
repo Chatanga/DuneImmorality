@@ -1191,9 +1191,9 @@ function PlayBoard:_createButtons()
         })
 
         board.createButton({
-            click_function = self:_createExclusiveCallback(function ()
+            click_function = self:_createExclusiveCallback(function (_, _, altClick)
                 if PlayBoard.isHuman(self.color) then
-                    self:onRevealHand()
+                    self:onRevealHand(altClick)
                 end
             end),
             label = I18N("revealHandButton"),
@@ -1203,7 +1203,8 @@ function PlayBoard:_createButtons()
             height = 320,
             font_size = 280,
             color = self.color,
-            font_color = fontColor
+            font_color = fontColor,
+            tooltip = I18N("revealHandTooltip")
         })
 
         self:_createNukeButton()
@@ -1232,21 +1233,21 @@ function PlayBoard:_createNukeButton()
 end
 
 ---
-function PlayBoard:onRevealHand()
+function PlayBoard:onRevealHand(brutal)
     local currentPlayer = TurnControl.getCurrentPlayer()
     if currentPlayer and currentPlayer ~= self.color then
         Dialog.broadcastToColor(I18N("revealNotTurn"), self.color, "Pink")
     else
         if not self.revealed and self:stillHavePlayableAgents() then
-            self:tryRevealHandEarly()
+            self:tryRevealHandEarly(brutal)
         else
-            self:revealHand()
+            self:revealHand(brutal)
         end
     end
 end
 
 ---
-function PlayBoard:tryRevealHandEarly()
+function PlayBoard:tryRevealHandEarly(brutal)
     local origin = PlayBoard.getPlayBoard(self.color):_newSymmetricBoardPosition(-8, 0, -4.5)
 
     local board = self.content.board
@@ -1272,7 +1273,7 @@ function PlayBoard:tryRevealHandEarly()
     indexHolder.validateButtonIndex = Helper.createButton(board, {
         click_function = self:_createExclusiveCallback(function ()
             reset()
-            self:revealHand()
+            self:revealHand(brutal)
         end),
         label = I18N('yes'),
         position = origin + Vector(-1, 0, 1),
@@ -1298,10 +1299,10 @@ function PlayBoard:tryRevealHandEarly()
 end
 
 ---
-function PlayBoard:revealHand()
+function PlayBoard:revealHand(brutal)
     PlayBoard._onceCardParkSpread(self.agentCardPark).doAfter(function ()
         PlayBoard._onceCardParkSpread(self.revealCardPark).doAfter(function ()
-            self:_revealHand()
+            self:_revealHand(brutal)
         end)
     end)
 end
@@ -1352,7 +1353,7 @@ function PlayBoard._onceCardParkSpread(park)
 end
 
 ---
-function PlayBoard:_revealHand()
+function PlayBoard:_revealHand(brutal)
     local playedIntrigues = Helper.filter(Park.getObjects(self.agentCardPark), Types.isIntrigueCard)
     local playedCards = Helper.filter(Park.getObjects(self.agentCardPark), Types.isImperiumCard)
 
@@ -1378,7 +1379,7 @@ function PlayBoard:_revealHand()
     local councilSeat = PlayBoard.hasHighCouncilSeat(self.color)
     local artillery = PlayBoard.hasTech(self.color, "artillery")
 
-    local intrigueCardContributions = IntrigueCard.evaluatePlot(self.color, playedIntrigues, allRevealedCards, artillery)
+    local intrigueCardContributions = {} -- IntrigueCard.evaluatePlot(self.color, playedIntrigues, allRevealedCards, artillery)
     local imperiumCardContributions = ImperiumCard.evaluateReveal(self.color, playedCards, allRevealedCards, artillery)
 
     self.persuasion:set(
@@ -1393,9 +1394,39 @@ function PlayBoard:_revealHand()
         (imperiumCardContributions.strength or 0) +
         ((restrictedOrdnance and councilSeat) and 4 or 0))
 
-    if false then
-        self.leader.troops(self.color, "supply", "tanks",
-            imperiumCardContributions.specimens or 0)
+    --Helper.dump("imperiumCardContributions:", imperiumCardContributions)
+
+    if brutal and not self.revealed then
+        for _, resourceName in ipairs({ "spice", "solari", "water" }) do
+            local amount = imperiumCardContributions[resourceName]
+            if amount then
+                self.leader.resources(self.color, resourceName, amount)
+            end
+        end
+
+        local intrigues = imperiumCardContributions.intrigues
+        if intrigues then
+            self.leader.drawIntrigues(self.color, intrigues)
+        end
+
+        local createMove = function (category, to)
+            return function ()
+                local amount = imperiumCardContributions[category] or 0
+                if amount > 0 then
+                    self.leader.troops(self.color, "supply", to, amount)
+                    return Park.onceStabilized(Action.getTroopPark(self.color, to))
+                else
+                    return Helper.fakeContinuation()
+                end
+            end
+        end
+
+        Helper.chainActions({
+            createMove("troops", "garrison"),
+            createMove("fighters", "combat"),
+            createMove("negotiators", "negotiation"),
+            createMove("specimens", "tanks"),
+        })
     end
 
     Park.putObjects(revealedCards, self.revealCardPark)

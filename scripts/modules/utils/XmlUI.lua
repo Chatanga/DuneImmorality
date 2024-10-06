@@ -15,6 +15,7 @@ function XmlUI.new(holder, id, fields)
         Changes made  directly by the user (e.g. checking a box)
         won't be reflected in the retrieved XML though.
     ]]
+    assert(holder)
     local xmlUI = Helper.createClassInstance(XmlUI, {
         holder = holder,
         xml = holder.UI.getXmlTable(),

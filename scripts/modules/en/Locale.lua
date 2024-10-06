@@ -83,6 +83,7 @@ return {
     resetDiscardButton = "Discard ➤ Deck",
     agentTurn = "Agent Turn",
     revealHandButton = "Reveal Turn",
+    revealHandTooltip = "Right click for an extended reveal.",
     atomics = "Atomics",
     revealNotTurn = "You can't Reveal while it's not your turn.",
     revealEarlyConfirm = "Reveal Hand ?",

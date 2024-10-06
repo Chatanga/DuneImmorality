@@ -13,6 +13,7 @@ local sword = CardEffect.sword
 local spice = CardEffect.spice
 local water = CardEffect.water
 local solari = CardEffect.solari
+local deploy = CardEffect.deploy
 local troop = CardEffect.troop
 local dreadnought = CardEffect.dreadnought
 local negotiator = CardEffect.negotiator
@@ -68,10 +69,10 @@ local ImperiumCard = {
     arrakisRecruiter = {cost = 2, agentIcons = {'blue'}, reveal = {persuasion(1), sword(1)}},
     assassinationMission = {cost = 1, reveal = {sword(1), solari(1)}},
     beneGesseritInitiate = {factions = {'beneGesserit'}, cost = 3, agentIcons = {'green', 'blue', 'yellow'}, reveal = {persuasion(1)}},
-    beneGesseritSister = {factions = {'beneGesserit'}, cost = 3, agentIcons = {'beneGesserit', 'green'}, reveal = {'2 sword or 2 persuasion'}},
+    beneGesseritSister = {factions = {'beneGesserit'}, cost = 3, agentIcons = {'beneGesserit', 'green'}, reveal = choice(1, {{sword(2)}, {persuasion(2)}})},
     carryall = {cost = 5, agentIcons = {'yellow'}, reveal = {persuasion(1), spice(1)}},
     chani = {factions = {'fremen'}, cost = 5, acquireBonus = {water(1)}, agentIcons = {'fremen', 'blue', 'yellow'}, reveal = {persuasion(2), 'Retreat any # of troops'}},
-    choamDirectorship = {cost = 8, acquireBonus = {'4x inf all'}, reveal = {solari(1)}},
+    choamDirectorship = {cost = 8, acquireBonus = {'4x inf all'}, reveal = {solari(3)}},
     crysknife = {factions = {'fremen'}, cost = 3, agentIcons = {'fremen', 'yellow'}, reveal = {sword(1), influence(fremenBond(1), 'fremen')}},
     drYueh = {cost = 1, agentIcons = {'blue'}, reveal = {persuasion(1)}},
     duncanIdaho = {cost = 4, agentIcons = {'blue'}, reveal = {sword(2), water(1)}},
@@ -111,7 +112,7 @@ local ImperiumCard = {
     -- ix
     appropriate = {factions = {'emperor'}, cost = 5, acquireBonus = {shipment(1)}, agentIcons = {'green', 'yellow'}, reveal = {persuasion(2)}},
     bountyHunter = {cost = 1, agentIcons = {'blue'}, infiltrate = true, reveal = {persuasion(1), sword(1)}},
-    choamDelegate = {cost = 1, agentIcons = {'yellow'}, infiltrate = true, reveal = {solari(1)}},
+    choamDelegate = {cost = 1, agentIcons = {'yellow'}, infiltrate = true, reveal = {solari(3)}},
     courtIntrigue = {factions = {'emperor'}, cost = 2, agentIcons = {'emperor'}, infiltrate = true, reveal = {persuasion(1), sword(1)}},
     desertAmbush = {factions = {'fremen'}, cost = 3, agentIcons = {'yellow'}, reveal = {persuasion(1), sword(1)}},
     embeddedAgent = {factions = {'beneGesserit'}, cost = 5, agentIcons = {'green'}, infiltrate = true, reveal = {persuasion(1), intrigue(1)}},
@@ -128,12 +129,12 @@ local ImperiumCard = {
     jamis = {factions = {'fremen'}, cost = 2, agentIcons = {'fremen'}, infiltrate = true, reveal = {persuasion(1), sword(2)}},
     landingRights = {factions = {'spacingGuild'}, cost = 4, agentIcons = {'blue'}, reveal = {persuasion(2)}},
     localFence = {cost = 3, agentIcons = {'blue'}, reveal = {persuasion(2)}},
-    negotiatedWithdrawal = {cost = 4, acquireBonus = {troop(1)}, agentIcons = {'green', 'blue', 'yellow'}, reveal = {persuasion(2), 'Retreat 3x troops - > +1 inf ?'}},
+    negotiatedWithdrawal = {cost = 4, acquireBonus = {troop(1)}, agentIcons = {'green', 'blue', 'yellow'}, reveal = {persuasion(2), 'Retreat 3x troops -> +1 inf ?'}},
     satelliteBan = {factions = {'spacingGuild', 'fremen'}, cost = 5, agentIcons = {'spacingGuild', 'fremen'}, reveal = {persuasion(1), 'Retreat up to 2 troops'}},
     sayyadina = {factions = {'beneGesserit', 'fremen'}, cost = 3, agentIcons = {'beneGesserit', 'fremen'}, reveal = {persuasion(fremenBond(3))}},
     shaiHulud = {factions = {'fremen'}, cost = 7, acquireBonus = {trash(1)}, agentIcons = {'yellow'}, reveal = {sword(fremenBond(5))}},
     spiceTrader = {factions = {'fremen'}, cost = 4, agentIcons = {'blue', 'yellow'}, reveal = {persuasion(2), sword(1)}},
-    treachery = {cost = 6, agentIcons = {'emperor', 'spacingGuild', 'beneGesserit', 'fremen'}, reveal = {'+2 troops and deploy them to conflict'}},
+    treachery = {cost = 6, agentIcons = {'emperor', 'spacingGuild', 'beneGesserit', 'fremen'}, reveal = {deploy(2)}},
     truthsayer = {factions = {'emperor', 'beneGesserit'}, cost = 3, agentIcons = {'emperor', 'beneGesserit', 'green'}, reveal = {persuasion(1), sword(1)}},
     waterPeddler = {cost = 1, acquireBonus = {water(1)}, reveal = {water(1)}},
     webOfPower = {factions = {'beneGesserit'}, cost = 4, agentIcons = {'beneGesserit'}, infiltrate = true, reveal = {persuasion(1), influence(1)}},
@@ -165,7 +166,7 @@ local ImperiumCard = {
     tleilaxuMaster = {cost = 5, agentIcons = {'green', 'yellow'}, reveal = {persuasion(1), research(2)}},
     tleilaxuSurgeon = {cost = 3, agentIcons = {'emperor', 'blue'}, reveal = {persuasion(2), 'Lose 2 Troops--> +2 Specimen'}},
     -- tleilaxu
-    reclaimedForces = {cost = 3, tleilaxu = true, acquireBonus = {'+2 troops or Beetle'}},
+    reclaimedForces = {cost = 3, tleilaxu = true, acquireBonus = choice(1, {{troop(2)}, {beetle(1)}})},
     usurp = {cost = 4, tleilaxu = true, reveal = {persuasion(1), sword(1), specimen(1)}},
     twistedMentat = {cost = 4, tleilaxu = true, agentIcons = {'green', 'blue'}, reveal = {persuasion(1), sword(1), specimen(1)}},
     beguilingPheromones = {cost = 3, tleilaxu = true, agentIcons = {'blue', 'yellow'}, reveal = {persuasion(1), sword(1)}},
@@ -231,9 +232,21 @@ function ImperiumCard.evaluateReveal2(color, playedCards, revealedCards, artille
                 result[resourceName] = (result[resourceName] or 0) + amount
             end,
 
+            drawIntrigues = function (_, amount)
+                result.intrigues = (result.intrigues or 0) + amount
+            end,
+
             troops = function (_, from, to, amount)
-                if from == "supply" and to == "tanks" then
-                    result.specimens = (result.specimens or 0) + amount
+                if from == "supply" then
+                    if to == "garrison" then
+                        result.troops = (result.troops or 0) + amount
+                    elseif to == "combat" then
+                        result.fighters = (result.fighters or 0) + amount
+                    elseif to == "negotiation" then
+                        result.negotiators = (result.negotiators or 0) + amount
+                    elseif to == "tanks" then
+                        result.specimens = (result.specimens or 0) + amount
+                    end
                 end
             end
         }

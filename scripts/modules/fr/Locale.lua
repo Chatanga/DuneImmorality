@@ -87,6 +87,7 @@ return {
     resetDiscardButton = "Défausse ➤ pioche",
     agentTurn = "Tour d’agent",
     revealHandButton = "Révélation",
+    revealHandTooltip = "Clic droit pour une révélation étendue.",
     atomics = "Atomiser",
     revealNotTurn = "Vous ne pouvez pas révéler en dehors de votre tour.",
     revealEarlyConfirm = "Révéler votre main ?",
