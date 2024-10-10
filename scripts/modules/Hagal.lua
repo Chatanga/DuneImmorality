@@ -365,14 +365,4 @@ function Hagal.isSwordmasterAvailable()
     return Hagal.difficulty ~= "expertPlus"
 end
 
----
-function Hagal.pickAnyRivalLeader(color)
-    local leaders = {}
-    for _, leader in ipairs(LeaderSelection.getSelectableLeaders(true)) do
-        table.insert(leaders , leader)
-    end
-    assert(#leaders > 0, "No rival leaders left!")
-    LeaderSelection.claimLeader(color, Helper.pickAny(leaders))
-end
-
 return Hagal

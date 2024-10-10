@@ -368,15 +368,11 @@ function LeaderSelection._setUpPicking(autoStart, random, hidden)
     end
 
     if random then
+        local selectedLeaders = {}
         Helper.registerEventListener("playerTurn", function (phase, color)
             if phase == 'leaderSelection' then
-                if PlayBoard.isRival(color) then
-                    Hagal.pickAnyRivalLeader(color)
-                elseif PlayBoard.isHuman(color) then
-                    local leaders = LeaderSelection.getSelectableLeaders()
-                    local leader = Helper.pickAny(leaders)
-                    LeaderSelection.claimLeader(color, leader)
-                end
+                local leader = LeaderSelection._pickAnyLeader(color, PlayBoard.isRival(color), selectedLeaders)
+                selectedLeaders[Helper.getID(leader)] = true
             end
         end)
     end
@@ -503,6 +499,21 @@ function LeaderSelection.getSelectableLeaders(rivalLeader)
         end
     end
     return selectableLeaders
+end
+
+---
+function LeaderSelection._pickAnyLeader(color, rivalLeader, excludedLeaders)
+    local allLeaders = LeaderSelection.getSelectableLeaders(rivalLeader)
+    local leaders = Helper.filter(allLeaders, function (leader)
+        return not excludedLeaders[Helper.getID(leader)]
+    end)
+    if #leaders == 0 then
+        leaders = allLeaders
+    end
+    assert(#leaders > 0, "No leaders left!")
+    local leader = Helper.pickAny(leaders)
+    LeaderSelection.claimLeader(color, leader)
+    return leader
 end
 
 ---

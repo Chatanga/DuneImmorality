@@ -42,7 +42,6 @@ function Leader._createCardButton(anchors, color, name, tooltip, offset, action)
             table.insert(anchors, anchor)
         end
         local y = (anchor.getPosition() + offset).y
-        Helper.dump("y:", y)
         Helper.createSizedAreaButton(1000, 380, anchor, origin.y + 0.1, tooltip, function (_, otherColor)
             if otherColor == color then
                 action(color, anchor)

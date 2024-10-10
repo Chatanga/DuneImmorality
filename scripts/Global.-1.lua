@@ -332,7 +332,9 @@ function asyncOnLoad(scriptState)
     if not uiAlreadySetUp then
         -- Force the translation of the whole UI (not restricted to the "setupPane" actually)
         -- since the other panels are also used after the setup.
+        Helper.dump(1)
         XmlUI.new(Global)
+        Helper.dump(2)
     end
 end
 

@@ -79,6 +79,9 @@ function XmlUI:fromUI(player, value, id)
 end
 
 function XmlUI:toUI()
+    if not self.id then
+        --return
+    end
     local root =  XmlUI._findXmlElement(self.xml, self.id)
     assert(root, "Unknown id: " .. tostring(self.id))
     root.attributes.active = self.active
