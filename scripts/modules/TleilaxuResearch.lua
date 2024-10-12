@@ -184,7 +184,8 @@ function TleilaxuResearch._generateResearchButtons()
         })
         Helper.markAsTransient(cellZone)
         Helper.createAnchoredAreaButton(cellZone, 1.6, 0.1, I18N("progressOnResearchTrack"), PlayBoard.withLeader(function (_, color, _)
-            if not PlayBoard.isRival(color) then
+            local validPlayer = Helper.isElementOf(color, PlayBoard.getActivePlayBoardColors())
+            if validPlayer and not PlayBoard.isRival(color) then
                 local leader = PlayBoard.getLeader(color)
                 local token = PlayBoard.getContent(color).researchToken
                 local tokenCellPosition = TleilaxuResearch._worlPositionToResearchSpace(token.getPosition())
@@ -204,7 +205,8 @@ function TleilaxuResearch._generateResearchButtons()
     end
 
     Helper.createAnchoredAreaButton(TleilaxuResearch.twoHelicesZone, 1.6, 0.1, I18N("progressAfterResearchTrack"), PlayBoard.withLeader(function (_, color, _)
-        if not PlayBoard.isRival(color) and TleilaxuResearch.hasReachedTwoHelices(color) then
+        local validPlayer = Helper.isElementOf(color, PlayBoard.getActivePlayBoardColors())
+        if validPlayer and not PlayBoard.isRival(color) and TleilaxuResearch.hasReachedTwoHelices(color) then
             local leader = PlayBoard.getLeader(color)
             local specialJump = Vector(1, 0, 0)
             leader.research(color, specialJump)

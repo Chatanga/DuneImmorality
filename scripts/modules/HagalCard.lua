@@ -144,15 +144,11 @@ end
 function HagalCard._activatePlaceSpyYellow(color, rival, riseOfIx)
     -- Order matters: CHOAM, then from right to left.
     local possiblePosts = {
+        riseOfIx and "ixChoam" or "choam",
         "imperialBasin",
         "haggaBasin",
         "deepDesert",
     }
-    if riseOfIx then
-        table.insert(possiblePosts, 1, "ixChoam")
-    else
-        table.insert(possiblePosts, 1, "choam")
-    end
     for _, observationPostName in ipairs(possiblePosts) do
         if not MainBoard.observationPostIsOccupied(observationPostName) then
             rival.sendSpy(color, observationPostName)
@@ -181,12 +177,9 @@ end
 function HagalCard._activatePlaceSpyGreen(color, rival, riseOfIx)
     -- Order matters: from right to left.
     local possiblePosts = {
-        "landsraadCouncil2",
+        riseOfIx and "ix" or "landsraadCouncil2",
         "landsraadCouncil1",
     }
-    if riseOfIx then
-        table.insert(possiblePosts, 1, "ix")
-    end
     for _, observationPostName in ipairs(possiblePosts) do
         if not MainBoard.observationPostIsOccupied(observationPostName) then
             rival.sendSpy(color, observationPostName)

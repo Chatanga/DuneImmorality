@@ -1381,16 +1381,21 @@ end
 ---
 function PlayBoard.withLeader(action)
     return function (source, color, ...)
-        local leader = PlayBoard.getLeader(color)
-        if leader then
-            if not Commander.isCommander(color) or Commander.getActivatedAlly(color) then
-                -- Replace the source by the leader.
-                action(leader, color, ...)
+        local validPlayer = Helper.isElementOf(color, PlayBoard.getActivePlayBoardColors())
+        if validPlayer then
+            local leader = PlayBoard.getLeader(color)
+            if leader then
+                if not Commander.isCommander(color) or Commander.getActivatedAlly(color) then
+                    -- Replace the source by the leader.
+                    action(leader, color, ...)
+                else
+                    Dialog.broadcastToColor(I18N('noAlly'), color, "Purple")
+                end
             else
-                Dialog.broadcastToColor(I18N('noAlly'), color, "Purple")
+                Dialog.broadcastToColor(I18N('noLeader'), color, "Purple")
             end
         else
-            Dialog.broadcastToColor(I18N('noLeader'), color, "Purple")
+            Dialog.broadcastToColor(I18N('noTouch'), color, "Purple")
         end
     end
 end

@@ -671,7 +671,25 @@ function MainBoard._manageIntelligenceAndInfiltrate(color, spaceName, recallSpy)
     -- so any remaining agent must be an enemy.
     local enemyAgentPresent = MainBoard.hasAgentInSpace(spaceName)
 
-    if not enemyAgentPresent then
+    -- We don't check the color access here as elsewhere.
+    local couldInfiltrateByOtherMeans = false
+    local infiltrationCards = {
+        -- Helena Richese
+        "kwisatzHaderach",
+        "guildAccord",
+        "choamDelegate",
+        "bountyHunter",
+        "embeddedAgent",
+        "tleilaxuInfiltrator",
+    }
+    for _, cardName in ipairs(infiltrationCards) do
+        if PlayBoard.hasPlayedThisTurn(color, cardName) then
+            couldInfiltrateByOtherMeans = true
+            break
+        end
+    end
+
+    if not enemyAgentPresent or couldInfiltrateByOtherMeans then
         if #recallableSpies == 0 or not hasCardsToDraw then
             if recallSpy then
                 Dialog.broadcastToColor(I18N('noSpyToRecallOrCardToDraw'), color, "Purple")
@@ -797,16 +815,10 @@ function MainBoard._checkGenericAccess(color, leader, requirements)
                 return false
             end
         elseif requirement == "friendship" then
-            local infiltrationCards = {
-                "kwisatzHaderach",
-                "guildAccord",
-                "choamDelegate",
-                "bountyHunter",
-                "embeddedAgent",
-                "tleilaxuInfiltrator",
+            local exemptionCards = {
                 "undercoverAsset",
             }
-            for _, cardName in ipairs(infiltrationCards) do
+            for _, cardName in ipairs(exemptionCards) do
                 if PlayBoard.hasPlayedThisTurn(color, cardName) then
                     return true
                 end
