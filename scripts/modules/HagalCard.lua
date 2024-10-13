@@ -560,6 +560,7 @@ end
 function HagalCard._activateResearchStationImmortality(color, rival)
     if HagalCard._spaceIsFree(color, "researchStation") then
         HagalCard._sendRivalAgent(color, rival, "researchStation")
+        HagalCard.acquireTroops(color, 0, true)
         rival.beetle(color, 2)
         return true
     else
