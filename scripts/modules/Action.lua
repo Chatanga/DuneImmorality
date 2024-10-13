@@ -77,6 +77,26 @@ function Action.setUp(color, settings)
 end
 
 ---
+function Action.instruct(phase, isActivePlayer)
+    local availablePhaseInstructions = {
+        leaderSelection = true,
+        playerTurns = true,
+        combat = true,
+        combatEnd = true,
+        endgame = true,
+    }
+
+    if availablePhaseInstructions[phase] then
+        if isActivePlayer then
+            return I18N(phase .. "ActiveInstruction")
+        else
+            return I18N(phase .. "InactiveInstruction")
+        end
+    else
+        return nil
+    end
+end
+
 function Action.prepare(color, settings)
     Action.resources(color, "water", 1)
     if settings.epicMode then

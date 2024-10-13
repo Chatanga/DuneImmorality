@@ -1092,6 +1092,11 @@ function PlayBoard._transientSetUp(settings)
         elseif phase == "endgame" then
             MainBoard.getFirstPlayerMarker().destruct()
         end
+
+        for _, playBoard in pairs(PlayBoard._getPlayBoards()) do
+            playBoard:_updateInstructionLabel(nil)
+        end
+
         PlayBoard._setActivePlayer(nil, nil)
     end)
 
@@ -1120,6 +1125,11 @@ function PlayBoard._transientSetUp(settings)
             else
                 Commander.setActivatedAlly(color, nil)
             end
+        end
+
+        for otherColor, otherPlayBoard in pairs(PlayBoard._getPlayBoards(true)) do
+            local instruction = (playBoard.leader or Action).instruct(phase, color == otherColor) or "-"
+            otherPlayBoard:_updateInstructionLabel(instruction)
         end
 
         PlayBoard._setActivePlayer(phase, color, refreshing)
@@ -1180,6 +1190,31 @@ function PlayBoard._transientSetUp(settings)
             font_color = "White"
         })
         PlayBoard._updateBagCounts(playBoard.content.completedContractBag)
+
+        local InstructionTextAnchorPosition = playBoard.content.board.getPosition() + playBoard:_newSymmetricBoardPosition(8, -0.5, 3.5)
+        Helper.createTransientAnchor("InstructionTextAnchor", InstructionTextAnchorPosition).doAfter(function (anchor)
+            playBoard.instructionTextAnchor = anchor
+        end)
+    end
+end
+
+---
+function PlayBoard:_updateInstructionLabel(instruction)
+    if self.instructionTextAnchor then
+        Helper.clearButtons(self.instructionTextAnchor)
+        if instruction then
+            Helper.createAbsoluteButtonWithRoundness(self.instructionTextAnchor, 1, {
+                click_function = Helper.registerGlobalCallback(),
+                label = instruction,
+                position = self.instructionTextAnchor.getPosition() + Vector(0, 0.7, 0),
+                width = 0,
+                height = 0,
+                font_size = 200,
+                scale = Vector(1, 1, 1),
+                color = { 0, 0, 0, 0.90 },
+                font_color = Color.fromString("White")
+            })
+        end
     end
 end
 
@@ -1344,9 +1379,9 @@ function PlayBoard.acceptTurn(phase, color)
     if phase == 'leaderSelection' then
         accepted = playBoard.leader == nil
     elseif phase == 'gameStart' then
-        accepted = false
+        accepted = playBoard.lastPhase ~= phase and playBoard.leader.instruct(phase, color)
     elseif phase == 'roundStart' then
-        accepted = false
+        accepted = playBoard.lastPhase ~= phase and playBoard.leader.instruct(phase, color)
     elseif phase == 'playerTurns' then
         accepted = PlayBoard.couldSendAgentOrReveal(color)
     elseif phase == 'combat' then

@@ -123,6 +123,25 @@ return {
     incompatibleLeader = "Ce n’est pas un dirigeant pour un humain !",
     incompatibleRivalLeader = "Ce n’est pas un dirigeant pour un rival !",
 
+    -- Instructions
+    leaderSelectionActiveInstruction = "Sélectionnez un dirigeant\nsur le plateau supérieur.",
+    leaderSelectionInactiveInstruction = "Attendez que vos adversaires\naient sélectionné leurs dirigeants.",
+    playerTurnsActiveInstruction = "Envoyez un agent\nou révélez votre main,\npuis appuyez sur Finir tour.",
+    playerTurnsInactiveInstruction = "Attendez que vos adversaires\naient joué leurs tours\nd’agent / révélation.",
+    combatActiveInstruction = "Jouez une intrigue et\nappuyez sur Finir tour\nou appuyez directement\nsur Finir tour pour passer.",
+    combatInactiveInstruction = "Attendez que vos\nadversaires en combat\naient joué une intrigue\nou passé leur tour.",
+    combatEndActiveInstruction = "Prenez votre butin et\njouez des cartes d’intrigue\nle cas échéant,\npuis appuyez sur Finir tour.",
+    combatEndInactiveInstruction = "Attendez que vos adversaires\naient récolté leur butin\net joué des intrigues.",
+    endgameActiveInstruction = "Jouez vos cartes de fin de jeu et\ntuiles tech que vous possédez\nafin de gagner des PV finaux.",
+    endgameInactiveInstruction = "Attendez que vos adversaires aient\njoué leurs cartes de fin de jeu\net tuiles tech qu’ils possèdent.",
+    -- Special instructions
+    gameStartActiveInstructionForVladimirHarkonnen = "Choisissez secrètement\ndeux factions.",
+    gameStartInactiveInstructionForVladimirHarkonnen = "Attendez que Vladimir Harkonnen\nait secrétement choisi\nses deux factions.",
+    gameStartActiveInstructionForIlesaEcaz = "Mettez de côté une carte\nde votre main.",
+    gameStartInactiveInstructionForIlesaEcaz = "Attendez que Ilesa Ecaz\nait mis de côté une carte\nde sa main.",
+    gameStartActiveInstructionForHundroMoritani = "Gardez une intrigue\net reposez l’autre\nau dessus du paquet d’intrigues.",
+    gameStartInactiveInstructionForHundroMoritani = "Attendez que Hundro Moritani\nait choisi entre\nses deux intrigues.",
+
     -- Resource
     spiceAmount = "Épice",
     spice = "unité d’épice",

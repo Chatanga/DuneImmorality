@@ -75,6 +75,13 @@ function Intrigue.stealIntrigues(color, otherColor, amount)
 end
 
 ---
+function Intrigue.moveIntrigues(positions)
+    for i = 1, #positions do
+        Helper.moveCardFromZone(Intrigue.deckZone, positions[i])
+    end
+end
+
+---
 function Intrigue.discard(card)
     Intrigue.discardQueue = Intrigue.discardQueue or Helper.createSpaceQueue()
     Intrigue.discardQueue.submit(function (height)

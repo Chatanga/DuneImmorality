@@ -123,6 +123,25 @@ return {
     incompatibleLeader = "Not a human leader!",
     incompatibleRivalLeader = "Not a rival leader!",
 
+    -- Instructions
+    leaderSelectionActiveInstruction = "Select a leader\non the upper board",
+    leaderSelectionInactiveInstruction = "Wait for your opponents\nto select their leader.",
+    playerTurnsActiveInstruction = "Send an agent\nor reveal your hand,\nthen press End of Turn.",
+    playerTurnsInactiveInstruction = "Wait for your opponents\nto play their\nagent / reveal turns.",
+    combatActiveInstruction = "Play an intrigue and\npress End of Turn or simply\npress End of Turn to pass.",
+    combatInactiveInstruction = "Wait for your opponents\nin combat to play an\nintrigue or pass their turns.",
+    combatEndActiveInstruction = "Take your reward and play\nintrigue cards if you may,\nthen press End of Turn.",
+    combatEndInactiveInstruction = "Wait for your opponents\nto collect their rewards\nand play any intrigue.",
+    endgameActiveInstruction = "Play any Endgame card and\nTech tile you possess\nto gain final victory points.",
+    endgameInactiveInstruction = "Wait for your opponents\nto play any Endgame card\nor Tech tiles they possess.",
+    -- Special instructions
+    gameStartActiveInstructionForVladimirHarkonnen = "Secretly choose two factions.",
+    gameStartInactiveInstructionForVladimirHarkonnen = "Wait for Vladimir Harkonnen\nto secretly choose\nits two factions.",
+    gameStartActiveInstructionForIlesaEcaz = "Set aside a card\nfrom your hand.",
+    gameStartInactiveInstructionForIlesaEcaz = "Wait for Ilesa Ecaz\nto set aside a card\nfrom her hand.",
+    gameStartActiveInstructionForHundroMoritani = "Keep one intrigue\nand put the other\non top of the intrigue deck.",
+    gameStartInactiveInstructionForHundroMoritani = "Wait for Hundro Moritani\nto choose between\nits two intrigues.",
+
     -- Resource
     spiceAmount = "Spice",
     spice = "spice unit",

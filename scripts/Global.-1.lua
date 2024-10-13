@@ -98,6 +98,31 @@ autoLoadedSettings = {
     soundEnabled = true,
     submitGameRankedGame = true,
 }
+
+autoLoadedSettings = {
+    language = "fr",
+    numberOfPlayers = 4,
+    hotSeat = true,
+    firstPlayer = "Green",
+    randomizePlayerPositions = false,
+    useContracts = true,
+    legacy = true,
+    merakon = false,
+    riseOfIx = true,
+    epicMode = true,
+    immortality = false,
+    goTo11 = false,
+    leaderSelection = {
+        Green = "helenaRichese",
+        Yellow = "vladimirHarkonnen",
+        Red = "hundroMoritani",
+        Blue = "ilesaEcaz",
+    },
+    horizontalHandLayout = true,
+    formalCombatPhase = true,
+    soundEnabled = true,
+    submitGameRankedGame = false,
+}
 ]]
 
 local Module = require("utils.Module")
@@ -332,9 +357,7 @@ function asyncOnLoad(scriptState)
     if not uiAlreadySetUp then
         -- Force the translation of the whole UI (not restricted to the "setupPane" actually)
         -- since the other panels are also used after the setup.
-        Helper.dump(1)
         XmlUI.new(Global)
-        Helper.dump(2)
     end
 end
 

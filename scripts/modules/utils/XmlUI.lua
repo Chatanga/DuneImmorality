@@ -80,7 +80,7 @@ end
 
 function XmlUI:toUI()
     if not self.id then
-        --return
+        return
     end
     local root =  XmlUI._findXmlElement(self.xml, self.id)
     assert(root, "Unknown id: " .. tostring(self.id))

@@ -13,6 +13,7 @@ local Combat = Module.lazyRequire("Combat")
 local ChoamContractMarket = Module.lazyRequire("ChoamContractMarket")
 local Deck = Module.lazyRequire("Deck")
 local TechMarket = Module.lazyRequire("TechMarket")
+local Intrigue = Module.lazyRequire("Intrigue")
 
 local Leader = Helper.createClass(Action)
 
@@ -86,6 +87,19 @@ Leader.vladimirHarkonnen = Helper.createClass(Leader, {
     tearDown = function ()
         local tokenBag = getObjectFromGUID('f89231')
         tokenBag.destruct()
+    end,
+
+    -- Masterstroke
+    instruct = function (phase, isActivePlayer)
+        if phase == "gameStart" then
+            if isActivePlayer then
+                return I18N("gameStartActiveInstructionForVladimirHarkonnen")
+            else
+                return I18N("gameStartInactiveInstructionForVladimirHarkonnen")
+            end
+        else
+            return Leader.instruct(phase, isActivePlayer)
+        end
     end,
 
     --- Scheme
@@ -343,6 +357,19 @@ Leader.ilesaEcaz = Helper.createClass(Leader, {
             Dialog.broadcastToColor(I18N("noAvailableFoldspaceCards"), color, "Purple")
         end
         return false
+    end,
+
+    --- One step ahead
+    instruct = function (phase, isActivePlayer)
+        if phase == "roundStart" then
+            if isActivePlayer then
+                return I18N("gameStartActiveInstructionForIlesaEcaz")
+            else
+                return I18N("gameStartInactiveInstructionForIlesaEcaz")
+            end
+        else
+            return Leader.instruct(phase, isActivePlayer)
+        end
     end
 })
 
@@ -462,9 +489,23 @@ Leader.hundroMoritani = Helper.createClass(Leader, {
     prepare = function (color, settings)
         Action.prepare(color, settings)
         Helper.onceFramesPassed(1).doAfter(function ()
-            local leader = PlayBoard.getLeader(color)
-            leader.drawIntrigues(color, 2)
+            -- We don't send it to the player hand to avoid any confusion with the epic mode intrigue.
+            local emptySlots = Park.findEmptySlots(PlayBoard.getAgentCardPark(color))
+            Intrigue.moveIntrigues({ emptySlots[1], emptySlots[2] })
         end)
+    end,
+
+    --- Intelligence
+    instruct = function (phase, isActivePlayer)
+        if phase == "gameStart" then
+            if isActivePlayer then
+                return I18N("gameStartActiveInstructionForHundroMoritani")
+            else
+                return I18N("gameStartInactiveInstructionForHundroMoritani")
+            end
+        else
+            return Leader.instruct(phase, isActivePlayer)
+        end
     end,
 
     --- Couriers (not used)
