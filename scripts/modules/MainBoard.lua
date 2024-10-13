@@ -24,8 +24,8 @@ local MainBoard = {
         vastWealth = { group = "emperor", posts = { "emperor" } },
         dutifulService = { group = "emperor", posts = { "emperor" } },
 
-        militarySupport = { group = "greatHouses", posts = { "greatHouse" } },
-        economicSupport = { group = "greatHouses", posts = { "greatHouse" } },
+        militarySupport = { group = "greatHouses", posts = { "greatHouses" } },
+        economicSupport = { group = "greatHouses", posts = { "greatHouses" } },
 
         heighliner = { group = "spacingGuild", combat = true, posts = { "spacingGuild" } },
         deliverSupplies = { group = "spacingGuild", posts = { "spacingGuild" } },
@@ -663,33 +663,11 @@ function MainBoard._manageIntelligenceAndInfiltrate(color, spaceName, recallSpy)
 
     local hasCardsToDraw = PlayBoard.getDrawDeck(color) or PlayBoard.getDiscard(color)
 
-    local details = MainBoard.spaceDetails[spaceName]
-    assert(details, spaceName)
-    -- TODO Take care of special cases such as Ariana Thorvald ability?
-
     -- We have already verified that there is no agent of the same color,
     -- so any remaining agent must be an enemy.
     local enemyAgentPresent = MainBoard.hasAgentInSpace(spaceName)
 
-    -- We don't check the color access here as elsewhere.
-    local couldInfiltrateByOtherMeans = false
-    local infiltrationCards = {
-        -- Helena Richese
-        "kwisatzHaderach",
-        "guildAccord",
-        "choamDelegate",
-        "bountyHunter",
-        "embeddedAgent",
-        "tleilaxuInfiltrator",
-    }
-    for _, cardName in ipairs(infiltrationCards) do
-        if PlayBoard.hasPlayedThisTurn(color, cardName) then
-            couldInfiltrateByOtherMeans = true
-            break
-        end
-    end
-
-    if not enemyAgentPresent or couldInfiltrateByOtherMeans then
+    if not enemyAgentPresent or MainBoard._couldInfiltrateByOtherMeans(color, spaceName) then
         if #recallableSpies == 0 or not hasCardsToDraw then
             if recallSpy then
                 Dialog.broadcastToColor(I18N('noSpyToRecallOrCardToDraw'), color, "Purple")
@@ -728,6 +706,42 @@ function MainBoard._manageIntelligenceAndInfiltrate(color, spaceName, recallSpy)
     return continuation
 end
 
+---
+function MainBoard._couldInfiltrateByOtherMeans(color, spaceName)
+    local details = MainBoard.spaceDetails[spaceName]
+    assert(details, spaceName)
+
+    -- Should be equivalent to the (unused) function 'ImperiumCard._resolveCard(card).factions'.
+    local infiltrationCards = {
+        kwisatzHaderach = {},
+        courtIntrigue = { "emperor", "greatHouses" },
+        guildAccord = { "spacingGuild" },
+        webOfPower = { "beneGesserit" },
+        jamis = { "fremen", "fringeWorlds" },
+        choamDelegate = { "desert", "choam" },
+        bountyHunter = { "city" },
+        embeddedAgent = { "landsraad", "ix" },
+        tleilaxuInfiltrator = {},
+    }
+
+    Helper.dump(PlayBoard.getLeaderName(color), "in", details.group)
+
+    -- FIXME
+    local leaderCard = PlayBoard.findLeaderCard(color)
+    if Helper.getID(leaderCard) == "helenaRichese" and Helper.isElementOf(details.group, { "landsraad", "ix" }) then
+        return true
+    end
+
+    for cardName, groups in pairs(infiltrationCards) do
+        local groupMatchs = Helper.isEmpty(groups) or Helper.isElementOf(details.group, groups)
+        if groupMatchs and PlayBoard.hasPlayedThisTurn(color, cardName) then
+            return true
+        end
+    end
+    return false
+end
+
+---
 function MainBoard._recallSpy(color, recallableSpies, continuation, recallMode)
     if recallMode == "infiltrateAndIntelligence" then
         -- Choosing 2 spies among 3 or more, or choosing twice in a row,

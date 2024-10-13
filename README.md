@@ -35,6 +35,7 @@ This repository contains the JSON skeletons and Lua scripts of various mods for 
 __All__
 
 - Free selection of leaders.
+- Reintroduce notice, startOfGame and startOfRound turns for some leaders?
 
 __6P__
 
