@@ -55,7 +55,7 @@ end
 
 Leader.vladimirHarkonnen = Helper.createClass(Leader, {
 
-    setUp = function (color, settings)
+    doSetUp = function (color, settings)
         Leader.vladimirHarkonnen.transientSetUp(color, settings)
     end,
 
@@ -111,7 +111,7 @@ Leader.vladimirHarkonnen = Helper.createClass(Leader, {
 
 Leader.glossuRabban = Helper.createClass(Leader, {
 
-    setUp = function (color, settings)
+    doSetUp = function (color, settings)
         Leader.glossuRabban.transientSetUp(color, settings)
     end,
 
@@ -136,7 +136,7 @@ Leader.glossuRabban = Helper.createClass(Leader, {
 
 Leader.ilbanRichese = Helper.createClass(Leader, {
 
-    setUp = function (color, settings)
+    doSetUp = function (color, settings)
         Leader.ilbanRichese.transientSetUp(color, settings)
     end,
 
@@ -217,7 +217,7 @@ Leader.letoAtreides = Helper.createClass(Leader, {
 
 Leader.paulAtreides = Helper.createClass(Leader, {
 
-    setUp = function (color, settings)
+    doSetUp = function (color, settings)
         Leader.paulAtreides.transientSetUp(color, settings)
     end,
 
@@ -250,7 +250,7 @@ Leader.paulAtreides = Helper.createClass(Leader, {
 
 Leader.arianaThorvald = Helper.createClass(Leader, {
 
-    setUp = function (color, settings)
+    doSetUp = function (color, settings)
         Leader.arianaThorvald.transientSetUp(color, settings)
     end,
 
@@ -283,7 +283,7 @@ Leader.arianaThorvald = Helper.createClass(Leader, {
 
 Leader.memnonThorvald = Helper.createClass(Leader, {
 
-    setUp = function (color, settings)
+    doSetUp = function (color, settings)
         Leader.memnonThorvald.transientSetUp(color, settings)
     end,
 
@@ -315,7 +315,7 @@ Leader.armandEcaz = Helper.createClass(Leader, {
 
 Leader.ilesaEcaz = Helper.createClass(Leader, {
 
-    setUp = function (color, settings)
+    doSetUp = function (color, settings)
         local content = PlayBoard.getPlayBoard(color).content
         local zone = content.leaderZone
         -- Temporary tag to avoid counting the leader card.
@@ -395,7 +395,7 @@ Leader.rhomburVernius = Helper.createClass(Leader, {
 
 Leader.tessiaVernius = Helper.createClass(Leader, {
 
-    setUp = function (color, settings)
+    doSetUp = function (color, settings)
         Leader.tessiaVernius.transientSetUp(color, settings)
     end,
 
@@ -449,7 +449,7 @@ Leader.tessiaVernius = Helper.createClass(Leader, {
 
 Leader.yunaMoritani = Helper.createClass(Leader, {
 
-    setUp = function (color, settings)
+    doSetUp = function (color, settings)
         Leader.yunaMoritani.transientSetUp(color, settings)
     end,
 
@@ -518,7 +518,7 @@ Leader.hundroMoritani = Helper.createClass(Leader, {
 Leader.stabanTuek = Helper.createClass(Leader, {
 
     -- Smuggle spice
-    setUp = function (color, settings)
+    doSetUp = function (color, settings)
         Leader.stabanTuek.transientSetUp(color, settings)
     end,
 
@@ -557,7 +557,7 @@ Leader.stabanTuek = Helper.createClass(Leader, {
 
 Leader.amberMetulli = Helper.createClass(Leader, {
 
-    setUp = function (color, settings)
+    doSetUp = function (color, settings)
         Leader.amberMetulli.transientSetUp(color, settings)
     end,
 
@@ -578,7 +578,7 @@ Leader.amberMetulli = Helper.createClass(Leader, {
 
 Leader.gurneyHalleck = Helper.createClass(Leader, {
 
-    setUp = function (color, settings)
+    doSetUp = function (color, settings)
         Leader.gurneyHalleck.transientSetUp(color, settings)
     end,
 
@@ -650,7 +650,7 @@ Leader.irulanCorrino = Helper.createClass(Leader, {
 
 Leader.jessica = Helper.createClass(Leader, {
 
-    setUp = function (color, settings)
+    doSetUp = function (color, settings)
         Leader.jessica.transientSetUp(color, settings)
     end,
 
@@ -733,7 +733,7 @@ Leader.feydRauthaHarkonnen = Helper.createClass(Leader, {
         Vector(-0.95, 0, 0.55),
     },
 
-    setUp = function (color, settings)
+    doSetUp = function (color, settings)
         local snapPoints = {}
         for _, position in ipairs(Leader.feydRauthaHarkonnen.positions) do
             table.insert(snapPoints, {
@@ -779,13 +779,14 @@ Leader.shaddamCorrino = Helper.createClass(Leader, {
 
 Leader.muadDib = Helper.createClass(Leader, {
 
-    setUp = function (color, settings)
+    doSetUp = function (color, settings)
         Leader.muadDib.transientSetUp(color, settings)
     end,
 
     --- Unpredictable foe
     transientSetUp = function (color, settings)
         Helper.registerEventListener("reveal", function (otherColor)
+            -- Should we consider its allies' sandworms too?
             if color == otherColor and PlayBoard.couldSendAgentOrReveal(color) and Combat.hasSandworms(color) then
                 local leader = PlayBoard.getLeader(color)
                 Action.log(I18N("muadDibBeingUnpredictable"), color)

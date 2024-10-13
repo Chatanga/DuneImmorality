@@ -33,6 +33,7 @@
         "onDestroy",
         "WebRequest",
         "onObjectDestroy",
-        "getAllObjects"
+        "getAllObjects",
+        "table"
     ]
 }

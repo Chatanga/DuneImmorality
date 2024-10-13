@@ -72,6 +72,7 @@ return {
     endgameReached = "Fin de jeu théorique atteinte",
     takeHighCouncilSeatByForce = "Prend de force",
     takeHighCouncilSeatByForceConfirm = "Prendre de force son siège au Haut-Conseil ?",
+    notEnoughLeaderLeft="Pas assez de dirigeants !",
 
     -- Card
     acquireButton = "Acquérir",

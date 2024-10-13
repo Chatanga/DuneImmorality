@@ -1083,7 +1083,7 @@ function PlayBoard._transientSetUp(settings)
     Helper.registerEventListener("phaseEnd", function (phase)
         if phase == "leaderSelection" then
             for color, playBoard in pairs(PlayBoard._getPlayBoards()) do
-                playBoard.leader.setUp(color, settings)
+                playBoard.leader.doSetUp(color, settings)
                 playBoard.leader.prepare(color, settings)
                 if Commander.isCommander(color) then
                     playBoard:_createAllySelector()
@@ -2904,7 +2904,7 @@ function PlayBoard.canTakeMakerHook(color)
         normalOrAllyColor = Commander.getActivatedAlly(color)
     end
 
-    return not PlayBoard.hasMakerHook(normalOrAllyColor) and (TurnControl.getPlayerCount() < 6 or Commander.isTeamMuabDib(normalOrAllyColor))
+    return not PlayBoard.hasMakerHook(normalOrAllyColor) and (TurnControl.getPlayerCount() < 6 or Commander.isTeamMuadDib(normalOrAllyColor))
 end
 
 ---
@@ -2923,7 +2923,7 @@ function PlayBoard.takeMakerHook(color)
             PlayBoard.getPlayBoard(normalOrAllyColor):_createButtons()
 
             if TurnControl.getPlayerCount() == 6 then
-                assert(Commander.isTeamMuabDib(normalOrAllyColor))
+                assert(Commander.isTeamMuadDib(normalOrAllyColor))
                 local otherAllyColor = Commander.getOtherAlly(normalOrAllyColor)
                 assert(otherAllyColor ~= normalOrAllyColor)
                 if not PlayBoard.hasMakerHook(otherAllyColor) then

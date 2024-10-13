@@ -69,7 +69,7 @@ return {
     phaseRecall = "Phase: recall",
     phaseEndgame = "Phase: endgame",
     phaseArrakeenScouts = "Phase: Arrakeen scouts",
-    endgameReached = "Theorical End of Game reached",
+    notEnoughLeaderLeft="Not enough leaders left!",
 
     -- Card
     acquireButton = "Acquire",

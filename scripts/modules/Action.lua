@@ -48,6 +48,11 @@ function Action.onLoad(state)
 end
 
 ---
+function Action.setUp()
+    -- NOP
+end
+
+---
 function Action.onSave(state)
     state.Action = {
         context = Action.context
@@ -72,7 +77,7 @@ function Action.checkContext(attributes)
 end
 
 ---
-function Action.setUp(color, settings)
+function Action.doSetUp(color, settings)
     -- NOP
 end
 

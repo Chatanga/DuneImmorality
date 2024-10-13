@@ -17,6 +17,11 @@ function Commander.onLoad()
 end
 
 ---
+function Commander.setUp(settings)
+    -- NOP
+end
+
+---
 function Commander.isCommander(color)
     return color == "Purple" or color == "White"
 end
@@ -106,7 +111,7 @@ function Commander.isMuadDib(color)
 end
 
 ---
-function Commander.isTeamMuabDib(color)
+function Commander.isTeamMuadDib(color)
     return color == "Green" or color == "Yellow" or color == "White"
 end
 
@@ -119,7 +124,7 @@ end
 function Commander.inSameTeam(...)
     assert(#{...} > 1)
     local shaddamTeamMemberCount = #Helper.filter({...}, Commander.isTeamShaddam)
-    local muadDibTeamMemberCount = #Helper.filter({...}, Commander.isTeamMuabDib)
+    local muadDibTeamMemberCount = #Helper.filter({...}, Commander.isTeamMuadDib)
     return shaddamTeamMemberCount == 0 or muadDibTeamMemberCount == 0
 end
 
@@ -128,7 +133,7 @@ function Commander.newCommander(color, leader)
     assert(Commander.isCommander(color))
     local commander = Helper.createClassInstance(Commander, {})
     Commander.leaders[color] = leader
-    Commander.name = leader.name
+    commander.name = leader.name
     return commander
 end
 
@@ -146,8 +151,18 @@ function Commander.getActivatedAlly(color)
 end
 
 ---
+function Commander.doSetUp(color, settings)
+    Helper.dumpFunction("Commander.doSetUp", color)
+    local leader = Commander.leaders[color]
+    assert(leader)
+    leader.doSetUp(color, settings, true)
+end
+
+---
 function Commander.prepare(color, settings)
-    Commander.leaders[color].prepare(color, settings, true)
+    local leader = Commander.leaders[color]
+    assert(leader)
+    leader.prepare(color, settings, true)
 end
 
 ---

@@ -724,11 +724,9 @@ function MainBoard._couldInfiltrateByOtherMeans(color, spaceName)
         tleilaxuInfiltrator = {},
     }
 
-    Helper.dump(PlayBoard.getLeaderName(color), "in", details.group)
-
-    -- FIXME
-    local leaderCard = PlayBoard.findLeaderCard(color)
-    if Helper.getID(leaderCard) == "helenaRichese" and Helper.isElementOf(details.group, { "landsraad", "ix" }) then
+    -- TODO Introduce IoD.
+    local leader = PlayBoard.getLeader(color)
+    if leader.name == "helenaRichese" and Helper.isElementOf(details.group, { "landsraad", "ix" }) then
         return true
     end
 

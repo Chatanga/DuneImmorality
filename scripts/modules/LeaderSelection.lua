@@ -204,7 +204,6 @@ end
 
 ---
 function LeaderSelection._layoutLeaders(start, count, callback)
-    local w = LeaderSelection.deckZone.getScale().x
     local h = LeaderSelection.deckZone.getScale().z
     local colCount = 6
     local origin = LeaderSelection.deckZone.getPosition() - Vector((colCount / 2 - 0.5) * 5, 0, h / 2 - 10)
@@ -325,14 +324,15 @@ function LeaderSelection._setUpPicking(autoStart, random, hidden)
         local start = function ()
             local availableLeaderCount = #LeaderSelection._getVisibleLeaders()
             local requiredLeaderCount = #LeaderSelection.players
-            if availableLeaderCount >= requiredLeaderCount then
+            -- In 6P mode, 2 players are automatically assigned.
+            if availableLeaderCount >= math.min(4, requiredLeaderCount) then
                 local visibleLeaders = LeaderSelection._prepareVisibleLeaders(hidden)
                 LeaderSelection._createDynamicLeaderSelection(visibleLeaders)
                 Helper.clearButtons(LeaderSelection.secondaryTable)
                 LeaderSelection.stage = Stage.STARTED
                 TurnControl.start()
             else
-                error("Not enough leaders left!")
+                broadcastToAll(I18N("notEnoughLeaderLeft"), "Red")
             end
         end
 
