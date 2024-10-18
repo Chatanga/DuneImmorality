@@ -73,11 +73,13 @@ function Hagal._transientSetUp(settings)
         end
     end)
 
-    Helper.registerEventListener("phaseEnd", function (phase)
-        if phase == "playerTurns" then
-            ImperiumRow.churn()
-        end
-    end)
+    if Hagal.numberOfPlayers == 1 then
+        Helper.registerEventListener("phaseEnd", function (phase)
+            if phase == "playerTurns" then
+                ImperiumRow.churn()
+            end
+        end)
+    end
 end
 
 ---
