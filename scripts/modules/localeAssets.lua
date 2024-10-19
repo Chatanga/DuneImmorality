@@ -7,9 +7,9 @@ local constants = require("Constants")
 local i18n = require("i18n")
 require("locales")
 
-local imperiumCardBack = "https://steamusercontent-a.akamaihd.net/ugc/2093667512238502565/C3DC7A02CF378129569B414967C9BE25097C6E77/"
+local imperiumCardBack = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141326342/C3DC7A02CF378129569B414967C9BE25097C6E77/"
 
-local intrigueCardBack = "https://steamusercontent-a.akamaihd.net/ugc/2093667512238521846/D63B92C616541C84A7984026D757DB03E79532DD/"
+local intrigueCardBack = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141342007/D63B92C616541C84A7984026D757DB03E79532DD/"
 
 local customDecks = {}
 
@@ -487,45 +487,45 @@ end
 
 customDecks.en = {
     -- starter with dune planet
-    starter = createImperiumCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2093667512238504518/BF3BA9C253ED953533B90D94DD56D0BAD4021B3C/", 4, 2),
+    starter = createImperiumCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2502404390141325193/BF3BA9C253ED953533B90D94DD56D0BAD4021B3C/", 4, 2),
     -- base with foldspace, liasion, the spice must flow
-    imperium = createImperiumCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2093667512238501976/6F98BCE051343A3D07D58D6BC62A8FCA2C9AAE1A/", 8, 6),
-    intrigue = createIntrigueCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2093667512238521425/A63AE0E1069DA1279FDA3A5DE6A0E073F45FC8EF/", 7, 5),
+    imperium = createImperiumCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2502404390141326803/6F98BCE051343A3D07D58D6BC62A8FCA2C9AAE1A/", 8, 6),
+    intrigue = createIntrigueCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2502404390141343483/A63AE0E1069DA1279FDA3A5DE6A0E073F45FC8EF/", 7, 5),
     -- ix with control the spice
-    ixImperium = createImperiumCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2093667512238502753/9DFCC56F20D09D60CF2B9D9050CB9640176F71B6/", 7, 5),
-    ixIntrigue = createIntrigueCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2093667512238520522/CE27F1B6D4D455A2D00D6E13FABEB72E6B9F05F1/", 5, 4),
+    ixImperium = createImperiumCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2502404390141328204/9DFCC56F20D09D60CF2B9D9050CB9640176F71B6/", 7, 5),
+    ixIntrigue = createIntrigueCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2502404390141342567/CE27F1B6D4D455A2D00D6E13FABEB72E6B9F05F1/", 5, 4),
     -- tleilax with experimentation
-    teilaxImperium = createImperiumCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2093667512238503099/E758512421B5CB27BBA228EF5F1880A7F3DC564D/", 6, 5),
+    teilaxImperium = createImperiumCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2502404390141324694/E758512421B5CB27BBA228EF5F1880A7F3DC564D/", 6, 5),
     -- tleilax with reclaimed forces
-    teilaxResearch = createImperiumCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2093667512238505265/D9BD273651404E7DE7F0E22B36F2D426D82B07A8/", 4, 5),
-    teilaxIntrigue = createIntrigueCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2093667512238520324/9FED90CD510F26618717CEB63FDA744CE916C6BA/", 6, 2),
+    teilaxResearch = createImperiumCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2502404390141325643/D9BD273651404E7DE7F0E22B36F2D426D82B07A8/", 4, 5),
+    teilaxIntrigue = createIntrigueCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2502404390141342411/9FED90CD510F26618717CEB63FDA744CE916C6BA/", 6, 2),
     -- special cards
-    seatOfPowerDeck = createImperiumCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2093667512238505419/E7E6E09C7D61392154D16277F3FEA3E4ADFCADAC/", 4, 1),
-    thumperDeck = createImperiumCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2027231506426140597/EED43686A0319F3C194702074F2D2B3E893642F7/", 1, 1)
+    seatOfPowerDeck = createImperiumCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2502404390141326498/E7E6E09C7D61392154D16277F3FEA3E4ADFCADAC/", 4, 1),
+    thumperDeck = createImperiumCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2502404390141457679/EED43686A0319F3C194702074F2D2B3E893642F7/", 1, 1)
 }
 
 localeAssets.en = {
     leaders = {
-        yuna = "https://steamusercontent-a.akamaihd.net/ugc/2093667512238499982/FA54B129B168169E3D58BA61536FCC0BB5AB7D34/",
-        hundro = "https://steamusercontent-a.akamaihd.net/ugc/2093667512238498857/6A89778D9C4BB8AC07FE503D48A4483D13DF6E5B/",
-        memnon = "https://steamusercontent-a.akamaihd.net/ugc/2120691978822940968/8431F61C545067A4EADC017E6295CB249A2BD813/",
-        ariana = "https://steamusercontent-a.akamaihd.net/ugc/2093667512238500886/2A9043877494A7174A32770C39147FAE941A39A2/",
-        ilesa = "https://steamusercontent-a.akamaihd.net/ugc/2120691978822941275/94B1575474BEEF1F1E0FE0860051932398F47CA5/",
-        armand = "https://steamusercontent-a.akamaihd.net/ugc/2093667512238498308/310C6B6E85920F9FC1A94896A335D34C3CFA6C15/",
-        paul = "https://steamusercontent-a.akamaihd.net/ugc/2120691978822941103/F597DBF1EB750EA14EA03F231D0EBCF07212A5AC/",
-        leto = "https://steamusercontent-a.akamaihd.net/ugc/2093667512238500319/8CBD932BE474529D6C14A3AA8C01BD8503EBEBC6/",
-        tessia = "https://steamusercontent-a.akamaihd.net/ugc/2120691978822940841/29817122A32B50C285EE07E0DAC32FDE9A237CEC/",
-        rhombur = "https://steamusercontent-a.akamaihd.net/ugc/2093667512238501024/0C06A30D74BD774D9B4F968C00AEC8C0817D4C77/",
-        rabban = "https://steamusercontent-a.akamaihd.net/ugc/2093667512238498058/DCF40F0D8C34B14180DC33B369DCC8AA4FD3FB55/",
-        vladimir = "https://steamusercontent-a.akamaihd.net/ugc/2093667512238499582/B5899377296C2BFAC0CF48E18AA3773AA8E998DE/",
-        ilban = "https://steamusercontent-a.akamaihd.net/ugc/2120691978822940718/15624E52D08F594943A4A6332CBD68B2A1645441/",
-        helena = "https://steamusercontent-a.akamaihd.net/ugc/2120691978822940558/63750F22F1DFBA9D9544587C0B2B8D65E157EC00/",
+        yuna = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141319867/FA54B129B168169E3D58BA61536FCC0BB5AB7D34/",
+        hundro = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141316031/6A89778D9C4BB8AC07FE503D48A4483D13DF6E5B/",
+        memnon = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141321067/8431F61C545067A4EADC017E6295CB249A2BD813/",
+        ariana = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141320077/2A9043877494A7174A32770C39147FAE941A39A2/",
+        ilesa = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141318208/94B1575474BEEF1F1E0FE0860051932398F47CA5/",
+        armand = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141320355/310C6B6E85920F9FC1A94896A335D34C3CFA6C15/",
+        paul = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141317535/F597DBF1EB750EA14EA03F231D0EBCF07212A5AC/",
+        leto = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141318661/8CBD932BE474529D6C14A3AA8C01BD8503EBEBC6/",
+        tessia = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141319434/29817122A32B50C285EE07E0DAC32FDE9A237CEC/",
+        rhombur = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141316909/0C06A30D74BD774D9B4F968C00AEC8C0817D4C77/",
+        rabban = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141317845/DCF40F0D8C34B14180DC33B369DCC8AA4FD3FB55/",
+        vladimir = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141316546/B5899377296C2BFAC0CF48E18AA3773AA8E998DE/",
+        ilban = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141316307/15624E52D08F594943A4A6332CBD68B2A1645441/",
+        helena = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141318952/63750F22F1DFBA9D9544587C0B2B8D65E157EC00/",
     },
     books = {
-        base = "https://steamusercontent-a.akamaihd.net/ugc/2093667512238529711/6DC9056BCDF73234C2283CDABA688AEAD7F8D965/",
-        faq = "https://steamusercontent-a.akamaihd.net/ugc/2120691978803955385/E7A19D5D6697389A853535BEFCBAC33C2B973492/",
-        riseOfIx = "https://steamusercontent-a.akamaihd.net/ugc/2093667512238528798/F55C0BC54AD4F658FFF7A511D5740BF93A0CB19E/",
-        immortality = "https://steamusercontent-a.akamaihd.net/ugc/2093667512238529000/DE61CF514A5C813C2E46CAA7C7FF76DDB3069641/",
+        base = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141358685/6DC9056BCDF73234C2283CDABA688AEAD7F8D965/",
+        faq = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141457843/E7A19D5D6697389A853535BEFCBAC33C2B973492/",
+        riseOfIx = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141356865/F55C0BC54AD4F658FFF7A511D5740BF93A0CB19E/",
+        immortality = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141359158/DE61CF514A5C813C2E46CAA7C7FF76DDB3069641/",
         blitz = nil
     },
     cards = {
@@ -611,53 +611,53 @@ localeAssets.en = {
 -- Tous les decks sont multi-instanciés.
 customDecks.fr = {
     -- starter without dune planet
-    starter = createImperiumCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2093667512238503531/D25AA65312D89EB7CEED36D451618E731A674BED/", 4, 2),
+    starter = createImperiumCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2502404390141323392/D25AA65312D89EB7CEED36D451618E731A674BED/", 4, 2),
     -- dune planet
-    starterDunePlanet = createImperiumCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2488878371149924429/98F5861E28F3167495D3F2890879072BF3A84E60/", 2, 2),
+    starterDunePlanet = createImperiumCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2502404390141327771/98F5861E28F3167495D3F2890879072BF3A84E60/", 2, 2),
     -- base without foldspace, nor liason, nor the spice must flow, but with Jessica of Arrakis and Duncan Loyal Blade
-    imperium = createImperiumCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2093667512238504179/CC2D301CA075930201B3883D82F4C6E1A0837273/", 10, 7),
-    imperiumFoldedSpace = createImperiumCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2093667512238503304/AE481C2ED19B085E2669F22420FD282982FD11A9/", 3, 2),
-    imperiumArrakisLiasion = createImperiumCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2093667512238504363/D7411DB495E6EB13D6B64F5E46CCF69FF322039F/", 4, 2),
-    imperiumTheSpiceMustFlow = createImperiumCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2488878371133991358/B6E08F8328DB699C60A8F058E88AA6443BA2F716/", 5, 2),
-    intrigue = createIntrigueCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2093667512238521654/13659DD01D152A8B8055B894B247CB1D254D3752/", 8, 5),
+    imperium = createImperiumCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2502404390141321326/CC2D301CA075930201B3883D82F4C6E1A0837273/", 10, 7),
+    imperiumFoldedSpace = createImperiumCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2502404390141324507/AE481C2ED19B085E2669F22420FD282982FD11A9/", 3, 2),
+    imperiumArrakisLiasion = createImperiumCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2502404390141323769/D7411DB495E6EB13D6B64F5E46CCF69FF322039F/", 4, 2),
+    imperiumTheSpiceMustFlow = createImperiumCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2502404390141326034/B6E08F8328DB699C60A8F058E88AA6443BA2F716/", 5, 2),
+    intrigue = createIntrigueCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2502404390141342723/13659DD01D152A8B8055B894B247CB1D254D3752/", 8, 5),
     -- ix without control the spice, but with Boundless Ambition
-    ixImperium = createImperiumCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2093667512238503692/C54BCAB79869547E728509123AC47EDB32E79BF5/", 6, 6),
-    ixImperiumControlTheSpice = createImperiumCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2093667512238505114/DD5ED3E5FD12F0A1C4F42750E766E83564248E07/", 1, 1),
-    ixIntrigue = createIntrigueCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2093667512238520112/3D33B3E59811CEDC64A53F104D31190E76676C64/", 5, 4),
+    ixImperium = createImperiumCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2502404390141329061/C54BCAB79869547E728509123AC47EDB32E79BF5/", 6, 6),
+    ixImperiumControlTheSpice = createImperiumCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2502404390141323266/DD5ED3E5FD12F0A1C4F42750E766E83564248E07/", 1, 1),
+    ixIntrigue = createIntrigueCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2502404390141342152/3D33B3E59811CEDC64A53F104D31190E76676C64/", 5, 4),
     -- tleilax without experimentation
-    teilaxImperium = createImperiumCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2093667512238503969/142F50245296C2EE1F5ABAD8CE93982AC0592110/", 6, 5),
-    teilaxImperiumExperimentation = createImperiumCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2093667512238504928/BF6DF4E8EF5B8C8F5BB6952166C559694A61BA04/", 2, 2),
+    teilaxImperium = createImperiumCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2502404390141325387/142F50245296C2EE1F5ABAD8CE93982AC0592110/", 6, 5),
+    teilaxImperiumExperimentation = createImperiumCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2502404390141324061/BF6DF4E8EF5B8C8F5BB6952166C559694A61BA04/", 2, 2),
     -- tleilax without reclaimed forces, but with Piter, Genius Advisor
-    teilaxResearch = createImperiumCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2093667512238501306/639814906915DFA557375A3F7963C9DE53301D57/", 4, 5),
+    teilaxResearch = createImperiumCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2502404390141328012/2399494577B270989873BC3A2002B8D99E33E001/", 4, 5),
     -- reclaimed forces
-    teilaxResearchReclaimedForces = createImperiumCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2093667512238501804/60812AEA733FF5558BA9190E47CBD474EBF38C94/", 1, 1),
-    teilaxIntrigue = createIntrigueCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2093667512238520919/83BA634F05FC7A14933153A18B7AEF83E07E3C14/", 6, 3),
+    teilaxResearchReclaimedForces = createImperiumCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2502404390141323085/60812AEA733FF5558BA9190E47CBD474EBF38C94/", 1, 1),
+    teilaxIntrigue = createIntrigueCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2502404390141343779/83BA634F05FC7A14933153A18B7AEF83E07E3C14/", 6, 3),
     -- special cards
-    seatOfPowerDeck = createImperiumCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2093667512238501163/AE3985811F9E7436655ABCCC1664368BBFF7395C/", 4, 1)
+    seatOfPowerDeck = createImperiumCustomDeck("https://steamusercontent-a.akamaihd.net/ugc/2502404390141323577/AE3985811F9E7436655ABCCC1664368BBFF7395C/", 4, 1)
 }
 
 localeAssets.fr = {
     leaders = {
-        yuna = "https://steamusercontent-a.akamaihd.net/ugc/2093667512238500769/CDAED205706CD8E32700B8A56C9BD387C5D72696/",
-        hundro = "https://steamusercontent-a.akamaihd.net/ugc/2093667512238499395/A64F2D77C6F482F31B12EC97C2DEEBBDF45AF3F9/",
-        memnon = "https://steamusercontent-a.akamaihd.net/ugc/2093667512238496955/36DB26EE194B780C9C879C74FC634C15433CE06A/",
-        ariana = "https://steamusercontent-a.akamaihd.net/ugc/2093667512238497102/3C1CA2B3506FB7AD8B1B40DB1414F7461F6974C8/",
-        ilesa = "https://steamusercontent-a.akamaihd.net/ugc/2093667512238497232/7A0FCC4CA1D0CAF19C8066776DC23A9631000997/",
-        armand = "https://steamusercontent-a.akamaihd.net/ugc/2093667512238498599/98401D1D00D15DB3512E48BBD63B9922EE17EF71/",
-        paul = "https://steamusercontent-a.akamaihd.net/ugc/2093667512238499852/008429F21B2898E4C2982EC7FB1AF422FDD85E24/",
-        leto = "https://steamusercontent-a.akamaihd.net/ugc/2093667512238500640/152B626A2D773B224CFFF878E35CEFDBB6F67505/",
-        tessia = "https://steamusercontent-a.akamaihd.net/ugc/2093667512238499203/6C34345ADF23EBD567DE0EE662B4920906F721F0/",
-        rhombur = "https://steamusercontent-a.akamaihd.net/ugc/2093667512238497351/58A6CF3EB6EBDEAC4B5826C0D21408A3CC02E678/",
-        rabban = "https://steamusercontent-a.akamaihd.net/ugc/2093667512238498462/68A9DE7E06DA5857EE51ECB978E13E3921A15B1A/",
-        vladimir = "https://steamusercontent-a.akamaihd.net/ugc/2093667512238497473/6F682C5E5C1ADE0B9B1B8FAC80B9525A6748C351/",
-        ilban = "https://steamusercontent-a.akamaihd.net/ugc/2093667512238498742/F0F052CCAB7005F4D30879BF639AFACEDFF70A80/",
-        helena = "https://steamusercontent-a.akamaihd.net/ugc/2093667512238499726/A069B3ECF1B4E9C42D2453E28EA13257F397B3F3/",
+        yuna = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141320605/CDAED205706CD8E32700B8A56C9BD387C5D72696/",
+        hundro = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141317391/A64F2D77C6F482F31B12EC97C2DEEBBDF45AF3F9/",
+        memnon = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141318361/36DB26EE194B780C9C879C74FC634C15433CE06A/",
+        ariana = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141318498/3C1CA2B3506FB7AD8B1B40DB1414F7461F6974C8/",
+        ilesa = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141320907/7A0FCC4CA1D0CAF19C8066776DC23A9631000997/",
+        armand = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141319231/98401D1D00D15DB3512E48BBD63B9922EE17EF71/",
+        paul = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141319736/008429F21B2898E4C2982EC7FB1AF422FDD85E24/",
+        leto = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141317105/152B626A2D773B224CFFF878E35CEFDBB6F67505/",
+        tessia = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141317697/6C34345ADF23EBD567DE0EE662B4920906F721F0/",
+        rhombur = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141316740/58A6CF3EB6EBDEAC4B5826C0D21408A3CC02E678/",
+        rabban = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141318082/68A9DE7E06DA5857EE51ECB978E13E3921A15B1A/",
+        vladimir = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141320749/6F682C5E5C1ADE0B9B1B8FAC80B9525A6748C351/",
+        ilban = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141317254/F0F052CCAB7005F4D30879BF639AFACEDFF70A80/",
+        helena = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141319602/A069B3ECF1B4E9C42D2453E28EA13257F397B3F3/",
     },
     books = {
-        base = "https://steamusercontent-a.akamaihd.net/ugc/2093667512238530720/3CE976153C0C7A7C5816837734D1C89D1DD17A09/",
-        faq = "https://steamusercontent-a.akamaihd.net/ugc/2120691978803956085/F81AB6FC61160924B9A9E4D829A02384CF09F5C1/",
-        riseOfIx = "https://steamusercontent-a.akamaihd.net/ugc/2093667512238529495/C7ACC9E96C2C162A13761F3C7C285AB9CF6D1C96/",
-        immortality = "https://steamusercontent-a.akamaihd.net/ugc/2093667512238528611/8542ECE0CBCE22F7B43D305B72718C7D689C1128/",
+        base = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141357092/3CE976153C0C7A7C5816837734D1C89D1DD17A09/",
+        faq = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141458028/F81AB6FC61160924B9A9E4D829A02384CF09F5C1/",
+        riseOfIx = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141357832/C7ACC9E96C2C162A13761F3C7C285AB9CF6D1C96/",
+        immortality = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141359528/8542ECE0CBCE22F7B43D305B72718C7D689C1128/",
         blitz = nil
     },
     cards = {

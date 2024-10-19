@@ -2,7 +2,10 @@
 
 The original mod adapted by [Murphy Zlaw](https://steamcommunity.com/profiles/76561197967411263/myworkshopfiles/?appid=286160), completed by [Asmodius](https://steamcommunity.com/profiles/76561197960555432/myworkshopfiles/?appid=286160) to support Rise of Ix and Immorality, then slightly modified by [me](https://steamcommunity.com/profiles/76561197978597744/myworkshopfiles/?appid=286160) to introduce aesthetic changes (mainly 3D boards), multiple languages, tech acquisition and other niceties.
 
+While still functionnal, this mod is deprecated and replaced by [Spice Flow](https://github.com/Chatanga/DuneImmorality) (Dune Imperium) and [Rakis Rising](https://github.com/Chatanga/DuneImmorality/tree/rakis) (Dune Uprising).
+
 Features:
+
 - Base game
 - Rise of Ix extension
 - Immortality extension
@@ -11,10 +14,11 @@ Features:
 - Fanmade leaders
 
 Supported langages:
+
 - French
 - English
 
-## Links :
+## Links
 
 - Steam: https://steamcommunity.com/sharedfiles/filedetails/?id=2956104551
 

@@ -22,33 +22,33 @@ worm.pics = nil
 function worm.init()
     worm.pics = {}
     worm.pics["Baron Harkonnen"] =
-        "https://steamusercontent-a.akamaihd.net/ugc/2093667512238513061/58773A049B5EC10CB24DABC66E8DFF5B3B5A7966/"
+        "https://steamusercontent-a.akamaihd.net/ugc/2502404390141345301/58773A049B5EC10CB24DABC66E8DFF5B3B5A7966/"
     worm.pics["Countess Ariana"] =
-        "https://steamusercontent-a.akamaihd.net/ugc/2093667512238519739/0AC41A9B4FF90D7CAD22A0C899532FA3624CD9D3/"
+        "https://steamusercontent-a.akamaihd.net/ugc/2502404390141344304/0AC41A9B4FF90D7CAD22A0C899532FA3624CD9D3/"
     worm.pics["Archduke Armand"] =
-        "https://steamusercontent-a.akamaihd.net/ugc/2093667512238517033/D7E5F550BBCAF67F7FC6280A9D2C8CBFD357D605/"
+        "https://steamusercontent-a.akamaihd.net/ugc/2502404390141344924/D7E5F550BBCAF67F7FC6280A9D2C8CBFD357D605/"
     worm.pics["Count Ilban"] =
-        "https://steamusercontent-a.akamaihd.net/ugc/2093667512238513786/68BE1BAD1A7DB2BD87330DD3D97E25D034B03A10/"
+        "https://steamusercontent-a.akamaihd.net/ugc/2502404390141344551/68BE1BAD1A7DB2BD87330DD3D97E25D034B03A10/"
     worm.pics["Helena Richese"] =
-        "https://steamusercontent-a.akamaihd.net/ugc/2093667512238518673/B3136F00AE416D6989303FE5A2504A1FC8DA32C2/"
+        "https://steamusercontent-a.akamaihd.net/ugc/2502404390141344426/B3136F00AE416D6989303FE5A2504A1FC8DA32C2/"
     worm.pics["Tessia Vernius"] =
-        "https://steamusercontent-a.akamaihd.net/ugc/2093667512238516658/38DEC17448EF01FE1D9C4BF402EA5864A07DBF31/"
+        "https://steamusercontent-a.akamaihd.net/ugc/2502404390141344665/38DEC17448EF01FE1D9C4BF402EA5864A07DBF31/"
     worm.pics["Prince Rhombur"] =
-        "https://steamusercontent-a.akamaihd.net/ugc/2093667512238512052/471BF295C71548463E1B1980E933911EA4C620E6/"
+        "https://steamusercontent-a.akamaihd.net/ugc/2502404390141344794/471BF295C71548463E1B1980E933911EA4C620E6/"
     worm.pics["Rabban 'The Beast'"] =
-        "https://steamusercontent-a.akamaihd.net/ugc/2093667512238511148/541AF590F49C02EB4D75E1188355B504A657E8F2/"
+        "https://steamusercontent-a.akamaihd.net/ugc/2502404390141345165/541AF590F49C02EB4D75E1188355B504A657E8F2/"
     worm.pics["Ilesa Ecaz"] =
-        "https://steamusercontent-a.akamaihd.net/ugc/2093667512238513160/2A9487D3C7E3546EC0272001965FBEFAB6F9324E/"
+        "https://steamusercontent-a.akamaihd.net/ugc/2502404390141345620/2A9487D3C7E3546EC0272001965FBEFAB6F9324E/"
     worm.pics["Duke Leto"] =
-        "https://steamusercontent-a.akamaihd.net/ugc/2093667512238514409/CC72D93C394CB1ECD456DF514D0746BE252F8D14/"
+        "https://steamusercontent-a.akamaihd.net/ugc/2502404390141345758/CC72D93C394CB1ECD456DF514D0746BE252F8D14/"
     worm.pics["Viscount Hundro"] =
         "https://steamusercontent-a.akamaihd.net/ugc/2488878371133860146/E06835C878941E36867616FC354BD9E1CE578B72/"
     worm.pics["Paul Atreides"] =
-        "https://steamusercontent-a.akamaihd.net/ugc/2093667512238517132/8E702CE9D1470D280C4BA616B41FA9CEB0265EC0/"
+        "https://steamusercontent-a.akamaihd.net/ugc/2502404390141345444/8E702CE9D1470D280C4BA616B41FA9CEB0265EC0/"
     worm.pics["Princess Yuna"] =
-        "https://steamusercontent-a.akamaihd.net/ugc/2093667512238519615/17C22AFCDBF5ED0B4743D98D4F7CBA2B52D3E133/"
+        "https://steamusercontent-a.akamaihd.net/ugc/2502404390141345030/17C22AFCDBF5ED0B4743D98D4F7CBA2B52D3E133/"
     worm.pics["Earl Memnon"] =
-        "https://steamusercontent-a.akamaihd.net/ugc/2093667512238519837/6E26B748A38B5FADF1A719C33E9E8EC591285052/"
+        "https://steamusercontent-a.akamaihd.net/ugc/2502404390141344161/6E26B748A38B5FADF1A719C33E9E8EC591285052/"
 
     worm.vptray = {}
     worm.vptray["Red"] = getObjectFromGUID("e0ed4b")

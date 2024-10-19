@@ -103,7 +103,7 @@ function nukeImperiumRow(obj, color)
     if soundEnabled then
         t = 2
         MusicPlayer.setCurrentAudioclip({
-            url = "https://steamusercontent-a.akamaihd.net/ugc/2044115565050309958/03DC77BB02B42FC405B134BCC0B0A393056F1046/",
+            url = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141336857/03DC77BB02B42FC405B134BCC0B0A393056F1046/",
             title = "Explosion"
         })
     end
