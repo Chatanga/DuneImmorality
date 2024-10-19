@@ -7,21 +7,21 @@ local Locale = Module.lazyRequire("Locale")
 -- Merakon's House Blend -> https://boardgamegeek.com/thread/3213458/merakons-house-blend
 local Deck = {
     decals = {
-        corrinoAcquireCard = "https://steamusercontent-a.akamaihd.net/ugc/2286203878409177043/9E9986D0F348F5D23A16745A271FFD28958651FB/",
-        genericAcquireCard = "https://steamusercontent-a.akamaihd.net/ugc/2286203878409243895/5F7C572489E5E03F3230B012DA0E01A84EDAABF8/",
+        corrinoAcquireCard = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141304246/9E9986D0F348F5D23A16745A271FFD28958651FB/",
+        genericAcquireCard = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141305713/5F7C572489E5E03F3230B012DA0E01A84EDAABF8/",
     },
     customDeckBaseId = 100,
     backs = {
-        imperiumCardBack = "https://steamusercontent-a.akamaihd.net/ugc/2093667512238502565/C3DC7A02CF378129569B414967C9BE25097C6E77/",
-        intrigueCardBack = "https://steamusercontent-a.akamaihd.net/ugc/2093667512238521846/D63B92C616541C84A7984026D757DB03E79532DD/",
-        techCardBack = "https://steamusercontent-a.akamaihd.net/ugc/2093667512238531825/1EA614EC832B16BC94811A7FE793344057850409/",
-        conflictCardBack = "https://steamusercontent-a.akamaihd.net/ugc/2093667512238537179/0423ECA84C0D71CCB38EBD60DEAE641EE72D7933/", -- a workaround
-        conflict1CardBack = "https://steamusercontent-a.akamaihd.net/ugc/2093667512238537179/0423ECA84C0D71CCB38EBD60DEAE641EE72D7933/",
-        conflict2CardBack = "https://steamusercontent-a.akamaihd.net/ugc/2093667512238537448/3B3F54DF65F76F0850D0EC683602524806A11E49/",
-        conflict3CardBack = "https://steamusercontent-a.akamaihd.net/ugc/2093667512238537046/9E194557E37B5C4CA74C7A77CBFB6B8A36043916/",
-        objectiveCardBack = "https://steamusercontent-a.akamaihd.net/ugc/2488878371133398865/02A61DC439DF213EA61A8CCEC1F545F4D369F2E8/",
-        hagalCardBack = "https://steamusercontent-a.akamaihd.net/ugc/2093668799785646965/26E28590801800D852F4BCA53E959AAFAAFC8FF3/",
-        leaderCardBack = "https://steamusercontent-a.akamaihd.net/ugc/2093668799785645356/005244DAC0A29EE68CFF741FC06564969563E8CF/",
+        imperiumCardBack = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141326342/C3DC7A02CF378129569B414967C9BE25097C6E77/",
+        intrigueCardBack = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141342007/D63B92C616541C84A7984026D757DB03E79532DD/",
+        techCardBack = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141363045/1EA614EC832B16BC94811A7FE793344057850409/",
+        conflictCardBack = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141365665/0423ECA84C0D71CCB38EBD60DEAE641EE72D7933/", -- a workaround
+        conflict1CardBack = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141365665/0423ECA84C0D71CCB38EBD60DEAE641EE72D7933/",
+        conflict2CardBack = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141365164/3B3F54DF65F76F0850D0EC683602524806A11E49/",
+        conflict3CardBack = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141365939/9E194557E37B5C4CA74C7A77CBFB6B8A36043916/",
+        objectiveCardBack = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141298841/02A61DC439DF213EA61A8CCEC1F545F4D369F2E8/",
+        hagalCardBack = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141333724/26E28590801800D852F4BCA53E959AAFAAFC8FF3/",
+        leaderCardBack = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141277039/005244DAC0A29EE68CFF741FC06564969563E8CF/",
         rivalLeaderCardBack = "https://steamusercontent-a.akamaihd.net/ugc/2291837013341174770/EB5ECE9F5373F0B132E93CD5825B89E7F023E9A2/",
     },
     sources = {},

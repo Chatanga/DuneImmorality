@@ -508,64 +508,64 @@ function PlayBoard.rebuild()
             {
                 name = "Scoreboard",
                 url = colorSwitch(
-                    "https://steamusercontent-a.akamaihd.net/ugc/2042984690511948114/BD4C6DB374A73A3A1586E84DD94DD2459EB51782/",
-                    "https://steamusercontent-a.akamaihd.net/ugc/2042984690511949009/00AEA6A9B03D893B1BF82EFF392448FD52B8C70E/"),
+                    "https://steamusercontent-a.akamaihd.net/ugc/2502404390141335512/BD4C6DB374A73A3A1586E84DD94DD2459EB51782/",
+                    "https://steamusercontent-a.akamaihd.net/ugc/2502404390141335805/00AEA6A9B03D893B1BF82EFF392448FD52B8C70E/"),
                 position = symmetric2(1.4, 0.2, -8.1),
                 rotation = { 90, 180, 0 },
                 scale = { 21.56, 1.1, 1.1 },
             },
             {
                 name = "First Player Token Slot",
-                url = "https://steamusercontent-a.akamaihd.net/ugc/2042984592862631937/B2176FBF3640DC02A6840C8E0FB162057724DE41/",
+                url = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141336231/B2176FBF3640DC02A6840C8E0FB162057724DE41/",
                 position = symmetric2(10.4, 0.2, -5.7),
                 rotation = { 90, 180, 0 },
                 scale = { 2, 2, 2 },
             },
             {
                 name = "Deck Slot",
-                url = "https://steamusercontent-a.akamaihd.net/ugc/2042984592862630696/9973F87497827C194B979D7410D0DD47E46305FA/",
+                url = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141335305/9973F87497827C194B979D7410D0DD47E46305FA/",
                 position = offseted2(10.4, 0.2, -1.5),
                 rotation = { 90, 180, 0 },
                 scale = { 2.4, 3.4, 3.4 },
             },
             {
                 name = "Discard Slot",
-                url = "https://steamusercontent-a.akamaihd.net/ugc/2042984592862631187/76205DFA6ECBC5F9C6B38BE95F42E6B5468B5999/",
+                url = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141335224/76205DFA6ECBC5F9C6B38BE95F42E6B5468B5999/",
                 position = offseted2(2.4, 0.2, -1.5),
                 rotation = { 90, 180, 0 },
                 scale = { 2.4, 3.4, 3.4 },
             },
             {
                 name = "Leader Slot",
-                url = "https://steamusercontent-a.akamaihd.net/ugc/2042984592862632410/7882B2E68FF7767C67EE5C63C9D7CF17B405A5C3/",
+                url = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141335398/7882B2E68FF7767C67EE5C63C9D7CF17B405A5C3/",
                 position = offseted2(6.4, 0.2, -1),
                 rotation = { 90, 180, 0 },
                 scale = { 5, 3.5, 3.5 },
             },
             {
                 name = "MuadDib Objective Slot",
-                url = "https://steamusercontent-a.akamaihd.net/ugc/2488878371134017159/52C4F6DEBC5F101B6663B833F1964BB9034A7C75/",
+                url = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141305375/52C4F6DEBC5F101B6663B833F1964BB9034A7C75/",
                 position = symmetric2(-3.4, 0.2, 0),
                 rotation = { 90, 180, 0 },
                 scale = { 1.1, 1.1, 1.1 },
             },
             {
                 name = "Crysknife Objective Slot",
-                url = "https://steamusercontent-a.akamaihd.net/ugc/2488878371134016948/D455406509BD5D1C4387C102CBACC5BFB56FC59E/",
+                url = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141304988/D455406509BD5D1C4387C102CBACC5BFB56FC59E/",
                 position = symmetric2(-4.8, 0.2, 0),
                 rotation = { 90, 180, 0 },
                 scale = { 1.1, 1.1, 1.1 },
             },
             {
                 name = "Ornithopter Objective Slot",
-                url = "https://steamusercontent-a.akamaihd.net/ugc/2488878371134017299/E4E692FE0EF6AF7B51B5A31DAC5D0D7DC7859655/",
+                url = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141304687/E4E692FE0EF6AF7B51B5A31DAC5D0D7DC7859655/",
                 position = symmetric2(-6.2, 0.2, 0),
                 rotation = { 90, 180, 0 },
                 scale = { 1.1, 1.1, 1.1 },
             },
             {
                 name = "Joker Objective Slot",
-                url = "https://steamusercontent-a.akamaihd.net/ugc/2285080980001125361/384109878E6ED179516CE638CE97167E12698A54/",
+                url = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141304458/384109878E6ED179516CE638CE97167E12698A54/",
                 position = symmetric2(-7.6, 0.2, 0),
                 rotation = { 90, 180, 0 },
                 scale = { 1, 1, 1 },
@@ -575,7 +575,7 @@ function PlayBoard.rebuild()
         layoutGrid(3, 1, function (x, y)
             table.insert(decals, {
                 name = "Generic Slot",
-                url = "https://steamusercontent-a.akamaihd.net/ugc/2042984592862621000/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
+                url = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
                 position = offseted2(4.9 + x * 1.5, 0.2, -6.5),
                 rotation = { 90, 0, 0 },
                 scale = { 0.5, 0.5, 0.5 },
@@ -585,7 +585,7 @@ function PlayBoard.rebuild()
         layoutGrid(3, 1, function (x, y)
             table.insert(decals,  {
                 name = "Generic Slot",
-                url = "https://steamusercontent-a.akamaihd.net/ugc/2042984592862621000/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
+                url = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
                 position = offseted2(4.9 + x * 1.5, 0.2, -5.75),
                 rotation = { 90, 0, 0 },
                 scale = { 0.25, 0.25, 0.25 },
@@ -595,7 +595,7 @@ function PlayBoard.rebuild()
         layoutGrid(2, 3, function (x, y)
             table.insert(decals, {
                 name = "Tech Tile Slot",
-                url = "https://steamusercontent-a.akamaihd.net/ugc/2042984592862632706/6A948CDC20774D0D4E5EA0EFF3E0D2C23F30FCC1/",
+                url = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141336300/6A948CDC20774D0D4E5EA0EFF3E0D2C23F30FCC1/",
                 position = symmetric2(-4 -3 * x, 0.2, -2 -2 * y),
                 rotation = { 90, 0, 0 },
                 scale = { 2.6, 1.8, 1.8 },
@@ -606,7 +606,7 @@ function PlayBoard.rebuild()
             layoutGrid(2, 1, function (x, y)
                 table.insert(decals, {
                     name = "Generic Slot",
-                    url = "https://steamusercontent-a.akamaihd.net/ugc/2042984592862621000/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
+                    url = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
                     position = symmetric2(-1.3 + x * 1.6, 0.2, -4.2),
                     rotation = { 90, 0, 0 },
                     scale = { 0.5, 0.5, 0.5 },
