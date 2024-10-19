@@ -1,8 +1,6 @@
 # Spice Flow Mod for Tabletop Simulator
 
-A complete rewrite of Dune Immorality from scratch to overcome the limitations of the code base and introduces more elaborated features : assisted revelation, automated Hagal House, Arrakeen Scouts, etc.
-
-*Note: formely known as "Dune Immorality - Alpha Test".*
+A Tabletop Simulator mod for Dune Imperium and its extensions.
 
 ![Capture](captures/capture-1.jpg)
 

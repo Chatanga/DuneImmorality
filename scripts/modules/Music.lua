@@ -2,9 +2,9 @@ local Helper = require("utils.Helper")
 
 local Music = {
     sounds = {
-        atomics = "https://steamusercontent-a.akamaihd.net/ugc/2488878371133585785/C9F0035DAF76EE6B353F9885C2859EBB282A9988/",
-        battle = "https://steamusercontent-a.akamaihd.net/ugc/2488878371133859320/474E09BB37578C5FC1CFDE001E7D6785EE54C52F/",
-        turn = "https://steamusercontent-a.akamaihd.net/ugc/2488878371133859467/2C9434C28270DDD87D33648DA7B17B23DA0D5ECF/",
+        atomics = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141278359/C9F0035DAF76EE6B353F9885C2859EBB282A9988/",
+        battle = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141336378/474E09BB37578C5FC1CFDE001E7D6785EE54C52F/",
+        turn = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141336932/2C9434C28270DDD87D33648DA7B17B23DA0D5ECF/",
     }
 }
 
