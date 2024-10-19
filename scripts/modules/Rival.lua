@@ -224,15 +224,6 @@ function Rival.drawIntrigues(color, amount)
 end
 
 ---
-function Rival.troops(color, from, to, amount)
-    local finalTo = to
-    if to == "garrison" and (Action.checkContext({ troopTransports = true }) or Action.checkContext({ hagalCard = HagalCard.isCombatCard })) then
-        finalTo = "combat"
-    end
-    return Action.troops(color, from, finalTo, amount)
-end
-
----
 function Rival.gainVictoryPoint(color, name, count)
     -- We make an exception for alliance token to make it clear that the Hagal House owns it.
     if Hagal.getRivalCount() == 2 or Helper.endsWith(name, "Alliance") then

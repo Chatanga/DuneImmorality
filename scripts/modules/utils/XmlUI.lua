@@ -16,9 +16,9 @@ function XmlUI.new(holder, id, fields)
         won't be reflected in the retrieved XML though.
     ]]
     assert(holder)
+    XmlUI.sharedGlobalXml = holder.UI.getXmlTable()
     local xmlUI = Helper.createClassInstance(XmlUI, {
         holder = holder,
-        xml = holder.UI.getXmlTable(),
         id = id,
         active = false,
         fields = fields
@@ -43,7 +43,7 @@ end
 
 ---
 function XmlUI:setButton(id, label, interactable)
-    local element = XmlUI._findXmlElement(self.xml, id)
+    local element = XmlUI._findXmlElement(XmlUI.sharedGlobalXml, id)
     assert(element, "Unknown id: " .. tostring(id))
     XmlUI._setXmlButton(element, label)
     XmlUI._setXmlInteractable(element, interactable)
@@ -51,7 +51,7 @@ end
 
 ---
 function XmlUI:setButtonI18N(id, key, interactable)
-    local element = XmlUI._findXmlElement(self.xml, id)
+    local element = XmlUI._findXmlElement(XmlUI.sharedGlobalXml, id)
     assert(element, "Unknown id: " .. tostring(id))
     XmlUI._setXmlButtonI18N(element, key)
     XmlUI._setXmlInteractable(element, interactable)
@@ -79,12 +79,15 @@ function XmlUI:fromUI(player, value, id)
 end
 
 function XmlUI:toUI()
-    local root =  XmlUI._findXmlElement(self.xml, self.id)
+    if not self.id then
+        return
+    end
+    local root =  XmlUI._findXmlElement(XmlUI.sharedGlobalXml, self.id)
     assert(root, "Unknown id: " .. tostring(self.id))
     root.attributes.active = self.active
     for name, value in pairs(self.fields) do
         if not XmlUI._isEnumeration(name) and not XmlUI._isRange(name) then
-            local element = XmlUI._findXmlElement(self.xml, name)
+            local element = XmlUI._findXmlElement(XmlUI.sharedGlobalXml, name)
             if element then
                 if XmlUI._isActive(value) then
                     local values = self:_getEnumeration(name)
@@ -107,8 +110,8 @@ function XmlUI:toUI()
             end
         end
     end
-    XmlUI._translateContent(self.xml)
-    self.holder.UI.setXmlTable(self.xml)
+    XmlUI._translateContent(XmlUI.sharedGlobalXml)
+    self.holder.UI.setXmlTable(XmlUI.sharedGlobalXml)
 end
 
 ---

@@ -27,6 +27,26 @@ local autoLoadedSettings = nil
 autoLoadedSettings = {
     language = "fr",
     hotSeat = true,
+    numberOfPlayers = 1,
+    difficulty = "expert",
+    randomizePlayerPositions = false,
+    riseOfIx = true,
+    epicMode = false,
+    immortality = true,
+    goTo11 = false,
+    firstPlayer = "Green",
+    leaderSelection = {
+        Green = "ilbanRichese",
+        Yellow = "arianaThorvald",
+        Red = "tessiaVernius",
+    },
+    formalCombatPhase = false,
+    soundEnabled = true,
+}
+
+autoLoadedSettings = {
+    language = "fr",
+    hotSeat = true,
     numberOfPlayers = 3,
     randomizePlayerPositions = false,
     riseOfIx = true,
@@ -165,6 +185,8 @@ local Controller = {
         randomizePlayerPositions = false,
         difficulty_all = allModules.Hagal.getDifficulties(),
         difficulty = {},
+        imperiumRowChurn = {},
+        brutalEscalation = {},
         riseOfIx = true,
         epicMode = false,
         immortality = true,
@@ -289,6 +311,7 @@ function asyncOnLoad(state)
         else
             Controller.ui = XmlUI.new(Global, "setupPane", Controller.fields)
             Controller.ui:show()
+            Controller.soloUi = XmlUI.new(Global, "soloSetupPane", Controller.fields)
             I18N.setLocale(Controller.fields.language)
             Controller.updateDefaultLeaderPoolSizeLabel()
             Controller.updateSetupButton()
@@ -444,7 +467,17 @@ end
 
 --- UI callback (cf. XML).
 function setDifficulty(player, value, id)
-    Controller.ui:fromUI(player, value, id)
+    Controller.soloUi:fromUI(player, value, id)
+end
+
+--- UI callback (cf. XML).
+function setImperiumRowChurn(player, value, id)
+    Controller.soloUi:fromUI(player, value, id)
+end
+
+--- UI callback (cf. XML).
+function setBrutalEscalation(player, value, id)
+    Controller.soloUi:fromUI(player, value, id)
 end
 
 --- UI callback (cf. XML).
@@ -525,6 +558,8 @@ end
 function setUpFromUI()
     Controller.ui:hide()
     Controller.ui = nil
+    Controller.soloUi:hide()
+    Controller.soloUi = nil
 
     local numberOfPlayers = Controller.getNumberOfPlayers(Controller.fields.virtualHotSeatMode)
 
@@ -535,6 +570,8 @@ function setUpFromUI()
         firstPlayer = Controller.fields.firstPlayer,
         randomizePlayerPositions = Controller.fields.randomizePlayerPositions == true,
         difficulty = Controller.fields.difficulty,
+        imperiumRowChurn = Controller.fields.imperiumRowChurn,
+        brutalEscalation = Controller.fields.brutalEscalation,
         riseOfIx = Controller.fields.riseOfIx == true,
         epicMode = Controller.fields.epicMode == true,
         immortality = Controller.fields.immortality == true,
@@ -625,8 +662,14 @@ function Controller.applyVirtualHotSeatMode()
 
     if Controller.isUndefined(Controller.fields.virtualHotSeatMode) or numberOfPlayers > 1 then
         Controller.fields.difficulty = {}
+        Controller.fields.imperiumRowChurn = {}
+        Controller.fields.brutalEscalation = {}
+        Controller.soloUi:hide()
     else Controller.isUndefined(Controller.fields.difficulty)
         Controller.fields.difficulty = "novice"
+        Controller.fields.imperiumRowChurn = true
+        Controller.fields.brutalEscalation = true
+        Controller.soloUi:show()
     end
 
     if numberOfPlayers > 2 then

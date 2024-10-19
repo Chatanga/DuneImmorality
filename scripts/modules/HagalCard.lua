@@ -9,6 +9,9 @@ local TleilaxuRow = Module.lazyRequire("TleilaxuRow")
 local Action = Module.lazyRequire("Action")
 local Types = Module.lazyRequire("Types")
 local TechMarket = Module.lazyRequire("TechMarket")
+local Hagal = Module.lazyRequire("Hagal")
+local TurnControl = Module.lazyRequire("TurnControl")
+local Combat = Module.lazyRequire("Combat")
 
 local HagalCard = {
     cards = {
@@ -60,10 +63,77 @@ function HagalCard.activate(color, card, riseOfIx)
     HagalCard.riseOfIx = riseOfIx
     local rival = PlayBoard.getLeader(color)
     local actionName = Helper.toCamelCase("_activate", cardName)
-    if HagalCard[actionName] then
-        return HagalCard[actionName](color, rival)
+    if HagalCard[actionName] and HagalCard[actionName](color, rival) then
+        HagalCard.flushTurnActions(color)
+        return true
     else
         return false
+    end
+end
+
+function HagalCard.flushTurnActions(color)
+    HagalCard.acquiredTroopCount = HagalCard.acquiredTroopCount or 0
+    local rival = PlayBoard.getLeader(color)
+    assert(rival, color)
+
+    if HagalCard.inCombat then
+        local deploymentLimit = Hagal.getExpertDeploymentLimit(color)
+
+        local garrisonedTroopCount = #Park.getObjects(Combat.getGarrisonPark(color))
+        local inSupplyTroopCount = #Park.getObjects(PlayBoard.getSupplyPark(color))
+
+        local fromGarrison = math.min(2, garrisonedTroopCount)
+        local fromSupply = HagalCard.acquiredTroopCount
+
+        if HagalCard.riseOfIx then
+            -- Dreadnoughts are free and implicit.
+            local count = rival.dreadnought(color, "garrison", "combat", 2)
+            fromGarrison = math.max(0, fromGarrison - count)
+
+            -- Flagship tech.
+            if  PlayBoard.hasTech(color, "flagship") and
+                deploymentLimit - fromGarrison - fromSupply > 0 and
+                inSupplyTroopCount - fromSupply >= 3 and
+                rival.resources(color, "solari", -4)
+            then
+                fromSupply = fromSupply + 3
+            end
+        end
+
+        local realFromSupply = math.min(fromSupply, deploymentLimit)
+        deploymentLimit = deploymentLimit - realFromSupply
+        local continuation = Helper.createContinuation("HagalCard.flushTurnActions")
+        if realFromSupply > 0 then
+            rival.troops(color, "supply", "combat", realFromSupply)
+            Park.onceStabilized(Action.getTroopPark(color, "combat")).doAfter(continuation.run)
+        else
+            continuation.run()
+        end
+        if fromSupply > realFromSupply then
+            continuation.doAfter(function ()
+                rival.troops(color, "supply", "garrison", fromSupply - realFromSupply)
+            end)
+        end
+
+        local realFromGarrison = math.min(fromGarrison, deploymentLimit)
+        if realFromGarrison > 0 then
+            rival.troops(color, "garrison", "combat", realFromGarrison)
+        end
+
+        HagalCard.inCombat = false
+    else
+        rival.troops(color, "supply", "garrison", HagalCard.acquiredTroopCount)
+    end
+    HagalCard.acquiredTroopCount = nil
+end
+
+function HagalCard.acquireTroops(color, n, inCombat)
+    if TurnControl.getCurrentPhase() == "playerTurns" then
+        HagalCard.inCombat = HagalCard.inCombat or inCombat
+        HagalCard.acquiredTroopCount = (HagalCard.acquiredTroopCount or 0) + n
+    else
+        local rival = PlayBoard.getLeader(color)
+        rival.troops(color, "supply", "garrison", n)
     end
 end
 
@@ -71,7 +141,7 @@ function HagalCard._activateConspire(color, rival)
     if HagalCard.spaceIsFree(color, "conspire") then
         HagalCard.sendRivalAgent(color, rival, "conspire")
         rival.influence(color, "emperor", 1)
-        rival.troops(color, "supply", "garrison", 2)
+        HagalCard.acquireTroops(color, 2, false)
         return true
     else
         return false
@@ -92,8 +162,7 @@ function HagalCard._activateHeighliner(color, rival)
     if HagalCard.spaceIsFree(color, "heighliner") then
         HagalCard.sendRivalAgent(color, rival, "heighliner")
         rival.influence(color, "spacingGuild", 1)
-        rival.troops(color, "supply", "combat", 3)
-        HagalCard.sendUpToTwoUnits(color, rival)
+        HagalCard.acquireTroops(color, 3, true)
         return true
     else
         return false
@@ -134,8 +203,7 @@ function HagalCard._activateHardyWarriors(color, rival)
     if HagalCard.spaceIsFree(color, "hardyWarriors") then
         HagalCard.sendRivalAgent(color, rival, "hardyWarriors")
         rival.influence(color, "fremen", 1)
-        rival.troops(color, "supply", "combat", 2)
-        HagalCard.sendUpToTwoUnits(color, rival)
+        HagalCard.acquireTroops(color, 2, true)
         return true
     else
         return false
@@ -146,7 +214,7 @@ function HagalCard._activateStillsuits(color, rival)
     if HagalCard.spaceIsFree(color, "stillsuits") then
         HagalCard.sendRivalAgent(color, rival, "stillsuits")
         rival.influence(color, "fremen", 1)
-        HagalCard.sendUpToTwoUnits(color, rival)
+        HagalCard.acquireTroops(color, 0, true)
         return true
     else
         return false
@@ -156,7 +224,7 @@ end
 function HagalCard._activateRallyTroops(color, rival)
     if HagalCard.spaceIsFree(color, "rallyTroops") then
         HagalCard.sendRivalAgent(color, rival, "rallyTroops")
-        rival.troops(color, "supply", "garrison", 4)
+        HagalCard.acquireTroops(color, 4, false)
         return true
     else
         return false
@@ -166,7 +234,7 @@ end
 function HagalCard._activateHallOfOratory(color, rival)
     if HagalCard.spaceIsFree(color, "hallOfOratory") then
         HagalCard.sendRivalAgent(color, rival, "hallOfOratory")
-        rival.troops(color, "supply", "garrison", 1)
+        HagalCard.acquireTroops(color, 1, false)
         return true
     else
         return false
@@ -176,8 +244,7 @@ end
 function HagalCard._activateCarthag(color, rival)
     if HagalCard.spaceIsFree(color, "carthag") then
         HagalCard.sendRivalAgent(color, rival, "carthag")
-        rival.troops(color, "supply", "combat", 1)
-        HagalCard.sendUpToTwoUnits(color, rival)
+        HagalCard.acquireTroops(color, 1, true)
         return true
     else
         return false
@@ -210,7 +277,7 @@ function HagalCard._activateHarvestSpice(color, rival)
         HagalCard.sendRivalAgent(color, rival, bestDesertSpace)
         rival.resources(color, "spice", bestTotalSpice)
         MainBoard.getSpiceBonus(bestDesertSpace):set(0)
-        HagalCard.sendUpToTwoUnits(color, rival)
+        HagalCard.acquireTroops(color, 0, true)
         return true
     else
         return false
@@ -220,9 +287,8 @@ end
 function HagalCard._activateArrakeen1p(color, rival)
     if HagalCard.spaceIsFree(color, "arrakeen") then
         HagalCard.sendRivalAgent(color, rival, "arrakeen")
-        rival.troops(color, "supply", "combat", 1)
+        HagalCard.acquireTroops(color, 1, true)
         rival.signetRing(color)
-        HagalCard.sendUpToTwoUnits(color, rival)
         return true
     else
         return false
@@ -232,8 +298,7 @@ end
 function HagalCard._activateArrakeen2p(color, rival)
     if HagalCard.spaceIsFree(color, "arrakeen") then
         HagalCard.sendRivalAgent(color, rival, "arrakeen")
-        rival.troops(color, "supply", "combat", 1)
-        HagalCard.sendUpToTwoUnits(color, rival)
+        HagalCard.acquireTroops(color, 1, true)
         return true
     else
         return false
@@ -319,7 +384,7 @@ function HagalCard._activateDreadnought2p(color, rival)
     if HagalCard.spaceIsFree(color, "dreadnought") and PlayBoard.getAquiredDreadnoughtCount(color) < 2 then
         HagalCard.sendRivalAgent(color, rival, "dreadnought")
         rival.dreadnought(color, "supply", "garrison", 1)
-        rival.troops(color, "supply", "garrison", 2)
+        HagalCard.acquireTroops(color, 2, false)
         return true
     else
         return false
@@ -330,7 +395,7 @@ function HagalCard._activateResearchStation(color, rival)
     if HagalCard.spaceIsFree(color, "researchStationImmortality") then
         HagalCard.sendRivalAgent(color, rival, "researchStationImmortality")
         rival.beetle(color, 2)
-        HagalCard.sendUpToTwoUnits(color, rival)
+        HagalCard.acquireTroops(color, 0, true)
         return true
     else
         return false
@@ -340,10 +405,9 @@ end
 function HagalCard._activateCarthag1(color, rival)
     if HagalCard.spaceIsFree(color, "carthag") then
         HagalCard.sendRivalAgent(color, rival, "carthag")
-        rival.troops(color, "supply", "combat", 1)
+        HagalCard.acquireTroops(color, 1, true)
         rival.beetle(color, 1)
         TleilaxuRow.trash(1)
-        HagalCard.sendUpToTwoUnits(color, rival)
         return true
     else
         return false
@@ -353,10 +417,9 @@ end
 function HagalCard._activateCarthag2(color, rival)
     if HagalCard.spaceIsFree(color, "carthag") then
         HagalCard.sendRivalAgent(color, rival, "carthag")
-        rival.troops(color, "supply", "combat", 1)
+        HagalCard.acquireTroops(color, 1, true)
         rival.beetle(color, 1)
         TleilaxuRow.trash(2)
-        HagalCard.sendUpToTwoUnits(color, rival)
         return true
     else
         return false
@@ -366,9 +429,8 @@ end
 function HagalCard._activateCarthag3(color, rival)
     if HagalCard.spaceIsFree(color, "carthag") then
         HagalCard.sendRivalAgent(color, rival, "carthag")
-        rival.troops(color, "supply", "combat", 1)
+        HagalCard.acquireTroops(color, 1, true)
         rival.beetle(color, 1)
-        HagalCard.sendUpToTwoUnits(color, rival)
         return true
     else
         return false
@@ -378,31 +440,11 @@ end
 function HagalCard.sendRivalAgent(color, rival, spaceName)
     if MainBoard.sendRivalAgent(color, spaceName) then
         if PlayBoard.useTech(color, "trainingDrones") then
-            rival.troops(color, "supply", "garrison", 1)
+            HagalCard.acquireTroops(color, 1, false)
         end
         return true
     else
         return false
-    end
-end
-
-function HagalCard.sendUpToTwoUnits(color, rival)
-    if HagalCard.riseOfIx then
-        local count = rival.dreadnought(color, "garrison", "combat", 2)
-        if count < 2 then
-            rival.troops(color, "garrison", "combat", 2 - count)
-        end
-
-        if PlayBoard.hasTech(color, "flagship") then
-            local supply = PlayBoard.getSupplyPark(color)
-            local leader = PlayBoard.getLeader(color)
-
-            if PlayBoard.hasTech(color, "flagship") and #Park.getObjects(supply) >= 3 and leader.resources(color, "solari", -4) then
-                rival.troops(color, "supply", "combat", 3)
-            end
-        end
-    else
-        rival.troops(color, "garrison", "combat", 2)
     end
 end
 

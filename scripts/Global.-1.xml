@@ -11,7 +11,7 @@
 		<Image raycastTarget="true"/>
 	</Defaults>
 	<VerticalLayout>
-		<Image ignoreLayout="True" image="https://steamusercontent-a.akamaihd.net/ugc/2509137691632252238/B918137D800EBB27B1C1055E98B6253B034D6F31/"/>
+		<Image ignoreLayout="True" type="Tiled" image="https://steamusercontent-a.akamaihd.net/ugc/2502404390135372157/BBDF8C1026A04FE222D52E39AA696F2310543485/"/>
 		<VerticalLayout padding="40 40 150 50">
 			<VerticalLayout padding="0 0 0 20">
 				<Text class="epigraph" key="prolog"/>
@@ -36,9 +36,6 @@
 				<HorizontalLayout>
 					<Toggle class="setUp" id="virtualHotSeat" onValueChanged="Global/setVirtualHotSeat" isOn="False" key="virtualHotSeat" disabled.tooltipKey="virtualHotSeatTooltip"/>
 					<Dropdown class="setUp" id="virtualHotSeatMode" onValueChanged="Global/setVirtualHotSeatMode" flexibleWidth="2.5" active="False">
-						<Option></Option>
-					</Dropdown>
-					<Dropdown class="setUp" id="difficulty" onValueChanged="Global/setDifficulty" flexibleWidth="3" active="False">
 						<Option></Option>
 					</Dropdown>
 				</HorizontalLayout>
@@ -87,4 +84,38 @@
 		</HorizontalLayout>
 	</VerticalLayout>
 	<Image position="0 375" width="256" height="256" image="https://steamusercontent-a.akamaihd.net/ugc/2492254803020933211/F1D935AF143A3EDAAF929A9585779CE4E7254B10/"/>
+</Panel>
+
+<Panel position="450 -50" width="400" height="160" color="#000000" id="soloSetupPane" rotation="0 0 0" outline="#61712c" outlineSize="1"
+	active="False" allowDragging="True" returnToOriginalPositionWhenReleased="False">
+	<Defaults>
+		<Text class="primary" color="#e5c638" fontSize="16" alignment="MiddleLeft"/>
+		<Text class="secondary" color="#efd9ff" alignment="MiddleLeft"/>
+		<Text class="epigraph" color="#df9730" fontSize="12" fontStyle="italic" alignment="MiddleCenter"/>
+		<Dropdown class="setUp" itemBackgroundColors="#61712c44|#df9730|#FFFFFF|#361441" textColor="#61712c" itemTextColor="#61712c" fontStyle="bold"/>
+		<InputField class="setUp" colors="#00000000|#61712c44|#61712c" textColor="#efd9ff" fontStyle="bold"/>
+		<Toggle class="setUp" colors="#efd9ff|#ffd60b|#efd9ff|#222222" textColor="#efd9ff" tooltipPosition="Left" tooltipBackgroundColor="#000000"/>
+		<Button class="setUp" colors="#61712c|#df9730|#361441|#222222" textColor="#ffd60b" fontSize="16" outline="#efd9ff" outlineSize="3 3"/>
+		<Image raycastTarget="true"/>
+	</Defaults>
+	<VerticalLayout>
+		<Image ignoreLayout="True" type="Tiled" image="https://steamusercontent-a.akamaihd.net/ugc/2502404390135372157/BBDF8C1026A04FE222D52E39AA696F2310543485/"/>
+		<VerticalLayout padding="40 40 20 20">
+
+			<HorizontalLayout>
+				<Text class="primary" key="soloSettings"/>
+			</HorizontalLayout>
+			<VerticalLayout padding="25 0 0 0">
+				<HorizontalLayout>
+					<Text class="secondary" key="difficulty"/>
+					<Dropdown class="setUp" id="difficulty" onValueChanged="Global/setDifficulty" flexibleWidth="3" minHeight="22" active="True">
+						<Option></Option>
+					</Dropdown>
+				</HorizontalLayout>
+				<Toggle class="setUp" id="imperiumRowChurn" onValueChanged="Global/setImperiumRowChurn" isOn="True" key="imperiumRowChurnOption"/>
+				<Toggle class="setUp" id="brutalEscalation" onValueChanged="Global/setBrutalEscalation" isOn="True" key="brutalEscalationOption"/>
+			</VerticalLayout>
+
+		</VerticalLayout>
+	</VerticalLayout>
 </Panel>

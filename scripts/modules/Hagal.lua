@@ -1,6 +1,7 @@
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local Park = require("utils.Park")
+local I18N = require("utils.I18N")
 
 local Deck = Module.lazyRequire("Deck")
 local TurnControl = Module.lazyRequire("TurnControl")
@@ -11,6 +12,7 @@ local HagalCard = Module.lazyRequire("HagalCard")
 local Combat = Module.lazyRequire("Combat")
 local ConflictCard = Module.lazyRequire("ConflictCard")
 local MainBoard = Module.lazyRequire("MainBoard")
+local ImperiumRow = Module.lazyRequire("ImperiumRow")
 
 -- Enlighting clarifications: https://boardgamegeek.com/thread/2578561/summarizing-automa-2p-and-1p-similarities-and-diff
 local Hagal = Helper.createClass(Action, {
@@ -93,6 +95,7 @@ function Hagal._transientSetUp(settings)
     Hagal.numberOfPlayers = settings.numberOfPlayers
     Hagal.difficulty = settings.difficulty
     Hagal.riseOfIx = settings.riseOfIx
+    Hagal.brutalEscalation = settings.brutalEscalation
 
     Hagal.difficulty = Hagal.numberOfPlayers == 1 and settings.difficulty or nil
 
@@ -120,6 +123,14 @@ function Hagal._transientSetUp(settings)
             end
         end
     end)
+
+    if settings.imperiumRowChurn and Hagal.numberOfPlayers == 1 then
+        Helper.registerEventListener("phaseEnd", function (phase, color)
+            if phase == "playerTurns" then
+                ImperiumRow.churn()
+            end
+        end)
+    end
 end
 
 ---
@@ -254,11 +265,50 @@ function Hagal._cleanUpConflict(color)
     return continuation
 end
 
----
 function Hagal._setStrengthFromFirstValidCard(color)
+    local soloPlay = Hagal.getRivalCount() == 2
+    local level3Conflict = Combat.getCurrentConflictLevel() == 3
+    local mentatOrHigher = Helper.isElementOf(Hagal.difficulty, { "expert", "expertPlus" })
+
+    -- Brutal Escalation
+    local n = (Hagal.brutalEscalation and soloPlay and level3Conflict and mentatOrHigher) and 2 or 1
+
     return Hagal._activateFirstValidCard(color, function (card)
-        return HagalCard.setStrength(color, card)
+        if HagalCard.setStrength(color, card) then
+            n = n - 1
+            if n > 0 then
+                Action.log(I18N("brutalEscalation"), color)
+            end
+            return n == 0
+        else
+            return false
+        end
     end)
+end
+
+---
+function Hagal.getExpertDeploymentLimit(color)
+    local level3Conflict = Combat.getCurrentConflictLevel() == 3
+    local mentatOrHigher = Helper.isElementOf(Hagal.difficulty, { "expert", "expertPlus" })
+
+    local n
+    if not level3Conflict and mentatOrHigher then
+        local colorUnitCount = 0
+        local otherColorMaxUnitCount = 0
+        for otherColor, unitCount in pairs(Combat.getUnitCounts()) do
+            if otherColor == color then
+                colorUnitCount = unitCount
+            else
+                otherColorMaxUnitCount = math.max(otherColorMaxUnitCount, unitCount)
+            end
+        end
+        n = math.max(0, 2 + otherColorMaxUnitCount - colorUnitCount)
+        Action.log(I18N("expertDeploymentLimit", { limit = n }), color)
+    else
+        n = 12
+    end
+    --Helper.dump("level3Conflict:", level3Conflict, "/ mentatOrHigher:", mentatOrHigher, "/ expertDeploymentLimit:", n)
+    return n
 end
 
 ---

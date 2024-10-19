@@ -162,13 +162,6 @@
       "id": 11
     }
   },
-  "MusicPlayer": {
-    "RepeatSong": false,
-    "PlaylistEntry": -1,
-    "CurrentAudioTitle": "Urukh Warh horn",
-    "CurrentAudioURL": "https://steamusercontent-a.akamaihd.net/ugc/2488878371133859811/C7B16DFAFDCA2827F66F837BDEB811C7BE8B3450/",
-    "AudioLibrary": []
-  },
   "Grid": {
     "Type": 0,
     "Lines": false,

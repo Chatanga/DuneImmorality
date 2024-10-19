@@ -708,7 +708,7 @@ function PlayBoard.acceptTurn(phase, color)
         end
     elseif phase == 'combat' then
         if Combat.isInCombat(color) and Combat.isFormalCombatPhaseEnabled() then
-            Helper.dump(color, "->", PlayBoard.combatPassCountdown, "/", #PlayBoard._getPotentialCombatIntrigues(color))
+            --Helper.dump(color, "->", PlayBoard.combatPassCountdown, "/", #PlayBoard._getPotentialCombatIntrigues(color))
             accepted = PlayBoard.combatPassCountdown > 0 and not PlayBoard.isRival(color) and #PlayBoard._getPotentialCombatIntrigues(color) > 0
             PlayBoard.combatPassCountdown = PlayBoard.combatPassCountdown - 1
         end

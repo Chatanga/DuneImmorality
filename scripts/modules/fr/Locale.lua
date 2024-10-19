@@ -42,16 +42,19 @@ return {
     twoPlayersOneRival = "2 (+1)",
     threePlayers = "3",
     fourPlayers = "4",
-    twoTeams = "2 x 3",
-    normal = "normal",
-    streamlined = "simplifié",
+    none = "Aucune",
+    arrakeenScouts = "Éclaireurs d’Arrakeen",
+
+    -- Solo Setup UI
+    soloSettings = "Mode solo",
+    difficulty = "Difficulté",
     all = "tous",
     novice = "mercenaire",
     veteran = "sardaukar",
     expert = "mentat",
     expertPlus = "kwisatz",
-    none = "Aucune",
-    arrakeenScouts = "Éclaireurs d’Arrakeen",
+    imperiumRowChurnOption = "Barattage de la rangée de l’Imperium",
+    brutalEscalationOption = "Escalade brutale",
 
     -- Phases
     phaseLeaderSelection = "Phase : sélection des dirigeants",
@@ -152,6 +155,8 @@ return {
     influence = "influence",
     beetle = "scarabée",
     beetles = "scarabées",
+    card = "carte",
+    cards = "cartes",
 
     -- Actions
     playerTurn = "■ Tour : {leader}",
@@ -188,11 +193,6 @@ return {
     sendingAgent = "■ Envoi d’un agent vers : {space} ({cards}).",
     stealIntrigues = "■ Vol de « {card} » à {victim}.",
     gainVictoryPoint = "■ Gain de PV ({name}).",
-
-    -- Shield Wall
-    confirmShieldWallDestruction = "Confirmez-vous cette violation flagrante de la Grande Convention ?",
-    blowUpShieldWall = "{leader} fait exploser le Mur du Bouclier !",
-    explosion = "Ka-Boom !",
 
     -- Combat
     announceCombat = "Le combat de la manche est : « {combat} »",
@@ -645,7 +645,7 @@ return {
     rivalSpice = "Rival - Épice",
     beneTleilax = "Bene Tleilax",
 
-    -- Hagal
+    -- Hagal cards
     harvestSpice = "Récolter l’épice",
     arrakeen1p = "Arrakeen 1J",
     arrakeen2p = "Arrakeen 2J",
@@ -656,4 +656,10 @@ return {
     carthag1 = "Carthag 1",
     carthag2 = "Carthag 2",
     carthag3 = "Carthag 3",
+
+    -- Hagal
+    reshuffle = "Rémélanger",
+    churnImperiumRow = "Barattage de la rangée de l’Imperium ({count} {card})",
+    brutalEscalation = "↯ Escalade brutale !",
+    expertDeploymentLimit = "↯ Limitation du déploiement de forces à {limit}.",
 }

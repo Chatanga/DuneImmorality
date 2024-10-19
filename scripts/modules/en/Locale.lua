@@ -42,13 +42,19 @@ return {
     twoPlayersOneRival = "2 (+1)",
     threePlayers = "3",
     fourPlayers = "4",
+    none = "None",
+    arrakeenScouts = "Arrakeen Scouts",
+
+    -- Solo Setup UI
+    soloSettings = "Solo mode",
+    difficulty = "Difficulty",
     all = "all",
     novice = "mercenary",
     veteran = "sardaukar",
     expert = "mentat",
     expertPlus = "kwisatz",
-    none = "None",
-    arrakeenScouts = "Arrakeen Scouts",
+    imperiumRowChurnOption = "Imperium Row Churn",
+    brutalEscalationOption = "Brutal Escalation",
 
     -- Phases
     phaseLeaderSelection = "Phase: leader selection",
@@ -150,6 +156,8 @@ return {
     influence = "influence",
     beetle = "beetle",
     beetles = "beetles",
+    card = "card",
+    cards = "cards",
 
     -- Actions
     playerTurn = "■ Turn: {leader}",
@@ -186,11 +194,6 @@ return {
     sendingAgent = "■ Sending an agent to: {space} ({cards}).",
     stealIntrigues = '■ Stealing "{card}" from {victim}.',
     gainVictoryPoint = "■ Gaining VP ({name}).",
-
-    -- Shield Wall
-    confirmShieldWallDestruction = "Do you really want not to obey the forms of the Great Convention?",
-    blowUpShieldWall = "{leader} is blowing up the Shield Wall!",
-    explosion = "Kaboom!",
 
     -- Combat
     announceCombat = 'Round combat is: "{combat}"',
@@ -655,4 +658,10 @@ return {
     carthag1 = "Carthag 1",
     carthag2 = "Carthag 2",
     carthag3 = "Carthag 3",
+
+    -- Hagal
+    reshuffle = "Reshuffle",
+    churnImperiumRow = "Imperium Row Churn ({count} {card})",
+    brutalEscalation = "↯ Brutal Escalation!",
+    expertDeploymentLimit = "↯ Limit deployed forces to {limit}.",
 }
