@@ -35,6 +35,7 @@ function TleilaxuRow.setUp(settings)
     if settings.immortality then
         Deck.generateSpecialDeck(TleilaxuRow.slotZones[3], "immortality", "reclaimedForces")
         Deck.generateTleilaxuDeck(TleilaxuRow.deckZone).doAfter(function (deck)
+            assert(deck, "No Tleilaxu deck!")
             Helper.shuffleDeck(deck)
             Helper.onceShuffled(deck).doAfter(function ()
                 for i = 1, 2 do

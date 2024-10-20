@@ -70,6 +70,7 @@ function ChoamContractMarket.setUp(settings)
         ChoamContractMarket.enabled = true
         ChoamContractMarket._transientSetUp(settings)
 
+        assert(ChoamContractMarket.contractBag, "No contract bag!")
         Helper.shuffleDeck(ChoamContractMarket.contractBag)
         Helper.onceShuffled(ChoamContractMarket.contractBag).doAfter(function ()
 

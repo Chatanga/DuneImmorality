@@ -45,6 +45,7 @@ end
 function Hagal.setUp(settings)
     if settings.numberOfPlayers < 3 then
         Deck.generateHagalDeck(Hagal.deckZone, settings.riseOfIx, settings.immortality, settings.numberOfPlayers).doAfter(function (deck)
+            assert(deck, "No Hagal deck!")
             Helper.shuffleDeck(deck)
         end)
         Hagal._transientSetUp(settings)
@@ -346,6 +347,7 @@ function Hagal._reshuffleDeck(color, action, n, continuation)
     end
     Helper.onceTimeElapsed(2).doAfter(function ()
         local deck = Helper.getDeck(Hagal.deckZone)
+        assert(deck, "No Hagal deck anymore!")
         Helper.shuffleDeck(deck)
         Helper.onceShuffled(deck).doAfter(function ()
             Hagal._doActivateFirstValidCard(color, action, n + 1, continuation)
