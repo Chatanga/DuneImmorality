@@ -43,11 +43,11 @@ def build():
 
 	config = configparser.ConfigParser()
 	config.read('build.properties')
-	save_input_index = config.get("save", "input_index")
-	save_output_index = config.get("save", "output_index")
+	save_input = config.get("save", "input")
+	save_output = config.get("save", "output")
 
-	input_save = os.path.join(tts_save_dir, f'TS_Save_{save_input_index}.json')
-	output_save = os.path.join(tts_save_dir, f'TS_Save_{save_output_index}.json')
+	input_save = os.path.join(tts_save_dir, f'{save_input}.json')
+	output_save = os.path.join(tts_save_dir, f'{save_output}.json')
 
 	parser = argparse.ArgumentParser(
 		prog = 'TSS Build Tool',
