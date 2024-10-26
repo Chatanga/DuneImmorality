@@ -269,7 +269,7 @@ return {
     sendNegotiatorOption = "Negotiator",
     buyTechWithDiscont1Option = "Discounted tech.",
     buyTechSelection = "Select which tech acquisition option you want to use.",
-    freighterTechBuyOption = "shipment track",
+    freighterTechBuyOption = "Shipment track",
     techNegotiationTechBuyOption = "Tech. negotiation",
     dreadnoughtTechBuyOption = "Dreadnought",
     appropriateTechBuyOption = "Appropriate",

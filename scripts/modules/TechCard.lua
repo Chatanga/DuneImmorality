@@ -60,7 +60,7 @@ local TechCard = {
     flagship = {cost = 8, hagal = true, acquireBonus = {vp(1)}},
     spaceport = {cost = 5, hagal = false, acquireBonus = {draw(2)}},
     artillery = {cost = 1, hagal = false},
-    holoprojectors = {cost = 2, hagal = false},
+    holoprojectors = {cost = 3, hagal = false},
     restrictedOrdnance = {cost = 4, hagal = false, acquireBonus = {persuasion(seat(2))}},
     shuttleFleet = {cost = 6, hagal = true, acquireBonus = {choice(2, {influence(1, "emperor"), influence(1, "spacingGuild"), influence(1, "beneGesserit"), influence(1, "fremen")})}},
     spySatellites = {cost = 4, hagal = true},
