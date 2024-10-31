@@ -225,6 +225,7 @@ function onLoad(scriptState)
         if false then
             allModules.Deck.rebuildPreloadAreas()
         end
+        relocateDecals()
     else
         -- The destroyed objects need one frame to disappear and not interfere
         -- with the mod.
@@ -234,6 +235,59 @@ function onLoad(scriptState)
                 asyncOnLoad(state)
             end)
         end)
+    end
+end
+
+---
+function relocateDecals()
+    local playerBoards = Helper.resolveGUIDs(true, {
+        Red = {
+            board = "adcd28",
+            decals = {},
+        },
+        Blue = {
+            board = "77ca63",
+            decals = {},
+        },
+        Green = {
+            board = "0bbae1",
+            decals = {},
+        },
+        Yellow = {
+            board = "fdd5f9",
+            decals = {},
+        }
+    })
+
+    local colors = { "Green", "Yellow", "Red", "Blue" }
+    for _, decal in ipairs(Global.getDecals()) do
+        local i = decal.position.x > 0 and 0 or 1
+        local j = decal.position.z > 0 and 0 or 1
+        local color = colors[i * 2 + j + 1]
+
+        local playerBoard = playerBoards[color]
+        local board = playerBoard.board
+
+        local p = decal.position
+        p = p - board.getPosition()
+
+        -- Inverting the X coordinate comes from our global 180° rotation around Y.
+
+        local r = board.getRotation()
+        p:rotateOver('x', r.x)
+        p:rotateOver('y', r.y)
+        p:rotateOver('z', r.z)
+
+        decal.position = p
+        decal.rotation = decal.rotation + Vector(0, 180, 0)
+
+        table.insert(playerBoard.decals, decal)
+    end
+    Global.setDecals({})
+
+    for color, playerBoard in pairs(playerBoards) do
+        Helper.dump(color, "->", playerBoard.board.getPosition(), "->", #playerBoard.decals)
+        playerBoard.board.setDecals(playerBoard.decals)
     end
 end
 
