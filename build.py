@@ -31,8 +31,10 @@ def build():
 	platform_system = platform.system()
 	if platform_system == 'Linux':
 		app_dir = os.path.join(os.environ['HOME'], '.local', 'share')
-		luabundler = 'luabundler'
+		app_dir = os.path.join(os.environ['HOME'], 'snap', 'steam', 'common', '.local', 'share')
+		luabundler = 'node_modules/.bin/luabundler'
 	elif platform_system == 'Windows':
+		app_dir = os.path.join(os.environ['USERPROFILE'], 'Documents', 'My Games')
 		app_dir = os.path.join(os.environ['USERPROFILE'], 'OneDrive', 'Documents', 'My Games')
 		luabundler = 'luabundler.cmd'
 	else:

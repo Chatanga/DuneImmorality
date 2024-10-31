@@ -67,7 +67,6 @@ end
 ---
 function ChoamContractMarket.setUp(settings)
     if settings.useContracts then
-        ChoamContractMarket.enabled = true
         ChoamContractMarket._transientSetUp(settings)
 
         assert(ChoamContractMarket.contractBag, "No contract bag!")
@@ -122,6 +121,8 @@ end
 
 ---
 function ChoamContractMarket._transientSetUp(settings)
+    ChoamContractMarket.enabled = true
+
     local barycenter = Vector(0, 0, 0)
     for language, bag in pairs(ChoamContractMarket.contractBags) do
         barycenter = barycenter + bag.getPosition()

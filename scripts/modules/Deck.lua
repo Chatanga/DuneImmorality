@@ -276,7 +276,7 @@ local Deck = {
             satelliteBan = 1,
             treachery = 1,
             shaiHulud = 1,
-            -- 93 Imperium cards total (69-6+30) (No counting promo cards I guess?)
+            -- 93 Imperium cards total (69-6+30) (Not counting promo cards I guess?)
         },
     },
     special = {
@@ -332,7 +332,7 @@ local Deck = {
             councilorsDispensation = 1,
             cornerTheMarket = 1,
             charisma = 1,
-            calculatedHire = 1,
+            --calculatedHire = 1,
             choamShares = 1,
             bypassProtocol = 1,
             recruitmentMission = 1,
