@@ -909,7 +909,7 @@ function Deck.generateConflictDeck(deckZone, ix, epic, playerCount)
     for level = 3, 1, -1 do
         local cardCount = cardCounts[level]
         if cardCount > 0 then
-            local levelContributions = Deck._mergeStandardContributionSets(Deck.conflict["level" .. tostring(level)], ix and level == 3, false)
+            local levelContributions = Deck._mergeStandardContributionSets(Deck.conflict["level" .. tostring(level)], ix and epic and level == 3, false)
             local cardNames = Helper.getKeys(levelContributions)
             assert(#cardNames >= cardCount, "Not enough level " .. tostring(level) .. " conflict cards!")
             Helper.shuffle(cardNames)
