@@ -173,7 +173,7 @@ local allModules = Module.registerModules({
     ThroneRow = require("ThroneRow"),
     TurnControl = require("TurnControl"),
     Types = require("Types"),
-    SubmitGame = require("SubmitGame"),
+    --SubmitGame = require("SubmitGame"),
 })
 
 local Controller = {
@@ -313,7 +313,7 @@ function asyncOnLoad(scriptState)
         { name = "ThroneRow", module = allModules.ThroneRow },
         { name = "TurnControl", module = allModules.TurnControl },
         { name = "LeaderSelection", module = allModules.LeaderSelection },
-        { name = "SubmitGame", module = allModules.SubmitGame },
+        -- { name = "SubmitGame", module = allModules.SubmitGame },
     }
 
     -- We cannot use Module.callOnAllRegisteredModules("onLoad", state),

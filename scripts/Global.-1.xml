@@ -109,14 +109,15 @@ be integrated to this mod in a standard way.
 				<Toggle class="setUp" id="formalCombatPhase" onValueChanged="Global/setFormalCombatPhase" isOn="False" key="formalCombatPhase" tooltipKey="formalCombatPhaseTooltip"/>
 				<Toggle class="setUp" id="soundEnabled" onValueChanged="Global/setSoundEnabled" isOn="True" key="soundEnabled"/>
 			</VerticalLayout>
-			<HorizontalLayout>
+
+			<!--HorizontalLayout>
 				<Text class="primary" key="submitGame"/>
 			</HorizontalLayout>
 			<VerticalLayout padding="25 0 0 0">
 				<HorizontalLayout>
 					<Toggle class="setUp" id="submitGameRankedGame" onValueChanged="Global/submitGameRankedGame" isOn="False" key="submitGameRankedGame"/>
 				</HorizontalLayout>
-			</VerticalLayout>
+			</VerticalLayout-->
 
 		</VerticalLayout>
 		<HorizontalLayout padding="100 100 0 0">
