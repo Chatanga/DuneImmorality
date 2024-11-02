@@ -32,10 +32,12 @@ def build():
 	if platform_system == 'Linux':
 		app_dir = os.path.join(os.environ['HOME'], '.local', 'share')
 		app_dir = os.path.join(os.environ['HOME'], 'snap', 'steam', 'common', '.local', 'share')
+		# Installed with 'npm install luabundler'
 		luabundler = 'node_modules/.bin/luabundler'
 	elif platform_system == 'Windows':
 		app_dir = os.path.join(os.environ['USERPROFILE'], 'Documents', 'My Games')
 		app_dir = os.path.join(os.environ['USERPROFILE'], 'OneDrive', 'Documents', 'My Games')
+		# Installed with 'npm install -g luabundler'
 		luabundler = 'luabundler.cmd'
 	else:
 		print('Unknown os: ' + platform_system, file = sys.stderr)

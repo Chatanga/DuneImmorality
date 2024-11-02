@@ -927,5 +927,4 @@ return {
     noPlayerMetEndGameCondition = "No player met the end game condition.",
     gameSubmitted = "Game submitted to Google Sheets",
     gameAlreadySubmitted = "Game already submited - Doing nothing",
-    need4Players = "Need 4 players to submit a game",
 }

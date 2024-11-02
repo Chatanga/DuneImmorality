@@ -929,5 +929,4 @@ return {
     noPlayerMetEndGameCondition = "Aucun joueur n’a rempli la condition de fin de partie.",
     gameSubmitted = "Partie soumise dans Google Sheets",
     gameAlreadySubmitted = "Jeu déjà soumis - Rien a faire.",
-    need4Players = "Il faut 4 joueurs pour soumettre une partie.",
 }

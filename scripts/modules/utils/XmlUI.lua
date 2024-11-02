@@ -1,7 +1,9 @@
 local Helper = require("utils.Helper")
 local I18N = require("utils.I18N")
 
-local XmlUI = Helper.createClass()
+local XmlUI = Helper.createClass(nil, {
+    sharedXml = {}
+})
 
 ---
 function XmlUI.new(holder, id, fields)
@@ -16,15 +18,23 @@ function XmlUI.new(holder, id, fields)
         won't be reflected in the retrieved XML though.
     ]]
     assert(holder)
+    XmlUI.sharedXml[holder] = holder.UI.getXmlTable()
     local xmlUI = Helper.createClassInstance(XmlUI, {
         holder = holder,
-        xml = holder.UI.getXmlTable(),
         id = id,
         active = false,
         fields = fields
     })
     xmlUI:toUI()
     return xmlUI
+end
+
+---
+function XmlUI:getXml()
+    assert(self.holder)
+    local xml = XmlUI.sharedXml[self.holder]
+    assert(xml)
+    return xml
 end
 
 ---
@@ -43,7 +53,7 @@ end
 
 ---
 function XmlUI:setButton(id, label, interactable)
-    local element = XmlUI._findXmlElement(self.xml, id)
+    local element = XmlUI._findXmlElement(self:getXml(), id)
     assert(element, "Unknown id: " .. tostring(id))
     XmlUI._setXmlButton(element, label)
     XmlUI._setXmlInteractable(element, interactable)
@@ -51,7 +61,7 @@ end
 
 ---
 function XmlUI:setButtonI18N(id, key, interactable)
-    local element = XmlUI._findXmlElement(self.xml, id)
+    local element = XmlUI._findXmlElement(self:getXml(), id)
     assert(element, "Unknown id: " .. tostring(id))
     XmlUI._setXmlButtonI18N(element, key)
     XmlUI._setXmlInteractable(element, interactable)
@@ -79,39 +89,38 @@ function XmlUI:fromUI(player, value, id)
 end
 
 function XmlUI:toUI()
-    if not self.id then
-        return
-    end
-    local root =  XmlUI._findXmlElement(self.xml, self.id)
-    assert(root, "Unknown id: " .. tostring(self.id))
-    root.attributes.active = self.active
-    for name, value in pairs(self.fields) do
-        if not XmlUI._isEnumeration(name) and not XmlUI._isRange(name) then
-            local element = XmlUI._findXmlElement(self.xml, name)
-            if element then
-                if XmlUI._isActive(value) then
-                    local values = self:_getEnumeration(name)
-                    local range = self:_getRange(name)
-                    if values then
-                        XmlUI._setXmlDropdownOptions(element, values, value)
-                    elseif range then
-                        XmlUI._setXmlSlider(element, range, value)
-                    elseif element.tag == "Toggle" then
-                        XmlUI._setXmlToggle(element, value)
-                    elseif element.tag == "Text" then
-                        XmlUI._setXmlText(element, value)
+    if self.id then
+        local root =  XmlUI._findXmlElement(self:getXml(), self.id)
+        assert(root, "Unknown id: " .. tostring(self.id))
+        root.attributes.active = self.active
+        for name, value in pairs(self.fields) do
+            if not XmlUI._isEnumeration(name) and not XmlUI._isRange(name) then
+                local element = XmlUI._findXmlElement(self:getXml(), name)
+                if element then
+                    if XmlUI.isActive(value) then
+                        local values = self:_getEnumeration(name)
+                        local range = self:_getRange(name)
+                        if values then
+                            XmlUI._setXmlDropdownOptions(element, values, value)
+                        elseif range then
+                            XmlUI._setXmlSlider(element, range, value)
+                        elseif element.tag == "Toggle" then
+                            XmlUI._setXmlToggle(element, value)
+                        elseif element.tag == "Text" then
+                            XmlUI._setXmlText(element, value)
+                        end
+                        XmlUI._setXmlInteractable(element, true)
+                    else
+                        XmlUI._setXmlInteractable(element, false)
                     end
-                    XmlUI._setXmlInteractable(element, true)
                 else
-                    XmlUI._setXmlInteractable(element, false)
+                    --log("Unknown id: " .. tostring(name))
                 end
-            else
-                --log("Unknown id: " .. tostring(name))
             end
         end
     end
-    XmlUI._translateContent(self.xml)
-    self.holder.UI.setXmlTable(self.xml)
+    XmlUI._translateContent(self:getXml())
+    self.holder.UI.setXmlTable(self:getXml())
 end
 
 ---
@@ -135,7 +144,7 @@ function XmlUI:_getRange(name)
 end
 
 ---
-function XmlUI._isActive(value)
+function XmlUI.isActive(value)
     return type(value) ~= "table" or #table > 0
 end
 

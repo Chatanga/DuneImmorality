@@ -173,7 +173,7 @@ local allModules = Module.registerModules({
     ThroneRow = require("ThroneRow"),
     TurnControl = require("TurnControl"),
     Types = require("Types"),
-    --SubmitGame = require("SubmitGame"),
+    SubmitGame = require("SubmitGame"),
 })
 
 local Controller = {
@@ -313,7 +313,7 @@ function asyncOnLoad(scriptState)
         { name = "ThroneRow", module = allModules.ThroneRow },
         { name = "TurnControl", module = allModules.TurnControl },
         { name = "LeaderSelection", module = allModules.LeaderSelection },
-        -- { name = "SubmitGame", module = allModules.SubmitGame },
+        { name = "SubmitGame", module = allModules.SubmitGame },
     }
 
     -- We cannot use Module.callOnAllRegisteredModules("onLoad", state),
@@ -610,12 +610,14 @@ end
 --- UI callback (cf. XML).
 function submitGameRankedGame(player, value, id)
     Controller.ui:fromUI(player, value, id)
+    --[[
     local seatedPlayers = getSeatedPlayers()
     if #seatedPlayers <= 3 then
         Controller.fields.submitGameRankedGame = false
         broadcastToAll(I18N("need4Players"), Color.fromString("White"))
     end
     Controller.ui:toUI()
+    ]]
 end
 
 --- UI callback (cf. XML).
@@ -796,6 +798,12 @@ function Controller.updateSetupButton()
             minPlayerCount = 3
         else
             minPlayerCount = 1
+        end
+
+        if #properlySeatedPlayers < 1 then
+            Controller.fields.submitGameRankedGame = {}
+        elseif not XmlUI.isActive(Controller.fields.submitGameRankedGame) then
+            Controller.fields.submitGameRankedGame = false
         end
 
         if #properlySeatedPlayers >= minPlayerCount then
