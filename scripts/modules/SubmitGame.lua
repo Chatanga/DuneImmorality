@@ -92,14 +92,14 @@ function SubmitGame.setUp(settings)
 
         SubmitGame.fields.startTime = SubmitGame._currentTimestamp()
 
-        SubmitGame._generateToken(function (token)
+        SubmitGame._generateToken(SubmitGame.fields.players, function (token)
             SubmitGame.fields.token = token
-            SubmitGame._staticSetUp()
+            SubmitGame._staticSetUp(state.settings)
         end)
     end
 end
 
-function SubmitGame._staticSetUp()
+function SubmitGame._staticSetUp(settings)
     if SubmitGame.fields.token then
         Global.setVar("openSubmitScreen", SubmitGame._openSubmitScreen)
         Global.setVar("closeSubmitGameScreen", SubmitGame._closeSubmitGameScreen)
@@ -172,8 +172,8 @@ function SubmitGame._updateSubmitScreenPanel()
     end
 end
 
-function SubmitGame._generateToken(tokenSetter)
-    SubmitGame._makeWebRequest(PRIMARY_URL .. "/generation/v1/token", "POST", SubmitGame.fields.players, function (request)
+function SubmitGame._generateToken(players, tokenSetter)
+    SubmitGame._makeWebRequest(PRIMARY_URL .. "/generation/v1/token", "POST", players, function (request)
         if request.is_error then
             Helper.dump("Failed to generate a token:", request.text)
             tokenSetter(0)

@@ -57,9 +57,8 @@ end
 ---
 function Hagal._transientSetUp(settings)
     Hagal.numberOfPlayers = settings.numberOfPlayers
-    Hagal.difficulty = settings.difficulty
     Hagal.riseOfIx = settings.riseOfIx
-
+    Hagal.autoTurnInSolo = settings.autoTurnInSolo
     Hagal.difficulty = Hagal.numberOfPlayers == 1 and settings.difficulty or nil
 
     Helper.registerEventListener("phaseStart", function (phase)
@@ -100,7 +99,7 @@ function Hagal.activate(phase, color)
         Hagal._lateActivate(phase, color).doAfter(function ()
             -- The leader selection already has an automatic end of turn when a leader is picked.
             if phase ~= "leaderSelection" then
-                if Hagal.getRivalCount() == 1 then
+                if Hagal.getRivalCount() == 1 or Hagal.autoTurnInSolo then
                     Helper.onceTimeElapsed(1).doAfter(TurnControl.endOfTurn)
                 else
                     PlayBoard.createEndOfTurnButton(color)

@@ -78,6 +78,7 @@ autoLoadedSettings = {
     language = "fr",
     numberOfPlayers = 1,
     hotSeat = true,
+    autoTurnInSolo = false,
     firstPlayer = "Green",
     randomizePlayerPositions = false,
     difficulty = "expert",
@@ -210,6 +211,7 @@ local Controller = {
         difficulty = {},
         rivalType_all = allModules.Rival.getRivalTypes(),
         rivalType = {},
+        autoTurnInSolo = false,
         useContracts = true,
         legacy = false,
         merakon = {},
@@ -648,6 +650,7 @@ function setUpFromUI()
         firstPlayer = Controller.fields.firstPlayer,
         randomizePlayerPositions = Controller.fields.randomizePlayerPositions == true,
         difficulty = Controller.fields.difficulty,
+        autoTurnInSolo = Controller.fields.autoTurnInSolo == true
         streamlinedRivals = Controller.fields.rivalType == "streamlined",
         useContracts = Controller.fields.useContracts == true or numberOfPlayers == 6,
         legacy = Controller.fields.legacy == true,
