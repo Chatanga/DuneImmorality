@@ -13,9 +13,14 @@ The two indexes may actually be the same, but this is not necessarily a good ide
 
 ```
 [save]
-input_index = 900
-output_index = 901
+input = TS_Save_900
+output = TS_Save_901
 ```
+
+Note: input/output indexes have been replaced by full names.
+You can still emulate the old behavior by following the `TS_Save_<number>` pattern, but it's not mandatory with TTS.*
+
+Finally, edit the `build.py` to adjust the `app_dir` and `luabundler` variables if needed to match your environment.
 
 **First time:**
 

@@ -29,6 +29,7 @@ autoLoadedSettings = {
     hotSeat = true,
     numberOfPlayers = 1,
     difficulty = "expert",
+    autoTurnInSolo = false,
     randomizePlayerPositions = false,
     riseOfIx = true,
     epicMode = false,
@@ -68,6 +69,7 @@ autoLoadedSettings = {
     hotSeat = true,
     numberOfPlayers = 1,
     difficulty = "novice",
+    autoTurnInSolo = false,
     randomizePlayerPositions = false,
     riseOfIx = true,
     epicMode = false,
@@ -185,6 +187,7 @@ local Controller = {
         randomizePlayerPositions = false,
         difficulty_all = allModules.Hagal.getDifficulties(),
         difficulty = {},
+        autoTurnInSolo = {},
         imperiumRowChurn = {},
         brutalEscalation = {},
         riseOfIx = true,
@@ -525,6 +528,11 @@ function setDifficulty(player, value, id)
 end
 
 --- UI callback (cf. XML).
+function setAutoTurnInSolo(player, value, id)
+    Controller.soloUi:fromUI(player, value, id)
+end
+
+--- UI callback (cf. XML).
 function setImperiumRowChurn(player, value, id)
     Controller.soloUi:fromUI(player, value, id)
 end
@@ -624,6 +632,7 @@ function setUpFromUI()
         firstPlayer = Controller.fields.firstPlayer,
         randomizePlayerPositions = Controller.fields.randomizePlayerPositions == true,
         difficulty = Controller.fields.difficulty,
+        autoTurnInSolo = Controller.fields.autoTurnInSolo == true,
         imperiumRowChurn = Controller.fields.imperiumRowChurn,
         brutalEscalation = Controller.fields.brutalEscalation,
         riseOfIx = Controller.fields.riseOfIx == true,
@@ -716,11 +725,13 @@ function Controller.applyVirtualHotSeatMode()
 
     if Controller.isUndefined(Controller.fields.virtualHotSeatMode) or numberOfPlayers > 1 then
         Controller.fields.difficulty = {}
+        Controller.fields.autoTurnInSolo = {}
         Controller.fields.imperiumRowChurn = {}
         Controller.fields.brutalEscalation = {}
         Controller.soloUi:hide()
     else Controller.isUndefined(Controller.fields.difficulty)
         Controller.fields.difficulty = "novice"
+        Controller.fields.autoTurnInSolo = false
         Controller.fields.imperiumRowChurn = true
         Controller.fields.brutalEscalation = true
         Controller.soloUi:show()

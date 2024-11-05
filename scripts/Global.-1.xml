@@ -86,7 +86,7 @@
 	<Image position="0 375" width="256" height="256" image="https://steamusercontent-a.akamaihd.net/ugc/2492254803020933211/F1D935AF143A3EDAAF929A9585779CE4E7254B10/"/>
 </Panel>
 
-<Panel position="450 -50" width="400" height="160" color="#000000" id="soloSetupPane" rotation="0 0 0" outline="#61712c" outlineSize="1"
+<Panel position="450 -30" width="400" height="180" color="#000000" id="soloSetupPane" rotation="0 0 0" outline="#61712c" outlineSize="1"
 	active="False" allowDragging="True" returnToOriginalPositionWhenReleased="False">
 	<Defaults>
 		<Text class="primary" color="#e5c638" fontSize="16" alignment="MiddleLeft"/>
@@ -112,6 +112,7 @@
 						<Option></Option>
 					</Dropdown>
 				</HorizontalLayout>
+				<Toggle class="setUp" id="autoTurnInSolo" onValueChanged="Global/setAutoTurnInSolo" isOn="True" key="autoTurnInSoloOption"/>
 				<Toggle class="setUp" id="imperiumRowChurn" onValueChanged="Global/setImperiumRowChurn" isOn="True" key="imperiumRowChurnOption"/>
 				<Toggle class="setUp" id="brutalEscalation" onValueChanged="Global/setBrutalEscalation" isOn="True" key="brutalEscalationOption"/>
 			</VerticalLayout>
