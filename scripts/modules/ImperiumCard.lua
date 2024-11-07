@@ -258,7 +258,7 @@ local ImperiumCard = {
     -- commander
     emperorConvincingArgument = {reveal = {persuasion(2)}},
     emperorCorrinoMight = {factions = {'emperor'}, agentIcons = {'green'}, reveal = {sword(1), 'spice(3), trash --> troop(2) / ally'}},
-    emperorCriticalShipments = {agentIcons = {'yellow'}, reveal = {persuasion(1)}},
+    emperorCriticalShipments = {agentIcons = {'yellow'}, reveal = {persuasion(2)}},
     emperorDemandResults = {factions = {'emperor'}, agentIcons = {'green'}, reveal = {sword(1)}},
     emperorDevastatingAssault = {agentIcons = {'yellow'}, reveal = {persuasion(1), 'swordmasterBonus: solari(3) --> sword(5)'}},
     emperorImperialOrnithopter = {factions = {'emperor'}, agentIcons = {'blue'}, reveal = {persuasion(1), solari(1)}},
