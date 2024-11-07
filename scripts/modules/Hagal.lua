@@ -58,8 +58,11 @@ end
 function Hagal._transientSetUp(settings)
     Hagal.numberOfPlayers = settings.numberOfPlayers
     Hagal.riseOfIx = settings.riseOfIx
-    Hagal.autoTurnInSolo = settings.autoTurnInSolo
     Hagal.difficulty = Hagal.numberOfPlayers == 1 and settings.difficulty or nil
+    Hagal.autoTurnInSolo = settings.autoTurnInSolo
+    Hagal.brutalEscalation = settings.brutalEscalation
+    Hagal.expertDeployment = settings.expertDeployment
+    Hagal.smartPolitics = settings.smartPolitics
 
     Helper.registerEventListener("phaseStart", function (phase)
         if phase == "combat" then
@@ -73,7 +76,7 @@ function Hagal._transientSetUp(settings)
         end
     end)
 
-    if Hagal.numberOfPlayers == 1 then
+    if settings.imperiumRowChurn then
         Helper.registerEventListener("phaseEnd", function (phase)
             if phase == "playerTurns" then
                 ImperiumRow.churn()
@@ -206,10 +209,9 @@ end
 ---
 function Hagal._setStrengthFromFirstValidCard(color)
     local level3Conflict = Combat.getCurrentConflictLevel() == 3
-    local mentatOrHigher = Helper.isElementOf(Hagal.difficulty, { "expert", "expertPlus" })
 
     -- Brutal Escalation
-    local n = (level3Conflict and mentatOrHigher) and 2 or 1
+    local n = (level3Conflict and Hagal.brutalEscalation) and 2 or 1
 
     return Hagal._activateFirstValidCard(color, function (card)
         if HagalCard.setStrength(color, card) then
@@ -227,10 +229,9 @@ end
 ---
 function Hagal.getExpertDeploymentLimit(color)
     local level3Conflict = Combat.getCurrentConflictLevel() == 3
-    local mentatOrHigher = Helper.isElementOf(Hagal.difficulty, { "expert", "expertPlus" })
 
     local n
-    if not level3Conflict and mentatOrHigher then
+    if not level3Conflict and Hagal.expertDeployment then
         local colorUnitCount = 0
         local otherColorMaxUnitCount = 0
         for otherColor, unitCount in pairs(Combat.getUnitCounts()) do
@@ -245,15 +246,13 @@ function Hagal.getExpertDeploymentLimit(color)
     else
         n = 12
     end
-    --Helper.dump("level3Conflict:", level3Conflict, "/ mentatOrHigher:", mentatOrHigher, "/ expertDeploymentLimit:", n)
+    --Helper.dump("level3Conflict:", level3Conflict, "/ expertDeploymentLimit:", n)
     return n
 end
 
 ---
 function Hagal.isSmartPolitics(color, faction)
-    local mentatOrHigher = Helper.isElementOf(Hagal.difficulty, { "expert", "expertPlus" })
-
-    if mentatOrHigher then
+    if Hagal.smartPolitics then
         local colorRank = 0
         local otherColorMaxRank = 0
         for _, otherColor in ipairs(PlayBoard.getActivePlayBoardColors()) do

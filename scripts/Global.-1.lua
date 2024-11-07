@@ -197,7 +197,7 @@ local Controller = {
             "fourPlayers",
             "twoTeams",
         },
-        virtualHotSeatMode = {},
+        virtualHotSeatMode = XmlUI.HIDDEN,
         firstPlayer = "random",
         firstPlayer_all = {
             random = "random",
@@ -208,17 +208,20 @@ local Controller = {
         },
         randomizePlayerPositions = false,
         difficulty_all = allModules.Hagal.getDifficulties(),
-        difficulty = {},
-        rivalType_all = allModules.Rival.getRivalTypes(),
-        rivalType = {},
-        autoTurnInSolo = false,
+        difficulty = XmlUI.HIDDEN,
+        autoTurnInSolo = XmlUI.DISABLED,
+        imperiumRowChurn = XmlUI.DISABLED,
+        streamlinedRivals = XmlUI.DISABLED,
+        brutalEscalation = XmlUI.DISABLED,
+        expertDeployment = XmlUI.DISABLED,
+        smartPolitics = XmlUI.DISABLED,
         useContracts = true,
         legacy = false,
-        merakon = {},
+        merakon = XmlUI.DISABLED,
         riseOfIx = false,
-        epicMode = {},
+        epicMode = XmlUI.DISABLED,
         immortality = false,
-        goTo11 = {},
+        goTo11 = XmlUI.DISABLED,
         leaderSelection_all = allModules.LeaderSelection.getSelectionMethods(4),
         leaderSelection = "reversePick",
         leaderPoolSize_range = { min = 4, max = 12 },
@@ -350,6 +353,7 @@ function asyncOnLoad(scriptState)
         else
             Controller.ui = XmlUI.new(Global, "setupPane", Controller.fields)
             Controller.ui:show()
+            Controller.soloUi = XmlUI.new(Global, "soloSetupPane", Controller.fields)
             I18N.setLocale(Controller.fields.language)
             Controller.updateLeaderPoolSizeLabel()
             Controller.updateSetupButton()
@@ -496,7 +500,7 @@ function setVirtualHotSeat(player, value, id)
     if value == "True" then
         Controller.fields.virtualHotSeatMode = 1
     else
-        Controller.fields.virtualHotSeatMode = {}
+        Controller.fields.virtualHotSeatMode = XmlUI.HIDDEN
     end
     Controller.applyVirtualHotSeatMode()
     Controller.ui:toUI()
@@ -512,10 +516,50 @@ end
 --- UI callback (cf. XML).
 function setDifficulty(player, value, id)
     Controller.ui:fromUI(player, value, id)
+    if Helper.isElementOf(Controller.fields.difficulty, { "novice", "veteran" }) then
+        Controller.fields.brutalEscalation = false
+        Controller.fields.expertDeployment = false
+        Controller.fields.smartPolitics = false
+    else
+        Controller.fields.brutalEscalation = true
+        Controller.fields.expertDeployment = true
+        Controller.fields.smartPolitics = true
+    end
+    Controller.ui:toUI()
 end
 
 --- UI callback (cf. XML).
-function setRivalType(player, value, id)
+function setAutoTurnInSolo(player, value, id)
+    Controller.ui:fromUI(player, value, id)
+end
+
+--- UI callback (cf. XML).
+function setImperiumRowChurn(player, value, id)
+    Controller.ui:fromUI(player, value, id)
+end
+
+--- UI callback (cf. XML).
+function setStreamlinedRivals(player, value, id)
+    Controller.ui:fromUI(player, value, id)
+end
+
+--- UI callback (cf. XML).
+function setBrutalEscalation(player, value, id)
+    Controller.ui:fromUI(player, value, id)
+end
+
+--- UI callback (cf. XML).
+function setExpertDeployment(player, value, id)
+    Controller.ui:fromUI(player, value, id)
+end
+
+--- UI callback (cf. XML).
+function setSmartPolitics(player, value, id)
+    Controller.ui:fromUI(player, value, id)
+end
+
+--- UI callback (cf. XML).
+function setStreamlinedRivals(player, value, id)
     Controller.ui:fromUI(player, value, id)
 end
 
@@ -536,7 +580,7 @@ function setLegacy(player, value, id)
     if value == "True" then
         Controller.fields.merakon = false
     else
-        Controller.fields.merakon = {}
+        Controller.fields.merakon = XmlUI.DISABLED
     end
     Controller.ui:toUI()
 end
@@ -552,7 +596,7 @@ function setRiseOfIx(player, value, id)
     if value == "True" then
         Controller.fields.epicMode = false
     else
-        Controller.fields.epicMode = {}
+        Controller.fields.epicMode = XmlUI.DISABLED
     end
     Controller.ui:toUI()
 end
@@ -568,7 +612,7 @@ function setImmortality(player, value, id)
     if value == "True" then
         Controller.fields.goTo11 = false
     else
-        Controller.fields.goTo11 = {}
+        Controller.fields.goTo11 = XmlUI.DISABLED
     end
     Controller.ui:toUI()
 end
@@ -640,6 +684,8 @@ function setUpFromUI()
 
     Controller.ui:hide()
     Controller.ui = nil
+    Controller.soloUi:hide()
+    Controller.soloUi = nil
 
     local numberOfPlayers = Controller.getNumberOfPlayers(Controller.fields.virtualHotSeatMode)
 
@@ -650,8 +696,12 @@ function setUpFromUI()
         firstPlayer = Controller.fields.firstPlayer,
         randomizePlayerPositions = Controller.fields.randomizePlayerPositions == true,
         difficulty = Controller.fields.difficulty,
-        autoTurnInSolo = Controller.fields.autoTurnInSolo == true
-        streamlinedRivals = Controller.fields.rivalType == "streamlined",
+        autoTurnInSolo = Controller.fields.autoTurnInSolo == true,
+        imperiumRowChurn = Controller.fields.imperiumRowChurn == true,
+        streamlinedRivals = Controller.fields.streamlinedRivals == true,
+        brutalEscalation = Controller.fields.brutalEscalation == true,
+        expertDeployment = Controller.fields.expertDeployment == true,
+        smartPolitics = Controller.fields.smartPolitics == true,
         useContracts = Controller.fields.useContracts == true or numberOfPlayers == 6,
         legacy = Controller.fields.legacy == true,
         merakon = Controller.fields.merakon == true,
@@ -743,21 +793,39 @@ end
 function Controller.applyVirtualHotSeatMode()
     local numberOfPlayers = Controller.getNumberOfPlayers(Controller.fields.virtualHotSeatMode)
 
-    if Controller.isUndefined(Controller.fields.virtualHotSeatMode) or numberOfPlayers > 1 then
-        Controller.fields.difficulty = {}
-    else Controller.isUndefined(Controller.fields.difficulty)
-        Controller.fields.difficulty = "novice"
-    end
-
-    if Controller.isUndefined(Controller.fields.virtualHotSeatMode) or numberOfPlayers ~= 2 then
-        Controller.fields.rivalType = {}
-    else Controller.isUndefined(Controller.fields.rivalType)
-        Controller.fields.rivalType = "streamlined"
+    if Controller.isUndefined(Controller.fields.virtualHotSeatMode) or numberOfPlayers > 2 then
+        Controller.fields.difficulty = XmlUI.HIDDEN
+        Controller.fields.autoTurnInSolo = XmlUI.DISABLED
+        Controller.fields.imperiumRowChurn = XmlUI.DISABLED
+        Controller.fields.streamlinedRivals = XmlUI.DISABLED
+        Controller.fields.brutalEscalation = XmlUI.DISABLED
+        Controller.fields.expertDeployment = XmlUI.DISABLED
+        Controller.fields.smartPolitics = XmlUI.DISABLED
+        Controller.soloUi:hide()
+    else
+        if numberOfPlayers == 1 then
+            Controller.fields.difficulty = "novice"
+            Controller.fields.autoTurnInSolo = false
+            Controller.fields.imperiumRowChurn = true
+            Controller.fields.streamlinedRivals = XmlUI.HIDDEN
+            Controller.fields.brutalEscalation = false
+            Controller.fields.expertDeployment = false
+            Controller.fields.smartPolitics = false
+        else
+            Controller.fields.difficulty = XmlUI.HIDDEN
+            Controller.fields.autoTurnInSolo = true
+            Controller.fields.imperiumRowChurn = XmlUI.HIDDEN
+            Controller.fields.streamlinedRivals = true
+            Controller.fields.brutalEscalation = false
+            Controller.fields.expertDeployment = false
+            Controller.fields.smartPolitics = false
+        end
+        Controller.soloUi:show()
     end
 
     Controller.fields.leaderSelection_all = allModules.LeaderSelection.getSelectionMethods(numberOfPlayers)
     if numberOfPlayers == 6 then
-        Controller.fields.useContracts = {}
+        Controller.fields.useContracts = XmlUI.DISABLED
     elseif Controller.isUndefined(Controller.fields.useContracts) then
         Controller.fields.useContracts = true
     end
@@ -804,8 +872,8 @@ function Controller.updateSetupButton()
         end
 
         if #properlySeatedPlayers < 1 then
-            Controller.fields.submitGameRankedGame = {}
-        elseif not XmlUI.isActive(Controller.fields.submitGameRankedGame) then
+            Controller.fields.submitGameRankedGame = XmlUI.DISABLED
+        elseif XmlUI.isDisabled(Controller.fields.submitGameRankedGame) then
             Controller.fields.submitGameRankedGame = false
         end
 

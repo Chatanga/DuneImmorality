@@ -44,7 +44,7 @@ return {
     random = "aléatoire",
     reversePick = "en sens inverse",
     reverseHiddenPick = "secrètement en sens inverse",
-    altHiddenPick = "secrètement dans le sens 4·3·1·2",
+    altHiddenPick = "secrètement + sens 4·3·1·2",
     onePlayerTwoRivals = "1 (+2)",
     twoPlayersOneRival = "2 (+1)",
     threePlayers = "3",
@@ -52,11 +52,21 @@ return {
     twoTeams = "2 x 3",
     normal = "normal",
     streamlined = "simplifié",
+
+    -- Solo Setup UI
+    soloSettings = "Hagal",
+    difficulty = "Difficulté",
     all = "tous",
     novice = "mercenaire",
     veteran = "sardaukar",
     expert = "mentat",
     expertPlus = "kwisatz",
+    autoTurnInSoloOption = "Passage de tour automatique",
+    imperiumRowChurnOption = "Barattage de la rangée de l’Imperium",
+    streamlinedRivalsOption = "Rivaux simplifiés",
+    brutalEscalationOption = "Escalade brutale",
+    expertDeploymentOption = "Déploiement expert",
+    smartPoliticsOption = "Politiques habiles",
 
     -- Phases
     phaseLeaderSelection = "Phase : sélection des dirigeants",

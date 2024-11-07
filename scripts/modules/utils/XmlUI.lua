@@ -2,6 +2,8 @@ local Helper = require("utils.Helper")
 local I18N = require("utils.I18N")
 
 local XmlUI = Helper.createClass(nil, {
+    DISABLED = { --[[ Disabled but visible ]] },
+    HIDDEN = { --[[ Disabled and hidden ]] },
     sharedXml = {}
 })
 
@@ -18,7 +20,7 @@ function XmlUI.new(holder, id, fields)
         won't be reflected in the retrieved XML though.
     ]]
     assert(holder)
-    XmlUI.sharedXml[holder] = holder.UI.getXmlTable()
+    XmlUI.sharedXml[holder] = XmlUI.sharedXml[holder] or holder.UI.getXmlTable()
     local xmlUI = Helper.createClassInstance(XmlUI, {
         holder = holder,
         id = id,
@@ -97,7 +99,9 @@ function XmlUI:toUI()
             if not XmlUI._isEnumeration(name) and not XmlUI._isRange(name) then
                 local element = XmlUI._findXmlElement(self:getXml(), name)
                 if element then
-                    if XmlUI.isActive(value) then
+                    local disabled = XmlUI.isDisabled(value)
+                    local hidden = XmlUI.isHidden(value)
+                    if not disabled and not hidden then
                         local values = self:_getEnumeration(name)
                         local range = self:_getRange(name)
                         if values then
@@ -109,8 +113,10 @@ function XmlUI:toUI()
                         elseif element.tag == "Text" then
                             XmlUI._setXmlText(element, value)
                         end
+                        XmlUI._setXmlActive(element, true)
                         XmlUI._setXmlInteractable(element, true)
                     else
+                        XmlUI._setXmlActive(element, not hidden)
                         XmlUI._setXmlInteractable(element, false)
                     end
                 else
@@ -144,8 +150,13 @@ function XmlUI:_getRange(name)
 end
 
 ---
-function XmlUI.isActive(value)
-    return type(value) ~= "table" or #table > 0
+function XmlUI.isDisabled(value)
+    return value == XmlUI.DISABLED
+end
+
+---
+function XmlUI.isHidden(value)
+    return value == XmlUI.HIDDEN
 end
 
 ---

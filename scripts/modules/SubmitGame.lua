@@ -94,7 +94,7 @@ function SubmitGame.setUp(settings)
 
         SubmitGame._generateToken(SubmitGame.fields.players, function (token)
             SubmitGame.fields.token = token
-            SubmitGame._staticSetUp(state.settings)
+            SubmitGame._staticSetUp(settings)
         end)
     end
 end

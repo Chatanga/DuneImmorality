@@ -52,11 +52,21 @@ return {
     twoTeams = "2 x 3",
     normal = "normal",
     streamlined = "streamlined",
+
+    -- Solo Setup UI
+    soloSettings = "Hagal",
+    difficulty = "Difficulty",
     all = "all",
     novice = "mercenary",
     veteran = "sardaukar",
     expert = "mentat",
     expertPlus = "kwisatz",
+    autoTurnInSoloOption = "Automatic turn pass",
+    imperiumRowChurnOption = "Imperium Row Churn",
+    streamlinedRivalsOption = "streamlined Rivals",
+    brutalEscalationOption = "Brutal Escalation",
+    expertDeploymentOption = "Expert Deployment",
+    smartPoliticsOption = "Smart Politics",
 
     -- Phases
     phaseLeaderSelection = "Phase: leader selection",
