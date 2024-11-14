@@ -36,7 +36,7 @@ def patch_object(object, component_tag_counts):
 def patch_save(input_path, output_path):
 
     save = None
-    with open(input_path, 'r') as save_file:
+    with open(input_path, 'r', encoding='utf-8') as save_file:
         save = json.load(save_file)
 
     save['SaveName'] = save['GameMode']
@@ -84,5 +84,5 @@ def patch_save(input_path, output_path):
 
     save['ObjectStates'] = new_objects
 
-    with open(output_path, 'w') as new_save:
+    with open(output_path, 'w', encoding='utf-8') as new_save:
         new_save.write(json.dumps(save, indent = 2))

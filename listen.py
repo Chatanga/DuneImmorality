@@ -112,7 +112,7 @@ def logException(message):
 
 def relocate(lineNumber):
     file_origin = 0
-    with open(os.path.join(tts_tmp_dir, 'Global.-1.ttslua'), 'r') as script_file:
+    with open(os.path.join(tts_tmp_dir, 'Global.-1.ttslua'), 'r', encoding='utf-8') as script_file:
         i = 0
         while True:
             line = script_file.readline()

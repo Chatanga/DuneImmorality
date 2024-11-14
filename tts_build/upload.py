@@ -22,7 +22,7 @@ def collect_script_and_UI(tts_tmp_dir, name, id, element, scriptStates):
 
     if element.get('LuaScript') == '...':
         try:
-            with open(file_name + '.ttslua', 'r') as script_file:
+            with open(file_name + '.ttslua', 'r', encoding='utf-8') as script_file:
                 scriptState['script'] = script_file.read()
         except FileNotFoundError:
             print("Script Lua", file_name, "introuvable.", file = sys.stderr)
@@ -30,7 +30,7 @@ def collect_script_and_UI(tts_tmp_dir, name, id, element, scriptStates):
 
     if element.get('XmlUI') == '...':
         try:
-            with open(file_name + '.xml', 'r') as script_file:
+            with open(file_name + '.xml', 'r', encoding='utf-8') as script_file:
                 scriptState['ui'] = script_file.read()
         except FileNotFoundError:
             print("Description UI XML", file_name, "introuvable.", file = sys.stderr)
@@ -40,7 +40,7 @@ def collect_script_and_UI(tts_tmp_dir, name, id, element, scriptStates):
 
 def browse_save(tts_tmp_dir, save_file_name, scriptStates):
     save = None
-    with open(save_file_name, 'r') as save_file:
+    with open(save_file_name, 'r', encoding='utf-8') as save_file:
         save = json.load(save_file)
 
     collect_script_and_UI(tts_tmp_dir, 'Global', -1, save, scriptStates)
