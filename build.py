@@ -51,6 +51,11 @@ def build():
 			print("No valid 'My Games' directory found.", file=sys.stderr)
 			exit(1)
 
+		# Installed with 'npm install -g luabundler'
+		luabundler = 'luabundler.cmd'
+	else:
+		print('Unknown OS:', platform_system, file=sys.stderr)
+		exit(1)
 
 	tts_save_dir = os.path.join(app_dir, 'Tabletop Simulator', 'Saves')
 
@@ -178,12 +183,12 @@ def bundle(luabundler, timestamp):
 				sys.exit(1)
 
 	luaFile = os.path.join(tts_tmp_dir, 'Global.-1.ttslua')
-	with open (luaFile, 'r') as f:
+	with open (luaFile, 'r', encoding='utf-8') as f:
 		content = f.read()
 
 	content_new = re.sub(r"local BUILD\s*=\s*.*", "local BUILD = '{}'".format(timestamp), content)
 
-	with open (luaFile, 'w') as f:
+	with open (luaFile, 'w', encoding='utf-8') as f:
 		f.write(content_new)
 
 def pack(timestamp):

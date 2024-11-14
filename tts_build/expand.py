@@ -15,7 +15,7 @@ def collect_position(state, positions):
 
 def collect_positions(save_file_name):
     save = None
-    with open(save_file_name, 'r') as save_file:
+    with open(save_file_name, 'r', encoding='utf-8') as save_file:
         save = json.load(save_file)
 
     positions = {}
@@ -35,11 +35,11 @@ def expand_in_scripts(positions, script_dir):
     for root, _, files in os.walk(script_dir):
         for filename in files:
             file_path = os.path.join(root, filename)
-            with open(file_path, 'r') as f:
+            with open(file_path, 'r', encoding='utf-8') as f:
                 content = f.read()
                 (expansion_count, new_content) = process(positions, filename, content)
                 if expansion_count > 0:
-                    with open(file_path, 'w') as f:
+                    with open(file_path, 'w', encoding='utf-8') as f:
                         f.write(new_content)
                     print(str(expansion_count) + " expansion(s) in " + filename)
 
