@@ -29,35 +29,29 @@ tts_tmp_dir='tmp/scripts.bundled/'
 #	   https://github.com/Benjamin-Dobell/luabundler
 def build():
 	platform_system = platform.system()
+
+	local_node_modules_path = os.path.exists('node_modules')
+
 	if platform_system == 'Linux':
-		# Installed as a Snap.
-		#app_dir = os.path.join(os.environ['HOME'], 'snap', 'steam', 'common', '.local', 'share')
-		app_dir = os.path.join(os.environ['HOME'], '.local', 'share')
-		# Installed with 'npm install luabundler'
-		luabundler = 'node_modules/.bin/luabundler'
-		# Installed with 'npm install -g luabundler'
-		#luabundler = 'luabundler'
+		tts_save_dirs = [
+			os.path.join(os.environ['HOME'], 'snap', 'steam', 'common', '.local', 'share', 'Tabletop Simulator', 'Saves'),
+			os.path.join(os.environ['HOME'], '.local', 'share', 'Tabletop Simulator', 'Saves')
+		]
+		luabundler = 'node_modules/.bin/luabundler' if local_node_modules_path else 'luabundler'
 	elif platform_system == 'Windows':
-		# Define both potential paths
-		one_drive_path = os.path.join(os.environ['USERPROFILE'], 'OneDrive', 'Documents', 'My Games')
-		documents_path = os.path.join(os.environ['USERPROFILE'], 'Documents', 'My Games')
-
-		# Check which path exists, prioritizing OneDrive if both are available
-		if os.path.exists(one_drive_path):
-			app_dir = one_drive_path
-		elif os.path.exists(documents_path):
-			app_dir = documents_path
-		else:
-			print("No valid 'My Games' directory found.", file=sys.stderr)
-			exit(1)
-
-		# Installed with 'npm install -g luabundler'
-		luabundler = 'luabundler.cmd'
+		tts_save_dirs = [
+			os.path.join(os.environ['USERPROFILE'], 'OneDrive', 'Documents', 'My Games', 'Tabletop Simulator', 'Saves'),
+			os.path.join(os.environ['USERPROFILE'], 'Documents', 'My Games', 'Tabletop Simulator', 'Saves')
+		]
+		luabundler = 'node_modules/.bin/luabundler.cmd' if local_node_modules_path else 'luabundler.cmd'
 	else:
 		print('Unknown OS:', platform_system, file=sys.stderr)
-		exit(1)
+		sys.exit(1)
 
-	tts_save_dir = os.path.join(app_dir, 'Tabletop Simulator', 'Saves')
+	tts_save_dir = select_first_existing_path(tts_save_dirs)
+	if tts_save_dir is None:
+		print("No valid Tabletop Simulator 'Saves' directory found.", file=sys.stderr)
+		sys.exit(1)
 
 	config = configparser.ConfigParser()
 	config.read('build.properties')
@@ -92,6 +86,11 @@ def build():
 	else:
 		pack(timestamp)
 		exportSave(output_save)
+
+def select_first_existing_path(paths):
+	for path in paths:
+		if os.path.exists(path):
+			return path
 
 def importSave(input_save):
 	print("[import]")
