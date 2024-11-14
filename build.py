@@ -38,13 +38,19 @@ def build():
 		# Installed with 'npm install -g luabundler'
 		#luabundler = 'luabundler'
 	elif platform_system == 'Windows':
-		app_dir = os.path.join(os.environ['USERPROFILE'], 'Documents', 'My Games')
-		app_dir = os.path.join(os.environ['USERPROFILE'], 'OneDrive', 'Documents', 'My Games')
-		# Installed with 'npm install -g luabundler'
-		luabundler = 'luabundler.cmd'
-	else:
-		print('Unknown os: ' + platform_system, file = sys.stderr)
-		exit(1)
+		# Define both potential paths
+		one_drive_path = os.path.join(os.environ['USERPROFILE'], 'OneDrive', 'Documents', 'My Games')
+		documents_path = os.path.join(os.environ['USERPROFILE'], 'Documents', 'My Games')
+
+		# Check which path exists, prioritizing OneDrive if both are available
+		if os.path.exists(one_drive_path):
+			app_dir = one_drive_path
+		elif os.path.exists(documents_path):
+			app_dir = documents_path
+		else:
+			print("No valid 'My Games' directory found.", file=sys.stderr)
+			exit(1)
+
 
 	tts_save_dir = os.path.join(app_dir, 'Tabletop Simulator', 'Saves')
 
