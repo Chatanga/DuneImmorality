@@ -18,7 +18,7 @@ local MOD_NAME = 'Rakis Rising'
 
 -- Do not load anything. Appropriate to work on the mod content in TTS without
 -- interference from the scripts.
-local constructionModeEnabled = false
+local constructionModeEnabled = faalse
 
 -- For test purposes (the secondary table won't disappear as a side effect).
 local autoLoadedSettings = nil
@@ -222,6 +222,9 @@ local Controller = {
         epicMode = XmlUI.DISABLED,
         immortality = false,
         goTo11 = XmlUI.DISABLED,
+        bloodlines = true,
+        ixAmbassy = true,
+        ixAmbassyWithIx = false,
         leaderSelection_all = allModules.LeaderSelection.getSelectionMethods(4),
         leaderSelection = "reversePick",
         leaderPoolSize_range = { min = 4, max = 12 },
@@ -255,7 +258,7 @@ function onLoad(scriptState)
             allModules.PlayBoard.rebuild()
         end
         -- Regenerate the decks in the localized cached areas.
-        if false then
+        if true then
             allModules.Deck.rebuildPreloadAreas()
         end
         -- Regenerate the boards for each language.
@@ -354,6 +357,8 @@ function asyncOnLoad(scriptState)
         else
             Controller.ui = XmlUI.new(Global, "setupPane", Controller.fields)
             Controller.ui:show()
+            Controller.extensionUi = XmlUI.new(Global, "extensionSetupPane", Controller.fields)
+            Controller.extensionUi:show()
             Controller.soloUi = XmlUI.new(Global, "soloSetupPane", Controller.fields)
             I18N.setLocale(Controller.fields.language)
             Controller.updateLeaderPoolSizeLabel()
@@ -596,8 +601,15 @@ function setRiseOfIx(player, value, id)
     Controller.ui:fromUI(player, value, id)
     if value == "True" then
         Controller.fields.epicMode = false
+        Controller.fields.ixAmbassy = XmlUI.DISABLED
+        Controller.fields.ixAmbassyWithIx = XmlUI.DISABLED
     else
         Controller.fields.epicMode = XmlUI.DISABLED
+        Controller.ui:fromUI(player, value, id)
+        if Controller.fields.bloodlines and XmlUI.isDisabled(Controller.fields.ixAmbassy) then
+            Controller.fields.ixAmbassy = true
+            Controller.fields.ixAmbassyWithIx = false
+        end
     end
     Controller.ui:toUI()
 end
@@ -620,6 +632,35 @@ end
 
 --- UI callback (cf. XML).
 function setGoTo11(player, value, id)
+    Controller.ui:fromUI(player, value, id)
+end
+
+--- UI callback (cf. XML).
+function setBloodlines(player, value, id)
+    Controller.ui:fromUI(player, value, id)
+    if value == "True" and not Controller.fields.riseOfIx then
+        Controller.fields.ixAmbassy = true
+        Controller.fields.ixAmbassyWithIx = false
+    else
+        Controller.fields.ixAmbassy = XmlUI.DISABLED
+        Controller.fields.ixAmbassyWithIx = XmlUI.DISABLED
+    end
+    Controller.ui:toUI()
+end
+
+--- UI callback (cf. XML).
+function setIxAmbassy(player, value, id)
+    Controller.ui:fromUI(player, value, id)
+    if value == "True" then
+        Controller.fields.ixAmbassyWithIx = false
+    else
+        Controller.fields.ixAmbassyWithIx = XmlUI.DISABLED
+    end
+    Controller.ui:toUI()
+end
+
+--- UI callback (cf. XML).
+function setIxAmbassyWithIx(player, value, id)
     Controller.ui:fromUI(player, value, id)
 end
 
@@ -668,6 +709,8 @@ function setUpFromUI()
 
     Controller.ui:hide()
     Controller.ui = nil
+    Controller.extensionUi:hide()
+    Controller.extensionUi = nil
     Controller.soloUi:hide()
     Controller.soloUi = nil
 
@@ -678,7 +721,7 @@ function setUpFromUI()
         numberOfPlayers = numberOfPlayers,
         hotSeat = not Controller.isUndefined(Controller.fields.virtualHotSeatMode),
         firstPlayer = Controller.fields.firstPlayer,
-        randomizePlayerPositions = Controller.fields.randomizePlayerPositions == true,
+        randomizePlayerPositions = Controller.fields.randomizePlayerPositions,
         difficulty = Controller.fields.difficulty,
         autoTurnInSolo = Controller.fields.autoTurnInSolo == true,
         imperiumRowChurn = Controller.fields.imperiumRowChurn == true,
@@ -687,12 +730,15 @@ function setUpFromUI()
         expertDeployment = Controller.fields.expertDeployment == true,
         smartPolitics = Controller.fields.smartPolitics == true,
         useContracts = Controller.fields.useContracts == true or numberOfPlayers == 6,
-        legacy = Controller.fields.legacy == true,
+        legacy = Controller.fields.legacy,
         merakon = Controller.fields.merakon == true,
-        riseOfIx = Controller.fields.riseOfIx == true,
+        riseOfIx = Controller.fields.riseOfIx,
         epicMode = Controller.fields.epicMode == true,
-        immortality = Controller.fields.immortality == true,
+        immortality = Controller.fields.immortality,
         goTo11 = Controller.fields.goTo11 == true,
+        bloodlines = Controller.fields.bloodlines,
+        ixAmbassy = Controller.fields.ixAmbassy == true,
+        ixAmbassyWithIx = Controller.fields.ixAmbassyWithIx == true,
         leaderSelection = Controller.fields.leaderSelection,
         leaderPoolSize = tonumber(Controller.fields.leaderPoolSize),
         tweakLeaderSelection = Controller.fields.tweakLeaderSelection,

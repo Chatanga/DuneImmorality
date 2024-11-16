@@ -116,6 +116,9 @@ function XmlUI:toUI()
                         XmlUI._setXmlActive(element, true)
                         XmlUI._setXmlInteractable(element, true)
                     else
+                        if element.tag == "Toggle" then
+                            XmlUI._setXmlToggle(element, false)
+                        end
                         XmlUI._setXmlActive(element, not hidden)
                         XmlUI._setXmlInteractable(element, false)
                     end

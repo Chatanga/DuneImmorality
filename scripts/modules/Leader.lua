@@ -814,4 +814,14 @@ Leader.muadDib = Helper.createClass(Leader, {
     end
 })
 
+Leader.chani = Helper.createClass(Leader, {})
+Leader.duncanIdaho = Helper.createClass(Leader, {})
+Leader.esmarTuek = Helper.createClass(Leader, {})
+Leader.gaiusHelenMohiam = Helper.createClass(Leader, {})
+Leader.hasimirFenring = Helper.createClass(Leader, {})
+Leader.lietKynes = Helper.createClass(Leader, {})
+Leader.piterDeVries = Helper.createClass(Leader, {})
+Leader.yrkoon = Helper.createClass(Leader, {})
+Leader.kotaOdax = Helper.createClass(Leader, {})
+
 return Leader

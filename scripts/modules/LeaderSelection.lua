@@ -92,6 +92,8 @@ function LeaderSelection.setUp(settings, activeOpponents)
             settings.immortality,
             settings.legacy,
             settings.merakon,
+            settings.bloodlines,
+            settings.ixAmbassy,
             free
         ).doAfter(function (deck)
             LeaderSelection.deckZone.removeTag("Leader")

@@ -21,6 +21,10 @@ local Deck = {
         uprisingImperium_contract = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141289270/C9C56A8015292829E5F4C65EFB0B3F78A19DCDB4/", 2, 2 },
         uprisingImperium_prepareTheWay = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141288931/3EFF528A17FA160E8C836BCE628875066C791E88/", 4, 2 },
         uprisingImperium_theSpiceMustFlow = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141288456/7EFF5F3E150A3F7E9F8B0DE21E42F42E2F8967D4/", 5, 2 },
+        -- bloodlines
+        bloodlinesImperium = { "https://steamusercontent-a.akamaihd.net/ugc/28804925896497409/EF8C20D262C03052C7964EC0F6AF7B18A4D72DB9/", 7, 3 },
+        bloodlinesImperium_contract = { "https://steamusercontent-a.akamaihd.net/ugc/28804925896497753/24D25A48FACF73A89AB9C67782BB7FFE9C3E698A/", 4, 1 },
+        bloodlinesImperium_tech = { "https://steamusercontent-a.akamaihd.net/ugc/28804925896497701/55378EA6DF305432157B5825DCA00FAD97785A26/", 1, 1 },
     },
     intrigue = {
         intrigue = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141343483/A63AE0E1069DA1279FDA3A5DE6A0E073F45FC8EF/", 7, 5 },
@@ -112,6 +116,16 @@ local Deck = {
         feydRauthaHarkonnen = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141282610/C6CC977066E02C55DFA870BF59D42A8DC21F6811/", 1, 1 },
         shaddamCorrino = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141285378/056063BC4E61922C15A7A45DD5093EA6EC04C354/", 1, 1 },
         muadDib = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141283595/202B5C036B90D32A408FE938AF0747BAF2DE7DFB/", 1, 1 },
+        -- bloodlines
+        chani = { "https://steamusercontent-a.akamaihd.net/ugc/28804925896497192/D71661A3571B0AD352BAC2B0EC042A74F2C449BD/", 1, 1 },
+        duncanIdaho = { "https://steamusercontent-a.akamaihd.net/ugc/28804925896496946/3279B2A26C2346C4CCED58E032F7515696F1EC55/", 1, 1 },
+        esmarTuek = { "https://steamusercontent-a.akamaihd.net/ugc/28804925896496485/14011EB052D02BE770A5E15CD12EACEDC03EB12B/", 1, 1 },
+        gaiusHelenMohiam = { "https://steamusercontent-a.akamaihd.net/ugc/28804925896496630/25B79FD5FFF0A4C8580935B794B5EAB6C4FAEBC8/", 1, 1 },
+        hasimirFenring = { "https://steamusercontent-a.akamaihd.net/ugc/28804925896497254/142C59D454BCEE3581C54C67ABCCCEC2DC52C8CF/", 1, 1 },
+        lietKynes = { "https://steamusercontent-a.akamaihd.net/ugc/28804925896496818/7C39C2CDC433858375E02699A00810BC0C7D0752/", 1, 1 },
+        piterDeVries = { "https://steamusercontent-a.akamaihd.net/ugc/28804925896497318/2D2F666442F6E80FC358908728E243A4FD753128/", 1, 1 },
+        yrkoon = { "https://steamusercontent-a.akamaihd.net/ugc/28804925896497017/46E0D31CCBD1C2237CCC9F83E1D9CBB69A106949/", 1, 1 },
+        kotaOdax = { "https://steamusercontent-a.akamaihd.net/ugc/28804925896497133/7821DCA1F54A5501DD192FB8E77C867500A4FCDB/", 1, 1 },
     },
     rivalLeader = {
         uprising = { "https://steamusercontent-a.akamaihd.net/ugc/2291837013341168508/811BF7142774932C8C2FAD7C10BA104F8DAD4299/", 4, 3 },
@@ -372,6 +386,38 @@ function Deck.loadCustomDecks(loader)
         "deliveryAgreement",
         "priorityContracts",
         "interstellarTrade",
+    })
+    Deck.load(loader, cards.imperium, "imperium", "bloodlinesImperium", 1, {
+        "fremenWarName",
+        "sardaukarStandard",
+        "quashRebellion",
+        "southernFaith",
+        "imperialThroneship",
+        "possibleFutures",
+        "arrakisObserver",
+        "eliminateAllies",
+        "holyWar",
+        "intelligenceTraining",
+        "bombast",
+        "pointingTheWay",
+        "shroudedCounsel",
+        "sandwalk",
+        "disruptionTactics",
+        "urgentShigawire",
+        "commandCenter",
+        "engineeredMiracle",
+        "iBelieve",
+        "litanyAgainstFear",
+        "eliteForces",
+    })
+    Deck.load(loader, cards.imperium, "imperium", "bloodlinesImperium_contract", 1, {
+        "deliveryLogistics",
+        "corruptBureaucrat",
+        "mercantileAffairs",
+        "choamDemands",
+    })
+    Deck.load(loader, cards.imperium, "imperium", "bloodlinesImperium_tech", 1, {
+        "ixianAmbassador",
     })
     Deck.load(loader, cards.special, "imperium", "imperium", 5, {
         "foldspace",

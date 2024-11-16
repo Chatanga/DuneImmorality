@@ -52,6 +52,9 @@ return {
     twoTeams = "2 x 3",
     normal = "normal",
     streamlined = "streamlined",
+    bloodlines = "Bloodline",
+    ixAmbassy = "Ix Ambassy",
+    ixAmbassyWithIx = "Include the Rise of Ix tiles",
 
     -- Solo Setup UI
     soloSettings = "Hagal",

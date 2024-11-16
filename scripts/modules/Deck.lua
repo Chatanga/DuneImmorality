@@ -234,6 +234,38 @@ local Deck = {
             priorityContracts = 1,
             interstellarTrade = 1,
         },
+        bloodlines = {
+            bombast = 1,
+            sandwalk = 2,
+            disruptionTactics = 1,
+            urgentShigawire = 2,
+            commandCenter = 1,
+            engineeredMiracle = 1,
+            iBelieve = 1,
+            litanyAgainstFear = 1,
+            eliteForces = 1,
+            fremenWarName = 1,
+            sardaukarStandard = 1,
+            quashRebellion = 2,
+            southernFaith = 1,
+            imperialThroneship = 1,
+            possibleFutures = 1,
+            arrakisObserver = 1,
+            eliminateAllies = 1,
+            holyWar = 1,
+            intelligenceTraining = 2,
+            pointingTheWay = 1,
+            shroudedCounsel = 1,
+        },
+        bloodlinesContract = {
+            deliveryLogistics = 2,
+            corruptBureaucrat = 1,
+            mercantileAffairs = 1,
+            choamDemands = 1,
+        },
+        bloodlinesTech = {
+            ixianAmbassador = 2,
+        },
         merakon = {
             -- Remove one copy of the following cards from the Uprising Imperium deck
             -- (Uprising comes with 2 each of these cards, so there's still 1 copy left after the removals):
@@ -424,6 +456,44 @@ local Deck = {
             reachAgreement = 1,
             choamProfits = 1,
         },
+        bloodlines = {
+            adaptiveTactics = 1,
+            desertSupport = 1,
+            emperorInvitation = 1,
+            honorGuard = 1,
+            returnTheFavor = 1,
+            sacredPools = 1,
+            seizeProduction = 1,
+            theStrongSurvive = 1,
+            tenuousBound = 1,
+            withdrawalAgreement = 1,
+            falseOrder = 1,
+            graspArrakis = 1,
+            insiderInformation = 1,
+            ripplesInTheSand = 1,
+            sleeperUnit = 1,
+        },
+        bloodlinesContract = {
+            coerciveNegotiation = 1,
+        },
+        bloodlinesTech = {
+            battlefieldResearch = 1,
+            rapidEngineering = 1,
+        },
+        bloodlinesTwisted = {
+            ambitious = 1,
+            calculating = 1,
+            controlled = 1,
+            devious = 1,
+            discerning = 1,
+            insidious = 1,
+            resourceful = 1,
+            sadistic = 1,
+            shrewd = 1,
+            sinister = 1,
+            unnatural = 1,
+            withdrawn = 1,
+        },
         merakon = {
             -- No cuts from Uprising.
             -- Add the following cards (all from DI):
@@ -449,6 +519,9 @@ local Deck = {
                 skirmishB = 1,
                 skirmishC = 1,
             },
+            bloodlines = {
+                skirmishD = 1,
+            },
         },
         level2 = {
             uprising = {
@@ -461,6 +534,9 @@ local Deck = {
                 secureImperialBasin = 1,
                 protectTheSietches = 1,
                 tradeDispute = 1,
+            },
+            bloodlines = {
+                stormsInTheSouth = 1,
             },
         },
         level3 = {
@@ -591,6 +667,17 @@ local Deck = {
             shaddamCorrino = 1,
             muadDib = 1,
         },
+        bloodlines = {
+            chani = 1,
+            duncanIdaho = 1,
+            esmarTuek = 1,
+            gaiusHelenMohiam = 1,
+            hasimirFenring = 1,
+            lietKynes = 1,
+            piterDeVries = 1,
+            yrkoon = 1,
+            kotaOdax = 1,
+        },
         merakon = {
             -- Legacy
             vladimirHarkonnen = 1,
@@ -629,6 +716,16 @@ local Deck = {
             feydRauthaHarkonnen = 0.5,
             shaddamCorrino = 0.5,
             muadDib = 0.5,
+            -- Bloodlines
+            chani = 0.5,
+            duncanIdaho = 0.5,
+            esmarTuek = 0.5,
+            gaiusHelenMohiam = 0.5,
+            hasimirFenring = 0.5,
+            lietKynes = 0.5,
+            piterDeVries = 0.5,
+            yrkoon = 0.5,
+            kotaOdax = 0.5,
         }
     },
     rivalLeaders = {
@@ -644,6 +741,31 @@ local Deck = {
             feydRauthaHarkonnen = 1,
             muadDib = 1,
         },
+    },
+    navigation = {
+        bloodlines = {
+            solarisAndPermanentPersuasion = 1,
+            spiceIfTrash = 1,
+            waterThenSpiceIfSpacingGuildInfluence = 1,
+            spiceOrInfluenceIfSolaris = 1,
+            spiceOrTSMFIfWater = 1,
+            spiceThenIntrigueIfAlliance = 1,
+            influenceIfInfluence = 1,
+            drawOrVpIfSpice = 1,
+            troopOrMoreTroopIfSolaris = 1,
+            spyOrIntrigueAndSpiceIfSpy = 1,
+        }
+    },
+    sardaukar = {
+        bloodlines = {
+            charismatic = 2,
+            desperate = 2,
+            fierce = 2,
+            canny = 2,
+            driven = 2,
+            loyal = 2,
+            hardy = 2,
+        }
     },
 }
 
@@ -808,13 +930,19 @@ function Deck.generateStarterDiscard(deckZone, immortality, epic)
 end
 
 ---
-function Deck.generateImperiumDeck(deckZone, contracts, ix, immortality, legacy, merakon)
+function Deck.generateImperiumDeck(deckZone, contracts, ix, immortality, legacy, merakon, bloodlines, ixAmbassy)
     assert(deckZone)
     assert(deckZone.getPosition)
     local continuation = Helper.createContinuation("Deck.generateImperiumDeck")
-    local contributions = Deck._mergeStandardContributionSets(Deck.imperium, ix, immortality, legacy, merakon)
+    local contributions = Deck._mergeStandardContributionSets(Deck.imperium, ix, immortality, legacy, merakon, bloodlines)
     if contracts then
         contributions = Deck._mergeContributionSets({ contributions, Deck.imperium.uprisingContract })
+        if bloodlines then
+            contributions = Deck._mergeContributionSets({ contributions, Deck.imperium.bloodlinesContract })
+        end
+    end
+    if ix or ixAmbassy then
+        contributions = Deck._mergeContributionSets({ contributions, Deck.imperium.bloodlinesTech })
     end
     Deck._generateDeck("Imperium", deckZone, contributions, Deck.sources.imperium).doAfter(continuation.run)
     return continuation
@@ -956,16 +1084,19 @@ function Deck.generateHagalDeck(deckZone, ix, immortality, playerCount)
 end
 
 ---
-function Deck.generateLeaderDeck(deckZone, contracts, ix, immortality, legacy, merakon, free)
+function Deck.generateLeaderDeck(deckZone, contracts, ix, immortality, legacy, merakon, bloodlines, ixAmbassy, free)
     assert(deckZone)
     assert(deckZone.getPosition)
     local continuation = Helper.createContinuation("Deck.generateLeaderDeck")
-    local contributions = Deck._mergeStandardContributionSets(Deck.leaders, ix, immortality, legacy, merakon, free)
+    local contributions = Deck._mergeStandardContributionSets(Deck.leaders, ix, immortality, legacy, merakon, free, bloodlines)
     contributions = Helper.mapValues(contributions, function (cardinality)
         return math.min(cardinality, 1)
     end)
     if not contracts then
         contributions.shaddamCorrino = nil
+    end
+    if not ix and not ixAmbassy then
+        contributions.kotaOdax = nil
     end
     Deck._generateDeck("Leader", deckZone, contributions, Deck.sources.leaders).doAfter(continuation.run)
     return continuation
@@ -988,7 +1119,7 @@ function Deck.generateRivalLeaderDeck(deckZone, streamlined, ix, immortality, le
 end
 
 ---
-function Deck._mergeStandardContributionSets(root, ix, immortality, legacy, merakon, free)
+function Deck._mergeStandardContributionSets(root, ix, immortality, legacy, merakon, free, bloodlines)
     local contributionSets = { root.uprising }
     if merakon then
         table.insert(contributionSets, root.merakon)
@@ -1004,6 +1135,9 @@ function Deck._mergeStandardContributionSets(root, ix, immortality, legacy, mera
         end
         if free then
             table.insert(contributionSets, root.free)
+        end
+        if bloodlines then
+            table.insert(contributionSets, root.bloodlines)
         end
     end
     return Deck._mergeContributionSets(contributionSets)
@@ -1292,6 +1426,9 @@ function Deck._prebuildImperiumDeck(deckPosition)
         Deck.imperium.immortality,
         Deck.imperium.uprising,
         Deck.imperium.uprisingContract,
+        Deck.imperium.bloodlines,
+        Deck.imperium.bloodlinesContract,
+        Deck.imperium.bloodlinesTech,
     }
     local contributions = Deck._mergeContributionSets(contributionSets, true)
     Deck._generateDynamicDeckWithTwoBackCards("Imperium", deckPosition, contributions, Deck.sources.imperium)
@@ -1365,6 +1502,8 @@ function Deck._prebuildLeaderDeck(deckPosition)
         Deck.leaders.legacy,
         Deck.leaders.ix,
         Deck.leaders.uprising,
+        Deck.leaders.bloodlines,
+        Deck.leaders.bloodlinesTech,
     }
     local contributions = Deck._mergeContributionSets(contributionSets, true)
     Deck._generateDynamicDeckWithTwoBackCards("Leader", deckPosition, contributions, Deck.sources.leaders)

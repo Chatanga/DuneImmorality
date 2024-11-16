@@ -18,21 +18,22 @@ More generally, take a look at the Example.lua file to see how your code might
 be integrated to this mod in a standard way.
 
 -->
-<Panel position="0 -90" width="450" height="730" color="#000000" id="setupPane" rotation="0 0 0" outline="#2e200f" outlineSize="1"
+<Panel position="0 -80" width="450" height="560" color="#000000" id="setupPane" rotation="0 0 0" outline="#2e200f" outlineSize="1"
 	active="False" allowDragging="True" returnToOriginalPositionWhenReleased="False" _visibility="Host">
 	<!-- Aplly to all panels actually. -->
 	<Defaults>
 		<Text class="primary" color="#000000" fontSize="20" fontStyle="bold" alignment="MiddleLeft"/>
-		<Text class="secondary" color="#000000" fontSize="14" fontStyle="bold" alignment="MiddleLeft"/>
+		<Text class="secondary" color="#22170b" fontSize="14" fontStyle="bold" alignment="MiddleLeft"/>
 		<Text class="warning" color="#ffe71c" fontSize="12" fontStyle="italic" alignment="MiddleCenter"/>
 		<Dropdown class="setUp" itemBackgroundColors="#2e200f44|#df9730|#ffffff|#361441" textColor="#2e200f" fontSize="12" itemTextColor="#2e200f" fontStyle="bold"/>
 		<InputField class="setUp" colors="#00000000|#2e200f44|#2e200f" textColor="#2e200f" fontSize="14" fontStyle="bold"/>
-		<Toggle class="setUp" colors="#9e907e|#ffd60b|#6d5e4c|#222222" textColor="#000000" fontSize="14" fontStyle="bold" tooltipPosition="Left" tooltipBackgroundColor="#000000"/>
+		<Toggle class="setUp" colors="#9e907e|#ffd60b|#6d5e4c|#222222" textColor="#22170b" fontSize="14" fontStyle="bold" tooltipPosition="Left" tooltipBackgroundColor="#000000"/>
 		<Button class="setUp" colors="#406f2e|#30281f|#df9730|#222222" textColor="#ffd60b" fontSize="14" outline="#30281f" outlineSize="3 3"/>
 		<Image raycastTarget="true"/>
 	</Defaults>
 	<VerticalLayout>
-		<Image ignoreLayout="True" image="https://steamusercontent-a.akamaihd.net/ugc/2502404390141305805/173703C80CC9894291106BFFF74C5D28619FE03F/"/>
+		<Image ignoreLayout="True" type="Simple" image="https://steamusercontent-a.akamaihd.net/ugc/28804925895890487/B0F072C061B4D88D25F0BD7B66A521702FF49D6C/"/>
+
 		<VerticalLayout padding="40 40 40 40">
 			<HorizontalLayout>
 				<Text class="primary" key="language"/>
@@ -40,23 +41,6 @@ be integrated to this mod in a standard way.
 					<Option></Option>
 				</Dropdown>
 			</HorizontalLayout>
-
-			<Text class="primary" key="extensions"/>
-			<VerticalLayout padding="25 0 0 0">
-				<Toggle class="setUp" id="useContracts" onValueChanged="Global/setUseContracts" isOn="True" key="useContracts"/>
-				<Toggle class="setUp" id="legacy" isOn="True" onValueChanged="Global/setLegacy" key="legacy"/>
-				<VerticalLayout padding="25 0 0 0">
-					<Toggle class="setUp" id="merakon" isOn="False" onValueChanged="Global/setMerakon" key="merakon"/>
-				</VerticalLayout>
-				<Toggle class="setUp" id="riseOfIx" isOn="True" onValueChanged="Global/setRiseOfIx" key="riseOfIx"/>
-				<VerticalLayout padding="25 0 0 0">
-					<Toggle class="setUp" id="epicMode" isOn="False" onValueChanged="Global/setEpicMode" key="epicMode"/>
-				</VerticalLayout>
-				<Toggle class="setUp" id="immortality" isOn="True" onValueChanged="Global/setImmortality" key="immortality"/>
-				<VerticalLayout padding="25 0 0 0">
-					<Toggle class="setUp" id="goTo11" isOn="False" onValueChanged="Global/setGoTo11" key="goTo11"/>
-				</VerticalLayout>
-			</VerticalLayout>
 
 			<HorizontalLayout>
 				<Text class="primary" key="leaderSelection"/>
@@ -117,13 +101,50 @@ be integrated to this mod in a standard way.
 			<Text class="warning" key="playerColorWarning"/>
 		</VerticalLayout>
 	</VerticalLayout>
-	<Image position="0 460" width="450" height="230" image="https://steamusercontent-a.akamaihd.net/ugc/2502404390141305534/F45EE24DE14C81CE4D22FFF72465DC2B588CC761/"/>
+
+	<Image position="0 380" width="450" height="230" image="https://steamusercontent-a.akamaihd.net/ugc/2502404390141305534/F45EE24DE14C81CE4D22FFF72465DC2B588CC761/"/>
 </Panel>
 
-<Panel position="480 -160" width="450" height="200" color="#000000" id="soloSetupPane" rotation="0 0 0" outline="#2e200f" outlineSize="1"
+<Panel position="480 160" width="450" height="360" color="#000000" id="extensionSetupPane" rotation="0 0 0" outline="#2e200f" outlineSize="1"
 	active="False" allowDragging="True" returnToOriginalPositionWhenReleased="False">
 	<VerticalLayout>
-		<Image ignoreLayout="True" type="Tiled" image="https://steamusercontent-a.akamaihd.net/ugc/28804201131342841/9FC861771F923C940219470E01B90E42BEDF098D/"/>
+		<Image ignoreLayout="True" type="Simple" image="https://steamusercontent-a.akamaihd.net/ugc/28804925895890487/B0F072C061B4D88D25F0BD7B66A521702FF49D6C/"/>
+
+		<VerticalLayout padding="40 40 20 20">
+
+			<Text class="primary" key="extensions"/>
+			<VerticalLayout padding="25 0 0 0">
+				<Toggle class="setUp" id="useContracts" onValueChanged="Global/setUseContracts" isOn="True" key="useContracts"/>
+				<Toggle class="setUp" id="legacy" isOn="True" onValueChanged="Global/setLegacy" key="legacy"/>
+				<VerticalLayout padding="25 0 0 0">
+					<Toggle class="setUp" id="merakon" isOn="False" onValueChanged="Global/setMerakon" key="merakon"/>
+				</VerticalLayout>
+				<Toggle class="setUp" id="riseOfIx" isOn="True" onValueChanged="Global/setRiseOfIx" key="riseOfIx"/>
+				<VerticalLayout padding="25 0 0 0">
+					<Toggle class="setUp" id="epicMode" isOn="False" onValueChanged="Global/setEpicMode" key="epicMode"/>
+				</VerticalLayout>
+				<Toggle class="setUp" id="immortality" isOn="True" onValueChanged="Global/setImmortality" key="immortality"/>
+				<VerticalLayout padding="25 0 0 0">
+					<Toggle class="setUp" id="goTo11" isOn="False" onValueChanged="Global/setGoTo11" key="goTo11"/>
+				</VerticalLayout>
+				<Toggle class="setUp" id="bloodlines" isOn="True" onValueChanged="Global/setBloodlines" key="bloodlines"/>
+				<VerticalLayout padding="25 0 0 0">
+					<Toggle class="setUp" id="ixAmbassy" isOn="True" onValueChanged="Global/setIxAmbassy" key="ixAmbassy"/>
+					<VerticalLayout padding="25 0 0 0">
+						<Toggle class="setUp" id="ixAmbassyWithIx" isOn="False" onValueChanged="Global/setIxAmbassyWithIx" key="ixAmbassyWithIx"/>
+					</VerticalLayout>
+				</VerticalLayout>
+			</VerticalLayout>
+
+		</VerticalLayout>
+	</VerticalLayout>
+</Panel>
+
+<Panel position="480 -180" width="450" height="240" color="#000000" id="soloSetupPane" rotation="0 0 0" outline="#2e200f" outlineSize="1"
+	active="False" allowDragging="True" returnToOriginalPositionWhenReleased="False">
+	<VerticalLayout>
+		<Image ignoreLayout="True" type="Simple" image="https://steamusercontent-a.akamaihd.net/ugc/28804925895890487/B0F072C061B4D88D25F0BD7B66A521702FF49D6C/"/>
+
 		<VerticalLayout padding="40 40 20 20">
 
 			<HorizontalLayout>
