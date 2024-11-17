@@ -34,7 +34,11 @@ def build():
 
 	if platform_system == 'Linux':
 		tts_save_dirs = [
+			# Steam as a Snap
 			os.path.join(os.environ['HOME'], 'snap', 'steam', 'common', '.local', 'share', 'Tabletop Simulator', 'Saves'),
+			# Steam as a .deb + with Proton (286160 is the Steam application ID for TTS)
+			os.path.join(os.environ['HOME'], '.local', 'share', 'Steam', 'steamapps', 'compatdata', '286160', 'pfx', 'drive_c', 'users', 'steamuser', 'My Documents', 'My Games', 'Tabletop Simulator', 'Saves'),
+			# Steam as a .deb + without Proton
 			os.path.join(os.environ['HOME'], '.local', 'share', 'Tabletop Simulator', 'Saves')
 		]
 		luabundler = 'node_modules/.bin/luabundler' if local_node_modules_path else 'luabundler'
