@@ -59,6 +59,7 @@ end
 
 ---
 function Hagal.setUp(settings)
+    Helper.dump("Hagal.setUp")
     if settings.numberOfPlayers < 3 then
         Deck.generateHagalDeck(Hagal.deckZone, settings.riseOfIx, settings.immortality, settings.numberOfPlayers).doAfter(function (deck)
             Helper.shuffleDeck(deck)
@@ -136,6 +137,11 @@ end
 function Hagal._tearDown()
     Hagal.mentatSpaceCostPatch.destruct()
     Hagal.deckZone.destruct()
+end
+
+---
+function Hagal.relocateDeckZone(newDeckZone)
+    Hagal.deckZone = newDeckZone
 end
 
 ---
@@ -383,7 +389,6 @@ function Hagal.pickAnyCompatibleLeader(color)
     if Hagal.getRivalCount() == 1 then
         local pseudoLeader = Helper.getDeck(Hagal.deckZone)
         assert(pseudoLeader, "Missing Hagal deck!")
-        Hagal.deckZone = PlayBoard.getContent(color).leaderZone
         PlayBoard.setLeader(color, pseudoLeader).doAfter(TurnControl.endOfTurn)
     else
         local leaders = {}

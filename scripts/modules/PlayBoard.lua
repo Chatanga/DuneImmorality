@@ -314,7 +314,11 @@ function PlayBoard.new(color, unresolvedContent, state, subState)
             playBoard.leaderCard = Helper.getDeckOrCard(playBoard.content.leaderZone)
             if playBoard.leaderCard then
                 if playBoard.opponent == "rival" then
-                    playBoard.leader = Rival.newRival(color, subState.leader)
+                    if Hagal.getRivalCount() == 1 then
+                        playBoard.leader = Rival.newRival(color)
+                    else
+                        playBoard.leader = Rival.newRival(color, subState.leader)
+                    end
                 else
                     playBoard.leader = Leader.newLeader(subState.leader)
                 end
@@ -914,7 +918,6 @@ end
 
 ---
 function PlayBoard:_generatePlayerScoreboardPositions()
-    assert(self.content.scoreMarker, self.color .. ": no score marker!")
     local origin = self.content.scoreMarkerInitialPosition
 
     -- Avoid collision between markers by giving a different height to each.

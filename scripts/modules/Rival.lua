@@ -9,7 +9,6 @@ local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
 local ShippingTrack = Module.lazyRequire("ShippingTrack")
 local TechMarket = Module.lazyRequire("TechMarket")
 local Intrigue = Module.lazyRequire("Intrigue")
-local HagalCard = Module.lazyRequire("HagalCard")
 local Types = Module.lazyRequire("Types")
 local Leader = Module.lazyRequire("Leader")
 
@@ -25,6 +24,7 @@ function Rival.newRival(color, leaderName, riseOfIx)
     rival.name = rival.leader.name
     if Hagal.getRivalCount() == 1 then
         assert(leaderName == nil)
+        Hagal.relocateDeckZone(PlayBoard.getContent(color).leaderZone)
         rival.recruitSwordmaster(color)
     else
         assert(leaderName)
