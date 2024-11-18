@@ -899,7 +899,7 @@ function MainBoard._goSecureContract(color, leader, continuation)
 end
 
 function MainBoard._goSellMelange(color, leader, continuation)
-    if MainBoard._checkGenericAccess(color, leader, { spice = "2" }) then
+    if MainBoard._checkGenericAccess(color, leader, { spice = 2 }) then
         local hasEnoughSpice = function (index, _)
             local spiceCost = index + 1
             return MainBoard._hasResource(leader, color, "spice", spiceCost)

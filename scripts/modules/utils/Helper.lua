@@ -1981,6 +1981,20 @@ function Helper._cons(head, tail)
 end
 
 ---
+function Helper.takeWhile(p, elements)
+    assert(elements)
+    local prefix = {}
+    for i, element in ipairs(elements) do
+        if p(i, element) then
+            table.insert(prefix, element)
+        else
+            break
+        end
+    end
+    return prefix
+end
+
+---
 function Helper.filter(elements, p)
     assert(elements)
     local filteredElements = {}
