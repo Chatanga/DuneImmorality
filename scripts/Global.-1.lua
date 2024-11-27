@@ -231,7 +231,7 @@ local Controller = {
         horizontalHandLayout = true,
         formalCombatPhase = false,
         soundEnabled = true,
-        submitGameRankedGame = false,
+        submitGameRankedGame = XmlUI.DISABLED,
     }
 }
 
@@ -656,23 +656,6 @@ end
 --- UI callback (cf. XML).
 function submitGameRankedGame(player, value, id)
     Controller.ui:fromUI(player, value, id)
-    --[[
-    local seatedPlayers = getSeatedPlayers()
-    if #seatedPlayers <= 3 then
-        Controller.fields.submitGameRankedGame = false
-        broadcastToAll(I18N("need4Players"), Color.fromString("White"))
-    end
-    Controller.ui:toUI()
-    ]]
-end
-
---- UI callback (cf. XML).
-function submitGameTournament(player, value, id)
-    Controller.ui:fromUI(player, value, id)
-    if value == "True" then
-        Controller.fields.submitGameRankedGame = false
-    end
-    Controller.ui:toUI()
 end
 
 --- UI callback (cf. XML).
@@ -871,7 +854,7 @@ function Controller.updateSetupButton()
             minPlayerCount = 1
         end
 
-        if #properlySeatedPlayers < 1 then
+        if #properlySeatedPlayers ~= 4 then
             Controller.fields.submitGameRankedGame = XmlUI.DISABLED
         elseif XmlUI.isDisabled(Controller.fields.submitGameRankedGame) then
             Controller.fields.submitGameRankedGame = false
