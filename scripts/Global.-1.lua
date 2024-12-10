@@ -232,6 +232,7 @@ local Controller = {
         formalCombatPhase = false,
         soundEnabled = true,
         submitGameRankedGame = XmlUI.DISABLED,
+        submitGameTournament = XmlUI.DISABLED,
     }
 }
 
@@ -698,7 +699,8 @@ function setUpFromUI()
         horizontalHandLayout = Controller.fields.horizontalHandLayout,
         formalCombatPhase = Controller.fields.formalCombatPhase,
         soundEnabled = Controller.fields.soundEnabled,
-        submitGameRankedGame = Controller.fields.submitGameRankedGame,
+        submitGameRankedGame = Controller.fields.submitGameRankedGame == true,
+        submitGameTournament = Controller.fields.submitGameTournament == true,
     })
 end
 
@@ -856,8 +858,14 @@ function Controller.updateSetupButton()
 
         if #properlySeatedPlayers ~= 4 then
             Controller.fields.submitGameRankedGame = XmlUI.DISABLED
-        elseif XmlUI.isDisabled(Controller.fields.submitGameRankedGame) then
-            Controller.fields.submitGameRankedGame = false
+            Controller.fields.submitGameTournament = XmlUI.DISABLED
+        else
+            if XmlUI.isDisabled(Controller.fields.submitGameRankedGame) then
+                Controller.fields.submitGameRankedGame = false
+            end
+            if XmlUI.isDisabled(Controller.fields.submitGameTournament) then
+                Controller.fields.submitGameTournament = false
+            end
         end
 
         if #properlySeatedPlayers >= minPlayerCount then
