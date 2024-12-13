@@ -253,7 +253,6 @@ function Rival.acquireTech(color, stackIndex, discount)
         end
 
         if bestTech then
-            Rival.resources(color, "spice", -bestTech.cost)
             finalStackIndex = bestTechIndex
         else
             return false
