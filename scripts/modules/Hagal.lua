@@ -5,7 +5,6 @@ local I18N = require("utils.I18N")
 
 local Deck = Module.lazyRequire("Deck")
 local TurnControl = Module.lazyRequire("TurnControl")
-local LeaderSelection = Module.lazyRequire("LeaderSelection")
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local HagalCard = Module.lazyRequire("HagalCard")
 local Combat = Module.lazyRequire("Combat")
@@ -44,7 +43,14 @@ end
 ---
 function Hagal.setUp(settings)
     if settings.numberOfPlayers < 3 then
-        Deck.generateHagalDeck(Hagal.deckZone, settings.riseOfIx, settings.immortality, settings.numberOfPlayers).doAfter(function (deck)
+        Deck.generateHagalDeck(
+            Hagal.deckZone,
+            settings.riseOfIx,
+            settings.immortality,
+            settings.bloodlines,
+            settings.ixAmbassy,
+            settings.numberOfPlayers)
+        .doAfter(function (deck)
             assert(deck, "No Hagal deck!")
             Helper.shuffleDeck(deck)
         end)
@@ -91,6 +97,27 @@ function Hagal._tearDown()
 end
 
 ---
+function Hagal.removeTuekSietch()
+    Helper.withAnyDeck(Hagal.deckZone, function (drawDeck)
+        local toBeRemoved = {}
+        for _, object in ipairs(drawDeck.getObjects()) do
+            if Helper.isElementOf("Hagal", object.tags) and Helper.getID(object) == "tuekSietch" then
+                table.insert(toBeRemoved, object.guid)
+            end
+        end
+        for i, guid in ipairs(toBeRemoved) do
+            drawDeck.takeObject({
+                guid = guid,
+                position = Vector(drawDeck.getPosition() + Vector(0, i, 0)),
+                callback_function = function (livingCard)
+                    MainBoard.trash(livingCard)
+                end
+            })
+        end
+    end)
+end
+
+---
 function Hagal.newRival(name)
     return Rival.newRival(name)
 end
@@ -102,7 +129,7 @@ function Hagal.activate(phase, color)
         Hagal._lateActivate(phase, color).doAfter(function ()
             -- The leader selection already has an automatic end of turn when a leader is picked.
             if phase ~= "leaderSelection" then
-                if Hagal.getRivalCount() == 1 or Hagal.autoTurnInSolo then
+                if Hagal.autoTurnInSolo then
                     Helper.onceTimeElapsed(1).doAfter(TurnControl.endOfTurn)
                 else
                     PlayBoard.createEndOfTurnButton(color)
@@ -151,9 +178,9 @@ function Hagal._collectReward(color)
     Helper.onceFramesPassed(1).doAfter(function ()
         local rank = Combat.getRank(color).value
         local conflictName = Combat.getCurrentConflictName()
-        local hasSandworms = Combat.hasSandworms(color)
+        local hasAnySandworm = Combat.hasAnySandworm(color)
         local postAction = Helper.partialApply(Rival.triggerHagalReaction, color)
-        ConflictCard.collectReward(color, conflictName, rank, hasSandworms, postAction).doAfter(function ()
+        ConflictCard.collectReward(color, conflictName, rank, hasAnySandworm, postAction).doAfter(function ()
             if rank == 1 then
                 local leader = PlayBoard.getLeader(color)
                 if PlayBoard.hasTech(color, "windtraps") then
@@ -300,6 +327,7 @@ end
 
 ---
 function Hagal._doActivateFirstValidCard(color, action, n, continuation)
+    --Helper.dumpFunction("Hagal._doActivateFirstValidCard", color)
     local emptySlots = Park.findEmptySlots(PlayBoard.getRevealCardPark(color))
     assert(emptySlots and #emptySlots > 0)
     assert(n < 10, "Something is not right!")
@@ -344,11 +372,11 @@ function Hagal._reshuffleDeck(color, action, n, continuation)
         end
     end
     Helper.onceTimeElapsed(2).doAfter(function ()
-        local deck = Helper.getDeck(Hagal.deckZone)
-        assert(deck, "No Hagal deck anymore!")
-        Helper.shuffleDeck(deck)
-        Helper.onceShuffled(deck).doAfter(function ()
-            Hagal._doActivateFirstValidCard(color, action, n + 1, continuation)
+        Helper.withAnyDeck(Hagal.deckZone, function (deck)
+            Helper.shuffleDeck(deck)
+            Helper.onceShuffled(deck).doAfter(function ()
+                Hagal._doActivateFirstValidCard(color, action, n + 1, continuation)
+            end)
         end)
     end)
 end

@@ -25,16 +25,16 @@ function ChoamContractMarket.onLoad(state)
     }))
 
     ChoamContractMarket.contracts = {
-        harvest3orMore = Helper.never(), -- MainBoard.isDesertSpace, -- x2
-        harvest4orMore = Helper.never(), -- MainBoard.isDesertSpace,
+        harvest3orMore = Helper.never(),
+        harvest4orMore = Helper.never(),
         deliverSupplies = Helper.equal("deliverSupplies"),
         highCouncilWithSolaris = Helper.equal("highCouncil"),
         highCouncilWithInfluence = Helper.equal("highCouncil"),
         acquireTheSpiceMustFlow = Helper.never(),
         immediate = Helper.never(),
-        researchStation = Helper.equal("researchStation"), -- with just solaris
+        researchStation = Helper.equal("researchStation"),
         researchStationWithSpy = Helper.equal("researchStation"),
-        espionage = Helper.equal("espionage"), -- x2
+        espionage = Helper.equal("espionage"),
         heighlinerWithWater = Helper.equal("heighliner"),
         heighlinerWithTroops = Helper.equal("heighliner"),
         sardaukarWithCards = Helper.equal("sardaukar"),
@@ -50,12 +50,23 @@ function ChoamContractMarket.onLoad(state)
         techNegotiation = Helper.equal("techNegotiation"),
         highCouncilWithTech = Helper.equal("highCouncil"),
         interstellarShipping = Helper.equal("interstellarShipping"),
-        harvest3orMoreWithTech = Helper.never(), -- MainBoard.isDesertSpace,
-        harvest4orMoreWithTech = Helper.never(), -- MainBoard.isDesertSpace,
+        harvest3orMoreWithTech = Helper.never(),
+        harvest4orMoreWithTech = Helper.never(),
         smuggling = Helper.equal("smuggling"),
         heighlinerWithTech = Helper.equal("heighliner"),
         espionageWithTech = Helper.equal("espionage"),
         secretsWithTech = Helper.equal("secrets"),
+    }
+
+    ChoamContractMarket.bloodlinesContracts = {
+        bloodlinesHarvest3orMore = Helper.never(),
+        bloodlinesHarvest4orMore = Helper.never(),
+        bloodlinesDeliverSupplies = Helper.equal("deliverSupplies"),
+        bloodlinesHighCouncil = Helper.equal("highCouncil"),
+        bloodlinesImmediate = Helper.never(),
+        bloodlinesSpiceRefinery = Helper.equal("spiceRefinery"),
+        bloodlinesSecrets = Helper.equal("secrets"),
+        bloodlinesEarnAnyAlliance = Helper.never(),
     }
 
     ChoamContractMarket.enabled = false
@@ -84,7 +95,16 @@ function ChoamContractMarket.setUp(settings)
 
             local trashHeight = 1
             for _, object in ipairs(ChoamContractMarket.contractBag.getObjects()) do
-                if Helper.isElementOf("IxContract", object.tags) then
+                if Helper.isElementOf("BloodlinesContract", object.tags) then
+                    if not settings.bloodlines then
+                        ChoamContractMarket.contractBag.takeObject({
+                            position = getObjectFromGUID('ef8614').getPosition() + Vector(0, trashHeight * 0.5, 0),
+                            rotation = Vector(0, 180, 0),
+                            guid = object.guid,
+                        })
+                        trashHeight = trashHeight + 1
+                    end
+                elseif Helper.isElementOf("IxContract", object.tags) then
                     local taken = false
                     for color, count in pairs(ixContratCountForEachPlayer) do
                         if count > 0 then
@@ -151,9 +171,12 @@ function ChoamContractMarket._transientSetUp(settings)
     Helper.registerEventListener("agentSent", function (color, spaceName)
         local parentSpaceName = MainBoard.findParentSpaceName(spaceName)
         local contracts = PlayBoard.getOpenContracts(color)
-        for i, contract in ipairs(contracts) do
+        for _, contract in ipairs(contracts) do
             local contractName = Helper.getID(contract)
-            local contractLocator = ChoamContractMarket.contracts[contractName] or ChoamContractMarket.ixContracts[contractName]
+            local contractLocator =
+                ChoamContractMarket.contracts[contractName] or
+                ChoamContractMarket.ixContracts[contractName] or
+                ChoamContractMarket.bloodlinesContracts[contractName]
             if contractLocator and contractLocator(parentSpaceName) then
                 broadcastToAll(I18N("fulfilledContract", { contract = I18N(contractName) }), color)
             end

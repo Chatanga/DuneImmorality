@@ -55,8 +55,22 @@ function Types.isSandworm(object, color)
 end
 
 ---
+function Types.isSardaukarCommander(object, color)
+    return object.hasTag("SardaukarCommander") and (not color or object.hasTag(color))
+end
+
+---
+function Types.isAgentUnit(object, color)
+    return object.hasTag("Agent") and object.hasTag("Unit") and (not color or object.hasTag(color))
+end
+
+---
 function Types.isUnit(object, color)
-    return Types.isTroop(object, color) or Types.isDreadnought(object, color) or Types.isSandworm(object, color)
+    return Types.isTroop(object, color)
+        or Types.isDreadnought(object, color)
+        or Types.isSandworm(object, color)
+        or Types.isSardaukarCommander(object, color)
+        or Types.isAgentUnit(object, color)
 end
 
 ---
@@ -112,6 +126,16 @@ end
 ---
 function Types.isContract(object)
     return object.hasTag("Contract")
+end
+
+---
+function Types.isSardaukarCommanderSkillCard(object)
+    return object.hasTag("SardaukarCommanderSkill")
+end
+
+---
+function Types.isNavigationCard(object)
+    return object.hasTag("Navigation")
 end
 
 ---

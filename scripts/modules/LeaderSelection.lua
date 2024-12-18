@@ -6,7 +6,7 @@ local Dialog = require("utils.Dialog")
 local Deck = Module.lazyRequire("Deck")
 local TurnControl = Module.lazyRequire("TurnControl")
 local PlayBoard = Module.lazyRequire("PlayBoard")
-local Hagal = Module.lazyRequire("Hagal")
+local Board = Module.lazyRequire("Board")
 
 local LeaderSelection = {
     dynamicLeaderSelection = {},
@@ -62,6 +62,13 @@ end
 function LeaderSelection.setUp(settings, activeOpponents)
     LeaderSelection.leaderSelectionPoolSize = settings.leaderPoolSize
 
+    --[[
+    Works as long as LeaderSelection is the last module to use Board (the others
+    being MainBoard and TechMarket actually). It should be in Global, but
+    LeaderSelection needs a clean secondary table before.
+    ]]
+    Board.destructInactiveBoards()
+
     local preContinuation = Helper.createContinuation("LeaderSelection.setUp.preContinuation")
     if settings.numberOfPlayers > 2 then
         preContinuation.run()
@@ -69,10 +76,14 @@ function LeaderSelection.setUp(settings, activeOpponents)
         Deck.generateRivalLeaderDeck(
             LeaderSelection.deckZone,
             settings.streamlinedRivals,
+            settings.useContracts,
             settings.riseOfIx,
             settings.immortality,
             settings.legacy,
-            settings.merakon
+            settings.merakon,
+            settings.bloodlines,
+            settings.ixAmbassy,
+            settings.numberOfPlayers
         ).doAfter(function (deck)
             LeaderSelection._layoutLeaderDeck(deck, 0).doAfter(preContinuation.run)
         end)
@@ -98,7 +109,7 @@ function LeaderSelection.setUp(settings, activeOpponents)
         ).doAfter(function (deck)
             LeaderSelection.deckZone.removeTag("Leader")
 
-            local start = settings.numberOfPlayers > 2 and 0 or 12
+            local start = settings.numberOfPlayers > 2 and 0 or 18
             LeaderSelection._layoutLeaderDeck(deck, start).doAfter(function ()
                 local testSetUp = type(settings.leaderSelection) == "table"
 

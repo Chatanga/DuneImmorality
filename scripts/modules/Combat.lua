@@ -63,7 +63,12 @@ end
 function Combat.setUp(settings)
     Combat._transientSetUp(settings)
     assert(Combat.conflictDeckZone)
-    return Deck.generateConflictDeck(Combat.conflictDeckZone, settings.riseOfIx, settings.epicMode, settings.numberOfPlayers)
+    return Deck.generateConflictDeck(
+        Combat.conflictDeckZone,
+        settings.riseOfIx,
+        settings.epicMode,
+        settings.bloodlines,
+        settings.numberOfPlayers)
 end
 
 ---
@@ -101,7 +106,8 @@ function Combat._transientSetUp(settings)
                     MainBoard.trash(object)
                 end
             end
-            -- Recalling units (troops, dreadnoughts and sandworms) in the combat (not in a controlable space).
+            -- Recalling units (troops, dreadnoughts, sandworms and sardaukar commanders) in the combat (not in a controlable space).
+            Helper.dump("///RECALL///")
             for _, object in ipairs(Combat.combatCenterZone.getObjects()) do
                 for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
                     if Types.isTroop(object, color) then
@@ -110,6 +116,14 @@ function Combat._transientSetUp(settings)
                         Park.putObject(object, Combat.dreadnoughtParks[color])
                     elseif Types.isSandworm(object, color) then
                         object.destruct()
+                    elseif Types.isSardaukarCommander(object, color) then
+                        if PlayBoard.isRival(color) then
+                            PlayBoard.getPlayBoard(color):trash(object)
+                        else
+                            Park.putObject(object, PlayBoard.getSardaukarCommanderPark(color))
+                        end
+                    elseif Types.isAgentUnit(object, color) then
+                        Park.putObject(object, PlayBoard.getAgentPark(color))
                     end
                 end
             end
@@ -328,6 +342,7 @@ function Combat._createGarrisonPark(color, position)
         nil,
         false,
         true)
+    park.avoidStacking = true
 
     -- FIXME Hardcoded height, use an existing parent anchor.
     Helper.createTransientAnchor("Garrison anchor", Vector(position.x, 0.6, position.z)).doAfter(function (anchor)
@@ -377,7 +392,7 @@ function Combat._createBattlegroundPark(position)
     Combat.combatCenterZone = Helper.markAsTransient(spawnObject({
         type = 'ScriptingTrigger',
         position = position,
-        scale = Vector(6.6, 1, 5),
+        scale = Vector(6.6, 3, 5), -- The height at 3 is to avoid oscillationg scores with the jumping sandworms.
     }))
 
     local park = Park.createPark(
@@ -385,11 +400,12 @@ function Combat._createBattlegroundPark(position)
         slots,
         nil,
         { Combat.combatCenterZone },
-        { "Troop", "Dreadnought", "Sandworm" },
+        { "Troop", "Dreadnought", "Sandworm", "SardaukarCommander" },
         nil,
         false,
         true)
     park.tagUnion = true
+    park.avoidStacking = true
 
     return park
 end
@@ -519,12 +535,12 @@ function Combat.__calculateRanking(forces, activeColors)
 end
 
 ---
-function Combat.getUnitCounts()
+function Combat.getUnitCounts(filter)
     local unitCounts = {}
     for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
         unitCounts[color] = 0
         for _, object in ipairs(Combat.combatCenterZone.getObjects()) do
-            if Types.isUnit(object, color) then
+            if Types.isUnit(object, color) and (not filter or filter(object)) then
                 unitCounts[color] = unitCounts[color] + 1
             end
         end
@@ -552,6 +568,10 @@ function Combat.calculateCombatForce(color)
                 force = force + (Combat.dreadnoughtStrengths[color] or 3)
             elseif Types.isSandworm(object, color) then
                 force = force + 3
+            elseif Types.isSardaukarCommander(object, color) then
+                force = force + (PlayBoard.isRival(color) and 4 or 2)
+            elseif Types.isAgentUnit(object, color) then
+                force = force + (PlayBoard.hasSwordmaster(color) and 3 or 2)
             else
                 error("Unknown unit type: " .. object.getGUID())
             end
@@ -672,16 +692,28 @@ function Combat.gainVictoryPoint(color, name, count)
 end
 
 ---
-function Combat.gainObjective(color, objective)
+function Combat.gainObjective(color, initialObjective, ignoreExisting)
+    local objective = initialObjective
+    if initialObjective ~= "" and PlayBoard.hasTech(color, "ornithopterFleet") then
+        objective = "ornithopter"
+    end
+
     local continuation = Helper.createContinuation("Combat.gainObjective")
     local position = PlayBoard.getObjectiveStackPosition(color, objective)
-    local tag = Helper.toPascalCase(objective, "ObjectiveToken")
+    local tag = Helper.toPascalCase(initialObjective, "ObjectiveToken")
 
-    for _, object in ipairs(Combat.rewardTokenZone.getObjects()) do
-        if object.hasTag(tag) then
-            object.setPositionSmooth(position + Vector(0, 1, 0))
-            Helper.onceMotionless(object).doAfter(continuation.run)
-            return continuation
+    if not ignoreExisting then
+        for _, object in ipairs(Combat.rewardTokenZone.getObjects()) do
+            if object.hasTag(tag) then
+                if initialObjective == objective then
+                    object.setPositionSmooth(position + Vector(0, 1, 0))
+                    Helper.onceMotionless(object).doAfter(continuation.run)
+                    return continuation
+                else
+                    object.destruct()
+                    break
+                end
+            end
         end
     end
 
@@ -744,10 +776,21 @@ function Combat.callSandworm(color, count)
 end
 
 ---
-function Combat.hasSandworms(color)
+function Combat.hasAnySandworm(color)
     local battlegroundPark = Combat.getBattlegroundPark()
     for _, object in ipairs(Park.getObjects(battlegroundPark)) do
         if Types.isSandworm(object, color) then
+            return true
+        end
+    end
+    return false
+end
+
+---
+function Combat.hasAnySardaukarCommander(color)
+    local battlegroundPark = Combat.getBattlegroundPark()
+    for _, object in ipairs(Park.getObjects(battlegroundPark)) do
+        if Types.isSardaukarCommander(object, color) then
             return true
         end
     end

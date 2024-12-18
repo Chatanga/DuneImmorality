@@ -298,6 +298,7 @@ end
 
 function SubmitGame._currentTimestamp()
     -- Weird: osdateparam != string|osdate...
+---@diagnostic disable-next-line: param-type-mismatch
     return os.date("!%m/%d/%Y %H:%M:%S", os.time(os.date("!*t")))
 end
 

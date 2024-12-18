@@ -24,9 +24,7 @@ local research = CardEffect.research
 local beetle = CardEffect.beetle
 local influence = CardEffect.influence
 local vp = CardEffect.vp
-local draw = CardEffect.draw
 local shipment = CardEffect.shipment
-local control = CardEffect.control
 local spy = CardEffect.spy
 local contract = CardEffect.contract
 local voice = CardEffect.voice
@@ -45,15 +43,18 @@ local spacingGuildAlliance = CardEffect.spacingGuildAlliance
 local beneGesseritAlliance = CardEffect.beneGesseritAlliance
 local fremenAlliance = CardEffect.fremenAlliance
 local fremenFriendship = CardEffect.fremenFriendship
-local anyAlliance = CardEffect.anyAlliance
 local oneHelix = CardEffect.oneHelix
 local twoHelices = CardEffect.twoHelices
-local winner = CardEffect.winner
 local twoSpies = CardEffect.twoSpies
 local spyMakerSpace = CardEffect.spyMakerSpace
 local swordmaster = CardEffect.swordmaster
+local hasSardaukarCommanderInConflict = CardEffect.hasSardaukarCommanderInConflict
+local command = CardEffect.command
+local garrisonQuad = CardEffect.garrisonQuad
+local twoTechs = CardEffect.twoTechs
 local multiply = CardEffect.multiply
 
+-- TODO Remove agentIcons.
 local ImperiumCard = {
     -- starter: base
     duneTheDesertPlanet = {agentIcons = {'yellow'}, reveal = {persuasion(1)}, starter = true },
@@ -274,6 +275,34 @@ local ImperiumCard = {
     muadDibUsul = {factions = {'fremen'}, agentIcons = {'blue'}, reveal = {persuasion(2)}},
     muadDibThreatenSpiceProduction = {agentIcons = {'yellow'}, reveal = {persuasion(1)}},
     muadDibSignetRing = {agentIcons = {'green', 'blue', 'yellow'}, reveal = {persuasion(1)}},
+    -- bloodlines
+    bombast = {factions = {'emperor'}, agentIcons = {'green'}, cost = 1, reveal = {persuasion(1), solari(command(3))}}, -- TODO command => trash
+    sandwalk = {factions = {'fremen'}, agentIcons = {'yellow'}, cost = 1, reveal = {persuasion(1), sword(1), persuasion(fremenBond(1))}},
+    disruptionTactics = {factions = {'fremen'}, agentIcons = {'fremen', 'yellow'}, cost = 2, reveal = {persuasion(1), 'trash --> combat(true)'}},
+    urgentShigawire = {factions = {'beneGesserit'}, agentIcons = {'beneGesserit', 'blue'}, cost = 2, reveal = {persuasion(1)}},
+    commandCenter = {factions = {'emperor'}, agentIcons = {'emperor', 'blue'}, cost = 3, reveal = {persuasion(1), 'retreat(2) --> persuasion(2)'}},
+    engineeredMiracle = {factions = {'beneGesserit'}, agentIcons = {'fremen', 'yellow'}, cost = 3, reveal = {persuasion(1), 'command --> (trash --> acquire card)'}},
+    iBelieve = {factions = {'fremen'}, agentIcons = {'fremen', 'blue'}, cost = 3, reveal = {persuasion(1), troop(command(2))}},
+    litanyAgainstFear = {factions = {'beneGesserit'}, cost = 3, reveal = {persuasion(2)}},
+    eliteForces = {factions = {'emperor', 'spacingGuild'}, agentIcons = {'emperor', 'spacingGuild'}, cost = 3, reveal = {persuasion(1), sword(1)}},
+    fremenWarName = {factions = {'fremen'}, agentIcons = {'fremen', 'yellow'}, cost = 4, reveal = {persuasion(2), sword(fremenBond(2))}},
+    sardaukarStandard = {factions = {'emperor'}, agentIcons = {'emperor', 'blue'}, cost = 4, reveal = {persuasion(2), troop(2)}},
+    quashRebellion = {factions = {'emperor'}, agentIcons = {'emperor', 'spacingGuild', 'green'}, cost = 5, reveal = {sword(2), persuasion(hasSardaukarCommanderInConflict(2))}},
+    southernFaith = {factions = {'beneGesserit', 'fremen'}, agentIcons = {'fremen', 'blue'}, cost = 5, reveal = {persuasion(1), sword(2), spice(command(1))}},
+    imperialThroneship = {factions = {'emperor'}, agentIcons = {'emperor', 'spacingGuild', 'beneGesserit', 'fremen', 'green', 'blue', 'yellow'}, cost = 7, acquireBonus = {influence(1, 'emperor')}, reveal = {persuasion(2), persuasion(garrisonQuad(1)), solari(garrisonQuad(3))}},
+    possibleFutures = {factions = {'beneGesserit', 'fremen'}, agentIcons = {'green', 'blue', 'yellow'}, cost = 8, acquireBonus = {water(1)}, reveal = {persuasion(2), water(1)}},
+    arrakisObserver = {factions = {'spacingGuild'}, agentIcons = {'blue', 'yellow'}, cost = 3, reveal = {persuasion(1), 'spy ---> sword(3)'}},
+    eliminateAllies = {factions = {'emperor'}, agentIcons = {'spy'}, cost = 2, reveal = {persuasion(1), sword(1)}},
+    holyWar = {factions = {'fremen'}, agentIcons = {'emperor', 'spacingGuild', 'beneGesserit', 'green'}, cost = 5, reveal = {persuasion(1), troop(1), 'combat(fremenBond(true))'}},
+    intelligenceTraining = {factions = {'emperor'}, agentIcons = {'blue', 'green'}, cost = 2, acquireBonus = {spy(1)}, reveal = {persuasion(1), sword(1), spy(command(1))}},
+    pointingTheWay = {factions = {'fremen'}, agentIcons = {'fremen', 'blue', 'yellow'}, cost = 6, reveal = {persuasion(1), sword(2), influence(command(1))}},
+    shroudedCounsel = {factions = {'beneGesserit'}, agentIcons = {'spy'}, cost = 4, reveal = {persuasion(1), trash(command(1))}},
+    ruthlessLeadership = {factions = {'emperor'}, agentIcons = {'blue', 'yellow'}, cost = 4, reveal = {persuasion(1), sword(1), 'combat(command(true))'}},
+    deliveryLogistics = {factions = {'spacingGuild'}, cost = 2, reveal = {choice(1, {persuasion(1), contract(1)})}},
+    corruptBureaucrat = {factions = {'spacingGuild'}, cost = 4, agentIcons = {'spacingGuild', 'green', 'spy'}, reveal = {persuasion(2)}},
+    mercantileAffairs = {factions = {'beneGesserit'}, cost = 5, acquireBonus = {contract(1)}, agentIcons = {'beneGesserit', 'blue', 'yellow', 'spy'}, reveal = {persuasion(2)}},
+    choamDemands = {factions = {'spacingGuild'}, cost = 6, agentIcons = {'green', 'blue', 'yellow'}, reveal = {'4+ completed contracts --> (trash ---> for each faction f, influence(1, f))'}},
+    ixianAmbassador = {factions = {'spacingGuild'}, cost = 4, reveal = {persuasion(1), influence(twoTechs(1))}},
 }
 
 function ImperiumCard._resolveCard(card)
@@ -294,19 +323,19 @@ function ImperiumCard._resolveCard(card)
     end
 end
 
-function ImperiumCard.evaluateReveal(color, playedCards, revealedCards, artillery)
-    return ImperiumCard.evaluateReveal2(
+function ImperiumCard.evaluateReveal(color, playedCards, revealedCards)
+    return ImperiumCard.evaluateRevealDirectly(
+        1,
         color,
         Helper.mapValues(playedCards, ImperiumCard._resolveCard),
-        Helper.mapValues(revealedCards, ImperiumCard._resolveCard),
-        artillery)
+        Helper.mapValues(revealedCards, ImperiumCard._resolveCard))
 end
 
--- TODO Rework this!
-function ImperiumCard.evaluateReveal2(color, playedCards, revealedCards, artillery)
+function ImperiumCard.evaluateRevealDirectly(depth, color, playedCards, revealedCards)
     local result = {}
 
     local context = {
+        depth = depth,
         color = color,
         playedCards = playedCards,
         revealedCards = revealedCards,
@@ -336,7 +365,7 @@ function ImperiumCard.evaluateReveal2(color, playedCards, revealedCards, artille
         }
     }
 
-    for cardName, card in ipairs(context.revealedCards) do
+    for cardName, card in pairs(context.revealedCards) do
         if card.reveal then
             context.card = card
             context.cardName = cardName
@@ -344,11 +373,6 @@ function ImperiumCard.evaluateReveal2(color, playedCards, revealedCards, artille
                 CardEffect.evaluate(context, effect)
             end
         end
-    end
-
-    if artillery then
-        context.card = nil
-        sword(perSwordCard(1))(context)
     end
 
     return result

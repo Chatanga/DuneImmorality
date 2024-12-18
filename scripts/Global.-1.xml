@@ -44,16 +44,16 @@ be integrated to this mod in a standard way.
 
 			<HorizontalLayout>
 				<Text class="primary" key="leaderSelection"/>
-				<Dropdown class="setUp" id="leaderSelection" flexibleWidth="4" onValueChanged="Global/setLeaderSelection">
+				<Dropdown class="setUp" id="leaderSelection" flexibleWidth="4" onValueChanged="Global/setAnyField">
 					<Option></Option>
 				</Dropdown>
 			</HorizontalLayout>
 			<VerticalLayout padding="25 0 0 0">
 				<HorizontalLayout>
 					<Text class="secondary" id="leaderPoolSizeLabel"/>
-					<Slider id="leaderPoolSize" flexibleWidth="2" onValueChanged="setLeaderPoolSize" wholeNumbers="True" minValue="6" maxValue="12" value="8"/>
+					<Slider id="leaderPoolSize" flexibleWidth="2" onValueChanged="Global/setLeaderPoolSize" wholeNumbers="True" minValue="6" maxValue="12" value="8"/>
 				</HorizontalLayout>
-				<Toggle class="setUp" id="tweakLeaderSelection" onValueChanged="Global/setTweakLeaderSelection" isOn="False" key="tweakLeaderSelection"/>
+				<Toggle class="setUp" id="tweakLeaderSelection" onValueChanged="Global/setAnyField" isOn="False" key="tweakLeaderSelection"/>
 			</VerticalLayout>
 
 			<HorizontalLayout>
@@ -62,11 +62,11 @@ be integrated to this mod in a standard way.
 			<VerticalLayout padding="25 0 0 0">
 				<HorizontalLayout minHeight="22">
 					<Text class="secondary" key="firstPlayer"/>
-					<Dropdown class="setUp" id="firstPlayer" onValueChanged="Global/setFirstPlayer" flexibleWidth="3" active="True">
+					<Dropdown class="setUp" id="firstPlayer" onValueChanged="Global/setAnyField" flexibleWidth="3" active="True">
 						<Option></Option>
 					</Dropdown>
 				</HorizontalLayout>
-				<Toggle class="setUp" id="randomizePlayerPositions" onValueChanged="Global/setRandomizePlayerPositions" isOn="True" key="randomizePlayersPositions" tooltipKey="randomizePlayersPositionTooltip"/>
+				<Toggle class="setUp" id="randomizePlayerPositions" onValueChanged="Global/setAnyField" isOn="True" key="randomizePlayersPositions" tooltipKey="randomizePlayersPositionTooltip"/>
 				<HorizontalLayout minHeight="22">
 					<Toggle class="setUp" id="virtualHotSeat" onValueChanged="Global/setVirtualHotSeat" isOn="False" key="virtualHotSeat" tooltipKey="virtualHotSeatTooltip"/>
 					<Dropdown class="setUp" id="virtualHotSeatMode" onValueChanged="Global/setVirtualHotSeatMode" flexibleWidth="2.5">
@@ -79,9 +79,9 @@ be integrated to this mod in a standard way.
 				<Text class="primary" key="miscellanous"/>
 			</HorizontalLayout>
 			<VerticalLayout padding="25 0 0 0">
-				<Toggle class="setUp" id="horizontalHandLayout" onValueChanged="Global/setHorizontalHandLayout" isOn="True" key="horizontalHandLayout"/>
-				<Toggle class="setUp" id="formalCombatPhase" onValueChanged="Global/setFormalCombatPhase" isOn="False" key="formalCombatPhase" tooltipKey="formalCombatPhaseTooltip"/>
-				<Toggle class="setUp" id="soundEnabled" onValueChanged="Global/setSoundEnabled" isOn="True" key="soundEnabled"/>
+				<Toggle class="setUp" id="horizontalHandLayout" onValueChanged="Global/setAnyField" isOn="True" key="horizontalHandLayout"/>
+				<Toggle class="setUp" id="formalCombatPhase" onValueChanged="Global/setAnyField" isOn="False" key="formalCombatPhase" tooltipKey="formalCombatPhaseTooltip"/>
+				<Toggle class="setUp" id="soundEnabled" onValueChanged="Global/setAnyField" isOn="True" key="soundEnabled"/>
 			</VerticalLayout>
 
 			<HorizontalLayout>
@@ -89,7 +89,7 @@ be integrated to this mod in a standard way.
 			</HorizontalLayout>
 			<VerticalLayout padding="25 0 0 0">
 				<HorizontalLayout>
-					<Toggle class="setUp" id="submitGameRankedGame" onValueChanged="Global/submitGameRankedGame" isOn="False" key="submitGameRankedGame"/>
+					<Toggle class="setUp" id="submitGameRankedGame" onValueChanged="Global/setAnyField" isOn="False" key="submitGameRankedGame"/>
 				</HorizontalLayout>
 			</VerticalLayout>
 
@@ -114,14 +114,14 @@ be integrated to this mod in a standard way.
 
 			<Text class="primary" key="extensions"/>
 			<VerticalLayout padding="25 0 0 0">
-				<Toggle class="setUp" id="useContracts" onValueChanged="Global/setUseContracts" isOn="True" key="useContracts"/>
+				<Toggle class="setUp" id="useContracts" onValueChanged="Global/setAnyField" isOn="True" key="useContracts"/>
 				<Toggle class="setUp" id="legacy" isOn="True" onValueChanged="Global/setLegacy" key="legacy"/>
 				<VerticalLayout padding="25 0 0 0">
-					<Toggle class="setUp" id="merakon" isOn="False" onValueChanged="Global/setMerakon" key="merakon"/>
+					<Toggle class="setUp" id="merakon" isOn="False" onValueChanged="Global/setAnyField" key="merakon"/>
 				</VerticalLayout>
 				<Toggle class="setUp" id="riseOfIx" isOn="True" onValueChanged="Global/setRiseOfIx" key="riseOfIx"/>
 				<VerticalLayout padding="25 0 0 0">
-					<Toggle class="setUp" id="epicMode" isOn="False" onValueChanged="Global/setEpicMode" key="epicMode"/>
+					<Toggle class="setUp" id="epicMode" isOn="False" onValueChanged="Global/setAnyField" key="epicMode"/>
 				</VerticalLayout>
 				<Toggle class="setUp" id="immortality" isOn="True" onValueChanged="Global/setImmortality" key="immortality"/>
 				<VerticalLayout padding="25 0 0 0">
@@ -131,7 +131,7 @@ be integrated to this mod in a standard way.
 				<VerticalLayout padding="25 0 0 0">
 					<Toggle class="setUp" id="ixAmbassy" isOn="True" onValueChanged="Global/setIxAmbassy" key="ixAmbassy"/>
 					<VerticalLayout padding="25 0 0 0">
-						<Toggle class="setUp" id="ixAmbassyWithIx" isOn="False" onValueChanged="Global/setIxAmbassyWithIx" key="ixAmbassyWithIx"/>
+						<Toggle class="setUp" id="ixAmbassyWithIx" isOn="False" onValueChanged="Global/setAnyField" key="ixAmbassyWithIx"/>
 					</VerticalLayout>
 				</VerticalLayout>
 			</VerticalLayout>
@@ -154,12 +154,12 @@ be integrated to this mod in a standard way.
 				</Dropdown>
 			</HorizontalLayout>
 			<VerticalLayout padding="25 0 0 0">
-				<Toggle class="setUp" active="True" id="autoTurnInSolo" onValueChanged="Global/setAutoTurnInSolo" isOn="True" key="autoTurnInSoloOption"/>
-				<Toggle class="setUp" active="True" id="imperiumRowChurn" onValueChanged="Global/setImperiumRowChurn" isOn="True" key="imperiumRowChurnOption"/>
-				<Toggle class="setUp" active="True" id="streamlinedRivals" onValueChanged="Global/setStreamlinedRivals" isOn="True" key="streamlinedRivalsOption"/>
-				<Toggle class="setUp" active="True" id="brutalEscalation" onValueChanged="Global/setBrutalEscalation" isOn="True" key="brutalEscalationOption"/>
-				<Toggle class="setUp" active="True" id="expertDeployment" onValueChanged="Global/setExpertDeployment" isOn="True" key="expertDeploymentOption"/>
-				<Toggle class="setUp" active="True" id="smartPolitics" onValueChanged="Global/setSmartPolitics" isOn="True" key="smartPoliticsOption"/>
+				<Toggle class="setUp" active="True" id="autoTurnInSolo" onValueChanged="Global/setAnyField" isOn="True" key="autoTurnInSoloOption"/>
+				<Toggle class="setUp" active="True" id="imperiumRowChurn" onValueChanged="Global/setAnyField" isOn="True" key="imperiumRowChurnOption"/>
+				<Toggle class="setUp" active="True" id="streamlinedRivals" onValueChanged="Global/setAnyField" isOn="True" key="streamlinedRivalsOption"/>
+				<Toggle class="setUp" active="True" id="brutalEscalation" onValueChanged="Global/setAnyField" isOn="True" key="brutalEscalationOption"/>
+				<Toggle class="setUp" active="True" id="expertDeployment" onValueChanged="Global/setAnyField" isOn="True" key="expertDeploymentOption"/>
+				<Toggle class="setUp" active="True" id="smartPolitics" onValueChanged="Global/setAnyField" isOn="True" key="smartPoliticsOption"/>
 			</VerticalLayout>
 
 		</VerticalLayout>

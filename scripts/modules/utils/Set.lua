@@ -2,6 +2,10 @@ local Helper = require("utils.Helper")
 
 local Set = Helper.createClass()
 
+function Set.empty()
+    return Set.newFromList({})
+end
+
 function Set.newFromItems(...)
     local data = {
         elements = {}

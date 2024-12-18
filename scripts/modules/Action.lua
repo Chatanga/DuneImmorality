@@ -19,6 +19,7 @@ local ScoreBoard = Module.lazyRequire("ScoreBoard")
 local ThroneRow = Module.lazyRequire("ThroneRow")
 local ChoamContractMarket = Module.lazyRequire("ChoamContractMarket")
 local TurnControl = Module.lazyRequire("TurnControl")
+local SardaukarCommander = Module.lazyRequire("SardaukarCommander")
 
 local Action = Helper.createClass(nil, {
     context = {}
@@ -116,7 +117,7 @@ end
 
 ---
 function Action.setContext(key, value)
-    if key == "agentSent" and Action.troopTransferCoalescentQueue then
+    if key == "agentDestination" and Action.troopTransferCoalescentQueue then
         Action.flushTroopTransfer()
     end
     Action.context[key] = value
@@ -136,7 +137,7 @@ function Action.log(message, color, isSecret)
         { name = "schemeTriggered", print = function (_)
             return I18N("triggeringScheme")
         end },
-        { name = "agentSent", print = function (value)
+        { name = "agentDestination", print = function (value)
             local cards = ""
             for i, card in pairs(value.cards or {}) do
                 if i > 1 then
@@ -189,10 +190,10 @@ function Action.sendAgent(color, spaceName, recallSpy)
 end
 
 ---
-function Action.sendSpy(color, observationPostName)
+function Action.sendSpy(color, observationPostName, deepCover)
     if observationPostName then
         Action.context.observationPost = observationPostName
-        return MainBoard.sendSpy(color, observationPostName)
+        return MainBoard.sendSpy(color, observationPostName, deepCover)
     else
         return false
     end
@@ -239,19 +240,21 @@ end
 
 ---@param color PlayerColor
 ---@param resourceName ResourceName
----@param amount integer
+---@param initialAmount integer
 ---@return boolean
-function Action.resources(color, resourceName, amount)
+function Action.resources(color, resourceName, initialAmount)
     Types.assertIsPlayerColor(color)
     Types.assertIsResourceName(resourceName)
-    Types.assertIsInteger(amount)
+    Types.assertIsInteger(initialAmount)
+
+    local amount = -Action.bargain(color, resourceName, -initialAmount)
 
     local resource = PlayBoard.getResource(color, resourceName)
     if resource:get() >= -amount then
         if amount ~= 0 then
             resource:change(amount)
             Action.log(I18N(amount > 0 and "credit" or "debit", {
-                what = I18N.agree(math.abs(amount), resourceName),
+                what = I18N.agree(amount, resourceName),
                 amount = math.abs(amount),
             }), color)
         end
@@ -270,7 +273,14 @@ function Action.bargain(color, resourceName, amount)
     Types.assertIsResourceName(resourceName)
     Types.assertIsInteger(amount)
 
-    return amount
+    local finalAmount = amount
+    if Helper.isElementOf(resourceName, {"spice", "solari"})
+        and PlayBoard.hasTech(color, "navigationChamber")
+        and amount > 0
+        and Action.checkContext({ phase = "playerTurns", color = color, agentDestination = Helper.isNotNil }) then
+        finalAmount = amount - 1
+    end
+    return finalAmount
 end
 
 ---
@@ -324,6 +334,8 @@ function Action.troops(color, from, to, baseCount)
     Types.assertIsTroopLocation(to)
     Types.assertIsInteger(baseCount)
     local count = Park.transfert(baseCount, Action.getTroopPark(color, from), Action.getTroopPark(color, to))
+    assert(count)
+    assert(type(count) == "number")
 
     if not Action.troopTransferCoalescentQueue then
 
@@ -434,6 +446,41 @@ end
 function Action.acquireThroneCard(color, indexInRow)
     Types.assertIsPlayerColor(color)
     return ThroneRow.acquireThroneCard(color, indexInRow)
+end
+
+---
+function Action.acquireSardaukarCommanderSkillCard(color, indexInRow)
+    Types.assertIsPlayerColor(color)
+    Types.assertIsInRange(1, 4, indexInRow)
+    if SardaukarCommander.acquireSardaukarCommanderSkillCard(indexInRow, color) then
+        Action.log(I18N("acquireSardaukarCommanderSkillCard"), color)
+        return true
+    else
+        return false
+    end
+end
+
+---
+function Action.discardSardaukarCommander(color, origin)
+    Types.assertIsPlayerColor(color)
+    return SardaukarCommander.discardSardaukarCommander(color, origin)
+end
+
+---
+function Action.recruitSardaukarCommander(color, origin)
+    Types.assertIsPlayerColor(color)
+    if origin then
+        if SardaukarCommander.recruitSardaukarCommander(color, origin) then
+            Action.log(I18N("recruitNewSardaukarCommander"), color)
+            return true
+        end
+    else
+        if PlayBoard.recruitSardaukarCommander(color) then
+            Action.log(I18N("recruitOwnSardaukarCommander"), color)
+            return true
+        end
+    end
+    return false
 end
 
 ---
@@ -586,9 +633,9 @@ function Action.gainVictoryPoint(color, name, count)
 end
 
 ---
-function Action.gainObjective(color, objective)
+function Action.gainObjective(color, objective, ignoreExisting)
     Types.assertIsPlayerColor(color)
-    return PlayBoard.gainObjective(color, objective)
+    return PlayBoard.gainObjective(color, objective, ignoreExisting)
 end
 
 ---

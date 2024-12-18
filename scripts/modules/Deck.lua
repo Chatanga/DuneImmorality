@@ -23,6 +23,8 @@ local Deck = {
         hagalCardBack = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141333724/26E28590801800D852F4BCA53E959AAFAAFC8FF3/",
         leaderCardBack = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141277039/005244DAC0A29EE68CFF741FC06564969563E8CF/",
         rivalLeaderCardBack = "https://steamusercontent-a.akamaihd.net/ugc/2291837013341174770/EB5ECE9F5373F0B132E93CD5825B89E7F023E9A2/",
+        navigationCardBack = "https://steamusercontent-a.akamaihd.net/ugc/28804925896498608/262562E5EF6A7212D473EE6146138B2F7FF67766/",
+        sardaukarCommanderSkillCardBack = "https://steamusercontent-a.akamaihd.net/ugc/28804925903402648/D6F4D1655CF23A2010A6FE1369599F2C47A2AB21/",
     },
     sources = {},
     starter = {
@@ -256,6 +258,7 @@ local Deck = {
             intelligenceTraining = 2,
             pointingTheWay = 1,
             shroudedCounsel = 1,
+            ruthlessLeadership = 1,
         },
         bloodlinesContract = {
             deliveryLogistics = 2,
@@ -578,7 +581,6 @@ local Deck = {
                 haggaBasinAndImperialBasin = 4,
                 deepDesert = 2,
             },
-            solo = {},
             twoPlayers = {
                 reshuffle = 1,
             }
@@ -612,8 +614,17 @@ local Deck = {
                 tleilaxuBonus2 = 1, -- ex Carthag
                 tleilaxuBonus3 = 1, -- ex Carthag
             },
-            twoPlayers = {}
-        }
+        },
+        bloodlines = {
+            common = {
+                tuekSietch = 2,
+            },
+        },
+        ixAmbassy = {
+            solo = {
+                acquireTech = 4,
+            },
+        },
     },
     tech = {
         ix = {
@@ -636,6 +647,28 @@ local Deck = {
             holtzmanEngine = 1,
             invasionShips = 1,
         },
+        bloodlines = {
+            trainingDepot = 1,
+            geneLockedVault = 1,
+            glowglobes = 1,
+            planetaryArray = 1,
+            servoReceivers = 1,
+            deliveryBay = 1,
+            plasteelBlades = 1,
+            suspensorSuits = 1,
+            rapidDropships = 1,
+            selfDestroyingMessages = 1,
+            navigationChamber = 1,
+            sardaukarHighCommand = 1,
+            forbiddenWeapons = 1,
+            advancedDataAnalysis = 1,
+            ornithopterFleet = 1,
+            panopticon = 1,
+            spyDrones = 1,
+        },
+        bloodlinesTech = {
+            choamTransports = 1,
+        }
     },
     leaders = {
         legacy = {
@@ -741,6 +774,14 @@ local Deck = {
             feydRauthaHarkonnen = 1,
             muadDib = 1,
         },
+        bloodlines = {
+            duncanIdaho = 1,
+            piterDeVries = 1,
+            chani = 1,
+            hasimirFenring = 1,
+            gaiusHelenMohiam = 1,
+            kotaOdax = 1,
+        }
     },
     navigation = {
         bloodlines = {
@@ -756,7 +797,7 @@ local Deck = {
             spyOrIntrigueAndSpiceIfSpy = 1,
         }
     },
-    sardaukar = {
+    sardaukarCommanderSkills = {
         bloodlines = {
             charismatic = 2,
             desperate = 2,
@@ -821,6 +862,8 @@ function Deck.rebuildPreloadAreas()
             Deck._prebuildHagalDeck(getNextPosition())
             Deck._prebuildLeaderDeck(getNextPosition())
             Deck._prebuildRivalLeaderDeck(getNextPosition())
+            Deck._prebuildNavigationDeck(getNextPosition())
+            Deck._prebuildSardaukarCommanderSkillDeck(getNextPosition())
         end
     end)
 end
@@ -986,27 +1029,46 @@ function Deck.generateIntrigueDeck(deckZone, contracts, ix, immortality, legacy,
 end
 
 ---
-function Deck.generateTechDeck(deckZones)
+function Deck.generateTwistedIntrigueDeck(deckZone)
+    assert(deckZone)
+    assert(deckZone.getPosition)
+    local continuation = Helper.createContinuation("Deck.generateTwistedIntrigueDeck")
+    Deck._generateDeck("Intrigue", deckZone, Deck.intrigue.bloodlinesTwisted, Deck.sources.intrigue).doAfter(continuation.run)
+    return continuation
+end
+
+---
+function Deck.generateTechDeck(deckZones, contracts, ix, bloodlines)
     assert(deckZones)
     assert(#deckZones == 3)
     local continuation = Helper.createContinuation("Deck.generateTechDeck")
 
-    local keys = Helper.getKeys(Deck.tech.ix)
+    local keys = {}
+    if ix then
+        keys = Helper.concatTables(keys, Helper.getKeys(Deck.tech.ix))
+    end
+    if bloodlines then
+        keys = Helper.concatTables(keys, Helper.getKeys(Deck.tech.bloodlines))
+        if contracts then
+            keys = Helper.concatTables(keys, Helper.getKeys(Deck.tech.bloodlinesTech))
+        end
+    end
     Helper.shuffle(keys)
 
     local decks = {}
 
     local remaining = 0
+    local stackSize = math.ceil(#keys / 3)
     for i = 1, 3 do
         remaining = remaining + 1
-        local part = {}
-        for j = (i - 1) * 6 + 1, i * 6 do
-            part[keys[j]] = Deck.tech.ix[keys[j]]
+        local contributions = {}
+        for j = (i - 1) * stackSize + 1, math.min(#keys, i * stackSize) do
+            contributions[keys[j]] = 1
         end
-        local zone = deckZones[i]
-        Deck._generateDeck("Tech", zone, part, Deck.sources.tech).doAfter(function (deck)
-            local above = zone.getPosition() + Vector(0, 1, 0)
-            Helper.moveCardFromZone(zone, above, nil, true, true)
+        local deckZone = deckZones[i]
+        Deck._generateDeck("Tech", deckZone, contributions, Deck.sources.tech).doAfter(function (deck)
+            local above = deckZone.getPosition() + Vector(0, 1, 0)
+            Helper.moveCardFromZone(deckZone, above, nil, true, true)
             table.insert(decks, deck)
             remaining = remaining - 1
             if remaining == 0 then
@@ -1019,7 +1081,7 @@ function Deck.generateTechDeck(deckZones)
 end
 
 --
-function Deck.generateConflictDeck(deckZone, ix, epic, playerCount)
+function Deck.generateConflictDeck(deckZone, ix, epic, bloodlines, playerCount)
     assert(deckZone)
     assert(deckZone.getPosition)
     local continuation = Helper.createContinuation("Deck.generateConflictDeck")
@@ -1037,7 +1099,7 @@ function Deck.generateConflictDeck(deckZone, ix, epic, playerCount)
     for level = 3, 1, -1 do
         local cardCount = cardCounts[level]
         if cardCount > 0 then
-            local levelContributions = Deck._mergeStandardContributionSets(Deck.conflict["level" .. tostring(level)], ix and epic and level == 3, false)
+            local levelContributions = Deck._mergeStandardContributionSets(Deck.conflict["level" .. tostring(level)], ix and epic and level == 3, false, false, false, bloodlines)
             local cardNames = Helper.getKeys(levelContributions)
             assert(#cardNames >= cardCount, "Not enough level " .. tostring(level) .. " conflict cards!")
             Helper.shuffle(cardNames)
@@ -1053,10 +1115,12 @@ function Deck.generateConflictDeck(deckZone, ix, epic, playerCount)
 end
 
 ---
-function Deck.generateHagalDeck(deckZone, ix, immortality, playerCount)
+function Deck.generateHagalDeck(deckZone, ix, immortality, bloodlines, ixAmbassy, playerCount)
     assert(deckZone)
     assert(deckZone.getPosition)
     assert(not playerCount or playerCount == 1 or playerCount == 2)
+    assert(not ixAmbassy or bloodlines)
+    assert(not (ix and ixAmbassy))
     local continuation = Helper.createContinuation("Deck.generateHagalDeck")
 
     local contributionSetNames = { "base" }
@@ -1066,19 +1130,30 @@ function Deck.generateHagalDeck(deckZone, ix, immortality, playerCount)
     if immortality then
         table.insert(contributionSetNames, "immortality")
     end
+    if bloodlines then
+        table.insert(contributionSetNames, "bloodlines")
+    end
+    if ixAmbassy then
+        table.insert(contributionSetNames, "ixAmbassy")
+    end
 
     local contributionSets = {}
     for _, contributionSetName in ipairs(contributionSetNames) do
         local root = Deck.hagal[contributionSetName]
-        table.insert(contributionSets, root.common)
+        table.insert(contributionSets, root.common or {})
         if not playerCount or playerCount == 1 then
-            table.insert(contributionSets, root.solo)
+            table.insert(contributionSets, root.solo or {})
         elseif not playerCount or playerCount == 2 then
-            table.insert(contributionSets, root.twoPlayers)
+            table.insert(contributionSets, root.twoPlayers or {})
         end
     end
 
     local contributions = Deck._mergeContributionSets(contributionSets)
+
+    if ix or not ixAmbassy then
+        contributions.acquireTech = nil
+    end
+
     Deck._generateDeck("Hagal", deckZone, contributions, Deck.sources.hagal).doAfter(continuation.run)
     return continuation
 end
@@ -1088,7 +1163,7 @@ function Deck.generateLeaderDeck(deckZone, contracts, ix, immortality, legacy, m
     assert(deckZone)
     assert(deckZone.getPosition)
     local continuation = Helper.createContinuation("Deck.generateLeaderDeck")
-    local contributions = Deck._mergeStandardContributionSets(Deck.leaders, ix, immortality, legacy, merakon, free, bloodlines)
+    local contributions = Deck._mergeStandardContributionSets(Deck.leaders, ix, immortality, legacy, merakon, bloodlines, free)
     contributions = Helper.mapValues(contributions, function (cardinality)
         return math.min(cardinality, 1)
     end)
@@ -1103,23 +1178,46 @@ function Deck.generateLeaderDeck(deckZone, contracts, ix, immortality, legacy, m
 end
 
 ---
-function Deck.generateRivalLeaderDeck(deckZone, streamlined, ix, immortality, legacy)
+function Deck.generateRivalLeaderDeck(deckZone, streamlined, contracts, ix, immortality, legacy, merakon, bloodlines, ixAmbassy, playerCount)
     assert(deckZone)
     assert(deckZone.getPosition)
     local continuation = Helper.createContinuation("Deck.generateRivalLeaderDeck")
-    local contributions = Deck._mergeStandardContributionSets(Deck.rivalLeaders, ix, immortality, legacy)
+    local contributions = Deck._mergeStandardContributionSets(Deck.rivalLeaders, ix, immortality, legacy, merakon, bloodlines)
     for rival, _ in pairs(contributions) do
         local streamlinedRival = Helper.isElementOf(rival, { "amberMetulli", "glossuRabban" })
         if (streamlined == true) ~= streamlinedRival then
             contributions[rival] = nil
         end
     end
+    if playerCount > 1 or (not ix and not ixAmbassy) then
+        contributions.kotaOdax = nil
+    end
     Deck._generateDeck("RivalLeader", deckZone, contributions, Deck.sources.rivalLeaders).doAfter(continuation.run)
     return continuation
 end
 
 ---
-function Deck._mergeStandardContributionSets(root, ix, immortality, legacy, merakon, free, bloodlines)
+function Deck.generateNavigationDeck(deckZone)
+    assert(deckZone)
+    assert(deckZone.getPosition)
+    local continuation = Helper.createContinuation("Deck.generateNavigationDeck")
+    local contributions = Deck._mergeStandardContributionSets(Deck.navigation, false, false, false, false, true)
+    Deck._generateDeck("Navigation", deckZone, contributions, Deck.sources.navigation).doAfter(continuation.run)
+    return continuation
+end
+
+---
+function Deck.generateSardaukarCommanderSkillDeck(deckZone)
+    assert(deckZone)
+    assert(deckZone.getPosition)
+    local continuation = Helper.createContinuation("Deck.generateSardaukarCommanderSkillDeck")
+    local contributions = Deck._mergeStandardContributionSets(Deck.sardaukarCommanderSkills, false, false, false, false, true)
+    Deck._generateDeck("SardaukarCommanderSkill", deckZone, contributions, Deck.sources.sardaukarCommanderSkills).doAfter(continuation.run)
+    return continuation
+end
+
+---
+function Deck._mergeStandardContributionSets(root, ix, immortality, legacy, merakon, bloodlines, free)
     local contributionSets = { root.uprising }
     if merakon then
         table.insert(contributionSets, root.merakon)
@@ -1458,6 +1556,10 @@ function Deck._prebuildIntrigueDeck(deckPosition)
         Deck.intrigue.immortality,
         Deck.intrigue.uprising,
         Deck.intrigue.uprisingContract,
+        Deck.intrigue.bloodlines,
+        Deck.intrigue.bloodlinesContract,
+        Deck.intrigue.bloodlinesTech,
+        Deck.intrigue.bloodlinesTwisted,
     }
     local contributions = Deck._mergeContributionSets(contributionSets, true)
     Deck._generateDynamicDeckWithTwoBackCards("Intrigue", deckPosition, contributions, Deck.sources.intrigue)
@@ -1465,14 +1567,20 @@ end
 
 ---
 function Deck._prebuildTechDeck(deckPosition)
-    Deck._generateDynamicDeckWithTwoBackCards("Tech", deckPosition, Deck.tech.ix, Deck.sources.tech)
+    local contributionSets = {
+        Deck.tech.ix,
+        Deck.tech.bloodlines,
+        Deck.tech.bloodlinesTech,
+    }
+    local contributions = Deck._mergeContributionSets(contributionSets, true)
+    Deck._generateDynamicDeckWithTwoBackCards("Tech", deckPosition, contributions, Deck.sources.tech)
 end
 
 --
 function Deck._prebuildConflictDeck(deckPosition)
     local contributionSets = {}
     for i = 1, 3 do
-        for _, extension in ipairs({ "uprising", "ix", "immortality" }) do
+        for _, extension in ipairs({ "uprising", "ix", "immortality", "bloodlines" }) do
             local level = "level" .. tostring(i)
             local contributionSet = Deck.conflict[level][extension]
             if contributionSet then
@@ -1487,9 +1595,9 @@ end
 ---
 function Deck._prebuildHagalDeck(deckPosition)
     local contributionSets = {}
-    for _, extension in ipairs({ "base", "ix", "immortality" }) do
+    for _, extension in ipairs({ "base", "ix", "immortality", "bloodlines", "ixAmbassy" }) do
         for _, players in ipairs({ "common", "solo", "twoPlayers" }) do
-            table.insert(contributionSets, Deck.hagal[extension][players])
+            table.insert(contributionSets, Deck.hagal[extension][players] or {})
         end
     end
     local contributions = Deck._mergeContributionSets(contributionSets, true)
@@ -1513,9 +1621,28 @@ end
 function Deck._prebuildRivalLeaderDeck(deckPosition)
     local contributionSets = {
         Deck.rivalLeaders.uprising,
+        Deck.rivalLeaders.bloodlines,
     }
     local contributions = Deck._mergeContributionSets(contributionSets, true)
     Deck._generateDynamicDeckWithTwoBackCards("RivalLeader", deckPosition, contributions, Deck.sources.rivalLeaders)
+end
+
+---
+function Deck._prebuildNavigationDeck(deckPosition)
+    local contributionSets = {
+        Deck.navigation.bloodlines,
+    }
+    local contributions = Deck._mergeContributionSets(contributionSets, true)
+    Deck._generateDynamicDeckWithTwoBackCards("Navigation", deckPosition, contributions, Deck.sources.navigation)
+end
+
+---
+function Deck._prebuildSardaukarCommanderSkillDeck(deckPosition)
+    local contributionSets = {
+        Deck.sardaukarCommanderSkills.bloodlines,
+    }
+    local contributions = Deck._mergeContributionSets(contributionSets, true)
+    Deck._generateDynamicDeckWithTwoBackCards("SardaukarCommanderSkill", deckPosition, contributions, Deck.sources.sardaukarCommanderSkills)
 end
 
 ---
@@ -1526,6 +1653,7 @@ function Deck._generateFromPrebuildDeck(deckType, deckZone, contributions, _, sp
         -- Curiously, the problem doesn't exist for dynamic decks.
         "Trying to generate a static deck in an incompatibly tagged zone will trigger the dreaded 'Unknown Error'.")
     assert(contributions)
+    assert(#Helper.getKeys(contributions) > 0)
 
     local continuation = Helper.createContinuation("Deck._prebuildDeck")
 
@@ -1560,7 +1688,7 @@ function Deck._generateFromPrebuildDeck(deckType, deckZone, contributions, _, sp
             assert(source.deck, "Should not happen! Source deck is not properly generated.")
             source.deck.takeObject({
                 guid = firstGuid,
-                -- Stacking is needed to preserve input order.
+                -- Stacking is needed to preserve input order (but when it is needed?).
                 position = deckZone.getPosition() + Vector(0, 1 + cardCount * (spacing or 0.1), 0),
                 smooth = false,
                 callback_function = function (card)
@@ -1572,6 +1700,7 @@ function Deck._generateFromPrebuildDeck(deckType, deckZone, contributions, _, sp
             cardCount = cardCount + 1
         end
     end
+    assert(cardCount > 0)
 
     Wait.condition(function ()
         local deckOrCard = Helper.getDeckOrCard(deckZone)
@@ -1642,6 +1771,16 @@ function Deck.createRivalLeaderCustomDeck(faceUrl, width, height)
 end
 
 ---
+function Deck.createNavigationCustomDeck(faceUrl, width, height)
+    return Deck.createCustomDeck(Deck.backs.navigationCardBack, faceUrl, width, height, Vector(1.0, 1, 1.0))
+end
+
+---
+function Deck.createSardaukarCommanderSkillCustomDeck(faceUrl, width, height)
+    return Deck.createCustomDeck(Deck.backs.sardaukarCommanderSkillCardBack, faceUrl, width, height, Vector(0.75, 1, 0.75))
+end
+
+---
 function Deck.createCustomDeck(backUrl, faceUrl, width, height, scale)
     assert(backUrl)
     assert(faceUrl)
@@ -1658,6 +1797,18 @@ function Deck.createCustomDeck(backUrl, faceUrl, width, height, scale)
         Type = 0,
         __scale = scale
     }
+end
+
+---
+function Deck.getCardUrlByName(category, name)
+    local allSupports = {
+        en = require("en.Deck"),
+        fr = require("fr.Deck"),
+    }
+    local support = allSupports[I18N.getLocale()]
+    Deck.sources = support.loadCustomDecks(Deck)
+    local deck = Deck.sources[category]
+    return deck[name].customDeck.FaceURL
 end
 
 return Deck

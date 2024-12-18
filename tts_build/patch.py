@@ -27,9 +27,29 @@ def register_tags(object, component_tag_counts):
                 for tag in snap_point['Tags']:
                     register_tag("snappoint tag")
 
+def scan_play_board_snappoints(object):
+    play_boards = {
+        'd47b92': 'Red',
+        'f23836': 'Blue',
+        '2facfd': 'Green',
+        '13b6cb': 'Yellow',
+        '4ad196': 'White',
+        'dc05a6': 'Purple',
+    }
+
+    guid = object['GUID']
+    if guid in play_boards:
+        color = play_boards[guid]
+        if 'AttachedSnapPoints' in object:
+            for snap_point in object['AttachedSnapPoints']:
+                tags = snap_point['Tags']
+                transform = snap_point['Position']
+                print("%s -> %s at (%s, %s, %s)" % (color, tags, transform['x'], transform['y'], transform['z']))
+
 def patch_object(object, component_tag_counts):
     rectify_rotation(object)
     register_tags(object, component_tag_counts)
+    #scan_play_board_snappoints(object)
     object['LuaScript'] = ''
     object['LuaScriptState'] = ''
 

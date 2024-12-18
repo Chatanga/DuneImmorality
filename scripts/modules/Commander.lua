@@ -152,7 +152,6 @@ end
 
 ---
 function Commander.doSetUp(color, settings)
-    Helper.dumpFunction("Commander.doSetUp", color)
     local leader = Commander.leaders[color]
     assert(leader)
     leader.doSetUp(color, settings, true)
@@ -182,6 +181,11 @@ end
 ---
 function Commander.troops(color, from, to, amount)
     return Commander._forwardToActivatedAlly(color, "troops", from, to, amount)
+end
+
+---
+function Commander.recruitSardaukarCommander(color, origin)
+    return Commander._forwardToActivatedAlly(color, "recruitSardaukarCommander", origin)
 end
 
 ---

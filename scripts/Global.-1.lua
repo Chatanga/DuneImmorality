@@ -14,117 +14,14 @@
 -- Will be automatically replaced by the build timestamp.
 local BUILD = 'TBD'
 
-local MOD_NAME = 'Rakis Rising'
+local MOD_NAME = 'Rakis Rising + Bloodlines'
 
 -- Do not load anything. Appropriate to work on the mod content in TTS without
 -- interference from the scripts.
-local constructionModeEnabled = faalse
+local constructionModeEnabled = false
 
 -- For test purposes (the secondary table won't disappear as a side effect).
 local autoLoadedSettings = nil
-
---[[
-autoLoadedSettings = {
-    language = "fr",
-    numberOfPlayers = 6,
-    hotSeat = true,
-    firstPlayer = "random",
-    randomizePlayerPositions = false,
-    useContracts = true,
-    legacy = true,
-    merakon = false,
-    riseOfIx = false,
-    epicMode = false,
-    immortality = false,
-    goTo11 = false,
-    leaderSelection = {
-        Green = "jessica",
-        Yellow = "helenaRichese",
-        Red = "feydRauthaHarkonnen",
-        Blue = "irulanCorrino",
-        White = "muadDib",
-        Purple = "shaddamCorrino",
-    },
-    horizontalHandLayout = true,
-    soundEnabled = true,
-    submitGameRankedGame = false,
-}
-
-autoLoadedSettings = {
-    language = "en",
-    numberOfPlayers = 4,
-    hotSeat = true,
-    firstPlayer = "Green",
-    randomizePlayerPositions = false,
-    useContracts = true,
-    legacy = false,
-    merakon = false,
-    riseOfIx = false,
-    epicMode = false,
-    immortality = false,
-    goTo11 = false,
-    leaderSelection = {
-        Green = "jessica",
-        Yellow = "gurneyHalleck",
-        Red = "feydRauthaHarkonnen",
-        Blue = "irulanCorrino",
-    },
-    horizontalHandLayout = true,
-    soundEnabled = true,
-    submitGameRankedGame = true,
-}
-
-autoLoadedSettings = {
-    language = "fr",
-    numberOfPlayers = 1,
-    hotSeat = true,
-    autoTurnInSolo = false,
-    firstPlayer = "Green",
-    randomizePlayerPositions = false,
-    difficulty = "expert",
-    streamlinedRivals = false,
-    useContracts = true,
-    legacy = false,
-    merakon = false,
-    riseOfIx = false,
-    epicMode = false,
-    immortality = false,
-    goTo11 = false,
-    leaderSelection = {
-        Green = "jessica",
-        Yellow = "feydRauthaHarkonnen",
-        Red = "stabanTuek",
-    },
-    horizontalHandLayout = true,
-    soundEnabled = true,
-    submitGameRankedGame = true,
-}
-
-autoLoadedSettings = {
-    language = "fr",
-    numberOfPlayers = 4,
-    hotSeat = true,
-    firstPlayer = "Green",
-    randomizePlayerPositions = false,
-    useContracts = true,
-    legacy = true,
-    merakon = false,
-    riseOfIx = true,
-    epicMode = true,
-    immortality = false,
-    goTo11 = false,
-    leaderSelection = {
-        Green = "helenaRichese",
-        Yellow = "vladimirHarkonnen",
-        Red = "hundroMoritani",
-        Blue = "ilesaEcaz",
-    },
-    horizontalHandLayout = true,
-    formalCombatPhase = true,
-    soundEnabled = true,
-    submitGameRankedGame = false,
-}
-]]
 
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
@@ -167,6 +64,8 @@ local allModules = Module.registerModules({
     Reserve = require("Reserve"),
     Resource = require("Resource"),
     Rival = require("Rival"),
+    SardaukarCommander = require("SardaukarCommander"),
+    SardaukarCommanderSkillCard = require("SardaukarCommanderSkillCard"),
     TechMarket = require("TechMarket"),
     TechCard = require("TechCard"),
     TleilaxuResearch = require("TleilaxuResearch"),
@@ -258,7 +157,7 @@ function onLoad(scriptState)
             allModules.PlayBoard.rebuild()
         end
         -- Regenerate the decks in the localized cached areas.
-        if true then
+        if false then
             allModules.Deck.rebuildPreloadAreas()
         end
         -- Regenerate the boards for each language.
@@ -317,6 +216,7 @@ function asyncOnLoad(scriptState)
         { name = "Intrigue", module = allModules.Intrigue },
         { name = "ImperiumRow", module = allModules.ImperiumRow },
         { name = "Reserve", module = allModules.Reserve },
+        { name = "SardaukarCommander", module = allModules.SardaukarCommander },
         { name = "TleilaxuResearch", module = allModules.TleilaxuResearch },
         { name = "TleilaxuRow", module = allModules.TleilaxuRow },
         { name = "ThroneRow", module = allModules.ThroneRow },
@@ -427,6 +327,10 @@ end
 function setUp(newSettings)
     assert(newSettings)
 
+    assert((not newSettings.epicMode) or newSettings.ix)
+    assert((not newSettings.ixAmbassy) or (not newSettings.ix))
+    assert((not newSettings.goTo11) or newSettings.immortality)
+
     local continuation = Helper.createContinuation("setUp")
     if newSettings.randomizePlayerPositions then
         Helper.randomizePlayerPositions(Controller.getProperlySeatedPlayers()).doAfter(continuation.run)
@@ -481,6 +385,11 @@ function onPlayerDisconnect()
     Controller.updateSelectionMethods()
 end
 
+--- Generic UI callback (cf. XML).
+function setAnyField(player, value, id)
+    Controller.ui:fromUI(player, value, id)
+end
+
 --- UI callback (cf. XML).
 function setLanguage(player, value, id)
     Controller.ui:fromUI(player, value, id)
@@ -488,16 +397,6 @@ function setLanguage(player, value, id)
     I18N.setLocale(Controller.fields.language)
     Controller.ui:toUI()
     Controller.updateLeaderPoolSizeLabel()
-end
-
---- UI callback (cf. XML).
-function setFirstPlayer(player, value, id)
-    Controller.ui:fromUI(player, value, id)
-end
-
---- UI callback (cf. XML).
-function setRandomizePlayerPositions(player, value, id)
-    Controller.ui:fromUI(player, value, id)
 end
 
 --- UI callback (cf. XML).
@@ -535,49 +434,9 @@ function setDifficulty(player, value, id)
 end
 
 --- UI callback (cf. XML).
-function setAutoTurnInSolo(player, value, id)
-    Controller.ui:fromUI(player, value, id)
-end
-
---- UI callback (cf. XML).
-function setImperiumRowChurn(player, value, id)
-    Controller.ui:fromUI(player, value, id)
-end
-
---- UI callback (cf. XML).
-function setStreamlinedRivals(player, value, id)
-    Controller.ui:fromUI(player, value, id)
-end
-
---- UI callback (cf. XML).
-function setBrutalEscalation(player, value, id)
-    Controller.ui:fromUI(player, value, id)
-end
-
---- UI callback (cf. XML).
-function setExpertDeployment(player, value, id)
-    Controller.ui:fromUI(player, value, id)
-end
-
---- UI callback (cf. XML).
-function setSmartPolitics(player, value, id)
-    Controller.ui:fromUI(player, value, id)
-end
-
---- UI callback (cf. XML).
-function setStreamlinedRivals(player, value, id)
-    Controller.ui:fromUI(player, value, id)
-end
-
---- UI callback (cf. XML).
 function setHotSeat(player, value, id)
     Controller.ui:fromUI(player, value, id)
     Controller.updateSetupButton()
-end
-
---- UI callback (cf. XML).
-function setUseContracts(player, value, id)
-    Controller.ui:fromUI(player, value, id)
 end
 
 --- UI callback (cf. XML).
@@ -589,11 +448,6 @@ function setLegacy(player, value, id)
         Controller.fields.merakon = XmlUI.DISABLED
     end
     Controller.ui:toUI()
-end
-
---- UI callback (cf. XML).
-function setMerakon(player, value, id)
-    Controller.ui:fromUI(player, value, id)
 end
 
 --- UI callback (cf. XML).
@@ -612,11 +466,6 @@ function setRiseOfIx(player, value, id)
         end
     end
     Controller.ui:toUI()
-end
-
---- UI callback (cf. XML).
-function setEpicMode(player, value, id)
-    Controller.ui:fromUI(player, value, id)
 end
 
 --- UI callback (cf. XML).
@@ -660,44 +509,9 @@ function setIxAmbassy(player, value, id)
 end
 
 --- UI callback (cf. XML).
-function setIxAmbassyWithIx(player, value, id)
-    Controller.ui:fromUI(player, value, id)
-end
-
---- UI callback (cf. XML).
-function setLeaderSelection(player, value, id)
-    Controller.ui:fromUI(player, value, id)
-end
-
---- UI callback (cf. XML).
 function setLeaderPoolSize(player, value, id)
     Controller.ui:fromUI(player, value, id)
     Controller.updateLeaderPoolSizeLabel()
-end
-
---- UI callback (cf. XML).
-function setTweakLeaderSelection(player, value, id)
-    Controller.ui:fromUI(player, value, id)
-end
-
---- UI callback (cf. XML).
-function setHorizontalHandLayout(player, value, id)
-    Controller.ui:fromUI(player, value, id)
-end
-
---- UI callback (cf. XML).
-function setFormalCombatPhase(player, value, id)
-    Controller.ui:fromUI(player, value, id)
-end
-
---- UI callback (cf. XML).
-function setSoundEnabled(player, value, id)
-    Controller.ui:fromUI(player, value, id)
-end
-
---- UI callback (cf. XML).
-function submitGameRankedGame(player, value, id)
-    Controller.ui:fromUI(player, value, id)
 end
 
 --- UI callback (cf. XML).

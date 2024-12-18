@@ -33,18 +33,25 @@ end
 function TleilaxuRow.setUp(settings)
     local continuation = Helper.createContinuation("TleilaxuRow.setUp")
     if settings.immortality then
-        Deck.generateSpecialDeck(TleilaxuRow.slotZones[3], "immortality", "reclaimedForces")
-        Deck.generateTleilaxuDeck(TleilaxuRow.deckZone).doAfter(function (deck)
-            assert(deck, "No Tleilaxu deck!")
-            Helper.shuffleDeck(deck)
-            Helper.onceShuffled(deck).doAfter(function ()
-                for i = 1, 2 do
-                    local zone = TleilaxuRow.slotZones[i]
-                    Helper.moveCardFromZone(TleilaxuRow.deckZone, zone.getPosition(), Vector(0, 180, 0))
-                end
+
+        local position = TleilaxuRow.deckZone.getPosition() - Vector(0, 1.5, 0)
+        Helper.createTransientAnchor("TleilaxRowDeck", position).doAfter(function (anchor)
+            local snapPoint = Helper.createRelativeSnapPointFromZone(anchor, TleilaxuRow.deckZone, true, { "Imperium" })
+            anchor.setSnapPoints({ snapPoint })
+
+            Deck.generateSpecialDeck(TleilaxuRow.slotZones[3], "immortality", "reclaimedForces")
+            Deck.generateTleilaxuDeck(TleilaxuRow.deckZone).doAfter(function (deck)
+                assert(deck, "No Tleilaxu deck!")
+                Helper.shuffleDeck(deck)
+                Helper.onceShuffled(deck).doAfter(function ()
+                    for i = 1, 2 do
+                        local zone = TleilaxuRow.slotZones[i]
+                        Helper.moveCardFromZone(TleilaxuRow.deckZone, zone.getPosition(), Vector(0, 180, 0))
+                    end
+                end)
+                TleilaxuRow._transientSetUp()
+                continuation.run()
             end)
-            TleilaxuRow._transientSetUp()
-            continuation.run()
         end)
     else
         TleilaxuRow._tearDown()
@@ -75,64 +82,64 @@ end
 ---
 function TleilaxuRow.acquireTleilaxuCard(indexInRow, color)
     local acquireCard = TleilaxuRow.acquireCards[indexInRow]
-    local card = Helper.getCard(acquireCard.zone)
-    assert(card)
-    local price = ImperiumCard.getTleilaxuCardCost(card)
-    local cardName = Helper.getID(card)
-    assert(price, "Unknown tleilaxu card: " .. tostring(cardName))
-    assert((cardName == "reclaimedForces") == (indexInRow == 3))
+    assert(Helper.withAnyCard(acquireCard.zone, function (card)
+        local price = ImperiumCard.getTleilaxuCardCost(card)
+        local cardName = Helper.getID(card)
+        assert(price, "Unknown tleilaxu card: " .. tostring(cardName))
+        assert((cardName == "reclaimedForces") == (indexInRow == 3))
 
-    local specimenSupplierColor = color
-    if Commander.isCommander(color) then
-        specimenSupplierColor = Commander.getActivatedAlly(color)
-    end
-
-    if TleilaxuResearch.getSpecimenCount(specimenSupplierColor) >= price then
-        local leader = PlayBoard.getLeader(color)
-        if cardName == "reclaimedForces" then
-            local options = {
-                I18N("troops"),
-                I18N("beetle"),
-            }
-            Dialog.showOptionsDialog(color, I18N("reclaimedForces"), options, nil, function (index)
-                if index == 1 then
-                    leader.troops(color, "tanks", "supply", price)
-                    leader.troops(color, "supply", "garrison", 2)
-                elseif index == 2 then
-                    leader.troops(color, "tanks", "supply", price)
-                    leader.beetle(color, 1)
-                end
-            end)
-        else
-            leader.troops(color, "tanks", "supply", price)
-
-            PlayBoard.giveCard(color, card, true)
-
-            -- Replenish the slot in the row.
-            Helper.moveCardFromZone(TleilaxuRow.deckZone, acquireCard.zone.getPosition(), Vector(0, 180, 0))
+        local specimenSupplierColor = color
+        if Commander.isCommander(color) then
+            specimenSupplierColor = Commander.getActivatedAlly(color)
         end
 
-        return true
-    else
-        Dialog.broadcastToColor(I18N("noEnoughSpecimen"), color, "Purple")
-        return false
-    end
+        if TleilaxuResearch.getSpecimenCount(specimenSupplierColor) >= price then
+            local leader = PlayBoard.getLeader(color)
+            if cardName == "reclaimedForces" then
+                local options = {
+                    I18N("troops"),
+                    I18N("beetle"),
+                }
+                Dialog.showOptionsDialog(color, I18N("reclaimedForces"), options, nil, function (index)
+                    if index == 1 then
+                        leader.troops(color, "tanks", "supply", price)
+                        leader.troops(color, "supply", "garrison", 2)
+                    elseif index == 2 then
+                        leader.troops(color, "tanks", "supply", price)
+                        leader.beetle(color, 1)
+                    end
+                end)
+            else
+                leader.troops(color, "tanks", "supply", price)
+
+                PlayBoard.giveCard(color, card, true)
+
+                -- Replenish the slot in the row.
+                Helper.moveCardFromZone(TleilaxuRow.deckZone, acquireCard.zone.getPosition(), Vector(0, 180, 0))
+            end
+
+            return true
+        else
+            Dialog.broadcastToColor(I18N("noEnoughSpecimen"), color, "Purple")
+            return false
+        end
+    end))
 end
 
 ---
 function TleilaxuRow.trash(indexInRow)
     local acquireCard = TleilaxuRow.acquireCards[indexInRow]
-    local card = Helper.getCard(acquireCard.zone)
-    assert(card)
-    local price = ImperiumCard.getTleilaxuCardCost(card)
-    local cardName = Helper.getID(card)
-    assert(price, "Unknown tleilaxu card: " .. tostring(cardName))
-    assert((cardName == "reclaimedForces") == (indexInRow == 3))
+    assert(Helper.withAnyCard(acquireCard.zone, function (card)
+        local price = ImperiumCard.getTleilaxuCardCost(card)
+        local cardName = Helper.getID(card)
+        assert(price, "Unknown tleilaxu card: " .. tostring(cardName))
+        assert((cardName == "reclaimedForces") == (indexInRow == 3))
 
-    MainBoard.trash(card)
+        MainBoard.trash(card)
 
-    -- Replenish the slot in the row.
-    Helper.moveCardFromZone(TleilaxuRow.deckZone, acquireCard.zone.getPosition(), Vector(0, 180, 0))
+        -- Replenish the slot in the row.
+        Helper.moveCardFromZone(TleilaxuRow.deckZone, acquireCard.zone.getPosition(), Vector(0, 180, 0))
+    end))
 end
 
 return TleilaxuRow

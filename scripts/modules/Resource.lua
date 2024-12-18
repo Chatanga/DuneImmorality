@@ -24,6 +24,8 @@ function Resource.new(token, color, resourceName, value, location)
         token = token,
         color = color,
         resourceName = resourceName,
+        baseValue = 0,
+        baseValueContributions = {},
         value = value,
         laggingValue = value,
         location = location,
@@ -83,20 +85,20 @@ end
 ---
 function Resource:_updateState()
     if self.value == self.laggingValue then
-        Helper.emitEvent(self.resourceName .. "ValueChanged", self.color, self.value)
+        Helper.emitEvent(self.resourceName .. "ValueChanged", self.color, self.baseValue + self.value)
     end
 end
 
 ---
 function Resource:_getTooltip()
-    return I18N(self.resourceName .. "Amount", self.value)
+    return I18N(self.resourceName .. "Amount", self.baseValue + self.value)
 end
 
 ---
 function Resource:_updateButton()
     self.token.editButton({
         index = 0,
-        label = tostring(self.value),
+        label = tostring(self.baseValue + self.value),
         tooltip = self:_getTooltip()
     })
 end
@@ -184,7 +186,32 @@ end
 
 ---
 function Resource:get()
-    return self.value
+    return self.value + self.baseValue
+end
+
+---
+function Resource:setBaseValueContribution(origin, amount)
+    self.baseValueContributions[origin] = amount
+    self:_updateBaseValueContributions()
+end
+
+---
+function Resource:clearBaseValueContributions()
+    self.baseValueContributions = {}
+    self:_updateBaseValueContributions()
+end
+
+---
+function Resource:_updateBaseValueContributions()
+    local oldBaseValue = self.baseValue
+    self.baseValue = 0
+    for _, a in pairs(self.baseValueContributions) do
+        self.baseValue = self.baseValue + a
+    end
+    if oldBaseValue ~= self.baseValue then
+        self:_updateButton()
+        self:_updateState()
+    end
 end
 
 return Resource

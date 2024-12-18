@@ -2,9 +2,10 @@
 ---@field x number
 ---@field y number
 ---@field z number
+---@field copy fun(self: Vector): Vector
+---@field setAt fun(self: Vector, coordinate: string, value: number): nil
 
 local Helper = {
-    sharedTables = {},
     eventListenersByTopic = {},
     uniqueNamePool = {},
 
@@ -21,7 +22,22 @@ math.randomseed(os.time())
 
 --[[
     Note: this function won't be able to catch any "<Unknow Error>",
-    because it happen inside the native code called by Lua.
+    because it happens inside the native code called by Lua. When
+    facing this kind of error, you probably need to look for any access
+    to dead reference. Per instance:
+
+        local x = getObjectFromGUID('...')
+        x.doSomething()
+        x.destruct()
+        x.doSomething() -- Ok, because destruct is asynchronous.
+        Wait.time(function()
+            if x then
+                x.doSomething() -- Raise an <Unknow Error>.
+            end
+            if x ~= nil then
+                x.doSomething() -- Line not executed.
+            end
+        end, 1)
 ]]
 ---@param context string
 ---@param callable function
@@ -313,12 +329,29 @@ function Helper.moveCardFromZone(zone, position, rotation, smooth, flipAtTheEnd)
     return continuation
 end
 
+---@param objects any[]
+---@return string[]
+function Helper.getAllCardNames(objects)
+    local allCardNames = {}
+    for _, object in ipairs(objects) do
+        local t = object.type
+        if t == "Card" then
+            table.insert(allCardNames, Helper.getID(object))
+        elseif t == "Deck" then
+            for _, innerObject in ipairs(object.getObjects()) do
+                table.insert(allCardNames, Helper.getID(innerObject))
+            end
+        end
+    end
+    return allCardNames
+end
+
 --[[
     Return a list of cards (not spawned in general) from the returned value of
     'Helper.getDeckOrCard(zone)'. If there is none, an empty list is returned.
 ]]
 ---@param deckOrCard table?
----@return table
+---@return any[]
 function Helper.getCards(deckOrCard)
     if deckOrCard then
         if deckOrCard.type == "Deck" then
@@ -332,7 +365,6 @@ function Helper.getCards(deckOrCard)
         return {}
     end
 end
-
 
 --[[
     Return the number of cards from the returned value of 'Helper.getDeckOrCard(zone)'.
@@ -369,24 +401,49 @@ function Helper.getDeckOrCard(zone)
     return nil
 end
 
----@deprecated Use Helper.getDeckOrCard and deal with real life.
-function Helper.getDeck(zone)
-    assert(zone)
-    assert(type(zone) ~= 'string', tostring(zone) .. ' looks like a GUID, not a zone')
-    for _, object in ipairs(zone.getObjects()) do
-        if not object.held_by_color and object.type == "Deck" then return object end
+---
+function Helper.withAnyDeck(zone, action)
+    local predicate = function (object)
+        return not object.held_by_color and object.type == "Deck"
     end
-    return nil
+    return Helper.withAnyItem(zone, predicate, action)
 end
 
----@deprecated Use Helper.getDeckOrCard and deal with real life.
-function Helper.getCard(zone)
+---
+function Helper.withAnyCard(zone, action)
+    local predicate = function (object)
+        return not object.held_by_color and object.type == "Card"
+    end
+    return Helper.withAnyItem(zone, predicate, action)
+end
+
+---
+function Helper.withAnyItem(zone, predicate, action)
+    return Helper._with(zone, false, predicate, action) > 0
+end
+
+---
+function Helper.withAllItems(zone, predicate, action)
+    Helper._with(zone, true, predicate, action)
+end
+
+---
+function Helper._with(zone, all, predicate, action)
     assert(zone)
     assert(type(zone) ~= 'string', tostring(zone) .. ' looks like a GUID, not a zone')
+    local cards = {}
     for _, object in ipairs(zone.getObjects()) do
-        if not object.held_by_color and object.type == "Card" then return object end
+        if predicate(object) then
+            table.insert(cards, object)
+        end
     end
-    return nil
+    for _, card in ipairs(cards) do
+        action(card)
+        if not all then
+            break
+        end
+    end
+    return #cards
 end
 
 -- *** Anchors ***
@@ -524,6 +581,10 @@ function Helper.createRelativeSnapPoint(parent, position, rotationSnap, tags)
     return snapPoint
 end
 
+function Helper.getSnapPointAbsolutePosition(parent, snapPoint)
+    return parent.positionToWorld(snapPoint - Vector(0, 0.25, 0))
+end
+
 ---
 function Helper.createAnchoredAreaButton(zone, ground, aboveGround, tooltip, callback)
     assert(zone)
@@ -541,13 +602,17 @@ function Helper.createAreaButton(zone, anchor, altitude, tooltip, callback)
     assert(anchor)
     assert(altitude)
 
+    local zoneOffset = zone.getPosition() - anchor.getPosition()
     local zoneScale = zone.getScale()
     local sizeFactor = 500 -- 350
 
     local width = zoneScale.x * sizeFactor
     local height = zoneScale.z * sizeFactor
 
-    return Helper.createSizedAreaButton(width, height, anchor, altitude, tooltip, callback)
+    local dx = zoneOffset.x
+    local dz = zoneOffset.z
+
+    return Helper.createSizedAreaButton(width, height, anchor, dx, dz, altitude, tooltip, callback)
 end
 
 ---
@@ -556,23 +621,27 @@ function Helper.createExperimentalAreaButton(zone, anchor, altitude, tooltip, ca
     assert(anchor)
     assert(altitude)
 
+    local zoneOffset = zone.getPosition() - anchor.getPosition()
     local zoneScale = zone.getScale()
 
     local width = zoneScale.x * 450
     local height = zoneScale.z * 200
 
-    return Helper.createSizedAreaButton(width, height, anchor, altitude, tooltip, callback)
+    local dx = zoneOffset.x
+    local dz = zoneOffset.z
+
+    return Helper.createSizedAreaButton(width, height, anchor, dx, dz, altitude, tooltip, callback)
 end
 
 ---
-function Helper.createSizedAreaButton(width, height, anchor, altitude, tooltip, callback)
+function Helper.createSizedAreaButton(width, height, anchor, dx, dz, altitude, tooltip, callback)
     assert(anchor)
 
     local anchorPosition = anchor.getPosition()
 
     local parameters = {
         click_function = Helper.registerGlobalCallback(callback),
-        position = Vector(anchorPosition.x, altitude, anchorPosition.z),
+        position = Vector(anchorPosition.x + dx, altitude, anchorPosition.z + dz),
         width = width,
         height = height,
         color = Helper.AREA_BUTTON_COLOR,
@@ -1080,7 +1149,7 @@ function Helper.onceOneDeck(zone)
     end
 
     Wait.condition(function ()
-        continuation.run(Helper.getDeck(zone))
+        Helper.withAnyDeck(zone, continuation.run)
     end, function ()
         local deckOrCards = getDecksOrCards()
         if #deckOrCards == 1 then
@@ -1472,18 +1541,6 @@ function Helper.createCoalescentQueue(name, separationDelay, coalesce, handle)
 end
 
 -- *** TTS miscellaneous ***
-
----@deprecated Relic of an old age.
-function Helper.setSharedTable(tableName, table)
-    --Global.setTable(tableName, table)
-    Helper.sharedTables[tableName] = table
-end
-
----@deprecated Relic of an old age.
-function Helper.getSharedTable(tableName)
-    --return Global.getTable(tableName)
-    return Helper.sharedTables[tableName]
-end
 
 --- Intended to be called from a coroutine.
 function Helper.sleep(durationInSeconds)
@@ -2156,6 +2213,16 @@ function Helper.chopName(name, n)
         end
     end
     return choppedName
+end
+
+---
+function Helper.isNotNil(object)
+    return object ~= nil
+end
+
+---
+function Helper.isNil(object)
+    return object == nil
 end
 
 return Helper

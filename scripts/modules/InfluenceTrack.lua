@@ -91,7 +91,7 @@ function InfluenceTrack._transientSetUp(settings, firstTime)
             levelPosition:setAt('y', 1.5)
             Helper.createTransientAnchor(faction .. "Rank" .. tostring(i), levelPosition).doAfter(function (anchor)
                 local actionName = I18N("progressOnInfluenceTrack", { withFaction = I18N(Helper.toCamelCase("with", faction)) })
-                Helper.createSizedAreaButton(1000, 400, anchor, 1.75, actionName, PlayBoard.withLeader(function (_, color, _)
+                Helper.createSizedAreaButton(1000, 400, anchor, 0, 0, 1.75, actionName, PlayBoard.withLeader(function (_, color, _)
                     if not InfluenceTrack.lockedActions[faction][color] then
                         if InfluenceTrack.hasAccess(color, faction) then
                             local rank = InfluenceTrack._getInfluenceTracksRank(faction, color)
@@ -274,6 +274,13 @@ function InfluenceTrack.hasFriendship(color, faction)
 end
 
 ---
+function InfluenceTrack.hasSuperFriendship(color, faction)
+    Types.assertIsPlayerColor(color)
+    Types.assertIsFaction(faction)
+    return InfluenceTrack.getInfluence(faction, color) >= 3
+end
+
+---
 function InfluenceTrack.getInfluence(faction, color, direct)
     if TurnControl.getPlayerCount() == 6 and not direct then
         if Commander.isCommander(color) then
@@ -392,7 +399,7 @@ function InfluenceTrack._changeInfluenceTracksRank(color, faction, change)
             InfluenceTrack._gainCommanderBonus(faction, color, 3)
         end
         continuation.run(realChange)
-        Helper.emitEvent("influence", faction, color, newRank)
+        Helper.emitEvent("influence", faction, color, newRank, oldRank)
     end)
 
     return continuation

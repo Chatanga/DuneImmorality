@@ -12,6 +12,8 @@ local TurnControl = Module.lazyRequire("TurnControl")
 local Hagal = Module.lazyRequire("Hagal")
 local TechMarket = Module.lazyRequire("TechMarket")
 local Action = Module.lazyRequire("Action")
+local SardaukarCommander = Module.lazyRequire("SardaukarCommander")
+local TechCard = Module.lazyRequire("TechCard")
 
 local HagalCard = {
     cardStrengths = {
@@ -47,6 +49,8 @@ local HagalCard = {
         tleilaxuBonus1 = 0,
         tleilaxuBonus2 = 0,
         tleilaxuBonus3 = 0,
+        acquireTech = 1,
+        tuekSietch = 2,
     }
 }
 
@@ -64,6 +68,7 @@ function HagalCard.setStrength(color, card)
 end
 
 function HagalCard.activate(color, card, riseOfIx)
+    --Helper.dumpFunction("HagalCard.activate", color, card, riseOfIx)
     Types.assertIsPlayerColor(color)
     assert(card)
     local cardName = Helper.getID(card)
@@ -76,14 +81,19 @@ function HagalCard.activate(color, card, riseOfIx)
 end
 
 function HagalCard.flushTurnActions(color)
+    Helper.dumpFunction("HagalCard.flushTurnActions", color)
     HagalCard.acquiredTroopCount = HagalCard.acquiredTroopCount or 0
     local rival = PlayBoard.getLeader(color)
     assert(rival, color)
 
+    -- Rapid Dropships
+    HagalCard.inCombat = HagalCard.inCombat or PlayBoard.useTech(color, "rapidDropships")
+
     if HagalCard.inCombat then
         local deploymentLimit = Hagal.getExpertDeploymentLimit(color)
 
-        local garrisonedTroopCount = #Park.getObjects(Combat.getGarrisonPark(color))
+        local garrisonedTroopCount = #Park.getObjects(Combat.getGarrisonPark(color)) -- Sardaukars included.
+        Helper.dump("garrisonedTroopCount:", garrisonedTroopCount)
         local inSupplyTroopCount = #Park.getObjects(PlayBoard.getSupplyPark(color))
 
         local fromGarrison = math.min(2, garrisonedTroopCount)
@@ -93,15 +103,15 @@ function HagalCard.flushTurnActions(color)
             -- Dreadnoughts are free and implicit.
             local count = rival.dreadnought(color, "garrison", "combat", 2)
             fromGarrison = math.max(0, fromGarrison - count)
+        end
 
-            -- Flagship tech.
-            if  PlayBoard.hasTech(color, "flagship") and
-                deploymentLimit - fromGarrison - fromSupply > 0 and
-                inSupplyTroopCount - fromSupply >= 3 and
-                rival.resources(color, "solari", -4)
-            then
-                fromSupply = fromSupply + 3
-            end
+        -- Flagship tech.
+        if  PlayBoard.hasTech(color, "flagship") and
+            deploymentLimit - fromGarrison - fromSupply > 0 and
+            inSupplyTroopCount - fromSupply >= 3 and
+            rival.resources(color, "solari", -4)
+        then
+            fromSupply = fromSupply + 3
         end
 
         local realFromSupply = math.min(fromSupply, deploymentLimit)
@@ -129,6 +139,14 @@ function HagalCard.flushTurnActions(color)
         rival.troops(color, "supply", "garrison", HagalCard.acquiredTroopCount)
     end
     HagalCard.acquiredTroopCount = nil
+
+    -- Immediate pseudo reveal after the final agent has been sent.
+    local playBoard = PlayBoard.getPlayBoard(color)
+    assert(playBoard, color)
+    if not playBoard:stillHavePlayableAgents() then
+        local techCardContributions = TechCard.evaluatePostReveal(color, { persuasion = 6 })
+        Helper.dump("techCardContributions:", techCardContributions)
+    end
 end
 
 function HagalCard.acquireTroops(color, n, inCombat)
@@ -194,6 +212,7 @@ function HagalCard._activateSardaukar(color, rival)
         HagalCard._sendRivalAgent(color, rival, "sardaukar")
         rival.influence(color, "emperor", 1)
         HagalCard.acquireTroops(color, 2)
+        HagalCard._tryRecruitingSardaukarCommander(color, rival, "sardaukar")
         return true
     else
         return false
@@ -204,6 +223,7 @@ function HagalCard._activateDutifulService(color, rival)
     if HagalCard._spaceIsFree(color, "dutifulService") and Hagal.isSmartPolitics(color, "emperor") then
         HagalCard._sendRivalAgent(color, rival, "dutifulService")
         rival.influence(color, "emperor", 1)
+        HagalCard._tryRecruitingSardaukarCommander(color, rival, "dutifulService")
         return true
     else
         return false
@@ -226,6 +246,7 @@ function HagalCard._activateDeliverSuppliesAndHeighliner(color, rival)
         if HagalCard._spaceIsFree(color, "deliverSupplies") and Hagal.isSmartPolitics(color, "spacingGuild") then
             HagalCard._sendRivalAgent(color, rival, "deliverSupplies")
             rival.influence(color, "spacingGuild", 1)
+            HagalCard._tryRecruitingSardaukarCommander(color, rival, "deliverSupplies")
             return true
         else
             return false
@@ -257,7 +278,8 @@ function HagalCard._activateSecrets(color, rival)
         rival.influence(color, "beneGesserit", 1)
         for _, otherColor in ipairs(PlayBoard.getActivePlayBoardColors()) do
             if otherColor ~= color then
-                if #PlayBoard.getIntrigues(otherColor) > 3 then
+                local limit = PlayBoard.hasTech(otherColor, "geneLockedVault") and 4 or 3
+                if #PlayBoard.getIntrigues(otherColor) > limit then
                     rival.stealIntrigues(color, otherColor, 1)
                 end
             end
@@ -300,6 +322,7 @@ function HagalCard._activateAssemblyHall(color, rival)
         if InfluenceTrack.hasFriendship(color, "emperor") then
             rival.influence(color, 1, 1)
         end
+        HagalCard._tryRecruitingSardaukarCommander(color, rival, "assemblyHall")
         return true
     else
         return false
@@ -310,6 +333,7 @@ function HagalCard._activateGatherSupport1(color, rival)
     if HagalCard._spaceIsFree(color, "gatherSupport") then
         HagalCard._sendRivalAgent(color, rival, "gatherSupport")
         HagalCard.acquireTroops(color, 1)
+        HagalCard._tryRecruitingSardaukarCommander(color, rival, "gatherSupport")
         return true
     else
         return false
@@ -323,6 +347,7 @@ function HagalCard._activateGatherSupport2(color, rival)
         if InfluenceTrack.hasFriendship(color, "emperor") then
             rival.influence(color, 2, 1)
         end
+        HagalCard._tryRecruitingSardaukarCommander(color, rival, "gatherSupport")
         return true
     else
         return false
@@ -526,6 +551,7 @@ function HagalCard._activateTechNegotiation(color, rival)
         if not rival.acquireTech(color, nil, 1) then
             rival.troops(color, "supply", "negotiation", 1)
         end
+        HagalCard._tryRecruitingSardaukarCommander(color, rival, "techNegotiation")
         return true
     else
         return false
@@ -538,6 +564,7 @@ function HagalCard._activateDreadnought1p(color, rival)
         rival.dreadnought(color, "supply", "garrison", 1)
         TechMarket.registerAcquireTechOption(color, "dreadnoughtTechBuyOption", "spice", 0)
         rival.acquireTech(color, nil, 0)
+        HagalCard._tryRecruitingSardaukarCommander(color, rival, "dreadnought")
         return true
     else
         return false
@@ -549,6 +576,7 @@ function HagalCard._activateDreadnought2p(color, rival)
         HagalCard._sendRivalAgent(color, rival, "dreadnought")
         rival.dreadnought(color, "supply", "garrison", 1)
         HagalCard.acquireTroops(color, 2)
+        HagalCard._tryRecruitingSardaukarCommander(color, rival, "dreadnought")
         return true
     else
         return false
@@ -585,15 +613,39 @@ function HagalCard._activateTleilaxuBonus3(color, rival)
     return false
 end
 
+function HagalCard._activateAcquireTech(color, rival)
+    if PlayBoard.hasSwordmaster(color) then
+        TechMarket.registerAcquireTechOption(color, "activateAcquireTechBuyOption", "spice", 1)
+        rival.acquireTech(color, nil, 1)
+    end
+    return false
+end
+
+function HagalCard._activateTuekSietch(color, rival)
+    local spiceBonusResource = MainBoard.getSpiceBonus("tuekSietch")
+    if spiceBonusResource then
+        local spiceBonus = spiceBonusResource:get()
+        if HagalCard._spaceIsFree(color, "tuekSietch") and spiceBonus > 0 then
+            HagalCard._sendRivalAgent(color, rival, "tuekSietch")
+            spiceBonusResource:set(0)
+            rival.resources(color, "spice", 1 + spiceBonus)
+            return true
+        else
+            return false
+        end
+    else
+        Helper.dump("Thit Hagal card should have been automatically removed during the setup!")
+        return false
+    end
+end
+
 function HagalCard._sendRivalAgent(color, rival, spaceName)
     if MainBoard.sendRivalAgent(color, spaceName) then
-        Park.onceStabilized(PlayBoard.getTechPark(color)).doAfter(function ()
-            Helper.onceTimeElapsed(0.5).doAfter(function ()
-                if PlayBoard.useTech(color, "trainingDrones") then
-                    rival.troops(color, "supply", "garrison", 1)
-                end
-            end)
-        end)
+        if PlayBoard.useTech(color, "trainingDrones") then
+            HagalCard.acquireTroops(color, 0)
+        elseif PlayBoard.useTech(color, "spyDrones") then
+            rival.resources(color, "solari", 1)
+        end
         return true
     else
         return false
@@ -610,6 +662,19 @@ function HagalCard._spaceIsFree(color, spaceName)
     else
         return false
     end
+end
+
+function HagalCard._tryRecruitingSardaukarCommander(color, rival, spaceName)
+    if PlayBoard.hasSwordmaster(color) and SardaukarCommander.isAvailable(spaceName) then
+        if rival.isStreamlined() then
+            SardaukarCommander.discardSardaukarCommander(color, spaceName)
+            return true
+        elseif rival.resources(color, "solari", PlayBoard.hasTech(color, "sardaukarHighCommand") and -1 or -2) then
+            Action.recruitSardaukarCommander(color, spaceName)
+            return true
+        end
+    end
+    return false
 end
 
 return HagalCard

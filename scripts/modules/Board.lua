@@ -13,8 +13,12 @@ local Board = {
         emperorBoard = "4cb9ba",
         fremenBoard = "01c575",
         shippingBoard = "0b9dfe",
-        ixBoard = "d75455",
+        ix = {
+            ixBoard = "d75455",
+            ixAmbassyBoard = "664fbc",
+        },
         tleilaxBoard = "d5c2db",
+        tuekSietchBoard = "7de80e",
     },
     --[[
         boardLocations[<baseBoardName.locale>] = {
@@ -73,7 +77,8 @@ function Board._cloneBoard(baseBoardName, board, height)
     local states = board.getStates()
     if states then
         for _, state in ipairs(states) do
-            namedIds[Board._getBaseName(Helper.getID(state))] = state.id
+            local id = Helper.getID(state)
+            namedIds[Board._getBaseName(id)] = state.id
         end
     end
 
@@ -180,7 +185,7 @@ function Board.setUp(setting)
 end
 
 ---
-function Board.selectBoard(baseBoardName, language)
+function Board.selectBoard(baseBoardName, language, doNotLock)
     local boardName = Board._toBoardName(baseBoardName, language)
     local location = Board.boardLocations[boardName]
     assert(location, "No location for board " .. boardName)
@@ -199,9 +204,13 @@ function Board.selectBoard(baseBoardName, language)
                 location.object.setPosition(otherPosition)
                 location.object.setInvisibleTo({})
                 location.active = true
-                Helper.onceMotionless(location.object).doAfter(function ()
-                    Helper.noPhysics(location.object)
-                end)
+                if doNotLock then
+                    Helper.physicsAndPlay(location.object)
+                else
+                    Helper.onceMotionless(location.object).doAfter(function ()
+                        Helper.noPhysics(location.object)
+                    end)
+                end
 
                 return location.object
             end

@@ -10,6 +10,7 @@ Features:
 - Base game 6P
 - Rise of Ix extension
 - Immortality extension
+- Bloodlines extension
 - Legacy Dune as an extension
 - Hagal House
 
@@ -34,7 +35,14 @@ This repository contains the JSON skeletons and Lua scripts of various mods for 
 
 __All__
 
+- Persist settings.
+- Objects or not (full functional).
+- Rules & recipies.
+
 - Free selection of leaders.
+- Add a corrective black border on the Uprising boards.
+
+- Look out for on the fly variable creation without save.
 
 __6P__
 
@@ -85,6 +93,8 @@ Modules relies on the Luabundler tool, but also on utils.Modules.
 - __Reserve.lua__ - Handles the card reserve next to the ImperiumRow.
 - __Resource.lua__ - A class handling the resources tokens (spice, solaris, etc.) on the various boards.
 - __Rival.lua__ - Provides a proxy for each rival leader, used as an indirection to Rival then Action. Each leader ability is implemented as an alteration of an existing action or as an event handler. Contrary to the Leader class, mostly empty, the Rival class provides part of the "AI" for Solo/Hagal mode.
+- __SardaukarCommander.lua__ - Everything related to the Sardaukar Commanders introduced by the Bloodlines extension.
+- __SardaukarCommanderSkillCard.lua__ - Describes all the Commander Skill tiles and their reveal bonuses.
 - __ScoreBoard.lua__ - A facade to retrieve the VP tokens from their various locations on the maiboard and player boards. Badly named actually, since it doesn't handle the shared VP track.
 - __ShipmentTrack.lua__ - Handle the shipping track and its freighters from the Ix extension.
 - __SubmitGame.lua__ - Rogerio's contribution to ranked play (includes dedicated global UI part).

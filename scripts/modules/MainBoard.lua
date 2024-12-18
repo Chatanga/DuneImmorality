@@ -66,6 +66,8 @@ local MainBoard = {
         haggaBasin = { group = "desert", combat = true, posts = { "haggaBasin" } },
         habbanyaErg = { group = "desert", combat = true, posts = { "habbanyaErg" } },
         imperialBasin = { group = "desert", combat = true, posts = { "imperialBasin" } },
+
+        tuekSietch = { group = "desert", combat = true, posts = {} },
     }
 }
 
@@ -78,6 +80,7 @@ function MainBoard.onLoad(state)
             haggaBasin = "c24705",
             imperialBasin = "3cdb2d",
             habbanyaErg = "394db2",
+            tuekSietch = "be19c0",
         },
         firstPlayerMarker = "1f5576",
         shieldWallToken = "31d6b0",
@@ -97,6 +100,7 @@ function MainBoard.onLoad(state)
         MainBoard.mainBoard = Board.getBoard("mainBoard4P") or Board.getBoard("mainBoard6P")
         MainBoard.emperorBoard = Board.getBoard("emperorBoard")
         MainBoard.fremenBoard = Board.getBoard("fremenBoard")
+        MainBoard.tuekSietchBoard = Board.getBoard("tuekSietchBoard")
 
         MainBoard._transientSetUp(state.settings)
     end
@@ -114,6 +118,21 @@ end
 ---
 function MainBoard.setUp(settings)
     local continuation = Helper.createContinuation("MainBoard.setUp")
+
+    MainBoard.tuekSietchBoard = Board.selectBoard("tuekSietchBoard", I18N.getLocale(), false)
+    MainBoard.tuekSietchBoard.createButton({
+        click_function = Helper.registerGlobalCallback(),
+        label = I18N("tuekBoardRelocationMessage"),
+        position = Vector(0, 0, 1.5),
+        width = 0,
+        height = 0,
+        font_size = 100,
+        font_color = "White"
+    })
+    -- Some part of the code locks the board right after its selection and I can't find where...
+    Helper.onceTimeElapsed(1).doAfter(function ()
+        Helper.physicsAndPlay(MainBoard.tuekSietchBoard)
+    end)
 
     if settings.numberOfPlayers == 6 then
         MainBoard.mainBoard = Board.selectBoard("mainBoard6P", settings.language)
@@ -134,8 +153,6 @@ function MainBoard.setUp(settings)
         MainBoard.spiceBonusTokens.habbanyaErg = nil
         continuation.run()
     end
-
-    Board.destructInactiveBoards()
 
     if settings.immortality then
     else
@@ -173,7 +190,13 @@ function MainBoard._transientSetUp(settings)
     MainBoard._createRoundIndicator()
 
     Helper.registerEventListener("phaseStart", function (phase)
-        if phase == "makers" then
+        if phase == "gameStart" then
+            if MainBoard.tuekSietchBoard and MainBoard.tuekSietchBoard.interactable then
+                MainBoard.tuekSietchBoard.destruct()
+                MainBoard.tuekSietchBoard = nil
+                Hagal.removeTuekSietch()
+            end
+        elseif phase == "makers" then
             for desert, _ in pairs(MainBoard.spiceBonusTokens) do
                 local space = MainBoard.spaces[desert]
                 if space then
@@ -264,12 +287,39 @@ end
 
 ---
 function MainBoard._processSnapPoints(settings)
-    local highCouncilSeats = {}
     MainBoard.spaces = {}
     MainBoard.observationPosts = {}
     MainBoard.banners = {}
 
-    MainBoard.collectSnapPointsOnAllBoards(settings, {
+    local highCouncilSeats = MainBoard._doProcessSnapPoints(
+        settings,
+        Helper.partialApply(MainBoard.collectSnapPointsOnAllBoards, settings))
+
+    if #highCouncilSeats > 0 then
+        MainBoard.highCouncilPark = Park.createPark(
+            "HighCouncil",
+            highCouncilSeats,
+            Vector(0, 0, 0),
+            { Park.createTransientBoundingZone(0, Vector(0.5, 1, 0.5), highCouncilSeats) },
+            { "HighCouncilSeatToken" },
+            nil,
+            true,
+            true)
+    end
+end
+
+---
+function MainBoard.processTuekSnapPoints(settings)
+    Helper.noPhysicsNorPlay(MainBoard.tuekSietchBoard)
+    MainBoard.tuekSietchBoard.clearButtons()
+    MainBoard._doProcessSnapPoints(settings, MainBoard._collectSnapPointsOnTuekBoard)
+end
+
+---
+function MainBoard._doProcessSnapPoints(settings, collect)
+    local highCouncilSeats = {}
+
+    collect({
 
         seat = function (name, position)
             local str = name:sub(12)
@@ -312,11 +362,11 @@ function MainBoard._processSnapPoints(settings)
 
         spice = function (name, position)
             local token = MainBoard.spiceBonusTokens[name]
-            token.setPosition(position + Vector(0, -0.05, 0))
+            --position.y = 1.70
+            token.setPosition(position)
+            token.setInvisibleTo({})
             Helper.noPhysics(token)
-            if not MainBoard.spiceBonuses[name] then
-                MainBoard.spiceBonuses[name] = Resource.new(token, nil, "spice", 0, name)
-            end
+            MainBoard.spiceBonuses[name] = Resource.new(token, nil, "spice", 0, name)
         end,
 
         flag = function (name, position)
@@ -329,17 +379,6 @@ function MainBoard._processSnapPoints(settings)
             MainBoard.banners[name .. "BannerZone"] = zone
         end
     })
-
-    assert(#highCouncilSeats > 0)
-    MainBoard.highCouncilPark = Park.createPark(
-        "HighCouncil",
-        highCouncilSeats,
-        Vector(0, 0, 0),
-        { Park.createTransientBoundingZone(0, Vector(0.5, 1, 0.5), highCouncilSeats) },
-        { "HighCouncilSeatToken" },
-        nil,
-        true,
-        true)
 
     -- A trick to ensure that parent space are created before
     -- their child spaces (which always have a longer name).
@@ -357,6 +396,15 @@ function MainBoard._processSnapPoints(settings)
 
     for _, bannerZone in pairs(MainBoard.banners) do
         MainBoard._createBannerSpace(bannerZone)
+    end
+
+    return highCouncilSeats
+end
+
+---
+function MainBoard.collectSnapPointsOnAllBoards(settings, net)
+    for _, board in ipairs(MainBoard._getAllBoards(settings)) do
+        Helper.collectSnapPoints(board, net)
     end
 end
 
@@ -380,10 +428,8 @@ function MainBoard._getAllBoards(settings)
 end
 
 ---
-function MainBoard.collectSnapPointsOnAllBoards(settings, net)
-    for _, board in ipairs(MainBoard._getAllBoards(settings)) do
-        Helper.collectSnapPoints(board, net)
-    end
+function MainBoard._collectSnapPointsOnTuekBoard(net)
+    Helper.collectSnapPoints(MainBoard.tuekSietchBoard, net)
 end
 
 ---
@@ -531,6 +577,7 @@ function MainBoard.sendAgent(color, spaceName, recallSpy)
         local leader = PlayBoard.getLeader(color)
         local innerContinuation = Helper.createContinuation("MainBoard." .. parentSpaceName)
 
+        Action.setContext("agentDestination", { space = parentSpaceName, cards = Helper.mapValues(PlayBoard.getCardsPlayedThisTurn(color), Helper.getID) })
         goSpace(color, leader, innerContinuation)
         innerContinuation.doAfter(function (action)
             -- The innerContinuation never cancels (but returns nil) to allow us to cancel the root continuation.
@@ -539,7 +586,6 @@ function MainBoard.sendAgent(color, spaceName, recallSpy)
                     if goAhead then
                         local innerInnerContinuation = Helper.createContinuation("MainBoard." .. spaceName .. ".goAhead")
                         Helper.emitEvent("agentSent", color, parentSpaceName)
-                        Action.setContext("agentSent", { space = parentSpaceName, cards = Helper.mapValues(PlayBoard.getCardsPlayedThisTurn(color), Helper.getID) })
                         Park.putObject(agent, parentSpace.park)
                         if spy then
                             Park.putObject(spy, PlayBoard.getSpyPark(color))
@@ -566,15 +612,17 @@ function MainBoard.sendAgent(color, spaceName, recallSpy)
                             -- FIXME We are cheating here...
                             Helper.onceTimeElapsed(2).doAfter(function ()
                                 Action.log(nil, color)
-                                Action.unsetContext("agentSent")
+                                Action.unsetContext("agentDestination")
                             end)
                             continuation.run()
                         end)
                     else
+                        Action.unsetContext("agentDestination")
                         continuation.cancel()
                     end
                 end)
             else
+                Action.unsetContext("agentDestination")
                 continuation.cancel()
             end
         end)
@@ -604,9 +652,7 @@ function MainBoard._findProperAgent(color)
             table.insert(candidates, agent)
         end
     end
-    if #candidates == 0 then
-        return nil
-    elseif #candidates > 1 then
+    if #candidates > 1 then
         for i, agent in ipairs(candidates) do
             if agent.hasTag("Swordmaster") then
                 table.remove(candidates, i)
@@ -614,17 +660,17 @@ function MainBoard._findProperAgent(color)
             end
         end
     end
-    return candidates[1]
+    return #candidates > 0 and candidates[1] or nil
 end
 
 ---
-function MainBoard.sendSpy(color, observationPostName)
+function MainBoard.sendSpy(color, observationPostName, deepCover)
     local observationPost = MainBoard.observationPosts[observationPostName]
     assert(observationPost, observationPostName)
 
     local spyPark = PlayBoard.getSpyPark(color)
-    if not Park.isEmpty(spyPark) then
-        Helper.emitEvent("spySent", color, observationPostName)
+    if deepCover or not Park.isEmpty(spyPark) then
+        Helper.emitEvent("spySent", color, observationPostName, deepCover)
         Park.transfert(1, spyPark, observationPost.park)
         return true
     else
@@ -800,7 +846,7 @@ function MainBoard.sendRivalAgent(color, spaceName)
     if not Park.isEmpty(PlayBoard.getAgentPark(color)) then
         local agentPark = PlayBoard.getAgentPark(color)
         Helper.emitEvent("agentSent", color, spaceName)
-        Action.setContext("agentSent", { space = spaceName })
+        Action.setContext("agentDestination", { space = spaceName })
         Park.transfert(1, agentPark, space.park)
         return true
     else
@@ -817,6 +863,7 @@ end
 ---
 function MainBoard._checkGenericAccess(color, leader, requirements)
     if PlayBoard.isRival(color) then
+        Helper.dump(color .. "player is a rival?!")
         return true
     end
 
@@ -872,7 +919,8 @@ function MainBoard._goSecrets(color, leader, continuation)
         leader.drawIntrigues(color, 1)
         for _, otherColor in ipairs(PlayBoard.getActivePlayBoardColors()) do
             if otherColor ~= color then
-                if #PlayBoard.getIntrigues(otherColor) > 3 then
+                local limit = PlayBoard.hasTech(otherColor, "geneLockedVault") and 4 or 3
+                if #PlayBoard.getIntrigues(otherColor) > limit then
                     leader.stealIntrigues(color, otherColor, 1)
                 end
             end
@@ -1102,7 +1150,7 @@ end
 function MainBoard._goAssemblyHall(color, leader, continuation)
     continuation.run(function ()
         leader.drawIntrigues(color, 1)
-        leader.resources(color, "persuasion", 1)
+        PlayBoard.getResource(color, "persuasion"):setBaseValueContribution("assemblyHall", 1)
     end)
 end
 
@@ -1178,7 +1226,7 @@ end
 
 ---
 function MainBoard._goSietchTabr(color, leader, continuation)
-    if MainBoard._checkGenericAccess(color, leader, { friendship = "fremen" }) then
+    if MainBoard._checkGenericAccess(color, leader, leader.name == "lietKynes" and {} or { friendship = "fremen" }) then
         local options = {
             PlayBoard.canTakeMakerHook(color) and I18N("hookTroopWaterOption") or I18N("troopWaterOption"),
             I18N("waterShieldWallOption"),
@@ -1200,7 +1248,7 @@ end
 
 ---
 function MainBoard._goSietchTabr_HookTroopWater(color, leader, continuation)
-    if MainBoard._checkGenericAccess(color, leader, { friendship = "fremen" }) then
+    if MainBoard._checkGenericAccess(color, leader, leader.name == "lietKynes" and {} or { friendship = "fremen" }) then
         continuation.run(function ()
             leader.takeMakerHook(color)
             leader.troops(color, "supply", "garrison", 1)
@@ -1213,7 +1261,7 @@ end
 
 ---
 function MainBoard._goSietchTabr_WaterShieldWall(color, leader, continuation)
-    if MainBoard._checkGenericAccess(color, leader, { friendship = "fremen" }) then
+    if MainBoard._checkGenericAccess(color, leader, leader.name == "lietKynes" and {} or { friendship = "fremen" }) then
         continuation.run(function ()
             leader.resources(color, "water", 1)
             MainBoard.blowUpShieldWall(color, true)
@@ -1392,6 +1440,38 @@ function MainBoard._goImperialBasin(color, leader, continuation)
 end
 
 ---
+function MainBoard._goTuekSietch(color, leader, continuation)
+    local options = {
+        I18N("withSpiceOption"),
+        I18N("withDrawOption"),
+    }
+    Dialog.showOptionsAndCancelDialog(color, I18N("goTuekSietch"), options, continuation, function (index)
+        if index == 1 then
+            MainBoard._goTuekSietch_WithSpice(color, leader, continuation)
+        elseif index == 2 then
+            MainBoard._goTuekSietch_WithDraw(color, leader, continuation)
+        else
+            assert(index == 0)
+            continuation.run()
+        end
+    end)
+end
+
+---
+function MainBoard._goTuekSietch_WithSpice(color, leader, continuation)
+    leader.resources(color, "spice", 1)
+    MainBoard._anySpiceSpace(color, leader, 0, 0, MainBoard.spiceBonuses.tuekSietch, continuation, function ()
+    end)
+end
+
+---
+function MainBoard._goTuekSietch_WithDraw(color, leader, continuation)
+    leader.drawImperiumCards(color, 1)
+    MainBoard._anySpiceSpace(color, leader, 0, 0, MainBoard.spiceBonuses.tuekSietch, continuation, function ()
+    end)
+end
+
+---
 function MainBoard._anySpiceSpace(color, leader, waterCost, spiceBaseAmount, spiceBonus, continuation, additionalAction)
     if MainBoard._checkGenericAccess(color, leader, { water = waterCost }) then
         continuation.run(function ()
@@ -1538,14 +1618,14 @@ end
 
 function MainBoard._goTechNegotiation_Buy(color, leader, continuation)
     continuation.run(function ()
-        leader.resources(color, "persuasion", 1)
+        PlayBoard.getResource(color, "persuasion"):setBaseValueContribution("techNegotiation", 1)
         TechMarket.registerAcquireTechOption(color, "techNegotiationTechBuyOption", "spice", 1)
     end)
 end
 
 function MainBoard._goTechNegotiation_Negotiate(color, leader, continuation)
     continuation.run(function ()
-        leader.resources(color, "persuasion", 1)
+        PlayBoard.getResource(color, "persuasion"):setBaseValueContribution("techNegotiation", 1)
         leader.troops(color, "supply", "negotiation", 1)
     end)
 end
@@ -1728,19 +1808,27 @@ function MainBoard.isFactionSpace(spaceName)
 end
 
 ---
-function MainBoard.isCitySpace(spaceName)
+function MainBoard.isLandsraadSpace(spaceName)
     return MainBoard.spaceDetails[spaceName].group == "city"
+end
+
+---
+function MainBoard.isGreenSpace(spaceName)
+    return Helper.isElementOf(MainBoard.spaceDetails[spaceName].group, { "landsraad", "ix" })
+end
+
+function MainBoard.isBlueSpace(spaceName)
+    return MainBoard.spaceDetails[spaceName].group == "city"
+end
+
+---
+function MainBoard.isYellowSpace(spaceName)
+    return Helper.isElementOf(MainBoard.spaceDetails[spaceName].group, { "desert", "choam" })
 end
 
 --- aka Maker space
 function MainBoard.isDesertSpace(spaceName)
     return MainBoard.spaceDetails[spaceName].group == "desert"
-end
-
----
-function MainBoard.isSpiceTradeSpace(spaceName)
-    return MainBoard.isDesertSpace(spaceName)
-        or MainBoard.isCHOAMSpace(spaceName)
 end
 
 ---
@@ -1757,6 +1845,11 @@ function MainBoard.getEmperorSpaces()
         end
     end
     return emperorSpaces
+end
+
+---
+function MainBoard.getGreenSpaces()
+    return Helper.filter(Helper.getKeys(MainBoard.spaceDetails), MainBoard.isGreenSpace)
 end
 
 ---

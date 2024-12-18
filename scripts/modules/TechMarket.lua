@@ -12,6 +12,7 @@ local Types = Module.lazyRequire("Types")
 local Commander = Module.lazyRequire("Commander")
 local TechCard = Module.lazyRequire("TechCard")
 local Action = Module.lazyRequire("Action")
+local Board = Module.lazyRequire("Board")
 
 local TechMarket = {
     negotiationParks = {},
@@ -20,36 +21,30 @@ local TechMarket = {
 
 ---
 function TechMarket.onLoad(state)
-    Helper.append(TechMarket, Helper.resolveGUIDs(false, {
-        board = "d75455",
-        negotiationZone = "2253fa",
-        techSlots = {
-            "7e131d",
-            "5a22f7",
-            "9c81c1"
-        },
-    }))
-
-    Helper.noPhysicsNorPlay(TechMarket.board)
-
-    if state.settings and state.settings.riseOfIx then
-        TechMarket.hagalSoloModeEnabled = state.TechMarket.hagalSoloModeEnabled
+    if state.settings and (state.settings.riseOfIx or state.settings.ixAmbassy) then
         TechMarket._transientSetUp(state.settings)
     end
 end
 
 ---
-function TechMarket.onSave(state)
-    state.TechMarket = {
-        hagalSoloModeEnabled = TechMarket.hagalSoloModeEnabled
-    }
-end
-
----
 function TechMarket.setUp(settings)
-    if settings.riseOfIx then
-        TechMarket.hagalSoloModeEnabled = settings.numberOfPlayers == 1
-        Deck.generateTechDeck(TechMarket.techSlots).doAfter(function (decks)
+    if settings.riseOfIx or settings.ixAmbassy then
+        if settings.ixAmbassy then
+            TechMarket.board = Board.selectBoard("ixAmbassyBoard", settings.language)
+            Board.destructBoard("ixBoard")
+        else
+            TechMarket.board = Board.selectBoard("ixBoard", settings.language)
+            Board.destructBoard("ixAmbassyBoard")
+        end
+
+        TechMarket._transientSetUp(settings)
+
+        Deck.generateTechDeck(
+            TechMarket.techSlots,
+            settings.contracts,
+            settings.riseOfIx or settings.ixAmbassyWithIx,
+            settings.bloodlines and settings.ixAmbassy)
+        .doAfter(function (decks)
             for _, deck in ipairs(decks) do
                 deck.interactable = false
             end
@@ -57,8 +52,6 @@ function TechMarket.setUp(settings)
             if TechMarket.hagalSoloModeEnabled then
                 Helper.onceTimeElapsed(1).doAfter(TechMarket.pruneStacksForSoloMode)
             end
-
-            TechMarket._transientSetUp(settings)
         end)
     else
         TechMarket._tearDown()
@@ -67,12 +60,18 @@ end
 
 ---
 function TechMarket._transientSetUp(settings)
-    for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
-        if not Commander.isCommander(color) then
-            TechMarket.negotiationParks[color] = TechMarket._createNegotiationPark(color)
+    TechMarket._processSnapPoints()
+
+    TechMarket.hagalSoloModeEnabled = settings.numberOfPlayers == 1
+
+    if settings.riseOfIx then
+        for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
+            if not Commander.isCommander(color) then
+                TechMarket.negotiationParks[color] = TechMarket._createNegotiationPark(color)
+            end
         end
+        TechMarket._createNegotiationButton()
     end
-    TechMarket._createNegotiationButton()
 
     TechMarket.acquireCards = {}
     for i, zone in ipairs(TechMarket.techSlots) do
@@ -86,17 +85,63 @@ function TechMarket._transientSetUp(settings)
 
     Helper.registerEventListener("agentSent", function (color, spaceName)
         TechMarket.acquireTechOptions = {}
+        if MainBoard.isGreenSpace(spaceName) then
+            local discount = PlayBoard.hasHighCouncilSeat(color) and 1 or 0
+            TechMarket.registerAcquireTechOption(color, "ixAmbassyTechBuyOption", "spice", discount)
+        end
+    end)
+
+    Helper.registerEventListener("highCouncilSeatTaken", function (color)
+        if TechMarket.acquireTechOptions["ixAmbassyTechBuyOption"] then
+            TechMarket.registerAcquireTechOption(color, "ixAmbassyTechBuyOption", "spice", 1)
+        end
+        TechMarket.setContributions(color)
     end)
 end
 
 ---
+function TechMarket.setContributions(color)
+    local contributions = TechCard.evaluatePreReveal(color)
+    PlayBoard.getResource(color, "persuasion"):setBaseValueContribution("techTiles", contributions.persuasion or 0)
+    PlayBoard.getResource(color, "strength"):setBaseValueContribution("techTiles", contributions.strength or 0)
+end
+
+---
 function TechMarket._tearDown()
-    TechMarket.board.destruct()
-    TechMarket.board = nil
-    TechMarket.negotiationZone.destruct()
-    for _, techSlot in ipairs(TechMarket.techSlots) do
-        techSlot.destruct()
-    end
+    Board.destructBoard("ixBoard")
+    Board.destructBoard("ixAmbassyBoard")
+end
+
+---
+function TechMarket._processSnapPoints()
+    TechMarket.techSlots = {}
+    TechMarket.negotiatorSlot = nil
+
+    Helper.collectSnapPoints(TechMarket.board, {
+
+        slotTech = function (name, position)
+            local index = tonumber(name)
+            assert(index, "Not a number: " .. name)
+            local zone = spawnObject({
+                type = 'ScriptingTrigger',
+                position = position,
+                rotation = Vector(0, 0, 0),
+                scale = { 2.8, 2.0, 1.8 }
+            })
+            Helper.markAsTransient(zone)
+            TechMarket.techSlots[index] = zone
+        end,
+
+        slotNegotiator = function (name, position)
+            local zone = spawnObject({
+                type = 'ScriptingTrigger',
+                position = position,
+                rotation = Vector(0, 0, 0),
+                scale = { 2.0, 2.0, 2.0 }
+            })
+            TechMarket.negotiationZone = zone
+        end
+    })
 end
 
 ---
@@ -175,8 +220,12 @@ function TechMarket._doAcquireTech(stackIndex, color)
         innerContinuation.doAfter(function (success)
             if success then
                 if color then
-                    PlayBoard.grantTechTile(color, techTileStack.topCard)
-                    TechCard.applyBuyEffect(color, techTileStack.topCard)
+                    local techCard = techTileStack.topCard
+                    PlayBoard.grantTechTile(color, techCard)
+                    -- Async simply to avoid an exception to break the whole market.
+                    Helper.onceFramesPassed(1).doAfter(function ()
+                        TechCard.applyBuyEffect(color, techCard)
+                    end)
                 end
                 Helper.onceTimeElapsed(0.5).doAfter(function ()
                     if techTileStack.otherCards then
@@ -251,7 +300,7 @@ function TechMarket._doBuyTech(techTileStack, option, color)
     local recalledNegociatorCount
     local adjustedTechCost
 
-    if optionDetails.resourceType == "spice" then
+    if negotiation and optionDetails.resourceType == "spice" then
         local negotiatorCount = #Park.getObjects(negotiation)
 
         adjustedTechCost = math.max(0, techCost - discountAmount - negotiatorCount)
@@ -265,7 +314,9 @@ function TechMarket._doBuyTech(techTileStack, option, color)
     if leader.resources(color, optionDetails.resourceType, -adjustedTechCost) then
 
         local supply = PlayBoard.getSupplyPark(color)
-        Park.transfert(recalledNegociatorCount, negotiation, supply)
+        if recalledNegociatorCount > 0 then
+            Park.transfert(recalledNegociatorCount, negotiation, supply)
+        end
 
         TechMarket.acquireTechOptions[option] = nil
 
@@ -286,6 +337,33 @@ function TechMarket.getTopCardDetails(stackIndex)
     local techTileStack = TechMarket._getTechTileStack(stackIndex)
     if techTileStack.topCard then
         return TechCard.getDetails(techTileStack.topCard)
+    end
+    return nil
+end
+
+---
+function TechMarket.getBottomCardDetails(stackIndex)
+    local techTileStack = TechMarket._getTechTileStack(stackIndex)
+    if techTileStack.otherCards then
+        local cards = techTileStack.otherCards.getObjects()
+        local bottomCard = cards[#cards]
+        return Helper.getID(bottomCard)
+    end
+    return nil
+end
+
+---
+function TechMarket.grapBottomCard(stackIndex, position)
+    local techTileStack = TechMarket._getTechTileStack(stackIndex)
+    if techTileStack.otherCards then
+        local cards = techTileStack.otherCards.getObjects()
+        local bottomCard = cards[#cards]
+        local parameters = {
+            guid = bottomCard.guid,
+            position = position,
+            smooth = false,
+        }
+        return techTileStack.otherCards.takeObject(parameters)
     end
     return nil
 end
@@ -371,11 +449,13 @@ end
 
 ---
 function TechMarket.getNegotiationPark(color)
+    assert(TechMarket.negotiationParks, "Missing Rise of Ix extension!")
     return TechMarket.negotiationParks[color]
 end
 
 ---
 function TechMarket.addNegotiator(color)
+    assert(TechMarket.negotiationParks, "Missing Rise of Ix extension!")
     local supply = PlayBoard.getSupplyPark()
     local negotiation = TechMarket.negotiationParks[color]
     return Park.transfert(1, supply, negotiation) > 0
@@ -383,6 +463,7 @@ end
 
 ---
 function TechMarket.removeNegotiator(color)
+    assert(TechMarket.negotiationParks, "Missing Rise of Ix extension!")
     local supply = PlayBoard.getSupplyPark()
     local negotiation = TechMarket.negotiationParks[color]
     return Park.transfert(1, negotiation, supply) > 0

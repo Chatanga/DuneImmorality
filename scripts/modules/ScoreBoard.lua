@@ -5,7 +5,6 @@ local I18N = require("utils.I18N")
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local Combat = Module.lazyRequire("Combat")
 local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
-local TleilaxuResearch = Module.lazyRequire("TleilaxuResearch")
 
 local ScoreBoard = {
     tokens = {}
@@ -72,8 +71,8 @@ function ScoreBoard.onLoad(state)
         },
         ix = {
             sayyadinaBag = "9193f5",
-            detonationDevicesBag = "4cc3d5",
             ixianEngineerBag = "4ae3de",
+            detonationDevicesBag = "4cc3d5",
             flagship = "692480",
             spySatellites = "c94718",
             techEndgameBag = "3e2ce6",
@@ -82,6 +81,10 @@ function ScoreBoard.onLoad(state)
             scientificBreakthrough = "b56adc",
             tleilaxBag = "37ceab",
             forHumanityBag = "6e2a13"
+        },
+        bloodlines = {
+            sardaukarHighCommand = "d26909",
+            navigation = "a30c10"
         },
     })
 
@@ -96,11 +99,12 @@ function ScoreBoard.setUp(settings)
         base = true,
         legacy = settings.legacy,
         hagal = settings.numberOfPlayers <= 2,
-        ix = settings.riseOfIx,
+        ix = settings.riseOfIx or settings.ixAmbassyWithIx,
         immortality = settings.immortality,
+        bloodlines = settings.bloodlines,
     }
 
-    for _, category in ipairs({ "base", "legacy", "hagal", "ix", "immortality" }) do
+    for _, category in ipairs({ "base", "legacy", "hagal", "ix", "immortality", "bloodlines" }) do
         if activateCategories[category] then
             Helper.forEachRecursively(ScoreBoard.tokens[category], function (name, token)
                 assert(token)

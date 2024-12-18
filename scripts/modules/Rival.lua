@@ -1,6 +1,7 @@
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local I18N = require("utils.I18N")
+local Park = require("utils.Park")
 
 local Action = Module.lazyRequire("Action")
 local Hagal = Module.lazyRequire("Hagal")
@@ -11,6 +12,7 @@ local ShippingTrack = Module.lazyRequire("ShippingTrack")
 local TechMarket = Module.lazyRequire("TechMarket")
 local Intrigue = Module.lazyRequire("Intrigue")
 local HagalCard = Module.lazyRequire("HagalCard")
+local Types = Module.lazyRequire("Types")
 
 local Rival = Helper.createClass(Action)
 
@@ -24,6 +26,7 @@ end
 
 ---
 function Rival.triggerHagalReaction(color)
+    Helper.dumpFunction("Rival.triggerHagalReaction", color)
     local continuation = Helper.createContinuation("Rival.triggerHagalReaction")
 
     local coroutineHolder = {}
@@ -208,6 +211,18 @@ function Rival.influence(color, indexOrfactionOrFactions, amount)
 end
 
 ---
+function Rival._gainAllianceIfAble(color, amount)
+    local factions = {}
+    for _, faction in ipairs({ "emperor", "spacingGuild", "beneGesserit", "fremen" }) do
+        local cost = InfluenceTrack.getAllianceCost(color, faction)
+        if cost <= amount then
+            table.insert(factions, faction)
+        end
+    end
+    Rival.influence(color, #factions > 0 and factions or nil, amount)
+end
+
+---
 function Rival.shipments(color, amount)
     Helper.repeatChainedAction(amount, function ()
         local level = ShippingTrack.getFreighterLevel(color)
@@ -217,9 +232,9 @@ function Rival.shipments(color, amount)
             Rival.recallFreighter(color)
             Rival.influence(color, nil, 1)
             if PlayBoard.hasTech(color, "troopTransports") then
-                Action.troops(color, "supply", "combat", 3)
+                Rival.troops(color, "supply", "combat", 3)
             else
-                Action.troops(color, "supply", "garrison", 2)
+                Rival.troops(color, "supply", "garrison", 2)
             end
             Rival.resources(color, "solari", 5)
             for _, otherColor in ipairs(PlayBoard.getActivePlayBoardColors()) do
@@ -263,7 +278,11 @@ function Rival.acquireTech(color, stackIndex, discount)
     if Action.acquireTech(color, finalStackIndex, discount) then
         if tech.name == "trainingDrones" then
             if PlayBoard.useTech(color, "trainingDrones") then
-                Action.troops(color, "supply", "garrison", 1)
+                Rival.troops(color, "supply", "garrison", 1)
+            end
+        elseif tech.name == "spyDrones" then
+            if PlayBoard.useTech(color, "spyDrones") then
+                Rival.resources(color, "solari", 1)
             end
         end
         return true
@@ -286,11 +305,13 @@ function Rival.choose(color, topic)
         Helper.repeatChainedAction(2, function ()
             return Rival.influence(color, factions, 1)
         end)
+    elseif Helper.isElementOf(topic, { "geneLockedVault" }) then
+        Rival.drawIntrigues(color, 1)
     end
 end
 
 ---
-function Action.decide(color, topic)
+function Rival.decide(color, topic)
     return true
 end
 
@@ -307,13 +328,13 @@ function Rival.resources(color, nature, amount)
 end
 
 ---
-function Rival.sendSpy(color, observationPostName)
+function Rival.sendSpy(color, observationPostName, deepCover)
     local rival = PlayBoard.getLeader(color)
     local finalObservationPostName = observationPostName
     if not finalObservationPostName then
         for _, faction in ipairs(rival.factionPriorities) do
             -- Observation posts in faction spaces have the same name as the faction.
-            if not MainBoard.observationPostIsOccupied(faction) then
+            if not MainBoard.observationPostIsOccupied(faction, deepCover and color or nil) then
                 finalObservationPostName = faction
                 break
             end
@@ -321,13 +342,42 @@ function Rival.sendSpy(color, observationPostName)
     end
     if finalObservationPostName then
         local recallableSpies = MainBoard.findRecallableSpies(color)
-        if Action.sendSpy(color, finalObservationPostName) then
+        if Action.sendSpy(color, finalObservationPostName, deepCover) then
             rival.recallableSpies = recallableSpies
             return true
         end
     else
         Helper.dump("No free observation post!")
     end
+    return false
+end
+
+---
+function Rival.troops(color, from, to, baseCount)
+    local finalCount = baseCount
+    if from == "garrison" and to == "combat" then
+        local garrison = Action.getTroopPark(color, "garrison")
+        local sardaukarCommanders = Park.getObjects(garrison, function (object, tags)
+            return Types.isSardaukarCommander(object, color)
+        end)
+        local count = #sardaukarCommanders
+        if count > 0 then
+            Action.log(I18N("transfer", {
+                count = count,
+                what = I18N.agree(count, "sardaukarCommander"),
+                from = I18N("garrisonPark"),
+                to = I18N("combatPark"),
+            }), color)
+            local combat = Action.getTroopPark(color, "combat")
+            Park.putObjects(sardaukarCommanders, combat)
+            finalCount = baseCount - count
+        end
+    end
+    return Action.troops(color, from, to, finalCount)
+end
+
+---
+function Rival.isStreamlined()
     return false
 end
 
@@ -368,14 +418,7 @@ Rival.glossuRabban = Helper.createClass(Rival, {
     end,
 
     scheme = function (color)
-        local factions = {}
-        for _, faction in ipairs({ "emperor", "spacingGuild", "beneGesserit", "fremen" }) do
-            local cost = InfluenceTrack.getAllianceCost(color, faction)
-            if cost == 1 or cost == 2 then
-                table.insert(factions, faction)
-            end
-        end
-        Rival.influence(color, #factions > 0 and factions or nil, 2)
+        Rival._gainAllianceIfAble(color, 2)
     end,
 
     gainVictoryPoint = function (color, name, count)
@@ -385,6 +428,10 @@ Rival.glossuRabban = Helper.createClass(Rival, {
         else
             return false
         end
+    end,
+
+    isStreamlined = function ()
+        return true
     end,
 })
 
@@ -434,6 +481,10 @@ Rival.amberMetulli = Helper.createClass(Rival, {
         else
             return false
         end
+    end,
+
+    isStreamlined = function ()
+        return true
     end,
 })
 
@@ -520,14 +571,7 @@ Rival.jessica = Helper.createClass(Rival, {
     },
 
     signetRing = function (color)
-        local factions = {}
-        for _, faction in ipairs({ "emperor", "spacingGuild", "beneGesserit", "fremen" }) do
-            local cost = InfluenceTrack.getAllianceCost(color, faction)
-            if cost == 1 then
-                table.insert(factions, faction)
-            end
-        end
-        Rival.influence(color, #factions > 0 and factions or nil, 1)
+        Rival._gainAllianceIfAble(color, 1)
     end,
 
     scheme = function (color)
@@ -574,6 +618,149 @@ Rival.muadDib = Helper.createClass(Rival, {
         Rival.takeMakerHook(color)
         MainBoard.blowUpShieldWall(color, true)
         Rival.drawIntrigues(color, 1)
+    end,
+})
+
+Rival.duncanIdaho = Helper.createClass(Rival, {
+
+    swordmasterCost = 8,
+
+    factionPriorities = {
+        "fremen",
+        "beneGesserit",
+        "spacingGuild",
+        "emperor",
+    },
+
+    signetRing = function (color)
+        Rival.troops(color, "supply", "garrison", 1)
+        if PlayBoard.hasSwordmaster(color) then
+            Rival.resources(color, "spice", 1)
+        end
+    end,
+
+    scheme = function (color)
+        Rival.influence(color, "fremen", 1)
+    end,
+})
+
+Rival.piterDeVries = Helper.createClass(Rival, {
+
+    swordmasterCost = 7,
+
+    factionPriorities = {
+        "spacingGuild",
+        "emperor",
+        "beneGesserit",
+        "fremen",
+    },
+
+    signetRing = function (color)
+        Rival.resources(color, "solari", 1)
+        if InfluenceTrack.hasAnyAlliance(color) then
+            Rival.drawIntrigues(color, 1)
+        end
+    end,
+
+    scheme = function (color)
+        Rival.influence(color, nil, 1)
+        Rival.resources(color, "solari", 1)
+    end,
+})
+
+Rival.chani = Helper.createClass(Rival, {
+
+    swordmasterCost = 6,
+
+    factionPriorities = {
+        "fremen",
+        "spacingGuild",
+        "beneGesserit",
+        "emperor",
+    },
+
+    signetRing = function (color)
+        Rival.resources(color, "water", 1)
+    end,
+
+    scheme = function (color)
+        local collectedSpiceAmount = 0
+        for _, otherColor in ipairs(PlayBoard.getActivePlayBoardColors()) do
+            if color ~= otherColor then
+                if PlayBoard.getLeader(otherColor).resources(otherColor, "spice", -1) then
+                    collectedSpiceAmount = collectedSpiceAmount + 1
+                end
+            end
+        end
+        Rival.resources(color, "spice", collectedSpiceAmount)
+    end,
+})
+
+Rival.hasimirFenring = Helper.createClass(Rival, {
+
+    swordmasterCost = 5,
+
+    factionPriorities = {
+        "emperor",
+        "beneGesserit",
+        "spacingGuild",
+        "fremen",
+    },
+
+    signetRing = function (color)
+        Rival.resources(color, "solari", 1)
+        Rival.troops(color, "supply", "garrison", 1)
+    end,
+
+    scheme = function (color)
+        Rival.drawIntrigues(color, 1)
+        Rival.resources(color, "solari", 3)
+    end,
+})
+
+Rival.gaiusHelenMohiam = Helper.createClass(Rival, {
+
+    swordmasterCost = 4,
+
+    factionPriorities = {
+        "beneGesserit",
+        "emperor",
+        "fremen",
+        "spacingGuild",
+    },
+
+    signetRing = function (color)
+        Helper.dumpFunction("Rival.gaiusHelenMohiam.signetRing")
+        Rival.sendSpy(color)
+        Rival.troops(color, "supply", "garrison", 1)
+    end,
+
+    scheme = function (color)
+        Rival.drawIntrigues(color, 1)
+        Rival._gainAllianceIfAble(color, 1)
+    end,
+})
+
+Rival.kotaOdax = Helper.createClass(Rival, {
+
+    swordmasterCost = 7,
+
+    factionPriorities = {
+        "spacingGuild",
+        "beneGesserit",
+        "fremen",
+        "emperor",
+    },
+
+    signetRing = function (color)
+        Rival.resources(color, "spice", 1)
+        TechMarket.registerAcquireTechOption(color, "kotaOdaxSignetRingTechBuyOption", "spice", 1)
+        Rival.acquireTech(color, nil, 1)
+    end,
+
+    scheme = function (color)
+        Rival.influence(color, nil, 1)
+        Rival.resources(color, "spice", 2)
     end,
 })
 

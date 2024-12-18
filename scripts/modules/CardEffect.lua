@@ -45,6 +45,7 @@ local draw = CardEffect.draw
 local shipment = CardEffect.shipment
 local control = CardEffect.control
 local spy = CardEffect.spy
+local deepCoverSpy = CardEffect.deepCoverSpy
 local contract = CardEffect.contract
 local voice = CardEffect.voice
 local perDreadnoughtInConflict = CardEffect.perDreadnoughtInConflict
@@ -53,12 +54,15 @@ local perFremen = CardEffect.perFremen
 local choice = CardEffect.choice
 local optional = CardEffect.optional
 local seat = CardEffect.seat
+local opponentHasSandworm = CardEffect.opponentHasSandworm
 local fremenBond = CardEffect.fremenBond
 local agentInEmperorSpace = CardEffect.agentInEmperorSpace
+local agentInGreenSpace = CardEffect.agentInGreenSpace
 local emperorAlliance = CardEffect.emperorAlliance
 local spacingGuildAlliance = CardEffect.spacingGuildAlliance
 local beneGesseritAlliance = CardEffect.beneGesseritAlliance
 local fremenAlliance = CardEffect.fremenAlliance
+local emperorSuperFriendship = CardEffect.emperorSuperFriendship
 local fremenFriendship = CardEffect.fremenFriendship
 local anyAlliance = CardEffect.anyAlliance
 local oneHelix = CardEffect.oneHelix
@@ -67,6 +71,10 @@ local winner = CardEffect.winner
 local twoSpies = CardEffect.twoSpies
 local spyMakerSpace = CardEffect.spyMakerSpace
 local swordmaster = CardEffect.swordmaster
+local hasSardaukarCommanderInConflict = CardEffect.hasSardaukarCommanderInConflict
+local command = CardEffect.command
+local garrisonQuad = CardEffect.garrisonQuad
+local twoTechs = CardEffect.twoTechs
 local multiply = CardEffect.multiply
 ]]
 
@@ -132,11 +140,11 @@ function CardEffect._dispatch(selector, expression)
             return false
         elseif selector == "beetle" then
             return call("beetle", color, value)
-        elseif selector == "spy" then
+        elseif selector == "spy" or selector == "deepCoverSpy" then
             assert(type(value) == "number")
             if value >= 0 then
                 for _ = 1, value do
-                    call("sendSpy", color)
+                    call("sendSpy", color, nil, selector == "deepCoverSpy")
                 end
                 return true
             else
@@ -244,6 +252,10 @@ function CardEffect.spy(expression)
     return CardEffect._dispatch('spy', expression)
 end
 
+function CardEffect.deepCoverSpy(expression)
+    return CardEffect._dispatch('deepCoverSpy', expression)
+end
+
 function CardEffect.contract(expression)
     return CardEffect._dispatch('contract', expression)
 end
@@ -262,22 +274,16 @@ end
 
 function CardEffect.perSwordCard(expression, cardExcluded)
     return function (context)
-        if context.fake then
-            return 0
-        end
-        local allCards = Set.newFromList(Helper.concatTables(context.playedCards, context.revealedCards))
-        local count = 0
-        for _, card in ipairs(context.revealedCards) do
-            if card.reveal and (not cardExcluded or card ~= context.card) then
-                -- Special case here of a recursive call.
-                local fakePlayedCards = (allCards - Set.newFromItems(card)):toList()
-                local output = ImperiumCard.evaluateReveal2(context.color, fakePlayedCards, { card }, false)
+        local swordCount = 0
+        if not context.oldContributions then
+            -- Special case here of a recursive call.
+            CardEffect._reapply(context, cardExcluded, function (output)
                 if output.strength and output.strength > 0 then
-                    count = count + 1
+                    swordCount = swordCount + 1
                 end
-            end
+            end)
         end
-        return CardEffect.evaluate(context, expression) * count
+        return CardEffect.evaluate(context, expression) * swordCount
     end
 end
 
@@ -350,6 +356,17 @@ function CardEffect.seat(expression)
     end)
 end
 
+function CardEffect.opponentHasSandworm(expression)
+    return CardEffect._filter(expression, function (context)
+        for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
+            if context.color ~= color and Combat.hasAnySandworm(color) then
+                return true
+            end
+        end
+        return false
+    end)
+end
+
 function CardEffect.fremenBond(expression)
     return CardEffect._filter(expression, function (context)
         for _, card in ipairs(Helper.concatTables(context.playedCards, context.revealedCards)) do
@@ -364,6 +381,17 @@ end
 function CardEffect.agentInEmperorSpace(expression)
     return CardEffect._filter(expression, function (context)
         for _, space in ipairs(MainBoard.getEmperorSpaces()) do
+            if MainBoard.hasAgentInSpace(space, context.color) then
+                return true
+            end
+        end
+        return false
+    end)
+end
+
+function CardEffect.agentInGreenSpace(expression)
+    return CardEffect._filter(expression, function (context)
+        for _, space in ipairs(MainBoard.getGreenSpaces()) do
             if MainBoard.hasAgentInSpace(space, context.color) then
                 return true
             end
@@ -392,6 +420,16 @@ end
 
 function CardEffect.fremenAlliance(expression)
     return CardEffect._alliance("fremen", expression)
+end
+
+function CardEffect._superFriendShip(faction, expression)
+    return CardEffect._filter(expression, function (context)
+        return InfluenceTrack.hasSuperFriendship(context.color, faction)
+    end)
+end
+
+function CardEffect.emperorSuperFriendship(expression)
+    return CardEffect._superFriendShip("emperor", expression)
 end
 
 function CardEffect._friendShip(faction, expression)
@@ -447,6 +485,39 @@ function CardEffect.swordmaster(expression)
     end)
 end
 
+function CardEffect.hasSardaukarCommanderInConflict(expression)
+    return CardEffect._filter(expression, function (context)
+        return Combat.hasAnySardaukarCommander(context.color)
+    end)
+end
+
+function CardEffect.command(expression)
+    return CardEffect._filter(expression, function (context)
+        local persuasion = 0
+        if context.oldContributions then
+            persuasion = context.oldContributions.persuasion or 0
+        else
+            -- Special case here of a recursive call.
+            CardEffect._reapply(context, true, function (output)
+                persuasion = persuasion + (output.persuasion or 0)
+            end)
+        end
+        return persuasion >= 6
+    end)
+end
+
+function CardEffect.garrisonQuad(expression)
+    return CardEffect._filter(expression, function (context)
+        return (Combat.getUnitCounts()[context.color] or 0) >= 4
+    end)
+end
+
+function CardEffect.twoTechs(expression)
+    return CardEffect._filter(expression, function (context)
+        return #PlayBoard.getAllTechs(context.color) >= 2
+    end)
+end
+
 function CardEffect.multiply(...)
     local expressions = {...}
     return function (context)
@@ -456,6 +527,23 @@ function CardEffect.multiply(...)
         end
         return result
     end
+end
+
+--- Internal
+
+function CardEffect._reapply(context, cardExcluded, processor)
+    if not context.depth or context.depth > 1 then
+        return false
+    end
+    local allCards = Set.newFromList(Helper.concatTables(context.playedCards, context.revealedCards))
+    for _, card in ipairs(context.revealedCards) do
+        if card.reveal and (not cardExcluded or card ~= context.card) then
+            local fakePlayedCards = (allCards - Set.newFromItems(card)):toList()
+            local output = ImperiumCard.evaluateRevealDirectly(context.depth + 1, context.color, fakePlayedCards, { card })
+            processor(output)
+        end
+    end
+    return true
 end
 
 return CardEffect

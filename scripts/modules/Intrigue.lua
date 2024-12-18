@@ -52,12 +52,14 @@ function Intrigue.drawIntrigues(color, amount)
     local orientedPosition = PlayBoard.getHandOrientedPosition(color)
     Helper.onceTimeElapsed(0.25, amount).doAfter(function ()
         Helper.moveCardFromZone(Intrigue.deckZone, orientedPosition.position, orientedPosition.rotation, false, true)
+        Intrigue.onIntrigueTaken(color)
     end)
 end
 
 ---
 function Intrigue.stealIntrigues(color, otherColor, amount)
     Types.assertIsPositiveInteger(amount)
+
     local victimName = PlayBoard.getLeaderName(otherColor)
 
     local intrigues = PlayBoard.getIntrigues(otherColor)
@@ -72,7 +74,18 @@ function Intrigue.stealIntrigues(color, otherColor, amount)
         card.setRotation(orientedPosition.rotation)
         local cardName = I18N(Helper.getID(card))
         Action.secretLog(I18N("stealIntrigues", { victim = victimName, card = cardName }), color)
+        Intrigue.onIntrigueTaken(color)
     end)
+end
+
+--- TODO To be reworked.
+function Intrigue.onIntrigueTaken(color)
+    local leader = PlayBoard.getLeader(color)
+    if PlayBoard.hasTech(color, "suspensorSuits") then
+        if leader.troops(color, "supply", "combat", 1) == 0 then
+            Helper.dump("Failed to deploy a troop in accordance to the suspensor suits.")
+        end
+    end
 end
 
 ---

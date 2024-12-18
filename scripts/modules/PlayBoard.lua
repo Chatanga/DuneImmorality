@@ -23,6 +23,9 @@ local Commander = Module.lazyRequire("Commander")
 local ConflictCard = Module.lazyRequire("ConflictCard")
 local ScoreBoard = Module.lazyRequire("ScoreBoard")
 local Action = Module.lazyRequire("Action")
+local SardaukarCommander = Module.lazyRequire("SardaukarCommander")
+local SardaukarCommanderSkillCard = Module.lazyRequire("SardaukarCommanderSkillCard")
+local TechCard = Module.lazyRequire("TechCard")
 
 local PlayBoard = Helper.createClass(nil, {
     ALL_RESOURCE_NAMES = { "spice", "water", "solari", "strength", "persuasion" },
@@ -91,6 +94,7 @@ local PlayBoard = Helper.createClass(nil, {
             endTurnButton = "895594",
             atomicsToken = "d5ff47",
             makerHook = "2a8414",
+            sardaukarMarker = "b8337b",
         },
         Blue = {
             board = "f23836",
@@ -155,6 +159,7 @@ local PlayBoard = Helper.createClass(nil, {
             endTurnButton = "9eeccd",
             atomicsToken = "700023",
             makerHook = "7011f2",
+            sardaukarMarker = "20842d",
         },
         Green = {
             board = "2facfd",
@@ -219,6 +224,7 @@ local PlayBoard = Helper.createClass(nil, {
             endTurnButton = "96aa58",
             atomicsToken = "0a22ec",
             makerHook = "0492e6",
+            sardaukarMarker = "dd6996",
         },
         Yellow = {
             board = "13b6cb",
@@ -283,6 +289,7 @@ local PlayBoard = Helper.createClass(nil, {
             endTurnButton = "3d1b90",
             atomicsToken = "7e10a9",
             makerHook = "a07d90",
+            sardaukarMarker = "25f3f2",
         },
         White = {
             board = "4ad196",
@@ -405,11 +412,6 @@ function PlayBoard.rebuild()
                 fourPlayerVictoryToken = symmetric(-11.2, 0, 8.1),
             },
             {
-                --[[
-                spice = offseted(-8.4, 0, 4.5),
-                solari = offseted(-4.4, 0, 4.5),
-                water = offseted(-6.4, 0, 4),
-                ]]
                 spice = offseted(-8.4, 0, 4),
                 solari = offseted(-6.4, 0, 4.5),
                 water = offseted(-4.4, 0, 4),
@@ -436,15 +438,17 @@ function PlayBoard.rebuild()
                     xOffset = symmetric(1.6, 0, 0),
                     yOffset = Vector(0, 0, 0),
                 },
-                councilToken = symmetric(1.35, 0, -0.6),
+                councilToken = symmetric(-0.5, 0, -0.6),
                 controlMarkerBag = symmetric(c1, 0, 4),
                 troops = {
-                    origin = symmetric(c1-0.5, 0, 1.8),
+                    origin = symmetric(c1 - 0.5, 0, 1.8),
                     width = 3,
                     height = 4,
                     xOffset = symmetric(0.5, 0, 0),
                     yOffset = Vector(0, 0, 0.5),
                 },
+                makerHook = symmetric(1.85, 0, 1.4),
+                sardaukarMarker = symmetric(1.8, 0, -0.6),
             },
             {
                 trash = symmetric(10, 0, 1),
@@ -508,11 +512,11 @@ function PlayBoard.rebuild()
             {
                 name = "Scoreboard",
                 url = colorSwitch(
-                    "https://steamusercontent-a.akamaihd.net/ugc/2502404390141335512/BD4C6DB374A73A3A1586E84DD94DD2459EB51782/",
-                    "https://steamusercontent-a.akamaihd.net/ugc/2502404390141335805/00AEA6A9B03D893B1BF82EFF392448FD52B8C70E/"),
-                position = symmetric2(1.4, 0.2, -8.1),
+                    "https://steamusercontent-a.akamaihd.net/ugc/28805470175239303/D9DC4354D5C11448C6A65AA8124CCE7637B07FCB/",
+                    "https://steamusercontent-a.akamaihd.net/ugc/28805470175239157/D7A62A0EDAFA86212F7C537376701E0BEC4F4D2A/"),
+                position = symmetric2(3.2, 0.2, -8.1),
                 rotation = { 90, 180, 0 },
-                scale = { 21.56, 1.1, 1.1 },
+                scale = { 17.96, 1.1, 1.1 },
             },
             {
                 name = "First Player Token Slot",
@@ -542,35 +546,40 @@ function PlayBoard.rebuild()
                 rotation = { 90, 180, 0 },
                 scale = { 5, 3.5, 3.5 },
             },
-            {
-                name = "MuadDib Objective Slot",
-                url = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141305375/52C4F6DEBC5F101B6663B833F1964BB9034A7C75/",
-                position = symmetric2(-3.4, 0.2, 0),
-                rotation = { 90, 180, 0 },
-                scale = { 1.1, 1.1, 1.1 },
-            },
-            {
-                name = "Crysknife Objective Slot",
-                url = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141304988/D455406509BD5D1C4387C102CBACC5BFB56FC59E/",
-                position = symmetric2(-4.8, 0.2, 0),
-                rotation = { 90, 180, 0 },
-                scale = { 1.1, 1.1, 1.1 },
-            },
-            {
-                name = "Ornithopter Objective Slot",
-                url = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141304687/E4E692FE0EF6AF7B51B5A31DAC5D0D7DC7859655/",
-                position = symmetric2(-6.2, 0.2, 0),
-                rotation = { 90, 180, 0 },
-                scale = { 1.1, 1.1, 1.1 },
-            },
-            {
-                name = "Joker Objective Slot",
-                url = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141304458/384109878E6ED179516CE638CE97167E12698A54/",
-                position = symmetric2(-7.6, 0.2, 0),
-                rotation = { 90, 180, 0 },
-                scale = { 1, 1, 1 },
-            },
         }
+
+        if Helper.isElementOf(color, { "Green", "Yellow", "Blue", "Red" }) then
+            decals = Helper.concatTables(decals, {
+                {
+                    name = "MuadDib Objective Slot",
+                    url = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141305375/52C4F6DEBC5F101B6663B833F1964BB9034A7C75/",
+                    position = symmetric2(-7.4, 0.2, -8.15),
+                    rotation = { 90, 180, 0 },
+                    scale = { 0.95, 0.95, 0.95 },
+                },
+                {
+                    name = "Crysknife Objective Slot",
+                    url = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141304988/D455406509BD5D1C4387C102CBACC5BFB56FC59E/",
+                    position = symmetric2(-8.6, 0.2, -8.15),
+                    rotation = { 90, 180, 0 },
+                    scale = { 0.95, 0.95, 0.95 },
+                },
+                {
+                    name = "Ornithopter Objective Slot",
+                    url = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141304687/E4E692FE0EF6AF7B51B5A31DAC5D0D7DC7859655/",
+                    position = symmetric2(-9.8, 0.2, -8.15),
+                    rotation = { 90, 180, 0 },
+                    scale = { 0.95, 0.95, 0.95 },
+                },
+                {
+                    name = "Joker Objective Slot",
+                    url = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141304458/384109878E6ED179516CE638CE97167E12698A54/",
+                    position = symmetric2(-11, 0.2, -8.15),
+                    rotation = { 90, 180, 0 },
+                    scale = { 0.95, 0.95, 0.95 },
+                },
+            })
+        end
 
         layoutGrid(3, 1, function (x, y)
             table.insert(decals, {
@@ -592,15 +601,37 @@ function PlayBoard.rebuild()
             })
         end)
 
-        layoutGrid(2, 3, function (x, y)
-            table.insert(decals, {
-                name = "Tech Tile Slot",
-                url = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141336300/6A948CDC20774D0D4E5EA0EFF3E0D2C23F30FCC1/",
-                position = symmetric2(-4 -3 * x, 0.2, -2 -2 * y),
-                rotation = { 90, 0, 0 },
-                scale = { 2.6, 1.8, 1.8 },
-            })
-        end)
+        if Helper.isElementOf(color, { "Green", "Yellow", "Blue", "Red" }) then
+            layoutGrid(2, 3, function (x, y)
+                table.insert(decals, {
+                    name = "Tech Tile Slot",
+                    url = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141336300/6A948CDC20774D0D4E5EA0EFF3E0D2C23F30FCC1/",
+                    position = symmetric2(-4 -3 * x, 0.2, -2.4 -2 * y),
+                    rotation = { 90, 0, 0 },
+                    scale = { 2.6, 1.8, 1.8 },
+                })
+            end)
+
+            layoutGrid(3, 1, function (x, y)
+                table.insert(decals, {
+                    name = "Generic Slot",
+                    url = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
+                    position = symmetric2(-3.75 -1.75 * x, 0.2, -0.2),
+                    rotation = { 90, 0, 0 },
+                    scale = { 0.45, 0.45, 0.45 },
+                })
+            end)
+        else
+            layoutGrid(2, 4, function (x, y)
+                table.insert(decals, {
+                    name = "Tech Tile Slot",
+                    url = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141336300/6A948CDC20774D0D4E5EA0EFF3E0D2C23F30FCC1/",
+                    position = symmetric2(-4 -3 * x, 0.2, -0.4 -2 * y),
+                    rotation = { 90, 0, 0 },
+                    scale = { 2.6, 1.8, 1.8 },
+                })
+            end)
+        end
 
         if content.dreadnoughts then
             layoutGrid(2, 1, function (x, y)
@@ -687,15 +718,13 @@ function PlayBoard:moveAt(position, isRelative, horizontalHandLayout)
         self.dreadnoughtPark,
         self.supplyPark,
         self.techPark,
+        self.sardaukarCommanderSkillPark,
+        self.sardaukarCommanderPark,
         self.scorePark,
     }
 
     for _, park in ipairs(parks) do
-        for _, slot in ipairs(park.slots) do
-            slot.x = slot.x + offset.x
-            slot.y = slot.y + offset.y
-            slot.z = slot.z + offset.z
-        end
+        Park.move(park, offset)
 
         for _, zone in ipairs(Park.getZones(park)) do
             zone[move](zone.getPosition() + offset)
@@ -899,10 +928,23 @@ function PlayBoard.new(color, unresolvedContent, state, subState)
     end
 
     if not Commander.isCommander(color) then
-        table.insert(snapPoints, { position = playBoard:_newSymmetricBoardPosition(-3.4, 0.2, 0), rotation_snap = true, tags = { "MuadDibObjectiveToken" } })
-        table.insert(snapPoints, { position = playBoard:_newSymmetricBoardPosition(-4.8, 0.2, 0), rotation_snap = true, tags = { "CrysknifeObjectiveToken" } })
-        table.insert(snapPoints, { position = playBoard:_newSymmetricBoardPosition(-6.2, 0.2, 0), rotation_snap = true, tags = { "OrnithopterObjectiveToken" } })
-        table.insert(snapPoints, { position = playBoard:_newSymmetricBoardPosition(-7.6, 0.2, 0), rotation_snap = true, tags = { "JokerObjectiveToken" } })
+        local decalToSnap = {
+            ["MuadDib Objective Slot"] = "MuadDibObjectiveToken",
+            ["Crysknife Objective Slot"] = "CrysknifeObjectiveToken",
+            ["Ornithopter Objective Slot"] = "OrnithopterObjectiveToken",
+            ["Joker Objective Slot"] = "JokerObjectiveToken",
+        }
+
+        for _, decal in pairs(playBoard.content.board.getDecals()) do
+            local tag = decalToSnap[decal.name]
+            if tag then
+                table.insert(snapPoints, {
+                    position = decal.position,
+                    rotation_snap = true,
+                    tags = { tag }
+                })
+            end
+        end
     end
 
     playBoard.content.board.setSnapPoints(snapPoints)
@@ -914,13 +956,16 @@ function PlayBoard.new(color, unresolvedContent, state, subState)
             playBoard[resourceName] = Resource.new(token, color, resourceName, value)
         end
     end
+    local firstTime = subState == nil
     playBoard.agentCardPark = playBoard:_createAgentCardPark()
     playBoard.revealCardPark = playBoard:_createRevealCardPark()
-    playBoard.agentPark = playBoard:_createAgentPark(subState == nil)
-    playBoard.spyPark = playBoard:_createSpyPark(subState == nil)
+    playBoard.agentPark = playBoard:_createAgentPark(firstTime)
+    playBoard.spyPark = playBoard:_createSpyPark(firstTime)
     if not Commander.isCommander(color) then
-        playBoard.dreadnoughtPark = playBoard:_createDreadnoughtPark(subState == nil)
-        playBoard.supplyPark = playBoard:_createSupplyPark(subState == nil)
+        playBoard.dreadnoughtPark = playBoard:_createDreadnoughtPark(firstTime)
+        playBoard.supplyPark = playBoard:_createSupplyPark(firstTime)
+        playBoard.sardaukarCommanderSkillPark = playBoard:_createSardaukarCommanderSkillPark()
+        playBoard.sardaukarCommanderPark = playBoard:_createSardaukarCommanderPark()
     end
     playBoard:_generatePlayerScoreboardPositions()
     playBoard.scorePark = playBoard:_createPlayerScorePark()
@@ -938,7 +983,7 @@ function PlayBoard.setUp(settings, activeOpponents)
     local sequentialActions = {}
 
     for color, playBoard in pairs(PlayBoard.playBoards) do
-        playBoard:_cleanUp(false, not settings.riseOfIx, not settings.immortality, settings.numberOfPlayers ~= 6)
+        playBoard:_cleanUp(false, not settings.riseOfIx, not settings.immortality, not settings.bloodlines, settings.numberOfPlayers ~= 6)
 
         PlayBoard:_pruneHandsInExcess(playBoard.color, settings.numberOfPlayers <= 4 and settings.horizontalHandLayout)
 
@@ -982,6 +1027,8 @@ function PlayBoard.setUp(settings, activeOpponents)
                     playBoard.content.researchToken.destruct()
                     playBoard.content.researchToken = nil
                 end
+                playBoard.content.sardaukarMarker.destruct()
+                playBoard.content.sardaukarMarker = nil
             end
 
             if not Commander.isCommander(color) then
@@ -1162,6 +1209,12 @@ function PlayBoard._transientSetUp(settings)
                     end
                 end
             end)
+
+            if spaceName == "techNegotiation" then
+                PlayBoard.getResource(color, "persuasion"):setBaseValueContribution("techNegotiation", 1)
+            elseif spaceName == "assemblyHall" then
+                PlayBoard.getResource(color, "persuasion"):setBaseValueContribution("assemblyHall", 1)
+            end
         end
     end)
 
@@ -1179,7 +1232,7 @@ function PlayBoard._transientSetUp(settings)
         end
     end)
 
-    for _, playBoard in pairs(PlayBoard._getPlayBoards()) do
+    for color, playBoard in pairs(PlayBoard._getPlayBoards()) do
         playBoard.content.completedContractBag.createButton({
             click_function = Helper.registerGlobalCallback(),
             label = "",
@@ -1190,6 +1243,16 @@ function PlayBoard._transientSetUp(settings)
             font_color = "White"
         })
         PlayBoard._updateBagCounts(playBoard.content.completedContractBag)
+
+        if settings.bloodlines and not Commander.isCommander(color) and not PlayBoard.isRival(color) then
+            SardaukarCommander.createSardaukarCommanderRecruitmentButton(playBoard.content.sardaukarMarker, false, PlayBoard.withLeader(function (leader, playerColor, altClick)
+                if playerColor == color then
+                    leader.recruitSardaukarCommander(color)
+                else
+                    Dialog.broadcastToColor(I18N('noTouch'), color, "Purple")
+                end
+            end))
+        end
 
         local InstructionTextAnchorPosition = playBoard.content.board.getPosition() + playBoard:_newSymmetricBoardPosition(8, -0.5, 3.5)
         Helper.createTransientAnchor("InstructionTextAnchor", InstructionTextAnchorPosition).doAfter(function (anchor)
@@ -1220,14 +1283,10 @@ end
 
 ---
 function PlayBoard:_recall()
-    local minimicFilm = PlayBoard.hasTech(self.color, "minimicFilm")
-    local restrictedOrdnance = PlayBoard.hasTech(self.color, "restrictedOrdnance")
-    local councilSeat = PlayBoard.hasHighCouncilSeat(self.color)
-    local swordmasterBonus = TurnControl.getPlayerCount() == 6 and PlayBoard.hasSwordmaster(self.color)
-
     self.revealed = false
-    self.persuasion:set((councilSeat and 2 or 0) + (minimicFilm and 1 or 0))
-    self.strength:set(((restrictedOrdnance and councilSeat) and 4 or 0) + (swordmasterBonus and 2 or 0))
+
+    self.persuasion:set(0)
+    self.strength:set(0)
 
     self:_createButtons()
 
@@ -1264,6 +1323,15 @@ function PlayBoard:_recall()
         Intrigue.discard(card)
     end)
 
+    -- Send all played navigation cards to the trash.
+    local playedNavigationCards = Helper.concatTables(
+        Helper.filter(Park.getObjects(self.agentCardPark), Types.isNavigationCard),
+        Helper.filter(Park.getObjects(self.revealCardPark), Types.isNavigationCard)
+    )
+    Helper.forEach(playedNavigationCards, function (i, card)
+        self:trash(card)
+    end)
+
     -- Flip any used tech.
     for _, techTile in ipairs(Park.getObjects(self.techPark)) do
         if Types.isTech(techTile) and techTile.is_face_down then
@@ -1292,6 +1360,7 @@ function PlayBoard._setActivePlayer(phase, color, refreshing)
                     and playBoard.revealed
                     and not Combat.isInCombat(otherColor)
                 then
+                    -- FIXME Now, won't reset the base value, but is it the intended behavior?
                     playBoard.strength:set(0)
                 end
             end
@@ -1439,12 +1508,15 @@ end
 function PlayBoard.collectReward(color)
     local conflictName = Combat.getCurrentConflictName()
     local rank = Combat.getRank(color).value
-    local hasSandworms = Combat.hasSandworms(color)
-    ConflictCard.collectReward(color, conflictName, rank, hasSandworms).doAfter(function ()
+    local hasAnySandworm = Combat.hasAnySandworm(color)
+    ConflictCard.collectReward(color, conflictName, rank, hasAnySandworm).doAfter(function ()
         if rank == 1 then
             local leader = PlayBoard.getLeader(color)
             if PlayBoard.hasTech(color, "windtraps") then
                 leader.resources(color, "water", 1)
+            end
+            if PlayBoard.hasTech(color, "planetaryArray") then
+                leader.drawImperiumCards(color, 1)
             end
 
             local dreadnoughts = Combat.getDreadnoughtsInConflict(color)
@@ -1497,7 +1569,7 @@ function PlayBoard:_createAgentCardPark()
         table.insert(slots, origin + Vector(i * step, 0, 0))
     end
 
-    local park = Park.createCommonPark({ "Imperium", "Intrigue" }, slots, Vector(2.4, 0.5, 3.2), Vector(0, 180, 0), true)
+    local park = Park.createCommonPark({ "Imperium", "Intrigue", "Navigation" }, slots, Vector(2.4, 0.5, 3.2), Vector(0, 180, 0), true)
     park.tagUnion = true
     park.smooth = false
     return park
@@ -1521,7 +1593,7 @@ function PlayBoard:_createRevealCardPark()
 
     local slots = Helper.concatTables(bottomSlots, topSlots)
 
-    local park = Park.createCommonPark({ "Imperium", "Intrigue" }, slots, nil, Vector(0, 180, 0), true, { bottomZone, topZone })
+    local park = Park.createCommonPark({ "Imperium", "Intrigue", "Navigation" }, slots, nil, Vector(0, 180, 0), true, { bottomZone, topZone })
     park.tagUnion = true
     park.smooth = false
     return park
@@ -1622,18 +1694,56 @@ function PlayBoard:_createSupplyPark(firstTime)
 end
 
 ---
+function PlayBoard:_createSardaukarCommanderSkillPark()
+    local origin = PlayBoard.generatePosition(self, "symmetric", Vector(5.5, 0, 0.2))
+    local color = self.color
+    local slots = {}
+    for h = 1, 3 do
+        for i = 1, 3 do
+            local x = (i - 2) * 1.75
+            if PlayBoard.isLeft(color) then
+                x = -x
+            end
+            local slot = Vector(x, 0.5 * h - 0.3, 0) + origin
+            table.insert(slots, slot)
+        end
+    end
+    local park = Park.createCommonPark({ "SardaukarCommanderSkill" }, slots, Vector(2, 1, 3), nil)
+    return park
+end
+
+---
+function PlayBoard:_createSardaukarCommanderPark()
+    local origin = PlayBoard.generatePosition(self, "symmetric", Vector(5.5, 0, 0.2))
+    local color = self.color
+    local slots = {}
+    for h = 1, 3 do
+        for i = 1, 3 do
+            local x = (i - 2) * 1.75
+            if PlayBoard.isLeft(color) then
+                x = -x
+            end
+            local slot = Vector(x, 0.5 * h, 0) + origin
+            table.insert(slots, slot)
+        end
+    end
+    local park = Park.createCommonPark({ "SardaukarCommander", self.color }, slots, Vector(1, 1, 1), nil)
+    return park
+end
+
+---
 function PlayBoard:_createTechPark()
-    local origin = PlayBoard.generatePosition(self, "symmetric", Vector(-0.45, 0, 3.6))
+    local origin = PlayBoard.generatePosition(self, "symmetric", Vector(5.5, 0, 4.4))
     local color = self.color
     local slots = {}
     for h = 1, 3 do
         for i = 1, 2 do
-            for j = 3, 1, -1 do
-                local x = (i - 1.5) * 3 + 6
+            for j = 3, (Commander.isCommander(color) and 0 or 1), -1 do
+                local x = (i - 1.5) * 3
                 if PlayBoard.isLeft(color) then
                     x = -x
                 end
-                    local z = (j - 2) * 2 + 0.4
+                local z = (j - 2) * 2
                 local slot = Vector(x, 0.5 * h - 0.3, z) + origin
                 table.insert(slots, slot)
             end
@@ -1679,14 +1789,14 @@ function PlayBoard:_createPlayerScorePark()
     end
 
     local slots = {}
-    for i = 1, 18 do
+    for i = 1, 15 do
         slots[i] = Vector(
             origin.x + (i - 1) * 1.075 * direction,
             origin.y,
             origin.z)
     end
 
-    return Park.createCommonPark({ "VictoryPointToken" }, slots, Vector(1, 0.2, 1), Vector(0, 180, 0))
+    return Park.createCommonPark({ "VictoryPointToken" }, slots, Vector(1, 1, 1), Vector(0, 180, 0))
 end
 
 ---
@@ -1701,26 +1811,35 @@ function PlayBoard:_updatePlayerScore()
 end
 
 ---
-function PlayBoard.onObjectEnterZone(zone, object)
-    for color, playBoard in pairs(PlayBoard.playBoards) do
-        if playBoard.opponent and playBoard.scorePark then
-            if Helper.isElementOf(zone, Park.getZones(playBoard.scorePark)) then
-                if Types.isVictoryPointToken(object) then
-                    playBoard:_updatePlayerScore()
-                end
-            end
-        end
+function PlayBoard:_updateSardaukarCommanderRecruitmentButton()
+    if self.content.sardaukarMarker then
+        local recruitableSardaukarCommanders = Park.getObjects(self.sardaukarCommanderPark)
+        SardaukarCommander.setAvailable(self.content.sardaukarMarker, #recruitableSardaukarCommanders > 0)
     end
 end
 
 ---
+function PlayBoard.onObjectEnterZone(zone, object)
+    PlayBoard._onObjectMovingAround(zone, object)
+end
+
+---
 function PlayBoard.onObjectLeaveZone(zone, object)
-    for _, playBoard in pairs(PlayBoard.playBoards) do
-        if playBoard.opponent and playBoard.scorePark then
-            if Helper.isElementOf(zone, Park.getZones(playBoard.scorePark)) then
-                if Types.isVictoryPointToken(object) then
-                    playBoard:_updatePlayerScore()
-                end
+    PlayBoard._onObjectMovingAround(zone, object)
+end
+
+---
+function PlayBoard._onObjectMovingAround(zone, object)
+    for color, playBoard in pairs(PlayBoard.playBoards) do
+        if playBoard.opponent then
+            if playBoard.scorePark and Helper.isElementOf(zone, Park.getZones(playBoard.scorePark)) and Types.isVictoryPointToken(object) then
+                playBoard:_updatePlayerScore()
+            end
+            if playBoard.techPark and Helper.isElementOf(zone, Park.getZones(playBoard.techPark)) and Types.isTech(object) then
+                TechMarket.setContributions(color)
+            end
+            if playBoard.sardaukarCommanderPark and Helper.isElementOf(zone, Park.getZones(playBoard.sardaukarCommanderPark)) and Types.isSardaukarCommander(object) then
+                playBoard:_updateSardaukarCommanderRecruitmentButton()
             end
         end
     end
@@ -1728,12 +1847,12 @@ end
 
 ---
 function PlayBoard:_tearDown()
-    self:_cleanUp(true, true, true, true, true)
+    self:_cleanUp(true, true, true, true, true, true)
     PlayBoard.playBoards[self.color] = nil
 end
 
 ---
-function PlayBoard:_cleanUp(base, ix, immortality, teamMode, full)
+function PlayBoard:_cleanUp(base, ix, immortality, bloodlines, teamMode, full)
     local content = self.content
 
     local toBeRemoved = {}
@@ -1802,6 +1921,10 @@ function PlayBoard:_cleanUp(base, ix, immortality, teamMode, full)
         collect("atomicsToken")
     end
 
+    if bloodlines then
+        collect("sardaukarMarker")
+    end
+
     if full then
         self:_clearButtons()
 
@@ -1815,6 +1938,7 @@ function PlayBoard:_cleanUp(base, ix, immortality, teamMode, full)
                 "agentPark",
                 "spyPark",
                 "techPark",
+                "sardaukarCommanderSkillPark",
                 "scorePark",
             }
 
@@ -1946,7 +2070,6 @@ function PlayBoard:_createButtons()
                 if PlayBoard.hasMakerHook(self.color) then
                     Combat.callSandworm(self.color, altClick and -1 or 1)
                 else
-                    -- TODO Confirmation popup?
                     Combat.callSandworm(self.color, altClick and -1 or 1)
                 end
             end),
@@ -2065,47 +2188,50 @@ function PlayBoard._convertObjectiveTokenPairsIntoVictoryPoints(object)
         MuadDibObjectiveToken = "muadDibVictoryPoint",
         OrnithopterObjectiveToken = "ornithopterVictoryPoint",
         CrysknifeObjectiveToken = "crysknifeVictoryPoint",
-        JokerObjectiveToken = "jokerVictoryPoint",
+        --JokerObjectiveToken = "jokerVictoryPoint",
     }
     local objectiveTag = object.getTags()[1]
-    for color, playBoard in pairs(PlayBoard.playBoards) do
-        local board = playBoard.content.board
-        for _, snapPoint in ipairs(board.getSnapPoints()) do
-            if Helper.isElementOf(objectiveTag, snapPoint.tags) then
-                local absoluteSnapPointPosition = board.positionToWorld(snapPoint.position)
-                local d = Vector.sqrDistance(object.getPosition(), absoluteSnapPointPosition)
-                if d < 1.5 then
-                    local leader = PlayBoard.getLeader(color)
-                    if not leader then
-                        return
-                    end
-
-                    local radius = 0.5
-                    local hits = Physics.cast({
-                        origin = absoluteSnapPointPosition,
-                        direction = Vector(0, 1, 0),
-                        type = 2,
-                        size = Vector(radius, radius, radius),
-                        max_distance = 2,
-                    })
-
-                    local hitTokens = Helper.filter(Helper.mapValues(hits, Helper.field("hit_object")), function (hitObject)
-                        return hitObject.hasTag(objectiveTag)
-                    end)
-
-                    while #hitTokens >= 2 do
-                        for _ = 1, 2 do
-                            hitTokens[1].destruct()
-                            table.remove(hitTokens, 1)
+    if tagToName[objectiveTag] then
+        for color, playBoard in pairs(PlayBoard.playBoards) do
+            local board = playBoard.content.board
+            for _, snapPoint in ipairs(board.getSnapPoints()) do
+                if Helper.isElementOf(objectiveTag, snapPoint.tags) then
+                    local absoluteSnapPointPosition = board.positionToWorld(snapPoint.position)
+                    local d = Vector.sqrDistance(object.getPosition(), absoluteSnapPointPosition)
+                    if d < 1.5 then
+                        local leader = PlayBoard.getLeader(color)
+                        if leader then
+                            local hitTokens = PlayBoard.collectObjectiveTokens(absoluteSnapPointPosition, objectiveTag)
+                            while #hitTokens >= 2 do
+                                for _ = 1, 2 do
+                                    hitTokens[1].destruct()
+                                    table.remove(hitTokens, 1)
+                                end
+                                leader.gainVictoryPoint(color, tagToName[objectiveTag], 1)
+                            end
                         end
-                        leader.gainVictoryPoint(color, tagToName[objectiveTag], 1)
+                        break
                     end
-
-                    break
                 end
             end
         end
     end
+end
+
+---
+function PlayBoard.collectObjectiveTokens(position, objectiveTag)
+    local radius = 0.5
+    local hits = Physics.cast({
+        origin = position,
+        direction = Vector(0, 1, 0),
+        type = 2,
+        size = Vector(radius, radius, radius),
+        max_distance = 2,
+    })
+
+    return Helper.filter(Helper.mapValues(hits, Helper.field("hit_object")), function (hitObject)
+        return hitObject.hasTag(objectiveTag)
+    end)
 end
 
 --- The global event handler 'onObjectEnterContainer' automatically calls every
@@ -2317,9 +2443,23 @@ function PlayBoard._onceCardParkSpread(park)
     return continuation
 end
 
+-- FIXME The agent could have been removed in some cases (e.g. Kwisatz Haderach).
+function PlayBoard:_refreshRevealSpaceContributions()
+    local councilSeat = PlayBoard.hasHighCouncilSeat(self.color)
+    self.persuasion:setBaseValueContribution("highCouncilSeat", councilSeat and 2 or 0)
+
+    local techNegotiation = MainBoard.hasAgentInSpace("techNegotiation", self.color)
+    self.persuasion:setBaseValueContribution("techNegotiation", techNegotiation and 1 or 0)
+
+    local assemblyHall = MainBoard.hasAgentInSpace("assemblyHall", self.color)
+    self.persuasion:setBaseValueContribution("assemblyHall", assemblyHall and 1 or 0)
+
+    local swordmasterBonus = TurnControl.getPlayerCount() == 6 and PlayBoard.hasSwordmaster(self.color)
+    self.strength:setBaseValueContribution("swordmaster", swordmasterBonus and 2 or 0)
+end
+
 ---
 function PlayBoard:_revealHand(brutal)
-    local playedIntrigues = Helper.filter(Park.getObjects(self.agentCardPark), Types.isIntrigueCard)
     local playedCards = Helper.filter(Park.getObjects(self.agentCardPark), Types.isImperiumCard)
 
     local properCard = function (card)
@@ -2353,48 +2493,46 @@ function PlayBoard:_revealHand(brutal)
     local alreadyRevealedCards = Helper.filter(Park.getObjects(self.revealCardPark), properCard)
     local allRevealedCards = Helper.concatTables(revealedCards, alreadyRevealedCards)
 
-    -- FIXME The agent could have been removed (e.g. Kwisatz Haderach)
-    local techNegotiation = MainBoard.hasAgentInSpace("techNegotiation", self.color)
-    local assemblyHall = MainBoard.hasAgentInSpace("assemblyHall", self.color)
+    self:_refreshRevealSpaceContributions()
+    local imperiumCardContributions = ImperiumCard.evaluateReveal(self.color, playedCards, allRevealedCards)
+    Helper.dump("imperiumCardContributions:", imperiumCardContributions)
+    local techCardContributions = TechCard.evaluatePostReveal(self.color, imperiumCardContributions)
+    Helper.dump("techCardContributions:", techCardContributions)
 
-    local minimicFilm = PlayBoard.hasTech(self.color, "minimicFilm")
-    local restrictedOrdnance = PlayBoard.hasTech(self.color, "restrictedOrdnance")
-    local councilSeat = PlayBoard.hasHighCouncilSeat(self.color)
-    local artillery = PlayBoard.hasTech(self.color, "artillery")
-    local swordmasterBonus = TurnControl.getPlayerCount() == 6 and PlayBoard.hasSwordmaster(self.color)
+    local sardaukarCommanderSkillCardContributions
+    if Combat.hasAnySardaukarCommander(self.color) then
+        local skillCardNames = PlayBoard.getAllCommanderSkillNames(self.color)
+        sardaukarCommanderSkillCardContributions = SardaukarCommanderSkillCard.evaluateReveal(self.color, skillCardNames)
+    else
+        sardaukarCommanderSkillCardContributions = {}
+    end
 
-    local imperiumCardContributions = ImperiumCard.evaluateReveal(self.color, playedCards, allRevealedCards, artillery)
+    local contributions = {}
+    for _, set in ipairs({ imperiumCardContributions, techCardContributions, sardaukarCommanderSkillCardContributions }) do
+        for k, v in pairs(set) do
+            contributions[k] = (contributions[k] or 0) + v
+        end
+    end
 
-    self.persuasion:set(
-        (imperiumCardContributions.persuasion or 0) +
-        (techNegotiation and 1 or 0) +
-        (assemblyHall and 1 or 0) +
-        (councilSeat and 2 or 0) +
-        (minimicFilm and 1 or 0))
-
-    self.strength:set(
-        (imperiumCardContributions.strength or 0) +
-        ((restrictedOrdnance and councilSeat) and 4 or 0) +
-        (swordmasterBonus and 2 or 0))
-
-    --Helper.dump("imperiumCardContributions:", imperiumCardContributions)
+    self.persuasion:set(contributions.persuasion or 0)
+    self.strength:set(contributions.strength or 0)
 
     if brutal and not self.revealed then
         for _, resourceName in ipairs({ "spice", "solari", "water" }) do
-            local amount = imperiumCardContributions[resourceName]
+            local amount = contributions[resourceName]
             if amount then
                 self.leader.resources(self.color, resourceName, amount)
             end
         end
 
-        local intrigues = imperiumCardContributions.intrigues
+        local intrigues = contributions.intrigues
         if intrigues then
             self.leader.drawIntrigues(self.color, intrigues)
         end
 
         local createMove = function (category, to)
             return function ()
-                local amount = imperiumCardContributions[category] or 0
+                local amount = contributions[category] or 0
                 if amount > 0 then
                     self.leader.troops(self.color, "supply", to, amount)
                     return Park.onceStabilized(Action.getTroopPark(self.color, to))
@@ -2779,6 +2917,11 @@ function PlayBoard.getSupplyPark(color)
 end
 
 ---
+function PlayBoard.getSardaukarCommanderPark(color)
+    return PlayBoard.getPlayBoard(color).sardaukarCommanderPark
+end
+
+---
 function PlayBoard.getTechPark(color)
     return PlayBoard.getPlayBoard(color).techPark
 end
@@ -2814,6 +2957,12 @@ function PlayBoard.grantContractTile(color, contractTile)
 end
 
 ---
+function PlayBoard.grantSardaukarCommanderSkillCard(color, card)
+    Helper.dumpFunction("PlayBoard.grantSardaukarCommanderSkillCard", color, card)
+    return Park.putObject(card, PlayBoard.getPlayBoard(color).sardaukarCommanderSkillPark)
+end
+
+---
 function PlayBoard.getScoreTokens(color)
     return Park.getObjects(PlayBoard.getPlayBoard(color).scorePark)
 end
@@ -2846,6 +2995,18 @@ function PlayBoard.getTech(color, techName)
 end
 
 ---
+function PlayBoard.getAllTechs(color)
+    local objects = Park.getObjects(PlayBoard.getPlayBoard(color).techPark)
+    return Helper.filter(objects, Types.isTech)
+end
+
+---
+function PlayBoard.getAllCommanderSkillNames(color)
+    local objects = Park.getObjects(PlayBoard.getPlayBoard(color).sardaukarCommanderSkillPark)
+    return Helper.getAllCardNames(Helper.filter(objects, Types.isSardaukarCommanderSkillCard))
+end
+
+---
 function PlayBoard.useTech(color, techName)
     local tech = PlayBoard.getTech(color, techName)
     if tech and not tech.is_face_down then
@@ -2875,10 +3036,7 @@ function PlayBoard.takeHighCouncilSeat(color)
             Helper.clearButtons(token)
             token.interactable = true
             local playBoard = PlayBoard.getPlayBoard(color)
-            playBoard.persuasion:change(2)
-            if PlayBoard.hasTech(color, "restrictedOrdnance") then
-                playBoard.strength:change(4)
-            end
+            playBoard.persuasion:setBaseValueContribution("highCouncilSeat", 2)
             Helper.emitEvent("highCouncilSeatTaken", color)
             return true
         end
@@ -2957,7 +3115,7 @@ function PlayBoard.recruitSwordmaster(color)
         if TurnControl.getPlayerCount() == 6 then
             playBoard.content.swordmasterBonusToken.setPosition(PlayBoard.swordmasterBonusPositions[color] + Vector(0, -0.15, 0))
             Helper.noPhysics(playBoard.content.swordmasterBonusToken)
-            playBoard.strength:change(2)
+            playBoard.strength:setBaseValueContribution("swordmaster", 2)
         end
         Helper.emitEvent("swordmasterTaken", color)
         return true
@@ -2974,6 +3132,21 @@ function PlayBoard.destroySwordmaster(color)
         playBoard.content.swordmaster.destruct()
         playBoard.content.swordmaster = nil
     end
+end
+
+---
+function PlayBoard.recruitSardaukarCommander(color)
+    local garrison = Combat.getGarrisonPark(color)
+    local sardaukarReserve = PlayBoard.getSardaukarCommanderPark(color)
+    if not Park.isEmpty(sardaukarReserve) then
+        local leader = PlayBoard.getLeader(color)
+        if leader.resources(color, "solari", PlayBoard.hasTech(color, "sardaukarHighCommand") and -1 or -2) then
+            return Park.transfert(1, sardaukarReserve, garrison) == 1
+        else
+            Dialog.broadcastToColor(I18N('notEnoughSolarisToRecruitSardaukarCommander'), color, "Purple")
+        end
+    end
+    return false
 end
 
 ---
@@ -3052,27 +3225,64 @@ end
 
 ---
 function PlayBoard.giveCardFromTrash(color, cardName)
+    local content = PlayBoard.getContent(color)
+    return PlayBoard._giveFromTrash(color, content.discardZone.getPosition(), nil, function (object)
+        return Helper.getID(object) == cardName
+    end)
+end
+
+---
+function PlayBoard.giveIntrigueFromTrash(color)
+    local orientedPosition = PlayBoard.getHandOrientedPosition(color)
+    local success = PlayBoard._giveFromTrash(color, orientedPosition.position, orientedPosition.rotation, function (object)
+        return Helper.isElementOf("Intrigue", object.tags)
+    end)
+    if success then
+        Intrigue.onIntrigueTaken(color)
+    end
+    return success
+end
+
+---
+function PlayBoard._giveFromTrash(color, position, rotation, predicate)
+    Types.assertIsPlayerColor(color)
+    local content = PlayBoard.getContent(color)
+    assert(content)
+    return PlayBoard._giveFromBag(color, position, rotation, content.trash, predicate, function(card)
+        printToAll(I18N("acquireImperiumCard", { card = I18N(Helper.getID(card)) }), color)
+    end)
+end
+
+---
+function PlayBoard.giveNavigationFromBag(color, bag)
+    local orientedPosition = PlayBoard.getHandOrientedPosition(color)
+    return PlayBoard._giveFromBag(color, orientedPosition.position, orientedPosition.rotation, bag, function (object)
+        return Helper.isElementOf("Navigation", object.tags)
+    end)
+end
+
+---
+function PlayBoard._giveFromBag(color, position, rotation, bag, predicate, callback)
     Types.assertIsPlayerColor(color)
 
     local content = PlayBoard.getContent(color)
     assert(content)
 
-    local playBoard = PlayBoard.getPlayBoard(color)
-    for _, object in ipairs(playBoard.content.trash.getObjects()) do
-        if Helper.getID(object) == cardName then
+    for _, object in ipairs(bag.getObjects()) do
+        if predicate(object) then
             local parameters = {
                 guid = object.guid,
-                position = content.discardZone.getPosition(),
+                position = position,
+                rotation = rotation,
                 smooth = false,
-                rotation = Vector(0, 180, 0),
-                callback_function = function (card)
-                    printToAll(I18N("acquireImperiumCard", { card = I18N(cardName) }), color)
-                end
+                callback_function = callback
             }
-            playBoard.content.trash.takeObject(parameters)
-            break
+            bag.takeObject(parameters)
+            return true
         end
     end
+
+    return false
 end
 
 ---
@@ -3104,8 +3314,8 @@ function PlayBoard.giveObjectiveCardFromZone(color, zone)
 end
 
 ---
-function PlayBoard.gainObjective(color, objective)
-    return Combat.gainObjective(color, objective).doAfter(PlayBoard._convertObjectiveTokenPairsIntoVictoryPoints)
+function PlayBoard.gainObjective(color, objective, ignoreExisting)
+    return Combat.gainObjective(color, objective, ignoreExisting).doAfter(PlayBoard._convertObjectiveTokenPairsIntoVictoryPoints)
 end
 
 ---
