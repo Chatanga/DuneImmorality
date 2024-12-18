@@ -32,21 +32,27 @@ def build():
 
 	local_node_modules_path = os.path.exists('node_modules')
 
+	linux_suffix = os.path.join('.local', 'share', 'Tabletop Simulator', 'Saves')
+	windows_suffix = os.path.join('Documents', 'My Games', 'Tabletop Simulator', 'Saves')
+
 	if platform_system == 'Linux':
+		# 286160 is the Steam application ID for TTS
+		proton_path = os.path.join('steamapps', 'compatdata', '286160', 'pfx', 'drive_c', 'users', 'steamuser')
 		tts_save_dirs = [
-			os.path.join(os.environ['HOME'], '.local', 'share', 'Tabletop Simulator', 'Saves'),
-			# Steam as a Snap
-			os.path.join(os.environ['HOME'], 'snap', 'steam', 'common', '.local', 'share', 'Tabletop Simulator', 'Saves'),
-			# Steam as a .deb + with Proton (286160 is the Steam application ID for TTS)
-			os.path.join(os.environ['HOME'], '.local', 'share', 'Steam', 'steamapps', 'compatdata', '286160', 'pfx', 'drive_c', 'users', 'steamuser', 'My Documents', 'My Games', 'Tabletop Simulator', 'Saves'),
 			# Steam as a .deb + without Proton
-			os.path.join(os.environ['HOME'], '.local', 'share', 'Tabletop Simulator', 'Saves')
+			os.path.join(os.environ['HOME'], linux_suffix),
+			# Steam as a Snap
+			os.path.join(os.environ['HOME'], 'snap', 'steam', 'common', linux_suffix),
+			# Steam as a .deb + with Proton
+			os.path.join(os.environ['HOME'], '.local', 'share', 'Steam', proton_path, windows_suffix),
+			# Steam as a .deb + with Proton (custom directory)
+			os.path.join(os.environ['HOME'], 'Fast', 'SteamLibrary', proton_path, windows_suffix)
 		]
 		luabundler = 'node_modules/.bin/luabundler' if local_node_modules_path else 'luabundler'
 	elif platform_system == 'Windows':
 		tts_save_dirs = [
-			os.path.join(os.environ['USERPROFILE'], 'OneDrive', 'Documents', 'My Games', 'Tabletop Simulator', 'Saves'),
-			os.path.join(os.environ['USERPROFILE'], 'Documents', 'My Games', 'Tabletop Simulator', 'Saves')
+			os.path.join(os.environ['USERPROFILE'], 'OneDrive', windows_suffix),
+			os.path.join(os.environ['USERPROFILE'], windows_suffix)
 		]
 		luabundler = 'node_modules/.bin/luabundler.cmd' if local_node_modules_path else 'luabundler.cmd'
 	else:
@@ -187,12 +193,12 @@ def bundle(luabundler, timestamp):
 				sys.exit(1)
 
 	luaFile = os.path.join(tts_tmp_dir, 'Global.-1.ttslua')
-	with open (luaFile, 'r') as f:
+	with open (luaFile, 'r', encoding='utf-8') as f:
 		content = f.read()
 
 	content_new = re.sub(r"local BUILD\s*=\s*.*", "local BUILD = '{}'".format(timestamp), content)
 
-	with open (luaFile, 'w') as f:
+	with open (luaFile, 'w', encoding='utf-8') as f:
 		f.write(content_new)
 
 def pack(timestamp):

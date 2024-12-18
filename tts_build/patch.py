@@ -27,16 +27,36 @@ def register_tags(object, component_tag_counts):
                 for tag in snap_point['Tags']:
                     register_tag("snappoint tag")
 
+def scan_play_board_snappoints(object):
+    play_boards = {
+        'd47b92': 'Red',
+        'f23836': 'Blue',
+        '2facfd': 'Green',
+        '13b6cb': 'Yellow',
+        '4ad196': 'White',
+        'dc05a6': 'Purple',
+    }
+
+    guid = object['GUID']
+    if guid in play_boards:
+        color = play_boards[guid]
+        if 'AttachedSnapPoints' in object:
+            for snap_point in object['AttachedSnapPoints']:
+                tags = snap_point['Tags']
+                transform = snap_point['Position']
+                print("%s -> %s at (%s, %s, %s)" % (color, tags, transform['x'], transform['y'], transform['z']))
+
 def patch_object(object, component_tag_counts):
     rectify_rotation(object)
     register_tags(object, component_tag_counts)
+    #scan_play_board_snappoints(object)
     object['LuaScript'] = ''
     object['LuaScriptState'] = ''
 
 def patch_save(input_path, output_path):
 
     save = None
-    with open(input_path, 'r') as save_file:
+    with open(input_path, 'r', encoding='utf-8') as save_file:
         save = json.load(save_file)
 
     save['SaveName'] = save['GameMode']
@@ -84,5 +104,5 @@ def patch_save(input_path, output_path):
 
     save['ObjectStates'] = new_objects
 
-    with open(output_path, 'w') as new_save:
+    with open(output_path, 'w', encoding='utf-8') as new_save:
         new_save.write(json.dumps(save, indent = 2))

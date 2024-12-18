@@ -228,7 +228,6 @@ function onLoad(scriptState)
         if false then
             allModules.Deck.rebuildPreloadAreas()
         end
-        relocateDecals()
     else
         -- The destroyed objects need one frame to disappear and not interfere
         -- with the mod.

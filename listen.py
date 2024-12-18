@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#! /usr/bin/python3
 
 import json
 import os
@@ -84,7 +84,7 @@ def error(message):
     print('\033[0m', file = sys.stderr)
 
 def logException(message):
-    result = re.search('([^:]*):\((\d+),(\d+)-(\d+)(,(\d+))?\): (.*)', message)
+    result = re.search(r'([^:]*):\((\d+),(\d+)-(\d+)(,(\d+))?\): (.*)', message)
     if result:
         try:
             startLineNumber = int(result.group(2))
@@ -112,7 +112,7 @@ def logException(message):
 
 def relocate(lineNumber):
     file_origin = 0
-    with open(os.path.join(tts_tmp_dir, 'Global.-1.ttslua'), 'r') as script_file:
+    with open(os.path.join(tts_tmp_dir, 'Global.-1.ttslua'), 'r', encoding='utf-8') as script_file:
         i = 0
         while True:
             line = script_file.readline()
@@ -120,7 +120,7 @@ def relocate(lineNumber):
                 i += 1
                 if i == lineNumber:
                     return file, i - file_origin
-                result = re.search('__bundle_register\("(.*)", function\(require, _LOADED, __bundle_register, __bundle_modules\)', line)
+                result = re.search(r'__bundle_register\("(.*)", function\(require, _LOADED, __bundle_register, __bundle_modules\)', line)
                 if result:
                     file = result.group(1)
                     if file == '__root':
