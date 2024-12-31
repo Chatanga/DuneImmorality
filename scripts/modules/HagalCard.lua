@@ -587,9 +587,13 @@ end
 
 function HagalCard._sendRivalAgent(color, rival, spaceName)
     if MainBoard.sendRivalAgent(color, spaceName) then
-        if PlayBoard.useTech(color, "trainingDrones") then
-            HagalCard.acquireTroops(color, 0)
-        end
+        Park.onceStabilized(PlayBoard.getTechPark(color)).doAfter(function ()
+            Helper.onceTimeElapsed(0.5).doAfter(function ()
+                if PlayBoard.useTech(color, "trainingDrones") then
+                    rival.troops(color, "supply", "garrison", 1)
+                end
+            end)
+        end)
         return true
     else
         return false
