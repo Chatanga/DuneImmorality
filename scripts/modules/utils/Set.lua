@@ -2,6 +2,10 @@ local Helper = require("utils.Helper")
 
 local Set = Helper.createClass()
 
+function Set.unused_empty()
+    return Set.newFromList({})
+end
+
 function Set.newFromItems(...)
     local data = {
         elements = {}
@@ -22,7 +26,7 @@ function Set.newFromList(elements)
     return Helper.createClassInstance(Set, data)
 end
 
-function Set.newFromSet(elements)
+function Set.unused_newFromSet(elements)
     local data = {
         elements = {}
     }
@@ -58,7 +62,7 @@ function Set:union(set)
     return newSet
 end
 
-function Set:soustraction(set)
+function Set:subtraction(set)
     assert(set)
     local newSet = Set.new()
     for element, _ in pairs(self.elements) do
@@ -170,7 +174,7 @@ end
 
 Set.__len = Set.size
 Set.__add = Set.union
-Set.__sub = Set.soustraction
+Set.__sub = Set.subtraction
 Set.__pow = Set.intersection
 Set.__ge = Set.isSupersetOf
 Set.__le = Set.isSubsetOf

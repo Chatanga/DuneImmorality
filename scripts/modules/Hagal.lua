@@ -7,12 +7,13 @@ local Deck = Module.lazyRequire("Deck")
 local TurnControl = Module.lazyRequire("TurnControl")
 local LeaderSelection = Module.lazyRequire("LeaderSelection")
 local PlayBoard = Module.lazyRequire("PlayBoard")
-local Action = Module.lazyRequire("Action")
 local HagalCard = Module.lazyRequire("HagalCard")
 local Combat = Module.lazyRequire("Combat")
-local ConflictCard = Module.lazyRequire("ConflictCard")
 local MainBoard = Module.lazyRequire("MainBoard")
+local ConflictCard = Module.lazyRequire("ConflictCard")
+local Rival = Module.lazyRequire("Rival")
 local ImperiumRow = Module.lazyRequire("ImperiumRow")
+local Action = Module.lazyRequire("Action")
 
 -- Enlighting clarifications: https://boardgamegeek.com/thread/2578561/summarizing-automa-2p-and-1p-similarities-and-diff
 local Hagal = Helper.createClass(Action, {
@@ -32,22 +33,24 @@ local Hagal = Helper.createClass(Action, {
         memnonThorvald = 1,
         rhomburVernius = 1,
         hundroMoritani = 1,
+        esmarTuek = 1,
+        piterDeVries = 1,
     }
 })
 
----
 function Hagal.onLoad(state)
-    Helper.append(Hagal, Helper.resolveGUIDs(false, {
-        deckZone = "8f49e3",
-        mentatSpaceCostPatch = "ba730f",
-    }))
+    if not state.settings or state.settings.numberOfPlayers < 3 then
+        Helper.append(Hagal, Helper.resolveGUIDs(true, {
+            deckZone = "8f49e3",
+            mentatSpaceCostPatch = "ba730f",
+        }))
+    end
 
     if state.settings and state.settings.numberOfPlayers < 3 then
         Hagal._transientSetUp(state.settings)
     end
 end
 
----
 function Hagal.getDifficulties()
     return {
         novice = "novice",
@@ -57,18 +60,24 @@ function Hagal.getDifficulties()
     }
 end
 
----
 function Hagal.setUp(settings)
-    Helper.dump("Hagal.setUp")
     if settings.numberOfPlayers < 3 then
-        Deck.generateHagalDeck(Hagal.deckZone, settings.riseOfIx, settings.immortality, settings.numberOfPlayers).doAfter(function (deck)
+        Deck.generateHagalDeck(
+            Hagal.deckZone,
+            settings.riseOfIx,
+            settings.immortality,
+            settings.bloodlines,
+            settings.ixAmbassy,
+            settings.numberOfPlayers)
+        .doAfter(function (deck)
+            assert(deck, "No Hagal deck!")
             Helper.shuffleDeck(deck)
         end)
         Hagal._transientSetUp(settings)
 
         if Hagal.getRivalCount() == 1 then
             Hagal.mentatSpaceCostPatch.destruct()
-        elseif  Hagal.getRivalCount() == 2 then
+        elseif Hagal.getRivalCount() == 2 then
             if Hagal.getMentatSpaceCost() == 5 then
                 Hagal.mentatSpaceCostPatch.setPosition(Vector(-3.98, 0.57, 3.43))
                 Hagal.mentatSpaceCostPatch.setInvisibleTo({})
@@ -82,7 +91,6 @@ function Hagal.setUp(settings)
     end
 end
 
----
 function Hagal.getMentatSpaceCost()
     if Hagal.getRivalCount() == 2 and Helper.isElementOf(Hagal.difficulty, {"veteran", "expert"}) then
         return 5
@@ -91,13 +99,13 @@ function Hagal.getMentatSpaceCost()
     end
 end
 
----
 function Hagal._transientSetUp(settings)
     Hagal.numberOfPlayers = settings.numberOfPlayers
     Hagal.riseOfIx = settings.riseOfIx
-    Hagal.brutalEscalation = settings.brutalEscalation
-    Hagal.autoTurnInSolo = settings.autoTurnInSolo
     Hagal.difficulty = Hagal.numberOfPlayers == 1 and settings.difficulty or nil
+    Hagal.autoTurnInSolo = settings.autoTurnInSolo
+    Hagal.brutalEscalation = settings.brutalEscalation
+    Hagal.expertDeployment = settings.expertDeployment
 
     Helper.registerEventListener("phaseStart", function (phase)
         if phase == "combat" then
@@ -124,8 +132,8 @@ function Hagal._transientSetUp(settings)
         end
     end)
 
-    if settings.imperiumRowChurn and Hagal.numberOfPlayers == 1 then
-        Helper.registerEventListener("phaseEnd", function (phase, color)
+    if settings.imperiumRowChurn then
+        Helper.registerEventListener("phaseEnd", function (phase)
             if phase == "playerTurns" then
                 ImperiumRow.churn()
             end
@@ -133,25 +141,43 @@ function Hagal._transientSetUp(settings)
     end
 end
 
----
 function Hagal._tearDown()
     Hagal.mentatSpaceCostPatch.destruct()
     Hagal.deckZone.destruct()
 end
 
----
+function Hagal.removeTuekSietch()
+    Helper.withAnyDeck(Hagal.deckZone, function (drawDeck)
+        local toBeRemoved = {}
+        for _, object in ipairs(drawDeck.getObjects()) do
+            if Helper.isElementOf("Hagal", object.tags) and Helper.getID(object) == "tuekSietch" then
+                table.insert(toBeRemoved, object.guid)
+            end
+        end
+        for i, guid in ipairs(toBeRemoved) do
+            drawDeck.takeObject({
+                guid = guid,
+                position = Vector(drawDeck.getPosition() + Vector(0, i, 0)),
+                callback_function = function (livingCard)
+                    MainBoard.trash(livingCard)
+                end
+            })
+        end
+    end)
+end
+
+--- The Hagal deck is not apart in 2P games, but replace the leader card on the single rival board.
 function Hagal.relocateDeckZone(newDeckZone)
     Hagal.deckZone = newDeckZone
 end
 
----
 function Hagal.activate(phase, color)
     -- A delay before and after the action, to let the human(s) see the progress.
     Helper.onceTimeElapsed(1).doAfter(function ()
         Hagal._lateActivate(phase, color).doAfter(function ()
             -- The leader selection already has an automatic end of turn when a leader is picked.
             if phase ~= "leaderSelection" then
-                if Hagal.getRivalCount() == 1 or Hagal.autoTurnInSolo then
+                if Hagal.autoTurnInSolo then
                     Helper.onceTimeElapsed(1).doAfter(TurnControl.endOfTurn)
                 else
                     PlayBoard.createEndOfTurnButton(color)
@@ -161,7 +187,6 @@ function Hagal.activate(phase, color)
     end)
 end
 
----
 function Hagal._lateActivate(phase, color)
     local continuation = Helper.createContinuation("Hagal._lateActivate")
 
@@ -191,49 +216,47 @@ function Hagal._lateActivate(phase, color)
     return continuation
 end
 
----
 function Hagal._activateFirstValidActionCard(color)
     return Hagal._activateFirstValidCard(color, function (card)
         return HagalCard.activate(color, card, Hagal.riseOfIx)
     end)
 end
 
----
 function Hagal._collectReward(color)
     local continuation = Helper.createContinuation("Hagal._collectReward")
     Helper.onceFramesPassed(1).doAfter(function ()
         local rank = Combat.getRank(color).value
         local conflictName = Combat.getCurrentConflictName()
-        ConflictCard.collectReward(color, conflictName, rank)
-        if rank == 1 then
-            local leader = PlayBoard.getLeader(color)
-            if PlayBoard.hasTech(color, "windtraps") then
-                leader.resources(color, "water", 1)
-            end
+        ConflictCard.collectReward(color, conflictName, rank).doAfter(function ()
+            if rank == 1 then
+                local leader = PlayBoard.getLeader(color)
+                if PlayBoard.hasTech(color, "windtraps") then
+                    leader.resources(color, "water", 1)
+                end
 
-            local dreadnoughts = Combat.getDreadnoughtsInConflict(color)
+                local dreadnoughts = Combat.getDreadnoughtsInConflict(color)
 
-            if #dreadnoughts > 0 and PlayBoard.hasTech(color, "detonationDevices") then
-                Park.putObject(dreadnoughts[1], PlayBoard.getDreadnoughtPark(color))
-                table.remove(dreadnoughts, 1)
-                leader.gainVictoryPoint(color, "detonationDevices", 1)
-            end
+                if #dreadnoughts > 0 and PlayBoard.hasTech(color, "detonationDevices") then
+                    Park.putObject(dreadnoughts[1], PlayBoard.getDreadnoughtPark(color))
+                    table.remove(dreadnoughts, 1)
+                    leader.gainVictoryPoint(color, "detonationDevices", 1)
+                end
 
-            if #dreadnoughts > 0 then
-                local bestBannerZone = Hagal._findBestBannerZone(color)
-                dreadnoughts[1].setPositionSmooth(bestBannerZone.getPosition())
+                if #dreadnoughts > 0 then
+                    local bestBannerZone = Hagal._findBestBannerZone(color)
+                    dreadnoughts[1].setPositionSmooth(bestBannerZone.getPosition())
+                end
             end
-        end
-        continuation.run()
+            continuation.run()
+        end)
     end)
     return continuation
 end
 
----
 function Hagal._findBestBannerZone(color)
     local bestValue
     local bestBannerZone
-    -- Already properly ordered (CCW from Imperial Basin).
+    -- Already properly ordered (CCW from the right). TODO Check it!
     for i, bannerZone in ipairs(MainBoard.getBannerZones()) do
         if not MainBoard.getControllingDreadnought(bannerZone) then
             local owner = MainBoard.getControllingPlayer(bannerZone)
@@ -256,7 +279,7 @@ function Hagal._findBestBannerZone(color)
     return bestBannerZone
 end
 
----
+--- A special behavior in 2P game.
 function Hagal._cleanUpConflict(color)
     local continuation = Helper.createContinuation("Hagal._cleanUpConflict")
     Helper.onceFramesPassed(1).doAfter(function ()
@@ -271,12 +294,10 @@ function Hagal._cleanUpConflict(color)
 end
 
 function Hagal._setStrengthFromFirstValidCard(color)
-    local soloPlay = Hagal.getRivalCount() == 2
     local level3Conflict = Combat.getCurrentConflictLevel() == 3
-    local mentatOrHigher = Helper.isElementOf(Hagal.difficulty, { "expert", "expertPlus" })
 
     -- Brutal Escalation
-    local n = (Hagal.brutalEscalation and soloPlay and level3Conflict and mentatOrHigher) and 2 or 1
+    local n = (level3Conflict and Hagal.brutalEscalation) and 2 or 1
 
     return Hagal._activateFirstValidCard(color, function (card)
         if HagalCard.setStrength(color, card) then
@@ -291,13 +312,11 @@ function Hagal._setStrengthFromFirstValidCard(color)
     end)
 end
 
----
 function Hagal.getExpertDeploymentLimit(color)
     local level3Conflict = Combat.getCurrentConflictLevel() == 3
-    local mentatOrHigher = Helper.isElementOf(Hagal.difficulty, { "expert", "expertPlus" })
 
     local n
-    if not level3Conflict and mentatOrHigher then
+    if not level3Conflict and Hagal.expertDeployment then
         local colorUnitCount = 0
         local otherColorMaxUnitCount = 0
         for otherColor, unitCount in pairs(Combat.getUnitCounts()) do
@@ -307,16 +326,16 @@ function Hagal.getExpertDeploymentLimit(color)
                 otherColorMaxUnitCount = math.max(otherColorMaxUnitCount, unitCount)
             end
         end
+        -- Beware that the limits are different in the base game and Uprising.
         n = math.max(0, 2 + otherColorMaxUnitCount - colorUnitCount)
         Action.log(I18N("expertDeploymentLimit", { limit = n }), color)
     else
         n = 12
     end
-    --Helper.dump("level3Conflict:", level3Conflict, "/ mentatOrHigher:", mentatOrHigher, "/ expertDeploymentLimit:", n)
+    --Helper.dump("level3Conflict:", level3Conflict, "/ expertDeploymentLimit:", n)
     return n
 end
 
----
 function Hagal._activateFirstValidCard(color, action)
     local continuation = Helper.createContinuation("Hagal._activateFirstValidCard")
 
@@ -328,28 +347,34 @@ function Hagal._activateFirstValidCard(color, action)
     return continuation
 end
 
----
 function Hagal._doActivateFirstValidCard(color, action, n, continuation)
+    --Helper.dumpFunction("Hagal._doActivateFirstValidCard", color)
     local emptySlots = Park.findEmptySlots(PlayBoard.getRevealCardPark(color))
     assert(emptySlots and #emptySlots > 0)
     assert(n < 10, "Something is not right!")
 
     Helper.moveCardFromZone(Hagal.deckZone, emptySlots[2] + Vector(0, 1 + 0.4 * n, 0), Vector(0, 180, 0)).doAfter(function (card)
         if card then
-            if Helper.getID(card) == "reshuffle" then
-                Hagal._reshuffleDeck(color, action, n, continuation)
-            elseif action(card) then
-                continuation.run(card)
-            else
-                Hagal._doActivateFirstValidCard(color, action, n + 1, continuation)
-            end
+            Helper.onceTimeElapsed(1).doAfter(function ()
+                if Helper.getID(card) == "reshuffle" then
+                    Hagal._reshuffleDeck(color, action, n, continuation)
+                elseif action(card) then
+                    Rival.triggerHagalReaction(color).doAfter(function ()
+                        HagalCard.flushTurnActions(color)
+                        continuation.run(card)
+                    end)
+                else
+                    Rival.triggerHagalReaction(color).doAfter(function ()
+                        Hagal._doActivateFirstValidCard(color, action, n + 1, continuation)
+                    end)
+                end
+            end)
         else
             Hagal._reshuffleDeck(color, action, n, continuation)
         end
     end)
 end
 
----
 function Hagal._reshuffleDeck(color, action, n, continuation)
     local i = 1
     for _, object in ipairs(getObjects()) do
@@ -367,15 +392,15 @@ function Hagal._reshuffleDeck(color, action, n, continuation)
         end
     end
     Helper.onceTimeElapsed(2).doAfter(function ()
-        local deck = Helper.getDeck(Hagal.deckZone)
-        Helper.shuffleDeck(deck)
-        Helper.onceShuffled(deck).doAfter(function ()
-            Hagal._doActivateFirstValidCard(color, action, n + 1, continuation)
+        Helper.withAnyDeck(Hagal.deckZone, function (deck)
+            Helper.shuffleDeck(deck)
+            Helper.onceShuffled(deck).doAfter(function ()
+                Hagal._doActivateFirstValidCard(color, action, n + 1, continuation)
+            end)
         end)
     end)
 end
 
----
 function Hagal.getRivalCount()
     if Hagal.numberOfPlayers then
         return 3 - Hagal.numberOfPlayers
@@ -384,7 +409,10 @@ function Hagal.getRivalCount()
     end
 end
 
----
+function Hagal.isSwordmasterAvailable()
+    return Hagal.difficulty ~= "expertPlus"
+end
+
 function Hagal.pickAnyCompatibleLeader(color)
     if Hagal.getRivalCount() == 1 then
         local pseudoLeader = Helper.getDeck(Hagal.deckZone)
@@ -402,7 +430,6 @@ function Hagal.pickAnyCompatibleLeader(color)
     end
 end
 
----
 function Hagal.isLeaderCompatible(leader)
     assert(leader)
     for _, compatibleLeader in ipairs(Helper.getKeys(Hagal.compatibleLeaders)) do

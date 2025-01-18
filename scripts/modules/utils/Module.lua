@@ -3,18 +3,16 @@ local Module = {
     registeredModuleRedirections = {},
 }
 
----
 function Module.registerModules(modulesByName)
     Module.modulesByName = Module._registerModules("", modulesByName)
     return Module._lazyRequireAll("", modulesByName)
 end
 
----
 function Module._registerModules(path, modulesByName)
     local modules = {}
 
     for name, node in pairs(modulesByName) do
-        -- Can’t work! Find a way to distinguish between a node and a module.
+        -- FIXME Can’t work! Find a way to distinguish between a node and a module.
         if type(node) == "table" and false then
             modules[name] = Module._registerModules(path .. name .. ".", node)
         else
@@ -25,7 +23,6 @@ function Module._registerModules(path, modulesByName)
     return modules
 end
 
----
 function Module._lazyRequireAll(path, modulesByName)
     local modules = {}
 
@@ -41,7 +38,6 @@ function Module._lazyRequireAll(path, modulesByName)
     return modules
 end
 
----
 function Module.lazyRequire(name)
     local lazyModule = {}
 
@@ -82,7 +78,6 @@ function Module.lazyRequire(name)
     return lazyModule
 end
 
----
 function Module._resolveModule(name)
     local node = Module.modulesByName
 
@@ -107,7 +102,6 @@ function Module._resolveModule(name)
     end
 end
 
----
 function Module.registerModuleRedirections(functionNames)
     for _, functionName in ipairs(functionNames) do
         local originalGlobalFunction = Global.getVar(functionName)
@@ -133,7 +127,6 @@ function Module.registerModuleRedirections(functionNames)
     end
 end
 
----
 function Module.callOnAllRegisteredModules(functionName, ...)
     for _, module in pairs(Module.modulesByName) do
         if module[functionName] then
@@ -142,7 +135,6 @@ function Module.callOnAllRegisteredModules(functionName, ...)
     end
 end
 
----
 function Module.unregisterAllModuleRedirections()
     for functionName, _ in pairs(Module.registeredModuleRedirections) do
         Global.setVar(functionName, nil)

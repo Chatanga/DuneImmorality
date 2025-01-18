@@ -7,10 +7,10 @@ local Deck = Module.lazyRequire("Deck")
 local TurnControl = Module.lazyRequire("TurnControl")
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local Hagal = Module.lazyRequire("Hagal")
+local Board = Module.lazyRequire("Board")
 
 local LeaderSelection = {
     dynamicLeaderSelection = {},
-    leaderSelectionPoolSize = 8,
     turnSequence = {},
 }
 
@@ -20,7 +20,6 @@ local Stage = {
     DONE = 3,
 }
 
----
 function LeaderSelection.getSelectionMethods(numberOfPlayers)
     local selectionMode = {
         random = "random",
@@ -33,7 +32,6 @@ function LeaderSelection.getSelectionMethods(numberOfPlayers)
     return selectionMode
 end
 
----
 function LeaderSelection.onLoad(state)
     Helper.append(LeaderSelection, Helper.resolveGUIDs(false, {
         deckZone = "23f2b5",
@@ -49,7 +47,6 @@ function LeaderSelection.onLoad(state)
     end
 end
 
----
 function LeaderSelection.onSave(state)
     state.LeaderSelection = {
         leaderSelectionPoolSize = LeaderSelection.leaderSelectionPoolSize,
@@ -58,23 +55,35 @@ function LeaderSelection.onSave(state)
     }
 end
 
----
 function LeaderSelection.setUp(settings, activeOpponents)
-    local postContinuation = Helper.createContinuation("LeaderSelection.setUp.postContinuation")
+    --[[
+    Works as long as LeaderSelection is the last module to use Board (the others
+    being MainBoard and TechMarket actually). It should be in Global, but
+    LeaderSelection needs a clean secondary table before.
+    ]]
+    Board.destructInactiveBoards()
 
-    Deck.generateLeaderDeck(LeaderSelection.deckZone, settings.riseOfIx, settings.immortality, settings.fanmadeLeaders).doAfter(function (deck)
+    local continuation = Helper.createContinuation("LeaderSelection.setUp")
+
+    Deck.generateLeaderDeck(
+        LeaderSelection.deckZone,
+        settings.riseOfIx,
+        settings.immortality,
+        settings.bloodlines,
+        settings.ixAmbassy,
+        settings.fanmadeLeaders)
+    .doAfter(function (deck)
         local start = settings.numberOfPlayers > 2 and 0 or 12
         LeaderSelection._layoutLeaderDeck(deck, start).doAfter(function ()
             local players = TurnControl.toCanonicallyOrderedPlayerList(activeOpponents)
-            LeaderSelection._transientSetUp(settings, settings.defaultLeaderPoolSize, players, Stage.INITIALIZED)
-            postContinuation.run()
+            LeaderSelection._transientSetUp(settings, settings.leaderPoolSize, players, Stage.INITIALIZED)
+            continuation.run()
         end)
     end)
 
-    return postContinuation
+    return continuation
 end
 
----
 function LeaderSelection._layoutLeaderDeck(deck, start)
     local continuation = Helper.createContinuation("LeaderSelection._layoutLeaderDeck")
     local numberOfLeaders = deck.getQuantity()
@@ -85,6 +94,9 @@ function LeaderSelection._layoutLeaderDeck(deck, start)
             position = position,
             flip = true,
             callback_function = function (card)
+                if card.hasTag("Unselected") then
+                    card.flip()
+                end
                 count = count - 1
                 if count == 0 then
                     Helper.onceTimeElapsed(1).doAfter(continuation.run)
@@ -96,7 +108,6 @@ function LeaderSelection._layoutLeaderDeck(deck, start)
     return continuation
 end
 
----
 function LeaderSelection._transientSetUp(settings, leaderSelectionPoolSize, players, stage)
     LeaderSelection.leaderSelectionPoolSize = leaderSelectionPoolSize
     LeaderSelection.players = players
@@ -150,9 +161,7 @@ function LeaderSelection._transientSetUp(settings, leaderSelectionPoolSize, play
     end
 end
 
----
 function LeaderSelection._layoutLeaders(start, count, callback)
-    local w = LeaderSelection.deckZone.getScale().x
     local h = LeaderSelection.deckZone.getScale().z
     local colCount = 6
     local origin = LeaderSelection.deckZone.getPosition() - Vector((colCount / 2 - 0.5) * 5, 0, h / 2 - 10)
@@ -174,7 +183,6 @@ function LeaderSelection._grabLeaders()
     return leaders
 end
 
----
 function LeaderSelection._setUpTest(players, leaderNames)
     local leaders = LeaderSelection._grabLeaders()
 
@@ -191,7 +199,6 @@ function LeaderSelection._setUpTest(players, leaderNames)
     TurnControl.start()
 end
 
----
 function LeaderSelection._setUpPicking(autoStart, random, hidden)
     local fontColor = Color(223/255, 151/255, 48/255)
 
@@ -272,7 +279,7 @@ function LeaderSelection._setUpPicking(autoStart, random, hidden)
                 LeaderSelection.stage = Stage.STARTED
                 TurnControl.start()
             else
-                error("Not enough leaders left!")
+                broadcastToAll(I18N("notEnoughLeaderLeft"), "Red")
             end
         end
 
@@ -425,7 +432,6 @@ function LeaderSelection._createDynamicLeaderSelection(leaders)
     end
 end
 
----
 function LeaderSelection.getSelectableLeaders()
     local selectableLeaders = {}
     for leader, selected in pairs(LeaderSelection.dynamicLeaderSelection) do
@@ -436,7 +442,6 @@ function LeaderSelection.getSelectableLeaders()
     return selectableLeaders
 end
 
----
 function LeaderSelection.claimLeader(color, leader)
     assert(leader)
     local continuation = PlayBoard.setLeader(color, leader)
@@ -449,7 +454,6 @@ function LeaderSelection.claimLeader(color, leader)
     end
 end
 
----
 function LeaderSelection._destructLeader(leader)
     leader.destruct()
 end

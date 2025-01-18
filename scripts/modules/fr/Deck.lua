@@ -21,23 +21,34 @@ local Deck = {
         tleilaxResearch = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141328012/2399494577B270989873BC3A2002B8D99E33E001/", 4, 5 },
         -- reclaimed forces
         tleilaxResearchReclaimedForces = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141323085/60812AEA733FF5558BA9190E47CBD474EBF38C94/", 1, 1 },
+        -- bloodlines
+        bloodlinesImperium = { "https://steamusercontent-a.akamaihd.net/ugc/28804925896497409/EF8C20D262C03052C7964EC0F6AF7B18A4D72DB9/", 7, 3 },
+        bloodlinesImperium_tech = { "https://steamusercontent-a.akamaihd.net/ugc/28804925896497701/55378EA6DF305432157B5825DCA00FAD97785A26/", 1, 1 },
+        bloodlinesImperium_ruthlessLeadership = { "https://steamusercontent-a.akamaihd.net/ugc/28805470176783647/0956E619DCEC23DD0A666F9C1BCC7F7DC1FAF78E/", 1, 1 },
     },
     intrigue = {
         intrigue = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141342723/13659DD01D152A8B8055B894B247CB1D254D3752/", 8, 5 },
         ixIntrigue = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141342152/3D33B3E59811CEDC64A53F104D31190E76676C64/", 5, 4 },
         immortalityIntrigue = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141343779/83BA634F05FC7A14933153A18B7AEF83E07E3C14/", 6, 3 },
+        bloodlinesIntrigue = { "https://steamusercontent-a.akamaihd.net/ugc/28804925896498407/D0132734BCCE0BF5993374E4874F2191B52D0D0B/", 5, 3 },
+        bloodlinesIntrigue_tech = { "https://steamusercontent-a.akamaihd.net/ugc/28804925896498478/1CFA02E34CA2BD1F589446898E33B56046DE8419/", 2, 1 },
+        bloodlinesIntrigue_twisted = { "https://steamusercontent-a.akamaihd.net/ugc/28804925896498295/5066A94AD636A81E811A99B4FAE7E697818392B6/", 4, 3 },
     },
     conflict1 = {
         conflict = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141365474/F1C0913A589ADB0A0532DFB8FAA7E9D7942CF6CB/", 3, 2 },
+        bloodlinesConflict = { "https://steamusercontent-a.akamaihd.net/ugc/28804925896498896/C3A9F89FF02CF78D920CAD43D2811986B1D5B120/", 1, 1 },
     },
     conflict2 = {
         conflict = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141365792/B1CD3F41933A9DD44522934B5F6CF3C5FF77A51C/", 6, 2 },
+        bloodlinesConflict = { "https://steamusercontent-a.akamaihd.net/ugc/28804925896498851/4E2DBCBC573D130238E9B81A877D878EC485D2C9/", 1, 1 },
     },
     conflict3 = {
         conflict = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141365294/F1BEAE6266E75B7A2F5DE511DB4FEB25A2CD486B/", 3, 2 },
     },
     hagal = {
-        hagal = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141457426/1BC00878E1A3E3B3007D0B30A33EE0E09D343ABE/", 5, 5 },
+        base = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141457426/1BC00878E1A3E3B3007D0B30A33EE0E09D343ABE/", 5, 5 },
+        bloodlinesTuek = { "https://steamusercontent-a.akamaihd.net/ugc/28804925896498113/3575301D6E9BEAAD0BFFFE890347B17EBFAD23BB/", 1, 1 },
+        bloodlinesTech = { "https://steamusercontent-a.akamaihd.net/ugc/28804925896498164/DB9D1FB875AB0FB2CF41C29011AAF8CE1144D2BB/", 1, 1 },
     },
     tech = {
         windtraps = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141361305/4AD548281EE3633601185ECDE6461BD5E6E67D12/", 1, 1 },
@@ -58,6 +69,20 @@ local Deck = {
         trainingDrones = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141364887/CC314BFCA03F938FD40AA091A22BB0AD050CECCF/", 1, 1 },
         shuttleFleet = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141361030/270E363DDF544F9A8B14AC269C193741258FCE41/", 1, 1 },
         restrictedOrdnance = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141363646/80CE99F45AED6EF9A249C9BF13E03458D633E8E4/", 1, 1 },
+        -- bloodlines = { "...", 3, 6 },
+        forbiddenWeapons = { "https://steamusercontent-a.akamaihd.net/ugc/28806919569795052/AAF0647BAD97BD2A2DD7E51102C4BC59ABA386A8/", 1, 1 },
+        servoReceivers = { "https://steamusercontent-a.akamaihd.net/ugc/28806919569795104/5A2A2C98F21C70F1C49E54C71030ADFC52D54358/", 1, 1 },
+        sardaukarHighCommand = { "https://steamusercontent-a.akamaihd.net/ugc/28806919569795215/F4078F350F8D1A2AD786749BFED303109A279DC6/", 1, 1 },
+        glowglobes = { "https://steamusercontent-a.akamaihd.net/ugc/28806919569795272/96F4779D8C1E1D8A9DF60F2AE18B1B4F379C45A7/", 1, 1 },
+        selfDestroyingMessages = { "https://steamusercontent-a.akamaihd.net/ugc/28806919569795379/53FF0A4C0ECD69FC4002957EFA36CE74290F2A9D/", 1, 1 },
+        navigationChamber = { "https://steamusercontent-a.akamaihd.net/ugc/28806919569795420/C8E34C5BA34745E9861B3FBB4E378BB09B0212C1/", 1, 1 },
+        rapidDropships = { "https://steamusercontent-a.akamaihd.net/ugc/28806919569795449/3E2105D21B2C60C71BD10A30D1A6D527C292FC8B/", 1, 1 },
+        plasteelBlades = { "https://steamusercontent-a.akamaihd.net/ugc/28806919569795490/1FDE74C66AE34AACB33FF00568A6D963946D2366/", 1, 1 },
+        deliveryBay = { "https://steamusercontent-a.akamaihd.net/ugc/28806919573531945/AFB31EDE9A52ED18C0A68A97DF540F50F4D817D3/", 1, 1 },
+        trainingDepot = { "https://steamusercontent-a.akamaihd.net/ugc/28806919569795628/1D1164CA7619EABEB0C99C221AB92B528AA0F7D2/", 1, 1 },
+        planetaryArray = { "https://steamusercontent-a.akamaihd.net/ugc/28806919569795672/BDDC19CA2B50EECC6D55C010440D07EEC294F63C/", 1, 1 },
+        geneLockedVault = { "https://steamusercontent-a.akamaihd.net/ugc/28806919569795792/4E41339D17C6788AA8F3D05CD220FE37667304DE/", 1, 1 },
+        suspensorSuits = { "https://steamusercontent-a.akamaihd.net/ugc/28806919569794993/D482F043F31F7DBEC24A0E7F83E405A553FCEA4D/", 1, 1 },
     },
     leader = {
         glossuRabban = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141318082/68A9DE7E06DA5857EE51ECB978E13E3921A15B1A/", 1, 1 },
@@ -75,41 +100,44 @@ local Deck = {
         armandEcaz = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141319231/98401D1D00D15DB3512E48BBD63B9922EE17EF71/", 1, 1 },
         tessiaVernius = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141317697/6C34345ADF23EBD567DE0EE662B4920906F721F0/", 1, 1 },
         rhomburVernius = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141316740/58A6CF3EB6EBDEAC4B5826C0D21408A3CC02E678/", 1, 1 },
+        -- bloodlines
+        chani = { "https://steamusercontent-a.akamaihd.net/ugc/28804925896497192/D71661A3571B0AD352BAC2B0EC042A74F2C449BD/", 1, 1 },
+        duncanIdaho = { "https://steamusercontent-a.akamaihd.net/ugc/28804925896496946/3279B2A26C2346C4CCED58E032F7515696F1EC55/", 1, 1 },
+        esmarTuek = { "https://steamusercontent-a.akamaihd.net/ugc/28804925896496485/14011EB052D02BE770A5E15CD12EACEDC03EB12B/", 1, 1 },
+        piterDeVries = { "https://steamusercontent-a.akamaihd.net/ugc/28804925896497318/2D2F666442F6E80FC358908728E243A4FD753128/", 1, 1 },
+        yrkoon = { "https://steamusercontent-a.akamaihd.net/ugc/28809909199603767/A9A4E2D2B1D01EE54FDD5222EDA9FAE1376B610F/", 1, 1 },
+        kotaOdax = { "https://steamusercontent-a.akamaihd.net/ugc/28804925896497133/7821DCA1F54A5501DD192FB8E77C867500A4FCDB/", 1, 1 },
     },
     fanmadeLeader = {
-        arkhane = {
-            abulurdHarkonnen = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141386629/40B8A2B4F6F5DA9A0C2D7738A3F5BFD925167438/", 1, 1 },
-            xavierHarkonnen = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141388874/43E90624D39B5A904FF112BD5A0B7C3D8AA21502/", 1, 1 },
-            feydRauthaHarkonnen = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141388733/D80761B2286A313A11939E3D45DEBCF24F7D30CC/", 1, 1 },
-            hasimirFenring = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141387204/3657671646912D7026E790B8DE187B49975CBD0E/", 1, 1 },
-            margotFenring = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141386481/1964022795283817F32D219C1C38050A9B5303AD/", 1, 1 },
-            lietKynes = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141386752/DC956CB7ACBD2370DC3D86484765E413F36DBBFF/", 1, 1 },
-            hwiNoree = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141389416/D3BB757794FCB5B9CF5D58798A697B354BD34EEA/", 1, 1 },
-            metulli = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141389269/09663A73D24AF2DB6A9315D87C5953614C0B0F32/", 1, 1 },
-            milesTeg = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141389726/299ECFBED3CD8F16774C5C69F8A957768CBBB66D/", 1, 1 },
-            normaCenvas = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141388576/4E8FC979A8689926A3A02EA748F402E7D76570BA/", 1, 1 },
-            irulanCorrino = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141387844/4C33FE97C3EFCABF776DF966B59D2AF15401D07E/", 1, 1 },
-            wencisiaCorrino = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141387530/C3D5184AD0F809A3F1F38BB16096AF5DD4437FA5/", 1, 1 },
-            vorianAtreides = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141386335/DFDB8318608D8F7B39273B40EBB4120FCEE56B3E/", 1, 1 },
-            serenaButler = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141387691/C4934E0587D33E2F1BB051D746A7EB30D2A6DEA7/", 1, 1 },
-            whitmoreBluud = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141386193/FEB8F943C50DFB711640347C6397243D71F9780A/", 1, 1 },
-            executrixOrdos = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141388228/69C591C92ED7FBA903ECDAD9C2CCC2B99EBBC5B0/", 1, 1 },
-            torgTheYoung = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141387038/66DCBBE36459C57FD8F631D8576F2CF01DFDC092/", 1, 1 },
-            twylwythWaff = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141386910/A7741DFFE841114BDDB8B6F8A2A57D2C59CDDEEB/", 1, 1 },
-            scytale = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141389573/BFA284BBABA15A609401208F4D834FE916EA960E/", 1, 1 },
-            stabanTuek = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141388403/1FCB42B17A8F7F711758BF5869CD3B7328E4542F/", 1, 1 },
-            esmarTuek = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141388021/EDAF5084889AA22C19B915DFADDFEADAB97F440F/", 1, 1 },
-            drisk = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141387340/2F2F3CF34B2737B7CAEF26433B3ECEE9FE41B3AF/", 1, 1 },
-            arkhane = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141389060/43F98BF29B58C81D6C1FABDC6D166BC0ED122953/", 1, 1 },
-        },
-        retienne = {
-            horatioDelta = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141373239/A5EC6C2D6540C450E5A88250E11177D28C74C1D2/", 1, 1 },
-            horatioFive = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141385834/3993C542CC0A5764E981F03759B7A0AA2623A95E/", 1, 1 },
-            sionaAtreides = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141374270/B59925EFADED6E2F319D2DDFF6DBF209DB07BEA7/", 1, 1 },
-            almaMavisTaraza = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141380076/0500E7617A9853B2BE2F7E7AE791B361218250DC/", 1, 1 },
-            dukeJenhaestraDrevMeos = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141372925/B7C33A61A918C6750601B4B781BA88988478DB02/", 1, 1 },
-            horatioPrime = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141383080/5ECF73D730CBC697C45C78D823D5D63EEB8F6717/", 1, 1 },
-        }
+        arkhaneAbulurdHarkonnen = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141386629/40B8A2B4F6F5DA9A0C2D7738A3F5BFD925167438/", 1, 1 },
+        arkhaneXavierHarkonnen = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141388874/43E90624D39B5A904FF112BD5A0B7C3D8AA21502/", 1, 1 },
+        arkhaneFeydRauthaHarkonnen = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141388733/D80761B2286A313A11939E3D45DEBCF24F7D30CC/", 1, 1 },
+        arkhaneHasimirFenring = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141387204/3657671646912D7026E790B8DE187B49975CBD0E/", 1, 1 },
+        arkhaneMargotFenring = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141386481/1964022795283817F32D219C1C38050A9B5303AD/", 1, 1 },
+        arkhaneLietKynes = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141386752/DC956CB7ACBD2370DC3D86484765E413F36DBBFF/", 1, 1 },
+        arkhaneHwiNoree = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141389416/D3BB757794FCB5B9CF5D58798A697B354BD34EEA/", 1, 1 },
+        arkhaneMetulli = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141389269/09663A73D24AF2DB6A9315D87C5953614C0B0F32/", 1, 1 },
+        arkhaneMilesTeg = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141389726/299ECFBED3CD8F16774C5C69F8A957768CBBB66D/", 1, 1 },
+        arkhaneNormaCenvas = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141388576/4E8FC979A8689926A3A02EA748F402E7D76570BA/", 1, 1 },
+        arkhaneIrulanCorrino = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141387844/4C33FE97C3EFCABF776DF966B59D2AF15401D07E/", 1, 1 },
+        arkhaneWencisiaCorrino = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141387530/C3D5184AD0F809A3F1F38BB16096AF5DD4437FA5/", 1, 1 },
+        arkhaneVorianAtreides = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141386335/DFDB8318608D8F7B39273B40EBB4120FCEE56B3E/", 1, 1 },
+        arkhaneSerenaButler = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141387691/C4934E0587D33E2F1BB051D746A7EB30D2A6DEA7/", 1, 1 },
+        arkhaneWhitmoreBluud = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141386193/FEB8F943C50DFB711640347C6397243D71F9780A/", 1, 1 },
+        arkhaneExecutrixOrdos = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141388228/69C591C92ED7FBA903ECDAD9C2CCC2B99EBBC5B0/", 1, 1 },
+        arkhaneTorgTheYoung = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141387038/66DCBBE36459C57FD8F631D8576F2CF01DFDC092/", 1, 1 },
+        arkhaneTwylwythWaff = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141386910/A7741DFFE841114BDDB8B6F8A2A57D2C59CDDEEB/", 1, 1 },
+        arkhaneScytale = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141389573/BFA284BBABA15A609401208F4D834FE916EA960E/", 1, 1 },
+        arkhaneStabanTuek = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141388403/1FCB42B17A8F7F711758BF5869CD3B7328E4542F/", 1, 1 },
+        arkhaneEsmarTuek = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141388021/EDAF5084889AA22C19B915DFADDFEADAB97F440F/", 1, 1 },
+        arkhaneDrisk = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141387340/2F2F3CF34B2737B7CAEF26433B3ECEE9FE41B3AF/", 1, 1 },
+        arkhaneArkhane = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141389060/43F98BF29B58C81D6C1FABDC6D166BC0ED122953/", 1, 1 },
+        retienneHoratioDelta = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141373239/A5EC6C2D6540C450E5A88250E11177D28C74C1D2/", 1, 1 },
+        retienneHoratioFive = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141385834/3993C542CC0A5764E981F03759B7A0AA2623A95E/", 1, 1 },
+        retienneSionaAtreides = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141374270/B59925EFADED6E2F319D2DDFF6DBF209DB07BEA7/", 1, 1 },
+        retienneAlmaMavisTaraza = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141380076/0500E7617A9853B2BE2F7E7AE791B361218250DC/", 1, 1 },
+        retienneDukeJenhaestraDrevMeos = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141372925/B7C33A61A918C6750601B4B781BA88988478DB02/", 1, 1 },
+        retienneHoratioPrime = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141383080/5ECF73D730CBC697C45C78D823D5D63EEB8F6717/", 1, 1 },
     },
     arrakeenScouts = {
         committee = {
@@ -187,10 +215,15 @@ local Deck = {
             revealTheFuture = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141397005/243F6620B8960AC7DBB0571BF72437729A7B3B6E/", 1, 1 },
             sooSooSookWaterPeddlers = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141397220/C6C6AD8F57D00FD1B6AA07606962D6DEB63E8B52/", 1, 1 },
         }
-    }
+    },
+    navigation = {
+        bloodlines = { "https://steamusercontent-a.akamaihd.net/ugc/28804925896498665/A7CA60333F021CC224CE59E553EF3D0C63052498/", 5, 2 },
+    },
+    sardaukarCommanderSkill = {
+        bloodlines = { "https://steamusercontent-a.akamaihd.net/ugc/28804925903402701/2950BB8750427F403492D5C3D8139532291A4D02/", 4, 2 },
+    },
 }
 
----
 function Deck.load(loader, cards, category, customDeckName, startLuaIndex, cardNames)
     assert(Deck[category], "Unknown category: " .. category)
     local desc = Deck[category][customDeckName]
@@ -206,7 +239,6 @@ function Deck.load(loader, cards, category, customDeckName, startLuaIndex, cardN
     return loader.loadCustomDeck(cards, customDeck, startLuaIndex, cardNames)
 end
 
----
 function Deck.loadWithSubCategory(loader, cards, category, subCategory, customDeckName, startLuaIndex, cardNames)
     assert(Deck[category], "No category: " .. category)
     assert(Deck[category][subCategory], "No sub category: " .. category .. "." .. subCategory)
@@ -218,7 +250,6 @@ function Deck.loadWithSubCategory(loader, cards, category, subCategory, customDe
     return loader.loadCustomDeck(cards, customDeck, startLuaIndex, cardNames)
 end
 
----
 function Deck.loadCustomDecks(loader)
     local cards = {
         imperium = {},
@@ -230,6 +261,8 @@ function Deck.loadCustomDecks(loader)
         tech = {},
         leaders = {},
         arrakeenScouts = {},
+        navigation = {},
+        sardaukarCommanderSkills = {},
     }
 
     Deck.load(loader, cards.imperium, "imperium", "starter", 1, {
@@ -379,6 +412,35 @@ function Deck.loadCustomDecks(loader)
         "usurp",
     })
 
+    Deck.load(loader, cards.imperium, "imperium", "bloodlinesImperium", 1, {
+        "fremenWarName",
+        "sardaukarStandard",
+        "quashRebellion",
+        "southernFaith",
+        "imperialThroneship",
+        "possibleFutures",
+        "",
+        "",
+        "",
+        "",
+        "bombast",
+        "",
+        "",
+        "sandwalk",
+        "disruptionTactics",
+        "urgentShigawire",
+        "commandCenter",
+        "engineeredMiracle",
+        "iBelieve",
+        "litanyAgainstFear",
+        "eliteForces",
+    })
+    Deck.load(loader, cards.imperium, "imperium", "bloodlinesImperium_tech", 1, {
+        "ixianAmbassador",
+    })
+    Deck.load(loader, cards.imperium, "imperium", "bloodlinesImperium_ruthlessLeadership", 1, {
+        "ruthlessLeadership",
+    })
     Deck.load(loader, cards.special, "imperium", "imperiumFoldedSpace", 1, {
         "foldspace",
         -- +5
@@ -464,6 +526,41 @@ function Deck.loadCustomDecks(loader)
         "viciousTalents",
         -- +4
     })
+    Deck.load(loader, cards.intrigue, "intrigue", "bloodlinesIntrigue", 1, {
+        "adaptiveTactics",
+        "desertSupport",
+        "emperorInvitation",
+        "honorGuard",
+        "returnTheFavor",
+        "sacredPools",
+        "seizeProduction",
+        "theStrongSurvive",
+        "tenuousBound",
+        "withdrawalAgreement",
+        "",
+        "",
+        "",
+        "",
+        "",
+    })
+    Deck.load(loader, cards.intrigue, "intrigue", "bloodlinesIntrigue_tech", 1, {
+        "battlefieldResearch",
+        "rapidEngineering",
+    })
+    Deck.load(loader, cards.intrigue, "intrigue", "bloodlinesIntrigue_twisted", 1, {
+        "ambitious",
+        "calculating",
+        "controlled",
+        "devious",
+        "discerning",
+        "insidious",
+        "resourceful",
+        "sadistic",
+        "shrewd",
+        "sinister",
+        "unnatural",
+        "withdrawn",
+    })
 
     Deck.load(loader, cards.conflict, "conflict1", "conflict", 1, {
         "skirmishA",
@@ -494,7 +591,7 @@ function Deck.loadCustomDecks(loader)
         "economicSupremacy"
     })
 
-    Deck.load(loader, cards.hagal, "hagal", "hagal", 1, {
+    Deck.load(loader, cards.hagal, "hagal", "base", 1, {
         "arrakeen1p",
         "arrakeen2p",
         "carthag",
@@ -521,10 +618,36 @@ function Deck.loadCustomDecks(loader)
         "carthag3",
         "researchStation",
     })
+    Deck.load(loader, cards.hagal, "hagal", "bloodlinesTuek", 1, {
+        "tuekSietch",
+    })
+    Deck.load(loader, cards.hagal, "hagal", "bloodlinesTech", 1, {
+        "acquireTech",
+    })
 
     -- One tech per custom deck.
     for techName, _ in pairs(Deck.tech) do
-        Deck.load(loader, cards.tech, "tech", techName, 1, { techName })
+        if techName ~= "bloodlines" then
+            Deck.load(loader, cards.tech, "tech", techName, 1, { techName })
+        end
+    end
+    if false then
+        -- But a single image for Bloodlines.
+        Deck.load(loader, cards.tech, "tech", "bloodlines", 1, {
+            "trainingDepot",
+            "geneLockedVault",
+            "glowglobes",
+            "planetaryArray",
+            "servoReceivers",
+            "deliveryBay",
+            "plasteelBlades",
+            "suspensorSuits",
+            "rapidDropships",
+            "selfDestroyingMessages",
+            "navigationChamber",
+            "sardaukarHighCommand",
+            "forbiddenWeapons",
+        })
     end
 
     -- One leader per custom deck.
@@ -533,11 +656,8 @@ function Deck.loadCustomDecks(loader)
     end
 
     -- One leader per custom deck.
-    for leaderName, _ in pairs(Deck.fanmadeLeader.arkhane) do
-        Deck.loadWithSubCategory(loader, cards.leaders, "fanmadeLeader", "arkhane", leaderName, 1, { leaderName })
-    end
-    for leaderName, _ in pairs(Deck.fanmadeLeader.retienne) do
-        Deck.loadWithSubCategory(loader, cards.leaders, "fanmadeLeader", "retienne", leaderName, 1, { leaderName })
+    for leaderName, _ in pairs(Deck.fanmadeLeader) do
+        Deck.load(loader, cards.leaders, "fanmadeLeader", leaderName, 1, { leaderName })
     end
 
     for category, cardNames in pairs(Deck.arrakeenScouts) do
@@ -547,6 +667,28 @@ function Deck.loadCustomDecks(loader)
             end
         end
     end
+
+    Deck.load(loader, cards.navigation, "navigation", "bloodlines", 1, {
+        "solarisAndPermanentPersuasion",
+        "spiceIfTrash",
+        "waterThenSpiceIfSpacingGuildInfluence",
+        "spiceOrInfluenceIfSolaris",
+        "spiceOrTSMFIfWater",
+        "spiceThenIntrigueIfAlliance",
+        "influenceIfInfluence",
+        "drawOrVpIfSpice",
+        "troopOrMoreTroopIfSolaris",
+    })
+
+    Deck.load(loader, cards.sardaukarCommanderSkills, "sardaukarCommanderSkill", "bloodlines", 1, {
+        "charismatic",
+        "desperate",
+        "fierce",
+        "canny",
+        "driven",
+        "loyal",
+        "hardy",
+    })
 
     return cards
 end

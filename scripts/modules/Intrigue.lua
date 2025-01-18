@@ -7,10 +7,10 @@ local Deck = Module.lazyRequire("Deck")
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local Types = Module.lazyRequire("Types")
 local Action = Module.lazyRequire("Action")
+local Board = Module.lazyRequire("Board")
 
 local Intrigue = {}
 
----
 function Intrigue.onLoad(state)
     Helper.append(Intrigue, Helper.resolveGUIDs(false, {
         deckZone = 'a377d8',
@@ -22,10 +22,10 @@ function Intrigue.onLoad(state)
     end
 end
 
----
 function Intrigue.setUp(settings)
     local continuation = Helper.createContinuation("Intrigue.setUp")
     Deck.generateIntrigueDeck(Intrigue.deckZone, settings.riseOfIx, settings.immortality).doAfter(function (deck)
+        assert(deck, "No intrigue deck!")
         Helper.shuffleDeck(deck)
         Intrigue._transientSetUp(settings)
         continuation.run()
@@ -33,30 +33,28 @@ function Intrigue.setUp(settings)
     return continuation
 end
 
----
 function Intrigue._transientSetUp(settings)
-    AcquireCard.new(Intrigue.deckZone, "Intrigue", PlayBoard.withLeader(Intrigue._acquireIntrigueCard), Deck.getAcquireCardDecalUrl("generic"))
-    AcquireCard.new(Intrigue.discardZone, "Intrigue", nil, Deck.getAcquireCardDecalUrl("generic"))
+    AcquireCard.new(Intrigue.deckZone, Board.onTable(0), "Intrigue", PlayBoard.withLeader(Intrigue._acquireIntrigueCard), Deck.getAcquireCardDecalUrl("generic"))
+    AcquireCard.new(Intrigue.discardZone, Board.onTable(0), "Intrigue", nil, Deck.getAcquireCardDecalUrl("generic"))
 end
 
----
 function Intrigue._acquireIntrigueCard(acquireCard, color)
     local leader = PlayBoard.getLeader(color)
     leader.drawIntrigues(color, 1)
 end
 
----
 function Intrigue.drawIntrigues(color, amount)
-    Types.assertIsPositiveInteger(amount)
+    assert(amount > 0)
     local orientedPosition = PlayBoard.getHandOrientedPosition(color)
     Helper.onceTimeElapsed(0.25, amount).doAfter(function ()
         Helper.moveCardFromZone(Intrigue.deckZone, orientedPosition.position, orientedPosition.rotation, false, true)
+        Intrigue.onIntrigueTaken(color)
     end)
 end
 
----
 function Intrigue.stealIntrigues(color, otherColor, amount)
-    Types.assertIsPositiveInteger(amount)
+    assert(amount > 0)
+
     local victimName = PlayBoard.getLeaderName(otherColor)
 
     local intrigues = PlayBoard.getIntrigues(otherColor)
@@ -71,10 +69,25 @@ function Intrigue.stealIntrigues(color, otherColor, amount)
         card.setRotation(orientedPosition.rotation)
         local cardName = I18N(Helper.getID(card))
         Action.secretLog(I18N("stealIntrigues", { victim = victimName, card = cardName }), color)
+        Intrigue.onIntrigueTaken(color)
     end)
 end
 
----
+function Intrigue.onIntrigueTaken(color)
+    local leader = PlayBoard.getLeader(color)
+    if PlayBoard.hasTech(color, "suspensorSuits") then
+        if leader.troops(color, "supply", "combat", 1) == 0 then
+            Helper.dump("Failed to deploy a troop in accordance to the suspensor suits.")
+        end
+    end
+end
+
+function Intrigue.moveIntrigues(positions)
+    for i = 1, #positions do
+        Helper.moveCardFromZone(Intrigue.deckZone, positions[i])
+    end
+end
+
 function Intrigue.discard(card)
     Intrigue.discardQueue = Intrigue.discardQueue or Helper.createSpaceQueue()
     Intrigue.discardQueue.submit(function (height)
@@ -83,7 +96,6 @@ function Intrigue.discard(card)
     end)
 end
 
----
 function Intrigue.getDiscardedIntrigues()
     local deckOrCard = Helper.getDeckOrCard(Intrigue.discardZone)
     return Helper.getCards(deckOrCard)

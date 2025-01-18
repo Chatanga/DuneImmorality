@@ -10,7 +10,6 @@ local ScoreBoard = {
     tokens = {}
 }
 
----
 function ScoreBoard.onLoad(state)
 
     ScoreBoard.hiddenZone = Helper.resolveGUIDs(true, "2edb38")
@@ -34,13 +33,13 @@ function ScoreBoard.onLoad(state)
         base = {
             fourPlayerBag = "c2290f",
             theSpiceMustFlowBag = "7bd6f8",
+            combatVictoryPointBag = "86dc4e",
+            endgameCardBag = "182475",
             guildAmbassadorBag = "912d75",
             opulenceBag = "c22e46",
             theSleeperMustAwaken = "9bfd65",
             choamShares = "2da115",
             stagedIncident = "1f98e2",
-            endgameCardBag = "182475",
-            combatVictoryPointBag = "86dc4e",
         },
         hagal = {
             intrigueBag = "772594",
@@ -60,7 +59,11 @@ function ScoreBoard.onLoad(state)
             scientificBreakthrough = "b56adc",
             tleilaxBag = "37ceab",
             forHumanityBag = "6e2a13"
-        }
+        },
+        bloodlines = {
+            sardaukarHighCommand = "d26909",
+            navigation = "a30c10"
+        },
     })
 
     if state.settings and state.settings.riseOfIx then
@@ -68,39 +71,22 @@ function ScoreBoard.onLoad(state)
     end
 end
 
----
 function ScoreBoard.setUp(settings)
     local activateCategories = {
         base = true,
         hagal = settings.numberOfPlayers <= 2,
-        ix = settings.riseOfIx,
+        ix = settings.riseOfIx or settings.ixAmbassyWithIx,
         immortality = settings.immortality,
+        bloodlines = settings.bloodlines,
     }
 
-    for _, category in ipairs({ "base", "hagal", "ix", "immortality" }) do
+    for _, category in ipairs({ "base", "hagal", "ix", "immortality", "bloodlines" }) do
         if activateCategories[category] then
             Helper.forEachRecursively(ScoreBoard.tokens[category], function (name, token)
                 assert(token)
                 local key = Helper.getID(token)
                 if key and key:len() > 0 then
                     token.setName(I18N(key))
-                end
-                if false then
-                    -- Clumsy workaround to name items in a bag.
-                    -- TODO Recreate the bag?
-                    if token.type == "Bag" then
-                        local count = #token.getObjects()
-                        for i = 1, count do
-                            local innerToken = token.takeObject({ position = token.getPosition() + Vector(0, i * 0.5, 0) })
-                            innerToken.setLock(true)
-                            Helper.onceTimeElapsed(0.5).doAfter(function ()
-                                innerToken.setName(I18N(Helper.getID(innerToken)))
-                                innerToken.setLock(false)
-                            end)
-                        end
-                    elseif token.type == "Infinite" then
-                        -- TODO
-                    end
                 end
             end)
         else
@@ -114,27 +100,22 @@ function ScoreBoard.setUp(settings)
     ScoreBoard._transientSetUp(settings)
 end
 
----
 function ScoreBoard._transientSetUp(settings)
     -- NOP
 end
 
----
 function ScoreBoard.gainVictoryPoint(color, name, count)
-    -- FIXME Useless indirection.
-    local holder = {
-        success = false
-    }
+    local success = false
     Helper.forEachRecursively(ScoreBoard.tokens, function (victoryPointName, victoryPointSource)
         if name == victoryPointName then
             PlayBoard.grantScoreToken(color, victoryPointSource)
-            holder.success = true
+            success = true
         elseif name .. "Bag" == victoryPointName then
             PlayBoard.grantScoreTokenFromBag(color, victoryPointSource, count)
-            holder.success = true
+            success = true
         end
     end)
-    if holder.success then
+    if success then
         return true
     elseif Combat.gainVictoryPoint(color, name, count) then
         return true

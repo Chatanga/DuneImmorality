@@ -12,11 +12,10 @@ local Resource = Helper.createClass(nil, {
     resources = {}
 })
 
----
 function Resource.new(token, color, resourceName, value, location)
     assert(token)
-    Types.assertIsResourceName(resourceName)
-    Types.assertIsPositiveInteger(value)
+    assert(Types.isResourceName(resourceName))
+    assert(value >= 0)
 
     token.interactable = false
 
@@ -24,6 +23,8 @@ function Resource.new(token, color, resourceName, value, location)
         token = token,
         color = color,
         resourceName = resourceName,
+        baseValue = 0,
+        baseValueContributions = {},
         value = value,
         laggingValue = value,
         location = location,
@@ -80,29 +81,25 @@ function Resource.new(token, color, resourceName, value, location)
     return resource
 end
 
----
 function Resource:_updateState()
     if self.value == self.laggingValue then
-        Helper.emitEvent(self.resourceName .. "ValueChanged", self.color, self.value)
+        Helper.emitEvent(self.resourceName .. "ValueChanged", self.color, self.baseValue + self.value)
     end
 end
 
----
 function Resource:_getTooltip()
-    return I18N(self.resourceName .. "Amount", self.value)
+    return I18N(self.resourceName .. "Amount", self.baseValue + self.value)
 end
 
----
 function Resource:_updateButton()
     self.token.editButton({
         index = 0,
-        label = tostring(self.value),
+        label = tostring(self.baseValue + self.value),
         tooltip = self:_getTooltip()
     })
 end
 
----
-function Resource.findResourceFromToken(token)
+function Resource.unused_findResourceFromToken(token)
     for _, resource in pairs(Resource.resources) do
         if resource.token == token then
             return resource
@@ -111,7 +108,6 @@ function Resource.findResourceFromToken(token)
     return nil
 end
 
----
 function Resource:_setValue(_, altClick)
     local change = altClick and -1 or 1
     local newValue = math.min(math.max(self.value + change, self.MIN_VALUE), self.MAX_VALUE)
@@ -123,7 +119,6 @@ function Resource:_setValue(_, altClick)
     end
 end
 
----
 function Resource:_changeValue(color, altClick)
     if self.color and color ~= self.color then
         Dialog.broadcastToColor(I18N("noTouch"), color, color)
@@ -164,7 +159,6 @@ function Resource:_changeValue(color, altClick)
     end
 end
 
----
 function Resource:change(change)
     local newValue = math.min(math.max(self.value + change, self.MIN_VALUE), self.MAX_VALUE)
     self.value = newValue
@@ -173,7 +167,6 @@ function Resource:change(change)
     self:_updateState()
 end
 
----
 function Resource:set(value)
     local newValue = math.min(math.max(value, self.MIN_VALUE), self.MAX_VALUE)
     self.value = newValue
@@ -182,9 +175,30 @@ function Resource:set(value)
     self:_updateState()
 end
 
----
 function Resource:get()
-    return self.value
+    return self.value + self.baseValue
+end
+
+function Resource:setBaseValueContribution(origin, amount)
+    self.baseValueContributions[origin] = amount
+    self:_updateBaseValueContributions()
+end
+
+function Resource:unused_clearBaseValueContributions()
+    self.baseValueContributions = {}
+    self:_updateBaseValueContributions()
+end
+
+function Resource:_updateBaseValueContributions()
+    local oldBaseValue = self.baseValue
+    self.baseValue = 0
+    for _, a in pairs(self.baseValueContributions) do
+        self.baseValue = self.baseValue + a
+    end
+    if oldBaseValue ~= self.baseValue then
+        self:_updateButton()
+        self:_updateState()
+    end
 end
 
 return Resource

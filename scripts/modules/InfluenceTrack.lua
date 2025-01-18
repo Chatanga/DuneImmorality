@@ -6,40 +6,12 @@ local Dialog = require("utils.Dialog")
 local Types = Module.lazyRequire("Types")
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local MainBoard = Module.lazyRequire("MainBoard")
+local Board = Module.lazyRequire("Board")
 
 local InfluenceTrack = {
-    influenceTokenInitialPositions = {
-        emperor = {
-            Red = Helper.getHardcodedPositionFromGUID('acfcef', -9.718932, 0.752500057, 1.85002029),
-            Blue = Helper.getHardcodedPositionFromGUID('426a23', -10.1873131, 0.7525, 1.85005832),
-            Green = Helper.getHardcodedPositionFromGUID('d7c9ba', -9.273371, 0.754999936, 1.8500092),
-            Yellow = Helper.getHardcodedPositionFromGUID('489871', -8.834659, 0.755000055, 1.85005462)
-        },
-        spacingGuild = {
-            Red = Helper.getHardcodedPositionFromGUID('be464e', -9.737917, 0.752500057, -3.640007),
-            Blue = Helper.getHardcodedPositionFromGUID('4069d8', -10.1552429, 0.7525, -3.64000773),
-            Green = Helper.getHardcodedPositionFromGUID('89da7d', -9.288127, 0.754999936, -3.64001),
-            Yellow = Helper.getHardcodedPositionFromGUID('9d0075', -8.846331, 0.755000055, -3.63998413)
-        },
-        beneGesserit = {
-            Red = Helper.getHardcodedPositionFromGUID('713eae', -9.766583, 0.752500057, -9.100027),
-            Blue = Helper.getHardcodedPositionFromGUID('2a88a6', -10.2121153, 0.7525, -9.100084),
-            Green = Helper.getHardcodedPositionFromGUID('2dc980', -9.319731, 0.754999936, -9.100017),
-            Yellow = Helper.getHardcodedPositionFromGUID('a3729e', -8.888711, 0.755000055, -9.100081)
-        },
-        fremen = {
-            Red = Helper.getHardcodedPositionFromGUID('088f51', -9.762483, 0.752500057, -14.5700312),
-            Blue = Helper.getHardcodedPositionFromGUID('0e6e41', -10.2238894, 0.7525, -14.5700541),
-            Green = Helper.getHardcodedPositionFromGUID('d390dc', -9.328378, 0.754999936, -14.570013),
-            Yellow = Helper.getHardcodedPositionFromGUID('77d7c8', -8.887749, 0.755000055, -14.5700006)
-        }
-    },
-    allianceTokenInitialPositions = {
-        emperor = Helper.getHardcodedPositionFromGUID('13e990', -9.511963, 0.78, 5.86089),
-        spacingGuild = Helper.getHardcodedPositionFromGUID('ad1aae', -9.507135, 0.780000031, 0.24908106),
-        beneGesserit = Helper.getHardcodedPositionFromGUID('33452e', -9.551374, 0.780000031, -5.21345472),
-        fremen = Helper.getHardcodedPositionFromGUID('4c2bcc', -9.543688, 0.780000031, -10.6707687)
-    },
+    influenceTokens = {},
+    influenceTokenInitialPositions = {},
+    allianceTokenInitialPositions = {},
     influenceLevels = {},
     lockedActions = {
         emperor = {},
@@ -49,7 +21,6 @@ local InfluenceTrack = {
     },
 }
 
----
 function InfluenceTrack.onLoad(state)
     Helper.append(InfluenceTrack, Helper.resolveGUIDs(false, {
         snoopers = {
@@ -58,44 +29,13 @@ function InfluenceTrack.onLoad(state)
             beneGesserit = "bed196",
             fremen = "b10897",
         },
-        influenceTokens = {
-            emperor = {
-                Red = 'acfcef',
-                Blue = '426a23',
-                Green = 'd7c9ba',
-                Yellow = '489871'
-            },
-            spacingGuild = {
-                Red = 'be464e',
-                Blue = '4069d8',
-                Green = '89da7d',
-                Yellow = '9d0075'
-            },
-            beneGesserit = {
-                Red = '713eae',
-                Blue = '2a88a6',
-                Green = '2dc980',
-                Yellow = 'a3729e'
-            },
-            fremen = {
-                Red = '088f51',
-                Blue = '0e6e41',
-                Green = 'd390dc',
-                Yellow = '77d7c8'
-            }
-        },
         friendshipBags = {
             emperor = "7007df",
             spacingGuild = "af9795",
             beneGesserit = "3ebbd7",
             fremen = "f5a7af",
         },
-        allianceTokens = {
-            emperor = 'f7fff2',
-            spacingGuild = '8f7ee3',
-            beneGesserit = 'a4da94',
-            fremen = '1ca742',
-        }
+        allianceTokens = {}
     }))
 
     if state.settings then
@@ -103,14 +43,13 @@ function InfluenceTrack.onLoad(state)
     end
 end
 
----
 function InfluenceTrack.setUp(settings)
     InfluenceTrack._transientSetUp(settings, true)
 end
 
----
 function InfluenceTrack._transientSetUp(settings, firstTime)
-    InfluenceTrack.influenceLevels = {}
+    InfluenceTrack._processSnapPoints(settings, firstTime)
+
     for faction, initialPositions in pairs(InfluenceTrack.influenceTokenInitialPositions) do
         local factionLevels = {}
         local meanStartPosition = Vector(0, 0, 0)
@@ -128,20 +67,21 @@ function InfluenceTrack._transientSetUp(settings, firstTime)
             meanStep = meanStep + step
             n = n + 1
         end
-        meanStartPosition:scale(1/n)
+        meanStartPosition:scale(1 / n)
         meanStep = meanStep / n
         for i = 0, 6 do
-            local levelPosition = meanStartPosition + Vector(0, 0, meanStep * i)
-            levelPosition:setAt('y', 0.5)
+            local levelPosition = meanStartPosition + Vector(0, -0.5, meanStep * i)
             Helper.createTransientAnchor(faction .. "Rank" .. tostring(i), levelPosition).doAfter(function (anchor)
                 local actionName = I18N("progressOnInfluenceTrack", { withFaction = I18N(Helper.toCamelCase("with", faction)) })
-                Helper.createSizedAreaButton(1000, 400, anchor, 0.7, actionName, PlayBoard.withLeader(function (_, color, _)
+                Helper.createSizedAreaButton(1000, 400, anchor, 0, 0, Board.onMainBoard(0.1), actionName, PlayBoard.withLeader(function (_, color, _)
                     if not InfluenceTrack.lockedActions[faction][color] then
-                        local rank = InfluenceTrack._getInfluenceTracksRank(faction, color)
-                        InfluenceTrack.lockedActions[faction][color] = true
-                        PlayBoard.getLeader(color).influence(color, faction, i - rank, true).doAfter(function ()
-                            InfluenceTrack.lockedActions[faction][color] = false
-                        end)
+                        if true then
+                            local rank = InfluenceTrack._getInfluenceTracksRank(faction, color)
+                            InfluenceTrack.lockedActions[faction][color] = true
+                            PlayBoard.getLeader(color).influence(color, faction, i - rank).doAfter(function ()
+                                InfluenceTrack.lockedActions[faction][color] = false
+                            end)
+                        end
                     end
                 end))
             end)
@@ -150,7 +90,79 @@ function InfluenceTrack._transientSetUp(settings, firstTime)
     end
 end
 
----
+function InfluenceTrack._processSnapPoints(settings, firstTime)
+    local allColors = { "Green", "Yellow", "Blue", "Red", "White", "Purple" }
+    local allActiveColors = PlayBoard.getActivePlayBoardColors()
+
+    local influenceTokens = {}
+    for _, object in ipairs(getObjects()) do
+        if object.hasTag("AllianceToken") then
+            for faction, _ in pairs(InfluenceTrack.lockedActions) do
+                if object.hasTag(faction) then
+                    InfluenceTrack.allianceTokens[faction] = object
+                    break
+                end
+            end
+        elseif object.hasTag("InfluenceTokens") then
+            for _, color in ipairs(allColors) do
+                if object.hasTag(color) then
+                    if Helper.isElementOf(color, allActiveColors) then
+                        table.insert(influenceTokens, object)
+                    else
+                        object.destruct()
+                    end
+                    break
+                end
+            end
+        end
+    end
+
+    MainBoard.collectSnapPointsOnAllBoards(settings, {
+
+        faction = function (faction, position)
+            InfluenceTrack.influenceTokens[faction] = {}
+            InfluenceTrack.influenceTokenInitialPositions[faction] = {}
+
+            for _, influenceToken in ipairs(influenceTokens) do
+                local tokenPosition = influenceToken.getPosition()
+                local dz = tokenPosition.z - position.z
+                if -2 < dz and dz < 3.5 then
+                    for _, color in ipairs(allColors) do
+                        if influenceToken.hasTag(color) then
+                            InfluenceTrack.influenceTokens[faction][color] = influenceToken
+                            local xOffsets = {
+                                Blue = -0.66,
+                                Red = -0.22,
+                                Green = 0.22,
+                                Yellow = 0.66,
+                                White = 0,
+                                Purple = 0,
+                            }
+                            local influenceTokenInitialPosition = position + Vector(xOffsets[color], 0, -1.6)
+                            -- Snap point height is weird, so we just keep the natural token position.
+                            influenceTokenInitialPosition.y = influenceToken.getPosition().y
+                            InfluenceTrack.influenceTokenInitialPositions[faction][color] = influenceTokenInitialPosition
+                            if firstTime then
+                                influenceToken.setPosition(influenceTokenInitialPosition)
+                                Helper.noPhysicsNorPlay(influenceToken)
+                            end
+                            break
+                        end
+                    end
+                end
+            end
+
+            local allianceTokenInitialPosition = position + Vector(-0.02, 0, 2.32)
+            InfluenceTrack.allianceTokenInitialPositions[faction] = allianceTokenInitialPosition
+            if firstTime then
+                local token = InfluenceTrack.allianceTokens[faction]
+                token.setInvisibleTo({})
+                token.setPositionSmooth(allianceTokenInitialPosition)
+            end
+        end
+    })
+end
+
 function InfluenceTrack.setUpSnoopers()
     for faction, snooper in pairs(InfluenceTrack.snoopers) do
         local position = MainBoard.getSnooperTrackPosition(faction)
@@ -163,14 +175,12 @@ function InfluenceTrack.setUpSnoopers()
     end
 end
 
----
 function InfluenceTrack.tearDownSnoopers()
     for _, snooper in pairs(InfluenceTrack.snoopers) do
         snooper.destruct()
     end
 end
 
----
 function InfluenceTrack.recallSnooper(faction, color)
 
     local foundSnooper
@@ -215,19 +225,22 @@ function InfluenceTrack.recallSnooper(faction, color)
     end
 end
 
----
 function InfluenceTrack.hasFriendship(color, faction)
-    Types.assertIsPlayerColor(color)
-    Types.assertIsFaction(faction)
+    assert(Types.isPlayerColor(color))
+    assert(Types.isFaction(faction))
     return InfluenceTrack.getInfluence(faction, color) >= 2
 end
 
----
+function InfluenceTrack.hasSuperFriendship(color, faction)
+    assert(Types.isPlayerColor(color))
+    assert(Types.isFaction(faction))
+    return InfluenceTrack.getInfluence(faction, color) >= 3
+end
+
 function InfluenceTrack.getInfluence(faction, color)
     return InfluenceTrack._getInfluenceTracksRank(faction, color)
 end
 
----
 function InfluenceTrack._getInfluenceTracksRank(faction, color)
     local influenceLevels = InfluenceTrack.influenceLevels[faction][color]
     local token = InfluenceTrack.influenceTokens[faction][color]
@@ -239,7 +252,6 @@ function InfluenceTrack._getInfluenceTracksRank(faction, color)
     end
 end
 
----
 function InfluenceTrack._setInfluenceTracksRank(faction, color, change)
     local levels = InfluenceTrack.influenceLevels[faction][color]
     local token = InfluenceTrack.influenceTokens[faction][color]
@@ -248,16 +260,13 @@ function InfluenceTrack._setInfluenceTracksRank(faction, color, change)
     token.setPositionSmooth(position, false, false)
 end
 
----
 function InfluenceTrack.change(color, faction, change)
     return InfluenceTrack._changeInfluenceTracksRank(color, faction, change)
 end
 
----
 function InfluenceTrack._changeInfluenceTracksRank(color, faction, change)
-    Types.assertIsPlayerColor(color)
-    Types.assertIsFaction(faction)
-    Types.assertIsInteger(change)
+    assert(Types.isPlayerColor(color))
+    assert(Types.isFaction(faction))
 
     local token = InfluenceTrack.influenceTokens[faction][color]
 
@@ -290,24 +299,22 @@ function InfluenceTrack._changeInfluenceTracksRank(color, faction, change)
             InfluenceTrack._loseFriendship(faction, color)
         end
         continuation.run(realChange)
-        Helper.emitEvent("influence", faction, color, newRank)
+        Helper.emitEvent("influence", faction, color, newRank, oldRank)
     end)
 
     return continuation
 end
 
----
 function InfluenceTrack._gainFriendship(faction, color)
-    Types.assertIsFaction(faction)
-    Types.assertIsPlayerColor(color)
+    assert(Types.isFaction(faction))
+    assert(Types.isPlayerColor(color))
     local friendshipTokenName = faction .. "Friendship"
     PlayBoard.getLeader(color).gainVictoryPoint(color, friendshipTokenName, 1)
 end
 
----
 function InfluenceTrack._loseFriendship(faction, color)
-    Types.assertIsFaction(faction)
-    Types.assertIsPlayerColor(color)
+    assert(Types.isFaction(faction))
+    assert(Types.isPlayerColor(color))
     local friendshipTokenName = faction .. "Friendship"
     for _, scoreToken in ipairs(PlayBoard.getScoreTokens(color)) do
         if Helper.getID(scoreToken) == friendshipTokenName then
@@ -316,7 +323,6 @@ function InfluenceTrack._loseFriendship(faction, color)
     end
 end
 
----
 function InfluenceTrack._challengeAlliance(faction)
     local bestRankedPlayers = {}
     local bestRank = 4
@@ -344,13 +350,32 @@ function InfluenceTrack._challengeAlliance(faction)
                 allianceOwner = bestRankedPlayers[1]
                 InfluenceTrack._gainAlliance(faction, allianceOwner)
             else
-                broadcastToAll(tostring(allianceOwner) .. " must grant alliance to one of " .. tostring(bestRankedPlayers), "Pink") -- FIXME
+                -- FIXME
+                broadcastToAll(tostring(allianceOwner) .. " must grant alliance to one of " .. tostring(bestRankedPlayers), "Pink")
             end
         end
     end
 end
 
----
+function InfluenceTrack.getAllianceCost(color, faction)
+    local rank = InfluenceTrack.getInfluence(faction, color)
+    for _, otherColor in ipairs(PlayBoard.getActivePlayBoardColors()) do
+        if InfluenceTrack.hasAlliance(otherColor, faction) then
+            if otherColor == color then
+                return 0
+            else
+                local otherRank = InfluenceTrack.getInfluence(faction, otherColor)
+                if otherRank == 6 then
+                    return -1
+                else
+                    return otherRank - rank + 1
+                end
+            end
+        end
+    end
+    return 4 - rank
+end
+
 function InfluenceTrack.hasAlliance(color, faction)
     local playerVictoryTokens = PlayBoard.getScoreTokens(color)
     for _, victoryToken in ipairs(playerVictoryTokens) do
@@ -361,7 +386,6 @@ function InfluenceTrack.hasAlliance(color, faction)
     return false
 end
 
----
 function InfluenceTrack.hasAnyAlliance(color)
     for faction, _ in pairs(InfluenceTrack.influenceTokenInitialPositions) do
         if InfluenceTrack.hasAlliance(color, faction) then
@@ -371,16 +395,14 @@ function InfluenceTrack.hasAnyAlliance(color)
     return false
 end
 
----
 function InfluenceTrack._gainAlliance(faction, color)
-    Types.assertIsFaction(faction)
-    Types.assertIsPlayerColor(color)
+    assert(Types.isFaction(faction))
+    assert(Types.isPlayerColor(color))
     local token = InfluenceTrack.allianceTokens[faction]
     assert(token)
     PlayBoard.getLeader(color).gainVictoryPoint(color, Helper.getID(token), 1)
 end
 
----
 function InfluenceTrack._gainAllianceBonus(faction, color)
     local leader = PlayBoard.getLeader(color)
     if not PlayBoard.isRival(color) then
@@ -398,7 +420,6 @@ function InfluenceTrack._gainAllianceBonus(faction, color)
     end
 end
 
----
 function InfluenceTrack._loseAlliance(faction, color)
     local position = InfluenceTrack.allianceTokenInitialPositions[faction]
     InfluenceTrack.allianceTokens[faction].setPositionSmooth(position, false, false)

@@ -35,3 +35,7 @@ This repository contains the JSON skeletons and Lua scripts of various mods for 
 - Arrakeen Scouts history (as cards).
 - Main board in French.
 - Fix Research Station bound to Ix extension.
+- Plastic or wood? Color adjust too.
+- Normalize spaces/tabs.
+
+Créer arbre d’appels.

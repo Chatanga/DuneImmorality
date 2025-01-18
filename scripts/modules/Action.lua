@@ -18,12 +18,12 @@ local TleilaxuRow = Module.lazyRequire("TleilaxuRow")
 local ScoreBoard = Module.lazyRequire("ScoreBoard")
 local Hagal = Module.lazyRequire("Hagal")
 local TurnControl = Module.lazyRequire("TurnControl")
+local SardaukarCommander = Module.lazyRequire("SardaukarCommander")
 
 local Action = Helper.createClass(nil, {
     context = {}
 })
 
----
 function Action.onLoad(state)
 
     Helper.registerEventListener("phaseStart", function (phase, _)
@@ -45,14 +45,16 @@ function Action.onLoad(state)
     end
 end
 
----
+function Action.setUp()
+    -- NOP
+end
+
 function Action.onSave(state)
     state.Action = {
         context = Action.context
     }
 end
 
----
 function Action.checkContext(attributes)
     for name, expectedValue in pairs(attributes) do
         local value = Action.context and Action.context[name] or nil
@@ -69,12 +71,10 @@ function Action.checkContext(attributes)
     return true
 end
 
----
-function Action.setUp(color, settings)
+function Action.doSetUp(color, settings)
     -- NOP
 end
 
----
 function Action.instruct(phase, isActivePlayer)
     local availablePhaseInstructions = {
         leaderSelection = true,
@@ -96,6 +96,7 @@ function Action.instruct(phase, isActivePlayer)
 end
 
 function Action.prepare(color, settings)
+    -- In the base game, but not in Uprising.
     if Hagal.getRivalCount() == 2 and settings.difficulty == "novice" then
         Action.resources(color, "solari", 1)
         Action.resources(color, "spice", 1)
@@ -108,30 +109,27 @@ function Action.prepare(color, settings)
     Action.troops(color, "supply", "garrison", settings.epicMode and 5 or 3)
 end
 
----
 function Action.tearDown()
 end
 
----
 function Action.setContext(key, value)
-    if key == "agentSent" and Action.troopTransferCoalescentQueue then
+    if key == "agentDestination" and Action.troopTransferCoalescentQueue then
         Action.flushTroopTransfer()
     end
     Action.context[key] = value
 end
 
----
 function Action.flushTroopTransfer()
     if Action.troopTransferCoalescentQueue then
         Action.troopTransferCoalescentQueue.flush()
     end
 end
 
----
 function Action.log(message, color, isSecret)
-    -- Order matters here (but there is only one option with this mod).
+    -- Order matters here.
+    -- (But there is only one option with this mod.)
     local logContextPrinters = {
-        { name = "agentSent", print = function (value)
+        { name = "agentDestination", print = function (value)
             local cards = ""
             for i, card in pairs(value.cards or {}) do
                 if i > 1 then
@@ -157,30 +155,29 @@ function Action.log(message, color, isSecret)
     end
     if message then
         if isSecret then
-            printToColor(prefix .. message, color, "Grey")
+            local player = Helper.findPlayerByColor(color)
+            if player and player.seated then
+                printToColor(prefix .. message, color, "Grey")
+            end
         else
             printToAll(prefix .. message, color)
         end
     end
 end
 
----
 function Action.secretLog(message, color)
     Action.log(message, color, true)
 end
 
----
 function Action.unsetContext(key)
     Action.context[key] = nil
 end
 
----
 function Action.sendAgent(color, spaceName)
     Action.context.space = spaceName
     return MainBoard.sendAgent(color, spaceName)
 end
 
----
 function Action.takeMentat(color, anywhere)
     local mentat = MainBoard.getMentat(anywhere)
     if mentat then
@@ -190,7 +187,6 @@ function Action.takeMentat(color, anywhere)
     end
 end
 
----
 function Action.recruitSwordmaster(color)
     if PlayBoard.recruitSwordmaster(color) then
         Action.log(I18N("recruitSwordmaster"), color)
@@ -200,7 +196,6 @@ function Action.recruitSwordmaster(color)
     end
 end
 
----
 function Action.takeHighCouncilSeat(color)
     if PlayBoard.takeHighCouncilSeat(color) then
         Action.log(I18N("takeHighCouncilSeat"), color)
@@ -212,19 +207,20 @@ end
 
 ---@param color PlayerColor
 ---@param resourceName ResourceName
----@param amount integer
+---@param initialAmount integer
 ---@return boolean
-function Action.resources(color, resourceName, amount)
-    Types.assertIsPlayerColor(color)
-    Types.assertIsResourceName(resourceName)
-    Types.assertIsInteger(amount)
+function Action.resources(color, resourceName, initialAmount)
+    assert(Types.isPlayerColor(color))
+    assert(Types.isResourceName(resourceName))
+
+    local amount = -Action.bargain(color, resourceName, -initialAmount)
 
     local resource = PlayBoard.getResource(color, resourceName)
     if resource:get() >= -amount then
         if amount ~= 0 then
             resource:change(amount)
             Action.log(I18N(amount > 0 and "credit" or "debit", {
-                what = I18N.agree(math.abs(amount), resourceName),
+                what = I18N.agree(amount, resourceName),
                 amount = math.abs(amount),
             }), color)
         end
@@ -239,16 +235,21 @@ end
 ---@param amount integer
 ---@return integer
 function Action.bargain(color, resourceName, amount)
-    Types.assertIsPlayerColor(color)
-    Types.assertIsResourceName(resourceName)
-    Types.assertIsInteger(amount)
+    assert(Types.isPlayerColor(color))
+    assert(Types.isResourceName(resourceName))
 
-    return amount
+    local finalAmount = amount
+    if Helper.isElementOf(resourceName, {"spice", "solari"})
+        and PlayBoard.hasTech(color, "navigationChamber")
+        and amount > 0
+        and Action.checkContext({ phase = "playerTurns", color = color, agentDestination = Helper.isNotNil }) then
+        finalAmount = amount - 1
+    end
+    return finalAmount
 end
 
----
 function Action.drawImperiumCards(color, amount, forced)
-    Types.assertIsPlayerColor(color)
+    assert(Types.isPlayerColor(color))
     local playBoard = PlayBoard.getPlayBoard(color)
     local continuation
     if forced then
@@ -269,8 +270,7 @@ end
 ---@param amount integer
 ---@return Continuation
 function Action.influence(color, faction, amount)
-    Types.assertIsPlayerColor(color)
-    Types.assertIsInteger(amount)
+    assert(Types.isPlayerColor(color))
     local continuation = Helper.createContinuation("Action.influence")
     if faction then
         InfluenceTrack.change(color, faction, amount).doAfter(function (realAmount)
@@ -292,11 +292,12 @@ end
 ---@param baseCount integer
 ---@return integer
 function Action.troops(color, from, to, baseCount)
-    Types.assertIsPlayerColor(color)
-    Types.assertIsTroopLocation(from)
-    Types.assertIsTroopLocation(to)
-    Types.assertIsInteger(baseCount)
-    local count = Park.transfert(baseCount, Action.getTroopPark(color, from), Action.getTroopPark(color, to))
+    assert(Types.isPlayerColor(color))
+    assert(Types.isTroopLocation(from))
+    assert(Types.isTroopLocation(to))
+    local count = Park.transfer(baseCount, Action.getTroopPark(color, from), Action.getTroopPark(color, to))
+    assert(count)
+    assert(type(count) == "number")
 
     if not Action.troopTransferCoalescentQueue then
 
@@ -334,7 +335,7 @@ function Action.troops(color, from, to, baseCount)
             end
         end
 
-        Action.troopTransferCoalescentQueue = Helper.createCoalescentQueue(1, coalesce, handle)
+        Action.troopTransferCoalescentQueue = Helper.createCoalescentQueue("troop", 1, coalesce, handle)
     end
 
     Action.troopTransferCoalescentQueue.submit({
@@ -347,7 +348,6 @@ function Action.troops(color, from, to, baseCount)
     return count
 end
 
----
 function Action.getTroopPark(color, parkName)
     if parkName == "supply" then
         return PlayBoard.getSupplyPark(color)
@@ -364,48 +364,73 @@ function Action.getTroopPark(color, parkName)
     end
 end
 
----
 function Action.reserveImperiumCard(color, indexInRow)
-    Types.assertIsPlayerColor(color)
-    Types.assertIsInRange(1, 5, indexInRow)
+    assert(Types.isPlayerColor(color))
+    assert(Helper.isInRange(1, 5, indexInRow))
     return ImperiumRow.reserveImperiumCard(indexInRow, color)
 end
 
----
 function Action.acquireReservedImperiumCard(color)
-    Types.assertIsPlayerColor(color)
+    assert(Types.isPlayerColor(color))
     return false
 end
 
----
 function Action.acquireImperiumCard(color, indexInRow)
-    Types.assertIsPlayerColor(color)
-    Types.assertIsInRange(1, 5, indexInRow)
+    assert(Types.isPlayerColor(color))
+    assert(Helper.isInRange(1, 5, indexInRow))
     return ImperiumRow.acquireImperiumCard(indexInRow, color)
 end
 
----
 function Action.acquireFoldspace(color)
-    Types.assertIsPlayerColor(color)
+    assert(Types.isPlayerColor(color))
     return Reserve.acquireFoldspace(color)
 end
 
----
 function Action.acquireArrakisLiaison(color, toItsHand)
-    Types.assertIsPlayerColor(color)
+    assert(Types.isPlayerColor(color))
     return Reserve.acquireArrakisLiaison(color, toItsHand)
 end
 
----
 function Action.acquireTheSpiceMustFlow(color)
-    Types.assertIsPlayerColor(color)
+    assert(Types.isPlayerColor(color))
     return Reserve.acquireTheSpiceMustFlow(color)
 end
 
----
+function Action.acquireSardaukarCommanderSkillCard(color, indexInRow)
+    assert(Types.isPlayerColor(color))
+    assert(Helper.isInRange(1, 4, indexInRow))
+    if SardaukarCommander.acquireSardaukarCommanderSkillCard(indexInRow, color) then
+        Action.log(I18N("acquireSardaukarCommanderSkillCard"), color)
+        return true
+    else
+        return false
+    end
+end
+
+function Action.discardSardaukarCommander(color, origin)
+    assert(Types.isPlayerColor(color))
+    return SardaukarCommander.discardSardaukarCommander(color, origin)
+end
+
+function Action.recruitSardaukarCommander(color, origin)
+    assert(Types.isPlayerColor(color))
+    if origin then
+        if SardaukarCommander.recruitSardaukarCommander(color, origin) then
+            Action.log(I18N("recruitNewSardaukarCommander"), color)
+            return true
+        end
+    else
+        if PlayBoard.recruitSardaukarCommander(color) then
+            Action.log(I18N("recruitOwnSardaukarCommander"), color)
+            return true
+        end
+    end
+    return false
+end
+
 function Action.advanceFreighter(color, positiveAmount)
-    Types.assertIsPlayerColor(color)
-    Types.assertIsPositiveInteger(positiveAmount)
+    assert(Types.isPlayerColor(color))
+    assert(positiveAmount > 0)
     for _ = 1, positiveAmount do
         if not ShippingTrack.freighterUp(color) then
             return false
@@ -416,9 +441,8 @@ function Action.advanceFreighter(color, positiveAmount)
     return true
 end
 
----
 function Action.recallFreighter(color)
-    Types.assertIsPlayerColor(color)
+    assert(Types.isPlayerColor(color))
     if ShippingTrack.freighterReset(color) then
         Action.log(I18N("recallFreighter"), color)
         return true
@@ -427,20 +451,17 @@ function Action.recallFreighter(color)
     end
 end
 
----
 function Action.shipments(color, amount)
-    Types.assertIsPlayerColor(color)
+    assert(Types.isPlayerColor(color))
     return false
 end
 
----
 function Action.dreadnought(color, from, to, amount)
-    Types.assertIsPlayerColor(color)
-    Types.assertIsDreadnoughtLocation(from)
-    Types.assertIsDreadnoughtLocation(to)
-    Types.assertIsInteger(amount)
+    assert(Types.isPlayerColor(color))
+    assert(Types.isDreadnoughtLocation(from))
+    assert(Types.isDreadnoughtLocation(to))
 
-    local count = Park.transfert(amount, Action.getDreadnoughtPark(color, from), Action.getDreadnoughtPark(color, to))
+    local count = Park.transfer(amount, Action.getDreadnoughtPark(color, from), Action.getDreadnoughtPark(color, to))
 
     if count > 0 then
         Action.log(I18N("transfer", {
@@ -454,7 +475,6 @@ function Action.dreadnought(color, from, to, amount)
     return count
 end
 
----
 function Action.getDreadnoughtPark(color, parkName)
     if parkName == "supply" then
         return PlayBoard.getDreadnoughtPark(color)
@@ -473,16 +493,14 @@ function Action.getDreadnoughtPark(color, parkName)
     end
 end
 
----
 function Action.acquireTleilaxuCard(color, indexInRow)
-    Types.assertIsPlayerColor(color)
-    Types.assertIsInRange(1, 3, indexInRow)
+    assert(Types.isPlayerColor(color))
+    assert(Helper.isInRange(1, 3, indexInRow))
     return TleilaxuRow.acquireTleilaxuCard(indexInRow, color)
 end
 
----
 function Action.research(color, jump)
-    Types.assertIsPlayerColor(color)
+    assert(Types.isPlayerColor(color))
     return TleilaxuResearch.advanceResearch(color, jump).doAfter(function (finalJump)
         if finalJump.x > 0 then
             Action.log(I18N("researchAdvance", { count = jump }), color)
@@ -492,10 +510,8 @@ function Action.research(color, jump)
     end)
 end
 
----
 function Action.beetle(color, jump)
-    Types.assertIsPlayerColor(color)
-    Types.assertIsInteger(jump)
+    assert(Types.isPlayerColor(color))
     TleilaxuResearch.advanceTleilax(color, jump).doAfter(function (finalJump)
         if finalJump > 0 then
             Action.log(I18N("beetleAdvance", { count = jump }), color)
@@ -506,41 +522,34 @@ function Action.beetle(color, jump)
     return true
 end
 
----
 function Action.atomics(color)
-    Types.assertIsPlayerColor(color)
+    assert(Types.isPlayerColor(color))
     ImperiumRow.nuke(color)
     Action.log(I18N("atomics"), color)
     return true
 end
 
----
 function Action.drawIntrigues(color, amount)
-    Types.assertIsPlayerColor(color)
-    Types.assertIsInteger(amount)
+    assert(Types.isPlayerColor(color))
     Intrigue.drawIntrigues(color, amount)
     Action.log(I18N("drawObjects", { amount = amount, object = I18N.agree(amount, "intrigueCard") }), color)
     return true
 end
 
----
 function Action.stealIntrigues(color, otherColor, amount)
-    Types.assertIsPlayerColor(color)
-    Types.assertIsPlayerColor(otherColor)
-    Types.assertIsInteger(amount)
+    assert(Types.isPlayerColor(color))
+    assert(Types.isPlayerColor(otherColor))
     Intrigue.stealIntrigues(color, otherColor, amount)
     return true
 end
 
----
 function Action.signetRing(color)
-    Types.assertIsPlayerColor(color)
+    assert(Types.isPlayerColor(color))
     return false
 end
 
----
 function Action.gainVictoryPoint(color, name, count)
-    Types.assertIsPlayerColor(color)
+    assert(Types.isPlayerColor(color))
     if ScoreBoard.gainVictoryPoint(color, name, count) then
         for _ = 1, (count or 1) do
             Action.log(I18N("gainVictoryPoint", { name = I18N(name) }), color)
@@ -551,9 +560,12 @@ function Action.gainVictoryPoint(color, name, count)
     end
 end
 
----
+function Action.unused_control(color, spaceName)
+    MainBoard.occupy(MainBoard.findControlableSpace(spaceName), color)
+end
+
 function Action.acquireTech(color, stackIndex)
-    Types.assertIsPlayerColor(color)
+    assert(Types.isPlayerColor(color))
     if stackIndex then
         TechMarket.acquireTech(stackIndex, color)
         return true
@@ -562,9 +574,8 @@ function Action.acquireTech(color, stackIndex)
     end
 end
 
----
-function Action.pickVoice(color)
-    Types.assertIsPlayerColor(color)
+function Action.unused_pickVoice(color)
+    assert(Types.isPlayerColor(color))
     local voiceToken = ScoreBoard.getFreeVoiceToken()
     if voiceToken then
         return PlayBoard.acquireVoice(color, voiceToken)
@@ -573,12 +584,10 @@ function Action.pickVoice(color)
     end
 end
 
----
 function Action.choose(color, topic)
     return false
 end
 
----
 function Action.decide(color, topic)
     -- Any reason to disable this for human players,
     -- since optional rewards are always desirable VPs?

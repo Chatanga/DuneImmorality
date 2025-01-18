@@ -1,4 +1,5 @@
 local Module = require("utils.Module")
+local Helper = require("utils.Helper")
 
 -- Exceptional Immediate require for the sake of aliasing.
 local CardEffect = require("CardEffect")
@@ -6,49 +7,22 @@ local CardEffect = require("CardEffect")
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local Types = Module.lazyRequire("Types")
 local Action = Module.lazyRequire("Action")
-local Combat = Module.lazyRequire("Combat")
 local MainBoard = Module.lazyRequire("MainBoard")
 
 -- Function aliasing for a more readable code.
-local persuasion = CardEffect.persuasion
-local sword = CardEffect.sword
 local spice = CardEffect.spice
 local water = CardEffect.water
 local solari = CardEffect.solari
-local deploy = CardEffect.deploy
 local troop = CardEffect.troop
-local dreadnought = CardEffect.dreadnought
-local negotiator = CardEffect.negotiator
-local specimen = CardEffect.specimen
 local intrigue = CardEffect.intrigue
 local trash = CardEffect.trash
-local research = CardEffect.research
-local beetle = CardEffect.beetle
 local influence = CardEffect.influence
 local vp = CardEffect.vp
-local draw = CardEffect.draw
 local shipment = CardEffect.shipment
 local mentat = CardEffect.mentat
 local control = CardEffect.control
-local perDreadnoughtInConflict = CardEffect.perDreadnoughtInConflict
-local perSwordCard = CardEffect.perSwordCard
-local perFremen = CardEffect.perFremen
 local choice = CardEffect.choice
 local optional = CardEffect.optional
-local seat = CardEffect.seat
-local fremenBond = CardEffect.fremenBond
-local agentInEmperorSpace = CardEffect.agentInEmperorSpace
-local emperorAlliance = CardEffect.emperorAlliance
-local spacingGuildAlliance = CardEffect.spacingGuildAlliance
-local beneGesseritAlliance = CardEffect.beneGesseritAlliance
-local fremenAlliance = CardEffect.fremenAlliance
-local fremenFriendship = CardEffect.fremenFriendship
-local anyAlliance = CardEffect.anyAlliance
-local oneHelix = CardEffect.oneHelix
-local twoHelices = CardEffect.twoHelices
-local winner = CardEffect.winner
-local swordmaster = CardEffect.swordmaster
-local multiply = CardEffect.multiply
 
 local ConflictCard = {
     skirmishA = {level = 1, base = true, rewards = {{vp(1)}, {intrigue(1), solari(2)}, {solari(2)}}},
@@ -78,7 +52,7 @@ local ConflictCard = {
 }
 
 function ConflictCard.collectReward(color, conflictName, rank)
-    Types.assertIsInRange(1, 3, rank)
+    assert(Helper.isInRange(1, 3, rank))
     local conflict = ConflictCard[conflictName]
     assert(conflict, "Unknown conflict: " .. tostring(conflictName))
     local rewards = conflict.rewards[rank]
@@ -94,6 +68,9 @@ function ConflictCard.collectReward(color, conflictName, rank)
     for _, reward in ipairs(rewards) do
         CardEffect.evaluate(context, reward)
     end
+
+    local continuation = Helper.fakeContinuation("ConflictCard.collectReward")
+    return continuation
 end
 
 function ConflictCard.getLevel(conflictName)
@@ -102,7 +79,7 @@ function ConflictCard.getLevel(conflictName)
     return conflict.level
 end
 
--- Hagal house (in 2P) way of collecting rewards.
+-- Hagal house (in base game and 2P) way of collecting rewards.
 function ConflictCard.cleanUpConflict(color, conflictName)
     local conflict = ConflictCard[conflictName]
     assert(conflict, "Unknown conflict: ", conflictName)

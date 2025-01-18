@@ -1,5 +1,7 @@
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
+local I18N = require("utils.I18N")
+local Park = require("utils.Park")
 
 local Action = Module.lazyRequire("Action")
 local Hagal = Module.lazyRequire("Hagal")
@@ -16,7 +18,6 @@ local Rival = Helper.createClass(Action, {
     rivals = {}
 })
 
----
 function Rival.newRival(color, leaderName, riseOfIx)
     local rival = Helper.createClassInstance(Rival, {
         leader = leaderName and Leader.newLeader(leaderName) or Hagal,
@@ -33,10 +34,115 @@ function Rival.newRival(color, leaderName, riseOfIx)
     return rival
 end
 
----
+function Rival.triggerHagalReaction(color)
+    Helper.dumpFunction("Rival.triggerHagalReaction", color)
+    local continuation = Helper.createContinuation("Rival.triggerHagalReaction")
+
+    local coroutineHolder = {}
+    coroutineHolder.coroutine = Helper.registerGlobalCallback(function ()
+        assert(coroutineHolder.coroutine)
+        Helper.unregisterGlobalCallback(coroutineHolder.coroutine)
+
+        Helper.sleep(1)
+
+        local rival = PlayBoard.getLeader(color)
+
+        local hasSwordmaster = PlayBoard.hasSwordmaster(color)
+
+        local allResources = {
+            intrigues = PlayBoard.getIntrigues(color),
+            solari = PlayBoard.getResource(color, "solari"),
+            spice = PlayBoard.getResource(color, "spice"),
+            water = PlayBoard.getResource(color, "water"),
+        }
+
+        local reduceGenericResource = function (name, amount)
+            local realAmount
+            if name == "intrigues" then
+                realAmount = math.min(amount, #allResources.intrigues)
+                for i = 1, realAmount do
+                    -- Not smooth to avoid being recaptured by the hand zone.
+                    Intrigue.discard(allResources.intrigues[i])
+                end
+            else
+                realAmount = math.min(amount, allResources[name]:get())
+                Action.resources(color, name, -realAmount)
+            end
+            return realAmount
+        end
+
+        local capital =
+            #allResources.intrigues +
+            allResources.solari:get() +
+            allResources.spice:get() +
+            allResources.water:get()
+
+        if hasSwordmaster then
+            Rival._buyVictoryPoints(color)
+        end
+
+        continuation.run()
+
+        return 1
+    end)
+    startLuaCoroutine(Global, coroutineHolder.coroutine)
+
+    return continuation
+end
+
+function Rival._buyVictoryPoints(color)
+    -- Do not use Rival.resources inside this function!
+
+    local rival = PlayBoard.getLeader(color)
+
+    if Hagal.getRivalCount() == 1 then
+        return
+    end
+
+    while true do
+        local intrigues = PlayBoard.getIntrigues(color)
+        if #intrigues >= 3 then
+            for i = 1, 3 do
+                -- Not smooth to avoid being recaptured by the hand zone.
+                Intrigue.discard(intrigues[i])
+            end
+            Rival.gainVictoryPoint(color, "intrigue", 1)
+            goto continue
+        end
+
+        if Hagal.riseOfIx then
+            local tech = PlayBoard.getTech(color, "spySatellites")
+            if tech and Action.resources(color, "spice", -3) then
+                MainBoard.trash(tech)
+                Rival.gainVictoryPoint(color, "spySatellites", 1)
+                goto continue
+            end
+        else
+            if Action.resources(color, "spice", -7) then
+                Rival.gainVictoryPoint(color, "spice", 1)
+                goto continue
+            end
+        end
+
+        if Action.resources(color, "water", -3) then
+            Rival.gainVictoryPoint(color, "water", 1)
+            goto continue
+        end
+
+        if Action.resources(color, "solari", -7) then
+            Rival.gainVictoryPoint(color, "solari", 1)
+            goto continue
+        end
+
+        break
+        ::continue::
+        Helper.sleep(1.5)
+    end
+end
+
 function Rival.prepare(color, settings)
     Rival.riseOfIx = settings.riseOfIx
-    -- https://boardgamegeek.com/thread/2570879/article/36734124#36734124
+    -- Note: Rabban as a rival has no additional resources (https://boardgamegeek.com/thread/2570879/article/36734124#36734124).
     local rivalCount = Hagal.getRivalCount()
     if rivalCount == 1 then
         Action.resources(color, "water", 1)
@@ -46,6 +152,7 @@ function Rival.prepare(color, settings)
         Action.resources(color, "water", 1)
         if settings.difficulty ~= "novice" then
             Action.troops(color, "supply", "garrison", 3)
+            -- Not in Uprising:
             Action.drawIntrigues(color, 1)
         end
     end
@@ -63,7 +170,6 @@ function Rival._removeBestFaction(color, factions)
     return bestFaction
 end
 
----
 function Rival.influence(color, factionOrFactions, amount)
     local finalFaction
     if not factionOrFactions or type(factionOrFactions) == "table" then
@@ -78,7 +184,17 @@ function Rival.influence(color, factionOrFactions, amount)
     return Action.influence(color, finalFaction, amount)
 end
 
----
+function Rival.unused__gainAllianceIfAble(color, amount)
+    local factions = {}
+    for _, faction in ipairs({ "emperor", "spacingGuild", "beneGesserit", "fremen" }) do
+        local cost = InfluenceTrack.getAllianceCost(color, faction)
+        if cost <= amount then
+            table.insert(factions, faction)
+        end
+    end
+    Rival.influence(color, #factions > 0 and factions or nil, amount)
+end
+
 function Rival.shipments(color, amount)
     Helper.repeatChainedAction(amount, function ()
         local level = ShippingTrack.getFreighterLevel(color)
@@ -100,16 +216,14 @@ function Rival.shipments(color, amount)
                 end
             end
         end
-        -- FIXME
         return Helper.onceTimeElapsed(0.5)
     end)
     return true
 end
 
----
 function Rival.acquireTech(color, stackIndex)
 
-    local finalStackIndex  = stackIndex
+    local finalStackIndex = stackIndex
     if not finalStackIndex then
         local discount = TechMarket.getRivalSpiceDiscount()
         local spiceBudget = PlayBoard.getResource(color, "spice"):get()
@@ -118,7 +232,7 @@ function Rival.acquireTech(color, stackIndex)
         local bestTech
         for otherStackIndex = 1, 3 do
             local tech = TechMarket.getTopCardDetails(otherStackIndex)
-            if tech and tech.hagal and tech.cost <= spiceBudget + discount and (not bestTech or bestTech.cost < tech.cost) then
+            if tech.hagal and tech.cost <= spiceBudget + discount and (not bestTech or bestTech.cost < tech.cost) then
                 bestTechIndex = otherStackIndex
                 bestTech = tech
             end
@@ -144,7 +258,6 @@ function Rival.acquireTech(color, stackIndex)
     end
 end
 
----
 function Rival.choose(color, topic)
     if Helper.isElementOf(topic, { "shuttleFleet", "machinations" }) then
         local factions = { "emperor", "spacingGuild", "beneGesserit", "fremen" }
@@ -152,52 +265,50 @@ function Rival.choose(color, topic)
             return Rival.influence(color, factions, 1)
         end)
         return true
+    elseif Helper.isElementOf(topic, { "geneLockedVault" }) then
+        return Rival.drawIntrigues(color, 1)
     else
         return false
     end
 end
 
----
-function Rival.resources(color, nature, amount)
-    if Hagal.getRivalCount() == 2 then
-        if Action.resources(color, nature, amount) then
-            local resource = PlayBoard.getResource(color, nature)
-            if nature == "spice" then
-                if Rival.riseOfIx then
-                    local tech = PlayBoard.getTech(color, "spySatellites")
-                    if tech and nature == "spice" and resource:get() >= 3 then
-                        MainBoard.trash(tech)
-                        Rival.gainVictoryPoint(color, "spySatellites", 1)
-                    end
-                else
-                    if resource:get() >= 7 then
-                        resource:change(-7)
-                        Rival.gainVictoryPoint(color, "spice", 1)
-                    end
-                end
-            elseif nature == "water" then
-                if resource:get() >= 3 then
-                    resource:change(-3)
-                    Rival.gainVictoryPoint(color, "water", 1)
-                end
-            elseif nature == "solari" then
-                if resource:get() >= 7 then
-                    resource:change(-7)
-                    Rival.gainVictoryPoint(color, "solari", 1)
-                end
-            end
-            return true
-        end
-    elseif Hagal.getRivalCount() == 1 and nature == "strength"  then
-        return Action.resources(color, nature, amount)
-    end
-    return false
+function Rival.decide(color, topic)
+    return true
 end
 
----
+function Rival.resources(color, nature, amount)
+    if nature ~= "strength" and Hagal.getRivalCount() == 1 then
+        return false
+    else
+        return Action.resources(color, nature, amount)
+    end
+end
+
+function Rival.troops(color, from, to, baseCount)
+    local finalCount = baseCount
+    if from == "garrison" and to == "combat" then
+        local garrison = Action.getTroopPark(color, "garrison")
+        local sardaukarCommanders = Park.getObjects(garrison, function (object, tags)
+            return Types.isSardaukarCommander(object, color)
+        end)
+        local count = #sardaukarCommanders
+        if count > 0 then
+            Action.log(I18N("transfer", {
+                count = count,
+                what = I18N.agree(count, "sardaukarCommander"),
+                from = I18N("garrisonPark"),
+                to = I18N("combatPark"),
+            }), color)
+            local combat = Action.getTroopPark(color, "combat")
+            Park.putObjects(sardaukarCommanders, combat)
+            finalCount = baseCount - count
+        end
+    end
+    return Action.troops(color, from, to, finalCount)
+end
+
 function Rival.beetle(color, jump)
-    Types.assertIsPlayerColor(color)
-    Types.assertIsInteger(jump)
+    assert(Types.isPlayerColor(color))
     if Hagal.getRivalCount() == 2 then
         return Action.beetle(color, jump)
     else
@@ -205,7 +316,6 @@ function Rival.beetle(color, jump)
     end
 end
 
----
 function Rival.drawIntrigues(color, amount)
     if Action.drawIntrigues(color, amount) then
         Helper.onceTimeElapsed(1).doAfter(function ()
@@ -223,7 +333,6 @@ function Rival.drawIntrigues(color, amount)
     end
 end
 
----
 function Rival.gainVictoryPoint(color, name, count)
     -- We make an exception for alliance token to make it clear that the Hagal House owns it.
     if Hagal.getRivalCount() == 2 or Helper.endsWith(name, "Alliance") then
@@ -233,13 +342,9 @@ function Rival.gainVictoryPoint(color, name, count)
     end
 end
 
----
 function Rival.signetRing(color)
-    -- FIXME Fix Park instead!
-    Helper.onceTimeElapsed(0.25).doAfter(function ()
-        local leader = Rival.rivals[color].leader
-        return leader.signetRing(color)
-    end)
+    local leader = Rival.rivals[color].leader
+    return leader.signetRing(color)
 end
 
 return Rival

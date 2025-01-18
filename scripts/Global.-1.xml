@@ -1,13 +1,13 @@
-<Panel position="0 -50" width="460" height="780" color="#000000" id="setupPane" rotation="0 0 0" outline="#61712c" outlineSize="1"
+<Panel position="0 -50" width="460" height="640" color="#000000" id="setupPane" rotation="0 0 0" outline="#61712c" outlineSize="1"
 	active="False" allowDragging="True" returnToOriginalPositionWhenReleased="False">
 	<Defaults>
 		<Text class="primary" color="#e5c638" fontSize="16" alignment="MiddleLeft"/>
-		<Text class="secondary" color="#efd9ff" alignment="MiddleLeft"/>
+		<Text class="secondary" color="#7fa768" alignment="MiddleLeft"/>
 		<Text class="epigraph" color="#df9730" fontSize="12" fontStyle="italic" alignment="MiddleCenter"/>
 		<Dropdown class="setUp" itemBackgroundColors="#61712c44|#df9730|#FFFFFF|#361441" textColor="#61712c" itemTextColor="#61712c" fontStyle="bold"/>
-		<InputField class="setUp" colors="#00000000|#61712c44|#61712c" textColor="#efd9ff" fontStyle="bold"/>
-		<Toggle class="setUp" colors="#efd9ff|#ffd60b|#efd9ff|#222222" textColor="#efd9ff" tooltipPosition="Left" tooltipBackgroundColor="#000000"/>
-		<Button class="setUp" colors="#61712c|#df9730|#361441|#222222" textColor="#ffd60b" fontSize="16" outline="#efd9ff" outlineSize="3 3"/>
+		<InputField class="setUp" colors="#00000000|#61712c44|#61712c" textColor="#7fa768" fontStyle="bold"/>
+		<Toggle class="setUp" colors="#7fa768|#ffd60b|#7fa768|#222222" textColor="#7fa768" tooltipPosition="Left" tooltipBackgroundColor="#000000"/>
+		<Button class="setUp" colors="#61712c|#df9730|#361441|#222222" textColor="#ffd60b" fontSize="16" outline="#7fa768" outlineSize="3 3"/>
 		<Image raycastTarget="true"/>
 	</Defaults>
 	<VerticalLayout>
@@ -28,11 +28,11 @@
 			<VerticalLayout padding="25 0 0 0">
 				<HorizontalLayout>
 					<Text class="secondary" key="firstPlayer"/>
-					<Dropdown class="setUp" id="firstPlayer" onValueChanged="Global/setFirstPlayer" flexibleWidth="3" active="True" minHeight="20">
+					<Dropdown class="setUp" id="firstPlayer" onValueChanged="Global/setAnyField" flexibleWidth="3" active="True" minHeight="20">
 						<Option></Option>
 					</Dropdown>
 				</HorizontalLayout>
-				<Toggle class="setUp" id="randomizePlayerPositions" onValueChanged="Global/setRandomizePlayerPositions" isOn="True" key="randomizePlayersPositions" tooltipKey="randomizePlayersPositionTooltip"/>
+				<Toggle class="setUp" id="randomizePlayerPositions" onValueChanged="Global/setAnyField" isOn="True" key="randomizePlayersPositions" tooltipKey="randomizePlayersPositionTooltip"/>
 				<HorizontalLayout>
 					<Toggle class="setUp" id="virtualHotSeat" onValueChanged="Global/setVirtualHotSeat" isOn="False" key="virtualHotSeat" disabled.tooltipKey="virtualHotSeatTooltip"/>
 					<Dropdown class="setUp" id="virtualHotSeatMode" onValueChanged="Global/setVirtualHotSeatMode" flexibleWidth="2.5" active="False">
@@ -41,31 +41,19 @@
 				</HorizontalLayout>
 			</VerticalLayout>
 
-			<Text class="primary" key="extensions"/>
-			<VerticalLayout padding="25 0 0 0">
-				<Toggle class="setUp" id="riseOfIx" isOn="True" onValueChanged="Global/setRiseOfIx" key="riseOfIx"/>
-				<VerticalLayout padding="25 0 0 0">
-					<Toggle class="setUp" id="epicMode" isOn="False" onValueChanged="Global/setEpicMode" key="epicMode"/>
-				</VerticalLayout>
-				<Toggle class="setUp" id="immortality" isOn="True" onValueChanged="Global/setImmortality" key="immortality"/>
-				<VerticalLayout padding="25 0 0 0">
-					<Toggle class="setUp" id="goTo11" isOn="False" onValueChanged="Global/setGoTo11" key="goTo11"/>
-				</VerticalLayout>
-			</VerticalLayout>
-
 			<HorizontalLayout>
 				<Text class="primary" key="leaderSelection"/>
-				<Dropdown class="setUp" id="leaderSelection" flexibleWidth="8" onValueChanged="Global/setLeaderSelection" minHeight="22">
+				<Dropdown class="setUp" id="leaderSelection" flexibleWidth="8" onValueChanged="Global/setAnyField" minHeight="22">
 					<Option></Option>
 				</Dropdown>
 			</HorizontalLayout>
 			<VerticalLayout padding="25 0 0 0">
-				<Toggle class="setUp" id="fanmadeLeaders" isOn="False" onValueChanged="Global/setFanmadeLeaders" key="fanmadeLeaders"/>
+				<Toggle class="setUp" id="fanmadeLeaders" isOn="False" onValueChanged="Global/setAnyField" key="fanmadeLeaders"/>
 			</VerticalLayout>
 
 			<HorizontalLayout>
 				<Text class="primary" key="variants"/>
-				<Dropdown class="setUp" id="variant" flexibleWidth="1.5" onValueChanged="Global/setVariant" minHeight="22">
+				<Dropdown class="setUp" id="variant" flexibleWidth="1.5" onValueChanged="Global/setAnyField" minHeight="22">
 					<Option></Option>
 				</Dropdown>
 			</HorizontalLayout>
@@ -74,8 +62,8 @@
 				<Text class="primary" key="miscellanous"/>
 			</HorizontalLayout>
 			<VerticalLayout padding="25 0 0 0">
-				<Toggle class="setUp" id="formalCombatPhase" onValueChanged="Global/setFormalCombatPhase" isOn="False" key="formalCombatPhase" tooltipKey="formalCombatPhaseTooltip"/>
-				<Toggle class="setUp" id="soundEnabled" onValueChanged="Global/setSoundEnabled" isOn="True" key="soundEnabled"/>
+				<Toggle class="setUp" id="formalCombatPhase" onValueChanged="Global/setAnyField" isOn="False" key="formalCombatPhase" tooltipKey="formalCombatPhaseTooltip"/>
+				<Toggle class="setUp" id="soundEnabled" onValueChanged="Global/setAnyField" isOn="True" key="soundEnabled"/>
 			</VerticalLayout>
 
 		</VerticalLayout>
@@ -83,19 +71,49 @@
 			<Button class="setUp" id="setUpButton" minHeight="26" onClick="Global/setUpFromUI" key="setup"/>
 		</HorizontalLayout>
 	</VerticalLayout>
-	<Image position="0 375" width="256" height="256" image="https://steamusercontent-a.akamaihd.net/ugc/2492254803020933211/F1D935AF143A3EDAAF929A9585779CE4E7254B10/"/>
+	<Image position="0 325" width="256" height="256" image="https://steamusercontent-a.akamaihd.net/ugc/2492254803020933211/F1D935AF143A3EDAAF929A9585779CE4E7254B10/"/>
 </Panel>
 
-<Panel position="450 -30" width="400" height="180" color="#000000" id="soloSetupPane" rotation="0 0 0" outline="#61712c" outlineSize="1"
+<Panel position="480 140" width="450" height="260" color="#000000" id="extensionSetupPane" rotation="0 0 0" outline="#61712c" outlineSize="1"
+	active="False" allowDragging="True" returnToOriginalPositionWhenReleased="False">
+	<VerticalLayout>
+		<Image ignoreLayout="True" type="Simple" image="https://steamusercontent-a.akamaihd.net/ugc/2502404390135372157/BBDF8C1026A04FE222D52E39AA696F2310543485/"/>
+
+		<VerticalLayout padding="40 40 20 20">
+
+			<Text class="primary" key="extensions"/>
+			<VerticalLayout padding="25 0 0 0">
+				<Toggle class="setUp" id="riseOfIx" isOn="True" onValueChanged="Global/setRiseOfIx" key="riseOfIx"/>
+				<VerticalLayout padding="25 0 0 0">
+					<Toggle class="setUp" id="epicMode" isOn="False" onValueChanged="Global/setAnyField" key="epicMode"/>
+				</VerticalLayout>
+				<Toggle class="setUp" id="immortality" isOn="True" onValueChanged="Global/setImmortality" key="immortality"/>
+				<VerticalLayout padding="25 0 0 0">
+					<Toggle class="setUp" id="goTo11" isOn="False" onValueChanged="Global/setGoTo11" key="goTo11"/>
+				</VerticalLayout>
+				<Toggle class="setUp" id="bloodlines" isOn="True" onValueChanged="Global/setBloodlines" key="bloodlines"/>
+				<VerticalLayout padding="25 0 0 0">
+					<Toggle class="setUp" id="ixAmbassy" isOn="True" onValueChanged="Global/setIxAmbassy" key="ixAmbassy"/>
+					<VerticalLayout padding="25 0 0 0">
+						<Toggle class="setUp" id="ixAmbassyWithIx" isOn="False" onValueChanged="Global/setAnyField" key="ixAmbassyWithIx"/>
+					</VerticalLayout>
+				</VerticalLayout>
+			</VerticalLayout>
+
+		</VerticalLayout>
+	</VerticalLayout>
+</Panel>
+
+<Panel position="480 -120" width="450" height="220" color="#000000" id="soloSetupPane" rotation="0 0 0" outline="#61712c" outlineSize="1"
 	active="False" allowDragging="True" returnToOriginalPositionWhenReleased="False">
 	<Defaults>
 		<Text class="primary" color="#e5c638" fontSize="16" alignment="MiddleLeft"/>
-		<Text class="secondary" color="#efd9ff" alignment="MiddleLeft"/>
+		<Text class="secondary" color="#7fa768" alignment="MiddleLeft"/>
 		<Text class="epigraph" color="#df9730" fontSize="12" fontStyle="italic" alignment="MiddleCenter"/>
 		<Dropdown class="setUp" itemBackgroundColors="#61712c44|#df9730|#FFFFFF|#361441" textColor="#61712c" itemTextColor="#61712c" fontStyle="bold"/>
-		<InputField class="setUp" colors="#00000000|#61712c44|#61712c" textColor="#efd9ff" fontStyle="bold"/>
-		<Toggle class="setUp" colors="#efd9ff|#ffd60b|#efd9ff|#222222" textColor="#efd9ff" tooltipPosition="Left" tooltipBackgroundColor="#000000"/>
-		<Button class="setUp" colors="#61712c|#df9730|#361441|#222222" textColor="#ffd60b" fontSize="16" outline="#efd9ff" outlineSize="3 3"/>
+		<InputField class="setUp" colors="#00000000|#61712c44|#61712c" textColor="#7fa768" fontStyle="bold"/>
+		<Toggle class="setUp" colors="#7fa768|#ffd60b|#7fa768|#222222" textColor="#7fa768" tooltipPosition="Left" tooltipBackgroundColor="#000000"/>
+		<Button class="setUp" colors="#61712c|#df9730|#361441|#222222" textColor="#ffd60b" fontSize="16" outline="#7fa768" outlineSize="3 3"/>
 		<Image raycastTarget="true"/>
 	</Defaults>
 	<VerticalLayout>
@@ -112,11 +130,90 @@
 						<Option></Option>
 					</Dropdown>
 				</HorizontalLayout>
-				<Toggle class="setUp" id="autoTurnInSolo" onValueChanged="Global/setAutoTurnInSolo" isOn="True" key="autoTurnInSoloOption"/>
-				<Toggle class="setUp" id="imperiumRowChurn" onValueChanged="Global/setImperiumRowChurn" isOn="True" key="imperiumRowChurnOption"/>
-				<Toggle class="setUp" id="brutalEscalation" onValueChanged="Global/setBrutalEscalation" isOn="True" key="brutalEscalationOption"/>
+				<Toggle class="setUp" id="autoTurnInSolo" onValueChanged="Global/setAnyField" isOn="True" key="autoTurnInSoloOption"/>
+				<Toggle class="setUp" id="imperiumRowChurn" onValueChanged="Global/setAnyField" isOn="True" key="imperiumRowChurnOption"/>
+				<Toggle class="setUp" id="brutalEscalation" onValueChanged="Global/setAnyField" isOn="True" key="brutalEscalationOption"/>
+			</VerticalLayout>
+			<VerticalLayout padding="0 0 10 10">
+				<Text class="epigraph" key="soloModeWarning"/>
 			</VerticalLayout>
 
 		</VerticalLayout>
 	</VerticalLayout>
+</Panel>
+
+<Panel id="openSubmitScreenPanel" class="Window" active="false" width="200" height="40" rectAlignment="LowerRight" offsetXY="-60,10">
+    <Button id="btnOpenSubmitScreen" color="blue" key="openSubmitScreen" text="Open submit screen" onClick="openSubmitScreen"/>
+</Panel>
+
+<Panel position="0 0" width="900" height="600" color="#000000" id="submitScreenPanel" rotation="0 0 0" outline="#2e200f" outlineSize="1" active="false" allowDragging="True" returnToOriginalPositionWhenReleased="False">
+	<Defaults>
+		<Cell dontUseTableCellBackground="true" width="1" style="Solid"/>
+	</Defaults>
+	<VerticalLayout childForceExpandWidth="false" childForceExpandHeight="false">
+		<Image class="setUp" image="https://steamusercontent-a.akamaihd.net/ugc/2502404390141305135/2B270A53CD2A3EC8703F738937ABA09788EC3B89/" preferredWidth="900" preferredHeight="300"/>
+	</VerticalLayout>
+	<Image class="setUp" position="0 270" color="#000000AA" width="900" height="60"/>
+    <VerticalLayout childForceExpandWidth="true" childForceExpandHeight="false" padding="20 20 10 10">
+        <Text class="setUp" key="submitGameMessage" color="#DDDDDDFF" fontSize="18"/>
+	</VerticalLayout>
+	<VerticalLayout>
+		<TableLayout padding="50 50 310 0" columnWidths="80 200 200 80 80 80 80" childAlignment="MiddleCenter" >
+			<Row>
+				<Cell><Text class="setUp" color="#FFFFFF" key="placement"/></Cell>
+				<Cell><Text class="setUp" color="#FFFFFF" key="name"/></Cell>
+				<Cell><Text class="setUp" color="#FFFFFF" key="leaderName"/></Cell>
+				<Cell><Text class="setUp" color="#FFFFFF" key="victoryPoints"/></Cell>
+				<Cell><Text class="setUp" color="#FFFFFF" key="spiceAmount"/></Cell>
+				<Cell><Text class="setUp" color="#FFFFFF" key="solariAmount"/></Cell>
+				<Cell><Text class="setUp" color="#FFFFFF" key="waterAmount"/></Cell>
+			</Row>
+			<Row>
+				<Cell id="cell_placement_1"><Text class="setUp" color="#000000" text="1"/></Cell>
+				<Cell id="cell_placement_1_name"><Text class="setUp" color="#000000" id="placement_1_name"/></Cell>
+				<Cell id="cell_placement_1_leader_name"><Text class="setUp" color="#000000" id="placement_1_leader_name"/></Cell>
+				<Cell id="cell_placement_1_victory_points"><Text class="setUp" color="#000000" id="placement_1_victory_points"/></Cell>
+				<Cell id="cell_placement_1_spice"><Text class="setUp" color="#000000" id="placement_1_spice"/></Cell>
+				<Cell id="cell_placement_1_solaris"><Text class="setUp" color="#000000" id="placement_1_solaris"/></Cell>
+				<Cell id="cell_placement_1_water"><Text class="setUp" color="#000000" id="placement_1_water"/></Cell>
+			</Row>
+			<Row>
+				<Cell id="cell_placement_2"><Text class="setUp" color="#000000" text="2"/></Cell>
+				<Cell id="cell_placement_2_name"><Text class="setUp" color="#000000" id="placement_2_name"/></Cell>
+				<Cell id="cell_placement_2_leader_name"><Text class="setUp" color="#000000" id="placement_2_leader_name"/></Cell>
+				<Cell id="cell_placement_2_victory_points"><Text class="setUp" color="#000000" id="placement_2_victory_points"/></Cell>
+				<Cell id="cell_placement_2_spice"><Text class="setUp" color="#000000" id="placement_2_spice"/></Cell>
+				<Cell id="cell_placement_2_solaris"><Text class="setUp" color="#000000" id="placement_2_solaris"/></Cell>
+				<Cell id="cell_placement_2_water"><Text class="setUp" color="#000000" id="placement_2_water"/></Cell>
+			</Row>
+			<Row>
+				<Cell id="cell_placement_3"><Text class="setUp" color="#000000" text="3"/></Cell>
+				<Cell id="cell_placement_3_name"><Text class="setUp" color="#000000" id="placement_3_name"/></Cell>
+				<Cell id="cell_placement_3_leader_name"><Text class="setUp" color="#000000" id="placement_3_leader_name"/></Cell>
+				<Cell id="cell_placement_3_victory_points"><Text class="setUp" color="#000000" id="placement_3_victory_points"/></Cell>
+				<Cell id="cell_placement_3_spice"><Text class="setUp" color="#000000" id="placement_3_spice"/></Cell>
+				<Cell id="cell_placement_3_solaris"><Text class="setUp" color="#000000" id="placement_3_solaris"/></Cell>
+				<Cell id="cell_placement_3_water"><Text class="setUp" color="#000000" id="placement_3_water"/></Cell>
+			</Row>
+			<Row>
+				<Cell id="cell_placement_4"><Text class="setUp" color="#000000" text="4"/></Cell>
+				<Cell id="cell_placement_4_name"><Text class="setUp" color="#000000" id="placement_4_name"/></Cell>
+				<Cell id="cell_placement_4_leader_name"><Text class="setUp" color="#000000" id="placement_4_leader_name"/></Cell>
+				<Cell id="cell_placement_4_victory_points"><Text class="setUp" color="#000000" id="placement_4_victory_points"/></Cell>
+				<Cell id="cell_placement_4_spice"><Text class="setUp" color="#000000" id="placement_4_spice"/></Cell>
+				<Cell id="cell_placement_4_solaris"><Text class="setUp" color="#000000" id="placement_4_solaris"/></Cell>
+				<Cell id="cell_placement_4_water"><Text class="setUp" color="#000000" id="placement_4_water"/></Cell>
+			</Row>
+			<Row/>
+			<Row>
+				<Cell/>
+				<Cell/>
+				<Cell><Button class="setUp" id="submitGameConfirm" width="130" height="60" onClick="submitGame" key="submitGame"/></Cell>
+				<Cell/>
+				<Cell/>
+				<Cell><Button class="setUp" id="submitGameClose" width="130" height="60" onClick="closeSubmitGameScreen" key="close"/></Cell>
+			</Row>
+			<Row/>
+		</TableLayout>
+    </VerticalLayout>
 </Panel>

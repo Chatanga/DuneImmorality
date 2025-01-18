@@ -4,19 +4,16 @@ local I18N = {
     locales = {}
 }
 
----
 function I18N.getLocale()
     return Global.getVar("Locale")
 end
 
----
 function I18N.setLocale(newLocale)
     assert(I18N.locales[newLocale], ("The locale %q is unknown"):format(newLocale))
     Global.setVar("Locale", newLocale)
     Helper.emitEvent("locale", newLocale)
 end
 
----
 function I18N.agree(quantity, noun)
     if math.abs(quantity) > 1 then
         return I18N(noun .. "s")
@@ -25,7 +22,6 @@ function I18N.agree(quantity, noun)
     end
 end
 
----
 function I18N.translate(key, args)
     assert(key)
     assert(type(key) == "string", type(string))

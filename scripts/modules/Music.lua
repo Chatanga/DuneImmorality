@@ -8,19 +8,16 @@ local Music = {
     }
 }
 
----
 function Music.onLoad(state)
     if state.settings then
         Music.enabled = state.settings.soundEnabled
     end
 end
 
----
 function Music.setUp(settings)
     Music.enabled = settings.soundEnabled
 end
 
----
 function Music.play(sound)
     if Music.enabled and Music.sounds[sound] then
         MusicPlayer.setCurrentAudioclip({

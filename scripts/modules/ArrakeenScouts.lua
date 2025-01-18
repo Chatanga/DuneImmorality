@@ -129,7 +129,6 @@ local ArrakeenScouts = {
 
 --ArrakeenScouts._debug = { "armedEscort" }
 
----
 function ArrakeenScouts.onLoad(state)
     ArrakeenScouts.fr = require("fr.ArrakeenScouts")
     ArrakeenScouts.en = require("en.ArrakeenScouts")
@@ -154,7 +153,6 @@ function ArrakeenScouts.onLoad(state)
     end
 end
 
----
 function ArrakeenScouts.onSave(state)
     state.ArrakeenScouts = {
         selectedCommittees = ArrakeenScouts.selectedCommittees,
@@ -163,7 +161,6 @@ function ArrakeenScouts.onSave(state)
     }
 end
 
----
 function ArrakeenScouts.setUp(settings)
     if settings.variant == "arrakeenScouts" then
         ArrakeenScouts.numberOfPlayers = settings.numberOfPlayers
@@ -231,7 +228,6 @@ function ArrakeenScouts.setUp(settings)
     end
 end
 
----
 function ArrakeenScouts._mergeContributions(contributionSets)
     local contributions = {}
     for _, contributionSet in ipairs(contributionSets) do
@@ -256,7 +252,6 @@ function ArrakeenScouts._mergeContributions(contributionSets)
     return contributions
 end
 
----
 function ArrakeenScouts._staticSetUp()
     Helper.registerEventListener("phaseStart", function (phaseName)
         if phaseName == "arrakeenScouts" then
@@ -299,7 +294,6 @@ function ArrakeenScouts._staticSetUp()
     end)
 end
 
----
 function ArrakeenScouts._tearDown()
     ArrakeenScouts.board.destruct()
     for _, zone in ipairs(ArrakeenScouts.committeeZones) do
@@ -307,7 +301,6 @@ function ArrakeenScouts._tearDown()
     end
 end
 
----
 function ArrakeenScouts._nextContent()
     local round = TurnControl.getCurrentRound()
     local firstRound = ArrakeenScouts._debug and 0 or 1
@@ -334,7 +327,6 @@ function ArrakeenScouts._nextContent()
     end
 end
 
----
 function ArrakeenScouts._createCommitteeTile(committee, zone)
     local image = ArrakeenScouts[I18N.getLocale()][committee]
     assert(image, "Unknow Arrakeen Scouts content: " .. committee)
@@ -399,7 +391,6 @@ function ArrakeenScouts._createCommitteeTile(committee, zone)
     return continuation
 end
 
----
 function ArrakeenScouts._createDialog(content)
     local createController = ArrakeenScouts[Helper.toCamelCase("_create", content, "controller")]
     assert(createController, "No create controller function for content: " .. content)
@@ -423,7 +414,6 @@ function ArrakeenScouts._createDialog(content)
     ArrakeenScouts._refreshContent()
 end
 
----
 function ArrakeenScouts._createDialogUI(image, playerPanes)
     local playerUIs = {}
     for _, color in ipairs({ "Red", "Green", "Blue", "Yellow" }) do
@@ -483,7 +473,6 @@ function ArrakeenScouts._createDialogUI(image, playerPanes)
     return dialogUI
 end
 
----
 function ArrakeenScouts._createPlayerUI(color, playerPane)
     local playerUI
 
@@ -544,9 +533,8 @@ function ArrakeenScouts._createPlayerUI(color, playerPane)
     return playerUI
 end
 
----
 function ArrakeenScouts._setAsOptionPane(color, playerPane, secret, options, controller)
-    Types.assertIsPlayerColor(color)
+    assert(Types.isPlayerColor(color))
     assert(playerPane)
     assert(secret ~= nil)
     assert(options)
@@ -635,7 +623,6 @@ function ArrakeenScouts._setAsOptionPane(color, playerPane, secret, options, con
     ArrakeenScouts._setSecret(color, playerPane, secret)
 end
 
----
 function ArrakeenScouts._setAsValidationPane(color, playerPane, secret, label, controller)
 
     local button = {
@@ -703,7 +690,6 @@ function ArrakeenScouts._setAsValidationPane(color, playerPane, secret, label, c
     ArrakeenScouts._setSecret(color, playerPane, secret)
 end
 
----
 function ArrakeenScouts._setAsPassivePane(color, playerPane, secret, label, textIcon)
 
     local icon = {
@@ -763,12 +749,10 @@ function ArrakeenScouts._setAsPassivePane(color, playerPane, secret, label, text
     ArrakeenScouts._setSecret(color, playerPane, secret)
 end
 
----
 function ArrakeenScouts._setSecret(color, playerPane, secret)
     playerPane.attributes.visibility = secret and color or ""
 end
 
----
 function ArrakeenScouts._refreshContent()
     --local xmlRoots = UI.getXmlTable()
     local xmlRoots = Helper.filter(UI.getXmlTable(), function (xmlRoot)
@@ -778,7 +762,6 @@ function ArrakeenScouts._refreshContent()
     UI.setXmlTable(xmlRoots)
 end
 
----
 function ArrakeenScouts._endContent()
     Helper.onceTimeElapsed(2).doAfter(function ()
         local xmlRoots = Helper.filter(UI.getXmlTable(), function (xmlRoot)
@@ -789,7 +772,6 @@ function ArrakeenScouts._endContent()
     end)
 end
 
----
 function ArrakeenScouts._rankPlayers(bids)
     local remainingBids = Helper.shallowCopy(bids)
     local ranking = {}
@@ -818,7 +800,6 @@ function ArrakeenScouts._rankPlayers(bids)
     return ranking
 end
 
----
 function ArrakeenScouts._getRank(color, ranking, maxLevel)
     local level = 1
     local count = 0
@@ -1071,7 +1052,7 @@ end
 
 function ArrakeenScouts._createSequentialAuctionController(playerPanes, resourceName, maxValue, secret, resolveAll)
     assert(playerPanes)
-    Types.assertIsResourceName(resourceName)
+    assert(Types.isResourceName(resourceName))
     assert(secret ~= nil)
     assert(resolveAll)
 
@@ -1994,7 +1975,6 @@ function ArrakeenScouts._createSooSooSookWaterPeddlersController(playerPanes)
     ArrakeenScouts._createSequentialChoiceController(playerPanes, getOptions, true, resolve)
 end
 
----
 function ArrakeenScouts._createRandomValidationController(playerPanes, secret, getLabel, resolve)
     local controller = {
         remainigPlayerCount = #Helper.getKeys(playerPanes),
@@ -2026,7 +2006,6 @@ function ArrakeenScouts._createRandomValidationController(playerPanes, secret, g
     end
 end
 
----
 function ArrakeenScouts._createSequentialChoiceController(playerPanes, getOptions, secret, resolve)
     local controller = {
         turnSequence = TurnControl.getPhaseTurnSequence(),
@@ -2093,7 +2072,6 @@ function ArrakeenScouts._createSequentialChoiceController(playerPanes, getOption
     end
 end
 
----
 function ArrakeenScouts._createSequentialBinaryChoiceController(playerPanes, predicate, resolveWithLeader)
     local getOptions = function (color)
         local options = { { status = false, value = I18N("refuseOption") } }
@@ -2115,7 +2093,6 @@ function ArrakeenScouts._createSequentialBinaryChoiceController(playerPanes, pre
     ArrakeenScouts._createSequentialChoiceController(playerPanes, getOptions, true, resolve)
 end
 
----
 function ArrakeenScouts._createPendingController(playerPanes, operation)
     local controller = {
         turnSequence = TurnControl.getPhaseTurnSequence(),
@@ -2168,7 +2145,6 @@ function ArrakeenScouts._createPendingController(playerPanes, operation)
     controller.nextReward()
 end
 
----
 function ArrakeenScouts._ensureDiscard(color, predicate)
     return ArrakeenScouts._ensureCardOperation(
         Helper.partialApply(PlayBoard.getHandedCards, color),
@@ -2176,21 +2152,18 @@ function ArrakeenScouts._ensureDiscard(color, predicate)
         predicate)
 end
 
----
 function ArrakeenScouts._ensureTrashFromHand(color)
     return ArrakeenScouts._ensureCardOperation(
         Helper.partialApply(PlayBoard.getHandedCards, color),
         Helper.partialApply(PlayBoard.getTrashedCards, color))
 end
 
----
 function ArrakeenScouts._ensureDiscardIntrigue(color)
     return ArrakeenScouts._ensureCardOperation(
         Helper.partialApply(PlayBoard.getIntrigues, color),
         Intrigue.getDiscardedIntrigues)
 end
 
----
 function ArrakeenScouts._ensureCardOperation(getSourceCards, getDestinationCards, predicate)
     local continuation = Helper.createContinuation("ArrakeenScouts._ensureCardOperation")
 
@@ -2244,7 +2217,6 @@ function ArrakeenScouts._ensureCardOperation(getSourceCards, getDestinationCards
     return continuation
 end
 
----
 function ArrakeenScouts._ensureResearch(color)
     local continuation = Helper.createContinuation("ArrakeenScouts._ensureResearch")
 

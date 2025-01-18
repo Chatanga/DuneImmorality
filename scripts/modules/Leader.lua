@@ -2,6 +2,7 @@ local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local I18N = require("utils.I18N")
 local Dialog = require("utils.Dialog")
+local Park = require("utils.Park")
 
 local Action = Module.lazyRequire("Action")
 local MainBoard = Module.lazyRequire("MainBoard")
@@ -9,60 +10,54 @@ local ImperiumRow = Module.lazyRequire("ImperiumRow")
 local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local Combat = Module.lazyRequire("Combat")
+local Deck = Module.lazyRequire("Deck")
 local TechMarket = Module.lazyRequire("TechMarket")
+local Intrigue = Module.lazyRequire("Intrigue")
+local Types = Module.lazyRequire("Types")
+local Board = Module.lazyRequire("Board")
 
 local Leader = Helper.createClass(Action)
 
----
 function Leader.newLeader(name)
     local LeaderClass = Leader[name]
     if not LeaderClass then
         -- Fanmade leader?
         LeaderClass = Helper.createClass(Leader, {})
     end
-    --assert(LeaderClass, "Unknown leader: " .. tostring(name))
     LeaderClass.name = name
     return Helper.createClassInstance(LeaderClass)
 end
 
----
 
 function Leader._createRightCardButton(anchors, color, name, tooltip, action)
-    Leader._createCardButton(anchors, color, name, tooltip, Vector(1.35, 0.6, -1.3), action)
+    Leader._createCardButton(anchors, color, name, tooltip, Vector(1.35, 0, -1.3), action)
 end
 
 function Leader._createLeftCardButton(anchors, color, name, tooltip, action)
-    Leader._createCardButton(anchors, color, name, tooltip, Vector(-1, 0.6, -1.3), action)
+    Leader._createCardButton(anchors, color, name, tooltip, Vector(-1, 0, -1.3), action)
 end
 
 function Leader._createCardButton(anchors, color, name, tooltip, offset, action)
     local leaderCard = PlayBoard.findLeaderCard(color)
-    Helper.createTransientAnchor(name, leaderCard.getPosition() + Vector(0, -0.5, 0)).doAfter(function (anchor)
+    local origin = leaderCard.getPosition() + offset
+    Helper.createTransientAnchor(name, origin + Vector(0, -0.5, 0)).doAfter(function (anchor)
         if anchors then
             table.insert(anchors, anchor)
         end
-        Helper.createAbsoluteButtonWithRoundness(anchor, 1, {
-            click_function = Helper.registerGlobalCallback(function (_, otherColor)
-                if otherColor == color then
-                    action(color, anchor)
-                else
-                    Dialog.broadcastToColor(I18N("noTouch"), otherColor, "Purple")
-                end
-            end),
-            position = anchor.getPosition() + offset,
-            width = 1000,
-            height = 380,
-            scale = Vector(1, 1, 1),
-            color = { 0, 0, 0, 0 },
-            font_color = { 0, 0, 0, 100 },
-            tooltip = tooltip,
-        })
+        local y = (anchor.getPosition() + offset).y
+        Helper.createSizedAreaButton(1000, 380, anchor, 0, 0, origin.y + 0.1, tooltip, function (_, otherColor)
+            if otherColor == color then
+                action(color, anchor)
+            else
+                Dialog.broadcastToColor(I18N("noTouch"), otherColor, "Purple")
+            end
+        end)
     end)
 end
 
 Leader.vladimirHarkonnen = Helper.createClass(Leader, {
 
-    setUp = function (color, settings)
+    doSetUp = function (color, settings)
         Leader.vladimirHarkonnen.transientSetUp(color, settings)
     end,
 
@@ -118,7 +113,7 @@ Leader.vladimirHarkonnen = Helper.createClass(Leader, {
 
 Leader.glossuRabban = Helper.createClass(Leader, {
 
-    setUp = function (color, settings)
+    doSetUp = function (color, settings)
         Leader.glossuRabban.transientSetUp(color, settings)
     end,
 
@@ -143,7 +138,7 @@ Leader.glossuRabban = Helper.createClass(Leader, {
 
 Leader.ilbanRichese = Helper.createClass(Leader, {
 
-    setUp = function (color, settings)
+    doSetUp = function (color, settings)
         Leader.ilbanRichese.transientSetUp(color, settings)
     end,
 
@@ -161,9 +156,10 @@ Leader.ilbanRichese = Helper.createClass(Leader, {
     resources = function (color, resourceName, amount)
         local success = Action.resources(color, resourceName, amount)
         if success
-        and resourceName == "solari"
-        and amount < 0
-        and Action.checkContext({ phase = "playerTurns", color = color, space = MainBoard.isLandsraadSpace }) then
+            and resourceName == "solari"
+            and amount < 0
+            and Action.checkContext({ phase = "playerTurns", color = color, agentDestination = Helper.isNotNil })
+        then
             local leader = PlayBoard.getLeader(color)
             leader.drawImperiumCards(color, 1)
         end
@@ -209,9 +205,12 @@ Leader.letoAtreides = Helper.createClass(Leader, {
 
     --- Landsraad popularity
     bargain = function (color, resourceName, amount)
-        local finalAmount = amount
-        if resourceName == "solari" and amount > 0 and Action.checkContext({ phase = "playerTurns", color = color, space = MainBoard.isLandsraadSpace }) then
-            finalAmount = amount - 1
+        local finalAmount = Action.bargain(color, resourceName, amount)
+        local toLandsraadSpace = function (agentDestination)
+            return agentDestination and MainBoard.isLandsraadSpace(agentDestination.space)
+        end
+        if resourceName == "solari" and Action.checkContext({ phase = "playerTurns", color = color, agentDestination = toLandsraadSpace }) then
+            finalAmount = math.max(0, amount - 1)
         end
         return finalAmount
     end,
@@ -220,7 +219,7 @@ Leader.letoAtreides = Helper.createClass(Leader, {
         return Action.resources(color, resourceName, -Leader.letoAtreides.bargain(color, resourceName, -amount))
     end,
 
-    --- Prudent Diplomacy
+    --- Prudent Diplomacy (only automated for a rival)
     signetRing = function (color)
 
         local getPotentialFactions = function ()
@@ -260,7 +259,7 @@ Leader.letoAtreides = Helper.createClass(Leader, {
 
 Leader.paulAtreides = Helper.createClass(Leader, {
 
-    setUp = function (color, settings)
+    doSetUp = function (color, settings)
         Leader.paulAtreides.transientSetUp(color, settings)
     end,
 
@@ -293,7 +292,7 @@ Leader.paulAtreides = Helper.createClass(Leader, {
 
 Leader.arianaThorvald = Helper.createClass(Leader, {
 
-    setUp = function (color, settings)
+    doSetUp = function (color, settings)
         Leader.arianaThorvald.transientSetUp(color, settings)
     end,
 
@@ -309,12 +308,12 @@ Leader.arianaThorvald = Helper.createClass(Leader, {
     end,
 
     --- Spice addict
-    sendAgent = function (color, spaceName, recallSpy)
+    sendAgent = function (color, spaceName)
         local oldSpiceStock = PlayBoard.getResource(color, "spice"):get()
-        local continuation = Action.sendAgent(color, spaceName, recallSpy)
+        local continuation = Action.sendAgent(color, spaceName)
         continuation.doAfter(function ()
             local newSpiceStock = PlayBoard.getResource(color, "spice"):get()
-            if MainBoard.isDesertSpace(spaceName) and newSpiceStock > oldSpiceStock then
+            if MainBoard.isDesertSpace(MainBoard.findParentSpaceName(spaceName)) and newSpiceStock > oldSpiceStock then
                 local leader = PlayBoard.getLeader(color)
                 leader.resources(color, "spice", -1)
                 leader.drawImperiumCards(color, 1)
@@ -326,7 +325,7 @@ Leader.arianaThorvald = Helper.createClass(Leader, {
 
 Leader.memnonThorvald = Helper.createClass(Leader, {
 
-    setUp = function (color, settings)
+    doSetUp = function (color, settings)
         Leader.memnonThorvald.transientSetUp(color, settings)
     end,
 
@@ -335,8 +334,8 @@ Leader.memnonThorvald = Helper.createClass(Leader, {
     end,
 
     --- Connections
-    sendAgent = function (color, spaceName, recallSpy)
-        local continuation = Action.sendAgent(color, spaceName, recallSpy)
+    sendAgent = function (color, spaceName)
+        local continuation = Action.sendAgent(color, spaceName)
         continuation.doAfter(function ()
             if spaceName == "highCouncil" then
                 local leader = PlayBoard.getLeader(color)
@@ -358,14 +357,13 @@ Leader.armandEcaz = Helper.createClass(Leader, {
 
 Leader.ilesaEcaz = Helper.createClass(Leader, {
 
-    setUp = function (color, settings)
+    doSetUp = function (color, settings)
         Leader.ilesaEcaz.transientSetUp(color, settings)
     end,
 
     transientSetUp = function (color, settings)
         Leader._createRightCardButton(nil, color, "GuildContactsAnchor", I18N("guildContactsTooltip"), Leader.ilesaEcaz.signetRing)
     end,
-
 
     --- Guild contacts
     signetRing = function (color)
@@ -406,7 +404,7 @@ Leader.rhomburVernius = Helper.createClass(Leader, {
         return continuation
     end,
 
-    --- Guild contacts (for a rival)
+    --- Guild contacts (only automated for a rival)
     signetRing = function (color)
         TechMarket.registerAcquireTechOption(color, "rhomburVerniusTechBuyOption", "spice", 0)
         local leader = PlayBoard.getLeader(color)
@@ -419,7 +417,7 @@ Leader.rhomburVernius = Helper.createClass(Leader, {
 
 Leader.tessiaVernius = Helper.createClass(Leader, {
 
-    setUp = function (color, settings)
+    doSetUp = function (color, settings)
         Leader.tessiaVernius.transientSetUp(color, settings)
     end,
 
@@ -473,7 +471,7 @@ Leader.tessiaVernius = Helper.createClass(Leader, {
 
 Leader.yunaMoritani = Helper.createClass(Leader, {
 
-    setUp = function (color, settings)
+    doSetUp = function (color, settings)
         Leader.yunaMoritani.transientSetUp(color, settings)
     end,
 
@@ -513,8 +511,9 @@ Leader.hundroMoritani = Helper.createClass(Leader, {
     prepare = function (color, settings)
         Action.prepare(color, settings)
         Helper.onceFramesPassed(1).doAfter(function ()
-            local leader = PlayBoard.getLeader(color)
-            leader.drawIntrigues(color, 2)
+            -- We don't send it to the player hand to avoid any confusion with the epic mode intrigue.
+            local emptySlots = Park.findEmptySlots(PlayBoard.getAgentCardPark(color))
+            Intrigue.moveIntrigues({ emptySlots[1], emptySlots[2] })
         end)
     end,
 
@@ -531,12 +530,398 @@ Leader.hundroMoritani = Helper.createClass(Leader, {
         end
     end,
 
-    --- Couriers
+    --- Couriers (only automated for a rival)
     signetRing = function (color)
         local leader = PlayBoard.getLeader(color)
-        return leader.resources(color, "spice", -1)
-            and leader.shipments(color, 1)
+        return leader.resources(color, "spice", -1) and leader.shipments(color, 1)
     end
+})
+
+Leader.muadDib = Helper.createClass(Leader, {
+
+    doSetUp = function (color, settings)
+        Leader.muadDib.transientSetUp(color, settings)
+    end,
+
+    --- Unpredictable foe
+    transientSetUp = function (color, settings)
+        Helper.registerEventListener("reveal", function (otherColor)
+            -- Should we consider its allies' sandworms too?
+            if color == otherColor and PlayBoard.couldSendAgentOrReveal(color) and Combat.hasAnySandworm(color) then
+                local leader = PlayBoard.getLeader(color)
+                Action.log(I18N("muadDibBeingUnpredictable"), color)
+                leader.drawIntrigues(color, 1)
+            end
+        end)
+        Leader._createRightCardButton(nil, color, "LeadTheWayAnchor", I18N("leadTheWayTooltip"), Leader.muadDib.signetRing)
+    end,
+
+    --- Lead the Way
+    signetRing = function (color)
+        local leader = PlayBoard.getLeader(color)
+        return leader.drawImperiumCards(color, 1, true)
+    end,
+
+    prepare = function (color, settings, asCommander)
+        if not asCommander then
+            Action.prepare(color, settings)
+        else
+            Action.resources(color, "water", 1)
+            if settings.epicMode then
+                Action.drawIntrigues(color, 1)
+            end
+        end
+    end
+})
+
+Leader.chani = Helper.createClass(Leader, {
+
+    doSetUp = function (color, settings)
+        local snapPoints = {}
+        Leader.chani.positions = {}
+        for i = 11, 1, -1 do
+            local position = Vector(i * 0.175 - 1.125, 0, 0.61)
+            table.insert(Leader.chani.positions, position)
+            table.insert(snapPoints, {
+                position = position,
+                tags = { "FedaykinManeuverMarker" },
+            })
+        end
+
+        local leaderCard = PlayBoard.findLeaderCard(color)
+        leaderCard.setSnapPoints(snapPoints)
+
+        Leader.chani.transientSetUp(color, settings)
+    end,
+
+    --- Fedaykin Maneuver & Tactician
+    transientSetUp = function (color, settings)
+        Leader._createRightCardButton(nil, color, "FedaykinManeuverAnchor", I18N("fedaykinManeuverTooltip"), Leader.chani.signetRing)
+
+        Helper.registerEventListener("phaseStart", function (phase)
+            if phase == "combatEnd" then
+                local count = Combat.getUnitCounts(function (object)
+                    return Types.isTroop(object) or Types.isSardaukarCommander(object)
+                end)[color]
+                if count > 0 then
+                    local markers = getObjectsWithTag("FedaykinManeuverMarker")
+                    assert(#markers == 1)
+                    local marker = markers[1]
+                    local markerPosition = marker.getPosition()
+                    local leaderCard = PlayBoard.findLeaderCard(color)
+                    local snapPoints = leaderCard.getSnapPoints()
+                    local slots = {}
+                    for _, snapPoint in ipairs(snapPoints) do
+                        local slot = leaderCard.positionToWorld(snapPoint.position)
+                        slot.y = markerPosition.y
+                        table.insert(slots, slot)
+                    end
+                    for markerPositionIndex, slot in ipairs(slots) do
+                        if Vector.sqrDistance(slot, markerPosition) < 0.1 then
+                            local leader = PlayBoard.getLeader(color)
+                            local startIndex = settings.numberOfPlayers == 6 and 1 or 3
+                            Action.log(I18N("chaniBeingTactical", { count = count, what = I18N.agree(count, "troop") }), color)
+                            Helper.repeatMovingAction(marker, count, function ()
+                                markerPositionIndex = markerPositionIndex >= 11 and startIndex or markerPositionIndex + 1
+                                marker.setPositionSmooth(slots[markerPositionIndex] + Vector(0, 0.25, 0))
+                                if markerPositionIndex == 6 then
+                                    leader.resources(color, "spice", 1)
+                                elseif markerPositionIndex == 11 then
+                                    leader.resources(color, "water", 1)
+                                end
+                            end)
+                            break
+                        end
+                    end
+                end
+            end
+        end)
+    end,
+
+    --- Lead the Way
+    signetRing = function (color)
+        local leader = PlayBoard.getLeader(color)
+        return InfluenceTrack.hasFriendship(color, "fremen")
+            and leader.resources(color, "water", -1)
+            and leader.drawImperiumCards(color, 2, true)
+    end,
+
+    --- Tactician
+    prepare = function (color, settings)
+        Action.prepare(color, settings)
+
+        local leaderCard = PlayBoard.findLeaderCard(color)
+        local startIndex = settings.numberOfPlayers == 6 and 1 or 3
+        local marker = getObjectFromGUID("505c31").clone({
+            position = leaderCard.positionToWorld(Leader.chani.positions[startIndex]) + Vector(0, 0.5, 0)
+        })
+        marker.setInvisibleTo({})
+        marker.setTags({ "FedaykinManeuverMarker" })
+    end
+})
+
+Leader.duncanIdaho = Helper.createClass(Leader, {
+
+    --- Into the Fray
+    doSetUp = function (color, settings)
+        for _, agent in ipairs(getObjectsWithTag("Agent")) do
+            if agent.hasTag(color) then
+                agent.addTag("Unit")
+            end
+        end
+    end,
+
+    --- Ginaz Swordmaster
+    bargain = function (color, resourceName, amount)
+        Helper.dumpFunction("bargain", color, resourceName, amount)
+        local finalAmount = Action.bargain(color, resourceName, amount)
+        local toSwordmasterSpace = function (agentDestination)
+            return agentDestination and agentDestination.space == "swordmaster"
+        end
+        if resourceName == "solari" and Action.checkContext({ phase = "playerTurns", color = color, agentDestination = toSwordmasterSpace }) then
+            finalAmount = math.max(0, amount - 2)
+        end
+        return finalAmount
+    end,
+
+    resources = function (color, resourceName, amount)
+        return Action.resources(color, resourceName, -Leader.duncanIdaho.bargain(color, resourceName, -amount))
+    end
+})
+
+Leader.esmarTuek = Helper.createClass(Leader, {
+
+    doSetUp = function (color, settings)
+        Leader.esmarTuek.transientSetUp(color, settings)
+    end,
+
+    --- Tuek's Sietch
+    transientSetUp = function (color, settings)
+        Helper.registerEventListener("agentSent", function (otherColor, spaceName)
+            if spaceName == "tuekSietch" then
+                local leader = PlayBoard.getLeader(color)
+                if color == otherColor then
+                    Action.log(I18N("tuekGainSolariFromAlly"), color)
+                    leader.resources(color, "solari", 1)
+                else
+                    Action.log(I18N("tuekDrawIntrigueFromOpponent"), color)
+                    leader.drawIntrigues(color, 1)
+                end
+            end
+        end)
+    end,
+
+    prepare = function (color, settings)
+        Action.prepare(color, settings)
+        MainBoard.processTuekSnapPoints(settings)
+    end,
+})
+
+Leader.piterDeVries = Helper.createClass(Leader, {
+
+    doSetUp = function (color, settings)
+        local content = PlayBoard.getPlayBoard(color).content
+        local zone = content.leaderZone
+        -- Temporary tag to avoid counting the leader card.
+        zone.addTag("Intrigue")
+        Deck.generateTwistedIntrigueDeck(zone).doAfter(function (deck)
+            Helper.shuffleDeck(deck)
+            Helper.onceShuffled(deck).doAfter(function ()
+                local cardCount = Helper.getCardCount(deck)
+                Helper.repeatChainedAction(cardCount, function ()
+                    local continuation = Helper.createContinuation("Leader.piterDeVries.doSetUp")
+                    Helper.moveCardFromZone(zone, content.trash.getPosition() + Vector(0, 1, 0), nil, false, false).doAfter(function (card)
+                        Helper.onceSwallowedUp(card).doAfter(continuation.run)
+                    end)
+                    return continuation
+                end).doAfter(function ()
+                    zone.removeTag("Intrigue")
+                end)
+            end)
+        end)
+
+        Leader.piterDeVries.transientSetUp(color, settings)
+    end,
+
+    --- Twisted Genius
+    transientSetUp = function (color, settings)
+        Helper.registerEventListener("phaseStart", function (phase)
+            if phase == "roundStart" then
+                if PlayBoard.giveIntrigueFromTrash(color) then
+                    return true
+                else
+                    Dialog.broadcastToColor(I18N("noAvailableTwistedIntrigues"), color, "Purple")
+                    return false
+                end
+            end
+        end)
+
+        Leader._createRightCardButton(nil, color, "HarkonnenAdvisorAnchor", I18N("harkonnenAdvisorTooltip"), Leader.piterDeVries.signetRing)
+    end,
+
+    --- Harkonnen Advisor
+    signetRing = function (color)
+        local leader = PlayBoard.getLeader(color)
+        return leader.troops(color, "supply", "garrison", 1)
+    end
+})
+
+Leader.yrkoon = Helper.createClass(Leader, {
+
+    bags = {
+        "7e56d8",
+        "686021",
+        "cfd6d1",
+        "5f9264",
+    },
+
+    doSetUp = function (color, settings)
+        local content = PlayBoard.getPlayBoard(color).content
+        local zone = content.leaderZone
+        -- Temporary tag to avoid counting the leader card.
+        zone.addTag("Navigation")
+        Deck.generateNavigationDeck(zone).doAfter(function (deck)
+            zone.removeTag("Navigation")
+            Helper.shuffleDeck(deck)
+            deck.setPosition(deck.getPosition() + Vector(0, 0, 0.25))
+
+            for i = 1, 4 do
+                local bag = getObjectFromGUID(Leader.yrkoon.bags[i])
+                local p = zone.getPosition() + Vector(i * 1.2 - 3, 0, -1.5)
+                p:setAt('y', Board.onPlayBoard(0))
+                bag.setPosition(p)
+                bag.setInvisibleTo({})
+                Helper.noPhysics(bag)
+            end
+        end)
+
+        Leader.yrkoon.transientSetUp(color, settings)
+    end,
+
+    -- Plot Course
+    instruct = function (phase, isActivePlayer)
+        if phase == "gameStart" then
+            if isActivePlayer then
+                return I18N("gameStartActiveInstructionForYrkoon")
+            else
+                return I18N("gameStartInactiveInstructionForYrkoon")
+            end
+        else
+            return Leader.instruct(phase, isActivePlayer)
+        end
+    end,
+
+    --- Hungry for Spice & Plot Course
+    transientSetUp = function (color, settings)
+        Helper.registerEventListener("playerTurn", function (phaseName, otherColor)
+            -- We don't check that otherColor == color because the rules don't say that the turn must be Y'rkoon's.
+            if phaseName == "playerTurns" then
+                Leader.yrkoon.baseSpice = PlayBoard.getResource(color, "spice"):get()
+            else
+                Leader.yrkoon.baseSpice = nil
+            end
+        end)
+        Helper.registerEventListener("spiceValueChanged", function (otherColor, newValue)
+            if Leader.yrkoon.baseSpice and otherColor == color then
+                if newValue - Leader.yrkoon.baseSpice >= 3 then
+                    local leader = PlayBoard.getLeader(color)
+                    Action.log(I18N("hungryForSpiceAbility"), color)
+                    leader.drawImperiumCards(color, 1)
+                    Leader.yrkoon.baseSpice = nil
+                end
+            end
+        end)
+        Helper.registerEventListener("influence", function (faction, otherColor, newRank, oldRank)
+            if otherColor == color and newRank >= 2 and oldRank < 2 then
+                Helper.dump("draw next navigation card")
+                for i = 1, 4 do
+                    local bag = getObjectFromGUID(Leader.yrkoon.bags[i])
+                    if PlayBoard.giveNavigationFromBag(color, bag) then
+                        return
+                    end
+                end
+            end
+        end)
+    end,
+
+    --- Strange Form
+    prepare = function (color, settings)
+        Action.prepare(color, settings)
+        local leader = PlayBoard.getLeader(color)
+        leader.resources(color, "water", -1)
+
+        local drawDeck = PlayBoard.getDrawDeck(color)
+        if drawDeck then
+            for i, card in ipairs(drawDeck.getObjects()) do
+                if Helper.getID(card) == "signetRing" then
+                    drawDeck.takeObject({
+                        index = i - 1,
+                        flip = true,
+                        position = Vector(drawDeck.getPosition() + Vector(0, 1, 0)),
+                        callback_function = function (livingCard)
+                            PlayBoard.getPlayBoard(color):trash(livingCard)
+                        end
+                    })
+                    break
+                end
+            end
+        end
+    end,
+})
+
+Leader.kotaOdax = Helper.createClass(Leader, {
+
+    doSetUp = function (color, settings)
+        Leader.kotaOdax.transientSetUp(color, settings)
+    end,
+
+    transientSetUp = function (color, settings)
+        Helper.registerEventListener("playerTurn", function (phaseName, otherColor)
+            if phaseName == "gameStart" and otherColor == color then
+                local options = {}
+                if false then
+                    for index = 1, 3 do
+                        local stackIndex = 4 - index
+                        local cardName = TechMarket.getBottomCardDetails(stackIndex)
+                        table.insert(options, cardName)
+                    end
+                    Dialog.showOptionsDialog(color, I18N("kotaOdaxChoice"), options, nil, function (index)
+                        local stackIndex = 4 - index
+                        local content = PlayBoard.getPlayBoard(color).content
+                        local zone = content.leaderZone
+                        TechMarket.grapBottomCard(stackIndex, zone.getPosition())
+                    end)
+                else
+                    for index = 1, 3 do
+                        local stackIndex = 4 - index
+                        local cardName = TechMarket.getBottomCardDetails(stackIndex)
+                        table.insert(options, {
+                            name = cardName,
+                            url = Deck.getCardUrlByName("tech", cardName),
+                        })
+                    end
+                    Dialog.showTechOptionsDialog(color, I18N("kotaOdaxChoice"), options, function (index)
+                        local stackIndex = 4 - math.max(1, index) -- Select the first option on cancellation.
+                        local content = PlayBoard.getPlayBoard(color).content
+                        local zone = content.leaderZone
+                        TechMarket.grapBottomCard(stackIndex, zone.getPosition())
+                    end)
+                end
+            end
+        end)
+    end,
+
+    instruct = function (phase, isActivePlayer)
+        if phase == "gameStart" then
+            if isActivePlayer then
+                return I18N("gameStartActiveInstructionForKotaOdax")
+            else
+                return I18N("gameStartInactiveInstructionForKotaOdax")
+            end
+        else
+            return Leader.instruct(phase, isActivePlayer)
+        end
+    end,
 })
 
 return Leader

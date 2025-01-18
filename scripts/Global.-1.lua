@@ -14,7 +14,7 @@
 -- Will be automatically replaced by the build timestamp.
 local BUILD = 'TBD'
 
-local MOD_NAME = 'Spice Flow'
+local MOD_NAME = 'Spice Flow + Bloodlines'
 
 -- Do not load anything. Appropriate to work on the mod content in TTS without
 -- interference from the scripts.
@@ -27,80 +27,19 @@ local autoLoadedSettings = nil
 autoLoadedSettings = {
     language = "fr",
     hotSeat = true,
-    numberOfPlayers = 1,
-    difficulty = "expert",
-    autoTurnInSolo = false,
+    numberOfPlayers = 4,
     randomizePlayerPositions = false,
-    riseOfIx = true,
+    riseOfIx = false,
     epicMode = false,
-    immortality = true,
+    immortality = false,
     goTo11 = false,
-    firstPlayer = "Green",
+    bloodlines = true,
+    ixAmbassy = true,
     leaderSelection = {
-        Green = "ilbanRichese",
-        Yellow = "arianaThorvald",
-        Red = "tessiaVernius",
-    },
-    formalCombatPhase = false,
-    soundEnabled = true,
-}
-
-autoLoadedSettings = {
-    language = "fr",
-    hotSeat = true,
-    numberOfPlayers = 3,
-    randomizePlayerPositions = false,
-    riseOfIx = true,
-    epicMode = false,
-    immortality = true,
-    goTo11 = false,
-    leaderSelection = {
-        Green = "ilbanRichese",
-        Yellow = "arianaThorvald",
-        Red = "tessiaVernius",
-        Blue = "paulAtreides",
-    },
-    formalCombatPhase = true,
-    soundEnabled = true,
-}
-
-autoLoadedSettings = {
-    language = "fr",
-    hotSeat = true,
-    numberOfPlayers = 1,
-    difficulty = "novice",
-    autoTurnInSolo = false,
-    randomizePlayerPositions = false,
-    riseOfIx = true,
-    epicMode = false,
-    immortality = true,
-    goTo11 = false,
-    leaderSelection = {
-        Green = "yunaMoritani",
-        -- vladimirHarkonnen
-        -- glossuRabban
-        -- ilbanRichese
-        -- helenaRichese
-        -- letoAtreides
-        -- paulAtreides
-        -- arianaThorvald
-        -- memnonThorvald
-        -- armandEcaz
-        -- ilesaEcaz
-        -- rhomburVernius
-        -- tessiaVernius
-        -- yunaMoritani
-        -- hundroMoritani
-        Yellow = "arianaThorvald",
-        Red = "memnonThorvald",
-        -- vladimirHarkonnen
-        -- glossuRabban
-        -- ilbanRichese
-        -- letoAtreides
-        -- arianaThorvald
-        -- memnonThorvald
-        -- rhomburVernius
-        -- hundroMoritani
+        Green = "yrkoon",
+        Yellow = "duncanIdaho",
+        Red = "chani",
+        Blue = "piterDeVries",
     },
     formalCombatPhase = false,
     soundEnabled = true,
@@ -124,10 +63,13 @@ local Dialog = require("utils.Dialog")
 local allModules = Module.registerModules({
     AcquireCard, -- To take advantage of Module.registerModuleRedirections.
     Action = require("Action"),
+    Board = require("Board"),
     ArrakeenScouts = require("ArrakeenScouts"),
     Combat = require("Combat"),
     ConflictCard = require("ConflictCard"),
+    ShippingTrack = require("ShippingTrack"),
     Deck = require("Deck"),
+    ScoreBoard = require("ScoreBoard"),
     DynamicBonus = require("DynamicBonus"),
     Hagal = require("Hagal"),
     HagalCard = require("HagalCard"),
@@ -135,7 +77,6 @@ local allModules = Module.registerModules({
     ImperiumRow = require("ImperiumRow"),
     InfluenceTrack = require("InfluenceTrack"),
     Intrigue = require("Intrigue"),
-    IntrigueCard = require("IntrigueCard"),
     Leader = require("Leader"),
     LeaderSelection = require("LeaderSelection"),
     Locale = require("Locale"),
@@ -146,14 +87,15 @@ local allModules = Module.registerModules({
     Reserve = require("Reserve"),
     Resource = require("Resource"),
     Rival = require("Rival"),
-    ScoreBoard = require("ScoreBoard"),
-    ShippingTrack = require("ShippingTrack"),
-    TechCard = require("TechCard"),
+    SardaukarCommander = require("SardaukarCommander"),
+    SardaukarCommanderSkillCard = require("SardaukarCommanderSkillCard"),
     TechMarket = require("TechMarket"),
+    TechCard = require("TechCard"),
     TleilaxuResearch = require("TleilaxuResearch"),
     TleilaxuRow = require("TleilaxuRow"),
     TurnControl = require("TurnControl"),
     Types = require("Types"),
+    SubmitGame = require("SubmitGame"),
 })
 
 local Controller = {
@@ -175,7 +117,7 @@ local Controller = {
             "threePlayers",
             "fourPlayers",
         },
-        virtualHotSeatMode = {},
+        virtualHotSeatMode = XmlUI.HIDDEN,
         firstPlayer = "random",
         firstPlayer_all = {
             random = "random",
@@ -186,19 +128,24 @@ local Controller = {
         },
         randomizePlayerPositions = false,
         difficulty_all = allModules.Hagal.getDifficulties(),
-        difficulty = {},
-        autoTurnInSolo = {},
-        imperiumRowChurn = {},
-        brutalEscalation = {},
-        riseOfIx = true,
-        epicMode = false,
-        immortality = true,
-        goTo11 = true,
+        difficulty = XmlUI.HIDDEN,
+        autoTurnInSolo = XmlUI.DISABLED,
+        imperiumRowChurn = XmlUI.DISABLED,
+        brutalEscalation = XmlUI.DISABLED,
+        expertDeployment = XmlUI.DISABLED,
+        smartPolitics = XmlUI.DISABLED,
+        riseOfIx = false,
+        epicMode = XmlUI.DISABLED,
+        immortality = false,
+        goTo11 = XmlUI.DISABLED,
+        bloodlines = true,
+        ixAmbassy = true,
+        ixAmbassyWithIx = false,
         leaderSelection_all = allModules.LeaderSelection.getSelectionMethods(4),
         leaderSelection = "reversePick",
-        defaultLeaderPoolSize_range = { min = 4, max = 12 },
-        defaultLeaderPoolSize = 9,
-        defaultLeaderPoolSizeLabel = "-",
+        leaderPoolSize_range = { min = 4, max = 12 },
+        leaderPoolSize = 9,
+        leaderPoolSizeLabel = "-",
         tweakLeaderSelection = true,
         variant_all = {
             none = "none",
@@ -207,6 +154,8 @@ local Controller = {
         variant = "none",
         formalCombatPhase = false,
         soundEnabled = true,
+        submitGameRankedGame = XmlUI.DISABLED,
+        submitGameTournament = XmlUI.DISABLED,
     }
 }
 
@@ -224,77 +173,30 @@ function onLoad(scriptState)
     Helper.destroyTransientObjects()
 
     if constructionModeEnabled then
+        -- Edit the player boards in a procedural way.
+        if false then
+            allModules.PlayBoard.rebuild()
+        end
         -- Regenerate the decks in the localized cached areas.
         if false then
             allModules.Deck.rebuildPreloadAreas()
+        end
+        -- Regenerate the boards for each language.
+        if false then
+            allModules.Board.rebuildPreloadAreas()
         end
     else
         -- The destroyed objects need one frame to disappear and not interfere
         -- with the mod.
         Helper.onceFramesPassed(1).doAfter(function ()
             Dialog.loadStaticUI().doAfter(function ()
-                local state = scriptState ~= "" and JSON.decode(scriptState) or {}
-                asyncOnLoad(state)
+                asyncOnLoad(scriptState)
             end)
         end)
     end
 end
 
----
-function relocateDecals()
-    local playerBoards = Helper.resolveGUIDs(true, {
-        Red = {
-            board = "adcd28",
-            decals = {},
-        },
-        Blue = {
-            board = "77ca63",
-            decals = {},
-        },
-        Green = {
-            board = "0bbae1",
-            decals = {},
-        },
-        Yellow = {
-            board = "fdd5f9",
-            decals = {},
-        }
-    })
-
-    local colors = { "Green", "Yellow", "Red", "Blue" }
-    for _, decal in ipairs(Global.getDecals()) do
-        local i = decal.position.x > 0 and 0 or 1
-        local j = decal.position.z > 0 and 0 or 1
-        local color = colors[i * 2 + j + 1]
-
-        local playerBoard = playerBoards[color]
-        local board = playerBoard.board
-
-        local p = decal.position
-        p = p - board.getPosition()
-
-        -- Inverting the X coordinate comes from our global 180° rotation around Y.
-
-        local r = board.getRotation()
-        p:rotateOver('x', r.x)
-        p:rotateOver('y', r.y)
-        p:rotateOver('z', r.z)
-
-        decal.position = p
-        decal.rotation = decal.rotation + Vector(0, 180, 0)
-
-        table.insert(playerBoard.decals, decal)
-    end
-    Global.setDecals({})
-
-    for color, playerBoard in pairs(playerBoards) do
-        Helper.dump(color, "->", playerBoard.board.getPosition(), "->", #playerBoard.decals)
-        playerBoard.board.setDecals(playerBoard.decals)
-    end
-end
-
----
-function asyncOnLoad(state)
+function asyncOnLoad(scriptState)
     local tables = Helper.resolveGUIDs(false, {
         primaryTable = "2b4b92",
         secondaryTable = "662ced",
@@ -303,6 +205,7 @@ function asyncOnLoad(state)
         tables.primaryTable,
         tables.secondaryTable)
 
+    local state = scriptState ~= "" and JSON.decode(scriptState) or {}
     settings = state.settings
 
     -- Make it available to 'Helper.postError'.
@@ -316,6 +219,7 @@ function asyncOnLoad(state)
     allModules.ordered = {
         { name = "Locale", module = allModules.Locale },
         { name = "Action", module = allModules.Action },
+        { name = "Board", module = allModules.Board },
         { name = "ArrakeenScouts", module = allModules.ArrakeenScouts },
         { name = "Pdf", module = allModules.Pdf },
         { name = "Music", module = allModules.Music },
@@ -331,10 +235,12 @@ function asyncOnLoad(state)
         { name = "Intrigue", module = allModules.Intrigue },
         { name = "ImperiumRow", module = allModules.ImperiumRow },
         { name = "Reserve", module = allModules.Reserve },
+        { name = "SardaukarCommander", module = allModules.SardaukarCommander },
         { name = "TleilaxuResearch", module = allModules.TleilaxuResearch },
         { name = "TleilaxuRow", module = allModules.TleilaxuRow },
         { name = "TurnControl", module = allModules.TurnControl },
         { name = "LeaderSelection", module = allModules.LeaderSelection },
+        { name = "SubmitGame", module = allModules.SubmitGame },
     }
 
     -- We cannot use Module.callOnAllRegisteredModules("onLoad", state),
@@ -359,19 +265,29 @@ function asyncOnLoad(state)
         "onObjectDrop",
     })
 
+    local uiAlreadySetUp = false
     if not state.settings then
         if autoLoadedSettings then
+            I18N.setLocale(autoLoadedSettings.language or "en")
             Helper.onceFramesPassed(1).doAfter(function ()
                 setUp(autoLoadedSettings)
             end)
         else
             Controller.ui = XmlUI.new(Global, "setupPane", Controller.fields)
             Controller.ui:show()
+            Controller.extensionUi = XmlUI.new(Global, "extensionSetupPane", Controller.fields)
+            Controller.extensionUi:show()
             Controller.soloUi = XmlUI.new(Global, "soloSetupPane", Controller.fields)
             I18N.setLocale(Controller.fields.language)
-            Controller.updateDefaultLeaderPoolSizeLabel()
+            Controller.updateLeaderPoolSizeLabel()
             Controller.updateSetupButton()
+            uiAlreadySetUp = true
         end
+    end
+    if not uiAlreadySetUp then
+        -- Force the translation of the whole UI (not restricted to the "setupPane" actually)
+        -- since the other panels are also used after the setup.
+        XmlUI.new(Global)
     end
 end
 
@@ -407,7 +323,7 @@ function onSave()
             stable = stable and "stable" or "unstable",
         }
 
-        -- FIXME Only call it for the same modules for which "onLoad" has been called.
+        -- TODO Only call it for the same modules for which "onLoad" has been called.
         Module.callOnAllRegisteredModules("onSave", savedState)
         return JSON.encode(savedState)
     else
@@ -428,6 +344,10 @@ end
 --- Set up the game, an irreversible operation.
 function setUp(newSettings)
     assert(newSettings)
+
+    assert((not newSettings.epicMode) or newSettings.ix)
+    assert((not newSettings.ixAmbassy) or (not newSettings.ix))
+    assert((not newSettings.goTo11) or newSettings.immortality)
 
     local continuation = Helper.createContinuation("setUp")
     if newSettings.randomizePlayerPositions then
@@ -483,23 +403,18 @@ function onPlayerDisconnect()
     Controller.updateSelectionMethods()
 end
 
+--- Generic UI callback (cf. XML).
+function setAnyField(player, value, id)
+    Controller.ui:fromUI(player, value, id)
+end
+
 --- UI callback (cf. XML).
 function setLanguage(player, value, id)
     Controller.ui:fromUI(player, value, id)
     -- The locale is changed in real time by the UI, but not the test mode.
     I18N.setLocale(Controller.fields.language)
     Controller.ui:toUI()
-    Controller.updateDefaultLeaderPoolSizeLabel()
-end
-
---- UI callback (cf. XML).
-function setFirstPlayer(player, value, id)
-    Controller.ui:fromUI(player, value, id)
-end
-
---- UI callback (cf. XML).
-function setRandomizePlayerPositions(player, value, id)
-    Controller.ui:fromUI(player, value, id)
+    Controller.updateLeaderPoolSizeLabel()
 end
 
 --- UI callback (cf. XML).
@@ -508,7 +423,7 @@ function setVirtualHotSeat(player, value, id)
     if value == "True" then
         Controller.fields.virtualHotSeatMode = 1
     else
-        Controller.fields.virtualHotSeatMode = {}
+        Controller.fields.virtualHotSeatMode = XmlUI.HIDDEN
     end
     Controller.applyVirtualHotSeatMode()
     Controller.ui:toUI()
@@ -523,22 +438,17 @@ end
 
 --- UI callback (cf. XML).
 function setDifficulty(player, value, id)
-    Controller.soloUi:fromUI(player, value, id)
-end
-
---- UI callback (cf. XML).
-function setAutoTurnInSolo(player, value, id)
-    Controller.soloUi:fromUI(player, value, id)
-end
-
---- UI callback (cf. XML).
-function setImperiumRowChurn(player, value, id)
-    Controller.soloUi:fromUI(player, value, id)
-end
-
---- UI callback (cf. XML).
-function setBrutalEscalation(player, value, id)
-    Controller.soloUi:fromUI(player, value, id)
+    Controller.ui:fromUI(player, value, id)
+    if Helper.isElementOf(Controller.fields.difficulty, { "novice", "veteran" }) then
+        Controller.fields.brutalEscalation = false
+        Controller.fields.expertDeployment = false
+        Controller.fields.smartPolitics = false
+    else
+        Controller.fields.brutalEscalation = true
+        Controller.fields.expertDeployment = true
+        Controller.fields.smartPolitics = true
+    end
+    Controller.ui:toUI()
 end
 
 --- UI callback (cf. XML).
@@ -552,15 +462,17 @@ function setRiseOfIx(player, value, id)
     Controller.ui:fromUI(player, value, id)
     if value == "True" then
         Controller.fields.epicMode = false
+        Controller.fields.ixAmbassy = XmlUI.DISABLED
+        Controller.fields.ixAmbassyWithIx = XmlUI.DISABLED
     else
-        Controller.fields.epicMode = {}
+        Controller.fields.epicMode = XmlUI.DISABLED
+        Controller.ui:fromUI(player, value, id)
+        if Controller.fields.bloodlines and XmlUI.isDisabled(Controller.fields.ixAmbassy) then
+            Controller.fields.ixAmbassy = true
+            Controller.fields.ixAmbassyWithIx = false
+        end
     end
     Controller.ui:toUI()
-end
-
---- UI callback (cf. XML).
-function setEpicMode(player, value, id)
-    Controller.ui:fromUI(player, value, id)
 end
 
 --- UI callback (cf. XML).
@@ -569,7 +481,7 @@ function setImmortality(player, value, id)
     if value == "True" then
         Controller.fields.goTo11 = false
     else
-        Controller.fields.goTo11 = {}
+        Controller.fields.goTo11 = XmlUI.DISABLED
     end
     Controller.ui:toUI()
 end
@@ -580,45 +492,46 @@ function setGoTo11(player, value, id)
 end
 
 --- UI callback (cf. XML).
-function setLeaderSelection(player, value, id)
+function setBloodlines(player, value, id)
     Controller.ui:fromUI(player, value, id)
+    if value == "True" and not Controller.fields.riseOfIx then
+        Controller.fields.ixAmbassy = true
+        Controller.fields.ixAmbassyWithIx = false
+    else
+        Controller.fields.ixAmbassy = XmlUI.DISABLED
+        Controller.fields.ixAmbassyWithIx = XmlUI.DISABLED
+    end
+    Controller.ui:toUI()
 end
 
 --- UI callback (cf. XML).
-function setFanmadeLeaders(player, value, id)
+function setIxAmbassy(player, value, id)
     Controller.ui:fromUI(player, value, id)
+    if value == "True" then
+        Controller.fields.ixAmbassyWithIx = false
+    else
+        Controller.fields.ixAmbassyWithIx = XmlUI.DISABLED
+    end
+    Controller.ui:toUI()
 end
 
 --- UI callback (cf. XML).
-function setDefaultLeaderPoolSize(player, value, id)
+function setLeaderPoolSize(player, value, id)
     Controller.ui:fromUI(player, value, id)
-    Controller.updateDefaultLeaderPoolSizeLabel()
-end
-
---- UI callback (cf. XML).
-function setTweakLeaderSelection(player, value, id)
-    Controller.ui:fromUI(player, value, id)
-end
-
---- UI callback (cf. XML).
-function setVariant(player, value, id)
-    Controller.ui:fromUI(player, value, id)
-end
-
---- UI callback (cf. XML).
-function setFormalCombatPhase(player, value, id)
-    Controller.ui:fromUI(player, value, id)
-end
-
---- UI callback (cf. XML).
-function setSoundEnabled(player, value, id)
-    Controller.ui:fromUI(player, value, id)
+    Controller.updateLeaderPoolSizeLabel()
 end
 
 --- UI callback (cf. XML).
 function setUpFromUI()
+    if not Controller.ui then
+        Helper.dump("No UI. Bouncing button?")
+        return
+    end
+
     Controller.ui:hide()
     Controller.ui = nil
+    Controller.extensionUi:hide()
+    Controller.extensionUi = nil
     Controller.soloUi:hide()
     Controller.soloUi = nil
 
@@ -629,23 +542,31 @@ function setUpFromUI()
         numberOfPlayers = numberOfPlayers,
         hotSeat = not Controller.isUndefined(Controller.fields.virtualHotSeatMode),
         firstPlayer = Controller.fields.firstPlayer,
-        randomizePlayerPositions = Controller.fields.randomizePlayerPositions == true,
+        randomizePlayerPositions = Controller.fields.randomizePlayerPositions,
         difficulty = Controller.fields.difficulty,
         autoTurnInSolo = Controller.fields.autoTurnInSolo == true,
-        imperiumRowChurn = Controller.fields.imperiumRowChurn,
-        brutalEscalation = Controller.fields.brutalEscalation,
-        riseOfIx = Controller.fields.riseOfIx == true,
+        imperiumRowChurn = Controller.fields.imperiumRowChurn == true,
+        streamlinedRivals = Controller.fields.streamlinedRivals == true,
+        brutalEscalation = Controller.fields.brutalEscalation == true,
+        expertDeployment = Controller.fields.expertDeployment == true,
+        smartPolitics = Controller.fields.smartPolitics == true,
+        riseOfIx = Controller.fields.riseOfIx,
         epicMode = Controller.fields.epicMode == true,
-        immortality = Controller.fields.immortality == true,
+        immortality = Controller.fields.immortality,
         goTo11 = Controller.fields.goTo11 == true,
+        bloodlines = Controller.fields.bloodlines,
+        ixAmbassy = Controller.fields.ixAmbassy == true,
+        ixAmbassyWithIx = Controller.fields.ixAmbassyWithIx == true,
         leaderSelection = Controller.fields.leaderSelection,
-        defaultLeaderPoolSize = tonumber(Controller.fields.defaultLeaderPoolSize),
+        leaderPoolSize = tonumber(Controller.fields.leaderPoolSize),
         tweakLeaderSelection = Controller.fields.tweakLeaderSelection,
         fanmadeLeaders = Controller.fields.fanmadeLeaders,
         horizontalHandLayout = Controller.fields.horizontalHandLayout,
         variant = Controller.fields.variant,
         formalCombatPhase = Controller.fields.formalCombatPhase,
         soundEnabled = Controller.fields.soundEnabled,
+        submitGameRankedGame = Controller.fields.submitGameRankedGame == true,
+        submitGameTournament = Controller.fields.submitGameTournament == true,
     })
 end
 
@@ -717,22 +638,33 @@ function Controller.getProperlySeatedPlayers()
     return properlySeatedPlayers
 end
 
----
 function Controller.applyVirtualHotSeatMode()
-
     local numberOfPlayers = Controller.getNumberOfPlayers(Controller.fields.virtualHotSeatMode)
 
-    if Controller.isUndefined(Controller.fields.virtualHotSeatMode) or numberOfPlayers > 1 then
-        Controller.fields.difficulty = {}
-        Controller.fields.autoTurnInSolo = {}
-        Controller.fields.imperiumRowChurn = {}
-        Controller.fields.brutalEscalation = {}
+    if Controller.isUndefined(Controller.fields.virtualHotSeatMode) or numberOfPlayers > 2 then
+        Controller.fields.difficulty = XmlUI.HIDDEN
+        Controller.fields.autoTurnInSolo = XmlUI.DISABLED
+        Controller.fields.imperiumRowChurn = XmlUI.DISABLED
+        Controller.fields.streamlinedRivals = XmlUI.DISABLED
+        Controller.fields.brutalEscalation = XmlUI.DISABLED
+        Controller.fields.expertDeployment = XmlUI.DISABLED
         Controller.soloUi:hide()
-    else Controller.isUndefined(Controller.fields.difficulty)
-        Controller.fields.difficulty = "novice"
-        Controller.fields.autoTurnInSolo = false
-        Controller.fields.imperiumRowChurn = true
-        Controller.fields.brutalEscalation = true
+    else
+        if numberOfPlayers == 1 then
+            Controller.fields.difficulty = "novice"
+            Controller.fields.autoTurnInSolo = false
+            Controller.fields.imperiumRowChurn = true
+            Controller.fields.streamlinedRivals = XmlUI.HIDDEN
+            Controller.fields.brutalEscalation = false
+            Controller.fields.expertDeployment = false
+        else
+            Controller.fields.difficulty = XmlUI.HIDDEN
+            Controller.fields.autoTurnInSolo = true
+            Controller.fields.imperiumRowChurn = XmlUI.HIDDEN
+            Controller.fields.streamlinedRivals = true
+            Controller.fields.brutalEscalation = false
+            Controller.fields.expertDeployment = false
+        end
         Controller.soloUi:show()
     end
 
@@ -752,7 +684,6 @@ function Controller.applyVirtualHotSeatMode()
     Controller.ui:toUI()
 end
 
----
 function Controller.getNumberOfPlayers(virtualHotSeatMode)
     local numberOfPlayers
     if Controller.isUndefined(virtualHotSeatMode) then
@@ -764,17 +695,14 @@ function Controller.getNumberOfPlayers(virtualHotSeatMode)
     return numberOfPlayers
 end
 
----
 function Controller.updateSelectionMethods()
     if Controller.ui then
         local numberOfPlayers = Controller.getNumberOfPlayers(Controller.fields.virtualHotSeatMode)
         Controller.fields.leaderSelection_all = allModules.LeaderSelection.getSelectionMethods(numberOfPlayers)
-
         Controller.ui:toUI()
     end
 end
 
----
 function Controller.updateSetupButton()
     if Controller.ui then
         local numberOfPlayers = Controller.getNumberOfPlayers(Controller.fields.virtualHotSeatMode)
@@ -789,6 +717,18 @@ function Controller.updateSetupButton()
             minPlayerCount = 1
         end
 
+        if #properlySeatedPlayers ~= 4 then
+            Controller.fields.submitGameRankedGame = XmlUI.DISABLED
+            Controller.fields.submitGameTournament = XmlUI.DISABLED
+        else
+            if XmlUI.isDisabled(Controller.fields.submitGameRankedGame) then
+                Controller.fields.submitGameRankedGame = false
+            end
+            if XmlUI.isDisabled(Controller.fields.submitGameTournament) then
+                Controller.fields.submitGameTournament = false
+            end
+        end
+
         if #properlySeatedPlayers >= minPlayerCount then
             Controller.ui:setButtonI18N("setUpButton", "setup", true)
         else
@@ -799,15 +739,13 @@ function Controller.updateSetupButton()
     end
 end
 
----
-function Controller.updateDefaultLeaderPoolSizeLabel()
-    local value = Controller.fields.defaultLeaderPoolSize
-    Controller.fields.defaultLeaderPoolSizeLabel = I18N("defaultLeaderPoolSizeLabel", { value = value } )
+function Controller.updateLeaderPoolSizeLabel()
+    local value = Controller.fields.leaderPoolSize
+    Controller.fields.leaderPoolSizeLabel = I18N("leaderPoolSizeLabel", { value = value } )
     -- Do not use Controller.ui:toUI() to avoid breaking the current UI operation.
-    self.UI.setValue("defaultLeaderPoolSizeLabel", Controller.fields.defaultLeaderPoolSizeLabel)
+    self.UI.setValue("leaderPoolSizeLabel", Controller.fields.leaderPoolSizeLabel)
 end
 
----
 function Controller.isUndefined(value)
     return value == nil or type(value) == "table"
 end

@@ -1,7 +1,12 @@
+--[[
+    Reify the turn sequence in interaction with the PlayBoard module (as well
+    as Hagal and Commander for the more specialized game modes), emitting events
+    along the way to offer a mean to other modules to activate when needed.
+]]
+
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local I18N = require("utils.I18N")
-local Dialog = require("utils.Dialog")
 
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local Hagal = Module.lazyRequire("Hagal")
@@ -24,6 +29,7 @@ function TurnControl.onLoad(state)
         TurnControl.scoreGoal = state.TurnControl.scoreGoal
         TurnControl.specialPhase = state.TurnControl.specialPhase
         TurnControl.firstPlayerLuaIndex = state.TurnControl.firstPlayerLuaIndex
+        TurnControl.firstPlayerOfTheGame = state.TurnControl.firstPlayerOfTheGame
         TurnControl.counterClockWise = state.TurnControl.counterClockWise
         TurnControl.currentRound = state.TurnControl.currentRound
         TurnControl.currentPhase = state.TurnControl.currentPhase
@@ -45,6 +51,7 @@ function TurnControl.onSave(state)
         scoreGoal = TurnControl.scoreGoal,
         specialPhase = TurnControl.specialPhase,
         firstPlayerLuaIndex = TurnControl.firstPlayerLuaIndex,
+        firstPlayerOfTheGame = TurnControl.firstPlayerOfTheGame,
         counterClockWise = TurnControl.counterClockWise,
         currentRound = TurnControl.currentRound,
         currentPhase = TurnControl.currentPhase,
@@ -60,14 +67,7 @@ function TurnControl.setUp(settings, activeOpponents)
     TurnControl.players = TurnControl.toCanonicallyOrderedPlayerList(activeOpponents)
     TurnControl.scoreGoal = settings.epicMode and 12 or 10
 
-    if settings.numberOfPlayers == 1 then
-        for i, player in ipairs(TurnControl.players) do
-            if PlayBoard.isHuman(player) then
-                TurnControl.firstPlayerLuaIndex = TurnControl._getNextPlayer(i)
-                break
-            end
-        end
-    elseif settings.numberOfPlayers == 2 then
+    if settings.numberOfPlayers == 2 then
         for i, player in ipairs(TurnControl.players) do
             if PlayBoard.isRival(player) then
                 TurnControl.firstPlayerLuaIndex = TurnControl._getNextPlayer(i, math.random() > 0)
@@ -75,6 +75,13 @@ function TurnControl.setUp(settings, activeOpponents)
             end
         end
         assert(TurnControl.firstPlayerLuaIndex)
+    elseif settings.numberOfPlayers == 1 then
+        for i, player in ipairs(TurnControl.players) do
+            if PlayBoard.isHuman(player) then
+                TurnControl.firstPlayerLuaIndex = TurnControl._getNextPlayer(i)
+                break
+            end
+        end
     elseif settings.firstPlayer == "Random" then
         TurnControl.firstPlayerLuaIndex = math.random(#TurnControl.players)
     else
@@ -82,6 +89,10 @@ function TurnControl.setUp(settings, activeOpponents)
         while TurnControl.firstPlayerLuaIndex < #TurnControl.players and TurnControl.players[TurnControl.firstPlayerLuaIndex] ~= settings.firstPlayer do
             TurnControl.firstPlayerLuaIndex = TurnControl.firstPlayerLuaIndex + 1
         end
+    end
+
+    if not TurnControl.firstPlayerOfTheGame then
+        TurnControl.firstPlayerOfTheGame = TurnControl.players[TurnControl.firstPlayerLuaIndex]
     end
 end
 
@@ -100,46 +111,10 @@ function TurnControl.toCanonicallyOrderedPlayerList(activeOpponents)
     return players
 end
 
----
-function TurnControl._bindButton(label, button, callback)
-    button.createButton({
-        click_function = TurnControl._createExclusiveCallback(function (...)
-            button.AssetBundle.playTriggerEffect(0)
-            callback(...)
-        end),
-        position = Vector(0, 0.6, 0),
-        label = label,
-        width = 1500,
-        height = 1500,
-        color = { 0, 0, 0, 0 },
-        font_size = 350,
-        font_color = { 1, 1, 1, 100 }
-    })
-end
-
----
-function TurnControl._createExclusiveCallback(innerCallback)
-    return Helper.registerGlobalCallback(function (_, color, _)
-        if color == "Black" then
-            if not TurnControl.buttonsDisabled then
-                TurnControl.buttonsDisabled = true
-                Helper.onceTimeElapsed(0.5).doAfter(function ()
-                    TurnControl.buttonsDisabled = false
-                end)
-                innerCallback()
-            end
-        else
-            Dialog.broadcastToColor(I18N('noTouch'), color, "Purple")
-        end
-    end)
-end
-
----
 function TurnControl.registerSpecialPhase(specialPhase)
     TurnControl.specialPhase = specialPhase
 end
 
----
 function TurnControl.getPhaseTurnSequence()
     local turnSequence = {}
     local playerLuaIndex = TurnControl.firstPlayerLuaIndex
@@ -150,7 +125,6 @@ function TurnControl.getPhaseTurnSequence()
     return turnSequence
 end
 
----
 function TurnControl.overridePhaseTurnSequence(turnSequence)
     TurnControl.customTurnSequence = {}
     for _, color in ipairs(turnSequence) do
@@ -162,13 +136,11 @@ function TurnControl.overridePhaseTurnSequence(turnSequence)
     end
 end
 
----
 function TurnControl.start()
     assert(TurnControl.firstPlayerLuaIndex, "A setup failure is highly probable!")
     TurnControl._startPhase("leaderSelection")
 end
 
----
 function TurnControl._startPhase(phase)
     assert(phase)
     TurnControl.lastTransition = os.time()
@@ -218,35 +190,40 @@ function TurnControl._startPhase(phase)
     end)
 end
 
----
 function TurnControl.endOfTurn()
     Helper.onceStabilized().doAfter(function ()
         TurnControl._next(TurnControl._getNextPlayer(TurnControl.currentPlayerLuaIndex, TurnControl.counterClockWise))
     end)
 end
 
----
 function TurnControl.endOfPhase(haltAfter)
     local bestTrigger
     local heavyPhases = { "recall" }
+    if TurnControl.getPlayerCount() < 3 then
+        table.insert(heavyPhases, "combat")
+    end
     if Helper.isElementOf(TurnControl.currentPhase, heavyPhases) then
         bestTrigger = Helper.onceTimeElapsed(2)
     else
         bestTrigger = Helper.onceStabilized()
     end
 
-    bestTrigger.doAfter(function ()
-        if TurnControl.currentPhase then
-            Helper.emitEvent("phaseEnd", TurnControl.currentPhase)
-        end
+    -- Current phase could change meanwhile (not great though).
+    local phase = TurnControl.currentPhase
 
+    bestTrigger.doAfter(function ()
+        if phase ~= TurnControl.currentPhase then
+            Helper.dump(phase, "=/=", TurnControl.currentPhase)
+        end
+        if phase then
+            Helper.emitEvent("phaseEnd", phase)
+        end
         if not haltAfter then
             TurnControl._nextPhase()
         end
     end)
 end
 
----
 function TurnControl._nextPhase()
     local nextPhase = TurnControl._getNextPhase(TurnControl.currentPhase)
     if nextPhase then
@@ -256,7 +233,6 @@ function TurnControl._nextPhase()
     end
 end
 
----
 function TurnControl._next(startPlayerLuaIndex)
     TurnControl.currentPlayerLuaIndex = TurnControl._findActivePlayer(startPlayerLuaIndex)
     if TurnControl.currentPlayerLuaIndex then
@@ -340,7 +316,6 @@ function TurnControl._createNextRoundButton()
     end)
 end
 
----
 function TurnControl._notifyPlayerTurn(refreshing)
     local playerColor = TurnControl.players[TurnControl.currentPlayerLuaIndex]
     local player = Helper.findPlayerByColor(playerColor)
@@ -388,7 +363,6 @@ function TurnControl.getLegitimatePlayers(color)
     return legitimatePlayers
 end
 
----
 function TurnControl._findActivePlayer(startPlayerLuaIndex)
     assert(startPlayerLuaIndex)
     local playerLuaIndex = startPlayerLuaIndex
@@ -402,7 +376,6 @@ function TurnControl._findActivePlayer(startPlayerLuaIndex)
     return nil
 end
 
----
 function TurnControl._getNextPlayer(playerLuaIndex, counterClockWise)
     assert(playerLuaIndex)
     if TurnControl.customTurnSequence then
@@ -426,7 +399,6 @@ function TurnControl._getNextPlayer(playerLuaIndex, counterClockWise)
     end
 end
 
----
 function TurnControl._getNextPhase(phase)
     if phase == 'leaderSelection' then
         return 'gameStart'
@@ -472,7 +444,6 @@ function TurnControl._endgameGoalReached(hardLimit)
     return bestScore >= TurnControl.scoreGoal
 end
 
----
 function TurnControl._isPlayerActive(playerLuaIndex)
     assert(playerLuaIndex)
     local phase = TurnControl.currentPhase
@@ -480,43 +451,39 @@ function TurnControl._isPlayerActive(playerLuaIndex)
     return PlayBoard.acceptTurn(phase, color)
 end
 
----
-function TurnControl.isCombat()
+function TurnControl.unused_isCombat()
     return TurnControl.currentPhase == "combat"
         or TurnControl.currentPhase == "combatEnd"
 end
 
----
 function TurnControl.getCurrentPlayer()
     return TurnControl.players[TurnControl.currentPlayerLuaIndex]
 end
 
----
 function TurnControl.getPlayerCount()
     return #TurnControl.players
 end
 
----
 function TurnControl.getPlayers()
     return TurnControl.players
 end
 
----
 function TurnControl.getFirstPlayer()
     return TurnControl.players[TurnControl.firstPlayerLuaIndex]
 end
 
----
+function TurnControl.getFirstPlayerOfTheGame()
+    return TurnControl.firstPlayerOfTheGame
+end
+
 function TurnControl.getCurrentRound()
     return TurnControl.currentRound
 end
 
----
 function TurnControl.getCurrentPhase()
     return TurnControl.currentPhase
 end
 
----
 function TurnControl.isHotSeatEnabled()
     return TurnControl.hotSeat
 end

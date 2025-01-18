@@ -11,7 +11,6 @@ local MainBoard = Module.lazyRequire("MainBoard")
 
 local DynamicBonus = {}
 
----
 function DynamicBonus.createSpaceBonus(origin, bonuses, extraBonuses)
     if not DynamicBonus.tq then
         DynamicBonus.tq = Helper.createTemporalQueue()
@@ -23,7 +22,7 @@ function DynamicBonus.createSpaceBonus(origin, bonuses, extraBonuses)
             if Helper.isElementOf(category, { "spice", "solari" }) then
                 total = total + 1
             elseif category == "intrigue" then
-                Types.assertIsPositiveInteger(description)
+                assert(description > 0)
                 total = total + description
             elseif Helper.isElementOf(category, { "combatTroop", "garrisonTroop", "tankTroop", "combatDreadnought", "controlMarker" })  then
                 total = total + #description
@@ -44,14 +43,14 @@ function DynamicBonus.createSpaceBonus(origin, bonuses, extraBonuses)
             extraBonuses[target][category] = {}
 
             if Helper.isElementOf(category, { "spice", "solari" }) then
-                Types.assertIsPositiveInteger(description)
+                assert(description > 0)
                 local position = toPosition(i)
                 DynamicBonus.tq.submit(function ()
                     local constructorName = Helper.toCamelCase("_create",  category, "token")
                     DynamicBonus[constructorName](position).doAfter(function (bonusToken)
                         Helper.onceMotionless(bonusToken).doAfter(function ()
                             Helper.noPlay(bonusToken)
-                            local bonus = Resource.new(bonusToken, nil, category, description)
+                            local bonus = Resource.new(bonusToken, nil, category, 0, description)
                             table.insert(extraBonuses[target][category], bonus)
                         end)
                     end)
@@ -59,7 +58,7 @@ function DynamicBonus.createSpaceBonus(origin, bonuses, extraBonuses)
                 i = i + 1
 
             elseif category == "intrigue" then
-                Types.assertIsPositiveInteger(description)
+                assert(description > 0)
                 for _ = 1, description do
                     local position = toPosition(i)
                     DynamicBonus.tq.submit(function ()
@@ -96,7 +95,6 @@ function DynamicBonus.createSpaceBonus(origin, bonuses, extraBonuses)
     return extraBonuses
 end
 
----
 function DynamicBonus.collectExtraBonuses(color, leader, extraBonuses)
     for _, target in ipairs({ "all", color }) do
         local targetBonuses = extraBonuses[target]
@@ -107,7 +105,6 @@ function DynamicBonus.collectExtraBonuses(color, leader, extraBonuses)
     end
 end
 
----
 function DynamicBonus._collectTargetBonuses(color, leader, targetBonuses)
     local intrigueAlreadyTaken = false
     local remainingTargetBonuses = {}
@@ -166,8 +163,7 @@ function DynamicBonus._collectTargetBonuses(color, leader, targetBonuses)
     return #Helper.getKeys(remainingTargetBonuses) > 0 and remainingTargetBonuses or nil
 end
 
----
-function DynamicBonus._createSpiceToken(position)
+function DynamicBonus.unused__createSpiceToken(position)
     local data = {
         Name = "Custom_Token",
         Transform = {
@@ -225,8 +221,7 @@ function DynamicBonus._createSpiceToken(position)
     return continuation
 end
 
----
-function DynamicBonus._createSolariToken(position)
+function DynamicBonus.unused__createSolariToken(position)
     local data = {
         Name = "Custom_Token",
         Transform = {
