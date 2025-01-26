@@ -1,18 +1,18 @@
-<Panel position="0 -50" width="460" height="640" color="#000000" id="setupPane" rotation="0 0 0" outline="#61712c" outlineSize="1"
+<Panel position="0 -50" width="460" height="620" color="#000000" id="setupPane" rotation="0 0 0" outline="#61712c" outlineSize="1"
 	active="False" allowDragging="True" returnToOriginalPositionWhenReleased="False">
 	<Defaults>
-		<Text class="primary" color="#e5c638" fontSize="16" alignment="MiddleLeft"/>
-		<Text class="secondary" color="#7fa768" alignment="MiddleLeft"/>
+		<Text class="primary" color="#e5c638" fontSize="20" fontStyle="bold" alignment="MiddleLeft"/>
+		<Text class="secondary" color="#7fa768" fontSize="14" fontStyle="bold" alignment="MiddleLeft"/>
 		<Text class="epigraph" color="#df9730" fontSize="12" fontStyle="italic" alignment="MiddleCenter"/>
-		<Dropdown class="setUp" itemBackgroundColors="#61712c44|#df9730|#FFFFFF|#361441" textColor="#61712c" itemTextColor="#61712c" fontStyle="bold"/>
-		<InputField class="setUp" colors="#00000000|#61712c44|#61712c" textColor="#7fa768" fontStyle="bold"/>
-		<Toggle class="setUp" colors="#7fa768|#ffd60b|#7fa768|#222222" textColor="#7fa768" tooltipPosition="Left" tooltipBackgroundColor="#000000"/>
-		<Button class="setUp" colors="#61712c|#df9730|#361441|#222222" textColor="#ffd60b" fontSize="16" outline="#7fa768" outlineSize="3 3"/>
+		<Dropdown class="setUp" itemBackgroundColors="#61712c44|#df9730|#FFFFFF|#361441" textColor="#61712c" fontSize="12" itemTextColor="#61712c" fontStyle="bold"/>
+		<InputField class="setUp" colors="#00000000|#61712c44|#61712c" textColor="#7fa768" fontSize="14" fontStyle="bold"/>
+		<Toggle class="setUp" colors="#7fa768|#ffd60b|#7fa768|#222222" textColor="#7fa768" fontSize="14" fontStyle="bold" tooltipPosition="Left" tooltipBackgroundColor="#000000"/>
+		<Button class="setUp" colors="#61712c|#df9730|#361441|#222222" textColor="#ffd60b" fontSize="14" outline="#7fa768" outlineSize="3 3"/>
 		<Image raycastTarget="true"/>
 	</Defaults>
 	<VerticalLayout>
 		<Image ignoreLayout="True" type="Tiled" image="https://steamusercontent-a.akamaihd.net/ugc/2502404390135372157/BBDF8C1026A04FE222D52E39AA696F2310543485/"/>
-		<VerticalLayout padding="40 40 150 50">
+		<VerticalLayout padding="40 40 150 40">
 			<VerticalLayout padding="0 0 0 20">
 				<Text class="epigraph" key="prolog"/>
 			</VerticalLayout>
@@ -33,7 +33,7 @@
 					</Dropdown>
 				</HorizontalLayout>
 				<Toggle class="setUp" id="randomizePlayerPositions" onValueChanged="Global/setAnyField" isOn="True" key="randomizePlayersPositions" tooltipKey="randomizePlayersPositionTooltip"/>
-				<HorizontalLayout>
+				<HorizontalLayout minHeight="22">
 					<Toggle class="setUp" id="virtualHotSeat" onValueChanged="Global/setVirtualHotSeat" isOn="False" key="virtualHotSeat" disabled.tooltipKey="virtualHotSeatTooltip"/>
 					<Dropdown class="setUp" id="virtualHotSeatMode" onValueChanged="Global/setVirtualHotSeatMode" flexibleWidth="2.5" active="False">
 						<Option></Option>
@@ -43,7 +43,7 @@
 
 			<HorizontalLayout>
 				<Text class="primary" key="leaderSelection"/>
-				<Dropdown class="setUp" id="leaderSelection" flexibleWidth="8" onValueChanged="Global/setAnyField" minHeight="22">
+				<Dropdown class="setUp" id="leaderSelection" flexibleWidth="4" onValueChanged="Global/setAnyField" minHeight="22">
 					<Option></Option>
 				</Dropdown>
 			</HorizontalLayout>
@@ -77,7 +77,7 @@
 <Panel position="480 140" width="450" height="260" color="#000000" id="extensionSetupPane" rotation="0 0 0" outline="#61712c" outlineSize="1"
 	active="False" allowDragging="True" returnToOriginalPositionWhenReleased="False">
 	<VerticalLayout>
-		<Image ignoreLayout="True" type="Simple" image="https://steamusercontent-a.akamaihd.net/ugc/2502404390135372157/BBDF8C1026A04FE222D52E39AA696F2310543485/"/>
+		<Image ignoreLayout="True" type="Tiled" image="https://steamusercontent-a.akamaihd.net/ugc/2502404390135372157/BBDF8C1026A04FE222D52E39AA696F2310543485/"/>
 
 		<VerticalLayout padding="40 40 20 20">
 

@@ -32,10 +32,31 @@ This repository contains the JSON skeletons and Lua scripts of various mods for 
 ## TODO
 
 - Scan Arrakeen Scouts deck (en).
-- Arrakeen Scouts history (as cards).
-- Main board in French.
-- Fix Research Station bound to Ix extension.
+- Main board in French. -> No.
 - Plastic or wood? Color adjust too.
 - Normalize spaces/tabs.
+- Multiple battlegrounds.
+- Arrakeen Scouts + Bloodlines.
+- Arrakeen Scouts history (as cards).
+- Arrakeen Scouts memory cards (using decals).
+- Blitz! mode?
+- Workaround to assimilate lazyRequire to a require?
+- Hagal: cost 5.
 
-Créer arbre d’appels.
+## Tests
+
+- [ ] base
+- [ ] base + ix
+- [ ] base + immortality
+- [ ] base + ix + immortality
+- [ ] base + bloodlines
+- [ ] base + ix + bloodlines
+- [ ] base + immortality + bloodlines
+- [ ] base + ix + immortality + bloodlines
+
+× { 1P, 2P, 3P, 4P }
+× { FR, EN }
+
+×~ difficulty, special rules, formal, first player, etc.
+
+/ boards / spaces / leaders / cards (imperium, intrigue, hagal) / conflict / VP tokens

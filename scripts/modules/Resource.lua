@@ -6,6 +6,14 @@ local Dialog = require("utils.Dialog")
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local Types = Module.lazyRequire("Types")
 
+---@class Resource
+---@field resources Resource[]
+---@field color PlayerColor
+---@field resourceName string
+---@field token table
+---@field location Vector
+---@field MIN_VALUE integer
+---@field MAX_VALUE integer
 local Resource = Helper.createClass(nil, {
     MIN_VALUE = 0,
     MAX_VALUE = 99,

@@ -224,7 +224,9 @@ function SardaukarCommander.setAvailable(marker, available)
 end
 
 function SardaukarCommander.isAvailable(origin)
+    Helper.dumpFunction("SardaukarCommander.isAvailable", origin)
     for _, marker in ipairs(SardaukarCommander.sardaukarMarkers) do
+        Helper.dump("-", Helper.getID(marker))
         if Helper.getID(marker) == origin then
             return not SardaukarCommander._getRecruitedSardaukar(origin)
         end

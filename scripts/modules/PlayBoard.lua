@@ -27,6 +27,7 @@ local SardaukarCommanderSkillCard = Module.lazyRequire("SardaukarCommanderSkillC
 local TechCard = Module.lazyRequire("TechCard")
 local Board = Module.lazyRequire("Board")
 
+---@class PlayBoard
 local PlayBoard = Helper.createClass(nil, {
     OFFSET = 17,
     ALL_COLORS = { "Green", "Yellow", "Blue", "Red" },
@@ -259,6 +260,7 @@ function PlayBoard.rebuild()
         local techSlots = extractSlotOffsets(pseudoPlayboard:_createTechPark())
         local sardaukarCommanderSkillSlots = extractSlotOffsets(pseudoPlayboard:_createSardaukarCommanderSkillPark())
         local agentCardSlots = extractSlotOffsets(pseudoPlayboard:_createAgentCardPark())
+        local playerScoreSlots = extractSlotOffsets(pseudoPlayboard:_createPlayerScorePark())
 
         local drawDeck = extractCenterOffset(pseudoPlayboard:_createDrawDeckZone())
         local leader = extractCenterOffset(pseudoPlayboard:_createLeaderZone())
@@ -268,7 +270,7 @@ function PlayBoard.rebuild()
         local objectOffsets = {
             board = Vector(0, 0, 0),
             colorband = Vector(0, 0, 0),
-            fourPlayerVictoryToken = symmetric(-14.48, 0, 10.35),
+            fourPlayerVictoryToken = playerScoreSlots[1],
             spice = offseted(-10.4, 0, 3),
             water = offseted(-8.4, 0, 2.5),
             solari = offseted(-6.4, 0, 3),
@@ -297,7 +299,6 @@ function PlayBoard.rebuild()
 
         local relocate = function (object, localOffset)
             local newPosition = boardPosition + localOffset
-            --newPosition.y = (object.getPosition() + offset).y + localOffset.y
             newPosition.y = object.getPosition().y
             object.setPosition(newPosition)
             object.setLock(true)
@@ -484,40 +485,10 @@ function PlayBoard.onSave(state)
     end)
 end
 
----@param playBoard table
----@param operation string
----@param position Vector An relative position, not to the board center, but its center on top.
----@return Vector
-function PlayBoard.generatePosition(playBoard, operation, position)
-
-    local colorSwitch = function (left, right)
-        if PlayBoard.isLeft(playBoard.color) then
-            return left
-        else
-            return right
-        end
-    end
-
-    local p = playBoard.content.board.getPosition()
-    p = p + Vector(0, Board.onPlayBoard(-p.y), 0)
-
-    if not operation then
-        p = p + position
-    elseif operation == "symmetric" then
-        p = p + colorSwitch(Vector(-position.x, position.y, position.z), position)
-    elseif operation == "offseted" then
-        p = p + colorSwitch(Vector(PlayBoard.OFFSET + position.x, position.y, position.z), position)
-    else
-        error("Unknow operation: " .. tostring(operation))
-    end
-
-    return p
-end
-
 function PlayBoard:createTransientZone(operation, position, scale)
     local zone = spawnObject({
         type = 'ScriptingTrigger',
-        position = self:generatePosition(operation, position),
+        position = self:_generateAbsolutePosition(operation, position),
         scale = { scale.x, scale.y, scale.z },
     })
     Helper.markAsTransient(zone)
@@ -536,6 +507,11 @@ function PlayBoard:_createDiscardZone()
     return self:createTransientZone("offseted", Vector(-3.5, 0.4, 4.75), Vector(2.3, 1, 3.3))
 end
 
+---@param color PlayerColor
+---@param unresolvedContent table
+---@param state table
+---@param subState? table
+---@return {}
 function PlayBoard.new(color, unresolvedContent, state, subState)
     local playBoard = Helper.createClassInstance(PlayBoard, {
         color = color,
@@ -712,11 +688,9 @@ function PlayBoard._transientSetUp(settings)
         end
 
         if phase == "roundStart" then
-            for color, playBoard in pairs(PlayBoard._getPlayBoards()) do
-                if playBoard.opponent ~= "rival" then
-                    local cardAmount = PlayBoard.hasTech(color, "holtzmanEngine") and 6 or 5
-                    playBoard:drawCards(cardAmount)
-                end
+            for color, playBoard in pairs(PlayBoard._getPlayBoards(true)) do
+                local cardAmount = PlayBoard.hasTech(color, "holtzmanEngine") and 6 or 5
+                playBoard:drawCards(cardAmount)
                 if PlayBoard.hasTech(color, "shuttleFleet") then
                     playBoard.leader.resources(color, "solari", 2)
                 end
@@ -740,8 +714,13 @@ function PlayBoard._transientSetUp(settings)
             MainBoard.getFirstPlayerMarker().destruct()
         end
 
-        for _, playBoard in pairs(PlayBoard._getPlayBoards()) do
-            playBoard:_updateInstructionLabel(nil)
+        for _, playBoard in pairs(PlayBoard._getPlayBoards(true)) do
+            -- When informal, the combat phase ends automatically, leaving the players in limbo until they press the "reclaim rewards" button.
+            if false and phase == "combat" and not Combat.isFormalCombatPhaseEnabled() then
+                playBoard:_updateInstructionLabel(I18N("combatInstruction"))
+            else
+                playBoard:_updateInstructionLabel(nil)
+            end
         end
 
         PlayBoard._setActivePlayer(nil, nil)
@@ -755,14 +734,6 @@ function PlayBoard._transientSetUp(settings)
             playBoard.alreadyPlayedCards = Helper.filter(Park.getObjects(playBoard.agentCardPark), function (card)
                 return (Types.isImperiumCard(card) or Types.isIntrigueCard(card)) and not card.is_face_down
             end)
-        end
-
-        -- TODO Uprising do it another way, why and how?
-        if phase == "combatEnd" then
-            -- Hagal has it own listener to do more things.
-            if PlayBoard.isHuman(color) then
-                PlayBoard.collectReward(color)
-            end
         end
 
         for otherColor, otherPlayBoard in pairs(PlayBoard._getPlayBoards(true)) do
@@ -801,11 +772,13 @@ function PlayBoard._transientSetUp(settings)
                 end
             end)
 
+            --[[
             if spaceName == "techNegotiation" then
                 PlayBoard.getResource(color, "persuasion"):setBaseValueContribution("techNegotiation", 1)
             elseif spaceName == "hallOfOratory" then
                 PlayBoard.getResource(color, "persuasion"):setBaseValueContribution("hallOfOratory", 1)
             end
+            ]]
         end
     end)
 
@@ -823,8 +796,8 @@ function PlayBoard._transientSetUp(settings)
         end
     end)
 
-    for color, playBoard in pairs(PlayBoard._getPlayBoards()) do
-        if settings.bloodlines and not PlayBoard.isRival(color) then
+    for color, playBoard in pairs(PlayBoard._getPlayBoards(true)) do
+        if settings.bloodlines then
             SardaukarCommander.createSardaukarCommanderRecruitmentButton(playBoard.content.sardaukarMarker, false, PlayBoard.withLeader(function (leader, playerColor, altClick)
                 if playerColor == color then
                     leader.recruitSardaukarCommander(color)
@@ -841,6 +814,7 @@ function PlayBoard._transientSetUp(settings)
     end
 end
 
+---@param instruction? string
 function PlayBoard:_updateInstructionLabel(instruction)
     local position = self.instructionTextAnchor.getPosition()
     position:setAt('y', Board.onPlayBoard(0.1))
@@ -862,11 +836,18 @@ function PlayBoard:_updateInstructionLabel(instruction)
     end
 end
 
+function PlayBoard.setGeneralCombatInstruction()
+    for _, playBoard in pairs(PlayBoard._getPlayBoards(true)) do
+        playBoard:_updateInstructionLabel(I18N("combatInstruction"))
+    end
+end
+
 function PlayBoard:_recall()
     self.revealed = false
 
     self.persuasion:set(0)
     self.strength:set(0)
+    self:_refreshStaticContributions(true)
 
     self:_createButtons()
 
@@ -919,12 +900,15 @@ function PlayBoard:_recall()
     end
 end
 
+---@param phase? Phase
+---@param color? PlayerColor
+---@param refreshing? boolean
 function PlayBoard._setActivePlayer(phase, color, refreshing)
-    for i, otherColor in ipairs(PlayBoard.ALL_COLORS) do
+    for _, otherColor in ipairs(PlayBoard.ALL_COLORS) do
         local playBoard = PlayBoard.playBoards[otherColor]
         if playBoard then
             local bandColor = "Black"
-            if otherColor == color then
+            if color and otherColor == color then
                 bandColor = color
                 if playBoard.opponent == "rival" and not refreshing then
                     Hagal.activate(phase, color)
@@ -956,6 +940,7 @@ function PlayBoard._updateControlButtons()
     end
 end
 
+---@param color PlayerColor
 function PlayBoard.createEndOfTurnButton(color)
     PlayBoard.playBoards[color]:_createEndOfTurnButton()
 end
@@ -1001,6 +986,9 @@ function PlayBoard:_createTakePlaceButton()
     })
 end
 
+---@param phase Phase
+---@param color PlayerColor
+---@return boolean
 function PlayBoard.acceptTurn(phase, color)
     assert(color)
     local playBoard = PlayBoard.getPlayBoard(color)
@@ -1030,6 +1018,7 @@ function PlayBoard.acceptTurn(phase, color)
         if playBoard.lastPhase ~= phase then
             accepted = true
             -- Rival collect their reward their own way.
+            -- Note: why not doing this in a playerTurn listener?
             if PlayBoard.isHuman(color) then
                 Helper.onceFramesPassed(1).doAfter(Helper.partialApply(PlayBoard.collectReward, color))
             end
@@ -1050,8 +1039,10 @@ function PlayBoard.acceptTurn(phase, color)
     return accepted
 end
 
+---@param action ButtonCallback
+---@return fun(leader: Leader, color:PlayerColor, altClick:boolean)
 function PlayBoard.withLeader(action)
-    return function (source, color, ...)
+    return function (_, color, ...)
         local validPlayer = Helper.isElementOf(color, PlayBoard.getActivePlayBoardColors())
         if validPlayer then
             local leader = PlayBoard.getLeader(color)
@@ -1069,6 +1060,7 @@ function PlayBoard.withLeader(action)
     end
 end
 
+---@param color PlayerColor
 function PlayBoard.collectReward(color)
     local conflictName = Combat.getCurrentConflictName()
     local rank = Combat.getRank(color).value
@@ -1090,6 +1082,7 @@ function PlayBoard.collectReward(color)
     end)
 end
 
+---@param color PlayerColor
 function PlayBoard.getPlayBoard(color)
     assert(color)
     assert(#Helper.getKeys(PlayBoard.playBoards) > 0, "No playBoard at all: too soon!")
@@ -1098,6 +1091,7 @@ function PlayBoard.getPlayBoard(color)
     return playBoard
 end
 
+---@param filterOutRival? boolean
 function PlayBoard._getPlayBoards(filterOutRival)
     assert(#Helper.getKeys(PlayBoard.playBoards) > 0, "No playBoard at all: too soon!")
     local filteredPlayBoards = {}
@@ -1110,16 +1104,47 @@ function PlayBoard._getPlayBoards(filterOutRival)
     return filteredPlayBoards
 end
 
+---@param filterOutRival? boolean
 function PlayBoard.getActivePlayBoardColors(filterOutRival)
     return Helper.getKeys(PlayBoard._getPlayBoards(filterOutRival))
 end
 
+---@param color PlayerColor
 function PlayBoard._getBoard(color)
     return PlayBoard.getContent(color).board
 end
 
+---@param operation? "symmetric"|"offseted" An optional geometric operation to apply to the offset.
+---@param offset Vector An relative position, not to the board center, but its center on top.
+---@return Vector
+function PlayBoard:_generateAbsolutePosition(operation, offset)
+
+    local colorSwitch = function (left, right)
+        if PlayBoard.isLeft(self.color) then
+            return left
+        else
+            return right
+        end
+    end
+
+    local p = self.content.board.getPosition()
+    p = p + Vector(0, Board.onPlayBoard(-p.y), 0)
+
+    if not operation then
+        p = p + offset
+    elseif operation == "symmetric" then
+        p = p + colorSwitch(Vector(-offset.x, offset.y, offset.z), offset)
+    elseif operation == "offseted" then
+        p = p + colorSwitch(Vector(PlayBoard.OFFSET + offset.x, offset.y, offset.z), offset)
+    else
+        error("Unknow operation: " .. tostring(operation))
+    end
+
+    return p
+end
+
 function PlayBoard:_createAgentCardPark()
-    local origin = PlayBoard.generatePosition(self, "symmetric", Vector(0.5, 0, -1))
+    local origin = self:_generateAbsolutePosition("symmetric", Vector(0.5, 0, -1))
     local spacing = PlayBoard.isLeft(self.color) and -2.5 or 2.5
     local slots = Park.createMatrixOfSlots(origin, Vector(12, 1, 1), Vector(spacing, 0, 0))
     local park = Park.createCommonPark({ "Imperium", "Intrigue", "Navigation" }, slots, Vector(2.4, 0.5, 3.2), Vector(0, 180, 0), true)
@@ -1129,7 +1154,7 @@ function PlayBoard:_createAgentCardPark()
 end
 
 function PlayBoard:_createRevealCardPark()
-    local origin = PlayBoard.generatePosition(self, "symmetric", Vector(0.5, 0, -5))
+    local origin = self:_generateAbsolutePosition("symmetric", Vector(0.5, 0, -5))
     local spacing = PlayBoard.isLeft(self.color) and -2.5 or 2.5
     local slots = Park.createMatrixOfSlots(origin, Vector(12, 1, 1), Vector(spacing, 0, 0))
     local zone = Park.createTransientBoundingZone(0, Vector(2.4, 0.5, 3.2), slots)
@@ -1140,23 +1165,23 @@ function PlayBoard:_createRevealCardPark()
 end
 
 function PlayBoard:_createAgentPark()
-    local origin = PlayBoard.generatePosition(self, "symmetric", Vector(-8.4, 0, 8.5))
-    local spacing = PlayBoard.isLeft(self.color) and -1.5 or 1.5
-    local slots = Park.createMatrixOfSlots(origin, Vector(3, 1, 1), Vector(spacing, 0, 0))
+    local origin = self:_generateAbsolutePosition("symmetric", Vector(-8.4, 0, 8.5))
+    local spacing = PlayBoard.isLeft(self.color) and -1 or 1
+    local slots = Park.createMatrixOfSlots(origin, Vector(4, 1, 1), Vector(spacing, 0, 0))
     local park = Park.createCommonPark({ "Agent", self.color }, slots, Vector(0.75, 3, 0.75))
     park.locked = true
     return park
 end
 
 function PlayBoard:_createDreadnoughtPark()
-    local origin = PlayBoard.generatePosition(self, "symmetric", Vector(0, 0, 7.5))
+    local origin = self:_generateAbsolutePosition("symmetric", Vector(0, 0, 7.5))
     local spacing = PlayBoard.isLeft(self.color) and -2 or 2
     local slots = Park.createMatrixOfSlots(origin, Vector(2, 1, 1), Vector(spacing, 0, 0))
     return Park.createCommonPark({ "Dreadnought", self.color }, slots, Vector(1, 2, 1))
 end
 
 function PlayBoard:_createSupplyPark()
-    local origin = PlayBoard.generatePosition(self, "symmetric", Vector(0, 0, 5.1))
+    local origin = self:_generateAbsolutePosition("symmetric", Vector(0, 0, 5.1))
     local diamond = Park.createDiamondOfSlots(origin, 4, 0.5)
     local supplyZone = Park.createTransientBoundingZone(45, Vector(0.75, 0.75, 0.75), diamond.allSlots)
     local park = Park.createCommonPark({ "Troop", self.color }, diamond.slots, nil, Vector(0, -45, 0), true, { supplyZone })
@@ -1165,22 +1190,25 @@ function PlayBoard:_createSupplyPark()
     return park
 end
 
+---@param layerCount integer
 function PlayBoard:_createSardaukarCommanderSkillPark(layerCount)
-    local origin = PlayBoard.generatePosition(self, "symmetric", Vector(5.5, 0, 2.2))
+    local origin = self:_generateAbsolutePosition("symmetric", Vector(5.5, 0, 2.3))
     local spacing = PlayBoard.isLeft(self.color) and -1.75 or 1.75
     local slots = Park.createMatrixOfSlots(origin, Vector(3, layerCount or 1, 1), Vector(spacing, 0.5, 0))
     return Park.createCommonPark({ "SardaukarCommanderSkill" }, slots, Vector(2, 1, 2.5))
 end
 
+---@param layerCount integer
 function PlayBoard:_createSardaukarCommanderPark(layerCount)
-    local origin = PlayBoard.generatePosition(self, "symmetric", Vector(5.5, 0.25, 2.2))
+    local origin = self:_generateAbsolutePosition("symmetric", Vector(5.5, 0.25, 2.2))
     local spacing = PlayBoard.isLeft(self.color) and -1.75 or 1.75
     local slots = Park.createMatrixOfSlots(origin, Vector(3, layerCount or 1, 1), Vector(spacing, 0.5, 0))
     return Park.createCommonPark({ "SardaukarCommander", self.color }, slots, Vector(0.75, 0.75, 0.75))
 end
 
+---@param layerCount integer
 function PlayBoard:_createTechPark(layerCount)
-    local origin = PlayBoard.generatePosition(self, "symmetric", Vector(5.5, 0, 6.6))
+    local origin = self:_generateAbsolutePosition("symmetric", Vector(5.5, 0, 6.5))
     local spacing = PlayBoard.isLeft(self.color) and -3 or 3
     local slots = Park.createMatrixOfSlots(origin, Vector(2, layerCount or 1, 3), Vector(spacing, 0.5, 2))
     local park = Park.createCommonPark({ "Tech" }, slots, Vector(3, 1, 2))
@@ -1189,17 +1217,21 @@ function PlayBoard:_createTechPark(layerCount)
 end
 
 function PlayBoard:_createPlayerScorePark()
+    local origin = self:_generateAbsolutePosition("symmetric", Vector(-14.48, 0, 10.35))
     local width = 18
     local spacing = PlayBoard.isLeft(self.color) and -1.092 or 1.092
-    local x = - math.abs((width - 1) / 2 * spacing + self.content.fourPlayerVictoryToken.getPosition().x - self.content.board.getPosition().x)
-    local origin = PlayBoard.generatePosition(self, "symmetric", Vector(x, 0, 10.35))
+    origin:setAt('x', origin.x + (width - 1) / 2 * spacing)
     local slots = Park.createMatrixOfSlots(origin, Vector(width, 1, 1), Vector(spacing, 0, 0))
     return Park.createCommonPark({ "VictoryPointToken" }, slots, Vector(1, 1, 1), Vector(0, 180, 0))
 end
 
 --- The shared score track on the main board.
 function PlayBoard:_generatePlayerScoreTrackPositions()
-    assert(self.content.scoreMarker, self.color .. ": no score marker!")
+    if not self.content.scoreMarker then
+        -- Rival in 2P mode has no score marker.
+        return
+    end
+
     local origin = self.content.scoreMarkerInitialPosition
 
     -- Avoid collision between markers by giving a different height to each.
@@ -1221,10 +1253,11 @@ function PlayBoard:_generatePlayerScoreTrackPositions()
 end
 
 function PlayBoard:_updatePlayerScore()
-    if self.content.scoreMarker then
+    local scoreMarker = self.content.scoreMarker
+    if scoreMarker then
+        assert(self.scorePositions and #self.scorePositions > 0, self.color)
         local rectifiedScore = self:getScore()
         rectifiedScore = rectifiedScore > 13 and rectifiedScore - 10 or rectifiedScore
-        local scoreMarker = self.content.scoreMarker
         scoreMarker.setLock(false)
         scoreMarker.setPositionSmooth(self.scorePositions[rectifiedScore])
     end
@@ -1238,14 +1271,17 @@ function PlayBoard:_updateSardaukarCommanderRecruitmentButton()
 end
 
 function PlayBoard.onObjectEnterZone(zone, object)
+    if Helper.isNil(zone) or Helper.isNil(object) then
+        return
+    end
     PlayBoard._onObjectMovingAround(zone, object)
 
     for color, playBoard in pairs(PlayBoard.playBoards) do
         if playBoard.opponent then
             if Helper.isElementOf(zone, playBoard.scorePark.zones) then
                 if Types.isVictoryPointToken(object) then
-                    playBoard:_updatePlayerScore()
                     local controlableSpace = MainBoard.findControlableSpaceFromConflictName(Helper.getID(object))
+                    PlayBoard.occupationCooldown = PlayBoard.occupationCooldown or {}
                     if controlableSpace and not PlayBoard.occupationCooldown[controlableSpace] then
                         MainBoard.occupy(controlableSpace, color)
                         PlayBoard.occupationCooldown[controlableSpace] = color
@@ -1262,6 +1298,9 @@ function PlayBoard.onObjectEnterZone(zone, object)
 end
 
 function PlayBoard.onObjectLeaveZone(zone, object)
+    if Helper.isNil(zone) or Helper.isNil(object) then
+        return
+    end
     PlayBoard._onObjectMovingAround(zone, object)
 end
 
@@ -1286,6 +1325,11 @@ function PlayBoard:_tearDown()
     PlayBoard.playBoards[self.color] = nil
 end
 
+---@param base boolean
+---@param ix boolean
+---@param immortality boolean
+---@param bloodlines boolean
+---@param full boolean
 function PlayBoard:_cleanUp(base, ix, immortality, bloodlines, full)
     local content = self.content
 
@@ -1373,6 +1417,7 @@ function PlayBoard.unused_findBoardColor(board)
     return nil
 end
 
+---@param innerCallback ButtonCallback
 function PlayBoard:_createExclusiveCallback(innerCallback)
     return Helper.registerGlobalCallback(function (object, color, altClick)
         if self.leader and self.color == color or PlayBoard.isRival(self.color) or TurnControl.isHotSeatEnabled() then
@@ -1389,6 +1434,7 @@ function PlayBoard:_createExclusiveCallback(innerCallback)
     end)
 end
 
+---@param innerCallback ButtonCallback
 function PlayBoard:_createSharedCallback(innerCallback)
     return Helper.registerGlobalCallback(function (object, color, altClick)
         local legitimateColors = Helper.mapValues(
@@ -1415,6 +1461,8 @@ function PlayBoard:_clearButtons()
     end
 end
 
+---@param color PlayerColor
+---@return number[] RGB triplet
 function PlayBoard._getTextColor(color)
     local fontColor = { 0.9, 0.9, 0.9 }
     if color == "Green" or color == "Yellow" or color == "White" then
@@ -1510,6 +1558,7 @@ function PlayBoard:_createNukeButton()
     end
 end
 
+---@param brutal boolean
 function PlayBoard:onRevealHand(brutal)
     local currentPlayer = TurnControl.getCurrentPlayer()
     if currentPlayer and currentPlayer ~= self.color then
@@ -1523,6 +1572,7 @@ function PlayBoard:onRevealHand(brutal)
     end
 end
 
+---@param brutal boolean
 function PlayBoard:tryRevealHandEarly(brutal)
     local origin = PlayBoard.getPlayBoard(self.color):_newSymmetricBoardPosition(-8, 0, -4.5)
 
@@ -1577,6 +1627,7 @@ function PlayBoard:tryRevealHandEarly(brutal)
     })
 end
 
+---@param brutal boolean
 function PlayBoard:revealHand(brutal)
     PlayBoard._onceCardParkSpread(self.agentCardPark).doAfter(function ()
         PlayBoard._onceCardParkSpread(self.revealCardPark).doAfter(function ()
@@ -1585,6 +1636,87 @@ function PlayBoard:revealHand(brutal)
     end)
 end
 
+---@param brutal boolean
+function PlayBoard:_revealHand(brutal)
+    local playedCards = Helper.filter(Park.getObjects(self.agentCardPark), Types.isImperiumCard)
+
+    local properCard = function (card)
+        assert(card)
+        if Types.isImperiumCard(card) then
+            --[[
+                We leave the sister card in the player's hand to simplify things and
+                make clear to the player that the card must be manually revealed.
+            ]]
+            return Types.isImperiumCard(card) and Helper.getID(card) ~= "beneGesseritSister"
+        else
+            return false
+        end
+    end
+
+    local revealedCards = Helper.filter(Player[self.color].getHandObjects(), properCard)
+    local alreadyRevealedCards = Helper.filter(Park.getObjects(self.revealCardPark), properCard)
+    local allRevealedCards = Helper.concatTables(revealedCards, alreadyRevealedCards)
+
+    local imperiumCardContributions = ImperiumCard.evaluateReveal(self.color, playedCards, allRevealedCards)
+    Helper.dump("imperiumCardContributions:", imperiumCardContributions)
+    local techCardContributions = TechCard.evaluatePostReveal(self.color, imperiumCardContributions)
+    Helper.dump("techCardContributions:", techCardContributions)
+
+    local sardaukarCommanderSkillCardContributions
+    if Combat.hasAnySardaukarCommander(self.color) then
+        local skillCardNames = PlayBoard.getAllCommanderSkillNames(self.color)
+        sardaukarCommanderSkillCardContributions = SardaukarCommanderSkillCard.evaluateReveal(self.color, skillCardNames)
+    else
+        sardaukarCommanderSkillCardContributions = {}
+    end
+    Helper.dump("sardaukarCommanderSkillCardContributions:", sardaukarCommanderSkillCardContributions)
+
+    local contributions = {}
+    for _, set in ipairs({ imperiumCardContributions, techCardContributions, sardaukarCommanderSkillCardContributions }) do
+        for k, v in pairs(set) do
+            contributions[k] = (contributions[k] or 0) + v
+        end
+    end
+
+    self.persuasion:set(contributions.persuasion or 0)
+    self.strength:set(contributions.strength or 0)
+    self:_refreshStaticContributions(false)
+
+    if brutal and not self.revealed then
+        for _, resourceName in ipairs({ "spice", "solari", "water" }) do
+            local amount = contributions[resourceName]
+            if amount then
+                self.leader.resources(self.color, resourceName, amount)
+            end
+        end
+
+        local intrigues = contributions.intrigues
+        if intrigues then
+            self.leader.drawIntrigues(self.color, intrigues)
+        end
+
+        local sendTroops = function (category, to)
+            local amount = contributions[category] or 0
+            if amount > 0 then
+                self.leader.troops(self.color, "supply", to, amount)
+            end
+        end
+
+        sendTroops("troops", "garrison")
+        sendTroops("fighters", "combat")
+        sendTroops("negotiators", "negotiation")
+        sendTroops("specimens", "tanks")
+    end
+
+    Park.putObjects(revealedCards, self.revealCardPark)
+
+    Helper.emitEvent("reveal", self.color)
+
+    self.revealed = true
+end
+
+---@param park Park
+---@return Continuation
 function PlayBoard._onceCardParkSpread(park)
     local continuation = Helper.createContinuation("PlayBoard.spreadCardPark")
     local count = 0
@@ -1627,102 +1759,34 @@ function PlayBoard._onceCardParkSpread(park)
     return continuation
 end
 
--- FIXME The agent could have been removed in some cases (e.g. Kwisatz Haderach).
-function PlayBoard:_refreshRevealSpaceContributions()
+---@param reconsiderSpaces boolean
+function PlayBoard:_refreshStaticContributions(reconsiderSpaces)
+    TechMarket.setContributions(self.color)
+
     local councilSeat = PlayBoard.hasHighCouncilSeat(self.color)
     self.persuasion:setBaseValueContribution("highCouncilSeat", councilSeat and 2 or 0)
 
-    local techNegotiation = MainBoard.hasAgentInSpace("techNegotiation", self.color)
-    self.persuasion:setBaseValueContribution("techNegotiation", techNegotiation and 1 or 0)
+    if reconsiderSpaces then
+        -- FIXME The agent could have been removed in some cases (e.g. Kwisatz Haderach).
+        local techNegotiation = MainBoard.hasAgentInSpace("techNegotiation", self.color)
+        self.persuasion:setBaseValueContribution("techNegotiation", techNegotiation and 1 or 0)
 
-    local hallOfOratory = MainBoard.hasAgentInSpace("hallOfOratory", self.color)
-    self.persuasion:setBaseValueContribution("hallOfOratory", hallOfOratory and 1 or 0)
+        -- FIXME The agent could have been removed in some cases (e.g. Kwisatz Haderach).
+        local hallOfOratory = MainBoard.hasAgentInSpace("hallOfOratory", self.color)
+        self.persuasion:setBaseValueContribution("hallOfOratory", hallOfOratory and 1 or 0)
+    end
 
-    local swordmasterBonus = TurnControl.getPlayerCount() == 6 and PlayBoard.hasSwordmaster(self.color)
-    self.strength:setBaseValueContribution("swordmaster", swordmasterBonus and 2 or 0)
+    --local swordmasterBonus = TurnControl.getPlayerCount() == 6 and PlayBoard.hasSwordmaster(self.color)
+    --self.strength:setBaseValueContribution("swordmaster", swordmasterBonus and 2 or 0)
 end
 
-function PlayBoard:_revealHand(brutal)
-    local playedCards = Helper.filter(Park.getObjects(self.agentCardPark), Types.isImperiumCard)
-
-    local properCard = function (card)
-        assert(card)
-        if Types.isImperiumCard(card) then
-            --[[
-                We leave the sister card in the player's hand to simplify things and
-                make clear to the player that the card must be manually revealed.
-            ]]
-            return Types.isImperiumCard(card) and Helper.getID(card) ~= "beneGesseritSister"
-        else
-            return false
-        end
-    end
-
-    local revealedCards = Helper.filter(Player[self.color].getHandObjects(), properCard)
-    local alreadyRevealedCards = Helper.filter(Park.getObjects(self.revealCardPark), properCard)
-    local allRevealedCards = Helper.concatTables(revealedCards, alreadyRevealedCards)
-
-    self:_refreshRevealSpaceContributions()
-    local imperiumCardContributions = ImperiumCard.evaluateReveal(self.color, playedCards, allRevealedCards)
-    Helper.dump("imperiumCardContributions:", imperiumCardContributions)
-    local techCardContributions = TechCard.evaluatePostReveal(self.color, imperiumCardContributions)
-    Helper.dump("techCardContributions:", techCardContributions)
-
-    local sardaukarCommanderSkillCardContributions
-    if Combat.hasAnySardaukarCommander(self.color) then
-        local skillCardNames = PlayBoard.getAllCommanderSkillNames(self.color)
-        sardaukarCommanderSkillCardContributions = SardaukarCommanderSkillCard.evaluateReveal(self.color, skillCardNames)
-    else
-        sardaukarCommanderSkillCardContributions = {}
-    end
-
-    local contributions = {}
-    for _, set in ipairs({ imperiumCardContributions, techCardContributions, sardaukarCommanderSkillCardContributions }) do
-        for k, v in pairs(set) do
-            contributions[k] = (contributions[k] or 0) + v
-        end
-    end
-
-    self.persuasion:set(contributions.persuasion or 0)
-    self.strength:set(contributions.strength or 0)
-
-    if brutal and not self.revealed then
-        for _, resourceName in ipairs({ "spice", "solari", "water" }) do
-            local amount = contributions[resourceName]
-            if amount then
-                self.leader.resources(self.color, resourceName, amount)
-            end
-        end
-
-        local intrigues = contributions.intrigues
-        if intrigues then
-            self.leader.drawIntrigues(self.color, intrigues)
-        end
-
-        local sendTroops = function (category, to)
-            local amount = contributions[category] or 0
-            if amount > 0 then
-                self.leader.troops(self.color, "supply", to, amount)
-            end
-        end
-
-        sendTroops("troops", "garrison")
-        sendTroops("fighters", "combat")
-        sendTroops("negotiators", "negotiation")
-        sendTroops("specimens", "tanks")
-    end
-
-    Park.putObjects(revealedCards, self.revealCardPark)
-
-    Helper.emitEvent("reveal", self.color)
-
-    self.revealed = true
-end
-
+---@return boolean
 function PlayBoard:stillHavePlayableAgents()
     return #Park.getObjects(self.agentPark) > 0
 end
 
+---@param color PlayerColor
+---@return Card[]
 function PlayBoard.getCardsPlayedThisTurn(color)
     local playBoard = PlayBoard.getPlayBoard(color)
 
@@ -1733,6 +1797,9 @@ function PlayBoard.getCardsPlayedThisTurn(color)
     return (Set.newFromList(playedCards) - Set.newFromList(playBoard.alreadyPlayedCards or {})):toList()
 end
 
+---@param color PlayerColor
+---@param cardName string
+---@return boolean
 function PlayBoard.hasPlayedThisTurn(color, cardName)
     for _, card in ipairs(PlayBoard.getCardsPlayedThisTurn(color)) do
         if Helper.getID(card) == cardName then
@@ -1742,6 +1809,8 @@ function PlayBoard.hasPlayedThisTurn(color, cardName)
     return false
 end
 
+---@param color PlayerColor
+---@return boolean
 function PlayBoard.couldSendAgentOrReveal(color)
     local playBoard = PlayBoard.getPlayBoard(color)
     if playBoard.opponent == "rival" then
@@ -1751,6 +1820,8 @@ function PlayBoard.couldSendAgentOrReveal(color)
     end
 end
 
+---@param count integer
+---@return Continuation
 function PlayBoard:tryToDrawCards(count)
     local continuation = Helper.createContinuation("PlayBoard:tryToDrawCards")
 
@@ -1788,6 +1859,8 @@ function PlayBoard:tryToDrawCards(count)
     return continuation
 end
 
+---@param count integer
+---@return Continuation
 function PlayBoard:_tryToDrawCards(count)
     local continuation = Helper.createContinuation("PlayBoard:_tryToDrawCards")
 
@@ -1823,6 +1896,8 @@ function PlayBoard:_tryToDrawCards(count)
     return continuation
 end
 
+---@param count integer
+---@return Continuation
 function PlayBoard:drawCards(count)
     local continuation = Helper.createContinuation("PlayBoard:drawCards")
 
@@ -1852,6 +1927,7 @@ function PlayBoard:drawCards(count)
     return continuation
 end
 
+---@return Continuation
 function PlayBoard:_resetDiscard()
     local continuation = Helper.createContinuation("PlayBoard:_resetDiscard")
     local discard = Helper.getDeckOrCard(self.content.discardZone)
@@ -1927,16 +2003,23 @@ function PlayBoard:_nukeConfirm()
     })
 end
 
+---@param color PlayerColor
+---@return boolean
 function PlayBoard.isRival(color)
     local playerBoard = PlayBoard.getPlayBoard(color)
     return playerBoard.opponent == "rival"
 end
 
+---@param color PlayerColor
+---@return boolean
 function PlayBoard.isHuman(color)
     local playerBoard = PlayBoard.getPlayBoard(color)
     return playerBoard.opponent ~= "rival"
 end
 
+---@param color PlayerColor
+---@param leaderCard Card
+---@return Continuation?
 function PlayBoard.setLeader(color, leaderCard)
     assert(Types.isPlayerColor(color))
     assert(leaderCard)
@@ -1973,6 +2056,8 @@ function PlayBoard.setLeader(color, leaderCard)
     return continuation
 end
 
+---@param color PlayerColor
+---@return table?
 function PlayBoard.findLeaderCard(color)
     local leaderZone = PlayBoard.getContent(color).leaderZone
     for _, object in ipairs(leaderZone.getObjects()) do
@@ -1983,53 +2068,77 @@ function PlayBoard.findLeaderCard(color)
     return nil
 end
 
+---@param color PlayerColor
+---@return Leader
 function PlayBoard.getLeader(color)
     return PlayBoard.getPlayBoard(color).leader
 end
 
+---@param color PlayerColor
+---@return string
 function PlayBoard.getLeaderName(color)
     local leaderCard = PlayBoard.findLeaderCard(color)
     return leaderCard and leaderCard.getName() or "?"
 end
 
+---TODO Encapsulate.
+---@param color PlayerColor
+---@return table
 function PlayBoard.getContent(color)
     local playBoard = PlayBoard.getPlayBoard(color)
     assert(playBoard, "Unknow player color: " .. tostring(color))
     return playBoard.content
 end
 
+---@param color PlayerColor
+---@return Park
 function PlayBoard.getAgentCardPark(color)
     return PlayBoard.getPlayBoard(color).agentCardPark
 end
 
+---@param color PlayerColor
+---@return Park
 function PlayBoard.getRevealCardPark(color)
     return PlayBoard.getPlayBoard(color).revealCardPark
 end
 
+---@param color PlayerColor
+---@return Park
 function PlayBoard.getAgentPark(color)
     return PlayBoard.getPlayBoard(color).agentPark
 end
 
+---@param color PlayerColor
+---@return Park
 function PlayBoard.getDreadnoughtPark(color)
     return PlayBoard.getPlayBoard(color).dreadnoughtPark
 end
 
+---@param color PlayerColor
+---@return Park
 function PlayBoard.getSupplyPark(color)
     return PlayBoard.getPlayBoard(color).supplyPark
 end
 
+---@param color PlayerColor
+---@return Park
 function PlayBoard.getSardaukarCommanderPark(color)
     return PlayBoard.getPlayBoard(color).sardaukarCommanderPark
 end
 
+---@param color PlayerColor
+---@return Park
 function PlayBoard.unused_getTechPark(color)
     return PlayBoard.getPlayBoard(color).techPark
 end
 
+---@param color PlayerColor
+---@return Park
 function PlayBoard.unused_getScorePark(color)
     return PlayBoard.getPlayBoard(color).scorePark
 end
 
+---@return integer
 function PlayBoard:getScore()
     local score = 0
     if not PlayBoard.isRival(self.color) or Hagal.getRivalCount() == 2 then
@@ -2042,31 +2151,52 @@ function PlayBoard:getScore()
     return score
 end
 
+---@param color PlayerColor
+---@param techTile Card
+---@return boolean
 function PlayBoard.grantTechTile(color, techTile)
     return Park.putObject(techTile, PlayBoard.getPlayBoard(color).techPark)
 end
 
+---@param color PlayerColor
+---@param card Card
+---@return boolean
 function PlayBoard.grantSardaukarCommanderSkillCard(color, card)
     return Park.putObject(card, PlayBoard.getPlayBoard(color).sardaukarCommanderSkillPark)
 end
 
+---@param color PlayerColor
+---@return Object[]
 function PlayBoard.getScoreTokens(color)
     return Park.getObjects(PlayBoard.getPlayBoard(color).scorePark)
 end
 
+---@param color PlayerColor
+---@param token Object
+---@return boolean
 function PlayBoard.grantScoreToken(color, token)
     token.setInvisibleTo({})
     return Park.putObject(token, PlayBoard.getPlayBoard(color).scorePark)
 end
 
+---@param color PlayerColor
+---@param tokenBag Bag
+---@param count integer
+---@return boolean
 function PlayBoard.grantScoreTokenFromBag(color, tokenBag, count)
     return Park.putObjectFromBag(tokenBag, PlayBoard.getPlayBoard(color).scorePark, count)
 end
 
+---@param color PlayerColor
+---@param techName string
+---@return boolean
 function PlayBoard.hasTech(color, techName)
     return PlayBoard.getTech(color, techName) ~= nil
 end
 
+---@param color PlayerColor
+---@param techName string
+---@return table
 function PlayBoard.getTech(color, techName)
     local techs = Park.getObjects(PlayBoard.getPlayBoard(color).techPark)
     for _, tech in ipairs(techs) do
@@ -2077,16 +2207,25 @@ function PlayBoard.getTech(color, techName)
     return nil
 end
 
+---@param color PlayerColor
+---@return Card[]
 function PlayBoard.getAllTechs(color)
     local objects = Park.getObjects(PlayBoard.getPlayBoard(color).techPark)
-    return Helper.filter(objects, Types.isTech)
+    local techTiles = Helper.filter(objects, Types.isTech)
+    Helper.dump("PlayBoard.getAllTechs:", color, "->", techTiles)
+    return techTiles
 end
 
+---@param color PlayerColor
+---@return string[]
 function PlayBoard.getAllCommanderSkillNames(color)
     local objects = Park.getObjects(PlayBoard.getPlayBoard(color).sardaukarCommanderSkillPark)
     return Helper.getAllCardNames(Helper.filter(objects, Types.isSardaukarCommanderSkillCard))
 end
 
+---@param color PlayerColor
+---@param techName string
+---@return boolean
 function PlayBoard.useTech(color, techName)
     local tech = PlayBoard.getTech(color, techName)
     if tech and not tech.is_face_down then
@@ -2097,6 +2236,8 @@ function PlayBoard.useTech(color, techName)
     end
 end
 
+---@param color PlayerColor
+---@return boolean
 function PlayBoard.hasHighCouncilSeat(color)
     local token = PlayBoard.getCouncilToken(color)
     for _, zone in ipairs(Park.getZones(MainBoard.getHighCouncilSeatPark())) do
@@ -2107,6 +2248,8 @@ function PlayBoard.hasHighCouncilSeat(color)
     return false
 end
 
+---@param color PlayerColor
+---@return boolean
 function PlayBoard.takeHighCouncilSeat(color)
     local token = PlayBoard.getCouncilToken(color)
     if not PlayBoard.hasHighCouncilSeat(color) then
@@ -2122,20 +2265,28 @@ function PlayBoard.takeHighCouncilSeat(color)
     return false
 end
 
+---@param color PlayerColor
+---@return boolean
 function PlayBoard.hasSwordmaster(color)
-    local agents = Park.getObjects(PlayBoard.getAgentPark(color))
-    return Helper.isElementOf(PlayBoard.getSwordmaster(color), agents)
+    local swordmaster = PlayBoard.getSwordmaster(color)
+    return swordmaster and (MainBoard.isInside(swordmaster) or PlayBoard.isInside(color, swordmaster))
 end
 
+---@param color PlayerColor
+---@return boolean
 function PlayBoard.recruitSwordmaster(color)
     return Park.putObject(PlayBoard.getSwordmaster(color), PlayBoard.getAgentPark(color))
 end
 
+---@param color PlayerColor
+---@return boolean
 function PlayBoard.getSwordmaster(color)
     local content = PlayBoard.getContent(color)
     return content.swordmaster
 end
 
+---@param color PlayerColor
+---@return boolean
 function PlayBoard.recruitSardaukarCommander(color)
     local garrison = Combat.getGarrisonPark(color)
     local sardaukarReserve = PlayBoard.getSardaukarCommanderPark(color)
@@ -2150,16 +2301,24 @@ function PlayBoard.recruitSardaukarCommander(color)
     return false
 end
 
+---@param color PlayerColor
+---@return Object
 function PlayBoard.getCouncilToken(color)
     local content = PlayBoard.getContent(color)
     return content.councilToken
 end
 
+---@param color PlayerColor
+---@param resourceName ResourceName
+---@return Resource
 function PlayBoard.getResource(color, resourceName)
     assert(Types.isResourceName(resourceName))
     return PlayBoard.getPlayBoard(color)[resourceName]
 end
 
+---@param color PlayerColor
+---@param card Card
+---@param isTleilaxuCard boolean
 function PlayBoard.giveCard(color, card, isTleilaxuCard)
     assert(Types.isPlayerColor(color))
     assert(card)
@@ -2186,6 +2345,9 @@ function PlayBoard.giveCard(color, card, isTleilaxuCard)
     end
 end
 
+---@param color PlayerColor
+---@param zone Zone
+---@param isTleilaxuCard boolean
 function PlayBoard.giveCardFromZone(color, zone, isTleilaxuCard)
     assert(Types.isPlayerColor(color))
 
@@ -2214,6 +2376,9 @@ function PlayBoard.giveCardFromZone(color, zone, isTleilaxuCard)
     end
 end
 
+---@param color PlayerColor
+---@param cardName string
+---@return boolean
 function PlayBoard.unused_giveCardFromTrash(color, cardName)
     local content = PlayBoard.getContent(color)
     return PlayBoard._giveFromTrash(color, content.discardZone.getPosition(), nil, function (object)
@@ -2221,6 +2386,8 @@ function PlayBoard.unused_giveCardFromTrash(color, cardName)
     end)
 end
 
+---@param color PlayerColor
+---@return boolean
 function PlayBoard.giveIntrigueFromTrash(color)
     local orientedPosition = PlayBoard.getHandOrientedPosition(color)
     local success = PlayBoard._giveFromTrash(color, orientedPosition.position, orientedPosition.rotation, function (object)
@@ -2232,6 +2399,11 @@ function PlayBoard.giveIntrigueFromTrash(color)
     return success
 end
 
+---@param color PlayerColor
+---@param position Vector
+---@param rotation Vector
+---@param predicate fun(object: Object): boolean
+---@return boolean
 function PlayBoard._giveFromTrash(color, position, rotation, predicate)
     assert(Types.isPlayerColor(color))
     local content = PlayBoard.getContent(color)
@@ -2241,6 +2413,9 @@ function PlayBoard._giveFromTrash(color, position, rotation, predicate)
     end)
 end
 
+---@param color PlayerColor
+---@param bag Bag
+---@return boolean
 function PlayBoard.giveNavigationFromBag(color, bag)
     local orientedPosition = PlayBoard.getHandOrientedPosition(color)
     return PlayBoard._giveFromBag(color, orientedPosition.position, orientedPosition.rotation, bag, function (object)
@@ -2248,6 +2423,13 @@ function PlayBoard.giveNavigationFromBag(color, bag)
     end)
 end
 
+---@param color PlayerColor
+---@param position Vector
+---@param rotation Vector
+---@param bag Bag
+---@param predicate fun(object: Object): boolean
+---@param callback function
+---@return boolean
 function PlayBoard._giveFromBag(color, position, rotation, bag, predicate, callback)
     assert(Types.isPlayerColor(color))
 
@@ -2271,28 +2453,38 @@ function PlayBoard._giveFromBag(color, position, rotation, bag, predicate, callb
     return false
 end
 
+---@param color PlayerColor
+---@return DeckOrCard?
 function PlayBoard.getDrawDeck(color)
     local playBoard = PlayBoard.getPlayBoard(color)
     local deckOrCard = Helper.getDeckOrCard(playBoard.content.drawDeckZone)
     return deckOrCard
 end
 
+---@param color PlayerColor
+---@return DeckOrCard?
 function PlayBoard.unused_getDiscard(color)
     local playBoard = PlayBoard.getPlayBoard(color)
     local deckOrCard = Helper.getDeckOrCard(playBoard.content.discardZone)
     return deckOrCard
 end
 
+---@param color PlayerColor
+---@return Card[]
 function PlayBoard.getHandedCards(color)
     return Helper.filter(Player[color].getHandObjects(), Types.isImperiumCard)
 end
 
+---@param color PlayerColor
+---@return (Card|DeadObject)[]
 function PlayBoard.getDiscardedCards(color)
     local playBoard = PlayBoard.getPlayBoard(color)
     local deckOrCard = Helper.getDeckOrCard(playBoard.content.discardZone)
     return Helper.getCards(deckOrCard)
 end
 
+---@param color PlayerColor
+---@return integer
 function PlayBoard.unused_getDiscardedCardCount(color)
     local playBoard = PlayBoard.getPlayBoard(color)
     local deckOrCard = Helper.getDeckOrCard(playBoard.content.discardZone)
@@ -2300,15 +2492,21 @@ function PlayBoard.unused_getDiscardedCardCount(color)
 end
 
 --- Anything trashed (and filtering is hard considering the content is not spawned).
-function PlayBoard.getTrashedCards(color)
+---@param color PlayerColor
+---@return Object[]
+function PlayBoard.getTrashedObjects(color)
     local playBoard = PlayBoard.getPlayBoard(color)
     return playBoard.content.trash.getObjects()
 end
 
+---@param color PlayerColor
+---@return Card[]
 function PlayBoard.getIntrigues(color)
     return Helper.filter(Player[color].getHandObjects(), Types.isIntrigueCard)
 end
 
+---@param color PlayerColor
+---@return Card[]
 function PlayBoard._getPotentialCombatIntrigues(color)
     local predicate
     if Hagal.getRivalCount() == 2 then
@@ -2321,17 +2519,25 @@ function PlayBoard._getPotentialCombatIntrigues(color)
     return Helper.filter(Player[color].getHandObjects(), predicate)
 end
 
+---@param color PlayerColor
+---@return integer
 function PlayBoard.getAquiredDreadnoughtCount(color)
     local park = PlayBoard.getPlayBoard(color).dreadnoughtPark
     return #Park.findEmptySlots(park)
 end
 
+---@param color PlayerColor
+---@return Bag
 function PlayBoard.getControlMarkerBag(color)
     local content = PlayBoard.getContent(color)
     assert(content)
     return content.controlMarkerBag
 end
 
+---@param x number
+---@param y number
+---@param z number
+---@return Vector
 function PlayBoard:_newSymmetricBoardPosition(x, y, z)
     if PlayBoard.isLeft(self.color) then
         return self:_newBoardPosition(-x, y, z)
@@ -2340,6 +2546,10 @@ function PlayBoard:_newSymmetricBoardPosition(x, y, z)
     end
 end
 
+---@param x number
+---@param y number
+---@param z number
+---@return Vector
 function PlayBoard:_newSymmetricBoardRotation(x, y, z)
     if PlayBoard.isLeft(self.color) then
         return self:_newBoardPosition(x, -y, z)
@@ -2348,6 +2558,10 @@ function PlayBoard:_newSymmetricBoardRotation(x, y, z)
     end
 end
 
+---@param x number
+---@param y number
+---@param z number
+---@return Vector
 function PlayBoard:_newOffsetedBoardPosition(x, y, z)
     if PlayBoard.isLeft(self.color) then
         return self:_newBoardPosition(PlayBoard.OFFSET + x, y, z)
@@ -2356,21 +2570,30 @@ function PlayBoard:_newOffsetedBoardPosition(x, y, z)
     end
 end
 
+---@param x number
+---@param y number
+---@param z number
+---@return Vector
 function PlayBoard:_newBoardPosition(x, y, z)
     -- TODO Get rid of the + 0.7
     return Vector(x, y + 0.7, -z)
 end
 
 --- Relative to the board, not a commander.
+---@param color PlayerColor
+---@return boolean
 function PlayBoard.isLeft(color)
     return color == "Red" or color == "Blue"
 end
 
 --- Relative to the board, not a commander.
+---@param color PlayerColor
+---@return boolean
 function PlayBoard.isRight(color)
     return color == "Green" or color == "Yellow"
 end
 
+---@param object Object
 function PlayBoard:trash(object)
     self.trashQueue = self.trashQueue or Helper.createSpaceQueue()
     self.trashQueue.submit(function (height)
@@ -2380,6 +2603,9 @@ function PlayBoard:trash(object)
     end)
 end
 
+---@param color PlayerColor
+---@param object Object
+---@return boolean
 function PlayBoard.isInside(color, object)
     local position = object.getPosition()
     local center = PlayBoard.getPlayBoard(color).content.board.getPosition()
@@ -2387,6 +2613,8 @@ function PlayBoard.isInside(color, object)
     return math.abs(offset.x) < 12 and math.abs(offset.z) < 10
 end
 
+---@param color PlayerColor
+---@return { position: Vector, rotation: Vector }
 function PlayBoard.getHandOrientedPosition(color)
     -- Add an offset to put the card on the left side of the player's hand.
     local handTransform = Player[color].getHandTransform()
@@ -2408,6 +2636,9 @@ function PlayBoard.getHandOrientedPosition(color)
     }
 end
 
+---@param color PlayerColor
+---@param voiceToken Object
+---@return boolean
 function PlayBoard.acquireVoice(color, voiceToken)
     assert(Types.isPlayerColor(color))
     assert(voiceToken)

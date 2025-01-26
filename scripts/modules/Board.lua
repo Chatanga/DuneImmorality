@@ -83,7 +83,7 @@ function Board.rebuildPreloadAreas()
     Locale.onLoad()
 
     local prebuildZone = getObjectFromGUID("23f2b5")
-    local secondaryTable = getObjectFromGUID("662ced")
+    local secondaryTable = getObjectFromGUID(GameTableGUIDs.secondary)
 
     for _, object in ipairs(prebuildZone.getObjects()) do
         -- Preserve the secondary table.

@@ -20,6 +20,7 @@ local Hagal = Module.lazyRequire("Hagal")
 local TurnControl = Module.lazyRequire("TurnControl")
 local SardaukarCommander = Module.lazyRequire("SardaukarCommander")
 
+---@class Action
 local Action = Helper.createClass(nil, {
     context = {}
 })
@@ -367,7 +368,7 @@ end
 function Action.reserveImperiumCard(color, indexInRow)
     assert(Types.isPlayerColor(color))
     assert(Helper.isInRange(1, 5, indexInRow))
-    return ImperiumRow.reserveImperiumCard(indexInRow, color)
+    return ImperiumRow.reserveImperiumCard(indexInRow)
 end
 
 function Action.acquireReservedImperiumCard(color)
@@ -386,9 +387,9 @@ function Action.acquireFoldspace(color)
     return Reserve.acquireFoldspace(color)
 end
 
-function Action.acquireArrakisLiaison(color, toItsHand)
+function Action.acquireArrakisLiaison(color)
     assert(Types.isPlayerColor(color))
-    return Reserve.acquireArrakisLiaison(color, toItsHand)
+    return Reserve.acquireArrakisLiaison(color)
 end
 
 function Action.acquireTheSpiceMustFlow(color)
@@ -584,7 +585,7 @@ function Action.unused_pickVoice(color)
     end
 end
 
-function Action.choose(color, topic)
+function Action.randomlyChoose(color, topic)
     return false
 end
 

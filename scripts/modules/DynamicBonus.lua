@@ -4,7 +4,6 @@ local Park = require("utils.Park")
 
 local Intrigue = Module.lazyRequire("Intrigue")
 local Resource = Module.lazyRequire("Resource")
-local Types = Module.lazyRequire("Types")
 local Combat = Module.lazyRequire("Combat")
 local TleilaxuResearch = Module.lazyRequire("TleilaxuResearch")
 local MainBoard = Module.lazyRequire("MainBoard")
@@ -163,7 +162,7 @@ function DynamicBonus._collectTargetBonuses(color, leader, targetBonuses)
     return #Helper.getKeys(remainingTargetBonuses) > 0 and remainingTargetBonuses or nil
 end
 
-function DynamicBonus.unused__createSpiceToken(position)
+function DynamicBonus.createSpiceToken(position)
     local data = {
         Name = "Custom_Token",
         Transform = {
@@ -221,7 +220,7 @@ function DynamicBonus.unused__createSpiceToken(position)
     return continuation
 end
 
-function DynamicBonus.unused__createSolariToken(position)
+function DynamicBonus.createSolariToken(position)
     local data = {
         Name = "Custom_Token",
         Transform = {

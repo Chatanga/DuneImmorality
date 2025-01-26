@@ -5,6 +5,7 @@ local I18N = require("utils.I18N")
     Provide an abstraction to show dialogs to the users as well as an alternate
     and nicer implementation relying on the XML UI.
 ]]
+---@class Dialog
 local Dialog = {
     -- Internal flag to revert to the native dialogs.
     nativeDialogUsed = false,
@@ -12,10 +13,15 @@ local Dialog = {
     staticDialogUsedLoaded = false,
 }
 
+---@alias ComplexOption { url: string }
+
 --[[
     A wrapper on 'broadcastToColor' to switch 'broadcastToAll'
     in case the target player is a bot or not seated.
 ]]
+---@param message string
+---@param playerColor PlayerColor
+---@param messageColor PlayerColor
 function Dialog.broadcastToColor(message, playerColor, messageColor)
     assert(message)
     assert(playerColor)
@@ -56,7 +62,7 @@ function Dialog.loadStaticUI()
     return Helper.onceFramesPassed(10)
 end
 
----@param color string The color of the player to show the dialogue to.
+---@param color PlayerColor The color of the player to show the dialogue to.
 ---@param message string The message to be displayed.
 function Dialog.showInfoDialog(color, message)
     if Dialog.nativeDialogUsed then
@@ -69,9 +75,9 @@ function Dialog.showInfoDialog(color, message)
     end
 end
 
----@param color string The color of the player to show the dialogue to.
+---@param color PlayerColor The color of the player to show the dialogue to.
 ---@param message string The message to be displayed.
----@param callback function Called without arguments on "ok" (but not "cancel").
+---@param callback fun() Called without arguments on "ok" (but not "cancel").
 function Dialog.showConfirmDialog(color, message, callback)
     assert(callback)
     if Dialog.nativeDialogUsed then
@@ -91,10 +97,10 @@ function Dialog.showConfirmDialog(color, message, callback)
     end
 end
 
----@param color string The color of the player to show the dialogue to.
+---@param color PlayerColor The color of the player to show the dialogue to.
 ---@param message string The message to be displayed.
 ---@param linkedContinuation? table An optional continuation to be forgotten (only useful when using a native dialog).
----@param callback function Called with a boolean arguments ("ok" -> true, "cancel" -> false).
+---@param callback fun(confirmed: boolean) Called with a boolean arguments ("ok" -> true, "cancel" -> false).
 function Dialog.unused_showConfirmOrCancelDialog(color, message, linkedContinuation, callback)
     assert(callback)
     if Dialog.nativeDialogUsed then
@@ -115,10 +121,10 @@ function Dialog.unused_showConfirmOrCancelDialog(color, message, linkedContinuat
     end
 end
 
----@param color string The color of the player to show the dialogue to.
+---@param color PlayerColor The color of the player to show the dialogue to.
 ---@param message string The message to be displayed.
----@param linkedContinuation? table An optional continuation to be forgotten (only useful when using a native dialog).
----@param callback function Called with a boolean arguments ("yes" -> true, "no/cancel" -> false).
+---@param linkedContinuation? Continuation An optional continuation to be forgotten (only useful when using a native dialog).
+---@param callback fun(confirmed: boolean) Called with a boolean arguments ("yes" -> true, "no/cancel" -> false).
 function Dialog.showYesOrNoDialog(color, message, linkedContinuation, callback)
     assert(callback)
     if Dialog.nativeDialogUsed then
@@ -139,11 +145,11 @@ function Dialog.showYesOrNoDialog(color, message, linkedContinuation, callback)
     end
 end
 
----@param color string The color of the player to show the dialogue to.
+---@param color PlayerColor The color of the player to show the dialogue to.
 ---@param message string The message to be displayed.
 ---@param options string[] One or more options to choose among.
----@param linkedContinuation? table An optional continuation to be forgotten (only useful when using a native dialog).
----@param callback function Called with an index arguments ("option #n" -> n) if not canceled.
+---@param linkedContinuation? Continuation An optional continuation to be forgotten (only useful when using a native dialog).
+---@param callback fun(index: integer) Called with an index arguments ("option #n" -> n) if not canceled.
 function Dialog.showOptionsDialog(color, message, options, linkedContinuation, callback)
     assert(options)
     assert(#options > 0)
@@ -164,11 +170,11 @@ function Dialog.showOptionsDialog(color, message, options, linkedContinuation, c
     end
 end
 
----@param color string The color of the player to show the dialogue to.
+---@param color PlayerColor The color of the player to show the dialogue to.
 ---@param message string The message to be displayed.
 ---@param options string[] One or more options to choose among.
----@param linkedContinuation? table An optional continuation to be forgotten (only useful when using a native dialog).
----@param callback function Called with an index arguments ("option #n" -> n, cancel -> 0).
+---@param linkedContinuation? Continuation An optional continuation to be forgotten (only useful when using a native dialog).
+---@param callback fun(optionIndex: integer) Called with an index arguments ("option #n" -> n, cancel -> 0).
 function Dialog.showOptionsAndCancelDialog(color, message, options, linkedContinuation, callback)
     assert(options)
     assert(#options > 0)
@@ -185,6 +191,10 @@ function Dialog.showOptionsAndCancelDialog(color, message, options, linkedContin
     end
 end
 
+---@param color PlayerColor
+---@param message string
+---@param options string[]
+---@param callback fun(optionIndex: integer)
 function Dialog._showOptionsAndCancelDialog(color, message, options, callback)
     if Dialog.staticDialogUsedLoaded and Dialog._checkExistence(nil, options) then
         Dialog._bindStaticUI(color, message, nil, options, callback)
@@ -197,10 +207,10 @@ end
 --[[
     Show a cancelable option dialog for Kota Odax where each option is a tech tile.
 ]]
----@param color string The color of the player to show the dialogue to.
+---@param color PlayerColor The color of the player to show the dialogue to.
 ---@param message string The message to be displayed.
 ---@param urls string[] One or more options to choose among as URLs to tech tile images.
----@param callback function Called with an index arguments ("option #n" -> n, cancel -> 0).
+---@param callback fun(optionIndex: integer) Called with an index arguments ("option #n" -> n, cancel -> 0).
 function Dialog.showTechOptionsDialog(color, message, urls, callback)
     if Dialog.staticDialogUsedLoaded and Dialog._checkExistence(nil, urls) then
         Dialog._bindStaticUI(color, message, "tech_", urls, callback)
@@ -213,11 +223,11 @@ end
 --[[
     Update and show the proper UI pane previously registered by 'loadStaticUI'.
 ]]
----@param color string
+---@param color PlayerColor
 ---@param message string
 ---@param prefix? string
 ---@param options string[] | table[]
----@param callback function
+---@param callback fun(optionIndex: integer)
 function Dialog._bindStaticUI(color, message, prefix, options, callback)
     assert(options)
     local dialogId = Dialog._dialogId(prefix, options)
@@ -254,6 +264,9 @@ end
     Check that a UI pane with the corresponding number of options is available
     (registered by loadStaticUI').
 ]]
+---@param prefix? string
+---@param options string[]
+---@return boolean
 function Dialog._checkExistence(prefix, options)
     assert(options)
     assert(#options > 0)
@@ -262,30 +275,48 @@ function Dialog._checkExistence(prefix, options)
     return color and type(color) == "string" and color:len() > 0
 end
 
+---@param prefix? string
+---@param options string[]
+---@return string
 function Dialog._dialogId(prefix, options)
     assert(options)
     assert(#options > 0)
     return (prefix or "") .. "dialogWith" .. tostring(#options) .. "Options"
 end
 
+---@param prefix? string
+---@param options string[]
+---@return string
 function Dialog._messageId(prefix, options)
     assert(options)
     assert(#options > 0)
     return Dialog._dialogId(prefix, options) .. "Message"
 end
 
+---@param prefix? string
+---@param options string[]
+---@return string
 function Dialog._cancelButtonId(prefix, options)
     assert(options)
     assert(#options > 0)
     return Dialog._dialogId(prefix, options) .. "CancelButton"
 end
 
+---@param prefix? string
+---@param options string[]
+---@param index integer
+---@return string
 function Dialog._optionButtonId(prefix, options, index)
     assert(options)
     assert(#options > 0)
     return Dialog._dialogId(prefix, options) .. "OptionButton" .. tostring(index)
 end
 
+---@param color? PlayerColor
+---@param message? string
+---@param prefix? string
+---@param options string[]
+---@param callback? fun(optionIndex: integer)
 function Dialog._generateDialogUI(color, message, prefix, options, callback)
     assert(options)
 
@@ -391,6 +422,9 @@ function Dialog._generateDialogUI(color, message, prefix, options, callback)
     return ui
 end
 
+---@param prefix? string
+---@param options string[]
+---@param callback fun(optionIndex: integer)
 function Dialog._createClosingCallback(prefix, options, callback)
     assert(options)
     assert(#options > 0)
@@ -405,6 +439,10 @@ function Dialog._createClosingCallback(prefix, options, callback)
     end
 end
 
+---@param prefix? string
+---@param options string[]
+---@param closingCallback fun(index: integer)
+---@return Button
 function Dialog._createCancelButton(prefix, options, closingCallback)
     local button = {
         tag = "Button",
@@ -429,6 +467,12 @@ function Dialog._createCancelButton(prefix, options, closingCallback)
     return button
 end
 
+---@param prefix? string
+---@param options string[]
+---@param index integer
+---@param option string|ComplexOption
+---@param closingCallback fun(index: integer)
+---@return Button
 function Dialog._createOptionButton(prefix, options, index, option, closingCallback)
     assert(index > 0)
 

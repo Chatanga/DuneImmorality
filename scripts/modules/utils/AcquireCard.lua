@@ -1,6 +1,13 @@
 local Helper = require("utils.Helper")
 local I18N = require("utils.I18N")
 
+---@class AcquireCard
+---@field UPDATE_EVENT_NAME string
+---@field CARD_HEIGHT number
+---@field anchor Object
+---@field zone Zone
+---@field groundHeight number
+---@field acquire fun(acquireCard: AcquireCard, color: PlayerColor)
 local AcquireCard = Helper.createClass(nil, {
     UPDATE_EVENT_NAME = "AcquireCard/objectEnterOrLeaveScriptingZone",
     CARD_HEIGHT = 0.01
@@ -25,9 +32,9 @@ local AcquireCard = Helper.createClass(nil, {
 ---@param zone table The zone where the deck is located.
 ---@param groundHeight integer The absolute coordinate Y where the deck lies.
 ---@param tag string A required tag for the deck.
----@param acquire? function A callback(AcquireCard, color) when the button is pressed.
+---@param acquire? fun(acquireCard: AcquireCard, color: PlayerColor) A callback called when the button is pressed.
 ---@param decalUrl? string An URL for a decal to decorate the deck location.
----@return table The created AquireCard (useful to help the callback know who has called it).
+---@return AcquireCard The created AquireCard (useful to help the callback know who has called it).
 function AcquireCard.new(zone, groundHeight, tag, acquire, decalUrl)
     assert(zone)
     assert(groundHeight)
@@ -80,6 +87,7 @@ function AcquireCard:_updateButton()
     self:_createButton()
 end
 
+---@param decalUrl string
 function AcquireCard:_setDecal(decalUrl)
     local scale = self.zone.getScale()
     self.anchor.setDecals({
@@ -93,12 +101,22 @@ function AcquireCard:_setDecal(decalUrl)
     })
 end
 
-function AcquireCard.onObjectEnterZone(...)
-    Helper.emitEvent(AcquireCard.UPDATE_EVENT_NAME, ...)
+---@param zone Zone
+---@param object Object
+function AcquireCard.onObjectEnterZone(zone, object)
+    if Helper.isNil(zone) or Helper.isNil(object) then
+        return
+    end
+    Helper.emitEvent(AcquireCard.UPDATE_EVENT_NAME, zone, object)
 end
 
-function AcquireCard.onObjectLeaveZone(...)
-    Helper.emitEvent(AcquireCard.UPDATE_EVENT_NAME, ...)
+---@param zone Zone
+---@param object Object
+function AcquireCard.onObjectLeaveZone(zone, object)
+    if Helper.isNil(zone) or Helper.isNil(object) then
+        return
+    end
+    Helper.emitEvent(AcquireCard.UPDATE_EVENT_NAME, zone, object)
 end
 
 function AcquireCard:_createButton()

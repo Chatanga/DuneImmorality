@@ -122,6 +122,8 @@ function Combat._transientSetUp(settings)
                 end
             end
             Action.unsetContext("combat")
+        elseif phase == "recall" then
+            Helper.shuffle(Combat.battlegroundPark.slots)
         end
     end)
 end
@@ -226,12 +228,18 @@ function Combat.findControlableSpace(conflictName)
 end
 
 function Combat.onObjectEnterZone(zone, object)
+    if Helper.isNil(zone) or Helper.isNil(object) then
+        return
+    end
     if zone == Combat.combatCenterZone and Types.isUnit(object) then
         Combat._updateCombatForces(Combat._calculateCombatForces())
     end
 end
 
 function Combat.onObjectLeaveZone(zone, object)
+    if Helper.isNil(zone) or Helper.isNil(object) then
+        return
+    end
     if zone == Combat.combatCenterZone and Types.isUnit(object) then
         Combat._updateCombatForces(Combat._calculateCombatForces())
     end

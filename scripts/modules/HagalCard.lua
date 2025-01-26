@@ -30,7 +30,6 @@ local HagalCard = {
         carthag = 0,
         arrakeen1p = 1,
         arrakeen2p = 1,
-        researchStation = 0,
         harvestSpice = 2,
         interstellarShipping = 3,
         foldspaceAndInterstellarShipping = 2,
@@ -38,6 +37,7 @@ local HagalCard = {
         techNegotiation = 0,
         dreadnought1p = 3,
         dreadnought2p = 3,
+        researchStation = 0,
         carthag1 = 0,
         carthag2 = 0,
         carthag3 = 0,
@@ -280,16 +280,6 @@ end
 
 -- City spaces
 
-function HagalCard._activateResearchStation(color, rival)
-    if HagalCard._spaceIsFree(color, "researchStation") then
-        HagalCard._sendRivalAgent(color, rival, "researchStation")
-        HagalCard.acquireTroops(color, 2, true)
-        return true
-    else
-        return false
-    end
-end
-
 function HagalCard._activateCarthag(color, rival)
     if HagalCard._spaceIsFree(color, "carthag") then
         HagalCard._sendRivalAgent(color, rival, "carthag")
@@ -324,36 +314,45 @@ end
 -- Desert spaces
 
 function HagalCard._activateHarvestSpice(color, rival)
+    local best = HagalCard.findHarvestableSpace(true)
+
+    if best.desertSpace then
+        HagalCard._sendRivalAgent(color, rival, best.desertSpace)
+        rival.resources(color, "spice", best.totalSpice)
+        MainBoard.getSpiceBonus(best.desertSpace):set(0)
+        HagalCard.acquireTroops(color, 0, true)
+        return true
+    else
+        return false
+    end
+end
+
+function HagalCard.findHarvestableSpace(ignoreIfNotFree)
     local desertSpaces = {
         imperialBasin = 1,
         haggaBasin = 2,
         theGreatFlat = 3,
     }
 
-    local bestDesertSpace
-    local bestSpiceBonus = 0.5
-    local bestTotalSpice = 0
+    local best = {
+        desertSpace = nil,
+        spiceBonus = 0.5,
+        totalSpice = 0,
+    }
+
     for desertSpace, baseSpice in pairs(desertSpaces) do
-        if HagalCard._spaceIsFree(desertSpace) then
+        if not ignoreIfNotFree or HagalCard._spaceIsFree(desertSpace) then
             local spiceBonus = MainBoard.getSpiceBonus(desertSpace):get()
             local totalSpice = baseSpice + spiceBonus
-            if spiceBonus > bestSpiceBonus or (spiceBonus == bestSpiceBonus and totalSpice > bestTotalSpice) then
-                bestDesertSpace = desertSpace
-                bestSpiceBonus = spiceBonus
-                bestTotalSpice = totalSpice
+            if spiceBonus > best.spiceBonus or (spiceBonus == best.spiceBonus and totalSpice > best.totalSpice) then
+                best.desertSpace = desertSpace
+                best.spiceBonus = spiceBonus
+                best.totalSpice = totalSpice
             end
         end
     end
 
-    if bestDesertSpace then
-        HagalCard._sendRivalAgent(color, rival, bestDesertSpace)
-        rival.resources(color, "spice", bestTotalSpice)
-        MainBoard.getSpiceBonus(bestDesertSpace):set(0)
-        HagalCard.acquireTroops(color, 0, true)
-        return true
-    else
-        return false
-    end
+    return best
 end
 
 -- Ix spaces (CHOAM)
@@ -381,6 +380,7 @@ function HagalCard._activateFoldspaceAndInterstellarShipping(color, rival)
         if HagalCard._spaceIsFree(color, "foldspace") then
             HagalCard._sendRivalAgent(color, rival, "foldspace")
             rival.influence(color, "spacingGuild", 1)
+            HagalCard._tryRecruitingSardaukarCommander(color, rival, "foldspace")
             return true
         else
             return false
@@ -451,7 +451,7 @@ end
 
 -- Immortality changes
 
-function HagalCard._activateResearchStationImmortality(color, rival)
+function HagalCard._activateResearchStation(color, rival)
     if HagalCard._spaceIsFree(color, "researchStation") then
         HagalCard._sendRivalAgent(color, rival, "researchStation")
         HagalCard.acquireTroops(color, 0, true)
@@ -557,6 +557,7 @@ function HagalCard.unused_isCombatCard(card)
 end
 
 function HagalCard._tryRecruitingSardaukarCommander(color, rival, spaceName)
+    Helper.dumpFunction("HagalCard._tryRecruitingSardaukarCommander", color, rival.name, spaceName)
     if PlayBoard.hasSwordmaster(color) and SardaukarCommander.isAvailable(spaceName) then
         if Hagal.getRivalCount() == 1 then
             SardaukarCommander.discardSardaukarCommander(color, spaceName)

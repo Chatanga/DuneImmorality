@@ -319,10 +319,8 @@ function ArrakeenScouts._nextContent()
     if contents and #contents > 0 then
         local content = contents[1]
         table.remove(contents, 1)
-        --Helper.dump("content = ", content)
         ArrakeenScouts._createDialog(content)
     else
-        --Helper.dump("TurnControl.endOfPhase()")
         TurnControl.endOfPhase()
     end
 end
@@ -1723,8 +1721,7 @@ end
 --- Missions ---
 
 function ArrakeenScouts._createSecretsInTheDesertController(playerPanes, immortality)
-    local spaceName = immortality and "researchStationImmortality" or "researchStation"
-    MainBoard.addSpaceBonus(spaceName, { all = { intrigue = 2 } })
+    MainBoard.addSpaceBonus("researchStation", { all = { intrigue = 2 } })
     ArrakeenScouts._createRandomValidationController(playerPanes, false, nil, nil)
 end
 
@@ -1745,8 +1742,7 @@ function ArrakeenScouts._createStationedSupportController(playerPanes, immortali
                 assert(card)
                 local cardName = Helper.getID(card)
                 ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, cardName, "✓")
-                local spaceName = immortality and "researchStationImmortality" or "researchStation"
-                MainBoard.addSpaceBonus(spaceName, { [color] = { combatTroop = { troops[color][1], troops[color][2] } } })
+                MainBoard.addSpaceBonus("researchStation", { [color] = { combatTroop = { troops[color][1], troops[color][2] } } })
                 continuation.run()
             end)
         else
@@ -2155,7 +2151,7 @@ end
 function ArrakeenScouts._ensureTrashFromHand(color)
     return ArrakeenScouts._ensureCardOperation(
         Helper.partialApply(PlayBoard.getHandedCards, color),
-        Helper.partialApply(PlayBoard.getTrashedCards, color))
+        Helper.partialApply(PlayBoard.getTrashedObjects, color))
 end
 
 function ArrakeenScouts._ensureDiscardIntrigue(color)

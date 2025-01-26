@@ -35,7 +35,7 @@ end
 function LeaderSelection.onLoad(state)
     Helper.append(LeaderSelection, Helper.resolveGUIDs(false, {
         deckZone = "23f2b5",
-        secondaryTable = "662ced",
+        secondaryTable = GameTableGUIDs.secondary,
     }))
 
     if state.settings and state.LeaderSelection then

@@ -45,39 +45,7 @@ function Rival.triggerHagalReaction(color)
 
         Helper.sleep(1)
 
-        local rival = PlayBoard.getLeader(color)
-
-        local hasSwordmaster = PlayBoard.hasSwordmaster(color)
-
-        local allResources = {
-            intrigues = PlayBoard.getIntrigues(color),
-            solari = PlayBoard.getResource(color, "solari"),
-            spice = PlayBoard.getResource(color, "spice"),
-            water = PlayBoard.getResource(color, "water"),
-        }
-
-        local reduceGenericResource = function (name, amount)
-            local realAmount
-            if name == "intrigues" then
-                realAmount = math.min(amount, #allResources.intrigues)
-                for i = 1, realAmount do
-                    -- Not smooth to avoid being recaptured by the hand zone.
-                    Intrigue.discard(allResources.intrigues[i])
-                end
-            else
-                realAmount = math.min(amount, allResources[name]:get())
-                Action.resources(color, name, -realAmount)
-            end
-            return realAmount
-        end
-
-        local capital =
-            #allResources.intrigues +
-            allResources.solari:get() +
-            allResources.spice:get() +
-            allResources.water:get()
-
-        if hasSwordmaster then
+        if Hagal.getRivalCount() == 2 then
             Rival._buyVictoryPoints(color)
         end
 
@@ -92,12 +60,6 @@ end
 
 function Rival._buyVictoryPoints(color)
     -- Do not use Rival.resources inside this function!
-
-    local rival = PlayBoard.getLeader(color)
-
-    if Hagal.getRivalCount() == 1 then
-        return
-    end
 
     while true do
         local intrigues = PlayBoard.getIntrigues(color)
@@ -170,6 +132,10 @@ function Rival._removeBestFaction(color, factions)
     return bestFaction
 end
 
+---@param color PlayerColor
+---@param factionOrFactions string|string[]|nil In case of an array, the faction picked will be removed from it as a side effect.
+---@param amount integer
+---@return Continuation
 function Rival.influence(color, factionOrFactions, amount)
     local finalFaction
     if not factionOrFactions or type(factionOrFactions) == "table" then
@@ -232,7 +198,7 @@ function Rival.acquireTech(color, stackIndex)
         local bestTech
         for otherStackIndex = 1, 3 do
             local tech = TechMarket.getTopCardDetails(otherStackIndex)
-            if tech.hagal and tech.cost <= spiceBudget + discount and (not bestTech or bestTech.cost < tech.cost) then
+            if tech and tech.hagal and tech.cost <= spiceBudget + discount and (not bestTech or bestTech.cost < tech.cost) then
                 bestTechIndex = otherStackIndex
                 bestTech = tech
             end
@@ -258,17 +224,18 @@ function Rival.acquireTech(color, stackIndex)
     end
 end
 
-function Rival.choose(color, topic)
+function Rival.randomlyChoose(color, topic)
     if Helper.isElementOf(topic, { "shuttleFleet", "machinations" }) then
         local factions = { "emperor", "spacingGuild", "beneGesserit", "fremen" }
         Helper.repeatChainedAction(2, function ()
             return Rival.influence(color, factions, 1)
         end)
-        return true
-    elseif Helper.isElementOf(topic, { "geneLockedVault" }) then
-        return Rival.drawIntrigues(color, 1)
-    else
         return false
+    elseif Helper.isElementOf(topic, { "geneLockedVault" }) then
+        Rival.drawIntrigues(color, 1)
+        return false
+    else
+        return true
     end
 end
 

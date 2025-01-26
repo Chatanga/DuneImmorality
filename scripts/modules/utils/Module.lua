@@ -137,7 +137,8 @@ end
 
 function Module.unregisterAllModuleRedirections()
     for functionName, _ in pairs(Module.registeredModuleRedirections) do
-        Global.setVar(functionName, nil)
+        Global.setVar(functionName, function (...)
+        end)
     end
 end
 

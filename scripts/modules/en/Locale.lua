@@ -132,6 +132,7 @@ return {
     leaderSelectionInactiveInstruction = "Wait for your opponents\nto select their leader.",
     playerTurnsActiveInstruction = "Send an agent\nor reveal your hand,\nthen press End of Turn.",
     playerTurnsInactiveInstruction = "Wait for your opponents\nto play their\nagent / reveal turns.",
+    combatInstruction = "Play your plot cards informally\nand collectively decide\nwhen the fight will end.",
     combatActiveInstruction = "Play an intrigue and\npress End of Turn or simply\npress End of Turn to pass.",
     combatInactiveInstruction = "Wait for your opponents\nin combat to play an\nintrigue or pass their turns.",
     combatEndActiveInstruction = "Take your reward and play\nintrigue cards if you may,\nthen press End of Turn.",
@@ -358,6 +359,7 @@ return {
     tuekGainSolariFromAlly = "↯ Esmar Tuek benefits of its allies.",
     tuekDrawIntrigueFromOpponent = "↯ Esmar Tuek benefits of its opponent.",
     hungryForSpiceAbility = "↯ Steersman Y'rkoon get stoned.",
+    lookAt = "Look at {rank} card",
     kotaOdaxChoice = "Select one Tech Tile.",
 
     -- Fanmade leaders
@@ -416,7 +418,6 @@ return {
     arrakeen = "Arrakeen",
     carthag = "Carthag",
     researchStation = "Research Station",
-    researchStationImmortality = "Research Station",
     sietchTabr = "Sietch Tabr",
     imperialBasin = "Imperial Basin",
     haggaBasin = "Hagga Basin",
@@ -428,7 +429,7 @@ return {
     techNegotiation_2 = "Send Negotiator",
     dreadnought = "Dreadnought",
 
-    -- Hagal
+    -- Hagal cards
     harvestSpice = "Harvest Spice",
     arrakeen1p = "Arrakeen 1P",
     arrakeen2p = "Arrakeen 2P",
@@ -439,10 +440,12 @@ return {
     carthag1 = "Carthag 1",
     carthag2 = "Carthag 2",
     carthag3 = "Carthag 3",
-    reshuffle = "Reshuffle",
-    churnImperiumRow = "Imperium Row Churn ({count} {card})",
     acquireTech = "Acquire Tech",
     tuekSietch = "Tuek's Sietch",
+
+    -- Hagal
+    reshuffle = "Reshuffle",
+    churnImperiumRow = "Imperium Row Churn ({count} {card})",
 
     -- Imperium cards
     duneTheDesertPlanet = "Dune the Desert Planet",

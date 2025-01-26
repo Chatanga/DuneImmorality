@@ -55,7 +55,7 @@ function Reserve.acquireTheSpiceMustFlow(color, toItsHand)
         local position = Player[color].getHandTransform().position
         Helper.moveCardFromZone(Reserve.theSpiceMustFlow.zone, position, nil, false, true)
     else
-        PlayBoard.giveCardFromZone(color, Reserve.theSpiceMustFlow.zone, false, toItsHand)
+        PlayBoard.giveCardFromZone(color, Reserve.theSpiceMustFlow.zone, false)
     end
     return true
 end

@@ -15,7 +15,11 @@ local TechMarket = Module.lazyRequire("TechMarket")
 local Intrigue = Module.lazyRequire("Intrigue")
 local Types = Module.lazyRequire("Types")
 local Board = Module.lazyRequire("Board")
+local TurnControl = Module.lazyRequire("TurnControl")
+local HagalCard = Module.lazyRequire("HagalCard")
 
+---@class Leader: Action
+---@field name string
 local Leader = Helper.createClass(Action)
 
 function Leader.newLeader(name)
@@ -715,6 +719,19 @@ Leader.esmarTuek = Helper.createClass(Leader, {
         Action.prepare(color, settings)
         MainBoard.processTuekSnapPoints(settings)
     end,
+
+    --- Smuggle Spice (only automated for a rival)
+    signetRing = function (color)
+        local leader = PlayBoard.getLeader(color)
+        local best = HagalCard.findHarvestableSpace(true)
+        if best.desertSpace and best.spiceBonus > 0 then
+            MainBoard.getSpiceBonus(best.desertSpace):change(-1)
+            leader.resources(color, "spice", 1)
+            return true
+        else
+            return false
+        end
+    end
 })
 
 Leader.piterDeVries = Helper.createClass(Leader, {
@@ -792,6 +809,21 @@ Leader.yrkoon = Helper.createClass(Leader, {
                 bag.setPosition(p)
                 bag.setInvisibleTo({})
                 Helper.noPhysics(bag)
+
+                local ranks = { "first", "second", "third", "fourth" }
+                bag.createButton({
+                    click_function = Helper.registerGlobalCallback(function ()
+                        bag.Container.search(color, 1)
+                    end),
+                    position = Vector(0, 0.6, 0),
+                    tooltip = I18N("lookAt", { rank = I18N(ranks[i]) }),
+                    width = 500,
+                    height = 500,
+                    color = Helper.AREA_BUTTON_COLOR,
+                    hover_color = { 0.7, 0.7, 0.7, 0.7 },
+                    press_color = { 0.5, 1, 0.5, 0.4 },
+                    font_color = { 1, 1, 1, 100 },
+                })
             end
         end)
 
@@ -822,7 +854,7 @@ Leader.yrkoon = Helper.createClass(Leader, {
             end
         end)
         Helper.registerEventListener("spiceValueChanged", function (otherColor, newValue)
-            if Leader.yrkoon.baseSpice and otherColor == color then
+            if Leader.yrkoon.baseSpice and otherColor == color and TurnControl.getCurrentPhase() == "playerTurns" then
                 if newValue - Leader.yrkoon.baseSpice >= 3 then
                     local leader = PlayBoard.getLeader(color)
                     Action.log(I18N("hungryForSpiceAbility"), color)
@@ -879,34 +911,21 @@ Leader.kotaOdax = Helper.createClass(Leader, {
         Helper.registerEventListener("playerTurn", function (phaseName, otherColor)
             if phaseName == "gameStart" and otherColor == color then
                 local options = {}
-                if false then
-                    for index = 1, 3 do
-                        local stackIndex = 4 - index
-                        local cardName = TechMarket.getBottomCardDetails(stackIndex)
-                        table.insert(options, cardName)
-                    end
-                    Dialog.showOptionsDialog(color, I18N("kotaOdaxChoice"), options, nil, function (index)
-                        local stackIndex = 4 - index
-                        local content = PlayBoard.getPlayBoard(color).content
-                        local zone = content.leaderZone
-                        TechMarket.grapBottomCard(stackIndex, zone.getPosition())
-                    end)
-                else
-                    for index = 1, 3 do
-                        local stackIndex = 4 - index
-                        local cardName = TechMarket.getBottomCardDetails(stackIndex)
-                        table.insert(options, {
-                            name = cardName,
-                            url = Deck.getCardUrlByName("tech", cardName),
-                        })
-                    end
-                    Dialog.showTechOptionsDialog(color, I18N("kotaOdaxChoice"), options, function (index)
-                        local stackIndex = 4 - math.max(1, index) -- Select the first option on cancellation.
-                        local content = PlayBoard.getPlayBoard(color).content
-                        local zone = content.leaderZone
-                        TechMarket.grapBottomCard(stackIndex, zone.getPosition())
-                    end)
+                for index = 1, 3 do
+                    local stackIndex = 4 - index
+                    local cardName = TechMarket.getBottomCardDetails(stackIndex)
+                    table.insert(options, {
+                        name = cardName,
+                        url = Deck.getCardUrlByName("tech", cardName),
+                    })
                 end
+                Dialog.showTechOptionsDialog(color, I18N("kotaOdaxChoice"), options, function (index)
+                    local stackIndex = 4 - math.max(1, index) -- Select the first option on cancellation.
+                    local content = PlayBoard.getPlayBoard(color).content
+                    local zone = content.leaderZone
+                    TechMarket.grapBottomCard(stackIndex, zone.getPosition())
+                    TurnControl.endOfTurn()
+                end)
             end
         end)
     end,

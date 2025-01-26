@@ -49,6 +49,7 @@ local MainBoard = {
         sietchTabr = { group = "city", combat = true },
         arrakeen = { group = "city", combat = true },
         carthag = { group = "city", combat = true },
+        researchStation = { group = "city", combat = true },
 
         theGreatFlat = { group = "desert", combat = true },
         haggaBasin = { group = "desert", combat = true },
@@ -74,25 +75,23 @@ function MainBoard.onLoad(state)
 
     Helper.forEachValue(MainBoard.spiceBonusTokens, Helper.noPhysicsNorPlay)
 
-    if state.settings then
-        for name, token in pairs(MainBoard.spiceBonusTokens) do
-            if token then
-                local value = state.MainBoard and state.MainBoard.spiceBonuses[name] or 0
-                MainBoard.spiceBonuses[name] = Resource.new(token, nil, "spice", value, name)
-            end
-        end
-
+    if state.settings and state.MainBoard then
         MainBoard.mainBoard = Board.getBoard("mainBoard")
         MainBoard.topRightBoard = Board.getBoard("defaultBoard") or Board.getBoard("shippingBoard")
         MainBoard.tuekSietchBoard = Board.getBoard("tuekSietchBoard")
 
         MainBoard._transientSetUp(state.settings)
+
+        for name, resource in pairs(MainBoard.spiceBonuses) do
+            local value = state.MainBoard.spiceBonuses[name]
+            resource:set(value)
+        end
     end
 end
 
 function MainBoard.onSave(state)
     state.MainBoard = {
-        spiceBonuses = Helper.map(MainBoard.spiceBonuses, function (_, resource)
+        spiceBonuses = Helper.mapValues(MainBoard.spiceBonuses, function (resource)
             return resource:get()
         end),
     }
@@ -199,7 +198,7 @@ function MainBoard._transientSetUp(settings)
 end
 
 function MainBoard._createRoundIndicator()
-    local primaryTable = getObjectFromGUID("2b4b92")
+    local primaryTable = getObjectFromGUID(GameTableGUIDs.primary)
     local origin = primaryTable.getPosition() + Vector(-5, 1.8, -16)
 
     Helper.createAbsoluteButtonWithRoundness(primaryTable, 1, {
@@ -397,7 +396,7 @@ function MainBoard._createSpaceButton(space)
 
             local zone = space.zone
             local tags = { "Agent" }
-            space.park = Park.createCommonPark(tags, slots, nil, nil, true, { zone })
+            space.park = Park.createCommonPark(tags, slots, nil, nil, true, { zone }, "Space")
         else
             space.zone = Park.createTransientBoundingZone(0, Vector(0.75, 1, 0.75), { p })
         end
@@ -740,7 +739,7 @@ function MainBoard._goHallOfOratory(color, leader, continuation)
     if MainBoard._checkGenericAccess(color, leader, {}) then
         continuation.run(function ()
             leader.troops(color, "supply", "garrison", 1)
-            leader.resources(color, "persuasion", 1)
+            PlayBoard.getResource(color, "persuasion"):setBaseValueContribution("hallOfOratory", 1)
         end)
     else
         continuation.run()
@@ -829,19 +828,12 @@ function MainBoard._goResearchStation(color, leader, continuation)
     if MainBoard._checkGenericAccess(color, leader, { water = 2 }) then
         continuation.run(function ()
             leader.resources(color, "water", -2)
-            leader.drawImperiumCards(color, 3)
-        end)
-    else
-        continuation.run()
-    end
-end
-
-function MainBoard._goResearchStationImmortality(color, leader, continuation)
-    if MainBoard._checkGenericAccess(color, leader, { water = 2 }) then
-        continuation.run(function ()
-            leader.resources(color, "water", -2)
-            leader.drawImperiumCards(color, 2)
-            leader.research(color)
+            if MainBoard.immortalityPatch then
+                leader.drawImperiumCards(color, 2)
+                leader.research(color)
+            else
+                leader.drawImperiumCards(color, 3)
+            end
         end)
     else
         continuation.run()
@@ -1124,7 +1116,7 @@ function MainBoard.unused_isFactionSpace(spaceName)
 end
 
 function MainBoard.isLandsraadSpace(spaceName)
-    return MainBoard.spaceDetails[spaceName].group == "city"
+    return MainBoard.spaceDetails[spaceName].group == "landsraad"
 end
 
 function MainBoard.isGreenSpace(spaceName)
@@ -1171,6 +1163,9 @@ function MainBoard.getBannerZones()
 end
 
 function MainBoard.onObjectEnterZone(zone, object)
+    if Helper.isNil(zone) or Helper.isNil(object) then
+        return
+    end
     if zone == MainBoard.mentatZone then
         if Types.isMentat(object) then
             -- Wait 1 second to see if the Mentat is still around and wasn't simply moving across the board.
@@ -1239,7 +1234,10 @@ function MainBoard.trash(object)
     end)
 end
 
-function MainBoard.unused_isInside(object)
+
+---@param object table
+---@return boolean
+function MainBoard.isInside(object)
     local position = object.getPosition()
     local center = MainBoard.mainBoard.getPosition()
     local offset = position - center

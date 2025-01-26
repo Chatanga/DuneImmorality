@@ -247,7 +247,9 @@ end
 function CardEffect.perSwordCard(expression, cardExcluded)
     return function (context)
         local swordCount = 0
-        if not context.oldContributions then
+        if context.oldContributions then
+            swordCount = context.oldContributions.strength or 0
+        else
             -- Special case here of a recursive call.
             CardEffect._reapply(context, cardExcluded, function (output)
                 if output.strength and output.strength > 0 then
@@ -287,8 +289,21 @@ end
 
 function CardEffect.choice(n, options)
     return function (context)
-        PlayBoard.getLeader(context.color).choose(context.color, context.cardName)
-        return true
+        if PlayBoard.getLeader(context.color).randomlyChoose(context.color, context.cardName) then
+            local shuffledOptions = Helper.shallowCopy(options)
+            Helper.shuffle(shuffledOptions)
+            local i = 0
+            for  _, option in ipairs(options) do
+                if i > n then
+                    break
+                end
+                if option(context) then
+                    i = i + 1
+                end
+            end
+            return true
+        end
+        return false
     end
 end
 
@@ -301,9 +316,8 @@ function CardEffect.optional(options)
                 end
             end
             return true
-        else
-            return false
         end
+        return false
     end
 end
 

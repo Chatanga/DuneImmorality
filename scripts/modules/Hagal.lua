@@ -14,6 +14,7 @@ local ConflictCard = Module.lazyRequire("ConflictCard")
 local Rival = Module.lazyRequire("Rival")
 local ImperiumRow = Module.lazyRequire("ImperiumRow")
 local Action = Module.lazyRequire("Action")
+local Board = Module.lazyRequire("Board")
 
 -- Enlighting clarifications: https://boardgamegeek.com/thread/2578561/summarizing-automa-2p-and-1p-similarities-and-diff
 local Hagal = Helper.createClass(Action, {
@@ -78,8 +79,9 @@ function Hagal.setUp(settings)
         if Hagal.getRivalCount() == 1 then
             Hagal.mentatSpaceCostPatch.destruct()
         elseif Hagal.getRivalCount() == 2 then
+            Helper.dump("Hagal.getMentatSpaceCost() =", Hagal.getMentatSpaceCost())
             if Hagal.getMentatSpaceCost() == 5 then
-                Hagal.mentatSpaceCostPatch.setPosition(Vector(-3.98, 0.57, 3.43))
+                Hagal.mentatSpaceCostPatch.setPosition(Vector(-3.90, Board.onMainBoard(-0.07), 3.75))
                 Hagal.mentatSpaceCostPatch.setInvisibleTo({})
                 Hagal.mentatSpaceCostPatch.setLock(true)
             else
@@ -92,7 +94,8 @@ function Hagal.setUp(settings)
 end
 
 function Hagal.getMentatSpaceCost()
-    if Hagal.getRivalCount() == 2 and Helper.isElementOf(Hagal.difficulty, {"veteran", "expert"}) then
+    Helper.dump("Hagal.difficulty:", Hagal.difficulty)
+    if Hagal.getRivalCount() == 2 and Helper.isElementOf(Hagal.difficulty, {"veteran", "expert", "expertPlus"}) then
         return 5
     else
         return 2
@@ -415,9 +418,11 @@ end
 
 function Hagal.pickAnyCompatibleLeader(color)
     if Hagal.getRivalCount() == 1 then
-        local pseudoLeader = Helper.getDeck(Hagal.deckZone)
-        assert(pseudoLeader, "Missing Hagal deck!")
-        PlayBoard.setLeader(color, pseudoLeader).doAfter(TurnControl.endOfTurn)
+        Helper.withAnyDeck(Hagal.deckZone, function (deck)
+            local pseudoLeader = deck
+            assert(pseudoLeader, "Missing Hagal deck!")
+            PlayBoard.setLeader(color, pseudoLeader).doAfter(TurnControl.endOfTurn)
+        end)
     else
         local leaders = {}
         for _, leader in ipairs(LeaderSelection.getSelectableLeaders()) do

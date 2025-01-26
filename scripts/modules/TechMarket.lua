@@ -20,6 +20,11 @@ local TechMarket = {
 
 function TechMarket.onLoad(state)
     if state.settings and (state.settings.riseOfIx or state.settings.ixAmbassy) then
+        if state.settings.ixAmbassy then
+            TechMarket.board = Board.getBoard("ixAmbassyBoard")
+        else
+            TechMarket.board = Board.getBoard("ixBoard")
+        end
         TechMarket._transientSetUp(state.settings)
     end
 end
@@ -77,7 +82,13 @@ function TechMarket._transientSetUp(settings)
         table.insert(TechMarket.acquireCards, acquireCard)
     end
 
+    Helper.registerEventListener("playerTurn", function (phase, color)
+        -- The "agentSent" event is not yet sent when revealing card such as "Acquire Tech".
+        TechMarket.acquireTechOptions = {}
+    end)
+
     Helper.registerEventListener("agentSent", function (color, spaceName)
+        -- Only needed when playing multiple times as a human (Jessica of Arrakis).
         TechMarket.acquireTechOptions = {}
         if settings.ixAmbassy and MainBoard.isGreenSpace(spaceName) then
             local discount = PlayBoard.hasHighCouncilSeat(color) and 1 or 0
@@ -105,8 +116,11 @@ function TechMarket._tearDown()
 end
 
 function TechMarket._processSnapPoints()
+    Helper.dumpFunction("TechMarket._processSnapPoints")
     TechMarket.techSlots = {}
     TechMarket.negotiatorSlot = nil
+
+    assert(TechMarket.board, "No tech market board!")
 
     Helper.collectSnapPoints(TechMarket.board, {
 
@@ -383,7 +397,7 @@ end
 
 function TechMarket.getRivalSpiceDiscount()
     local options = Helper.getValues(TechMarket.acquireTechOptions)
-    assert(#options == 1)
+    assert(#options == 1, #options)
     local option = options[1]
     assert(option.resourceType == "spice")
     return option.amount
@@ -397,6 +411,7 @@ function TechMarket._createNegotiationPark(color)
         Yellow = Vector(0.45, 0, -0.45)
     }
 
+    assert(TechMarket.negotiationZone, "No " .. color .. " negotiation zone!")
     local origin = TechMarket.negotiationZone.getPosition() + offsets[color]
     origin:setAt('y', Board.onIxBoard(0.18)) -- ground level
     local slots = {}
@@ -432,14 +447,14 @@ end
 
 function TechMarket.unused_addNegotiator(color)
     assert(TechMarket.negotiationParks, "Missing Rise of Ix extension!")
-    local supply = PlayBoard.getSupplyPark()
+    local supply = PlayBoard.getSupplyPark(color)
     local negotiation = TechMarket.negotiationParks[color]
     return Park.transfer(1, supply, negotiation) > 0
 end
 
 function TechMarket.unused_removeNegotiator(color)
     assert(TechMarket.negotiationParks, "Missing Rise of Ix extension!")
-    local supply = PlayBoard.getSupplyPark()
+    local supply = PlayBoard.getSupplyPark(color)
     local negotiation = TechMarket.negotiationParks[color]
     return Park.transfer(1, negotiation, supply) > 0
 end

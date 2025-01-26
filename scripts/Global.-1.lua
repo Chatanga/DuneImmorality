@@ -46,6 +46,11 @@ autoLoadedSettings = {
 }
 ]]
 
+GameTableGUIDs = {
+    primary = "2b4b92",
+    secondary = "662ced"
+}
+
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local XmlUI = require("utils.XmlUI")
@@ -198,8 +203,8 @@ end
 
 function asyncOnLoad(scriptState)
     local tables = Helper.resolveGUIDs(false, {
-        primaryTable = "2b4b92",
-        secondaryTable = "662ced",
+        primaryTable = GameTableGUIDs.primary,
+        secondaryTable = GameTableGUIDs.secondary,
     })
     Helper.noPhysicsNorPlay(
         tables.primaryTable,
@@ -260,9 +265,6 @@ function asyncOnLoad(scriptState)
         "onPlayerDisconnect",
         "onObjectEnterZone",
         "onObjectLeaveZone",
-        "onObjectEnterContainer",
-        "onObjectLeaveContainer",
-        "onObjectDrop",
     })
 
     local uiAlreadySetUp = false
@@ -312,7 +314,7 @@ function onSave()
         if not stable then
             -- Shake the world a bit.
             Wait.time(function ()
-                local primaryTable = getObjectFromGUID("2b4b92")
+                local primaryTable = getObjectFromGUID(GameTableGUIDs.primary)
                 primaryTable.setName(primaryTable.getName() == "" and "..." or "")
             end, 0.5, 2)
         end
@@ -334,7 +336,7 @@ end
 
 --- TTS event handler.
 function onObjectDestroy(object)
-    if object.getGUID() == "2b4b92" then
+    if object.getGUID() == GameTableGUIDs.primary then
         Module.unregisterAllModuleRedirections()
         --Helper.destroyTransientObjects()
         Helper.dump("Bye!")
@@ -342,11 +344,12 @@ function onObjectDestroy(object)
 end
 
 --- Set up the game, an irreversible operation.
+---@param newSettings Settings
 function setUp(newSettings)
     assert(newSettings)
 
-    assert((not newSettings.epicMode) or newSettings.ix)
-    assert((not newSettings.ixAmbassy) or (not newSettings.ix))
+    assert((not newSettings.epicMode) or newSettings.riseOfIx)
+    assert((not newSettings.ixAmbassy) or (not newSettings.riseOfIx))
     assert((not newSettings.goTo11) or newSettings.immortality)
 
     local continuation = Helper.createContinuation("setUp")
@@ -537,6 +540,37 @@ function setUpFromUI()
 
     local numberOfPlayers = Controller.getNumberOfPlayers(Controller.fields.virtualHotSeatMode)
 
+    ---@alias Settings {
+    --- language: string,
+    --- numberOfPlayers: 1|2|3|4,
+    --- hotSeat: boolean,
+    --- firstPlayer: PlayerColor|"random",
+    --- randomizePlayerPositions: boolean,
+    --- difficulty: string,
+    --- autoTurnInSolo: boolean,
+    --- imperiumRowChurn: boolean,
+    --- streamlinedRivals: boolean,
+    --- brutalEscalation: boolean,
+    --- expertDeployment: boolean,
+    --- smartPolitics: boolean,
+    --- riseOfIx: boolean,
+    --- epicMode: boolean,
+    --- immortality: boolean,
+    --- goTo11: boolean,
+    --- bloodlines: boolean,
+    --- ixAmbassy: boolean,
+    --- ixAmbassyWithIx: boolean,
+    --- leaderSelection: "random"|"reversePick"|"reverseHiddenPick"|"altHiddenPick"|string[],
+    --- leaderPoolSize?: integer,
+    --- tweakLeaderSelection: boolean,
+    --- fanmadeLeaders: boolean,
+    --- horizontalHandLayout: boolean,
+    --- variant: "none"|"arrakeenScouts",
+    --- formalCombatPhase: boolean,
+    --- soundEnabled: boolean,
+    --- submitGameRankedGame: boolean,
+    --- submitGameTournament: boolean,
+    ---}
     setUp({
         language = Controller.fields.language,
         numberOfPlayers = numberOfPlayers,

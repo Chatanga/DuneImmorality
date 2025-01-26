@@ -5,6 +5,8 @@
 ---@field copy fun(self: Vector): Vector
 ---@field setAt fun(self: Vector, coordinate: string, value: number): nil
 
+---@alias ButtonCallback fun(object: table, color:PlayerColor, altClick:boolean)
+
 --[[
     Miscellaneous. Sections marked with (!) are used extensively in this mod
     and should be studied closely to understand it.
@@ -76,6 +78,8 @@ end
     Post an anonymous error log on my site in case an error has occured and been
     catched.
 ]]
+---@param context string
+---@param error string
 function Helper._postError(context, error)
 
     local saveInfo = Global.getVar("saveInfo")
@@ -107,6 +111,9 @@ end
 
 -- *** Event listeners ***
 
+---@param topic string
+---@param listener function
+---@return function
 function Helper.registerEventListener(topic, listener)
     return Helper.registerEventListenerWithPriority(topic, 0, listener)
 end
@@ -178,7 +185,7 @@ end
     Emit an event: all listeners registered for the specified topic will
     be called with the following parameters.
 ]]
----@param topic any
+---@param topic string
 ---@param ... unknown
 function Helper.emitEvent(topic, ...)
     local listenersWithPriority = Helper.eventListenersByTopic[topic]
@@ -277,8 +284,8 @@ end
 --[[
     A synthetic move of an object, combining multiple operations.
 ]]
----@param object table
----@param position? Vector
+---@param object Object
+---@param position Vector
 ---@param rotation? Vector
 ---@param smooth? boolean
 ---@param flipAtTheEnd? boolean
@@ -353,7 +360,7 @@ function Helper.moveCardFromZone(zone, position, rotation, smooth, flipAtTheEnd)
     return continuation
 end
 
----@param objects any[]
+---@param objects Object[]
 ---@return string[]
 function Helper.getAllCardNames(objects)
     local allCardNames = {}
@@ -362,6 +369,7 @@ function Helper.getAllCardNames(objects)
         if t == "Card" then
             table.insert(allCardNames, Helper.getID(object))
         elseif t == "Deck" then
+            ---@cast object Bag
             for _, innerObject in ipairs(object.getObjects()) do
                 table.insert(allCardNames, Helper.getID(innerObject))
             end
@@ -374,8 +382,8 @@ end
     Return a list of cards (not spawned in general) from the returned value of
     'Helper.getDeckOrCard(zone)'. If there is none, an empty list is returned.
 ]]
----@param deckOrCard table?
----@return any[]
+---@param deckOrCard DeckOrCard
+---@return (Card|DeadObject)[]
 function Helper.getCards(deckOrCard)
     if deckOrCard then
         if deckOrCard.type == "Deck" then
@@ -393,7 +401,7 @@ end
 --[[
     Return the number of cards from the returned value of 'Helper.getDeckOrCard(zone)'.
 ]]
----@param deckOrCard table?
+---@param deckOrCard DeckOrCard
 ---@return integer
 function Helper.getCardCount(deckOrCard)
     if not deckOrCard then
@@ -411,20 +419,25 @@ end
     Return the first deck or card found in the provide zone. Deck and card hold
     by a player are ignored.
 ]]
----@param zone table
----@return table?
+---@param zone Zone
+---@return DeckOrCard?
 function Helper.getDeckOrCard(zone)
     assert(zone)
     assert(type(zone) ~= 'string', tostring(zone) .. ' looks like a GUID, not a zone')
     -- It is pairs, not ipairs!
+    -- TODO Confirm it...
     for _, object in pairs(zone.getObjects()) do
         if object.type and not object.held_by_color and (object.type == "Card" or object.type == "Deck") then
+            ---@cast object Card|Deck
             return object
         end
     end
     return nil
 end
 
+---@param zone Zone
+---@param action fun(deck: Deck)
+---@return boolean
 function Helper.withAnyDeck(zone, action)
     local predicate = function (object)
         return not object.held_by_color and object.type == "Deck"
@@ -432,6 +445,9 @@ function Helper.withAnyDeck(zone, action)
     return Helper.withAnyItem(zone, predicate, action)
 end
 
+---@param zone Zone
+---@param action fun(card: Card)
+---@return boolean
 function Helper.withAnyCard(zone, action)
     local predicate = function (object)
         return not object.held_by_color and object.type == "Card"
@@ -439,14 +455,26 @@ function Helper.withAnyCard(zone, action)
     return Helper.withAnyItem(zone, predicate, action)
 end
 
+---@param zone Zone
+---@param action fun(object: Object)
+---@return boolean
 function Helper.withAnyItem(zone, predicate, action)
     return Helper._with(zone, false, predicate, action) > 0
 end
 
+---@param zone Zone
+---@param predicate fun(object: Object): boolean
+---@param action fun(object: Object)
+---@return integer
 function Helper.unused_withAllItems(zone, predicate, action)
-    Helper._with(zone, true, predicate, action)
+    return Helper._with(zone, true, predicate, action)
 end
 
+---@param zone Zone
+---@param all boolean
+---@param predicate fun(object: Object): boolean
+---@param action fun(object: Object)
+---@return integer
 function Helper._with(zone, all, predicate, action)
     assert(zone)
     assert(type(zone) ~= 'string', tostring(zone) .. ' looks like a GUID, not a zone')
@@ -554,12 +582,16 @@ function Helper.createTransientAnchor(nickname, position)
     return continuation
 end
 
+---@param object Object
+---@return Object
 function Helper.markAsTransient(object)
     -- Tagging is not usable on a zone without filtering its content.
     object.setGMNotes("Transient")
     return object
 end
 
+---@param object Object
+---@return boolean
 function Helper._isTransient(object)
     return object.getGMNotes() == "Transient"
 end
@@ -2044,6 +2076,10 @@ function Helper.splitString(str, sep)
         table.insert(tokens, token)
     end
     return tokens
+end
+
+function Helper.isNil(object)
+    return object == nil
 end
 
 function Helper.isNotNil(object)

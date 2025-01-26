@@ -11,6 +11,17 @@ local I18N = require("utils.I18N")
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local Hagal = Module.lazyRequire("Hagal")
 
+---@alias Phase
+---| 'leaderSelection'
+---| 'gameStart'
+---| 'roundStart'
+---| 'playerTurns'
+---| 'combat'
+---| 'combatEnd'
+---| 'makers'
+---| 'recall'
+---| 'endgame'
+
 local TurnControl = {
     hotSeat = false,
     players = {},
@@ -36,10 +47,15 @@ function TurnControl.onLoad(state)
         TurnControl.currentPlayerLuaIndex = state.TurnControl.currentPlayerLuaIndex
         TurnControl.customTurnSequence = state.TurnControl.customTurnSequence
 
+        -- The "playerTurn" event is resent to resync things properly.
         if TurnControl.currentPlayerLuaIndex then
             Helper.onceTimeElapsed(2).doAfter(Helper.partialApply(TurnControl._notifyPlayerTurn, true))
-        else
+        end
+
+        if TurnControl.currentPhase == 'combat' then
             TurnControl._createReclaimRewardsButton()
+        elseif TurnControl.currentPhase == 'combatEnd' then
+            TurnControl._createNextRoundButton()
         end
     end
 end
@@ -196,7 +212,7 @@ function TurnControl.endOfTurn()
     end)
 end
 
-function TurnControl.endOfPhase(haltAfter)
+function TurnControl.endOfPhase()
     local bestTrigger
     local heavyPhases = { "recall" }
     if TurnControl.getPlayerCount() < 3 then
@@ -218,9 +234,7 @@ function TurnControl.endOfPhase(haltAfter)
         if phase then
             Helper.emitEvent("phaseEnd", phase)
         end
-        if not haltAfter then
-            TurnControl._nextPhase()
-        end
+        TurnControl._nextPhase()
     end)
 end
 
@@ -240,22 +254,20 @@ function TurnControl._next(startPlayerLuaIndex)
     else
         if TurnControl.currentPhase == "combat" then
             TurnControl._createReclaimRewardsButton()
-            TurnControl.endOfPhase(true)
         elseif TurnControl.currentPhase == "combatEnd" and TurnControl._endgameGoalReached() and TurnControl.currentRound < 10 then
             TurnControl._createNextRoundButton()
-            TurnControl.endOfPhase(true)
         else
             TurnControl.endOfPhase()
         end
     end
 end
 
-function TurnControl._getButtonAnchor()
-    local primaryTable = getObjectFromGUID("2b4b92")
+function TurnControl._getCombatButtonAnchor()
+    local primaryTable = getObjectFromGUID(GameTableGUIDs.primary)
 
-    local continuation = Helper.createContinuation("TurnControl._createReclaimRewardsButton")
+    local continuation = Helper.createContinuation("TurnControl._getCombatButtonAnchor")
     if not TurnControl.buttonAnchor then
-        Helper.createTransientAnchor("AgentPark", primaryTable.getPosition() + Vector(5, 1.3, -15.8)).doAfter(function (anchor)
+        Helper.createTransientAnchor("CombatButton", primaryTable.getPosition() + Vector(5, 1.3, -15.8)).doAfter(function (anchor)
             TurnControl.buttonAnchor = anchor
             continuation.run(TurnControl.buttonAnchor)
         end)
@@ -274,11 +286,11 @@ function TurnControl._createReclaimRewardsButton()
     Turns.order = {}
     Turns.enable = false
 
-    TurnControl._getButtonAnchor().doAfter(function (anchor)
+    TurnControl._getCombatButtonAnchor().doAfter(function (anchor)
         Helper.createAbsoluteButtonWithRoundness(anchor, 1, {
             click_function = Helper.registerGlobalCallback(function ()
                 anchor.clearButtons()
-                TurnControl._nextPhase()
+                TurnControl.endOfPhase()
             end),
             label = I18N("reclaimRewards"),
             position = anchor.getPosition() + Vector(0, 0.5, 0),
@@ -289,6 +301,8 @@ function TurnControl._createReclaimRewardsButton()
             font_color = fromIntRGB(204, 153, 0),
         })
     end)
+
+    PlayBoard.setGeneralCombatInstruction()
 end
 
 function TurnControl._createNextRoundButton()
@@ -299,11 +313,11 @@ function TurnControl._createNextRoundButton()
     Turns.order = {}
     Turns.enable = false
 
-    TurnControl._getButtonAnchor().doAfter(function (anchor)
+    TurnControl._getCombatButtonAnchor().doAfter(function (anchor)
         Helper.createAbsoluteButtonWithRoundness(anchor, 1, {
             click_function = Helper.registerGlobalCallback(function ()
                 anchor.clearButtons()
-                TurnControl._nextPhase()
+                TurnControl.endOfPhase()
             end),
             label = I18N("doYouWantAnotherRound"),
             position = anchor.getPosition() + Vector(0, 0.5, 0),

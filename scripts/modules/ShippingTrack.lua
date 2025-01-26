@@ -17,6 +17,7 @@ local ShippingTrack = {
 
 function ShippingTrack.onLoad(state)
     if state.settings and state.settings.riseOfIx then
+        ShippingTrack.board = Board.getBoard("shippingBoard")
         ShippingTrack._transientSetUp(state.settings)
     end
 end

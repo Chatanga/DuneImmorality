@@ -1,24 +1,27 @@
 local Helper = require("utils.Helper")
 
--- Make it a class (and upgrade createPark into newPark)?
+-- TODO Make it a class (and upgrade createPark into newPark)?
+-- TODO Better encapsulate the state?
+---@alias Park {}
 local Park = {
     objectsInTransit = {}
 }
 
 ---@param tags [string]
 ---@param slots [Vector]
----@param margins Vector
+---@param margins? Vector
 ---@param rotation? Vector
----@param rotationSnap? Vector
+---@param rotationSnap? boolean
 ---@param zones? [table]
+---@param name? string
 ---@return table
-function Park.createCommonPark(tags, slots, margins, rotation, rotationSnap, zones)
+function Park.createCommonPark(tags, slots, margins, rotation, rotationSnap, zones, name)
     assert(#slots > 0)
     local finalZones = (zones and #zones > 0) and zones or { Park.createTransientBoundingZone(0, margins, slots) }
-    local name = Helper.stringConcat(tags) .. "_" .. finalZones[1].getGUID()
+    local finalName = name or Helper.stringConcat(tags) .. "_" .. finalZones[1].getGUID()
 
     local park = Park.createPark(
-        name,
+        finalName,
         slots,
         rotation,
         finalZones,
@@ -29,7 +32,7 @@ function Park.createCommonPark(tags, slots, margins, rotation, rotationSnap, zon
 
     local p = slots[1]
     local anchorDepth = 0.5
-    Helper.createTransientAnchor(name .. "Park", p - Vector(0, anchorDepth, 0)).doAfter(function (anchor)
+    Helper.createTransientAnchor(finalName .. "Park", p - Vector(0, anchorDepth, 0)).doAfter(function (anchor)
         park.anchor = anchor
         park.slots = nil
         park.slotHeight = p.y
@@ -165,18 +168,22 @@ function Park._putHolders(holders, toPark)
 
     local emptySlots = Park.findEmptySlots(toPark)
 
-    local count = math.max(0, math.min(#emptySlots, #holders))
+    local skip = #Helper.filter(Park.objectsInTransit, function (object)
+        return type(object) == "number"
+    end)
+
+    local count = math.max(0, math.min(#emptySlots - skip, #holders))
 
     for i = 1, count do
         local holder = holders[i]
         if holder.object then
-            Park._moveObjectToPark(holder.object, emptySlots[i], toPark)
+            Park._moveObjectToPark(holder.object, emptySlots[i + skip], toPark)
             Park.objectsInTransit[holder.object] = { time = now, destination = toPark }
         elseif holder.bag then
             Park.uid = (Park.uid or 0) + 1
             local uid = Park.uid
             Park.objectsInTransit[uid] = { time = now, destination = toPark }
-            Park._takeObjectToPark(holder.bag, emptySlots[i], toPark).doAfter(function (object)
+            Park._takeObjectToPark(holder.bag, emptySlots[i + skip], toPark).doAfter(function (object)
                 Park._mutateObjectInTransit(uid, object)
             end)
         end
@@ -233,6 +240,7 @@ function Park.getObjects(park, customFilter, ignoreTransit)
     else
         isOneOfThem = function (object)
             return
+                (type(object) ~= "number") and
                 (park.tagUnion and Helper.hasAnyTag(object, park.tags) or Helper.hasAllTags(object, park.tags)) and
                 (not parkId or parkId == Helper.getID(object))
         end
@@ -408,7 +416,7 @@ function Park._findEmptySlots(park, customFilter)
 end
 
 ---@param rotationAroundY number
----@param margins Vector
+---@param margins? Vector
 ---@param points Vector[]
 ---@return table
 function Park.createTransientBoundingZone(rotationAroundY, margins, points)
@@ -446,14 +454,16 @@ function Park.createTransientBoundingZone(rotationAroundY, margins, points)
     local sy = 2 * math.max(math.abs(minBounds.y), math.abs(maxBounds.y))
     local sz = 2 * math.max(math.abs(minBounds.z), math.abs(maxBounds.z))
 
+    local finalMargins = margins or Vector(0, 0, 0)
+
     local zone = spawnObject({
         type = 'ScriptingTrigger',
         position = barycenter,
         rotation = Vector(0, rotationAroundY, 0),
         scale = {
-            math.max(0.1, sx + margins.x),
-            math.max(0.1, sy + margins.y),
-            math.max(0.1, sz + margins.z)}
+            math.max(0.1, sx + finalMargins.x),
+            math.max(0.1, sy + finalMargins.y),
+            math.max(0.1, sz + finalMargins.z)}
     })
 
     Helper.markAsTransient(zone)

@@ -58,7 +58,7 @@ return {
     expert = "mentat",
     expertPlus = "kwisatz",
     autoTurnInSoloOption = "Passage de tour automatique pour les rivaux",
-    imperiumRowChurnOption = "Barattage de la rangée de l’Imperium",
+    imperiumRowChurnOption = "« Roulement » de la rangée de l’Imperium",
     brutalEscalationOption = "Escalade brutale",
     expertDeploymentOption = "Déploiement expert",
     smartPoliticsOption = "Politiques habiles",
@@ -132,6 +132,7 @@ return {
     leaderSelectionInactiveInstruction = "Attendez que vos adversaires\naient sélectionné leurs dirigeants.",
     playerTurnsActiveInstruction = "Envoyez un agent\nou révélez votre main,\npuis appuyez sur Finir tour.",
     playerTurnsInactiveInstruction = "Attendez que vos adversaires\naient joué leurs tours\nd’agent / révélation.",
+    combatInstruction = "Jouez vos intrigues\nde manière informelle et\ndécidez collectivement de\nla fin du combat.",
     combatActiveInstruction = "Jouez une intrigue et\nappuyez sur Finir tour\nou appuyez directement\nsur Finir tour pour passer.",
     combatInactiveInstruction = "Attendez que vos\nadversaires en combat\naient joué une intrigue\nou passé leur tour.",
     combatEndActiveInstruction = "Prenez votre butin et\njouez des cartes d’intrigue\nle cas échéant,\npuis appuyez sur Finir tour.",
@@ -358,6 +359,7 @@ return {
     tuekDrawIntrigueFromOpponent = "↯ Esmar Tuek profite de ses ennemies.",
     hungryForSpiceAbility = "↯ Le timonier Y'rkoon est complètement stone.",
     kotaOdaxChoice = "Sélectionnez une tuile tech.",
+    lookAt = "Regarder le {rank} choix de carte",
 
     -- Bloodlines leaders
     chani = "Chani",
@@ -415,7 +417,6 @@ return {
     arrakeen = "Arrakeen",
     carthag = "Carthag",
     researchStation = "Station de recherche",
-    researchStationImmortality = "Station de recherche",
     sietchTabr = "Sietch Tabr",
     imperialBasin = "Bassin impérial",
     haggaBasin = "Bassin de Hagga",
@@ -439,7 +440,7 @@ return {
     carthag2 = "Carthag 2",
     carthag3 = "Carthag 3",
     acquireTech = "Acquérir une Tech.",
-    --tuekSietch = "Sietch de Tuek",
+    tuekSietch = "Sietch de Tuek",
 
     -- Hagal
     reshuffle = "Rémélanger",
