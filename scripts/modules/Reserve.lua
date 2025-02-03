@@ -8,6 +8,7 @@ local Board = Module.lazyRequire("Board")
 
 local Reserve = {}
 
+---@param state table
 function Reserve.onLoad(state)
     Helper.append(Reserve, Helper.resolveGUIDs(true, {
         foldspaceSlotZone = "6b62e0",
@@ -42,14 +43,18 @@ function Reserve._transientSetUp()
     end), Deck.getAcquireCardDecalUrl("generic"))
 end
 
+---@param color PlayerColor
 function Reserve.acquireFoldspace(color)
     PlayBoard.giveCardFromZone(color, Reserve.foldspace.zone, false)
 end
 
+---@param color PlayerColor
 function Reserve.acquireArrakisLiaison(color)
     PlayBoard.giveCardFromZone(color, Reserve.arrakisLiaison.zone, false)
 end
 
+---@param color PlayerColor
+---@param toItsHand? boolean
 function Reserve.acquireTheSpiceMustFlow(color, toItsHand)
     if toItsHand then
         local position = Player[color].getHandTransform().position
@@ -57,17 +62,19 @@ function Reserve.acquireTheSpiceMustFlow(color, toItsHand)
     else
         PlayBoard.giveCardFromZone(color, Reserve.theSpiceMustFlow.zone, false)
     end
-    return true
 end
 
+---@param card Card
 function Reserve.recycleFoldspaceCard(card)
     card.setPosition(Reserve.foldspaceSlotZone.getPosition())
 end
 
 --- Move a card out of a trash and back into the reserve if necessary.
+---@param trashBag Bag
+---@param card DeadObject
 function Reserve.unused_redirectUntrashableCards(trashBag, card)
     -- The ID is stored in the 'GM Notes' property (the description and/or name
-    -- properties store an unpredictable I18N content).
+    -- properties stores an unpredictable I18N content).
     local cardName = Helper.getID(card)
     local acquireCard = Reserve[cardName]
     if acquireCard then

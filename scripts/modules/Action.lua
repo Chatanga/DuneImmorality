@@ -25,6 +25,7 @@ local Action = Helper.createClass(nil, {
     context = {}
 })
 
+---@param state table
 function Action.onLoad(state)
 
     Helper.registerEventListener("phaseStart", function (phase, _)
@@ -50,12 +51,15 @@ function Action.setUp()
     -- NOP
 end
 
+---@param state table
 function Action.onSave(state)
     state.Action = {
         context = Action.context
     }
 end
 
+---@param attributes table<string, any|function>
+---@return boolean
 function Action.checkContext(attributes)
     for name, expectedValue in pairs(attributes) do
         local value = Action.context and Action.context[name] or nil
@@ -72,10 +76,15 @@ function Action.checkContext(attributes)
     return true
 end
 
+---@param color PlayerColor
+---@param settings Settings
 function Action.doSetUp(color, settings)
     -- NOP
 end
 
+---@param phase string
+---@param isActivePlayer boolean
+---@return string?
 function Action.instruct(phase, isActivePlayer)
     local availablePhaseInstructions = {
         leaderSelection = true,
@@ -96,6 +105,8 @@ function Action.instruct(phase, isActivePlayer)
     end
 end
 
+---@param color PlayerColor
+---@param settings Settings
 function Action.prepare(color, settings)
     -- In the base game, but not in Uprising.
     if Hagal.getRivalCount() == 2 and settings.difficulty == "novice" then
@@ -113,6 +124,8 @@ end
 function Action.tearDown()
 end
 
+---@param key string
+---@param value any
 function Action.setContext(key, value)
     if key == "agentDestination" and Action.troopTransferCoalescentQueue then
         Action.flushTroopTransfer()
@@ -126,6 +139,9 @@ function Action.flushTroopTransfer()
     end
 end
 
+---@param message? string
+---@param color PlayerColor
+---@param isSecret? boolean
 function Action.log(message, color, isSecret)
     -- Order matters here.
     -- (But there is only one option with this mod.)
@@ -166,19 +182,28 @@ function Action.log(message, color, isSecret)
     end
 end
 
+---@param message string
+---@param color PlayerColor
 function Action.secretLog(message, color)
     Action.log(message, color, true)
 end
 
+---@param key string
 function Action.unsetContext(key)
     Action.context[key] = nil
 end
 
+---@param color PlayerColor
+---@param spaceName string
+---@return Continuation
 function Action.sendAgent(color, spaceName)
     Action.context.space = spaceName
     return MainBoard.sendAgent(color, spaceName)
 end
 
+---@param color PlayerColor
+---@param anywhere? boolean
+---@return boolean
 function Action.takeMentat(color, anywhere)
     local mentat = MainBoard.getMentat(anywhere)
     if mentat then
@@ -188,6 +213,8 @@ function Action.takeMentat(color, anywhere)
     end
 end
 
+---@param color PlayerColor
+---@return boolean
 function Action.recruitSwordmaster(color)
     if PlayBoard.recruitSwordmaster(color) then
         Action.log(I18N("recruitSwordmaster"), color)
@@ -197,6 +224,8 @@ function Action.recruitSwordmaster(color)
     end
 end
 
+---@param color PlayerColor
+---@return boolean
 function Action.takeHighCouncilSeat(color)
     if PlayBoard.takeHighCouncilSeat(color) then
         Action.log(I18N("takeHighCouncilSeat"), color)
@@ -249,6 +278,10 @@ function Action.bargain(color, resourceName, amount)
     return finalAmount
 end
 
+---@param color PlayerColor
+---@param amount integer
+---@param forced? boolean
+---@return Continuation
 function Action.drawImperiumCards(color, amount, forced)
     assert(Types.isPlayerColor(color))
     local playBoard = PlayBoard.getPlayBoard(color)
@@ -267,7 +300,7 @@ function Action.drawImperiumCards(color, amount, forced)
 end
 
 ---@param color PlayerColor
----@param faction Faction
+---@param faction? Faction
 ---@param amount integer
 ---@return Continuation
 function Action.influence(color, faction, amount)
@@ -349,6 +382,9 @@ function Action.troops(color, from, to, baseCount)
     return count
 end
 
+---@param color PlayerColor
+---@param parkName string
+---@return Park
 function Action.getTroopPark(color, parkName)
     if parkName == "supply" then
         return PlayBoard.getSupplyPark(color)
@@ -365,38 +401,58 @@ function Action.getTroopPark(color, parkName)
     end
 end
 
+---@param color PlayerColor
+---@param indexInRow integer
+---@return boolean
 function Action.reserveImperiumCard(color, indexInRow)
     assert(Types.isPlayerColor(color))
     assert(Helper.isInRange(1, 5, indexInRow))
     return ImperiumRow.reserveImperiumCard(indexInRow)
 end
 
+---@param color PlayerColor
+---@return boolean
 function Action.acquireReservedImperiumCard(color)
     assert(Types.isPlayerColor(color))
     return false
 end
 
+---@param color PlayerColor
+---@param indexInRow integer
+---@return boolean
 function Action.acquireImperiumCard(color, indexInRow)
     assert(Types.isPlayerColor(color))
     assert(Helper.isInRange(1, 5, indexInRow))
     return ImperiumRow.acquireImperiumCard(indexInRow, color)
 end
 
+---@param color PlayerColor
+---@return boolean
 function Action.acquireFoldspace(color)
     assert(Types.isPlayerColor(color))
-    return Reserve.acquireFoldspace(color)
+    Reserve.acquireFoldspace(color)
+    return true
 end
 
+---@param color PlayerColor
+---@return boolean
 function Action.acquireArrakisLiaison(color)
     assert(Types.isPlayerColor(color))
-    return Reserve.acquireArrakisLiaison(color)
+    Reserve.acquireArrakisLiaison(color)
+    return true
 end
 
+---@param color PlayerColor
+---@return boolean
 function Action.acquireTheSpiceMustFlow(color)
     assert(Types.isPlayerColor(color))
-    return Reserve.acquireTheSpiceMustFlow(color)
+    Reserve.acquireTheSpiceMustFlow(color)
+    return true
 end
 
+---@param color PlayerColor
+---@param indexInRow integer
+---@return boolean
 function Action.acquireSardaukarCommanderSkillCard(color, indexInRow)
     assert(Types.isPlayerColor(color))
     assert(Helper.isInRange(1, 4, indexInRow))
@@ -408,11 +464,17 @@ function Action.acquireSardaukarCommanderSkillCard(color, indexInRow)
     end
 end
 
+---@param color PlayerColor
+---@param origin string
+---@return boolean
 function Action.discardSardaukarCommander(color, origin)
     assert(Types.isPlayerColor(color))
     return SardaukarCommander.discardSardaukarCommander(color, origin)
 end
 
+---@param color PlayerColor
+---@param origin? string
+---@return boolean
 function Action.recruitSardaukarCommander(color, origin)
     assert(Types.isPlayerColor(color))
     if origin then
@@ -429,6 +491,9 @@ function Action.recruitSardaukarCommander(color, origin)
     return false
 end
 
+---@param color PlayerColor
+---@param positiveAmount integer
+---@return boolean
 function Action.advanceFreighter(color, positiveAmount)
     assert(Types.isPlayerColor(color))
     assert(positiveAmount > 0)
@@ -442,6 +507,8 @@ function Action.advanceFreighter(color, positiveAmount)
     return true
 end
 
+---@param color PlayerColor
+---@return boolean
 function Action.recallFreighter(color)
     assert(Types.isPlayerColor(color))
     if ShippingTrack.freighterReset(color) then
@@ -452,11 +519,19 @@ function Action.recallFreighter(color)
     end
 end
 
+---@param color PlayerColor
+---@param amount integer
+---@return boolean
 function Action.shipments(color, amount)
     assert(Types.isPlayerColor(color))
     return false
 end
 
+---@param color PlayerColor
+---@param from string 
+---@param to string
+---@param amount integer
+---@return integer
 function Action.dreadnought(color, from, to, amount)
     assert(Types.isPlayerColor(color))
     assert(Types.isDreadnoughtLocation(from))
@@ -476,6 +551,9 @@ function Action.dreadnought(color, from, to, amount)
     return count
 end
 
+---@param color PlayerColor
+---@param parkName string
+---@return Park?
 function Action.getDreadnoughtPark(color, parkName)
     if parkName == "supply" then
         return PlayBoard.getDreadnoughtPark(color)
@@ -494,23 +572,33 @@ function Action.getDreadnoughtPark(color, parkName)
     end
 end
 
+---@param color PlayerColor
+---@param indexInRow integer
 function Action.acquireTleilaxuCard(color, indexInRow)
     assert(Types.isPlayerColor(color))
     assert(Helper.isInRange(1, 3, indexInRow))
-    return TleilaxuRow.acquireTleilaxuCard(indexInRow, color)
+    TleilaxuRow.acquireTleilaxuCard(indexInRow, color)
+    return true
 end
 
+---@param color PlayerColor
+---@param jump? Vector
+---@return unknown
 function Action.research(color, jump)
     assert(Types.isPlayerColor(color))
-    return TleilaxuResearch.advanceResearch(color, jump).doAfter(function (finalJump)
+    TleilaxuResearch.advanceResearch(color, jump).doAfter(function (finalJump)
         if finalJump.x > 0 then
             Action.log(I18N("researchAdvance", { count = jump }), color)
         elseif finalJump.x < 0 then
             Action.log(I18N("researchRollback"), color)
         end
     end)
+    return true
 end
 
+---@param color PlayerColor
+---@param jump integer
+---@return boolean
 function Action.beetle(color, jump)
     assert(Types.isPlayerColor(color))
     TleilaxuResearch.advanceTleilax(color, jump).doAfter(function (finalJump)
@@ -523,13 +611,18 @@ function Action.beetle(color, jump)
     return true
 end
 
+---@param color PlayerColor
+---@return boolean
 function Action.atomics(color)
     assert(Types.isPlayerColor(color))
-    ImperiumRow.nuke(color)
+    ImperiumRow.nuke()
     Action.log(I18N("atomics"), color)
     return true
 end
 
+---@param color PlayerColor
+---@param amount integer
+---@return boolean
 function Action.drawIntrigues(color, amount)
     assert(Types.isPlayerColor(color))
     Intrigue.drawIntrigues(color, amount)
@@ -537,6 +630,10 @@ function Action.drawIntrigues(color, amount)
     return true
 end
 
+---@param color PlayerColor
+---@param otherColor PlayerColor
+---@param amount integer
+---@return boolean
 function Action.stealIntrigues(color, otherColor, amount)
     assert(Types.isPlayerColor(color))
     assert(Types.isPlayerColor(otherColor))
@@ -544,11 +641,17 @@ function Action.stealIntrigues(color, otherColor, amount)
     return true
 end
 
+---@param color PlayerColor
+---@return boolean
 function Action.signetRing(color)
     assert(Types.isPlayerColor(color))
     return false
 end
 
+---@param color PlayerColor
+---@param name string
+---@param count integer
+---@return boolean
 function Action.gainVictoryPoint(color, name, count)
     assert(Types.isPlayerColor(color))
     if ScoreBoard.gainVictoryPoint(color, name, count) then
@@ -561,10 +664,15 @@ function Action.gainVictoryPoint(color, name, count)
     end
 end
 
+---@param color PlayerColor
+---@param spaceName string
 function Action.unused_control(color, spaceName)
     MainBoard.occupy(MainBoard.findControlableSpace(spaceName), color)
 end
 
+---@param color PlayerColor
+---@param stackIndex? integer
+---@return boolean
 function Action.acquireTech(color, stackIndex)
     assert(Types.isPlayerColor(color))
     if stackIndex then
@@ -575,6 +683,8 @@ function Action.acquireTech(color, stackIndex)
     end
 end
 
+---@param color PlayerColor
+---@return boolean
 function Action.unused_pickVoice(color)
     assert(Types.isPlayerColor(color))
     local voiceToken = ScoreBoard.getFreeVoiceToken()
@@ -585,10 +695,16 @@ function Action.unused_pickVoice(color)
     end
 end
 
+---@param color PlayerColor
+---@param topic string
+---@return boolean
 function Action.randomlyChoose(color, topic)
     return false
 end
 
+---@param color PlayerColor
+---@param topic string
+---@return boolean
 function Action.decide(color, topic)
     -- Any reason to disable this for human players,
     -- since optional rewards are always desirable VPs?

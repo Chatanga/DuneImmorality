@@ -1,12 +1,37 @@
 local Helper = require("utils.Helper")
 local I18N = require("utils.I18N")
 
+---@class XmlUI
+---@field sharedXml table<any, Xml>
+---@field holder any
+---@field fields table<string, any>
+---@field id string
+---@field DISABLED {}
+---@field HIDDEN {}
 local XmlUI = Helper.createClass(nil, {
     DISABLED = { --[[ Disabled but visible ]] },
     HIDDEN = { --[[ Disabled and hidden ]] },
     sharedXml = {}
 })
 
+---@alias Deactivable<T> T -- |table
+---@alias Hideable<T> T -- |table
+
+---@param value string|table
+---@return string?
+function XmlUI.toStringValue(value)
+    if value and not XmlUI.isDisabled(value) then
+        ---@cast value string
+        return value
+    else
+        return nil
+    end
+end
+
+---@param holder any
+---@param id? string
+---@param fields? table<string, any>
+---@return XmlUI
 function XmlUI.new(holder, id, fields)
     --[[
         Important:
@@ -30,6 +55,7 @@ function XmlUI.new(holder, id, fields)
     return xmlUI
 end
 
+---@return Xml
 function XmlUI:getXml()
     assert(self.holder)
     local xml = XmlUI.sharedXml[self.holder]
@@ -49,6 +75,9 @@ function XmlUI:hide()
     --self.holder.UI.hide(self.id)
 end
 
+---@param id string
+---@param label string
+---@param interactable boolean
 function XmlUI:setButton(id, label, interactable)
     local element = XmlUI._findXmlElement(self:getXml(), id)
     assert(element, "Unknown id: " .. tostring(id))
@@ -56,6 +85,9 @@ function XmlUI:setButton(id, label, interactable)
     XmlUI._setXmlInteractable(element, interactable)
 end
 
+---@param id string
+---@param key string
+---@param interactable boolean
 function XmlUI:setButtonI18N(id, key, interactable)
     local element = XmlUI._findXmlElement(self:getXml(), id)
     assert(element, "Unknown id: " .. tostring(id))
@@ -63,6 +95,9 @@ function XmlUI:setButtonI18N(id, key, interactable)
     XmlUI._setXmlInteractable(element, interactable)
 end
 
+---@param player Player
+---@param value any
+---@param id string
 function XmlUI:fromUI(player, value, id)
     local values = self:_getEnumeration(id)
     if values then
@@ -125,30 +160,45 @@ function XmlUI:toUI()
     self.holder.UI.setXmlTable(self:getXml())
 end
 
+---@param name string
+---@return boolean
 function XmlUI._isEnumeration(name)
     return name:sub(-4) == "_all"
 end
 
+---@param name string
+---@return any[]
 function XmlUI:_getEnumeration(name)
     return self.fields[name .. "_all"]
 end
 
+---@param name string
+---@return boolean
 function XmlUI._isRange(name)
     return name:sub(-6) == "_range"
 end
 
+---@param name string
+---@return any
 function XmlUI:_getRange(name)
     return self.fields[name .. "_range"]
 end
 
+---@param value string|unknown
+---@return boolean
 function XmlUI.isDisabled(value)
     return value == XmlUI.DISABLED
 end
 
+---@param value string|unknown
+---@return boolean
 function XmlUI.isHidden(value)
     return value == XmlUI.HIDDEN
 end
 
+---@param xml Xml
+---@param id string
+---@return Xml?
 function XmlUI._findXmlElement(xml, id)
     for _, element in ipairs(xml) do
         if element.attributes and element.attributes.id == id then
@@ -163,6 +213,9 @@ function XmlUI._findXmlElement(xml, id)
     return nil
 end
 
+---@param dropdown Xml
+---@param optionValues table<any, string>
+---@param default any
 function XmlUI._setXmlDropdownOptions(dropdown, optionValues, default)
     assert(dropdown)
     assert(dropdown.tag == "Dropdown", dropdown.tag)
@@ -179,18 +232,25 @@ function XmlUI._setXmlDropdownOptions(dropdown, optionValues, default)
     end
 end
 
+---@param text Xml
+---@param value any
 function XmlUI._setXmlText(text, value)
     assert(text)
     assert(text.tag == "Text", text.tag)
     text.value = value
 end
 
+---@param toggle Xml
+---@param on boolean
 function XmlUI._setXmlToggle(toggle, on)
     assert(toggle)
     assert(toggle.tag == "Toggle", toggle.tag)
     toggle.attributes.isOn = XmlUI._toBool(on)
 end
 
+---@param slider Xml
+---@param range { min: number, max: number }
+---@param value number
 function XmlUI._setXmlSlider(slider, range, value)
     assert(slider)
     assert(slider.tag == "Slider", slider.tag)
@@ -199,23 +259,31 @@ function XmlUI._setXmlSlider(slider, range, value)
     slider.attributes.value = value
 end
 
+---@param button Xml
+---@param label string
 function XmlUI._setXmlButton(button, label)
     assert(button)
     assert(button.tag == "Button", button.tag)
     button.value = label
 end
 
+---@param button Xml
+---@param key string
 function XmlUI._setXmlButtonI18N(button, key)
     assert(button)
     assert(button.tag == "Button", button.tag)
     button.attributes.key = key
 end
 
+---@param xml Xml
+---@param active boolean
 function XmlUI._setXmlActive(xml, active)
     assert(xml)
     xml.attributes.active = XmlUI._toBool(active)
 end
 
+---@param xml Xml
+---@param interactable boolean
 function XmlUI._setXmlInteractable(xml, interactable)
     assert(xml)
     if xml.tag == "Dropdown" or xml.tag == "Slider" then
@@ -226,12 +294,14 @@ function XmlUI._setXmlInteractable(xml, interactable)
     end
 end
 
+---@param xml Xml
 function XmlUI._translateContent(xml)
     for _, element in ipairs(xml) do
         XmlUI._translate(element)
     end
 end
 
+---@param node Xml
 function XmlUI._translate(node)
     if node.attributes then
         if node.attributes.key then
@@ -250,6 +320,8 @@ function XmlUI._translate(node)
     end
 end
 
+---@param value any
+---@return string
 function XmlUI._toBool(value)
     return value and "True" or "False"
 end

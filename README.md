@@ -40,8 +40,7 @@ This repository contains the JSON skeletons and Lua scripts of various mods for 
 - Arrakeen Scouts history (as cards).
 - Arrakeen Scouts memory cards (using decals).
 - Blitz! mode?
-- Workaround to assimilate lazyRequire to a require?
-- Hagal: cost 5.
+- Parameter name conflict in generic typing with a compound call!
 
 ## Tests
 

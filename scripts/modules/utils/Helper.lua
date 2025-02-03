@@ -1,12 +1,3 @@
----@class Vector
----@field x number
----@field y number
----@field z number
----@field copy fun(self: Vector): Vector
----@field setAt fun(self: Vector, coordinate: string, value: number): nil
-
----@alias ButtonCallback fun(object: table, color:PlayerColor, altClick:boolean)
-
 --[[
     Miscellaneous. Sections marked with (!) are used extensively in this mod
     and should be studied closely to understand it.
@@ -36,6 +27,9 @@ local Helper = {
 }
 
 math.randomseed(os.time())
+
+---@generic TreeParameter
+---@alias Tree<TreeParameter> TreeParameter | table<string, Tree<TreeParameter>>
 
 -- *** Exception handling ***
 
@@ -216,6 +210,7 @@ function Helper.resolveGUIDs(reportUnresolvedGUIDs, data)
     local newData = data
     if data == Helper.ERASE then
         -- NOP
+        newData = nil
     elseif data then
         local t = type(data)
         if t == "string" then
@@ -244,7 +239,7 @@ function Helper.resolveGUIDs(reportUnresolvedGUIDs, data)
         else
             -- Not a problem per se, but still unexpected in our use cases.
             log("[resolveGUIDs] Unknown type: " .. t)
-            -- NOP
+        -- NOP
         end
     end
     return newData
@@ -382,7 +377,7 @@ end
     Return a list of cards (not spawned in general) from the returned value of
     'Helper.getDeckOrCard(zone)'. If there is none, an empty list is returned.
 ]]
----@param deckOrCard DeckOrCard
+---@param deckOrCard? DeckOrCard
 ---@return (Card|DeadObject)[]
 function Helper.getCards(deckOrCard)
     if deckOrCard then
@@ -401,15 +396,16 @@ end
 --[[
     Return the number of cards from the returned value of 'Helper.getDeckOrCard(zone)'.
 ]]
----@param deckOrCard DeckOrCard
+---@param object? Object
 ---@return integer
-function Helper.getCardCount(deckOrCard)
-    if not deckOrCard then
+function Helper.getCardCount(object)
+    if not object then
         return 0
-    elseif deckOrCard.type == "Card" then
+    elseif object.type == "Card" then
         return 1
-    elseif deckOrCard.type == "Deck" then
-        return deckOrCard.getQuantity()
+    elseif object.type == "Deck" then
+        ---@cast object Deck
+        return object.getQuantity()
     else
         return 0
     end
@@ -446,6 +442,16 @@ function Helper.withAnyDeck(zone, action)
 end
 
 ---@param zone Zone
+---@param action fun(deck: Deck)
+---@return integer
+function Helper.withAllDecks(zone, action)
+    local predicate = function (object)
+        return not object.held_by_color and object.type == "Deck"
+    end
+    return Helper.withAllItems(zone, predicate, action)
+end
+
+---@param zone Zone
 ---@param action fun(card: Card)
 ---@return boolean
 function Helper.withAnyCard(zone, action)
@@ -466,7 +472,7 @@ end
 ---@param predicate fun(object: Object): boolean
 ---@param action fun(object: Object)
 ---@return integer
-function Helper.unused_withAllItems(zone, predicate, action)
+function Helper.withAllItems(zone, predicate, action)
     return Helper._with(zone, true, predicate, action)
 end
 
@@ -582,6 +588,7 @@ function Helper.createTransientAnchor(nickname, position)
     return continuation
 end
 
+-- @generic T: Object (not possible?)
 ---@param object Object
 ---@return Object
 function Helper.markAsTransient(object)
@@ -614,11 +621,20 @@ end
     Create a snapPoint relative to a parent centered on the provided zone, but
     at the height of the parent.
 ]]
----
+---@param parent Object
+---@param zone Zone
+---@param rotationSnap boolean
+---@param tags string[]
+---@return SnapPoint
 function Helper.createRelativeSnapPointFromZone(parent, zone, rotationSnap, tags)
     return Helper.createRelativeSnapPoint(parent, zone.getPosition(), rotationSnap, tags)
 end
 
+---@param parent Object
+---@param position Vector
+---@param rotationSnap boolean
+---@param tags string[]
+---@return SnapPoint
 function Helper.createRelativeSnapPoint(parent, position, rotationSnap, tags)
     local p = Vector(position.x, parent.getPosition().y, position.z)
     local snapPoint = {
@@ -629,10 +645,18 @@ function Helper.createRelativeSnapPoint(parent, position, rotationSnap, tags)
     return snapPoint
 end
 
+---@param parent Object
+---@param snapPoint SnapPoint
+---@return Vector
 function Helper.getSnapPointAbsolutePosition(parent, snapPoint)
     return parent.positionToWorld(snapPoint)
 end
 
+---@param zone Zone
+---@param ground number
+---@param aboveGround number
+---@param tooltip string
+---@param callback ClickFunction
 function Helper.createAnchoredAreaButton(zone, ground, aboveGround, tooltip, callback)
     assert(zone)
     assert(aboveGround)
@@ -643,6 +667,12 @@ function Helper.createAnchoredAreaButton(zone, ground, aboveGround, tooltip, cal
     end)
 end
 
+---@param zone Zone
+---@param anchor Object
+---@param altitude number
+---@param tooltip string
+---@param callback ClickFunction
+---@return string
 function Helper.createAreaButton(zone, anchor, altitude, tooltip, callback)
     assert(zone)
     assert(anchor)
@@ -661,6 +691,12 @@ function Helper.createAreaButton(zone, anchor, altitude, tooltip, callback)
     return Helper.createSizedAreaButton(width, height, anchor, dx, dz, altitude, tooltip, callback)
 end
 
+---@param zone Zone
+---@param anchor Object
+---@param altitude number
+---@param tooltip string
+---@param callback ClickFunction
+---@return string
 function Helper.createExperimentalAreaButton(zone, anchor, altitude, tooltip, callback)
     assert(zone)
     assert(anchor)
@@ -678,6 +714,15 @@ function Helper.createExperimentalAreaButton(zone, anchor, altitude, tooltip, ca
     return Helper.createSizedAreaButton(width, height, anchor, dx, dz, altitude, tooltip, callback)
 end
 
+---@param width number
+---@param height number
+---@param anchor Object
+---@param dx number
+---@param dz number
+---@param altitude number
+---@param tooltip string
+---@param callback ClickFunction
+---@return string
 function Helper.createSizedAreaButton(width, height, anchor, dx, dz, altitude, tooltip, callback)
     assert(anchor)
 
@@ -701,10 +746,19 @@ function Helper.createSizedAreaButton(width, height, anchor, dx, dz, altitude, t
     return parameters.click_function
 end
 
+---@param object Object
+---@param parameters {}
+---@return Button
 function Helper.createButton(object, parameters)
-    return Helper._createWidget("Button", object, parameters)
+    local button = Helper._createWidget("Button", object, parameters)
+    ---@cast button Button
+    return button
 end
 
+---@param name string
+---@param object Object
+---@param parameters {}
+---@return Widget
 function Helper._createWidget(name, object, parameters)
     assert(object)
     local createWidget = object["create" .. name]
@@ -741,10 +795,18 @@ end
     X coordinate is inverted.
 ]]
 ---
+---@param object Object
+---@param roundness number
+---@param parameters {}
+---@return Button
 function Helper.createAbsoluteButtonWithRoundness(object, roundness, parameters)
     return Helper.createButton(object, Helper._createAbsoluteWidgetWithRoundnessParameters(object, roundness, parameters))
 end
 
+---@param object Object
+---@param roundness number
+---@param parameters {}
+---@return {}
 function Helper._createAbsoluteWidgetWithRoundnessParameters(object, roundness, parameters)
     assert(object)
     assert(roundness >= 0, "Zero or negative roundness won't work as intended.")
@@ -825,6 +887,10 @@ function Helper._createAbsoluteWidgetWithRoundnessParameters(object, roundness, 
     return parameters
 end
 
+---@alias CollectNet table<string, fun(name: string, position: Vector)>
+
+---@param object Object
+---@param net CollectNet
 function Helper.collectSnapPoints(object, net)
     if not object then
         return
@@ -848,6 +914,8 @@ end
 
 -- *** Dynamic (button) callbacks ***
 
+---@param callback? function
+---@return string
 function Helper.registerGlobalCallback(callback)
     local GLOBAL_COUNTER_NAME = "generatedCallbackNextIndex"
     if callback then
@@ -871,6 +939,7 @@ function Helper.registerGlobalCallback(callback)
     end
 end
 
+---@param uniqueName string
 function Helper.unregisterGlobalCallback(uniqueName)
     if uniqueName ~= "generatedCallback0" then
         local callback = Global.getVar(uniqueName)
@@ -886,6 +955,19 @@ function Helper.unregisterGlobalCallback(uniqueName)
     end
 end
 
+---@return string
+function Helper._getNopCallback()
+    local uniqueName = "generatedCallback0"
+    local nopCallback = Global.getVar(uniqueName)
+    if not nopCallback then
+        Global.setVar(uniqueName, function ()
+            -- NOP
+        end)
+    end
+    return uniqueName
+end
+
+---@param object Object
 function Helper.clearButtons(object)
     local buttons = object.getButtons()
     if buttons then
@@ -900,6 +982,9 @@ function Helper.clearButtons(object)
     end
 end
 
+---@param object Object
+---@param index integer
+---@return Button?
 function Helper._getButton(object, index)
     local buttons = object.getButtons()
     assert(buttons)
@@ -911,6 +996,8 @@ function Helper._getButton(object, index)
     return nil
 end
 
+---@param object Object
+---@param index integer
 function Helper._removeButton(object, index)
     local button = Helper._getButton(object, index)
     assert(button, "No button with index: " .. tostring(index))
@@ -922,6 +1009,8 @@ function Helper._removeButton(object, index)
     object.removeButton(index)
 end
 
+---@param object Object
+---@param indexes integer[]
 function Helper.removeButtons(object, indexes)
     local orderedIndexes = indexes
     table.sort(orderedIndexes, function (a, b) return a > b end)
@@ -944,6 +1033,7 @@ function Helper.createContinuation(name)
         Helper.pendingContinuations = {}
     end
 
+    -- TODO Add run function as generic parameter?
     ---@class Continuation
     ---@field name string
     ---@field what function
@@ -1026,7 +1116,7 @@ function Helper.fakeContinuation(...)
     return fakeContinuation
 end
 
----@param timeout number?
+---@param timeout? number
 ---@return Continuation
 function Helper.onceStabilized(timeout)
     local continuation = Helper.createContinuation("Helper.onceStabilized")
@@ -1126,7 +1216,7 @@ function Helper.onceShuffled(container)
 end
 
 ---@param delay number
----@param count integer?
+---@param count? integer
 ---@return Continuation
 function Helper.onceTimeElapsed(delay, count)
     local continuation = Helper.createContinuation("Helper.onceTimeElapsed")
@@ -1201,13 +1291,13 @@ function Helper.repeatChainedAction(count, action)
     return continuation
 end
 
----@param actions function[]
+---@param actions (fun(): Continuation)[]
 ---@return Continuation
 function Helper.chainActions(actions)
     return Helper._chainActions(1, actions)
 end
 
----@param actions function[]
+---@param actions (fun(): Continuation)[]
 ---@return Continuation
 function Helper._chainActions(i, actions)
     local continuation = Helper.createContinuation("Helper._chainActions")
@@ -1223,6 +1313,9 @@ function Helper._chainActions(i, actions)
     return continuation
 end
 
+---@param object Object
+---@param count integer
+---@param action fun()
 ---@return Continuation
 function Helper.repeatMovingAction(object, count, action)
     local continuation = Helper.createContinuation("Helper.repeatMovingAction")
@@ -1243,6 +1336,9 @@ end
 
 -- *** Basic OOP ***
 
+---@param superclass? table
+---@param data? table
+---@return table
 function Helper.createClass(superclass, data)
     -- We can't make this test unfortunately, since it superclasses typically come through lazyRequire.
     --assert(not superclass or superclass.__index, "Superclass doesn't look like a class itself.")
@@ -1257,6 +1353,9 @@ function Helper.createClass(superclass, data)
     return class
 end
 
+---@param class table
+---@param data? table
+---@return table
 function Helper.createClassInstance(class, data)
     assert(class)
     assert(class.__index, "Provided class doesn't look like a class actually.")
@@ -1268,6 +1367,8 @@ function Helper.createClassInstance(class, data)
     return instance
 end
 
+---@param instance table
+---@return table
 function Helper.unused_getClass(instance)
     assert(instance.what() == "instance")
     local class = getmetatable(instance)
@@ -1275,24 +1376,17 @@ function Helper.unused_getClass(instance)
     return class
 end
 
-function Helper._getNopCallback()
-    local uniqueName = "generatedCallback0"
-    local nopCallback = Global.getVar(uniqueName)
-    if not nopCallback then
-        Global.setVar(uniqueName, function ()
-            -- NOP
-        end)
-    end
-    return uniqueName
-end
-
 -- *** player color support ***
 
+---@param color string
+---@return Player
 function Helper.findPlayerByColor(color)
     return Player[color]
 end
 
 --- Colour shuffler script, developed by markimus on steam.
+---@param colors string[]
+---@return Continuation
 function Helper.randomizePlayerPositions(colors)
     local continuation = Helper.createContinuation("Helper.randomizePlayerPositions")
 
@@ -1419,6 +1513,8 @@ end
 
 -- *** Specialized queues ***
 
+---@param delay? number
+---@return { submit: fun(action: fun()) }
 function Helper.createTemporalQueue(delay)
     local tq = {
         delay = delay or 0.25,
@@ -1429,16 +1525,16 @@ function Helper.createTemporalQueue(delay)
         assert(action)
         table.insert(tq.actions, action)
         if #tq.actions == 1 then
-            tq.activateLater()
+            tq._activateLater()
         end
     end
 
-    function tq.activateLater()
+    function tq._activateLater()
         Helper.onceTimeElapsed(tq.delay).doAfter(function ()
             local action = tq.actions[1]
             table.remove(tq.actions, 1)
             if #tq.actions > 0 then
-                tq.activateLater()
+                tq._activateLater()
             end
             action()
         end)
@@ -1447,6 +1543,7 @@ function Helper.createTemporalQueue(delay)
     return tq
 end
 
+---@return { submit: fun(action: fun(distance: integer)) }
 function Helper.createSpaceQueue()
     local sq = {
         distance = 0,
@@ -1471,12 +1568,18 @@ function Helper.createSpaceQueue()
     return sq
 end
 
+---@generic T
+---@param name string
+---@param separationDelay number
+---@param coalesce fun(event: T, lastEvent: T): T
+---@param handle fun(event: T)
+---@return { submit: fun(event: T), flush: fun() }
 function Helper.createCoalescentQueue(name, separationDelay, coalesce, handle)
     local cq = {
         separationDelay = separationDelay or 1,
     }
 
-    function cq.handleLater()
+    function cq._handleLater()
         assert(cq.lastEvent)
         if cq.delayedHandler then
             Wait.stop(cq.delayedHandler)
@@ -1508,7 +1611,7 @@ function Helper.createCoalescentQueue(name, separationDelay, coalesce, handle)
         else
             cq.lastEvent = event
         end
-        cq.handleLater()
+        cq._handleLater()
     end
 
     function cq.flush()
@@ -1529,6 +1632,7 @@ end
 -- *** TTS miscellaneous ***
 
 --- Intended to be called from a coroutine.
+---@param durationInSeconds number
 function Helper.sleep(durationInSeconds)
     local Time = os.clock() + durationInSeconds
     while os.clock() < Time do
@@ -1536,16 +1640,20 @@ function Helper.sleep(durationInSeconds)
     end
 end
 
+---@param object Object|DeadObject
+---@return string
 function Helper.getID(object)
     assert(object)
     if object.getGMNotes then
+        ---@cast object Object
         return object.getGMNotes()
     else
+        ---@cast object DeadObject
         return object.gm_notes
     end
 end
 
----@param deck any
+---@param deck Deck
 function Helper.shuffleDeck(deck)
     assert(deck)
     if true then
@@ -1553,6 +1661,9 @@ function Helper.shuffleDeck(deck)
     end
 end
 
+---@param object Object
+---@param tags string[]
+---@return boolean
 function Helper.hasAllTags(object, tags)
     for _, tag in ipairs(tags) do
         if not object.hasTag(tag) then
@@ -1562,6 +1673,9 @@ function Helper.hasAllTags(object, tags)
     return true
 end
 
+---@param object Object
+---@param tags string[]
+---@return boolean
 function Helper.hasAnyTag(object, tags)
     for _, tag in ipairs(tags) do
         if object.hasTag(tag) then
@@ -1571,6 +1685,7 @@ function Helper.hasAnyTag(object, tags)
     return false
 end
 
+---@param ... Object
 function Helper.noPhysics(...)
     for _, object in pairs({...}) do
         object.setLock(true)
@@ -1578,6 +1693,7 @@ function Helper.noPhysics(...)
     end
 end
 
+---@param ... Object
 function Helper.noPlay(...)
     for _, object in pairs({...}) do
         object.setLock(false)
@@ -1585,6 +1701,7 @@ function Helper.noPlay(...)
     end
 end
 
+---@param ... Object
 function Helper.noPhysicsNorPlay(...)
     for _, object in pairs({...}) do
         object.setLock(true)
@@ -1592,6 +1709,7 @@ function Helper.noPhysicsNorPlay(...)
     end
 end
 
+---@param ... Object
 function Helper.physicsAndPlay(...)
     for _, object in pairs({...}) do
         object.setLock(false)
@@ -1601,10 +1719,7 @@ end
 
 -- *** Lua miscellaneous ***
 
-function Helper.isEmpty(table)
-    return #table == 0 and #Helper.getKeys(table) == 0
-end
-
+---@param ... string
 function Helper.toCamelCase(...)
     local camelString
     for i, str in ipairs({...}) do
@@ -1617,6 +1732,7 @@ function Helper.toCamelCase(...)
     return camelString
 end
 
+---@param ... string
 function Helper.unused_toPascalCase(...)
     local pascalString
     for i, str in ipairs({...}) do
@@ -1629,6 +1745,7 @@ function Helper.unused_toPascalCase(...)
     return pascalString
 end
 
+---@param data table
 ---@return Vector
 function Helper.toVector(data)
     if not data then
@@ -1651,6 +1768,15 @@ function Helper.onGround(position, ground)
     return Vector(position.x, ground, position.z)
 end
 
+---@param table table
+---@return boolean
+function Helper.isEmpty(table)
+    return #table == 0 and #Helper.getKeys(table) == 0
+end
+
+---@generic T
+---@param objects T[]
+---@param otherObjects T[]
 function Helper.unused_addAll(objects, otherObjects)
     assert(objects)
     assert(otherObjects)
@@ -1660,6 +1786,9 @@ function Helper.unused_addAll(objects, otherObjects)
     end
 end
 
+---@param parent table
+---@param set table
+---@return table
 function Helper.append(parent, set)
     for name, value in pairs(set) do
         parent[name] = value
@@ -1667,6 +1796,9 @@ function Helper.append(parent, set)
     return parent
 end
 
+---@param zone Zone
+---@param object Object
+---@return boolean
 function Helper.contains(zone, object)
     assert(zone)
     assert(object)
@@ -1681,26 +1813,31 @@ end
 --[[
     Fisher-Yates shuffle, in-place – for each position, pick an element from those not yet picked.
 ]]
-function Helper.shuffle(table)
-    assert(table)
-    assert(#table > 0 or #Helper.getKeys(table) == 0, "Not an indexed table")
+---@generic T
+---@param items T[]
+function Helper.shuffle(items)
+    assert(items)
+    assert(#items > 0 or #Helper.getKeys(items) == 0, "Not an indexed table")
     if true then
-        for i = #table, 2, -1 do
+        for i = #items, 2, -1 do
             local j = math.random(i)
-            table[i], table[j] = table[j], table[i]
+            items[i], items[j] = items[j], items[i]
         end
     end
 end
 
 ---@generic T
----@param table T[]
+---@param items T[]
 ---@return T
-function Helper.pickAny(table)
-    return table[math.random(#table)]
+function Helper.pickAny(items)
+    return items[math.random(#items)]
 end
 
-function Helper.pickAnyKey(set)
-    local keys = Helper.getKeys(set)
+---@generic K, V
+---@param items table<K, V>
+---@return K
+function Helper.pickAnyKey(items)
+    local keys = Helper.getKeys(items)
     return keys[math.random(#keys)]
 end
 
@@ -1760,6 +1897,7 @@ function Helper.stringConcat(elements)
     return str
 end
 
+---@param ... any
 function Helper.dump(...)
     local str = ""
     local args = table.pack(...)
@@ -1772,10 +1910,13 @@ function Helper.dump(...)
     Helper._log(str)
 end
 
+---@param ... any
 function Helper.dumpFunction(...)
     Helper._log(Helper.functionToString(...))
 end
 
+---@param ... any
+---@return string
 function Helper.functionToString(...)
     local args = table.pack(...)
     local str
@@ -1798,6 +1939,7 @@ function Helper.functionToString(...)
     return str
 end
 
+---@param str string
 function Helper._log(str)
     if Helper.lastMessage ~= str then
         if Helper.lastMessage then
@@ -1859,6 +2001,9 @@ function Helper.toString(object, quoted)
     end
 end
 
+---@generic T
+---@param ... T[]
+---@return T[]
 function Helper.concatTables(...)
     local result = {}
     for _, t in ipairs({...}) do
@@ -1869,6 +2014,8 @@ function Helper.concatTables(...)
     return result
 end
 
+---@param elements table
+---@return table
 function Helper.shallowCopy(elements)
     local copy = {}
     for k, v in pairs(elements) do
@@ -1877,6 +2024,8 @@ function Helper.shallowCopy(elements)
     return copy
 end
 
+---@param something table
+---@return table
 function Helper.deepCopy(something)
     local t = type(something)
     if Helper._isBasicType(t) then
@@ -1894,6 +2043,8 @@ function Helper.deepCopy(something)
     end
 end
 
+---@param t string
+---@return boolean
 function Helper._isBasicType(t)
     return t == "nil"
         or t == "boolean"
@@ -1905,6 +2056,9 @@ function Helper._isBasicType(t)
         or t == "table"
 end
 
+---@generic K
+---@param elements table<K, any>
+---@return K[]
 function Helper.getKeys(elements)
     local keys = {}
     for k, _ in pairs(elements) do
@@ -1913,8 +2067,9 @@ function Helper.getKeys(elements)
     return keys
 end
 
----@param elements table
----@return any[]
+---@generic V
+---@param elements table<any, V>
+---@return V[]
 function Helper.getValues(elements)
     local values = {}
     for _, v in pairs(elements) do
@@ -1923,6 +2078,10 @@ function Helper.getValues(elements)
     return values
 end
 
+---@generic T
+---@param elements T[]
+---@param i integer
+---@param j integer
 function Helper.swap(elements, i, j)
     assert(elements)
     if i ~= j then
@@ -1932,7 +2091,9 @@ function Helper.swap(elements, i, j)
     end
 end
 
-function Helper.reverse(elements)
+---@generic T
+---@param elements T[]
+function Helper.reverseInPlace(elements)
     assert(elements)
     local count = #elements
     for i = 1, count do
@@ -1945,7 +2106,9 @@ function Helper.reverse(elements)
     end
 end
 
-function Helper.cycle(elements)
+---@generic T
+---@param elements T[]
+function Helper.cycleInPlace(elements)
     assert(elements)
     local count = #elements
     local first = elements[1]
@@ -1954,6 +2117,10 @@ function Helper.cycle(elements)
     end
 end
 
+---@generic T
+---@param elements T[]
+---@param p fun(element: T): boolean
+---@return T[]
 function Helper.filter(elements, p)
     assert(elements)
     local filteredElements = {}
@@ -1965,6 +2132,12 @@ function Helper.filter(elements, p)
     return filteredElements
 end
 
+-- TODO Explicit array=list/table=map versions.
+
+---@generic K, V
+---@param elements table<K, V>
+---@param p fun(key: K, value: V): boolean
+---@return integer
 function Helper.count(elements, p)
     assert(elements)
     local count = 0
@@ -1976,6 +2149,10 @@ function Helper.count(elements, p)
     return count
 end
 
+---@generic K, V, W
+---@param elements table<K, V>
+---@param f fun(key: K, value: V): W
+---@return table<K, W>
 function Helper.map(elements, f)
     assert(elements)
     local newElements = {}
@@ -1985,6 +2162,10 @@ function Helper.map(elements, f)
     return newElements
 end
 
+---@generic K, V, W
+---@param elements table<K, V>
+---@param f fun(value: V): W
+---@return table<K, W>
 function Helper.mapValues(elements, f)
     assert(elements)
     local newElements = {}
@@ -1994,6 +2175,22 @@ function Helper.mapValues(elements, f)
     return newElements
 end
 
+---@generic V, W
+---@param elements V[]
+---@param f fun(value: V): W
+---@return W[]
+function Helper.mapArrayValues(elements, f)
+    assert(elements)
+    local newElements = {}
+    for i, v in ipairs(elements) do
+        newElements[i] = f(v)
+    end
+    return newElements
+end
+
+---@generic K, V
+---@param elements table<K, V>
+---@param f fun(key: K, value: V)
 function Helper.forEach(elements, f)
     assert(elements)
     assert(f)
@@ -2002,6 +2199,9 @@ function Helper.forEach(elements, f)
     end
 end
 
+---@generic K, V
+---@param elements table<K, V>
+---@param f fun(value: V)
 function Helper.forEachValue(elements, f)
     assert(elements)
     assert(f)
@@ -2010,6 +2210,9 @@ function Helper.forEachValue(elements, f)
     end
 end
 
+---@generic K, V
+---@param elements table<K, V|table>
+---@param f fun(key: K, value: V)
 function Helper.forEachRecursively(elements, f)
     assert(elements)
     assert(f)
@@ -2022,12 +2225,15 @@ function Helper.forEachRecursively(elements, f)
     end
 end
 
+---@param table table
 function Helper._clearTable(table)
     for k, _ in pairs(table) do
         table[k] = nil
     end
 end
 
+---@param table table
+---@param newTable table
 function Helper.mutateTable(table, newTable)
     Helper._clearTable(table)
     for k, v in pairs(newTable) do
@@ -2035,6 +2241,9 @@ function Helper.mutateTable(table, newTable)
     end
 end
 
+---@param f function
+---@param ... any
+---@return function
 function Helper.partialApply(f, ...)
     assert(f)
     local args = table.pack(...)
@@ -2048,12 +2257,16 @@ function Helper.partialApply(f, ...)
     end
 end
 
+---@param name string
+---@return fun(object: table): any
 function Helper.field(name)
     return function (object)
         return object[name]
     end
 end
 
+---@param predicate fun(...): boolean
+---@return fun(...): boolean
 function Helper.negate(predicate)
     return function (...)
         return not predicate(...)
@@ -2061,15 +2274,24 @@ function Helper.negate(predicate)
 end
 
 --- http://lua-users.org/wiki/StringRecipes
+---@param str string
+---@param start string
+---@return boolean
 function Helper.startsWith(str, start)
     return str:sub(1, #start) == start
 end
 
 --- http://lua-users.org/wiki/StringRecipes
+---@param str string
+---@param ending string
+---@return boolean
 function Helper.endsWith(str, ending)
     return ending == "" or str:sub(-#ending) == ending
 end
 
+---@param str string
+---@param sep string
+---@return string[]
 function Helper.splitString(str, sep)
     local tokens = {}
     for token in string.gmatch(str, "([^" .. (sep or "%s") .. "]+)") do
@@ -2078,14 +2300,22 @@ function Helper.splitString(str, sep)
     return tokens
 end
 
+---@param object Object
+---@return boolean
 function Helper.isNil(object)
     return object == nil
 end
 
+---@param object Object
+---@return boolean
 function Helper.isNotNil(object)
     return object ~= nil
 end
 
+---@generic T
+---@param p fun(index: integer, element: T): boolean
+---@param elements T[]
+---@return T[]
 function Helper.takeWhile(p, elements)
     assert(elements)
     local prefix = {}

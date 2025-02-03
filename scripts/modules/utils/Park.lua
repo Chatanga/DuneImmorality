@@ -2,7 +2,18 @@ local Helper = require("utils.Helper")
 
 -- TODO Make it a class (and upgrade createPark into newPark)?
 -- TODO Better encapsulate the state?
----@alias Park {}
+---@alias Park {
+--- name: string,
+--- slots: Vector[],
+--- rotation: Vector,
+--- zones: Zone[],
+--- tags: string[],
+--- tagUnion: boolean,
+--- description: string,
+--- locked: boolean,
+--- smooth: boolean,
+--- anchor: Object,
+--- slotHeight: number }
 local Park = {
     objectsInTransit = {}
 }
@@ -81,6 +92,8 @@ function Park.createPark(name, slots, rotation, zones, tags, description, locked
     }
 end
 
+---@param park Park
+---@return Vector[]
 function Park._getSlots(park)
     local slots = park.slots
     if not slots then

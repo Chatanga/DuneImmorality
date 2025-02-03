@@ -4,6 +4,7 @@ local I18N = require("utils.I18N")
 
 local Locale = Module.lazyRequire("Locale")
 
+---@class Board
 local Board = {
 
     -- Table height
@@ -80,7 +81,7 @@ function Board.onPlayBoard(offset)
 end
 
 function Board.rebuildPreloadAreas()
-    Locale.onLoad()
+    Locale.onLoad({})
 
     local prebuildZone = getObjectFromGUID("23f2b5")
     local secondaryTable = getObjectFromGUID(GameTableGUIDs.secondary)
@@ -111,6 +112,10 @@ function Board.rebuildPreloadAreas()
     end
 end
 
+---@param baseBoardName string
+---@param board Object
+---@param height number
+---@return integer
 function Board._cloneBoard(baseBoardName, board, height)
     local boardName = Helper.getID(board)
     assert(boardName and boardName:len() > 0, "Unidentified board: " .. board.getGUID())
@@ -173,6 +178,8 @@ function Board._cloneBoard(baseBoardName, board, height)
     return count
 end
 
+---@param id string
+---@return string?
 function Board._getBaseName(id)
     if id then
         local tokens = Helper.splitString(id, '.')
@@ -223,10 +230,15 @@ function Board.onLoad()
     end
 end
 
+---@param setting Settings
 function Board.setUp(setting)
     -- NOP
 end
 
+---@param baseBoardName string
+---@param language string
+---@param doNotLock? boolean
+---@return Object
 function Board.selectBoard(baseBoardName, language, doNotLock)
     local boardName = Board._toBoardName(baseBoardName, language)
     local location = Board.boardLocations[boardName]
@@ -262,6 +274,7 @@ function Board.selectBoard(baseBoardName, language, doNotLock)
     end
 end
 
+---@param baseBoardName string
 function Board.destructBoard(baseBoardName)
     for _, location in pairs(Board.boardLocations) do
         if location.baseBoardName == baseBoardName and location.object then
@@ -281,6 +294,9 @@ function Board.destructInactiveBoards()
     end
 end
 
+---@param baseBoardName string
+---@param locale? string
+---@return Object?
 function Board.getBoard(baseBoardName, locale)
     local boardName = Board._toBoardName(baseBoardName, locale or I18N.getLocale())
     local location = Board.boardLocations[boardName]
@@ -289,6 +305,9 @@ function Board.getBoard(baseBoardName, locale)
     end
 end
 
+---@param baseBoardName string
+---@param locale string
+---@return string
 function Board._toBoardName(baseBoardName, locale)
     assert(locale, "No locale provided!")
     return baseBoardName .. '.' .. locale

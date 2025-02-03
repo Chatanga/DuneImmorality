@@ -8,13 +8,14 @@ local Board = Module.lazyRequire("Board")
 
 local ShippingTrack = {
     initialFreighterPositions = {
-        Yellow = Helper.getHardcodedPositionFromGUID('8fa76f', 8.999569, 1.6641159650000001, 2.8503623),
-        Green = Helper.getHardcodedPositionFromGUID('34281d', 8.449544, 1.6641097999999999, 2.85037136),
-        Blue = Helper.getHardcodedPositionFromGUID('68e424', 7.349539, 1.6641073, 2.8544147),
-        Red = Helper.getHardcodedPositionFromGUID('e9096d', 7.899618, 1.6641103, 2.853234)
+        Yellow = Helper.getHardcodedPositionFromGUID('8fa76f', 8.999524, 1.74046052, 2.85046625),
+        Green = Helper.getHardcodedPositionFromGUID('34281d', 8.449439, 1.74046087, 2.85044169),
+        Blue = Helper.getHardcodedPositionFromGUID('68e424', 7.349248, 1.74046052, 2.85460949),
+        Red = Helper.getHardcodedPositionFromGUID('e9096d', 7.8995533, 1.74046075, 2.85330772)
     }
 }
 
+---@param state table
 function ShippingTrack.onLoad(state)
     if state.settings and state.settings.riseOfIx then
         ShippingTrack.board = Board.getBoard("shippingBoard")
@@ -22,6 +23,7 @@ function ShippingTrack.onLoad(state)
     end
 end
 
+---@param settings Settings
 function ShippingTrack.setUp(settings)
     if settings.riseOfIx then
         ShippingTrack.board = Board.selectBoard("shippingBoard", I18N.getLocale(), false)
@@ -31,13 +33,17 @@ function ShippingTrack.setUp(settings)
     end
 end
 
+---@param settings Settings
 function ShippingTrack._transientSetUp(settings)
+
     local createZone = function (position, scale)
-        return Helper.markAsTransient(spawnObject({
+        local object = Helper.markAsTransient(spawnObject({
             type = 'ScriptingTrigger',
             position = position,
             scale = scale,
         }))
+        ---@cast object Zone
+        return object
     end
 
     Helper.collectSnapPoints(ShippingTrack.board, {
@@ -66,10 +72,13 @@ function ShippingTrack._transientSetUp(settings)
     })
 end
 
+---@return Object?
 function ShippingTrack.getBoard()
     return ShippingTrack.board
 end
 
+---@param level integer
+---@param levelSlot Zone
 function ShippingTrack._createLevelButton(level, levelSlot)
     local tooltip = level == 0
         and I18N("recallYourFreighter")
@@ -86,6 +95,8 @@ function ShippingTrack._createLevelButton(level, levelSlot)
     end))
 end
 
+---@param bonusName string
+---@param bonusSlot Zone
 function ShippingTrack._createBonusButton(bonusName, bonusSlot)
     local tooltip = I18N("pickBonus", { bonus = I18N(bonusName) })
     local ground = bonusSlot.getPosition().y - 0.1
@@ -97,23 +108,32 @@ function ShippingTrack._createBonusButton(bonusName, bonusSlot)
     end))
 end
 
+---@param color PlayerColor
+---@return integer
 function ShippingTrack.getFreighterLevel(color)
     local p = PlayBoard.getContent(color).freighter.getPosition()
     return math.floor((p.z - ShippingTrack.initialFreighterPositions[color].z) / 1.1 + 0.5)
 end
 
+---@param color PlayerColor
+---@param level integer
 function ShippingTrack._setFreighterPositionSmooth(color, level)
     local p = ShippingTrack.initialFreighterPositions[color]:copy()
     p:setAt('z', p.z + 1.1 * level)
     PlayBoard.getContent(color).freighter.setPositionSmooth(p, false, true)
 end
 
+---@param color PlayerColor
+---@param count integer
 function ShippingTrack.unused__freighterGoUp(color, count)
     Helper.repeatMovingAction(PlayBoard.getContent(color).freighter, count, function ()
         ShippingTrack.freighterUp(color)
     end)
 end
 
+---@param color PlayerColor
+---@param baseCount? integer
+---@return boolean
 function ShippingTrack.freighterUp(color, baseCount)
     local level = ShippingTrack.getFreighterLevel(color)
     local count = math.min(baseCount or 1, 3 - level)
@@ -125,6 +145,8 @@ function ShippingTrack.freighterUp(color, baseCount)
     end
 end
 
+---@param color PlayerColor
+---@return boolean
 function ShippingTrack.freighterReset(color)
     local level = ShippingTrack.getFreighterLevel(color)
     if level > 0 then
@@ -138,6 +160,7 @@ function ShippingTrack.freighterReset(color)
     end
 end
 
+---@param color PlayerColor
 function ShippingTrack._pickSolarisBonus(color)
     local leader = PlayBoard.getLeader(color)
     leader.resources(color, "solari", 5)
@@ -149,11 +172,13 @@ function ShippingTrack._pickSolarisBonus(color)
     end
 end
 
+---@param color PlayerColor
 function ShippingTrack._pickSpiceBonus(color)
     local leader = PlayBoard.getLeader(color)
     leader.resources(color, "spice", 2)
 end
 
+---@param color PlayerColor
 function ShippingTrack._pickTroopsAndInfluenceBonus(color)
     local leader = PlayBoard.getLeader(color)
     local troopAmount = 2

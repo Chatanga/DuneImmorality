@@ -59,6 +59,13 @@ local MainBoard = {
     }
 }
 
+---@alias Space {
+--- name: string,
+--- position: Vector,
+--- zone: Zone,
+--- park: Park }
+
+---@param state table
 function MainBoard.onLoad(state)
     Helper.append(MainBoard, Helper.resolveGUIDs(false, {
         immortalityPatch = "efcd46",
@@ -89,6 +96,7 @@ function MainBoard.onLoad(state)
     end
 end
 
+---@param state table
 function MainBoard.onSave(state)
     state.MainBoard = {
         spiceBonuses = Helper.mapValues(MainBoard.spiceBonuses, function (resource)
@@ -97,6 +105,7 @@ function MainBoard.onSave(state)
     }
 end
 
+---@param settings Settings
 function MainBoard.setUp(settings)
     MainBoard.mainBoard = Board.selectBoard("mainBoard", I18N.getLocale(), false)
 
@@ -130,6 +139,7 @@ function MainBoard.setUp(settings)
     MainBoard._transientSetUp(settings)
 end
 
+---@param settings Settings
 function MainBoard._transientSetUp(settings)
     MainBoard._processSnapPoints(settings)
 
@@ -235,12 +245,12 @@ function MainBoard._createRoundIndicator()
     Helper.onceTimeElapsed(1).doAfter(updateContent)
 end
 
+---@param settings Settings
 function MainBoard._processSnapPoints(settings)
     MainBoard.spaces = {}
     MainBoard.banners = {}
 
     local highCouncilSeats = MainBoard._doProcessSnapPoints(
-        settings,
         Helper.partialApply(MainBoard.collectSnapPointsOnAllBoards, settings))
 
     if #highCouncilSeats > 0 then
@@ -256,13 +266,16 @@ function MainBoard._processSnapPoints(settings)
     end
 end
 
+---@param settings Settings
 function MainBoard.processTuekSnapPoints(settings)
     Helper.noPhysicsNorPlay(MainBoard.tuekSietchBoard)
     MainBoard.tuekSietchBoard.clearButtons()
-    MainBoard._doProcessSnapPoints(settings, MainBoard._collectSnapPointsOnTuekBoard)
+    MainBoard._doProcessSnapPoints(MainBoard._collectSnapPointsOnTuekBoard)
 end
 
-function MainBoard._doProcessSnapPoints(settings, collect)
+---@param collect fun(net: CollectNet)
+---@return table<integer, Vector>
+function MainBoard._doProcessSnapPoints(collect)
     local highCouncilSeats = {}
 
     collect({
@@ -324,12 +337,16 @@ function MainBoard._doProcessSnapPoints(settings, collect)
     return highCouncilSeats
 end
 
+---@param settings Settings
+---@param net CollectNet
 function MainBoard.collectSnapPointsOnAllBoards(settings, net)
     for _, board in ipairs(MainBoard._getAllBoards(settings)) do
         Helper.collectSnapPoints(board, net)
     end
 end
 
+---@param settings Settings
+---@return Object[]
 function MainBoard._getAllBoards(settings)
     local boards = { MainBoard.mainBoard, MainBoard.topRightBoard }
 
@@ -343,14 +360,19 @@ function MainBoard._getAllBoards(settings)
     return boards
 end
 
+---@param net CollectNet
 function MainBoard._collectSnapPointsOnTuekBoard(net)
     Helper.collectSnapPoints(MainBoard.tuekSietchBoard, net)
 end
 
+---@return Park
 function MainBoard.getHighCouncilSeatPark()
     return MainBoard.highCouncilPark
 end
 
+---@param controlableSpace Zone
+---@param color PlayerColor
+---@param onlyCleanUp? boolean
 function MainBoard.occupy(controlableSpace, color, onlyCleanUp)
     for _, object in ipairs(controlableSpace.getObjects()) do
         for _, otherColor in ipairs(PlayBoard.getActivePlayBoardColors()) do
@@ -380,6 +402,7 @@ function MainBoard.occupy(controlableSpace, color, onlyCleanUp)
     end
 end
 
+---@param space Space
 function MainBoard._createSpaceButton(space)
     local p = space.position
     Helper.createTransientAnchor("AgentPark", p - Vector(0, 0.5, 0)).doAfter(function (anchor)
@@ -404,12 +427,12 @@ function MainBoard._createSpaceButton(space)
         local lastActivation = 0
 
         local tooltip = I18N("sendAgentTo", { space = I18N(space.name) })
-        Helper.createAreaButton(space.zone, anchor, Board.onMainBoard(0.1), tooltip, PlayBoard.withLeader(function (leader, color, altClick)
+        Helper.createAreaButton(space.zone, anchor, Board.onMainBoard(0.1), tooltip, PlayBoard.withLeader(function (leader, color, _)
             if TurnControl.getCurrentPlayer() == color then
                 local cooldown = os.time() - lastActivation
                 if cooldown > 2 then
                     lastActivation = os.time()
-                    leader.sendAgent(color, space.name, altClick)
+                    leader.sendAgent(color, space.name)
                 end
             else
                 Dialog.broadcastToColor(I18N('notYourTurn'), color, "Purple")
@@ -418,6 +441,7 @@ function MainBoard._createSpaceButton(space)
     end)
 end
 
+---@param bannerZone Zone
 function MainBoard._createBannerSpace(bannerZone)
     Helper.createTransientAnchor("BannerPark", bannerZone.getPosition() - Vector(0, 0.5, 0)).doAfter(function (anchor)
         anchor.setSnapPoints({{
@@ -428,10 +452,15 @@ function MainBoard._createBannerSpace(bannerZone)
     end)
 end
 
+-- TODO parent -> root
+---@param space Space
+---@return Space
 function MainBoard._findParentSpace(space)
     return MainBoard.spaces[MainBoard.findParentSpaceName(space.name)]
 end
 
+---@param spaceName string
+---@return string
 function MainBoard.findParentSpaceName(spaceName)
     assert(MainBoard.spaces[spaceName], "No space named: " .. spaceName)
     local parentSpaceName = spaceName
@@ -443,6 +472,9 @@ function MainBoard.findParentSpaceName(spaceName)
     return parentSpaceName
 end
 
+---@param color PlayerColor
+---@param spaceName string
+---@return Continuation
 function MainBoard.sendAgent(color, spaceName)
     local continuation = Helper.createContinuation("MainBoard.sendAgent")
 
@@ -492,11 +524,16 @@ function MainBoard.sendAgent(color, spaceName)
     return continuation
 end
 
+---@param color PlayerColor
+---@return Object
 function MainBoard._findProperAgent(color)
     local agentPark = PlayBoard.getAgentPark(color)
     return Park.getObjects(agentPark)[1]
 end
 
+---@param color PlayerColor
+---@param spaceName string
+---@return boolean
 function MainBoard.sendRivalAgent(color, spaceName)
     local space = MainBoard.spaces[spaceName]
     if not Park.isEmpty(PlayBoard.getAgentPark(color)) then
@@ -512,6 +549,7 @@ function MainBoard.sendRivalAgent(color, spaceName)
     end
 end
 
+---@param name string
 function MainBoard.applyControlOfAnySpace(name)
     if name == "imperialBasin" then
         MainBoard._applyControlOfAnySpace(MainBoard.banners.imperialBasinBannerZone, "spice")
@@ -522,11 +560,20 @@ function MainBoard.applyControlOfAnySpace(name)
     end
 end
 
+---@param leader Leader
+---@param color PlayerColor
+---@param resourceName ResourceName
+---@param amount integer
+---@return boolean
 function MainBoard._hasResource(leader, color, resourceName, amount)
     local realAmount = leader.bargain(color, resourceName, amount)
     return PlayBoard.getResource(color, resourceName):get() >= realAmount
 end
 
+---@param color PlayerColor
+---@param leader Leader
+---@param requirements table<string, any>
+---@return boolean
 function MainBoard._checkGenericAccess(color, leader, requirements)
     if PlayBoard.isRival(color) then
         Helper.dump(color .. "player is a rival?!")
@@ -552,6 +599,9 @@ end
 
 -- Emperor spaces
 
+---@param color PlayerColor
+---@param leader Leader
+---@param continuation Continuation
 function MainBoard._goConspire(color, leader, continuation)
     if MainBoard._checkGenericAccess(color, leader, { spice = 4 }) then
         continuation.run(function ()
@@ -566,6 +616,9 @@ function MainBoard._goConspire(color, leader, continuation)
     end
 end
 
+---@param color PlayerColor
+---@param leader Leader
+---@param continuation Continuation
 function MainBoard._goWealth(color, leader, continuation)
     if MainBoard._checkGenericAccess(color, leader, {}) then
         continuation.run(function ()
@@ -579,6 +632,9 @@ end
 
 -- Spacing guild spaces
 
+---@param color PlayerColor
+---@param leader Leader
+---@param continuation Continuation
 function MainBoard._goHeighliner(color, leader, continuation)
     local spiceCost = PlayBoard.hasPlayedThisTurn(color, "guildAccord") and 4 or 6
     if MainBoard._checkGenericAccess(color, leader, { spice = spiceCost }) then
@@ -593,6 +649,9 @@ function MainBoard._goHeighliner(color, leader, continuation)
     end
 end
 
+---@param color PlayerColor
+---@param leader Leader
+---@param continuation Continuation
 function MainBoard._goFoldspace(color, leader, continuation)
     if MainBoard._checkGenericAccess(color, leader, {}) then
         continuation.run(function ()
@@ -604,6 +663,9 @@ function MainBoard._goFoldspace(color, leader, continuation)
     end
 end
 
+---@param color PlayerColor
+---@param leader Leader
+---@param continuation Continuation
 function MainBoard._goSelectiveBreeding(color, leader, continuation)
     if MainBoard._checkGenericAccess(color, leader, { spice = 2 }) then
         continuation.run(function ()
@@ -617,6 +679,9 @@ end
 
 -- Bene Gesserit spaces
 
+---@param color PlayerColor
+---@param leader Leader
+---@param continuation Continuation
 function MainBoard._goSecrets(color, leader, continuation)
     if MainBoard._checkGenericAccess(color, leader, {}) then
         continuation.run(function ()
@@ -637,6 +702,9 @@ end
 
 -- Fremen spaces
 
+---@param color PlayerColor
+---@param leader Leader
+---@param continuation Continuation
 function MainBoard._goHardyWarriors(color, leader, continuation)
     if MainBoard._checkGenericAccess(color, leader, { water = 1 }) then
         continuation.run(function ()
@@ -649,6 +717,9 @@ function MainBoard._goHardyWarriors(color, leader, continuation)
     end
 end
 
+---@param color PlayerColor
+---@param leader Leader
+---@param continuation Continuation
 function MainBoard._goStillsuits(color, leader, continuation)
     if MainBoard._checkGenericAccess(color, leader, {}) then
         continuation.run(function ()
@@ -662,6 +733,9 @@ end
 
 -- Landsraad spaces
 
+---@param color PlayerColor
+---@param leader Leader
+---@param continuation Continuation
 function MainBoard._goSwordmaster(color, leader, continuation)
     if not Hagal.isSwordmasterAvailable() then
         Dialog.broadcastToColor(I18N("unavailableSwordmaster"), color, "Purple")
@@ -684,6 +758,9 @@ function MainBoard._goSwordmaster(color, leader, continuation)
     end
 end
 
+---@param color PlayerColor
+---@param leader Leader
+---@param continuation Continuation
 function MainBoard._goMentat(color, leader, continuation)
     local mentatCost = Hagal.getMentatSpaceCost()
     if MainBoard._checkGenericAccess(color, leader, { solari = mentatCost }) then
@@ -702,6 +779,7 @@ function MainBoard._goMentat(color, leader, continuation)
     end
 end
 
+---@param anywhere? boolean
 function MainBoard.getMentat(anywhere)
     if anywhere or Vector.distance(MainBoard.mentat.getPosition(), MainBoard.mentatZone.getPosition()) < 1 then
         return MainBoard.mentat
@@ -710,6 +788,9 @@ function MainBoard.getMentat(anywhere)
     end
 end
 
+---@param color PlayerColor
+---@param leader Leader
+---@param continuation Continuation
 function MainBoard._goHighCouncil(color, leader, continuation)
     if PlayBoard.hasHighCouncilSeat(color) then
         Dialog.broadcastToColor(I18N("alreadyHaveHighCouncilSeat"), color, "Purple")
@@ -724,6 +805,9 @@ function MainBoard._goHighCouncil(color, leader, continuation)
     end
 end
 
+---@param color PlayerColor
+---@param leader Leader
+---@param continuation Continuation
 function MainBoard._goRallyTroops(color, leader, continuation)
     if MainBoard._checkGenericAccess(color, leader, { solari = 4 }) then
         continuation.run(function ()
@@ -735,6 +819,9 @@ function MainBoard._goRallyTroops(color, leader, continuation)
     end
 end
 
+---@param color PlayerColor
+---@param leader Leader
+---@param continuation Continuation
 function MainBoard._goHallOfOratory(color, leader, continuation)
     if MainBoard._checkGenericAccess(color, leader, {}) then
         continuation.run(function ()
@@ -748,6 +835,9 @@ end
 
 -- CHOAM spaces
 
+---@param color PlayerColor
+---@param leader Leader
+---@param continuation Continuation
 function MainBoard._goSecureContract(color, leader, continuation)
     if MainBoard._checkGenericAccess(color, leader, {}) then
         continuation.run(function ()
@@ -758,6 +848,9 @@ function MainBoard._goSecureContract(color, leader, continuation)
     end
 end
 
+---@param color PlayerColor
+---@param leader Leader
+---@param continuation Continuation
 function MainBoard._goSellMelange(color, leader, continuation)
     if MainBoard._checkGenericAccess(color, leader, { spice = 2 }) then
         local hasEnoughSpice = function (index, _)
@@ -782,22 +875,37 @@ function MainBoard._goSellMelange(color, leader, continuation)
     end
 end
 
+---@param color PlayerColor
+---@param leader Leader
+---@param continuation Continuation
 function MainBoard._goSellMelange_1(color, leader, continuation)
     return MainBoard._sellMelange(color, leader, continuation, 1)
 end
 
+---@param color PlayerColor
+---@param leader Leader
+---@param continuation Continuation
 function MainBoard._goSellMelange_2(color, leader, continuation)
     return MainBoard._sellMelange(color, leader, continuation, 2)
 end
 
+---@param color PlayerColor
+---@param leader Leader
+---@param continuation Continuation
 function MainBoard._goSellMelange_3(color, leader, continuation)
     return MainBoard._sellMelange(color, leader, continuation, 3)
 end
 
+---@param color PlayerColor
+---@param leader Leader
+---@param continuation Continuation
 function MainBoard._goSellMelange_4(color, leader, continuation)
     return MainBoard._sellMelange(color, leader, continuation, 4)
 end
 
+---@param color PlayerColor
+---@param leader Leader
+---@param continuation Continuation
 function MainBoard._sellMelange(color, leader, continuation, index)
     local spiceCost = index + 1
     if MainBoard._checkGenericAccess(color, leader, { spice = spiceCost }) then
@@ -813,6 +921,9 @@ end
 
 -- City spaces
 
+---@param color PlayerColor
+---@param leader Leader
+---@param continuation Continuation
 function MainBoard._goSietchTabr(color, leader, continuation)
     if MainBoard._checkGenericAccess(color, leader, { friendship = "fremen" }) then
         continuation.run(function ()
@@ -824,6 +935,9 @@ function MainBoard._goSietchTabr(color, leader, continuation)
     end
 end
 
+---@param color PlayerColor
+---@param leader Leader
+---@param continuation Continuation
 function MainBoard._goResearchStation(color, leader, continuation)
     if MainBoard._checkGenericAccess(color, leader, { water = 2 }) then
         continuation.run(function ()
@@ -840,6 +954,9 @@ function MainBoard._goResearchStation(color, leader, continuation)
     end
 end
 
+---@param color PlayerColor
+---@param leader Leader
+---@param continuation Continuation
 function MainBoard._goCarthag(color, leader, continuation)
     continuation.run(function ()
         leader.drawIntrigues(color, 1)
@@ -848,6 +965,9 @@ function MainBoard._goCarthag(color, leader, continuation)
     end)
 end
 
+---@param color PlayerColor
+---@param leader Leader
+---@param continuation Continuation
 function MainBoard._goArrakeen(color, leader, continuation)
     continuation.run(function ()
         leader.troops(color, "supply", "garrison", 1)
@@ -858,6 +978,9 @@ end
 
 -- Desert spaces
 
+---@param color PlayerColor
+---@param leader Leader
+---@param continuation Continuation
 function MainBoard._goImperialBasin(color, leader, continuation)
     local innerContinuation = Helper.createContinuation("MainBoard._goImperialBasin")
     MainBoard._anySpiceSpace(color, leader, innerContinuation, 0, 1, MainBoard.spiceBonuses.imperialBasin)
@@ -869,14 +992,23 @@ function MainBoard._goImperialBasin(color, leader, continuation)
     end)
 end
 
+---@param color PlayerColor
+---@param leader Leader
+---@param continuation Continuation
 function MainBoard._goHaggaBasin(color, leader, continuation)
     MainBoard._anySpiceSpace(color, leader, continuation, 1, 2, MainBoard.spiceBonuses.haggaBasin)
 end
 
+---@param color PlayerColor
+---@param leader Leader
+---@param continuation Continuation
 function MainBoard._goTheGreatFlat(color, leader, continuation)
     MainBoard._anySpiceSpace(color, leader, continuation, 2, 3, MainBoard.spiceBonuses.theGreatFlat)
 end
 
+---@param color PlayerColor
+---@param leader Leader
+---@param continuation Continuation
 function MainBoard._goTuekSietch(color, leader, continuation)
     local options = {
         I18N("withSpiceOption"),
@@ -894,16 +1026,28 @@ function MainBoard._goTuekSietch(color, leader, continuation)
     end)
 end
 
+---@param color PlayerColor
+---@param leader Leader
+---@param continuation Continuation
 function MainBoard._goTuekSietch_WithSpice(color, leader, continuation)
     leader.resources(color, "spice", 1)
     MainBoard._anySpiceSpace(color, leader, continuation, 0, 0, MainBoard.spiceBonuses.tuekSietch)
 end
 
+---@param color PlayerColor
+---@param leader Leader
+---@param continuation Continuation
 function MainBoard._goTuekSietch_WithDraw(color, leader, continuation)
     leader.drawImperiumCards(color, 1)
     MainBoard._anySpiceSpace(color, leader, continuation, 0, 0, MainBoard.spiceBonuses.tuekSietch)
 end
 
+---@param color PlayerColor
+---@param leader Leader
+---@param continuation Continuation
+---@param waterCost integer
+---@param spiceBaseAmount integer
+---@param spiceBonus Resource
 function MainBoard._anySpiceSpace(color, leader, continuation, waterCost, spiceBaseAmount, spiceBonus)
     if MainBoard._checkGenericAccess(color, leader, { water = waterCost }) then
         continuation.run(function ()
@@ -916,11 +1060,16 @@ function MainBoard._anySpiceSpace(color, leader, continuation, waterCost, spiceB
     end
 end
 
+---@param desertSpaceName string
+---@return Resource
 function MainBoard.getSpiceBonus(desertSpaceName)
     assert(MainBoard.isDesertSpace(desertSpaceName))
     return MainBoard.spiceBonuses[desertSpaceName]
 end
 
+---@param baseAmount integer
+---@param spiceBonus Resource
+---@return integer
 function MainBoard._harvestSpice(baseAmount, spiceBonus)
     assert(spiceBonus)
     local spiceAmount = baseAmount + spiceBonus:get()
@@ -928,6 +1077,8 @@ function MainBoard._harvestSpice(baseAmount, spiceBonus)
     return spiceAmount
 end
 
+---@param bannerZone Zone
+---@param resourceName string
 function MainBoard._applyControlOfAnySpace(bannerZone, resourceName)
     local controllingPlayer = MainBoard.getControllingPlayer(bannerZone)
     if controllingPlayer then
@@ -935,6 +1086,8 @@ function MainBoard._applyControlOfAnySpace(bannerZone, resourceName)
     end
 end
 
+---@param conflictName string
+---@return Zone?
 function MainBoard.findControlableSpaceFromConflictName(conflictName)
     assert(conflictName)
     if conflictName == "secureImperialBasin" or conflictName == "battleForImperialBasin" then
@@ -948,6 +1101,8 @@ function MainBoard.findControlableSpaceFromConflictName(conflictName)
     end
 end
 
+---@param name string
+---@return Zone?
 function MainBoard.unused_findControlableSpace(name)
     for bannerZoneName, zone in pairs(MainBoard.banners) do
         if Helper.startsWith(bannerZoneName, name) then
@@ -957,6 +1112,8 @@ function MainBoard.unused_findControlableSpace(name)
     return nil
 end
 
+---@param bannerZone Zone
+---@return PlayerColor?
 function MainBoard.getControllingPlayer(bannerZone)
     local controllingPlayer = nil
 
@@ -985,6 +1142,8 @@ function MainBoard.getControllingPlayer(bannerZone)
     return controllingPlayer
 end
 
+---@param bannerZone Zone
+---@return Object?
 function MainBoard.getControllingDreadnought(bannerZone)
     for _, object in ipairs(bannerZone.getObjects()) do
         for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
@@ -998,6 +1157,9 @@ end
 
 -- Ix spaces (CHOAM)
 
+---@param color PlayerColor
+---@param leader Leader
+---@param continuation Continuation
 function MainBoard._goSmuggling(color, leader, continuation)
     continuation.run(function ()
         leader.resources(color, "solari", 1)
@@ -1005,6 +1167,9 @@ function MainBoard._goSmuggling(color, leader, continuation)
     end)
 end
 
+---@param color PlayerColor
+---@param leader Leader
+---@param continuation Continuation
 function MainBoard._goInterstellarShipping(color, leader, continuation)
     if MainBoard._checkGenericAccess(color, leader, { friendship = "spacingGuild" }) then
         continuation.run(function ()
@@ -1017,6 +1182,9 @@ end
 
 -- Ix spaces
 
+---@param color PlayerColor
+---@param leader Leader
+---@param continuation Continuation
 function MainBoard._goTechNegotiation(color, leader, continuation)
     local options = {
         I18N("sendNegotiatorOption"),
@@ -1034,6 +1202,9 @@ function MainBoard._goTechNegotiation(color, leader, continuation)
     end)
 end
 
+---@param color PlayerColor
+---@param leader Leader
+---@param continuation Continuation
 function MainBoard._goTechNegotiation_Negotiate(color, leader, continuation)
     continuation.run(function ()
         PlayBoard.getResource(color, "persuasion"):setBaseValueContribution("techNegotiation", 1)
@@ -1041,6 +1212,9 @@ function MainBoard._goTechNegotiation_Negotiate(color, leader, continuation)
     end)
 end
 
+---@param color PlayerColor
+---@param leader Leader
+---@param continuation Continuation
 function MainBoard._goTechNegotiation_Buy(color, leader, continuation)
     continuation.run(function ()
         PlayBoard.getResource(color, "persuasion"):setBaseValueContribution("techNegotiation", 1)
@@ -1048,6 +1222,9 @@ function MainBoard._goTechNegotiation_Buy(color, leader, continuation)
     end)
 end
 
+---@param color PlayerColor
+---@param leader Leader
+---@param continuation Continuation
 function MainBoard._goDreadnought(color, leader, continuation)
     if MainBoard._checkGenericAccess(color, leader, { solari = 3 }) then
         continuation.run(function ()
@@ -1061,6 +1238,9 @@ function MainBoard._goDreadnought(color, leader, continuation)
 end
 
 --- The color could be nil (the same way it could be nil with Types.isAgent)
+---@param spaceName string
+---@param color PlayerColor
+---@return boolean
 function MainBoard.hasAgentInSpace(spaceName, color)
     local space = MainBoard.spaces[spaceName]
     -- Avoid since it depends on the active extensions.
@@ -1075,6 +1255,9 @@ function MainBoard.hasAgentInSpace(spaceName, color)
     return false
 end
 
+---@param spaceName string
+---@param color PlayerColor
+---@return boolean
 function MainBoard.hasEnemyAgentInSpace(spaceName, color)
     for _, otherColor in ipairs(PlayBoard.getActivePlayBoardColors()) do
         if otherColor ~= color and MainBoard.hasAgentInSpace(spaceName, otherColor) then
@@ -1084,6 +1267,8 @@ function MainBoard.hasEnemyAgentInSpace(spaceName, color)
     return false
 end
 
+---@param spaceName string
+---@return boolean
 function MainBoard.hasVoiceToken(spaceName)
     local space = MainBoard.spaces[spaceName]
     if space then
@@ -1092,22 +1277,32 @@ function MainBoard.hasVoiceToken(spaceName)
     return false
 end
 
+---@param spaceName string
+---@return boolean
 function MainBoard.isEmperorSpace(spaceName)
     return MainBoard.spaceDetails[spaceName].group == "emperor"
 end
 
+---@param spaceName string
+---@return boolean
 function MainBoard.isSpacingGuildSpace(spaceName)
     return MainBoard.spaceDetails[spaceName].group == "spacingGuild"
 end
 
+---@param spaceName string
+---@return boolean
 function MainBoard.isBeneGesseritSpace(spaceName)
     return MainBoard.spaceDetails[spaceName].group == "beneGesserit"
 end
 
+---@param spaceName string
+---@return boolean
 function MainBoard.isFremenSpace(spaceName)
     return MainBoard.spaceDetails[spaceName].group == "fremen"
 end
 
+---@param spaceName string
+---@return boolean
 function MainBoard.unused_isFactionSpace(spaceName)
     return MainBoard.isEmperorSpace(spaceName)
         or MainBoard.isSpacingGuildSpace(spaceName)
@@ -1115,31 +1310,44 @@ function MainBoard.unused_isFactionSpace(spaceName)
         or MainBoard.isFremenSpace(spaceName)
 end
 
+---@param spaceName string
+---@return boolean
 function MainBoard.isLandsraadSpace(spaceName)
     return MainBoard.spaceDetails[spaceName].group == "landsraad"
 end
 
+---@param spaceName string
+---@return boolean
 function MainBoard.isGreenSpace(spaceName)
     return Helper.isElementOf(MainBoard.spaceDetails[spaceName].group, { "landsraad", "ix" })
 end
 
+---@param spaceName string
+---@return boolean
 function MainBoard.unused_isBlueSpace(spaceName)
     return MainBoard.spaceDetails[spaceName].group == "city"
 end
 
+---@param spaceName string
+---@return boolean
 function MainBoard.unused_isYellowSpace(spaceName)
     return Helper.isElementOf(MainBoard.spaceDetails[spaceName].group, { "desert", "choam" })
 end
 
 --- aka Maker space
+---@param spaceName string
+---@return boolean
 function MainBoard.isDesertSpace(spaceName)
     return MainBoard.spaceDetails[spaceName].group == "desert"
 end
 
+---@param spaceName string
+---@return boolean
 function MainBoard.unused_isCombatSpace(spaceName)
     return MainBoard.spaceDetails[spaceName].combat
 end
 
+---@return Space[]
 function MainBoard.getEmperorSpaces()
     local emperorSpaces = {}
     for space, details in pairs(MainBoard.spaceDetails) do
@@ -1150,10 +1358,12 @@ function MainBoard.getEmperorSpaces()
     return emperorSpaces
 end
 
+---@return Space[]
 function MainBoard.getGreenSpaces()
     return Helper.filter(Helper.getKeys(MainBoard.spaceDetails), MainBoard.isGreenSpace)
 end
 
+---@return Zone[]
 function MainBoard.getBannerZones()
     return {
         MainBoard.banners.imperialBasinBannerZone,
@@ -1162,6 +1372,8 @@ function MainBoard.getBannerZones()
     }
 end
 
+---@param zone Zone
+---@param object Object
 function MainBoard.onObjectEnterZone(zone, object)
     if Helper.isNil(zone) or Helper.isNil(object) then
         return
@@ -1181,6 +1393,8 @@ function MainBoard.onObjectEnterZone(zone, object)
     end
 end
 
+---@param spaceName string
+---@param bonuses table<TARGET, table<CATEGORY, any>>
 function MainBoard.addSpaceBonus(spaceName, bonuses)
     local space = MainBoard.spaces[spaceName]
     assert(space, "Unknow space: " .. spaceName)
@@ -1190,6 +1404,9 @@ function MainBoard.addSpaceBonus(spaceName, bonuses)
     DynamicBonus.createSpaceBonus(space.zone.getPosition() + Vector(1.2, 0, 0.75), bonuses, space.extraBonuses)
 end
 
+---@param color PlayerColor
+---@param leader Leader
+---@param spaceName string
 function MainBoard.collectExtraBonuses(color, leader, spaceName)
     local space = MainBoard.spaces[spaceName]
     if space.extraBonuses then
@@ -1197,6 +1414,8 @@ function MainBoard.collectExtraBonuses(color, leader, spaceName)
     end
 end
 
+---@param faction Faction
+---@return Vector[]
 function MainBoard.getSnooperTrackPosition(faction)
 
     local getAveragePosition = function (spaceNames)
@@ -1221,10 +1440,12 @@ function MainBoard.getSnooperTrackPosition(faction)
     return positions[faction]
 end
 
+---@return Object
 function MainBoard.getFirstPlayerMarker()
     return MainBoard.firstPlayerMarker
 end
 
+---@param object Object
 function MainBoard.trash(object)
     MainBoard.trashQueue = MainBoard.trashQueue or Helper.createSpaceQueue()
     MainBoard.trashQueue.submit(function (height)
@@ -1234,8 +1455,7 @@ function MainBoard.trash(object)
     end)
 end
 
-
----@param object table
+---@param object Object
 ---@return boolean
 function MainBoard.isInside(object)
     local position = object.getPosition()

@@ -681,7 +681,7 @@ local Deck = {
 }
 
 function Deck.rebuildPreloadAreas()
-    Locale.onLoad()
+    Locale.onLoad({})
     local allSupports = {
         en = require("en.Deck"),
         fr = require("fr.Deck"),
@@ -693,6 +693,7 @@ function Deck.rebuildPreloadAreas()
     })
 
     for _, prebuildZone in pairs(Deck.prebuildZones) do
+        ---@cast prebuildZone Zone
         for _, object in ipairs(prebuildZone.getObjects()) do
             if object.type == "Deck" then
                 object.destruct()
@@ -741,12 +742,14 @@ function Deck.onLoad()
     })
 
     for _, prebuildZone in pairs(Deck.prebuildZones) do
+        ---@cast prebuildZone Zone
         for _, object in ipairs(prebuildZone.getObjects()) do
             object.setInvisibleTo(Player.getColors())
         end
     end
 end
 
+---@param settings Settings
 function Deck.setUp(settings)
     -- Not needed anymore since we are relying on prebuild decks now.
     -- (But deck sources are still needed in "rebuildPreloadAreas".)
@@ -765,12 +768,18 @@ function Deck.setUp(settings)
     end
 end
 
+---@param name string
+---@return string
 function Deck.getAcquireCardDecalUrl(name)
     local decalUrl = Deck.decals[name .. "AcquireCard"]
     assert(decalUrl, name)
     return decalUrl
 end
 
+---@param deckZone Zone
+---@param immortality boolean
+---@param epic boolean
+---@return Continuation
 function Deck.generateStarterDeck(deckZone, immortality, epic)
     assert(deckZone)
     assert(deckZone.getPosition)
@@ -788,6 +797,10 @@ function Deck.generateStarterDeck(deckZone, immortality, epic)
     return continuation
 end
 
+---@param deckZone Zone
+---@param immortality boolean
+---@param epic boolean
+---@return Continuation
 function Deck.generateStarterDiscard(deckZone, immortality, epic)
     assert(deckZone)
     assert(deckZone.getPosition)
@@ -803,6 +816,12 @@ function Deck.generateStarterDiscard(deckZone, immortality, epic)
     return continuation
 end
 
+---@param deckZone Zone
+---@param ix boolean
+---@param immortality boolean
+---@param bloodlines boolean
+---@param ixAmbassy boolean
+---@return Continuation
 function Deck.generateImperiumDeck(deckZone, ix, immortality, bloodlines, ixAmbassy)
     assert(deckZone)
     assert(deckZone.getPosition)
@@ -815,6 +834,10 @@ function Deck.generateImperiumDeck(deckZone, ix, immortality, bloodlines, ixAmba
     return continuation
 end
 
+---@param deckZone Zone
+---@param parent string
+---@param name string
+---@return Continuation
 function Deck.generateSpecialDeck(deckZone, parent, name)
     assert(deckZone, name)
     assert(deckZone.getPosition)
@@ -829,6 +852,8 @@ function Deck.generateSpecialDeck(deckZone, parent, name)
     return continuation
 end
 
+---@param deckZone Zone
+---@return Continuation
 function Deck.generateTleilaxuDeck(deckZone)
     assert(deckZone)
     assert(deckZone.getPosition)
@@ -837,15 +862,22 @@ function Deck.generateTleilaxuDeck(deckZone)
     return continuation
 end
 
-function Deck.generateIntrigueDeck(deckZone, ix, immortality)
+---@param deckZone Zone
+---@param ix boolean
+---@param immortality boolean
+---@param bloodlines boolean
+---@return Continuation
+function Deck.generateIntrigueDeck(deckZone, ix, immortality, bloodlines)
     assert(deckZone)
     assert(deckZone.getPosition)
     local continuation = Helper.createContinuation("Deck.generateIntrigueDeck")
-    local contributions = Deck._mergeStandardContributionSets(Deck.intrigue, ix, immortality)
+    local contributions = Deck._mergeStandardContributionSets(Deck.intrigue, ix, immortality, bloodlines)
     Deck._generateDeck("Intrigue", deckZone, contributions, Deck.sources.intrigue).doAfter(continuation.run)
     return continuation
 end
 
+---@param deckZone Zone
+---@return Continuation
 function Deck.generateTwistedIntrigueDeck(deckZone)
     assert(deckZone)
     assert(deckZone.getPosition)
@@ -854,6 +886,10 @@ function Deck.generateTwistedIntrigueDeck(deckZone)
     return continuation
 end
 
+---@param deckZones Zone
+---@param ix boolean
+---@param bloodlines boolean
+---@return Continuation
 function Deck.generateTechDeck(deckZones, ix, bloodlines)
     assert(deckZones)
     assert(#deckZones == 3)
@@ -893,7 +929,11 @@ function Deck.generateTechDeck(deckZones, ix, bloodlines)
     return continuation
 end
 
---
+---@param deckZone Zone
+---@param ix boolean
+---@param epic boolean
+---@param bloodlines boolean
+---@return Continuation
 function Deck.generateConflictDeck(deckZone, ix, epic, bloodlines)
     assert(deckZone)
     assert(deckZone.getPosition)
@@ -920,6 +960,13 @@ function Deck.generateConflictDeck(deckZone, ix, epic, bloodlines)
     return continuation
 end
 
+---@param deckZone Zone
+---@param ix boolean
+---@param immortality boolean
+---@param bloodlines boolean
+---@param ixAmbassy boolean
+---@param playerCount integer
+---@return Continuation
 function Deck.generateHagalDeck(deckZone, ix, immortality, bloodlines, ixAmbassy, playerCount)
     assert(deckZone)
     assert(deckZone.getPosition)
@@ -963,6 +1010,13 @@ function Deck.generateHagalDeck(deckZone, ix, immortality, bloodlines, ixAmbassy
     return continuation
 end
 
+---@param deckZone Zone
+---@param ix boolean
+---@param immortality boolean
+---@param bloodlines boolean
+---@param ixAmbassy boolean
+---@param fanmadeLeaders boolean
+---@return Continuation
 function Deck.generateLeaderDeck(deckZone, ix, immortality, bloodlines, ixAmbassy, fanmadeLeaders)
     assert(deckZone)
     assert(deckZone.getPosition)
@@ -971,9 +1025,9 @@ function Deck.generateLeaderDeck(deckZone, ix, immortality, bloodlines, ixAmbass
     if fanmadeLeaders then
         local locale = I18N.getLocale()
         if locale == 'fr' then
-            contributions = Deck._mergeContributionSets({ contributions, Deck._mergeStandardContributionSets(Deck.leaders.fanmade.arkhane, ix, immortality) })
+            contributions = Deck._mergeContributionSets({ contributions, Deck._mergeStandardContributionSets(Deck.leaders.fanmade.arkhane, ix, immortality, bloodlines) })
         elseif locale == 'en' then
-            contributions = Deck._mergeStandardContributionSets(Deck.leaders.fanmade.retienne, ix, immortality)
+            contributions = Deck._mergeStandardContributionSets(Deck.leaders.fanmade.retienne, ix, immortality, bloodlines)
         end
     end
     if not ix and not ixAmbassy then
@@ -983,6 +1037,8 @@ function Deck.generateLeaderDeck(deckZone, ix, immortality, bloodlines, ixAmbass
     return continuation
 end
 
+---@param deckZone Zone
+---@return Continuation
 function Deck.generateNavigationDeck(deckZone)
     assert(deckZone)
     assert(deckZone.getPosition)
@@ -992,6 +1048,8 @@ function Deck.generateNavigationDeck(deckZone)
     return continuation
 end
 
+---@param deckZone Zone
+---@return Continuation
 function Deck.generateSardaukarCommanderSkillDeck(deckZone)
     assert(deckZone)
     assert(deckZone.getPosition)
@@ -1001,6 +1059,11 @@ function Deck.generateSardaukarCommanderSkillDeck(deckZone)
     return continuation
 end
 
+---@param root Tree<integer|string>
+---@param ix boolean
+---@param immortality boolean
+---@param bloodlines boolean
+---@return table<string, integer>
 function Deck._mergeStandardContributionSets(root, ix, immortality, bloodlines)
     local contributionSets = { root.base }
     if ix then
@@ -1015,6 +1078,9 @@ function Deck._mergeStandardContributionSets(root, ix, immortality, bloodlines)
     return Deck._mergeContributionSets(contributionSets)
 end
 
+---@param contributionSets table<string, table<string, integer>>
+---@param ignoreErasure? boolean
+---@return table<string, integer>
 function Deck._mergeContributionSets(contributionSets, ignoreErasure)
     local contributions = {}
     for _, contributionSet in ipairs(contributionSets) do
@@ -1043,11 +1109,11 @@ end
 --- Load part of a "custom deck" (an image made of tiled cards) into a named card
 --- collection. Only the cards listed in cardNames are added.
 --- The startLuaIndex could be greater than 1 to skip the first cards, whereas
---- empty names ("") allows to skip intermediate cards.
----@param cards any The set where to add the namec cards.
----@param customDeck any A custom deck (API struct) as returned by Deck.createImperiumCustomDeck.
----@param startLuaIndex any The Lua start index for the card names.
----@param cardNames any An list of card names matching those in the custon deck.
+--- Helper.ERASE allows to skip intermediate cards.
+---@param cards table<string, { customDeck: table, luaIndex: integer }> any The set where to add the named cards.
+---@param customDeck table A custom deck (API struct) as returned by Deck.createImperiumCustomDeck.
+---@param startLuaIndex integer The Lua start index for the card names.
+---@param cardNames string[] A list of card names matching those in the custon deck.
 function Deck.loadCustomDeck(cards, customDeck, startLuaIndex, cardNames)
     assert(cards)
     assert(customDeck)
@@ -1060,6 +1126,10 @@ function Deck.loadCustomDeck(cards, customDeck, startLuaIndex, cardNames)
     end
 end
 
+---@param customDeck table
+---@param customDeckId integer
+---@param cardId string
+---@return table
 function Deck._generateCardData(customDeck, customDeckId, cardId)
     assert(customDeck, "customDeck")
     assert(customDeckId, "customDeckId")
@@ -1122,12 +1192,23 @@ function Deck._generateCardData(customDeck, customDeckId, cardId)
     return data
 end
 
+---@param deckType string
+---@param deckZone Zone
+---@param contributions table<string, integer>
+---@param sources table<string, table>
+---@param spacing? integer
+---@return Continuation
 function Deck._generateDeck(deckType, deckZone, contributions, sources, spacing)
     assert(deckZone.getPosition)
     return Deck._generateFromPrebuildDeck(deckType, deckZone, contributions, sources, spacing)
 end
 
 --- Add 2 back cards such as to always have a deck to take cards from.
+---@param deckType string
+---@param position Vector
+---@param contributions table<string, integer>
+---@param sources table<string, table>
+---@return Continuation
 function Deck._generateDynamicDeckWithTwoBackCards(deckType, position, contributions, sources)
     local contributions2 = Helper.shallowCopy(contributions)
     contributions2.back = 2
@@ -1143,6 +1224,11 @@ function Deck._generateDynamicDeckWithTwoBackCards(deckType, position, contribut
     return Deck._generateDynamicDeck(deckType, position, contributions2, sources2)
 end
 
+---@param deckType string
+---@param position Vector
+---@param contributions table<string, table>
+---@param sources table<string, table>
+---@return Continuation
 function Deck._generateDynamicDeck(deckType, position, contributions, sources)
     assert(deckType)
     assert(position)
@@ -1164,7 +1250,7 @@ function Deck._generateDynamicDeck(deckType, position, contributions, sources)
         },
         Nickname = "",
         Description = "",
-        GMNotes = "",
+        GMNotes = deckType,
         AltLookAngle = {
             x = 0.0,
             y = 0.0,
@@ -1244,11 +1330,13 @@ function Deck._generateDynamicDeck(deckType, position, contributions, sources)
     return continuation
 end
 
+---@return integer
 function Deck._nextCustomDeckId()
     Deck.customDeckBaseId = Deck.customDeckBaseId + 1
     return Deck.customDeckBaseId
 end
 
+---@param deckPosition Vector
 function Deck._prebuildStarterDeck(deckPosition)
     local contributionSets = {
         Deck.starter.base,
@@ -1262,14 +1350,17 @@ function Deck._prebuildStarterDeck(deckPosition)
     Deck._generateDynamicDeckWithTwoBackCards("Imperium", deckPosition, contributions, Deck.sources.imperium)
 end
 
+---@param deckPosition Vector
 function Deck._prebuildEmperorStarterDeck(deckPosition)
     Deck._generateDynamicDeckWithTwoBackCards("Imperium", deckPosition, Deck.starter.emperor, Deck.sources.imperium)
 end
 
+---@param deckPosition Vector
 function Deck._prebuildMuadDibStarterDeck(deckPosition)
     Deck._generateDynamicDeckWithTwoBackCards("Imperium", deckPosition, Deck.starter.muadDib, Deck.sources.imperium)
 end
 
+---@param deckPosition Vector
 function Deck._prebuildImperiumDeck(deckPosition)
     local contributionSets = {
         Deck.imperium.base,
@@ -1282,6 +1373,7 @@ function Deck._prebuildImperiumDeck(deckPosition)
     Deck._generateDynamicDeckWithTwoBackCards("Imperium", deckPosition, contributions, Deck.sources.imperium)
 end
 
+---@param deckPosition Vector
 function Deck._prebuildSpecialDeck(deckPosition)
     local contributionSets = {
         Deck.special.base,
@@ -1291,10 +1383,12 @@ function Deck._prebuildSpecialDeck(deckPosition)
     Deck._generateDynamicDeckWithTwoBackCards("Imperium", deckPosition, contributions, Deck.sources.special)
 end
 
+---@param deckPosition Vector
 function Deck._prebuildTleilaxuDeck(deckPosition)
     Deck._generateDynamicDeckWithTwoBackCards("Imperium", deckPosition, Deck.tleilaxu, Deck.sources.tleilaxu)
 end
 
+---@param deckPosition Vector
 function Deck._prebuildIntrigueDeck(deckPosition)
     local contributionSets = {
         Deck.intrigue.base,
@@ -1308,6 +1402,7 @@ function Deck._prebuildIntrigueDeck(deckPosition)
     Deck._generateDynamicDeckWithTwoBackCards("Intrigue", deckPosition, contributions, Deck.sources.intrigue)
 end
 
+---@param deckPosition Vector
 function Deck._prebuildTechDeck(deckPosition)
     local contributionSets = {
         Deck.tech.ix,
@@ -1318,7 +1413,7 @@ function Deck._prebuildTechDeck(deckPosition)
     Deck._generateDynamicDeckWithTwoBackCards("Tech", deckPosition, contributions, Deck.sources.tech)
 end
 
---
+---@param deckPosition Vector
 function Deck._prebuildConflictDeck(deckPosition)
     local contributionSets = {}
     for i = 1, 3 do
@@ -1334,6 +1429,7 @@ function Deck._prebuildConflictDeck(deckPosition)
     Deck._generateDynamicDeckWithTwoBackCards("Conflict", deckPosition, contributions, Deck.sources.conflict)
 end
 
+---@param deckPosition Vector
 function Deck._prebuildHagalDeck(deckPosition)
     local contributionSets = {}
     for _, extension in ipairs({ "base", "ix", "immortality", "bloodlines", "ixAmbassy" }) do
@@ -1345,6 +1441,7 @@ function Deck._prebuildHagalDeck(deckPosition)
     Deck._generateDynamicDeckWithTwoBackCards("Hagal", deckPosition, contributions, Deck.sources.hagal)
 end
 
+---@param deckPosition Vector
 function Deck._prebuildLeaderDeck(deckPosition)
     local contributionSets = {
         Deck.leaders.base,
@@ -1356,14 +1453,15 @@ function Deck._prebuildLeaderDeck(deckPosition)
 
     local locale = I18N.getLocale()
     if locale == 'fr' then
-        contributions = Deck._mergeContributionSets({ contributions, Deck._mergeStandardContributionSets(Deck.leaders.fanmade.arkhane, true, true) })
+        contributions = Deck._mergeContributionSets({ contributions, Deck._mergeStandardContributionSets(Deck.leaders.fanmade.arkhane, true, true, true) })
     elseif locale == 'en' then
-        contributions = Deck._mergeContributionSets({ contributions, Deck._mergeStandardContributionSets(Deck.leaders.fanmade.retienne, true, true) })
+        contributions = Deck._mergeContributionSets({ contributions, Deck._mergeStandardContributionSets(Deck.leaders.fanmade.retienne, true, true, true) })
     end
 
     Deck._generateDynamicDeckWithTwoBackCards("Leader", deckPosition, contributions, Deck.sources.leaders)
 end
 
+---@param deckPosition Vector
 function Deck._prebuildArrakeenScoutDeck(deckPosition)
     local contributionSets = {
         Deck.arrakeenScouts.committee,
@@ -1376,6 +1474,7 @@ function Deck._prebuildArrakeenScoutDeck(deckPosition)
     Deck._generateDynamicDeckWithTwoBackCards("ArrakeenScouts", deckPosition, contributions, Deck.sources.arrakeenScouts)
 end
 
+---@param deckPosition Vector
 function Deck._prebuildNavigationDeck(deckPosition)
     local contributionSets = {
         Deck.navigation.bloodlines,
@@ -1384,6 +1483,7 @@ function Deck._prebuildNavigationDeck(deckPosition)
     Deck._generateDynamicDeckWithTwoBackCards("Navigation", deckPosition, contributions, Deck.sources.navigation)
 end
 
+---@param deckPosition Vector
 function Deck._prebuildSardaukarCommanderSkillDeck(deckPosition)
     local contributionSets = {
         Deck.sardaukarCommanderSkills.bloodlines,
@@ -1392,6 +1492,12 @@ function Deck._prebuildSardaukarCommanderSkillDeck(deckPosition)
     Deck._generateDynamicDeckWithTwoBackCards("SardaukarCommanderSkill", deckPosition, contributions, Deck.sources.sardaukarCommanderSkills)
 end
 
+---@param deckType string
+---@param deckZone Zone
+---@param contributions table<string, integer>
+---@param _ any
+---@param spacing? integer
+---@return Continuation
 function Deck._generateFromPrebuildDeck(deckType, deckZone, contributions, _, spacing)
     assert(deckType)
     assert(deckZone)
@@ -1406,22 +1512,22 @@ function Deck._generateFromPrebuildDeck(deckType, deckZone, contributions, _, sp
     local sources = {}
 
     local prebuildZone = Deck.prebuildZones[I18N.getLocale()]
-    for _, object in ipairs(prebuildZone.getObjects()) do
-        if object.hasTag(deckType) then
-            assert(object.type == "Deck")
-            for _, card in ipairs(object.getObjects()) do
+    ---@cast prebuildZone Zone
+    Helper.withAllDecks(prebuildZone, function (deck)
+        if Helper.getID(deck) == deckType then
+            for i, card in ipairs(deck.getObjects()) do
                 local id = Helper.getID(card)
                 if sources[id] then
                     table.insert(sources[id].instances, card.guid)
                 else
                     sources[id] = {
-                        deck = object,
+                        deck = deck,
                         instances = { card.guid }
                     }
                 end
             end
         end
-    end
+    end)
 
     local cardCount = 0
     for name, cardinality in pairs(contributions) do
@@ -1461,58 +1567,114 @@ function Deck._generateFromPrebuildDeck(deckType, deckZone, contributions, _, sp
     return continuation
 end
 
+---@param faceUrl string
+---@param width number
+---@param height number
+---@return table
 function Deck.createImperiumCustomDeck(faceUrl, width, height)
     return Deck.createCustomDeck(Deck.backs.imperiumCardBack, faceUrl, width, height, Vector(1.05, 1, 1.05))
 end
 
+---@param faceUrl string
+---@param width number
+---@param height number
+---@return table
 function Deck.createIntrigueCustomDeck(faceUrl, width, height)
     return Deck.createCustomDeck(Deck.backs.intrigueCardBack, faceUrl, width, height, Vector(1, 1, 1))
 end
 
+---@param faceUrl string
+---@param width number
+---@param height number
+---@return table
 function Deck.createTechCustomDeck(faceUrl, width, height)
     return Deck.createCustomDeck(Deck.backs.techCardBack, faceUrl, width, height, Vector(0.55, 1, 0.55))
 end
 
+---@param faceUrl string
+---@param width number
+---@param height number
+---@return table
 function Deck.createConflictCustomDeck(faceUrl, width, height)
     return Deck.createCustomDeck(Deck.backs.conflictCardBack, faceUrl, width, height, Vector(1, 1, 1))
 end
 
+---@param faceUrl string
+---@param width number
+---@param height number
+---@return table
 function Deck.createConflict1CustomDeck(faceUrl, width, height)
     return Deck.createCustomDeck(Deck.backs.conflict1CardBack, faceUrl, width, height, Vector(1, 1, 1))
 end
 
+---@param faceUrl string
+---@param width number
+---@param height number
+---@return table
 function Deck.createConflict2CustomDeck(faceUrl, width, height)
     return Deck.createCustomDeck(Deck.backs.conflict2CardBack, faceUrl, width, height, Vector(1, 1, 1))
 end
 
+---@param faceUrl string
+---@param width number
+---@param height number
+---@return table
 function Deck.createConflict3CustomDeck(faceUrl, width, height)
     return Deck.createCustomDeck(Deck.backs.conflict3CardBack, faceUrl, width, height, Vector(1, 1, 1))
 end
 
+---@param faceUrl string
+---@param width number
+---@param height number
+---@return table
 function Deck.createHagalCustomDeck(faceUrl, width, height, scale)
     return Deck.createCustomDeck(Deck.backs.hagalCardBack, faceUrl, width, height, scale or Vector(0.83, 1, 0.83))
 end
 
+---@param faceUrl string
+---@param width number
+---@param height number
+---@return table
 function Deck.createLeaderCustomDeck(faceUrl, width, height)
     return Deck.createCustomDeck(Deck.backs.leaderCardBack, faceUrl, width, height, Vector(1.12, 1, 1.12))
 end
 
+---@param faceUrl string
+---@param width number
+---@param height number
+---@return table
 function Deck.createFanmadeLeaderCustomDeck(faceUrl, width, height)
     return Deck.createCustomDeck(Deck.backs.fanmadeLeaderCardBack, faceUrl, width, height, Vector(1.12, 1, 1.12))
 end
 
+---@param faceUrl string
+---@param width number
+---@param height number
+---@return table
 function Deck.createArrakeenScoutsCustomDeck(faceUrl, width, height)
     return Deck.createCustomDeck(Deck.backs.arrakeenScoutsCardBack, faceUrl, width, height, Vector(0.5, 1, 0.5))
 end
 
+---@param faceUrl string
+---@param width number
+---@param height number
+---@return table
 function Deck.createNavigationCustomDeck(faceUrl, width, height)
     return Deck.createCustomDeck(Deck.backs.navigationCardBack, faceUrl, width, height, Vector(1.0, 1, 1.0))
 end
 
+---@param faceUrl string
+---@param width number
+---@param height number
+---@return table
 function Deck.createSardaukarCommanderSkillCustomDeck(faceUrl, width, height)
     return Deck.createCustomDeck(Deck.backs.sardaukarCommanderSkillCardBack, faceUrl, width, height, Vector(0.75, 1, 0.75))
 end
 
+---@param faceUrl string
+---@param width number
+---@param height number
+---@return table
 function Deck.createCustomDeck(backUrl, faceUrl, width, height, scale)
     assert(backUrl)
     assert(faceUrl)
@@ -1531,6 +1693,9 @@ function Deck.createCustomDeck(backUrl, faceUrl, width, height, scale)
     }
 end
 
+---@param category string
+---@param name string
+---@return string
 function Deck.getCardUrlByName(category, name)
     local allSupports = {
         en = require("en.Deck"),

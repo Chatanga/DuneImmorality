@@ -8,16 +8,19 @@ local Music = {
     }
 }
 
+---@param state table
 function Music.onLoad(state)
     if state.settings then
         Music.enabled = state.settings.soundEnabled
     end
 end
 
+---@param settings Settings
 function Music.setUp(settings)
     Music.enabled = settings.soundEnabled
 end
 
+---@param sound string
 function Music.play(sound)
     if Music.enabled and Music.sounds[sound] then
         MusicPlayer.setCurrentAudioclip({

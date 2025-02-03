@@ -5,7 +5,6 @@ local Helper = require("utils.Helper")
 local CardEffect = require("CardEffect")
 
 local PlayBoard = Module.lazyRequire("PlayBoard")
-local Types = Module.lazyRequire("Types")
 local Action = Module.lazyRequire("Action")
 local MainBoard = Module.lazyRequire("MainBoard")
 
@@ -51,6 +50,10 @@ local ConflictCard = {
     economicSupremacy = {level = 3, ix = true, rewards = {{vp(1), optional({solari(-6), vp(1)}), optional({spice(-4), vp(1)})}, {vp(1)}, {spice(2), solari(2)}}},
 }
 
+---@param color PlayerColor
+---@param conflictName string
+---@param rank integer
+---@return Continuation
 function ConflictCard.collectReward(color, conflictName, rank)
     assert(Helper.isInRange(1, 3, rank))
     local conflict = ConflictCard[conflictName]
@@ -73,6 +76,8 @@ function ConflictCard.collectReward(color, conflictName, rank)
     return continuation
 end
 
+---@param conflictName string
+---@return integer
 function ConflictCard.getLevel(conflictName)
     local conflict = ConflictCard[conflictName]
     assert(conflict, conflictName)
@@ -80,6 +85,8 @@ function ConflictCard.getLevel(conflictName)
 end
 
 -- Hagal house (in base game and 2P) way of collecting rewards.
+---@param color PlayerColor
+---@param conflictName string
 function ConflictCard.cleanUpConflict(color, conflictName)
     local conflict = ConflictCard[conflictName]
     assert(conflict, "Unknown conflict: ", conflictName)

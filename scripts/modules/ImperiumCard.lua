@@ -8,6 +8,7 @@ local PlayBoard = Module.lazyRequire("PlayBoard")
 local Types = Module.lazyRequire("Types")
 
 -- Function aliasing for a more readable code.
+local todo = CardEffect.todo
 local persuasion = CardEffect.persuasion
 local sword = CardEffect.sword
 local spice = CardEffect.spice
@@ -52,6 +53,25 @@ local garrisonQuad = CardEffect.garrisonQuad
 local twoTechs = CardEffect.twoTechs
 local multiply = CardEffect.multiply
 
+---@alias RevealContribution {
+--- solari: integer,
+--- spice: integer,
+--- water: integer,
+--- intrigue: integer,
+--- troops: integer,
+--- fighters: integer,
+--- negotiators: integer,
+--- specimens: integer }
+
+---@class ImperiumCardInfo: CardInfo
+---@field factions Faction[]
+---@field cost integer
+---@field acquireBonus CardEffect[]
+---@field agentIcons AgentIcon[]
+---@field reveal CardEffect[]
+---@field tleilaxu boolean
+---@field starter boolean
+
 -- Note: the 'agentIcons' field is not used today.
 local ImperiumCard = {
     -- starter: base
@@ -86,7 +106,7 @@ local ImperiumCard = {
     fremenCamp = {factions = {'fremen'}, cost = 4, agentIcons = {'yellow'}, reveal = {persuasion(2), sword(1)}},
     geneManipulation = {factions = {'beneGesserit'}, cost = 3, agentIcons = {'green', 'blue'}, reveal = {persuasion(2)}},
     guildAdministrator = {factions = {'spacingGuild'}, cost = 2, agentIcons = {'spacingGuild', 'yellow'}, reveal = {persuasion(1)}},
-    guildAmbassador = {factions = {'spacingGuild'}, cost = 4, agentIcons = {'green'}, reveal = {spacingGuildAlliance('-3 Sp -> +1 VP')}},
+    guildAmbassador = {factions = {'spacingGuild'}, cost = 4, agentIcons = {'green'}, reveal = {spacingGuildAlliance(todo('-3 Sp -> +1 VP'))}},
     guildBankers = {factions = {'spacingGuild'}, cost = 3, agentIcons = {'emperor', 'spacingGuild', 'green'}, reveal = {'SMF costs 3 less this turn'}},
     gunThopter = {cost = 4, agentIcons = {'blue', 'yellow'}, reveal = {sword(3), 'may deploy 1x troop from garrison'}},
     gurneyHalleck = {cost = 6, agentIcons = {'blue'}, reveal = {persuasion(2), '-3 Sol -> +2 troops may deploy to conflict'}},
@@ -151,7 +171,7 @@ local ImperiumCard = {
     clandestineMeeting = {factions = {'beneGesserit'}, cost = 4, reveal = {persuasion(2)}},
     corruptSmuggler = {factions = {'spacingGuild', 'fremen'}, cost = 3, agentIcons = {'spacingGuild', 'yellow'}, reveal = {persuasion(1), sword(1)}},
     dissectingKit = {cost = 2, agentIcons = {'green', 'blue'}, reveal = {persuasion(1), beetle(oneHelix(1))}},
-    forHumanity = {factions = {'beneGesserit'}, cost = 7, agentIcons = {'beneGesserit', 'green', 'yellow'}, reveal = {persuasion(2), beneGesseritAlliance('-2 Inf --> +1 VP')}},
+    forHumanity = {factions = {'beneGesserit'}, cost = 7, agentIcons = {'beneGesserit', 'green', 'yellow'}, reveal = {persuasion(2), beneGesseritAlliance(todo('-2 Inf --> +1 VP'))}},
     highPriorityTravel = {factions = {'spacingGuild'}, cost = 1, agentIcons = {'green', 'yellow'}, reveal = {persuasion(1), solari(1)}},
     imperiumCeremony = {factions = {'emperor', 'spacingGuild'}, cost = 6, agentIcons = {'emperor', 'spacingGuild', 'green'}, reveal = {persuasion(3)}},
     interstellarConspiracy = {cost = 4, agentIcons = {'blue'}, reveal = {persuasion(2)}},
@@ -215,6 +235,8 @@ local ImperiumCard = {
     ixianAmbassador = {factions = {'spacingGuild'}, cost = 4, reveal = {persuasion(1), influence(twoTechs(1))}},
 }
 
+---@param card Card
+---@return ImperiumCardInfo
 function ImperiumCard._resolveCard(card)
     assert(card)
     local cardName = Helper.getID(card)
@@ -233,6 +255,10 @@ function ImperiumCard._resolveCard(card)
     end
 end
 
+---@param color PlayerColor
+---@param playedCards Card[]
+---@param revealedCards Card[]
+---@return table<string, integer>
 function ImperiumCard.evaluateReveal(color, playedCards, revealedCards)
     return ImperiumCard.evaluateRevealDirectly(
         1,
@@ -241,6 +267,11 @@ function ImperiumCard.evaluateReveal(color, playedCards, revealedCards)
         Helper.mapValues(revealedCards, ImperiumCard._resolveCard))
 end
 
+---@param depth integer
+---@param color PlayerColor
+---@param playedCards ImperiumCardInfo[]
+---@param revealedCards ImperiumCardInfo[]
+---@return RevealContribution
 function ImperiumCard.evaluateRevealDirectly(depth, color, playedCards, revealedCards)
     local result = {}
 
@@ -288,6 +319,8 @@ function ImperiumCard.evaluateRevealDirectly(depth, color, playedCards, revealed
     return result
 end
 
+---@param color PlayerColor
+---@param card Card
 function ImperiumCard.applyAcquireEffect(color, card)
     assert(Types.isPlayerColor(color))
     assert(card)
@@ -307,17 +340,23 @@ function ImperiumCard.applyAcquireEffect(color, card)
     end
 end
 
+---@param card Card
+---@return integer
 function ImperiumCard.getTleilaxuCardCost(card)
     local cardInfo = ImperiumCard._resolveCard(card)
     assert(cardInfo.tleilaxu)
     return cardInfo.cost
 end
 
+---@param card Card
+---@return boolean
 function ImperiumCard.unused_isStarterCard(card)
     local cardInfo = ImperiumCard._resolveCard(card)
     return cardInfo.starter or false
 end
 
+---@param card Card
+---@return boolean
 function ImperiumCard.unused_isFactionCard(card, faction)
     if faction then
         assert(Types.isFaction(faction))

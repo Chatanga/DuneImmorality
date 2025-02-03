@@ -20,6 +20,8 @@ local Stage = {
     DONE = 3,
 }
 
+---@param numberOfPlayers integer
+---@return string[]
 function LeaderSelection.getSelectionMethods(numberOfPlayers)
     local selectionMode = {
         random = "random",
@@ -32,6 +34,7 @@ function LeaderSelection.getSelectionMethods(numberOfPlayers)
     return selectionMode
 end
 
+---@param state table
 function LeaderSelection.onLoad(state)
     Helper.append(LeaderSelection, Helper.resolveGUIDs(false, {
         deckZone = "23f2b5",
@@ -47,6 +50,7 @@ function LeaderSelection.onLoad(state)
     end
 end
 
+---@param state table
 function LeaderSelection.onSave(state)
     state.LeaderSelection = {
         leaderSelectionPoolSize = LeaderSelection.leaderSelectionPoolSize,
@@ -55,6 +59,9 @@ function LeaderSelection.onSave(state)
     }
 end
 
+---@param settings Settings
+---@param activeOpponents table<PlayerColor, ActiveOpponent>
+---@return Continuation
 function LeaderSelection.setUp(settings, activeOpponents)
     --[[
     Works as long as LeaderSelection is the last module to use Board (the others
@@ -84,6 +91,9 @@ function LeaderSelection.setUp(settings, activeOpponents)
     return continuation
 end
 
+---@param deck Deck
+---@param start integer
+---@return Continuation
 function LeaderSelection._layoutLeaderDeck(deck, start)
     local continuation = Helper.createContinuation("LeaderSelection._layoutLeaderDeck")
     local numberOfLeaders = deck.getQuantity()
@@ -108,6 +118,10 @@ function LeaderSelection._layoutLeaderDeck(deck, start)
     return continuation
 end
 
+---@param settings Settings
+---@param leaderSelectionPoolSize integer
+---@param players PlayerColor[]
+---@param stage integer
 function LeaderSelection._transientSetUp(settings, leaderSelectionPoolSize, players, stage)
     LeaderSelection.leaderSelectionPoolSize = leaderSelectionPoolSize
     LeaderSelection.players = players
@@ -123,15 +137,15 @@ function LeaderSelection._transientSetUp(settings, leaderSelectionPoolSize, play
         if phase == "leaderSelection" then
             local turnSequence = Helper.shallowCopy(players)
             while turnSequence[1] ~= firstPlayer do
-                Helper.cycle(turnSequence)
+                Helper.cycleInPlace(turnSequence)
             end
 
             if settings.leaderSelection == "reversePick" then
-                Helper.reverse(turnSequence)
+                Helper.reverseInPlace(turnSequence)
             elseif settings.leaderSelection == "reverseHiddenPick" then
-                Helper.reverse(turnSequence)
+                Helper.reverseInPlace(turnSequence)
             elseif settings.leaderSelection == "altHiddenPick" then
-                Helper.reverse(turnSequence)
+                Helper.reverseInPlace(turnSequence)
                 if #turnSequence == 4 then
                     Helper.swap(turnSequence, 4, 3)
                 else
@@ -147,7 +161,9 @@ function LeaderSelection._transientSetUp(settings, leaderSelectionPoolSize, play
     local testSetUp = type(settings.leaderSelection) == "table"
 
     if testSetUp then
-        LeaderSelection._setUpTest(players, settings.leaderSelection)
+        local leaderNames = settings.leaderSelection
+        ---@cast leaderNames string[]
+        LeaderSelection._setUpTest(players, leaderNames)
     elseif settings.leaderSelection == "random" then
         LeaderSelection._setUpPicking(autoStart, true, false)
     elseif settings.leaderSelection == "reversePick" then
@@ -161,6 +177,9 @@ function LeaderSelection._transientSetUp(settings, leaderSelectionPoolSize, play
     end
 end
 
+---@param start integer
+---@param count integer
+---@param callback fun(index: integer, position: Vector)
 function LeaderSelection._layoutLeaders(start, count, callback)
     local h = LeaderSelection.deckZone.getScale().z
     local colCount = 6
@@ -173,6 +192,7 @@ function LeaderSelection._layoutLeaders(start, count, callback)
 end
 
 --- Return all the leaders laid out on the secondary table.
+---@return Card[]
 function LeaderSelection._grabLeaders()
     local leaders = {}
     for _, object in ipairs(LeaderSelection.deckZone.getObjects()) do
@@ -183,6 +203,8 @@ function LeaderSelection._grabLeaders()
     return leaders
 end
 
+---@param players PlayerColor[]
+---@param leaderNames string[]
 function LeaderSelection._setUpTest(players, leaderNames)
     local leaders = LeaderSelection._grabLeaders()
 
@@ -199,6 +221,9 @@ function LeaderSelection._setUpTest(players, leaderNames)
     TurnControl.start()
 end
 
+---@param autoStart boolean
+---@param random boolean
+---@param hidden boolean
 function LeaderSelection._setUpPicking(autoStart, random, hidden)
     local fontColor = Color(223/255, 151/255, 48/255)
 
@@ -365,6 +390,8 @@ function LeaderSelection._setUpPicking(autoStart, random, hidden)
     end)
 end
 
+---@param object Object
+---@param color PlayerColor
 function LeaderSelection._setOnlyVisibleFrom(object, color)
     local excludedColors = {}
     for _, otherColor in ipairs(TurnControl.getPlayers()) do
@@ -375,6 +402,7 @@ function LeaderSelection._setOnlyVisibleFrom(object, color)
     object.setInvisibleTo(excludedColors)
 end
 
+---@return Card[]
 function LeaderSelection._getVisibleLeaders()
     local leaders = {}
     for _, object in ipairs(LeaderSelection.deckZone.getObjects()) do
@@ -387,6 +415,8 @@ function LeaderSelection._getVisibleLeaders()
     return leaders
 end
 
+---@param hidden boolean
+---@return Card[]
 function LeaderSelection._prepareVisibleLeaders(hidden)
     local leaders = {}
     for _, object in ipairs(LeaderSelection.deckZone.getObjects()) do
@@ -404,6 +434,7 @@ function LeaderSelection._prepareVisibleLeaders(hidden)
     return leaders
 end
 
+---@param leaders Card[]
 function LeaderSelection._createDynamicLeaderSelection(leaders)
     Helper.shuffle(leaders)
 
@@ -432,6 +463,7 @@ function LeaderSelection._createDynamicLeaderSelection(leaders)
     end
 end
 
+---@return Card[]
 function LeaderSelection.getSelectableLeaders()
     local selectableLeaders = {}
     for leader, selected in pairs(LeaderSelection.dynamicLeaderSelection) do
@@ -442,6 +474,8 @@ function LeaderSelection.getSelectableLeaders()
     return selectableLeaders
 end
 
+---@param color PlayerColor
+---@param leader Card
 function LeaderSelection.claimLeader(color, leader)
     assert(leader)
     local continuation = PlayBoard.setLeader(color, leader)
@@ -454,6 +488,7 @@ function LeaderSelection.claimLeader(color, leader)
     end
 end
 
+---@param leader Card
 function LeaderSelection._destructLeader(leader)
     leader.destruct()
 end

@@ -10,6 +10,27 @@ local MainBoard = Module.lazyRequire("MainBoard")
 
 local DynamicBonus = {}
 
+--[[
+    TARGET  CATEGORY                    DESCRIPTION     EXTRA
+
+            "spice"                     integer         Object
+            "solari"                    integer         Object
+
+            "intrigue"                  integer         Card
+
+            "combatTroop"               Object          Object
+            "garrisonTroop"             Object          Object
+            "tankTroop"                 Object          Object
+            "combatDreadnought"         Object          Object
+            "controlMarker"             Object          Object
+]]
+---@alias TARGET "all" | PlayerColor
+---@alias CATEGORY string
+---@alias DESCRIPTION any
+
+---@param origin Vector
+---@param bonuses table<TARGET, table<CATEGORY, DESCRIPTION>>
+---@param extraBonuses table<TARGET, table<CATEGORY, any>>
 function DynamicBonus.createSpaceBonus(origin, bonuses, extraBonuses)
     if not DynamicBonus.tq then
         DynamicBonus.tq = Helper.createTemporalQueue()
@@ -42,14 +63,16 @@ function DynamicBonus.createSpaceBonus(origin, bonuses, extraBonuses)
             extraBonuses[target][category] = {}
 
             if Helper.isElementOf(category, { "spice", "solari" }) then
+                ---@cast description integer
                 assert(description > 0)
                 local position = toPosition(i)
                 DynamicBonus.tq.submit(function ()
                     local constructorName = Helper.toCamelCase("_create",  category, "token")
-                    DynamicBonus[constructorName](position).doAfter(function (bonusToken)
+                    local c = DynamicBonus[constructorName](position)
+                    c.doAfter(function (bonusToken)
                         Helper.onceMotionless(bonusToken).doAfter(function ()
                             Helper.noPlay(bonusToken)
-                            local bonus = Resource.new(bonusToken, nil, category, 0, description)
+                            local bonus = Resource.new(bonusToken, nil, category, 0)
                             table.insert(extraBonuses[target][category], bonus)
                         end)
                     end)
@@ -57,6 +80,7 @@ function DynamicBonus.createSpaceBonus(origin, bonuses, extraBonuses)
                 i = i + 1
 
             elseif category == "intrigue" then
+                ---@cast description integer
                 assert(description > 0)
                 for _ = 1, description do
                     local position = toPosition(i)
@@ -72,6 +96,7 @@ function DynamicBonus.createSpaceBonus(origin, bonuses, extraBonuses)
                 end
 
             elseif Helper.isElementOf(category, { "combatTroop", "garrisonTroop", "tankTroop", "combatDreadnought", "controlMarker" })  then
+                ---@cast description table<string, Object>
                 for _, item in ipairs(description) do
                     local position = toPosition(i)
                     DynamicBonus.tq.submit(function ()
@@ -90,10 +115,11 @@ function DynamicBonus.createSpaceBonus(origin, bonuses, extraBonuses)
             end
         end
     end
-
-    return extraBonuses
 end
 
+---@param color PlayerColor
+---@param leader Leader
+---@param extraBonuses table<TARGET, table<CATEGORY, any>>
 function DynamicBonus.collectExtraBonuses(color, leader, extraBonuses)
     for _, target in ipairs({ "all", color }) do
         local targetBonuses = extraBonuses[target]
@@ -104,6 +130,10 @@ function DynamicBonus.collectExtraBonuses(color, leader, extraBonuses)
     end
 end
 
+---@param color PlayerColor
+---@param leader Leader
+---@param targetBonuses table<CATEGORY, any>
+---@return table<CATEGORY, any>?
 function DynamicBonus._collectTargetBonuses(color, leader, targetBonuses)
     local intrigueAlreadyTaken = false
     local remainingTargetBonuses = {}
@@ -132,7 +162,7 @@ function DynamicBonus._collectTargetBonuses(color, leader, targetBonuses)
                 Helper.physicsAndPlay(item)
                 local toPark
                 if category == "combatTroop" or category == "combatDreadnought" then
-                    toPark = Combat.getBattlegroundPark(color)
+                    toPark = Combat.getBattlegroundPark()
                 elseif category == "garrisonTroop" then
                     toPark = Combat.getGarrisonPark(color)
                 elseif category == "tankTroop" then
@@ -162,7 +192,9 @@ function DynamicBonus._collectTargetBonuses(color, leader, targetBonuses)
     return #Helper.getKeys(remainingTargetBonuses) > 0 and remainingTargetBonuses or nil
 end
 
-function DynamicBonus.createSpiceToken(position)
+---@param position Vector
+---@return Continuation
+function DynamicBonus._createSpiceToken(position)
     local data = {
         Name = "Custom_Token",
         Transform = {
@@ -220,7 +252,9 @@ function DynamicBonus.createSpiceToken(position)
     return continuation
 end
 
-function DynamicBonus.createSolariToken(position)
+---@param position Vector
+---@return Continuation
+function DynamicBonus._createSolariToken(position)
     local data = {
         Name = "Custom_Token",
         Transform = {

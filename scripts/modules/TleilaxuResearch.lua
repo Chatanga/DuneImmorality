@@ -9,6 +9,27 @@ local PlayBoard = Module.lazyRequire("PlayBoard")
 local DynamicBonus = Module.lazyRequire("DynamicBonus")
 local Board = Module.lazyRequire("Board")
 
+---@alias CellBenefit {
+--- spice: integer,
+--- solari: integer,
+--- specimen: boolean,
+--- beetle: boolean,
+--- research: boolean,
+--- solariToBeetle: boolean }
+
+---@alias LevelBenefit {
+--- intrigue: boolean,
+--- victoryToken: boolean,
+--- spiceBonus: boolean }
+
+---@class TleilaxuResearch
+---@field researchCellBenefits table<Vector, CellBenefit>
+---@field board Object
+---@field tleilaxSpiceBonusToken Object
+---@field TanksZone Zone
+---@field tleilaxuLevelZones Zone[]
+---@field oneHelixZone Zone
+---@field twoHelicesZone Zone
 local TleilaxuResearch = {
     --[[
         Research path for each player in a discrete 2D space (we use the usual X-Z
@@ -52,6 +73,7 @@ local TleilaxuResearch = {
     extraBonuses = {},
 }
 
+---@param state table
 function TleilaxuResearch.onLoad(state)
     Helper.append(TleilaxuResearch, Helper.resolveGUIDs(false, {
         board = "d5c2db",
@@ -83,6 +105,7 @@ function TleilaxuResearch.onLoad(state)
     end
 end
 
+---@param state table
 function TleilaxuResearch.onSave(state)
     if TleilaxuResearch.board then
         state.TleilaxuResearch = {
@@ -91,6 +114,7 @@ function TleilaxuResearch.onSave(state)
     end
 end
 
+---@param settings Settings
 function TleilaxuResearch.setUp(settings)
     if settings.immortality then
         TleilaxuResearch._transientSetUp()
@@ -126,10 +150,14 @@ function TleilaxuResearch._tearDown()
     TleilaxuResearch.twoHelicesZone.destruct()
 end
 
+---@param color PlayerColor
+---@return integer
 function TleilaxuResearch.getSpecimenCount(color)
     return #Park.getObjects(TleilaxuResearch.tanksParks[color])
 end
 
+---@param positionInResearchSpace Vector
+---@return Vector
 function TleilaxuResearch._researchSpaceToWorldPosition(positionInResearchSpace)
     local offset = Vector(
         positionInResearchSpace.x * 1.225 - 0.07,
@@ -139,6 +167,8 @@ function TleilaxuResearch._researchSpaceToWorldPosition(positionInResearchSpace)
     return positionInWorldSpace
 end
 
+---@param positionInWorldSpace Vector
+---@return Vector
 function TleilaxuResearch._worlPositionToResearchSpace(positionInWorldSpace)
     local offset = positionInWorldSpace - TleilaxuResearch.researchTokenOrigin
     local x = math.floor((offset.x + 0.07) / 1.225 + 0.5)
@@ -147,6 +177,8 @@ function TleilaxuResearch._worlPositionToResearchSpace(positionInWorldSpace)
     return positionInResearchSpace
 end
 
+---@param positionField string
+---@return Vector
 function TleilaxuResearch._getAveragePosition(positionField)
     local p = Vector(0, 0, 0)
     local count = 0
@@ -159,6 +191,8 @@ function TleilaxuResearch._getAveragePosition(positionField)
     return p * (1 / count)
 end
 
+---@param color PlayerColor
+---@return Vector
 function TleilaxuResearch.getTokenCellPosition(color)
     local token = PlayBoard.getContent(color).researchToken
     local tokenCellPosition = TleilaxuResearch._worlPositionToResearchSpace(token.getPosition())
@@ -207,6 +241,8 @@ function TleilaxuResearch._generateResearchButtons()
     end))
 end
 
+---@param cellPosition Vector
+---@return CellBenefit?
 function TleilaxuResearch._findResearchCellBenefits(cellPosition)
     for existingCellPosition, cell in pairs(TleilaxuResearch.researchCellBenefits) do
         if Vector.distance(existingCellPosition, cellPosition) < 0.1 then
@@ -217,7 +253,8 @@ function TleilaxuResearch._findResearchCellBenefits(cellPosition)
 end
 
 ---@param color PlayerColor
----@param jump Vector
+---@param jump? Vector
+---@return Continuation
 function TleilaxuResearch.advanceResearch(color, jump)
     local continuation = Helper.createContinuation("TleilaxuResearch.advanceResearch")
     local finalJump = jump
@@ -260,7 +297,9 @@ function TleilaxuResearch._advanceResearch(color, jump, withBenefits)
 
                 for _, resource in ipairs({"spice", "solari"}) do
                     if researchCellBenefits[resource] then
-                        leader.resources(color, resource, researchCellBenefits[resource])
+                        local amount = researchCellBenefits[resource]
+                        ---@cast amount integer
+                        leader.resources(color, resource, amount)
                     end
                 end
 
@@ -300,26 +339,36 @@ function TleilaxuResearch._advanceResearch(color, jump, withBenefits)
     end
 end
 
+---@param color PlayerColor
+---@return boolean
 function TleilaxuResearch.hasReachedOneHelix(color)
     return TleilaxuResearch.getBestResearch(color) >= 4
 end
 
+---@param color PlayerColor
+---@return boolean
 function TleilaxuResearch.hasReachedTwoHelices(color)
     return TleilaxuResearch.getBestResearch(color) == 8
 end
 
+---@param color PlayerColor
+---@return integer
 function TleilaxuResearch.getBestResearch(color)
     local bestResearch = 0
     bestResearch = TleilaxuResearch.getTokenCellPosition(color).x
     return bestResearch
 end
 
+---@param positionInTleilaxSpace integer
+---@return Vector
 function TleilaxuResearch._tleilaxSpaceToWorldPosition(positionInTleilaxSpace)
     local tleilaxuLevelZone = TleilaxuResearch.tleilaxuLevelZones[positionInTleilaxSpace]
     assert(tleilaxuLevelZone, "No zone at coordinates " .. tostring(positionInTleilaxSpace))
     return tleilaxuLevelZone.getPosition()
 end
 
+---@param positionInWorldSpace Vector
+---@return integer
 function TleilaxuResearch._worlPositionToTleilaxSpace(positionInWorldSpace)
     local nearestLevel = nil
     local nearestDistance = 0
@@ -442,6 +491,8 @@ function TleilaxuResearch._createTanksButton()
     end))
 end
 
+---@param color PlayerColor
+---@return Park
 function TleilaxuResearch._createTanksPark(color)
     local offsets = {
         Red = Vector(-0.65, 0, 0.45),
@@ -478,10 +529,14 @@ function TleilaxuResearch._createTanksPark(color)
         true)
 end
 
+---@param color PlayerColor
+---@return Park
 function TleilaxuResearch.getTankPark(color)
     return TleilaxuResearch.tanksParks[color]
 end
 
+---@param location string|integer
+---@param bonuses table<TARGET, table<CATEGORY, any>>
 function TleilaxuResearch.addSpaceBonus(location, bonuses)
     local position
     if location == "oneHelix" then

@@ -21,6 +21,7 @@ local InfluenceTrack = {
     },
 }
 
+---@param state table
 function InfluenceTrack.onLoad(state)
     Helper.append(InfluenceTrack, Helper.resolveGUIDs(false, {
         snoopers = {
@@ -43,10 +44,13 @@ function InfluenceTrack.onLoad(state)
     end
 end
 
+---@param settings Settings
 function InfluenceTrack.setUp(settings)
     InfluenceTrack._transientSetUp(settings, true)
 end
 
+---@param settings Settings
+---@param firstTime boolean
 function InfluenceTrack._transientSetUp(settings, firstTime)
     InfluenceTrack._processSnapPoints(settings, firstTime)
 
@@ -90,6 +94,8 @@ function InfluenceTrack._transientSetUp(settings, firstTime)
     end
 end
 
+---@param settings Settings
+---@param firstTime boolean
 function InfluenceTrack._processSnapPoints(settings, firstTime)
     local allColors = { "Green", "Yellow", "Blue", "Red", "White", "Purple" }
     local allActiveColors = PlayBoard.getActivePlayBoardColors()
@@ -181,6 +187,8 @@ function InfluenceTrack.tearDownSnoopers()
     end
 end
 
+---@param faction Faction
+---@param color PlayerColor
 function InfluenceTrack.recallSnooper(faction, color)
 
     local foundSnooper
@@ -225,22 +233,34 @@ function InfluenceTrack.recallSnooper(faction, color)
     end
 end
 
+---@param color PlayerColor
+---@param faction Faction
+---@return boolean
 function InfluenceTrack.hasFriendship(color, faction)
     assert(Types.isPlayerColor(color))
     assert(Types.isFaction(faction))
     return InfluenceTrack.getInfluence(faction, color) >= 2
 end
 
+---@param color PlayerColor
+---@param faction Faction
+---@return boolean
 function InfluenceTrack.hasSuperFriendship(color, faction)
     assert(Types.isPlayerColor(color))
     assert(Types.isFaction(faction))
     return InfluenceTrack.getInfluence(faction, color) >= 3
 end
 
+---@param faction Faction
+---@param color PlayerColor
+---@return integer
 function InfluenceTrack.getInfluence(faction, color)
     return InfluenceTrack._getInfluenceTracksRank(faction, color)
 end
 
+---@param faction Faction
+---@param color PlayerColor
+---@return integer
 function InfluenceTrack._getInfluenceTracksRank(faction, color)
     local influenceLevels = InfluenceTrack.influenceLevels[faction][color]
     local token = InfluenceTrack.influenceTokens[faction][color]
@@ -252,6 +272,8 @@ function InfluenceTrack._getInfluenceTracksRank(faction, color)
     end
 end
 
+---@param faction Faction
+---@param color PlayerColor
 function InfluenceTrack._setInfluenceTracksRank(faction, color, change)
     local levels = InfluenceTrack.influenceLevels[faction][color]
     local token = InfluenceTrack.influenceTokens[faction][color]
@@ -260,10 +282,18 @@ function InfluenceTrack._setInfluenceTracksRank(faction, color, change)
     token.setPositionSmooth(position, false, false)
 end
 
+---@param color PlayerColor
+---@param faction Faction
+---@param change integer
+---@return Continuation
 function InfluenceTrack.change(color, faction, change)
     return InfluenceTrack._changeInfluenceTracksRank(color, faction, change)
 end
 
+---@param color PlayerColor
+---@param faction Faction
+---@param change integer
+---@return Continuation
 function InfluenceTrack._changeInfluenceTracksRank(color, faction, change)
     assert(Types.isPlayerColor(color))
     assert(Types.isFaction(faction))
@@ -276,7 +306,7 @@ function InfluenceTrack._changeInfluenceTracksRank(color, faction, change)
 
     local continuation = Helper.createContinuation("InfluenceTrack._changeInfluenceTracksRank")
 
-    Helper.repeatMovingAction(token, math.abs(realChange), function (_)
+    Helper.repeatMovingAction(token, math.abs(realChange), function ()
         InfluenceTrack._setInfluenceTracksRank(faction, color, Helper.signum(change))
     end).doAfter(function (_)
         local newRank = InfluenceTrack._getInfluenceTracksRank(faction, color)
@@ -305,6 +335,8 @@ function InfluenceTrack._changeInfluenceTracksRank(color, faction, change)
     return continuation
 end
 
+---@param faction Faction
+---@param color PlayerColor
 function InfluenceTrack._gainFriendship(faction, color)
     assert(Types.isFaction(faction))
     assert(Types.isPlayerColor(color))
@@ -312,6 +344,8 @@ function InfluenceTrack._gainFriendship(faction, color)
     PlayBoard.getLeader(color).gainVictoryPoint(color, friendshipTokenName, 1)
 end
 
+---@param faction Faction
+---@param color PlayerColor
 function InfluenceTrack._loseFriendship(faction, color)
     assert(Types.isFaction(faction))
     assert(Types.isPlayerColor(color))
@@ -323,6 +357,7 @@ function InfluenceTrack._loseFriendship(faction, color)
     end
 end
 
+---@param faction Faction
 function InfluenceTrack._challengeAlliance(faction)
     local bestRankedPlayers = {}
     local bestRank = 4
@@ -343,7 +378,7 @@ function InfluenceTrack._challengeAlliance(faction)
     end
 
     if not Helper.tableContains(bestRankedPlayers, allianceOwner) then
-        InfluenceTrack._loseAlliance(faction, allianceOwner)
+        InfluenceTrack._loseAlliance(faction)
 
         if #bestRankedPlayers > 0 then
             if #bestRankedPlayers == 1 then
@@ -357,6 +392,8 @@ function InfluenceTrack._challengeAlliance(faction)
     end
 end
 
+---@param color PlayerColor
+---@param faction Faction
 function InfluenceTrack.getAllianceCost(color, faction)
     local rank = InfluenceTrack.getInfluence(faction, color)
     for _, otherColor in ipairs(PlayBoard.getActivePlayBoardColors()) do
@@ -376,6 +413,8 @@ function InfluenceTrack.getAllianceCost(color, faction)
     return 4 - rank
 end
 
+---@param color PlayerColor
+---@param faction Faction
 function InfluenceTrack.hasAlliance(color, faction)
     local playerVictoryTokens = PlayBoard.getScoreTokens(color)
     for _, victoryToken in ipairs(playerVictoryTokens) do
@@ -386,6 +425,7 @@ function InfluenceTrack.hasAlliance(color, faction)
     return false
 end
 
+---@param color PlayerColor
 function InfluenceTrack.hasAnyAlliance(color)
     for faction, _ in pairs(InfluenceTrack.influenceTokenInitialPositions) do
         if InfluenceTrack.hasAlliance(color, faction) then
@@ -395,6 +435,8 @@ function InfluenceTrack.hasAnyAlliance(color)
     return false
 end
 
+---@param faction Faction
+---@param color PlayerColor
 function InfluenceTrack._gainAlliance(faction, color)
     assert(Types.isFaction(faction))
     assert(Types.isPlayerColor(color))
@@ -403,6 +445,8 @@ function InfluenceTrack._gainAlliance(faction, color)
     PlayBoard.getLeader(color).gainVictoryPoint(color, Helper.getID(token), 1)
 end
 
+---@param faction Faction
+---@param color PlayerColor
 function InfluenceTrack._gainAllianceBonus(faction, color)
     local leader = PlayBoard.getLeader(color)
     if not PlayBoard.isRival(color) then
@@ -420,11 +464,16 @@ function InfluenceTrack._gainAllianceBonus(faction, color)
     end
 end
 
-function InfluenceTrack._loseAlliance(faction, color)
+---@param faction Faction
+function InfluenceTrack._loseAlliance(faction)
     local position = InfluenceTrack.allianceTokenInitialPositions[faction]
     InfluenceTrack.allianceTokens[faction].setPositionSmooth(position, false, false)
 end
 
+---@param color PlayerColor
+---@param name string
+---@param count integer
+---@return boolean
 function InfluenceTrack.gainVictoryPoint(color, name, count)
     assert(count == 1)
     for _, friendshipTokenBag in pairs(InfluenceTrack.friendshipBags) do

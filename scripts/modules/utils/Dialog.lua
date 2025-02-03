@@ -21,7 +21,7 @@ local Dialog = {
 ]]
 ---@param message string
 ---@param playerColor PlayerColor
----@param messageColor PlayerColor
+---@param messageColor string
 function Dialog.broadcastToColor(message, playerColor, messageColor)
     assert(message)
     assert(playerColor)

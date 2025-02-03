@@ -11,6 +11,7 @@ local Board = Module.lazyRequire("Board")
 
 local ImperiumRow = {}
 
+---@param state table
 function ImperiumRow.onLoad(state)
     Helper.append(ImperiumRow, Helper.resolveGUIDs(false, {
         deckZone = "8bd982",
@@ -29,6 +30,8 @@ function ImperiumRow.onLoad(state)
     end
 end
 
+---@param settings Settings
+---@return Continuation
 function ImperiumRow.setUp(settings)
     local continuation = Helper.createContinuation("ImperiumRow.setUp")
 
@@ -80,6 +83,8 @@ function ImperiumRow._transientSetUp()
     end)
 end
 
+---@param color PlayerColor
+---@return boolean
 function ImperiumRow.acquireReservedImperiumCard(color)
     local cardOrDeck = Helper.getDeckOrCard(ImperiumRow.reservationSlotZone)
     if cardOrDeck then
@@ -90,6 +95,8 @@ function ImperiumRow.acquireReservedImperiumCard(color)
     end
 end
 
+---@param indexInRow integer
+---@return boolean
 function ImperiumRow.reserveImperiumCard(indexInRow)
     local zone = ImperiumRow.slotZones[indexInRow]
     return Helper.withAnyCard(zone, function (card)
@@ -98,6 +105,9 @@ function ImperiumRow.reserveImperiumCard(indexInRow)
     end)
 end
 
+---@param indexInRow integer
+---@param color PlayerColor
+---@return boolean
 function ImperiumRow.acquireImperiumCard(indexInRow, color)
     local zone = ImperiumRow.slotZones[indexInRow]
     return Helper.withAnyCard(zone, function (card)
@@ -106,7 +116,7 @@ function ImperiumRow.acquireImperiumCard(indexInRow, color)
     end)
 end
 
-function ImperiumRow.nuke(color)
+function ImperiumRow.nuke()
     Music.play("atomics")
     Helper.onceTimeElapsed(3).doAfter(function ()
         for i, zone in ipairs(ImperiumRow.slotZones) do
@@ -134,6 +144,7 @@ function ImperiumRow.churn()
     printToAll(I18N("churnImperiumRow", { count = count, card = I18N.agree(count, "card") }), "Pink")
 end
 
+---@param indexInRow integer
 function ImperiumRow._replenish(indexInRow)
     local position = ImperiumRow.slotZones[indexInRow].getPosition()
     Helper.moveCardFromZone(ImperiumRow.deckZone, position, Vector(0, 180, 0))

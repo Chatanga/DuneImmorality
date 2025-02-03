@@ -17,6 +17,10 @@ local Action = Module.lazyRequire("Action")
 local Board = Module.lazyRequire("Board")
 
 -- Enlighting clarifications: https://boardgamegeek.com/thread/2578561/summarizing-automa-2p-and-1p-similarities-and-diff
+---@class Hagal: Action
+---@field swordmasterArrivalTurns table<string, integer>
+---@field mentatSpaceCostPatch Object
+---@field compatibleLeaders table<string, integer>
 local Hagal = Helper.createClass(Action, {
     name = "houseHagal",
     swordmasterArrivalTurns = {
@@ -39,6 +43,7 @@ local Hagal = Helper.createClass(Action, {
     }
 })
 
+---@param state table
 function Hagal.onLoad(state)
     if not state.settings or state.settings.numberOfPlayers < 3 then
         Helper.append(Hagal, Helper.resolveGUIDs(true, {
@@ -52,6 +57,7 @@ function Hagal.onLoad(state)
     end
 end
 
+---@return table<string, string>
 function Hagal.getDifficulties()
     return {
         novice = "novice",
@@ -61,6 +67,7 @@ function Hagal.getDifficulties()
     }
 end
 
+---@param settings Settings
 function Hagal.setUp(settings)
     if settings.numberOfPlayers < 3 then
         Deck.generateHagalDeck(
@@ -93,6 +100,7 @@ function Hagal.setUp(settings)
     end
 end
 
+---@return integer
 function Hagal.getMentatSpaceCost()
     Helper.dump("Hagal.difficulty:", Hagal.difficulty)
     if Hagal.getRivalCount() == 2 and Helper.isElementOf(Hagal.difficulty, {"veteran", "expert", "expertPlus"}) then
@@ -102,6 +110,7 @@ function Hagal.getMentatSpaceCost()
     end
 end
 
+---@param settings Settings
 function Hagal._transientSetUp(settings)
     Hagal.numberOfPlayers = settings.numberOfPlayers
     Hagal.riseOfIx = settings.riseOfIx
@@ -170,10 +179,13 @@ function Hagal.removeTuekSietch()
 end
 
 --- The Hagal deck is not apart in 2P games, but replace the leader card on the single rival board.
+---@param newDeckZone Zone
 function Hagal.relocateDeckZone(newDeckZone)
     Hagal.deckZone = newDeckZone
 end
 
+---@param phase Phase
+---@param color PlayerColor
 function Hagal.activate(phase, color)
     -- A delay before and after the action, to let the human(s) see the progress.
     Helper.onceTimeElapsed(1).doAfter(function ()
@@ -190,6 +202,8 @@ function Hagal.activate(phase, color)
     end)
 end
 
+---@param phase Phase
+---@param color PlayerColor
 function Hagal._lateActivate(phase, color)
     local continuation = Helper.createContinuation("Hagal._lateActivate")
 
@@ -219,12 +233,14 @@ function Hagal._lateActivate(phase, color)
     return continuation
 end
 
+---@param color PlayerColor
 function Hagal._activateFirstValidActionCard(color)
     return Hagal._activateFirstValidCard(color, function (card)
         return HagalCard.activate(color, card, Hagal.riseOfIx)
     end)
 end
 
+---@param color PlayerColor
 function Hagal._collectReward(color)
     local continuation = Helper.createContinuation("Hagal._collectReward")
     Helper.onceFramesPassed(1).doAfter(function ()
@@ -256,6 +272,7 @@ function Hagal._collectReward(color)
     return continuation
 end
 
+---@param color PlayerColor
 function Hagal._findBestBannerZone(color)
     local bestValue
     local bestBannerZone
@@ -283,6 +300,7 @@ function Hagal._findBestBannerZone(color)
 end
 
 --- A special behavior in 2P game.
+---@param color PlayerColor
 function Hagal._cleanUpConflict(color)
     local continuation = Helper.createContinuation("Hagal._cleanUpConflict")
     Helper.onceFramesPassed(1).doAfter(function ()
@@ -296,6 +314,7 @@ function Hagal._cleanUpConflict(color)
     return continuation
 end
 
+---@param color PlayerColor
 function Hagal._setStrengthFromFirstValidCard(color)
     local level3Conflict = Combat.getCurrentConflictLevel() == 3
 
@@ -315,6 +334,7 @@ function Hagal._setStrengthFromFirstValidCard(color)
     end)
 end
 
+---@param color PlayerColor
 function Hagal.getExpertDeploymentLimit(color)
     local level3Conflict = Combat.getCurrentConflictLevel() == 3
 
@@ -339,6 +359,8 @@ function Hagal.getExpertDeploymentLimit(color)
     return n
 end
 
+---@param color PlayerColor
+---@param action fun(card: Card): boolean
 function Hagal._activateFirstValidCard(color, action)
     local continuation = Helper.createContinuation("Hagal._activateFirstValidCard")
 
@@ -350,6 +372,10 @@ function Hagal._activateFirstValidCard(color, action)
     return continuation
 end
 
+---@param color PlayerColor
+---@param action fun(card: Card): boolean
+---@param n integer
+---@param continuation Continuation
 function Hagal._doActivateFirstValidCard(color, action, n, continuation)
     --Helper.dumpFunction("Hagal._doActivateFirstValidCard", color)
     local emptySlots = Park.findEmptySlots(PlayBoard.getRevealCardPark(color))
@@ -378,6 +404,10 @@ function Hagal._doActivateFirstValidCard(color, action, n, continuation)
     end)
 end
 
+---@param color PlayerColor
+---@param action fun(card: Card): boolean
+---@param n integer
+---@param continuation Continuation
 function Hagal._reshuffleDeck(color, action, n, continuation)
     local i = 1
     for _, object in ipairs(getObjects()) do
@@ -404,6 +434,7 @@ function Hagal._reshuffleDeck(color, action, n, continuation)
     end)
 end
 
+---@return integer
 function Hagal.getRivalCount()
     if Hagal.numberOfPlayers then
         return 3 - Hagal.numberOfPlayers
@@ -412,10 +443,12 @@ function Hagal.getRivalCount()
     end
 end
 
+---@return boolean
 function Hagal.isSwordmasterAvailable()
     return Hagal.difficulty ~= "expertPlus"
 end
 
+---@param color PlayerColor
 function Hagal.pickAnyCompatibleLeader(color)
     if Hagal.getRivalCount() == 1 then
         Helper.withAnyDeck(Hagal.deckZone, function (deck)
@@ -425,9 +458,9 @@ function Hagal.pickAnyCompatibleLeader(color)
         end)
     else
         local leaders = {}
-        for _, leader in ipairs(LeaderSelection.getSelectableLeaders()) do
-            if Hagal.isLeaderCompatible(leader) then
-                table.insert(leaders , leader)
+        for _, leaderCard in ipairs(LeaderSelection.getSelectableLeaders()) do
+            if Hagal.isLeaderCompatible(leaderCard) then
+                table.insert(leaders , leaderCard)
             end
         end
         assert(#leaders > 0, "No leader left for Hagal!")
@@ -435,10 +468,12 @@ function Hagal.pickAnyCompatibleLeader(color)
     end
 end
 
-function Hagal.isLeaderCompatible(leader)
-    assert(leader)
+---@param leaderCard Card
+---@return boolean
+function Hagal.isLeaderCompatible(leaderCard)
+    assert(leaderCard)
     for _, compatibleLeader in ipairs(Helper.getKeys(Hagal.compatibleLeaders)) do
-        if compatibleLeader == Helper.getID(leader) then
+        if compatibleLeader == Helper.getID(leaderCard) then
             return true
         end
     end

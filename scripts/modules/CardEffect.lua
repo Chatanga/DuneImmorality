@@ -13,18 +13,31 @@ local ImperiumCard = Module.lazyRequire("ImperiumCard")
     Save some helping functions such as "perSwordCard", the intent of this
     module is to allow a compact, terse writing style for card effects.
 ]]
+---@class CardEffect
 local CardEffect = {}
 
+---@alias Contributions {
+--- strength: integer,
+--- persuasion: integer }
+
+---@class CardInfo {
+---@field factions Faction[]
+
 ---@class Context
----@field player any
----@field color table
----@field card any
+---@field player Player
+---@field color PlayerColor
+---@field card Card
 ---@field cardName string
----@field playedCards any[]?
----@field revealedCards any[]?
+---@field playedCards? CardInfo[]
+---@field revealedCards? CardInfo[]
+---@field oldContributions Contributions
+---@field depth integer
+---@field persuasion integer
+---@field strength integer
 
 --[[
 -- Function aliasing for a more readable code.
+local todo = CardEffect.todo
 local persuasion = CardEffect.persuasion
 local sword = CardEffect.sword
 local spice = CardEffect.spice
@@ -72,17 +85,28 @@ local twoTechs = CardEffect.twoTechs
 local multiply = CardEffect.multiply
 ]]
 
+---@generic X
+---@alias XFunction<X> fun(context: Context): X
+
+---@generic Y
+---@alias XExpression<Y> Y | fun(context: Context): Y
+
+---@generic Z
 ---@param context Context
----@param expression any
----@return boolean
+---@param expression? XExpression<Z>
+---@return Z
 function CardEffect.evaluate(context, expression)
-    if type(expression) == 'function' then
+    if expression ~= nil and type(expression) == 'function' then
         return expression(context)
     else
         return expression
     end
 end
 
+---@generic T
+---@param selector string
+---@param expression XExpression<T>
+---@return XFunction<boolean>
 function CardEffect._dispatch(selector, expression)
     return function (context)
         local color = context.color
@@ -115,11 +139,7 @@ function CardEffect._dispatch(selector, expression)
         elseif selector == "trash" then
             return false
         elseif Helper.isElementOf(selector, { "emperor", "spacingGuild", "beneGesserit", "fremen", "?" }) then
-            local faction = selector
-            if selector == "?" then
-                faction = nil
-            end
-            return call("influence", color, faction, value)
+            return call("influence", color, selector ~= "?" and selector or nil, value)
         elseif selector == "vp" then
             call("gainVictoryPoint", color, context.cardName, value)
             return true
@@ -135,6 +155,7 @@ function CardEffect._dispatch(selector, expression)
         elseif selector == "beetle" then
             return call("beetle", color, value)
         elseif selector == "mentat" then
+            assert(not value, tostring(value))
             if call("takeMentat", color) then
                 MainBoard.getMentat(true).addTag("notToBeRecalled")
                 return true
@@ -152,98 +173,150 @@ end
 
 -- Effectors
 
+---@param comment string
+---@return XFunction<boolean>
+function CardEffect.todo(comment)
+    return function (_)
+        return false
+    end
+end
+
+---@param expression XExpression<integer>
+---@return XFunction<boolean>
 function CardEffect.persuasion(expression)
     return CardEffect._dispatch('persuasion', expression)
 end
 
+---@param expression XExpression<integer>
+---@return XFunction<boolean>
 function CardEffect.sword(expression)
     return CardEffect._dispatch('strength', expression)
 end
 
+---@param expression XExpression<integer>
+---@return XFunction<boolean>
 function CardEffect.spice(expression)
     return CardEffect._dispatch('spice', expression)
 end
 
+---@param expression XExpression<integer>
+---@return XFunction<boolean>
 function CardEffect.water(expression)
     return CardEffect._dispatch('water', expression)
 end
 
+---@param expression XExpression<integer>
+---@return XFunction<boolean>
 function CardEffect.solari(expression)
     return CardEffect._dispatch('solari', expression)
 end
 
+---@param expression XExpression<integer>
+---@return XFunction<boolean>
 function CardEffect.deploy(expression)
     return CardEffect._dispatch('deploy', expression)
 end
 
+---@param expression XExpression<integer>
+---@return XFunction<boolean>
 function CardEffect.troop(expression)
     return CardEffect._dispatch('troop', expression)
 end
 
+---@param expression XExpression<integer>
+---@return XFunction<boolean>
 function CardEffect.dreadnought(expression)
     return CardEffect._dispatch('dreadnought', expression)
 end
 
+---@param expression XExpression<integer>
+---@return XFunction<boolean>
 function CardEffect.negotiator(expression)
     return CardEffect._dispatch('negotiator', expression)
 end
 
+---@param expression XExpression<integer>
+---@return XFunction<boolean>
 function CardEffect.specimen(expression)
     return CardEffect._dispatch('specimen', expression)
 end
 
+---@param expression XExpression<integer>
+---@return XFunction<boolean>
 function CardEffect.intrigue(expression)
     return CardEffect._dispatch('intrigue', expression)
 end
 
+---@param expression XExpression<integer>
+---@return XFunction<boolean>
 function CardEffect.trash(expression)
     return CardEffect._dispatch('trash', expression)
 end
 
+---@param expression XExpression<integer>
+---@return XFunction<boolean>
 function CardEffect.research(expression)
     return CardEffect._dispatch('research', expression)
 end
 
+---@param expression XExpression<integer>
+---@return XFunction<boolean>
 function CardEffect.beetle(expression)
     return CardEffect._dispatch('beetle', expression)
 end
 
+---@param expression XExpression<integer>
+---@return XFunction<boolean>
 function CardEffect.influence(expression, faction)
     return CardEffect._dispatch(faction or "?", expression)
 end
 
+---@param expression XExpression<integer>
+---@return XFunction<boolean>
 function CardEffect.vp(expression)
     return CardEffect._dispatch('vp', expression)
 end
 
+---@param expression XExpression<integer>
+---@return XFunction<boolean>
 function CardEffect.draw(expression)
     return CardEffect._dispatch('draw', expression)
 end
 
+---@param expression XExpression<integer>
+---@return XFunction<boolean>
 function CardEffect.shipment(expression)
     return CardEffect._dispatch('shipment', expression)
 end
 
-function CardEffect.mentat(expression)
-    return CardEffect._dispatch('mentat', expression)
+---@return XFunction<boolean>
+function CardEffect.mentat()
+    return CardEffect._dispatch('mentat', nil)
 end
 
+---@param expression XExpression<string>
+---@return XFunction<boolean>
 function CardEffect.control(expression)
     return CardEffect._dispatch('control', expression)
 end
 
-function CardEffect.voice(expression)
-    return CardEffect._dispatch('voice', expression)
+---@return XFunction<boolean>
+function CardEffect.voice()
+    return CardEffect._dispatch('voice', 0)
 end
 
 -- Functors
 
+---@param expression XExpression<integer>
+---@return XFunction<integer>
 function CardEffect.perDreadnoughtInConflict(expression)
     return function (context)
         return CardEffect.evaluate(context, expression) * Combat.getNumberOfDreadnoughtsInConflict(context.color)
     end
 end
 
+---@param expression XExpression<integer>
+---@return XFunction<integer>
 function CardEffect.perSwordCard(expression, cardExcluded)
     return function (context)
         local swordCount = 0
@@ -261,6 +334,8 @@ function CardEffect.perSwordCard(expression, cardExcluded)
     end
 end
 
+---@param expression XExpression<integer>
+---@return XFunction<integer>
 function CardEffect.perFremen(expression)
     return function (context)
         local count = 0
@@ -273,6 +348,8 @@ function CardEffect.perFremen(expression)
     end
 end
 
+---@param expression XExpression<integer>
+---@return XFunction<integer>
 function CardEffect.perEmperor(expression)
     return function (context)
         local count = 0
@@ -287,6 +364,9 @@ end
 
 -- Special functors
 
+---@param n integer
+---@param options XFunction<boolean>[]
+---@return XFunction<boolean>
 function CardEffect.choice(n, options)
     return function (context)
         if PlayBoard.getLeader(context.color).randomlyChoose(context.color, context.cardName) then
@@ -307,6 +387,8 @@ function CardEffect.choice(n, options)
     end
 end
 
+---@param options XFunction<boolean>[]
+---@return XFunction<boolean>
 function CardEffect.optional(options)
     return function (context)
         if PlayBoard.getLeader(context.color).decide(context.color, context.cardName) then
@@ -323,18 +405,29 @@ end
 
 -- Filter
 
+---@param expression XExpression<integer>
+---@param predicate XFunction<boolean>
+---@return XFunction<integer>
 function CardEffect._filter(expression, predicate)
     return function (context)
-        return predicate(context) and CardEffect.evaluate(context, expression) or 0
+        if predicate(context) then
+            return CardEffect.evaluate(context, expression)
+        else
+            return 0
+        end
     end
 end
 
+---@param expression XExpression<integer>
+---@return XFunction<integer>
 function CardEffect.seat(expression)
     return CardEffect._filter(expression, function (context)
         return PlayBoard.hasHighCouncilSeat(context.color)
     end)
 end
 
+---@param expression XExpression<integer>
+---@return XFunction<integer>
 function CardEffect.fremenBond(expression)
     return CardEffect._filter(expression, function (context)
         for _, card in ipairs(Helper.concatTables(context.playedCards, context.revealedCards)) do
@@ -346,6 +439,8 @@ function CardEffect.fremenBond(expression)
     end)
 end
 
+---@param expression XExpression<integer>
+---@return XFunction<integer>
 function CardEffect.agentInEmperorSpace(expression)
     return CardEffect._filter(expression, function (context)
         for _, space in ipairs(MainBoard.getEmperorSpaces()) do
@@ -357,6 +452,8 @@ function CardEffect.agentInEmperorSpace(expression)
     end)
 end
 
+---@param expression XExpression<integer>
+---@return XFunction<integer>
 function CardEffect.agentInGreenSpace(expression)
     return CardEffect._filter(expression, function (context)
         for _, space in ipairs(MainBoard.getGreenSpaces()) do
@@ -368,48 +465,68 @@ function CardEffect.agentInGreenSpace(expression)
     end)
 end
 
+---@param expression XExpression<integer>
+---@return XFunction<integer>
 function CardEffect._alliance(faction, expression)
     return CardEffect._filter(expression, function (context)
         return InfluenceTrack.hasAlliance(context.color, faction)
     end)
 end
 
+---@param expression XExpression<integer>
+---@return XFunction<integer>
 function CardEffect.emperorAlliance(expression)
     return CardEffect._alliance("emperor", expression)
 end
 
+---@param expression XExpression<integer>
+---@return XFunction<integer>
 function CardEffect.spacingGuildAlliance(expression)
     return CardEffect._alliance("spacingGuild", expression)
 end
 
+---@param expression XExpression<integer>
+---@return XFunction<integer>
 function CardEffect.beneGesseritAlliance(expression)
     return CardEffect._alliance("beneGesserit", expression)
 end
 
+---@param expression XExpression<integer>
+---@return XFunction<integer>
 function CardEffect.fremenAlliance(expression)
     return CardEffect._alliance("fremen", expression)
 end
 
+---@param expression XExpression<integer>
+---@return XFunction<integer>
 function CardEffect._superFriendShip(faction, expression)
     return CardEffect._filter(expression, function (context)
         return InfluenceTrack.hasSuperFriendship(context.color, faction)
     end)
 end
 
+---@param expression XExpression<integer>
+---@return XFunction<integer>
 function CardEffect.emperorSuperFriendship(expression)
     return CardEffect._superFriendShip("emperor", expression)
 end
 
+---@param expression XExpression<integer>
+---@return XFunction<integer>
 function CardEffect._friendShip(faction, expression)
     return CardEffect._filter(expression, function (context)
         return InfluenceTrack.hasFriendship(context.color, faction)
     end)
 end
 
+---@param expression XExpression<integer>
+---@return XFunction<integer>
 function CardEffect.fremenFriendship(expression)
     return CardEffect._friendShip("fremen", expression)
 end
 
+---@param expression XExpression<integer>
+---@return XFunction<integer>
 function CardEffect.anyAlliance(expression)
     return CardEffect.emperorAlliance(expression)
         or CardEffect.spacingGuildAlliance(expression)
@@ -417,30 +534,40 @@ function CardEffect.anyAlliance(expression)
         or CardEffect.fremenAlliance(expression)
 end
 
+---@param expression XExpression<integer>
+---@return XFunction<integer>
 function CardEffect.oneHelix(expression)
     return CardEffect._filter(expression, function (context)
         return TleilaxuResearch.hasReachedOneHelix(context.color)
     end)
 end
 
+---@param expression XExpression<integer>
+---@return XFunction<integer>
 function CardEffect.twoHelices(expression)
     return CardEffect._filter(expression, function (context)
         return TleilaxuResearch.hasReachedTwoHelices(context.color)
     end)
 end
 
+---@param expression XExpression<integer>
+---@return XFunction<integer>
 function CardEffect.swordmaster(expression)
     return CardEffect._filter(expression, function (context)
         return PlayBoard.hasSwordmaster(context.color)
     end)
 end
 
+---@param expression XExpression<integer>
+---@return XFunction<integer>
 function CardEffect.hasSardaukarCommanderInConflict(expression)
     return CardEffect._filter(expression, function (context)
         return Combat.hasAnySardaukarCommander(context.color)
     end)
 end
 
+---@param expression XExpression<integer>
+---@return XFunction<integer>
 function CardEffect.command(expression)
     return CardEffect._filter(expression, function (context)
         local persuasion = 0
@@ -456,18 +583,24 @@ function CardEffect.command(expression)
     end)
 end
 
+---@param expression XExpression<integer>
+---@return XFunction<integer>
 function CardEffect.garrisonQuad(expression)
     return CardEffect._filter(expression, function (context)
         return (Combat.getUnitCounts()[context.color] or 0) >= 4
     end)
 end
 
+---@param expression XExpression<integer>
+---@return XFunction<integer>
 function CardEffect.twoTechs(expression)
     return CardEffect._filter(expression, function (context)
         return #PlayBoard.getAllTechs(context.color) >= 2
     end)
 end
 
+---@param ... XExpression<integer>
+---@return XFunction<integer>
 function CardEffect.multiply(...)
     local expressions = {...}
     return function (context)
@@ -481,12 +614,17 @@ end
 
 --- Internal
 
+---@param context Context
+---@param cardExcluded boolean
+---@param processor fun(context: Context)
+---@return boolean
 function CardEffect._reapply(context, cardExcluded, processor)
     if not context.depth or context.depth > 1 then
         return false
     end
     local allCards = Set.newFromList(Helper.concatTables(context.playedCards, context.revealedCards))
     for _, card in ipairs(context.revealedCards) do
+        ---@cast card ImperiumCardInfo
         if card.reveal and (not cardExcluded or card ~= context.card) then
             local fakePlayedCards = (allCards - Set.newFromItems(card)):toList()
             local output = ImperiumCard.evaluateRevealDirectly(context.depth + 1, context.color, fakePlayedCards, { card })

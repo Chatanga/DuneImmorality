@@ -13,11 +13,18 @@ local TechCard = Module.lazyRequire("TechCard")
 local Action = Module.lazyRequire("Action")
 local Board = Module.lazyRequire("Board")
 
+---@alias TechTileStack {
+--- topCard: Card,
+--- otherCards: Deck }
+
+---@class TechMarket
+---@field acquireTechOptions table<string, { resourceType: ResourceName, amount: integer }>
 local TechMarket = {
     negotiationParks = {},
     acquireTechOptions = {},
 }
 
+---@param state table
 function TechMarket.onLoad(state)
     if state.settings and (state.settings.riseOfIx or state.settings.ixAmbassy) then
         if state.settings.ixAmbassy then
@@ -29,6 +36,7 @@ function TechMarket.onLoad(state)
     end
 end
 
+---@param settings Settings
 function TechMarket.setUp(settings)
     if settings.riseOfIx or settings.ixAmbassy then
         if settings.ixAmbassy then
@@ -59,6 +67,7 @@ function TechMarket.setUp(settings)
     end
 end
 
+---@param settings Settings
 function TechMarket._transientSetUp(settings)
     TechMarket._processSnapPoints()
 
@@ -104,6 +113,7 @@ function TechMarket._transientSetUp(settings)
     end)
 end
 
+---@param color PlayerColor
 function TechMarket.setContributions(color)
     local contributions = TechCard.evaluatePreReveal(color)
     PlayBoard.getResource(color, "persuasion"):setBaseValueContribution("techTiles", contributions.persuasion or 0)
@@ -149,6 +159,7 @@ function TechMarket._processSnapPoints()
     })
 end
 
+---@return Object?
 function TechMarket.getBoard()
     return TechMarket.board
 end
@@ -191,6 +202,8 @@ function TechMarket._createNegotiationButton()
     end))
 end
 
+---@param stackIndex integer
+---@param color PlayerColor
 function TechMarket.acquireTech(stackIndex, color)
     if not TechMarket.frozen then
         TechMarket.frozen = true
@@ -209,6 +222,9 @@ function TechMarket.acquireTech(stackIndex, color)
     end
 end
 
+---@param stackIndex integer
+---@param color? PlayerColor
+---@return Continuation
 function TechMarket._doAcquireTech(stackIndex, color)
     local continuation = Helper.createContinuation("TechMarket._doAcquireTech")
     local acquireCard = TechMarket.acquireCards[stackIndex]
@@ -259,6 +275,9 @@ function TechMarket._doAcquireTech(stackIndex, color)
     return continuation
 end
 
+---@param stackIndex integer
+---@param color PlayerColor
+---@return Continuation
 function TechMarket._buyTech(stackIndex, color)
     local continuation = Helper.createContinuation("TechMarket._buyTech")
     local techTileStack = TechMarket._getTechTileStack(stackIndex)
@@ -266,7 +285,11 @@ function TechMarket._buyTech(stackIndex, color)
         local options = Helper.getKeys(TechMarket.acquireTechOptions)
         if #options > 0 then
             if #options > 1 then
-                Dialog.showOptionsAndCancelDialog(color, I18N("buyTechSelection"), Helper.mapValues(options, I18N), continuation, function (index)
+                -- The functor nature of I18N seems to confuse annotation typing.
+                local translate = function (str)
+                    return I18N(str)
+                end
+                Dialog.showOptionsAndCancelDialog(color, I18N("buyTechSelection"), Helper.mapValues(options, translate), continuation, function (index)
                     if index > 0 then
                         continuation.run(index and TechMarket._doBuyTech(techTileStack, options[index], color))
                     else
@@ -289,6 +312,10 @@ function TechMarket._buyTech(stackIndex, color)
     return continuation
 end
 
+---@param techTileStack TechTileStack
+---@param option string
+---@param color PlayerColor
+---@return boolean
 function TechMarket._doBuyTech(techTileStack, option, color)
     local techCost = TechCard.getCost(techTileStack.topCard)
 
@@ -330,6 +357,8 @@ function TechMarket._doBuyTech(techTileStack, option, color)
     end
 end
 
+---@param stackIndex integer
+---@return TechCardDetails?
 function TechMarket.getTopCardDetails(stackIndex)
     local techTileStack = TechMarket._getTechTileStack(stackIndex)
     if techTileStack.topCard then
@@ -338,6 +367,8 @@ function TechMarket.getTopCardDetails(stackIndex)
     return nil
 end
 
+---@param stackIndex integer
+---@return string?
 function TechMarket.getBottomCardDetails(stackIndex)
     local techTileStack = TechMarket._getTechTileStack(stackIndex)
     if techTileStack.otherCards then
@@ -348,6 +379,9 @@ function TechMarket.getBottomCardDetails(stackIndex)
     return nil
 end
 
+---@param stackIndex integer
+---@param position Vector
+---@return Card?
 function TechMarket.grapBottomCard(stackIndex, position)
     local techTileStack = TechMarket._getTechTileStack(stackIndex)
     if techTileStack.otherCards then
@@ -363,6 +397,8 @@ function TechMarket.grapBottomCard(stackIndex, position)
     return nil
 end
 
+---@param stackIndex integer
+---@return TechTileStack
 function TechMarket._getTechTileStack(stackIndex)
     assert(Helper.isInRange(1, 3, stackIndex))
 
@@ -381,7 +417,7 @@ function TechMarket._getTechTileStack(stackIndex)
 end
 
 ---@param color PlayerColor
----@param source any
+---@param source string
 ---@param resourceType ResourceName
 ---@param amount integer
 function TechMarket.registerAcquireTechOption(color, source, resourceType, amount)
@@ -395,6 +431,7 @@ function TechMarket.registerAcquireTechOption(color, source, resourceType, amoun
     }
 end
 
+---@return integer
 function TechMarket.getRivalSpiceDiscount()
     local options = Helper.getValues(TechMarket.acquireTechOptions)
     assert(#options == 1, #options)
@@ -403,6 +440,8 @@ function TechMarket.getRivalSpiceDiscount()
     return option.amount
 end
 
+---@param color PlayerColor
+---@return Park
 function TechMarket._createNegotiationPark(color)
     local offsets = {
         Red = Vector(-0.45, 0, 0.45),
@@ -440,11 +479,15 @@ function TechMarket._createNegotiationPark(color)
         true)
 end
 
+---@param color PlayerColor
+---@return Park
 function TechMarket.getNegotiationPark(color)
     assert(TechMarket.negotiationParks, "Missing Rise of Ix extension!")
     return TechMarket.negotiationParks[color]
 end
 
+---@param color PlayerColor
+---@return boolean
 function TechMarket.unused_addNegotiator(color)
     assert(TechMarket.negotiationParks, "Missing Rise of Ix extension!")
     local supply = PlayBoard.getSupplyPark(color)
@@ -452,6 +495,8 @@ function TechMarket.unused_addNegotiator(color)
     return Park.transfer(1, supply, negotiation) > 0
 end
 
+---@param color PlayerColor
+---@return boolean
 function TechMarket.unused_removeNegotiator(color)
     assert(TechMarket.negotiationParks, "Missing Rise of Ix extension!")
     local supply = PlayBoard.getSupplyPark(color)
@@ -460,6 +505,8 @@ function TechMarket.unused_removeNegotiator(color)
 end
 
 --- In TechMarket for convenience, but it could also be in MainBoard.
+---@param object Object
+---@return boolean
 function TechMarket.unused_isInside(object)
     if TechMarket.board then
         local position = object.getPosition()

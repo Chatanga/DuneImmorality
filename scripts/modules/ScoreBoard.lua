@@ -71,6 +71,7 @@ function ScoreBoard.onLoad(state)
     end
 end
 
+---@param settings Settings
 function ScoreBoard.setUp(settings)
     local activateCategories = {
         base = true,
@@ -100,10 +101,15 @@ function ScoreBoard.setUp(settings)
     ScoreBoard._transientSetUp(settings)
 end
 
+---@param settings Settings
 function ScoreBoard._transientSetUp(settings)
     -- NOP
 end
 
+---@param color PlayerColor
+---@param name string
+---@param count integer
+---@return boolean
 function ScoreBoard.gainVictoryPoint(color, name, count)
     local success = false
     Helper.forEachRecursively(ScoreBoard.tokens, function (victoryPointName, victoryPointSource)
@@ -128,6 +134,7 @@ function ScoreBoard.gainVictoryPoint(color, name, count)
 end
 
 --- TODO Find a better place and implementation.
+---@return Object?
 function ScoreBoard.getFreeVoiceToken()
     for _, object in ipairs(ScoreBoard.hiddenZone.getObjects()) do
         if Helper.isElementOf(object.getGUID(), { "516df5", "cc0eda" }) then

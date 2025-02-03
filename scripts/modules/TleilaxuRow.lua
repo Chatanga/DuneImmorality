@@ -29,6 +29,8 @@ function TleilaxuRow.onLoad(state)
     end
 end
 
+---@param settings Settings
+---@return Continuation
 function TleilaxuRow.setUp(settings)
     local continuation = Helper.createContinuation("TleilaxuRow.setUp")
     if settings.immortality then
@@ -76,6 +78,8 @@ function TleilaxuRow._tearDown()
     end
 end
 
+---@param indexInRow integer
+---@param color PlayerColor
 function TleilaxuRow.acquireTleilaxuCard(indexInRow, color)
     local acquireCard = TleilaxuRow.acquireCards[indexInRow]
     assert(Helper.withAnyCard(acquireCard.zone, function (card)
@@ -114,15 +118,13 @@ function TleilaxuRow.acquireTleilaxuCard(indexInRow, color)
             if acquireCard.extraBonuses then
                 DynamicBonus.collectExtraBonuses(color, leader, acquireCard.extraBonuses)
             end
-
-            return true
         else
             Dialog.broadcastToColor(I18N("noEnoughSpecimen"), color, "Purple")
-            return false
         end
     end))
 end
 
+---@param indexInRow integer
 function TleilaxuRow.trash(indexInRow)
     local acquireCard = TleilaxuRow.acquireCards[indexInRow]
     assert(Helper.withAnyCard(acquireCard.zone, function (card)
@@ -138,6 +140,7 @@ function TleilaxuRow.trash(indexInRow)
     end))
 end
 
+---@param bonuses table<TARGET, table<CATEGORY, any>>
 function TleilaxuRow.addAcquireBonus(bonuses)
     local acquireCard = TleilaxuRow.acquireCards[3]
     local position = acquireCard.zone.getPosition()

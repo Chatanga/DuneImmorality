@@ -20,6 +20,12 @@ local Resource = Helper.createClass(nil, {
     resources = {}
 })
 
+---@param token Object
+---@param color? PlayerColor
+---@param resourceName ResourceName
+---@param value integer
+---@param location? Vector
+---@return Resource
 function Resource.new(token, color, resourceName, value, location)
     assert(token)
     assert(Types.isResourceName(resourceName))
@@ -95,6 +101,7 @@ function Resource:_updateState()
     end
 end
 
+---@return string
 function Resource:_getTooltip()
     return I18N(self.resourceName .. "Amount", self.baseValue + self.value)
 end
@@ -107,6 +114,8 @@ function Resource:_updateButton()
     })
 end
 
+---@param token Object
+---@return Resource?
 function Resource.unused_findResourceFromToken(token)
     for _, resource in pairs(Resource.resources) do
         if resource.token == token then
@@ -116,7 +125,9 @@ function Resource.unused_findResourceFromToken(token)
     return nil
 end
 
-function Resource:_setValue(_, altClick)
+---@param color PlayerColor
+---@param altClick boolean
+function Resource:_setValue(color, altClick)
     local change = altClick and -1 or 1
     local newValue = math.min(math.max(self.value + change, self.MIN_VALUE), self.MAX_VALUE)
     if self.value ~= newValue then
@@ -127,6 +138,8 @@ function Resource:_setValue(_, altClick)
     end
 end
 
+---@param color PlayerColor
+---@param altClick boolean
 function Resource:_changeValue(color, altClick)
     if self.color and color ~= self.color then
         Dialog.broadcastToColor(I18N("noTouch"), color, color)
@@ -167,6 +180,7 @@ function Resource:_changeValue(color, altClick)
     end
 end
 
+---@param change integer
 function Resource:change(change)
     local newValue = math.min(math.max(self.value + change, self.MIN_VALUE), self.MAX_VALUE)
     self.value = newValue
@@ -175,6 +189,7 @@ function Resource:change(change)
     self:_updateState()
 end
 
+---@param value integer
 function Resource:set(value)
     local newValue = math.min(math.max(value, self.MIN_VALUE), self.MAX_VALUE)
     self.value = newValue
@@ -183,10 +198,13 @@ function Resource:set(value)
     self:_updateState()
 end
 
+---@return integer
 function Resource:get()
     return self.value + self.baseValue
 end
 
+---@param origin string
+---@param amount integer
 function Resource:setBaseValueContribution(origin, amount)
     self.baseValueContributions[origin] = amount
     self:_updateBaseValueContributions()

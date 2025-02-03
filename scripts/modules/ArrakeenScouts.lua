@@ -127,8 +127,9 @@ local ArrakeenScouts = {
     pendingOperations = {},
 }
 
---ArrakeenScouts._debug = { "armedEscort" }
+--ArrakeenScouts._debug = { "saphoJuice" }
 
+---@param state table
 function ArrakeenScouts.onLoad(state)
     ArrakeenScouts.fr = require("fr.ArrakeenScouts")
     ArrakeenScouts.en = require("en.ArrakeenScouts")
@@ -153,6 +154,7 @@ function ArrakeenScouts.onLoad(state)
     end
 end
 
+---@param state table
 function ArrakeenScouts.onSave(state)
     state.ArrakeenScouts = {
         selectedCommittees = ArrakeenScouts.selectedCommittees,
@@ -161,6 +163,7 @@ function ArrakeenScouts.onSave(state)
     }
 end
 
+---@param settings Settings
 function ArrakeenScouts.setUp(settings)
     if settings.variant == "arrakeenScouts" then
         ArrakeenScouts.numberOfPlayers = settings.numberOfPlayers
@@ -228,6 +231,8 @@ function ArrakeenScouts.setUp(settings)
     end
 end
 
+---@param contributionSets table<string, table<string, any>>
+---@return table<string, any>
 function ArrakeenScouts._mergeContributions(contributionSets)
     local contributions = {}
     for _, contributionSet in ipairs(contributionSets) do
@@ -325,6 +330,9 @@ function ArrakeenScouts._nextContent()
     end
 end
 
+---@param committee string
+---@param zone Zone
+---@return Continuation
 function ArrakeenScouts._createCommitteeTile(committee, zone)
     local image = ArrakeenScouts[I18N.getLocale()][committee]
     assert(image, "Unknow Arrakeen Scouts content: " .. committee)
@@ -389,6 +397,7 @@ function ArrakeenScouts._createCommitteeTile(committee, zone)
     return continuation
 end
 
+---@param content string
 function ArrakeenScouts._createDialog(content)
     local createController = ArrakeenScouts[Helper.toCamelCase("_create", content, "controller")]
     assert(createController, "No create controller function for content: " .. content)
@@ -412,6 +421,9 @@ function ArrakeenScouts._createDialog(content)
     ArrakeenScouts._refreshContent()
 end
 
+---@param image Xml
+---@param playerPanes table<PlayerColor, Xml>
+---@return Xml[]
 function ArrakeenScouts._createDialogUI(image, playerPanes)
     local playerUIs = {}
     for _, color in ipairs({ "Red", "Green", "Blue", "Yellow" }) do
@@ -471,6 +483,9 @@ function ArrakeenScouts._createDialogUI(image, playerPanes)
     return dialogUI
 end
 
+---@param color PlayerColor
+---@param playerPane Xml
+---@return Xml
 function ArrakeenScouts._createPlayerUI(color, playerPane)
     local playerUI
 
@@ -531,6 +546,13 @@ function ArrakeenScouts._createPlayerUI(color, playerPane)
     return playerUI
 end
 
+---@alias Option { value: string }
+
+---@param color PlayerColor
+---@param playerPane Xml
+---@param secret boolean
+---@param options Option[]
+---@param controller { validate: fun(color: PlayerColor, option?: Option) }
 function ArrakeenScouts._setAsOptionPane(color, playerPane, secret, options, controller)
     assert(Types.isPlayerColor(color))
     assert(playerPane)
@@ -557,9 +579,7 @@ function ArrakeenScouts._setAsOptionPane(color, playerPane, secret, options, con
         return nil
     end
 
-    local holder = {
-        selectedOption = findOption(optionValues[1])
-    }
+    local selectedOption = findOption(optionValues[1])
 
     local dropdown = {
         tag = "Dropdown",
@@ -567,7 +587,7 @@ function ArrakeenScouts._setAsOptionPane(color, playerPane, secret, options, con
             id = color .. "Options",
             flexibleWidth = 100,
             onValueChanged = Helper.registerGlobalCallback(function (_, value, _)
-                holder.selectedOption = findOption(value)
+                selectedOption = findOption(value)
             end),
         },
         children = Helper.map(optionValues, function (i, value)
@@ -598,7 +618,7 @@ function ArrakeenScouts._setAsOptionPane(color, playerPane, secret, options, con
         if player.color == color then
             Helper.unregisterGlobalCallback(dropdown.attributes.onValueChanged)
             Helper.unregisterGlobalCallback(button.attributes.onClick)
-            controller.validate(color, holder.selectedOption)
+            controller.validate(color, selectedOption)
         else
             --Helper.dump("color =", color)
             --Helper.dump("player.color = ", player.color)
@@ -621,6 +641,11 @@ function ArrakeenScouts._setAsOptionPane(color, playerPane, secret, options, con
     ArrakeenScouts._setSecret(color, playerPane, secret)
 end
 
+---@param color PlayerColor
+---@param playerPane Xml
+---@param secret boolean
+---@param label? string
+---@param controller { validate: fun(color: PlayerColor) }
 function ArrakeenScouts._setAsValidationPane(color, playerPane, secret, label, controller)
 
     local button = {
@@ -688,6 +713,11 @@ function ArrakeenScouts._setAsValidationPane(color, playerPane, secret, label, c
     ArrakeenScouts._setSecret(color, playerPane, secret)
 end
 
+---@param color PlayerColor
+---@param playerPane Xml
+---@param secret boolean
+---@param label? string
+---@param textIcon string
 function ArrakeenScouts._setAsPassivePane(color, playerPane, secret, label, textIcon)
 
     local icon = {
@@ -747,6 +777,9 @@ function ArrakeenScouts._setAsPassivePane(color, playerPane, secret, label, text
     ArrakeenScouts._setSecret(color, playerPane, secret)
 end
 
+---@param color PlayerColor
+---@param playerPane Xml
+---@param secret boolean
 function ArrakeenScouts._setSecret(color, playerPane, secret)
     playerPane.attributes.visibility = secret and color or ""
 end
@@ -770,6 +803,8 @@ function ArrakeenScouts._endContent()
     end)
 end
 
+---@param bids table<PlayerColor, integer>
+---@return PlayerColor[][]
 function ArrakeenScouts._rankPlayers(bids)
     local remainingBids = Helper.shallowCopy(bids)
     local ranking = {}
@@ -798,6 +833,10 @@ function ArrakeenScouts._rankPlayers(bids)
     return ranking
 end
 
+---@param color PlayerColor
+---@param ranking PlayerColor[][]
+---@param maxLevel integer
+---@return { level: integer, exAequo: boolean }?
 function ArrakeenScouts._getRank(color, ranking, maxLevel)
     local level = 1
     local count = 0
@@ -815,6 +854,8 @@ end
 
 --- Commitees ---
 
+---@param color PlayerColor
+---@param luaIndex integer
 function ArrakeenScouts.joinCommitee(color, luaIndex)
     if ArrakeenScouts.committeeAccess[color] then
         local committeeTile = ArrakeenScouts.committeeTiles[luaIndex]
@@ -841,60 +882,86 @@ function ArrakeenScouts.joinCommitee(color, luaIndex)
     end
 end
 
+---@param color PlayerColor
+---@param leader Leader
 function ArrakeenScouts._joinAppropriations(color, leader)
     leader.resources(color, "spice", 1)
 end
 
+---@param color PlayerColor
+---@param leader Leader
 function ArrakeenScouts._joinDevelopment(color, leader)
     -- leader.resources(color, "spice", 3)
     -- leader.drawImperiumCards(color, 3)
 end
 
+---@param color PlayerColor
+---@param leader Leader
 function ArrakeenScouts._joinInformation(color, leader)
     leader.drawImperiumCards(color, 1)
 end
 
+---@param color PlayerColor
+---@param leader Leader
 function ArrakeenScouts._joinInvestigation(color, leader)
     -- leader.resources(color, "solari", -1)
     -- leader.drawIntrigues(color, 1)
 end
 
+---@param color PlayerColor
+---@param leader Leader
 function ArrakeenScouts._joinJoinForces(color, leader)
     -- leader.resources(color, "solari", -2)
     -- leader.troops(color, "supply", "garrison", 3)
 end
 
+---@param color PlayerColor
+---@param leader Leader
 function ArrakeenScouts._joinPoliticalAffairs(color, leader)
     -- leader.resources(color, "spice", -4)
     -- 2 influences
 end
 
+---@param color PlayerColor
+---@param leader Leader
 function ArrakeenScouts._joinPreparation(color, leader)
     leader.troops(color, "supply", "garrison", 1)
 end
 
+---@param color PlayerColor
+---@param leader Leader
 function ArrakeenScouts._joinRelations(color, leader)
     -- leader.resources(color, "spice", -2)
     -- 1 influence
 end
 
+---@param color PlayerColor
+---@param leader Leader
 function ArrakeenScouts._joinSupervision(color, leader)
     -- leader.resources(color, "solari", -1)
     -- ArrakeenScouts._ensureTrashFromHand(color)
 end
 
+---@param color PlayerColor
+---@param leader Leader
 function ArrakeenScouts._joinImmortality(color, leader)
 end
 
+---@param color PlayerColor
+---@param leader Leader
 function ArrakeenScouts._joinDataAnalysis(color, leader)
     -- leader.resources(color, "solari", -1)
     -- ArrakeenScouts._ensureResearch(color)
 end
 
+---@param color PlayerColor
+---@param leader Leader
 function ArrakeenScouts._joinDevelopmentProject(color, leader)
     leader.troops(color, "supply", "tanks", 1)
 end
 
+---@param color PlayerColor
+---@param leader Leader
 function ArrakeenScouts._joinTleilaxuRelations(color, leader)
     -- leader.resources(color, "spice", 3)
     -- leader.beetle(color, 2)
@@ -902,14 +969,19 @@ end
 
 --- Auctions ---
 
+---@param playerPanes Xml
 function ArrakeenScouts._createMentat1Controller(playerPanes)
-    return ArrakeenScouts._createMentatController(playerPanes, "solari", 1)
+    ArrakeenScouts._createMentatController(playerPanes, "solari", 1)
 end
 
+---@param playerPanes Xml
 function ArrakeenScouts._createMentat2Controller(playerPanes)
-    return ArrakeenScouts._createMentatController(playerPanes, "spice", 2)
+    ArrakeenScouts._createMentatController(playerPanes, "spice", 2)
 end
 
+---@param playerPanes Xml
+---@param resourceName ResourceName
+---@param level integer
 function ArrakeenScouts._createMentatController(playerPanes, resourceName, level)
     ArrakeenScouts._createBetterSequentialAuctionController(playerPanes, resourceName, nil, false, level, function (color, bids, rank, continuation)
         local leader = PlayBoard.getLeader(color)
@@ -930,14 +1002,17 @@ function ArrakeenScouts._createMentatController(playerPanes, resourceName, level
     end)
 end
 
+---@param playerPanes Xml
 function ArrakeenScouts._createMercenaries1Controller(playerPanes)
-    return ArrakeenScouts._createMercenariesController(playerPanes)
+    ArrakeenScouts._createMercenariesController(playerPanes)
 end
 
+---@param playerPanes Xml
 function ArrakeenScouts._createMercenaries2Controller(playerPanes)
-    return ArrakeenScouts._createMercenariesController(playerPanes)
+    ArrakeenScouts._createMercenariesController(playerPanes)
 end
 
+---@param playerPanes Xml
 function ArrakeenScouts._createMercenariesController(playerPanes)
     ArrakeenScouts._createSequentialAuctionController(playerPanes, "spice", 3, true, function (bids)
 
@@ -956,14 +1031,17 @@ function ArrakeenScouts._createMercenariesController(playerPanes)
     end)
 end
 
+---@param playerPanes Xml
 function ArrakeenScouts._createTreachery1Controller(playerPanes)
     ArrakeenScouts._createTreacheryBisController(playerPanes, 1)
 end
 
+---@param playerPanes Xml
 function ArrakeenScouts._createTreachery2Controller(playerPanes)
     ArrakeenScouts._createTreacheryBisController(playerPanes, 2)
 end
 
+---@param playerPanes Xml
 function ArrakeenScouts._createTreacheryBisController(playerPanes, level)
     ArrakeenScouts._createBetterSequentialAuctionController(playerPanes, "spice", nil, true, level, function (color, bids, rank, continuation)
         local leader = PlayBoard.getLeader(color)
@@ -978,14 +1056,18 @@ function ArrakeenScouts._createTreacheryBisController(playerPanes, level)
     end)
 end
 
+---@param playerPanes Xml
 function ArrakeenScouts._createToTheHighestBidder1Controller(playerPanes)
     ArrakeenScouts._createToTheHighestBidderController(playerPanes, 1)
 end
 
+---@param playerPanes Xml
 function ArrakeenScouts._createToTheHighestBidder2Controller(playerPanes)
     ArrakeenScouts._createToTheHighestBidderController(playerPanes, 2)
 end
 
+---@param playerPanes Xml
+---@param level integer
 function ArrakeenScouts._createToTheHighestBidderController(playerPanes, level)
     ArrakeenScouts._createBetterSequentialAuctionController(playerPanes, "solari", nil, true, level, function (color, bids, rank, continuation)
         local leader = PlayBoard.getLeader(color)
@@ -1000,14 +1082,18 @@ function ArrakeenScouts._createToTheHighestBidderController(playerPanes, level)
     end)
 end
 
+---@param playerPanes Xml
 function ArrakeenScouts._createCompetitiveStudy1Controller(playerPanes)
     return ArrakeenScouts._createCompetitiveStudyController(playerPanes, 1)
 end
 
+---@param playerPanes Xml
 function ArrakeenScouts._createCompetitiveStudy2Controller(playerPanes)
     return ArrakeenScouts._createCompetitiveStudyController(playerPanes, 2)
 end
 
+---@param playerPanes Xml
+---@param level integer
 function ArrakeenScouts._createCompetitiveStudyController(playerPanes, level)
     ArrakeenScouts._createBetterSequentialAuctionController(playerPanes, "solari", nil, true, level, function (color, bids, rank, continuation)
         local leader = PlayBoard.getLeader(color)
@@ -1020,6 +1106,12 @@ function ArrakeenScouts._createCompetitiveStudyController(playerPanes, level)
     end)
 end
 
+---@param playerPanes table<PlayerColor, Xml>
+---@param resourceName ResourceName
+---@param maxValue? integer
+---@param secret boolean
+---@param level integer
+---@param resolve fun(color: PlayerColor, bids: table<PlayerColor, integer>, rank: { level: integer, exAequo: boolean }, continuation: Continuation)
 function ArrakeenScouts._createBetterSequentialAuctionController(playerPanes, resourceName, maxValue, secret, level, resolve)
     ArrakeenScouts._createSequentialAuctionController(playerPanes, resourceName, maxValue, secret, function (bids)
         local ranking = ArrakeenScouts._rankPlayers(bids)
@@ -1048,6 +1140,11 @@ function ArrakeenScouts._createBetterSequentialAuctionController(playerPanes, re
     end)
 end
 
+---@param playerPanes table<PlayerColor, Xml>
+---@param resourceName ResourceName
+---@param maxValue? integer
+---@param secret boolean
+---@param resolveAll fun(bids: table<PlayerColor, integer>)
 function ArrakeenScouts._createSequentialAuctionController(playerPanes, resourceName, maxValue, secret, resolveAll)
     assert(playerPanes)
     assert(Types.isResourceName(resourceName))
@@ -1081,7 +1178,7 @@ function ArrakeenScouts._createSequentialAuctionController(playerPanes, resource
     end
 
     function controller.validate(color, option)
-        TurnControl.endOfTurn(color)
+        TurnControl.endOfTurn()
 
         if controller.bids[color] then
             --log("Doing nothing: already validated")
@@ -1124,6 +1221,7 @@ end
 
 --- Events ---
 
+---@param playerPanes table<PlayerColor, Xml>
 function ArrakeenScouts._createChangeOfPlansController(playerPanes)
     local getOptions = function (_)
         return {
@@ -1149,6 +1247,7 @@ function ArrakeenScouts._createChangeOfPlansController(playerPanes)
     ArrakeenScouts._createSequentialChoiceController(playerPanes, getOptions, false, resolve)
 end
 
+---@param playerPanes table<PlayerColor, Xml>
 function ArrakeenScouts._createCovertOperationController(playerPanes)
     local getOptions = function (_)
         return {
@@ -1204,10 +1303,12 @@ function ArrakeenScouts._createCovertOperationController(playerPanes)
     ArrakeenScouts._createSequentialChoiceController(playerPanes, getOptions, true, resolve)
 end
 
+---@param playerPanes table<PlayerColor, Xml>
 function ArrakeenScouts._createCovertOperationRewardController(playerPanes)
     ArrakeenScouts._createPendingController(playerPanes, "covertOperation")
 end
 
+---@param playerPanes table<PlayerColor, Xml>
 function ArrakeenScouts._createGiftOfWaterController(playerPanes)
     local getOptions = function (color)
         local options = { { status = false, value = I18N("refuseOption") } }
@@ -1229,6 +1330,7 @@ function ArrakeenScouts._createGiftOfWaterController(playerPanes)
     ArrakeenScouts._createSequentialChoiceController(playerPanes, getOptions, true, resolve)
 end
 
+---@param playerPanes table<PlayerColor, Xml>
 function ArrakeenScouts._createDesertGiftController(playerPanes)
     local notAStarterCard = Helper.negate(ImperiumCard.isStarterCard)
     local getOptions = function (color)
@@ -1258,6 +1360,7 @@ function ArrakeenScouts._createDesertGiftController(playerPanes)
     ArrakeenScouts._createSequentialChoiceController(playerPanes, getOptions, true, resolve)
 end
 
+---@param playerPanes table<PlayerColor, Xml>
 function ArrakeenScouts._createGuildNegotiationController(playerPanes)
     local getOptions = function (color)
         local options = { { status = false, value = I18N("passOption") } }
@@ -1279,6 +1382,7 @@ function ArrakeenScouts._createGuildNegotiationController(playerPanes)
     ArrakeenScouts._createSequentialChoiceController(playerPanes, getOptions, true, resolve)
 end
 
+---@param playerPanes table<PlayerColor, Xml>
 function ArrakeenScouts._createIntriguingGiftController(playerPanes)
     local getOptions = function (color)
         local options = { { status = false, value = I18N("passOption") } }
@@ -1307,6 +1411,7 @@ function ArrakeenScouts._createIntriguingGiftController(playerPanes)
     ArrakeenScouts._createSequentialChoiceController(playerPanes, getOptions, true, resolve)
 end
 
+---@param playerPanes table<PlayerColor, Xml>
 function ArrakeenScouts._createTestOfLoyaltyController(playerPanes)
     local getOptions = function (color)
         local options = { { status = false, value = I18N("passOption") } }
@@ -1328,6 +1433,7 @@ function ArrakeenScouts._createTestOfLoyaltyController(playerPanes)
     ArrakeenScouts._createSequentialChoiceController(playerPanes, getOptions, true, resolve)
 end
 
+---@param playerPanes table<PlayerColor, Xml>
 function ArrakeenScouts._createBeneGesseritTreacheryController(playerPanes)
     local getOptions = function (color)
         local options = { { status = true, value = I18N("discardOption") } }
@@ -1355,6 +1461,7 @@ function ArrakeenScouts._createBeneGesseritTreacheryController(playerPanes)
     ArrakeenScouts._createSequentialChoiceController(playerPanes, getOptions, true, resolve)
 end
 
+---@param playerPanes table<PlayerColor, Xml>
 function ArrakeenScouts._createEmperorsTaxController(playerPanes)
     local getOptions = function (color)
         local options = {}
@@ -1383,6 +1490,7 @@ function ArrakeenScouts._createEmperorsTaxController(playerPanes)
     ArrakeenScouts._createSequentialChoiceController(playerPanes, getOptions, true, resolve)
 end
 
+---@param playerPanes table<PlayerColor, Xml>
 function ArrakeenScouts._createFremenExchangeController(playerPanes)
     local getOptions = function (color)
         local options = {}
@@ -1411,6 +1519,7 @@ function ArrakeenScouts._createFremenExchangeController(playerPanes)
     ArrakeenScouts._createSequentialChoiceController(playerPanes, getOptions, true, resolve)
 end
 
+---@param playerPanes table<PlayerColor, Xml>
 function ArrakeenScouts._createPoliticalEquilibriumController(playerPanes)
     local getOptions = function (color)
         local highestInfluence
@@ -1449,6 +1558,7 @@ function ArrakeenScouts._createPoliticalEquilibriumController(playerPanes)
     ArrakeenScouts._createSequentialChoiceController(playerPanes, getOptions, true, resolve)
 end
 
+---@param playerPanes table<PlayerColor, Xml>
 function ArrakeenScouts._createWaterForSpiceSmugglersController(playerPanes)
     local getOptions = function (color)
         local options = {}
@@ -1476,6 +1586,7 @@ function ArrakeenScouts._createWaterForSpiceSmugglersController(playerPanes)
     ArrakeenScouts._createSequentialChoiceController(playerPanes, getOptions, true, resolve)
 end
 
+---@param playerPanes table<PlayerColor, Xml>
 function ArrakeenScouts._createRotationgDoorsController(playerPanes)
     local getOptions = function (color)
         local options = { { status = false, value = I18N("refuseOption") } }
@@ -1504,6 +1615,7 @@ function ArrakeenScouts._createRotationgDoorsController(playerPanes)
     ArrakeenScouts._createSequentialChoiceController(playerPanes, getOptions, true, resolve)
 end
 
+---@param playerPanes table<PlayerColor, Xml>
 function ArrakeenScouts._createSecretsForSaleController(playerPanes)
     local getOptions = function (color)
         local options = { { value = I18N("refuseOption") } }
@@ -1530,6 +1642,7 @@ function ArrakeenScouts._createSecretsForSaleController(playerPanes)
     ArrakeenScouts._createSequentialChoiceController(playerPanes, getOptions, true, resolve)
 end
 
+---@param playerPanes table<PlayerColor, Xml>
 function ArrakeenScouts._createNoComingBackController(playerPanes)
     local getOptions = function (_)
         local factions = { "emperor", "spacingGuild", "beneGesserit", "fremen" }
@@ -1566,6 +1679,7 @@ function ArrakeenScouts._createNoComingBackController(playerPanes)
     ArrakeenScouts._createSequentialChoiceController(playerPanes, getOptions, true, resolve)
 end
 
+---@param playerPanes table<PlayerColor, Xml>
 function ArrakeenScouts._createTapIntoSpiceReservesController(playerPanes)
     local resolve = function (color, continuation)
         ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, nil, "✓")
@@ -1576,6 +1690,7 @@ function ArrakeenScouts._createTapIntoSpiceReservesController(playerPanes)
     ArrakeenScouts._createRandomValidationController(playerPanes, true, nil, resolve)
 end
 
+---@param playerPanes table<PlayerColor, Xml>
 function ArrakeenScouts._createGetBackInTheGoodGracesController(playerPanes)
     local getOptions = function (color)
         local options = { { value = I18N("passOption") } }
@@ -1599,6 +1714,7 @@ function ArrakeenScouts._createGetBackInTheGoodGracesController(playerPanes)
     ArrakeenScouts._createSequentialChoiceController(playerPanes, getOptions, true, resolve)
 end
 
+---@param playerPanes table<PlayerColor, Xml>
 function ArrakeenScouts._createTreacheryController(playerPanes)
     local getOptions = function (color)
         local options = { { status = false, value = I18N("passOption") } }
@@ -1619,6 +1735,7 @@ function ArrakeenScouts._createTreacheryController(playerPanes)
     ArrakeenScouts._createSequentialChoiceController(playerPanes, getOptions, true, resolve)
 end
 
+---@param playerPanes table<PlayerColor, Xml>
 function ArrakeenScouts._createNewInnovationsController(playerPanes)
     local getOptions = function (color)
         local options = { { value = I18N("refuseOption") } }
@@ -1649,6 +1766,7 @@ function ArrakeenScouts._createNewInnovationsController(playerPanes)
     ArrakeenScouts._createSequentialChoiceController(playerPanes, getOptions, true, resolve)
 end
 
+---@param playerPanes table<PlayerColor, Xml>
 function ArrakeenScouts._createOffWordOperationController(playerPanes)
     local getOptions = function (_)
         -- TODO I18N
@@ -1686,10 +1804,12 @@ function ArrakeenScouts._createOffWordOperationController(playerPanes)
     ArrakeenScouts._createSequentialChoiceController(playerPanes, getOptions, true, resolve)
 end
 
+---@param playerPanes table<PlayerColor, Xml>
 function ArrakeenScouts._createOffWordOperationRewardController(playerPanes)
     ArrakeenScouts._createPendingController(playerPanes, "offWordOperation")
 end
 
+---@param playerPanes table<PlayerColor, Xml>
 function ArrakeenScouts._createCeaseAndDesistRequestController(playerPanes)
     local getOptions = function (color)
         local options = { { status = false, value = I18N("refuseOption") } }
@@ -1720,11 +1840,13 @@ end
 
 --- Missions ---
 
+---@param playerPanes table<PlayerColor, Xml>
 function ArrakeenScouts._createSecretsInTheDesertController(playerPanes, immortality)
     MainBoard.addSpaceBonus("researchStation", { all = { intrigue = 2 } })
     ArrakeenScouts._createRandomValidationController(playerPanes, false, nil, nil)
 end
 
+---@param playerPanes table<PlayerColor, Xml>
 function ArrakeenScouts._createStationedSupportController(playerPanes, immortality)
     local troops = {}
     local getOptions = function (color)
@@ -1753,6 +1875,7 @@ function ArrakeenScouts._createStationedSupportController(playerPanes, immortali
     ArrakeenScouts._createSequentialChoiceController(playerPanes, getOptions, false, resolve)
 end
 
+---@param playerPanes table<PlayerColor, Xml>
 function ArrakeenScouts._createGeneticResearchController(playerPanes)
     local troops = {}
     local predicate = function (color)
@@ -1766,6 +1889,7 @@ function ArrakeenScouts._createGeneticResearchController(playerPanes)
     ArrakeenScouts._createSequentialBinaryChoiceController(playerPanes, predicate, resolve)
 end
 
+---@param playerPanes table<PlayerColor, Xml>
 function ArrakeenScouts._createGuildManipulationsController(playerPanes)
     local troops = {}
     local predicate = function (color)
@@ -1781,11 +1905,13 @@ function ArrakeenScouts._createGuildManipulationsController(playerPanes)
     ArrakeenScouts._createSequentialBinaryChoiceController(playerPanes, predicate, resolve)
 end
 
+---@param playerPanes table<PlayerColor, Xml>
 function ArrakeenScouts._createSpiceIncentiveController(playerPanes)
     MainBoard.addSpaceBonus("rallyTroops", { all = { solari = 2 } })
     ArrakeenScouts._createRandomValidationController(playerPanes, false, nil, nil)
 end
 
+---@param playerPanes table<PlayerColor, Xml>
 function ArrakeenScouts._createStrongarmedAllianceController(playerPanes)
     local troops = {}
     local predicate = function (color)
@@ -1799,6 +1925,7 @@ function ArrakeenScouts._createStrongarmedAllianceController(playerPanes)
     ArrakeenScouts._createSequentialBinaryChoiceController(playerPanes, predicate, resolve)
 end
 
+---@param playerPanes table<PlayerColor, Xml>
 function ArrakeenScouts._createSaphoJuiceController(playerPanes)
     local resolve = function (color, continuation)
         local controlMarkerBag = PlayBoard.getControlMarkerBag(color)
@@ -1817,11 +1944,13 @@ function ArrakeenScouts._createSaphoJuiceController(playerPanes)
     ArrakeenScouts._createRandomValidationController(playerPanes, false, nil, resolve)
 end
 
+---@param playerPanes table<PlayerColor, Xml>
 function ArrakeenScouts._createSpaceTravelDealController(playerPanes)
     MainBoard.addSpaceBonus("heighliner", { all = { solari = 3 } })
     ArrakeenScouts._createRandomValidationController(playerPanes, false, nil, nil)
 end
 
+---@param playerPanes table<PlayerColor, Xml>
 function ArrakeenScouts._createArmedEscortController(playerPanes)
     local resolve = function (color, continuation)
         local dreadnoughtPark = PlayBoard.getDreadnoughtPark(color)
@@ -1833,11 +1962,13 @@ function ArrakeenScouts._createArmedEscortController(playerPanes)
     ArrakeenScouts._createRandomValidationController(playerPanes, false, nil, resolve)
 end
 
+---@param playerPanes table<PlayerColor, Xml>
 function ArrakeenScouts._createSecretStashController(playerPanes)
     MainBoard.addSpaceBonus("smuggling", { all = { spice = 2 } })
     ArrakeenScouts._createRandomValidationController(playerPanes, false, nil, nil)
 end
 
+---@param playerPanes table<PlayerColor, Xml>
 function ArrakeenScouts._createStowawayController(playerPanes)
     local troops = {}
     local predicate = function (color)
@@ -1853,19 +1984,23 @@ function ArrakeenScouts._createStowawayController(playerPanes)
     ArrakeenScouts._createSequentialBinaryChoiceController(playerPanes, predicate, resolve)
 end
 
+---@param playerPanes table<PlayerColor, Xml>
 function ArrakeenScouts._createBackstageAgreementController(playerPanes)
     TleilaxuRow.addAcquireBonus({ all = { solari = 2 } })
     ArrakeenScouts._createRandomValidationController(playerPanes, false, nil, nil)
 end
 
+---@param playerPanes table<PlayerColor, Xml>
 function ArrakeenScouts._createSecretsInTheDesert_immortalityController(playerPanes)
     return ArrakeenScouts._createSecretsInTheDesertController(playerPanes, true)
 end
 
+---@param playerPanes table<PlayerColor, Xml>
 function ArrakeenScouts._createStationedSupport_immortalityController(playerPanes)
     return ArrakeenScouts._createStationedSupportController(playerPanes, true)
 end
 
+---@param playerPanes table<PlayerColor, Xml>
 function ArrakeenScouts._createCoordinationWithTheEmperorController(playerPanes)
     local tankParks = {}
     local predicate = function (color)
@@ -1878,11 +2013,13 @@ function ArrakeenScouts._createCoordinationWithTheEmperorController(playerPanes)
     ArrakeenScouts._createSequentialBinaryChoiceController(playerPanes, predicate, resolve)
 end
 
+---@param playerPanes table<PlayerColor, Xml>
 function ArrakeenScouts._createSponsoredResearchController(playerPanes)
     TleilaxuResearch.addSpaceBonus("oneHelix", { all = { spice = 2 } })
     ArrakeenScouts._createRandomValidationController(playerPanes, false, nil, nil)
 end
 
+---@param playerPanes table<PlayerColor, Xml>
 function ArrakeenScouts._createTleilaxuOfferingController(playerPanes)
     local troops = {}
     local predicate = function (color)
@@ -1899,6 +2036,7 @@ end
 
 --- Sales ---
 
+---@param playerPanes table<PlayerColor, Xml>
 function ArrakeenScouts._createFremenMercenariesController(playerPanes)
     local getOptions = function (color)
         local options = { { amount = 0, value = I18N("refuseOption") } }
@@ -1921,6 +2059,7 @@ function ArrakeenScouts._createFremenMercenariesController(playerPanes)
     ArrakeenScouts._createSequentialChoiceController(playerPanes, getOptions, true, resolve)
 end
 
+---@param playerPanes table<PlayerColor, Xml>
 function ArrakeenScouts._createRevealTheFutureController(playerPanes)
     local getOptions = function (color)
         local options = { { amount = 0, value = I18N("refuseOption") } }
@@ -1949,6 +2088,7 @@ function ArrakeenScouts._createRevealTheFutureController(playerPanes)
     ArrakeenScouts._createSequentialChoiceController(playerPanes, getOptions, true, resolve)
 end
 
+---@param playerPanes table<PlayerColor, Xml>
 function ArrakeenScouts._createSooSooSookWaterPeddlersController(playerPanes)
     local getOptions = function (color)
         local options = { { amount = 0, value = I18N("refuseOption") } }
@@ -1971,6 +2111,10 @@ function ArrakeenScouts._createSooSooSookWaterPeddlersController(playerPanes)
     ArrakeenScouts._createSequentialChoiceController(playerPanes, getOptions, true, resolve)
 end
 
+---@param playerPanes table<PlayerColor, Xml>
+---@param secret boolean
+---@param getLabel? fun(color: PlayerColor): string
+---@param resolve? fun(color: PlayerColor, continuation: Continuation)
 function ArrakeenScouts._createRandomValidationController(playerPanes, secret, getLabel, resolve)
     local controller = {
         remainigPlayerCount = #Helper.getKeys(playerPanes),
@@ -2002,6 +2146,10 @@ function ArrakeenScouts._createRandomValidationController(playerPanes, secret, g
     end
 end
 
+---@param playerPanes table<PlayerColor, Xml>
+---@param getOptions? fun(color: PlayerColor): Option
+---@param secret boolean
+---@param resolve? fun(color: PlayerColor, option: Option, continuation: Continuation)
 function ArrakeenScouts._createSequentialChoiceController(playerPanes, getOptions, secret, resolve)
     local controller = {
         turnSequence = TurnControl.getPhaseTurnSequence(),
@@ -2019,7 +2167,7 @@ function ArrakeenScouts._createSequentialChoiceController(playerPanes, getOption
     end
 
     function controller.validate(color, option)
-        TurnControl.endOfTurn(color)
+        TurnControl.endOfTurn()
 
         if controller.options[color] then
             --log("Doing nothing: already validated")
@@ -2068,6 +2216,9 @@ function ArrakeenScouts._createSequentialChoiceController(playerPanes, getOption
     end
 end
 
+---@param playerPanes table<PlayerColor, Xml>
+---@param predicate fun(color: PlayerColor): boolean
+---@param resolveWithLeader fun(color: PlayerColor, leader: Leader)
 function ArrakeenScouts._createSequentialBinaryChoiceController(playerPanes, predicate, resolveWithLeader)
     local getOptions = function (color)
         local options = { { status = false, value = I18N("refuseOption") } }
@@ -2089,6 +2240,8 @@ function ArrakeenScouts._createSequentialBinaryChoiceController(playerPanes, pre
     ArrakeenScouts._createSequentialChoiceController(playerPanes, getOptions, true, resolve)
 end
 
+---@param playerPanes table<PlayerColor, Xml>
+---@param operation string
 function ArrakeenScouts._createPendingController(playerPanes, operation)
     local controller = {
         turnSequence = TurnControl.getPhaseTurnSequence(),
@@ -2114,7 +2267,7 @@ function ArrakeenScouts._createPendingController(playerPanes, operation)
 
     function controller.nextReward()
         while #controller.turnSequence > 0 and not controller.setUpPlayerPane(controller.turnSequence[1]) do
-            TurnControl.endOfTurn(controller.turnSequence[1])
+            TurnControl.endOfTurn()
             table.remove(controller.turnSequence, 1)
         end
     end
@@ -2122,7 +2275,7 @@ function ArrakeenScouts._createPendingController(playerPanes, operation)
     function controller.validate(color)
         controller.pendingResolver()
 
-        TurnControl.endOfTurn(color)
+        TurnControl.endOfTurn()
         table.remove(controller.turnSequence, 1)
 
         ArrakeenScouts._setAsPassivePane(color, playerPanes[color], false, nil, "✓")
@@ -2141,6 +2294,9 @@ function ArrakeenScouts._createPendingController(playerPanes, operation)
     controller.nextReward()
 end
 
+---@param color PlayerColor
+---@param predicate? fun(thing: string):boolean
+---@return Continuation
 function ArrakeenScouts._ensureDiscard(color, predicate)
     return ArrakeenScouts._ensureCardOperation(
         Helper.partialApply(PlayBoard.getHandedCards, color),
@@ -2148,18 +2304,26 @@ function ArrakeenScouts._ensureDiscard(color, predicate)
         predicate)
 end
 
+---@param color PlayerColor
+---@return Continuation
 function ArrakeenScouts._ensureTrashFromHand(color)
     return ArrakeenScouts._ensureCardOperation(
         Helper.partialApply(PlayBoard.getHandedCards, color),
         Helper.partialApply(PlayBoard.getTrashedObjects, color))
 end
 
+---@param color PlayerColor
+---@return Continuation
 function ArrakeenScouts._ensureDiscardIntrigue(color)
     return ArrakeenScouts._ensureCardOperation(
         Helper.partialApply(PlayBoard.getIntrigues, color),
         Intrigue.getDiscardedIntrigues)
 end
 
+---@param getSourceCards fun(): Card[]
+---@param getDestinationCards fun(): Card[]
+---@param predicate? fun(card: Card): boolean
+---@return Continuation
 function ArrakeenScouts._ensureCardOperation(getSourceCards, getDestinationCards, predicate)
     local continuation = Helper.createContinuation("ArrakeenScouts._ensureCardOperation")
 
@@ -2213,6 +2377,8 @@ function ArrakeenScouts._ensureCardOperation(getSourceCards, getDestinationCards
     return continuation
 end
 
+---@param color PlayerColor
+---@return Continuation
 function ArrakeenScouts._ensureResearch(color)
     local continuation = Helper.createContinuation("ArrakeenScouts._ensureResearch")
 

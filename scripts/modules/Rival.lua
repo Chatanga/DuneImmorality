@@ -14,11 +14,17 @@ local Intrigue = Module.lazyRequire("Intrigue")
 local Types = Module.lazyRequire("Types")
 local Leader = Module.lazyRequire("Leader")
 
+---@class Rival: Leader
+---@field rivals table<PlayerColor, Rival>
+---@field leader Leader
 local Rival = Helper.createClass(Action, {
     rivals = {}
 })
 
-function Rival.newRival(color, leaderName, riseOfIx)
+---@param color PlayerColor
+---@param leaderName? string
+---@return Rival
+function Rival.newRival(color, leaderName)
     local rival = Helper.createClassInstance(Rival, {
         leader = leaderName and Leader.newLeader(leaderName) or Hagal,
     })
@@ -34,6 +40,8 @@ function Rival.newRival(color, leaderName, riseOfIx)
     return rival
 end
 
+---@param color PlayerColor
+---@return Continuation
 function Rival.triggerHagalReaction(color)
     Helper.dumpFunction("Rival.triggerHagalReaction", color)
     local continuation = Helper.createContinuation("Rival.triggerHagalReaction")
@@ -58,6 +66,7 @@ function Rival.triggerHagalReaction(color)
     return continuation
 end
 
+---@param color PlayerColor
 function Rival._buyVictoryPoints(color)
     -- Do not use Rival.resources inside this function!
 
@@ -102,6 +111,8 @@ function Rival._buyVictoryPoints(color)
     end
 end
 
+---@param color PlayerColor
+---@param settings Settings
 function Rival.prepare(color, settings)
     Rival.riseOfIx = settings.riseOfIx
     -- Note: Rabban as a rival has no additional resources (https://boardgamegeek.com/thread/2570879/article/36734124#36734124).
@@ -120,6 +131,9 @@ function Rival.prepare(color, settings)
     end
 end
 
+---@param color PlayerColor
+---@param factions Faction[]
+---@return Faction
 function Rival._removeBestFaction(color, factions)
     Helper.shuffle(factions)
     table.sort(factions, function (f1, f2)
@@ -133,7 +147,7 @@ function Rival._removeBestFaction(color, factions)
 end
 
 ---@param color PlayerColor
----@param factionOrFactions string|string[]|nil In case of an array, the faction picked will be removed from it as a side effect.
+---@param factionOrFactions nil|Faction|Faction[]
 ---@param amount integer
 ---@return Continuation
 function Rival.influence(color, factionOrFactions, amount)
@@ -150,6 +164,8 @@ function Rival.influence(color, factionOrFactions, amount)
     return Action.influence(color, finalFaction, amount)
 end
 
+---@param color PlayerColor
+---@param amount integer
 function Rival.unused__gainAllianceIfAble(color, amount)
     local factions = {}
     for _, faction in ipairs({ "emperor", "spacingGuild", "beneGesserit", "fremen" }) do
@@ -161,6 +177,9 @@ function Rival.unused__gainAllianceIfAble(color, amount)
     Rival.influence(color, #factions > 0 and factions or nil, amount)
 end
 
+---@param color PlayerColor
+---@param amount integer
+---@return boolean
 function Rival.shipments(color, amount)
     Helper.repeatChainedAction(amount, function ()
         local level = ShippingTrack.getFreighterLevel(color)
@@ -187,6 +206,9 @@ function Rival.shipments(color, amount)
     return true
 end
 
+---@param color PlayerColor
+---@param stackIndex integer
+---@return boolean
 function Rival.acquireTech(color, stackIndex)
 
     local finalStackIndex = stackIndex
@@ -212,7 +234,7 @@ function Rival.acquireTech(color, stackIndex)
     end
 
     local techDetails = TechMarket.getTopCardDetails(finalStackIndex)
-    if Action.acquireTech(color, finalStackIndex) then
+    if techDetails and Action.acquireTech(color, finalStackIndex) then
         if techDetails.name == "trainingDrones" then
             if PlayBoard.useTech(color, "trainingDrones") then
                 Rival.troops(color, "supply", "garrison", 1)
@@ -224,6 +246,9 @@ function Rival.acquireTech(color, stackIndex)
     end
 end
 
+---@param color PlayerColor
+---@param topic string
+---@return boolean
 function Rival.randomlyChoose(color, topic)
     if Helper.isElementOf(topic, { "shuttleFleet", "machinations" }) then
         local factions = { "emperor", "spacingGuild", "beneGesserit", "fremen" }
@@ -239,10 +264,17 @@ function Rival.randomlyChoose(color, topic)
     end
 end
 
+---@param color PlayerColor
+---@param topic string
+---@return boolean
 function Rival.decide(color, topic)
     return true
 end
 
+---@param color PlayerColor
+---@param nature ResourceName
+---@param amount integer
+---@return boolean
 function Rival.resources(color, nature, amount)
     if nature ~= "strength" and Hagal.getRivalCount() == 1 then
         return false
@@ -251,6 +283,11 @@ function Rival.resources(color, nature, amount)
     end
 end
 
+---@param color PlayerColor
+---@param from TroopLocation
+---@param to TroopLocation
+---@param baseCount integer
+---@return integer
 function Rival.troops(color, from, to, baseCount)
     local finalCount = baseCount
     if from == "garrison" and to == "combat" then
@@ -274,6 +311,9 @@ function Rival.troops(color, from, to, baseCount)
     return Action.troops(color, from, to, finalCount)
 end
 
+---@param color PlayerColor
+---@param jump integer
+---@return boolean
 function Rival.beetle(color, jump)
     assert(Types.isPlayerColor(color))
     if Hagal.getRivalCount() == 2 then
@@ -283,6 +323,9 @@ function Rival.beetle(color, jump)
     end
 end
 
+---@param color PlayerColor
+---@param amount integer
+---@return boolean
 function Rival.drawIntrigues(color, amount)
     if Action.drawIntrigues(color, amount) then
         Helper.onceTimeElapsed(1).doAfter(function ()
@@ -300,6 +343,10 @@ function Rival.drawIntrigues(color, amount)
     end
 end
 
+---@param color PlayerColor
+---@param name string
+---@param count integer
+---@return boolean
 function Rival.gainVictoryPoint(color, name, count)
     -- We make an exception for alliance token to make it clear that the Hagal House owns it.
     if Hagal.getRivalCount() == 2 or Helper.endsWith(name, "Alliance") then
@@ -309,6 +356,8 @@ function Rival.gainVictoryPoint(color, name, count)
     end
 end
 
+---@param color PlayerColor
+---@return boolean
 function Rival.signetRing(color)
     local leader = Rival.rivals[color].leader
     return leader.signetRing(color)

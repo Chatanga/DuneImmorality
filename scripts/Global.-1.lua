@@ -169,6 +169,7 @@ local Controller = {
 local settings
 
 --- TTS event handler.
+---@param scriptState string
 function onLoad(scriptState)
     log("--------< " .. MOD_NAME .. " - " .. BUILD .. " >--------")
 
@@ -201,6 +202,7 @@ function onLoad(scriptState)
     end
 end
 
+---@param scriptState string
 function asyncOnLoad(scriptState)
     local tables = Helper.resolveGUIDs(false, {
         primaryTable = GameTableGUIDs.primary,
@@ -335,6 +337,7 @@ function onSave()
 end
 
 --- TTS event handler.
+---@param object Object
 function onObjectDestroy(object)
     if object.getGUID() == GameTableGUIDs.primary then
         Module.unregisterAllModuleRedirections()
@@ -373,6 +376,8 @@ function setUp(newSettings)
 end
 
 --- Set up each module, one by one.
+---@param index integer
+---@param activeOpponents table<PlayerColor, ActiveOpponent>
 function runSetUp(index, activeOpponents)
     local moduleInfo = allModules.ordered[index]
     if moduleInfo then
@@ -546,7 +551,7 @@ function setUpFromUI()
     --- hotSeat: boolean,
     --- firstPlayer: PlayerColor|"random",
     --- randomizePlayerPositions: boolean,
-    --- difficulty: string,
+    --- difficulty?: string,
     --- autoTurnInSolo: boolean,
     --- imperiumRowChurn: boolean,
     --- streamlinedRivals: boolean,
@@ -577,7 +582,7 @@ function setUpFromUI()
         hotSeat = not Controller.isUndefined(Controller.fields.virtualHotSeatMode),
         firstPlayer = Controller.fields.firstPlayer,
         randomizePlayerPositions = Controller.fields.randomizePlayerPositions,
-        difficulty = Controller.fields.difficulty,
+        difficulty = XmlUI.toStringValue(Controller.fields.difficulty),
         autoTurnInSolo = Controller.fields.autoTurnInSolo == true,
         imperiumRowChurn = Controller.fields.imperiumRowChurn == true,
         streamlinedRivals = Controller.fields.streamlinedRivals == true,
@@ -604,6 +609,9 @@ function setUpFromUI()
     })
 end
 
+---@alias ActiveOpponent Player|"rival"|"puppet"
+---@alias Opponent "rival"|"human"
+
 --- Return the mapping between (player) colors and opponent types. An opponent
 --- type could be:
 --- - a Player instance,
@@ -611,6 +619,9 @@ end
 --- - the "puppet" string for a playable but unseated color in hotseat mode.
 --- Later, in opponents (not activeOppenents), Player instances and "puppet" are
 --- replaced by the "human" string.
+---@param properlySeatedPlayers any
+---@param numberOfPlayers integer
+---@return table<PlayerColor, ActiveOpponent>
 function Controller.findActiveOpponents(properlySeatedPlayers, numberOfPlayers)
     local colorsByPreference = { "Green", "Red", "Yellow", "Blue" }
 
@@ -653,6 +664,7 @@ end
 
 --- return only the (colors of the) legitimate player depending on the selected
 --- mode (1-4P).
+---@return PlayerColor[]
 function Controller.getProperlySeatedPlayers()
     local seatedPlayers = getSeatedPlayers()
 
@@ -718,6 +730,8 @@ function Controller.applyVirtualHotSeatMode()
     Controller.ui:toUI()
 end
 
+---@param virtualHotSeatMode any
+---@return integer
 function Controller.getNumberOfPlayers(virtualHotSeatMode)
     local numberOfPlayers
     if Controller.isUndefined(virtualHotSeatMode) then
@@ -780,6 +794,9 @@ function Controller.updateLeaderPoolSizeLabel()
     self.UI.setValue("leaderPoolSizeLabel", Controller.fields.leaderPoolSizeLabel)
 end
 
+---@generic T
+---@param value Deactivable<T> | Hideable<T>
+---@return boolean
 function Controller.isUndefined(value)
-    return value == nil or type(value) == "table"
+    return not value or XmlUI.isDisabled(value) or XmlUI.isHidden(value)
 end

@@ -10,6 +10,15 @@
 ---| 'beneGesserit'
 ---| 'fremen'
 
+---@alias AgentIcon
+---| 'emperor'
+---| 'spacingGuild'
+---| 'beneGesserit'
+---| 'fremen'
+---| 'blue'
+---| 'green'
+---| 'yellow'
+
 ---@alias TroopLocation
 ---| 'supply'
 ---| 'garrison'
@@ -34,22 +43,37 @@
 
 local Types = {}
 
+---@param object Object
+---@param color? PlayerColor
+---@return boolean
 function Types.isTroop(object, color)
     return object.hasTag("Troop") and (not color or object.hasTag(color))
 end
 
+---@param object Object
+---@param color? PlayerColor
+---@return boolean
 function Types.isDreadnought(object, color)
     return object.hasTag("Dreadnought") and (not color or object.hasTag(color))
 end
 
+---@param object Object
+---@param color? PlayerColor
+---@return boolean
 function Types.isSardaukarCommander(object, color)
     return object.hasTag("SardaukarCommander") and (not color or object.hasTag(color))
 end
 
+---@param object Object
+---@param color? PlayerColor
+---@return boolean
 function Types.isAgentUnit(object, color)
     return object.hasTag("Agent") and object.hasTag("Unit") and (not color or object.hasTag(color))
 end
 
+---@param object Object
+---@param color? PlayerColor
+---@return boolean
 function Types.isUnit(object, color)
     return Types.isTroop(object, color)
         or Types.isDreadnought(object, color)
@@ -57,50 +81,77 @@ function Types.isUnit(object, color)
         or Types.isAgentUnit(object, color)
 end
 
+---@param object Object
+---@param color? PlayerColor
+---@return boolean
 function Types.isControlMarker(object, color)
     return object.hasTag("Flag") and (not color or object.hasTag(color))
 end
 
+---@param object Object
+---@param color? PlayerColor
+---@return boolean
 function Types.isAgent(object, color)
     return object.hasTag("Agent") and (not color or object.hasTag(color))
 end
 
+---@param object Object
+---@param color? PlayerColor
+---@return boolean
 function Types.isMentat(object, color)
     return object.hasTag("Mentat") and (not color or object.hasTag(color))
 end
 
+---@param object Object
+---@return boolean
 function Types.isVoiceToken(object)
     return object.hasTag("VoiceToken")
 end
 
+---@param object Object
+---@return boolean
 function Types.isVictoryPointToken(object)
     return object.hasTag("VictoryPointToken")
 end
 
+---@param object Object
+---@return boolean
 function Types.isLeader(object)
     return object.hasTag("Leader")
 end
 
+---@param object Object
+---@return boolean
 function Types.isImperiumCard(object)
     return object.hasTag("Imperium")
 end
 
+---@param object Object
+---@return boolean
 function Types.isIntrigueCard(object)
     return object.hasTag("Intrigue")
 end
 
+---@param object Object
+---@return boolean
 function Types.isTech(object)
     return object.hasTag("Tech")
 end
 
+---@param object Object
+---@return boolean
 function Types.isSardaukarCommanderSkillCard(object)
     return object.hasTag("SardaukarCommanderSkill")
 end
 
+---@param object Object
+---@return boolean
 function Types.isNavigationCard(object)
     return object.hasTag("Navigation")
 end
 
+---@param color string
+---@return boolean
 function Types.isPlayerColor(color)
     return color == "Green"
         or color == "Yellow"
@@ -108,6 +159,8 @@ function Types.isPlayerColor(color)
         or color == "Red"
 end
 
+---@param faction string
+---@return boolean
 function Types.isFaction(faction)
     return faction == "emperor"
         or faction == "spacingGuild"
@@ -115,6 +168,8 @@ function Types.isFaction(faction)
         or faction == "fremen"
 end
 
+---@param location string
+---@return boolean
 function Types.isTroopLocation(location)
     return location == "supply" -- when lost or recalled
         or location == "garrison" -- when recruited
@@ -123,6 +178,8 @@ function Types.isTroopLocation(location)
         or location == "tanks" -- when sent as specimen
 end
 
+---@param location string
+---@return boolean
 function Types.isDreadnoughtLocation(location)
     return location == "supply" -- when lost or recalled
         or location == "garrison" -- when recruited
@@ -132,6 +189,8 @@ function Types.isDreadnoughtLocation(location)
         or location == "imperialBassin" -- when occupying the place
 end
 
+---@param resourceName string
+---@return boolean
 function Types.isResourceName(resourceName)
     return resourceName == "spice"
         or resourceName == "water"
