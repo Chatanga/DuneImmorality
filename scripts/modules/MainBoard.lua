@@ -317,6 +317,7 @@ function MainBoard._doProcessSnapPoints(collect)
                 scale = { 1, 3, 1.5 },
             })
             Helper.markAsTransient(MainBoard.mentatZone)
+            MainBoard.mentatZone.setName(os.time())
         end
     })
 
@@ -341,6 +342,7 @@ end
 ---@param net CollectNet
 function MainBoard.collectSnapPointsOnAllBoards(settings, net)
     for _, board in ipairs(MainBoard._getAllBoards(settings)) do
+        --Helper.dump("Collecting snap points on board", Helper.getID(board))
         Helper.collectSnapPoints(board, net)
     end
 end
@@ -351,7 +353,6 @@ function MainBoard._getAllBoards(settings)
     local boards = { MainBoard.mainBoard, MainBoard.topRightBoard }
 
     if settings.riseOfIx then
-        table.insert(boards, ShippingTrack.getBoard())
         table.insert(boards, TechMarket.getBoard())
     end
 
@@ -541,7 +542,7 @@ function MainBoard.sendRivalAgent(color, spaceName)
         Helper.emitEvent("agentSent", color, spaceName)
         Action.setContext("agentDestination", { space = spaceName })
         Park.transfer(1, agentPark, space.park)
-	    -- TODO Why is it specific to SF?
+        -- TODO Why is it specific to SF?
         MainBoard.applyControlOfAnySpace(spaceName)
         return true
     else
@@ -1097,6 +1098,7 @@ function MainBoard.findControlableSpaceFromConflictName(conflictName)
     elseif conflictName == "siegeOfCarthag" or conflictName == "battleForCarthag" then
         return MainBoard.banners.carthagBannerZone
     else
+        Helper.dump("No controlable space for conflict:", conflictName)
         return nil
     end
 end

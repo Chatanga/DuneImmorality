@@ -95,6 +95,7 @@ function XmlUI:setButtonI18N(id, key, interactable)
     XmlUI._setXmlInteractable(element, interactable)
 end
 
+--- Update the fields with the UI view content.
 ---@param player Player
 ---@param value any
 ---@param id string
@@ -118,6 +119,7 @@ function XmlUI:fromUI(player, value, id)
     error("Unknown value: " .. tostring(value))
 end
 
+--- Update the UI view content with the fields.
 function XmlUI:toUI()
     if self.id then
         local root =  XmlUI._findXmlElement(self:getXml(), self.id)

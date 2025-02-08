@@ -86,7 +86,6 @@ function Hagal.setUp(settings)
         if Hagal.getRivalCount() == 1 then
             Hagal.mentatSpaceCostPatch.destruct()
         elseif Hagal.getRivalCount() == 2 then
-            Helper.dump("Hagal.getMentatSpaceCost() =", Hagal.getMentatSpaceCost())
             if Hagal.getMentatSpaceCost() == 5 then
                 Hagal.mentatSpaceCostPatch.setPosition(Vector(-3.90, Board.onMainBoard(-0.07), 3.75))
                 Hagal.mentatSpaceCostPatch.setInvisibleTo({})
@@ -102,7 +101,6 @@ end
 
 ---@return integer
 function Hagal.getMentatSpaceCost()
-    Helper.dump("Hagal.difficulty:", Hagal.difficulty)
     if Hagal.getRivalCount() == 2 and Helper.isElementOf(Hagal.difficulty, {"veteran", "expert", "expertPlus"}) then
         return 5
     else
@@ -266,7 +264,7 @@ function Hagal._collectReward(color)
                     dreadnoughts[1].setPositionSmooth(bestBannerZone.getPosition())
                 end
             end
-            continuation.run()
+            Rival.triggerHagalReaction(color).doAfter(continuation.run)
         end)
     end)
     return continuation
@@ -377,7 +375,6 @@ end
 ---@param n integer
 ---@param continuation Continuation
 function Hagal._doActivateFirstValidCard(color, action, n, continuation)
-    --Helper.dumpFunction("Hagal._doActivateFirstValidCard", color)
     local emptySlots = Park.findEmptySlots(PlayBoard.getRevealCardPark(color))
     assert(emptySlots and #emptySlots > 0)
     assert(n < 10, "Something is not right!")

@@ -181,11 +181,17 @@ function Park._putHolders(holders, toPark)
 
     local emptySlots = Park.findEmptySlots(toPark)
 
-    local skip = #Helper.filter(Park.objectsInTransit, function (object)
-        return type(object) == "number"
-    end)
+    local skip = 0
+    for object, transit in pairs(Park.objectsInTransit) do
+        --Helper.dump("- transit -> destination:", toPark.name, ", type(object):", type(object))
+        if transit.destination == toPark and type(object) == "number" then
+            skip = skip + 1
+        end
+    end
 
     local count = math.max(0, math.min(#emptySlots - skip, #holders))
+
+    --Helper.dump("emptySlots:", #emptySlots, ", skip:", skip, ", count:", count)
 
     for i = 1, count do
         local holder = holders[i]
@@ -224,7 +230,7 @@ function Park._updateObjectsInTransit(now)
     for object, transit in pairs(Park.objectsInTransit) do
         local duration = now - transit.time
         local notResting = function (o)
-            return type(o) ~= "number" and not o.resting
+            return type(o) == "number" or not o.resting
         end
         if Helper.isNotNil(object) and duration < 2.5 and (duration == 0 or notResting(object)) then
             newObjectsInTransit[object] = transit

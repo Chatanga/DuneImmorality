@@ -21,6 +21,7 @@ local Hagal = Module.lazyRequire("Hagal")
 ---| 'makers'
 ---| 'recall'
 ---| 'endgame'
+---| 'arrakeenScouts'
 
 local TurnControl = {
     hotSeat = false,

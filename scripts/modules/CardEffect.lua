@@ -444,7 +444,7 @@ end
 function CardEffect.agentInEmperorSpace(expression)
     return CardEffect._filter(expression, function (context)
         for _, space in ipairs(MainBoard.getEmperorSpaces()) do
-            if MainBoard.hasAgentInSpace(space, context.color) then
+            if MainBoard.hasAgentInSpace(space.name, context.color) then
                 return true
             end
         end
@@ -457,7 +457,7 @@ end
 function CardEffect.agentInGreenSpace(expression)
     return CardEffect._filter(expression, function (context)
         for _, space in ipairs(MainBoard.getGreenSpaces()) do
-            if MainBoard.hasAgentInSpace(space, context.color) then
+            if MainBoard.hasAgentInSpace(space.name, context.color) then
                 return true
             end
         end

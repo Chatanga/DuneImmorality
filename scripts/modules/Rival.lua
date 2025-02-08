@@ -43,7 +43,6 @@ end
 ---@param color PlayerColor
 ---@return Continuation
 function Rival.triggerHagalReaction(color)
-    Helper.dumpFunction("Rival.triggerHagalReaction", color)
     local continuation = Helper.createContinuation("Rival.triggerHagalReaction")
 
     local coroutineHolder = {}
@@ -207,7 +206,7 @@ function Rival.shipments(color, amount)
 end
 
 ---@param color PlayerColor
----@param stackIndex integer
+---@param stackIndex? integer
 ---@return boolean
 function Rival.acquireTech(color, stackIndex)
 
@@ -216,17 +215,18 @@ function Rival.acquireTech(color, stackIndex)
         local discount = TechMarket.getRivalSpiceDiscount()
         local spiceBudget = PlayBoard.getResource(color, "spice"):get()
 
-        local bestTechIndex
-        local bestTech
+        local bestTechIndex = nil
+        local bestTech = nil
         for otherStackIndex = 1, 3 do
             local tech = TechMarket.getTopCardDetails(otherStackIndex)
+            --Helper.dump("tech:", tech, ", cost:", tech and tech.cost, ", spiceBudget:", spiceBudget, ", discount:", discount)
             if tech and tech.hagal and tech.cost <= spiceBudget + discount and (not bestTech or bestTech.cost < tech.cost) then
                 bestTechIndex = otherStackIndex
                 bestTech = tech
             end
         end
 
-        if bestTech then
+        if bestTechIndex then
             finalStackIndex = bestTechIndex
         else
             return false

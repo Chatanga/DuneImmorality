@@ -527,6 +527,12 @@ function Deck.loadCustomDecks(loader)
         -- +4
     })
     Deck.load(loader, cards.intrigue, "intrigue", "bloodlinesIntrigue", 1, {
+        "withdrawalAgreement",
+        "",
+        "",
+        "",
+        "",
+        "",
         "adaptiveTactics",
         "desertSupport",
         "emperorInvitation",
@@ -536,12 +542,6 @@ function Deck.loadCustomDecks(loader)
         "seizeProduction",
         "theStrongSurvive",
         "tenuousBound",
-        "withdrawalAgreement",
-        "",
-        "",
-        "",
-        "",
-        "",
     })
     Deck.load(loader, cards.intrigue, "intrigue", "bloodlinesIntrigue_tech", 1, {
         "battlefieldResearch",

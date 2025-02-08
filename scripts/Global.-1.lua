@@ -178,6 +178,11 @@ function onLoad(scriptState)
     -- methods in case the game has already been set up).
     Helper.destroyTransientObjects()
 
+    -- These 3 rebuild functions work the same way. They modify the otherwise
+    -- static content of the game. As such, you need to save the mod as the new
+    -- "Flow_Base", then call "build.py --full" to update the local skeleton
+    -- file. After that, "build.py" or "build.py --upload" is enough to rebuild
+    -- the mod.
     if constructionModeEnabled then
         -- Edit the player boards in a procedural way.
         if false then
@@ -285,6 +290,7 @@ function asyncOnLoad(scriptState)
             I18N.setLocale(Controller.fields.language)
             Controller.updateLeaderPoolSizeLabel()
             Controller.updateSetupButton()
+            Controller.ui:toUI()
             uiAlreadySetUp = true
         end
     end
@@ -395,20 +401,29 @@ end
 
 --- TTS event handler.
 function onPlayerChangeColor()
-    Controller.updateSetupButton()
-    Controller.updateSelectionMethods()
+    if Controller.ui then
+        Controller.updateSetupButton()
+        Controller.updateSelectionMethods()
+        Controller.ui:toUI()
+    end
 end
 
 --- TTS event handler.
 function onPlayerConnect()
-    Controller.updateSetupButton()
-    Controller.updateSelectionMethods()
+    if Controller.ui then
+        Controller.updateSetupButton()
+        Controller.updateSelectionMethods()
+        Controller.ui:toUI()
+    end
 end
 
 --- TTS event handler.
 function onPlayerDisconnect()
-    Controller.updateSetupButton()
-    Controller.updateSelectionMethods()
+    if Controller.ui then
+        Controller.updateSetupButton()
+        Controller.updateSelectionMethods()
+        Controller.ui:toUI()
+    end
 end
 
 --- Generic UI callback (cf. XML).
@@ -421,14 +436,14 @@ function setLanguage(player, value, id)
     Controller.ui:fromUI(player, value, id)
     -- The locale is changed in real time by the UI, but not the test mode.
     I18N.setLocale(Controller.fields.language)
-    Controller.ui:toUI()
     Controller.updateLeaderPoolSizeLabel()
+    Controller.ui:toUI()
 end
 
 --- UI callback (cf. XML).
 function setVirtualHotSeat(player, value, id)
     Controller.ui:fromUI(player, value, id)
-    if value == "True" then
+    if Controller.fields.virtualHotSeat then
         Controller.fields.virtualHotSeatMode = 1
     else
         Controller.fields.virtualHotSeatMode = XmlUI.HIDDEN
@@ -463,12 +478,13 @@ end
 function setHotSeat(player, value, id)
     Controller.ui:fromUI(player, value, id)
     Controller.updateSetupButton()
+    Controller.ui:toUI()
 end
 
 --- UI callback (cf. XML).
 function setRiseOfIx(player, value, id)
     Controller.ui:fromUI(player, value, id)
-    if value == "True" then
+    if Controller.fields.riseOfIx then
         Controller.fields.epicMode = false
         Controller.fields.ixAmbassy = XmlUI.DISABLED
         Controller.fields.ixAmbassyWithIx = XmlUI.DISABLED
@@ -486,7 +502,7 @@ end
 --- UI callback (cf. XML).
 function setImmortality(player, value, id)
     Controller.ui:fromUI(player, value, id)
-    if value == "True" then
+    if Controller.fields.immortality then
         Controller.fields.goTo11 = false
     else
         Controller.fields.goTo11 = XmlUI.DISABLED
@@ -495,14 +511,9 @@ function setImmortality(player, value, id)
 end
 
 --- UI callback (cf. XML).
-function setGoTo11(player, value, id)
-    Controller.ui:fromUI(player, value, id)
-end
-
---- UI callback (cf. XML).
 function setBloodlines(player, value, id)
     Controller.ui:fromUI(player, value, id)
-    if value == "True" and not Controller.fields.riseOfIx then
+    if Controller.fields.bloodlines then
         Controller.fields.ixAmbassy = true
         Controller.fields.ixAmbassyWithIx = false
     else
@@ -515,7 +526,7 @@ end
 --- UI callback (cf. XML).
 function setIxAmbassy(player, value, id)
     Controller.ui:fromUI(player, value, id)
-    if value == "True" then
+    if Controller.fields.ixAmbassy then
         Controller.fields.ixAmbassyWithIx = false
     else
         Controller.fields.ixAmbassyWithIx = XmlUI.DISABLED
@@ -527,6 +538,8 @@ end
 function setLeaderPoolSize(player, value, id)
     Controller.ui:fromUI(player, value, id)
     Controller.updateLeaderPoolSizeLabel()
+    -- Do not use Controller.ui:toUI() to avoid breaking the current UI operation.
+    self.UI.setValue("leaderPoolSizeLabel", Controller.fields.leaderPoolSizeLabel)
 end
 
 --- UI callback (cf. XML).
@@ -714,6 +727,12 @@ function Controller.applyVirtualHotSeatMode()
         Controller.soloUi:show()
     end
 
+    Controller.updateVariant(numberOfPlayers)
+    Controller.updateSetupButton()
+end
+
+---@param numberOfPlayers integer
+function Controller.updateVariant(numberOfPlayers)
     if numberOfPlayers > 2 then
         Controller.fields.variant_all = {
             none = "none",
@@ -725,9 +744,6 @@ function Controller.applyVirtualHotSeatMode()
         }
         Controller.fields.variant = "none"
     end
-
-    Controller.updateSetupButton()
-    Controller.ui:toUI()
 end
 
 ---@param virtualHotSeatMode any
@@ -744,54 +760,45 @@ function Controller.getNumberOfPlayers(virtualHotSeatMode)
 end
 
 function Controller.updateSelectionMethods()
-    if Controller.ui then
-        local numberOfPlayers = Controller.getNumberOfPlayers(Controller.fields.virtualHotSeatMode)
-        Controller.fields.leaderSelection_all = allModules.LeaderSelection.getSelectionMethods(numberOfPlayers)
-        Controller.ui:toUI()
-    end
+    local numberOfPlayers = Controller.getNumberOfPlayers(Controller.fields.virtualHotSeatMode)
+    Controller.fields.leaderSelection_all = allModules.LeaderSelection.getSelectionMethods(numberOfPlayers)
 end
 
 function Controller.updateSetupButton()
-    if Controller.ui then
-        local numberOfPlayers = Controller.getNumberOfPlayers(Controller.fields.virtualHotSeatMode)
-        Controller.fields.leaderSelection_all = allModules.LeaderSelection.getSelectionMethods(numberOfPlayers)
+    local numberOfPlayers = Controller.getNumberOfPlayers(Controller.fields.virtualHotSeatMode)
+    Controller.fields.leaderSelection_all = allModules.LeaderSelection.getSelectionMethods(numberOfPlayers)
 
-        local properlySeatedPlayers = Controller.getProperlySeatedPlayers()
+    local properlySeatedPlayers = Controller.getProperlySeatedPlayers()
 
-        local minPlayerCount
-        if Controller.isUndefined(Controller.fields.virtualHotSeatMode) then
-            minPlayerCount = 3
-        else
-            minPlayerCount = 1
+    local minPlayerCount
+    if Controller.isUndefined(Controller.fields.virtualHotSeatMode) then
+        minPlayerCount = 3
+    else
+        minPlayerCount = 1
+    end
+
+    if #properlySeatedPlayers ~= 4 then
+        Controller.fields.submitGameRankedGame = XmlUI.DISABLED
+        Controller.fields.submitGameTournament = XmlUI.DISABLED
+    else
+        if XmlUI.isDisabled(Controller.fields.submitGameRankedGame) then
+            Controller.fields.submitGameRankedGame = false
         end
-
-        if #properlySeatedPlayers ~= 4 then
-            Controller.fields.submitGameRankedGame = XmlUI.DISABLED
-            Controller.fields.submitGameTournament = XmlUI.DISABLED
-        else
-            if XmlUI.isDisabled(Controller.fields.submitGameRankedGame) then
-                Controller.fields.submitGameRankedGame = false
-            end
-            if XmlUI.isDisabled(Controller.fields.submitGameTournament) then
-                Controller.fields.submitGameTournament = false
-            end
+        if XmlUI.isDisabled(Controller.fields.submitGameTournament) then
+            Controller.fields.submitGameTournament = false
         end
+    end
 
-        if #properlySeatedPlayers >= minPlayerCount then
-            Controller.ui:setButtonI18N("setUpButton", "setup", true)
-        else
-            Controller.ui:setButtonI18N("setUpButton", "notEnoughPlayers", false)
-        end
-
-        Controller.ui:toUI()
+    if #properlySeatedPlayers >= minPlayerCount then
+        Controller.ui:setButtonI18N("setUpButton", "setup", true)
+    else
+        Controller.ui:setButtonI18N("setUpButton", "notEnoughPlayers", false)
     end
 end
 
 function Controller.updateLeaderPoolSizeLabel()
     local value = Controller.fields.leaderPoolSize
     Controller.fields.leaderPoolSizeLabel = I18N("leaderPoolSizeLabel", { value = value } )
-    -- Do not use Controller.ui:toUI() to avoid breaking the current UI operation.
-    self.UI.setValue("leaderPoolSizeLabel", Controller.fields.leaderPoolSizeLabel)
 end
 
 ---@generic T

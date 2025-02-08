@@ -88,6 +88,7 @@ return {
     agentAlreadyPresent = "You already have an agent present there!",
     noFriendship = "You don't have enough influence with {withFaction}!",
     alreadyHaveSwordmaster = "You already have a swordmaster!",
+    alreadyHaveHighCouncilSeat = "You already have a High Council seat!",
     noResource = "You don't have enough {resource}!",
     forbiddenAccess = "You cannot access this space!",
     sardaukarAcquireAndRecruitButton = "Acquire and recruit a Sardaukar Commander",

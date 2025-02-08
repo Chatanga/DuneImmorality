@@ -159,13 +159,15 @@ function SardaukarCommander._createSardaukarCommanderRecruitmentButtons(settings
                 end)
             else
                 if settings.numberOfPlayers == 6 and Commander.isTeamMuadDib(color) then
-                    if leader.resources(color, "spice", -2) then
-                        leader.discardSardaukarCommander(color, sardaukarLocationName)
-                    else
-                        Dialog.broadcastToColor(I18N('notEnoughSpiceToDiscardSardaukarCommander'), color, "Purple")
+                    if sardaukarLocationName ~= "sardaukarStandard" then
+                        if leader.resources(color, "spice", -2) then
+                            leader.discardSardaukarCommander(color, sardaukarLocationName)
+                        else
+                            Dialog.broadcastToColor(I18N('notEnoughSpiceToDiscardSardaukarCommander'), color, "Purple")
+                        end
                     end
                 else
-                    if leader.resources(color, "solari", PlayBoard.hasTech(color, "sardaukarHighCommand") and -1 or -2) then
+                    if sardaukarLocationName == "sardaukarStandard" or leader.resources(color, "solari", PlayBoard.hasTech(color, "sardaukarHighCommand") and -1 or -2) then
                         leader.recruitSardaukarCommander(color, sardaukarLocationName)
                     else
                         Dialog.broadcastToColor(I18N('notEnoughSolarisToRecruitSardaukarCommander'), color, "Purple")
@@ -200,21 +202,21 @@ function SardaukarCommander._getRecruitedSardaukar(origin)
 end
 
 ---@param color PlayerColor
----@param origin Vector
+---@param origin string
 ---@return boolean
 function SardaukarCommander.recruitSardaukarCommander(color, origin)
     return SardaukarCommander._acquireSardaukarCommander(color, origin, true)
 end
 
 ---@param color PlayerColor
----@param origin Vector
+---@param origin string
 ---@return boolean
 function SardaukarCommander.discardSardaukarCommander(color, origin)
     return SardaukarCommander._acquireSardaukarCommander(color, origin, false)
 end
 
 ---@param color PlayerColor
----@param origin Vector
+---@param origin string
 ---@param recruit boolean
 ---@return boolean
 function SardaukarCommander._acquireSardaukarCommander(color, origin, recruit)
@@ -251,9 +253,7 @@ end
 ---@param origin string
 ---@return boolean
 function SardaukarCommander.isAvailable(origin)
-    Helper.dumpFunction("SardaukarCommander.isAvailable", origin)
     for _, marker in ipairs(SardaukarCommander.sardaukarMarkers) do
-        Helper.dump("-", Helper.getID(marker))
         if Helper.getID(marker) == origin then
             return not SardaukarCommander._getRecruitedSardaukar(origin)
         end

@@ -104,7 +104,7 @@ function HagalCard.flushTurnActions(color)
         local deploymentLimit = Hagal.getExpertDeploymentLimit(color)
 
         local garrisonedTroopCount = #Park.getObjects(Combat.getGarrisonPark(color)) -- Sardaukars included.
-        Helper.dump("garrisonedTroopCount:", garrisonedTroopCount)
+        --Helper.dump("garrisonedTroopCount:", garrisonedTroopCount)
         local inSupplyTroopCount = #Park.getObjects(PlayBoard.getSupplyPark(color))
 
         local fromGarrison = math.min(2, garrisonedTroopCount)
@@ -151,7 +151,7 @@ function HagalCard.flushTurnActions(color)
     assert(playBoard, color)
     if not playBoard:stillHavePlayableAgents() then
         local techCardContributions = TechCard.evaluatePostReveal(color, { persuasion = 6 })
-        Helper.dump("techCardContributions:", techCardContributions)
+        --Helper.dump("techCardContributions:", techCardContributions)
     end
 end
 
@@ -481,7 +481,7 @@ function HagalCard._activateTechNegotiation(color, rival)
     if HagalCard._spaceIsFree(color, "techNegotiation") then
         HagalCard._sendRivalAgent(color, rival, "techNegotiation")
         TechMarket.registerAcquireTechOption(color, "techNegotiationTechBuyOption", "spice", 1)
-        if not rival.acquireTech(color, 1) then
+        if not rival.acquireTech(color) then
             rival.troops(color, "supply", "negotiation", 1)
         end
         HagalCard._tryRecruitingSardaukarCommander(color, rival, "techNegotiation")
@@ -499,7 +499,7 @@ function HagalCard._activateDreadnought1p(color, rival)
         HagalCard._sendRivalAgent(color, rival, "dreadnought")
         rival.dreadnought(color, "supply", "garrison", 1)
         TechMarket.registerAcquireTechOption(color, "dreadnoughtTechBuyOption", "spice", 0)
-        rival.acquireTech(color, 0)
+        rival.acquireTech(color)
         HagalCard._tryRecruitingSardaukarCommander(color, rival, "dreadnought")
         return true
     else
@@ -590,7 +590,7 @@ end
 function HagalCard._activateAcquireTech(color, rival)
     if PlayBoard.hasSwordmaster(color) then
         TechMarket.registerAcquireTechOption(color, "activateAcquireTechBuyOption", "spice", 1)
-        rival.acquireTech(color, 1)
+        rival.acquireTech(color)
     end
     return false
 end
@@ -611,7 +611,7 @@ function HagalCard._activateTuekSietch(color, rival)
             return false
         end
     else
-        Helper.dump("Thit Hagal card should have been automatically removed during the setup!")
+        --Helper.dump("Thit Hagal card should have been automatically removed during the setup!")
         return false
     end
 end
@@ -661,7 +661,6 @@ end
 ---@param spaceName string
 ---@return boolean
 function HagalCard._tryRecruitingSardaukarCommander(color, rival, spaceName)
-    Helper.dumpFunction("HagalCard._tryRecruitingSardaukarCommander", color, rival.name, spaceName)
     if PlayBoard.hasSwordmaster(color) and SardaukarCommander.isAvailable(spaceName) then
         if Hagal.getRivalCount() == 1 then
             SardaukarCommander.discardSardaukarCommander(color, spaceName)

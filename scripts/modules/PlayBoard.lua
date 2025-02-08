@@ -883,9 +883,12 @@ end
 function PlayBoard:_recall()
     self.revealed = false
 
-    self.persuasion:set(0)
-    self.strength:set(0)
-    self:_refreshStaticContributions(true)
+    -- Wait for the removal of the agents.
+    Helper.onceTimeElapsed(1).doAfter(function ()
+        self.persuasion:set(0)
+        self.strength:set(0)
+        self:_refreshStaticContributions(true)
+    end)
 
     self:_createButtons()
 
@@ -1710,9 +1713,9 @@ function PlayBoard:_revealHand(brutal)
     local allRevealedCards = Helper.concatTables(revealedCards, alreadyRevealedCards)
 
     local imperiumCardContributions = ImperiumCard.evaluateReveal(self.color, playedCards, allRevealedCards)
-    Helper.dump("imperiumCardContributions:", imperiumCardContributions)
+    --Helper.dump("imperiumCardContributions:", imperiumCardContributions)
     local techCardContributions = TechCard.evaluatePostReveal(self.color, imperiumCardContributions)
-    Helper.dump("techCardContributions:", techCardContributions)
+    --Helper.dump("techCardContributions:", techCardContributions)
 
     local sardaukarCommanderSkillCardContributions
     if Combat.hasAnySardaukarCommander(self.color) then
@@ -1721,7 +1724,7 @@ function PlayBoard:_revealHand(brutal)
     else
         sardaukarCommanderSkillCardContributions = {}
     end
-    Helper.dump("sardaukarCommanderSkillCardContributions:", sardaukarCommanderSkillCardContributions)
+    --Helper.dump("sardaukarCommanderSkillCardContributions:", sardaukarCommanderSkillCardContributions)
 
     local contributions = {}
     for _, set in ipairs({ imperiumCardContributions, techCardContributions, sardaukarCommanderSkillCardContributions }) do
@@ -2269,7 +2272,6 @@ end
 function PlayBoard.getAllTechs(color)
     local objects = Park.getObjects(PlayBoard.getPlayBoard(color).techPark)
     local techTiles = Helper.filter(objects, Types.isTech)
-    Helper.dump("PlayBoard.getAllTechs:", color, "->", techTiles)
     return techTiles
 end
 

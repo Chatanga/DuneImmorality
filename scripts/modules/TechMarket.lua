@@ -126,7 +126,6 @@ function TechMarket._tearDown()
 end
 
 function TechMarket._processSnapPoints()
-    Helper.dumpFunction("TechMarket._processSnapPoints")
     TechMarket.techSlots = {}
     TechMarket.negotiatorSlot = nil
 
@@ -148,13 +147,13 @@ function TechMarket._processSnapPoints()
         end,
 
         slotNegotiator = function (name, position)
-            local zone = spawnObject({
+            TechMarket.negotiationZone = spawnObject({
                 type = 'ScriptingTrigger',
                 position = position,
                 rotation = Vector(0, 0, 0),
                 scale = { 2.0, 2.0, 2.0 }
             })
-            TechMarket.negotiationZone = zone
+            Helper.markAsTransient(TechMarket.negotiationZone)
         end
     })
 end

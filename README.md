@@ -31,16 +31,18 @@ This repository contains the JSON skeletons and Lua scripts of various mods for 
 
 ## TODO
 
+- Parameter name conflict in generic typing with a compound call!
+- Normalize spaces/tabs.
+
 - Scan Arrakeen Scouts deck (en).
 - Main board in French. -> No.
 - Plastic or wood? Color adjust too.
-- Normalize spaces/tabs.
 - Multiple battlegrounds.
-- Arrakeen Scouts + Bloodlines.
 - Arrakeen Scouts history (as cards).
 - Arrakeen Scouts memory cards (using decals).
-- Blitz! mode?
-- Parameter name conflict in generic typing with a compound call!
+- Blitz! mode
+- Detect unused I18N strings.
+- Dreadnought block agents.
 
 ## Tests
 

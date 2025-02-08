@@ -440,7 +440,7 @@ Leader.rhomburVernius = Helper.createClass(Leader, {
     signetRing = function (color)
         TechMarket.registerAcquireTechOption(color, "rhomburVerniusTechBuyOption", "spice", 0)
         local leader = PlayBoard.getLeader(color)
-        if not leader.acquireTech(color, nil) then
+        if not leader.acquireTech(color) then
             leader.troops(color, "supply", "negotiation", 1)
         end
         return true
@@ -675,7 +675,6 @@ Leader.duncanIdaho = Helper.createClass(Leader, {
 
     --- Ginaz Swordmaster
     bargain = function (color, resourceName, amount)
-        Helper.dumpFunction("bargain", color, resourceName, amount)
         local finalAmount = Action.bargain(color, resourceName, amount)
         local toSwordmasterSpace = function (agentDestination)
             return agentDestination and agentDestination.space == "swordmaster"
@@ -863,7 +862,7 @@ Leader.yrkoon = Helper.createClass(Leader, {
         end)
         Helper.registerEventListener("influence", function (faction, otherColor, newRank, oldRank)
             if otherColor == color and newRank >= 2 and oldRank < 2 then
-                Helper.dump("draw next navigation card")
+                --Helper.dump("draw next navigation card")
                 for i = 1, 4 do
                     local bag = getObjectFromGUID(Leader.yrkoon.bags[i])
                     if PlayBoard.giveNavigationFromBag(color, bag) then

@@ -11,7 +11,7 @@ local Types = Module.lazyRequire("Types")
 ---@field color PlayerColor
 ---@field resourceName string
 ---@field token table
----@field location Vector
+---@field location string
 ---@field MIN_VALUE integer
 ---@field MAX_VALUE integer
 local Resource = Helper.createClass(nil, {
@@ -24,7 +24,7 @@ local Resource = Helper.createClass(nil, {
 ---@param color? PlayerColor
 ---@param resourceName ResourceName
 ---@param value integer
----@param location? Vector
+---@param location? string
 ---@return Resource
 function Resource.new(token, color, resourceName, value, location)
     assert(token)
