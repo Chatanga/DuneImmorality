@@ -24,27 +24,27 @@ local constructionModeEnabled = false
 local autoLoadedSettings = nil
 
 --[[
+]]
 autoLoadedSettings = {
     language = "fr",
     hotSeat = true,
     numberOfPlayers = 4,
     randomizePlayerPositions = false,
-    riseOfIx = false,
+    riseOfIx = true,
     epicMode = false,
     immortality = false,
     goTo11 = false,
     bloodlines = true,
-    ixAmbassy = true,
     leaderSelection = {
-        Green = "yrkoon",
+        Green = "paulAtreides",
         Yellow = "duncanIdaho",
         Red = "chani",
-        Blue = "piterDeVries",
+        Blue = "letoAtreides",
     },
     formalCombatPhase = false,
     soundEnabled = true,
+    variant = "arrakeenScouts",
 }
-]]
 
 GameTableGUIDs = {
     primary = "2b4b92",

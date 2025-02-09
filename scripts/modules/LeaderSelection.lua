@@ -175,6 +175,16 @@ function LeaderSelection._transientSetUp(settings, leaderSelectionPoolSize, play
     else
         error(settings.leaderSelection)
     end
+
+    Helper.registerEventListener("phaseEnd", function (phase)
+        if phase == 'gameStart' then
+            for _, object in ipairs(LeaderSelection.deckZone.getObjects()) do
+                if object ~= LeaderSelection.secondaryTable then
+                    object.destruct()
+                end
+            end
+        end
+    end)
 end
 
 ---@param start integer
@@ -380,12 +390,6 @@ function LeaderSelection._setUpPicking(autoStart, random, hidden)
                 end
             end
             LeaderSelection.stage = Stage.DONE
-        end
-
-        if phase == 'gameStart' then
-            for _, object in ipairs(LeaderSelection.deckZone.getObjects()) do
-                object.destruct()
-            end
         end
     end)
 end

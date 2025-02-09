@@ -1087,25 +1087,9 @@ function MainBoard._applyControlOfAnySpace(bannerZone, resourceName)
     end
 end
 
----@param conflictName string
----@return Zone?
-function MainBoard.findControlableSpaceFromConflictName(conflictName)
-    assert(conflictName)
-    if conflictName == "secureImperialBasin" or conflictName == "battleForImperialBasin" then
-        return MainBoard.banners.imperialBasinBannerZone
-    elseif conflictName == "siegeOfArrakeen" or conflictName == "battleForArrakeen" then
-        return MainBoard.banners.arrakeenBannerZone
-    elseif conflictName == "siegeOfCarthag" or conflictName == "battleForCarthag" then
-        return MainBoard.banners.carthagBannerZone
-    else
-        Helper.dump("No controlable space for conflict:", conflictName)
-        return nil
-    end
-end
-
 ---@param name string
 ---@return Zone?
-function MainBoard.unused_findControlableSpace(name)
+function MainBoard.findControlableSpace(name)
     for bannerZoneName, zone in pairs(MainBoard.banners) do
         if Helper.startsWith(bannerZoneName, name) then
             return zone

@@ -1899,6 +1899,11 @@ end
 
 ---@param ... any
 function Helper.dump(...)
+    Helper._log(Helper.argumentsToString(...))
+end
+
+---@param ... any
+function Helper.argumentsToString(...)
     local str = ""
     local args = table.pack(...)
     for i = 1, args.n do
@@ -1907,7 +1912,7 @@ function Helper.dump(...)
         end
         str = str .. Helper.toString(args[i])
     end
-    Helper._log(str)
+    return str
 end
 
 ---@param ... any

@@ -666,8 +666,14 @@ end
 
 ---@param color PlayerColor
 ---@param spaceName string
-function Action.unused_control(color, spaceName)
-    MainBoard.occupy(MainBoard.findControlableSpace(spaceName), color)
+function Action.control(color, spaceName)
+    local controlableSpace = MainBoard.findControlableSpace(spaceName)
+    if controlableSpace then
+        MainBoard.occupy(controlableSpace, color)
+        return true
+    else
+        return false
+    end
 end
 
 ---@param color PlayerColor

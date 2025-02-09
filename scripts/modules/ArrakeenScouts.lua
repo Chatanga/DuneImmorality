@@ -15,6 +15,7 @@ local ImperiumCard = Module.lazyRequire("ImperiumCard")
 local Combat = Module.lazyRequire("Combat")
 local Intrigue = Module.lazyRequire("Intrigue")
 local Types = Module.lazyRequire("Types")
+local Deck = Module.lazyRequire("Deck")
 
 local ArrakeenScouts = {
     committees = {
@@ -134,6 +135,8 @@ function ArrakeenScouts.onLoad(state)
     ArrakeenScouts.fr = require("fr.ArrakeenScouts")
     ArrakeenScouts.en = require("en.ArrakeenScouts")
     Helper.append(ArrakeenScouts, Helper.resolveGUIDs(false, {
+        deckZone = "23f2b5",
+        secondaryTable = GameTableGUIDs.secondary,
         board = "54b5be",
         committeeZones = {
             "1d4471",
@@ -197,37 +200,70 @@ function ArrakeenScouts.setUp(settings)
         }
 
         ArrakeenScouts.selectedContent = {}
-        if ArrakeenScouts._debug then
-            table.insert(ArrakeenScouts.selectedContent, ArrakeenScouts._debug )
-        end
-        if math.random() > 0 then
-            table.insert(ArrakeenScouts.selectedContent, { selection.missions[1], selection.missions[2] })
-            table.insert(ArrakeenScouts.selectedContent, { selection.missions[3] })
-        else
-            table.insert(ArrakeenScouts.selectedContent, { selection.missions[1] })
-            table.insert(ArrakeenScouts.selectedContent, { selection.missions[2], selection.missions[3] })
-        end
-        table.insert(ArrakeenScouts.selectedContent, { selection.events[1] })
-        if math.random() > 0 then
-            table.insert(ArrakeenScouts.selectedContent, { selection.auctions[1] .. "1", selection.events[2] })
-            table.insert(ArrakeenScouts.selectedContent, { selection.events[3] })
-        else
-            table.insert(ArrakeenScouts.selectedContent, { selection.events[2] })
-            table.insert(ArrakeenScouts.selectedContent, { selection.auctions[1] .. "1", selection.events[3] })
-        end
-        table.insert(ArrakeenScouts.selectedContent, { selection.events[4] })
-        if math.random() > 0 then
-            table.insert(ArrakeenScouts.selectedContent, { selection.auctions[2] .. "2" })
-            table.insert(ArrakeenScouts.selectedContent, { selection.sales[1] })
-        else
-            table.insert(ArrakeenScouts.selectedContent, { selection.sales[1] })
-            table.insert(ArrakeenScouts.selectedContent, { selection.auctions[2] .. "2" })
-        end
+
+        Helper.registerEventListener("phaseEnd", function (phase)
+            if phase == 'gameStart' then
+                Deck.generateArrakeenScoutsDeck(ArrakeenScouts.deckZone).doAfter(function (deck)
+                    if ArrakeenScouts._debug then
+                        ArrakeenScouts._registerTurnContent(deck, 2, ArrakeenScouts._debug )
+                    end
+                    if math.random() > 0 then
+                        ArrakeenScouts._registerTurnContent(deck, 3, { selection.missions[1], selection.missions[2] })
+                        ArrakeenScouts._registerTurnContent(deck, 4, { selection.missions[3] })
+                    else
+                        ArrakeenScouts._registerTurnContent(deck, 3, { selection.missions[1] })
+                        ArrakeenScouts._registerTurnContent(deck, 4, { selection.missions[2], selection.missions[3] })
+                    end
+                    ArrakeenScouts._registerTurnContent(deck, 5, { selection.events[1] })
+                    if math.random() > 0 then
+                        ArrakeenScouts._registerTurnContent(deck, 6, { selection.auctions[1] .. "1", selection.events[2] })
+                        ArrakeenScouts._registerTurnContent(deck, 7, { selection.events[3] })
+                    else
+                        ArrakeenScouts._registerTurnContent(deck, 6, { selection.events[2] })
+                        ArrakeenScouts._registerTurnContent(deck, 7, { selection.auctions[1] .. "1", selection.events[3] })
+                    end
+                    ArrakeenScouts._registerTurnContent(deck, 8, { selection.events[4] })
+                    if math.random() > 0 then
+                        ArrakeenScouts._registerTurnContent(deck, 9, { selection.auctions[2] .. "2" })
+                        ArrakeenScouts._registerTurnContent(deck, 10, { selection.sales[1] })
+                    else
+                        ArrakeenScouts._registerTurnContent(deck, 9, { selection.sales[1] })
+                        ArrakeenScouts._registerTurnContent(deck, 10, { selection.auctions[2] .. "2" })
+                    end
+                end)
+            end
+        end)
 
         TurnControl.registerSpecialPhase("arrakeenScouts")
         ArrakeenScouts._staticSetUp()
     else
         ArrakeenScouts._tearDown()
+    end
+end
+
+---@param deck Deck
+---@param turn integer
+---@param elements DeadObject[]
+function ArrakeenScouts._registerTurnContent(deck, turn, elements)
+    table.insert(ArrakeenScouts.selectedContent, elements)
+
+    local origin = ArrakeenScouts.deckZone.getPosition()
+
+    local width = #elements
+    for i, element in ipairs(elements) do
+        local found = false
+        for _, card in ipairs(deck.getObjects()) do
+            if Helper.getID(card) == element then
+                deck.takeObject({
+                    guid = card.guid,
+                    position = origin + Vector((i - 0.5 - width / 2) * 5, 1, -35 + 3 * turn),
+                    flip = true
+                })
+                found = true
+                break
+            end
+        end
+        assert(found, "Card not found: " .. element)
     end
 end
 
@@ -401,6 +437,8 @@ end
 function ArrakeenScouts._createDialog(content)
     local createController = ArrakeenScouts[Helper.toCamelCase("_create", content, "controller")]
     assert(createController, "No create controller function for content: " .. content)
+
+    broadcastToAll(I18N(content), Color.fromString("Pink"))
 
     local playerPanes = {}
     for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do

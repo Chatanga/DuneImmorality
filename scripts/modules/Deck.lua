@@ -616,18 +616,30 @@ local Deck = {
             competitiveStudy1 = 1,
             competitiveStudy2 = 1,
         },
-        merakon = {
-            -- Legacy
-            vladimirHarkonnen = 1,
-            glossuRabban = 1,
-            ilbanRichese = 1,
-            arianaThorvald = 1,
-            memnonThorvald = 1,
-            armandEcaz = 1,
-            ilesaEcaz = 1,
-            -- Ix
-            tessiaVernius = 1,
-            yunaMoritani = 1,
+        event = {
+            changeOfPlans = 1,
+            covertOperation = 1,
+            covertOperationReward = 1,
+            giftOfWater = 1,
+            desertGift = 1,
+            guildNegotiation = 1,
+            intriguingGift = 1,
+            testOfLoyalty = 1,
+            beneGesseritTreachery = 1,
+            emperorsTax = 1,
+            fremenExchange = 1,
+            politicalEquilibrium = 1,
+            waterForSpiceSmugglers = 1,
+            rotationgDoors = 1,
+            secretsForSale = 1,
+            noComingBack = 1,
+            tapIntoSpiceReserves = 1,
+            getBackInTheGoodGraces = 1,
+            treachery = 1,
+            newInnovations = 1,
+            offWordOperation = 1,
+            offWordOperationReward = 1,
+            ceaseAndDesistRequest = 1,
         },
         mission = {
             secretsInTheDesert = 1,
@@ -1034,6 +1046,23 @@ function Deck.generateLeaderDeck(deckZone, ix, immortality, bloodlines, ixAmbass
         contributions.kotaOdax = nil
     end
     Deck._generateDeck("Leader", deckZone, contributions, Deck.sources.leaders).doAfter(continuation.run)
+    return continuation
+end
+
+---@param deckZone Zone
+---@return Continuation
+function Deck.generateArrakeenScoutsDeck(deckZone)
+    assert(deckZone)
+    assert(deckZone.getPosition)
+    local continuation = Helper.createContinuation("Deck.generateArrakeenScoutsDeck")
+    local contributionSets = {
+        Deck.arrakeenScouts.auction,
+        Deck.arrakeenScouts.event,
+        Deck.arrakeenScouts.mission,
+        Deck.arrakeenScouts.sale,
+    }
+    local contributions = Deck._mergeContributionSets(contributionSets, true)
+    Deck._generateDeck("ArrakeenScouts", deckZone, contributions, Deck.sources.arrakeenScouts).doAfter(continuation.run)
     return continuation
 end
 
@@ -1464,7 +1493,6 @@ end
 ---@param deckPosition Vector
 function Deck._prebuildArrakeenScoutDeck(deckPosition)
     local contributionSets = {
-        Deck.arrakeenScouts.committee,
         Deck.arrakeenScouts.auction,
         Deck.arrakeenScouts.event,
         Deck.arrakeenScouts.mission,
@@ -1515,8 +1543,10 @@ function Deck._generateFromPrebuildDeck(deckType, deckZone, contributions, _, sp
     ---@cast prebuildZone Zone
     Helper.withAllDecks(prebuildZone, function (deck)
         if Helper.getID(deck) == deckType then
+            --Helper.dump(Helper.getID(deck), "==", deckType)
             for i, card in ipairs(deck.getObjects()) do
                 local id = Helper.getID(card)
+                --Helper.dump(i, "-", id)
                 if sources[id] then
                     table.insert(sources[id].instances, card.guid)
                 else

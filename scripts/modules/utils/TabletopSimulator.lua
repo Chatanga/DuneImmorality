@@ -1,6 +1,7 @@
 ---@alias DeadObject {
 --- id: integer,
 --- guid: string,
+--- name: string,
 --- gm_notes: string,
 --- tags: string[] }
 

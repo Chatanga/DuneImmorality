@@ -96,7 +96,7 @@ function ConflictCard.cleanUpConflict(color, conflictName)
         color = color,
         player = {
             control = function (spaceName)
-                local controlableSpace = MainBoard.findControlableSpaceFromConflictName(conflictName)
+                local controlableSpace = MainBoard.findControlableSpace(spaceName)
                 if controlableSpace then
                     MainBoard.occupy(controlableSpace, color, true)
                 end

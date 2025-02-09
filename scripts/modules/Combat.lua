@@ -222,7 +222,7 @@ function Combat._setUpConflict()
             end
         end
 
-        local controlableSpace = Combat.findControlableSpace(cardName)
+        local controlableSpace = Combat.findControlableSpaceFromConflictName(cardName)
         if controlableSpace then
             local color = MainBoard.getControllingPlayer(controlableSpace)
             if color then
@@ -236,8 +236,17 @@ end
 
 ---@param conflictName string
 ---@return Zone?
-function Combat.findControlableSpace(conflictName)
-    return MainBoard.findControlableSpaceFromConflictName(conflictName)
+function Combat.findControlableSpaceFromConflictName(conflictName)
+    assert(conflictName)
+    if conflictName == "secureImperialBasin" or conflictName == "battleForImperialBasin" then
+        return MainBoard.findControlableSpace("imperialBasin")
+    elseif conflictName == "siegeOfArrakeen" or conflictName == "battleForArrakeen" then
+        return MainBoard.findControlableSpace("arrakeen")
+    elseif conflictName == "siegeOfCarthag" or conflictName == "battleForCarthag" then
+        return MainBoard.findControlableSpace("carthag")
+    else
+        return nil
+    end
 end
 
 ---@param zone Zone
