@@ -3,18 +3,21 @@ local Module = {
     registeredModuleRedirections = {},
 }
 
----
+---@param modulesByName table<string, table>
+---@return table<string, table>
 function Module.registerModules(modulesByName)
     Module.modulesByName = Module._registerModules("", modulesByName)
     return Module._lazyRequireAll("", modulesByName)
 end
 
----
+---@param path string
+---@param modulesByName table<string, table>
+---@return table<string, table>
 function Module._registerModules(path, modulesByName)
     local modules = {}
 
     for name, node in pairs(modulesByName) do
-        -- Can’t work! Find a way to distinguish between a node and a module.
+        -- FIXME Can’t work! Find a way to distinguish between a node and a module.
         if type(node) == "table" and false then
             modules[name] = Module._registerModules(path .. name .. ".", node)
         else
@@ -25,7 +28,9 @@ function Module._registerModules(path, modulesByName)
     return modules
 end
 
----
+---@param path string
+---@param modulesByName table<string, table>
+---@return table<string, table>
 function Module._lazyRequireAll(path, modulesByName)
     local modules = {}
 
@@ -41,7 +46,8 @@ function Module._lazyRequireAll(path, modulesByName)
     return modules
 end
 
----
+---@param name string
+---@return table
 function Module.lazyRequire(name)
     local lazyModule = {}
 
@@ -82,7 +88,8 @@ function Module.lazyRequire(name)
     return lazyModule
 end
 
----
+---@param name string
+---@return table?
 function Module._resolveModule(name)
     local node = Module.modulesByName
 
@@ -107,7 +114,7 @@ function Module._resolveModule(name)
     end
 end
 
----
+---@param functionNames string[]
 function Module.registerModuleRedirections(functionNames)
     for _, functionName in ipairs(functionNames) do
         local originalGlobalFunction = Global.getVar(functionName)
@@ -133,7 +140,8 @@ function Module.registerModuleRedirections(functionNames)
     end
 end
 
----
+---@param functionName string
+---@param ... any
 function Module.callOnAllRegisteredModules(functionName, ...)
     for _, module in pairs(Module.modulesByName) do
         if module[functionName] then
@@ -142,10 +150,10 @@ function Module.callOnAllRegisteredModules(functionName, ...)
     end
 end
 
----
 function Module.unregisterAllModuleRedirections()
     for functionName, _ in pairs(Module.registeredModuleRedirections) do
-        Global.setVar(functionName, nil)
+        Global.setVar(functionName, function (...)
+        end)
     end
 end
 

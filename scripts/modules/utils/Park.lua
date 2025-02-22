@@ -1,18 +1,39 @@
 local Helper = require("utils.Helper")
 
--- Make it a class (and upgrade createPark into newPark)?
+-- TODO Make it a class (and upgrade createPark into newPark)?
+-- TODO Better encapsulate the state?
+---@alias Park {
+--- name: string,
+--- slots: Vector[],
+--- rotation: Vector,
+--- zones: Zone[],
+--- tags: string[],
+--- tagUnion: boolean,
+--- description: string,
+--- locked: boolean,
+--- smooth: boolean,
+--- anchor: Object,
+--- slotHeight: number,
+--- avoidStacking: boolean }
 local Park = {
     objectsInTransit = {}
 }
 
----
-function Park.createCommonPark(tags, slots, margins, rotation, rotationSnap, zones)
+---@param tags [string]
+---@param slots [Vector]
+---@param margins? Vector
+---@param rotation? Vector
+---@param rotationSnap? boolean
+---@param zones? [table]
+---@param name? string
+---@return table
+function Park.createCommonPark(tags, slots, margins, rotation, rotationSnap, zones, name)
     assert(#slots > 0)
     local finalZones = (zones and #zones > 0) and zones or { Park.createTransientBoundingZone(0, margins, slots) }
-    local name = Helper.stringConcat(tags) .. "_" .. finalZones[1].getGUID()
+    local finalName = name or Helper.stringConcat(tags) .. "_" .. finalZones[1].getGUID()
 
     local park = Park.createPark(
-        name,
+        finalName,
         slots,
         rotation,
         finalZones,
@@ -21,15 +42,20 @@ function Park.createCommonPark(tags, slots, margins, rotation, rotationSnap, zon
         false,
         true)
 
-    local p = slots[1]:copy()
-    p:setAt("y", 2)
-    Helper.createTransientAnchor(name .. "Park", p).doAfter(function (anchor)
+    local p = slots[1]
+    local anchorDepth = 0.5
+    Helper.createTransientAnchor(finalName .. "Park", p - Vector(0, anchorDepth, 0)).doAfter(function (anchor)
         park.anchor = anchor
         park.slots = nil
-        park.slotHeight = slots[1].y
+        park.slotHeight = p.y
         local snapPoints = {}
         for _, slot in ipairs(slots) do
-            table.insert(snapPoints, Helper.createRelativeSnapPoint(anchor, slot, rotationSnap or false, tags))
+            local snapPoint = {
+                position = anchor.positionToLocal(slot - Vector(0, anchorDepth, 0)) + Vector(0, anchorDepth, 0),
+                rotation_snap = rotationSnap or false,
+                tags = tags
+            }
+            table.insert(snapPoints, snapPoint)
         end
         anchor.setSnapPoints(snapPoints)
     end)
@@ -40,21 +66,19 @@ end
 --[[
     A park is basically an open field bag with a fixed size and a visual
     arrangement of its content.
-
-    name: a unique name for the park.
-    slots: the slot positions.
-    rotation: the optional rotation to apply to parked objects.
-    zones: one or more zones to test if an object is in the park.
-    tags: restriction on the park content.
-    description: an optional restriction on the park content.
-    locked: should the park content be locked?
 ]]
----
+---@param name string A unique name for the park.
+---@param slots [Vector] The slot positions.
+---@param rotation? Vector The optional rotation to apply to parked objects.
+---@param zones [table] One or more zones to test if an object is in the park.
+---@param tags [string] Restriction on the park content.
+---@param description? string An optional restriction on the park content.
+---@param locked? boolean Should the park content be locked?
+---@param smooth? boolean Should the objects be transfered smoothly to the park?
+---@return Park
 function Park.createPark(name, slots, rotation, zones, tags, description, locked, smooth)
     assert(#slots > 0, "No slot provided for new park.")
     assert(zones and #zones > 0, "No park zones provided.")
-
-    -- Check all slots in the zone.
 
     return {
         name = name,
@@ -69,7 +93,8 @@ function Park.createPark(name, slots, rotation, zones, tags, description, locked
     }
 end
 
----
+---@param park Park
+---@return Vector[]
 function Park._getSlots(park)
     local slots = park.slots
     if not slots then
@@ -84,7 +109,6 @@ function Park._getSlots(park)
     return slots
 end
 
----
 function Park.move(park, offset)
     if park.slots then
         for _, slot in ipairs(park.slots) do
@@ -96,14 +120,13 @@ function Park.move(park, offset)
 end
 
 --[[
-    Transfert objects from a park to another.
+    Transfer objects from a park to another.
 
     n: the number of objects to be transfered.
     fromParkName: the source park.
     toParkName: the destination park.
 ]]
----
-function Park.transfert(n, fromPark, toPark)
+function Park.transfer(n, fromPark, toPark)
     assert(n >= 0, "Negative count.")
     assert(fromPark, "No source park.")
     assert(toPark, "No destination park.")
@@ -126,13 +149,11 @@ end
     object: the object to put in the park.
     toParkName: the name of the destination park.
 ]]
----
 function Park.putObject(object, toPark)
     assert(object, "No object provided.")
     return Park.putObjects({object}, toPark) > 0
 end
 
----
 function Park.putObjects(objects, toPark)
     assert(objects, "No objects provided.")
     local holders = {}
@@ -142,7 +163,6 @@ function Park.putObjects(objects, toPark)
     return Park._putHolders(holders, toPark)
 end
 
----
 function Park.putObjectFromBag(objectBag, toPark, count)
     assert(objectBag, "No object bag provided.")
     local holders = {}
@@ -152,7 +172,6 @@ function Park.putObjectFromBag(objectBag, toPark, count)
     return Park._putHolders(holders, toPark) == (count or 1)
 end
 
----
 function Park._putHolders(holders, toPark)
     assert(toPark, "No destination park.")
 
@@ -163,18 +182,28 @@ function Park._putHolders(holders, toPark)
 
     local emptySlots = Park.findEmptySlots(toPark)
 
-    local count = math.max(0, math.min(#emptySlots, #holders))
+    local skip = 0
+    for object, transit in pairs(Park.objectsInTransit) do
+        --Helper.dump("- transit -> destination:", toPark.name, ", type(object):", type(object))
+        if transit.destination == toPark and type(object) == "number" then
+            skip = skip + 1
+        end
+    end
+
+    local count = math.max(0, math.min(#emptySlots - skip, #holders))
+
+    --Helper.dump("emptySlots:", #emptySlots, ", skip:", skip, ", count:", count)
 
     for i = 1, count do
         local holder = holders[i]
         if holder.object then
-            Park._moveObjectToPark(holder.object, emptySlots[i], toPark)
+            Park._moveObjectToPark(holder.object, emptySlots[i + skip], toPark)
             Park.objectsInTransit[holder.object] = { time = now, destination = toPark }
         elseif holder.bag then
             Park.uid = (Park.uid or 0) + 1
             local uid = Park.uid
             Park.objectsInTransit[uid] = { time = now, destination = toPark }
-            Park._takeObjectToPark(holder.bag, emptySlots[i], toPark).doAfter(function (object)
+            Park._takeObjectToPark(holder.bag, emptySlots[i + skip], toPark).doAfter(function (object)
                 Park._mutateObjectInTransit(uid, object)
             end)
         end
@@ -183,7 +212,6 @@ function Park._putHolders(holders, toPark)
     return count
 end
 
----
 function Park._mutateObjectInTransit(before, after)
     local newObjectsInTransit = {}
     for object, transit in pairs(Park.objectsInTransit) do
@@ -198,13 +226,12 @@ function Park._mutateObjectInTransit(before, after)
     Park.objectsInTransit = newObjectsInTransit
 end
 
----
 function Park._updateObjectsInTransit(now)
     local newObjectsInTransit = {}
     for object, transit in pairs(Park.objectsInTransit) do
         local duration = now - transit.time
         local notResting = function (o)
-            return type(o) ~= "number" and not o.resting
+            return type(o) == "number" or not o.resting
         end
         if Helper.isNotNil(object) and duration < 2.5 and (duration == 0 or notResting(object)) then
             newObjectsInTransit[object] = transit
@@ -213,22 +240,14 @@ function Park._updateObjectsInTransit(now)
     Park.objectsInTransit = newObjectsInTransit
 end
 
---- FIXME Not needed anymore.
-function Park.onceStabilized(toPark)
-    return Helper.fakeContinuation("Park.onceStabilized")
-end
-
----
 function Park.getZones(park)
     return park.zones
 end
 
----
 function Park.getPosition(park)
     return park.zones[1].getPosition()
 end
 
----
 function Park.getObjects(park, customFilter, ignoreTransit)
     assert(park)
     local parkId = Helper.getID(park)
@@ -241,6 +260,7 @@ function Park.getObjects(park, customFilter, ignoreTransit)
     else
         isOneOfThem = function (object)
             return
+                (type(object) ~= "number") and
                 (park.tagUnion and Helper.hasAnyTag(object, park.tags) or Helper.hasAllTags(object, park.tags)) and
                 (not parkId or parkId == Helper.getID(object))
         end
@@ -265,18 +285,15 @@ function Park.getObjects(park, customFilter, ignoreTransit)
     return objects
 end
 
----
 function Park.getAnyObject(park)
     local objects = Park.getObjects(park)
     return #objects > 0 and objects[1] or nil
 end
 
----
 function Park.isEmpty(park)
     return #Park.getObjects(park) == 0
 end
 
----
 function Park._instantTidyUp(park)
 
     local freeSlots = {}
@@ -338,7 +355,6 @@ function Park._instantTidyUp(park)
     --assert(#freeObjects == 0, "Too many objects.")
 end
 
----
 function Park._moveObjectToPark(object, slot, park)
     object.setLock(park.locked)
     local offset = Vector(0, 0, 0)
@@ -356,7 +372,6 @@ function Park._moveObjectToPark(object, slot, park)
     end
 end
 
----
 function Park._takeObjectToPark(bag, slot, park)
     local continuation = Helper.createContinuation("Park._takeObjectToPark/" .. park.name)
     local takeParameters = {}
@@ -390,11 +405,12 @@ function Park.findEmptySlots(park)
     return freeSlots
 end
 
--- freeSlots is built in such a way that we only check each object once
--- (i.e. a given object cannot take multiple slots). We also take care
--- of only considering the 2D distance and selecting the lowest slot.
+--[[
+    freeSlots is built in such a way that we only check each object once
+    (i.e. a given object cannot take multiple slots). We also take care
+    of only considering the 2D distance and selecting the lowest slot.
+]]
 function Park._findEmptySlots(park, customFilter)
-    --Helper.dumpFunction("Park._findEmptySlots")
     local freeSlots = Helper.shallowCopy(Park._getSlots(park))
 
     for _, object in ipairs(Park.getObjects(park, customFilter)) do
@@ -408,7 +424,6 @@ function Park._findEmptySlots(park, customFilter)
                 lowerSlotHeight = slot.y
             end
         end
-        --Helper.dump("Found:", object.getGUID(), "->", tostring(object), "@", lowerSlotIndex)
         if lowerSlotIndex then
             table.remove(freeSlots, lowerSlotIndex)
         end
@@ -420,7 +435,10 @@ function Park._findEmptySlots(park, customFilter)
     return freeSlots
 end
 
----
+---@param rotationAroundY number
+---@param margins? Vector
+---@param points Vector[]
+---@return table
 function Park.createTransientBoundingZone(rotationAroundY, margins, points)
     assert(#points > 0)
 
@@ -456,19 +474,66 @@ function Park.createTransientBoundingZone(rotationAroundY, margins, points)
     local sy = 2 * math.max(math.abs(minBounds.y), math.abs(maxBounds.y))
     local sz = 2 * math.max(math.abs(minBounds.z), math.abs(maxBounds.z))
 
+    local finalMargins = margins or Vector(0, 0, 0)
+
     local zone = spawnObject({
         type = 'ScriptingTrigger',
         position = barycenter,
         rotation = Vector(0, rotationAroundY, 0),
         scale = {
-            math.max(0.1, sx + margins.x),
-            math.max(0.1, sy + margins.y),
-            math.max(0.1, sz + margins.z)}
+            math.max(0.1, sx + finalMargins.x),
+            math.max(0.1, sy + finalMargins.y),
+            math.max(0.1, sz + finalMargins.z)}
     })
 
     Helper.markAsTransient(zone)
 
     return zone
+end
+
+---@param center Vector
+---@param size integer
+---@param spacing number
+---@param rotation? number
+---@return table
+function Park.createDiamondOfSlots(center, size, spacing, rotation)
+    local allSlots = {}
+    local slots = {}
+    local halfSize = size / 2
+    local middle = (1 + size) / 2
+    for i = 1, size do
+        for j = 1, size do
+            local x = (i - middle) * spacing
+            local z = (j - middle) * spacing
+            local slot = Vector(x, 0, z):rotateOver('y', rotation or 135) + center
+            table.insert(allSlots, slot)
+            if i > halfSize or j > halfSize then
+                table.insert(slots, slot)
+            end
+        end
+    end
+    return { slots = slots, allSlots = allSlots }
+end
+
+---@param center Vector
+---@param size Vector
+---@param spacing Vector Could have negative components.
+---@return Vector[]
+function Park.createMatrixOfSlots(center, size, spacing)
+    local slots = {}
+    local middle = (size + Vector(1, 1, 1)):scale(0.5)
+    for h = 1, size.y do
+        for i = 1, size.x do
+            for j = size.z, 1, -1 do
+                local x = (i - middle.x) * spacing.x
+                local y = (h - 1) * spacing.y
+                local z = (j - middle.z) * spacing.z
+                local slot = Vector(x, y, z) + center
+                table.insert(slots, slot)
+            end
+        end
+    end
+    return slots
 end
 
 return Park

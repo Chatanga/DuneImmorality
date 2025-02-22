@@ -14,7 +14,7 @@ Features:
 - Legacy Dune as an extension
 - Hagal House
 
-Supported langages:
+Supported languages:
 
 - English
 - French
@@ -36,13 +36,13 @@ This repository contains the JSON skeletons and Lua scripts of various mods for 
 __All__
 
 - Persist settings.
-- Objects or not (full functional).
+- Objects or not (i.e. fully functional).
 - Rules & recipies.
 
 - Free selection of leaders.
-- Add a corrective black border on the Uprising boards.
+- Add a corrective black border on the Uprising game boards.
 
-- Look out for on the fly variable creation without save.
+- Spice token size and positions.
 
 __6P__
 
@@ -74,6 +74,7 @@ Modules relies on the Luabundler tool, but also on utils.Modules.
 - __CardEffect.lua__ - Small framework to describe most card effects. Heavily used by the fully automated Hagal house, but also by the assisted revelation, among others.
 - __ChoamContractMarket.lua__ - Everything related to the CHOAM contract module.
 - __Combat.lua__ - Manage the mainboard content related to combat, conflict cards included.
+- __ConflicCard.lua__ - Describes all the conflict cards with their (reveal) effects.
 - __Commander.lua__ - Some functions related to the 6P mode and a proxy for a commander's leader (similarto the rival proxies) dispactching effects between a commander's leader and its active ally's leader.
 - __Deck.lua__ - All cards and decks are generated here, both in a static and dynamic way.
 - __Example.lua__ - A documented example of a fake module.
@@ -96,7 +97,7 @@ Modules relies on the Luabundler tool, but also on utils.Modules.
 - __SardaukarCommander.lua__ - Everything related to the Sardaukar Commanders introduced by the Bloodlines extension.
 - __SardaukarCommanderSkillCard.lua__ - Describes all the Commander Skill tiles and their reveal bonuses.
 - __ScoreBoard.lua__ - A facade to retrieve the VP tokens from their various locations on the maiboard and player boards. Badly named actually, since it doesn't handle the shared VP track.
-- __ShipmentTrack.lua__ - Handle the shipping track and its freighters from the Ix extension.
+- __ShippingTrack.lua__ - Handle the shipping track and its freighters from the Ix extension.
 - __SubmitGame.lua__ - Rogerio's contribution to ranked play (includes dedicated global UI part).
 - __TechCard.lua__ - Describes all the Tech tiles, mainly their costs and acquisition bonuses.
 - __TechMarket.lua__ - Handles the tech market (and its "tiles" which are cards actually) from the Ix extension.
@@ -131,4 +132,5 @@ Reusable modules without dependencies on the other modules.
 - __Module.lua__ - LazyModule would be a better name.
 - __Park.lua__ - An ubiquitous mechanism to manage a kind of open field bag.
 - __Set.lua__ - A set container.
+- __TabletopSimulator.lua__ - Typing annotations for TTS objects.
 - __XmlUI.lua__ - To help control a XML UI.

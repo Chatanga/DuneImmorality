@@ -5,12 +5,12 @@ local I18N = require("utils.I18N")
 
 local Deck = Module.lazyRequire("Deck")
 local PlayBoard = Module.lazyRequire("PlayBoard")
-local Types = Module.lazyRequire("Types")
 local Action = Module.lazyRequire("Action")
+local Board = Module.lazyRequire("Board")
 
 local Intrigue = {}
 
----
+---@param state table
 function Intrigue.onLoad(state)
     Helper.append(Intrigue, Helper.resolveGUIDs(false, {
         deckZone = 'a377d8',
@@ -18,37 +18,37 @@ function Intrigue.onLoad(state)
     }))
 
     if state.settings then
-        Intrigue._transientSetUp(state.settings)
+        Intrigue._transientSetUp()
     end
 end
 
----
+---@param settings Settings
+---@return Continuation
 function Intrigue.setUp(settings)
     local continuation = Helper.createContinuation("Intrigue.setUp")
-    Deck.generateIntrigueDeck(Intrigue.deckZone, settings.useContracts, settings.riseOfIx, settings.immortality, settings.legacy, settings.merakon).doAfter(function (deck)
+    Deck.generateIntrigueDeck(Intrigue.deckZone, settings).doAfter(function (deck)
         assert(deck, "No intrigue deck!")
         Helper.shuffleDeck(deck)
-        Intrigue._transientSetUp(settings)
+        Intrigue._transientSetUp()
         continuation.run()
     end)
     return continuation
 end
 
----
-function Intrigue._transientSetUp(settings)
-    AcquireCard.new(Intrigue.deckZone, "Intrigue", PlayBoard.withLeader(Intrigue._acquireIntrigueCard), Deck.getAcquireCardDecalUrl("generic"))
-    AcquireCard.new(Intrigue.discardZone, "Intrigue", nil, Deck.getAcquireCardDecalUrl("generic"))
+function Intrigue._transientSetUp()
+    AcquireCard.new(Intrigue.deckZone, Board.onTable(0), "Intrigue", PlayBoard.withLeader(Intrigue._acquireIntrigueCard), Deck.getAcquireCardDecalUrl("generic"))
+    AcquireCard.new(Intrigue.discardZone, Board.onTable(0), "Intrigue", nil, Deck.getAcquireCardDecalUrl("generic"))
 end
 
----
-function Intrigue._acquireIntrigueCard(acquireCard, color)
-    local leader = PlayBoard.getLeader(color)
+---@param color PlayerColor
+function Intrigue._acquireIntrigueCard(leader, color, _)
     leader.drawIntrigues(color, 1)
 end
 
----
+---@param color PlayerColor
+---@param amount integer
 function Intrigue.drawIntrigues(color, amount)
-    Types.assertIsPositiveInteger(amount)
+    assert(amount > 0)
     local orientedPosition = PlayBoard.getHandOrientedPosition(color)
     Helper.onceTimeElapsed(0.25, amount).doAfter(function ()
         Helper.moveCardFromZone(Intrigue.deckZone, orientedPosition.position, orientedPosition.rotation, false, true)
@@ -56,9 +56,11 @@ function Intrigue.drawIntrigues(color, amount)
     end)
 end
 
----
+---@param color PlayerColor
+---@param otherColor PlayerColor
+---@param amount integer
 function Intrigue.stealIntrigues(color, otherColor, amount)
-    Types.assertIsPositiveInteger(amount)
+    assert(amount > 0)
 
     local victimName = PlayBoard.getLeaderName(otherColor)
 
@@ -78,7 +80,7 @@ function Intrigue.stealIntrigues(color, otherColor, amount)
     end)
 end
 
---- TODO To be reworked.
+---@param color PlayerColor
 function Intrigue.onIntrigueTaken(color)
     local leader = PlayBoard.getLeader(color)
     if PlayBoard.hasTech(color, "suspensorSuits") then
@@ -88,14 +90,14 @@ function Intrigue.onIntrigueTaken(color)
     end
 end
 
----
+---@param positions Vector[]
 function Intrigue.moveIntrigues(positions)
     for i = 1, #positions do
         Helper.moveCardFromZone(Intrigue.deckZone, positions[i])
     end
 end
 
----
+---@param card Card
 function Intrigue.discard(card)
     Intrigue.discardQueue = Intrigue.discardQueue or Helper.createSpaceQueue()
     Intrigue.discardQueue.submit(function (height)
@@ -104,7 +106,7 @@ function Intrigue.discard(card)
     end)
 end
 
----
+---@return (Card|DeadObject)[]
 function Intrigue.getDiscardedIntrigues()
     local deckOrCard = Helper.getDeckOrCard(Intrigue.discardZone)
     return Helper.getCards(deckOrCard)

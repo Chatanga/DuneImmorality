@@ -23,6 +23,11 @@ local constructionModeEnabled = false
 -- For test purposes (the secondary table won't disappear as a side effect).
 local autoLoadedSettings = nil
 
+GameTableGUIDs = {
+    primary = "2b4b92",
+    secondary = "662ced"
+}
+
 local Module = require("utils.Module")
 local Helper = require("utils.Helper")
 local XmlUI = require("utils.XmlUI")
@@ -143,6 +148,7 @@ local Controller = {
 local settings
 
 --- TTS event handler.
+---@param scriptState string
 function onLoad(scriptState)
     log("--------< " .. MOD_NAME .. " - " .. BUILD .. " >--------")
 
@@ -151,6 +157,11 @@ function onLoad(scriptState)
     -- methods in case the game has already been set up).
     Helper.destroyTransientObjects()
 
+    -- These 3 rebuild functions work the same way. They modify the otherwise
+    -- static content of the game. As such, you need to save the mod as the new
+    -- "Flow_Base", then call "build.py --full" to update the local skeleton
+    -- file. After that, "build.py" or "build.py --upload" is enough to rebuild
+    -- the mod.
     if constructionModeEnabled then
         -- Edit the player boards in a procedural way.
         if false then
@@ -175,11 +186,11 @@ function onLoad(scriptState)
     end
 end
 
----
+---@param scriptState string
 function asyncOnLoad(scriptState)
     local tables = Helper.resolveGUIDs(false, {
-        primaryTable = "2b4b92",
-        secondaryTable = "662ced",
+        primaryTable = GameTableGUIDs.primary,
+        secondaryTable = GameTableGUIDs.secondary,
     })
     Helper.noPhysicsNorPlay(
         tables.primaryTable,
@@ -263,6 +274,7 @@ function asyncOnLoad(scriptState)
             I18N.setLocale(Controller.fields.language)
             Controller.updateLeaderPoolSizeLabel()
             Controller.updateSetupButton()
+            Controller.ui:toUI()
             uiAlreadySetUp = true
         end
     end
@@ -294,7 +306,7 @@ function onSave()
         if not stable then
             -- Shake the world a bit.
             Wait.time(function ()
-                local primaryTable = getObjectFromGUID("2b4b92")
+                local primaryTable = getObjectFromGUID(GameTableGUIDs.primary)
                 primaryTable.setName(primaryTable.getName() == "" and "..." or "")
             end, 0.5, 2)
         end
@@ -305,7 +317,7 @@ function onSave()
             stable = stable and "stable" or "unstable",
         }
 
-        -- FIXME Only call it for the same modules for which "onLoad" has been called.
+        -- TODO Only call it for the same modules for which "onLoad" has been called.
         Module.callOnAllRegisteredModules("onSave", savedState)
         return JSON.encode(savedState)
     else
@@ -315,8 +327,9 @@ function onSave()
 end
 
 --- TTS event handler.
+---@param object Object
 function onObjectDestroy(object)
-    if object.getGUID() == "2b4b92" then
+    if object.getGUID() == GameTableGUIDs.primary then
         Module.unregisterAllModuleRedirections()
         --Helper.destroyTransientObjects()
         Helper.dump("Bye!")
@@ -324,11 +337,12 @@ function onObjectDestroy(object)
 end
 
 --- Set up the game, an irreversible operation.
+---@param newSettings Settings
 function setUp(newSettings)
     assert(newSettings)
 
-    assert((not newSettings.epicMode) or newSettings.ix)
-    assert((not newSettings.ixAmbassy) or (not newSettings.ix))
+    assert((not newSettings.epicMode) or newSettings.riseOfIx)
+    assert((not newSettings.ixAmbassy) or (not newSettings.riseOfIx))
     assert((not newSettings.goTo11) or newSettings.immortality)
 
     local continuation = Helper.createContinuation("setUp")
@@ -352,6 +366,8 @@ function setUp(newSettings)
 end
 
 --- Set up each module, one by one.
+---@param index integer
+---@param activeOpponents table<PlayerColor, ActiveOpponent>
 function runSetUp(index, activeOpponents)
     local moduleInfo = allModules.ordered[index]
     if moduleInfo then
@@ -369,20 +385,29 @@ end
 
 --- TTS event handler.
 function onPlayerChangeColor()
-    Controller.updateSetupButton()
-    Controller.updateSelectionMethods()
+    if Controller.ui then
+        Controller.updateSetupButton()
+        Controller.updateSelectionMethods()
+        Controller.ui:toUI()
+    end
 end
 
 --- TTS event handler.
 function onPlayerConnect()
-    Controller.updateSetupButton()
-    Controller.updateSelectionMethods()
+    if Controller.ui then
+        Controller.updateSetupButton()
+        Controller.updateSelectionMethods()
+        Controller.ui:toUI()
+    end
 end
 
 --- TTS event handler.
 function onPlayerDisconnect()
-    Controller.updateSetupButton()
-    Controller.updateSelectionMethods()
+    if Controller.ui then
+        Controller.updateSetupButton()
+        Controller.updateSelectionMethods()
+        Controller.ui:toUI()
+    end
 end
 
 --- Generic UI callback (cf. XML).
@@ -395,14 +420,14 @@ function setLanguage(player, value, id)
     Controller.ui:fromUI(player, value, id)
     -- The locale is changed in real time by the UI, but not the test mode.
     I18N.setLocale(Controller.fields.language)
-    Controller.ui:toUI()
     Controller.updateLeaderPoolSizeLabel()
+    Controller.ui:toUI()
 end
 
 --- UI callback (cf. XML).
 function setVirtualHotSeat(player, value, id)
     Controller.ui:fromUI(player, value, id)
-    if value == "True" then
+    if Controller.fields.virtualHotSeat then
         Controller.fields.virtualHotSeatMode = 1
     else
         Controller.fields.virtualHotSeatMode = XmlUI.HIDDEN
@@ -453,7 +478,7 @@ end
 --- UI callback (cf. XML).
 function setRiseOfIx(player, value, id)
     Controller.ui:fromUI(player, value, id)
-    if value == "True" then
+    if Controller.fields.riseOfIx then
         Controller.fields.epicMode = false
         Controller.fields.ixAmbassy = XmlUI.DISABLED
         Controller.fields.ixAmbassyWithIx = XmlUI.DISABLED
@@ -471,7 +496,7 @@ end
 --- UI callback (cf. XML).
 function setImmortality(player, value, id)
     Controller.ui:fromUI(player, value, id)
-    if value == "True" then
+    if Controller.fields.immortality then
         Controller.fields.goTo11 = false
     else
         Controller.fields.goTo11 = XmlUI.DISABLED
@@ -480,14 +505,9 @@ function setImmortality(player, value, id)
 end
 
 --- UI callback (cf. XML).
-function setGoTo11(player, value, id)
-    Controller.ui:fromUI(player, value, id)
-end
-
---- UI callback (cf. XML).
 function setBloodlines(player, value, id)
     Controller.ui:fromUI(player, value, id)
-    if value == "True" and not Controller.fields.riseOfIx then
+    if Controller.fields.bloodlines and not Controller.fields.riseOfIx then
         Controller.fields.ixAmbassy = true
         Controller.fields.ixAmbassyWithIx = false
     else
@@ -500,7 +520,7 @@ end
 --- UI callback (cf. XML).
 function setIxAmbassy(player, value, id)
     Controller.ui:fromUI(player, value, id)
-    if value == "True" then
+    if Controller.fields.ixAmbassy then
         Controller.fields.ixAmbassyWithIx = false
     else
         Controller.fields.ixAmbassyWithIx = XmlUI.DISABLED
@@ -512,6 +532,8 @@ end
 function setLeaderPoolSize(player, value, id)
     Controller.ui:fromUI(player, value, id)
     Controller.updateLeaderPoolSizeLabel()
+    -- Do not use Controller.ui:toUI() to avoid breaking the current UI operation.
+    self.UI.setValue("leaderPoolSizeLabel", Controller.fields.leaderPoolSizeLabel)
 end
 
 --- UI callback (cf. XML).
@@ -530,13 +552,47 @@ function setUpFromUI()
 
     local numberOfPlayers = Controller.getNumberOfPlayers(Controller.fields.virtualHotSeatMode)
 
+    ---@alias Settings {
+    --- language: string,
+    --- numberOfPlayers: 1|2|3|4,
+    --- hotSeat: boolean,
+    --- firstPlayer: PlayerColor|"random",
+    --- randomizePlayerPositions: boolean,
+    --- difficulty?: string,
+    --- autoTurnInSolo: boolean,
+    --- imperiumRowChurn: boolean,
+    --- streamlinedRivals: boolean,
+    --- brutalEscalation: boolean,
+    --- expertDeployment: boolean,
+    --- smartPolitics: boolean,
+    --- useContracts: boolean,
+    --- riseOfIx: boolean,
+    --- epicMode: boolean,
+    --- immortality: boolean,
+    --- goTo11: boolean,
+    --- bloodlines: boolean,
+    --- ixAmbassy: boolean,
+    --- ixAmbassyWithIx: boolean,
+    --- legacy: boolean,
+    --- merakon: boolean,
+    --- leaderSelection: "random"|"reversePick"|"reverseHiddenPick"|"altHiddenPick"|string[],
+    --- leaderPoolSize?: integer,
+    --- tweakLeaderSelection: boolean,
+    --- fanmadeLeaders: boolean,
+    --- horizontalHandLayout: boolean,
+    --- variant: "none"|"arrakeenScouts",
+    --- formalCombatPhase: boolean,
+    --- soundEnabled: boolean,
+    --- submitGameRankedGame: boolean,
+    --- submitGameTournament: boolean,
+    ---}
     setUp({
         language = Controller.fields.language,
         numberOfPlayers = numberOfPlayers,
         hotSeat = not Controller.isUndefined(Controller.fields.virtualHotSeatMode),
         firstPlayer = Controller.fields.firstPlayer,
         randomizePlayerPositions = Controller.fields.randomizePlayerPositions,
-        difficulty = Controller.fields.difficulty,
+        difficulty = XmlUI.toStringValue(Controller.fields.difficulty),
         autoTurnInSolo = Controller.fields.autoTurnInSolo == true,
         imperiumRowChurn = Controller.fields.imperiumRowChurn == true,
         streamlinedRivals = Controller.fields.streamlinedRivals == true,
@@ -564,6 +620,9 @@ function setUpFromUI()
     })
 end
 
+---@alias ActiveOpponent Player|"rival"|"puppet"
+---@alias Opponent "rival"|"human"
+
 --- Return the mapping between (player) colors and opponent types. An opponent
 --- type could be:
 --- - a Player instance,
@@ -571,6 +630,9 @@ end
 --- - the "puppet" string for a playable but unseated color in hotseat mode.
 --- Later, in opponents (not activeOppenents), Player instances and "puppet" are
 --- replaced by the "human" string.
+---@param properlySeatedPlayers any
+---@param numberOfPlayers integer
+---@return table<PlayerColor, ActiveOpponent>
 function Controller.findActiveOpponents(properlySeatedPlayers, numberOfPlayers)
     local colorsByPreference = { "Green", "Red", "Yellow", "Blue", "Purple", "White" }
 
@@ -612,7 +674,8 @@ function Controller.findActiveOpponents(properlySeatedPlayers, numberOfPlayers)
 end
 
 --- return only the (colors of the) legitimate player depending on the selected
---- mode (1-4P or 6P).
+--- mode (1-4P).
+---@return PlayerColor[]
 function Controller.getProperlySeatedPlayers()
     local seatedPlayers = getSeatedPlayers()
 
@@ -634,7 +697,6 @@ function Controller.getProperlySeatedPlayers()
     return properlySeatedPlayers
 end
 
----
 function Controller.applyVirtualHotSeatMode()
     local numberOfPlayers = Controller.getNumberOfPlayers(Controller.fields.virtualHotSeatMode)
 
@@ -668,18 +730,22 @@ function Controller.applyVirtualHotSeatMode()
         Controller.soloUi:show()
     end
 
+    Controller.updateContracts(numberOfPlayers)
+    Controller.updateSetupButton()
+end
+
+---@param numberOfPlayers integer
+function Controller.updateContracts(numberOfPlayers)
     Controller.fields.leaderSelection_all = allModules.LeaderSelection.getSelectionMethods(numberOfPlayers)
     if numberOfPlayers == 6 then
         Controller.fields.useContracts = XmlUI.DISABLED
     elseif Controller.isUndefined(Controller.fields.useContracts) then
         Controller.fields.useContracts = true
     end
-
-    Controller.updateSetupButton()
-    Controller.ui:toUI()
 end
 
----
+---@param virtualHotSeatMode any
+---@return integer
 function Controller.getNumberOfPlayers(virtualHotSeatMode)
     local numberOfPlayers
     if Controller.isUndefined(virtualHotSeatMode) then
@@ -691,62 +757,51 @@ function Controller.getNumberOfPlayers(virtualHotSeatMode)
     return numberOfPlayers
 end
 
----
 function Controller.updateSelectionMethods()
-    if Controller.ui then
-        local numberOfPlayers = Controller.getNumberOfPlayers(Controller.fields.virtualHotSeatMode)
-        Controller.fields.leaderSelection_all = allModules.LeaderSelection.getSelectionMethods(numberOfPlayers)
-
-        Controller.ui:toUI()
-    end
+    local numberOfPlayers = Controller.getNumberOfPlayers(Controller.fields.virtualHotSeatMode)
+    Controller.fields.leaderSelection_all = allModules.LeaderSelection.getSelectionMethods(numberOfPlayers)
 end
 
----
 function Controller.updateSetupButton()
-    if Controller.ui then
-        local numberOfPlayers = Controller.getNumberOfPlayers(Controller.fields.virtualHotSeatMode)
-        Controller.fields.leaderSelection_all = allModules.LeaderSelection.getSelectionMethods(numberOfPlayers)
+    local numberOfPlayers = Controller.getNumberOfPlayers(Controller.fields.virtualHotSeatMode)
+    Controller.fields.leaderSelection_all = allModules.LeaderSelection.getSelectionMethods(numberOfPlayers)
 
-        local properlySeatedPlayers = Controller.getProperlySeatedPlayers()
+    local properlySeatedPlayers = Controller.getProperlySeatedPlayers()
 
-        local minPlayerCount
-        if Controller.isUndefined(Controller.fields.virtualHotSeatMode) then
-            minPlayerCount = 3
-        else
-            minPlayerCount = 1
+    local minPlayerCount
+    if Controller.isUndefined(Controller.fields.virtualHotSeatMode) then
+        minPlayerCount = 3
+    else
+        minPlayerCount = 1
+    end
+
+    if #properlySeatedPlayers ~= 4 then
+        Controller.fields.submitGameRankedGame = XmlUI.DISABLED
+        Controller.fields.submitGameTournament = XmlUI.DISABLED
+    else
+        if XmlUI.isDisabled(Controller.fields.submitGameRankedGame) then
+            Controller.fields.submitGameRankedGame = false
         end
-
-        if #properlySeatedPlayers ~= 4 then
-            Controller.fields.submitGameRankedGame = XmlUI.DISABLED
-            Controller.fields.submitGameTournament = XmlUI.DISABLED
-        else
-            if XmlUI.isDisabled(Controller.fields.submitGameRankedGame) then
-                Controller.fields.submitGameRankedGame = false
-            end
-            if XmlUI.isDisabled(Controller.fields.submitGameTournament) then
-                Controller.fields.submitGameTournament = false
-            end
+        if XmlUI.isDisabled(Controller.fields.submitGameTournament) then
+            Controller.fields.submitGameTournament = false
         end
+    end
 
-        if #properlySeatedPlayers >= minPlayerCount then
-            Controller.ui:setButtonI18N("setUpButton", "setup", true)
-        else
-            Controller.ui:setButtonI18N("setUpButton", "notEnoughPlayers", false)
-        end
-
-        Controller.ui:toUI()
+    if #properlySeatedPlayers >= minPlayerCount then
+        Controller.ui:setButtonI18N("setUpButton", "setup", true)
+    else
+        Controller.ui:setButtonI18N("setUpButton", "notEnoughPlayers", false)
     end
 end
 
----
 function Controller.updateLeaderPoolSizeLabel()
     local value = Controller.fields.leaderPoolSize
     Controller.fields.leaderPoolSizeLabel = I18N("leaderPoolSizeLabel", { value = value } )
-    -- Do not use Controller.ui:toUI() to avoid breaking the current UI operation.
-    self.UI.setValue("leaderPoolSizeLabel", Controller.fields.leaderPoolSizeLabel)
 end
 
----
+---@generic T
+---@param value Deactivable<T> | Hideable<T>
+---@return boolean
 function Controller.isUndefined(value)
-    return value == nil or type(value) == "table"
+    return not value or XmlUI.isDisabled(value) or XmlUI.isHidden(value)
 end

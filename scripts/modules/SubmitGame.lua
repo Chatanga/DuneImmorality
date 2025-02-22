@@ -8,6 +8,7 @@ local TurnControl = Module.lazyRequire("TurnControl")
 local PRIMARY_URL = "http://dunerank.servehttp.com:8081"
 local GOOGLE_DOC_URL = "https://docs.google.com/forms/u/1/d/e/1FAIpQLSeaApnr3rZNPGvTsHilxg390UPtrTuCm8kVP9gSiK0yitU9IQ"
 
+---@class SubmitGame
 local SubmitGame = Helper.createClass(nil, {
     fields = {
 
@@ -41,6 +42,7 @@ local SubmitGame = Helper.createClass(nil, {
     }
 })
 
+---@param state table
 function SubmitGame.onLoad(state)
     if state.SubmitGame then
         SubmitGame.fields = state.SubmitGame.fields
@@ -50,12 +52,14 @@ function SubmitGame.onLoad(state)
     end
 end
 
+---@param state table
 function SubmitGame.onSave(state)
     state.SubmitGame = {
         fields = SubmitGame.fields
     }
 end
 
+---@param settings Settings
 function SubmitGame.setUp(settings)
     if settings.submitGameRankedGame or settings.submitGameTournament then
 
@@ -94,12 +98,12 @@ function SubmitGame.setUp(settings)
 
         SubmitGame._generateToken(SubmitGame.fields.players, function (token)
             SubmitGame.fields.token = token
-            SubmitGame._staticSetUp(settings)
+            SubmitGame._staticSetUp()
         end)
     end
 end
 
-function SubmitGame._staticSetUp(settings)
+function SubmitGame._staticSetUp()
     if SubmitGame.fields.token then
         Global.setVar("openSubmitScreen", SubmitGame._openSubmitScreen)
         Global.setVar("closeSubmitGameScreen", SubmitGame._closeSubmitGameScreen)
@@ -172,6 +176,8 @@ function SubmitGame._updateSubmitScreenPanel()
     end
 end
 
+---@param players PlayerColor[]
+---@param tokenSetter fun(text: integer|string)
 function SubmitGame._generateToken(players, tokenSetter)
     SubmitGame._makeWebRequest(PRIMARY_URL .. "/generation/v1/token", "POST", players, function (request)
         if request.is_error then
@@ -285,6 +291,10 @@ function SubmitGame._doSubmitGame()
     end)
 end
 
+---@param url string
+---@param method "POST"
+---@param body table<string, any>
+---@param callback fun(request: table)
 function SubmitGame._makeWebRequest(url, method, body, callback)
     local headers = {
         ["Content-Type"] = "application/json",
@@ -296,6 +306,7 @@ function SubmitGame._makeWebRequest(url, method, body, callback)
     WebRequest.custom(url, method, true, jsonString, headers, callback)
 end
 
+---@return string|osdate
 function SubmitGame._currentTimestamp()
     -- Weird: osdateparam != string|osdate...
 ---@diagnostic disable-next-line: param-type-mismatch

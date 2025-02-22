@@ -14,6 +14,16 @@
 ---| 'fremen'
 ---| 'fringeWorlds'
 
+---@alias AgentIcon
+---| 'emperor'
+---| 'spacingGuild'
+---| 'beneGesserit'
+---| 'fremen'
+---| 'blue'
+---| 'green'
+---| 'yellow'
+
+
 ---@alias TroopLocation
 ---| 'supply'
 ---| 'garrison'
@@ -39,32 +49,44 @@
 
 local Types = {}
 
----
+---@param object Object
+---@param color? PlayerColor
+---@return boolean
 function Types.isTroop(object, color)
     return object.hasTag("Troop") and (not color or object.hasTag(color))
 end
 
----
+---@param object Object
+---@param color? PlayerColor
+---@return boolean
 function Types.isDreadnought(object, color)
     return object.hasTag("Dreadnought") and (not color or object.hasTag(color))
 end
 
----
+---@param object Object
+---@param color? PlayerColor
+---@return boolean
 function Types.isSandworm(object, color)
-    return object.hasTag("Sandworm") and (not color or object.hasTag(color))
+    return object.hasTag("sandworm") and (not color or object.hasTag(color))
 end
 
----
+---@param object Object
+---@param color? PlayerColor
+---@return boolean
 function Types.isSardaukarCommander(object, color)
     return object.hasTag("SardaukarCommander") and (not color or object.hasTag(color))
 end
 
----
+---@param object Object
+---@param color? PlayerColor
+---@return boolean
 function Types.isAgentUnit(object, color)
     return object.hasTag("Agent") and object.hasTag("Unit") and (not color or object.hasTag(color))
 end
 
----
+---@param object Object
+---@param color? PlayerColor
+---@return boolean
 function Types.isUnit(object, color)
     return Types.isTroop(object, color)
         or Types.isDreadnought(object, color)
@@ -73,32 +95,41 @@ function Types.isUnit(object, color)
         or Types.isAgentUnit(object, color)
 end
 
----
+---@param object Object
+---@param color? PlayerColor
+---@return boolean
 function Types.isControlMarker(object, color)
     return object.hasTag("Flag") and (not color or object.hasTag(color))
 end
 
----
+---@param object Object
+---@param color? PlayerColor
+---@return boolean
 function Types.isAgent(object, color)
     return object.hasTag("Agent") and (not color or object.hasTag(color))
 end
 
----
+---@param object Object
+---@param color? PlayerColor
+---@return boolean
 function Types.isSpy(object, color)
     return object.hasTag("Spy") and (not color or object.hasTag(color))
 end
 
----
+---@param object Object
+---@return boolean
 function Types.isVoiceToken(object)
     return object.hasTag("VoiceToken")
 end
 
----
+---@param object Object
+---@return boolean
 function Types.isVictoryPointToken(object)
     return object.hasTag("VictoryPointToken")
 end
 
----
+---@param object Object
+---@return boolean
 function Types.isObjectiveToken(object)
     for _, prefix in ipairs({ "MuadDib", "Ornithopter", "Crysknife", "Joker" }) do
         if object.hasTag(prefix .. "ObjectiveToken") then
@@ -108,125 +139,94 @@ function Types.isObjectiveToken(object)
     return false
 end
 
----
+---@param object Object
+---@return boolean
 function Types.isImperiumCard(object)
     return object.hasTag("Imperium")
 end
 
----
+---@param object Object
+---@return boolean
 function Types.isIntrigueCard(object)
     return object.hasTag("Intrigue")
 end
 
----
+---@param object Object
+---@return boolean
 function Types.isTech(object)
     return object.hasTag("Tech")
 end
 
----
+---@param object Object
+---@return boolean
 function Types.isContract(object)
     return object.hasTag("Contract")
 end
 
----
+---@param object Object
+---@return boolean
 function Types.isSardaukarCommanderSkillCard(object)
     return object.hasTag("SardaukarCommanderSkill")
 end
 
----
+---@param object Object
+---@return boolean
 function Types.isNavigationCard(object)
     return object.hasTag("Navigation")
 end
 
----
-function Types.assertIsPlayerColor(color)
-    assert(color == "Green"
+---@param color string
+---@return boolean
+function Types.isPlayerColor(color)
+    return color == "Green"
         or color == "Purple"
         or color == "Yellow"
         or color == "Blue"
         or color == "White"
-        or color == "Red",
-        "Not a player color: " .. tostring(color))
+        or color == "Red"
 end
 
----
-function Types.assertIsFaction(faction)
-    assert(faction == "greatHouses"
+
+---@param faction string
+---@return boolean
+function Types.isFaction(faction)
+    return faction == "greatHouses"
         or faction == "emperor"
         or faction == "spacingGuild"
         or faction == "beneGesserit"
         or faction == "fremen"
-        or faction == "fringeWorlds",
-        "Not a faction: " .. tostring(faction))
+        or faction == "fringeWorlds"
 end
 
----
-function Types.assertIsTroopLocation(location)
-    assert(location == "supply" -- when lost or recalled
+---@param location string
+---@return boolean
+function Types.isTroopLocation(location)
+    return location == "supply" -- when lost or recalled
         or location == "garrison" -- when recruited
         or location == "combat" -- when deployed
         or location == "negotiation" -- when sent as negotiator
-        or location == "tanks", -- when sent as specimen
-        "No a troop location: " .. tostring(location))
+        or location == "tanks" -- when sent as specimen
 end
 
----
-function Types.assertIsDreadnoughtLocation(location)
-    assert(location == "supply" -- when lost or recalled
+---@param location string
+---@return boolean
+function Types.isDreadnoughtLocation(location)
+    return location == "supply" -- when lost or recalled
         or location == "garrison" -- when recruited
         or location == "combat" -- when deployed
         or location == "carthag" -- when occupying the place
         or location == "arrakeen" -- when occupying the place
-        or location == "imperialBassin", -- when occupying the place
-        "No a dreadnought location: " .. tostring(location))
+        or location == "imperialBassin" -- when occupying the place
 end
 
----
-function Types.assertIsResourceName(resourceName)
-    assert(resourceName == "spice"
+---@param resourceName string
+---@return boolean
+function Types.isResourceName(resourceName)
+    return resourceName == "spice"
         or resourceName == "water"
         or resourceName == "solari"
         or resourceName == "persuasion"
-        or resourceName == "strength",
-        "No a resource name: " .. tostring(resourceName))
-end
-
----
-function Types.assertIsString(str)
-    assert(type(str) == "string", "Not a string: " .. tostring(str))
-end
-
----
-function Types.assertIsBoolean(b)
-    assert(type(b) == "boolean", "Not a boolean: " .. tostring(b))
-end
-
----
-function Types.isInteger(n)
-    return type(n) == "number" and math.floor(n) == n
-end
-
----
-function Types.assertIsInteger(n)
-    assert(Types.isInteger(n), "Not an integer: " .. tostring(n))
-end
-
----
-function Types.assertIsPositiveInteger(n)
-    assert(Types.isInteger(n) and n >= 0, "Not a positive integer: " .. tostring(n))
-end
-
----
-function Types.assertIsStrictlyPositive(n)
-    assert(Types.isInteger(n) and n > 0, "Not a strictly positive integer: " .. tostring(n))
-end
-
----
-function Types.assertIsInRange(min, max, n)
-    assert(Types.isInteger(min))
-    assert(Types.isInteger(max))
-    assert(Types.isInteger(n), "Not an integer: " .. tostring(n))
-    assert(min <= n and n <= max, "Not in range [" .. tostring(min) .. ", " .. tostring(max) .. "]: " .. tostring(n))
+        or resourceName == "strength"
 end
 
 return Types

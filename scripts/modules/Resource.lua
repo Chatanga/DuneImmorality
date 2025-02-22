@@ -6,17 +6,30 @@ local Dialog = require("utils.Dialog")
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local Types = Module.lazyRequire("Types")
 
+---@class Resource
+---@field resources Resource[]
+---@field color PlayerColor
+---@field resourceName string
+---@field token table
+---@field location string
+---@field MIN_VALUE integer
+---@field MAX_VALUE integer
 local Resource = Helper.createClass(nil, {
     MIN_VALUE = 0,
     MAX_VALUE = 99,
     resources = {}
 })
 
----
+---@param token Object
+---@param color? PlayerColor
+---@param resourceName ResourceName
+---@param value integer
+---@param location? string
+---@return Resource
 function Resource.new(token, color, resourceName, value, location)
     assert(token)
-    Types.assertIsResourceName(resourceName)
-    Types.assertIsPositiveInteger(value)
+    assert(Types.isResourceName(resourceName))
+    assert(value == nil or value >= 0)
 
     token.interactable = false
 
@@ -26,8 +39,8 @@ function Resource.new(token, color, resourceName, value, location)
         resourceName = resourceName,
         baseValue = 0,
         baseValueContributions = {},
-        value = value,
-        laggingValue = value,
+        value = value or 0,
+        laggingValue = value or 0,
         location = location,
     })
     Resource.resources[token.getGUID()] = resource
@@ -82,19 +95,17 @@ function Resource.new(token, color, resourceName, value, location)
     return resource
 end
 
----
 function Resource:_updateState()
     if self.value == self.laggingValue then
         Helper.emitEvent(self.resourceName .. "ValueChanged", self.color, self.baseValue + self.value)
     end
 end
 
----
+---@return string
 function Resource:_getTooltip()
     return I18N(self.resourceName .. "Amount", self.baseValue + self.value)
 end
 
----
 function Resource:_updateButton()
     self.token.editButton({
         index = 0,
@@ -103,7 +114,8 @@ function Resource:_updateButton()
     })
 end
 
----
+---@param token Object
+---@return Resource?
 function Resource.findResourceFromToken(token)
     for _, resource in pairs(Resource.resources) do
         if resource.token == token then
@@ -113,8 +125,9 @@ function Resource.findResourceFromToken(token)
     return nil
 end
 
----
-function Resource:_setValue(_, altClick)
+---@param color PlayerColor
+---@param altClick boolean
+function Resource:_setValue(color, altClick)
     local change = altClick and -1 or 1
     local newValue = math.min(math.max(self.value + change, self.MIN_VALUE), self.MAX_VALUE)
     if self.value ~= newValue then
@@ -125,7 +138,8 @@ function Resource:_setValue(_, altClick)
     end
 end
 
----
+---@param color PlayerColor
+---@param altClick boolean
 function Resource:_changeValue(color, altClick)
     if self.color and color ~= self.color then
         Dialog.broadcastToColor(I18N("noTouch"), color, color)
@@ -166,7 +180,7 @@ function Resource:_changeValue(color, altClick)
     end
 end
 
----
+---@param change integer
 function Resource:change(change)
     local newValue = math.min(math.max(self.value + change, self.MIN_VALUE), self.MAX_VALUE)
     self.value = newValue
@@ -175,7 +189,7 @@ function Resource:change(change)
     self:_updateState()
 end
 
----
+---@param value integer
 function Resource:set(value)
     local newValue = math.min(math.max(value, self.MIN_VALUE), self.MAX_VALUE)
     self.value = newValue
@@ -184,24 +198,23 @@ function Resource:set(value)
     self:_updateState()
 end
 
----
+---@return integer
 function Resource:get()
     return self.value + self.baseValue
 end
 
----
+---@param origin string
+---@param amount integer
 function Resource:setBaseValueContribution(origin, amount)
     self.baseValueContributions[origin] = amount
     self:_updateBaseValueContributions()
 end
 
----
 function Resource:clearBaseValueContributions()
     self.baseValueContributions = {}
     self:_updateBaseValueContributions()
 end
 
----
 function Resource:_updateBaseValueContributions()
     local oldBaseValue = self.baseValue
     self.baseValue = 0

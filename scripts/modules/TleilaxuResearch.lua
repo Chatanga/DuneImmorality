@@ -7,7 +7,29 @@ local Dialog = require("utils.Dialog")
 local Resource = Module.lazyRequire("Resource")
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local Commander = Module.lazyRequire("Commander")
+local Board = Module.lazyRequire("Board")
 
+---@alias CellBenefit {
+--- spice: integer,
+--- solari: integer,
+--- specimen: boolean,
+--- beetle: boolean,
+--- research: boolean,
+--- solariToBeetle: boolean }
+
+---@alias LevelBenefit {
+--- intrigue: boolean,
+--- victoryToken: boolean,
+--- spiceBonus: boolean }
+
+---@class TleilaxuResearch
+---@field researchCellBenefits table<Vector, CellBenefit>
+---@field board Object
+---@field tleilaxSpiceBonusToken Object
+---@field tanksZone Zone
+---@field tleilaxuLevelZones Zone[]
+---@field oneHelixZone Zone
+---@field twoHelicesZone Zone
 local TleilaxuResearch = {
     --[[
         Research path for each player in a discrete 2D space (we use the usual X-Z
@@ -50,11 +72,10 @@ local TleilaxuResearch = {
     tanksParks = {},
 }
 
----
+---@param state table
 function TleilaxuResearch.onLoad(state)
     Helper.append(TleilaxuResearch, Helper.resolveGUIDs(false, {
-        board = "d5c2db",
-        TanksZone = "f5de09",
+        tanksZone = "f5de09",
         tleilaxSpiceBonusToken = "46cd6b",
         tleilaxuLevelZones = {
             "b3137b",
@@ -70,19 +91,17 @@ function TleilaxuResearch.onLoad(state)
         twoHelicesZone = "03e529"
     }))
 
-    if TleilaxuResearch.board then
-        Helper.noPhysicsNorPlay(TleilaxuResearch.board)
-
-        local value = (state and state.TleilaxuResearch and state.TleilaxuResearch.tleilaxSpiceBonusToken) or 2
+    if state.settings and state.settings.immortality and state.TleilaxuResearch then
+        local board = Board.getBoard("tleilaxBoard")
+        assert(board)
+        TleilaxuResearch.board = board
+        local value = state.TleilaxuResearch.tleilaxSpiceBonusToken
         TleilaxuResearch.spiceBonus = Resource.new(TleilaxuResearch.tleilaxSpiceBonusToken, nil, "spice", value)
-    end
-
-    if state.settings and state.settings.immortality then
         TleilaxuResearch._transientSetUp()
     end
 end
 
----
+---@param state table
 function TleilaxuResearch.onSave(state)
     if TleilaxuResearch.board then
         state.TleilaxuResearch = {
@@ -91,16 +110,17 @@ function TleilaxuResearch.onSave(state)
     end
 end
 
----
+---@param settings Settings
 function TleilaxuResearch.setUp(settings)
     if settings.immortality then
+        TleilaxuResearch.board = Board.selectBoard("tleilaxBoard", settings.language)
+        TleilaxuResearch.spiceBonus = Resource.new(TleilaxuResearch.tleilaxSpiceBonusToken, nil, "spice", 2)
         TleilaxuResearch._transientSetUp()
     else
         TleilaxuResearch._tearDown()
     end
 end
 
----
 function TleilaxuResearch._transientSetUp()
 
     TleilaxuResearch.researchTokenOrigin = TleilaxuResearch._getAveragePosition("researchTokenInitalPosition")
@@ -109,7 +129,7 @@ function TleilaxuResearch._transientSetUp()
     TleilaxuResearch.tleilaxTokenOrigin = TleilaxuResearch._getAveragePosition("tleilaxTokenInitalPosition")
     TleilaxuResearch._generateTleilaxButtons()
 
-    for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
+    for i, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
         if not Commander.isCommander(color) then
             TleilaxuResearch.tanksParks[color] = TleilaxuResearch._createTanksPark(color)
         end
@@ -117,10 +137,9 @@ function TleilaxuResearch._transientSetUp()
     TleilaxuResearch._createTanksButton()
 end
 
----
 function TleilaxuResearch._tearDown()
-    TleilaxuResearch.TanksZone.destruct()
-    TleilaxuResearch.board.destruct()
+    Board.destructBoard("tleilaxBoard")
+    TleilaxuResearch.tanksZone.destruct()
     TleilaxuResearch.tleilaxSpiceBonusToken.destruct()
     for _, zone in ipairs(TleilaxuResearch.tleilaxuLevelZones) do
         zone.destruct()
@@ -129,22 +148,25 @@ function TleilaxuResearch._tearDown()
     TleilaxuResearch.twoHelicesZone.destruct()
 end
 
----
+---@param color PlayerColor
+---@return integer
 function TleilaxuResearch.getSpecimenCount(color)
     return #Park.getObjects(TleilaxuResearch.tanksParks[color])
 end
 
----
+---@param positionInResearchSpace Vector
+---@return Vector
 function TleilaxuResearch._researchSpaceToWorldPosition(positionInResearchSpace)
     local offset = Vector(
         positionInResearchSpace.x * 1.225 - 0.07,
-        1.27,
+        Board.onTleilaxBoard(-0.41),
         positionInResearchSpace.z * 0.7)
     local positionInWorldSpace = TleilaxuResearch.researchTokenOrigin + offset
     return positionInWorldSpace
 end
 
----
+---@param positionInWorldSpace Vector
+---@return Vector
 function TleilaxuResearch._worlPositionToResearchSpace(positionInWorldSpace)
     local offset = positionInWorldSpace - TleilaxuResearch.researchTokenOrigin
     local x = math.floor((offset.x + 0.07) / 1.225 + 0.5)
@@ -153,7 +175,8 @@ function TleilaxuResearch._worlPositionToResearchSpace(positionInWorldSpace)
     return positionInResearchSpace
 end
 
----
+---@param positionField string
+---@return Vector
 function TleilaxuResearch._getAveragePosition(positionField)
     local p = Vector(0, 0, 0)
     local count = 0
@@ -166,27 +189,34 @@ function TleilaxuResearch._getAveragePosition(positionField)
     return p * (1 / count)
 end
 
----
+---@param color PlayerColor
+---@return Vector
 function TleilaxuResearch.getTokenCellPosition(color)
     local token = PlayBoard.getContent(color).researchToken
     local tokenCellPosition = TleilaxuResearch._worlPositionToResearchSpace(token.getPosition())
     return tokenCellPosition
 end
 
----
+--- When a zone is only needed to create a button.
+---@param position Vector
+---@param scale Vector
+function TleilaxuResearch._createPseudoZone(position, scale)
+    return {
+        getPosition = function ()
+            return position
+        end,
+        getScale = function ()
+           return scale
+        end
+    }
+end
+
 function TleilaxuResearch._generateResearchButtons()
     for cellPosition, _ in pairs(TleilaxuResearch.researchCellBenefits) do
         local p = TleilaxuResearch._researchSpaceToWorldPosition(cellPosition)
-        local cellZone = spawnObject({
-            type = 'ScriptingTrigger',
-            position = p,
-            scale = Vector(1.2, 1, 1.35)
-        })
-        Helper.markAsTransient(cellZone)
-        Helper.createAnchoredAreaButton(cellZone, 1.6, 0.1, I18N("progressOnResearchTrack"), PlayBoard.withLeader(function (_, color, _)
-            local validPlayer = Helper.isElementOf(color, PlayBoard.getActivePlayBoardColors())
-            if validPlayer and not PlayBoard.isRival(color) then
-                local leader = PlayBoard.getLeader(color)
+        local pseudoCellZone = TleilaxuResearch._createPseudoZone(p, Vector(1.2, 1, 1.35))
+        Helper.createAnchoredAreaButton(pseudoCellZone, Board.onTleilaxBoard(-0.08), 0.1, I18N("progressOnResearchTrack"), PlayBoard.withLeader(function (leader, color, _)
+            if not Commander.isCommander(color) and not PlayBoard.isRival(color) then
                 local token = PlayBoard.getContent(color).researchToken
                 local tokenCellPosition = TleilaxuResearch._worlPositionToResearchSpace(token.getPosition())
                 local jump = cellPosition - tokenCellPosition
@@ -204,10 +234,8 @@ function TleilaxuResearch._generateResearchButtons()
         end))
     end
 
-    Helper.createAnchoredAreaButton(TleilaxuResearch.twoHelicesZone, 1.6, 0.1, I18N("progressAfterResearchTrack"), PlayBoard.withLeader(function (_, color, _)
-        local validPlayer = Helper.isElementOf(color, PlayBoard.getActivePlayBoardColors())
-        if validPlayer and not PlayBoard.isRival(color) and TleilaxuResearch.hasReachedTwoHelices(color) then
-            local leader = PlayBoard.getLeader(color)
+    Helper.createAnchoredAreaButton(TleilaxuResearch.twoHelicesZone, Board.onTleilaxBoard(-0.08), 0.1, I18N("progressAfterResearchTrack"), PlayBoard.withLeader(function (leader, color, _)
+        if not Commander.isCommander(color) and not PlayBoard.isRival(color) and TleilaxuResearch.hasReachedTwoHelices(color) then
             local specialJump = Vector(1, 0, 0)
             leader.research(color, specialJump)
         else
@@ -216,7 +244,8 @@ function TleilaxuResearch._generateResearchButtons()
     end))
 end
 
----
+---@param cellPosition Vector
+---@return CellBenefit?
 function TleilaxuResearch._findResearchCellBenefits(cellPosition)
     for existingCellPosition, cell in pairs(TleilaxuResearch.researchCellBenefits) do
         if Vector.distance(existingCellPosition, cellPosition) < 0.1 then
@@ -227,7 +256,8 @@ function TleilaxuResearch._findResearchCellBenefits(cellPosition)
 end
 
 ---@param color PlayerColor
----@param jump Vector
+---@param jump? Vector
+---@return Continuation
 function TleilaxuResearch.advanceResearch(color, jump)
     local continuation = Helper.createContinuation("TleilaxuResearch.advanceResearch")
     local finalJump = jump
@@ -270,7 +300,9 @@ function TleilaxuResearch._advanceResearch(color, jump, withBenefits)
 
                 for _, resource in ipairs({"spice", "solari"}) do
                     if researchCellBenefits[resource] then
-                        leader.resources(color, resource, researchCellBenefits[resource])
+                        local amount = researchCellBenefits[resource]
+                        ---@cast amount integer
+                        leader.resources(color, resource, amount)
                     end
                 end
 
@@ -303,17 +335,20 @@ function TleilaxuResearch._advanceResearch(color, jump, withBenefits)
     end
 end
 
----
+---@param color PlayerColor
+---@return boolean
 function TleilaxuResearch.hasReachedOneHelix(color)
     return TleilaxuResearch.getBestResearch(color) >= 4
 end
 
----
+---@param color PlayerColor
+---@return boolean
 function TleilaxuResearch.hasReachedTwoHelices(color)
     return TleilaxuResearch.getBestResearch(color) == 8
 end
 
----
+---@param color PlayerColor
+---@return integer
 function TleilaxuResearch.getBestResearch(color)
     local bestResearch = 0
     if Commander.isCommander(color) then
@@ -326,12 +361,16 @@ function TleilaxuResearch.getBestResearch(color)
     return bestResearch
 end
 
----
+---@param positionInTleilaxSpace integer
+---@return Vector
 function TleilaxuResearch._tleilaxSpaceToWorldPosition(positionInTleilaxSpace)
-    return TleilaxuResearch.tleilaxuLevelZones[positionInTleilaxSpace].getPosition()
+    local tleilaxuLevelZone = TleilaxuResearch.tleilaxuLevelZones[positionInTleilaxSpace]
+    assert(tleilaxuLevelZone, "No zone at coordinates " .. tostring(positionInTleilaxSpace))
+    return tleilaxuLevelZone.getPosition()
 end
 
----
+---@param positionInWorldSpace Vector
+---@return integer
 function TleilaxuResearch._worlPositionToTleilaxSpace(positionInWorldSpace)
     local nearestLevel = nil
     local nearestDistance = 0
@@ -345,12 +384,10 @@ function TleilaxuResearch._worlPositionToTleilaxSpace(positionInWorldSpace)
     return nearestLevel
 end
 
----
 function TleilaxuResearch._generateTleilaxButtons()
     for level, _ in pairs(TleilaxuResearch.tleilaxLevelBenefits) do
         local levelZone = TleilaxuResearch.tleilaxuLevelZones[level]
-        Helper.createAnchoredAreaButton(levelZone, 1.6, 0.1, I18N("progressOnTleilaxTrack"), PlayBoard.withLeader(function (_, color, _)
-            local leader = PlayBoard.getLeader(color)
+        Helper.createAnchoredAreaButton(levelZone, Board.onTleilaxBoard(-0.08), 0.1, I18N("progressOnTleilaxTrack"), PlayBoard.withLeader(function (leader, color, _)
             local token = PlayBoard.getContent(color).tleilaxToken
             local tokenLevel = TleilaxuResearch._worlPositionToTleilaxSpace(token.getPosition())
             -- Human players are required to advance step by step.
@@ -437,10 +474,8 @@ function TleilaxuResearch._advanceTleilax(color, jump, withBenefits)
     return continuation
 end
 
----
 function TleilaxuResearch._createTanksButton()
-    Helper.createAnchoredAreaButton(TleilaxuResearch.TanksZone, 1.6, 0.1, I18N("specimenEdit"), PlayBoard.withLeader(function (_, color, altClick)
-        local leader = PlayBoard.getLeader(color)
+    Helper.createAnchoredAreaButton(TleilaxuResearch.tanksZone, Board.onTleilaxBoard(-0.08), 0.1, I18N("specimenEdit"), PlayBoard.withLeader(function (leader, color, altClick)
         if altClick then
             leader.troops(color, "tanks", "supply", 1)
         else
@@ -449,7 +484,8 @@ function TleilaxuResearch._createTanksButton()
     end))
 end
 
----
+---@param color PlayerColor
+---@return Park
 function TleilaxuResearch._createTanksPark(color)
     local offsets = {
         Red = Vector(-0.65, 0, 0.45),
@@ -458,8 +494,8 @@ function TleilaxuResearch._createTanksPark(color)
         Yellow = Vector(0.65, 0, -0.45)
     }
 
-    local origin = getObjectFromGUID("f5de09").getPosition() + offsets[color]
-    origin:setAt('y', 1.86) -- ground level
+    local origin = TleilaxuResearch.tanksZone.getPosition() + offsets[color]
+    origin:setAt('y', Board.onTleilaxBoard(0.18)) -- ground level
     local slots = {}
     for k = 1, 2 do
         for j = 1, 2 do
@@ -486,7 +522,8 @@ function TleilaxuResearch._createTanksPark(color)
         true)
 end
 
----
+---@param color PlayerColor
+---@return Park
 function TleilaxuResearch.getTankPark(color)
     return TleilaxuResearch.tanksParks[color]
 end

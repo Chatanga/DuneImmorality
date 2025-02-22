@@ -8,6 +8,7 @@ local PlayBoard = Module.lazyRequire("PlayBoard")
 local Types = Module.lazyRequire("Types")
 
 -- Function aliasing for a more readable code.
+local todo = CardEffect.todo
 local persuasion = CardEffect.persuasion
 local sword = CardEffect.sword
 local spice = CardEffect.spice
@@ -54,7 +55,26 @@ local garrisonQuad = CardEffect.garrisonQuad
 local twoTechs = CardEffect.twoTechs
 local multiply = CardEffect.multiply
 
--- TODO Remove agentIcons.
+---@alias RevealContribution {
+--- solari: integer,
+--- spice: integer,
+--- water: integer,
+--- intrigue: integer,
+--- troops: integer,
+--- fighters: integer,
+--- negotiators: integer,
+--- specimens: integer }
+
+---@class ImperiumCardInfo: CardInfo
+---@field factions Faction[]
+---@field cost integer
+---@field acquireBonus CardEffect[]
+---@field agentIcons AgentIcon[]
+---@field reveal CardEffect[]
+---@field tleilaxu boolean
+---@field starter boolean
+
+-- Note: the 'agentIcons' field is not used today.
 local ImperiumCard = {
     -- starter: base
     duneTheDesertPlanet = {agentIcons = {'yellow'}, reveal = {persuasion(1)}, starter = true },
@@ -71,14 +91,14 @@ local ImperiumCard = {
     -- reserve
     foldspace = {cost = 0, agentIcons = {'emperor', 'spacingGuild', 'beneGesserit', 'fremen', 'green', 'blue', 'yellow'}},
     prepareTheWay = {factions = {'beneGesserit'}, cost = 2, agentIcons = {'green', 'blue'}, reveal = {persuasion(2)}},
-    theSpiceMustFlow  = {factions = {'spacingGuild'}, cost = 9, acquireBonus = {vp(1)}, reveal = {spice(1)}},
+    theSpiceMustFlow = {factions = {'spacingGuild'}, cost = 9, acquireBonus = {vp(1)}, reveal = {spice(1)}},
     -- base
     arrakisRecruiter = {cost = 2, agentIcons = {'blue'}, reveal = {persuasion(1), sword(1)}},
     assassinationMission = {cost = 1, reveal = {sword(1), solari(1)}},
     beneGesseritInitiate = {factions = {'beneGesserit'}, cost = 3, agentIcons = {'green', 'blue', 'yellow'}, reveal = {persuasion(1)}},
     beneGesseritSister = {factions = {'beneGesserit'}, cost = 3, agentIcons = {'beneGesserit', 'green'}, reveal = choice(1, {{sword(2)}, {persuasion(2)}})},
     carryall = {cost = 5, agentIcons = {'yellow'}, reveal = {persuasion(1), spice(1)}},
-    chani = {factions = {'fremen'}, cost = 5, acquireBonus = {water(1)}, agentIcons = {'fremen', 'blue', 'yellow'}, reveal = {persuasion(2), 'Retreat any # of troops'}},
+    chani = {factions = {'fremen'}, cost = 5, acquireBonus = {water(1)}, agentIcons = {'fremen', 'blue', 'yellow'}, reveal = {persuasion(2), todo('Retreat any # of troops')}},
     choamDirectorship = {cost = 8, acquireBonus = {'4x inf all'}, reveal = {solari(3)}},
     crysknife = {factions = {'fremen'}, cost = 3, agentIcons = {'fremen', 'yellow'}, reveal = {sword(1), influence(fremenBond(1), 'fremen')}},
     drYueh = {cost = 1, agentIcons = {'blue'}, reveal = {persuasion(1)}},
@@ -88,10 +108,10 @@ local ImperiumCard = {
     fremenCamp = {factions = {'fremen'}, cost = 4, agentIcons = {'yellow'}, reveal = {persuasion(2), sword(1)}},
     geneManipulation = {factions = {'beneGesserit'}, cost = 3, agentIcons = {'green', 'blue'}, reveal = {persuasion(2)}},
     guildAdministrator = {factions = {'spacingGuild'}, cost = 2, agentIcons = {'spacingGuild', 'yellow'}, reveal = {persuasion(1)}},
-    guildAmbassador = {factions = {'spacingGuild'}, cost = 4, agentIcons = {'green'}, reveal = {spacingGuildAlliance('-3 Sp -> +1 VP')}},
-    guildBankers = {factions = {'spacingGuild'}, cost = 3, agentIcons = {'emperor', 'spacingGuild', 'green'}, reveal = {'SMF costs 3 less this turn'}},
-    gunThopter = {cost = 4, agentIcons = {'blue', 'yellow'}, reveal = {sword(3), 'may deploy 1x troop from garrison'}},
-    gurneyHalleck = {cost = 6, agentIcons = {'blue'}, reveal = {persuasion(2), '-3 Sol -> +2 troops may deploy to conflict'}},
+    guildAmbassador = {factions = {'spacingGuild'}, cost = 4, agentIcons = {'green'}, reveal = {spacingGuildAlliance(todo('-3 Sp -> +1 VP'))}},
+    guildBankers = {factions = {'spacingGuild'}, cost = 3, agentIcons = {'emperor', 'spacingGuild', 'green'}, reveal = {todo('SMF costs 3 less this turn')}},
+    gunThopter = {cost = 4, agentIcons = {'blue', 'yellow'}, reveal = {sword(3), todo('may deploy 1x troop from garrison')}},
+    gurneyHalleck = {cost = 6, agentIcons = {'blue'}, reveal = {persuasion(2), todo('-3 Sol -> +2 troops may deploy to conflict')}},
     imperialSpy = {factions = {'emperor'}, cost = 2, agentIcons = {'emperor'}, reveal = {persuasion(1), sword(1)}},
     kwisatzHaderach = {factions = {'beneGesserit'}, cost = 8, agentIcons = {'any'}, infiltrate = true},
     ladyJessica = {factions = {'beneGesserit'}, cost = 7, acquireBonus = {influence(1)}, agentIcons = {'beneGesserit', 'green', 'blue', 'yellow'}, reveal = {persuasion(3), sword(1)}},
@@ -102,8 +122,8 @@ local ImperiumCard = {
     powerPlay = {cost = 5, agentIcons = {'emperor', 'spacingGuild', 'beneGesserit', 'fremen'}},
     reverendMotherMohiam = {factions = {'emperor', 'beneGesserit'}, cost = 6, agentIcons = {'emperor', 'beneGesserit'}, reveal = {persuasion(2), spice(2)}},
     sardaukarInfantry = {factions = {'emperor'}, cost = 1, reveal = {persuasion(1), sword(2)}},
-    sardaukarLegion = {factions = {'emperor'}, cost = 5, agentIcons = {'emperor', 'green'}, reveal = {persuasion(1), 'deploy up to 3 troops from garrison'}},
-    scout = {cost = 1, agentIcons = {'blue', 'yellow'}, reveal = {persuasion(1), sword(1), 'Retreat up to 2 troops'}},
+    sardaukarLegion = {factions = {'emperor'}, cost = 5, agentIcons = {'emperor', 'green'}, reveal = {persuasion(1), todo('deploy up to 3 troops from garrison')}},
+    scout = {cost = 1, agentIcons = {'blue', 'yellow'}, reveal = {persuasion(1), sword(1), todo('Retreat up to 2 troops')}},
     shiftingAllegiances = {cost = 3, agentIcons = {'green', 'yellow'}, reveal = {persuasion(2)}},
     sietchReverendMother = {factions = {'beneGesserit', 'fremen'}, cost = 4, agentIcons = {'beneGesserit', 'fremen'}, reveal = {persuasion(fremenBond(3)), spice(1)}},
     smugglersThopter = {factions = {'spacingGuild'}, cost = 4, agentIcons = {'yellow'}, reveal = {persuasion(1), spice(1)}},
@@ -132,12 +152,12 @@ local ImperiumCard = {
     imperialShockTrooper = {factions = {'emperor'}, cost = 3, reveal = {persuasion(1), sword(2), sword(agentInEmperorSpace(3))}},
     inTheShadows = {factions = {'beneGesserit'}, cost = 2, agentIcons = {'green', 'blue'}, reveal = {influence(1, 'spacingGuild')}},
     ixGuildCompact = {factions = {'spacingGuild'}, cost = 3, agentIcons = {'spacingGuild'}, reveal = {negotiator(2)}},
-    ixianEngineer = {cost = 5, agentIcons = {'yellow'}, reveal = {'If 3 Tech: Trash this card -> +1 VP'}},
+    ixianEngineer = {cost = 5, agentIcons = {'yellow'}, reveal = {todo('If 3 Tech: Trash this card -> +1 VP')}},
     jamis = {factions = {'fremen'}, cost = 2, agentIcons = {'fremen'}, infiltrate = true, reveal = {persuasion(1), sword(2)}},
     landingRights = {factions = {'spacingGuild'}, cost = 4, agentIcons = {'blue'}, reveal = {persuasion(2)}},
     localFence = {cost = 3, agentIcons = {'blue'}, reveal = {persuasion(2)}},
-    negotiatedWithdrawal = {cost = 4, acquireBonus = {troop(1)}, agentIcons = {'green', 'blue', 'yellow'}, reveal = {persuasion(2), 'Retreat 3x troops -> +1 inf ?'}},
-    satelliteBan = {factions = {'spacingGuild', 'fremen'}, cost = 5, agentIcons = {'spacingGuild', 'fremen'}, reveal = {persuasion(1), 'Retreat up to 2 troops'}},
+    negotiatedWithdrawal = {cost = 4, acquireBonus = {troop(1)}, agentIcons = {'green', 'blue', 'yellow'}, reveal = {persuasion(2), todo('Retreat 3x troops -> +1 inf ?')}},
+    satelliteBan = {factions = {'spacingGuild', 'fremen'}, cost = 5, agentIcons = {'spacingGuild', 'fremen'}, reveal = {persuasion(1), todo('Retreat up to 2 troops')}},
     sayyadina = {factions = {'beneGesserit', 'fremen'}, cost = 3, agentIcons = {'beneGesserit', 'fremen'}, reveal = {persuasion(fremenBond(3))}},
     shaiHulud = {factions = {'fremen'}, cost = 7, acquireBonus = {trash(1)}, agentIcons = {'yellow'}, reveal = {sword(fremenBond(5))}},
     spiceTrader = {factions = {'fremen'}, cost = 4, agentIcons = {'blue', 'yellow'}, reveal = {persuasion(2), sword(1)}},
@@ -153,7 +173,7 @@ local ImperiumCard = {
     clandestineMeeting = {factions = {'beneGesserit'}, cost = 4, reveal = {persuasion(2)}},
     corruptSmuggler = {factions = {'spacingGuild', 'fremen'}, cost = 3, agentIcons = {'spacingGuild', 'yellow'}, reveal = {persuasion(1), sword(1)}},
     dissectingKit = {cost = 2, agentIcons = {'green', 'blue'}, reveal = {persuasion(1), beetle(oneHelix(1))}},
-    forHumanity = {factions = {'beneGesserit'}, cost = 7, agentIcons = {'beneGesserit', 'green', 'yellow'}, reveal = {persuasion(2), beneGesseritAlliance('-2 Inf --> +1 VP')}},
+    forHumanity = {factions = {'beneGesserit'}, cost = 7, agentIcons = {'beneGesserit', 'green', 'yellow'}, reveal = {persuasion(2), beneGesseritAlliance(todo('-2 Inf --> +1 VP'))}},
     highPriorityTravel = {factions = {'spacingGuild'}, cost = 1, agentIcons = {'green', 'yellow'}, reveal = {persuasion(1), solari(1)}},
     imperiumCeremony = {factions = {'emperor', 'spacingGuild'}, cost = 6, agentIcons = {'emperor', 'spacingGuild', 'green'}, reveal = {persuasion(3)}},
     interstellarConspiracy = {cost = 4, agentIcons = {'blue'}, reveal = {persuasion(2)}},
@@ -165,13 +185,13 @@ local ImperiumCard = {
     plannedCoupling = {factions = {'beneGesserit'}, cost = 3, agentIcons = {'beneGesserit'}, reveal = {persuasion(1)}},
     replacementEyes = {cost = 5, agentIcons = {'blue'}, reveal = {persuasion(1), sword(1)}},
     sardaukarQuartermaster = {factions = {'emperor'}, cost = 2, agentIcons = {'green', 'blue'}, reveal = {persuasion(1), sword(2)}},
-    shadoutMapes = {factions = {'fremen'}, cost = 2, agentIcons = {'fremen', 'yellow'}, reveal = {persuasion(1), sword(1), 'May deploy or retreat 1 of your Troops'}},
+    shadoutMapes = {factions = {'fremen'}, cost = 2, agentIcons = {'fremen', 'yellow'}, reveal = {persuasion(1), sword(1), todo('May deploy or retreat 1 of your Troops')}},
     showOfStrength = {factions = {'emperor', 'fremen'}, cost = 3, reveal = {persuasion(1), sword(2)}},
     spiritualFervor = {cost = 3, acquireBonus = {research(1)}, agentIcons = {'yellow'}, reveal = {persuasion(1), specimen(1)}},
     stillsuitManufacturer = {factions = {'fremen'}, cost = 5, agentIcons = {'fremen', 'blue'}, reveal = {persuasion(1), spice(fremenBond(2))}},
     throneRoomPolitics = {factions = {'emperor', 'beneGesserit'}, cost = 4, agentIcons = {'emperor'}, reveal = {persuasion(1), influence(1, 'beneGesserit')}},
     tleilaxuMaster = {cost = 5, agentIcons = {'green', 'yellow'}, reveal = {persuasion(1), research(2)}},
-    tleilaxuSurgeon = {cost = 3, agentIcons = {'emperor', 'blue'}, reveal = {persuasion(2), 'Lose 2 Troops--> +2 Specimen'}},
+    tleilaxuSurgeon = {cost = 3, agentIcons = {'emperor', 'blue'}, reveal = {persuasion(2), todo('Lose 2 Troops--> +2 Specimen')}},
     -- tleilaxu
     reclaimedForces = {cost = 3, tleilaxu = true, acquireBonus = choice(1, {{troop(2)}, {beetle(1)}})},
     usurp = {cost = 4, tleilaxu = true, reveal = {persuasion(1), sword(1), specimen(1)}},
@@ -193,12 +213,12 @@ local ImperiumCard = {
     industrialEspionage = {cost = 1, tleilaxu = true, agentIcons = {'green'}, reveal = {persuasion(1)}},
     faceDancerInitiate = {factions = {'emperor', 'spacingGuild', 'fremen'}, cost = 1, tleilaxu = true, agentIcons = {'emperor', 'spacingGuild', 'fremen'}, reveal = {persuasion(1)}},
     -- promo
-    boundlessAmbition = {cost = 5, agentIcons = {'emperor', 'spacingGuild', 'beneGesserit', 'fremen'}, reveal = {'Acquire a card that costs 5 or less'}},
-    duncanLoyalBlade = {cost = 5, agentIcons = {'fremen', 'blue'}, reveal = {persuasion(1), sword(2), 'trash this--> deploy/retreat any # of troops'}},
+    boundlessAmbition = {cost = 5, agentIcons = {'emperor', 'spacingGuild', 'beneGesserit', 'fremen'}, reveal = {todo('Acquire a card that costs 5 or less')}},
+    duncanLoyalBlade = {cost = 5, agentIcons = {'fremen', 'blue'}, reveal = {persuasion(1), sword(2), todo('trash this--> deploy/retreat any # of troops')}},
     jessicaOfArrakis = {factions = {'beneGesserit'}, cost = 3, agentIcons = {'yellow'}, reveal = {persuasion(1), sword(2)}},
     piterGeniusAdvisor = {cost = 3, tleilaxu = true, agentIcons = {'green', 'yellow'}, reveal = {persuasion(1), sword(1)}},
     -- uprising
-    unswervingLoyalty = {factions = {'fremen'}, cost = 1, reveal = {persuasion(1), troop(1), 'deploy/reply 1 troop if fremen bond'}},
+    unswervingLoyalty = {factions = {'fremen'}, cost = 1, reveal = {persuasion(1), troop(1), todo('deploy/reply 1 troop if fremen bond')}},
     spaceTimeFolding = {factions = {"spacingGuild"}, cost = 1, agentIcons = {"spacingGuild"}, reveal = {persuasion(1)}},
     weirdingWoman = {factions = {"beneGesserit"}, cost = 1, agentIcons = {'blue', 'yellow'}, reveal = {persuasion(1), sword(1)}},
     sardaukarSoldier = {factions = {"emperor"}, cost = 1, agentIcons = {'blue'}, reveal = {persuasion(1), sword(1)}},
@@ -209,7 +229,7 @@ local ImperiumCard = {
     wheelsWithinWheels = {factions = {"emperor", "spacingGuild"}, cost = 2, spy = true, reveal = {persuasion(1), spy(1)}},
     fedaykinStilltent = {factions = {"fremen"}, cost = 2, agentIcons = {'yellow'}, reveal = {water(1)}},
     imperialSpymaster = {factions = {'emperor'}, cost = 2, agentIcons = {'emperor'}, spy = true, reveal = {persuasion(1), sword(1)}},
-    spyNetwork = {factions = {'emperor', 'spacingGuild'}, cost = 2, acquireBonus = {spy(1)}, reveal = {persuasion(2), sword(1), 'spy --> treachery if 2 spies on board'}},
+    spyNetwork = {factions = {'emperor', 'spacingGuild'}, cost = 2, acquireBonus = {spy(1)}, reveal = {persuasion(2), sword(1), todo('spy --> treachery if 2 spies on board')}},
     desertSurvival = {factions = {'fremen'}, cost = 2, agentIcons = {'yellow'}, reveal = {persuasion(1), sword(1)}},
     undercoverAsset = {factions = {'emperor', 'spacingGuild'}, cost = 2, agentIcons = {'green', 'blue', 'yellow'}, reveal = choice(1, {{spy(1)}, {sword(2)}})},
     beneGesseritOperative = {factions = {'beneGesserit'}, cost = 3, agentIcons = {'beneGesserit'}, reveal = {persuasion(1), persuasion(twoSpies(2))}},
@@ -220,8 +240,8 @@ local ImperiumCard = {
     doubleAgent = {factions = {'emperor', 'spacingGuild'}, cost = 3, agentIcons = {'green', 'blue', 'yellow'}, reveal = {persuasion(1), sword(1)}},
     guildEnvoy = {factions = {'spacingGuild'}, cost = 3, agentIcons = {'emperor', 'spacingGuild', 'beneGesserit', 'fremen'}, reveal = {persuasion(1)}},
     rebelSupplier = {factions = {'fremen'}, cost = 3, agentIcons = {'blue'}, reveal = {spice(1), sword(1)}},
-    calculusOfPower = {factions = {'emperor'}, cost = 3, spy = true, agentIcons = {'blue'}, reveal = {persuasion(2), 'trash emperor card in play --> sword(3)'}},
-    guildSpy = {factions = {'spacingGuild'}, cost = 3, acquireBonus = {spy(1)}, spy = true, reveal = {persuasion(2), 'TSMF --> +1 infl / faction with agent'}},
+    calculusOfPower = {factions = {'emperor'}, cost = 3, spy = true, agentIcons = {'blue'}, reveal = {persuasion(2), todo('trash emperor card in play --> sword(3)')}},
+    guildSpy = {factions = {'spacingGuild'}, cost = 3, acquireBonus = {spy(1)}, spy = true, reveal = {persuasion(2), todo('TSMF --> +1 infl / faction with agent')}},
     dangerousRhetoric = {cost = 3, spy = true, agentIcons = {'green'}, reveal = {persuasion(1), sword(1)}},
     branchingPath = {factions = {'beneGesserit'}, cost = 3, agentIcons = {'beneGesserit', "blue"}, reveal = {persuasion(2)}},
     ecologicalTestingStation = {factions = {'fremen'}, cost = 3, agentIcons = {'fremen', 'blue'}, reveal = {persuasion(1), water(fremenBond(1))}},
@@ -234,18 +254,18 @@ local ImperiumCard = {
     publicSpectable = {factions = {'emperor'}, cost = 4, spy = true, reveal = {persuasion(1), spy(1)}},
     southernElders = {factions = {'beneGesserit', 'fremen'}, cost = 4, agentIcons = {'beneGesserit', 'fremen'}, reveal = {water(1), persuasion(fremenBond(2))}},
     treadInDarkness = {factions = {'beneGesserit'}, cost = 4, agentIcons = {'green', 'blue', 'yellow'}, reveal = {persuasion(2), sword(1)}},
-    spacingGuildFavor = {factions = {'spacingGuild'}, cost = 5, agentIcons = {'spacingGuild', 'yellow'}, reveal = {persuasion(2), 'spice(-3) -> influence(1)'}},
+    spacingGuildFavor = {factions = {'spacingGuild'}, cost = 5, agentIcons = {'spacingGuild', 'yellow'}, reveal = {persuasion(2), todo('spice(-3) -> influence(1)')}},
     capturedMentat = {cost = 5, agentIcons = {'green', 'yellow'}, reveal = {persuasion(1), 'influence(-1) --> influence(1)'}},
     subversiveAdvisor = {cost = 5, acquireBonus = {spy(1)}, spy = true, reveal = {persuasion(1)}},
     leadership = {factions = {'fremen'}, cost = 5, agentIcons = {'fremen', 'yellow'}, reveal = {persuasion(2), sword(1), sword(perSwordCard(1, true))}},
     inHighPlaces = {factions = {'emperor', 'beneGesserit'}, cost = 5, acquireBonus = {spy(1)}, agentIcons = {'emperor', 'beneGesserit'}, reveal = {persuasion(2), optional({spy(-2), persuasion(3)})}},
     strikeFleet = {cost = 5, acquireBonus = {spy(1)}, spy = true, reveal = {persuasion(1), sword(3)}},
     trecherousManeuver = {factions = {'emperor'}, cost = 5, agentIcons = {'emperor', 'spacingGuild', 'beneGesserit', 'fremen'}, reveal = {persuasion(1), intrigue(1)}},
-    chaniCleverTactician = {factions = {'fremen'}, cost = 5, agentIcons = {'fremen', 'blue', 'yellow'}, reveal = {persuasion(fremenBond(2)), 'reply 2 troops --> sword(4)'}},
+    chaniCleverTactician = {factions = {'fremen'}, cost = 5, agentIcons = {'fremen', 'blue', 'yellow'}, reveal = {persuasion(fremenBond(2)), todo('reply 2 troops --> sword(4)')}},
     junctionHeadquarters = {factions = {'spacingGuild'}, cost = 6, agentIcons = {'green', 'blue', 'yellow'}, reveal = {persuasion(1), water(1), troop(1)}},
-    corrinthCity = {factions = {'emperor'}, cost = 6, agentIcons = {'emperor', 'green'}, reveal = {solari(seat(5)), choice(1, {{solari(5)}, 'solari(-5) --> takeHighCouncilSeat(1)'})}},
+    corrinthCity = {factions = {'emperor'}, cost = 6, agentIcons = {'emperor', 'green'}, reveal = {solari(seat(5)), choice(1, {{solari(5)}, todo('solari(-5) --> takeHighCouncilSeat(1)')})}},
     stilgarTheDevoted = {factions = {'fremen'}, cost = 6, agentIcons = {'fremen', 'blue', 'yellow'}, reveal = {persuasion(perFremen(2))}},
-    desertPower = {factions = {'fremen'}, cost = 6, agentIcons = {'yellow'}, reveal = {choice(1, {{persuasion(2)}, {'hook: water(1) -> worm(1)'}})}},
+    desertPower = {factions = {'fremen'}, cost = 6, agentIcons = {'yellow'}, reveal = {choice(1, {{persuasion(2)}, {todo('hook: water(1) -> worm(1)')}})}},
     arrakisRevolt = {factions = {'fremen'}, cost = 6, acquireBonus = {troop(1)}, agentIcons = {'blue'}, reveal = {persuasion(1), sword(3)}},
     priceIsNoObject = {factions = {'emperor', 'beneGesserit'}, cost = 6, acquireBonus = {solari(2)}, agentIcons = {'emperor', 'beneGesserit'}, reveal = {persuasion(2), solari(2)}},
     longLiveTheFighters = {factions = {'fremen'}, cost = 7, agentIcons = {'fremen', 'blue'}, reveal = {persuasion(2), sword(3)}},
@@ -253,15 +273,15 @@ local ImperiumCard = {
     steersman = {factions = {'spacingGuild'}, cost = 8, acquireBonus = {influence(1, 'spacingGuild')}, agentIcons = {'spacingGuild', 'green', 'blue', 'yellow'}, reveal = {persuasion(2), spice(2)}},
     -- contract
     cargoRunner = {factions = {'spacingGuild'}, cost = 3, agentIcons = {'green', 'blue', 'yellow'}, reveal = {persuasion(1)}},
-    deliveryAgreement = {factions = {'spacingGuild'}, cost = 5, agentIcons = {'blue'}, reveal = {choice(1, {spice(1), 'contract(4), trash --> vp(1)'})}},
-    priorityContracts = {factions = {'spacingGuild'}, cost = 6, agentIcons = {'green', 'yellow'}, reveal = {choice(1, {spice(2), 'contract(4), trash --> vp(1)'})}},
+    deliveryAgreement = {factions = {'spacingGuild'}, cost = 5, agentIcons = {'blue'}, reveal = {choice(1, {spice(1), todo('contract(4), trash --> vp(1)')})}},
+    priorityContracts = {factions = {'spacingGuild'}, cost = 6, agentIcons = {'green', 'yellow'}, reveal = {choice(1, {spice(2), todo('contract(4), trash --> vp(1)')})}},
     interstellarTrade = {factions = {'spacingGuild'}, cost = 7, acquireBonus = {contract(1)}, agentIcons = {'green', 'blue', 'yellow'}, reveal = {persuasion(perFulfilledContract(1))}},
     -- commander
     emperorConvincingArgument = {reveal = {persuasion(2)}},
-    emperorCorrinoMight = {factions = {'emperor'}, agentIcons = {'green'}, reveal = {sword(1), 'spice(3), trash --> troop(2) / ally'}},
+    emperorCorrinoMight = {factions = {'emperor'}, agentIcons = {'green'}, reveal = {sword(1), todo('spice(3), trash --> troop(2) / ally')}},
     emperorCriticalShipments = {agentIcons = {'yellow'}, reveal = {persuasion(2)}},
     emperorDemandResults = {factions = {'emperor'}, agentIcons = {'green'}, reveal = {sword(1)}},
-    emperorDevastatingAssault = {agentIcons = {'yellow'}, reveal = {persuasion(1), 'swordmasterBonus: solari(3) --> sword(5)'}},
+    emperorDevastatingAssault = {agentIcons = {'yellow'}, reveal = {persuasion(1), todo('swordmasterBonus: solari(3) --> sword(5)')}},
     emperorImperialOrnithopter = {factions = {'emperor'}, agentIcons = {'blue'}, reveal = {persuasion(1), solari(1)}},
     emperorSignetRing = {agentIcons = {'green', 'blue', 'yellow'}, reveal = {persuasion(1)}},
     emperorSeekAllies = {agentIcons = {'emperor', 'spacingGuild', 'beneGesserit', 'fremen'}},
@@ -278,10 +298,10 @@ local ImperiumCard = {
     -- bloodlines
     bombast = {factions = {'emperor'}, agentIcons = {'green'}, cost = 1, reveal = {persuasion(1), solari(command(3))}}, -- TODO command => trash
     sandwalk = {factions = {'fremen'}, agentIcons = {'yellow'}, cost = 1, reveal = {persuasion(1), sword(1), persuasion(fremenBond(1))}},
-    disruptionTactics = {factions = {'fremen'}, agentIcons = {'fremen', 'yellow'}, cost = 2, reveal = {persuasion(1), 'trash --> combat(true)'}},
+    disruptionTactics = {factions = {'fremen'}, agentIcons = {'fremen', 'yellow'}, cost = 2, reveal = {persuasion(1), todo('trash --> combat(true)')}},
     urgentShigawire = {factions = {'beneGesserit'}, agentIcons = {'beneGesserit', 'blue'}, cost = 2, reveal = {persuasion(1)}},
-    commandCenter = {factions = {'emperor'}, agentIcons = {'emperor', 'blue'}, cost = 3, reveal = {persuasion(1), 'retreat(2) --> persuasion(2)'}},
-    engineeredMiracle = {factions = {'beneGesserit'}, agentIcons = {'fremen', 'yellow'}, cost = 3, reveal = {persuasion(1), 'command --> (trash --> acquire card)'}},
+    commandCenter = {factions = {'emperor'}, agentIcons = {'emperor', 'blue'}, cost = 3, reveal = {persuasion(1), todo('retreat(2) --> persuasion(2)')}},
+    engineeredMiracle = {factions = {'beneGesserit'}, agentIcons = {'fremen', 'yellow'}, cost = 3, reveal = {persuasion(1), todo('command --> (trash --> acquire card)')}},
     iBelieve = {factions = {'fremen'}, agentIcons = {'fremen', 'blue'}, cost = 3, reveal = {persuasion(1), troop(command(2))}},
     litanyAgainstFear = {factions = {'beneGesserit'}, cost = 3, reveal = {persuasion(2)}},
     eliteForces = {factions = {'emperor', 'spacingGuild'}, agentIcons = {'emperor', 'spacingGuild'}, cost = 3, reveal = {persuasion(1), sword(1)}},
@@ -291,20 +311,22 @@ local ImperiumCard = {
     southernFaith = {factions = {'beneGesserit', 'fremen'}, agentIcons = {'fremen', 'blue'}, cost = 5, reveal = {persuasion(1), sword(2), spice(command(1))}},
     imperialThroneship = {factions = {'emperor'}, agentIcons = {'emperor', 'spacingGuild', 'beneGesserit', 'fremen', 'green', 'blue', 'yellow'}, cost = 7, acquireBonus = {influence(1, 'emperor')}, reveal = {persuasion(2), persuasion(garrisonQuad(1)), solari(garrisonQuad(3))}},
     possibleFutures = {factions = {'beneGesserit', 'fremen'}, agentIcons = {'green', 'blue', 'yellow'}, cost = 8, acquireBonus = {water(1)}, reveal = {persuasion(2), water(1)}},
-    arrakisObserver = {factions = {'spacingGuild'}, agentIcons = {'blue', 'yellow'}, cost = 3, reveal = {persuasion(1), 'spy ---> sword(3)'}},
+    arrakisObserver = {factions = {'spacingGuild'}, agentIcons = {'blue', 'yellow'}, cost = 3, reveal = {persuasion(1), todo('spy ---> sword(3)')}},
     eliminateAllies = {factions = {'emperor'}, agentIcons = {'spy'}, cost = 2, reveal = {persuasion(1), sword(1)}},
-    holyWar = {factions = {'fremen'}, agentIcons = {'emperor', 'spacingGuild', 'beneGesserit', 'green'}, cost = 5, reveal = {persuasion(1), troop(1), 'combat(fremenBond(true))'}},
+    holyWar = {factions = {'fremen'}, agentIcons = {'emperor', 'spacingGuild', 'beneGesserit', 'green'}, cost = 5, reveal = {persuasion(1), troop(1), todo('combat(fremenBond(true))')}},
     intelligenceTraining = {factions = {'emperor'}, agentIcons = {'blue', 'green'}, cost = 2, acquireBonus = {spy(1)}, reveal = {persuasion(1), sword(1), spy(command(1))}},
     pointingTheWay = {factions = {'fremen'}, agentIcons = {'fremen', 'blue', 'yellow'}, cost = 6, reveal = {persuasion(1), sword(2), influence(command(1))}},
     shroudedCounsel = {factions = {'beneGesserit'}, agentIcons = {'spy'}, cost = 4, reveal = {persuasion(1), trash(command(1))}},
-    ruthlessLeadership = {factions = {'emperor'}, agentIcons = {'blue', 'yellow'}, cost = 4, reveal = {persuasion(1), sword(1), 'combat(command(true))'}},
     deliveryLogistics = {factions = {'spacingGuild'}, cost = 2, reveal = {choice(1, {persuasion(1), contract(1)})}},
     corruptBureaucrat = {factions = {'spacingGuild'}, cost = 4, agentIcons = {'spacingGuild', 'green', 'spy'}, reveal = {persuasion(2)}},
     mercantileAffairs = {factions = {'beneGesserit'}, cost = 5, acquireBonus = {contract(1)}, agentIcons = {'beneGesserit', 'blue', 'yellow', 'spy'}, reveal = {persuasion(2)}},
-    choamDemands = {factions = {'spacingGuild'}, cost = 6, agentIcons = {'green', 'blue', 'yellow'}, reveal = {'4+ completed contracts --> (trash ---> for each faction f, influence(1, f))'}},
+    choamDemands = {factions = {'spacingGuild'}, cost = 6, agentIcons = {'green', 'blue', 'yellow'}, reveal = {todo('4+ completed contracts --> (trash ---> for each faction f, influence(1, f))')}},
+    ruthlessLeadership = {factions = {'emperor'}, agentIcons = {'blue', 'yellow'}, cost = 4, reveal = {persuasion(1), sword(1), todo('combat(command(true))')}},
     ixianAmbassador = {factions = {'spacingGuild'}, cost = 4, reveal = {persuasion(1), influence(twoTechs(1))}},
 }
 
+---@param card Card
+---@return ImperiumCardInfo
 function ImperiumCard._resolveCard(card)
     assert(card)
     local cardName = Helper.getID(card)
@@ -323,6 +345,10 @@ function ImperiumCard._resolveCard(card)
     end
 end
 
+---@param color PlayerColor
+---@param playedCards Card[]
+---@param revealedCards Card[]
+---@return table<string, integer>
 function ImperiumCard.evaluateReveal(color, playedCards, revealedCards)
     return ImperiumCard.evaluateRevealDirectly(
         1,
@@ -331,6 +357,11 @@ function ImperiumCard.evaluateReveal(color, playedCards, revealedCards)
         Helper.mapValues(revealedCards, ImperiumCard._resolveCard))
 end
 
+---@param depth integer
+---@param color PlayerColor
+---@param playedCards ImperiumCardInfo[]
+---@param revealedCards ImperiumCardInfo[]
+---@return RevealContribution
 function ImperiumCard.evaluateRevealDirectly(depth, color, playedCards, revealedCards)
     local result = {}
 
@@ -378,8 +409,10 @@ function ImperiumCard.evaluateRevealDirectly(depth, color, playedCards, revealed
     return result
 end
 
+---@param color PlayerColor
+---@param card Card
 function ImperiumCard.applyAcquireEffect(color, card)
-    Types.assertIsPlayerColor(color)
+    assert(Types.isPlayerColor(color))
     assert(card)
 
     local bonus = ImperiumCard._resolveCard(card).acquireBonus
@@ -397,20 +430,26 @@ function ImperiumCard.applyAcquireEffect(color, card)
     end
 end
 
+---@param card Card
+---@return integer
 function ImperiumCard.getTleilaxuCardCost(card)
     local cardInfo = ImperiumCard._resolveCard(card)
     assert(cardInfo.tleilaxu)
     return cardInfo.cost
 end
 
+---@param card Card
+---@return boolean
 function ImperiumCard.isStarterCard(card)
     local cardInfo = ImperiumCard._resolveCard(card)
     return cardInfo.starter or false
 end
 
+---@param card Card
+---@return boolean
 function ImperiumCard.isFactionCard(card, faction)
     if faction then
-        Types.assertIsFaction(faction)
+        assert(Types.isFaction(faction))
     end
     local cardInfo = ImperiumCard._resolveCard(card)
     return cardInfo.factions and (not faction or Helper.isElementOf(faction, cardInfo.factions))

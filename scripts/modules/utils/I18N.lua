@@ -1,22 +1,25 @@
 local Helper = require("utils.Helper")
 
+---@class I18N
 local I18N = {
     locales = {}
 }
 
----
+---@return string
 function I18N.getLocale()
     return Global.getVar("Locale")
 end
 
----
+---@param newLocale string
 function I18N.setLocale(newLocale)
     assert(I18N.locales[newLocale], ("The locale %q is unknown"):format(newLocale))
     Global.setVar("Locale", newLocale)
     Helper.emitEvent("locale", newLocale)
 end
 
----
+---@param quantity number
+---@param noun string
+---@return string
 function I18N.agree(quantity, noun)
     if math.abs(quantity) > 1 then
         return I18N(noun .. "s")
@@ -25,7 +28,9 @@ function I18N.agree(quantity, noun)
     end
 end
 
----
+---@param key string
+---@param args table<string, any>
+---@return string
 function I18N.translate(key, args)
     assert(key)
     assert(type(key) == "string", type(string))
@@ -43,6 +48,9 @@ function I18N.translate(key, args)
     return content and I18N._parse(content, args) or "{" .. key .. "}"
 end
 
+---@param content string
+---@param args table<string, any>
+---@return string
 function I18N._parse(content, args)
     assert(content)
     assert(type(content) == "string", type(string))
@@ -66,10 +74,15 @@ function I18N._parse(content, args)
     return text
 end
 
+---@param expression string
+---@param args table<string, any>
+---@return any
 function I18N._evaluate(expression, args)
     return args[expression]
 end
 
 setmetatable(I18N, { __call = function (_, ...) return I18N.translate(...) end })
+
+---@overload fun(key: string, parameters?: table<string, any>): string
 
 return I18N

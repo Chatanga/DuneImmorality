@@ -4,7 +4,22 @@ local I18N = require("utils.I18N")
 
 local Locale = Module.lazyRequire("Locale")
 
+---@class Board
 local Board = {
+
+    -- Table height
+    T = 1.59,
+    -- Main board height
+    MB = 1.69,
+    -- Ix board patch height
+    IxP = 1.70,
+    -- Ix board height
+    IXB = 1.69,
+    -- Tleilax board height
+    TXB = 1.68,
+    -- Play board height
+    PB = 2.19,
+
     allInitialBoards = {
         mainBoard = {
             mainBoard4P = "483a1a",
@@ -22,7 +37,7 @@ local Board = {
     },
     --[[
         boardLocations[<baseBoardName.locale>] = {
-            rootBaseBoardName = <mainBoard for mainBoard4P/6P, otherwise same as baseBoardName>,
+            rootBaseBoardName = <e.g. ix for ixBoard or tleilaxBoard for tleilaxBoard>,
             baseBoardName = <idem>,
             object = <the actual object if it exists>,
             active = <is the object alive on the primary table?>,
@@ -31,12 +46,47 @@ local Board = {
     boardLocations = {}
 }
 
----
+--- @param offset integer
+--- @return integer
+function Board.onTable(offset)
+    return Board.T + offset
+end
+
+--- @param offset? integer
+--- @return integer
+function Board.onMainBoard(offset)
+    return Board.MB + offset
+end
+
+--- @param offset? integer
+--- @return integer
+function Board.onIxBoardPatch(offset)
+    return Board.IxP + offset
+end
+
+--- @param offset? integer
+--- @return integer
+function Board.onIxBoard(offset)
+    return Board.IxP + offset
+end
+
+--- @param offset? integer
+--- @return integer
+function Board.onTleilaxBoard(offset)
+    return Board.TXB + offset
+end
+
+--- @param offset? integer
+--- @return integer
+function Board.onPlayBoard(offset)
+    return Board.PB + offset
+end
+
 function Board.rebuildPreloadAreas()
-    Locale.onLoad()
+    Locale.onLoad({})
 
     local prebuildZone = getObjectFromGUID("23f2b5")
-    local secondaryTable = getObjectFromGUID("662ced")
+    local secondaryTable = getObjectFromGUID(GameTableGUIDs.secondary)
 
     for _, object in ipairs(prebuildZone.getObjects()) do
         -- Preserve the secondary table.
@@ -64,7 +114,10 @@ function Board.rebuildPreloadAreas()
     end
 end
 
----
+---@param baseBoardName string
+---@param board Object
+---@param height number
+---@return integer
 function Board._cloneBoard(baseBoardName, board, height)
     local boardName = Helper.getID(board)
     assert(boardName and boardName:len() > 0, "Unidentified board: " .. board.getGUID())
@@ -127,7 +180,8 @@ function Board._cloneBoard(baseBoardName, board, height)
     return count
 end
 
----
+---@param id string
+---@return string?
 function Board._getBaseName(id)
     if id then
         local tokens = Helper.splitString(id, '.')
@@ -138,7 +192,6 @@ function Board._getBaseName(id)
     return nil
 end
 
----
 function Board.onLoad()
     local prebuildZone = getObjectFromGUID("23f2b5")
 
@@ -179,12 +232,15 @@ function Board.onLoad()
     end
 end
 
----
+---@param setting Settings
 function Board.setUp(setting)
     -- NOP
 end
 
----
+---@param baseBoardName string
+---@param language string
+---@param doNotLock? boolean
+---@return Object
 function Board.selectBoard(baseBoardName, language, doNotLock)
     local boardName = Board._toBoardName(baseBoardName, language)
     local location = Board.boardLocations[boardName]
@@ -196,7 +252,6 @@ function Board.selectBoard(baseBoardName, language, doNotLock)
             if otherLocation.rootBaseBoardName == location.rootBaseBoardName and otherLocation.active then
                 local otherPosition = otherLocation.object.getPosition()
 
-                -- TODO A simple move (swap) would be enough.
                 otherLocation.object.destruct()
                 otherLocation.object = nil
                 otherLocation.active = false
@@ -221,7 +276,7 @@ function Board.selectBoard(baseBoardName, language, doNotLock)
     end
 end
 
----
+---@param baseBoardName string
 function Board.destructBoard(baseBoardName)
     for _, location in pairs(Board.boardLocations) do
         if location.baseBoardName == baseBoardName and location.object then
@@ -232,7 +287,6 @@ function Board.destructBoard(baseBoardName)
     end
 end
 
----
 function Board.destructInactiveBoards()
     for _, location in pairs(Board.boardLocations) do
         if not location.active and location.object then
@@ -242,7 +296,9 @@ function Board.destructInactiveBoards()
     end
 end
 
----
+---@param baseBoardName string
+---@param locale? string
+---@return Object?
 function Board.getBoard(baseBoardName, locale)
     local boardName = Board._toBoardName(baseBoardName, locale or I18N.getLocale())
     local location = Board.boardLocations[boardName]
@@ -251,9 +307,12 @@ function Board.getBoard(baseBoardName, locale)
     end
 end
 
----
-function Board._toBoardName(baseBoardName, language)
-    return baseBoardName .. '.' .. language
+---@param baseBoardName string
+---@param locale string
+---@return string
+function Board._toBoardName(baseBoardName, locale)
+    assert(locale, "No locale provided!")
+    return baseBoardName .. '.' .. locale
 end
 
 return Board

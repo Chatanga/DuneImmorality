@@ -14,9 +14,13 @@ local Intrigue = Module.lazyRequire("Intrigue")
 local HagalCard = Module.lazyRequire("HagalCard")
 local Types = Module.lazyRequire("Types")
 
+---@class Rival: Leader
+---@field swordmasterCost integer
+---@field factionPriorities Faction[]
+---@field recallableSpies Object[]
 local Rival = Helper.createClass(Action)
 
----
+---@return Rival
 function Rival.newRival(name)
     local RivalClass = Rival[name]
     assert(RivalClass, "Unknown rival leader: " .. tostring(name))
@@ -24,9 +28,16 @@ function Rival.newRival(name)
     return Helper.createClassInstance(RivalClass)
 end
 
----
+---@param color PlayerColor
+function Rival.getRival(color)
+    local leader = PlayBoard.getLeader(color)
+    ---@cast leader Rival
+    return leader
+end
+
+---@param color PlayerColor
+---@return Continuation
 function Rival.triggerHagalReaction(color)
-    Helper.dumpFunction("Rival.triggerHagalReaction", color)
     local continuation = Helper.createContinuation("Rival.triggerHagalReaction")
 
     local coroutineHolder = {}
@@ -36,7 +47,7 @@ function Rival.triggerHagalReaction(color)
 
         Helper.sleep(1)
 
-        local rival = PlayBoard.getLeader(color)
+        local rival = Rival.getRival(color)
 
         if rival.recallableSpies and #rival.recallableSpies == 2 then
             for _, otherObservationPostName in ipairs(rival.recallableSpies) do
@@ -107,13 +118,13 @@ function Rival.triggerHagalReaction(color)
     return continuation
 end
 
----
+---@param color PlayerColor
 function Rival._buyVictoryPoints(color)
     -- Do not use Rival.resources inside this function!
 
-    local rival = PlayBoard.getLeader(color)
+    local rival = Rival.getRival(color)
 
-    if Helper.isElementOf(rival.name, { "glossuRabban", "amberMetulli" }) then
+    if rival.isStreamlined() then
         return
     end
 
@@ -158,20 +169,25 @@ function Rival._buyVictoryPoints(color)
     end
 end
 
----
+---@param color PlayerColor
+---@param settings Settings
 function Rival.prepare(color, settings)
-    if Hagal.getRivalCount() == 2 then
+    local rivalCount = Hagal.getRivalCount()
+    if rivalCount == 1 then
+        Action.resources(color, "water", 1)
+        Action.troops(color, "supply", "garrison", 3)
+    else
+        assert(rivalCount == 2)
         Action.resources(color, "water", 1)
         if settings.difficulty ~= "novice" then
             Action.troops(color, "supply", "garrison", 3)
         end
-    else
-        Action.resources(color, "water", 1)
-        Action.troops(color, "supply", "garrison", 3)
     end
 end
 
----
+---@param color PlayerColor
+---@param factions Faction[]
+---@return Faction
 function Rival:_removeBestFaction(color, factions)
     local function indexOf(faction)
         for i, f in pairs(self.factionPriorities) do
@@ -191,10 +207,13 @@ function Rival:_removeBestFaction(color, factions)
     return bestFaction
 end
 
----
+---@param color PlayerColor
+---@param indexOrfactionOrFactions nil|integer|Faction|Faction[]
+---@param amount integer
+---@return Continuation
 function Rival.influence(color, indexOrfactionOrFactions, amount)
     local finalFaction
-    local rival = PlayBoard.getLeader(color)
+    local rival = Rival.getRival(color)
     if not indexOrfactionOrFactions or type(indexOrfactionOrFactions) == "table" then
         local factions = indexOrfactionOrFactions
         if not factions then
@@ -207,11 +226,13 @@ function Rival.influence(color, indexOrfactionOrFactions, amount)
     else
         finalFaction = indexOrfactionOrFactions
     end
+    ---@cast finalFaction Faction
     return Action.influence(color, finalFaction, amount)
 end
 
----
-function Rival._gainAllianceIfAble(color, amount)
+---@param color PlayerColor
+---@param amount integer
+function Rival.gainAllianceIfAble(color, amount)
     local factions = {}
     for _, faction in ipairs({ "emperor", "spacingGuild", "beneGesserit", "fremen" }) do
         local cost = InfluenceTrack.getAllianceCost(color, faction)
@@ -222,7 +243,9 @@ function Rival._gainAllianceIfAble(color, amount)
     Rival.influence(color, #factions > 0 and factions or nil, amount)
 end
 
----
+---@param color PlayerColor
+---@param amount integer
+---@return boolean
 function Rival.shipments(color, amount)
     Helper.repeatChainedAction(amount, function ()
         local level = ShippingTrack.getFreighterLevel(color)
@@ -244,43 +267,46 @@ function Rival.shipments(color, amount)
                 end
             end
         end
-        -- FIXME
         return Helper.onceTimeElapsed(0.5)
     end)
     return true
 end
 
----
-function Rival.acquireTech(color, stackIndex, discount)
+---@param color PlayerColor
+---@param stackIndex? integer
+---@return boolean
+function Rival.acquireTech(color, stackIndex)
 
     local finalStackIndex = stackIndex
     if not finalStackIndex then
+        local discount = TechMarket.getRivalSpiceDiscount()
         local spiceBudget = PlayBoard.getResource(color, "spice"):get()
 
-        local bestTechIndex
-        local bestTech
+        local bestTechIndex = nil
+        local bestTech = nil
         for otherStackIndex = 1, 3 do
             local tech = TechMarket.getTopCardDetails(otherStackIndex)
-            if tech.hagal and tech.cost <= spiceBudget + discount and (not bestTech or bestTech.cost < tech.cost) then
+            --Helper.dump("tech:", tech, ", cost:", tech and tech.cost, ", spiceBudget:", spiceBudget, ", discount:", discount)
+            if tech and tech.hagal and tech.cost <= spiceBudget + discount and (not bestTech or bestTech.cost < tech.cost) then
                 bestTechIndex = otherStackIndex
                 bestTech = tech
             end
         end
 
-        if bestTech then
+        if bestTechIndex then
             finalStackIndex = bestTechIndex
         else
             return false
         end
     end
 
-    local tech = TechMarket.getTopCardDetails(finalStackIndex)
-    if Action.acquireTech(color, finalStackIndex, discount) then
-        if tech.name == "trainingDrones" then
+    local techDetails = TechMarket.getTopCardDetails(finalStackIndex)
+    if techDetails and Action.acquireTech(color, finalStackIndex) then
+        if techDetails.name == "trainingDrones" then
             if PlayBoard.useTech(color, "trainingDrones") then
                 Rival.troops(color, "supply", "garrison", 1)
             end
-        elseif tech.name == "spyDrones" then
+        elseif techDetails.name == "spyDrones" then
             if PlayBoard.useTech(color, "spyDrones") then
                 Rival.resources(color, "solari", 1)
             end
@@ -291,68 +317,59 @@ function Rival.acquireTech(color, stackIndex, discount)
     end
 end
 
----
+---@param color PlayerColor
+---@param stackIndex integer
+---@return boolean
 function Rival.pickContract(color, stackIndex)
-    local rival = PlayBoard.getLeader(color)
+    local rival = Rival.getRival(color)
     rival.resources(color, "solari", 2)
     return true
 end
 
----
-function Rival.choose(color, topic)
+---@param color PlayerColor
+---@param topic string
+---@return boolean
+function Rival.randomlyChoose(color, topic)
     if Helper.isElementOf(topic, { "shuttleFleet", "machinations", "propaganda" }) then
         local factions = { "emperor", "spacingGuild", "beneGesserit", "fremen" }
         Helper.repeatChainedAction(2, function ()
             return Rival.influence(color, factions, 1)
         end)
+        return false
     elseif Helper.isElementOf(topic, { "geneLockedVault" }) then
         Rival.drawIntrigues(color, 1)
+        return false
+    else
+        return true
     end
 end
 
----
+---@param color PlayerColor
+---@param topic string
+---@return boolean
 function Rival.decide(color, topic)
     return true
 end
 
----
+---@param color PlayerColor
+---@param nature ResourceName
+---@param amount integer
+---@return boolean
 function Rival.resources(color, nature, amount)
-    local rival = PlayBoard.getLeader(color)
+    local rival = Rival.getRival(color)
     local hasSwordmaster = PlayBoard.hasSwordmaster(color)
-
-    if amount > 0 and hasSwordmaster and Helper.isElementOf(rival, { Rival.glossuRabban, Rival.amberMetulli }) then
+    if nature ~= "strength" and amount > 0 and hasSwordmaster and rival.isStreamlined() then
         return false
     else
         return Action.resources(color, nature, amount)
     end
 end
 
----
-function Rival.sendSpy(color, observationPostName, deepCover)
-    local rival = PlayBoard.getLeader(color)
-    local finalObservationPostName = observationPostName
-    if not finalObservationPostName then
-        for _, faction in ipairs(rival.factionPriorities) do
-            -- Observation posts in faction spaces have the same name as the faction.
-            if not MainBoard.observationPostIsOccupied(faction, deepCover and color or nil) then
-                finalObservationPostName = faction
-                break
-            end
-        end
-    end
-    if finalObservationPostName then
-        local recallableSpies = MainBoard.findRecallableSpies(color)
-        if Action.sendSpy(color, finalObservationPostName, deepCover) then
-            rival.recallableSpies = recallableSpies
-            return true
-        end
-    else
-        Helper.dump("No free observation post!")
-    end
-    return false
-end
-
----
+---@param color PlayerColor
+---@param from TroopLocation
+---@param to TroopLocation
+---@param baseCount integer
+---@return integer
 function Rival.troops(color, from, to, baseCount)
     local finalCount = baseCount
     if from == "garrison" and to == "combat" then
@@ -376,9 +393,43 @@ function Rival.troops(color, from, to, baseCount)
     return Action.troops(color, from, to, finalCount)
 end
 
----
+---@param color PlayerColor
+---@param observationPostName? string
+---@param deepCover? boolean
+---@return boolean
+function Rival.sendSpy(color, observationPostName, deepCover)
+    local rival = Rival.getRival(color)
+    ---@cast rival Rival
+    local finalObservationPostName = observationPostName
+    if not finalObservationPostName then
+        for _, faction in ipairs(rival.factionPriorities) do
+            -- Observation posts in faction spaces have the same name as the faction.
+            if not MainBoard.observationPostIsOccupied(faction, deepCover and color or nil) then
+                finalObservationPostName = faction
+                break
+            end
+        end
+    end
+    if finalObservationPostName then
+        local recallableSpies = MainBoard.findRecallableSpies(color)
+        if Action.sendSpy(color, finalObservationPostName, deepCover) then
+            rival.recallableSpies = recallableSpies
+            return true
+        end
+    else
+        Helper.dump("No free observation post!")
+    end
+    return false
+end
+
+---@return boolean
 function Rival.isStreamlined()
     return false
+end
+
+---@param color PlayerColor
+function Rival.scheme(color)
+    -- NOP
 end
 
 Rival.vladimirHarkonnen = Helper.createClass(Rival, {
@@ -418,7 +469,7 @@ Rival.glossuRabban = Helper.createClass(Rival, {
     end,
 
     scheme = function (color)
-        Rival._gainAllianceIfAble(color, 2)
+        Rival.gainAllianceIfAble(color, 2)
     end,
 
     gainVictoryPoint = function (color, name, count)
@@ -504,7 +555,7 @@ Rival.gurneyHalleck = Helper.createClass(Rival, {
     end,
 
     scheme = function (color)
-        local rival = PlayBoard.getLeader(color)
+        local rival = Rival.getRival(color)
         local bestFaction = nil
         local bestRank = nil
         for _, faction in ipairs(rival.factionPriorities) do
@@ -571,7 +622,7 @@ Rival.jessica = Helper.createClass(Rival, {
     },
 
     signetRing = function (color)
-        Rival._gainAllianceIfAble(color, 1)
+        Rival.gainAllianceIfAble(color, 1)
     end,
 
     scheme = function (color)
@@ -737,7 +788,7 @@ Rival.gaiusHelenMohiam = Helper.createClass(Rival, {
 
     scheme = function (color)
         Rival.drawIntrigues(color, 1)
-        Rival._gainAllianceIfAble(color, 1)
+        Rival.gainAllianceIfAble(color, 1)
     end,
 })
 
@@ -755,7 +806,7 @@ Rival.kotaOdax = Helper.createClass(Rival, {
     signetRing = function (color)
         Rival.resources(color, "spice", 1)
         TechMarket.registerAcquireTechOption(color, "kotaOdaxSignetRingTechBuyOption", "spice", 1)
-        Rival.acquireTech(color, nil, 1)
+        Rival.acquireTech(color, nil)
     end,
 
     scheme = function (color)

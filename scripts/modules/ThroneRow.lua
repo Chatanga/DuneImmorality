@@ -8,10 +8,11 @@ local Deck = Module.lazyRequire("Deck")
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local Commander = Module.lazyRequire("Commander")
 local ImperiumCard = Module.lazyRequire("ImperiumCard")
+local Board = Module.lazyRequire("Board")
 
 local ThroneRow = {}
 
----
+---@param state table
 function ThroneRow.onLoad(state)
     Helper.append(ThroneRow, Helper.resolveGUIDs(false, {
         slotZones = {
@@ -27,7 +28,7 @@ function ThroneRow.onLoad(state)
     end
 end
 
----
+---@param settings Settings
 function ThroneRow.setUp(settings)
     if settings.numberOfPlayers == 6 then
         ThroneRow._transientSetUp()
@@ -36,13 +37,12 @@ function ThroneRow.setUp(settings)
     end
 end
 
----
 function ThroneRow._transientSetUp()
     ThroneRow.acquireCards = {}
     for i, zone in ipairs(ThroneRow.slotZones) do
-        local acquireCard = AcquireCard.new(zone, "Imperium", PlayBoard.withLeader(function (_, color)
+        local acquireCard = AcquireCard.new(zone, Board.onTable(0), "Imperium", PlayBoard.withLeader(function (leader, color)
             if Commander.isTeamShaddam(color) then
-                PlayBoard.getLeader(color).acquireThroneCard(color, i)
+                leader.acquireThroneCard(color, i)
             else
                 Dialog.broadcastToColor(I18N('notShaddamTeam'), color, "Purple")
             end
@@ -51,12 +51,17 @@ function ThroneRow._transientSetUp()
     end
 end
 
----
+---@param zone Zone
+---@param object Object
 function ThroneRow.onObjectEnterZone(zone, object)
+    if Helper.isNil(zone) or Helper.isNil(object) then
+        return
+    end
     if ThroneRow.acquireCards then
         for _, acquireCard in ipairs(ThroneRow.acquireCards) do
             if acquireCard.zone == zone then
                 if object.type == "Card" then
+                    ---@cast object Card
                     if ImperiumCard.isFactionCard(object, "fremen") then
                         broadcastToAll(I18N('notFremenCard'), "White")
                     end
@@ -66,14 +71,15 @@ function ThroneRow.onObjectEnterZone(zone, object)
     end
 end
 
----
 function ThroneRow._tearDown()
     for _, slotZone in ipairs(ThroneRow.slotZones) do
         slotZone.destruct()
     end
 end
 
----
+---@param color PlayerColor
+---@param indexInRow integer
+---@return boolean
 function ThroneRow.acquireThroneCard(color, indexInRow)
     local acquireCard = ThroneRow.acquireCards[indexInRow]
     PlayBoard.giveCardFromZone(color, acquireCard.zone)

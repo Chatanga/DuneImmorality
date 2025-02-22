@@ -10,7 +10,7 @@ local ScoreBoard = {
     tokens = {}
 }
 
----
+---@param state table
 function ScoreBoard.onLoad(state)
 
     ScoreBoard.hiddenZone = Helper.resolveGUIDs(true, "3848a9")
@@ -93,7 +93,7 @@ function ScoreBoard.onLoad(state)
     end
 end
 
----
+---@param settings Settings
 function ScoreBoard.setUp(settings)
     local activateCategories = {
         base = true,
@@ -112,23 +112,6 @@ function ScoreBoard.setUp(settings)
                 if key and key:len() > 0 then
                     token.setName(I18N(key))
                 end
-                if false then
-                    -- Clumsy workaround to name items in a bag.
-                    -- TODO Recreate the bag?
-                    if token.type == "Bag" then
-                        local count = #token.getObjects()
-                        for i = 1, count do
-                            local innerToken = token.takeObject({ position = token.getPosition() + Vector(0, i * 0.5, 0) })
-                            innerToken.setLock(true)
-                            Helper.onceTimeElapsed(0.5).doAfter(function ()
-                                innerToken.setName(I18N(Helper.getID(innerToken)))
-                                innerToken.setLock(false)
-                            end)
-                        end
-                    elseif token.type == "Infinite" then
-                        -- TODO
-                    end
-                end
             end)
         else
             Helper.forEach(ScoreBoard.tokens[category], function (_, token)
@@ -141,27 +124,27 @@ function ScoreBoard.setUp(settings)
     ScoreBoard._transientSetUp(settings)
 end
 
----
+---@param settings Settings
 function ScoreBoard._transientSetUp(settings)
     -- NOP
 end
 
----
+---@param color PlayerColor
+---@param name string
+---@param count integer
+---@return boolean
 function ScoreBoard.gainVictoryPoint(color, name, count)
-    -- FIXME Useless indirection.
-    local holder = {
-        success = false
-    }
+    local success = false
     Helper.forEachRecursively(ScoreBoard.tokens, function (victoryPointName, victoryPointSource)
         if name == victoryPointName then
             PlayBoard.grantScoreToken(color, victoryPointSource)
-            holder.success = true
+            success = true
         elseif name .. "Bag" == victoryPointName then
             PlayBoard.grantScoreTokenFromBag(color, victoryPointSource, count)
-            holder.success = true
+            success = true
         end
     end)
-    if holder.success then
+    if success then
         return true
     elseif Combat.gainVictoryPoint(color, name, count) then
         return true
@@ -174,6 +157,7 @@ function ScoreBoard.gainVictoryPoint(color, name, count)
 end
 
 --- TODO Find a better place and implementation.
+---@return Object?
 function ScoreBoard.getFreeVoiceToken()
     for _, object in ipairs(ScoreBoard.hiddenZone.getObjects()) do
         if Helper.isElementOf(object.getGUID(), { "516df5", "cc0eda" }) then

@@ -67,105 +67,140 @@ local TechCard = {
     choamTransports = {cost = 6, hagal = false, acquireBonus = {contract(1)}},
 }
 
-function TechCard._resolveCard(card)
-    assert(card)
-    local cardName = Helper.getID(card)
+---@alias TechCardDetails {
+--- name: string,
+--- cost: integer,
+--- hagal: boolean,
+--- acquireBonus: function[],
+--- preReveal: function[],
+--- postReveal: function[] }
+
+---@param techCard Card
+---@return TechCardDetails
+function TechCard._resolveCard(techCard)
+    assert(techCard)
+    local cardName = Helper.getID(techCard)
     local cardInfo = TechCard[cardName]
     assert(cardInfo, "Unknown card (empty name usually means that the card is stacked with another): " .. tostring(cardName))
     cardInfo.name = cardName
     return cardInfo
 end
 
----
+---@param techCard Card
+---@return TechCardDetails
 function TechCard.getDetails(techCard)
     return TechCard._resolveCard(techCard)
 end
 
----
+---@param techCard Card
+---@return integer
 function TechCard.getCost(techCard)
     return TechCard._resolveCard(techCard).cost
 end
 
----
+---@param techCard Card
+---@return boolean
 function TechCard.isHagal(techCard)
     return TechCard._resolveCard(techCard).hagal
 end
 
----
+---@param color PlayerColor
+---@return TechRevealContributions
 function TechCard.evaluatePreReveal(color)
     return TechCard._evaluateReveal(color, true)
 end
 
----
+---@param color PlayerColor
+---@return TechRevealContributions
 function TechCard.evaluatePostReveal(color, oldContributions)
     return TechCard._evaluateReveal(color, false, oldContributions)
 end
 
----
+---@alias TechRevealContributions {
+--- spice: integer,
+--- water: integer,
+--- solari: integer,
+--- persuasion: integer,
+--- strength: integer,
+--- intrigues: integer,
+--- troops: integer,
+--- fighters: integer,
+--- negotiators: integer,
+--- tanks: integer }
+
+---@param color PlayerColor
+---@param preElsePost boolean
+---@param oldContributions? TechRevealContributions
+---@return TechRevealContributions
 function TechCard._evaluateReveal(color, preElsePost, oldContributions)
-    local result = {}
+    local contributions = {}
 
     local context = {
         oldContributions = oldContributions,
         color = color,
-        techCards = Helper.mapValues(PlayBoard.getAllTechs(color), TechCard._resolveCard),
         -- This mock up is enough since reveal effects only cover persuasion and strength (or other resources).
         player = {
             resources = function (_, resourceName, amount)
-                result[resourceName] = (result[resourceName] or 0) + amount
+                contributions[resourceName] = (contributions[resourceName] or 0) + amount
             end,
 
             drawIntrigues = function (_, amount)
-                result.intrigues = (result.intrigues or 0) + amount
+                contributions.intrigues = (contributions.intrigues or 0) + amount
             end,
 
             troops = function (_, from, to, amount)
                 if from == "supply" then
                     if to == "garrison" then
-                        result.troops = (result.troops or 0) + amount
+                        contributions.troops = (contributions.troops or 0) + amount
                     elseif to == "combat" then
-                        result.fighters = (result.fighters or 0) + amount
+                        contributions.fighters = (contributions.fighters or 0) + amount
                     elseif to == "negotiation" then
-                        result.negotiators = (result.negotiators or 0) + amount
+                        contributions.negotiators = (contributions.negotiators or 0) + amount
                     elseif to == "tanks" then
-                        result.specimens = (result.specimens or 0) + amount
+                        contributions.specimens = (contributions.specimens or 0) + amount
                     end
                 end
             end
-        }
+        },
     }
 
-    for cardName, card in pairs(context.techCards) do
-        local effects = preElsePost and card.preReveal or card.postReveal
+    for _, techCard in ipairs(PlayBoard.getAllTechs(color)) do
+        local details = TechCard._resolveCard(techCard)
+        local effects = preElsePost and details.preReveal or details.postReveal
         if effects then
-            context.card = card
-            context.cardName = cardName
+
+            -- TODO Doesn't matter?
+            context.card = techCard
+            context.cardName = Helper.getID(techCard)
+
             for _, effect in ipairs(effects) do
                 CardEffect.evaluate(context, effect)
             end
         end
     end
 
-    return result
+    return contributions
 end
 
----
+---@param color PlayerColor
+---@param techCard Card
 function TechCard.applyBuyEffect(color, techCard)
-    Types.assertIsPlayerColor(color)
+    assert(Types.isPlayerColor(color))
     assert(techCard)
 
     local details = TechCard.getDetails(techCard)
-    local bonus = details.acquireBonus
-    if bonus then
+    if details.acquireBonus then
         local context = {
             color = color,
             player = PlayBoard.getLeader(color),
-            cardName = Helper.getID(techCard),
+
+            -- TODO Doesn't matter?
             card = techCard,
+            cardName = Helper.getID(techCard),
         }
 
-        for _, bonusItem in ipairs(bonus) do
-            CardEffect.evaluate(context, bonusItem)
+        for _, effect in ipairs(details.acquireBonus) do
+            CardEffect.evaluate(context, effect)
         end
     end
 

@@ -7,6 +7,7 @@ local I18N = require("utils.I18N")
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local MainBoard = Module.lazyRequire("MainBoard")
 local Commander = Module.lazyRequire("Commander")
+local Board = Module.lazyRequire("Board")
 
 local ChoamContractMarket = {
     contracts = {},
@@ -15,7 +16,7 @@ local ChoamContractMarket = {
     contractSlots = {},
 }
 
----
+---@param state table
 function ChoamContractMarket.onLoad(state)
     Helper.append(ChoamContractMarket, Helper.resolveGUIDs(false, {
         contractBags = {
@@ -75,7 +76,7 @@ function ChoamContractMarket.onLoad(state)
     end
 end
 
----
+---@param settings Settings
 function ChoamContractMarket.setUp(settings)
     if settings.useContracts then
         ChoamContractMarket._transientSetUp(settings)
@@ -139,7 +140,7 @@ function ChoamContractMarket.setUp(settings)
     end
 end
 
----
+---@param settings Settings
 function ChoamContractMarket._transientSetUp(settings)
     ChoamContractMarket.enabled = true
 
@@ -159,12 +160,10 @@ function ChoamContractMarket._transientSetUp(settings)
     ChoamContractMarket._processSnapPoints(settings)
 
     for i, zone in ipairs(ChoamContractMarket.contractSlots) do
-        local acquireCard = AcquireCard.new(zone, "Contract", PlayBoard.withLeader(function (_, color)
-            local leader = PlayBoard.getLeader(color)
+        local acquireCard = AcquireCard.new(zone, Board.onMainBoard(0.1), "Contract", PlayBoard.withLeader(function (leader, color)
             leader.pickContract(color, i)
         end))
-        acquireCard.groundHeight = acquireCard.groundHeight + 0.1
-        acquireCard.cardHeight = 0.2
+        acquireCard.CARD_HEIGHT = 0.2
         table.insert(ChoamContractMarket.acquireCards, acquireCard)
     end
 
@@ -184,19 +183,18 @@ function ChoamContractMarket._transientSetUp(settings)
     end)
 end
 
----
 function ChoamContractMarket._tearDown()
     for _, bag in pairs(ChoamContractMarket.contractBags) do
         bag.destruct()
     end
 end
 
----
+---@return boolean
 function ChoamContractMarket.isEnabled()
     return ChoamContractMarket.enabled
 end
 
----
+---@param settings Settings
 function ChoamContractMarket._processSnapPoints(settings)
     ChoamContractMarket.contractSlots = {}
 
@@ -217,14 +215,16 @@ function ChoamContractMarket._processSnapPoints(settings)
     })
 end
 
----
+---@param indexInRow integer
+---@param color PlayerColor
+---@return boolean
 function ChoamContractMarket.acquireContract(indexInRow, color)
     local acquireCard = ChoamContractMarket.acquireCards[indexInRow]
     local objects = acquireCard.zone.getObjects()
     if #objects > 0 then
         local contract = objects[1]
         printToAll(I18N("acquireContract", { name = I18N(Helper.getID(contract)) }), color)
-        PlayBoard.grantContractTile(color, contract, false)
+        PlayBoard.grantContractTile(color, contract)
         ChoamContractMarket._replenish(indexInRow)
         return true
     else
@@ -232,7 +232,7 @@ function ChoamContractMarket.acquireContract(indexInRow, color)
     end
 end
 
----
+---@param indexInRow integer
 function ChoamContractMarket._replenish(indexInRow)
     local acquireCard = ChoamContractMarket.acquireCards[indexInRow]
     local position = acquireCard.zone.getPosition()
@@ -245,7 +245,7 @@ function ChoamContractMarket._replenish(indexInRow)
     end
 end
 
----
+---@param position Vector
 function ChoamContractMarket.takeAnySardaukarContract(position)
 
     for _, object in ipairs(ChoamContractMarket.contractBag.getObjects()) do

@@ -68,8 +68,8 @@ function Example._transientSetUp(settings)
             Helper.dump("Click once:", ...)
 
             -- Same as "Example.anchor.removeButtons()", except when a dynamic
-            -- callback is found. In this case, the callbck is also unregistered.
-            Helper.removeButtons(Example.anchor)
+            -- callback is found. In this case, the callback is also unregistered.
+            Helper.removeButtons(Example.anchor, { 1 })
             -- The function above already takes care of removing any dynamic callback.
             Helper.unregisterGlobalCallback(Example.callbackNme)
         end)

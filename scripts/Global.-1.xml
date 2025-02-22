@@ -125,7 +125,7 @@ be integrated to this mod in a standard way.
 				</VerticalLayout>
 				<Toggle class="setUp" id="immortality" isOn="True" onValueChanged="Global/setImmortality" key="immortality"/>
 				<VerticalLayout padding="25 0 0 0">
-					<Toggle class="setUp" id="goTo11" isOn="False" onValueChanged="Global/setGoTo11" key="goTo11"/>
+					<Toggle class="setUp" id="goTo11" isOn="False" onValueChanged="Global/setAnyField" key="goTo11"/>
 				</VerticalLayout>
 				<Toggle class="setUp" id="bloodlines" isOn="True" onValueChanged="Global/setBloodlines" key="bloodlines"/>
 				<VerticalLayout padding="25 0 0 0">
@@ -135,7 +135,6 @@ be integrated to this mod in a standard way.
 					</VerticalLayout>
 				</VerticalLayout>
 			</VerticalLayout>
-
 		</VerticalLayout>
 	</VerticalLayout>
 </Panel>
@@ -167,7 +166,7 @@ be integrated to this mod in a standard way.
 </Panel>
 
 <Panel id="openSubmitScreenPanel" class="Window" active="false" width="200" height="40" rectAlignment="LowerRight" offsetXY="-60,10">
-    <Button id="btnOpenSubmitScreen" color="blue" key="openSubmitScreen" text="Open submit screen" onClick="openSubmitScreen"/>
+	<Button id="btnOpenSubmitScreen" color="blue" key="openSubmitScreen" text="Open submit screen" onClick="openSubmitScreen"/>
 </Panel>
 
 <Panel position="0 0" width="900" height="600" color="#000000" id="submitScreenPanel" rotation="0 0 0" outline="#2e200f" outlineSize="1" active="false" allowDragging="True" returnToOriginalPositionWhenReleased="False">
@@ -178,8 +177,8 @@ be integrated to this mod in a standard way.
 		<Image class="setUp" image="https://steamusercontent-a.akamaihd.net/ugc/2502404390141305135/2B270A53CD2A3EC8703F738937ABA09788EC3B89/" preferredWidth="900" preferredHeight="300"/>
 	</VerticalLayout>
 	<Image class="setUp" position="0 270" color="#000000AA" width="900" height="60"/>
-    <VerticalLayout childForceExpandWidth="true" childForceExpandHeight="false" padding="20 20 10 10">
-        <Text class="setUp" key="submitGameMessage" color="#DDDDDDFF" fontSize="18"/>
+	<VerticalLayout childForceExpandWidth="true" childForceExpandHeight="false" padding="20 20 10 10">
+		<Text class="setUp" key="submitGameMessage" color="#DDDDDDFF" fontSize="18"/>
 	</VerticalLayout>
 	<VerticalLayout>
 		<TableLayout padding="50 50 310 0" columnWidths="80 200 200 80 80 80 80" childAlignment="MiddleCenter" >
@@ -239,5 +238,5 @@ be integrated to this mod in a standard way.
 			</Row>
 			<Row/>
 		</TableLayout>
-    </VerticalLayout>
+	</VerticalLayout>
 </Panel>

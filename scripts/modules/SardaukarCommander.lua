@@ -12,10 +12,11 @@ local Combat = Module.lazyRequire("Combat")
 local SardaukarCommanderSkillCard = Module.lazyRequire("SardaukarCommanderSkillCard")
 local Commander = Module.lazyRequire("Commander")
 local TurnControl = Module.lazyRequire("TurnControl")
+local Board = Module.lazyRequire("Board")
 
 local SardaukarCommander = {}
 
----
+---@param state table
 function SardaukarCommander.onLoad(state)
     Helper.append(SardaukarCommander, Helper.resolveGUIDs(false, {
         protoSardaukar = "87b7c1",
@@ -42,7 +43,8 @@ function SardaukarCommander.onLoad(state)
     end
 end
 
----
+---@param settings Settings
+---@return Continuation?
 function SardaukarCommander.setUp(settings)
     if settings.bloodlines then
         local continuation = Helper.createContinuation("SardaukarCommander.setUp")
@@ -52,7 +54,7 @@ function SardaukarCommander.setUp(settings)
             local snapPoint = Helper.createRelativeSnapPointFromZone(anchor, SardaukarCommander.deckZone, true, { "SardaukarCommanderSkill" })
             anchor.setSnapPoints({ snapPoint })
 
-            Deck.generateSardaukarCommanderSkillDeck(SardaukarCommander.deckZone).doAfter(function (deck)
+            Deck.generateSardaukarCommanderSkillDeck(SardaukarCommander.deckZone, settings).doAfter(function (deck)
                 assert(deck, "No sardaukar skill deck!")
                 Helper.shuffleDeck(deck)
                 for _, zone in ipairs(SardaukarCommander.slotZones) do
@@ -64,14 +66,15 @@ function SardaukarCommander.setUp(settings)
         end)
 
         return continuation
+    else
+        return nil
     end
 end
 
----
+---@param settings Settings
 function SardaukarCommander._transientSetUp(settings)
     for i, zone in ipairs(SardaukarCommander.slotZones) do
-        AcquireCard.new(zone, "SardaukarCommanderSkill", PlayBoard.withLeader(function (_, color)
-            local leader = PlayBoard.getLeader(color)
+        AcquireCard.new(zone, Board.onTable(0), "SardaukarCommanderSkill", PlayBoard.withLeader(function (leader, color)
             leader.acquireSardaukarCommanderSkillCard(color, i)
         end), Deck.getAcquireCardDecalUrl("generic"))
     end
@@ -97,7 +100,7 @@ function SardaukarCommander._transientSetUp(settings)
     end)
 end
 
----
+---@param color PlayerColor
 function SardaukarCommander._setStrengthContributions(color)
     local strength = 0
     if Combat.hasAnySardaukarCommander(color) then
@@ -107,7 +110,7 @@ function SardaukarCommander._setStrengthContributions(color)
     PlayBoard.getResource(color, "strength"):setBaseValueContribution("sardaukarCommanderSkills", strength)
 end
 
----
+---@param settings Settings
 function SardaukarCommander._createSardaukarCommanderRecruitmentButtons(settings)
     local sardaukarLocationNames = {}
     if settings.numberOfPlayers == 6 then
@@ -142,7 +145,7 @@ function SardaukarCommander._createSardaukarCommanderRecruitmentButtons(settings
             sardaukarLocationPositions[name] = position
             position.y = 1.65 -- 1.58
         end
-    }, true)
+    })
 
     sardaukarLocationPositions.sardaukarStandard = Vector(0.34, 1.56, 14.6)
 
@@ -167,13 +170,15 @@ function SardaukarCommander._createSardaukarCommanderRecruitmentButtons(settings
                 end)
             else
                 if settings.numberOfPlayers == 6 and Commander.isTeamMuadDib(color) then
-                    if leader.resources(color, "spice", -2) then
-                        leader.discardSardaukarCommander(color, sardaukarLocationName)
-                    else
-                        Dialog.broadcastToColor(I18N('notEnoughSpiceToDiscardSardaukarCommander'), color, "Purple")
+                    if sardaukarLocationName ~= "sardaukarStandard" then
+                        if leader.resources(color, "spice", -2) then
+                            leader.discardSardaukarCommander(color, sardaukarLocationName)
+                        else
+                            Dialog.broadcastToColor(I18N('notEnoughSpiceToDiscardSardaukarCommander'), color, "Purple")
+                        end
                     end
                 else
-                    if leader.resources(color, "solari", PlayBoard.hasTech(color, "sardaukarHighCommand") and -1 or -2) then
+                    if sardaukarLocationName == "sardaukarStandard" or leader.resources(color, "solari", PlayBoard.hasTech(color, "sardaukarHighCommand") and -1 or -2) then
                         leader.recruitSardaukarCommander(color, sardaukarLocationName)
                     else
                         Dialog.broadcastToColor(I18N('notEnoughSolarisToRecruitSardaukarCommander'), color, "Purple")
@@ -187,14 +192,17 @@ function SardaukarCommander._createSardaukarCommanderRecruitmentButtons(settings
     end
 end
 
----
+---@param marker Object
+---@param acquire boolean
+---@param callback ClickFunction
 function SardaukarCommander.createSardaukarCommanderRecruitmentButton(marker, acquire, callback)
     local height = marker.getPosition().y + 0.1
     Helper.createSizedAreaButton(360, 360, marker, 0, 0, height, I18N(acquire and "sardaukarAcquireAndRecruitButton" or "sardaukarRecruitButton"), callback)
     SardaukarCommander.setAvailable(marker, acquire)
 end
 
----
+---@param origin string
+---@return Object?
 function SardaukarCommander._getRecruitedSardaukar(origin)
     for _, sardaukar in ipairs(getObjectsWithTag("SardaukarCommander")) do
         if Helper.getID(sardaukar) == origin then
@@ -204,17 +212,24 @@ function SardaukarCommander._getRecruitedSardaukar(origin)
     return nil
 end
 
----
+---@param color PlayerColor
+---@param origin string
+---@return boolean
 function SardaukarCommander.recruitSardaukarCommander(color, origin)
     return SardaukarCommander._acquireSardaukarCommander(color, origin, true)
 end
 
----
+---@param color PlayerColor
+---@param origin string
+---@return boolean
 function SardaukarCommander.discardSardaukarCommander(color, origin)
     return SardaukarCommander._acquireSardaukarCommander(color, origin, false)
 end
 
----
+---@param color PlayerColor
+---@param origin string
+---@param recruit boolean
+---@return boolean
 function SardaukarCommander._acquireSardaukarCommander(color, origin, recruit)
     for _, marker in ipairs(getObjectsWithTag("SardaukarCommanderRecruitmentMarker")) do
         if Helper.getID(marker) == origin then
@@ -237,7 +252,8 @@ function SardaukarCommander._acquireSardaukarCommander(color, origin, recruit)
     return false
 end
 
----
+---@param marker Object
+---@param available boolean
 function SardaukarCommander.setAvailable(marker, available)
     marker.editButton({
         index = 0,
@@ -245,16 +261,19 @@ function SardaukarCommander.setAvailable(marker, available)
     })
 end
 
----
+---@param origin string
+---@return boolean
 function SardaukarCommander.isAvailable(origin)
     for _, marker in ipairs(SardaukarCommander.sardaukarMarkers) do
         if Helper.getID(marker) == origin then
             return not SardaukarCommander._getRecruitedSardaukar(origin)
         end
     end
+    return false
 end
 
----
+---@param indexInRow integer
+---@param color PlayerColor
 function SardaukarCommander.acquireSardaukarCommanderSkillCard(indexInRow, color)
     if TurnControl.getPlayerCount() == 6 then
         if Commander.isTeamMuadDib(color) then
@@ -265,13 +284,19 @@ function SardaukarCommander.acquireSardaukarCommanderSkillCard(indexInRow, color
     end
     local zone = SardaukarCommander.slotZones[indexInRow]
     return Helper.withAnyCard(zone, function (card)
-        PlayBoard.grantSardaukarCommanderSkillCard(color, card)
-        Helper.onceTimeElapsed(2).doAfter(Helper.partialApply(SardaukarCommander._setStrengthContributions, color))
-        SardaukarCommander._replenish(indexInRow)
+        local newSkillCardName = Helper.getID(card)
+        local skillCardNames = PlayBoard.getAllCommanderSkillNames(color)
+        if not Helper.isElementOf(newSkillCardName, skillCardNames) then
+            PlayBoard.grantSardaukarCommanderSkillCard(color, card)
+            Helper.onceTimeElapsed(2).doAfter(Helper.partialApply(SardaukarCommander._setStrengthContributions, color))
+            SardaukarCommander._replenish(indexInRow)
+        else
+            Dialog.broadcastToColor(I18N('sardaukarCommanderSkillAlreadyPossessed'), color, "Purple")
+        end
     end)
 end
 
----
+---@param indexInRow integer
 function SardaukarCommander._replenish(indexInRow)
     local position = SardaukarCommander.slotZones[indexInRow].getPosition()
     Helper.moveCardFromZone(SardaukarCommander.deckZone, position, Vector(0, 180, 0))

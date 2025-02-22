@@ -1,11 +1,16 @@
 local Helper = require("utils.Helper")
 
+---@class Set
+---@field elements any[]
 local Set = Helper.createClass()
 
-function Set.empty()
+---@return Set
+function Set.unused_empty()
     return Set.newFromList({})
 end
 
+---@param ... any
+---@return Set
 function Set.newFromItems(...)
     local data = {
         elements = {}
@@ -16,6 +21,8 @@ function Set.newFromItems(...)
     return Helper.createClassInstance(Set, data)
 end
 
+---@param elements any[]
+---@return Set
 function Set.newFromList(elements)
     local data = {
         elements = {}
@@ -26,7 +33,9 @@ function Set.newFromList(elements)
     return Helper.createClassInstance(Set, data)
 end
 
-function Set.newFromSet(elements)
+---@param elements table<any, any>
+---@return Set
+function Set.unused_newFromSet(elements)
     local data = {
         elements = {}
     }
@@ -38,6 +47,8 @@ function Set.newFromSet(elements)
     return Helper.createClassInstance(Set, data)
 end
 
+---@param set? Set
+---@return Set
 function Set.new(set)
     local data = {
         elements = {}
@@ -50,10 +61,13 @@ function Set.new(set)
     return Helper.createClassInstance(Set, data)
 end
 
+---@return integer
 function Set:size()
     return #self:toList()
 end
 
+---@param set Set
+---@return Set
 function Set:union(set)
     local newSet = Set.new(self)
     for element, _ in pairs(set.elements) do
@@ -62,7 +76,9 @@ function Set:union(set)
     return newSet
 end
 
-function Set:soustraction(set)
+---@param set Set
+---@return Set
+function Set:subtraction(set)
     assert(set)
     local newSet = Set.new()
     for element, _ in pairs(self.elements) do
@@ -73,6 +89,8 @@ function Set:soustraction(set)
     return newSet
 end
 
+---@param set Set
+---@return Set
 function Set:intersection(set)
     assert(set)
     local newSet = Set.new()
@@ -84,6 +102,8 @@ function Set:intersection(set)
     return newSet
 end
 
+---@param set Set
+---@return boolean
 function Set:isSupersetOf(set)
     assert(set)
     for element, _ in pairs(set.elements) do
@@ -94,6 +114,8 @@ function Set:isSupersetOf(set)
     return true
 end
 
+---@param set Set
+---@return boolean
 function Set:isSubsetOf(set)
     assert(set)
     for element, _ in pairs(self.elements) do
@@ -104,11 +126,15 @@ function Set:isSubsetOf(set)
     return true
 end
 
+---@param element any
+---@return boolean
 function Set:contains(element)
     assert(element)
     return self.elements[element]
 end
 
+---@param element any
+---@return boolean
 function Set:add(element)
     assert(element)
     if not self.elements[element] then
@@ -119,6 +145,8 @@ function Set:add(element)
     end
 end
 
+---@param element any
+---@return boolean
 function Set:remove(element)
     assert(element)
     if self.elements[element] then
@@ -129,6 +157,8 @@ function Set:remove(element)
     end
 end
 
+---@param f fun(x: any): any
+---@return Set
 function Set:map(f)
     local newSet = Set.new()
     for element, _ in pairs(self.elements) do
@@ -138,6 +168,8 @@ function Set:map(f)
     return newSet
 end
 
+---@param p fun(x: any): boolean
+---@return Set
 function Set:filter(p)
     local newSet = Set.new()
     for element, _ in pairs(self.elements) do
@@ -149,6 +181,7 @@ function Set:filter(p)
     return newSet
 end
 
+---@return any[]
 function Set:toList()
     local list = {}
     for element, _ in pairs(self.elements) do
@@ -157,6 +190,7 @@ function Set:toList()
     return list
 end
 
+---@return string
 function Set:toString()
     local str = "{"
     local first = true
@@ -174,7 +208,7 @@ end
 
 Set.__len = Set.size
 Set.__add = Set.union
-Set.__sub = Set.soustraction
+Set.__sub = Set.subtraction
 Set.__pow = Set.intersection
 Set.__ge = Set.isSupersetOf
 Set.__le = Set.isSubsetOf

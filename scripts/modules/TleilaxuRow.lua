@@ -10,10 +10,11 @@ local TleilaxuResearch = Module.lazyRequire("TleilaxuResearch")
 local MainBoard = Module.lazyRequire("MainBoard")
 local ImperiumCard = Module.lazyRequire("ImperiumCard")
 local Commander = Module.lazyRequire("Commander")
+local Board = Module.lazyRequire("Board")
 
 local TleilaxuRow = {}
 
----
+---@param state table
 function TleilaxuRow.onLoad(state)
     Helper.append(TleilaxuRow, Helper.resolveGUIDs(false, {
         deckZone = "14b2ca",
@@ -29,7 +30,8 @@ function TleilaxuRow.onLoad(state)
     end
 end
 
----
+---@param settings Settings
+---@return Continuation
 function TleilaxuRow.setUp(settings)
     local continuation = Helper.createContinuation("TleilaxuRow.setUp")
     if settings.immortality then
@@ -60,18 +62,16 @@ function TleilaxuRow.setUp(settings)
     return continuation
 end
 
----
 function TleilaxuRow._transientSetUp()
     TleilaxuRow.acquireCards = {}
     for i, zone in ipairs(TleilaxuRow.slotZones) do
-        local acquireCard = AcquireCard.new(zone, "Imperium", PlayBoard.withLeader(function (_, color)
-            PlayBoard.getLeader(color).acquireTleilaxuCard(color, i)
+        local acquireCard = AcquireCard.new(zone, Board.onTable(0), "Imperium", PlayBoard.withLeader(function (leader, color)
+            leader.acquireTleilaxuCard(color, i)
         end), Deck.getAcquireCardDecalUrl("generic"))
         table.insert(TleilaxuRow.acquireCards, acquireCard)
     end
 end
 
----
 function TleilaxuRow._tearDown()
     TleilaxuRow.deckZone.destruct()
     for _, slotZone in ipairs(TleilaxuRow.slotZones) do
@@ -79,7 +79,8 @@ function TleilaxuRow._tearDown()
     end
 end
 
----
+---@param indexInRow integer
+---@param color PlayerColor
 function TleilaxuRow.acquireTleilaxuCard(indexInRow, color)
     local acquireCard = TleilaxuRow.acquireCards[indexInRow]
     assert(Helper.withAnyCard(acquireCard.zone, function (card)
@@ -117,16 +118,13 @@ function TleilaxuRow.acquireTleilaxuCard(indexInRow, color)
                 -- Replenish the slot in the row.
                 Helper.moveCardFromZone(TleilaxuRow.deckZone, acquireCard.zone.getPosition(), Vector(0, 180, 0))
             end
-
-            return true
         else
             Dialog.broadcastToColor(I18N("noEnoughSpecimen"), color, "Purple")
-            return false
         end
     end))
 end
 
----
+---@param indexInRow integer
 function TleilaxuRow.trash(indexInRow)
     local acquireCard = TleilaxuRow.acquireCards[indexInRow]
     assert(Helper.withAnyCard(acquireCard.zone, function (card)

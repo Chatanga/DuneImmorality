@@ -4,6 +4,7 @@ local Helper = require("utils.Helper")
 local CardEffect = require("CardEffect")
 
 -- Function aliasing for a more readable code.
+local todo = CardEffect.todo
 local persuasion = CardEffect.persuasion
 local sword = CardEffect.sword
 local spice = CardEffect.spice
@@ -12,10 +13,14 @@ local opponentHasSandworm = CardEffect.opponentHasSandworm
 local agentInGreenSpace = CardEffect.agentInGreenSpace
 local emperorSuperFriendship = CardEffect.emperorSuperFriendship
 
+---@class SkillCardInfo: CardInfo
+---@field reveal CardEffect[]
+---@field combat CardEffect[]
+
 local SardaukarCommanderSkillCard = {
     -- bloodlines
     charismatic = {reveal = {persuasion(1)}},
-    desperate = {combat = {'trash --> sword(3)'}},
+    desperate = {combat = {todo('trash --> sword(3)')}},
     fierce = {combat = {sword(1), sword(opponentHasSandworm(1))}},
     canny = {combat = {sword(agentInGreenSpace(2))}},
     driven = {reveal = {spice(1)}},
@@ -23,6 +28,8 @@ local SardaukarCommanderSkillCard = {
     hardy = {reveal = {troop(1)}},
 }
 
+---@param cardName string
+---@return SkillCardInfo
 function SardaukarCommanderSkillCard._resolveCard(cardName)
     local cardInfo = SardaukarCommanderSkillCard[cardName]
     assert(cardInfo, "Unknown card: " .. tostring(cardName))
@@ -30,13 +37,17 @@ function SardaukarCommanderSkillCard._resolveCard(cardName)
     return cardInfo
 end
 
----
-function SardaukarCommanderSkillCard.getDetails(skillCard)
-    return SardaukarCommanderSkillCard._resolveCard(skillCard)
+---@param cardName string
+---@return SkillCardInfo
+function SardaukarCommanderSkillCard.getDetails(cardName)
+    return SardaukarCommanderSkillCard._resolveCard(cardName)
 end
 
+---@param color PlayerColor
+---@param skillCardNames string[]
+---@return table
 function SardaukarCommanderSkillCard.evaluateReveal(color, skillCardNames)
-    local skillCards = Helper.mapValues(skillCardNames, SardaukarCommanderSkillCard._resolveCard)
+    local skillCards = Helper.mapArrayValues(skillCardNames, SardaukarCommanderSkillCard._resolveCard)
 
     local result = {}
 
@@ -77,8 +88,11 @@ function SardaukarCommanderSkillCard.evaluateReveal(color, skillCardNames)
     return result
 end
 
+---@param color PlayerColor
+---@param skillCardNames string[]
+---@return integer
 function SardaukarCommanderSkillCard.evaluateCombat(color, skillCardNames)
-    local skillCards = Helper.mapValues(skillCardNames, SardaukarCommanderSkillCard._resolveCard)
+    local skillCards = Helper.mapArrayValues(skillCardNames, SardaukarCommanderSkillCard._resolveCard)
 
     local result = {}
 

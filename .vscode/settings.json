@@ -34,6 +34,11 @@
         "WebRequest",
         "onObjectDestroy",
         "getAllObjects",
-        "table"
-    ]
+        "table",
+        "gameTableGUIDs"
+    ],
+    "Lua.completion.autoRequire": false,
+    "Lua.runtime.special": {
+        "Module.lazyRequire": "require"
+    }
 }

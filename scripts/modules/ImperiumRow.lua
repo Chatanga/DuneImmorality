@@ -7,14 +7,14 @@ local Deck = Module.lazyRequire("Deck")
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local Music = Module.lazyRequire("Music")
 local MainBoard = Module.lazyRequire("MainBoard")
+local Board = Module.lazyRequire("Board")
 
 local ImperiumRow = {}
 
----
+---@param state table
 function ImperiumRow.onLoad(state)
     Helper.append(ImperiumRow, Helper.resolveGUIDs(false, {
         deckZone = "8bd982",
-        -- FIXME Confusing "reserve" wording.
         reservationSlotZone = "473cf7",
         slotZones = {
             '3de1d0',
@@ -30,7 +30,8 @@ function ImperiumRow.onLoad(state)
     end
 end
 
----
+---@param settings Settings
+---@return Continuation
 function ImperiumRow.setUp(settings)
     local continuation = Helper.createContinuation("ImperiumRow.setUp")
 
@@ -39,15 +40,7 @@ function ImperiumRow.setUp(settings)
         local snapPoint = Helper.createRelativeSnapPointFromZone(anchor, ImperiumRow.deckZone, true, { "Imperium" })
         anchor.setSnapPoints({ snapPoint })
 
-        Deck.generateImperiumDeck(
-            ImperiumRow.deckZone,
-            settings.useContracts,
-            settings.riseOfIx,
-            settings.immortality,
-            settings.legacy,
-            settings.merakon,
-            settings.bloodlines,
-            settings.ixAmbassy)
+        Deck.generateImperiumDeck(ImperiumRow.deckZone, settings)
         .doAfter(function (deck)
             assert(deck, "No Imperium deck!")
             Helper.shuffleDeck(deck)
@@ -62,17 +55,14 @@ function ImperiumRow.setUp(settings)
     return continuation
 end
 
----
 function ImperiumRow._transientSetUp()
     for i, zone in ipairs(ImperiumRow.slotZones) do
-        AcquireCard.new(zone, "Imperium", PlayBoard.withLeader(function (_, color)
-            local leader = PlayBoard.getLeader(color)
+        AcquireCard.new(zone, Board.onTable(0), "Imperium", PlayBoard.withLeader(function (leader, color)
             leader.acquireImperiumCard(color, i)
         end), Deck.getAcquireCardDecalUrl("generic"))
     end
 
-    AcquireCard.new(ImperiumRow.reservationSlotZone, "Imperium", PlayBoard.withLeader(function (_, color)
-        local leader = PlayBoard.getLeader(color)
+    AcquireCard.new(ImperiumRow.reservationSlotZone, Board.onTable(0), "Imperium", PlayBoard.withLeader(function (leader, color)
         leader.acquireReservedImperiumCard(color)
     end), Deck.getAcquireCardDecalUrl("generic"))
 
@@ -86,7 +76,8 @@ function ImperiumRow._transientSetUp()
     end)
 end
 
----
+---@param color PlayerColor
+---@return boolean
 function ImperiumRow.acquireReservedImperiumCard(color)
     local cardOrDeck = Helper.getDeckOrCard(ImperiumRow.reservationSlotZone)
     if cardOrDeck then
@@ -97,7 +88,8 @@ function ImperiumRow.acquireReservedImperiumCard(color)
     end
 end
 
----
+---@param indexInRow integer
+---@return boolean
 function ImperiumRow.reserveImperiumCard(indexInRow)
     local zone = ImperiumRow.slotZones[indexInRow]
     return Helper.withAnyCard(zone, function (card)
@@ -106,7 +98,9 @@ function ImperiumRow.reserveImperiumCard(indexInRow)
     end)
 end
 
----
+---@param indexInRow integer
+---@param color PlayerColor
+---@return boolean
 function ImperiumRow.acquireImperiumCard(indexInRow, color)
     local zone = ImperiumRow.slotZones[indexInRow]
     return Helper.withAnyCard(zone, function (card)
@@ -115,8 +109,7 @@ function ImperiumRow.acquireImperiumCard(indexInRow, color)
     end)
 end
 
----
-function ImperiumRow.nuke(color)
+function ImperiumRow.nuke()
     Music.play("atomics")
     Helper.onceTimeElapsed(3).doAfter(function ()
         for i, zone in ipairs(ImperiumRow.slotZones) do
@@ -128,7 +121,6 @@ function ImperiumRow.nuke(color)
     end)
 end
 
----
 function ImperiumRow.churn()
     local firstCardIndex = math.random(6)
     local secondCardIndex = math.random(6)
@@ -145,7 +137,7 @@ function ImperiumRow.churn()
     printToAll(I18N("churnImperiumRow", { count = count, card = I18N.agree(count, "card") }), "Pink")
 end
 
----
+---@param indexInRow integer
 function ImperiumRow._replenish(indexInRow)
     local position = ImperiumRow.slotZones[indexInRow].getPosition()
     Helper.moveCardFromZone(ImperiumRow.deckZone, position, Vector(0, 180, 0))
