@@ -41,6 +41,7 @@ function Pdf._moveOrReplaceBook(bookName, info, locale, bag)
     end
 
     if locale == "en" then
+        Helper.physicsAndPlay(book)
         bag.putObject(book)
     else
         -- Retrieve the French URL from the French PDF module
@@ -61,6 +62,7 @@ function Pdf._moveOrReplaceBook(bookName, info, locale, bag)
             if spawnedBook then
                 spawnedBook.setScale(info.scale)
                 Helper.onceFramesPassed(1).doAfter(function()
+                    Helper.physicsAndPlay(spawnedBook)
                     bag.putObject(spawnedBook)
                 end)
             else
