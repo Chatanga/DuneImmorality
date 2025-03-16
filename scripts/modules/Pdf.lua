@@ -3,15 +3,17 @@ local I18N = require("utils.I18N")
 
 local Pdf = {
     books = {
-        base = { guid = "dc6297", scale = Vector(1.67, 1, 1.67) },
-        guide = { guid = "43fd49", scale = Vector(1.59, 1, 1.59) },
+        base = { guid = "dc6297", position = Vector(-13, 0.61, -29), scale = Vector(1.67, 1, 1.67) },
+        guide = { guid = "43fd49", position = Vector(-5, 0.61, -29), scale = Vector(1.59, 1, 1.59) },
+        --riseOfIx = { guid = "2ed556", position = Vector(5, 0.61, -29), scale = Vector(1.5, 1, 1.5) },
+        --immortality = { guid = "e2ef02", position = Vector(13, 0.61, -29), scale = Vector(1.1, 1, 1.1) },
     },
     bagGUID = "66ac63" -- The bag where PDFs should be placed
 }
 
 function Pdf.onLoad()
-    Pdf.fr = require("fr.Pdf")  -- French PDF references (must include URL info)
-    Pdf.en = require("en.Pdf")  -- English PDF references
+    Pdf.fr = require("fr.Pdf")
+    Pdf.en = require("en.Pdf")
 end
 
 function Pdf.setUp()
@@ -19,7 +21,6 @@ function Pdf.setUp()
     local bag = getObjectFromGUID(Pdf.bagGUID)
 
     if not bag then
-        print("Error: Bag with GUID " .. Pdf.bagGUID .. " not found!")
         return
     end
 
@@ -36,7 +37,6 @@ end
 function Pdf._moveOrReplaceBook(bookName, info, locale, bag)
     local book = getObjectFromGUID(info.guid)
     if not book then
-        print("Error: Book with GUID " .. info.guid .. " not found!")
         return
     end
 
@@ -47,7 +47,6 @@ function Pdf._moveOrReplaceBook(bookName, info, locale, bag)
         -- Retrieve the French URL from the French PDF module
         local frenchUrl = Pdf.fr[bookName]
         if not frenchUrl then
-            print("Error: No French URL found for book '" .. bookName .. "'")
             return
         end
 
@@ -66,7 +65,6 @@ function Pdf._moveOrReplaceBook(bookName, info, locale, bag)
                     bag.putObject(spawnedBook)
                 end)
             else
-                print("Error: Failed to spawn localized book for " .. bookName)
             end
         end)
     end
