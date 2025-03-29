@@ -34,7 +34,6 @@ local Combat = {
     },
     noCombatForcePositions = Vector(0, 0, 0),
     combatForcePositions = {},
-    victoryPointTokenPositions = {},
     dreadnoughtStrengths = {},
     ranking = {}
 }
@@ -147,6 +146,8 @@ function Combat._transientSetUp(settings)
                 end
             end
             Action.unsetContext("combat")
+        elseif phase == "recall" then
+            Helper.shuffle(Combat.battlegroundPark.slots)
         end
     end)
 end
@@ -180,7 +181,7 @@ function Combat._processSnapPoints(settings)
         garrison = function (name, position)
             local color = name:gsub("^%l", string.upper)
             Combat.garrisonParks[color] = Combat._createGarrisonPark(color, position)
-            if settings.riseOfIx then
+            if settings.ix then
                 Combat.dreadnoughtParks[color] = Combat._createDreadnoughtPark(color, position)
             end
         end,
@@ -726,7 +727,7 @@ end
 ---@return Continuation
 function Combat.gainObjective(color, initialObjective, ignoreExisting)
     local objective = initialObjective
-    if initialObjective ~= "" and PlayBoard.hasTech(color, "ornithopterFleet") then
+    if Helper.isElementOf(initialObjective, { "muadDib", "crysknife" }) and PlayBoard.hasTech(color, "ornithopterFleet") then
         objective = "ornithopter"
     end
 

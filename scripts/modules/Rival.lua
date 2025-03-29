@@ -139,7 +139,7 @@ function Rival._buyVictoryPoints(color)
             goto continue
         end
 
-        if Hagal.riseOfIx then
+        if Hagal.ix then
             local tech = PlayBoard.getTech(color, "spySatellites")
             if tech and Action.resources(color, "spice", -3) then
                 MainBoard.trash(tech)

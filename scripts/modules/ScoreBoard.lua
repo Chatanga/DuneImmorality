@@ -88,7 +88,7 @@ function ScoreBoard.onLoad(state)
         },
     })
 
-    if state.settings and state.settings.riseOfIx then
+    if state.settings and state.settings.ix then
         ScoreBoard._transientSetUp(state.settings)
     end
 end
@@ -99,7 +99,7 @@ function ScoreBoard.setUp(settings)
         base = true,
         legacy = settings.legacy,
         hagal = settings.numberOfPlayers <= 2,
-        ix = settings.riseOfIx or settings.ixAmbassyWithIx,
+        ix = settings.ix or settings.ixAmbassyWithIx,
         immortality = settings.immortality,
         bloodlines = settings.bloodlines,
     }

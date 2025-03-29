@@ -21,7 +21,7 @@ return {
     useContracts = "Contrats de la CHOM",
     legacy = "Dune : Imperium",
     merakon = "Choix de cartes de Paul Dennen",
-    riseOfIx = "L’Avènement de Ix",
+    ix = "L’Avènement de Ix",
     epicMode = "Mode épique",
     immortality = "Immortalité",
     goTo11 = "Pousser jusqu’à 11",
@@ -288,7 +288,7 @@ return {
     doublingConflictRewards = "Récompenses doublées",
     unavailableSwordmaster = "Pas de maître d’armes avec ce niveau de difficulté !",
     tuekBoardRelocationMessage = "Peut être repositionné jusqu’à\nla sélection du dernier dirigeant.",
-    goTuekSietch = "Selectionnez une option.",
+    goTuekSietch = "Sélectionnez une option",
     withDrawOption = "Pioche d’une carte",
     goDeepDesert = "Selectionnez une option.",
     fourSpicesOption = "4 épices",
@@ -989,6 +989,17 @@ return {
     panopticon = "Panopticon",
     spyDrones = "Spy Drones",
     choamTransports = "CHOAM Transports",
+
+    -- Navigation Card
+    solarisAndPermanentPersuasion = "Solaris + Persuasion",
+    spiceIfTrash = "Spice / Trash",
+    waterThenSpiceIfSpacingGuildInfluence = "Water and Spice / Spacing Guild",
+    spiceOrInfluenceIfSolaris = "Spice or Influence / Solaris",
+    spiceOrTSMFIfWater = "Spice or TSMF / Water",
+    spiceThenIntrigueIfAlliance = "Spice then Intrigue / Alliance",
+    influenceIfInfluence = "Influence / Influence",
+    drawOrVpIfSpice = "Draw or VP / Spice",
+    troopOrMoreTroopIfSolaris = "Troop or mor Troop / Solaris",
 
     -- Contracts
     fulfilledContract = "Contrat « {contract} » rempli.",

@@ -995,7 +995,7 @@ function Deck.generateImperiumDeck(deckZone, settings)
             contributions = Deck._mergeContributionSets({ contributions, Deck.imperium.bloodlinesContract })
         end
     end
-    if settings.riseOfIx or settings.ixAmbassy then
+    if settings.ix or settings.ixAmbassy then
         contributions = Deck._mergeContributionSets({ contributions, Deck.imperium.bloodlinesTech })
     end
     Deck._generateDeck("Imperium", deckZone, contributions, Deck.sources.imperium).doAfter(continuation.run)
@@ -1064,7 +1064,7 @@ function Deck.generateTechDeck(deckZones, settings)
     local continuation = Helper.createContinuation("Deck.generateTechDeck")
 
     local keys = {}
-    if settings.riseOfIx then
+    if settings.ix then
         keys = Helper.concatTables(keys, Helper.getKeys(Deck.tech.ix))
     end
     if settings.bloodlines then
@@ -1146,11 +1146,11 @@ function Deck.generateHagalDeck(deckZone, settings)
     assert(deckZone.getPosition)
     assert(not settings.numberOfPlayers or settings.numberOfPlayers == 1 or settings.numberOfPlayers == 2)
     assert(not settings.ixAmbassy or settings.bloodlines)
-    assert(not (settings.riseOfIx and settings.ixAmbassy))
+    assert(not (settings.ix and settings.ixAmbassy))
     local continuation = Helper.createContinuation("Deck.generateHagalDeck")
 
     local contributionSetNames = { "base" }
-    if settings.riseOfIx then
+    if settings.ix then
         table.insert(contributionSetNames, "ix")
     end
     if settings.immortality then
@@ -1176,7 +1176,7 @@ function Deck.generateHagalDeck(deckZone, settings)
 
     local contributions = Deck._mergeContributionSets(contributionSets)
 
-    if settings.riseOfIx or not settings.ixAmbassy then
+    if settings.ix or not settings.ixAmbassy then
         contributions.acquireTech = nil
     end
 
@@ -1198,7 +1198,7 @@ function Deck.generateLeaderDeck(deckZone, settings)
     if not settings.useContracts then
         contributions.shaddamCorrino = nil
     end
-    if not settings.riseOfIx and not settings.ixAmbassy then
+    if not settings.ix and not settings.ixAmbassy then
         contributions.kotaOdax = nil
     end
     Deck._generateDeck("Leader", deckZone, contributions, Deck.sources.leaders).doAfter(continuation.run)
@@ -1219,7 +1219,7 @@ function Deck.generateRivalLeaderDeck(deckZone, settings)
             contributions[rival] = nil
         end
     end
-    if settings.numberOfPlayers > 1 or (not settings.riseOfIx and not settings.ixAmbassy) then
+    if settings.numberOfPlayers > 1 or (not settings.ix and not settings.ixAmbassy) then
         contributions.kotaOdax = nil
     end
     Deck._generateDeck("RivalLeader", deckZone, contributions, Deck.sources.rivalLeaders).doAfter(continuation.run)
@@ -1260,7 +1260,7 @@ function Deck._mergeStandardContributionSets(root, settings)
     if settings.merakon then
         table.insert(contributionSets, root.merakon)
     else
-        if settings.riseOfIx then
+        if settings.ix then
             table.insert(contributionSets, root.ix)
         end
         if settings.immortality then
@@ -1489,31 +1489,33 @@ function Deck._generateDynamicDeck(deckType, position, contributions, sources)
     local knownCustomDecks = {}
 
     for name, cardinality in pairs(contributions) do
-        local source = sources[name]
-        if source then
-            assert(source.customDeck, name)
-            local customDeckId = knownCustomDecks[source.customDeck]
-            if not customDeckId then
-                customDeckId = Deck._nextCustomDeckId()
-                data.CustomDeck[tostring(customDeckId)] = source.customDeck
-                data.Transform.scaleX = source.customDeck.__scale.x
-                data.Transform.scaleY = source.customDeck.__scale.y
-                data.Transform.scaleZ = source.customDeck.__scale.z
-                knownCustomDecks[source.customDeck] = customDeckId
-            end
+        if cardinality > 0 then
+            local source = sources[name]
+            if source then
+                assert(source.customDeck, name)
+                local customDeckId = knownCustomDecks[source.customDeck]
+                if not customDeckId then
+                    customDeckId = Deck._nextCustomDeckId()
+                    data.CustomDeck[tostring(customDeckId)] = source.customDeck
+                    data.Transform.scaleX = source.customDeck.__scale.x
+                    data.Transform.scaleY = source.customDeck.__scale.y
+                    data.Transform.scaleZ = source.customDeck.__scale.z
+                    knownCustomDecks[source.customDeck] = customDeckId
+                end
 
-            for _ = 1, cardinality do
-                local index = source.luaIndex - 1
-                local cardId = tostring(customDeckId * 100 + index)
-                table.insert(data.DeckIDs, tostring(cardId))
-                local cardData = Deck._generateCardData(source.customDeck, customDeckId, cardId)
-                cardData.Tags = { deckType }
-                cardData.Nickname = I18N(name)
-                cardData.GMNotes = name
-                table.insert(data.ContainedObjects, cardData)
+                for _ = 1, cardinality do
+                    local index = source.luaIndex - 1
+                    local cardId = tostring(customDeckId * 100 + index)
+                    table.insert(data.DeckIDs, tostring(cardId))
+                    local cardData = Deck._generateCardData(source.customDeck, customDeckId, cardId)
+                    cardData.Tags = { deckType }
+                    cardData.Nickname = I18N(name)
+                    cardData.GMNotes = name
+                    table.insert(data.ContainedObjects, cardData)
+                end
+            else
+                error("No source for card '" .. name .. "'")
             end
-        else
-            error("No source for card '" .. name .. "'")
         end
     end
 
@@ -1743,25 +1745,27 @@ function Deck._generateFromPrebuildDeck(deckType, deckZone, contributions, _, sp
 
     local cardCount = 0
     for name, cardinality in pairs(contributions) do
-        local source = sources[name]
-        assert(source, "No source for card '" .. deckType .. "." .. name .. "'")
-        for i = 1, math.ceil(cardinality) do
-            local firstGuid = source.instances[1]
-            assert(firstGuid, "Not enough instances of the card '" .. name .. "'")
-            table.remove(source.instances, 1)
-            assert(source.deck, "Should not happen! Source deck is not properly generated.")
-            source.deck.takeObject({
-                guid = firstGuid,
-                -- Stacking is needed to preserve input order (but when it is needed?).
-                position = deckZone.getPosition() + Vector(0, 1 + cardCount * (spacing or 0.1), 0),
-                smooth = false,
-                callback_function = function (card)
-                    if cardinality - i < 0 then
-                        card.setTags(Helper.concatTables(card.getTags(), { "Unselected" }))
+        if cardinality > 0 then
+            local source = sources[name]
+            assert(source, "No source for card '" .. deckType .. "." .. name .. "'")
+            for i = 1, math.ceil(cardinality) do
+                local firstGuid = source.instances[1]
+                assert(firstGuid, "Not enough instances of the card '" .. name .. "'")
+                table.remove(source.instances, 1)
+                assert(source.deck, "Should not happen! Source deck is not properly generated.")
+                source.deck.takeObject({
+                    guid = firstGuid,
+                    -- Stacking is needed to preserve input order (but when it is needed?).
+                    position = deckZone.getPosition() + Vector(0, 1 + cardCount * (spacing or 0.1), 0),
+                    smooth = false,
+                    callback_function = function (card)
+                        if cardinality - i < 0 then
+                            card.setTags(Helper.concatTables(card.getTags(), { "Unselected" }))
+                        end
                     end
-                end
-            })
-            cardCount = cardCount + 1
+                })
+                cardCount = cardCount + 1
+            end
         end
     end
     assert(cardCount > 0)

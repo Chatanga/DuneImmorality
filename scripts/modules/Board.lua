@@ -8,17 +8,17 @@ local Locale = Module.lazyRequire("Locale")
 local Board = {
 
     -- Table height
-    T = 1.59,
+    T = 1.61 - 0.02,
     -- Main board height
-    MB = 1.69,
+    MB = 1.72 - 0.03,
     -- Ix board patch height
-    IxP = 1.70,
+    IxP = 1.72 - 0.02,
     -- Ix board height
-    IXB = 1.69,
+    IXB = 1.71 - 0.02,
     -- Tleilax board height
     TXB = 1.68,
     -- Play board height
-    PB = 2.19,
+    PB = 2.12 + 0.07,
 
     allInitialBoards = {
         mainBoard = {

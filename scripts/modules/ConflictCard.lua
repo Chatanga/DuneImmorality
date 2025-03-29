@@ -57,7 +57,7 @@ end
 ---@param conflictName string
 ---@param rank integer
 ---@param doubleRewards boolean
----@param postAction? fun()
+---@param postAction? fun(): nil
 ---@return Continuation
 function ConflictCard.collectReward(color, conflictName, rank, doubleRewards, postAction)
     assert(Helper.isInRange(1, 3, rank))

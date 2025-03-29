@@ -412,8 +412,8 @@ function CardEffect.choice(n, options)
         if PlayBoard.getLeader(context.color).randomlyChoose(context.color, context.cardName) then
             local shuffledOptions = Helper.shallowCopy(options)
             Helper.shuffle(shuffledOptions)
-            local i = 0
-            for  _, option in ipairs(options) do
+            local i = 1
+            for  _, option in ipairs(shuffledOptions) do
                 if i > n then
                     break
                 end

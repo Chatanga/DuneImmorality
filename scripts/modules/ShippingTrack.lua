@@ -17,7 +17,7 @@ local ShippingTrack = {
 
 ---@param state table
 function ShippingTrack.onLoad(state)
-    if state.settings and state.settings.riseOfIx then
+    if state.settings and state.settings.ix then
         ShippingTrack.board = Board.getBoard("shippingBoard")
         ShippingTrack._transientSetUp(state.settings)
     end
@@ -25,7 +25,7 @@ end
 
 ---@param settings Settings
 function ShippingTrack.setUp(settings)
-    if settings.riseOfIx then
+    if settings.ix then
         ShippingTrack.board = Board.selectBoard("shippingBoard", I18N.getLocale(), false)
         ShippingTrack._transientSetUp(settings)
     else

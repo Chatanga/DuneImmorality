@@ -86,7 +86,7 @@ function ChoamContractMarket.setUp(settings)
         Helper.onceShuffled(ChoamContractMarket.contractBag).doAfter(function ()
 
             local ixContratCountForEachPlayer = {}
-            if settings.riseOfIx then
+            if settings.ix then
                 for _, color in ipairs(PlayBoard.getActivePlayBoardColors(true)) do
                     if not Commander.isCommander(color) then
                         ixContratCountForEachPlayer[color] = 2

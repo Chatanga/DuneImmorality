@@ -35,13 +35,7 @@ This repository contains the JSON skeletons and Lua scripts of various mods for 
 
 __All__
 
-- Persist settings.
-- Objects or not (i.e. fully functional).
-- Rules & recipies.
-
-- Free selection of leaders.
 - Add a corrective black border on the Uprising game boards.
-
 - Spice token size and positions.
 
 __6P__

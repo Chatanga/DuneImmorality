@@ -66,7 +66,7 @@ end
 ---@param settings Settings
 function Hagal._transientSetUp(settings)
     Hagal.numberOfPlayers = settings.numberOfPlayers
-    Hagal.riseOfIx = settings.riseOfIx
+    Hagal.ix = settings.ix
     Hagal.immortality = settings.immortality
     Hagal.difficulty = Hagal.numberOfPlayers == 1 and settings.difficulty or nil
     Hagal.autoTurnInSolo = settings.autoTurnInSolo
@@ -173,7 +173,7 @@ end
 ---@param color PlayerColor
 function Hagal._activateFirstValidActionCard(color)
     return Hagal._activateFirstValidCard(color, function (card)
-        return HagalCard.activate(color, card, Hagal.riseOfIx, Hagal.immortality)
+        return HagalCard.activate(color, card, Hagal.ix, Hagal.immortality)
     end)
 end
 

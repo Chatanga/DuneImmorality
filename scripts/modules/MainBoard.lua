@@ -284,8 +284,7 @@ function MainBoard._processSnapPoints(settings)
     MainBoard.observationPosts = {}
     MainBoard.banners = {}
 
-    local highCouncilSeats = MainBoard._doProcessSnapPoints(
-        settings,
+    local highCouncilSeats = MainBoard._doProcessSnapPoints(settings,
         Helper.partialApply(MainBoard.collectSnapPointsOnAllBoards, settings))
 
     if #highCouncilSeats > 0 then
@@ -327,7 +326,7 @@ function MainBoard._doProcessSnapPoints(settings, collect)
             -- Spice Flow use two exclusive boards, one for Ix and another without it, whereas Rakis Rising
             -- uses only a "patching" board for Ix, forcing us to ignore the snap points under it. The later
             -- approach is probably the better.
-            if settings.riseOfIx then
+            if settings.ix then
                 local ignoredSpaceNames = {
                     "assemblyHall",
                     "gatherSupport",
@@ -344,7 +343,7 @@ function MainBoard._doProcessSnapPoints(settings, collect)
         end,
 
         post = function (name, position, snapPoint)
-            if settings.riseOfIx then
+            if settings.ix then
                 local ignoredSpaceNames = {
                     "choam",
                     "landsraadCouncil2"
@@ -420,7 +419,7 @@ function MainBoard._getAllBoards(settings)
         table.insert(boards, MainBoard.fremenBoard)
     end
 
-    if settings.riseOfIx then
+    if settings.ix then
         table.insert(boards, ShippingTrack.getBoard())
         table.insert(boards, TechMarket.getBoard())
     end
@@ -480,10 +479,10 @@ function MainBoard._createSpaceButton(space)
         if MainBoard._findParentSpace(space) == space then
 
             local slots = {
-                Vector(p.x - 0.36, Board.onMainBoard(0), p.z - 0.3),
-                Vector(p.x + 0.36, Board.onMainBoard(0), p.z + 0.3),
                 Vector(p.x - 0.36, Board.onMainBoard(0), p.z + 0.3),
-                Vector(p.x + 0.36, Board.onMainBoard(0), p.z - 0.3)
+                Vector(p.x + 0.36, Board.onMainBoard(0), p.z - 0.3),
+                Vector(p.x + 0.36, Board.onMainBoard(0), p.z + 0.3),
+                Vector(p.x - 0.36, Board.onMainBoard(0), p.z - 0.3),
             }
             space.zone = Park.createTransientBoundingZone(0, Vector(1, 3, 0.7), slots)
 

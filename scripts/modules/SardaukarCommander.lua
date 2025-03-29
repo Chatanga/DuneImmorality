@@ -118,11 +118,11 @@ function SardaukarCommander._createSardaukarCommanderRecruitmentButtons(settings
             "militarySupport",
             "deliverSupplies",
             "highCouncil",
-            settings.riseOfIx and "dreadnought" or "gatherSupport",
+            settings.ix and "dreadnought" or "gatherSupport",
             "sardaukar",
             "sardaukarStandard",
         }
-        if not settings.riseOfIx then
+        if not settings.ix then
             table.insert(sardaukarLocationNames, "assemblyHall")
         end
     else
@@ -131,11 +131,11 @@ function SardaukarCommander._createSardaukarCommanderRecruitmentButtons(settings
             "dutifulService",
             "deliverSupplies",
             "highCouncil",
-            settings.riseOfIx and "dreadnought" or "gatherSupport",
+            settings.ix and "dreadnought" or "gatherSupport",
             "sardaukarStandard",
         }
         if settings.numberOfPlayers == 4 then
-            table.insert(sardaukarLocationNames, settings.riseOfIx and "techNegotiation" or "assemblyHall")
+            table.insert(sardaukarLocationNames, settings.ix and "techNegotiation" or "assemblyHall")
         end
     end
 

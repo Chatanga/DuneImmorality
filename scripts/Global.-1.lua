@@ -122,7 +122,7 @@ local Controller = {
         useContracts = true,
         legacy = false,
         merakon = XmlUI.DISABLED,
-        riseOfIx = false,
+        ix = false,
         epicMode = XmlUI.DISABLED,
         immortality = false,
         goTo11 = XmlUI.DISABLED,
@@ -341,8 +341,8 @@ end
 function setUp(newSettings)
     assert(newSettings)
 
-    assert((not newSettings.epicMode) or newSettings.riseOfIx)
-    assert((not newSettings.ixAmbassy) or (not newSettings.riseOfIx))
+    assert((not newSettings.epicMode) or newSettings.ix)
+    assert((not newSettings.ixAmbassy) or (not newSettings.ix))
     assert((not newSettings.goTo11) or newSettings.immortality)
 
     local continuation = Helper.createContinuation("setUp")
@@ -476,9 +476,9 @@ function setLegacy(player, value, id)
 end
 
 --- UI callback (cf. XML).
-function setRiseOfIx(player, value, id)
+function setIx(player, value, id)
     Controller.ui:fromUI(player, value, id)
-    if Controller.fields.riseOfIx then
+    if Controller.fields.ix then
         Controller.fields.epicMode = false
         Controller.fields.ixAmbassy = XmlUI.DISABLED
         Controller.fields.ixAmbassyWithIx = XmlUI.DISABLED
@@ -507,7 +507,7 @@ end
 --- UI callback (cf. XML).
 function setBloodlines(player, value, id)
     Controller.ui:fromUI(player, value, id)
-    if Controller.fields.bloodlines and not Controller.fields.riseOfIx then
+    if Controller.fields.bloodlines and not Controller.fields.ix then
         Controller.fields.ixAmbassy = true
         Controller.fields.ixAmbassyWithIx = false
     else
@@ -566,7 +566,7 @@ function setUpFromUI()
     --- expertDeployment: boolean,
     --- smartPolitics: boolean,
     --- useContracts: boolean,
-    --- riseOfIx: boolean,
+    --- ix: boolean,
     --- epicMode: boolean,
     --- immortality: boolean,
     --- goTo11: boolean,
@@ -602,7 +602,7 @@ function setUpFromUI()
         useContracts = Controller.fields.useContracts == true or numberOfPlayers == 6,
         legacy = Controller.fields.legacy,
         merakon = Controller.fields.merakon == true,
-        riseOfIx = Controller.fields.riseOfIx,
+        ix = Controller.fields.ix,
         epicMode = Controller.fields.epicMode == true,
         immortality = Controller.fields.immortality,
         goTo11 = Controller.fields.goTo11 == true,

@@ -409,7 +409,7 @@ function PlayBoard.rebuild()
             councilToken = symmetric(-0.5, 0, -0.6),
             controlMarkerBag = symmetric(0.5, 0, 4),
             troops = troopSlots,
-            makerHook = symmetric(1.85, 0, 1.4),
+            makerHook = symmetric(1.85, 0, 2 + (PlayBoard.isTop(color) and 0.7 or -0.7)),
             sardaukarMarker = symmetric(1.8, 0, -0.6),
             trash = symmetric(10, 0, 1),
             endTurnButton = symmetric(-2.4, 0, 6),
@@ -815,7 +815,7 @@ function PlayBoard.new(color, unresolvedContent, state, subState)
             if playBoard.leaderCard then
                 assert(subState.leader)
                 if playBoard.opponent == "rival" then
-                    playBoard.leader = Hagal.newRival(subState.leader)
+                    playBoard.leader = Rival.newRival(subState.leader)
                 else
                     playBoard.leader = Leader.newLeader(subState.leader)
                     if Commander.isCommander(color) then
@@ -916,7 +916,7 @@ function PlayBoard.setUp(settings, activeOpponents)
     local sequentialActions = {}
 
     for color, playBoard in pairs(PlayBoard.playBoards) do
-        playBoard:_cleanUp(false, not settings.riseOfIx, not settings.immortality, not settings.bloodlines, settings.numberOfPlayers ~= 6)
+        playBoard:_cleanUp(false, not settings.ix, not settings.immortality, not settings.bloodlines, settings.numberOfPlayers ~= 6)
 
         PlayBoard:_pruneHandsInExcess(playBoard.color, settings.numberOfPlayers <= 4 and settings.horizontalHandLayout)
 
@@ -1141,9 +1141,6 @@ function PlayBoard._transientSetUp(settings)
                         TechMarket.registerAcquireTechOption(color, cardName .. "TechBuyOption", "spice", 0)
                     elseif cardName == "machineCulture" then
                         TechMarket.registerAcquireTechOption(color, cardName .. "TechBuyOption", "spice", 0)
-                    -- TODO Find some way to push this into Leader.
-                    elseif cardName == "signetRing" and PlayBoard.getLeader(color).name == "rhomburVernius" then
-                        TechMarket.registerAcquireTechOption(color, "rhomburVerniusTechBuyOption", "spice", 0)
                     end
                 end
             end)
@@ -1572,11 +1569,10 @@ end
 
 ---@return Park
 function PlayBoard:_createSpyPark()
-    local origin = self:_generateAbsolutePosition("symmetric", Vector(-6.4, 0, 5.8))
+    local origin = self:_generateAbsolutePosition("symmetric", Vector(-6.4, 0.33, 5.8))
     local spacing = PlayBoard.isLeft(self.color) and -1.5 or 1.5
     local slots = Park.createMatrixOfSlots(origin, Vector(3, 1, 1), Vector(spacing, 0, 0))
     local park = Park.createCommonPark({ "Spy", self.color }, slots, Vector(0.75, 1, 0.75))
-    park.locked = true
     return park
 end
 
@@ -2030,13 +2026,12 @@ function PlayBoard:_createButtons()
     end
 end
 
----
 function PlayBoard.onObjectDrop(color, object)
     local objectiveTags = {
         "MuadDibObjectiveToken",
         "CrysknifeObjectiveToken",
         "OrnithopterObjectiveToken",
-        "JokerObjectiveToken",
+        --"JokerObjectiveToken",
     }
     for _, objectiveTag in ipairs(objectiveTags) do
         if object.hasTag(objectiveTag) then
@@ -2046,8 +2041,16 @@ function PlayBoard.onObjectDrop(color, object)
     end
 end
 
----
 function PlayBoard._convertObjectiveTokenPairsIntoVictoryPoints(object)
+    if PlayBoard.conversionCooldown then
+        return
+    else
+        PlayBoard.conversionCooldown = true
+        Helper.onceFramesPassed(1).doAfter(function ()
+            PlayBoard.conversionCooldown = false
+        end)
+    end
+
     local tagToName = {
         MuadDibObjectiveToken = "muadDibVictoryPoint",
         OrnithopterObjectiveToken = "ornithopterVictoryPoint",
@@ -2082,7 +2085,6 @@ function PlayBoard._convertObjectiveTokenPairsIntoVictoryPoints(object)
     end
 end
 
----
 function PlayBoard.collectObjectiveTokens(position, objectiveTag)
     local radius = 0.5
     local hits = Physics.cast({
@@ -2116,12 +2118,10 @@ function PlayBoard.onObjectEnterContainer(container, object)
     end
 end
 
----
 function PlayBoard.onObjectLeaveContainer(container, object)
     PlayBoard._updateBagCounts(container)
 end
 
----
 function PlayBoard.getOpenContracts(color)
     local contracts = {}
     local playBoard = PlayBoard.getPlayBoard(color)
@@ -2133,7 +2133,6 @@ function PlayBoard.getOpenContracts(color)
     return contracts
 end
 
----
 function PlayBoard._updateBagCounts(container)
     for _, playBoard in pairs(PlayBoard.playBoards) do
         if playBoard.opponent ~= "rival" then
@@ -2150,7 +2149,6 @@ function PlayBoard._updateBagCounts(container)
     end
 end
 
----
 function PlayBoard.getCompletedContractCount(color)
     local playBoard = PlayBoard.getPlayBoard(color)
     if playBoard.opponent ~= "rival" then
@@ -2162,7 +2160,6 @@ function PlayBoard.getCompletedContractCount(color)
     return 0
 end
 
----
 function PlayBoard:_createNukeButton()
     if self.content.atomicsToken then
         self.content.atomicsToken.createButton({
@@ -2735,7 +2732,7 @@ end
 function PlayBoard.findLeaderCard(color)
     local leaderZone = PlayBoard.getContent(color).leaderZone
     -- Ignore the tag here, as some leaders temporarily set their zone tags.
-    for i, object in ipairs(leaderZone.getObjects(true)) do
+    for _, object in ipairs(leaderZone.getObjects(true)) do
         if object.hasTag("Leader") or object.hasTag("RivalLeader") then
             return object
         end
@@ -3399,8 +3396,19 @@ end
 ---@param z number
 ---@return Vector
 function PlayBoard:_newBoardPosition(x, y, z)
-    -- TODO Get rid of the + 0.7
-    return Vector(x, y + 0.7 * 0, -z)
+    return Vector(x, y, -z)
+end
+
+---@param color PlayerColor
+---@return boolean
+function PlayBoard.isTop(color)
+    return color == "Red" or color == "Green"
+end
+
+---@param color PlayerColor
+---@return boolean
+function PlayBoard.isBottom(color)
+    return color == "Blue" or color == "Yellow"
 end
 
 --- Relative to the board, not a commander.

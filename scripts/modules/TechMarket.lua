@@ -27,7 +27,7 @@ local TechMarket = {
 
 ---@param state table
 function TechMarket.onLoad(state)
-    if state.settings and (state.settings.riseOfIx or state.settings.ixAmbassy) then
+    if state.settings and (state.settings.ix or state.settings.ixAmbassy) then
         if state.settings.ixAmbassy then
             TechMarket.board = Board.getBoard("ixAmbassyBoard")
         else
@@ -39,7 +39,7 @@ end
 
 ---@param settings Settings
 function TechMarket.setUp(settings)
-    if settings.riseOfIx or settings.ixAmbassy then
+    if settings.ix or settings.ixAmbassy then
         if settings.ixAmbassy then
             TechMarket.board = Board.selectBoard("ixAmbassyBoard", settings.language)
             Board.destructBoard("ixBoard")
@@ -71,7 +71,7 @@ function TechMarket._transientSetUp(settings)
 
     TechMarket.hagalSoloModeEnabled = settings.numberOfPlayers == 1
 
-    if settings.riseOfIx then
+    if settings.ix then
         for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
             if not Commander.isCommander(color) then
                 TechMarket.negotiationParks[color] = TechMarket._createNegotiationPark(color)
@@ -313,7 +313,7 @@ function TechMarket._buyTech(techCard, color, cumulativeDiscound)
                 end
             end)
         else
-            continuation.run(TechMarket._doBuyTech(techCard, options[1], color))
+            continuation.run(TechMarket._doBuyTech(techCard, options[1], color, cumulativeDiscound))
         end
     elseif not PlayBoard.isRival(color) then
         Dialog.showYesOrNoDialog(color, I18N("manuallyBuyTech"), continuation, function (confirmed)

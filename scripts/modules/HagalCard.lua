@@ -72,20 +72,20 @@ end
 
 ---@param color PlayerColor
 ---@param card Card
----@param riseOfIx boolean
+---@param ix boolean
 ---@param immortality boolean
 ---@return boolean
-function HagalCard.activate(color, card, riseOfIx, immortality)
+function HagalCard.activate(color, card, ix, immortality)
     assert(Types.isPlayerColor(color))
     assert(card)
     local cardName = Helper.getID(card)
     Action.setContext("hagalCard",  cardName)
-    HagalCard.riseOfIx = riseOfIx
+    HagalCard.ix = ix
     HagalCard.immortality = immortality
     local rival = PlayBoard.getLeader(color)
     local actionName = Helper.toCamelCase("_activate", cardName)
     assert(HagalCard[actionName], actionName)
-    return HagalCard[actionName](color, rival, riseOfIx)
+    return HagalCard[actionName](color, rival, ix)
 end
 
 ---@param color PlayerColor
@@ -107,7 +107,7 @@ function HagalCard.flushTurnActions(color)
         local fromGarrison = math.min(2, garrisonedTroopCount)
         local fromSupply = HagalCard.acquiredTroopCount
 
-        if HagalCard.riseOfIx then
+        if HagalCard.ix then
             -- Dreadnoughts are free and implicit.
             local count = rival.dreadnought(color, "garrison", "combat", 2)
             fromGarrison = math.max(0, fromGarrison - count)
@@ -169,12 +169,12 @@ end
 
 ---@param color PlayerColor
 ---@param rival Rival
----@param riseOfIx boolean
+---@param ix boolean
 ---@return boolean
-function HagalCard._activatePlaceSpyYellow(color, rival, riseOfIx)
+function HagalCard._activatePlaceSpyYellow(color, rival, ix)
     -- Order matters: CHOAM, then from right to left.
     local possiblePosts = {
-        riseOfIx and "ixChoam" or "choam",
+        ix and "ixChoam" or "choam",
         "imperialBasin",
         "haggaBasin",
         "deepDesert",
@@ -190,9 +190,9 @@ end
 
 ---@param color PlayerColor
 ---@param rival Rival
----@param riseOfIx boolean
+---@param ix boolean
 ---@return boolean
-function HagalCard._activatePlaceSpyBlue(color, rival, riseOfIx)
+function HagalCard._activatePlaceSpyBlue(color, rival, ix)
     -- Order matters: from right to left.
     local possiblePosts = {
         "spiceRefineryArrakeen",
@@ -210,12 +210,12 @@ end
 
 ---@param color PlayerColor
 ---@param rival Rival
----@param riseOfIx boolean
+---@param ix boolean
 ---@return boolean
-function HagalCard._activatePlaceSpyGreen(color, rival, riseOfIx)
+function HagalCard._activatePlaceSpyGreen(color, rival, ix)
     -- Order matters: from right to left.
     local possiblePosts = {
-        riseOfIx and "ix" or "landsraadCouncil2",
+        ix and "ix" or "landsraadCouncil2",
         "landsraadCouncil1",
     }
     for _, observationPostName in ipairs(possiblePosts) do
@@ -577,7 +577,6 @@ function HagalCard._activateDeepDesert(color, rival)
     end
 end
 
---- TODO Adapter
 ---@param color PlayerColor
 ---@return { desertSpace: string, spiceBonus: integer, totalSpice: integer }
 function HagalCard.findHarvestableSpace(color, ignoreIfNotFree)

@@ -129,7 +129,7 @@ function TleilaxuResearch._transientSetUp()
     TleilaxuResearch.tleilaxTokenOrigin = TleilaxuResearch._getAveragePosition("tleilaxTokenInitalPosition")
     TleilaxuResearch._generateTleilaxButtons()
 
-    for i, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
+    for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
         if not Commander.isCommander(color) then
             TleilaxuResearch.tanksParks[color] = TleilaxuResearch._createTanksPark(color)
         end

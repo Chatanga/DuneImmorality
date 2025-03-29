@@ -169,7 +169,6 @@ local Deck = {
     },
 }
 
----
 function Deck.load(loader, cards, category, customDeckName, startLuaIndex, cardNames)
     assert(Deck[category], "Unknown category: " .. tostring(category))
     local desc = Deck[category][customDeckName]
@@ -186,7 +185,6 @@ function Deck.load(loader, cards, category, customDeckName, startLuaIndex, cardN
     return loader.loadCustomDeck(cards, customDeck, startLuaIndex, cardNames)
 end
 
----
 function Deck.loadWithSubCategory(loader, cards, category, subCategory, customDeckName, startLuaIndex, cardNames)
     assert(Deck[category], "No category: " .. category)
     assert(Deck[category][subCategory], "No sub category: " .. category .. "." .. subCategory)
@@ -199,7 +197,6 @@ function Deck.loadWithSubCategory(loader, cards, category, subCategory, customDe
     return loader.loadCustomDeck(cards, customDeck, startLuaIndex, cardNames)
 end
 
----
 function Deck.loadCustomDecks(loader)
     local cards = {
         objective = {},

@@ -915,6 +915,7 @@ Leader.chani = Helper.createClass(Leader, {
                                 local leader = PlayBoard.getLeader(color)
                                 local startIndex = settings.numberOfPlayers == 6 and 1 or 3
                                 Action.log(I18N("chaniBeingTactical", { count = count, what = I18N.agree(count, "troop") }), color)
+                                count = math.min(count, 12 - markerPositionIndex)
                                 Helper.repeatMovingAction(marker, count, function ()
                                     markerPositionIndex = markerPositionIndex >= 11 and startIndex or markerPositionIndex + 1
                                     marker.setPositionSmooth(slots[markerPositionIndex] + Vector(0, 0.25, 0))
@@ -1132,7 +1133,12 @@ Leader.yrkoon = Helper.createClass(Leader, {
         Deck.generateNavigationDeck(zone, settings).doAfter(function (deck)
             zone.removeTag("Navigation")
             Helper.shuffleDeck(deck)
-            deck.setPosition(deck.getPosition() + Vector(0, 0, -0.25))
+            Helper.onceShuffled(deck).doAfter(function ()
+                deck.deal(5, color)
+                Helper.onceTimeElapsed(1).doAfter(function ()
+                    PlayBoard.getPlayBoard(color):trash(deck)
+                end)
+            end)
 
             for i = 1, 4 do
                 local bag = getObjectFromGUID(Leader.yrkoon.bags[i])

@@ -21,7 +21,7 @@ return {
     useContracts = "CHOAM contracts",
     legacy = "Dune: Imperium",
     merakon = "Paul Dennen's House Blend",
-    riseOfIx = "Rise of Ix",
+    ix = "Rise of Ix",
     epicMode = "Epic mode",
     immortality = "Immortality",
     goTo11 = "Go to 11",
@@ -983,6 +983,17 @@ return {
     panopticon = "Panopticon",
     spyDrones = "Spy Drones",
     choamTransports = "CHOAM Transports",
+
+    -- Navigation Card
+    solarisAndPermanentPersuasion = "Solaris + Persuasion",
+    spiceIfTrash = "Spice / Trash",
+    waterThenSpiceIfSpacingGuildInfluence = "Water and Spice / Spacing Guild",
+    spiceOrInfluenceIfSolaris = "Spice or Influence / Solaris",
+    spiceOrTSMFIfWater = "Spice or TSMF / Water",
+    spiceThenIntrigueIfAlliance = "Spice then Intrigue / Alliance",
+    influenceIfInfluence = "Influence / Influence",
+    drawOrVpIfSpice = "Draw or VP / Spice",
+    troopOrMoreTroopIfSolaris = "Troop or mor Troop / Solaris",
 
     -- Contracts
     fulfilledContract = 'Fulfilled contract "{contract}".',

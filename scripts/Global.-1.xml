@@ -119,7 +119,7 @@ be integrated to this mod in a standard way.
 				<VerticalLayout padding="25 0 0 0">
 					<Toggle class="setUp" id="merakon" isOn="False" onValueChanged="Global/setAnyField" key="merakon"/>
 				</VerticalLayout>
-				<Toggle class="setUp" id="riseOfIx" isOn="True" onValueChanged="Global/setRiseOfIx" key="riseOfIx"/>
+				<Toggle class="setUp" id="ix" isOn="True" onValueChanged="Global/setIx" key="ix"/>
 				<VerticalLayout padding="25 0 0 0">
 					<Toggle class="setUp" id="epicMode" isOn="False" onValueChanged="Global/setAnyField" key="epicMode"/>
 				</VerticalLayout>
