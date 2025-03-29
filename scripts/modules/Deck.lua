@@ -259,6 +259,7 @@ local Deck = {
             pointingTheWay = 1,
             shroudedCounsel = 1,
             ruthlessLeadership = 1,
+            pivotalGambit = 1,
         },
         bloodlinesContract = {
             deliveryLogistics = 2,

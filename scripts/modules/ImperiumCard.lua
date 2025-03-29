@@ -321,8 +321,9 @@ local ImperiumCard = {
     corruptBureaucrat = {factions = {'spacingGuild'}, cost = 4, agentIcons = {'spacingGuild', 'green', 'spy'}, reveal = {persuasion(2)}},
     mercantileAffairs = {factions = {'beneGesserit'}, cost = 5, acquireBonus = {contract(1)}, agentIcons = {'beneGesserit', 'blue', 'yellow', 'spy'}, reveal = {persuasion(2)}},
     choamDemands = {factions = {'spacingGuild'}, cost = 6, agentIcons = {'green', 'blue', 'yellow'}, reveal = {todo('4+ completed contracts --> (trash ---> for each faction f, influence(1, f))')}},
-    ruthlessLeadership = {factions = {'emperor'}, agentIcons = {'blue', 'yellow'}, cost = 4, reveal = {persuasion(1), sword(1), todo('combat(command(true))')}},
     ixianAmbassador = {factions = {'spacingGuild'}, cost = 4, reveal = {persuasion(1), influence(twoTechs(1))}},
+    ruthlessLeadership = {factions = {'emperor'}, agentIcons = {'blue', 'yellow'}, cost = 4, reveal = {persuasion(1), sword(1), todo('combat(command(true))')}},
+    pivotalGambit = {factions = {'fremen'}, agentIcons = {'fremen', 'blue'}, cost = 3, reveal = {persuasion(1), sword(2), todo('trash this --> troop + influnce at 1st place in conflict')}},
 }
 
 ---@param card Card

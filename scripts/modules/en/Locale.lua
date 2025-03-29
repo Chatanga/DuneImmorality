@@ -787,6 +787,7 @@ return {
     pointingTheWay = "Pointing The Way",
     shroudedCounsel = "Shrouded Counsel",
     ruthlessLeadership = "Ruthless Leadership",
+    pivotalGambit = "Pivotal Gambit",
     deliveryLogistics = "Delivery Logistics",
     corruptBureaucrat = "Corrupt Bureaucrat",
     mercantileAffairs = "Mercantile Affairs",

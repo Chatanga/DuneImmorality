@@ -33,6 +33,7 @@ local Deck = {
         bloodlinesImperium_contract = { "https://steamusercontent-a.akamaihd.net/ugc/28804925896497753/24D25A48FACF73A89AB9C67782BB7FFE9C3E698A/", 4, 1 },
         bloodlinesImperium_tech = { "https://steamusercontent-a.akamaihd.net/ugc/28804925896497701/55378EA6DF305432157B5825DCA00FAD97785A26/", 1, 1 },
         bloodlinesImperium_ruthlessLeadership = { "https://steamusercontent-a.akamaihd.net/ugc/28805470176783647/0956E619DCEC23DD0A666F9C1BCC7F7DC1FAF78E/", 1, 1 },
+        bloodlinesImperium_pivotalGambit = { "https://steamusercontent-a.akamaihd.net/ugc/28817056368135828/4D252B82A71116EE460A2C1B248CD3B182E36585/", 1, 1 },
     },
     intrigue = {
         intrigue = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141342723/13659DD01D152A8B8055B894B247CB1D254D3752/", 8, 5 },
@@ -489,6 +490,9 @@ function Deck.loadCustomDecks(loader)
     })
     Deck.load(loader, cards.imperium, "imperium", "bloodlinesImperium_ruthlessLeadership", 1, {
         "ruthlessLeadership",
+    })
+    Deck.load(loader, cards.imperium, "imperium", "bloodlinesImperium_pivotalGambit", 1, {
+        "pivotalGambit",
     })
     Deck.load(loader, cards.special, "imperium", "imperiumFoldedSpace", 1, {
         "foldspace",
