@@ -25,16 +25,14 @@ local Rival = Helper.createClass(Action, {
 ---@param leaderName? string
 ---@return Rival
 function Rival.newRival(color, leaderName)
+    assert((leaderName ~= nil) == (Hagal.getRivalCount() == 2))
     local rival = Helper.createClassInstance(Rival, {
-        leader = leaderName and Leader.newLeader(leaderName) or Hagal,
+        leader = leaderName and Leader.newLeader(leaderName) or Hagal
     })
-    rival.name = rival.leader.name
+    rival.name = rival.leader.name -- That's the translated name.
     if Hagal.getRivalCount() == 1 then
-        assert(leaderName == nil)
         Hagal.relocateDeckZone(PlayBoard.getContent(color).leaderZone)
         rival.recruitSwordmaster(color)
-    else
-        assert(leaderName)
     end
     Rival.rivals[color] = rival
     return rival
@@ -80,7 +78,7 @@ function Rival._buyVictoryPoints(color)
             goto continue
         end
 
-        if Hagal.riseOfIx then
+        if Hagal.ix then
             local tech = PlayBoard.getTech(color, "spySatellites")
             if tech and Action.resources(color, "spice", -3) then
                 MainBoard.trash(tech)
@@ -113,7 +111,7 @@ end
 ---@param color PlayerColor
 ---@param settings Settings
 function Rival.prepare(color, settings)
-    Rival.riseOfIx = settings.riseOfIx
+    Rival.ix = settings.ix
     -- Note: Rabban as a rival has no additional resources (https://boardgamegeek.com/thread/2570879/article/36734124#36734124).
     local rivalCount = Hagal.getRivalCount()
     if rivalCount == 1 then
@@ -165,7 +163,7 @@ end
 
 ---@param color PlayerColor
 ---@param amount integer
-function Rival.unused__gainAllianceIfAble(color, amount)
+function Rival.gainAllianceIfAble(color, amount)
     local factions = {}
     for _, faction in ipairs({ "emperor", "spacingGuild", "beneGesserit", "fremen" }) do
         local cost = InfluenceTrack.getAllianceCost(color, faction)
@@ -323,6 +321,7 @@ function Rival.beetle(color, jump)
     end
 end
 
+--[[
 ---@param color PlayerColor
 ---@param amount integer
 ---@return boolean
@@ -342,6 +341,7 @@ function Rival.drawIntrigues(color, amount)
         return false
     end
 end
+]]
 
 ---@param color PlayerColor
 ---@param name string

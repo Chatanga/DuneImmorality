@@ -70,13 +70,7 @@ end
 ---@param settings Settings
 function Hagal.setUp(settings)
     if settings.numberOfPlayers < 3 then
-        Deck.generateHagalDeck(
-            Hagal.deckZone,
-            settings.riseOfIx,
-            settings.immortality,
-            settings.bloodlines,
-            settings.ixAmbassy,
-            settings.numberOfPlayers)
+        Deck.generateHagalDeck(Hagal.deckZone, settings)
         .doAfter(function (deck)
             assert(deck, "No Hagal deck!")
             Helper.shuffleDeck(deck)
@@ -111,7 +105,7 @@ end
 ---@param settings Settings
 function Hagal._transientSetUp(settings)
     Hagal.numberOfPlayers = settings.numberOfPlayers
-    Hagal.riseOfIx = settings.riseOfIx
+    Hagal.ix = settings.ix
     Hagal.difficulty = Hagal.numberOfPlayers == 1 and settings.difficulty or nil
     Hagal.autoTurnInSolo = settings.autoTurnInSolo
     Hagal.brutalEscalation = settings.brutalEscalation
@@ -234,7 +228,7 @@ end
 ---@param color PlayerColor
 function Hagal._activateFirstValidActionCard(color)
     return Hagal._activateFirstValidCard(color, function (card)
-        return HagalCard.activate(color, card, Hagal.riseOfIx)
+        return HagalCard.activate(color, card, Hagal.ix)
     end)
 end
 
@@ -244,7 +238,8 @@ function Hagal._collectReward(color)
     Helper.onceFramesPassed(1).doAfter(function ()
         local rank = Combat.getRank(color).value
         local conflictName = Combat.getCurrentConflictName()
-        ConflictCard.collectReward(color, conflictName, rank).doAfter(function ()
+        local postAction = Helper.partialApply(Rival.triggerHagalReaction, color)
+        ConflictCard.collectReward(color, conflictName, rank, postAction).doAfter(function ()
             if rank == 1 then
                 local leader = PlayBoard.getLeader(color)
                 if PlayBoard.hasTech(color, "windtraps") then
@@ -264,7 +259,7 @@ function Hagal._collectReward(color)
                     dreadnoughts[1].setPositionSmooth(bestBannerZone.getPosition())
                 end
             end
-            Rival.triggerHagalReaction(color).doAfter(continuation.run)
+            continuation.run()
         end)
     end)
     return continuation

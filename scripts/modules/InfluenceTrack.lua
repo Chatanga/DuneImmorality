@@ -77,12 +77,12 @@ function InfluenceTrack._transientSetUp(settings, firstTime)
             local levelPosition = meanStartPosition + Vector(0, -0.5, meanStep * i)
             Helper.createTransientAnchor(faction .. "Rank" .. tostring(i), levelPosition).doAfter(function (anchor)
                 local actionName = I18N("progressOnInfluenceTrack", { withFaction = I18N(Helper.toCamelCase("with", faction)) })
-                Helper.createSizedAreaButton(1000, 400, anchor, 0, 0, Board.onMainBoard(0.1), actionName, PlayBoard.withLeader(function (_, color, _)
+                Helper.createSizedAreaButton(1000, 400, anchor, 0, 0, Board.onMainBoard(0.1), actionName, PlayBoard.withLeader(function (leader, color, _)
                     if not InfluenceTrack.lockedActions[faction][color] then
                         if true then
                             local rank = InfluenceTrack._getInfluenceTracksRank(faction, color)
                             InfluenceTrack.lockedActions[faction][color] = true
-                            PlayBoard.getLeader(color).influence(color, faction, i - rank).doAfter(function ()
+                            leader.influence(color, faction, i - rank).doAfter(function ()
                                 InfluenceTrack.lockedActions[faction][color] = false
                             end)
                         end
@@ -385,7 +385,6 @@ function InfluenceTrack._challengeAlliance(faction)
                 allianceOwner = bestRankedPlayers[1]
                 InfluenceTrack._gainAlliance(faction, allianceOwner)
             else
-                -- FIXME
                 broadcastToAll(tostring(allianceOwner) .. " must grant alliance to one of " .. tostring(bestRankedPlayers), "Pink")
             end
         end

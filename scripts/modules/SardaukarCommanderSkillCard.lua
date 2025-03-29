@@ -37,7 +37,7 @@ end
 
 ---@param cardName string
 ---@return SkillCardInfo
-function SardaukarCommanderSkillCard.unused_getDetails(cardName)
+function SardaukarCommanderSkillCard.getDetails(cardName)
     return SardaukarCommanderSkillCard._resolveCard(cardName)
 end
 

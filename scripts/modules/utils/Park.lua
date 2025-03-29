@@ -13,7 +13,8 @@ local Helper = require("utils.Helper")
 --- locked: boolean,
 --- smooth: boolean,
 --- anchor: Object,
---- slotHeight: number }
+--- slotHeight: number,
+--- avoidStacking: boolean }
 local Park = {
     objectsInTransit = {}
 }
@@ -74,7 +75,7 @@ end
 ---@param description? string An optional restriction on the park content.
 ---@param locked? boolean Should the park content be locked?
 ---@param smooth? boolean Should the objects be transfered smoothly to the park?
----@return table
+---@return Park
 function Park.createPark(name, slots, rotation, zones, tags, description, locked, smooth)
     assert(#slots > 0, "No slot provided for new park.")
     assert(zones and #zones > 0, "No park zones provided.")
@@ -493,8 +494,9 @@ end
 ---@param center Vector
 ---@param size integer
 ---@param spacing number
+---@param rotation? number
 ---@return table
-function Park.createDiamondOfSlots(center, size, spacing)
+function Park.createDiamondOfSlots(center, size, spacing, rotation)
     local allSlots = {}
     local slots = {}
     local halfSize = size / 2
@@ -503,7 +505,7 @@ function Park.createDiamondOfSlots(center, size, spacing)
         for j = 1, size do
             local x = (i - middle) * spacing
             local z = (j - middle) * spacing
-            local slot = Vector(x, 0, z):rotateOver('y', 135) + center
+            local slot = Vector(x, 0, z):rotateOver('y', rotation or 135) + center
             table.insert(allSlots, slot)
             if i > halfSize or j > halfSize then
                 table.insert(slots, slot)

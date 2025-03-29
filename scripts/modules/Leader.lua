@@ -14,8 +14,8 @@ local Deck = Module.lazyRequire("Deck")
 local TechMarket = Module.lazyRequire("TechMarket")
 local Intrigue = Module.lazyRequire("Intrigue")
 local Types = Module.lazyRequire("Types")
-local Board = Module.lazyRequire("Board")
 local TurnControl = Module.lazyRequire("TurnControl")
+local Board = Module.lazyRequire("Board")
 local HagalCard = Module.lazyRequire("HagalCard")
 
 ---@class Leader: Action
@@ -34,7 +34,7 @@ function Leader.newLeader(name)
     return Helper.createClassInstance(LeaderClass)
 end
 
----@param anchors? Option[]
+---@param anchors? Object[]
 ---@param color PlayerColor
 ---@param name string
 ---@param tooltip string
@@ -43,7 +43,7 @@ function Leader._createRightCardButton(anchors, color, name, tooltip, action)
     Leader._createCardButton(anchors, color, name, tooltip, Vector(1.35, 0, -1.3), action)
 end
 
----@param anchors? Option[]
+---@param anchors? Object[]
 ---@param color PlayerColor
 ---@param name string
 ---@param tooltip string
@@ -52,7 +52,7 @@ function Leader._createLeftCardButton(anchors, color, name, tooltip, action)
     Leader._createCardButton(anchors, color, name, tooltip, Vector(-1, 0, -1.3), action)
 end
 
----@param anchors? Option[]
+---@param anchors? Object[]
 ---@param color PlayerColor
 ---@param name string
 ---@param tooltip string
@@ -201,7 +201,7 @@ Leader.helenaRichese = Helper.createClass(Leader, {
     --- Eyes everywhere
     sendAgent = function (color, spaceName)
         -- We don't care since it's simpler to let the player apply the rules.
-        --local force = MainBoard.isLandsraadSpace(spaceName) or MainBoard.isSpiceTradeSpace(spaceName)
+        --local force = MainBoard.isGreenSpace(spaceName) or MainBoard.isSpiceTradeSpace(spaceName)
         return Action.sendAgent(color, spaceName)
     end,
 
@@ -794,10 +794,15 @@ Leader.yrkoon = Helper.createClass(Leader, {
         local zone = content.leaderZone
         -- Temporary tag to avoid counting the leader card.
         zone.addTag("Navigation")
-        Deck.generateNavigationDeck(zone).doAfter(function (deck)
+        Deck.generateNavigationDeck(zone, settings).doAfter(function (deck)
             zone.removeTag("Navigation")
             Helper.shuffleDeck(deck)
-            deck.setPosition(deck.getPosition() + Vector(0, 0, 0.25))
+            Helper.onceShuffled(deck).doAfter(function ()
+                deck.deal(5, color)
+                Helper.onceTimeElapsed(1).doAfter(function ()
+                    PlayBoard.getPlayBoard(color):trash(deck)
+                end)
+            end)
 
             for i = 1, 4 do
                 local bag = getObjectFromGUID(Leader.yrkoon.bags[i])
@@ -901,10 +906,20 @@ Leader.yrkoon = Helper.createClass(Leader, {
 Leader.kotaOdax = Helper.createClass(Leader, {
 
     doSetUp = function (color, settings)
+        local leaderCard = PlayBoard.findLeaderCard(color)
+        if leaderCard then
+            local snapPoints = {{ position = Vector(0, 0, 0), tags = { "Tech" } }}
+            leaderCard.setSnapPoints(snapPoints)
+        end
+
         Leader.kotaOdax.transientSetUp(color, settings)
     end,
 
+    --- Secret Project
     transientSetUp = function (color, settings)
+        local content = PlayBoard.getPlayBoard(color).content
+        local zone = content.leaderZone
+
         Helper.registerEventListener("playerTurn", function (phaseName, otherColor)
             if phaseName == "gameStart" and otherColor == color then
                 local options = {}
@@ -920,11 +935,22 @@ Leader.kotaOdax = Helper.createClass(Leader, {
                 end
                 Dialog.showTechOptionsDialog(color, I18N("kotaOdaxChoice"), options, function (index)
                     local stackIndex = 4 - math.max(1, index) -- Select the first option on cancellation.
-                    local content = PlayBoard.getPlayBoard(color).content
-                    local zone = content.leaderZone
                     TechMarket.grapBottomCard(stackIndex, zone.getPosition())
                     TurnControl.endOfTurn()
                 end)
+            end
+        end)
+
+        Leader._createLeftCardButton(nil, color, "SecretProjectAnchor", I18N("secretProjectAnchorTooltip"), function (otherColor)
+            if otherColor == color then
+                for _, object in ipairs(zone.getObjects()) do
+                    if Types.isTech(object) then
+                        local techCard = object
+                        ---@cast techCard Card
+                        TechMarket.acquireRandomTech(color, techCard, 1)
+                        break
+                    end
+                end
             end
         end)
     end,

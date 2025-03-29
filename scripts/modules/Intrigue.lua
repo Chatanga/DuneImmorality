@@ -26,7 +26,7 @@ end
 ---@return Continuation
 function Intrigue.setUp(settings)
     local continuation = Helper.createContinuation("Intrigue.setUp")
-    Deck.generateIntrigueDeck(Intrigue.deckZone, settings.riseOfIx, settings.immortality, settings.bloodlines).doAfter(function (deck)
+    Deck.generateIntrigueDeck(Intrigue.deckZone, settings).doAfter(function (deck)
         assert(deck, "No intrigue deck!")
         Helper.shuffleDeck(deck)
         Intrigue._transientSetUp()

@@ -420,9 +420,7 @@ end
 function Helper.getDeckOrCard(zone)
     assert(zone)
     assert(type(zone) ~= 'string', tostring(zone) .. ' looks like a GUID, not a zone')
-    -- It is pairs, not ipairs!
-    -- TODO Confirm it...
-    for _, object in pairs(zone.getObjects()) do
+    for _, object in ipairs(zone.getObjects()) do
         if object.type and not object.held_by_color and (object.type == "Card" or object.type == "Deck") then
             ---@cast object Card|Deck
             return object
@@ -624,21 +622,21 @@ end
 ---@param parent Object
 ---@param zone Zone
 ---@param rotationSnap boolean
----@param tags string[]
+---@param tags? string[]
 ---@return SnapPoint
 function Helper.createRelativeSnapPointFromZone(parent, zone, rotationSnap, tags)
-    return Helper.createRelativeSnapPoint(parent, zone.getPosition(), rotationSnap, tags)
+    local p = zone.getPosition()
+    return Helper.createRelativeSnapPoint(parent, Vector(p.x, parent.getPosition().y, p.z), rotationSnap, tags)
 end
 
 ---@param parent Object
 ---@param position Vector
 ---@param rotationSnap boolean
----@param tags string[]
+---@param tags? string[]
 ---@return SnapPoint
 function Helper.createRelativeSnapPoint(parent, position, rotationSnap, tags)
-    local p = Vector(position.x, parent.getPosition().y, position.z)
     local snapPoint = {
-        position = parent.positionToLocal(p),
+        position = parent.positionToLocal(position),
         rotation_snap = rotationSnap,
         tags = tags
     }
@@ -887,7 +885,7 @@ function Helper._createAbsoluteWidgetWithRoundnessParameters(object, roundness, 
     return parameters
 end
 
----@alias CollectNet table<string, fun(name: string, position: Vector)>
+---@alias CollectNet table<string, fun(name: string, position: Vector, snapPoint?: Object)>
 
 ---@param object Object
 ---@param net CollectNet
@@ -902,7 +900,7 @@ function Helper.collectSnapPoints(object, net)
                 for prefix, collector in pairs(net) do
                     if Helper.startsWith(tag, prefix) then
                         local name = tag:sub(prefix:len() + 1):gsub("^%u", string.lower)
-                        collector(name, object.positionToWorld(snapPoint.position))
+                        collector(name, object.positionToWorld(snapPoint.position), snapPoint)
                     end
                 end
             end
@@ -1208,7 +1206,7 @@ end
 ---@return Continuation
 function Helper.onceShuffled(container)
     local continuation = Helper.createContinuation("Helper.onceShuffled")
-    -- TODO Is there a better way?
+    -- FIXME Is there a better way?
     Wait.time(function ()
         continuation.run(container)
     end, 2)
@@ -1733,7 +1731,7 @@ function Helper.toCamelCase(...)
 end
 
 ---@param ... string
-function Helper.unused_toPascalCase(...)
+function Helper.toPascalCase(...)
     local pascalString
     for i, str in ipairs({...}) do
         if i > 1 then
@@ -2278,6 +2276,28 @@ function Helper.negate(predicate)
     end
 end
 
+---@param value any
+---@return fun(...): boolean
+function Helper.equal(value)
+    return function (object)
+        return object == value
+    end
+end
+
+---@return fun(...): boolean
+function Helper.never()
+    return function ()
+        return false
+    end
+end
+
+---@return fun(...): boolean
+function Helper.always()
+    return function ()
+        return true
+    end
+end
+
 --- http://lua-users.org/wiki/StringRecipes
 ---@param str string
 ---@param start string
@@ -2303,6 +2323,28 @@ function Helper.splitString(str, sep)
         table.insert(tokens, token)
     end
     return tokens
+end
+
+---@param name string
+---@param n integer
+---@return string
+function Helper.chopName(name, n)
+    local choppedName = ""
+    local i = 0
+    for _, token in ipairs(Helper.splitString(name, " ")) do
+        if token:len() > 2 then
+            i = i + 1
+        end
+        if i <= n then
+            if choppedName:len() > 0 then
+                choppedName = choppedName .. " "
+            end
+            choppedName = choppedName .. token
+        else
+            break
+        end
+    end
+    return choppedName
 end
 
 ---@param object Object

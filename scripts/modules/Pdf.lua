@@ -8,11 +8,11 @@ local I18N = require("utils.I18N")
 
 local Pdf = {
     books = {
-        base = { guid = "dc6297", position = Vector(-14, 0.61, -29), scale = Vector(1.67, 1, 1.67) },
-        faq = { guid = "43fd49", position = Vector(-7, 0.61, -29), scale = Vector(1.59, 1, 1.59) },
-        riseOfIx = { guid = "2ed556", position = Vector(0, 0.61, -29), scale = Vector(1.5, 1, 1.5) },
-        immortality = { guid = "e2ef02", position = Vector(7, 0.61, -29), scale = Vector(1.1, 1, 1.1) },
-        bloodlines = { guid = "86496f", position = Vector(14, 0.61, -29), scale = Vector(1.5, 1, 1.5) },
+        base = "dc6297",
+        ix = "2ed556",
+        immortality = "e2ef02",
+        bloodlines = "86496f",
+        faq = "43fd49",
     }
 }
 
@@ -29,23 +29,23 @@ function Pdf.setUp()
         return
     end
 
-    for bookName, bookInfo in pairs(Pdf.books) do
+    for bookName, guid in pairs(Pdf.books) do
         local url = Pdf[locale][bookName]
         Helper.onceFramesPassed(1).doAfter(function ()
-            -- FIXME Name clash with localized mixin modules.
+            -- FIXME Name clash with localized mixin modules (e.g. modules[|.fr|.en].Board)..
             ---@cast url unknown
-            Pdf._mututateBook(bookName, bookInfo, url)
+            Pdf._mututateBook(bookName, guid, url)
         end)
     end
 end
 
----comment
 ---@param bookName string
----@param info BookInfo
+---@param guid GUID
 ---@param url string
-function Pdf._mututateBook(bookName, info, url)
+function Pdf._mututateBook(bookName, guid, url)
     --- We cannot create PDF ex nihilo, but need an existing PDF to be mutated.
-    local book = getObjectFromGUID(info.guid)
+    local book = getObjectFromGUID(guid)
+    assert(book, bookName)
     local data = book.getData()
     data.CustomPDF.PDFUrl = url
     book.destruct()

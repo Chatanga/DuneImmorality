@@ -16,7 +16,7 @@ return {
     randomizePlayersPositions = "Mélanger les positions des joueurs",
     randomizePlayersPositionTooltip = "Aucun joueur ne doit utiliser le siège noir pendant\nque les positions des joueurs sont mélangées.",
     extensions = "Extensions",
-    riseOfIx = "L’Avènement de Ix",
+    ix = "L’Avènement de Ix",
     epicMode = "Mode épique",
     immortality = "Immortalité",
     goTo11 = "Pousser jusqu’à 11",
@@ -243,7 +243,9 @@ return {
     progressAfterResearchTrack = "Progresser au-delà de la piste de recherche",
     negotiatorEdit = "Négociateur: ±1",
     goSellMelange = "Selectionnez le montant en épice à convertir en solaris.",
-    goTechNegotiation = "Sélectionnez une option.",
+    tuekBoardRelocationMessage = "Peut être repositionné jusqu’à\nla sélection du dernier dirigeant.",
+    goTuekSietch = "Sélectionnez une option",
+    goTechNegotiation = "Sélectionnez une option",
     sendNegotiatorOption = "Négociateur",
     buyTechWithDiscount1Option = "Tech. avec un rabais",
     buyTechSelection = "Selectionnez votre option d’achat de tech.",
@@ -360,6 +362,7 @@ return {
     tuekDrawIntrigueFromOpponent = "↯ Esmar Tuek profite de ses ennemies.",
     hungryForSpiceAbility = "↯ Le timonier Y'rkoon est complètement stone.",
     kotaOdaxChoice = "Sélectionnez une tuile tech.",
+    secretProjectAnchorTooltip = "Acquérez votre projet secret.",
     lookAt = "Regarder le {rank} choix de carte",
 
     -- Bloodlines leaders
@@ -425,9 +428,12 @@ return {
     smuggling = "Contrebande",
     interstellarShipping = "Livraison interstellaire",
     techNegotiation = "Négociation tech.",
-    techNegotiation_1 = "Acheter une tech.",
-    techNegotiation_2 = "Envoyer un négociateur.",
+    techNegotiation_Buy = "Acheter une tech.",
+    techNegotiation_Negotiate = "Envoyer un négociateur.",
     dreadnought = "Cuirassé",
+    tuekSietch = "Sietch de Tuek",
+    tuekSietch_WithSpice = "1 unité d’épice",
+    tuekSietch_WithDraw = "Pioche d’une carte",
 
     -- Hagal cards
     harvestSpice = "Récolter l’épice",
@@ -441,7 +447,6 @@ return {
     carthag2 = "Carthag 2",
     carthag3 = "Carthag 3",
     acquireTech = "Acquérir une Tech.",
-    tuekSietch = "Sietch de Tuek",
 
     -- Hagal
     reshuffle = "Rémélanger",
@@ -603,6 +608,7 @@ return {
     pointingTheWay = "Pointing The Way",
     shroudedCounsel = "Shrouded Counsel",
     ruthlessLeadership = "Ruthless Leadership",
+    pivotalGambit = "Pivotal Gambit",
 
     -- Intrigue
     bribery = "Pot-de-vin",
@@ -750,6 +756,17 @@ return {
     navigationChamber = "Navigation Chamber",
     sardaukarHighCommand = "Sardaukar High Command",
     forbiddenWeapons = "Forbidden Weapons",
+
+    -- Navigation Card
+    solarisAndPermanentPersuasion = "Solaris + Persuasion",
+    spiceIfTrash = "Spice / Trash",
+    waterThenSpiceIfSpacingGuildInfluence = "Water and Spice / Spacing Guild",
+    spiceOrInfluenceIfSolaris = "Spice or Influence / Solaris",
+    spiceOrTSMFIfWater = "Spice or TSMF / Water",
+    spiceThenIntrigueIfAlliance = "Spice then Intrigue / Alliance",
+    influenceIfInfluence = "Influence / Influence",
+    drawOrVpIfSpice = "Draw or VP / Spice",
+    troopOrMoreTroopIfSolaris = "Troop or mor Troop / Solaris",
 
     -- Specific victory tokens
     emperorFriendship = "Amitié avec l’Empereur",

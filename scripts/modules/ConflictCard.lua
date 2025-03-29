@@ -53,8 +53,9 @@ local ConflictCard = {
 ---@param color PlayerColor
 ---@param conflictName string
 ---@param rank integer
+---@param postAction? fun(): nil
 ---@return Continuation
-function ConflictCard.collectReward(color, conflictName, rank)
+function ConflictCard.collectReward(color, conflictName, rank, postAction)
     assert(Helper.isInRange(1, 3, rank))
     local conflict = ConflictCard[conflictName]
     assert(conflict, "Unknown conflict: " .. tostring(conflictName))
@@ -70,6 +71,10 @@ function ConflictCard.collectReward(color, conflictName, rank)
 
     for _, reward in ipairs(rewards) do
         CardEffect.evaluate(context, reward)
+    end
+
+    if postAction then
+        postAction()
     end
 
     local continuation = Helper.fakeContinuation("ConflictCard.collectReward")

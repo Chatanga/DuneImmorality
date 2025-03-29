@@ -51,11 +51,7 @@ end
 function Combat.setUp(settings)
     Combat._transientSetUp(settings)
     assert(Combat.conflictDeckZone)
-    return Deck.generateConflictDeck(
-        Combat.conflictDeckZone,
-        settings.riseOfIx,
-        settings.epicMode,
-        settings.bloodlines)
+    return Deck.generateConflictDeck(Combat.conflictDeckZone, settings)
 end
 
 ---@param settings Settings
@@ -164,13 +160,16 @@ function Combat._processSnapPoints(settings)
         garrison = function (name, position)
             local color = name:gsub("^%l", string.upper)
             Combat.garrisonParks[color] = Combat._createGarrisonPark(color, position)
-            if settings.riseOfIx then
+            if settings.ix then
                 Combat.dreadnoughtParks[color] = Combat._createDreadnoughtPark(color, position)
             end
         end,
 
         battlefield = function (name, position)
-            Combat.battlegroundPark = Combat._createBattlegroundPark(position)
+            -- Skipping player battlegrounds.
+            if name == "" then
+                Combat.battlegroundPark = Combat._createBattlegroundPark(position)
+            end
         end,
 
         victoryTokenRoom = function (name, position)
@@ -316,6 +315,7 @@ end
 ---@return Park
 function Combat._createDreadnoughtPark(color, origin)
     local dir = PlayBoard.isLeft(color) and -1 or 1
+    -- Moved in Uprising to make room to the sandworm hook.
     local slots = {
         origin + Vector(1.3 * dir, 0.2, 0.9),
         origin + Vector(1.3 * dir, 0.2, -0.9),
@@ -681,7 +681,7 @@ function Combat.hasAnySardaukarCommander(color)
 end
 
 ---@return Zone
-function Combat.unused_getCombatCenterZone()
+function Combat.getCombatCenterZone()
     return Combat.combatCenterZone
 end
 

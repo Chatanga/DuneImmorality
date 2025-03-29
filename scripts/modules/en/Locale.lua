@@ -16,7 +16,7 @@ return {
     randomizePlayersPositions = "Randomize players' positions",
     randomizePlayersPositionTooltip = "No player must use the black seat while\nthe player positions are shuffled.",
     extensions = "Extensions",
-    riseOfIx = "Rise of Ix",
+    ix = "Rise of Ix",
     epicMode = "Epic mode",
     immortality = "Immortality",
     goTo11 = "Go to 11",
@@ -73,7 +73,6 @@ return {
     phaseRecall = "Phase: recall",
     phaseEndgame = "Phase: endgame",
     phaseArrakeenScouts = "Phase: Arrakeen scouts",
-    endgameReached = "Theorical End of Game reached",
 
     -- Card
     acquireButton = "Acquire",
@@ -360,8 +359,9 @@ return {
     tuekGainSolariFromAlly = "↯ Esmar Tuek benefits of its allies.",
     tuekDrawIntrigueFromOpponent = "↯ Esmar Tuek benefits of its opponent.",
     hungryForSpiceAbility = "↯ Steersman Y'rkoon get stoned.",
-    lookAt = "Look at {rank} card",
     kotaOdaxChoice = "Select one Tech Tile.",
+    secretProjectAnchorTooltip = "Aquire your Secret Project.",
+    lookAt = "Look at {rank} card",
 
     -- Fanmade leaders
     arkhaneAbulurdHarkonnen = "Abulurd Harkonnen",
@@ -426,9 +426,12 @@ return {
     smuggling = "Smuggling",
     interstellarShipping = "Interstellar Shipping",
     techNegotiation = "Tech Negotiation",
-    techNegotiation_1 = "Buy Tech",
-    techNegotiation_2 = "Send Negotiator",
+    techNegotiation_Buy = "Buy Tech",
+    techNegotiation_Negotiate = "Send Negotiator",
     dreadnought = "Dreadnought",
+    tuekSietch = "Tuek's Sietch",
+    tuekSietch_WithSpice = "1 spice unit",
+    tuekSietch_WithDraw = "draw 1 card",
 
     -- Hagal cards
     harvestSpice = "Harvest Spice",
@@ -442,7 +445,6 @@ return {
     carthag2 = "Carthag 2",
     carthag3 = "Carthag 3",
     acquireTech = "Acquire Tech",
-    tuekSietch = "Tuek's Sietch",
 
     -- Hagal
     reshuffle = "Reshuffle",
@@ -503,7 +505,6 @@ return {
     reverendMotherMohiam = "Reverend Mother Mohiam",
     powerPlay = "Power Play",
     duncanLoyalBlade = "Duncan Loyal Blade",
-    thumper = "Thumper",
     boundlessAmbition = "Boundless Ambition",
     guildChiefAdministrator = "Guild Chief Administrator",
     guildAccord = "Guild Accord",
@@ -605,6 +606,7 @@ return {
     pointingTheWay = "Pointing The Way",
     shroudedCounsel = "Shrouded Counsel",
     ruthlessLeadership = "Ruthless Leadership",
+    pivotalGambit = "Pivotal Gambit",
 
     -- Intrigue
     bribery = "Bribery",
@@ -752,6 +754,17 @@ return {
     navigationChamber = "Navigation Chamber",
     sardaukarHighCommand = "Sardaukar High Command",
     forbiddenWeapons = "Forbidden Weapons",
+
+    -- Navigation Card
+    solarisAndPermanentPersuasion = "Solaris + Persuasion",
+    spiceIfTrash = "Spice / Trash",
+    waterThenSpiceIfSpacingGuildInfluence = "Water and Spice / Spacing Guild",
+    spiceOrInfluenceIfSolaris = "Spice or Influence / Solaris",
+    spiceOrTSMFIfWater = "Spice or TSMF / Water",
+    spiceThenIntrigueIfAlliance = "Spice then Intrigue / Alliance",
+    influenceIfInfluence = "Influence / Influence",
+    drawOrVpIfSpice = "Draw or VP / Spice",
+    troopOrMoreTroopIfSolaris = "Troop or mor Troop / Solaris",
 
     -- Specific victory tokens
     emperorFriendship = "Friendship with the Emperor",

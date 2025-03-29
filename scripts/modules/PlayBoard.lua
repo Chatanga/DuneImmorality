@@ -92,10 +92,10 @@ local PlayBoard = Helper.createClass(nil, {
             forceMarker = '2d1d17',
             trash = "ea3fe1",
             tleilaxToken = "2bfc39",
-            tleilaxTokenInitalPosition = Helper.getHardcodedPositionFromGUID('2bfc39', 0.544617236, 1.8775003, 22.0549927),
+            tleilaxTokenInitalPosition = Helper.getHardcodedPositionFromGUID('2bfc39', 0.5446171, 1.8775003, 22.0549927),
             researchToken = "39e0f3",
-            researchTokenInitalPosition = Helper.getHardcodedPositionFromGUID('39e0f3', 0.369999945, 1.88000035, 18.2351761),
-            freighter = "e9096d",
+            researchTokenInitalPosition = Helper.getHardcodedPositionFromGUID('39e0f3', 0.369999915, 1.88000035, 18.2351761),
+            freighter = "e672c6",
             firstPlayerMarkerZone = "346e0d",
             firstPlayerInitialPosition = Helper.getHardcodedPositionFromGUID('346e0d', -14.0, 2.5, 19.7) + Vector(0, -0.4, 0),
             endTurnButton = "895594",
@@ -135,10 +135,10 @@ local PlayBoard = Helper.createClass(nil, {
             forceMarker = 'f22e20',
             trash = "52a539",
             tleilaxToken = "96607f",
-            tleilaxTokenInitalPosition = Helper.getHardcodedPositionFromGUID('96607f', 0.5446167, 1.88000023, 22.75),
+            tleilaxTokenInitalPosition = Helper.getHardcodedPositionFromGUID('96607f', 0.544616759, 1.88000023, 22.75),
             researchToken = "292658",
-            researchTokenInitalPosition = Helper.getHardcodedPositionFromGUID('292658', 0.369999915, 1.87750018, 18.9369965),
-            freighter = "68e424",
+            researchTokenInitalPosition = Helper.getHardcodedPositionFromGUID('292658', 0.369999975, 1.87750018, 18.9369965),
+            freighter = "e4a2dd",
             firstPlayerMarkerZone = "1fc559",
             firstPlayerInitialPosition = Helper.getHardcodedPositionFromGUID('1fc559', -14.0, 2.501278, -3.3) + Vector(0, -0.4, 0),
             endTurnButton = "9eeccd",
@@ -178,10 +178,10 @@ local PlayBoard = Helper.createClass(nil, {
             forceMarker = 'a1a9a7',
             trash = "4060b5",
             tleilaxToken = "63d39f",
-            tleilaxTokenInitalPosition = Helper.getHardcodedPositionFromGUID('63d39f', 1.24461615, 1.88000011, 22.05),
+            tleilaxTokenInitalPosition = Helper.getHardcodedPositionFromGUID('63d39f', 1.24461627, 1.88000011, 22.05),
             researchToken = "658b17",
-            researchTokenInitalPosition = Helper.getHardcodedPositionFromGUID('658b17', 0.3699998, 1.8775003, 20.34),
-            freighter = "34281d",
+            researchTokenInitalPosition = Helper.getHardcodedPositionFromGUID('658b17', 0.369999349, 1.8775003, 20.34),
+            freighter = "e89b34",
             firstPlayerMarkerZone = "59523d",
             firstPlayerInitialPosition = Helper.getHardcodedPositionFromGUID('59523d', 14.0, 2.45146346, 19.7) + Vector(0, -0.4, 0),
             endTurnButton = "96aa58",
@@ -223,8 +223,8 @@ local PlayBoard = Helper.createClass(nil, {
             tleilaxToken = "d20bcf",
             tleilaxTokenInitalPosition = Helper.getHardcodedPositionFromGUID('d20bcf', 1.24461651, 1.88000023, 22.75),
             researchToken = "8988cf",
-            researchTokenInitalPosition = Helper.getHardcodedPositionFromGUID('8988cf', 0.370000929, 1.8775003, 19.6394081),
-            freighter = "8fa76f",
+            researchTokenInitalPosition = Helper.getHardcodedPositionFromGUID('8988cf', 0.370001018, 1.8775003, 19.6394081),
+            freighter = "a7d445",
             firstPlayerMarkerZone = "e9a44c",
             firstPlayerInitialPosition = Helper.getHardcodedPositionFromGUID('e9a44c', 14.0, 2.44851, -3.3) + Vector(0, -0.4, 0),
             endTurnButton = "3d1b90",
@@ -350,7 +350,7 @@ function PlayBoard.rebuild()
         handTransform.position = handTransform.position + offset
         Player[color].setHandTransform(handTransform)
 
-        local decalHeight = 0.68
+        local decalHeight = 0.68 -- 0.19 with Uprising?!
 
         local positionToLocalDecal = function (p)
             local localPosition = content.board.positionToLocal(p)
@@ -504,8 +504,6 @@ function PlayBoard.onSave(state)
             lastPhase = playBoard.lastPhase,
             revealed = playBoard.revealed,
             initialPositions = {
-                tleilaxTokenInitalPosition = playBoard.content.tleilaxTokenInitalPosition,
-                researchTokenInitalPosition = playBoard.content.researchTokenInitalPosition,
                 firstPlayerInitialPosition = playBoard.content.firstPlayerInitialPosition,
             },
         }
@@ -565,7 +563,6 @@ function PlayBoard.new(color, unresolvedContent, state, subState)
 
     if subState then
         playBoard.opponent = subState.opponent
-
         playBoard.lastPhase = subState.lastPhase
         playBoard.revealed = subState.revealed
 
@@ -575,12 +572,7 @@ function PlayBoard.new(color, unresolvedContent, state, subState)
             if playBoard.leaderCard then
                 assert(subState.leader)
                 if playBoard.opponent == "rival" then
-                    -- TODO Encapsuler dans Hagal.newRival(subState.leader)
-                    if Hagal.getRivalCount() == 1 then
-                        playBoard.leader = Rival.newRival(color)
-                    else
-                        playBoard.leader = Rival.newRival(color, subState.leader)
-                    end
+                    playBoard.leader = Rival.newRival(color, subState.leader)
                 else
                     playBoard.leader = Leader.newLeader(subState.leader)
                 end
@@ -590,8 +582,6 @@ function PlayBoard.new(color, unresolvedContent, state, subState)
             end
         end)
 
-        playBoard.content.tleilaxTokenInitalPosition = Helper.toVector(subState.initialPositions.tleilaxTokenInitalPosition)
-        playBoard.content.researchTokenInitalPosition = Helper.toVector(subState.initialPositions.researchTokenInitalPosition)
         playBoard.content.firstPlayerInitialPosition = Helper.toVector(subState.initialPositions.firstPlayerInitialPosition)
     else
         Helper.noPlay(
@@ -655,7 +645,7 @@ function PlayBoard.setUp(settings, activeOpponents)
     local sequentialActions = {}
 
     for color, playBoard in pairs(PlayBoard.playBoards) do
-        playBoard:_cleanUp(false, not settings.riseOfIx, not settings.immortality, not settings.bloodlines)
+        playBoard:_cleanUp(false, not settings.ix, not settings.immortality, not settings.bloodlines)
         if activeOpponents[color] then
             if activeOpponents[color] == "rival" then
                 playBoard.opponent = "rival"
@@ -667,8 +657,8 @@ function PlayBoard.setUp(settings, activeOpponents)
                 playBoard.content.sardaukarMarker = nil
             else
                 playBoard.opponent = "human"
-                Deck.generateStarterDeck(playBoard.content.drawDeckZone, settings.immortality, settings.epicMode).doAfter(Helper.shuffleDeck)
-                Deck.generateStarterDiscard(playBoard.content.discardZone, settings.immortality, settings.epicMode)
+                Deck.generateStarterDeck(playBoard.content.drawDeckZone, settings).doAfter(Helper.shuffleDeck)
+                Deck.generateStarterDiscard(playBoard.content.discardZone, settings)
             end
 
             if true then
@@ -768,7 +758,7 @@ function PlayBoard._transientSetUp(settings)
         local playBoard = PlayBoard.getPlayBoard(color)
 
         if PlayBoard.isHuman(color) and not refreshing then
-            -- FIXME To naive, won't work for multiple agents in a single turn (weirding way).
+            -- FIXME To naive, won't work for multiple agents in a single turn (e.g. Weirding Way).
             playBoard.alreadyPlayedCards = Helper.filter(Park.getObjects(playBoard.agentCardPark), function (card)
                 return (Types.isImperiumCard(card) or Types.isIntrigueCard(card)) and not card.is_face_down
             end)
@@ -803,20 +793,9 @@ function PlayBoard._transientSetUp(settings)
                         TechMarket.registerAcquireTechOption(color, cardName .. "TechBuyOption", "spice", 0)
                     elseif cardName == "machineCulture" then
                         TechMarket.registerAcquireTechOption(color, cardName .. "TechBuyOption", "spice", 0)
-                    -- TODO Find some way to push this into Leader.
-                    elseif cardName == "signetRing" and PlayBoard.getLeader(color).name == "rhomburVernius" then
-                        TechMarket.registerAcquireTechOption(color, "rhomburVerniusTechBuyOption", "spice", 0)
                     end
                 end
             end)
-
-            --[[
-            if spaceName == "techNegotiation" then
-                PlayBoard.getResource(color, "persuasion"):setBaseValueContribution("techNegotiation", 1)
-            elseif spaceName == "hallOfOratory" then
-                PlayBoard.getResource(color, "persuasion"):setBaseValueContribution("hallOfOratory", 1)
-            end
-            ]]
         end
     end)
 
@@ -905,7 +884,7 @@ function PlayBoard:_recall()
         if cardName == "foldspace" then
             Reserve.recycleFoldspaceCard(card)
         elseif Helper.isElementOf(cardName, {"seekAllies", "powerPlay", "treachery"}) then
-            MainBoard.trash(card)
+            self:trash(card)
         else
             card.setPosition(nextDiscardPosition())
         end
@@ -1264,10 +1243,9 @@ function PlayBoard:_createTechPark(layerCount)
 end
 
 function PlayBoard:_createPlayerScorePark()
-    local origin = self:_generateAbsolutePosition("symmetric", Vector(-14.48, 0, 10.35))
-    local width = 18
+    local origin = self:_generateAbsolutePosition("symmetric", Vector(-5.2, 0, 10.35))
     local spacing = PlayBoard.isLeft(self.color) and -1.092 or 1.092
-    origin:setAt('x', origin.x + (width - 1) / 2 * spacing)
+    local width = 18
     local slots = Park.createMatrixOfSlots(origin, Vector(width, 1, 1), Vector(spacing, 0, 0))
     return Park.createCommonPark({ "VictoryPointToken" }, slots, Vector(1, 1, 1), Vector(0, 180, 0))
 end
@@ -1278,7 +1256,6 @@ function PlayBoard:_generatePlayerScoreTrackPositions()
         -- Rival in 2P mode has no score marker.
         return
     end
-
     local origin = self.content.scoreMarkerInitialPosition
 
     -- Avoid collision between markers by giving a different height to each.
@@ -1329,7 +1306,7 @@ function PlayBoard.onObjectEnterZone(zone, object)
         if playBoard.opponent then
             if Helper.isElementOf(zone, playBoard.scorePark.zones) then
                 if Types.isVictoryPointToken(object) then
-                    local controlableSpace = MainBoard.findControlableSpaceFromConflictName(Helper.getID(object))
+                    local controlableSpace = Combat.findControlableSpaceFromConflictName(Helper.getID(object))
                     PlayBoard.occupationCooldown = PlayBoard.occupationCooldown or {}
                     if controlableSpace and not PlayBoard.occupationCooldown[controlableSpace] then
                         MainBoard.occupy(controlableSpace, color)
@@ -1463,7 +1440,7 @@ end
 
 ---@param board Object
 ---@return PlayerColor?
-function PlayBoard.unused_findBoardColor(board)
+function PlayBoard.findBoardColor(board)
     for color, _ in pairs(PlayBoard.playBoards) do
         if PlayBoard._getBoard(color) == board then
             return color
@@ -1539,7 +1516,7 @@ function PlayBoard:_createButtons()
                 self:drawCards(1)
             end),
             label = I18N("drawOneCardButton"),
-            position = self:_newOffsetedBoardPosition(-13.5, 0, 2.6),
+            position = self:_newOffsetedBoardPosition(-13.5, 0.67, 2.6),
             width = 1100,
             height = 250,
             font_size = 150,
@@ -1552,7 +1529,7 @@ function PlayBoard:_createButtons()
                 self:_resetDiscard()
             end),
             label = I18N("resetDiscardButton"),
-            position = self:_newOffsetedBoardPosition(-3.5, 0, 2.6),
+            position = self:_newOffsetedBoardPosition(-3.5, 0.67, 2.6),
             width = 1400,
             height = 250,
             font_size = 150,
@@ -1563,7 +1540,7 @@ function PlayBoard:_createButtons()
         board.createButton({
             click_function = Helper.registerGlobalCallback(),
             label = I18N("agentTurn"),
-            position = self:_newSymmetricBoardPosition(-14.8, 0, -1),
+            position = self:_newSymmetricBoardPosition(-14.8, 0.67, -1),
             rotation = self:_newSymmetricBoardRotation(0, -90, 0),
             width = 0,
             height = 0,
@@ -1579,7 +1556,7 @@ function PlayBoard:_createButtons()
                 end
             end),
             label = I18N("revealHandButton"),
-            position = self:_newSymmetricBoardPosition(-14.8, 0, -5),
+            position = self:_newSymmetricBoardPosition(-14.8, 0.67, -5),
             rotation = self:_newSymmetricBoardRotation(0, -90, 0),
             width = 1600,
             height = 320,
@@ -1602,7 +1579,7 @@ function PlayBoard:_createNukeButton()
                 end
             end),
             tooltip = I18N('atomics'),
-            position = Vector(0, 0, 0),
+            position = Vector(0, 0.67, 0),
             width = 700,
             height = 700,
             scale = Vector(3, 3, 3),
@@ -1629,7 +1606,7 @@ end
 
 ---@param brutal boolean
 function PlayBoard:tryRevealHandEarly(brutal)
-    local origin = PlayBoard.getPlayBoard(self.color):_newSymmetricBoardPosition(-8, 0, -4.5)
+    local origin = PlayBoard.getPlayBoard(self.color):_newSymmetricBoardPosition(-8, 0.67, -4.5)
 
     local board = self.content.board
 
@@ -2017,7 +1994,7 @@ function PlayBoard:_nukeConfirm()
     Helper.createButton(token, {
         click_function = Helper.registerGlobalCallback(),
         label = I18N("atomicsConfirm"),
-        position = Vector(0, 0, 3.5),
+        position = Vector(0, 0.67, 3.5),
         width = 0,
         height = 0,
         scale = Vector(3, 3, 3),
@@ -2034,7 +2011,7 @@ function PlayBoard:_nukeConfirm()
             self.content.atomicsToken = nil
         end),
         label = I18N('yes'),
-        position = Vector(-5, 0, 0),
+        position = Vector(-5, 0.67, 0),
         width = 550,
         height = 350,
         scale = Vector(3, 3, 3),
@@ -2048,7 +2025,7 @@ function PlayBoard:_nukeConfirm()
             reset()
         end),
         label = I18N('no'),
-        position = Vector(5, 0, 0),
+        position = Vector(5, 0.67, 0),
         width = 550,
         height = 350,
         scale = Vector(3, 3, 3),
@@ -2095,6 +2072,7 @@ function PlayBoard.setLeader(color, leaderCard)
             end
         end
     else
+        assert(leaderCard.hasTag("Leader"))
         playBoard.leader = Leader.newLeader(Helper.getID(leaderCard))
     end
 
@@ -2116,6 +2094,7 @@ function PlayBoard.setLeader(color, leaderCard)
     return continuation
 end
 
+--- Useful to find the leader card before the setup.
 ---@param color PlayerColor
 ---@return Card?
 function PlayBoard.findLeaderCard(color)
@@ -2188,13 +2167,13 @@ end
 
 ---@param color PlayerColor
 ---@return Park
-function PlayBoard.unused_getTechPark(color)
+function PlayBoard.getTechPark(color)
     return PlayBoard.getPlayBoard(color).techPark
 end
 
 ---@param color PlayerColor
 ---@return Park
-function PlayBoard.unused_getScorePark(color)
+function PlayBoard.getScorePark(color)
     return PlayBoard.getPlayBoard(color).scorePark
 end
 
@@ -2406,7 +2385,7 @@ end
 
 ---@param color PlayerColor
 ---@param zone Zone
----@param isTleilaxuCard boolean
+---@param isTleilaxuCard? boolean
 function PlayBoard.giveCardFromZone(color, zone, isTleilaxuCard)
     assert(Types.isPlayerColor(color))
 
@@ -2438,7 +2417,7 @@ end
 ---@param color PlayerColor
 ---@param cardName string
 ---@return boolean
-function PlayBoard.unused_giveCardFromTrash(color, cardName)
+function PlayBoard.giveCardFromTrash(color, cardName)
     local content = PlayBoard.getContent(color)
     return PlayBoard._giveFromTrash(color, content.discardZone.getPosition(), nil, function (object)
         return Helper.getID(object) == cardName
@@ -2522,7 +2501,7 @@ end
 
 ---@param color PlayerColor
 ---@return DeckOrCard?
-function PlayBoard.unused_getDiscard(color)
+function PlayBoard.getDiscard(color)
     local playBoard = PlayBoard.getPlayBoard(color)
     local deckOrCard = Helper.getDeckOrCard(playBoard.content.discardZone)
     return deckOrCard
@@ -2544,7 +2523,7 @@ end
 
 ---@param color PlayerColor
 ---@return integer
-function PlayBoard.unused_getDiscardedCardCount(color)
+function PlayBoard.getDiscardedCardCount(color)
     local playBoard = PlayBoard.getPlayBoard(color)
     local deckOrCard = Helper.getDeckOrCard(playBoard.content.discardZone)
     return Helper.getCardCount(deckOrCard)
@@ -2634,8 +2613,7 @@ end
 ---@param z number
 ---@return Vector
 function PlayBoard:_newBoardPosition(x, y, z)
-    -- TODO Get rid of the + 0.7
-    return Vector(x, y + 0.7, -z)
+    return Vector(x, y, -z)
 end
 
 --- Relative to the board, not a commander.

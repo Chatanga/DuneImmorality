@@ -54,7 +54,7 @@ function SardaukarCommander.setUp(settings)
             local snapPoint = Helper.createRelativeSnapPointFromZone(anchor, SardaukarCommander.deckZone, true, { "SardaukarCommanderSkill" })
             anchor.setSnapPoints({ snapPoint })
 
-            Deck.generateSardaukarCommanderSkillDeck(SardaukarCommander.deckZone).doAfter(function (deck)
+            Deck.generateSardaukarCommanderSkillDeck(SardaukarCommander.deckZone, settings).doAfter(function (deck)
                 assert(deck, "No sardaukar skill deck!")
                 Helper.shuffleDeck(deck)
                 for _, zone in ipairs(SardaukarCommander.slotZones) do
@@ -74,8 +74,7 @@ end
 ---@param settings Settings
 function SardaukarCommander._transientSetUp(settings)
     for i, zone in ipairs(SardaukarCommander.slotZones) do
-        AcquireCard.new(zone, Board.onTable(0), "SardaukarCommanderSkill", PlayBoard.withLeader(function (_, color)
-            local leader = PlayBoard.getLeader(color)
+        AcquireCard.new(zone, Board.onTable(0), "SardaukarCommanderSkill", PlayBoard.withLeader(function (leader, color)
             leader.acquireSardaukarCommanderSkillCard(color, i)
         end), Deck.getAcquireCardDecalUrl("generic"))
     end
@@ -120,11 +119,11 @@ function SardaukarCommander._createSardaukarCommanderRecruitmentButtons(settings
             "wealth",
             "foldspace",
             "highCouncil",
-            settings.riseOfIx and "dreadnought" or "rallyTroops",
+            settings.ix and "dreadnought" or "rallyTroops",
             "sardaukarStandard",
         }
         if settings.numberOfPlayers == 4 then
-            table.insert(sardaukarLocationNames, settings.riseOfIx and "techNegotiation" or "hallOfOratory")
+            table.insert(sardaukarLocationNames, settings.ix and "techNegotiation" or "hallOfOratory")
         end
     end
 

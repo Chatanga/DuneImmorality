@@ -24,27 +24,29 @@ local constructionModeEnabled = false
 local autoLoadedSettings = nil
 
 --[[
-]]
 autoLoadedSettings = {
     language = "fr",
     hotSeat = true,
     numberOfPlayers = 4,
+    firstPlayer = "Green",
     randomizePlayerPositions = false,
-    riseOfIx = true,
+    ix = false,
     epicMode = false,
     immortality = false,
     goTo11 = false,
     bloodlines = true,
+    ixAmbassy = true,
     leaderSelection = {
-        Green = "paulAtreides",
-        Yellow = "duncanIdaho",
+        Green = "kotaOdax",
+        Yellow = "yrkoon",
         Red = "chani",
-        Blue = "letoAtreides",
+        Blue = "duncanIdaho",
     },
     formalCombatPhase = false,
     soundEnabled = true,
     variant = "arrakeenScouts",
 }
+]]
 
 GameTableGUIDs = {
     primary = "2b4b92",
@@ -139,7 +141,7 @@ local Controller = {
         brutalEscalation = XmlUI.DISABLED,
         expertDeployment = XmlUI.DISABLED,
         smartPolitics = XmlUI.DISABLED,
-        riseOfIx = false,
+        ix = false,
         epicMode = XmlUI.DISABLED,
         immortality = false,
         goTo11 = XmlUI.DISABLED,
@@ -357,8 +359,8 @@ end
 function setUp(newSettings)
     assert(newSettings)
 
-    assert((not newSettings.epicMode) or newSettings.riseOfIx)
-    assert((not newSettings.ixAmbassy) or (not newSettings.riseOfIx))
+    assert((not newSettings.epicMode) or newSettings.ix)
+    assert((not newSettings.ixAmbassy) or (not newSettings.ix))
     assert((not newSettings.goTo11) or newSettings.immortality)
 
     local continuation = Helper.createContinuation("setUp")
@@ -482,9 +484,9 @@ function setHotSeat(player, value, id)
 end
 
 --- UI callback (cf. XML).
-function setRiseOfIx(player, value, id)
+function setIx(player, value, id)
     Controller.ui:fromUI(player, value, id)
-    if Controller.fields.riseOfIx then
+    if Controller.fields.ix then
         Controller.fields.epicMode = false
         Controller.fields.ixAmbassy = XmlUI.DISABLED
         Controller.fields.ixAmbassyWithIx = XmlUI.DISABLED
@@ -513,7 +515,7 @@ end
 --- UI callback (cf. XML).
 function setBloodlines(player, value, id)
     Controller.ui:fromUI(player, value, id)
-    if Controller.fields.bloodlines then
+    if Controller.fields.bloodlines and not Controller.fields.ix then
         Controller.fields.ixAmbassy = true
         Controller.fields.ixAmbassyWithIx = false
     else
@@ -571,7 +573,7 @@ function setUpFromUI()
     --- brutalEscalation: boolean,
     --- expertDeployment: boolean,
     --- smartPolitics: boolean,
-    --- riseOfIx: boolean,
+    --- ix: boolean,
     --- epicMode: boolean,
     --- immortality: boolean,
     --- goTo11: boolean,
@@ -602,7 +604,7 @@ function setUpFromUI()
         brutalEscalation = Controller.fields.brutalEscalation == true,
         expertDeployment = Controller.fields.expertDeployment == true,
         smartPolitics = Controller.fields.smartPolitics == true,
-        riseOfIx = Controller.fields.riseOfIx,
+        ix = Controller.fields.ix,
         epicMode = Controller.fields.epicMode == true,
         immortality = Controller.fields.immortality,
         goTo11 = Controller.fields.goTo11 == true,

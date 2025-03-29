@@ -70,25 +70,24 @@ function LeaderSelection.setUp(settings, activeOpponents)
     ]]
     Board.destructInactiveBoards()
 
-    local continuation = Helper.createContinuation("LeaderSelection.setUp")
+    local preContinuation = Helper.fakeContinuation("LeaderSelection.setUp.preContinuation")
 
-    Deck.generateLeaderDeck(
-        LeaderSelection.deckZone,
-        settings.riseOfIx,
-        settings.immortality,
-        settings.bloodlines,
-        settings.ixAmbassy,
-        settings.fanmadeLeaders)
-    .doAfter(function (deck)
-        local start = settings.numberOfPlayers > 2 and 0 or 12
-        LeaderSelection._layoutLeaderDeck(deck, start).doAfter(function ()
-            local players = TurnControl.toCanonicallyOrderedPlayerList(activeOpponents)
-            LeaderSelection._transientSetUp(settings, settings.leaderPoolSize, players, Stage.INITIALIZED)
-            continuation.run()
+    local postContinuation = Helper.createContinuation("LeaderSelection.setUp.postContinuation")
+
+    preContinuation.doAfter(function ()
+        Deck.generateLeaderDeck(LeaderSelection.deckZone, settings).doAfter(function (deck)
+            local start = settings.numberOfPlayers > 2 and 0 or 12
+            LeaderSelection._layoutLeaderDeck(deck, start).doAfter(function ()
+                if true then
+                    local players = TurnControl.toCanonicallyOrderedPlayerList(activeOpponents)
+                    LeaderSelection._transientSetUp(settings, settings.leaderPoolSize, players, Stage.INITIALIZED)
+                end
+                postContinuation.run()
+            end)
         end)
     end)
 
-    return continuation
+    return postContinuation
 end
 
 ---@param deck Deck
@@ -179,6 +178,7 @@ function LeaderSelection._transientSetUp(settings, leaderSelectionPoolSize, play
     Helper.registerEventListener("phaseEnd", function (phase)
         if phase == 'gameStart' then
             for _, object in ipairs(LeaderSelection.deckZone.getObjects()) do
+                -- settings.variant ~= 'arrakeenScouts' or
                 if object ~= LeaderSelection.secondaryTable then
                     object.destruct()
                 end

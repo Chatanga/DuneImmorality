@@ -29,16 +29,13 @@ function Reserve.setUp()
 end
 
 function Reserve._transientSetUp()
-    Reserve.foldspace = AcquireCard.new(Reserve.foldspaceSlotZone, Board.onTable(0), "Imperium", PlayBoard.withLeader(function (_, color)
-        local leader = PlayBoard.getLeader(color)
+    Reserve.foldspace = AcquireCard.new(Reserve.foldspaceSlotZone, Board.onTable(0), "Imperium", PlayBoard.withLeader(function (leader, color)
         leader.acquireFoldspace(color)
     end))
-    Reserve.arrakisLiaison = AcquireCard.new(Reserve.arrakisLiaisonSlotZone, Board.onTable(0), "Imperium", PlayBoard.withLeader(function (_, color)
-        local leader = PlayBoard.getLeader(color)
+    Reserve.arrakisLiaison = AcquireCard.new(Reserve.arrakisLiaisonSlotZone, Board.onTable(0), "Imperium", PlayBoard.withLeader(function (leader, color)
         leader.acquireArrakisLiaison(color)
     end), Deck.getAcquireCardDecalUrl("generic"))
-    Reserve.theSpiceMustFlow = AcquireCard.new(Reserve.theSpiceMustFlowSlotZone, Board.onTable(0), "Imperium", PlayBoard.withLeader(function (_, color)
-        local leader = PlayBoard.getLeader(color)
+    Reserve.theSpiceMustFlow = AcquireCard.new(Reserve.theSpiceMustFlowSlotZone, Board.onTable(0), "Imperium", PlayBoard.withLeader(function (leader, color)
         leader.acquireTheSpiceMustFlow(color)
     end), Deck.getAcquireCardDecalUrl("generic"))
 end
@@ -72,7 +69,7 @@ end
 --- Move a card out of a trash and back into the reserve if necessary.
 ---@param trashBag Bag
 ---@param card DeadObject
-function Reserve.unused_redirectUntrashableCards(trashBag, card)
+function Reserve.redirectUntrashableCards(trashBag, card)
     -- The ID is stored in the 'GM Notes' property (the description and/or name
     -- properties stores an unpredictable I18N content).
     local cardName = Helper.getID(card)

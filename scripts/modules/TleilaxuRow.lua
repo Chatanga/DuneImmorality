@@ -14,6 +14,7 @@ local Board = Module.lazyRequire("Board")
 
 local TleilaxuRow = {}
 
+---@param state table
 function TleilaxuRow.onLoad(state)
     Helper.append(TleilaxuRow, Helper.resolveGUIDs(false, {
         deckZone = "14b2ca",
@@ -64,8 +65,8 @@ end
 function TleilaxuRow._transientSetUp()
     TleilaxuRow.acquireCards = {}
     for i, zone in ipairs(TleilaxuRow.slotZones) do
-        local acquireCard = AcquireCard.new(zone, Board.onTable(0), "Imperium", PlayBoard.withLeader(function (_, color)
-            PlayBoard.getLeader(color).acquireTleilaxuCard(color, i)
+        local acquireCard = AcquireCard.new(zone, Board.onTable(0), "Imperium", PlayBoard.withLeader(function (leader, color)
+            leader.acquireTleilaxuCard(color, i)
         end), Deck.getAcquireCardDecalUrl("generic"))
         table.insert(TleilaxuRow.acquireCards, acquireCard)
     end

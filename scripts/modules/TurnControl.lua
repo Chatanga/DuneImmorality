@@ -119,7 +119,7 @@ end
 
 --- Return the (colors of the) active opponents in the mod canonical order,
 --- starting from Green and progressing clockwise.
----@param activeOpponents table<PlayerColor, ActiveOpponent>
+---@param activeOpponents ActiveOpponent[]
 ---@return PlayerColor[]
 function TurnControl.toCanonicallyOrderedPlayerList(activeOpponents)
     local orderedColors = { "Green", "Purple", "Yellow", "Blue", "White", "Red" }
@@ -499,7 +499,7 @@ function TurnControl._isPlayerActive(playerLuaIndex)
 end
 
 ---@return boolean
-function TurnControl.unused_isCombat()
+function TurnControl.isCombat()
     return TurnControl.currentPhase == "combat"
         or TurnControl.currentPhase == "combatEnd"
 end

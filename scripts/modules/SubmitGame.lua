@@ -8,6 +8,7 @@ local TurnControl = Module.lazyRequire("TurnControl")
 local PRIMARY_URL = "http://dunerank.servehttp.com:8081"
 local GOOGLE_DOC_URL = "https://docs.google.com/forms/u/1/d/e/1FAIpQLSeaApnr3rZNPGvTsHilxg390UPtrTuCm8kVP9gSiK0yitU9IQ"
 
+---@class SubmitGame
 local SubmitGame = Helper.createClass(nil, {
     fields = {
 
@@ -18,8 +19,7 @@ local SubmitGame = Helper.createClass(nil, {
         numberOfPlayers = 0,
         hotseat = false,
         randomizePlayerPositions = false,
-        legacy = false,
-        riseOfIx = false,
+        ix = false,
         epicMode = false,
         immortality = false,
         goTo11 = false,
@@ -76,8 +76,7 @@ function SubmitGame.setUp(settings)
             "numberOfPlayers",
             "hotseat",
             "randomizePlayerPositions",
-            "legacy",
-            "riseOfIx",
+            "ix",
             "epicMode",
             "immortality",
             "goTo11",
@@ -232,8 +231,7 @@ function SubmitGame._doSubmitGameStats()
         ["entry.910125184"] = fields.players[4].leader,
         ["entry.997583011"] = fields.players[4].steamId,
 
-        ["entry.845707618"] = fields.legacy,
-        ["entry.2040351705"] = fields.riseOfIx,
+        ["entry.2040351705"] = fields.ix,
         ["entry.744802168"] = fields.immortality,
         ["entry.419313208"] = fields.token,
         ["entry.2086786594"] = fields.epicMode,
@@ -263,9 +261,8 @@ function SubmitGame._doSubmitGame()
         token = fields.token,
         firstPlayerColor = fields.firstPlayerColor,
         numberOfPlayers = fields.numberOfPlayers,
-        riseOfIx = fields.riseOfIx,
+        riseOfIx = fields.ix,
         epicMode = fields.epicMode,
-        Imperium = fields.legacy, -- Imperium with an uppercase, really?
         immortality = fields.immortality,
         goTo11 = fields.goTo11,
         leaderSelection = fields.leaderSelection,

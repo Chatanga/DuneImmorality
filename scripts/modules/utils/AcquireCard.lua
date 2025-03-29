@@ -94,7 +94,7 @@ function AcquireCard:_setDecal(decalUrl)
         {
             name = "AcquireCard",
             url = decalUrl,
-            position = Vector(0, 0.1, 0),
+            position = Vector(0, 0.5, 0),
             rotation = { 90, 180, 0 },
             scale = Vector.scale(Vector(scale.x, scale.z, scale.y), 1.1),
         }

@@ -77,18 +77,18 @@ end
 
 ---@param color PlayerColor
 ---@param card Card
----@param riseOfIx boolean
+---@param ix boolean
 ---@return boolean
-function HagalCard.activate(color, card, riseOfIx)
+function HagalCard.activate(color, card, ix)
     assert(Types.isPlayerColor(color))
     assert(card)
     local cardName = Helper.getID(card)
     Action.setContext("hagalCard",  cardName)
-    HagalCard.riseOfIx = riseOfIx
+    HagalCard.ix = ix
     local rival = PlayBoard.getLeader(color)
     local actionName = Helper.toCamelCase("_activate", cardName)
     assert(HagalCard[actionName], actionName)
-    return HagalCard[actionName](color, rival, riseOfIx)
+    return HagalCard[actionName](color, rival, ix)
 end
 
 ---@param color PlayerColor
@@ -110,7 +110,7 @@ function HagalCard.flushTurnActions(color)
         local fromGarrison = math.min(2, garrisonedTroopCount)
         local fromSupply = HagalCard.acquiredTroopCount
 
-        if HagalCard.riseOfIx then
+        if HagalCard.ix then
             -- Dreadnoughts are free and implicit.
             local count = rival.dreadnought(color, "garrison", "combat", 2)
             fromGarrison = math.max(0, fromGarrison - count)
@@ -371,9 +371,9 @@ function HagalCard._activateHarvestSpice(color, rival)
 
     if best.desertSpace then
         HagalCard._sendRivalAgent(color, rival, best.desertSpace)
-        rival.resources(color, "spice", best.totalSpice)
         MainBoard.getSpiceBonus(best.desertSpace):set(0)
         HagalCard.acquireTroops(color, 0, true)
+        rival.resources(color, "spice", best.totalSpice)
         return true
     else
         return false
@@ -383,6 +383,7 @@ end
 ---@param color PlayerColor
 ---@return { desertSpace: string, spiceBonus: integer, totalSpice: integer }
 function HagalCard.findHarvestableSpace(color, ignoreIfNotFree)
+    -- Note: order matters for ties.
     local desertSpaces = {
         imperialBasin = 1,
         haggaBasin = 2,
@@ -646,14 +647,6 @@ function HagalCard._spaceIsFree(color, spaceName)
     else
         return false
     end
-end
-
--- This simple test doesn't work in Uprising where the same card could lead to different places.
--- Maybe we should go for the more general approach?
----@param card Card
----@return boolean
-function HagalCard.unused_isCombatCard(card)
-    return Helper.isElementOf(card, HagalCard.combatCards)
 end
 
 ---@param color PlayerColor

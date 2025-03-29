@@ -565,7 +565,7 @@ function Action.getDreadnoughtPark(color, parkName)
         return nil
     elseif parkName == "arrakeen" then
         return nil
-    elseif parkName == "imperialBassin" then
+    elseif parkName == "imperialBasin" then
         return nil
     else
         error("Unknow park name: " .. tostring(parkName))
@@ -583,7 +583,7 @@ end
 
 ---@param color PlayerColor
 ---@param jump? Vector
----@return unknown
+---@return boolean
 function Action.research(color, jump)
     assert(Types.isPlayerColor(color))
     TleilaxuResearch.advanceResearch(color, jump).doAfter(function (finalJump)
@@ -678,8 +678,9 @@ end
 
 ---@param color PlayerColor
 ---@param stackIndex? integer
+---@param discount? integer
 ---@return boolean
-function Action.acquireTech(color, stackIndex)
+function Action.acquireTech(color, stackIndex, discount)
     assert(Types.isPlayerColor(color))
     if stackIndex then
         TechMarket.acquireTech(stackIndex, color)
@@ -691,7 +692,7 @@ end
 
 ---@param color PlayerColor
 ---@return boolean
-function Action.unused_pickVoice(color)
+function Action.pickVoice(color)
     assert(Types.isPlayerColor(color))
     local voiceToken = ScoreBoard.getFreeVoiceToken()
     if voiceToken then

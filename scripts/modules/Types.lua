@@ -32,7 +32,7 @@
 ---| 'combat'
 ---| 'carthag'
 ---| 'arrakeen'
----| 'imperialBassin'
+---| 'imperialBasin'
 
 ---@alias ResourceName
 ---| 'spice'
@@ -186,7 +186,7 @@ function Types.isDreadnoughtLocation(location)
         or location == "combat" -- when deployed
         or location == "carthag" -- when occupying the place
         or location == "arrakeen" -- when occupying the place
-        or location == "imperialBassin" -- when occupying the place
+        or location == "imperialBasin" -- when occupying the place
 end
 
 ---@param resourceName string

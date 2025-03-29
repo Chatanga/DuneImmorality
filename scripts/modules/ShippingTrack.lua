@@ -17,7 +17,7 @@ local ShippingTrack = {
 
 ---@param state table
 function ShippingTrack.onLoad(state)
-    if state.settings and state.settings.riseOfIx then
+    if state.settings and state.settings.ix then
         ShippingTrack.board = Board.getBoard("shippingBoard")
         ShippingTrack._transientSetUp(state.settings)
     end
@@ -25,7 +25,7 @@ end
 
 ---@param settings Settings
 function ShippingTrack.setUp(settings)
-    if settings.riseOfIx then
+    if settings.ix then
         ShippingTrack.board = Board.selectBoard("shippingBoard", I18N.getLocale(), false)
         ShippingTrack._transientSetUp(settings)
     else
@@ -84,8 +84,7 @@ function ShippingTrack._createLevelButton(level, levelSlot)
         and I18N("recallYourFreighter")
         or I18N("progressOnShipmentTrack")
     local ground = levelSlot.getPosition().y - 0.1
-    Helper.createAnchoredAreaButton(levelSlot, ground, 0.2, tooltip, PlayBoard.withLeader(function (_, color, _)
-        local leader = PlayBoard.getLeader(color)
+    Helper.createAnchoredAreaButton(levelSlot, ground, 0.2, tooltip, PlayBoard.withLeader(function (leader, color, _)
         local freighterLevel = ShippingTrack.getFreighterLevel(color)
         if freighterLevel < level then
             leader.advanceFreighter(color, level - freighterLevel)
@@ -125,7 +124,7 @@ end
 
 ---@param color PlayerColor
 ---@param count integer
-function ShippingTrack.unused__freighterGoUp(color, count)
+function ShippingTrack.freighterGoUp(color, count)
     Helper.repeatMovingAction(PlayBoard.getContent(color).freighter, count, function ()
         ShippingTrack.freighterUp(color)
     end)

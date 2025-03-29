@@ -175,7 +175,7 @@ function ArrakeenScouts.setUp(settings)
         for _, category in ipairs({ "committees", "auctions", "events", "missions", "sales" }) do
             local contributions = ArrakeenScouts._mergeContributions({
                 ArrakeenScouts[category].base,
-                settings.riseOfIx and ArrakeenScouts[category].ix or {},
+                settings.ix and ArrakeenScouts[category].ix or {},
                 settings.immortality and ArrakeenScouts[category].immortality or {}})
 
             selection[category] = {}
@@ -247,23 +247,24 @@ end
 function ArrakeenScouts._registerTurnContent(deck, turn, elements)
     table.insert(ArrakeenScouts.selectedContent, elements)
 
-    local origin = ArrakeenScouts.deckZone.getPosition()
-
-    local width = #elements
-    for i, element in ipairs(elements) do
-        local found = false
-        for _, card in ipairs(deck.getObjects()) do
-            if Helper.getID(card) == element then
-                deck.takeObject({
-                    guid = card.guid,
-                    position = origin + Vector((i - 0.5 - width / 2) * 5, 1, -35 + 3 * turn),
-                    flip = true
-                })
-                found = true
-                break
+    if false then
+        local origin = ArrakeenScouts.deckZone.getPosition()
+        local width = #elements
+        for i, element in ipairs(elements) do
+            local found = false
+            for _, card in ipairs(deck.getObjects()) do
+                if Helper.getID(card) == element then
+                    deck.takeObject({
+                        guid = card.guid,
+                        position = origin + Vector((i - 0.5 - width / 2) * 5, 1, -35 + 3 * turn),
+                        flip = true
+                    })
+                    found = true
+                    break
+                end
             end
+            assert(found, "Card not found: " .. element)
         end
-        assert(found, "Card not found: " .. element)
     end
 end
 

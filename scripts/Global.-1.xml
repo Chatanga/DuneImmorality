@@ -1,3 +1,23 @@
+<!--
+
+How to add an auxiliary UI:
+
+Simply add your panel(s) here, either by hand or procedurally in code (using
+setXml/setXmlTable, ideally in the YourModule.onLoad method) and keep the two
+following constraints in mind:
+
+1 -	The setup UI relies heavily on setXmlTable to dynamically update its
+	contents, erasing any live changes made to any other UI. So don't try to
+	update your UI during setup.
+
+2 -	After the setup, other modules may have a live UI that cannot be properly
+	preserved via a pair of getXml/setXml calls. So, update your UI only using
+	targeted setAttribute/setValue calls.
+
+More generally, take a look at the Example.lua file to see how your code might
+be integrated to this mod in a standard way.
+
+-->
 <Panel position="0 -50" width="460" height="620" color="#000000" id="setupPane" rotation="0 0 0" outline="#61712c" outlineSize="1"
 	active="False" allowDragging="True" returnToOriginalPositionWhenReleased="False">
 	<Defaults>
@@ -81,7 +101,7 @@
 		<VerticalLayout padding="40 40 20 20">
 			<Text class="primary" key="extensions"/>
 			<VerticalLayout padding="25 0 0 0">
-				<Toggle class="setUp" id="riseOfIx" isOn="True" onValueChanged="Global/setRiseOfIx" key="riseOfIx"/>
+				<Toggle class="setUp" id="ix" isOn="True" onValueChanged="Global/setIx" key="ix"/>
 				<VerticalLayout padding="25 0 0 0">
 					<Toggle class="setUp" id="epicMode" isOn="False" onValueChanged="Global/setAnyField" key="epicMode"/>
 				</VerticalLayout>

@@ -169,6 +169,7 @@ local Deck = {
             imperialThroneship = 1,
             possibleFutures = 1,
             ruthlessLeadership = 1,
+            pivotalGambit = 1,
         },
         bloodlinesTech = {
             ixianAmbassador = 2,
@@ -443,6 +444,13 @@ local Deck = {
             navigationChamber = 1,
             sardaukarHighCommand = 1,
             forbiddenWeapons = 1,
+            advancedDataAnalysis = 0,
+            ornithopterFleet = 0,
+            panopticon = 0,
+            spyDrones = 0,
+        },
+        bloodlinesTech = {
+            choamTransports = 0,
         }
     },
     leaders = {
@@ -468,6 +476,9 @@ local Deck = {
             chani = 1,
             duncanIdaho = 1,
             esmarTuek = 1,
+            gaiusHelenMohiam = 0,
+            hasimirFenring = 0,
+            lietKynes = 0,
             piterDeVries = 1,
             yrkoon = 1,
             kotaOdax = 1,
@@ -677,13 +688,14 @@ local Deck = {
             influenceIfInfluence = 1,
             drawOrVpIfSpice = 1,
             troopOrMoreTroopIfSolaris = 1,
+            spyOrIntrigueAndSpiceIfSpy = 0,
         }
     },
     sardaukarCommanderSkills = {
         bloodlines = {
             charismatic = 2,
             desperate = 2,
-            --fierce = 2,
+            fierce = 0,
             canny = 2,
             driven = 2,
             loyal = 2,
@@ -789,19 +801,18 @@ function Deck.getAcquireCardDecalUrl(name)
 end
 
 ---@param deckZone Zone
----@param immortality boolean
----@param epic boolean
+---@param settings Settings
 ---@return Continuation
-function Deck.generateStarterDeck(deckZone, immortality, epic)
+function Deck.generateStarterDeck(deckZone, settings)
     assert(deckZone)
     assert(deckZone.getPosition)
     local continuation = Helper.createContinuation("Deck.generateStarterDeck")
     local contributionSets = { Deck.starter.base }
-    if immortality then
+    if settings.immortality then
         table.insert(contributionSets, Deck.starter.immortality)
     end
     local contributions = Deck._mergeContributionSets(contributionSets)
-    if not immortality and epic then
+    if not settings.immortality and settings.epicMode then
         contributions["duneTheDesertPlanet"] = 1
         contributions["controlTheSpice"] = 1
     end
@@ -810,14 +821,13 @@ function Deck.generateStarterDeck(deckZone, immortality, epic)
 end
 
 ---@param deckZone Zone
----@param immortality boolean
----@param epic boolean
+---@param settings Settings
 ---@return Continuation
-function Deck.generateStarterDiscard(deckZone, immortality, epic)
+function Deck.generateStarterDiscard(deckZone, settings)
     assert(deckZone)
     assert(deckZone.getPosition)
     local continuation = Helper.createContinuation("Deck.generateStarterDiscard")
-    if immortality and epic then
+    if settings.immortality and settings.epicMode then
         Deck._generateDeck("Imperium", deckZone, Deck.starter.epic, Deck.sources.imperium).doAfter(function (deck)
             deck.flip()
             continuation.run(deck)
@@ -829,17 +839,14 @@ function Deck.generateStarterDiscard(deckZone, immortality, epic)
 end
 
 ---@param deckZone Zone
----@param ix boolean
----@param immortality boolean
----@param bloodlines boolean
----@param ixAmbassy boolean
+---@param settings Settings
 ---@return Continuation
-function Deck.generateImperiumDeck(deckZone, ix, immortality, bloodlines, ixAmbassy)
+function Deck.generateImperiumDeck(deckZone, settings)
     assert(deckZone)
     assert(deckZone.getPosition)
     local continuation = Helper.createContinuation("Deck.generateImperiumDeck")
-    local contributions = Deck._mergeStandardContributionSets(Deck.imperium, ix, immortality, bloodlines)
-    if ix or ixAmbassy then
+    local contributions = Deck._mergeStandardContributionSets(Deck.imperium, settings)
+    if settings.ix or settings.ixAmbassy then
         contributions = Deck._mergeContributionSets({ contributions, Deck.imperium.bloodlinesTech })
     end
     Deck._generateDeck("Imperium", deckZone, contributions, Deck.sources.imperium).doAfter(continuation.run)
@@ -875,15 +882,13 @@ function Deck.generateTleilaxuDeck(deckZone)
 end
 
 ---@param deckZone Zone
----@param ix boolean
----@param immortality boolean
----@param bloodlines boolean
+---@param settings Settings
 ---@return Continuation
-function Deck.generateIntrigueDeck(deckZone, ix, immortality, bloodlines)
+function Deck.generateIntrigueDeck(deckZone, settings)
     assert(deckZone)
     assert(deckZone.getPosition)
     local continuation = Helper.createContinuation("Deck.generateIntrigueDeck")
-    local contributions = Deck._mergeStandardContributionSets(Deck.intrigue, ix, immortality, bloodlines)
+    local contributions = Deck._mergeStandardContributionSets(Deck.intrigue, settings)
     Deck._generateDeck("Intrigue", deckZone, contributions, Deck.sources.intrigue).doAfter(continuation.run)
     return continuation
 end
@@ -898,21 +903,23 @@ function Deck.generateTwistedIntrigueDeck(deckZone)
     return continuation
 end
 
----@param deckZones Zone
----@param ix boolean
----@param bloodlines boolean
+---@param deckZones Zone[]
+---@param settings Settings
 ---@return Continuation
-function Deck.generateTechDeck(deckZones, ix, bloodlines)
+function Deck.generateTechDeck(deckZones, settings)
     assert(deckZones)
     assert(#deckZones == 3)
     local continuation = Helper.createContinuation("Deck.generateTechDeck")
 
     local keys = {}
-    if ix then
-        keys = Helper.concatTables(keys, Helper.getKeys(Deck.tech.ix))
-    end
-    if bloodlines then
-        keys = Helper.concatTables(keys, Helper.getKeys(Deck.tech.bloodlines))
+    for _, category in ipairs({ 'ix', 'bloodlines' }) do
+        if settings[category] then
+            for key, card in pairs(Deck.tech[category]) do
+                if card > 0 then
+                    table.insert(keys, key)
+                end
+            end
+        end
     end
     Helper.shuffle(keys)
 
@@ -942,22 +949,22 @@ function Deck.generateTechDeck(deckZones, ix, bloodlines)
 end
 
 ---@param deckZone Zone
----@param ix boolean
----@param epic boolean
----@param bloodlines boolean
+---@param settings Settings
 ---@return Continuation
-function Deck.generateConflictDeck(deckZone, ix, epic, bloodlines)
+function Deck.generateConflictDeck(deckZone, settings)
     assert(deckZone)
     assert(deckZone.getPosition)
     local continuation = Helper.createContinuation("Deck.generateConflictDeck")
 
-    local cardCounts = epic and { 0, 5, 5 } or { 1, 5, 4 }
+    local cardCounts = settings.epicMode and { 0, 5, 5 } or { 1, 5, 4 }
 
     local contributions = {}
     for level = 3, 1, -1 do
         local cardCount = cardCounts[level]
         if cardCount > 0 then
-            local levelContributions = Deck._mergeStandardContributionSets(Deck.conflict["level" .. tostring(level)], ix and epic and level == 3, false, bloodlines)
+            local alteredSettings = Helper.shallowCopy(settings)
+            alteredSettings.ix = alteredSettings.ix and level == 3
+            local levelContributions = Deck._mergeStandardContributionSets(Deck.conflict["level" .. tostring(level)], alteredSettings)
             local cardNames = Helper.getKeys(levelContributions)
             assert(#cardNames >= cardCount, "Not enough level " .. tostring(level) .. " conflict cards!")
             Helper.shuffle(cardNames)
@@ -973,31 +980,27 @@ function Deck.generateConflictDeck(deckZone, ix, epic, bloodlines)
 end
 
 ---@param deckZone Zone
----@param ix boolean
----@param immortality boolean
----@param bloodlines boolean
----@param ixAmbassy boolean
----@param playerCount integer
+---@param settings Settings
 ---@return Continuation
-function Deck.generateHagalDeck(deckZone, ix, immortality, bloodlines, ixAmbassy, playerCount)
+function Deck.generateHagalDeck(deckZone, settings)
     assert(deckZone)
     assert(deckZone.getPosition)
-    assert(not playerCount or playerCount == 1 or playerCount == 2)
-    assert(not ixAmbassy or bloodlines)
-    assert(not (ix and ixAmbassy))
+    assert(not settings.numberOfPlayers or settings.numberOfPlayers == 1 or settings.numberOfPlayers == 2)
+    assert(not settings.ixAmbassy or settings.bloodlines)
+    assert(not (settings.ix and settings.ixAmbassy))
     local continuation = Helper.createContinuation("Deck.generateHagalDeck")
 
     local contributionSetNames = { "base" }
-    if ix then
+    if settings.ix then
         table.insert(contributionSetNames, "ix")
     end
-    if immortality then
+    if settings.immortality then
         table.insert(contributionSetNames, "immortality")
     end
-    if bloodlines then
+    if settings.bloodlines then
         table.insert(contributionSetNames, "bloodlines")
     end
-    if ixAmbassy then
+    if settings.ixAmbassy then
         table.insert(contributionSetNames, "ixAmbassy")
     end
 
@@ -1005,16 +1008,16 @@ function Deck.generateHagalDeck(deckZone, ix, immortality, bloodlines, ixAmbassy
     for _, contributionSetName in ipairs(contributionSetNames) do
         local root = Deck.hagal[contributionSetName]
         table.insert(contributionSets, root.common or {})
-        if not playerCount or playerCount == 1 then
+        if not settings.numberOfPlayers or settings.numberOfPlayers == 1 then
             table.insert(contributionSets, root.solo or {})
-        elseif not playerCount or playerCount == 2 then
+        elseif not settings.numberOfPlayers or settings.numberOfPlayers == 2 then
             table.insert(contributionSets, root.twoPlayers or {})
         end
     end
 
     local contributions = Deck._mergeContributionSets(contributionSets)
 
-    if ix or not ixAmbassy then
+    if settings.ix or not settings.ixAmbassy then
         contributions.acquireTech = nil
     end
 
@@ -1023,26 +1026,22 @@ function Deck.generateHagalDeck(deckZone, ix, immortality, bloodlines, ixAmbassy
 end
 
 ---@param deckZone Zone
----@param ix boolean
----@param immortality boolean
----@param bloodlines boolean
----@param ixAmbassy boolean
----@param fanmadeLeaders boolean
+---@param settings Settings
 ---@return Continuation
-function Deck.generateLeaderDeck(deckZone, ix, immortality, bloodlines, ixAmbassy, fanmadeLeaders)
+function Deck.generateLeaderDeck(deckZone, settings)
     assert(deckZone)
     assert(deckZone.getPosition)
     local continuation = Helper.createContinuation("Deck.generateLeaderDeck")
-    local contributions = Deck._mergeStandardContributionSets(Deck.leaders, ix, immortality, bloodlines)
-    if fanmadeLeaders then
+    local contributions = Deck._mergeStandardContributionSets(Deck.leaders, settings)
+    if settings.fanmadeLeaders then
         local locale = I18N.getLocale()
         if locale == 'fr' then
-            contributions = Deck._mergeContributionSets({ contributions, Deck._mergeStandardContributionSets(Deck.leaders.fanmade.arkhane, ix, immortality, bloodlines) })
+            contributions = Deck._mergeContributionSets({ contributions, Deck._mergeStandardContributionSets(Deck.leaders.fanmade.arkhane, settings) })
         elseif locale == 'en' then
-            contributions = Deck._mergeStandardContributionSets(Deck.leaders.fanmade.retienne, ix, immortality, bloodlines)
+            contributions = Deck._mergeStandardContributionSets(Deck.leaders.fanmade.retienne, settings)
         end
     end
-    if not ix and not ixAmbassy then
+    if not settings.ix and not settings.ixAmbassy then
         contributions.kotaOdax = nil
     end
     Deck._generateDeck("Leader", deckZone, contributions, Deck.sources.leaders).doAfter(continuation.run)
@@ -1067,41 +1066,41 @@ function Deck.generateArrakeenScoutsDeck(deckZone)
 end
 
 ---@param deckZone Zone
+---@param settings Settings
 ---@return Continuation
-function Deck.generateNavigationDeck(deckZone)
+function Deck.generateNavigationDeck(deckZone, settings)
     assert(deckZone)
     assert(deckZone.getPosition)
     local continuation = Helper.createContinuation("Deck.generateNavigationDeck")
-    local contributions = Deck._mergeStandardContributionSets(Deck.navigation, false, false, true)
+    local contributions = Deck._mergeStandardContributionSets(Deck.navigation, settings)
     Deck._generateDeck("Navigation", deckZone, contributions, Deck.sources.navigation).doAfter(continuation.run)
     return continuation
 end
 
 ---@param deckZone Zone
+---@param settings Settings
 ---@return Continuation
-function Deck.generateSardaukarCommanderSkillDeck(deckZone)
+function Deck.generateSardaukarCommanderSkillDeck(deckZone, settings)
     assert(deckZone)
     assert(deckZone.getPosition)
     local continuation = Helper.createContinuation("Deck.generateSardaukarCommanderSkillDeck")
-    local contributions = Deck._mergeStandardContributionSets(Deck.sardaukarCommanderSkills, false, false, true)
+    local contributions = Deck._mergeStandardContributionSets(Deck.sardaukarCommanderSkills, settings)
     Deck._generateDeck("SardaukarCommanderSkill", deckZone, contributions, Deck.sources.sardaukarCommanderSkills).doAfter(continuation.run)
     return continuation
 end
 
 ---@param root Tree<integer|string>
----@param ix boolean
----@param immortality boolean
----@param bloodlines boolean
+---@param settings Settings
 ---@return table<string, integer>
-function Deck._mergeStandardContributionSets(root, ix, immortality, bloodlines)
+function Deck._mergeStandardContributionSets(root, settings)
     local contributionSets = { root.base }
-    if ix then
+    if settings.ix then
         table.insert(contributionSets, root.ix)
     end
-    if immortality then
+    if settings.immortality then
         table.insert(contributionSets, root.immortality)
     end
-    if bloodlines then
+    if settings.bloodlines then
         table.insert(contributionSets, root.bloodlines)
     end
     return Deck._mergeContributionSets(contributionSets)
@@ -1112,7 +1111,7 @@ end
 ---@return table<string, integer>
 function Deck._mergeContributionSets(contributionSets, ignoreErasure)
     local contributions = {}
-    for _, contributionSet in ipairs(contributionSets) do
+    for z, contributionSet in ipairs(contributionSets) do
         for name, arity in pairs(contributionSet) do
             local currentArity
             if arity == Helper.ERASE then
@@ -1317,31 +1316,33 @@ function Deck._generateDynamicDeck(deckType, position, contributions, sources)
     local knownCustomDecks = {}
 
     for name, cardinality in pairs(contributions) do
-        local source = sources[name]
-        if source then
-            assert(source.customDeck, name)
-            local customDeckId = knownCustomDecks[source.customDeck]
-            if not customDeckId then
-                customDeckId = Deck._nextCustomDeckId()
-                data.CustomDeck[tostring(customDeckId)] = source.customDeck
-                data.Transform.scaleX = source.customDeck.__scale.x
-                data.Transform.scaleY = source.customDeck.__scale.y
-                data.Transform.scaleZ = source.customDeck.__scale.z
-                knownCustomDecks[source.customDeck] = customDeckId
-            end
+        if cardinality > 0 then
+            local source = sources[name]
+            if source then
+                assert(source.customDeck, name)
+                local customDeckId = knownCustomDecks[source.customDeck]
+                if not customDeckId then
+                    customDeckId = Deck._nextCustomDeckId()
+                    data.CustomDeck[tostring(customDeckId)] = source.customDeck
+                    data.Transform.scaleX = source.customDeck.__scale.x
+                    data.Transform.scaleY = source.customDeck.__scale.y
+                    data.Transform.scaleZ = source.customDeck.__scale.z
+                    knownCustomDecks[source.customDeck] = customDeckId
+                end
 
-            for _ = 1, cardinality do
-                local index = source.luaIndex - 1
-                local cardId = tostring(customDeckId * 100 + index)
-                table.insert(data.DeckIDs, tostring(cardId))
-                local cardData = Deck._generateCardData(source.customDeck, customDeckId, cardId)
-                cardData.Tags = { deckType }
-                cardData.Nickname = I18N(name)
-                cardData.GMNotes = name
-                table.insert(data.ContainedObjects, cardData)
+                for _ = 1, cardinality do
+                    local index = source.luaIndex - 1
+                    local cardId = tostring(customDeckId * 100 + index)
+                    table.insert(data.DeckIDs, tostring(cardId))
+                    local cardData = Deck._generateCardData(source.customDeck, customDeckId, cardId)
+                    cardData.Tags = { deckType }
+                    cardData.Nickname = I18N(name)
+                    cardData.GMNotes = name
+                    table.insert(data.ContainedObjects, cardData)
+                end
+            else
+                error("No source for card '" .. name .. "'")
             end
-        else
-            error("No source for card '" .. name .. "'")
         end
     end
 
@@ -1478,14 +1479,17 @@ function Deck._prebuildLeaderDeck(deckPosition)
         Deck.leaders.bloodlines,
         Deck.leaders.bloodlinesTech,
     }
-    local contributions = Deck._mergeContributionSets(contributionSets, true)
 
     local locale = I18N.getLocale()
-    if locale == 'fr' then
-        contributions = Deck._mergeContributionSets({ contributions, Deck._mergeStandardContributionSets(Deck.leaders.fanmade.arkhane, true, true, true) })
-    elseif locale == 'en' then
-        contributions = Deck._mergeContributionSets({ contributions, Deck._mergeStandardContributionSets(Deck.leaders.fanmade.retienne, true, true, true) })
+    for _, extension in ipairs({ "base", "ix", "immortality" }) do
+        if locale == 'fr' then
+            table.insert(contributionSets, Deck.leaders.fanmade.arkhane[extension] or {})
+        elseif locale == 'en' then
+            table.insert(contributionSets, Deck.leaders.fanmade.retienne[extension] or {})
+        end
     end
+
+    local contributions = Deck._mergeContributionSets(contributionSets, true)
 
     Deck._generateDynamicDeckWithTwoBackCards("Leader", deckPosition, contributions, Deck.sources.leaders)
 end
@@ -1523,8 +1527,8 @@ end
 ---@param deckType string
 ---@param deckZone Zone
 ---@param contributions table<string, integer>
----@param _ any
----@param spacing? integer
+---@param _ unknown
+---@param spacing? number
 ---@return Continuation
 function Deck._generateFromPrebuildDeck(deckType, deckZone, contributions, _, spacing)
     assert(deckType)
@@ -1561,25 +1565,27 @@ function Deck._generateFromPrebuildDeck(deckType, deckZone, contributions, _, sp
 
     local cardCount = 0
     for name, cardinality in pairs(contributions) do
-        local source = sources[name]
-        assert(source, "No source for card '" .. deckType .. "." .. name .. "'")
-        for i = 1, math.ceil(cardinality) do
-            local firstGuid = source.instances[1]
-            assert(firstGuid, "Not enough instances of the card '" .. name .. "'")
-            table.remove(source.instances, 1)
-            assert(source.deck, "Should not happen! Source deck is not properly generated.")
-            source.deck.takeObject({
-                guid = firstGuid,
-                -- Stacking is needed to preserve input order (but when it is needed?).
-                position = deckZone.getPosition() + Vector(0, 1 + cardCount * (spacing or 0.1), 0),
-                smooth = false,
-                callback_function = function (card)
-                    if cardinality - i < 0 then
-                        card.setTags(Helper.concatTables(card.getTags(), { "Unselected" }))
+        if cardinality > 0 then
+            local source = sources[name]
+            assert(source, "No source for card '" .. deckType .. "." .. name .. "'")
+            for i = 1, math.ceil(cardinality) do
+                local firstGuid = source.instances[1]
+                assert(firstGuid, "Not enough instances of the card '" .. name .. "'")
+                table.remove(source.instances, 1)
+                assert(source.deck, "Should not happen! Source deck is not properly generated.")
+                source.deck.takeObject({
+                    guid = firstGuid,
+                    -- Stacking is needed to preserve input order (but when it is needed?).
+                    position = deckZone.getPosition() + Vector(0, 1 + cardCount * (spacing or 0.1), 0),
+                    smooth = false,
+                    callback_function = function (card)
+                        if cardinality - i < 0 then
+                            card.setTags(Helper.concatTables(card.getTags(), { "Unselected" }))
+                        end
                     end
-                end
-            })
-            cardCount = cardCount + 1
+                })
+                cardCount = cardCount + 1
+            end
         end
     end
     assert(cardCount > 0)

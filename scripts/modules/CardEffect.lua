@@ -301,8 +301,8 @@ function CardEffect.control(expression)
 end
 
 ---@return XFunction<boolean>
-function CardEffect.voice()
-    return CardEffect._dispatch('voice', 0)
+function CardEffect.voice(expression)
+    return CardEffect._dispatch('voice', expression)
 end
 
 -- Functors
@@ -372,8 +372,8 @@ function CardEffect.choice(n, options)
         if PlayBoard.getLeader(context.color).randomlyChoose(context.color, context.cardName) then
             local shuffledOptions = Helper.shallowCopy(options)
             Helper.shuffle(shuffledOptions)
-            local i = 0
-            for  _, option in ipairs(options) do
+            local i = 1
+            for  _, option in ipairs(shuffledOptions) do
                 if i > n then
                     break
                 end
@@ -443,8 +443,8 @@ end
 ---@return XFunction<integer>
 function CardEffect.agentInEmperorSpace(expression)
     return CardEffect._filter(expression, function (context)
-        for _, space in ipairs(MainBoard.getEmperorSpaces()) do
-            if MainBoard.hasAgentInSpace(space.name, context.color) then
+        for _, spaceName in ipairs(MainBoard.getEmperorSpaces()) do
+            if MainBoard.hasAgentInSpace(spaceName, context.color) then
                 return true
             end
         end
@@ -456,8 +456,8 @@ end
 ---@return XFunction<integer>
 function CardEffect.agentInGreenSpace(expression)
     return CardEffect._filter(expression, function (context)
-        for _, space in ipairs(MainBoard.getGreenSpaces()) do
-            if MainBoard.hasAgentInSpace(space.name, context.color) then
+        for _, spaceName in ipairs(MainBoard.getGreenSpaces()) do
+            if MainBoard.hasAgentInSpace(spaceName, context.color) then
                 return true
             end
         end

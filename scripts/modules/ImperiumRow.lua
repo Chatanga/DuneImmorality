@@ -40,12 +40,7 @@ function ImperiumRow.setUp(settings)
         local snapPoint = Helper.createRelativeSnapPointFromZone(anchor, ImperiumRow.deckZone, true, { "Imperium" })
         anchor.setSnapPoints({ snapPoint })
 
-        Deck.generateImperiumDeck(
-            ImperiumRow.deckZone,
-            settings.riseOfIx,
-            settings.immortality,
-            settings.bloodlines,
-            settings.ixAmbassy)
+        Deck.generateImperiumDeck(ImperiumRow.deckZone, settings)
         .doAfter(function (deck)
             assert(deck, "No Imperium deck!")
             Helper.shuffleDeck(deck)
@@ -62,14 +57,12 @@ end
 
 function ImperiumRow._transientSetUp()
     for i, zone in ipairs(ImperiumRow.slotZones) do
-        AcquireCard.new(zone, Board.onTable(0), "Imperium", PlayBoard.withLeader(function (_, color)
-            local leader = PlayBoard.getLeader(color)
+        AcquireCard.new(zone, Board.onTable(0), "Imperium", PlayBoard.withLeader(function (leader, color)
             leader.acquireImperiumCard(color, i)
         end), Deck.getAcquireCardDecalUrl("generic"))
     end
 
-    AcquireCard.new(ImperiumRow.reservationSlotZone, Board.onTable(0), "Imperium", PlayBoard.withLeader(function (_, color)
-        local leader = PlayBoard.getLeader(color)
+    AcquireCard.new(ImperiumRow.reservationSlotZone, Board.onTable(0), "Imperium", PlayBoard.withLeader(function (leader, color)
         leader.acquireReservedImperiumCard(color)
     end), Deck.getAcquireCardDecalUrl("generic"))
 

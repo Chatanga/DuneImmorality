@@ -12,7 +12,7 @@ Features:
 - Hagal House
 - Arrakeen Scouts
 
-Supported langages:
+Supported languages:
 
 - French
 - English
@@ -31,14 +31,12 @@ This repository contains the JSON skeletons and Lua scripts of various mods for 
 
 ## TODO
 
-- Scan Arrakeen Scouts deck (en).
-- Main board in French. -> No.
-- Plastic or wood? Color adjust too.
+- Arrakeen Scouts deck in English.
 - Multiple battlegrounds.
 - Arrakeen Scouts history (as cards).
 - Arrakeen Scouts memory cards (using decals).
 - Blitz! mode
-- Dreadnought block agents (reorder space slots).
+- UI resizing.
 
 ### scripts/modules
 

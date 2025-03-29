@@ -29,7 +29,7 @@ local Resource = Helper.createClass(nil, {
 function Resource.new(token, color, resourceName, value, location)
     assert(token)
     assert(Types.isResourceName(resourceName))
-    assert(value >= 0)
+    assert(value == nil or value >= 0)
 
     token.interactable = false
 
@@ -39,8 +39,8 @@ function Resource.new(token, color, resourceName, value, location)
         resourceName = resourceName,
         baseValue = 0,
         baseValueContributions = {},
-        value = value,
-        laggingValue = value,
+        value = value or 0,
+        laggingValue = value or 0,
         location = location,
     })
     Resource.resources[token.getGUID()] = resource
@@ -116,7 +116,7 @@ end
 
 ---@param token Object
 ---@return Resource?
-function Resource.unused_findResourceFromToken(token)
+function Resource.findResourceFromToken(token)
     for _, resource in pairs(Resource.resources) do
         if resource.token == token then
             return resource
@@ -210,7 +210,7 @@ function Resource:setBaseValueContribution(origin, amount)
     self:_updateBaseValueContributions()
 end
 
-function Resource:unused_clearBaseValueContributions()
+function Resource:clearBaseValueContributions()
     self.baseValueContributions = {}
     self:_updateBaseValueContributions()
 end

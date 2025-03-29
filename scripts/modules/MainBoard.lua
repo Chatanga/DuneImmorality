@@ -7,7 +7,6 @@ local Dialog = require("utils.Dialog")
 local Types = Module.lazyRequire("Types")
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local InfluenceTrack = Module.lazyRequire("InfluenceTrack")
-local ShippingTrack = Module.lazyRequire("ShippingTrack")
 local TechMarket = Module.lazyRequire("TechMarket")
 local Combat = Module.lazyRequire("Combat")
 local Resource = Module.lazyRequire("Resource")
@@ -109,7 +108,7 @@ end
 function MainBoard.setUp(settings)
     MainBoard.mainBoard = Board.selectBoard("mainBoard", I18N.getLocale(), false)
 
-    if settings.riseOfIx then
+    if settings.ix then
         MainBoard.topRightBoard = Board.selectBoard("shippingBoard", I18N.getLocale(), false)
     else
         MainBoard.topRightBoard = Board.selectBoard("defaultBoard", I18N.getLocale(), false)
@@ -250,7 +249,7 @@ function MainBoard._processSnapPoints(settings)
     MainBoard.spaces = {}
     MainBoard.banners = {}
 
-    local highCouncilSeats = MainBoard._doProcessSnapPoints(
+    local highCouncilSeats = MainBoard._doProcessSnapPoints(settings,
         Helper.partialApply(MainBoard.collectSnapPointsOnAllBoards, settings))
 
     if #highCouncilSeats > 0 then
@@ -270,12 +269,13 @@ end
 function MainBoard.processTuekSnapPoints(settings)
     Helper.noPhysicsNorPlay(MainBoard.tuekSietchBoard)
     MainBoard.tuekSietchBoard.clearButtons()
-    MainBoard._doProcessSnapPoints(MainBoard._collectSnapPointsOnTuekBoard)
+    MainBoard._doProcessSnapPoints(settings, MainBoard._collectSnapPointsOnTuekBoard)
 end
 
+---@param settings Settings
 ---@param collect fun(net: CollectNet)
 ---@return table<integer, Vector>
-function MainBoard._doProcessSnapPoints(collect)
+function MainBoard._doProcessSnapPoints(settings, collect)
     local highCouncilSeats = {}
 
     collect({
@@ -352,7 +352,7 @@ end
 function MainBoard._getAllBoards(settings)
     local boards = { MainBoard.mainBoard, MainBoard.topRightBoard }
 
-    if settings.riseOfIx then
+    if settings.ix then
         table.insert(boards, TechMarket.getBoard())
     end
 
@@ -411,10 +411,10 @@ function MainBoard._createSpaceButton(space)
         if MainBoard._findParentSpace(space) == space then
 
             local slots = {
-                Vector(p.x - 0.36, Board.onMainBoard(0), p.z - 0.3),
-                Vector(p.x + 0.36, Board.onMainBoard(0), p.z + 0.3),
                 Vector(p.x - 0.36, Board.onMainBoard(0), p.z + 0.3),
-                Vector(p.x + 0.36, Board.onMainBoard(0), p.z - 0.3)
+                Vector(p.x + 0.36, Board.onMainBoard(0), p.z - 0.3),
+                Vector(p.x + 0.36, Board.onMainBoard(0), p.z + 0.3),
+                Vector(p.x - 0.36, Board.onMainBoard(0), p.z - 0.3),
             }
             space.zone = Park.createTransientBoundingZone(0, Vector(1, 3, 0.7), slots)
 
@@ -428,7 +428,7 @@ function MainBoard._createSpaceButton(space)
         local lastActivation = 0
 
         local tooltip = I18N("sendAgentTo", { space = I18N(space.name) })
-        Helper.createAreaButton(space.zone, anchor, Board.onMainBoard(0.1), tooltip, PlayBoard.withLeader(function (leader, color, _)
+        Helper.createAreaButton(space.zone, anchor, Board.onMainBoard(0.1), tooltip, PlayBoard.withLeader(function (leader, color, altClick)
             if TurnControl.getCurrentPlayer() == color then
                 local cooldown = os.time() - lastActivation
                 if cooldown > 2 then
@@ -453,7 +453,6 @@ function MainBoard._createBannerSpace(bannerZone)
     end)
 end
 
--- TODO parent -> root
 ---@param space Space
 ---@return Space
 function MainBoard._findParentSpace(space)
@@ -542,7 +541,6 @@ function MainBoard.sendRivalAgent(color, spaceName)
         Helper.emitEvent("agentSent", color, spaceName)
         Action.setContext("agentDestination", { space = spaceName })
         Park.transfer(1, agentPark, space.park)
-        -- TODO Why is it specific to SF?
         MainBoard.applyControlOfAnySpace(spaceName)
         return true
     else
@@ -551,13 +549,23 @@ function MainBoard.sendRivalAgent(color, spaceName)
 end
 
 ---@param name string
+---@return boolean
 function MainBoard.applyControlOfAnySpace(name)
+    local bannerZone = MainBoard.findControlableSpace(name)
     if name == "imperialBasin" then
+        assert(bannerZone == MainBoard.banners.imperialBasinBannerZone)
         MainBoard._applyControlOfAnySpace(MainBoard.banners.imperialBasinBannerZone, "spice")
+        return true
     elseif name == "arrakeen" then
+        assert(bannerZone == MainBoard.banners.arrakeenBannerZone)
         MainBoard._applyControlOfAnySpace(MainBoard.banners.arrakeenBannerZone, "solari")
+        return true
     elseif name == "carthag" then
+        assert(bannerZone == MainBoard.banners.carthagBannerZone)
         MainBoard._applyControlOfAnySpace(MainBoard.banners.carthagBannerZone, "solari")
+        return true
+    else
+        return false
     end
 end
 
@@ -689,7 +697,8 @@ function MainBoard._goSecrets(color, leader, continuation)
             leader.drawIntrigues(color, 1)
             for _, otherColor in ipairs(PlayBoard.getActivePlayBoardColors()) do
                 if otherColor ~= color then
-                    if #PlayBoard.getIntrigues(otherColor) > 3 then
+                    local limit = PlayBoard.hasTech(otherColor, "geneLockedVault") and 4 or 3
+                    if #PlayBoard.getIntrigues(otherColor) > limit then
                         leader.stealIntrigues(color, otherColor, 1)
                     end
                 end
@@ -1049,12 +1058,16 @@ end
 ---@param waterCost integer
 ---@param spiceBaseAmount integer
 ---@param spiceBonus Resource
-function MainBoard._anySpiceSpace(color, leader, continuation, waterCost, spiceBaseAmount, spiceBonus)
+---@param additionalAction? fun()
+function MainBoard._anySpiceSpace(color, leader, continuation, waterCost, spiceBaseAmount, spiceBonus, additionalAction)
     if MainBoard._checkGenericAccess(color, leader, { water = waterCost }) then
         continuation.run(function ()
             leader.resources(color, "water", -waterCost)
             local harvestedSpiceAmount = MainBoard._harvestSpice(spiceBaseAmount, spiceBonus)
             leader.resources(color, "spice", harvestedSpiceAmount)
+            if additionalAction then
+                additionalAction()
+            end
         end)
     else
         continuation.run()
@@ -1225,12 +1238,11 @@ end
 
 --- The color could be nil (the same way it could be nil with Types.isAgent)
 ---@param spaceName string
----@param color PlayerColor
+---@param color? PlayerColor
 ---@return boolean
 function MainBoard.hasAgentInSpace(spaceName, color)
     local space = MainBoard.spaces[spaceName]
-    -- Avoid since it depends on the active extensions.
-    --assert(space, "Unknow space: " .. spaceName)
+    -- A space could be unknown depending on the active extensions.
     if space then
         for _, object in ipairs(space.zone.getObjects()) do
             if Types.isAgent(object, color) then
@@ -1242,7 +1254,7 @@ function MainBoard.hasAgentInSpace(spaceName, color)
 end
 
 ---@param spaceName string
----@param color PlayerColor
+---@param color? PlayerColor
 ---@return boolean
 function MainBoard.hasEnemyAgentInSpace(spaceName, color)
     for _, otherColor in ipairs(PlayBoard.getActivePlayBoardColors()) do
@@ -1289,7 +1301,7 @@ end
 
 ---@param spaceName string
 ---@return boolean
-function MainBoard.unused_isFactionSpace(spaceName)
+function MainBoard.isFactionSpace(spaceName)
     return MainBoard.isEmperorSpace(spaceName)
         or MainBoard.isSpacingGuildSpace(spaceName)
         or MainBoard.isBeneGesseritSpace(spaceName)
@@ -1310,13 +1322,13 @@ end
 
 ---@param spaceName string
 ---@return boolean
-function MainBoard.unused_isBlueSpace(spaceName)
+function MainBoard.isBlueSpace(spaceName)
     return MainBoard.spaceDetails[spaceName].group == "city"
 end
 
 ---@param spaceName string
 ---@return boolean
-function MainBoard.unused_isYellowSpace(spaceName)
+function MainBoard.isYellowSpace(spaceName)
     return Helper.isElementOf(MainBoard.spaceDetails[spaceName].group, { "desert", "choam" })
 end
 
@@ -1329,11 +1341,11 @@ end
 
 ---@param spaceName string
 ---@return boolean
-function MainBoard.unused_isCombatSpace(spaceName)
+function MainBoard.isCombatSpace(spaceName)
     return MainBoard.spaceDetails[spaceName].combat
 end
 
----@return Space[]
+---@return string[]
 function MainBoard.getEmperorSpaces()
     local emperorSpaces = {}
     for space, details in pairs(MainBoard.spaceDetails) do
@@ -1344,7 +1356,7 @@ function MainBoard.getEmperorSpaces()
     return emperorSpaces
 end
 
----@return Space[]
+---@return string[]
 function MainBoard.getGreenSpaces()
     return Helper.filter(Helper.getKeys(MainBoard.spaceDetails), MainBoard.isGreenSpace)
 end
