@@ -32,11 +32,10 @@ This repository contains the JSON skeletons and Lua scripts of various mods for 
 ## TODO
 
 - Arrakeen Scouts deck in English.
-- Multiple battlegrounds.
 - Arrakeen Scouts history (as cards).
 - Arrakeen Scouts memory cards (using decals).
-- Blitz! mode
-- UI resizing.
+- Arrakeen Scouts for Bloodlines.
+- UI (re)sizing in general.
 
 ### scripts/modules
 
