@@ -35,8 +35,7 @@ This repository contains the JSON skeletons and Lua scripts of various mods for 
 
 __All__
 
-- Add a corrective black border on the Uprising game boards.
-- Spice token size and positions.
+- Reduce / dilute the setup load?
 
 __6P__
 
@@ -51,6 +50,8 @@ __Aesthetic__
 
 - Rework the tech/contract decals.
 - Widen the colored border of the boards (and remove the trigger effects in the process).
+- Add a corrective black border on the Uprising game boards.
+- Spice token size and positions.
 
 ## Lua sources
 
