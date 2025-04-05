@@ -1622,9 +1622,9 @@ function PlayBoard:_createTechPark(layerCount)
 end
 
 function PlayBoard:_createPlayerScorePark()
-    local origin = self:_generateAbsolutePosition("symmetric", Vector(-3.56, 0, 8.10))
+    local origin = self:_generateAbsolutePosition("symmetric", Vector(-3.72, 0, 8.10))
     local width = 15
-    local spacing = PlayBoard.isLeft(self.color) and -1.092 or 1.092
+    local spacing = (PlayBoard.isLeft(self.color) and -1 or 1) * 1.071
     local slots = Park.createMatrixOfSlots(origin, Vector(width, 1, 1), Vector(spacing, 0, 0))
     return Park.createCommonPark({ "VictoryPointToken" }, slots, Vector(1, 1, 1), Vector(0, 180, 0))
 end
