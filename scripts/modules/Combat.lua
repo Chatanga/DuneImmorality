@@ -330,7 +330,7 @@ function Combat._createGarrisonPark(color, position)
             local x = (PlayBoard.isLeft(color) and (2.5 - i) or (i - 2.5)) * 0.45
             local z = (j - 2) * 0.45
             local slot = position + Vector(x, 0, z)
-            slot:setAt('y', Board.onMainBoard(0))
+            slot:setAt('y', Board.onMainBoard(0.18))
             table.insert(slots, slot)
         end
     end

@@ -360,7 +360,7 @@ function MainBoard._doProcessSnapPoints(settings, collect)
         spice = function (name, position)
             local token = MainBoard.spiceBonusTokens[name]
             assert(token, name)
-            token.setPosition(position)
+            token.setPosition(position + Vector(0, -0.1, 0))
             token.setInvisibleTo({})
             Helper.noPhysics(token)
             MainBoard.spiceBonuses[name] = Resource.new(token, nil, "spice", 0, name)

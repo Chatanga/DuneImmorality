@@ -960,8 +960,6 @@ function PlayBoard.setUp(settings, activeOpponents)
                     playBoard.content.researchToken.destruct()
                     playBoard.content.researchToken = nil
                 end
-                playBoard.content.sardaukarMarker.destruct()
-                playBoard.content.sardaukarMarker = nil
             end
 
             if not Commander.isCommander(color) then
