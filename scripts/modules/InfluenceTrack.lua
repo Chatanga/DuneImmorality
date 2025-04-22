@@ -467,7 +467,7 @@ function InfluenceTrack._challengeAlliance(faction)
                 allianceOwner = bestRankedPlayers[1]
                 InfluenceTrack._gainAlliance(faction, allianceOwner)
             else
-                broadcastToAll(tostring(allianceOwner) .. " must grant alliance to one of " .. tostring(bestRankedPlayers), "Pink")
+                broadcastToAll(I18N("allianceMustBeGrantedByHand", { owner = PlayBoard.getLeaderName(allianceOwner) }), "Pink")
             end
         end
     end

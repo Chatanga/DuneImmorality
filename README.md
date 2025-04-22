@@ -62,7 +62,7 @@ __Aesthetic__
 
 ### scripts/modules
 
-Modules relies on the Luabundler tool, but also on utils.Modules.
+Modules relies on the Luabundler tool, but also on `utils.Modules`.
 
 - __Action.lua__ - All atomic actions (or effets): spending spice, deploying a troop, drawing a card...
 - __Board.lua__ - The board static cloning mechanism, an alternative to the former mutation approach, is implemented here.
@@ -85,7 +85,7 @@ Modules relies on the Luabundler tool, but also on utils.Modules.
 - __MainBoard.lua__ - Creates the various actionable spaces on the 4P/6P boards based on their snappoints and provides the functions to resolve their effects on the active player's leader (which is a proxy on Action).
 - __Music.lua__ - Handles the sound part, nothing elaborated here.
 - __Pdf.lua__ - Same as Deck, but for PDF. Quite basic.
-- __PlayBoard.lua__ - The heaviest module around, but contrary to ArrakeenScouts, offers little game related functions. It's mostly here to manage the layout and the mod niceties related to each player's board with all their content.
+- __PlayBoard.lua__ - The heaviest module around, but offers little game related functions. It's mostly here to manage the layout and the mod niceties related to each player's board with all their content.
 - __Reserve.lua__ - Handles the card reserve next to the ImperiumRow.
 - __Resource.lua__ - A class handling the resources tokens (spice, solaris, etc.) on the various boards.
 - __Rival.lua__ - Provides a proxy for each rival leader, used as an indirection to Rival then Action. Each leader ability is implemented as an alteration of an existing action or as an event handler. Contrary to the Leader class, mostly empty, the Rival class provides part of the "AI" for Solo/Hagal mode.

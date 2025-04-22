@@ -314,6 +314,7 @@ return {
     reclaimRewards = "Reclaim Rewards",
     roundNumber = "Round #",
     doYouWantAnotherRound = "Play another round?",
+    allianceMustBeGrantedByHand = "{owner} must choose to whom to grant their lost alliance.",
 
     -- Arrakeen Scouts
     joinCommittee = "Join the subcommittee: {committee}",
@@ -411,6 +412,8 @@ return {
     otherMemoriesUsed = "↯ Lady Jessica used her Other Memories.",
     waterOfLifeTooltip = "Drink the Water of Life",
     leadTheWayTooltip = "Lead the Way",
+    fedaykinManeuverTooltip = "Fedaykin Maneuver",
+    harkonnenAdvisorTooltip = "Harkonnen Advisor",
     firstSnooperRecall = "↯ Tessia Vernius has recalled her first snooper from {withFaction}.",
     secondSnooperRecall = "↯ Tessia Vernius has recalled her second snooper from {withFaction}.",
     thirdSnooperRecall = "↯ Tessia Vernius has recalled her third snooper from {withFaction}.",

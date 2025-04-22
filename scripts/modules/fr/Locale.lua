@@ -316,6 +316,7 @@ return {
     reclaimRewards = "Réclamer les récompenses",
     roundNumber = "Manche n°",
     doYouWantAnotherRound = "Jouer encore une manche ?",
+    allianceMustBeGrantedByHand = "{owner} doit choisir à qui accorder son alliance perdue.",
 
     -- Arrakeen Scouts
     joinCommittee = "Rejoindre le sous-comité : {committee}",
@@ -414,6 +415,8 @@ return {
     otherMemoriesUsed = "↯ Dame Jessica a utilisée sa mémoire seconde.",
     waterOfLifeTooltip = "Boire l’eau de vie",
     leadTheWayTooltip = "Montrer la voie",
+    fedaykinManeuverTooltip = "Manoeuvre de Fedaykin",
+    harkonnenAdvisorTooltip = "Conseiller Harkonnen",
     firstSnooperRecall = "↯ Tessia Vernius a rappelé son premier fouineur {withFaction}.",
     secondSnooperRecall = "↯ Tessia Vernius a rappelé son second fouineur {withFaction}.",
     thirdSnooperRecall = "↯ Tessia Vernius a rappelé son troisième fouineur {withFaction}.",
