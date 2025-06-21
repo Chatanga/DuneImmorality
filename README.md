@@ -31,15 +31,18 @@ This repository contains the JSON skeletons and Lua scripts of various mods for 
 
 ## TODO
 
+- Mentat in wood!
+- 5 mentat cost token misplaced.
+
 - Arrakeen Scouts deck in English.
 - Arrakeen Scouts history (as cards).
 - Arrakeen Scouts memory cards (using decals).
-- Arrakeen Scouts for Bloodlines.
+- Arrakeen Scouts for Bloodlines (nothing to do?).
 - UI (re)sizing in general.
 
 ### scripts/modules
 
-Modules relies on the Luabundler tool, but also on utils.Modules.
+Modules relies on the Luabundler tool, but also on `utils.Modules`.
 
 - __Action.lua__ - All atomic actions (or effets): spending spice, deploying a troop, drawing a card...
 - __ArrakeenScouts.lua__ - Interactive UI panes for the Arrakeen Scouts mode (see also the DynamicBonus module).

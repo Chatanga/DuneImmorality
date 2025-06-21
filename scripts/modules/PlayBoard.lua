@@ -653,8 +653,10 @@ function PlayBoard.setUp(settings, activeOpponents)
                     playBoard.content.scoreMarker.destruct()
                     playBoard.content.scoreMarker = nil
                 end
-                playBoard.content.sardaukarMarker.destruct()
-                playBoard.content.sardaukarMarker = nil
+                if playBoard.content.sardaukarMarker then
+                    playBoard.content.sardaukarMarker.destruct()
+                    playBoard.content.sardaukarMarker = nil
+                end
             else
                 playBoard.opponent = "human"
                 Deck.generateStarterDeck(playBoard.content.drawDeckZone, settings).doAfter(Helper.shuffleDeck)
