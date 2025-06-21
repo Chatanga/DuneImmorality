@@ -49,7 +49,7 @@ __2P / Solo__
 __Aesthetic__
 
 - Rework the tech/contract decals.
-- Widen the colored border of the boards (and remove the trigger effects in the process).
+- Widen the colored border of the boards (and remove both the negative scale and the trigger effects in the process).
 - Add a corrective black border on the Uprising game boards.
 - Spice token size and positions.
 

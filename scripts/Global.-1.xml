@@ -17,18 +17,23 @@ following constraints in mind:
 More generally, take a look at the Example.lua file to see how your code might
 be integrated to this mod in a standard way.
 
+Note: in case you wonder, dimensions in this XML are in pixels, but for a
+virtual screen in the full HD resolution (1920 x 1080). The resulting UI is
+scaled up or down depending on each player's screen. Since this scaling is done
+at the component level, the end result could be broken if things are adjusted to
+the pixel.
 -->
 <Panel position="0 -80" width="450" height="560" color="#000000" id="setupPane" rotation="0 0 0" outline="#2e200f" outlineSize="1"
 	active="False" allowDragging="True" returnToOriginalPositionWhenReleased="False" _visibility="Host">
 	<!-- Aplly to all panels actually. -->
 	<Defaults>
-		<Text class="primary" color="#000000" fontSize="20" fontStyle="bold" alignment="MiddleLeft"/>
-		<Text class="secondary" color="#22170b" fontSize="14" fontStyle="bold" alignment="MiddleLeft"/>
-		<Text class="warning" color="#ffe71c" fontSize="12" fontStyle="italic" alignment="MiddleCenter"/>
-		<Dropdown class="setUp" itemBackgroundColors="#2e200f44|#df9730|#ffffff|#361441" textColor="#2e200f" fontSize="12" itemTextColor="#2e200f" fontStyle="bold"/>
-		<InputField class="setUp" colors="#00000000|#2e200f44|#2e200f" textColor="#2e200f" fontSize="14" fontStyle="bold"/>
-		<Toggle class="setUp" colors="#9e907e|#ffd60b|#6d5e4c|#222222" textColor="#22170b" fontSize="14" fontStyle="bold" tooltipPosition="Left" tooltipBackgroundColor="#000000"/>
-		<Button class="setUp" colors="#406f2e|#30281f|#df9730|#222222" textColor="#ffd60b" fontSize="14" outline="#30281f" outlineSize="3 3"/>
+		<Text class="primary" color="#000000" fontSize="22" fontStyle="bold" alignment="MiddleLeft"/>
+		<Text class="secondary" color="#22170b" fontSize="16" fontStyle="bold" alignment="MiddleLeft"/>
+		<Text class="warning" color="#ffe71c" fontSize="14" fontStyle="italic" alignment="MiddleCenter"/>
+		<Dropdown class="setUp" itemBackgroundColors="#2e200f44|#df9730|#ffffff|#361441" textColor="#2e200f" fontSize="14" itemTextColor="#2e200f" fontStyle="bold"/>
+		<InputField class="setUp" colors="#00000000|#2e200f44|#2e200f" textColor="#2e200f" fontSize="16" fontStyle="bold"/>
+		<Toggle class="setUp" colors="#9e907e|#ffd60b|#6d5e4c|#222222" textColor="#22170b" fontSize="16" fontStyle="bold" tooltipPosition="Left" tooltipBackgroundColor="#000000"/>
+		<Button class="setUp" colors="#406f2e|#30281f|#df9730|#222222" textColor="#ffd60b" fontSize="16" outline="#30281f" outlineSize="3 3"/>
 		<Image raycastTarget="true"/>
 	</Defaults>
 	<VerticalLayout>
