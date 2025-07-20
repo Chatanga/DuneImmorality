@@ -36,8 +36,7 @@ This repository contains the JSON skeletons and Lua scripts of various mods for 
 __All__
 
 - Reduce / dilute the setup load?
-- Thick trash to avoid bugs.
-- Fixed snappoints Y coordinate.
+- Thick trash to workaround TTS bug.
 
 __6P__
 
