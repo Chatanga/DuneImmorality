@@ -76,7 +76,7 @@ function SardaukarCommander._transientSetUp(settings)
     for i, zone in ipairs(SardaukarCommander.slotZones) do
         AcquireCard.new(zone, Board.onTable(0), "SardaukarCommanderSkill", PlayBoard.withLeader(function (leader, color)
             leader.acquireSardaukarCommanderSkillCard(color, i)
-        end), Deck.getAcquireCardDecalUrl("generic"))
+        end), Deck.getAcquireCardDecalUrl("sardaukar"))
     end
 
     SardaukarCommander._createSardaukarCommanderRecruitmentButtons(settings)

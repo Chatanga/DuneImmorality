@@ -36,15 +36,13 @@ This repository contains the JSON skeletons and Lua scripts of various mods for 
 __All__
 
 - Reduce / dilute the setup load?
+- Thick trash to avoid bugs.
+- Fixed snappoints Y coordinate.
 
 __6P__
 
 - Team PV counter.
 - Exchange of resources.
-
-__2P / Solo__
-
-- Hagal cards in French.
 
 __Aesthetic__
 

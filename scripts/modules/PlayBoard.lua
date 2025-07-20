@@ -578,7 +578,7 @@ function PlayBoard.rebuild()
         if Helper.isElementOf(color, { "Green", "Yellow", "Blue", "Red" }) then
             for _, slot in ipairs(sardaukarCommanderSkillSlots) do
                 table.insert(decals, {
-                    name = "Generic Slot",
+                    name = "Sardaukar Slot",
                     url = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
                     position = offsetToLocalDecal(slot),
                     rotation = { 90, 0, 0 },
@@ -1596,7 +1596,7 @@ end
 ---@param layerCount integer
 function PlayBoard:_createSardaukarCommanderSkillPark(layerCount)
     local origin = self:_generateAbsolutePosition("symmetric", Vector(5.5, 0, 0.2))
-    local spacing = PlayBoard.isLeft(self.color) and -1.75 or 1.75
+    local spacing = PlayBoard.isLeft(self.color) and -1.8 or 1.8
     local slots = Park.createMatrixOfSlots(origin, Vector(3, layerCount or 1, 1), Vector(spacing, 0.5, 0))
     return Park.createCommonPark({ "SardaukarCommanderSkill" }, slots, Vector(2, 1, 2.5))
 end

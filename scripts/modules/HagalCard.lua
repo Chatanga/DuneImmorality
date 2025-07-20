@@ -741,7 +741,7 @@ end
 ---@param rival Rival
 ---@return boolean
 function HagalCard._activateAcquireTech(color, rival)
-    if PlayBoard.hasSwordmaster(color) then
+    if PlayBoard.hasSwordmaster(color) or rival.name == "kotaOdax" then
         TechMarket.registerAcquireTechOption(color, "activateAcquireTechBuyOption", "spice", 1)
         rival.acquireTech(color)
     end

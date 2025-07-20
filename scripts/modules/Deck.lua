@@ -9,6 +9,7 @@ local Deck = {
     decals = {
         corrinoAcquireCard = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141304246/9E9986D0F348F5D23A16745A271FFD28958651FB/",
         genericAcquireCard = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141305713/5F7C572489E5E03F3230B012DA0E01A84EDAABF8/",
+        sardaukarAcquireCard = "https://steamusercontent-a.akamaihd.net/ugc/16046670112954493226/F677AA2397AB2A856597F63304AD4275FD3FF7E2/",
     },
     customDeckBaseId = 100,
     backs = {
@@ -23,8 +24,8 @@ local Deck = {
         hagalCardBack = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141333724/26E28590801800D852F4BCA53E959AAFAAFC8FF3/",
         leaderCardBack = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141277039/005244DAC0A29EE68CFF741FC06564969563E8CF/",
         rivalLeaderCardBack = "https://steamusercontent-a.akamaihd.net/ugc/2291837013341174770/EB5ECE9F5373F0B132E93CD5825B89E7F023E9A2/",
-        navigationCardBack = "https://steamusercontent-a.akamaihd.net/ugc/28804925896498608/262562E5EF6A7212D473EE6146138B2F7FF67766/",
-        sardaukarCommanderSkillCardBack = "https://steamusercontent-a.akamaihd.net/ugc/28804925903402648/D6F4D1655CF23A2010A6FE1369599F2C47A2AB21/",
+        navigationCardBack = "https://steamusercontent-a.akamaihd.net/ugc/11785911389932807807/DB25F5E9F1A59B4D113F8E5DA52C1100DEE53458/",
+        sardaukarCommanderSkillCardBack = "https://steamusercontent-a.akamaihd.net/ugc/9769430335022447450/70DB33EE8471E049EBD158C6F60EC0482C2FAF08/",
     },
     sources = {},
     starter = {
@@ -1065,7 +1066,7 @@ function Deck.generateTechDeck(deckZones, settings)
     local continuation = Helper.createContinuation("Deck.generateTechDeck")
 
     local keys = {}
-    if settings.ix then
+    if settings.ix or settings.ixAmbassyWithIx then
         keys = Helper.concatTables(keys, Helper.getKeys(Deck.tech.ix))
     end
     if settings.bloodlines then
@@ -1885,7 +1886,7 @@ end
 ---@param height number
 ---@return table
 function Deck.createSardaukarCommanderSkillCustomDeck(faceUrl, width, height)
-    return Deck.createCustomDeck(Deck.backs.sardaukarCommanderSkillCardBack, faceUrl, width, height, Vector(0.75, 1, 0.75))
+    return Deck.createCustomDeck(Deck.backs.sardaukarCommanderSkillCardBack, faceUrl, width, height, Vector(0.57, 1, 0.57))
 end
 
 ---@param faceUrl string

@@ -358,6 +358,7 @@ function MainBoard._doProcessSnapPoints(settings, collect)
         end,
 
         spice = function (name, position)
+            Helper.dump(name, "->", position)
             local token = MainBoard.spiceBonusTokens[name]
             assert(token, name)
             token.setPosition(position + Vector(0, -0.1, 0))

@@ -727,7 +727,7 @@ end
 ---@return Continuation
 function Combat.gainObjective(color, initialObjective, ignoreExisting)
     local objective = initialObjective
-    if Helper.isElementOf(initialObjective, { "muadDib", "crysknife" }) and PlayBoard.hasTech(color, "ornithopterFleet") then
+    if Helper.isElementOf(initialObjective, { "muadDib", "crysknife", "joker" }) and PlayBoard.hasTech(color, "ornithopterFleet") then
         objective = "ornithopter"
     end
 

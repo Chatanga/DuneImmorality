@@ -276,7 +276,6 @@ end
 ---@param stackIndex? integer
 ---@return boolean
 function Rival.acquireTech(color, stackIndex)
-
     local finalStackIndex = stackIndex
     if not finalStackIndex then
         local discount = TechMarket.getRivalSpiceDiscount()
@@ -757,6 +756,11 @@ Rival.hasimirFenring = Helper.createClass(Rival, {
         "spacingGuild",
         "fremen",
     },
+
+    prepare = function (color, settings)
+        Rival.prepare(color, settings)
+        Rival.influence(color, "emperor", 1)
+    end,
 
     signetRing = function (color)
         Rival.resources(color, "solari", 1)
