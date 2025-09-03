@@ -36,8 +36,6 @@ This repository contains the JSON skeletons and Lua scripts of various mods for 
 __All__
 
 - Reduce / dilute the setup load?
-- Thick trash and contract bags to worka round TTS constraints.
-- Sardaukars tagged as troops.
 
 __6P__
 
@@ -49,7 +47,6 @@ __Aesthetic__
 - Rework the tech/contract decals.
 - Widen the colored border of the boards (and remove both the negative scale and the trigger effects in the process).
 - Add a corrective black border on the Uprising game boards.
-- Spice token size and positions.
 
 ## Lua sources
 

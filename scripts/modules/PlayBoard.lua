@@ -101,7 +101,7 @@ local PlayBoard = Helper.createClass(nil, {
                 "af7cd0"
             },
             forceMarker = '2d1d17',
-            trash = "f198b0",
+            trash = "b3a73b",
             completedContractBag = "07cc68",
             tleilaxToken = "2bfc39",
             tleilaxTokenInitalPosition = Helper.getHardcodedPositionFromGUID('2bfc39', 0.542931, 1.882152, 22.0543556),
@@ -153,7 +153,7 @@ local PlayBoard = Helper.createClass(nil, {
                 "694553"
             },
             forceMarker = 'f22e20',
-            trash = "f3bc73",
+            trash = "7c9aab",
             completedContractBag = "431016",
             tleilaxToken = "96607f",
             tleilaxTokenInitalPosition = Helper.getHardcodedPositionFromGUID('96607f', 0.5425502, 1.8846519, 22.75358),
@@ -205,7 +205,7 @@ local PlayBoard = Helper.createClass(nil, {
                 "fc9c62"
             },
             forceMarker = 'a1a9a7',
-            trash = "827226",
+            trash = "480d28",
             completedContractBag = "9e66be",
             tleilaxToken = "63d39f",
             tleilaxTokenInitalPosition = Helper.getHardcodedPositionFromGUID('63d39f', 1.24582732, 1.88465178, 22.04864),
@@ -257,7 +257,7 @@ local PlayBoard = Helper.createClass(nil, {
                 "b5d32e"
             },
             forceMarker = 'c2dd31',
-            trash = "074c1f",
+            trash = "913f29",
             completedContractBag = "eb459d",
             tleilaxToken = "d20bcf",
             tleilaxTokenInitalPosition = Helper.getHardcodedPositionFromGUID('d20bcf', 1.2472322, 1.8846519, 22.7536983),
@@ -290,7 +290,7 @@ local PlayBoard = Helper.createClass(nil, {
             councilToken = "ded786",
             scoreMarker = "201011",
             scoreMarkerInitialPosition = Helper.getHardcodedPositionFromGUID('201011', 10.3917294, 2.58932447, -14.09231),
-            trash = "d9a14c",
+            trash = "aebead",
             completedContractBag = "9c9f7a",
             firstPlayerMarkerZone = "f4c962",
             firstPlayerInitialPosition = Helper.getHardcodedPositionFromGUID('f4c962', -13.6, 2.7, 1.7) + Vector(0, -0.4, 0),
@@ -316,7 +316,7 @@ local PlayBoard = Helper.createClass(nil, {
             councilToken = "8c6ba7",
             scoreMarker = "2ccf7f",
             scoreMarkerInitialPosition = Helper.getHardcodedPositionFromGUID('2ccf7f', 10.3914042, 2.789329, -14.0921068),
-            trash = "556139",
+            trash = "bb5961",
             completedContractBag = "240112",
             firstPlayerMarkerZone = "7a8ea9",
             firstPlayerInitialPosition = Helper.getHardcodedPositionFromGUID('7a8ea9', 13.58, 2.7, 1.7) + Vector(0, -0.4, 0),
@@ -1164,8 +1164,7 @@ function PlayBoard._transientSetUp(settings)
         playBoard.content.completedContractBag.createButton({
             click_function = Helper.registerGlobalCallback(),
             label = "",
-            rotation = Vector(0, 180, 0),
-            position = Vector(0, 0.05, -2),
+            position = Vector(0, 0.05, 2),
             width = 0,
             height = 0,
             font_size = 800,
