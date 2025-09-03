@@ -57,7 +57,7 @@ return {
     veteran = "sardaukar",
     expert = "mentat",
     expertPlus = "kwisatz",
-    autoTurnInSoloOption = "Automatic turn pass for rivals",
+    autoTurnInSoloOption = "Automatic turn pass",
     imperiumRowChurnOption = "Imperium Row Churn",
     brutalEscalationOption = "Brutal Escalation",
     expertDeploymentOption = "Expert Deployment",

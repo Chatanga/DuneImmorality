@@ -207,7 +207,6 @@ end
 ---@param stackIndex? integer
 ---@return boolean
 function Rival.acquireTech(color, stackIndex)
-
     local finalStackIndex = stackIndex
     if not finalStackIndex then
         local discount = TechMarket.getRivalSpiceDiscount()

@@ -84,11 +84,11 @@ def build():
 	timestamp = datetime.now().strftime("%m/%d/%Y %I:%M:%S %p")
 
 	if args.full:
-		importSave(input_save)
+		import_save(input_save)
 		unpack()
 		unbundle(luabundler)
 		patch()
-		storeJson()
+		store_json()
 
 	bundle(luabundler, timestamp)
 
@@ -96,14 +96,14 @@ def build():
 		upload()
 	else:
 		pack(timestamp)
-		exportSave(output_save)
+		export_save(output_save)
 
 def select_first_existing_path(paths):
 	for path in paths:
 		if os.path.exists(path):
 			return path
 
-def importSave(input_save):
+def import_save(input_save):
 	print("[import]")
 	if os.path.exists(input_save):
 		shutil.copyfile(input_save, os.path.join('tmp', 'mod.unpatched.json'))
@@ -164,7 +164,7 @@ def expand():
 	input_file_name = os.path.join('tmp', 'mod.unscripted.patched.json')
 	tts_build.expand.expand(input_file_name, 'scripts')
 
-def storeJson():
+def store_json():
 	print("[store]")
 	shutil.copyfile(os.path.join('tmp', 'mod.unscripted.patched.json'), 'skeleton.json')
 
@@ -207,7 +207,7 @@ def pack(timestamp):
 	output_file_name = os.path.join('tmp', 'mod.patched.json')
 	tts_build.pack.pack_save(tts_tmp_dir, input_file_name, output_file_name, timestamp)
 
-def exportSave(output_save):
+def export_save(output_save):
 	print("[export]")
 	shutil.copyfile(os.path.join('tmp', 'mod.patched.json'), output_save)
 	output_png_file = output_save.replace('.json', '.png')

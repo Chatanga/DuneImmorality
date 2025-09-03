@@ -428,7 +428,7 @@ function PlayBoard.rebuild()
         if true then
             for _, slot in ipairs(sardaukarCommanderSkillSlots) do
                 table.insert(decals, {
-                    name = "Generic Slot",
+                    name = "Sardaukar Slot",
                     url = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
                     position = offsetToLocalDecal(slot),
                     rotation = { 90, 0, 0 },

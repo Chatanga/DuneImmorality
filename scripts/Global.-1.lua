@@ -186,15 +186,15 @@ function onLoad(scriptState)
     -- file. After that, "build.py" or "build.py --upload" is enough to rebuild
     -- the mod.
     if constructionModeEnabled then
-        -- Edit the player boards in a procedural way.
-        if false then
-            allModules.PlayBoard.rebuild()
-        end
-        -- Regenerate the decks in the localized cached areas.
+        -- Rebuild the decks in the localized cached areas.
         if false then
             allModules.Deck.rebuildPreloadAreas()
         end
-        -- Regenerate the boards for each language.
+        -- Rebuild the player boards in a procedural way.
+        if false then
+            allModules.PlayBoard.rebuild()
+        end
+        -- Rebuild the boards for each language.
         if false then
             allModules.Board.rebuildPreloadAreas()
         end

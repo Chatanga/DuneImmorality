@@ -1,11 +1,6 @@
 local Helper = require("utils.Helper")
 local I18N = require("utils.I18N")
 
----@alias BookInfo {
---- guid: GUID,
---- position: Vector,
---- scale: Vector }
-
 local Pdf = {
     books = {
         base = "dc6297",

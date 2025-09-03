@@ -29,14 +29,14 @@ def listen(host, port):
                 try:
                     data = sock.makefile("rb")
                     try:
-                        handleMessage(json.load(data))
+                        handle_message(json.load(data))
                     except Exception as e:
                         print(e)
                 finally:
                     rxset.remove(sock)
                     sock.close()
 
-def handleMessage(message):
+def handle_message(message):
     id = message['messageID']
     if id == 0:
         debug("Pushing new object.")
@@ -47,19 +47,19 @@ def handleMessage(message):
     elif id == 2:
         # Messages could be received out of order compared to the ingame log, which is weird with a locale TCP connection...
         body = message['message']
-        if not logException(body):
+        if not log_exception(body):
             info(body)
     elif id == 3:
-        errorMessage = message['error']
-        if not logException(errorMessage):
-            error(errorMessage)
+        error_message = message['error']
+        if not log_exception(error_message):
+            error(error_message)
     elif id == 4:
-        customMessage = message['customMessage']
-        debug(f'> {customMessage}')
+        custom_message = message['customMessage']
+        debug(f'> {custom_message}')
         pass
     elif id == 5:
-        returnValue = message['returnValue']
-        debug(f'< {returnValue}')
+        return_value = message['returnValue']
+        debug(f'< {return_value}')
     elif id == 6:
         debug("Game saved.")
     elif id == 7:
@@ -83,34 +83,34 @@ def error(message):
     print(message, file = sys.stderr, end = '')
     print('\033[0m', file = sys.stderr)
 
-def logException(message):
+def log_exception(message):
     result = re.search(r'([^:]*):\((\d+),(\d+)-(\d+)(,(\d+))?\): (.*)', message)
     if result:
         try:
-            startLineNumber = int(result.group(2))
-            startColNumber = int(result.group(3)) + 1
+            start_line_number = int(result.group(2))
+            start_col_number = int(result.group(3)) + 1
             if result.group(5):
-                endLineNumber = int(result.group(4)) + 1
-                endColNumber = int(result.group(6)) + 1
+                end_line_number = int(result.group(4)) + 1
+                end_col_number = int(result.group(6)) + 1
             else:
-                endLineNumber = startLineNumber
-                endColNumber = int(result.group(4)) + 1
+                end_line_number = start_line_number
+                end_col_number = int(result.group(4)) + 1
             message = result.group(7)
-            startLocation = relocate(startLineNumber)
+            start_location = relocate(start_line_number)
         except:
             for i in range(1, 7):
                 print(i, '->', result.group(i))
-            startLocation = None
+            start_location = None
     else:
-        startLocation = None
-    if startLocation:
-        file, lineNumber = startLocation
-        error(f'{file}:{lineNumber}:{startColNumber}: {message}')
+        start_location = None
+    if start_location:
+        file, line_number = start_location
+        error(f'{file}:{line_number}:{start_col_number}: {message}')
         return True
     else:
         return False
 
-def relocate(lineNumber):
+def relocate(line_ñumber):
     file_origin = 0
     with open(os.path.join(tts_tmp_dir, 'Global.-1.ttslua'), 'r', encoding='utf-8') as script_file:
         i = 0
@@ -118,7 +118,7 @@ def relocate(lineNumber):
             line = script_file.readline()
             if line:
                 i += 1
-                if i == lineNumber:
+                if i == line_ñumber:
                     return file, i - file_origin
                 result = re.search(r'__bundle_register\("(.*)", function\(require, _LOADED, __bundle_register, __bundle_modules\)', line)
                 if result:

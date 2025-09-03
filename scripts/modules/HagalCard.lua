@@ -103,7 +103,9 @@ function HagalCard.flushTurnActions(color)
     if HagalCard.inCombat then
         local deploymentLimit = Hagal.getExpertDeploymentLimit(color)
 
-        local garrisonedTroopCount = #Park.getObjects(Combat.getGarrisonPark(color)) -- Sardaukars included.
+        local garrisonedTroopCount = #Park.getObjects(Combat.getGarrisonPark(color), function (object)
+            return Types.isTroop(object, color) or Types.isSardaukarCommander(object, color)
+        end)
         --Helper.dump("garrisonedTroopCount:", garrisonedTroopCount)
         local inSupplyTroopCount = #Park.getObjects(PlayBoard.getSupplyPark(color))
 

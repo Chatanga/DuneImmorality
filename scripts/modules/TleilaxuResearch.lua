@@ -76,7 +76,6 @@ local TleilaxuResearch = {
 ---@param state table
 function TleilaxuResearch.onLoad(state)
     Helper.append(TleilaxuResearch, Helper.resolveGUIDs(false, {
-        board = "d5c2db",
         tanksZone = "f5de09",
         tleilaxSpiceBonusToken = "46cd6b",
         tleilaxuLevelZones = {

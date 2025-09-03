@@ -1,5 +1,60 @@
 import json
 
+
+class TagRegistry:
+
+    def __init__(self, save):
+        self.component_tags = {}
+        self.component_tag_counts = {}
+        for tag in save['ComponentTags']['labels']:
+            displayed_tag_name = tag['displayed']
+            self.component_tags[displayed_tag_name] = tag['normalized']
+            self.component_tag_counts[displayed_tag_name] = 0
+
+    def register_tags(self, object):
+
+        def register_tag(tag_type):
+            if not tag in self.component_tag_counts:
+                print(f'Undeclared {tag_type}: {tag}')
+                self.component_tag_counts[tag] = 0
+            self.component_tag_counts[tag] += 1
+
+        if 'Tags' in object:
+            for tag in object['Tags']:
+                register_tag("tag")
+
+        if 'AttachedSnapPoints' in object:
+            for snap_point in object['AttachedSnapPoints']:
+                if 'Tags' in snap_point:
+                    for tag in snap_point['Tags']:
+                        register_tag("snappoint tag")
+
+    def get_used_labels(self):
+        used_labels = []
+        for tag in self.component_tag_counts.items():
+            if tag[1] > 0:
+                if tag[0] in self.component_tags:
+                    displayed_tag_name = tag[0]
+                    used_labels.append({
+                        'displayed': displayed_tag_name,
+                        'normalized': self.component_tags[displayed_tag_name],
+                    })
+            else:
+                print(f'Orphan tag: {tag[0]}')
+        return used_labels
+
+
+def rectify_snappoints(parent, object):
+    if 'AttachedSnapPoints' in object:
+        #print('-' * 80)
+        yParent = None if parent is None else parent['Transform']['posY']
+        yObject = None if object is None else object['Transform']['posY']
+        for snap_point in object['AttachedSnapPoints']:
+            tags = snap_point['Tags']
+            y = snap_point['Position']['y']
+            #print(f'{yParent} / {yObject} / {y} - {tags}')
+            snap_point['Position']['y'] = 0.100000143
+
 def rectify_rotation(object):
     for coordinate in ['rotX', 'rotY', 'rotZ']:
         c = object['Transform'][coordinate]
@@ -9,47 +64,10 @@ def rectify_rotation(object):
             c = 0
         object['Transform'][coordinate] = c
 
-def register_tags(object, component_tag_counts):
-
-    def register_tag(tag_type):
-        if not tag in component_tag_counts:
-            print("Undeclared " + tag_type + ": " + tag)
-            component_tag_counts[tag] = 0
-        component_tag_counts[tag] += 1
-
-    if 'Tags' in object:
-        for tag in object['Tags']:
-            register_tag("tag")
-
-    if 'AttachedSnapPoints' in object:
-        for snap_point in object['AttachedSnapPoints']:
-            if 'Tags' in snap_point:
-                for tag in snap_point['Tags']:
-                    register_tag("snappoint tag")
-
-def scan_play_board_snappoints(object):
-    play_boards = {
-        'd47b92': 'Red',
-        'f23836': 'Blue',
-        '2facfd': 'Green',
-        '13b6cb': 'Yellow',
-        '4ad196': 'White',
-        'dc05a6': 'Purple',
-    }
-
-    guid = object['GUID']
-    if guid in play_boards:
-        color = play_boards[guid]
-        if 'AttachedSnapPoints' in object:
-            for snap_point in object['AttachedSnapPoints']:
-                tags = snap_point['Tags']
-                transform = snap_point['Position']
-                print("%s -> %s at (%s, %s, %s)" % (color, tags, transform['x'], transform['y'], transform['z']))
-
-def patch_object(object, component_tag_counts):
+def visit_object(parent, object, tag_registry):
     rectify_rotation(object)
-    register_tags(object, component_tag_counts)
-    #scan_play_board_snappoints(object)
+    tag_registry.register_tags(object)
+    rectify_snappoints(parent, object)
     object['LuaScript'] = ''
     object['LuaScriptState'] = ''
 
@@ -61,12 +79,7 @@ def patch_save(input_path, output_path):
 
     save['SaveName'] = save['GameMode']
 
-    component_tags = {}
-    component_tag_counts = {}
-    for tag in save['ComponentTags']['labels']:
-        displayed_tag_name = tag['displayed']
-        component_tags[displayed_tag_name] = tag['normalized']
-        component_tag_counts[displayed_tag_name] = 0
+    tag_registry = TagRegistry(save)
 
     objects = save['ObjectStates']
     new_objects = []
@@ -76,32 +89,20 @@ def patch_save(input_path, output_path):
     for object in objects:
         if 'States' in object:
             for _, state in object['States'].items():
-                patch_object(state, component_tag_counts)
+                visit_object(object, state, tag_registry)
 
         if 'ContainedObjects' in object:
             for child in object['ContainedObjects']:
-                patch_object(child, component_tag_counts)
+                visit_object(object, child, tag_registry)
 
         guid = object['GUID']
         object_by_guid[guid] = object
 
-        patch_object(object, component_tag_counts)
+        visit_object(None, object, tag_registry)
 
         new_objects.append(object)
 
-    new_labels = []
-    for tag in component_tag_counts.items():
-        if tag[1] > 0:
-            if tag[0] in component_tags:
-                displayed_tag_name = tag[0]
-                new_labels.append({
-                    'displayed': displayed_tag_name,
-                    'normalized': component_tags[displayed_tag_name],
-                })
-        else:
-            print("Orphan tag:", tag[0])
-    save['ComponentTags']['labels'] = new_labels
-
+    save['ComponentTags']['labels'] = tag_registry.get_used_labels()
     save['ObjectStates'] = new_objects
 
     with open(output_path, 'w', encoding='utf-8') as new_save:

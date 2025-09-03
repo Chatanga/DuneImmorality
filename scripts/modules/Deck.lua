@@ -8,6 +8,7 @@ local Deck = {
     decals = {
         corrinoAcquireCard = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141304246/9E9986D0F348F5D23A16745A271FFD28958651FB/",
         genericAcquireCard = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141305713/5F7C572489E5E03F3230B012DA0E01A84EDAABF8/",
+        sardaukarAcquireCard = "https://steamusercontent-a.akamaihd.net/ugc/16046670112954493226/F677AA2397AB2A856597F63304AD4275FD3FF7E2/",
     },
     customDeckBaseId = 100,
     backs = {
@@ -22,8 +23,8 @@ local Deck = {
         leaderCardBack = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141277039/005244DAC0A29EE68CFF741FC06564969563E8CF/",
         fanmadeLeaderCardBack = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141366089/4C75C9A8CA6B890A6178B4B22B0F994B2F663D33/",
         arrakeenScoutsCardBack = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141280256/DE94B7602EB41EEB68DE4907DF1369CBEF2ADD55/",
-        navigationCardBack = "https://steamusercontent-a.akamaihd.net/ugc/28804925896498608/262562E5EF6A7212D473EE6146138B2F7FF67766/",
-        sardaukarCommanderSkillCardBack = "https://steamusercontent-a.akamaihd.net/ugc/28804925903402648/D6F4D1655CF23A2010A6FE1369599F2C47A2AB21/",
+        navigationCardBack = "https://steamusercontent-a.akamaihd.net/ugc/11785911389932807807/DB25F5E9F1A59B4D113F8E5DA52C1100DEE53458/",
+        sardaukarCommanderSkillCardBack = "https://steamusercontent-a.akamaihd.net/ugc/9769430335022447450/70DB33EE8471E049EBD158C6F60EC0482C2FAF08/",
     },
     sources = {},
     starter = {
@@ -705,7 +706,7 @@ local Deck = {
 }
 
 function Deck.rebuildPreloadAreas()
-    Locale.onLoad({})
+    Locale.onLoad()
     local allSupports = {
         en = require("en.Deck"),
         fr = require("fr.Deck"),
@@ -1111,7 +1112,7 @@ end
 ---@return table<string, integer>
 function Deck._mergeContributionSets(contributionSets, ignoreErasure)
     local contributions = {}
-    for z, contributionSet in ipairs(contributionSets) do
+    for _, contributionSet in ipairs(contributionSets) do
         for name, arity in pairs(contributionSet) do
             local currentArity
             if arity == Helper.ERASE then
@@ -1704,7 +1705,7 @@ end
 ---@param height number
 ---@return table
 function Deck.createSardaukarCommanderSkillCustomDeck(faceUrl, width, height)
-    return Deck.createCustomDeck(Deck.backs.sardaukarCommanderSkillCardBack, faceUrl, width, height, Vector(0.75, 1, 0.75))
+    return Deck.createCustomDeck(Deck.backs.sardaukarCommanderSkillCardBack, faceUrl, width, height, Vector(0.57, 1, 0.57))
 end
 
 ---@param faceUrl string
