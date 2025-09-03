@@ -14,7 +14,7 @@
 -- Will be automatically replaced by the build timestamp.
 local BUILD = 'TBD'
 
-local MOD_NAME = 'Spice Flow + Bloodlines'
+local MOD_NAME = 'Spice Flow'
 
 -- Do not load anything. Appropriate to work on the mod content in TTS without
 -- interference from the scripts.
