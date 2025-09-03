@@ -81,7 +81,10 @@ function Hagal.setUp(settings)
             Hagal.mentatSpaceCostPatch.destruct()
         elseif Hagal.getRivalCount() == 2 then
             if Hagal.getMentatSpaceCost() == 5 then
-                Hagal.mentatSpaceCostPatch.setPosition(Vector(-3.90, Board.onMainBoard(-0.07), 3.75))
+                local patchPosition = settings.ix
+                    and Vector(-4.0, Board.onMainBoard(-0.07), 3.45)
+                    or Vector(-3.90, Board.onMainBoard(-0.07), 3.75)
+                Hagal.mentatSpaceCostPatch.setPosition(patchPosition)
                 Hagal.mentatSpaceCostPatch.setInvisibleTo({})
                 Hagal.mentatSpaceCostPatch.setLock(true)
             else

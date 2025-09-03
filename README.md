@@ -31,15 +31,6 @@ This repository contains the JSON skeletons and Lua scripts of various mods for 
 
 ## TODO
 
-- Mentat in wood!
-- 5 mentat cost token misplaced.
-- Resize all Sardaukar's decal zones.
-- Button location for atomics.
-- Sardaukar skill card spacing on player boards.
-- Troop heights in garrison.
-- Spice bonus heights.
-- Enlarge Tech decal?
-
 - Arrakeen Scouts deck in English.
 - Arrakeen Scouts history (as cards).
 - Arrakeen Scouts memory cards (using decals).

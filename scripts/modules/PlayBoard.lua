@@ -1221,7 +1221,7 @@ end
 ---@param layerCount integer
 function PlayBoard:_createSardaukarCommanderSkillPark(layerCount)
     local origin = self:_generateAbsolutePosition("symmetric", Vector(5.5, 0, 2.3))
-    local spacing = PlayBoard.isLeft(self.color) and -1.75 or 1.75
+    local spacing = PlayBoard.isLeft(self.color) and -1.8 or 1.8
     local slots = Park.createMatrixOfSlots(origin, Vector(3, layerCount or 1, 1), Vector(spacing, 0.5, 0))
     return Park.createCommonPark({ "SardaukarCommanderSkill" }, slots, Vector(2, 1, 2.5))
 end
@@ -1229,7 +1229,7 @@ end
 ---@param layerCount integer
 function PlayBoard:_createSardaukarCommanderPark(layerCount)
     local origin = self:_generateAbsolutePosition("symmetric", Vector(5.5, 0.25, 2.2))
-    local spacing = PlayBoard.isLeft(self.color) and -1.75 or 1.75
+    local spacing = PlayBoard.isLeft(self.color) and -1.8 or 1.8
     local slots = Park.createMatrixOfSlots(origin, Vector(3, layerCount or 1, 1), Vector(spacing, 0.5, 0))
     return Park.createCommonPark({ "SardaukarCommander", self.color }, slots, Vector(0.75, 0.75, 0.75))
 end
@@ -1581,7 +1581,7 @@ function PlayBoard:_createNukeButton()
                 end
             end),
             tooltip = I18N('atomics'),
-            position = Vector(0, 0.67, 0),
+            position = Vector(0, 0, 0),
             width = 700,
             height = 700,
             scale = Vector(3, 3, 3),
@@ -1996,7 +1996,7 @@ function PlayBoard:_nukeConfirm()
     Helper.createButton(token, {
         click_function = Helper.registerGlobalCallback(),
         label = I18N("atomicsConfirm"),
-        position = Vector(0, 0.67, 3.5),
+        position = Vector(0, 0, -3.5),
         width = 0,
         height = 0,
         scale = Vector(3, 3, 3),
@@ -2013,7 +2013,7 @@ function PlayBoard:_nukeConfirm()
             self.content.atomicsToken = nil
         end),
         label = I18N('yes'),
-        position = Vector(-5, 0.67, 0),
+        position = Vector(-5, 0, 0),
         width = 550,
         height = 350,
         scale = Vector(3, 3, 3),
@@ -2027,7 +2027,7 @@ function PlayBoard:_nukeConfirm()
             reset()
         end),
         label = I18N('no'),
-        position = Vector(5, 0.67, 0),
+        position = Vector(5, 0, 0),
         width = 550,
         height = 350,
         scale = Vector(3, 3, 3),

@@ -94,7 +94,7 @@ be integrated to this mod in a standard way.
 	<Image position="0 325" width="256" height="256" image="https://steamusercontent-a.akamaihd.net/ugc/2492254803020933211/F1D935AF143A3EDAAF929A9585779CE4E7254B10/"/>
 </Panel>
 
-<Panel position="480 140" width="450" height="260" color="#000000" id="extensionSetupPane" rotation="0 0 0" outline="#61712c" outlineSize="1"
+<Panel position="480 130" width="450" height="260" color="#000000" id="extensionSetupPane" rotation="0 0 0" outline="#61712c" outlineSize="1"
 	active="False" allowDragging="True" returnToOriginalPositionWhenReleased="False">
 	<VerticalLayout>
 		<Image ignoreLayout="True" type="Tiled" image="https://steamusercontent-a.akamaihd.net/ugc/2502404390135372157/BBDF8C1026A04FE222D52E39AA696F2310543485/"/>
@@ -121,7 +121,7 @@ be integrated to this mod in a standard way.
 	</VerticalLayout>
 </Panel>
 
-<Panel position="480 -120" width="450" height="220" color="#000000" id="soloSetupPane" rotation="0 0 0" outline="#61712c" outlineSize="1"
+<Panel position="480 -140" width="450" height="220" color="#000000" id="soloSetupPane" rotation="0 0 0" outline="#61712c" outlineSize="1"
 	active="False" allowDragging="True" returnToOriginalPositionWhenReleased="False">
 	<Defaults>
 		<Text class="primary" color="#e5c638" fontSize="16" alignment="MiddleLeft"/>
