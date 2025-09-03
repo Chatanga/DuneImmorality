@@ -36,7 +36,8 @@ This repository contains the JSON skeletons and Lua scripts of various mods for 
 __All__
 
 - Reduce / dilute the setup load?
-- Thick trash to workaround TTS bug.
+- Thick trash and contract bags to worka round TTS constraints.
+- Sardaukars tagged as troops.
 
 __6P__
 

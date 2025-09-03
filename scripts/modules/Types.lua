@@ -48,6 +48,8 @@
 
 local Types = {}
 
+--- Sardaukar Commanders are not troops here. They are in the rules,
+--- but not in this mod where it's easier to treat them spefically.
 ---@param object Object
 ---@param color? PlayerColor
 ---@return boolean
