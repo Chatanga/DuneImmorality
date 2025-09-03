@@ -9,6 +9,7 @@ Features:
 - Base game 3-4P
 - Rise of Ix extension
 - Immortality extension
+- Bloodlines extension
 - Hagal House
 - Arrakeen Scouts
 
