@@ -90,7 +90,7 @@ local PlayBoard = Helper.createClass(nil, {
                 "af7cd0"
             },
             forceMarker = '2d1d17',
-            trash = "ea3fe1",
+            trash = "957241",
             tleilaxToken = "2bfc39",
             tleilaxTokenInitalPosition = Helper.getHardcodedPositionFromGUID('2bfc39', 0.5446171, 1.8775003, 22.0549927),
             researchToken = "39e0f3",
@@ -133,7 +133,7 @@ local PlayBoard = Helper.createClass(nil, {
                 "694553"
             },
             forceMarker = 'f22e20',
-            trash = "52a539",
+            trash = "eb3c77",
             tleilaxToken = "96607f",
             tleilaxTokenInitalPosition = Helper.getHardcodedPositionFromGUID('96607f', 0.544616759, 1.88000023, 22.75),
             researchToken = "292658",
@@ -176,7 +176,7 @@ local PlayBoard = Helper.createClass(nil, {
                 "fc9c62"
             },
             forceMarker = 'a1a9a7',
-            trash = "4060b5",
+            trash = "1aef9c",
             tleilaxToken = "63d39f",
             tleilaxTokenInitalPosition = Helper.getHardcodedPositionFromGUID('63d39f', 1.24461627, 1.88000011, 22.05),
             researchToken = "658b17",
@@ -219,7 +219,7 @@ local PlayBoard = Helper.createClass(nil, {
                 "b5d32e"
             },
             forceMarker = 'c2dd31',
-            trash = "7d1e07",
+            trash = "9b9ca5",
             tleilaxToken = "d20bcf",
             tleilaxTokenInitalPosition = Helper.getHardcodedPositionFromGUID('d20bcf', 1.24461651, 1.88000023, 22.75),
             researchToken = "8988cf",

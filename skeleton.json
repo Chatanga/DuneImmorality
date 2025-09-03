@@ -1,7 +1,7 @@
 {
   "SaveName": "Spice Flow",
-  "EpochTime": 1743281538,
-  "Date": "3/29/2025 9:52:18 PM",
+  "EpochTime": 1756892081,
+  "Date": "9/3/2025 11:34:41 AM",
   "VersionNumber": "v13.3",
   "GameMode": "Spice Flow",
   "GameType": "Game",
@@ -836,9 +836,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.09801384,
-        "g": 0.09801384,
-        "b": 0.09801384
+        "r": 0.09801378,
+        "g": 0.09801378,
+        "b": 0.09801378
       },
       "Tags": [
         "AutomataStuff"
@@ -1112,9 +1112,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191999614,
+        "r": 0.1919995,
         "g": 0.701,
-        "b": 0.1679996
+        "b": 0.167999476
       },
       "Tags": [
         "Agent",
@@ -1171,9 +1171,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191999614,
+        "r": 0.1919995,
         "g": 0.701,
-        "b": 0.1679996
+        "b": 0.167999476
       },
       "Tags": [
         "Agent",
@@ -1230,9 +1230,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191949338,
+        "r": 0.191949278,
         "g": 0.701,
-        "b": 0.167949319
+        "b": 0.167949259
       },
       "Tags": [
         "Green",
@@ -1291,7 +1291,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121462919,
+        "r": 0.121462785,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -1409,7 +1409,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121462919,
+        "r": 0.121462785,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -1468,7 +1468,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121515237,
+        "r": 0.121515162,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -1649,7 +1649,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121462919,
+        "r": 0.121462785,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -1748,7 +1748,7 @@
       "GUID": "fb1629",
       "Name": "Custom_Model",
       "Transform": {
-        "posX": -0.9999896,
+        "posX": -0.9999895,
         "posY": 1.61090136,
         "posZ": 26.0,
         "rotX": 0,
@@ -1767,9 +1767,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191999614,
+        "r": 0.1919995,
         "g": 0.701,
-        "b": 0.1679996
+        "b": 0.167999476
       },
       "Tags": [
         "Agent",
@@ -1973,7 +1973,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.12152683,
+        "r": 0.12152677,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -2022,7 +2022,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.12152683,
+        "r": 0.12152677,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -2071,7 +2071,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.12152683,
+        "r": 0.12152677,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -3598,7 +3598,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.12152683,
+        "r": 0.12152677,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -3647,7 +3647,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.12152683,
+        "r": 0.12152677,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -3696,7 +3696,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.12152683,
+        "r": 0.12152677,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -3745,7 +3745,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.12152683,
+        "r": 0.12152677,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -3794,7 +3794,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.12152683,
+        "r": 0.12152677,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -3843,7 +3843,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.12152683,
+        "r": 0.12152677,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -5087,9 +5087,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.442958564,
-        "g": 0.230958551,
-        "b": 0.08996629
+        "r": 0.4429585,
+        "g": 0.230958492,
+        "b": 0.089966245
       },
       "Tags": [
         "VictoryPointToken"
@@ -5147,9 +5147,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.442958564,
-        "g": 0.230958551,
-        "b": 0.08996629
+        "r": 0.4429585,
+        "g": 0.230958492,
+        "b": 0.089966245
       },
       "Tags": [
         "VictoryPointToken"
@@ -5207,9 +5207,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.442958564,
-        "g": 0.230958551,
-        "b": 0.08996629
+        "r": 0.4429585,
+        "g": 0.230958492,
+        "b": 0.089966245
       },
       "Tags": [
         "VictoryPointToken"
@@ -5267,9 +5267,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.442958564,
-        "g": 0.230958551,
-        "b": 0.08996629
+        "r": 0.4429585,
+        "g": 0.230958492,
+        "b": 0.089966245
       },
       "Tags": [
         "VictoryPointToken"
@@ -5386,9 +5386,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191925645,
+        "r": 0.191925526,
         "g": 0.701,
-        "b": 0.167925626
+        "b": 0.1679255
       },
       "Tags": [
         "Dreadnought",
@@ -5445,7 +5445,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.12156827,
+        "r": 0.121568151,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -5505,8 +5505,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.09992527,
-        "b": 0.09392484
+        "g": 0.09992515,
+        "b": 0.09392474
       },
       "Tags": [
         "Dreadnought",
@@ -5624,9 +5624,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191949338,
+        "r": 0.191949278,
         "g": 0.701,
-        "b": 0.167949319
+        "b": 0.167949259
       },
       "Tags": [
         "Green",
@@ -5807,9 +5807,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191949338,
+        "r": 0.191949278,
         "g": 0.701,
-        "b": 0.167949319
+        "b": 0.167949259
       },
       "Tags": [
         "Green",
@@ -5868,7 +5868,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.12152683,
+        "r": 0.12152677,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -6051,7 +6051,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.12152683,
+        "r": 0.12152677,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -6112,7 +6112,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.12152683,
+        "r": 0.12152677,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -6234,9 +6234,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191949338,
+        "r": 0.191949278,
         "g": 0.701,
-        "b": 0.167949319
+        "b": 0.167949259
       },
       "Tags": [
         "Green",
@@ -6417,9 +6417,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191949338,
+        "r": 0.191949278,
         "g": 0.701,
-        "b": 0.167949319
+        "b": 0.167949259
       },
       "Tags": [
         "Green",
@@ -6478,7 +6478,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.12152683,
+        "r": 0.12152677,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -6598,9 +6598,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191925645,
+        "r": 0.191925526,
         "g": 0.701,
-        "b": 0.167925626
+        "b": 0.1679255
       },
       "Tags": [
         "Dreadnought",
@@ -6657,7 +6657,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.12156827,
+        "r": 0.121568151,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -6717,8 +6717,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.09992527,
-        "b": 0.09392484
+        "g": 0.09992515,
+        "b": 0.09392474
       },
       "Tags": [
         "Dreadnought",
@@ -6775,7 +6775,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.419153243,
+        "r": 0.419153154,
         "g": 0.0,
         "b": 0.681184649
       },
@@ -7217,8 +7217,8 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.353624254,
-        "g": 0.126023978,
+        "r": 0.3536242,
+        "g": 0.126023918,
         "b": 0.0
       },
       "LayoutGroupSortIndex": 0,
@@ -7816,7 +7816,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.12152674,
+        "r": 0.121526681,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -7889,9 +7889,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.1919505,
+        "r": 0.19195044,
         "g": 0.701,
-        "b": 0.167950481
+        "b": 0.167950422
       },
       "Tags": [
         "ForceToken"
@@ -8011,290 +8011,6 @@
         "AngularDrag": 0.1,
         "UseGravity": true
       }
-    },
-    {
-      "GUID": "7d1e07",
-      "Name": "Custom_Model_Bag",
-      "Transform": {
-        "posX": 39.6,
-        "posY": 2.14719725,
-        "posZ": -6.5,
-        "rotX": 0,
-        "rotY": 0,
-        "rotZ": 0,
-        "scaleX": 2.5,
-        "scaleY": 1.0,
-        "scaleZ": 3.5
-      },
-      "Nickname": "",
-      "Description": "",
-      "GMNotes": "",
-      "AltLookAngle": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
-      },
-      "ColorDiffuse": {
-        "r": 1.0,
-        "g": 1.0,
-        "b": 1.0
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": false,
-      "MaterialIndex": -1,
-      "MeshIndex": -1,
-      "Number": 0,
-      "CustomMesh": {
-        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/2042984592862608679/0383C231514AACEB52B88A2E503A90945A4E8143/",
-        "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/2042984592862608745/145B7A623631CD97E9D5711475562353AD303E53/",
-        "NormalURL": "",
-        "ColliderURL": "",
-        "Convex": true,
-        "MaterialIndex": 3,
-        "TypeIndex": 6,
-        "CustomShader": {
-          "SpecularColor": {
-            "r": 1.0,
-            "g": 1.0,
-            "b": 1.0
-          },
-          "SpecularIntensity": 0.0,
-          "SpecularSharpness": 2.0,
-          "FresnelStrength": 0.0
-        },
-        "CastShadows": true
-      },
-      "Bag": {
-        "Order": 0
-      },
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": ""
-    },
-    {
-      "GUID": "52a539",
-      "Name": "Custom_Model_Bag",
-      "Transform": {
-        "posX": -39.6,
-        "posY": 2.16556334,
-        "posZ": -6.5,
-        "rotX": 0,
-        "rotY": 0,
-        "rotZ": 0,
-        "scaleX": 2.5,
-        "scaleY": 1.0,
-        "scaleZ": 3.5
-      },
-      "Nickname": "",
-      "Description": "",
-      "GMNotes": "",
-      "AltLookAngle": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
-      },
-      "ColorDiffuse": {
-        "r": 1.0,
-        "g": 1.0,
-        "b": 1.0
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": false,
-      "MaterialIndex": -1,
-      "MeshIndex": -1,
-      "Number": 0,
-      "CustomMesh": {
-        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/2042984592862608679/0383C231514AACEB52B88A2E503A90945A4E8143/",
-        "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/2042984592862608745/145B7A623631CD97E9D5711475562353AD303E53/",
-        "NormalURL": "",
-        "ColliderURL": "",
-        "Convex": true,
-        "MaterialIndex": 3,
-        "TypeIndex": 6,
-        "CustomShader": {
-          "SpecularColor": {
-            "r": 1.0,
-            "g": 1.0,
-            "b": 1.0
-          },
-          "SpecularIntensity": 0.0,
-          "SpecularSharpness": 2.0,
-          "FresnelStrength": 0.0
-        },
-        "CastShadows": true
-      },
-      "Bag": {
-        "Order": 0
-      },
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": ""
-    },
-    {
-      "GUID": "4060b5",
-      "Name": "Custom_Model_Bag",
-      "Transform": {
-        "posX": 39.6,
-        "posY": 2.17580628,
-        "posZ": 16.5,
-        "rotX": 0,
-        "rotY": 0,
-        "rotZ": 0,
-        "scaleX": 2.5,
-        "scaleY": 1.0,
-        "scaleZ": 3.5
-      },
-      "Nickname": "",
-      "Description": "",
-      "GMNotes": "",
-      "AltLookAngle": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
-      },
-      "ColorDiffuse": {
-        "r": 1.0,
-        "g": 1.0,
-        "b": 1.0
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": false,
-      "MaterialIndex": -1,
-      "MeshIndex": -1,
-      "Number": 0,
-      "CustomMesh": {
-        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/2042984592862608679/0383C231514AACEB52B88A2E503A90945A4E8143/",
-        "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/2042984592862608745/145B7A623631CD97E9D5711475562353AD303E53/",
-        "NormalURL": "",
-        "ColliderURL": "",
-        "Convex": true,
-        "MaterialIndex": 3,
-        "TypeIndex": 6,
-        "CustomShader": {
-          "SpecularColor": {
-            "r": 1.0,
-            "g": 1.0,
-            "b": 1.0
-          },
-          "SpecularIntensity": 0.0,
-          "SpecularSharpness": 2.0,
-          "FresnelStrength": 0.0
-        },
-        "CastShadows": true
-      },
-      "Bag": {
-        "Order": 0
-      },
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": ""
-    },
-    {
-      "GUID": "ea3fe1",
-      "Name": "Custom_Model_Bag",
-      "Transform": {
-        "posX": -39.6,
-        "posY": 2.175809,
-        "posZ": 16.5,
-        "rotX": 0,
-        "rotY": 0,
-        "rotZ": 0,
-        "scaleX": 2.5,
-        "scaleY": 1.0,
-        "scaleZ": 3.5
-      },
-      "Nickname": "",
-      "Description": "",
-      "GMNotes": "",
-      "AltLookAngle": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
-      },
-      "ColorDiffuse": {
-        "r": 1.0,
-        "g": 1.0,
-        "b": 1.0
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": false,
-      "MaterialIndex": -1,
-      "MeshIndex": -1,
-      "Number": 0,
-      "CustomMesh": {
-        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/2042984592862608679/0383C231514AACEB52B88A2E503A90945A4E8143/",
-        "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/2042984592862608745/145B7A623631CD97E9D5711475562353AD303E53/",
-        "NormalURL": "",
-        "ColliderURL": "",
-        "Convex": true,
-        "MaterialIndex": 3,
-        "TypeIndex": 6,
-        "CustomShader": {
-          "SpecularColor": {
-            "r": 1.0,
-            "g": 1.0,
-            "b": 1.0
-          },
-          "SpecularIntensity": 0.0,
-          "SpecularSharpness": 2.0,
-          "FresnelStrength": 0.0
-        },
-        "CastShadows": true
-      },
-      "Bag": {
-        "Order": 0
-      },
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": ""
     },
     {
       "GUID": "46cd6b",
@@ -8560,9 +8276,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.199430227,
-        "g": 0.0555228442,
-        "b": 0.2978946
+        "r": 0.199430168,
+        "g": 0.0555228,
+        "b": 0.297894537
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -8656,7 +8372,7 @@
       "Name": "Custom_Token",
       "Transform": {
         "posX": 39.6,
-        "posY": 2.20401525,
+        "posY": 2.15,
         "posZ": -9.6,
         "rotX": 0,
         "rotY": 180,
@@ -8716,7 +8432,7 @@
       "Name": "Custom_Token",
       "Transform": {
         "posX": 39.6,
-        "posY": 2.21439028,
+        "posY": 2.15,
         "posZ": 13.4,
         "rotX": 0,
         "rotY": 180,
@@ -8776,7 +8492,7 @@
       "Name": "Custom_Token",
       "Transform": {
         "posX": -39.6,
-        "posY": 2.269359,
+        "posY": 2.15,
         "posZ": 13.4,
         "rotX": 0,
         "rotY": 180,
@@ -8836,7 +8552,7 @@
       "Name": "Custom_Token",
       "Transform": {
         "posX": -39.6,
-        "posY": 2.26349187,
+        "posY": 2.15,
         "posZ": -9.6,
         "rotX": 0,
         "rotY": 180,
@@ -8956,7 +8672,7 @@
       "GUID": "63d39f",
       "Name": "Custom_Token",
       "Transform": {
-        "posX": 1.24461627,
+        "posX": 1.24461615,
         "posY": 1.88000011,
         "posZ": 22.05,
         "rotX": 0,
@@ -8975,9 +8691,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191949338,
+        "r": 0.191949278,
         "g": 0.701,
-        "b": 0.167949319
+        "b": 0.167949259
       },
       "Tags": [
         "Green",
@@ -9017,7 +8733,7 @@
       "GUID": "96607f",
       "Name": "Custom_Token",
       "Transform": {
-        "posX": 0.5446168,
+        "posX": 0.544616759,
         "posY": 1.88000023,
         "posZ": 22.75,
         "rotX": 0,
@@ -9036,7 +8752,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.12152683,
+        "r": 0.12152677,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -9078,7 +8794,7 @@
       "GUID": "2bfc39",
       "Name": "Custom_Token",
       "Transform": {
-        "posX": 0.5446171,
+        "posX": 0.5446172,
         "posY": 1.8775003,
         "posZ": 22.0549927,
         "rotX": 0,
@@ -9158,9 +8874,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191949338,
+        "r": 0.191949278,
         "g": 0.701,
-        "b": 0.167949319
+        "b": 0.167949259
       },
       "Tags": [
         "Green",
@@ -9200,7 +8916,7 @@
       "GUID": "8988cf",
       "Name": "Custom_Token",
       "Transform": {
-        "posX": 0.3700011,
+        "posX": 0.370001137,
         "posY": 1.8775003,
         "posZ": 19.6394081,
         "rotX": 0,
@@ -9280,7 +8996,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.12152683,
+        "r": 0.12152677,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -9322,7 +9038,7 @@
       "GUID": "39e0f3",
       "Name": "Custom_Token",
       "Transform": {
-        "posX": 0.3699999,
+        "posX": 0.369999826,
         "posY": 1.88000035,
         "posZ": 18.2351761,
         "rotX": 0,
@@ -9506,9 +9222,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191985726,
+        "r": 0.1919856,
         "g": 0.701,
-        "b": 0.167985708
+        "b": 0.167985588
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -9558,7 +9274,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.12156827,
+        "r": 0.121568151,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -12427,7 +12143,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.1215268,
+        "r": 0.12152674,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -12476,7 +12192,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.1215268,
+        "r": 0.12152674,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -12525,7 +12241,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.1215268,
+        "r": 0.12152674,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -16437,7 +16153,7 @@
       },
       "ColorDiffuse": {
         "r": 0.554045439,
-        "g": 0.387893975,
+        "g": 0.387893915,
         "b": 0.6567944
       },
       "Tags": [
@@ -16561,8 +16277,8 @@
       },
       "ColorDiffuse": {
         "r": 0.7334496,
-        "g": 0.1443862,
-        "b": 0.1443862
+        "g": 0.144386142,
+        "b": 0.144386142
       },
       "Tags": [
         "AllianceToken",
@@ -18215,7 +17931,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 8.411531,
-        "posY": 1.61253,
+        "posY": 1.61252844,
         "posZ": 27.11,
         "rotX": 0,
         "rotY": 180,
@@ -18275,7 +17991,7 @@
       "Name": "Custom_Model_Infinite_Bag",
       "Transform": {
         "posX": 7.41152954,
-        "posY": 1.7100333,
+        "posY": 1.71003485,
         "posZ": 27.1092873,
         "rotX": 0,
         "rotY": 180,
@@ -18454,7 +18170,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 4.91153,
-        "posY": 1.612528,
+        "posY": 1.61252773,
         "posZ": 26.1092854,
         "rotX": 0,
         "rotY": 180,
@@ -18472,9 +18188,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.428481162,
+        "r": 0.4284811,
         "g": 0.541811764,
-        "b": 0.195388287
+        "b": 0.195388228
       },
       "Tags": [
         "VictoryPointToken"
@@ -18514,7 +18230,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 5.91153,
-        "posY": 1.61252868,
+        "posY": 1.61252892,
         "posZ": 26.1092854,
         "rotX": 0,
         "rotY": 180,
@@ -18532,9 +18248,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.428481162,
+        "r": 0.4284811,
         "g": 0.541811764,
-        "b": 0.195388287
+        "b": 0.195388228
       },
       "Tags": [
         "VictoryPointToken"
@@ -18995,7 +18711,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 2.411529,
-        "posY": 1.61252928,
+        "posY": 1.612529,
         "posZ": 26.1092854,
         "rotX": 0,
         "rotY": 180,
@@ -19015,7 +18731,7 @@
       "ColorDiffuse": {
         "r": 0.688153446,
         "g": 0.553023756,
-        "b": 0.23377645
+        "b": 0.233776391
       },
       "Tags": [
         "VictoryPointToken"
@@ -19075,7 +18791,7 @@
       "ColorDiffuse": {
         "r": 0.688153446,
         "g": 0.553023756,
-        "b": 0.23377645
+        "b": 0.233776391
       },
       "Tags": [
         "VictoryPointToken"
@@ -19115,7 +18831,7 @@
       "Name": "Custom_Model_Infinite_Bag",
       "Transform": {
         "posX": 3.41186452,
-        "posY": 1.710033,
+        "posY": 1.710035,
         "posZ": 27.1091423,
         "rotX": 0,
         "rotY": 180,
@@ -19294,7 +19010,7 @@
       "Name": "Custom_Model_Infinite_Bag",
       "Transform": {
         "posX": 2.4115293,
-        "posY": 1.71003282,
+        "posY": 1.71003294,
         "posZ": 27.1092873,
         "rotX": 0,
         "rotY": 180,
@@ -19492,8 +19208,8 @@
       },
       "ColorDiffuse": {
         "r": 0.796167254,
-        "g": 0.05686625,
-        "b": 0.05686625
+        "g": 0.0568662062,
+        "b": 0.0568662062
       },
       "Tags": [
         "VictoryPointToken"
@@ -22147,9 +21863,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191991538,
+        "r": 0.191991478,
         "g": 0.701,
-        "b": 0.167991519
+        "b": 0.167991459
       },
       "Tags": [
         "Spy"
@@ -22327,7 +22043,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117992841,
+        "r": 0.117992781,
         "g": 0.53,
         "b": 1.0
       },
@@ -23383,9 +23099,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.428479642,
+        "r": 0.428479582,
         "g": 0.541811764,
-        "b": 0.195386857
+        "b": 0.1953868
       },
       "Tags": [
         "VictoryPointToken"
@@ -24247,7 +23963,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": -8.081626,
-        "posY": 1.61252952,
+        "posY": 1.61252987,
         "posZ": -17.3033237,
         "rotX": 0,
         "rotY": 180,
@@ -24365,7 +24081,7 @@
       },
       "ColorDiffuse": {
         "r": 1.0,
-        "g": 0.07806451,
+        "g": 0.07806445,
         "b": 0.0
       },
       "Tags": [
@@ -24854,7 +24570,7 @@
       },
       "ColorDiffuse": {
         "r": 0.5139372,
-        "g": 0.344595432,
+        "g": 0.344595373,
         "b": 0.0188026223
       },
       "LayoutGroupSortIndex": 0,
@@ -27100,9 +26816,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.199430227,
-        "g": 0.0555228442,
-        "b": 0.2978946
+        "r": 0.199430168,
+        "g": 0.0555228,
+        "b": 0.297894537
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -28797,9 +28513,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191949338,
+        "r": 0.191949278,
         "g": 0.701,
-        "b": 0.167949319
+        "b": 0.167949259
       },
       "Tags": [
         "Freighter",
@@ -28919,7 +28635,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.12152683,
+        "r": 0.12152677,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -108257,7 +107973,7 @@
       "Name": "Deck",
       "Transform": {
         "posX": 30.0,
-        "posY": 2.0738852,
+        "posY": 2.073885,
         "posZ": 48.0,
         "rotX": 0,
         "rotY": 180,
@@ -109945,6 +109661,6382 @@
           "LuaScript": "",
           "LuaScriptState": "",
           "XmlUI": ""
+        }
+      ]
+    },
+    {
+      "GUID": "1aef9c",
+      "Name": "Custom_Model_Bag",
+      "Transform": {
+        "posX": 39.6,
+        "posY": 2.07,
+        "posZ": 16.5,
+        "rotX": 0,
+        "rotY": 0,
+        "rotZ": 0,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "MaterialIndex": -1,
+      "MeshIndex": -1,
+      "Number": 0,
+      "CustomMesh": {
+        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/16825770907863433946/F6CD57A6BE21758AF9A0EB7F19C8CB7E0661C528/",
+        "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/16391535948953040551/769B653B525F43EE468E5F1BC14369950703C635/",
+        "NormalURL": "",
+        "ColliderURL": "",
+        "Convex": true,
+        "MaterialIndex": 3,
+        "TypeIndex": 6,
+        "CustomShader": {
+          "SpecularColor": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "SpecularIntensity": 0.0,
+          "SpecularSharpness": 2.0,
+          "FresnelStrength": 0.0
+        },
+        "CastShadows": true
+      },
+      "Bag": {
+        "Order": 0
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "9b9ca5",
+      "Name": "Custom_Model_Bag",
+      "Transform": {
+        "posX": 39.6,
+        "posY": 2.07,
+        "posZ": -6.5,
+        "rotX": 0,
+        "rotY": 0,
+        "rotZ": 0,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "MaterialIndex": -1,
+      "MeshIndex": -1,
+      "Number": 0,
+      "CustomMesh": {
+        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/16825770907863433946/F6CD57A6BE21758AF9A0EB7F19C8CB7E0661C528/",
+        "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/16391535948953040551/769B653B525F43EE468E5F1BC14369950703C635/",
+        "NormalURL": "",
+        "ColliderURL": "",
+        "Convex": true,
+        "MaterialIndex": 3,
+        "TypeIndex": 6,
+        "CustomShader": {
+          "SpecularColor": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "SpecularIntensity": 0.0,
+          "SpecularSharpness": 2.0,
+          "FresnelStrength": 0.0
+        },
+        "CastShadows": true
+      },
+      "Bag": {
+        "Order": 0
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "eb3c77",
+      "Name": "Custom_Model_Bag",
+      "Transform": {
+        "posX": -39.6,
+        "posY": 2.07,
+        "posZ": -6.5,
+        "rotX": 0,
+        "rotY": 0,
+        "rotZ": 0,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "MaterialIndex": -1,
+      "MeshIndex": -1,
+      "Number": 0,
+      "CustomMesh": {
+        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/16825770907863433946/F6CD57A6BE21758AF9A0EB7F19C8CB7E0661C528/",
+        "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/16391535948953040551/769B653B525F43EE468E5F1BC14369950703C635/",
+        "NormalURL": "",
+        "ColliderURL": "",
+        "Convex": true,
+        "MaterialIndex": 3,
+        "TypeIndex": 6,
+        "CustomShader": {
+          "SpecularColor": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "SpecularIntensity": 0.0,
+          "SpecularSharpness": 2.0,
+          "FresnelStrength": 0.0
+        },
+        "CastShadows": true
+      },
+      "Bag": {
+        "Order": 0
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "957241",
+      "Name": "Custom_Model_Bag",
+      "Transform": {
+        "posX": -39.6,
+        "posY": 2.07,
+        "posZ": 16.5,
+        "rotX": 0,
+        "rotY": 0,
+        "rotZ": 0,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "MaterialIndex": -1,
+      "MeshIndex": -1,
+      "Number": 0,
+      "CustomMesh": {
+        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/16825770907863433946/F6CD57A6BE21758AF9A0EB7F19C8CB7E0661C528/",
+        "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/16391535948953040551/769B653B525F43EE468E5F1BC14369950703C635/",
+        "NormalURL": "",
+        "ColliderURL": "",
+        "Convex": true,
+        "MaterialIndex": 3,
+        "TypeIndex": 6,
+        "CustomShader": {
+          "SpecularColor": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "SpecularIntensity": 0.0,
+          "SpecularSharpness": 2.0,
+          "FresnelStrength": 0.0
+        },
+        "CastShadows": true
+      },
+      "Bag": {
+        "Order": 0
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "20f590",
+      "Name": "ScriptingTrigger",
+      "Transform": {
+        "posX": 19.1,
+        "posY": 2.12,
+        "posZ": 20.0,
+        "rotX": 0,
+        "rotY": 0,
+        "rotZ": 0,
+        "scaleX": 3.75,
+        "scaleY": 3.0,
+        "scaleZ": 0.75
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 0.509803951
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "45da16",
+      "Name": "Custom_Model",
+      "Transform": {
+        "posX": 17.6,
+        "posY": 1.62,
+        "posZ": 20.0,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "AgentGreen_20f590Park",
+      "Description": "Generated transient anchor.",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 0.0,
+        "b": 1.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": false,
+      "Snap": false,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": false,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomMesh": {
+        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/2042984592862608679/0383C231514AACEB52B88A2E503A90945A4E8143/",
+        "DiffuseURL": "",
+        "NormalURL": "",
+        "ColliderURL": "",
+        "Convex": true,
+        "MaterialIndex": 0,
+        "TypeIndex": 4,
+        "CustomShader": {
+          "SpecularColor": {
+            "r": 0.0,
+            "g": 0.0,
+            "b": 0.0
+          },
+          "SpecularIntensity": 0.0,
+          "SpecularSharpness": 7.0,
+          "FresnelStrength": 0.4
+        },
+        "CastShadows": false
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "AttachedSnapPoints": [
+        {
+          "Position": {
+            "x": 0.0,
+            "y": 0.5,
+            "z": 0.0
+          },
+          "Tags": [
+            "Green",
+            "Agent"
+          ]
+        },
+        {
+          "Position": {
+            "x": -1.0,
+            "y": 0.5,
+            "z": -8.742278e-08
+          },
+          "Tags": [
+            "Green",
+            "Agent"
+          ]
+        },
+        {
+          "Position": {
+            "x": -2.0,
+            "y": 0.5,
+            "z": -1.74845553e-07
+          },
+          "Tags": [
+            "Green",
+            "Agent"
+          ]
+        },
+        {
+          "Position": {
+            "x": -3.0,
+            "y": 0.5,
+            "z": -2.62268316e-07
+          },
+          "Tags": [
+            "Green",
+            "Agent"
+          ]
+        }
+      ]
+    },
+    {
+      "GUID": "98c15b",
+      "Name": "ScriptingTrigger",
+      "Transform": {
+        "posX": 27.5,
+        "posY": 2.12,
+        "posZ": 19.0,
+        "rotX": 0,
+        "rotY": 0,
+        "rotZ": 0,
+        "scaleX": 3.0,
+        "scaleY": 2.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 0.509803951
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "4552f0",
+      "Name": "Custom_Model",
+      "Transform": {
+        "posX": 26.5,
+        "posY": 1.62,
+        "posZ": 19.0,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "DreadnoughtGreen_98c15bPark",
+      "Description": "Generated transient anchor.",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 0.0,
+        "b": 1.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": false,
+      "Snap": false,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": false,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomMesh": {
+        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/2042984592862608679/0383C231514AACEB52B88A2E503A90945A4E8143/",
+        "DiffuseURL": "",
+        "NormalURL": "",
+        "ColliderURL": "",
+        "Convex": true,
+        "MaterialIndex": 0,
+        "TypeIndex": 4,
+        "CustomShader": {
+          "SpecularColor": {
+            "r": 0.0,
+            "g": 0.0,
+            "b": 0.0
+          },
+          "SpecularIntensity": 0.0,
+          "SpecularSharpness": 7.0,
+          "FresnelStrength": 0.4
+        },
+        "CastShadows": false
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "AttachedSnapPoints": [
+        {
+          "Position": {
+            "x": 0.0,
+            "y": 0.5,
+            "z": 0.0
+          },
+          "Tags": [
+            "Green",
+            "Dreadnought"
+          ]
+        },
+        {
+          "Position": {
+            "x": -2.0,
+            "y": 0.5,
+            "z": -1.74845553e-07
+          },
+          "Tags": [
+            "Green",
+            "Dreadnought"
+          ]
+        }
+      ]
+    },
+    {
+      "GUID": "fc184a",
+      "Name": "ScriptingTrigger",
+      "Transform": {
+        "posX": 27.5,
+        "posY": 2.12,
+        "posZ": 16.6,
+        "rotX": 0,
+        "rotY": 45.0000038,
+        "rotZ": 0,
+        "scaleX": 2.25,
+        "scaleY": 0.75,
+        "scaleZ": 2.25
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 0.509803951
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "0de101",
+      "Name": "Custom_Model",
+      "Transform": {
+        "posX": 28.2071075,
+        "posY": 1.62,
+        "posZ": 16.9535542,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "TroopGreen_fc184aPark",
+      "Description": "Generated transient anchor.",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 0.0,
+        "b": 1.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": false,
+      "Snap": false,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": false,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomMesh": {
+        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/2042984592862608679/0383C231514AACEB52B88A2E503A90945A4E8143/",
+        "DiffuseURL": "",
+        "NormalURL": "",
+        "ColliderURL": "",
+        "Convex": true,
+        "MaterialIndex": 0,
+        "TypeIndex": 4,
+        "CustomShader": {
+          "SpecularColor": {
+            "r": 0.0,
+            "g": 0.0,
+            "b": 0.0
+          },
+          "SpecularIntensity": 0.0,
+          "SpecularSharpness": 7.0,
+          "FresnelStrength": 0.4
+        },
+        "CastShadows": false
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "AttachedSnapPoints": [
+        {
+          "Position": {
+            "x": 0.0,
+            "y": 0.5,
+            "z": 0.0
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Green",
+            "Troop"
+          ]
+        },
+        {
+          "Position": {
+            "x": -0.3535519,
+            "y": 0.5,
+            "z": 0.353553742
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Green",
+            "Troop"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.353553742,
+            "y": 0.5,
+            "z": 0.3535538
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Green",
+            "Troop"
+          ]
+        },
+        {
+          "Position": {
+            "x": -6.18173e-08,
+            "y": 0.5,
+            "z": 0.707107544
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Green",
+            "Troop"
+          ]
+        },
+        {
+          "Position": {
+            "x": 1.41421509,
+            "y": 0.5,
+            "z": 1.236346e-07
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Green",
+            "Troop"
+          ]
+        },
+        {
+          "Position": {
+            "x": 1.06066132,
+            "y": 0.5,
+            "z": 0.353553861
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Green",
+            "Troop"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.7071075,
+            "y": 0.5,
+            "z": 0.7071076
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Green",
+            "Troop"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.353553683,
+            "y": 0.5,
+            "z": 1.06066132
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Green",
+            "Troop"
+          ]
+        },
+        {
+          "Position": {
+            "x": 1.767767,
+            "y": 0.5,
+            "z": 0.353553921
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Green",
+            "Troop"
+          ]
+        },
+        {
+          "Position": {
+            "x": 1.414215,
+            "y": 0.5,
+            "z": 0.707107663
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Green",
+            "Troop"
+          ]
+        },
+        {
+          "Position": {
+            "x": 1.0606612,
+            "y": 0.5,
+            "z": 1.06066144
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Green",
+            "Troop"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.7071074,
+            "y": 0.5,
+            "z": 1.41421425
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Green",
+            "Troop"
+          ]
+        }
+      ]
+    },
+    {
+      "GUID": "1d8555",
+      "Name": "ScriptingTrigger",
+      "Transform": {
+        "posX": 33.0,
+        "posY": 2.12,
+        "posZ": 18.0,
+        "rotX": 0,
+        "rotY": 0,
+        "rotZ": 0,
+        "scaleX": 6.0,
+        "scaleY": 1.0,
+        "scaleZ": 6.0
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 0.509803951
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "c6055e",
+      "Name": "Custom_Model",
+      "Transform": {
+        "posX": 31.5,
+        "posY": 1.62,
+        "posZ": 20.0,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "Tech_1d8555Park",
+      "Description": "Generated transient anchor.",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 0.0,
+        "b": 1.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": false,
+      "Snap": false,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": false,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomMesh": {
+        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/2042984592862608679/0383C231514AACEB52B88A2E503A90945A4E8143/",
+        "DiffuseURL": "",
+        "NormalURL": "",
+        "ColliderURL": "",
+        "Convex": true,
+        "MaterialIndex": 0,
+        "TypeIndex": 4,
+        "CustomShader": {
+          "SpecularColor": {
+            "r": 0.0,
+            "g": 0.0,
+            "b": 0.0
+          },
+          "SpecularIntensity": 0.0,
+          "SpecularSharpness": 7.0,
+          "FresnelStrength": 0.4
+        },
+        "CastShadows": false
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "AttachedSnapPoints": [
+        {
+          "Position": {
+            "x": 0.0,
+            "y": 0.5,
+            "z": 0.0
+          },
+          "Tags": [
+            "Tech"
+          ]
+        },
+        {
+          "Position": {
+            "x": -1.74845553e-07,
+            "y": 0.5,
+            "z": 2.0
+          },
+          "Tags": [
+            "Tech"
+          ]
+        },
+        {
+          "Position": {
+            "x": -3.496911e-07,
+            "y": 0.5,
+            "z": 4.0
+          },
+          "Tags": [
+            "Tech"
+          ]
+        },
+        {
+          "Position": {
+            "x": -3.0,
+            "y": 0.5,
+            "z": -2.62268316e-07
+          },
+          "Tags": [
+            "Tech"
+          ]
+        },
+        {
+          "Position": {
+            "x": -3.00000024,
+            "y": 0.5,
+            "z": 1.99999976
+          },
+          "Tags": [
+            "Tech"
+          ]
+        },
+        {
+          "Position": {
+            "x": -3.00000024,
+            "y": 0.5,
+            "z": 3.99999952
+          },
+          "Tags": [
+            "Tech"
+          ]
+        }
+      ]
+    },
+    {
+      "GUID": "dd752f",
+      "Name": "ScriptingTrigger",
+      "Transform": {
+        "posX": 33.0,
+        "posY": 2.12,
+        "posZ": 13.8,
+        "rotX": 0,
+        "rotY": 0,
+        "rotZ": 0,
+        "scaleX": 5.5,
+        "scaleY": 1.0,
+        "scaleZ": 2.5
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 0.509803951
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "b57cbd",
+      "Name": "Custom_Model",
+      "Transform": {
+        "posX": 31.25,
+        "posY": 1.62,
+        "posZ": 13.8,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "SardaukarCommanderSkill_dd752fPark",
+      "Description": "Generated transient anchor.",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 0.0,
+        "b": 1.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": false,
+      "Snap": false,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": false,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomMesh": {
+        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/2042984592862608679/0383C231514AACEB52B88A2E503A90945A4E8143/",
+        "DiffuseURL": "",
+        "NormalURL": "",
+        "ColliderURL": "",
+        "Convex": true,
+        "MaterialIndex": 0,
+        "TypeIndex": 4,
+        "CustomShader": {
+          "SpecularColor": {
+            "r": 0.0,
+            "g": 0.0,
+            "b": 0.0
+          },
+          "SpecularIntensity": 0.0,
+          "SpecularSharpness": 7.0,
+          "FresnelStrength": 0.4
+        },
+        "CastShadows": false
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "AttachedSnapPoints": [
+        {
+          "Position": {
+            "x": 0.0,
+            "y": 0.5,
+            "z": 0.0
+          },
+          "Tags": [
+            "SardaukarCommanderSkill"
+          ]
+        },
+        {
+          "Position": {
+            "x": -1.75,
+            "y": 0.5,
+            "z": -1.52989855e-07
+          },
+          "Tags": [
+            "SardaukarCommanderSkill"
+          ]
+        },
+        {
+          "Position": {
+            "x": -3.5,
+            "y": 0.5,
+            "z": -3.059797e-07
+          },
+          "Tags": [
+            "SardaukarCommanderSkill"
+          ]
+        }
+      ]
+    },
+    {
+      "GUID": "ba96bc",
+      "Name": "ScriptingTrigger",
+      "Transform": {
+        "posX": 28.0,
+        "posY": 2.12,
+        "posZ": 10.5,
+        "rotX": 0,
+        "rotY": 0,
+        "rotZ": 0,
+        "scaleX": 29.9,
+        "scaleY": 0.5,
+        "scaleZ": 3.2
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 0.509803951
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "882c1e",
+      "Name": "Custom_Model",
+      "Transform": {
+        "posX": 14.25,
+        "posY": 1.62,
+        "posZ": 10.5,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "ImperiumIntrigueNavigation_ba96bcPark",
+      "Description": "Generated transient anchor.",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 0.0,
+        "b": 1.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": false,
+      "Snap": false,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": false,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomMesh": {
+        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/2042984592862608679/0383C231514AACEB52B88A2E503A90945A4E8143/",
+        "DiffuseURL": "",
+        "NormalURL": "",
+        "ColliderURL": "",
+        "Convex": true,
+        "MaterialIndex": 0,
+        "TypeIndex": 4,
+        "CustomShader": {
+          "SpecularColor": {
+            "r": 0.0,
+            "g": 0.0,
+            "b": 0.0
+          },
+          "SpecularIntensity": 0.0,
+          "SpecularSharpness": 7.0,
+          "FresnelStrength": 0.4
+        },
+        "CastShadows": false
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "AttachedSnapPoints": [
+        {
+          "Position": {
+            "x": 0.0,
+            "y": 0.5,
+            "z": 0.0
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Intrigue",
+            "Imperium",
+            "Navigation"
+          ]
+        },
+        {
+          "Position": {
+            "x": -2.5,
+            "y": 0.5,
+            "z": -2.18556949e-07
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Intrigue",
+            "Imperium",
+            "Navigation"
+          ]
+        },
+        {
+          "Position": {
+            "x": -5.0,
+            "y": 0.5,
+            "z": -4.371139e-07
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Intrigue",
+            "Imperium",
+            "Navigation"
+          ]
+        },
+        {
+          "Position": {
+            "x": -7.5,
+            "y": 0.5,
+            "z": -6.556708e-07
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Intrigue",
+            "Imperium",
+            "Navigation"
+          ]
+        },
+        {
+          "Position": {
+            "x": -10.0,
+            "y": 0.5,
+            "z": -8.742278e-07
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Intrigue",
+            "Imperium",
+            "Navigation"
+          ]
+        },
+        {
+          "Position": {
+            "x": -12.5,
+            "y": 0.5,
+            "z": -1.09278471e-06
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Intrigue",
+            "Imperium",
+            "Navigation"
+          ]
+        },
+        {
+          "Position": {
+            "x": -15.0,
+            "y": 0.5,
+            "z": -1.31134163e-06
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Intrigue",
+            "Imperium",
+            "Navigation"
+          ]
+        },
+        {
+          "Position": {
+            "x": -17.5,
+            "y": 0.5,
+            "z": -1.52989855e-06
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Intrigue",
+            "Imperium",
+            "Navigation"
+          ]
+        },
+        {
+          "Position": {
+            "x": -20.0,
+            "y": 0.5,
+            "z": -1.74845559e-06
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Intrigue",
+            "Imperium",
+            "Navigation"
+          ]
+        },
+        {
+          "Position": {
+            "x": -22.5,
+            "y": 0.5,
+            "z": -1.96701239e-06
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Intrigue",
+            "Imperium",
+            "Navigation"
+          ]
+        },
+        {
+          "Position": {
+            "x": -25.0,
+            "y": 0.5,
+            "z": -2.18556943e-06
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Intrigue",
+            "Imperium",
+            "Navigation"
+          ]
+        },
+        {
+          "Position": {
+            "x": -27.5,
+            "y": 0.5,
+            "z": -2.40412646e-06
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Intrigue",
+            "Imperium",
+            "Navigation"
+          ]
+        }
+      ]
+    },
+    {
+      "GUID": "3273cf",
+      "Name": "ScriptingTrigger",
+      "Transform": {
+        "posX": 22.3,
+        "posY": 2.12,
+        "posZ": 21.85,
+        "rotX": 0,
+        "rotY": 0,
+        "rotZ": 0,
+        "scaleX": 19.564,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 0.509803951
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "745da7",
+      "Name": "Custom_Model",
+      "Transform": {
+        "posX": 13.018,
+        "posY": 1.62,
+        "posZ": 21.85,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "VictoryPointToken_3273cfPark",
+      "Description": "Generated transient anchor.",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 0.0,
+        "b": 1.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": false,
+      "Snap": false,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": false,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomMesh": {
+        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/2042984592862608679/0383C231514AACEB52B88A2E503A90945A4E8143/",
+        "DiffuseURL": "",
+        "NormalURL": "",
+        "ColliderURL": "",
+        "Convex": true,
+        "MaterialIndex": 0,
+        "TypeIndex": 4,
+        "CustomShader": {
+          "SpecularColor": {
+            "r": 0.0,
+            "g": 0.0,
+            "b": 0.0
+          },
+          "SpecularIntensity": 0.0,
+          "SpecularSharpness": 7.0,
+          "FresnelStrength": 0.4
+        },
+        "CastShadows": false
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "AttachedSnapPoints": [
+        {
+          "Position": {
+            "x": 0.0,
+            "y": 0.5,
+            "z": 0.0
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": -1.092,
+            "y": 0.5,
+            "z": -9.546567e-08
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": -2.184,
+            "y": 0.5,
+            "z": -1.90931345e-07
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": -3.276001,
+            "y": 0.5,
+            "z": -2.863971e-07
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": -4.368,
+            "y": 0.5,
+            "z": -3.818627e-07
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": -5.460001,
+            "y": 0.5,
+            "z": -4.77328456e-07
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": -6.552,
+            "y": 0.5,
+            "z": -5.72794e-07
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": -7.644001,
+            "y": 0.5,
+            "z": -6.682598e-07
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": -8.736,
+            "y": 0.5,
+            "z": -7.637254e-07
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": -9.828001,
+            "y": 0.5,
+            "z": -8.591911e-07
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": -10.92,
+            "y": 0.5,
+            "z": -9.546567e-07
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": -12.012001,
+            "y": 0.5,
+            "z": -1.05012248e-06
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": -13.104,
+            "y": 0.5,
+            "z": -1.145588e-06
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": -14.1960011,
+            "y": 0.5,
+            "z": -1.24105384e-06
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": -15.288,
+            "y": 0.5,
+            "z": -1.3365194e-06
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": -16.3800011,
+            "y": 0.5,
+            "z": -1.4319852e-06
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": -17.472,
+            "y": 0.5,
+            "z": -1.52745076e-06
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": -18.5640011,
+            "y": 0.5,
+            "z": -1.62291656e-06
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        }
+      ]
+    },
+    {
+      "GUID": "0e6052",
+      "Name": "ScriptingTrigger",
+      "Transform": {
+        "posX": 19.1,
+        "posY": 2.12,
+        "posZ": -3.0,
+        "rotX": 0,
+        "rotY": 0,
+        "rotZ": 0,
+        "scaleX": 3.75,
+        "scaleY": 3.0,
+        "scaleZ": 0.75
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 0.509803951
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "b0b578",
+      "Name": "Custom_Model",
+      "Transform": {
+        "posX": 17.6,
+        "posY": 1.62,
+        "posZ": -3.0,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "AgentYellow_0e6052Park",
+      "Description": "Generated transient anchor.",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 0.0,
+        "b": 1.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": false,
+      "Snap": false,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": false,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomMesh": {
+        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/2042984592862608679/0383C231514AACEB52B88A2E503A90945A4E8143/",
+        "DiffuseURL": "",
+        "NormalURL": "",
+        "ColliderURL": "",
+        "Convex": true,
+        "MaterialIndex": 0,
+        "TypeIndex": 4,
+        "CustomShader": {
+          "SpecularColor": {
+            "r": 0.0,
+            "g": 0.0,
+            "b": 0.0
+          },
+          "SpecularIntensity": 0.0,
+          "SpecularSharpness": 7.0,
+          "FresnelStrength": 0.4
+        },
+        "CastShadows": false
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "AttachedSnapPoints": [
+        {
+          "Position": {
+            "x": 0.0,
+            "y": 0.5,
+            "z": 0.0
+          },
+          "Tags": [
+            "Yellow",
+            "Agent"
+          ]
+        },
+        {
+          "Position": {
+            "x": -1.0,
+            "y": 0.5,
+            "z": -8.742278e-08
+          },
+          "Tags": [
+            "Yellow",
+            "Agent"
+          ]
+        },
+        {
+          "Position": {
+            "x": -2.0,
+            "y": 0.5,
+            "z": -1.74845553e-07
+          },
+          "Tags": [
+            "Yellow",
+            "Agent"
+          ]
+        },
+        {
+          "Position": {
+            "x": -3.0,
+            "y": 0.5,
+            "z": -2.62268316e-07
+          },
+          "Tags": [
+            "Yellow",
+            "Agent"
+          ]
+        }
+      ]
+    },
+    {
+      "GUID": "1253c8",
+      "Name": "ScriptingTrigger",
+      "Transform": {
+        "posX": 27.5,
+        "posY": 2.12,
+        "posZ": -4.0,
+        "rotX": 0,
+        "rotY": 0,
+        "rotZ": 0,
+        "scaleX": 3.0,
+        "scaleY": 2.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 0.509803951
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "ecfa43",
+      "Name": "Custom_Model",
+      "Transform": {
+        "posX": 26.5,
+        "posY": 1.62,
+        "posZ": -4.0,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "DreadnoughtYellow_1253c8Park",
+      "Description": "Generated transient anchor.",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 0.0,
+        "b": 1.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": false,
+      "Snap": false,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": false,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomMesh": {
+        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/2042984592862608679/0383C231514AACEB52B88A2E503A90945A4E8143/",
+        "DiffuseURL": "",
+        "NormalURL": "",
+        "ColliderURL": "",
+        "Convex": true,
+        "MaterialIndex": 0,
+        "TypeIndex": 4,
+        "CustomShader": {
+          "SpecularColor": {
+            "r": 0.0,
+            "g": 0.0,
+            "b": 0.0
+          },
+          "SpecularIntensity": 0.0,
+          "SpecularSharpness": 7.0,
+          "FresnelStrength": 0.4
+        },
+        "CastShadows": false
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "AttachedSnapPoints": [
+        {
+          "Position": {
+            "x": 0.0,
+            "y": 0.5,
+            "z": 0.0
+          },
+          "Tags": [
+            "Yellow",
+            "Dreadnought"
+          ]
+        },
+        {
+          "Position": {
+            "x": -2.0,
+            "y": 0.5,
+            "z": -1.74845553e-07
+          },
+          "Tags": [
+            "Yellow",
+            "Dreadnought"
+          ]
+        }
+      ]
+    },
+    {
+      "GUID": "89e646",
+      "Name": "ScriptingTrigger",
+      "Transform": {
+        "posX": 27.5,
+        "posY": 2.12,
+        "posZ": -6.4,
+        "rotX": 0,
+        "rotY": 45.0000038,
+        "rotZ": 0,
+        "scaleX": 2.25,
+        "scaleY": 0.75,
+        "scaleZ": 2.25
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 0.509803951
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "da0d93",
+      "Name": "Custom_Model",
+      "Transform": {
+        "posX": 28.2071075,
+        "posY": 1.62,
+        "posZ": -6.046447,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "TroopYellow_89e646Park",
+      "Description": "Generated transient anchor.",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 0.0,
+        "b": 1.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": false,
+      "Snap": false,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": false,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomMesh": {
+        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/2042984592862608679/0383C231514AACEB52B88A2E503A90945A4E8143/",
+        "DiffuseURL": "",
+        "NormalURL": "",
+        "ColliderURL": "",
+        "Convex": true,
+        "MaterialIndex": 0,
+        "TypeIndex": 4,
+        "CustomShader": {
+          "SpecularColor": {
+            "r": 0.0,
+            "g": 0.0,
+            "b": 0.0
+          },
+          "SpecularIntensity": 0.0,
+          "SpecularSharpness": 7.0,
+          "FresnelStrength": 0.4
+        },
+        "CastShadows": false
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "AttachedSnapPoints": [
+        {
+          "Position": {
+            "x": 0.0,
+            "y": 0.5,
+            "z": 0.0
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Yellow",
+            "Troop"
+          ]
+        },
+        {
+          "Position": {
+            "x": -0.3535519,
+            "y": 0.5,
+            "z": 0.353553265
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Yellow",
+            "Troop"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.353553742,
+            "y": 0.5,
+            "z": 0.353553325
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Yellow",
+            "Troop"
+          ]
+        },
+        {
+          "Position": {
+            "x": -6.181722e-08,
+            "y": 0.5,
+            "z": 0.7071066
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Yellow",
+            "Troop"
+          ]
+        },
+        {
+          "Position": {
+            "x": 1.41421509,
+            "y": 0.5,
+            "z": 1.236346e-07
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Yellow",
+            "Troop"
+          ]
+        },
+        {
+          "Position": {
+            "x": 1.06066132,
+            "y": 0.5,
+            "z": 0.353553385
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Yellow",
+            "Troop"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.7071075,
+            "y": 0.5,
+            "z": 0.70710665
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Yellow",
+            "Troop"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.353553683,
+            "y": 0.5,
+            "z": 1.06065989
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Yellow",
+            "Troop"
+          ]
+        },
+        {
+          "Position": {
+            "x": 1.767767,
+            "y": 0.5,
+            "z": 0.353553444
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Yellow",
+            "Troop"
+          ]
+        },
+        {
+          "Position": {
+            "x": 1.414215,
+            "y": 0.5,
+            "z": 0.7071067
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Yellow",
+            "Troop"
+          ]
+        },
+        {
+          "Position": {
+            "x": 1.0606612,
+            "y": 0.5,
+            "z": 1.06066
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Yellow",
+            "Troop"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.7071074,
+            "y": 0.5,
+            "z": 1.4142133
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Yellow",
+            "Troop"
+          ]
+        }
+      ]
+    },
+    {
+      "GUID": "dd8826",
+      "Name": "ScriptingTrigger",
+      "Transform": {
+        "posX": 33.0,
+        "posY": 2.12,
+        "posZ": -5.0,
+        "rotX": 0,
+        "rotY": 0,
+        "rotZ": 0,
+        "scaleX": 6.0,
+        "scaleY": 1.0,
+        "scaleZ": 6.0
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 0.509803951
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "fb7289",
+      "Name": "Custom_Model",
+      "Transform": {
+        "posX": 31.5,
+        "posY": 1.62,
+        "posZ": -3.0,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "Tech_dd8826Park",
+      "Description": "Generated transient anchor.",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 0.0,
+        "b": 1.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": false,
+      "Snap": false,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": false,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomMesh": {
+        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/2042984592862608679/0383C231514AACEB52B88A2E503A90945A4E8143/",
+        "DiffuseURL": "",
+        "NormalURL": "",
+        "ColliderURL": "",
+        "Convex": true,
+        "MaterialIndex": 0,
+        "TypeIndex": 4,
+        "CustomShader": {
+          "SpecularColor": {
+            "r": 0.0,
+            "g": 0.0,
+            "b": 0.0
+          },
+          "SpecularIntensity": 0.0,
+          "SpecularSharpness": 7.0,
+          "FresnelStrength": 0.4
+        },
+        "CastShadows": false
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "AttachedSnapPoints": [
+        {
+          "Position": {
+            "x": 0.0,
+            "y": 0.5,
+            "z": 0.0
+          },
+          "Tags": [
+            "Tech"
+          ]
+        },
+        {
+          "Position": {
+            "x": -1.74845553e-07,
+            "y": 0.5,
+            "z": 2.0
+          },
+          "Tags": [
+            "Tech"
+          ]
+        },
+        {
+          "Position": {
+            "x": -3.496911e-07,
+            "y": 0.5,
+            "z": 4.0
+          },
+          "Tags": [
+            "Tech"
+          ]
+        },
+        {
+          "Position": {
+            "x": -3.0,
+            "y": 0.5,
+            "z": -2.62268316e-07
+          },
+          "Tags": [
+            "Tech"
+          ]
+        },
+        {
+          "Position": {
+            "x": -3.00000024,
+            "y": 0.5,
+            "z": 1.99999976
+          },
+          "Tags": [
+            "Tech"
+          ]
+        },
+        {
+          "Position": {
+            "x": -3.00000024,
+            "y": 0.5,
+            "z": 3.99999952
+          },
+          "Tags": [
+            "Tech"
+          ]
+        }
+      ]
+    },
+    {
+      "GUID": "88d3d8",
+      "Name": "ScriptingTrigger",
+      "Transform": {
+        "posX": 33.0,
+        "posY": 2.12,
+        "posZ": -9.2,
+        "rotX": 0,
+        "rotY": 0,
+        "rotZ": 0,
+        "scaleX": 5.5,
+        "scaleY": 1.0,
+        "scaleZ": 2.5
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 0.509803951
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "af7494",
+      "Name": "Custom_Model",
+      "Transform": {
+        "posX": 31.25,
+        "posY": 1.62,
+        "posZ": -9.2,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "SardaukarCommanderSkill_88d3d8Park",
+      "Description": "Generated transient anchor.",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 0.0,
+        "b": 1.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": false,
+      "Snap": false,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": false,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomMesh": {
+        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/2042984592862608679/0383C231514AACEB52B88A2E503A90945A4E8143/",
+        "DiffuseURL": "",
+        "NormalURL": "",
+        "ColliderURL": "",
+        "Convex": true,
+        "MaterialIndex": 0,
+        "TypeIndex": 4,
+        "CustomShader": {
+          "SpecularColor": {
+            "r": 0.0,
+            "g": 0.0,
+            "b": 0.0
+          },
+          "SpecularIntensity": 0.0,
+          "SpecularSharpness": 7.0,
+          "FresnelStrength": 0.4
+        },
+        "CastShadows": false
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "AttachedSnapPoints": [
+        {
+          "Position": {
+            "x": 0.0,
+            "y": 0.5,
+            "z": 0.0
+          },
+          "Tags": [
+            "SardaukarCommanderSkill"
+          ]
+        },
+        {
+          "Position": {
+            "x": -1.75,
+            "y": 0.5,
+            "z": -1.52989855e-07
+          },
+          "Tags": [
+            "SardaukarCommanderSkill"
+          ]
+        },
+        {
+          "Position": {
+            "x": -3.5,
+            "y": 0.5,
+            "z": -3.059797e-07
+          },
+          "Tags": [
+            "SardaukarCommanderSkill"
+          ]
+        }
+      ]
+    },
+    {
+      "GUID": "342462",
+      "Name": "ScriptingTrigger",
+      "Transform": {
+        "posX": 28.0,
+        "posY": 2.12,
+        "posZ": -12.5,
+        "rotX": 0,
+        "rotY": 0,
+        "rotZ": 0,
+        "scaleX": 29.9,
+        "scaleY": 0.5,
+        "scaleZ": 3.2
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 0.509803951
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "af6e30",
+      "Name": "Custom_Model",
+      "Transform": {
+        "posX": 14.25,
+        "posY": 1.62,
+        "posZ": -12.5,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "ImperiumIntrigueNavigation_342462Park",
+      "Description": "Generated transient anchor.",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 0.0,
+        "b": 1.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": false,
+      "Snap": false,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": false,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomMesh": {
+        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/2042984592862608679/0383C231514AACEB52B88A2E503A90945A4E8143/",
+        "DiffuseURL": "",
+        "NormalURL": "",
+        "ColliderURL": "",
+        "Convex": true,
+        "MaterialIndex": 0,
+        "TypeIndex": 4,
+        "CustomShader": {
+          "SpecularColor": {
+            "r": 0.0,
+            "g": 0.0,
+            "b": 0.0
+          },
+          "SpecularIntensity": 0.0,
+          "SpecularSharpness": 7.0,
+          "FresnelStrength": 0.4
+        },
+        "CastShadows": false
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "AttachedSnapPoints": [
+        {
+          "Position": {
+            "x": 0.0,
+            "y": 0.5,
+            "z": 0.0
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Intrigue",
+            "Imperium",
+            "Navigation"
+          ]
+        },
+        {
+          "Position": {
+            "x": -2.5,
+            "y": 0.5,
+            "z": -2.18556949e-07
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Intrigue",
+            "Imperium",
+            "Navigation"
+          ]
+        },
+        {
+          "Position": {
+            "x": -5.0,
+            "y": 0.5,
+            "z": -4.371139e-07
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Intrigue",
+            "Imperium",
+            "Navigation"
+          ]
+        },
+        {
+          "Position": {
+            "x": -7.5,
+            "y": 0.5,
+            "z": -6.556708e-07
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Intrigue",
+            "Imperium",
+            "Navigation"
+          ]
+        },
+        {
+          "Position": {
+            "x": -10.0,
+            "y": 0.5,
+            "z": -8.742278e-07
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Intrigue",
+            "Imperium",
+            "Navigation"
+          ]
+        },
+        {
+          "Position": {
+            "x": -12.5,
+            "y": 0.5,
+            "z": -1.09278471e-06
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Intrigue",
+            "Imperium",
+            "Navigation"
+          ]
+        },
+        {
+          "Position": {
+            "x": -15.0,
+            "y": 0.5,
+            "z": -1.31134163e-06
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Intrigue",
+            "Imperium",
+            "Navigation"
+          ]
+        },
+        {
+          "Position": {
+            "x": -17.5,
+            "y": 0.5,
+            "z": -1.52989855e-06
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Intrigue",
+            "Imperium",
+            "Navigation"
+          ]
+        },
+        {
+          "Position": {
+            "x": -20.0,
+            "y": 0.5,
+            "z": -1.74845559e-06
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Intrigue",
+            "Imperium",
+            "Navigation"
+          ]
+        },
+        {
+          "Position": {
+            "x": -22.5,
+            "y": 0.5,
+            "z": -1.96701239e-06
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Intrigue",
+            "Imperium",
+            "Navigation"
+          ]
+        },
+        {
+          "Position": {
+            "x": -25.0,
+            "y": 0.5,
+            "z": -2.18556943e-06
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Intrigue",
+            "Imperium",
+            "Navigation"
+          ]
+        },
+        {
+          "Position": {
+            "x": -27.5,
+            "y": 0.5,
+            "z": -2.40412646e-06
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Intrigue",
+            "Imperium",
+            "Navigation"
+          ]
+        }
+      ]
+    },
+    {
+      "GUID": "87c003",
+      "Name": "ScriptingTrigger",
+      "Transform": {
+        "posX": 22.3,
+        "posY": 2.12,
+        "posZ": -1.15,
+        "rotX": 0,
+        "rotY": 0,
+        "rotZ": 0,
+        "scaleX": 19.564,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 0.509803951
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "c9af11",
+      "Name": "Custom_Model",
+      "Transform": {
+        "posX": 13.018,
+        "posY": 1.62,
+        "posZ": -1.15,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "VictoryPointToken_87c003Park",
+      "Description": "Generated transient anchor.",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 0.0,
+        "b": 1.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": false,
+      "Snap": false,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": false,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomMesh": {
+        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/2042984592862608679/0383C231514AACEB52B88A2E503A90945A4E8143/",
+        "DiffuseURL": "",
+        "NormalURL": "",
+        "ColliderURL": "",
+        "Convex": true,
+        "MaterialIndex": 0,
+        "TypeIndex": 4,
+        "CustomShader": {
+          "SpecularColor": {
+            "r": 0.0,
+            "g": 0.0,
+            "b": 0.0
+          },
+          "SpecularIntensity": 0.0,
+          "SpecularSharpness": 7.0,
+          "FresnelStrength": 0.4
+        },
+        "CastShadows": false
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "AttachedSnapPoints": [
+        {
+          "Position": {
+            "x": 0.0,
+            "y": 0.5,
+            "z": 0.0
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": -1.092,
+            "y": 0.5,
+            "z": -9.546567e-08
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": -2.184,
+            "y": 0.5,
+            "z": -1.90931345e-07
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": -3.276001,
+            "y": 0.5,
+            "z": -2.863971e-07
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": -4.368,
+            "y": 0.5,
+            "z": -3.818627e-07
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": -5.460001,
+            "y": 0.5,
+            "z": -4.77328456e-07
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": -6.552,
+            "y": 0.5,
+            "z": -5.72794e-07
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": -7.644001,
+            "y": 0.5,
+            "z": -6.682598e-07
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": -8.736,
+            "y": 0.5,
+            "z": -7.637254e-07
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": -9.828001,
+            "y": 0.5,
+            "z": -8.591911e-07
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": -10.92,
+            "y": 0.5,
+            "z": -9.546567e-07
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": -12.012001,
+            "y": 0.5,
+            "z": -1.05012248e-06
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": -13.104,
+            "y": 0.5,
+            "z": -1.145588e-06
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": -14.1960011,
+            "y": 0.5,
+            "z": -1.24105384e-06
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": -15.288,
+            "y": 0.5,
+            "z": -1.3365194e-06
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": -16.3800011,
+            "y": 0.5,
+            "z": -1.4319852e-06
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": -17.472,
+            "y": 0.5,
+            "z": -1.52745076e-06
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": -18.5640011,
+            "y": 0.5,
+            "z": -1.62291656e-06
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        }
+      ]
+    },
+    {
+      "GUID": "87b835",
+      "Name": "ScriptingTrigger",
+      "Transform": {
+        "posX": -19.1,
+        "posY": 2.12,
+        "posZ": -3.0,
+        "rotX": 0,
+        "rotY": 0,
+        "rotZ": 0,
+        "scaleX": 3.75,
+        "scaleY": 3.0,
+        "scaleZ": 0.75
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 0.509803951
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "cb8c73",
+      "Name": "Custom_Model",
+      "Transform": {
+        "posX": -17.6,
+        "posY": 1.62,
+        "posZ": -3.0,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "AgentBlue_87b835Park",
+      "Description": "Generated transient anchor.",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 0.0,
+        "b": 1.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": false,
+      "Snap": false,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": false,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomMesh": {
+        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/2042984592862608679/0383C231514AACEB52B88A2E503A90945A4E8143/",
+        "DiffuseURL": "",
+        "NormalURL": "",
+        "ColliderURL": "",
+        "Convex": true,
+        "MaterialIndex": 0,
+        "TypeIndex": 4,
+        "CustomShader": {
+          "SpecularColor": {
+            "r": 0.0,
+            "g": 0.0,
+            "b": 0.0
+          },
+          "SpecularIntensity": 0.0,
+          "SpecularSharpness": 7.0,
+          "FresnelStrength": 0.4
+        },
+        "CastShadows": false
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "AttachedSnapPoints": [
+        {
+          "Position": {
+            "x": 0.0,
+            "y": 0.5,
+            "z": 0.0
+          },
+          "Tags": [
+            "Blue",
+            "Agent"
+          ]
+        },
+        {
+          "Position": {
+            "x": 1.0,
+            "y": 0.5,
+            "z": 8.742278e-08
+          },
+          "Tags": [
+            "Blue",
+            "Agent"
+          ]
+        },
+        {
+          "Position": {
+            "x": 2.0,
+            "y": 0.5,
+            "z": 1.74845553e-07
+          },
+          "Tags": [
+            "Blue",
+            "Agent"
+          ]
+        },
+        {
+          "Position": {
+            "x": 3.0,
+            "y": 0.5,
+            "z": 2.62268316e-07
+          },
+          "Tags": [
+            "Blue",
+            "Agent"
+          ]
+        }
+      ]
+    },
+    {
+      "GUID": "1a3524",
+      "Name": "ScriptingTrigger",
+      "Transform": {
+        "posX": -27.5,
+        "posY": 2.12,
+        "posZ": -4.0,
+        "rotX": 0,
+        "rotY": 0,
+        "rotZ": 0,
+        "scaleX": 3.0,
+        "scaleY": 2.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 0.509803951
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "699b7c",
+      "Name": "Custom_Model",
+      "Transform": {
+        "posX": -26.5,
+        "posY": 1.62,
+        "posZ": -4.0,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "DreadnoughtBlue_1a3524Park",
+      "Description": "Generated transient anchor.",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 0.0,
+        "b": 1.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": false,
+      "Snap": false,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": false,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomMesh": {
+        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/2042984592862608679/0383C231514AACEB52B88A2E503A90945A4E8143/",
+        "DiffuseURL": "",
+        "NormalURL": "",
+        "ColliderURL": "",
+        "Convex": true,
+        "MaterialIndex": 0,
+        "TypeIndex": 4,
+        "CustomShader": {
+          "SpecularColor": {
+            "r": 0.0,
+            "g": 0.0,
+            "b": 0.0
+          },
+          "SpecularIntensity": 0.0,
+          "SpecularSharpness": 7.0,
+          "FresnelStrength": 0.4
+        },
+        "CastShadows": false
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "AttachedSnapPoints": [
+        {
+          "Position": {
+            "x": 0.0,
+            "y": 0.5,
+            "z": 0.0
+          },
+          "Tags": [
+            "Blue",
+            "Dreadnought"
+          ]
+        },
+        {
+          "Position": {
+            "x": 2.0,
+            "y": 0.5,
+            "z": 1.74845553e-07
+          },
+          "Tags": [
+            "Blue",
+            "Dreadnought"
+          ]
+        }
+      ]
+    },
+    {
+      "GUID": "92e925",
+      "Name": "ScriptingTrigger",
+      "Transform": {
+        "posX": -27.5,
+        "posY": 2.12,
+        "posZ": -6.4,
+        "rotX": 0,
+        "rotY": 45.0000038,
+        "rotZ": 0,
+        "scaleX": 2.25,
+        "scaleY": 0.75,
+        "scaleZ": 2.25
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 0.509803951
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "561212",
+      "Name": "Custom_Model",
+      "Transform": {
+        "posX": -26.7928925,
+        "posY": 1.62,
+        "posZ": -6.046447,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "TroopBlue_92e925Park",
+      "Description": "Generated transient anchor.",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 0.0,
+        "b": 1.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": false,
+      "Snap": false,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": false,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomMesh": {
+        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/2042984592862608679/0383C231514AACEB52B88A2E503A90945A4E8143/",
+        "DiffuseURL": "",
+        "NormalURL": "",
+        "ColliderURL": "",
+        "Convex": true,
+        "MaterialIndex": 0,
+        "TypeIndex": 4,
+        "CustomShader": {
+          "SpecularColor": {
+            "r": 0.0,
+            "g": 0.0,
+            "b": 0.0
+          },
+          "SpecularIntensity": 0.0,
+          "SpecularSharpness": 7.0,
+          "FresnelStrength": 0.4
+        },
+        "CastShadows": false
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "AttachedSnapPoints": [
+        {
+          "Position": {
+            "x": 0.0,
+            "y": 0.5,
+            "z": 0.0
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Blue",
+            "Troop"
+          ]
+        },
+        {
+          "Position": {
+            "x": -0.3535519,
+            "y": 0.5,
+            "z": 0.353553265
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Blue",
+            "Troop"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.353553742,
+            "y": 0.5,
+            "z": 0.353553325
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Blue",
+            "Troop"
+          ]
+        },
+        {
+          "Position": {
+            "x": -6.181722e-08,
+            "y": 0.5,
+            "z": 0.7071066
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Blue",
+            "Troop"
+          ]
+        },
+        {
+          "Position": {
+            "x": 1.41421509,
+            "y": 0.5,
+            "z": 1.236346e-07
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Blue",
+            "Troop"
+          ]
+        },
+        {
+          "Position": {
+            "x": 1.06066132,
+            "y": 0.5,
+            "z": 0.353553385
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Blue",
+            "Troop"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.7071075,
+            "y": 0.5,
+            "z": 0.70710665
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Blue",
+            "Troop"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.353553683,
+            "y": 0.5,
+            "z": 1.06065989
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Blue",
+            "Troop"
+          ]
+        },
+        {
+          "Position": {
+            "x": 1.767767,
+            "y": 0.5,
+            "z": 0.353553444
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Blue",
+            "Troop"
+          ]
+        },
+        {
+          "Position": {
+            "x": 1.414215,
+            "y": 0.5,
+            "z": 0.7071067
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Blue",
+            "Troop"
+          ]
+        },
+        {
+          "Position": {
+            "x": 1.0606612,
+            "y": 0.5,
+            "z": 1.06066
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Blue",
+            "Troop"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.7071074,
+            "y": 0.5,
+            "z": 1.4142133
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Blue",
+            "Troop"
+          ]
+        }
+      ]
+    },
+    {
+      "GUID": "59e540",
+      "Name": "ScriptingTrigger",
+      "Transform": {
+        "posX": -33.0,
+        "posY": 2.12,
+        "posZ": -5.0,
+        "rotX": 0,
+        "rotY": 0,
+        "rotZ": 0,
+        "scaleX": 6.0,
+        "scaleY": 1.0,
+        "scaleZ": 6.0
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 0.509803951
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "cb37d3",
+      "Name": "Custom_Model",
+      "Transform": {
+        "posX": -31.5,
+        "posY": 1.62,
+        "posZ": -3.0,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "Tech_59e540Park",
+      "Description": "Generated transient anchor.",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 0.0,
+        "b": 1.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": false,
+      "Snap": false,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": false,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomMesh": {
+        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/2042984592862608679/0383C231514AACEB52B88A2E503A90945A4E8143/",
+        "DiffuseURL": "",
+        "NormalURL": "",
+        "ColliderURL": "",
+        "Convex": true,
+        "MaterialIndex": 0,
+        "TypeIndex": 4,
+        "CustomShader": {
+          "SpecularColor": {
+            "r": 0.0,
+            "g": 0.0,
+            "b": 0.0
+          },
+          "SpecularIntensity": 0.0,
+          "SpecularSharpness": 7.0,
+          "FresnelStrength": 0.4
+        },
+        "CastShadows": false
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "AttachedSnapPoints": [
+        {
+          "Position": {
+            "x": 0.0,
+            "y": 0.5,
+            "z": 0.0
+          },
+          "Tags": [
+            "Tech"
+          ]
+        },
+        {
+          "Position": {
+            "x": -1.74845553e-07,
+            "y": 0.5,
+            "z": 2.0
+          },
+          "Tags": [
+            "Tech"
+          ]
+        },
+        {
+          "Position": {
+            "x": -3.496911e-07,
+            "y": 0.5,
+            "z": 4.0
+          },
+          "Tags": [
+            "Tech"
+          ]
+        },
+        {
+          "Position": {
+            "x": 3.0,
+            "y": 0.5,
+            "z": 2.62268316e-07
+          },
+          "Tags": [
+            "Tech"
+          ]
+        },
+        {
+          "Position": {
+            "x": 2.99999976,
+            "y": 0.5,
+            "z": 2.00000024
+          },
+          "Tags": [
+            "Tech"
+          ]
+        },
+        {
+          "Position": {
+            "x": 2.99999976,
+            "y": 0.5,
+            "z": 4.0
+          },
+          "Tags": [
+            "Tech"
+          ]
+        }
+      ]
+    },
+    {
+      "GUID": "123db2",
+      "Name": "ScriptingTrigger",
+      "Transform": {
+        "posX": -33.0,
+        "posY": 2.12,
+        "posZ": -9.2,
+        "rotX": 0,
+        "rotY": 0,
+        "rotZ": 0,
+        "scaleX": 5.5,
+        "scaleY": 1.0,
+        "scaleZ": 2.5
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 0.509803951
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "c5b183",
+      "Name": "Custom_Model",
+      "Transform": {
+        "posX": -31.25,
+        "posY": 1.62,
+        "posZ": -9.2,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "SardaukarCommanderSkill_123db2Park",
+      "Description": "Generated transient anchor.",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 0.0,
+        "b": 1.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": false,
+      "Snap": false,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": false,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomMesh": {
+        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/2042984592862608679/0383C231514AACEB52B88A2E503A90945A4E8143/",
+        "DiffuseURL": "",
+        "NormalURL": "",
+        "ColliderURL": "",
+        "Convex": true,
+        "MaterialIndex": 0,
+        "TypeIndex": 4,
+        "CustomShader": {
+          "SpecularColor": {
+            "r": 0.0,
+            "g": 0.0,
+            "b": 0.0
+          },
+          "SpecularIntensity": 0.0,
+          "SpecularSharpness": 7.0,
+          "FresnelStrength": 0.4
+        },
+        "CastShadows": false
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "AttachedSnapPoints": [
+        {
+          "Position": {
+            "x": 0.0,
+            "y": 0.5,
+            "z": 0.0
+          },
+          "Tags": [
+            "SardaukarCommanderSkill"
+          ]
+        },
+        {
+          "Position": {
+            "x": 1.75,
+            "y": 0.5,
+            "z": 1.52989855e-07
+          },
+          "Tags": [
+            "SardaukarCommanderSkill"
+          ]
+        },
+        {
+          "Position": {
+            "x": 3.5,
+            "y": 0.5,
+            "z": 3.059797e-07
+          },
+          "Tags": [
+            "SardaukarCommanderSkill"
+          ]
+        }
+      ]
+    },
+    {
+      "GUID": "02a01e",
+      "Name": "ScriptingTrigger",
+      "Transform": {
+        "posX": -28.0,
+        "posY": 2.12,
+        "posZ": -12.5,
+        "rotX": 0,
+        "rotY": 0,
+        "rotZ": 0,
+        "scaleX": 29.9,
+        "scaleY": 0.5,
+        "scaleZ": 3.2
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 0.509803951
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "83409d",
+      "Name": "Custom_Model",
+      "Transform": {
+        "posX": -14.25,
+        "posY": 1.62,
+        "posZ": -12.5,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "ImperiumIntrigueNavigation_02a01ePark",
+      "Description": "Generated transient anchor.",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 0.0,
+        "b": 1.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": false,
+      "Snap": false,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": false,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomMesh": {
+        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/2042984592862608679/0383C231514AACEB52B88A2E503A90945A4E8143/",
+        "DiffuseURL": "",
+        "NormalURL": "",
+        "ColliderURL": "",
+        "Convex": true,
+        "MaterialIndex": 0,
+        "TypeIndex": 4,
+        "CustomShader": {
+          "SpecularColor": {
+            "r": 0.0,
+            "g": 0.0,
+            "b": 0.0
+          },
+          "SpecularIntensity": 0.0,
+          "SpecularSharpness": 7.0,
+          "FresnelStrength": 0.4
+        },
+        "CastShadows": false
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "AttachedSnapPoints": [
+        {
+          "Position": {
+            "x": 0.0,
+            "y": 0.5,
+            "z": 0.0
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Intrigue",
+            "Imperium",
+            "Navigation"
+          ]
+        },
+        {
+          "Position": {
+            "x": 2.5,
+            "y": 0.5,
+            "z": 2.18556949e-07
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Intrigue",
+            "Imperium",
+            "Navigation"
+          ]
+        },
+        {
+          "Position": {
+            "x": 5.0,
+            "y": 0.5,
+            "z": 4.371139e-07
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Intrigue",
+            "Imperium",
+            "Navigation"
+          ]
+        },
+        {
+          "Position": {
+            "x": 7.5,
+            "y": 0.5,
+            "z": 6.556708e-07
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Intrigue",
+            "Imperium",
+            "Navigation"
+          ]
+        },
+        {
+          "Position": {
+            "x": 10.0,
+            "y": 0.5,
+            "z": 8.742278e-07
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Intrigue",
+            "Imperium",
+            "Navigation"
+          ]
+        },
+        {
+          "Position": {
+            "x": 12.5,
+            "y": 0.5,
+            "z": 1.09278471e-06
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Intrigue",
+            "Imperium",
+            "Navigation"
+          ]
+        },
+        {
+          "Position": {
+            "x": 15.0,
+            "y": 0.5,
+            "z": 1.31134163e-06
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Intrigue",
+            "Imperium",
+            "Navigation"
+          ]
+        },
+        {
+          "Position": {
+            "x": 17.5,
+            "y": 0.5,
+            "z": 1.52989855e-06
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Intrigue",
+            "Imperium",
+            "Navigation"
+          ]
+        },
+        {
+          "Position": {
+            "x": 20.0,
+            "y": 0.5,
+            "z": 1.74845559e-06
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Intrigue",
+            "Imperium",
+            "Navigation"
+          ]
+        },
+        {
+          "Position": {
+            "x": 22.5,
+            "y": 0.5,
+            "z": 1.96701239e-06
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Intrigue",
+            "Imperium",
+            "Navigation"
+          ]
+        },
+        {
+          "Position": {
+            "x": 25.0,
+            "y": 0.5,
+            "z": 2.18556943e-06
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Intrigue",
+            "Imperium",
+            "Navigation"
+          ]
+        },
+        {
+          "Position": {
+            "x": 27.5,
+            "y": 0.5,
+            "z": 2.40412646e-06
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Intrigue",
+            "Imperium",
+            "Navigation"
+          ]
+        }
+      ]
+    },
+    {
+      "GUID": "27bfa9",
+      "Name": "ScriptingTrigger",
+      "Transform": {
+        "posX": -22.3,
+        "posY": 2.12,
+        "posZ": -1.15,
+        "rotX": 0,
+        "rotY": 0,
+        "rotZ": 0,
+        "scaleX": 19.564,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 0.509803951
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "69bf0f",
+      "Name": "Custom_Model",
+      "Transform": {
+        "posX": -13.018,
+        "posY": 1.62,
+        "posZ": -1.15,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "VictoryPointToken_27bfa9Park",
+      "Description": "Generated transient anchor.",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 0.0,
+        "b": 1.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": false,
+      "Snap": false,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": false,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomMesh": {
+        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/2042984592862608679/0383C231514AACEB52B88A2E503A90945A4E8143/",
+        "DiffuseURL": "",
+        "NormalURL": "",
+        "ColliderURL": "",
+        "Convex": true,
+        "MaterialIndex": 0,
+        "TypeIndex": 4,
+        "CustomShader": {
+          "SpecularColor": {
+            "r": 0.0,
+            "g": 0.0,
+            "b": 0.0
+          },
+          "SpecularIntensity": 0.0,
+          "SpecularSharpness": 7.0,
+          "FresnelStrength": 0.4
+        },
+        "CastShadows": false
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "AttachedSnapPoints": [
+        {
+          "Position": {
+            "x": 0.0,
+            "y": 0.5,
+            "z": 0.0
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": 1.092,
+            "y": 0.5,
+            "z": 9.546567e-08
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": 2.184,
+            "y": 0.5,
+            "z": 1.90931345e-07
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": 3.276001,
+            "y": 0.5,
+            "z": 2.863971e-07
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": 4.368,
+            "y": 0.5,
+            "z": 3.818627e-07
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": 5.460001,
+            "y": 0.5,
+            "z": 4.77328456e-07
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": 6.552,
+            "y": 0.5,
+            "z": 5.72794e-07
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": 7.644001,
+            "y": 0.5,
+            "z": 6.682598e-07
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": 8.736,
+            "y": 0.5,
+            "z": 7.637254e-07
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": 9.828001,
+            "y": 0.5,
+            "z": 8.591911e-07
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": 10.92,
+            "y": 0.5,
+            "z": 9.546567e-07
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": 12.012001,
+            "y": 0.5,
+            "z": 1.05012248e-06
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": 13.104,
+            "y": 0.5,
+            "z": 1.145588e-06
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": 14.1960011,
+            "y": 0.5,
+            "z": 1.24105384e-06
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": 15.288,
+            "y": 0.5,
+            "z": 1.3365194e-06
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": 16.3800011,
+            "y": 0.5,
+            "z": 1.4319852e-06
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": 17.472,
+            "y": 0.5,
+            "z": 1.52745076e-06
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": 18.5640011,
+            "y": 0.5,
+            "z": 1.62291656e-06
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        }
+      ]
+    },
+    {
+      "GUID": "bcc884",
+      "Name": "ScriptingTrigger",
+      "Transform": {
+        "posX": -19.1,
+        "posY": 2.12,
+        "posZ": 20.0,
+        "rotX": 0,
+        "rotY": 0,
+        "rotZ": 0,
+        "scaleX": 3.75,
+        "scaleY": 3.0,
+        "scaleZ": 0.75
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 0.509803951
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "be88d0",
+      "Name": "Custom_Model",
+      "Transform": {
+        "posX": -17.6,
+        "posY": 1.62,
+        "posZ": 20.0,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "AgentRed_bcc884Park",
+      "Description": "Generated transient anchor.",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 0.0,
+        "b": 1.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": false,
+      "Snap": false,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": false,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomMesh": {
+        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/2042984592862608679/0383C231514AACEB52B88A2E503A90945A4E8143/",
+        "DiffuseURL": "",
+        "NormalURL": "",
+        "ColliderURL": "",
+        "Convex": true,
+        "MaterialIndex": 0,
+        "TypeIndex": 4,
+        "CustomShader": {
+          "SpecularColor": {
+            "r": 0.0,
+            "g": 0.0,
+            "b": 0.0
+          },
+          "SpecularIntensity": 0.0,
+          "SpecularSharpness": 7.0,
+          "FresnelStrength": 0.4
+        },
+        "CastShadows": false
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "AttachedSnapPoints": [
+        {
+          "Position": {
+            "x": 0.0,
+            "y": 0.5,
+            "z": 0.0
+          },
+          "Tags": [
+            "Red",
+            "Agent"
+          ]
+        },
+        {
+          "Position": {
+            "x": 1.0,
+            "y": 0.5,
+            "z": 8.742278e-08
+          },
+          "Tags": [
+            "Red",
+            "Agent"
+          ]
+        },
+        {
+          "Position": {
+            "x": 2.0,
+            "y": 0.5,
+            "z": 1.74845553e-07
+          },
+          "Tags": [
+            "Red",
+            "Agent"
+          ]
+        },
+        {
+          "Position": {
+            "x": 3.0,
+            "y": 0.5,
+            "z": 2.62268316e-07
+          },
+          "Tags": [
+            "Red",
+            "Agent"
+          ]
+        }
+      ]
+    },
+    {
+      "GUID": "afecbc",
+      "Name": "ScriptingTrigger",
+      "Transform": {
+        "posX": -27.5,
+        "posY": 2.12,
+        "posZ": 19.0,
+        "rotX": 0,
+        "rotY": 0,
+        "rotZ": 0,
+        "scaleX": 3.0,
+        "scaleY": 2.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 0.509803951
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "681b41",
+      "Name": "Custom_Model",
+      "Transform": {
+        "posX": -26.5,
+        "posY": 1.62,
+        "posZ": 19.0,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "DreadnoughtRed_afecbcPark",
+      "Description": "Generated transient anchor.",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 0.0,
+        "b": 1.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": false,
+      "Snap": false,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": false,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomMesh": {
+        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/2042984592862608679/0383C231514AACEB52B88A2E503A90945A4E8143/",
+        "DiffuseURL": "",
+        "NormalURL": "",
+        "ColliderURL": "",
+        "Convex": true,
+        "MaterialIndex": 0,
+        "TypeIndex": 4,
+        "CustomShader": {
+          "SpecularColor": {
+            "r": 0.0,
+            "g": 0.0,
+            "b": 0.0
+          },
+          "SpecularIntensity": 0.0,
+          "SpecularSharpness": 7.0,
+          "FresnelStrength": 0.4
+        },
+        "CastShadows": false
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "AttachedSnapPoints": [
+        {
+          "Position": {
+            "x": 0.0,
+            "y": 0.5,
+            "z": 0.0
+          },
+          "Tags": [
+            "Red",
+            "Dreadnought"
+          ]
+        },
+        {
+          "Position": {
+            "x": 2.0,
+            "y": 0.5,
+            "z": 1.74845553e-07
+          },
+          "Tags": [
+            "Red",
+            "Dreadnought"
+          ]
+        }
+      ]
+    },
+    {
+      "GUID": "186107",
+      "Name": "ScriptingTrigger",
+      "Transform": {
+        "posX": -27.5,
+        "posY": 2.12,
+        "posZ": 16.6,
+        "rotX": 0,
+        "rotY": 45.0000038,
+        "rotZ": 0,
+        "scaleX": 2.25,
+        "scaleY": 0.75,
+        "scaleZ": 2.25
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 0.509803951
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "489c21",
+      "Name": "Custom_Model",
+      "Transform": {
+        "posX": -26.7928925,
+        "posY": 1.62,
+        "posZ": 16.9535542,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "TroopRed_186107Park",
+      "Description": "Generated transient anchor.",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 0.0,
+        "b": 1.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": false,
+      "Snap": false,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": false,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomMesh": {
+        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/2042984592862608679/0383C231514AACEB52B88A2E503A90945A4E8143/",
+        "DiffuseURL": "",
+        "NormalURL": "",
+        "ColliderURL": "",
+        "Convex": true,
+        "MaterialIndex": 0,
+        "TypeIndex": 4,
+        "CustomShader": {
+          "SpecularColor": {
+            "r": 0.0,
+            "g": 0.0,
+            "b": 0.0
+          },
+          "SpecularIntensity": 0.0,
+          "SpecularSharpness": 7.0,
+          "FresnelStrength": 0.4
+        },
+        "CastShadows": false
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "AttachedSnapPoints": [
+        {
+          "Position": {
+            "x": 0.0,
+            "y": 0.5,
+            "z": 0.0
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Red",
+            "Troop"
+          ]
+        },
+        {
+          "Position": {
+            "x": -0.3535519,
+            "y": 0.5,
+            "z": 0.353553742
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Red",
+            "Troop"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.353553742,
+            "y": 0.5,
+            "z": 0.3535538
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Red",
+            "Troop"
+          ]
+        },
+        {
+          "Position": {
+            "x": -6.18173e-08,
+            "y": 0.5,
+            "z": 0.707107544
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Red",
+            "Troop"
+          ]
+        },
+        {
+          "Position": {
+            "x": 1.41421509,
+            "y": 0.5,
+            "z": 1.236346e-07
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Red",
+            "Troop"
+          ]
+        },
+        {
+          "Position": {
+            "x": 1.06066132,
+            "y": 0.5,
+            "z": 0.353553861
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Red",
+            "Troop"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.7071075,
+            "y": 0.5,
+            "z": 0.7071076
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Red",
+            "Troop"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.353553683,
+            "y": 0.5,
+            "z": 1.06066132
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Red",
+            "Troop"
+          ]
+        },
+        {
+          "Position": {
+            "x": 1.767767,
+            "y": 0.5,
+            "z": 0.353553921
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Red",
+            "Troop"
+          ]
+        },
+        {
+          "Position": {
+            "x": 1.414215,
+            "y": 0.5,
+            "z": 0.707107663
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Red",
+            "Troop"
+          ]
+        },
+        {
+          "Position": {
+            "x": 1.0606612,
+            "y": 0.5,
+            "z": 1.06066144
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Red",
+            "Troop"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.7071074,
+            "y": 0.5,
+            "z": 1.41421425
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Red",
+            "Troop"
+          ]
+        }
+      ]
+    },
+    {
+      "GUID": "a8925d",
+      "Name": "ScriptingTrigger",
+      "Transform": {
+        "posX": -33.0,
+        "posY": 2.12,
+        "posZ": 18.0,
+        "rotX": 0,
+        "rotY": 0,
+        "rotZ": 0,
+        "scaleX": 6.0,
+        "scaleY": 1.0,
+        "scaleZ": 6.0
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 0.509803951
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "657783",
+      "Name": "Custom_Model",
+      "Transform": {
+        "posX": -31.5,
+        "posY": 1.62,
+        "posZ": 20.0,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "Tech_a8925dPark",
+      "Description": "Generated transient anchor.",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 0.0,
+        "b": 1.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": false,
+      "Snap": false,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": false,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomMesh": {
+        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/2042984592862608679/0383C231514AACEB52B88A2E503A90945A4E8143/",
+        "DiffuseURL": "",
+        "NormalURL": "",
+        "ColliderURL": "",
+        "Convex": true,
+        "MaterialIndex": 0,
+        "TypeIndex": 4,
+        "CustomShader": {
+          "SpecularColor": {
+            "r": 0.0,
+            "g": 0.0,
+            "b": 0.0
+          },
+          "SpecularIntensity": 0.0,
+          "SpecularSharpness": 7.0,
+          "FresnelStrength": 0.4
+        },
+        "CastShadows": false
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "AttachedSnapPoints": [
+        {
+          "Position": {
+            "x": 0.0,
+            "y": 0.5,
+            "z": 0.0
+          },
+          "Tags": [
+            "Tech"
+          ]
+        },
+        {
+          "Position": {
+            "x": -1.74845553e-07,
+            "y": 0.5,
+            "z": 2.0
+          },
+          "Tags": [
+            "Tech"
+          ]
+        },
+        {
+          "Position": {
+            "x": -3.496911e-07,
+            "y": 0.5,
+            "z": 4.0
+          },
+          "Tags": [
+            "Tech"
+          ]
+        },
+        {
+          "Position": {
+            "x": 3.0,
+            "y": 0.5,
+            "z": 2.62268316e-07
+          },
+          "Tags": [
+            "Tech"
+          ]
+        },
+        {
+          "Position": {
+            "x": 2.99999976,
+            "y": 0.5,
+            "z": 2.00000024
+          },
+          "Tags": [
+            "Tech"
+          ]
+        },
+        {
+          "Position": {
+            "x": 2.99999976,
+            "y": 0.5,
+            "z": 4.0
+          },
+          "Tags": [
+            "Tech"
+          ]
+        }
+      ]
+    },
+    {
+      "GUID": "1c4336",
+      "Name": "ScriptingTrigger",
+      "Transform": {
+        "posX": -33.0,
+        "posY": 2.12,
+        "posZ": 13.8,
+        "rotX": 0,
+        "rotY": 0,
+        "rotZ": 0,
+        "scaleX": 5.5,
+        "scaleY": 1.0,
+        "scaleZ": 2.5
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 0.509803951
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "dc1cf1",
+      "Name": "Custom_Model",
+      "Transform": {
+        "posX": -31.25,
+        "posY": 1.62,
+        "posZ": 13.8,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "SardaukarCommanderSkill_1c4336Park",
+      "Description": "Generated transient anchor.",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 0.0,
+        "b": 1.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": false,
+      "Snap": false,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": false,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomMesh": {
+        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/2042984592862608679/0383C231514AACEB52B88A2E503A90945A4E8143/",
+        "DiffuseURL": "",
+        "NormalURL": "",
+        "ColliderURL": "",
+        "Convex": true,
+        "MaterialIndex": 0,
+        "TypeIndex": 4,
+        "CustomShader": {
+          "SpecularColor": {
+            "r": 0.0,
+            "g": 0.0,
+            "b": 0.0
+          },
+          "SpecularIntensity": 0.0,
+          "SpecularSharpness": 7.0,
+          "FresnelStrength": 0.4
+        },
+        "CastShadows": false
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "AttachedSnapPoints": [
+        {
+          "Position": {
+            "x": 0.0,
+            "y": 0.5,
+            "z": 0.0
+          },
+          "Tags": [
+            "SardaukarCommanderSkill"
+          ]
+        },
+        {
+          "Position": {
+            "x": 1.75,
+            "y": 0.5,
+            "z": 1.52989855e-07
+          },
+          "Tags": [
+            "SardaukarCommanderSkill"
+          ]
+        },
+        {
+          "Position": {
+            "x": 3.5,
+            "y": 0.5,
+            "z": 3.059797e-07
+          },
+          "Tags": [
+            "SardaukarCommanderSkill"
+          ]
+        }
+      ]
+    },
+    {
+      "GUID": "85aacb",
+      "Name": "ScriptingTrigger",
+      "Transform": {
+        "posX": -28.0,
+        "posY": 2.12,
+        "posZ": 10.5,
+        "rotX": 0,
+        "rotY": 0,
+        "rotZ": 0,
+        "scaleX": 29.9,
+        "scaleY": 0.5,
+        "scaleZ": 3.2
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 0.509803951
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "220182",
+      "Name": "Custom_Model",
+      "Transform": {
+        "posX": -14.25,
+        "posY": 1.62,
+        "posZ": 10.5,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "ImperiumIntrigueNavigation_85aacbPark",
+      "Description": "Generated transient anchor.",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 0.0,
+        "b": 1.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": false,
+      "Snap": false,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": false,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomMesh": {
+        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/2042984592862608679/0383C231514AACEB52B88A2E503A90945A4E8143/",
+        "DiffuseURL": "",
+        "NormalURL": "",
+        "ColliderURL": "",
+        "Convex": true,
+        "MaterialIndex": 0,
+        "TypeIndex": 4,
+        "CustomShader": {
+          "SpecularColor": {
+            "r": 0.0,
+            "g": 0.0,
+            "b": 0.0
+          },
+          "SpecularIntensity": 0.0,
+          "SpecularSharpness": 7.0,
+          "FresnelStrength": 0.4
+        },
+        "CastShadows": false
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "AttachedSnapPoints": [
+        {
+          "Position": {
+            "x": 0.0,
+            "y": 0.5,
+            "z": 0.0
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Intrigue",
+            "Imperium",
+            "Navigation"
+          ]
+        },
+        {
+          "Position": {
+            "x": 2.5,
+            "y": 0.5,
+            "z": 2.18556949e-07
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Intrigue",
+            "Imperium",
+            "Navigation"
+          ]
+        },
+        {
+          "Position": {
+            "x": 5.0,
+            "y": 0.5,
+            "z": 4.371139e-07
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Intrigue",
+            "Imperium",
+            "Navigation"
+          ]
+        },
+        {
+          "Position": {
+            "x": 7.5,
+            "y": 0.5,
+            "z": 6.556708e-07
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Intrigue",
+            "Imperium",
+            "Navigation"
+          ]
+        },
+        {
+          "Position": {
+            "x": 10.0,
+            "y": 0.5,
+            "z": 8.742278e-07
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Intrigue",
+            "Imperium",
+            "Navigation"
+          ]
+        },
+        {
+          "Position": {
+            "x": 12.5,
+            "y": 0.5,
+            "z": 1.09278471e-06
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Intrigue",
+            "Imperium",
+            "Navigation"
+          ]
+        },
+        {
+          "Position": {
+            "x": 15.0,
+            "y": 0.5,
+            "z": 1.31134163e-06
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Intrigue",
+            "Imperium",
+            "Navigation"
+          ]
+        },
+        {
+          "Position": {
+            "x": 17.5,
+            "y": 0.5,
+            "z": 1.52989855e-06
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Intrigue",
+            "Imperium",
+            "Navigation"
+          ]
+        },
+        {
+          "Position": {
+            "x": 20.0,
+            "y": 0.5,
+            "z": 1.74845559e-06
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Intrigue",
+            "Imperium",
+            "Navigation"
+          ]
+        },
+        {
+          "Position": {
+            "x": 22.5,
+            "y": 0.5,
+            "z": 1.96701239e-06
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Intrigue",
+            "Imperium",
+            "Navigation"
+          ]
+        },
+        {
+          "Position": {
+            "x": 25.0,
+            "y": 0.5,
+            "z": 2.18556943e-06
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Intrigue",
+            "Imperium",
+            "Navigation"
+          ]
+        },
+        {
+          "Position": {
+            "x": 27.5,
+            "y": 0.5,
+            "z": 2.40412646e-06
+          },
+          "Rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Tags": [
+            "Intrigue",
+            "Imperium",
+            "Navigation"
+          ]
+        }
+      ]
+    },
+    {
+      "GUID": "718c71",
+      "Name": "ScriptingTrigger",
+      "Transform": {
+        "posX": -22.3,
+        "posY": 2.12,
+        "posZ": 21.85,
+        "rotX": 0,
+        "rotY": 0,
+        "rotZ": 0,
+        "scaleX": 19.564,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 0.509803951
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "f6de5a",
+      "Name": "Custom_Model",
+      "Transform": {
+        "posX": -13.018,
+        "posY": 1.62,
+        "posZ": 21.85,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "VictoryPointToken_718c71Park",
+      "Description": "Generated transient anchor.",
+      "GMNotes": "Transient",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 1.0,
+        "g": 0.0,
+        "b": 1.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": false,
+      "Snap": false,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": false,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomMesh": {
+        "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/2042984592862608679/0383C231514AACEB52B88A2E503A90945A4E8143/",
+        "DiffuseURL": "",
+        "NormalURL": "",
+        "ColliderURL": "",
+        "Convex": true,
+        "MaterialIndex": 0,
+        "TypeIndex": 4,
+        "CustomShader": {
+          "SpecularColor": {
+            "r": 0.0,
+            "g": 0.0,
+            "b": 0.0
+          },
+          "SpecularIntensity": 0.0,
+          "SpecularSharpness": 7.0,
+          "FresnelStrength": 0.4
+        },
+        "CastShadows": false
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "AttachedSnapPoints": [
+        {
+          "Position": {
+            "x": 0.0,
+            "y": 0.5,
+            "z": 0.0
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": 1.092,
+            "y": 0.5,
+            "z": 9.546567e-08
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": 2.184,
+            "y": 0.5,
+            "z": 1.90931345e-07
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": 3.276001,
+            "y": 0.5,
+            "z": 2.863971e-07
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": 4.368,
+            "y": 0.5,
+            "z": 3.818627e-07
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": 5.460001,
+            "y": 0.5,
+            "z": 4.77328456e-07
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": 6.552,
+            "y": 0.5,
+            "z": 5.72794e-07
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": 7.644001,
+            "y": 0.5,
+            "z": 6.682598e-07
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": 8.736,
+            "y": 0.5,
+            "z": 7.637254e-07
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": 9.828001,
+            "y": 0.5,
+            "z": 8.591911e-07
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": 10.92,
+            "y": 0.5,
+            "z": 9.546567e-07
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": 12.012001,
+            "y": 0.5,
+            "z": 1.05012248e-06
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": 13.104,
+            "y": 0.5,
+            "z": 1.145588e-06
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": 14.1960011,
+            "y": 0.5,
+            "z": 1.24105384e-06
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": 15.288,
+            "y": 0.5,
+            "z": 1.3365194e-06
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": 16.3800011,
+            "y": 0.5,
+            "z": 1.4319852e-06
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": 17.472,
+            "y": 0.5,
+            "z": 1.52745076e-06
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
+        },
+        {
+          "Position": {
+            "x": 18.5640011,
+            "y": 0.5,
+            "z": 1.62291656e-06
+          },
+          "Tags": [
+            "VictoryPointToken"
+          ]
         }
       ]
     }
