@@ -24,11 +24,11 @@ local Board = {
         mainBoard = "483a1a",
         topRightBoard = {
             defaultBoard = "585831",
-            shippingBoard = "e92f13",
+            shippingBoard = "------",
         },
         ix = {
             ixBoard = "d75455",
-            ixAmbassyBoard = "664fbc",
+            ixAmbassyBoard = "------",
         },
         tleilaxBoard = "d5c2db",
         tuekSietchBoard = "7de80e",
