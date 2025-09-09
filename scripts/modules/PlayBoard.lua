@@ -1585,7 +1585,7 @@ end
 
 ---@return Park
 function PlayBoard:_createSupplyPark()
-    local origin = self:_generateAbsolutePosition("symmetric", Vector(0.5, 0, 2))
+    local origin = self:_generateAbsolutePosition("symmetric", Vector(0.5, 0.18, 2))
     local diamond = Park.createDiamondOfSlots(origin, 4, 0.5, 315)
     local supplyZone = Park.createTransientBoundingZone(45, Vector(0.75, 0.75, 0.75), diamond.allSlots)
     local park = Park.createCommonPark({ "Troop", self.color }, diamond.slots, nil, Vector(0, -45, 0), true, { supplyZone })

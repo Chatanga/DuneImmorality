@@ -45,7 +45,7 @@ __6P__
 __Aesthetic__
 
 - Rework the tech/contract decals.
-- Widen the colored border of the boards (and remove both the negative scale and the trigger effects in the process).
+- Widen the colored border of the boards, remove both the negative scale and the trigger effects in the process and fix UV mapping.
 - Add a corrective black border on the Uprising game boards.
 
 ## Lua sources
