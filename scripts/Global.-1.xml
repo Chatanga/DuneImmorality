@@ -65,14 +65,14 @@ the pixel.
 				<Text class="primary" key="players"/>
 			</HorizontalLayout>
 			<VerticalLayout padding="25 0 0 0">
-				<HorizontalLayout minHeight="22">
+				<HorizontalLayout minHeight="24">
 					<Text class="secondary" key="firstPlayer"/>
 					<Dropdown class="setUp" id="firstPlayer" onValueChanged="Global/setAnyField" flexibleWidth="3" active="True">
 						<Option></Option>
 					</Dropdown>
 				</HorizontalLayout>
 				<Toggle class="setUp" id="randomizePlayerPositions" onValueChanged="Global/setAnyField" isOn="True" key="randomizePlayersPositions" tooltipKey="randomizePlayersPositionTooltip"/>
-				<HorizontalLayout minHeight="22">
+				<HorizontalLayout minHeight="24">
 					<Toggle class="setUp" id="virtualHotSeat" onValueChanged="Global/setVirtualHotSeat" isOn="False" key="virtualHotSeat" tooltipKey="virtualHotSeatTooltip"/>
 					<Dropdown class="setUp" id="virtualHotSeatMode" onValueChanged="Global/setVirtualHotSeatMode" flexibleWidth="2.5">
 						<Option></Option>
