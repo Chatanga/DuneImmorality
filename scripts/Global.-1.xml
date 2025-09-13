@@ -21,13 +21,13 @@ be integrated to this mod in a standard way.
 <Panel position="0 -50" width="460" height="620" color="#000000" id="setupPane" rotation="0 0 0" outline="#61712c" outlineSize="1"
 	active="False" allowDragging="True" returnToOriginalPositionWhenReleased="False">
 	<Defaults>
-		<Text class="primary" color="#e5c638" fontSize="20" fontStyle="bold" alignment="MiddleLeft"/>
-		<Text class="secondary" color="#7fa768" fontSize="14" fontStyle="bold" alignment="MiddleLeft"/>
-		<Text class="epigraph" color="#df9730" fontSize="12" fontStyle="italic" alignment="MiddleCenter"/>
-		<Dropdown class="setUp" itemBackgroundColors="#61712c44|#df9730|#FFFFFF|#361441" textColor="#61712c" fontSize="12" itemTextColor="#61712c" fontStyle="bold"/>
-		<InputField class="setUp" colors="#00000000|#61712c44|#61712c" textColor="#7fa768" fontSize="14" fontStyle="bold"/>
-		<Toggle class="setUp" colors="#7fa768|#ffd60b|#7fa768|#222222" textColor="#7fa768" fontSize="14" fontStyle="bold" tooltipPosition="Left" tooltipBackgroundColor="#000000"/>
-		<Button class="setUp" colors="#61712c|#df9730|#361441|#222222" textColor="#ffd60b" fontSize="14" outline="#7fa768" outlineSize="3 3"/>
+		<Text class="primary" color="#e5c638" fontSize="22" fontStyle="bold" alignment="MiddleLeft"/>
+		<Text class="secondary" color="#7fa768" fontSize="16" fontStyle="bold" alignment="MiddleLeft"/>
+		<Text class="epigraph" color="#df9730" fontSize="14" fontStyle="italic" alignment="MiddleCenter"/>
+		<Dropdown class="setUp" itemBackgroundColors="#61712c44|#df9730|#FFFFFF|#361441" textColor="#61712c" fontSize="14" itemTextColor="#61712c" fontStyle="bold"/>
+		<InputField class="setUp" colors="#00000000|#61712c44|#61712c" textColor="#7fa768" fontSize="16" fontStyle="bold"/>
+		<Toggle class="setUp" colors="#7fa768|#ffd60b|#7fa768|#222222" textColor="#7fa768" fontSize="16" fontStyle="bold" tooltipPosition="Left" tooltipBackgroundColor="#000000"/>
+		<Button class="setUp" colors="#61712c|#df9730|#361441|#222222" textColor="#ffd60b" fontSize="16" outline="#7fa768" outlineSize="3 3"/>
 		<Image raycastTarget="true"/>
 	</Defaults>
 	<VerticalLayout>
@@ -48,7 +48,7 @@ be integrated to this mod in a standard way.
 			<VerticalLayout padding="25 0 0 0">
 				<HorizontalLayout>
 					<Text class="secondary" key="firstPlayer"/>
-					<Dropdown class="setUp" id="firstPlayer" onValueChanged="Global/setAnyField" flexibleWidth="3" active="True" minHeight="20">
+					<Dropdown class="setUp" id="firstPlayer" onValueChanged="Global/setAnyField" flexibleWidth="3" active="True" minHeight="22">
 						<Option></Option>
 					</Dropdown>
 				</HorizontalLayout>
@@ -123,7 +123,7 @@ be integrated to this mod in a standard way.
 
 <Panel position="480 -140" width="450" height="220" color="#000000" id="soloSetupPane" rotation="0 0 0" outline="#61712c" outlineSize="1"
 	active="False" allowDragging="True" returnToOriginalPositionWhenReleased="False">
-	<Defaults>
+	<!--Defaults>
 		<Text class="primary" color="#e5c638" fontSize="16" alignment="MiddleLeft"/>
 		<Text class="secondary" color="#7fa768" alignment="MiddleLeft"/>
 		<Text class="epigraph" color="#df9730" fontSize="12" fontStyle="italic" alignment="MiddleCenter"/>
@@ -132,7 +132,7 @@ be integrated to this mod in a standard way.
 		<Toggle class="setUp" colors="#7fa768|#ffd60b|#7fa768|#222222" textColor="#7fa768" tooltipPosition="Left" tooltipBackgroundColor="#000000"/>
 		<Button class="setUp" colors="#61712c|#df9730|#361441|#222222" textColor="#ffd60b" fontSize="16" outline="#7fa768" outlineSize="3 3"/>
 		<Image raycastTarget="true"/>
-	</Defaults>
+	</Defaults-->
 	<VerticalLayout>
 		<Image ignoreLayout="True" type="Tiled" image="https://steamusercontent-a.akamaihd.net/ugc/2502404390135372157/BBDF8C1026A04FE222D52E39AA696F2310543485/"/>
 		<VerticalLayout padding="40 40 20 20">
@@ -142,7 +142,7 @@ be integrated to this mod in a standard way.
 			<VerticalLayout padding="25 0 0 0">
 				<HorizontalLayout>
 					<Text class="secondary" key="difficulty"/>
-					<Dropdown class="setUp" id="difficulty" onValueChanged="Global/setDifficulty" flexibleWidth="3" minHeight="22" active="True">
+					<Dropdown class="setUp" id="difficulty" onValueChanged="Global/setDifficulty" flexibleWidth="3" minHeight="24" active="True">
 						<Option></Option>
 					</Dropdown>
 				</HorizontalLayout>
