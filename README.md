@@ -35,8 +35,6 @@ This repository contains the JSON skeletons and Lua scripts of various mods for 
 - Arrakeen Scouts deck in English.
 - Arrakeen Scouts history (as cards).
 - Arrakeen Scouts memory cards (using decals).
-- Arrakeen Scouts for Bloodlines (nothing to do?).
-- UI (re)sizing in general.
 
 ### scripts/modules
 
