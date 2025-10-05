@@ -245,6 +245,8 @@ return {
     goSellMelange = "Selectionnez le montant en épice à convertir en solaris.",
     tuekBoardRelocationMessage = "Peut être repositionné jusqu’à\nla sélection du dernier dirigeant.",
     goTuekSietch = "Sélectionnez une option",
+    withDrawOption = "Pioche d’une carte",
+    withSpiceOption = "1 épice",
     goTechNegotiation = "Sélectionnez une option",
     sendNegotiatorOption = "Négociateur",
     buyTechWithDiscount1Option = "Tech. avec un rabais",

@@ -244,6 +244,8 @@ return {
     goSellMelange = "Select spice amount to be converted into solari.",
     tuekBoardRelocationMessage = "Could be relocated until\nthe last leader is selected",
     goTuekSietch = "Select an option.",
+    withDrawOption = "draw 1 card",
+    withSpiceOption = "1 spice unit",
     goTechNegotiation = "Select an option.",
     sendNegotiatorOption = "Negotiator",
     buyTechWithDiscount1Option = "Discounted tech.",
