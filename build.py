@@ -29,17 +29,40 @@ tts_tmp_dir='tmp/scripts.bundled/'
 #	   https://github.com/Benjamin-Dobell/luabundler
 def build():
 	platform_system = platform.system()
-	if platform_system == 'Linux':
-		app_dir = os.path.join(os.environ['HOME'], '.local', 'share')
-		luabundler = 'luabundler'
-	elif platform_system == 'Windows':
-		app_dir = os.path.join(os.environ['USERPROFILE'], 'OneDrive', 'Documents', 'My Games')
-		luabundler = 'luabundler.cmd'
-	else:
-		print('Unknown os: ' + platform_system, file = sys.stderr)
-		exit(1)
 
-	tts_save_dir = os.path.join(app_dir, 'Tabletop Simulator', 'Saves')
+	local_node_modules_path = os.path.exists('node_modules')
+
+	linux_suffix = os.path.join('.local', 'share', 'Tabletop Simulator', 'Saves')
+	windows_suffix = os.path.join('Documents', 'My Games', 'Tabletop Simulator', 'Saves')
+
+	if platform_system == 'Linux':
+		# 286160 is the Steam application ID for TTS
+		proton_path = os.path.join('steamapps', 'compatdata', '286160', 'pfx', 'drive_c', 'users', 'steamuser')
+		tts_save_dirs = [
+			# Steam as a .deb + without Proton
+			os.path.join(os.environ['HOME'], linux_suffix),
+			# Steam as a Snap
+			os.path.join(os.environ['HOME'], 'snap', 'steam', 'common', linux_suffix),
+			# Steam as a .deb + with Proton
+			os.path.join(os.environ['HOME'], '.local', 'share', 'Steam', proton_path, windows_suffix),
+			# Steam as a .deb + with Proton (custom directory)
+			os.path.join(os.environ['HOME'], 'Fast', 'SteamLibrary', proton_path, windows_suffix)
+		]
+		luabundler = 'node_modules/.bin/luabundler' if local_node_modules_path else 'luabundler'
+	elif platform_system == 'Windows':
+		tts_save_dirs = [
+			os.path.join(os.environ['USERPROFILE'], 'OneDrive', windows_suffix),
+			os.path.join(os.environ['USERPROFILE'], windows_suffix)
+		]
+		luabundler = 'node_modules/.bin/luabundler.cmd' if local_node_modules_path else 'luabundler.cmd'
+	else:
+		print('Unknown OS:', platform_system, file=sys.stderr)
+		sys.exit(1)
+
+	tts_save_dir = select_first_existing_path(tts_save_dirs)
+	if tts_save_dir is None:
+		print("No valid Tabletop Simulator 'Saves' directory found.", file=sys.stderr)
+		sys.exit(1)
 
 	config = configparser.ConfigParser()
 	config.read('build.properties')
@@ -61,11 +84,11 @@ def build():
 	timestamp = datetime.now().strftime("%m/%d/%Y %I:%M:%S %p")
 
 	if args.full:
-		importSave(input_save)
+		import_save(input_save)
 		unpack()
 		unbundle(luabundler)
 		patch()
-		storeJson()
+		store_json()
 
 	bundle(luabundler, timestamp)
 
@@ -73,9 +96,14 @@ def build():
 		upload()
 	else:
 		pack(timestamp)
-		exportSave(output_save)
+		export_save(output_save)
 
-def importSave(input_save):
+def select_first_existing_path(paths):
+	for path in paths:
+		if os.path.exists(path):
+			return path
+
+def import_save(input_save):
 	print("[import]")
 	if os.path.exists(input_save):
 		shutil.copyfile(input_save, os.path.join('tmp', 'mod.unpatched.json'))
@@ -116,6 +144,13 @@ def unbundle(luabundler):
 			except:
 				print('    (An error is ok if the script does not use require directives.)')
 				shutil.copyfile(full_path, os.path.join(target, filename))
+			print("Segmenting module paths.")
+			module_dir = os.path.join(target, 'modules')
+			for m in os.listdir(module_dir):
+				n = re.sub(r'\.', '/', re.sub(r'\.lua$', '', m)) + '.lua'
+				if m != n:
+					os.makedirs(os.path.join(module_dir, os.path.dirname(n)), exist_ok = True)
+					shutil.move(os.path.join(module_dir, m), os.path.join(module_dir, n))
 
 def patch():
 	print("[patch]")
@@ -129,7 +164,7 @@ def expand():
 	input_file_name = os.path.join('tmp', 'mod.unscripted.patched.json')
 	tts_build.expand.expand(input_file_name, 'scripts')
 
-def storeJson():
+def store_json():
 	print("[store]")
 	shutil.copyfile(os.path.join('tmp', 'mod.unscripted.patched.json'), 'skeleton.json')
 
@@ -158,12 +193,12 @@ def bundle(luabundler, timestamp):
 				sys.exit(1)
 
 	luaFile = os.path.join(tts_tmp_dir, 'Global.-1.ttslua')
-	with open (luaFile, 'r') as f:
+	with open (luaFile, 'r', encoding='utf-8') as f:
 		content = f.read()
 
 	content_new = re.sub(r"local BUILD\s*=\s*.*", "local BUILD = '{}'".format(timestamp), content)
 
-	with open (luaFile, 'w') as f:
+	with open (luaFile, 'w', encoding='utf-8') as f:
 		f.write(content_new)
 
 def pack(timestamp):
@@ -172,7 +207,7 @@ def pack(timestamp):
 	output_file_name = os.path.join('tmp', 'mod.patched.json')
 	tts_build.pack.pack_save(tts_tmp_dir, input_file_name, output_file_name, timestamp)
 
-def exportSave(output_save):
+def export_save(output_save):
 	print("[export]")
 	shutil.copyfile(os.path.join('tmp', 'mod.patched.json'), output_save)
 	output_png_file = output_save.replace('.json', '.png')

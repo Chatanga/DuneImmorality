@@ -426,6 +426,18 @@ function setLanguage(language)
     i18n.setLocale(language.locale)
     localeAssets.load()
     core.callOnAllLoadedObjects("onLocaleChange")
+    updateWarningCardsOnLanguageChange(language)
+end
+
+function updateWarningCardsOnLanguageChange(language)
+    for _, guid in ipairs({'9243c7', '58fe1d', '0017fe', '6efbef'}) do
+        local warningCard = getObjectFromGUID(guid)
+        if warningCard then
+            local rotation = warningCard.getRotation()
+            rotation.z = language.locale == 'fr' and 180 or 0
+            warningCard.setRotation(rotation)
+        end
+    end
 end
 
 -----------------End Number of ban buttons section------------------------
