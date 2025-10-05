@@ -52,7 +52,7 @@ __Aesthetic__
 
 ### scripts
 
-- __Global.-1.lua__ - Create, register, load, set up and save all the modules + manage the set up UI.
+- __Global.-1.lua__ - Create, register, load, set up and save all the modules + manage the setup UI.
 - __Global.-1.xml__ - All global UI roots are there (only the set up menu for Uprising).
 
 ### scripts/modules
@@ -115,7 +115,7 @@ Modules relies on the Luabundler tool, but also on `utils.Modules`.
 
 Reusable modules without dependencies on the other modules.
 
-- __AcquireCard.lua__ - An auto adjustable dynami button to draw from a stack of deck.
+- __AcquireCard.lua__ - An auto adjustable dynamic button to draw from a stack of deck.
 - __Dialog.lua__ - Alternative dialogs to be notified when a user choose to cancel.
 - __Helper.lua__ - Various helping functions.
 - __I18N.lua__ - Internationalisation support.
