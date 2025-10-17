@@ -914,7 +914,7 @@ return {
     theStrongSurvive = "The Strong Survive",
     tenuousBound = "Tenuous Bound",
     withdrawalAgreement = "Withdrawal Agreement",
-    falseOrder = "False Order",
+    falseOrders = "False Orders",
     graspArrakis = "Grasp Arrakis",
     insiderInformation = "Insider Information",
     ripplesInTheSand = "Ripples In TheSand",

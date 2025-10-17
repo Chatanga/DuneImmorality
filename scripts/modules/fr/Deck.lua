@@ -620,6 +620,12 @@ function Deck.loadCustomDecks(loader)
         "choamProfits",
     })
     Deck.load(loader, cards.intrigue, "intrigue", "bloodlinesIntrigue", 1, {
+        "withdrawalAgreement",
+        "falseOrders",
+        "graspArrakis",
+        "insiderInformation",
+        "ripplesInTheSand",
+        "sleeperUnit",
         "adaptiveTactics",
         "desertSupport",
         "emperorInvitation",
@@ -629,12 +635,6 @@ function Deck.loadCustomDecks(loader)
         "seizeProduction",
         "theStrongSurvive",
         "tenuousBound",
-        "withdrawalAgreement",
-        "falseOrder",
-        "graspArrakis",
-        "insiderInformation",
-        "ripplesInTheSand",
-        "sleeperUnit",
     })
     Deck.load(loader, cards.intrigue, "intrigue", "bloodlinesIntrigue_contract", 1, {
         "coerciveNegotiation",
