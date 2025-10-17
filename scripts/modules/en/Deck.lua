@@ -551,6 +551,12 @@ function Deck.loadCustomDecks(loader)
         "viciousTalents"
     })
     Deck.load(loader, cards.intrigue, "intrigue", "bloodlinesIntrigue", 1, {
+        "withdrawalAgreement",
+        "", -- falseOrders
+        "", -- graspArrakis
+        "", -- insiderInformation
+        "", -- ripplesInTheSand
+        "", -- sleeperUnit
         "adaptiveTactics",
         "desertSupport",
         "emperorInvitation",
@@ -560,7 +566,6 @@ function Deck.loadCustomDecks(loader)
         "seizeProduction",
         "theStrongSurvive",
         "tenuousBound",
-        "withdrawalAgreement",
     })
     Deck.load(loader, cards.intrigue, "intrigue", "bloodlinesIntrigue_tech", 1, {
         "battlefieldResearch",
