@@ -1259,7 +1259,7 @@ function Deck._mergeStandardContributionSets(root, settings)
     local free = settings.tweakLeaderSelection and not settings.merakon
 
     local contributionSets = { root.uprising }
-    if settings.merakon then
+    if settings.merakon and root.merakon then
         table.insert(contributionSets, root.merakon)
     else
         if settings.ix then
@@ -1719,7 +1719,7 @@ function Deck._generateFromPrebuildDeck(deckType, deckZone, contributions, _, sp
         -- Curiously, the problem doesn't exist for dynamic decks.
         "Trying to generate a static deck in an incompatibly tagged zone will trigger the dreaded 'Unknown Error'.")
     assert(contributions)
-    assert(#Helper.getKeys(contributions) > 0)
+    assert(#Helper.getKeys(contributions) > 0, "No contributions for prebuild deck '" .. deckType .. "'")
 
     local continuation = Helper.createContinuation("Deck._prebuildDeck")
 
