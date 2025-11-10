@@ -1020,7 +1020,8 @@ Leader.gaiusHelenMohiam = Helper.createClass(Leader, {
 
     --- Clandestine
     sendAgent = function (color, spaceName, recallSpy)
-        local recallableSpies = MainBoard.getRecallableSpies(color, spaceName)
+        local parentSpaceName = MainBoard.findParentSpaceName(spaceName)
+        local recallableSpies = MainBoard.getRecallableSpies(color, parentSpaceName)
         return Action.sendAgent(color, spaceName, #recallableSpies > 0)
     end,
 })

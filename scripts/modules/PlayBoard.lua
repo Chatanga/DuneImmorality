@@ -1073,12 +1073,12 @@ function PlayBoard._transientSetUp(settings)
             MainBoard.getFirstPlayerMarker().destruct()
         end
 
-        for _, playBoard in pairs(PlayBoard._getPlayBoards(true)) do
+        for color, playBoard in pairs(PlayBoard._getPlayBoards(true)) do
             -- When informal, the combat phase ends automatically, leaving the players in limbo until they press the "reclaim rewards" button.
             if false and phase == "combat" and not Combat.isFormalCombatPhaseEnabled() then
-                playBoard:_updateInstructionLabel(I18N("combatInstruction"))
+                playBoard:_updateInstructionLabel(color, I18N("combatInstruction"))
             else
-                playBoard:_updateInstructionLabel(nil)
+                playBoard:_updateInstructionLabel(color, nil)
             end
         end
 
@@ -1113,7 +1113,7 @@ function PlayBoard._transientSetUp(settings)
         end
         for otherColor, otherPlayBoard in pairs(PlayBoard._getPlayBoards(true)) do
             local instruction = (playBoard.leader or Action).instruct(phase, color == otherColor) or "-"
-            otherPlayBoard:_updateInstructionLabel(instruction)
+            otherPlayBoard:_updateInstructionLabel(otherColor, instruction)
         end
 
         PlayBoard._setActivePlayer(phase, color, refreshing)
@@ -1189,8 +1189,11 @@ function PlayBoard._transientSetUp(settings)
     end
 end
 
+---@param color PlayerColor
 ---@param instruction? string
-function PlayBoard:_updateInstructionLabel(instruction)
+function PlayBoard:_updateInstructionLabel(color, instruction)
+    assert(self.instructionTextAnchor, color .. " has no instruction text anchor!")
+    assert(not Helper.isNil(self.instructionTextAnchor), color .. " has no more instruction text anchor!")
     local position = self.instructionTextAnchor.getPosition()
     position:setAt('y', Board.onPlayBoard(0.1))
     if self.instructionTextAnchor then
@@ -1212,8 +1215,8 @@ function PlayBoard:_updateInstructionLabel(instruction)
 end
 
 function PlayBoard.setGeneralCombatInstruction()
-    for _, playBoard in pairs(PlayBoard._getPlayBoards(true)) do
-        playBoard:_updateInstructionLabel(I18N("combatInstruction"))
+    for color, playBoard in pairs(PlayBoard._getPlayBoards(true)) do
+        playBoard:_updateInstructionLabel(color, I18N("combatInstruction"))
     end
 end
 
