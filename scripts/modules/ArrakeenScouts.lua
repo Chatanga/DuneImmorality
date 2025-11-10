@@ -1707,7 +1707,6 @@ function ArrakeenScouts._createNoComingBackController(playerPanes)
                 elseif cardName == "diplomacy" then
                     leader.influence(color, option.faction, 2)
                 end
-                leader.troops(color, "supply", "tanks", 1)
                 continuation.run()
             end)
         else
