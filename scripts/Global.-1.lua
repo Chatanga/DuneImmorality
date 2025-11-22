@@ -220,7 +220,7 @@ function asyncOnLoad(scriptState)
 
     local state = scriptState ~= "" and JSON.decode(scriptState) or {}
     settings = state.settings
-    updateSaveInfo()
+    updateSaveInfo(state.state)
 
     -- TODO Detail dependencies? An explicit graph would be useful.
     allModules.ordered = {
@@ -297,13 +297,14 @@ function asyncOnLoad(scriptState)
 end
 
 --- Update the save information as sent when reporting an error.
-function updateSaveInfo()
+---@param state? string
+function updateSaveInfo(state)
     local saveInfo = Global.getVar("saveInfo")
 
     saveInfo = {
         modName = MOD_NAME,
         build = BUILD,
-        state = saveInfo and saveInfo.state or "prime",
+        state = saveInfo and saveInfo.state or (state or "prime"),
     }
 
     if settings then
@@ -369,7 +370,7 @@ function onSave()
         local savedState = {
             date = os.time(),
             settings = settings,
-            stable = stable and "stable" or "unstable",
+            state = stable and "stable" or "unstable",
         }
 
         -- TODO Only call it for the same modules for which "onLoad" has been called.
