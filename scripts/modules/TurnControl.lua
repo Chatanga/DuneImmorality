@@ -278,7 +278,7 @@ function TurnControl._startPhase(phase)
 
     local firstPlayer = TurnControl.players[TurnControl.firstPlayerLuaIndex]
     Helper.dump("> Round:", TurnControl.getCurrentRound(), "- Phase:", phase)
-    broadcastToAll(I18N(Helper.toCamelCase("phase", phase), { round = TurnControl.currentRound }), Color.fromString("Pink"))
+    broadcastToAll(I18N(Helper.concatAsCamelCase("phase", phase), { round = TurnControl.currentRound }), Color.fromString("Pink"))
     Helper.emitEvent("phaseStart", TurnControl.currentPhase, firstPlayer)
 
     Helper.onceFramesPassed(1).doAfter(function ()

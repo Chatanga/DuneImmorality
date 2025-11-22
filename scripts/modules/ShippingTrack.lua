@@ -99,7 +99,7 @@ end
 function ShippingTrack._createBonusButton(bonusName, bonusSlot)
     local tooltip = I18N("pickBonus", { bonus = I18N(bonusName) })
     local ground = bonusSlot.getPosition().y - 0.1
-    local callbackName = Helper.toCamelCase("_pick", bonusName, "bonus")
+    local callbackName = Helper.concatAsCamelCase("_pick", bonusName, "bonus")
     local callback = ShippingTrack[callbackName]
     assert(callback, "No callback named " .. callbackName)
     Helper.createAnchoredAreaButton(bonusSlot, ground, 0.2, tooltip, PlayBoard.withLeader(function (_, color, _)

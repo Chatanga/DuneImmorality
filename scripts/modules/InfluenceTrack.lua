@@ -87,7 +87,7 @@ function InfluenceTrack._transientSetUp(settings, firstTime)
         for i = 0, 6 do
             local levelPosition = meanStartPosition + Vector(0, -0.5, meanStep * i)
             Helper.createTransientAnchor(faction .. "Rank" .. tostring(i), levelPosition).doAfter(function (anchor)
-                local actionName = I18N("progressOnInfluenceTrack", { withFaction = I18N(Helper.toCamelCase("with", faction)) })
+                local actionName = I18N("progressOnInfluenceTrack", { withFaction = I18N(Helper.concatAsCamelCase("with", faction)) })
                 Helper.createSizedAreaButton(1000, 400, anchor, 0, 0, Board.onMainBoard(0.1), actionName, PlayBoard.withLeader(function (leader, color, _)
                     if not InfluenceTrack.lockedActions[faction][color] then
                         if InfluenceTrack.hasAccess(color, faction) then
@@ -222,7 +222,7 @@ function InfluenceTrack.recallSnooper(faction, color)
         foundSnooper.setPositionSmooth(p)
 
         Helper.onceTimeElapsed(1).doAfter(function ()
-            local parameters = { withFaction = I18N(Helper.toCamelCase("with", faction)) }
+            local parameters = { withFaction = I18N(Helper.concatAsCamelCase("with", faction)) }
             local leader = PlayBoard.getLeader(color)
             if snooperRank == 1 then
                 broadcastToAll(I18N("firstSnooperRecall", parameters), color)

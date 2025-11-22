@@ -207,7 +207,7 @@ function TechCard.applyBuyEffect(color, techCard)
     if details.name == "ornithopterFleet" then
         for _, objective in ipairs({ "muadDib", "crysknife", "joker" }) do
             local position = PlayBoard.getObjectiveStackPosition(color, objective)
-            local tag = Helper.toPascalCase(objective, "ObjectiveToken")
+            local tag = Helper.concatAsPascalCase(objective, "ObjectiveToken")
             local hitTokens = PlayBoard.collectObjectiveTokens(position, tag)
             for _, hitToken in ipairs(hitTokens) do
                 hitToken.destruct()

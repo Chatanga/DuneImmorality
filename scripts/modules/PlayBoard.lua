@@ -3265,7 +3265,7 @@ end
 ---@param objective string
 ---@return Vector?
 function PlayBoard.getObjectiveStackPosition(color, objective)
-    local tag = Helper.toPascalCase(objective, "ObjectiveToken")
+    local tag = Helper.concatAsPascalCase(objective, "ObjectiveToken")
     local board = PlayBoard.getPlayBoard(color).content.board
     for _, snapPoint in ipairs(board.getSnapPoints()) do
         if Helper.isElementOf(tag, snapPoint.tags) then

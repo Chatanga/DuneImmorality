@@ -328,7 +328,7 @@ function Action.influence(color, faction, amount)
     if faction then
         InfluenceTrack.change(color, faction, amount).doAfter(function (realAmount)
             Action.log(I18N(amount > 0 and "gainInfluence" or "loseInfluence", {
-                withFaction = I18N(Helper.toCamelCase("with", faction)),
+                withFaction = I18N(Helper.concatAsCamelCase("with", faction)),
                 amount = math.abs(amount),
             }), color)
             continuation.run(realAmount)

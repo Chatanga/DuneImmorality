@@ -733,7 +733,7 @@ function Combat.gainObjective(color, initialObjective, ignoreExisting)
 
     local continuation = Helper.createContinuation("Combat.gainObjective")
     local position = PlayBoard.getObjectiveStackPosition(color, objective)
-    local tag = Helper.toPascalCase(initialObjective, "ObjectiveToken")
+    local tag = Helper.concatAsPascalCase(initialObjective, "ObjectiveToken")
 
     if not ignoreExisting then
         for _, object in ipairs(Combat.rewardTokenZone.getObjects()) do

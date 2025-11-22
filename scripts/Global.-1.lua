@@ -198,13 +198,7 @@ function asyncOnLoad(scriptState)
 
     local state = scriptState ~= "" and JSON.decode(scriptState) or {}
     settings = state.settings
-
-    -- Make it available to 'Helper.postError'.
-    Global.setVar("saveInfo", {
-        modname = MOD_NAME,
-        build = BUILD,
-        stable = state.stable or "prime",
-    });
+    updateSaveInfo()
 
     -- TODO Detail dependencies? An explicit graph would be useful.
     allModules.ordered = {
@@ -285,6 +279,53 @@ function asyncOnLoad(scriptState)
     end
 end
 
+--- Update the save information as sent when reporting an error.
+function updateSaveInfo()
+    local saveInfo = Global.getVar("saveInfo")
+
+    saveInfo = {
+        modName = MOD_NAME,
+        build = BUILD,
+        state = saveInfo and saveInfo.state or "prime",
+    }
+
+    if settings then
+        saveInfo.language = settings.language
+        saveInfo.numberOfPlayers = settings.numberOfPlayers
+        saveInfo.hotSeat = settings.hotSeat
+        saveInfo.firstPlayer = settings.firstPlayer
+        saveInfo.randomizePlayerPositions = settings.randomizePlayerPositions
+        saveInfo.difficulty = settings.difficulty
+        saveInfo.autoTurnInSolo = settings.autoTurnInSolo
+        saveInfo.imperiumRowChurn = settings.imperiumRowChurn
+        saveInfo.streamlinedRivals = settings.streamlinedRivals
+        saveInfo.brutalEscalation = settings.brutalEscalation
+        saveInfo.expertDeployment = settings.expertDeployment
+        saveInfo.smartPolitics = settings.smartPolitics
+        saveInfo.useContracts = settings.useContracts
+        saveInfo.legacy = settings.legacy
+        saveInfo.merakon = settings.merakon
+        saveInfo.ix = settings.ix
+        saveInfo.epicMode = settings.epicMode
+        saveInfo.immortality = settings.immortality
+        saveInfo.goTo11 = settings.goTo11
+        saveInfo.bloodlines = settings.bloodlines
+        saveInfo.ixAmbassy = settings.ixAmbassy
+        saveInfo.ixAmbassyWithIx = settings.ixAmbassyWithIx
+        saveInfo.leaderSelection = settings.leaderSelection
+        saveInfo.leaderPoolSize = settings.leaderPoolSize
+        saveInfo.tweakLeaderSelection = settings.tweakLeaderSelection
+        saveInfo.horizontalHandLayout = settings.horizontalHandLayout
+        saveInfo.formalCombatPhase = settings.formalCombatPhase
+        saveInfo.soundEnabled = settings.soundEnabled
+        saveInfo.submitGameRankedGame = settings.submitGameRankedGame
+        saveInfo.submitGameTournament = settings.submitGameTournament
+    end
+
+    -- Make it available to 'Helper.postError'.
+    Global.setVar("saveInfo", saveInfo);
+end
+
 --- TTS event handler.
 function onSave()
     if constructionModeEnabled then
@@ -355,6 +396,7 @@ function setUp(newSettings)
     continuation.doAfter(function ()
         -- Not assigned before in order to avoid saving anything.
         settings = newSettings
+        updateSaveInfo()
 
         local properlySeatedPlayers = Controller.getProperlySeatedPlayers()
         local activeOpponents = Controller.findActiveOpponents(properlySeatedPlayers, newSettings.numberOfPlayers)

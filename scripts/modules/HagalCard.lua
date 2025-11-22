@@ -83,7 +83,7 @@ function HagalCard.activate(color, card, ix, immortality)
     HagalCard.ix = ix
     HagalCard.immortality = immortality
     local rival = PlayBoard.getLeader(color)
-    local actionName = Helper.toCamelCase("_activate", cardName)
+    local actionName = Helper.concatAsCamelCase("_activate", cardName)
     assert(HagalCard[actionName], actionName)
     return HagalCard[actionName](color, rival, ix)
 end
