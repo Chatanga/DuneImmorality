@@ -73,31 +73,53 @@ end
     catched.
 ]]
 ---@param context string
----@param error string
-function Helper._postError(context, error)
+---@param errorMessage string
+function Helper._postError(context, errorMessage)
 
     local saveInfo = Global.getVar("saveInfo")
     if not saveInfo then
         return
     end
 
-    local url = "https://hihan.org/tts-error-log/index.php"
     local form = {
         action = "add",
-        modname = saveInfo.modname,
-        build = saveInfo.build,
-        stable = saveInfo.stable,
-        context = Helper.toString(context),
-        error = Helper.toString(error),
+        s_context = Helper.toString(context),
+        s_error = Helper.toString(errorMessage),
     }
 
+    for key, value in pairs(saveInfo) do
+        if value ~= nil then
+            local t = type(value)
+            if t ~= "table" then
+                local name = Helper.camelCaseToSnakeCase(key)
+                if t == "string" then
+                    name = "s_" .. name
+                elseif t == "number" then
+                    name = "n_" .. name
+                elseif t == "boolean" then
+                    name = "b_" .. name
+                else
+                    Helper.dump("value:", value)
+                    error("Unsupported type for key '" .. key .. "': " .. t)
+                end
+                ---@cast form table<string, any>
+                form[name] = value
+            end
+        end
+    end
+
+    --Helper.dump("form:", form)
+
+    local url = "https://hihan.org/tts-error-log/index.php"
     WebRequest.post(url, form, function(request)
         if request.is_error then
             Helper.dump("Request failed:", request.error)
         else
             local responseData = JSON.decode(request.text)
-            if not responseData.code or responseData.code ~= "0" then
-                Helper.dump("Response:", responseData)
+            if responseData then
+                if not responseData.code or responseData.code ~= "0" then
+                    Helper.dump("Response:", responseData)
+                end
             end
         end
     end)
@@ -1718,7 +1740,7 @@ end
 -- *** Lua miscellaneous ***
 
 ---@param ... string
-function Helper.toCamelCase(...)
+function Helper.concatAsCamelCase(...)
     local camelString
     for i, str in ipairs({...}) do
         if i > 1 then
@@ -1731,7 +1753,7 @@ function Helper.toCamelCase(...)
 end
 
 ---@param ... string
-function Helper.toPascalCase(...)
+function Helper.concatAsPascalCase(...)
     local pascalString
     for i, str in ipairs({...}) do
         if i > 1 then
@@ -1741,6 +1763,27 @@ function Helper.toPascalCase(...)
         end
     end
     return pascalString
+end
+
+---@param camelCase string
+function Helper.camelCaseToSnakeCase(camelCase)
+    local snakeCase = ""
+    local word = ""
+    for i = 1, #camelCase + 1 do
+        local c = i <= #camelCase and camelCase:sub(i, i) or 'Z'
+        if c == string.upper(c) then
+            if word ~= "" then
+                if snakeCase  ~= "" then
+                    snakeCase = snakeCase .. '_'
+                end
+                snakeCase = snakeCase .. word
+            end
+            word = string.lower(c)
+        else
+            word = word .. c
+        end
+    end
+    return snakeCase
 end
 
 ---@param data table

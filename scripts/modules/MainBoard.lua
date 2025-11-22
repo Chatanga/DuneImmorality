@@ -481,7 +481,7 @@ function MainBoard.sendAgent(color, spaceName)
     local agent = MainBoard._findProperAgent(color)
 
     local space = MainBoard.spaces[spaceName]
-    local functionSpaceName = Helper.toCamelCase("_go", space.name)
+    local functionSpaceName = Helper.concatAsCamelCase("_go", space.name)
     local goSpace = MainBoard[functionSpaceName]
     assert(goSpace, "Unknow go space function: " .. functionSpaceName)
 
@@ -597,7 +597,7 @@ function MainBoard._checkGenericAccess(color, leader, requirements)
             end
         elseif requirement == "friendship" then
             if not InfluenceTrack.hasFriendship(color, value) then
-                Dialog.broadcastToColor(I18N("noFriendship", { withFaction = I18N(Helper.toCamelCase("with", value)) }), color, "Purple")
+                Dialog.broadcastToColor(I18N("noFriendship", { withFaction = I18N(Helper.concatAsCamelCase("with", value)) }), color, "Purple")
                 return false
             end
         end

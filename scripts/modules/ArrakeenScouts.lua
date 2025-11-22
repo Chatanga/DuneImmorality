@@ -436,7 +436,7 @@ end
 
 ---@param content string
 function ArrakeenScouts._createDialog(content)
-    local createController = ArrakeenScouts[Helper.toCamelCase("_create", content, "controller")]
+    local createController = ArrakeenScouts[Helper.concatAsCamelCase("_create", content, "controller")]
     assert(createController, "No create controller function for content: " .. content)
 
     broadcastToAll(I18N(content), Color.fromString("Pink"))
@@ -910,7 +910,7 @@ function ArrakeenScouts.joinCommitee(color, luaIndex)
         Helper.clearButtons(ArrakeenScouts.committeeAnchors[luaIndex])
         ArrakeenScouts.committeeAccess[color] = false
 
-        local effector = ArrakeenScouts[Helper.toCamelCase("_join", committee)]
+        local effector = ArrakeenScouts[Helper.concatAsCamelCase("_join", committee)]
         assert(effector, "No effector for commitee: " .. committee)
         if effector then
             local leader = PlayBoard.getLeader(color)
