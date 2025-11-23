@@ -206,6 +206,21 @@ function onLoad(scriptState)
             end)
         end)
     end
+
+    Helper.createButton(getObjectFromGUID("7645c0"), {
+        click_function = Helper.registerGlobalCallback(function (player)
+            player.unknownMember = 0
+        end),
+        label = "☠",
+        position = Vector(-0.485, 0.5, 0),
+        rotation = Vector(0, 180, 0),
+        scale = Vector(1/40.66, 1/5, 1/2.6),
+        width = 200,
+        height = 200,
+        color = "Black",
+        font_size = 100,
+        font_color = "White"
+    })
 end
 
 ---@param scriptState string
