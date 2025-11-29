@@ -81,9 +81,10 @@ end
 
 ---@param indexInRow integer
 ---@param color PlayerColor
+---@return boolean
 function TleilaxuRow.acquireTleilaxuCard(indexInRow, color)
     local acquireCard = TleilaxuRow.acquireCards[indexInRow]
-    assert(Helper.withAnyCard(acquireCard.zone, function (card)
+    return Helper.withAnyCard(acquireCard.zone, function (card)
         local price = ImperiumCard.getTleilaxuCardCost(card)
         local cardName = Helper.getID(card)
         assert(price, "Unknown tleilaxu card: " .. tostring(cardName))
@@ -122,7 +123,7 @@ function TleilaxuRow.acquireTleilaxuCard(indexInRow, color)
         else
             Dialog.broadcastToColor(I18N("noEnoughSpecimen"), color, "Purple")
         end
-    end))
+    end)
 end
 
 ---@param indexInRow integer
