@@ -1529,7 +1529,7 @@ end
 ---@param deckZone Zone
 ---@param contributions table<string, integer>
 ---@param _ unknown
----@param spacing? number
+---@param spacing? number Only needed to preserve input order.
 ---@return Continuation
 function Deck._generateFromPrebuildDeck(deckType, deckZone, contributions, _, spacing)
     assert(deckType)
@@ -1576,8 +1576,7 @@ function Deck._generateFromPrebuildDeck(deckType, deckZone, contributions, _, sp
                 assert(source.deck, "Should not happen! Source deck is not properly generated.")
                 source.deck.takeObject({
                     guid = firstGuid,
-                    -- Stacking is needed to preserve input order (but when it is needed?).
-                    position = deckZone.getPosition() + Vector(0, 1 + cardCount * (spacing or 0.1), 0),
+                    position = deckZone.getPosition() + Vector(0, 1 + cardCount * (spacing or 0), 0),
                     smooth = false,
                     callback_function = function (card)
                         if cardinality - i < 0 then
