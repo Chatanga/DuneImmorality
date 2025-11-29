@@ -604,8 +604,7 @@ end
 function Action.acquireTleilaxuCard(color, indexInRow)
     assert(Types.isPlayerColor(color))
     assert(Helper.isInRange(1, 3, indexInRow))
-    TleilaxuRow.acquireTleilaxuCard(indexInRow, color)
-    return true
+    return TleilaxuRow.acquireTleilaxuCard(indexInRow, color)
 end
 
 ---@param color PlayerColor
