@@ -239,6 +239,19 @@ function TurnControl.overridePhaseTurnSequence(turnSequence)
     end
 end
 
+function TurnControl._updateSaveInfo()
+    local saveInfo = Global.getVar("saveInfo")
+
+    saveInfo = Helper.shallowCopy(saveInfo)
+
+    saveInfo.currentRound = TurnControl.currentRound
+    saveInfo.currentPhase = TurnControl.currentPhase
+    saveInfo.currentPlayer = TurnControl.players[TurnControl.currentPlayerLuaIndex]
+
+    -- Make it available to 'Helper.postError'.
+    Global.setVar("saveInfo", saveInfo);
+end
+
 function TurnControl.start()
     assert(TurnControl.firstPlayerLuaIndex, "A setup failure is highly probable!")
     TurnControl._startPhase("leaderSelection")
@@ -280,6 +293,7 @@ function TurnControl._startPhase(phase)
     Helper.dump("> Round:", TurnControl.getCurrentRound(), "- Phase:", phase)
     broadcastToAll(I18N(Helper.concatAsCamelCase("phase", phase), { round = TurnControl.currentRound }), Color.fromString("Pink"))
     Helper.emitEvent("phaseStart", TurnControl.currentPhase, firstPlayer)
+    TurnControl._updateSaveInfo()
 
     Helper.onceFramesPassed(1).doAfter(function ()
         if TurnControl.customTurnSequence then
@@ -321,6 +335,7 @@ function TurnControl.endOfPhase()
         end
         if phase then
             Helper.emitEvent("phaseEnd", phase)
+            TurnControl._updateSaveInfo()
         end
         TurnControl._nextPhase()
     end)
@@ -439,6 +454,7 @@ function TurnControl._notifyPlayerTurn(refreshing)
             end
             Helper.dump(">> Turn:", playerColor)
             Helper.emitEvent("playerTurn", TurnControl.currentPhase, playerColor, refreshing)
+            TurnControl._updateSaveInfo()
         end)
     end
 end
