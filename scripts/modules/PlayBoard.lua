@@ -744,7 +744,7 @@ function PlayBoard.onSave(state)
         return {
             opponent = playBoard.opponent,
             resources = resourceValues,
-            leader = playBoard.leader and playBoard.leader.name,
+            leaderName = playBoard.leader and playBoard.leader.name or nil,
             lastPhase = playBoard.lastPhase,
             revealed = playBoard.revealed,
             initialPositions = {
@@ -814,11 +814,11 @@ function PlayBoard.new(color, unresolvedContent, state, subState)
         Helper.onceFramesPassed(1).doAfter(function ()
             playBoard.leaderCard = Helper.getDeckOrCard(playBoard.content.leaderZone)
             if playBoard.leaderCard then
-                assert(subState.leader)
+                assert(subState.leaderName)
                 if playBoard.opponent == "rival" then
-                    playBoard.leader = Rival.newRival(subState.leader)
+                    playBoard.leader = Rival.newRival(subState.leaderName)
                 else
-                    playBoard.leader = Leader.newLeader(subState.leader)
+                    playBoard.leader = Leader.newLeader(subState.leaderName)
                     if Commander.isCommander(color) then
                         playBoard.leader = Commander.newCommander(color, playBoard.leader)
                     end
