@@ -500,7 +500,7 @@ function PlayBoard.onSave(state)
         return {
             opponent = playBoard.opponent,
             resources = resourceValues,
-            leader = playBoard.leader and playBoard.leader.name,
+            leaderName = Hagal.getRivalCount() ~= 1 and playBoard.leader and playBoard.leader.name or nil,
             lastPhase = playBoard.lastPhase,
             revealed = playBoard.revealed,
             initialPositions = {
@@ -570,11 +570,10 @@ function PlayBoard.new(color, unresolvedContent, state, subState)
         Helper.onceFramesPassed(1).doAfter(function ()
             playBoard.leaderCard = Helper.getDeckOrCard(playBoard.content.leaderZone)
             if playBoard.leaderCard then
-                assert(subState.leader)
                 if playBoard.opponent == "rival" then
-                    playBoard.leader = Rival.newRival(color, subState.leader)
+                    playBoard.leader = Rival.newRival(color, subState.leaderName)
                 else
-                    playBoard.leader = Leader.newLeader(subState.leader)
+                    playBoard.leader = Leader.newLeader(subState.leaderName)
                 end
                 if playBoard.leader.transientSetUp then
                     playBoard.leader.transientSetUp(color, state.settings)

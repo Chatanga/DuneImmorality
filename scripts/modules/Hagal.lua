@@ -46,7 +46,7 @@ local Hagal = Helper.createClass(Action, {
 ---@param state table
 function Hagal.onLoad(state)
     if not state.settings or state.settings.numberOfPlayers < 3 then
-        Helper.append(Hagal, Helper.resolveGUIDs(true, {
+        Helper.append(Hagal, Helper.resolveGUIDs(false, {
             deckZone = "8f49e3",
             mentatSpaceCostPatch = "ba730f",
         }))
