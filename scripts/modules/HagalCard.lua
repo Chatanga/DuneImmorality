@@ -128,7 +128,6 @@ function HagalCard.flushTurnActions(color)
         deploymentLimit = deploymentLimit - realFromSupply
         if realFromSupply > 0 then
             rival.troops(color, "supply", "combat", realFromSupply)
-            Action.getTroopPark(color, "combat")
         end
         if fromSupply > realFromSupply then
             rival.troops(color, "supply", "garrison", fromSupply - realFromSupply)
@@ -140,7 +139,7 @@ function HagalCard.flushTurnActions(color)
         end
 
         HagalCard.inCombat = false
-    else
+    elseif HagalCard.acquiredTroopCount > 0 then
         rival.troops(color, "supply", "garrison", HagalCard.acquiredTroopCount)
     end
     HagalCard.acquiredTroopCount = nil
