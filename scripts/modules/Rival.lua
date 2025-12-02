@@ -289,11 +289,18 @@ function Rival.troops(color, from, to, baseCount)
     local finalCount = baseCount
     if from == "garrison" and to == "combat" then
         local garrison = Action.getTroopPark(color, "garrison")
-        local sardaukarCommanders = Park.getObjects(garrison, function (object, tags)
+        local allSardaukarCommanders = Park.getObjects(garrison, function (object, tags)
             return Types.isSardaukarCommander(object, color)
         end)
-        local count = #sardaukarCommanders
-        if count > 0 then
+        if #allSardaukarCommanders > 0 then
+            local sardaukarCommanders = {}
+            for i, sardaukarCommander in ipairs(allSardaukarCommanders) do
+                if i > baseCount then
+                    break
+                end
+                table.insert(sardaukarCommanders, sardaukarCommander)
+            end
+            local count = #sardaukarCommanders
             Action.log(I18N("transfer", {
                 count = count,
                 what = I18N.agree(count, "sardaukarCommander"),
