@@ -107,7 +107,7 @@ the pixel.
 		</VerticalLayout>
 	</VerticalLayout>
 
-	<Image position="0 380" width="450" height="230" image="https://steamusercontent-a.akamaihd.net/ugc/2502404390141305534/F45EE24DE14C81CE4D22FFF72465DC2B588CC761/"/>
+	<Image position="0 403" width="450" height="273" image="https://steamusercontent-a.akamaihd.net/ugc/14684968512780467305/7D9C7FE96944018AB4301D2076269C9926D2433D/"/>
 </Panel>
 
 <Panel position="480 160" width="450" height="360" color="#000000" id="extensionSetupPane" rotation="0 0 0" outline="#2e200f" outlineSize="1"
