@@ -227,4 +227,10 @@ function Resource:_updateBaseValueContributions()
     end
 end
 
+---@param origin string
+---@return integer
+function Resource:getBaseValue()
+    return self.baseValue
+end
+
 return Resource

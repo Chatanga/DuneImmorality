@@ -143,14 +143,15 @@ def unbundle(luabundler):
 					sys.exit(1)
 			except:
 				print('    (An error is ok if the script does not use require directives.)')
+				print('    (Note: the Lua scripts inside the JSON save must use the end of line convention of the OS...)')
 				shutil.copyfile(full_path, os.path.join(target, filename))
 			print("Segmenting module paths.")
 			module_dir = os.path.join(target, 'modules')
 			for m in os.listdir(module_dir):
-				n = re.sub(r'\.', '/', re.sub(r'\.lua$', '', m)) + '.lua'
+				n = re.sub(r'\.', '/', re.sub(r'\.lua$', '', m))
 				if m != n:
 					os.makedirs(os.path.join(module_dir, os.path.dirname(n)), exist_ok = True)
-					shutil.move(os.path.join(module_dir, m), os.path.join(module_dir, n))
+					shutil.move(os.path.join(module_dir, m), os.path.join(module_dir, n + '.lua'))
 
 def patch():
 	print("[patch]")

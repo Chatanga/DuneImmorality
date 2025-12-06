@@ -330,9 +330,10 @@ function TurnControl._createReclaimRewardsButton()
             color = fromIntRGB(128, 77, 0),
             font_color = fromIntRGB(204, 153, 0),
         })
-    end)
 
-    PlayBoard.setGeneralCombatInstruction()
+        -- Also do it asynchronously since the instruction text needs its own anchor to be created when loading.
+        PlayBoard.setGeneralCombatInstruction()
+    end)
 end
 
 function TurnControl._createNextRoundButton()

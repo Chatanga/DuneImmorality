@@ -804,31 +804,16 @@ Leader.yrkoon = Helper.createClass(Leader, {
                     PlayBoard.getPlayBoard(color):trash(deck)
                 end)
             end)
-
-            for i = 1, 4 do
-                local bag = getObjectFromGUID(Leader.yrkoon.bags[i])
-                local p = zone.getPosition() + Vector(i * 1.2 - 3, 0, -1.5)
-                p:setAt('y', Board.onPlayBoard(0))
-                bag.setPosition(p)
-                bag.setInvisibleTo({})
-                Helper.noPhysics(bag)
-
-                local ranks = { "first", "second", "third", "fourth" }
-                bag.createButton({
-                    click_function = Helper.registerGlobalCallback(function ()
-                        bag.Container.search(color, 1)
-                    end),
-                    position = Vector(0, 0.6, 0),
-                    tooltip = I18N("lookAt", { rank = I18N(ranks[i]) }),
-                    width = 500,
-                    height = 500,
-                    color = Helper.AREA_BUTTON_COLOR,
-                    hover_color = { 0.7, 0.7, 0.7, 0.7 },
-                    press_color = { 0.5, 1, 0.5, 0.4 },
-                    font_color = { 1, 1, 1, 100 },
-                })
-            end
         end)
+
+        for i, bag in ipairs(Leader.yrkoon.bags) do
+            local bag = getObjectFromGUID(bagGUID)
+            local p = zone.getPosition() + Vector(i * 1.2 - 3, 0, -1.5)
+            p:setAt('y', Board.onPlayBoard(0))
+            bag.setPosition(p)
+            bag.setInvisibleTo({})
+            Helper.noPhysics(bag)
+        end
 
         Leader.yrkoon.transientSetUp(color, settings)
     end,
@@ -848,6 +833,25 @@ Leader.yrkoon = Helper.createClass(Leader, {
 
     --- Hungry for Spice & Plot Course
     transientSetUp = function (color, settings)
+
+        local ranks = { "first", "second", "third", "fourth" }
+        for i, bagGUID in ipairs(Leader.yrkoon.bags) do
+            local bag = getObjectFromGUID(bagGUID)
+            bag.createButton({
+                click_function = Helper.registerGlobalCallback(function ()
+                    bag.Container.search(color, 1)
+                end),
+                position = Vector(0, 0.6, 0),
+                tooltip = I18N("lookAt", { rank = I18N(ranks[i]) }),
+                width = 500,
+                height = 500,
+                color = Helper.AREA_BUTTON_COLOR,
+                hover_color = { 0.7, 0.7, 0.7, 0.7 },
+                press_color = { 0.5, 1, 0.5, 0.4 },
+                font_color = { 1, 1, 1, 100 },
+            })
+        end
+
         Helper.registerEventListener("playerTurn", function (phaseName, otherColor)
             -- We don't check that otherColor == color because the rules don't say that the turn must be Y'rkoon's.
             if phaseName == "playerTurns" then
@@ -856,6 +860,7 @@ Leader.yrkoon = Helper.createClass(Leader, {
                 Leader.yrkoon.baseSpice = nil
             end
         end)
+
         Helper.registerEventListener("spiceValueChanged", function (otherColor, newValue)
             if Leader.yrkoon.baseSpice and otherColor == color and TurnControl.getCurrentPhase() == "playerTurns" then
                 if newValue - Leader.yrkoon.baseSpice >= 3 then
@@ -866,6 +871,7 @@ Leader.yrkoon = Helper.createClass(Leader, {
                 end
             end
         end)
+
         Helper.registerEventListener("influence", function (faction, otherColor, newRank, oldRank)
             if otherColor == color and newRank >= 2 and oldRank < 2 then
                 --Helper.dump("draw next navigation card")
