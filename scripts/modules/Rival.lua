@@ -69,6 +69,8 @@ function Rival._buyVictoryPoints(color)
     -- Do not use Rival.resources inside this function!
 
     local level3Conflict = Combat.getCurrentConflictLevel() == 3
+    local techAvailable = Hagal.ix or Hagal.ixAmbassy
+
     while true do
         local intrigues = PlayBoard.getIntrigues(color)
         if #intrigues >= 3 then
@@ -80,14 +82,16 @@ function Rival._buyVictoryPoints(color)
             goto continue
         end
 
-        if Hagal.ix and not level3Conflict then
+        if techAvailable then
             local tech = PlayBoard.getTech(color, "spySatellites")
             if tech and Action.resources(color, "spice", -3) then
                 MainBoard.trash(tech)
                 Rival.gainVictoryPoint(color, "spySatellites", 1)
                 goto continue
             end
-        else
+        end
+
+        if not techAvailable or level3Conflict then
             if Action.resources(color, "spice", -7) then
                 Rival.gainVictoryPoint(color, "spice", 1)
                 goto continue
