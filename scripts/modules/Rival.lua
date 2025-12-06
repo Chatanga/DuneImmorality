@@ -46,7 +46,8 @@ function Rival.triggerHagalReaction(color)
         assert(coroutineHolder.coroutine)
         Helper.unregisterGlobalCallback(coroutineHolder.coroutine)
 
-        Helper.sleep(1)
+        -- Enough time for any intrigue card to reach a rival hand.
+        Helper.sleep(2)
 
         local rival = Rival.getRival(color)
 
