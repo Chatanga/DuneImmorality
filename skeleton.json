@@ -555,8 +555,8 @@
         "normalized": "spacetechnegotiation_buy"
       },
       {
-        "displayed": "spaceTechNegotiation_Negotitator",
-        "normalized": "spacetechnegotiation_negotitator"
+        "displayed": "spaceTechNegotiation_Negotiate",
+        "normalized": "spacetechnegotiation_negotiate"
       },
       {
         "displayed": "victoryTokenRoom",
@@ -25937,7 +25937,7 @@
             "z": -0.5116248
           },
           "Tags": [
-            "spaceTechNegotiation_Negotitator"
+            "spaceTechNegotiation_Negotiate"
           ]
         },
         {
@@ -27106,7 +27106,7 @@
             "z": -0.5116248
           },
           "Tags": [
-            "spaceTechNegotiation_Negotitator"
+            "spaceTechNegotiation_Negotiate"
           ]
         },
         {
@@ -28581,7 +28581,7 @@
                 "z": -0.5116248
               },
               "Tags": [
-                "spaceTechNegotiation_Negotitator"
+                "spaceTechNegotiation_Negotiate"
               ]
             },
             {
@@ -28831,7 +28831,7 @@
                 "z": -0.5116248
               },
               "Tags": [
-                "spaceTechNegotiation_Negotitator"
+                "spaceTechNegotiation_Negotiate"
               ]
             },
             {
