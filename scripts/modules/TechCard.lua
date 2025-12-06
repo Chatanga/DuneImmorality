@@ -166,7 +166,12 @@ function TechCard._evaluateReveal(color, preElsePost, oldContributions)
 
     for _, techCard in ipairs(PlayBoard.getAllTechs(color)) do
         local details = TechCard._resolveCard(techCard)
-        local effects = preElsePost and details.preReveal or details.postReveal
+        local effects
+        if preElsePost then
+            effects = details.preReveal
+        else
+            effects = details.postReveal
+        end
         if effects then
 
             -- TODO Doesn't matter?

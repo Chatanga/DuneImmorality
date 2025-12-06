@@ -7,7 +7,7 @@ def extract_script_and_UI(tts_tmp_dir, name, id, element):
 
     if element.get('LuaScript'):
         with open(file_name + '.ttslua', 'w', encoding='utf-8') as script_file:
-            script_file.write(element['LuaScript'])
+            script_file.write(element['LuaScript'].replace('\r', ''))
         element['LuaScript'] = "..."
         #element['LuaScriptState'] = ""
 

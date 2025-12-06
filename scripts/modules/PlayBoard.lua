@@ -2295,8 +2295,17 @@ function PlayBoard:_revealHand(brutal)
     local alreadyRevealedCards = Helper.filter(Park.getObjects(self.revealCardPark), properCard)
     local allRevealedCards = Helper.concatTables(revealedCards, alreadyRevealedCards)
 
+    self:_refreshStaticContributions(false)
+
     local imperiumCardContributions = ImperiumCard.evaluateReveal(self.color, playedCards, allRevealedCards)
     --Helper.dump("imperiumCardContributions:", imperiumCardContributions)
+
+    local correctedImperiumCardContributions = {}
+    for _, resourceName in ipairs({"persuasion", "strength"}) do
+        correctedImperiumCardContributions[resourceName] = (imperiumCardContributions[resourceName] or 0) + self[resourceName]:getBaseValue()
+    end
+    --Helper.dump("correctedImperiumCardContributions:", correctedImperiumCardContributions)
+
     local techCardContributions = TechCard.evaluatePostReveal(self.color, imperiumCardContributions)
     --Helper.dump("techCardContributions:", techCardContributions)
 
@@ -2318,7 +2327,6 @@ function PlayBoard:_revealHand(brutal)
 
     self.persuasion:set(contributions.persuasion or 0)
     self.strength:set(contributions.strength or 0)
-    self:_refreshStaticContributions(false)
 
     if brutal and not self.revealed then
         for _, resourceName in ipairs({ "spice", "solari", "water" }) do
