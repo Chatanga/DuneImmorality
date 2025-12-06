@@ -847,7 +847,7 @@ function Deck.generateImperiumDeck(deckZone, settings)
     assert(deckZone.getPosition)
     local continuation = Helper.createContinuation("Deck.generateImperiumDeck")
     local contributions = Deck._mergeStandardContributionSets(Deck.imperium, settings)
-    if settings.ix or settings.ixAmbassy then
+    if settings.bloodlines and (settings.ix or settings.ixAmbassy) then
         contributions = Deck._mergeContributionSets({ contributions, Deck.imperium.bloodlinesTech })
     end
     Deck._generateDeck("Imperium", deckZone, contributions, Deck.sources.imperium).doAfter(continuation.run)

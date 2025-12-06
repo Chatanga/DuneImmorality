@@ -504,7 +504,7 @@ return {
     gurneyHalleck = "Gurney Halleck",
     thufirHawat = "Thufir Hawat",
     otherMemory = "Mémoire seconde",
-    --lietKynes = "Liet Kynes",
+    lietKynes = "Liet Kynes",
     wormRiders = "Chevaucheurs de ver",
     reverendMotherMohiam = "Révérende mère Mohiam",
     powerPlay = "Jeu de pouvoir",
@@ -611,6 +611,7 @@ return {
     shroudedCounsel = "Shrouded Counsel",
     ruthlessLeadership = "Ruthless Leadership",
     pivotalGambit = "Pivotal Gambit",
+    ixianAmbassador = "Ixiam Ambassador",
 
     -- Intrigue
     bribery = "Pot-de-vin",

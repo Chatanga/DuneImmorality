@@ -609,6 +609,7 @@ return {
     shroudedCounsel = "Shrouded Counsel",
     ruthlessLeadership = "Ruthless Leadership",
     pivotalGambit = "Pivotal Gambit",
+    ixianAmbassador = "Ixiam Ambassador",
 
     -- Intrigue
     bribery = "Bribery",

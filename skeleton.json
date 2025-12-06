@@ -1,7 +1,7 @@
 {
   "SaveName": "Spice Flow",
-  "EpochTime": 1760701315,
-  "Date": "10/17/2025 1:41:55 PM",
+  "EpochTime": 1765022718,
+  "Date": "12/6/2025 1:05:18 PM",
   "VersionNumber": "v13.3",
   "GameMode": "Spice Flow",
   "GameType": "Game",
@@ -836,9 +836,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.09801354,
-        "g": 0.09801354,
-        "b": 0.09801354
+        "r": 0.09801348,
+        "g": 0.09801348,
+        "b": 0.09801348
       },
       "Tags": [
         "AutomataStuff"
@@ -1112,9 +1112,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191998959,
+        "r": 0.191998839,
         "g": 0.701,
-        "b": 0.16799894
+        "b": 0.167998821
       },
       "Tags": [
         "Agent",
@@ -1171,9 +1171,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191998959,
+        "r": 0.191998839,
         "g": 0.701,
-        "b": 0.16799894
+        "b": 0.167998821
       },
       "Tags": [
         "Agent",
@@ -1230,9 +1230,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.19194901,
+        "r": 0.19194895,
         "g": 0.701,
-        "b": 0.167948991
+        "b": 0.167948931
       },
       "Tags": [
         "Green",
@@ -1291,7 +1291,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121462218,
+        "r": 0.1214621,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -1409,7 +1409,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121462218,
+        "r": 0.1214621,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -1468,7 +1468,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121514879,
+        "r": 0.12151482,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -1649,7 +1649,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121462218,
+        "r": 0.1214621,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -1748,7 +1748,7 @@
       "GUID": "fb1629",
       "Name": "Custom_Model",
       "Transform": {
-        "posX": -0.999989152,
+        "posX": -0.999989033,
         "posY": 1.61090124,
         "posZ": 26.0,
         "rotX": 0,
@@ -1767,9 +1767,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191998959,
+        "r": 0.191998839,
         "g": 0.701,
-        "b": 0.16799894
+        "b": 0.167998821
       },
       "Tags": [
         "Agent",
@@ -1973,7 +1973,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526487,
+        "r": 0.121526428,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -2022,7 +2022,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526487,
+        "r": 0.121526428,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -2071,7 +2071,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526487,
+        "r": 0.121526428,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -3539,7 +3539,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526487,
+        "r": 0.121526428,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -3588,7 +3588,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526487,
+        "r": 0.121526428,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -3637,7 +3637,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526487,
+        "r": 0.121526428,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -3686,7 +3686,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526487,
+        "r": 0.121526428,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -3735,7 +3735,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526487,
+        "r": 0.121526428,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -3784,7 +3784,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526487,
+        "r": 0.121526428,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -5028,9 +5028,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.4429582,
-        "g": 0.2309582,
-        "b": 0.08996601
+        "r": 0.442958146,
+        "g": 0.230958134,
+        "b": 0.08996596
       },
       "Tags": [
         "VictoryPointToken"
@@ -5088,9 +5088,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.4429582,
-        "g": 0.2309582,
-        "b": 0.08996601
+        "r": 0.442958146,
+        "g": 0.230958134,
+        "b": 0.08996596
       },
       "Tags": [
         "VictoryPointToken"
@@ -5148,9 +5148,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.4429582,
-        "g": 0.2309582,
-        "b": 0.08996601
+        "r": 0.442958146,
+        "g": 0.230958134,
+        "b": 0.08996596
       },
       "Tags": [
         "VictoryPointToken"
@@ -5208,9 +5208,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.4429582,
-        "g": 0.2309582,
-        "b": 0.08996601
+        "r": 0.442958146,
+        "g": 0.230958134,
+        "b": 0.08996596
       },
       "Tags": [
         "VictoryPointToken"
@@ -5327,9 +5327,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191924989,
+        "r": 0.19192487,
         "g": 0.701,
-        "b": 0.16792497
+        "b": 0.167924851
       },
       "Tags": [
         "Dreadnought",
@@ -5386,7 +5386,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121567585,
+        "r": 0.12156745,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -5446,8 +5446,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.09992462,
-        "b": 0.09392419
+        "g": 0.0999245,
+        "b": 0.09392405
       },
       "Tags": [
         "Dreadnought",
@@ -5565,9 +5565,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.19194901,
+        "r": 0.19194895,
         "g": 0.701,
-        "b": 0.167948991
+        "b": 0.167948931
       },
       "Tags": [
         "Green",
@@ -5748,9 +5748,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.19194901,
+        "r": 0.19194895,
         "g": 0.701,
-        "b": 0.167948991
+        "b": 0.167948931
       },
       "Tags": [
         "Green",
@@ -5809,7 +5809,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526487,
+        "r": 0.121526428,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -5992,7 +5992,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526487,
+        "r": 0.121526428,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -6053,7 +6053,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526487,
+        "r": 0.121526428,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -6175,9 +6175,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.19194901,
+        "r": 0.19194895,
         "g": 0.701,
-        "b": 0.167948991
+        "b": 0.167948931
       },
       "Tags": [
         "Green",
@@ -6358,9 +6358,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.19194901,
+        "r": 0.19194895,
         "g": 0.701,
-        "b": 0.167948991
+        "b": 0.167948931
       },
       "Tags": [
         "Green",
@@ -6419,7 +6419,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526487,
+        "r": 0.121526428,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -6539,9 +6539,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191924989,
+        "r": 0.19192487,
         "g": 0.701,
-        "b": 0.16792497
+        "b": 0.167924851
       },
       "Tags": [
         "Dreadnought",
@@ -6598,7 +6598,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121567585,
+        "r": 0.12156745,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -6658,8 +6658,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.09992462,
-        "b": 0.09392419
+        "g": 0.0999245,
+        "b": 0.09392405
       },
       "Tags": [
         "Dreadnought",
@@ -6716,7 +6716,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.4191529,
+        "r": 0.419152826,
         "g": 0.0,
         "b": 0.681184649
       },
@@ -7158,8 +7158,8 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.3536239,
-        "g": 0.12602365,
+        "r": 0.353623837,
+        "g": 0.126023591,
         "b": 0.0
       },
       "LayoutGroupSortIndex": 0,
@@ -7757,7 +7757,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.1215264,
+        "r": 0.121526338,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -7830,9 +7830,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191950172,
+        "r": 0.191950113,
         "g": 0.701,
-        "b": 0.167950153
+        "b": 0.1679501
       },
       "Tags": [
         "ForceToken"
@@ -8217,9 +8217,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.1994299,
-        "g": 0.0555226,
-        "b": 0.297894239
+        "r": 0.19942984,
+        "g": 0.0555225462,
+        "b": 0.29789418
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -8613,7 +8613,7 @@
       "GUID": "63d39f",
       "Name": "Custom_Token",
       "Transform": {
-        "posX": 1.24461615,
+        "posX": 1.244616,
         "posY": 1.88000011,
         "posZ": 22.05,
         "rotX": 0,
@@ -8632,9 +8632,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.19194901,
+        "r": 0.19194895,
         "g": 0.701,
-        "b": 0.167948991
+        "b": 0.167948931
       },
       "Tags": [
         "Green",
@@ -8693,7 +8693,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526487,
+        "r": 0.121526428,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -8735,7 +8735,7 @@
       "GUID": "2bfc39",
       "Name": "Custom_Token",
       "Transform": {
-        "posX": 0.5446171,
+        "posX": 0.544617057,
         "posY": 1.8775003,
         "posZ": 22.0549927,
         "rotX": 0,
@@ -8796,7 +8796,7 @@
       "GUID": "658b17",
       "Name": "Custom_Token",
       "Transform": {
-        "posX": 0.369999319,
+        "posX": 0.369999379,
         "posY": 1.8775003,
         "posZ": 20.34,
         "rotX": 0,
@@ -8815,9 +8815,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.19194901,
+        "r": 0.19194895,
         "g": 0.701,
-        "b": 0.167948991
+        "b": 0.167948931
       },
       "Tags": [
         "Green",
@@ -8937,7 +8937,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526487,
+        "r": 0.121526428,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -8979,7 +8979,7 @@
       "GUID": "39e0f3",
       "Name": "Custom_Token",
       "Transform": {
-        "posX": 0.369999856,
+        "posX": 0.3699998,
         "posY": 1.88000035,
         "posZ": 18.2351761,
         "rotX": 0,
@@ -9163,9 +9163,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191985071,
+        "r": 0.191984951,
         "g": 0.701,
-        "b": 0.167985052
+        "b": 0.167984933
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -9215,7 +9215,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121567585,
+        "r": 0.12156745,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -12084,7 +12084,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526457,
+        "r": 0.1215264,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -12133,7 +12133,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526457,
+        "r": 0.1215264,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -12182,7 +12182,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526457,
+        "r": 0.1215264,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -16094,7 +16094,7 @@
       },
       "ColorDiffuse": {
         "r": 0.554045439,
-        "g": 0.387893647,
+        "g": 0.3878936,
         "b": 0.6567944
       },
       "Tags": [
@@ -16218,8 +16218,8 @@
       },
       "ColorDiffuse": {
         "r": 0.7334496,
-        "g": 0.144385874,
-        "b": 0.144385874
+        "g": 0.144385815,
+        "b": 0.144385815
       },
       "Tags": [
         "AllianceToken",
@@ -18129,9 +18129,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.4284808,
+        "r": 0.428480744,
         "g": 0.541811764,
-        "b": 0.195387959
+        "b": 0.1953879
       },
       "Tags": [
         "VictoryPointToken"
@@ -18171,7 +18171,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 5.91153,
-        "posY": 1.61252892,
+        "posY": 1.61253011,
         "posZ": 26.1092854,
         "rotX": 0,
         "rotY": 180,
@@ -18189,9 +18189,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.4284808,
+        "r": 0.428480744,
         "g": 0.541811764,
-        "b": 0.195387959
+        "b": 0.1953879
       },
       "Tags": [
         "VictoryPointToken"
@@ -18652,7 +18652,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 2.411529,
-        "posY": 1.61252928,
+        "posY": 1.612529,
         "posZ": 26.1092854,
         "rotX": 0,
         "rotY": 180,
@@ -18672,7 +18672,7 @@
       "ColorDiffuse": {
         "r": 0.688153446,
         "g": 0.553023756,
-        "b": 0.233776122
+        "b": 0.233776063
       },
       "Tags": [
         "VictoryPointToken"
@@ -18712,7 +18712,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 3.398384,
-        "posY": 1.61252761,
+        "posY": 1.61253011,
         "posZ": 26.1092854,
         "rotX": 0,
         "rotY": 180,
@@ -18732,7 +18732,7 @@
       "ColorDiffuse": {
         "r": 0.688153446,
         "g": 0.553023756,
-        "b": 0.233776122
+        "b": 0.233776063
       },
       "Tags": [
         "VictoryPointToken"
@@ -19149,8 +19149,8 @@
       },
       "ColorDiffuse": {
         "r": 0.796167254,
-        "g": 0.05686599,
-        "b": 0.05686599
+        "g": 0.0568659455,
+        "b": 0.0568659455
       },
       "Tags": [
         "VictoryPointToken"
@@ -19369,7 +19369,7 @@
       "Name": "Custom_Model_Infinite_Bag",
       "Transform": {
         "posX": 5.91152954,
-        "posY": 1.71003318,
+        "posY": 1.71003485,
         "posZ": 25.1092873,
         "rotX": 0,
         "rotY": 180,
@@ -19548,7 +19548,7 @@
       "Name": "Custom_Model_Infinite_Bag",
       "Transform": {
         "posX": 3.4,
-        "posY": 1.71003294,
+        "posY": 1.71003091,
         "posZ": 25.11,
         "rotX": 0,
         "rotY": 180,
@@ -21804,9 +21804,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.19199121,
+        "r": 0.19199115,
         "g": 0.701,
-        "b": 0.167991191
+        "b": 0.167991132
       },
       "Tags": [
         "Spy"
@@ -21984,7 +21984,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.1179925,
+        "r": 0.117992438,
         "g": 0.53,
         "b": 1.0
       },
@@ -23040,9 +23040,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.428479284,
+        "r": 0.428479224,
         "g": 0.541811764,
-        "b": 0.195386529
+        "b": 0.195386469
       },
       "Tags": [
         "VictoryPointToken"
@@ -24003,7 +24003,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 9.91,
-        "posY": 1.61252761,
+        "posY": 1.61252582,
         "posZ": 27.11,
         "rotX": 0,
         "rotY": 180,
@@ -24022,7 +24022,7 @@
       },
       "ColorDiffuse": {
         "r": 1.0,
-        "g": 0.0780642256,
+        "g": 0.07806415,
         "b": 0.0
       },
       "Tags": [
@@ -24511,7 +24511,7 @@
       },
       "ColorDiffuse": {
         "r": 0.5139372,
-        "g": 0.344595075,
+        "g": 0.344595015,
         "b": 0.0188026223
       },
       "LayoutGroupSortIndex": 0,
@@ -25399,9 +25399,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.19194901,
+        "r": 0.19194895,
         "g": 0.701,
-        "b": 0.167948991
+        "b": 0.167948931
       },
       "Tags": [
         "Freighter",
@@ -25521,7 +25521,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526487,
+        "r": 0.121526428,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -27285,9 +27285,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.1994299,
-        "g": 0.0555226,
-        "b": 0.297894239
+        "r": 0.19942984,
+        "g": 0.0555225462,
+        "b": 0.29789418
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -28958,7 +28958,7 @@
       "XmlUI": ""
     },
     {
-      "GUID": "1092e5",
+      "GUID": "7ff383",
       "Name": "Deck",
       "Transform": {
         "posX": -30.0,
@@ -32397,7 +32397,7 @@
       ]
     },
     {
-      "GUID": "60257f",
+      "GUID": "8de735",
       "Name": "Deck",
       "Transform": {
         "posX": -30.0,
@@ -42149,7 +42149,7 @@
             "scaleY": 1.0,
             "scaleZ": 1.05
           },
-          "Nickname": "{ixianAmbassador}",
+          "Nickname": "Ixiam Ambassador",
           "Description": "",
           "GMNotes": "ixianAmbassador",
           "AltLookAngle": {
@@ -42210,7 +42210,7 @@
             "scaleY": 1.0,
             "scaleZ": 1.05
           },
-          "Nickname": "{ixianAmbassador}",
+          "Nickname": "Ixiam Ambassador",
           "Description": "",
           "GMNotes": "ixianAmbassador",
           "AltLookAngle": {
@@ -42382,7 +42382,7 @@
       ]
     },
     {
-      "GUID": "f9b6fd",
+      "GUID": "ce8c80",
       "Name": "Deck",
       "Transform": {
         "posX": -30.0,
@@ -44138,7 +44138,7 @@
       ]
     },
     {
-      "GUID": "1b13ea",
+      "GUID": "42331e",
       "Name": "Deck",
       "Transform": {
         "posX": -30.0,
@@ -45513,7 +45513,7 @@
       ]
     },
     {
-      "GUID": "2975cf",
+      "GUID": "2e6e28",
       "Name": "Deck",
       "Transform": {
         "posX": -30.0,
@@ -51707,7 +51707,7 @@
       ]
     },
     {
-      "GUID": "1e9bf9",
+      "GUID": "aa3a55",
       "Name": "Deck",
       "Transform": {
         "posX": -30.0,
@@ -54096,7 +54096,7 @@
       ]
     },
     {
-      "GUID": "01de69",
+      "GUID": "ed728f",
       "Name": "Deck",
       "Transform": {
         "posX": -30.0,
@@ -55675,7 +55675,7 @@
       ]
     },
     {
-      "GUID": "f56bc2",
+      "GUID": "59db78",
       "Name": "Deck",
       "Transform": {
         "posX": -30.0,
@@ -58981,7 +58981,7 @@
       ]
     },
     {
-      "GUID": "72af4f",
+      "GUID": "7ab459",
       "Name": "Deck",
       "Transform": {
         "posX": -30.0,
@@ -65346,7 +65346,7 @@
       ]
     },
     {
-      "GUID": "c9bbcc",
+      "GUID": "4c20bb",
       "Name": "Deck",
       "Transform": {
         "posX": -26.0,
@@ -69297,7 +69297,7 @@
       ]
     },
     {
-      "GUID": "ad3cfc",
+      "GUID": "0d8c92",
       "Name": "Deck",
       "Transform": {
         "posX": -26.0,
@@ -69342,7 +69342,6 @@
       "Hands": false,
       "SidewaysCard": false,
       "DeckIDs": [
-        30600,
         30601,
         30602,
         30603,
@@ -69351,6 +69350,7 @@
         30606,
         30607,
         30608,
+        30609,
         30700,
         30700
       ],
@@ -69422,7 +69422,7 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 30600,
+          "CardID": 30601,
           "SidewaysCard": false,
           "CustomDeck": {
             "306": {
@@ -69483,7 +69483,7 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 30601,
+          "CardID": 30602,
           "SidewaysCard": false,
           "CustomDeck": {
             "306": {
@@ -69544,7 +69544,7 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 30602,
+          "CardID": 30603,
           "SidewaysCard": false,
           "CustomDeck": {
             "306": {
@@ -69605,7 +69605,7 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 30603,
+          "CardID": 30604,
           "SidewaysCard": false,
           "CustomDeck": {
             "306": {
@@ -69666,7 +69666,7 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 30604,
+          "CardID": 30605,
           "SidewaysCard": false,
           "CustomDeck": {
             "306": {
@@ -69727,7 +69727,7 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 30605,
+          "CardID": 30606,
           "SidewaysCard": false,
           "CustomDeck": {
             "306": {
@@ -69788,7 +69788,7 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 30606,
+          "CardID": 30607,
           "SidewaysCard": false,
           "CustomDeck": {
             "306": {
@@ -69849,7 +69849,7 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 30607,
+          "CardID": 30608,
           "SidewaysCard": false,
           "CustomDeck": {
             "306": {
@@ -69910,7 +69910,7 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 30608,
+          "CardID": 30609,
           "SidewaysCard": false,
           "CustomDeck": {
             "306": {
@@ -70052,7 +70052,7 @@
       ]
     },
     {
-      "GUID": "16c64b",
+      "GUID": "c96371",
       "Name": "Deck",
       "Transform": {
         "posX": -26.0,
@@ -70993,7 +70993,7 @@
       ]
     },
     {
-      "GUID": "34d352",
+      "GUID": "97e51e",
       "Name": "Deck",
       "Transform": {
         "posX": 26.0,
@@ -74441,7 +74441,7 @@
       ]
     },
     {
-      "GUID": "7e9d2d",
+      "GUID": "2de6bd",
       "Name": "Deck",
       "Transform": {
         "posX": 26.0,
@@ -78459,7 +78459,7 @@
             "scaleY": 1.0,
             "scaleZ": 1.05
           },
-          "Nickname": "{lietKynes}",
+          "Nickname": "Liet Kynes",
           "Description": "",
           "GMNotes": "lietKynes",
           "AltLookAngle": {
@@ -84193,7 +84193,7 @@
             "scaleY": 1.0,
             "scaleZ": 1.05
           },
-          "Nickname": "{ixianAmbassador}",
+          "Nickname": "Ixiam Ambassador",
           "Description": "",
           "GMNotes": "ixianAmbassador",
           "AltLookAngle": {
@@ -84254,7 +84254,7 @@
             "scaleY": 1.0,
             "scaleZ": 1.05
           },
-          "Nickname": "{ixianAmbassador}",
+          "Nickname": "Ixiam Ambassador",
           "Description": "",
           "GMNotes": "ixianAmbassador",
           "AltLookAngle": {
@@ -84426,7 +84426,7 @@
       ]
     },
     {
-      "GUID": "ccecbd",
+      "GUID": "4da2c1",
       "Name": "Deck",
       "Transform": {
         "posX": 26.0,
@@ -86200,7 +86200,7 @@
       ]
     },
     {
-      "GUID": "742f58",
+      "GUID": "c6123c",
       "Name": "Deck",
       "Transform": {
         "posX": 26.0,
@@ -87575,7 +87575,7 @@
       ]
     },
     {
-      "GUID": "ac34eb",
+      "GUID": "d46711",
       "Name": "Deck",
       "Transform": {
         "posX": 26.0,
@@ -93769,7 +93769,7 @@
       ]
     },
     {
-      "GUID": "692a47",
+      "GUID": "6a644c",
       "Name": "Deck",
       "Transform": {
         "posX": 26.0,
@@ -96158,7 +96158,7 @@
       ]
     },
     {
-      "GUID": "4bf227",
+      "GUID": "4d53fc",
       "Name": "Deck",
       "Transform": {
         "posX": 26.0,
@@ -97737,7 +97737,7 @@
       ]
     },
     {
-      "GUID": "f2ebb4",
+      "GUID": "884c73",
       "Name": "Deck",
       "Transform": {
         "posX": 26.0,
@@ -101043,7 +101043,7 @@
       ]
     },
     {
-      "GUID": "683241",
+      "GUID": "9ae881",
       "Name": "Deck",
       "Transform": {
         "posX": 26.0,
@@ -104284,7 +104284,7 @@
       ]
     },
     {
-      "GUID": "5b0331",
+      "GUID": "4651a1",
       "Name": "Deck",
       "Transform": {
         "posX": 30.0,
@@ -108235,7 +108235,7 @@
       ]
     },
     {
-      "GUID": "35effe",
+      "GUID": "a734a1",
       "Name": "Deck",
       "Transform": {
         "posX": 30.0,
@@ -108280,7 +108280,6 @@
       "Hands": false,
       "SidewaysCard": false,
       "DeckIDs": [
-        47400,
         47401,
         47402,
         47403,
@@ -108289,6 +108288,7 @@
         47406,
         47407,
         47408,
+        47409,
         47500,
         47500
       ],
@@ -108360,7 +108360,7 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 47400,
+          "CardID": 47401,
           "SidewaysCard": false,
           "CustomDeck": {
             "474": {
@@ -108421,7 +108421,7 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 47401,
+          "CardID": 47402,
           "SidewaysCard": false,
           "CustomDeck": {
             "474": {
@@ -108482,7 +108482,7 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 47402,
+          "CardID": 47403,
           "SidewaysCard": false,
           "CustomDeck": {
             "474": {
@@ -108543,7 +108543,7 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 47403,
+          "CardID": 47404,
           "SidewaysCard": false,
           "CustomDeck": {
             "474": {
@@ -108604,7 +108604,7 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 47404,
+          "CardID": 47405,
           "SidewaysCard": false,
           "CustomDeck": {
             "474": {
@@ -108665,7 +108665,7 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 47405,
+          "CardID": 47406,
           "SidewaysCard": false,
           "CustomDeck": {
             "474": {
@@ -108726,7 +108726,7 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 47406,
+          "CardID": 47407,
           "SidewaysCard": false,
           "CustomDeck": {
             "474": {
@@ -108787,7 +108787,7 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 47407,
+          "CardID": 47408,
           "SidewaysCard": false,
           "CustomDeck": {
             "474": {
@@ -108848,7 +108848,7 @@
           "GridProjection": false,
           "HideWhenFaceDown": true,
           "Hands": true,
-          "CardID": 47408,
+          "CardID": 47409,
           "SidewaysCard": false,
           "CustomDeck": {
             "474": {
@@ -108990,7 +108990,7 @@
       ]
     },
     {
-      "GUID": "3c60e6",
+      "GUID": "3b4702",
       "Name": "Deck",
       "Transform": {
         "posX": 30.0,

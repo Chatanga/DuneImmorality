@@ -13,6 +13,7 @@ local TechMarket = Module.lazyRequire("TechMarket")
 local Intrigue = Module.lazyRequire("Intrigue")
 local Types = Module.lazyRequire("Types")
 local Leader = Module.lazyRequire("Leader")
+local Combat = Module.lazyRequire("Combat")
 
 ---@class Rival: Leader
 ---@field rivals table<PlayerColor, Rival>
@@ -67,6 +68,7 @@ end
 function Rival._buyVictoryPoints(color)
     -- Do not use Rival.resources inside this function!
 
+    local level3Conflict = Combat.getCurrentConflictLevel() == 3
     while true do
         local intrigues = PlayBoard.getIntrigues(color)
         if #intrigues >= 3 then
@@ -78,7 +80,7 @@ function Rival._buyVictoryPoints(color)
             goto continue
         end
 
-        if Hagal.ix then
+        if Hagal.ix and not level3Conflict then
             local tech = PlayBoard.getTech(color, "spySatellites")
             if tech and Action.resources(color, "spice", -3) then
                 MainBoard.trash(tech)

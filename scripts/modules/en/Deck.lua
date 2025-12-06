@@ -692,6 +692,7 @@ function Deck.loadCustomDecks(loader)
     end
 
     Deck.load(loader, cards.navigation, "navigation", "bloodlines", 1, {
+        "",
         "solarisAndPermanentPersuasion",
         "spiceIfTrash",
         "waterThenSpiceIfSpacingGuildInfluence",
