@@ -997,7 +997,7 @@ function Deck.generateImperiumDeck(deckZone, settings)
             contributions = Deck._mergeContributionSets({ contributions, Deck.imperium.bloodlinesContract })
         end
     end
-    if settings.ix or settings.ixAmbassy then
+    if settings.bloodlines and (settings.ix or settings.ixAmbassy) then
         contributions = Deck._mergeContributionSets({ contributions, Deck.imperium.bloodlinesTech })
     end
     Deck._generateDeck("Imperium", deckZone, contributions, Deck.sources.imperium).doAfter(continuation.run)

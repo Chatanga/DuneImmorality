@@ -67,6 +67,7 @@ end
 function Hagal._transientSetUp(settings)
     Hagal.numberOfPlayers = settings.numberOfPlayers
     Hagal.ix = settings.ix
+    Hagal.ixAmbassy = settings.ixAmbassy
     Hagal.immortality = settings.immortality
     Hagal.difficulty = Hagal.numberOfPlayers == 1 and settings.difficulty or nil
     Hagal.autoTurnInSolo = settings.autoTurnInSolo
