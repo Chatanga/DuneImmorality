@@ -10,6 +10,7 @@ local I18N = require("utils.I18N")
 
 local PlayBoard = Module.lazyRequire("PlayBoard")
 local Hagal = Module.lazyRequire("Hagal")
+local Combat = Module.lazyRequire("Combat")
 
 ---@alias Phase
 ---| 'leaderSelection'
