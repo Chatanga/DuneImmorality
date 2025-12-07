@@ -149,7 +149,7 @@ return {
     gameStartInactiveInstructionForHundroMoritani = "Attendez que Hundro Moritani\nait choisi entre\nses deux intrigues.",
     gameStartActiveInstructionForYrkoon = "Choisissez 4 cartes de navigation\net insérez en une dans chaque sac\n(I à IV).",
     gameStartInactiveInstructionForYrkoon = "Attendez que le timonier Y’rkoon\nchoisisse ses cartes de navigation",
-    gameStartActiveInstructionForKotaOdax = "Sélectionnez une tuile tech..",
+    gameStartActiveInstructionForKotaOdax = "Sélectionnez une tuile tech.",
     gameStartInactiveInstructionForKotaOdax = "Attendez que Kota Odax de Ix\nsélectionne une tuile tech.",
 
     -- Resource

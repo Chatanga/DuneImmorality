@@ -743,13 +743,8 @@ function PlayBoard._transientSetUp(settings)
             MainBoard.getFirstPlayerMarker().destruct()
         end
 
-        for _, playBoard in pairs(PlayBoard._getPlayBoards(true)) do
-            -- When informal, the combat phase ends automatically, leaving the players in limbo until they press the "reclaim rewards" button.
-            if false and phase == "combat" and not Combat.isFormalCombatPhaseEnabled() then
-                playBoard:_updateInstructionLabel(I18N("combatInstruction"))
-            else
-                playBoard:_updateInstructionLabel(nil)
-            end
+        for color, playBoard in pairs(PlayBoard._getPlayBoards(true)) do
+            playBoard:_updateInstructionLabel(color, nil)
         end
 
         PlayBoard._setActivePlayer(nil, nil)
