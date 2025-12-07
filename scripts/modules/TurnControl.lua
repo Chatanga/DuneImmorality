@@ -406,8 +406,10 @@ function TurnControl._createReclaimRewardsButton()
             font_color = fromIntRGB(204, 153, 0),
         })
 
-        -- Also do it asynchronously since the instruction text needs its own anchor to be created when loading.
-        PlayBoard.setGeneralCombatInstruction()
+        if not Combat.isFormalCombatPhaseEnabled() then
+            -- Also do it asynchronously since the instruction text needs its own anchor to be created when loading.
+            PlayBoard.setGeneralCombatInstruction()
+        end
     end)
 end
 

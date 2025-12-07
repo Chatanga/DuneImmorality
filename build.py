@@ -36,17 +36,25 @@ def build():
 	windows_suffix = os.path.join('Documents', 'My Games', 'Tabletop Simulator', 'Saves')
 
 	if platform_system == 'Linux':
+		home = os.environ['HOME']
 		# 286160 is the Steam application ID for TTS
 		proton_path = os.path.join('steamapps', 'compatdata', '286160', 'pfx', 'drive_c', 'users', 'steamuser')
+		full_proton_path = os.path.join('.local', 'share', 'Steam', proton_path)
 		tts_save_dirs = [
-			# Steam as a .deb + without Proton
-			os.path.join(os.environ['HOME'], linux_suffix),
+			# Steam as a .deb
+			os.path.join(home, linux_suffix),
+			# Steam as a .deb + Proton
+			os.path.join(home, full_proton_path, windows_suffix),
+			# Steam as a .deb + Proton (custom directory)
+			os.path.join(home, 'Fast', 'SteamLibrary', proton_path, windows_suffix),
+			# Steam as a Flatpak
+			os.path.join(home, '.var', 'app', 'com.valvesoftware.Steam', linux_suffix),
+			# Steam as a Flatpak + Proton
+			os.path.join(home, '.var', 'app', 'com.valvesoftware.Steam', full_proton_path, windows_suffix),
 			# Steam as a Snap
-			os.path.join(os.environ['HOME'], 'snap', 'steam', 'common', linux_suffix),
-			# Steam as a .deb + with Proton
-			os.path.join(os.environ['HOME'], '.local', 'share', 'Steam', proton_path, windows_suffix),
-			# Steam as a .deb + with Proton (custom directory)
-			os.path.join(os.environ['HOME'], 'Fast', 'SteamLibrary', proton_path, windows_suffix)
+			os.path.join(home, 'snap', 'steam', 'common', linux_suffix),
+			# Steam as a Snap + Proton
+			os.path.join(home, 'snap', 'steam', 'common', full_proton_path, windows_suffix),
 		]
 		luabundler = 'node_modules/.bin/luabundler' if local_node_modules_path else 'luabundler'
 	elif platform_system == 'Windows':

@@ -36,6 +36,8 @@ This repository contains the JSON skeletons and Lua scripts of various mods for 
 __All__
 
 - Reduce / dilute the setup load?
+- Move deck landing zone higher?
+- Complete french scans.
 
 __6P__
 
