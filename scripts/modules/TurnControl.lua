@@ -88,7 +88,7 @@ end
 function TurnControl.setUp(settings, activeOpponents)
     TurnControl.hotSeat = settings.hotSeat
     TurnControl.players = TurnControl.toCanonicallyOrderedPlayerList(activeOpponents)
-    TurnControl.scoreGoal = settings.epicMode and 12 or 10
+    TurnControl.scoreGoal = settings.epicMode and 12 or ((settings.goTo11 and settings.numberOfPlayers ~= 4) and 11 or 10)
 
     if settings.numberOfPlayers == 2 then
         for i, player in ipairs(TurnControl.players) do
