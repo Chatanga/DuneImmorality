@@ -756,7 +756,6 @@ return {
     selfDestroyingMessages = "Self Destroying Messages",
     navigationChamber = "Navigation Chamber",
     sardaukarHighCommand = "Sardaukar High Command",
-    forbiddenWeapons = "Forbidden Weapons",
 
     -- Navigation Card
     solarisAndPermanentPersuasion = "Solaris + Persuasion",

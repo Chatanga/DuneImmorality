@@ -62,7 +62,6 @@ local Deck = {
         shuttleFleet = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141364620/9E39289A6CED8A977E8206E1B5FD1A14F4BA55F8/", 1, 1 },
         restrictedOrdnance = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141360269/1F4181A709E103B8807D6D6FBF3C6BA62A4C20F9/", 1, 1 },
         --bloodlines = { "https://steamusercontent-a.akamaihd.net/ugc/10973288923341663054/234258C6F169769056E00EB7EF0DC28C7B8D1BB6/", 3, 6 },
-        forbiddenWeapons = { "https://steamusercontent-a.akamaihd.net/ugc/16549886529912961809/706C717BFDE2EA9891327761BE5B5B1D1CA40CD4/", 1, 1 },
         servoReceivers = { "https://steamusercontent-a.akamaihd.net/ugc/17243030170230690229/ED105B4406B9930D8AF32B8107A9185F4D7973D9/", 1, 1 },
         sardaukarHighCommand = { "https://steamusercontent-a.akamaihd.net/ugc/15404490943906426113/5859AA96D10B1AC49C932D82687FA8DC8C07DE82/", 1, 1 },
         glowglobes = { "https://steamusercontent-a.akamaihd.net/ugc/12218741996139093793/16A506EC1607EF2836A17BBD376D60286BE5F538/", 1, 1 },
@@ -669,7 +668,6 @@ function Deck.loadCustomDecks(loader)
             "selfDestroyingMessages",
             "navigationChamber",
             "sardaukarHighCommand",
-            "forbiddenWeapons",
         })
     end
 

@@ -56,7 +56,6 @@ local TechCard = {
     selfDestroyingMessages = {cost = 4, hagal = true, acquireBonus = {intrigue(2)}, preReveal = {persuasion(1)}},
     navigationChamber = {cost = 5, hagal = false, acquireBonus = {influence(1)}},
     sardaukarHighCommand = {cost = 7, hagal = true, acquireBonus = {vp(1)}},
-    forbiddenWeapons = {cost = 2, hagal = false, acquireBonus = {troop(1)}},
 }
 
 ---@alias TechCardDetails {
