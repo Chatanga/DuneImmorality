@@ -1734,7 +1734,7 @@ function MainBoard.getControllingPlayer(bannerZone)
         for _, object in ipairs(bannerZone.getObjects()) do
             for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
                 if Types.isControlMarker(object, color) then
-                    assert(not controllingPlayer, "Too many flags around")
+                    assert(not controllingPlayer, "Too many flags around at " .. MainBoard._getZoneName(bannerZone) .. "!")
                     controllingPlayer = color
                 end
             end
@@ -2083,6 +2083,20 @@ function MainBoard.getBannerZones()
         MainBoard.banners.arrakeenBannerZone,
         MainBoard.banners.spiceRefineryBannerZone,
     }
+end
+
+---@param zone Zone
+---@return string
+function MainBoard._getZoneName(zone)
+    if zone == MainBoard.banners.imperialBasinBannerZone then
+        return "imperialBasin"
+    elseif zone == MainBoard.banners.arrakeenBannerZone then
+        return "arrakeen"
+    elseif zone == MainBoard.banners.spiceRefineryBannerZone then
+        return "spiceRefinery"
+    else
+        return "?"
+    end
 end
 
 ---@param faction Faction
