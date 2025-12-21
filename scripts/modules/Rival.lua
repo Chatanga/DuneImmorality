@@ -285,15 +285,18 @@ end
 function Rival.acquireTech(color, stackIndex)
     local finalStackIndex = stackIndex
     if not finalStackIndex then
+        local negotiation = TechMarket.getNegotiationPark(color)
+        local negotiatorCount = negotiation and #Park.getObjects(negotiation) or 0
         local discount = TechMarket.getRivalSpiceDiscount()
         local spiceBudget = PlayBoard.getResource(color, "spice"):get()
+        local budget = spiceBudget + discount + negotiatorCount
 
         local bestTechIndex = nil
         local bestTech = nil
         for otherStackIndex = 1, 3 do
             local tech = TechMarket.getTopCardDetails(otherStackIndex)
-            --Helper.dump("tech:", tech, ", cost:", tech and tech.cost, ", spiceBudget:", spiceBudget, ", discount:", discount)
-            if tech and tech.hagal and tech.cost <= spiceBudget + discount and (not bestTech or bestTech.cost < tech.cost) then
+            --Helper.dump("tech:", tech, ", cost:", tech and tech.cost, ", spiceBudget:", spiceBudget, ", discount:", discount, "negotiatorCount:", negotiatorCount)
+            if tech and tech.hagal and tech.cost <= budget and (not bestTech or bestTech.cost < tech.cost) then
                 bestTechIndex = otherStackIndex
                 bestTech = tech
             end
