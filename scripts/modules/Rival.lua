@@ -131,7 +131,7 @@ function Rival._buyVictoryPoints(color)
     end
 
     local level3Conflict = Combat.getCurrentConflictLevel() == 3
-    local techAvailable = Hagal.ix or Hagal.ixAmbassy
+    local techAvailable = Hagal.isIxAvailable()
 
     while true do
         local intrigues = PlayBoard.getIntrigues(color)

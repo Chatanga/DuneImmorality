@@ -410,4 +410,9 @@ function Hagal.isSwordmasterAvailable()
     return Hagal.difficulty ~= "expertPlus"
 end
 
+---@return boolean
+function Hagal.isIxAvailable()
+    return Hagal.ix or Hagal.ixAmbassy
+end
+
 return Hagal
