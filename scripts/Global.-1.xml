@@ -23,7 +23,7 @@ scaled up or down depending on each player's screen. Since this scaling is done
 at the component level, the end result could be broken if things are adjusted to
 the pixel.
 -->
-<Panel position="0 -80" width="450" height="560" color="#000000" id="setupPane" rotation="0 0 0" outline="#2e200f" outlineSize="1"
+<Panel position="0 -80" width="450" height="550" color="#000000" id="setupPane" rotation="0 0 0" outline="#2e200f" outlineSize="1"
 	active="False" allowDragging="True" returnToOriginalPositionWhenReleased="False" _visibility="Host">
 	<!-- Aplly to all panels actually. -->
 	<Defaults>
@@ -47,6 +47,8 @@ the pixel.
 				</Dropdown>
 			</HorizontalLayout>
 
+			<HorizontalLayout padding="50 0 0 0"/>
+
 			<HorizontalLayout>
 				<Text class="primary" key="leaderSelection"/>
 				<Dropdown class="setUp" id="leaderSelection" flexibleWidth="4" onValueChanged="Global/setAnyField">
@@ -56,10 +58,14 @@ the pixel.
 			<VerticalLayout padding="25 0 0 0">
 				<HorizontalLayout>
 					<Text class="secondary" id="leaderPoolSizeLabel"/>
-					<Slider id="leaderPoolSize" flexibleWidth="2" onValueChanged="Global/setLeaderPoolSize" wholeNumbers="True" minValue="6" maxValue="12" value="8"/>
+					<VerticalLayout padding="0 0 2 2">
+						<Slider id="leaderPoolSize" flexibleWidth="3" onValueChanged="Global/setLeaderPoolSize" wholeNumbers="True" minValue="6" maxValue="12" value="8"/>
+					</VerticalLayout>
 				</HorizontalLayout>
 				<Toggle class="setUp" id="tweakLeaderSelection" onValueChanged="Global/setAnyField" isOn="False" key="tweakLeaderSelection"/>
 			</VerticalLayout>
+
+			<HorizontalLayout padding="50 0 0 0"/>
 
 			<HorizontalLayout>
 				<Text class="primary" key="players"/>
@@ -80,6 +86,8 @@ the pixel.
 				</HorizontalLayout>
 			</VerticalLayout>
 
+			<HorizontalLayout padding="50 0 0 0"/>
+
 			<HorizontalLayout>
 				<Text class="primary" key="miscellanous"/>
 			</HorizontalLayout>
@@ -89,14 +97,14 @@ the pixel.
 				<Toggle class="setUp" id="soundEnabled" onValueChanged="Global/setAnyField" isOn="True" key="soundEnabled"/>
 			</VerticalLayout>
 
-			<HorizontalLayout>
+			<!--HorizontalLayout>
 				<Text class="primary" key="submitGame"/>
 			</HorizontalLayout>
 			<VerticalLayout padding="25 0 0 0">
 				<HorizontalLayout>
 					<Toggle class="setUp" id="submitGameRankedGame" onValueChanged="Global/setAnyField" isOn="False" key="submitGameRankedGame"/>
 				</HorizontalLayout>
-			</VerticalLayout>
+			</VerticalLayout-->
 
 		</VerticalLayout>
 		<HorizontalLayout padding="100 100 0 0">
@@ -107,7 +115,7 @@ the pixel.
 		</VerticalLayout>
 	</VerticalLayout>
 
-	<Image position="0 403" width="450" height="273" image="https://steamusercontent-a.akamaihd.net/ugc/14684968512780467305/7D9C7FE96944018AB4301D2076269C9926D2433D/"/>
+	<Image position="0 380" width="450" height="230" image="https://steamusercontent-a.akamaihd.net/ugc/2502404390141305534/F45EE24DE14C81CE4D22FFF72465DC2B588CC761/"/>
 </Panel>
 
 <Panel position="480 160" width="450" height="360" color="#000000" id="extensionSetupPane" rotation="0 0 0" outline="#2e200f" outlineSize="1"
