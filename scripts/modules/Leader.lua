@@ -709,6 +709,8 @@ Leader.jessica = Helper.createClass(Leader, {
         if leaderCard.getGMNotes() ~= "reverendMotherJessica" then
             local anchors = {}
 
+            Leader._createRightCardButton(anchors, color, "SpiceAgonyAnchor", I18N("spiceAgonyTooltip"), Leader.jessica.signetRing)
+
             Leader._createLeftCardButton(anchors, color, "OtherMemoriesAnchor", I18N("otherMemoriesTooltip"), function ()
                 Dialog.showYesOrNoDialog(color, I18N("confirmOtherMemories"), nil, function (confirmed)
                     if confirmed then
@@ -716,11 +718,10 @@ Leader.jessica = Helper.createClass(Leader, {
                         for _, anchor in ipairs(anchors) do
                             anchor.destruct()
                         end
+                        Leader._createRightCardButton(nil, color, "WaterOfLifeAnchor", I18N("waterOfLifeTooltip"), Leader.jessica.signetRing)
                     end
                 end)
             end)
-
-            Leader._createRightCardButton(nil, color, "SpiceAgonyAnchor", I18N("spiceAgonyTooltip"), Leader.jessica.signetRing)
         else
             Leader._createRightCardButton(nil, color, "WaterOfLifeAnchor", I18N("waterOfLifeTooltip"), Leader.jessica.signetRing)
         end
