@@ -571,6 +571,174 @@ Leader.hundroMoritani = Helper.createClass(Leader, {
     end
 })
 
+Leader.amberMetulli = Helper.createClass(Leader, {
+
+    doSetUp = function (color, settings)
+        Leader.amberMetulli.transientSetUp(color, settings)
+    end,
+
+    transientSetUp = function (color, settings)
+        Leader._createRightCardButton(nil, color, "FillCoffersAnchor", I18N("fillCoffersTooltip"), Leader.amberMetulli.signetRing)
+    end,
+
+    --- Fill Coffers
+    signetRing = function (color)
+        local leader = PlayBoard.getLeader(color)
+        if InfluenceTrack.hasAnyAlliance(color) then
+            leader.resources(color, "spice", 1)
+        end
+        leader.resources(color, "solari", 1)
+        return true
+    end
+})
+
+Leader.gurneyHalleck = Helper.createClass(Leader, {
+
+    doSetUp = function (color, settings)
+        Leader.gurneyHalleck.transientSetUp(color, settings)
+    end,
+
+    --- Always smiling
+    transientSetUp = function (color, settings)
+        Helper.registerEventListener("reveal", function (otherColor)
+            if color == otherColor then
+                local threshold = settings.numberOfPlayers == 6 and 10 or 6
+                if Combat.calculateCombatForce(color) >= threshold then
+                    Action.log(I18N("gurneySmile"), color)
+                    local leader = PlayBoard.getLeader(color)
+                    leader.resources(color, "persuasion", 1)
+                end
+            end
+        end)
+        Leader._createRightCardButton(nil, color, "WarmasterAnchor", I18N("warmasterTooltip"), Leader.gurneyHalleck.signetRing)
+    end,
+
+    --- Warmaster
+    signetRing = function (color)
+        local leader = PlayBoard.getLeader(color)
+        return leader.troops(color, "supply", "garrison", 1)
+    end
+})
+
+Leader.margotFenring = Helper.createClass(Leader, {
+
+    --- Loyalty
+    influence = function (color, faction, amount)
+        if faction == "beneGesserit" then
+            local noFriendshipBefore = not InfluenceTrack.hasFriendship(color, faction)
+            local continuation = Action.influence(color, faction, amount)
+            continuation.doAfter(function (...)
+                local friendshipAfter = InfluenceTrack.hasFriendship(color, faction)
+                if noFriendshipBefore and friendshipAfter then
+                    local leader = PlayBoard.getLeader(color)
+                    Action.log(I18N("loyalty"), color)
+                    leader.resources(color, "spice", 2)
+                end
+            end)
+            return continuation
+        else
+            return Action.influence(color, faction, amount)
+        end
+    end
+})
+
+Leader.irulanCorrino = Helper.createClass(Leader, {
+
+    --- Imperial Birthright
+    influence = function (color, faction, amount)
+        if faction == "emperor" then
+            local noFriendshipBefore = not InfluenceTrack.hasFriendship(color, faction)
+            local continuation = Action.influence(color, faction, amount)
+            continuation.doAfter(function ()
+                local friendshipAfter = InfluenceTrack.hasFriendship(color, faction)
+                if noFriendshipBefore and friendshipAfter then
+                    local leader = PlayBoard.getLeader(color)
+                    Action.log(I18N("imperialBirthright"), color)
+                    leader.drawIntrigues(color, 1)
+                end
+            end)
+            return continuation
+        else
+            return Action.influence(color, faction, amount)
+        end
+    end
+})
+
+Leader.jessica = Helper.createClass(Leader, {
+
+    doSetUp = function (color, settings)
+        Leader.jessica.transientSetUp(color, settings)
+    end,
+
+    --- Other memories
+    transientSetUp = function (color, settings)
+        local leaderCard = PlayBoard.findLeaderCard(color)
+        assert(leaderCard)
+
+        Leader.jessica.otherMemoriesPark = MainBoard.createOtherMemoriesPark(color)
+
+        local otherMemories = function ()
+            Leader.jessica.name = "reverendMotherJessica"
+            leaderCard.setLock(false)
+            leaderCard.setGMNotes(Leader.jessica.name)
+            leaderCard.setName(I18N(Leader.jessica.name))
+            leaderCard.setRotation(Vector(0, 180, 180))
+            Helper.onceMotionless(leaderCard).doAfter(function ()
+                leaderCard.setLock(true)
+            end)
+            broadcastToAll(I18N("otherMemoriesUsed"), color)
+            local count = Park.transfer(12, Leader.jessica.otherMemoriesPark, PlayBoard.getSupplyPark(color))
+            Action.drawImperiumCards(color, count, true)
+        end
+
+        if leaderCard.getGMNotes() ~= "reverendMotherJessica" then
+            local anchors = {}
+
+            Leader._createRightCardButton(anchors, color, "SpiceAgonyAnchor", I18N("spiceAgonyTooltip"), Leader.jessica.signetRing)
+
+            Leader._createLeftCardButton(anchors, color, "OtherMemoriesAnchor", I18N("otherMemoriesTooltip"), function ()
+                Dialog.showYesOrNoDialog(color, I18N("confirmOtherMemories"), nil, function (confirmed)
+                    if confirmed then
+                        otherMemories()
+                        for _, anchor in ipairs(anchors) do
+                            anchor.destruct()
+                        end
+                        Leader._createRightCardButton(nil, color, "WaterOfLifeAnchor", I18N("waterOfLifeTooltip"), Leader.jessica.signetRing)
+                    end
+                end)
+            end)
+        else
+            Leader._createRightCardButton(nil, color, "WaterOfLifeAnchor", I18N("waterOfLifeTooltip"), Leader.jessica.signetRing)
+        end
+   end,
+
+    --- Spice Agony / Water of Life
+    signetRing = function (color)
+        local leader = PlayBoard.getLeader(color)
+        local leaderCard = PlayBoard.findLeaderCard(color)
+        assert(leaderCard)
+        if leaderCard.getGMNotes() ~= "reverendMotherJessica" then
+            if leader.resources(color, "spice", -1) then
+                leader.drawIntrigues(color, 1)
+                local count = Park.transfer(1, PlayBoard.getSupplyPark(color), Leader.jessica.otherMemoriesPark)
+                Action.log(I18N("transfer", {
+                    count = count,
+                    what = I18N.agree(count, "troop"),
+                    from = I18N("supplyPark"),
+                    to = I18N("otherMemoriesPark"),
+                }), color)
+                return true
+            else
+                return false
+            end
+        else
+            return leader.resources(color, "spice", -1) and leader.resources(color, "water", 1)
+        end
+    end
+})
+
+Leader.reverendMotherJessica = Leader.jessica
+
 Leader.chani = Helper.createClass(Leader, {
 
     doSetUp = function (color, settings)

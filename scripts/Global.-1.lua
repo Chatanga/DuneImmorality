@@ -34,6 +34,7 @@ autoLoadedSettings = {
     epicMode = false,
     immortality = false,
     goTo11 = false,
+    uprisingLeaders = false,
     bloodlines = true,
     ixAmbassy = true,
     leaderSelection = {
@@ -144,6 +145,7 @@ local Controller = {
         epicMode = XmlUI.DISABLED,
         immortality = false,
         goTo11 = XmlUI.DISABLED,
+        uprisingLeaders = false,
         bloodlines = true,
         ixAmbassy = true,
         ixAmbassyWithIx = false,
@@ -337,6 +339,7 @@ function updateSaveInfo(state)
         saveInfo.epicMode = settings.epicMode
         saveInfo.immortality = settings.immortality
         saveInfo.goTo11 = settings.goTo11
+        saveInfo.uprisingLeaders = settings.uprisingLeaders
         saveInfo.bloodlines = settings.bloodlines
         saveInfo.ixAmbassy = settings.ixAmbassy
         saveInfo.ixAmbassyWithIx = settings.ixAmbassyWithIx
@@ -627,6 +630,7 @@ function setUpFromUI()
     --- epicMode: boolean,
     --- immortality: boolean,
     --- goTo11: boolean,
+    --- uprisingLeaders: boolean,
     --- bloodlines: boolean,
     --- ixAmbassy: boolean,
     --- ixAmbassyWithIx: boolean,
@@ -656,6 +660,7 @@ function setUpFromUI()
         epicMode = Controller.fields.epicMode == true,
         immortality = Controller.fields.immortality,
         goTo11 = Controller.fields.goTo11 == true,
+        uprisingLeaders = Controller.fields.uprisingLeaders,
         bloodlines = Controller.fields.bloodlines,
         ixAmbassy = Controller.fields.ixAmbassy == true,
         ixAmbassyWithIx = Controller.fields.ixAmbassyWithIx == true,

@@ -473,6 +473,12 @@ local Deck = {
             yunaMoritani = 1,
             hundroMoritani = 1,
         },
+        uprising = {
+            amberMetulli = 1,
+            gurneyHalleck = 1,
+            irulanCorrino = 1,
+            jessica = 1,
+        },
         bloodlines = {
             chani = 1,
             duncanIdaho = 1,
@@ -1101,6 +1107,9 @@ function Deck._mergeStandardContributionSets(root, settings)
     if settings.immortality then
         table.insert(contributionSets, root.immortality)
     end
+    if settings.uprisingLeaders then
+        table.insert(contributionSets, root.uprising)
+    end
     if settings.bloodlines then
         table.insert(contributionSets, root.bloodlines)
     end
@@ -1477,6 +1486,7 @@ function Deck._prebuildLeaderDeck(deckPosition)
     local contributionSets = {
         Deck.leaders.base,
         Deck.leaders.ix,
+        Deck.leaders.uprising,
         Deck.leaders.bloodlines,
         Deck.leaders.bloodlinesTech,
     }

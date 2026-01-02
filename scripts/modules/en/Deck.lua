@@ -91,6 +91,12 @@ local Deck = {
         tessiaVernius = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141319434/29817122A32B50C285EE07E0DAC32FDE9A237CEC/", 1, 1 },
         yunaMoritani = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141319867/FA54B129B168169E3D58BA61536FCC0BB5AB7D34/", 1, 1 },
         hundroMoritani = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141316031/6A89778D9C4BB8AC07FE503D48A4483D13DF6E5B/", 1, 1 },
+        -- uprising
+        amberMetulli = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141280903/E525FD044AB8D577752189B9094E795D1F4BC9D5/", 1, 1 },
+        gurneyHalleck = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141283901/6F7B49241ECB5CB66B0C8F68F05B91DAA2D6E11E/", 1, 1 },
+        irulanCorrino = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141282774/EC550B921EFB707D338F5A45AB39609A9DFDE7BA/", 1, 1 },
+        jessica = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141283120/1969BB59A8DD3C683E82A2D07D1C41BB2F175313/", 1, 1, Vector(1.12, 1, 1.12),
+            "https://steamusercontent-a.akamaihd.net/ugc/2502404390141285197/3FA11CDE733EB59839FB85D0328588F28BE43D57/" },
         -- bloodlines
         chani = { "https://steamusercontent-a.akamaihd.net/ugc/13842380678639370326/5C69E12794AF4A94C6ED57290B516B6DC76A1FE1/", 1, 1 },
         duncanIdaho = { "https://steamusercontent-a.akamaihd.net/ugc/13463505432383320270/54FF9A593B9870E13BC8FEF9A18AAA9274E19CBA/", 1, 1 },

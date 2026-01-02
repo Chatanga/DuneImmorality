@@ -1476,4 +1476,33 @@ function MainBoard.isInside(object)
     return math.abs(offset.x) < 11 and math.abs(offset.z) < 11
 end
 
+---@param color PlayerColor
+---@return Park
+function MainBoard.createOtherMemoriesPark(color)
+
+    local origin = MainBoard.spaces.selectiveBreeding.position + Vector(-0.4, 0, 1.5)
+    origin:setAt('y', 1.86) -- ground level
+    local slots = {}
+    for j = 1, 2 do
+        for i = 1, 6 do
+            local x = (i - 1.5) * 0.4
+            local z = (1.5 - j) * 0.4
+            local slot = origin + Vector(x, 0, z)
+            table.insert(slots, slot)
+        end
+    end
+
+    local zone = Park.createTransientBoundingZone(0, Vector(0.25, 0.25, 0.25), slots)
+
+    return Park.createPark(
+        "OtherMemories",
+        slots,
+        Vector(0, 0, 0),
+        { zone },
+        { "Troop", color },
+        nil,
+        false,
+        true)
+end
+
 return MainBoard
