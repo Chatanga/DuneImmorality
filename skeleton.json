@@ -1,8 +1,8 @@
 {
   "SaveName": "Rakis Rising",
-  "EpochTime": 1765023999,
-  "Date": "12/6/2025 1:26:39 PM",
-  "VersionNumber": "v13.3",
+  "EpochTime": 1767454962,
+  "Date": "1/3/2026 4:42:42 PM",
+  "VersionNumber": "v14.0.3",
   "GameMode": "Rakis Rising",
   "GameType": "Game",
   "GameComplexity": "Medium Complexity",
@@ -1344,9 +1344,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191981673,
+        "r": 0.191981614,
         "g": 0.701,
-        "b": 0.167981654
+        "b": 0.1679816
       },
       "Tags": [
         "Agent",
@@ -1403,9 +1403,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191990823,
+        "r": 0.1919908,
         "g": 0.701,
-        "b": 0.1679908
+        "b": 0.167990774
       },
       "Tags": [
         "Green",
@@ -1464,7 +1464,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117980681,
+        "r": 0.117980622,
         "g": 0.53,
         "b": 1.0
       },
@@ -1524,8 +1524,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.0999814644,
-        "b": 0.09398144
+        "g": 0.0999814048,
+        "b": 0.09398138
       },
       "Tags": [
         "Agent",
@@ -1582,7 +1582,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117980681,
+        "r": 0.117980622,
         "g": 0.53,
         "b": 1.0
       },
@@ -1641,7 +1641,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121506013,
+        "r": 0.121505983,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -1764,8 +1764,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.0999814644,
-        "b": 0.09398144
+        "g": 0.0999814048,
+        "b": 0.09398138
       },
       "Tags": [
         "Agent",
@@ -1822,7 +1822,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117980681,
+        "r": 0.117980622,
         "g": 0.53,
         "b": 1.0
       },
@@ -1883,8 +1883,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.0999814644,
-        "b": 0.09398144
+        "g": 0.0999814048,
+        "b": 0.09398138
       },
       "Tags": [
         "Agent",
@@ -1924,7 +1924,7 @@
       "Name": "Custom_Model",
       "Transform": {
         "posX": 0.6700001,
-        "posY": 1.5908922,
+        "posY": 1.590892,
         "posZ": 7.91,
         "rotX": 0,
         "rotY": 180,
@@ -1942,9 +1942,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191981673,
+        "r": 0.191981614,
         "g": 0.701,
-        "b": 0.167981654
+        "b": 0.1679816
       },
       "Tags": [
         "Agent",
@@ -2002,9 +2002,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191990823,
+        "r": 0.1919908,
         "g": 0.701,
-        "b": 0.1679908
+        "b": 0.167990774
       },
       "Tags": [
         "Green",
@@ -2051,9 +2051,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191990823,
+        "r": 0.1919908,
         "g": 0.701,
-        "b": 0.1679908
+        "b": 0.167990774
       },
       "Tags": [
         "Green",
@@ -2100,9 +2100,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191990823,
+        "r": 0.1919908,
         "g": 0.701,
-        "b": 0.1679908
+        "b": 0.167990774
       },
       "Tags": [
         "Green",
@@ -2149,7 +2149,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117990337,
+        "r": 0.117990293,
         "g": 0.53,
         "b": 1.0
       },
@@ -2198,7 +2198,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117990337,
+        "r": 0.117990293,
         "g": 0.53,
         "b": 1.0
       },
@@ -2247,7 +2247,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117990337,
+        "r": 0.117990293,
         "g": 0.53,
         "b": 1.0
       },
@@ -2297,8 +2297,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.09999072,
-        "b": 0.0939906761
+        "g": 0.09999069,
+        "b": 0.09399065
       },
       "Tags": [
         "Red",
@@ -2346,8 +2346,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.09999072,
-        "b": 0.0939906761
+        "g": 0.09999069,
+        "b": 0.09399065
       },
       "Tags": [
         "Red",
@@ -3250,8 +3250,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.09999072,
-        "b": 0.0939906761
+        "g": 0.09999069,
+        "b": 0.09399065
       },
       "Tags": [
         "Red",
@@ -3298,9 +3298,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191990823,
+        "r": 0.1919908,
         "g": 0.701,
-        "b": 0.1679908
+        "b": 0.167990774
       },
       "Tags": [
         "Green",
@@ -3347,9 +3347,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191990823,
+        "r": 0.1919908,
         "g": 0.701,
-        "b": 0.1679908
+        "b": 0.167990774
       },
       "Tags": [
         "Green",
@@ -3396,9 +3396,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191990823,
+        "r": 0.1919908,
         "g": 0.701,
-        "b": 0.1679908
+        "b": 0.167990774
       },
       "Tags": [
         "Green",
@@ -3445,9 +3445,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191990823,
+        "r": 0.1919908,
         "g": 0.701,
-        "b": 0.1679908
+        "b": 0.167990774
       },
       "Tags": [
         "Green",
@@ -3495,8 +3495,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.09999072,
-        "b": 0.0939906761
+        "g": 0.09999069,
+        "b": 0.09399065
       },
       "Tags": [
         "Red",
@@ -3544,8 +3544,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.09999072,
-        "b": 0.0939906761
+        "g": 0.09999069,
+        "b": 0.09399065
       },
       "Tags": [
         "Red",
@@ -3593,8 +3593,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.09999072,
-        "b": 0.0939906761
+        "g": 0.09999069,
+        "b": 0.09399065
       },
       "Tags": [
         "Red",
@@ -3641,9 +3641,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191990823,
+        "r": 0.1919908,
         "g": 0.701,
-        "b": 0.1679908
+        "b": 0.167990774
       },
       "Tags": [
         "Green",
@@ -3690,9 +3690,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191990823,
+        "r": 0.1919908,
         "g": 0.701,
-        "b": 0.1679908
+        "b": 0.167990774
       },
       "Tags": [
         "Green",
@@ -3740,8 +3740,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.09999072,
-        "b": 0.0939906761
+        "g": 0.09999069,
+        "b": 0.09399065
       },
       "Tags": [
         "Red",
@@ -3789,8 +3789,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.09999072,
-        "b": 0.0939906761
+        "g": 0.09999069,
+        "b": 0.09399065
       },
       "Tags": [
         "Red",
@@ -3838,8 +3838,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.09999072,
-        "b": 0.0939906761
+        "g": 0.09999069,
+        "b": 0.09399065
       },
       "Tags": [
         "Red",
@@ -3886,7 +3886,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117990337,
+        "r": 0.117990293,
         "g": 0.53,
         "b": 1.0
       },
@@ -3935,7 +3935,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117990337,
+        "r": 0.117990293,
         "g": 0.53,
         "b": 1.0
       },
@@ -3984,7 +3984,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117990337,
+        "r": 0.117990293,
         "g": 0.53,
         "b": 1.0
       },
@@ -4033,7 +4033,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117990337,
+        "r": 0.117990293,
         "g": 0.53,
         "b": 1.0
       },
@@ -4082,7 +4082,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117990337,
+        "r": 0.117990293,
         "g": 0.53,
         "b": 1.0
       },
@@ -4131,7 +4131,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117990337,
+        "r": 0.117990293,
         "g": 0.53,
         "b": 1.0
       },
@@ -4366,7 +4366,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171981663
+        "b": 0.1719816
       },
       "Tags": [
         "Agent",
@@ -4425,7 +4425,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171981663
+        "b": 0.1719816
       },
       "Tags": [
         "Agent",
@@ -4484,7 +4484,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171981663
+        "b": 0.1719816
       },
       "Tags": [
         "Agent",
@@ -4544,7 +4544,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171990812
+        "b": 0.171990782
       },
       "Tags": [
         "Troop",
@@ -4593,7 +4593,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171990812
+        "b": 0.171990782
       },
       "Tags": [
         "Troop",
@@ -4642,7 +4642,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171990812
+        "b": 0.171990782
       },
       "Tags": [
         "Troop",
@@ -4691,7 +4691,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171990812
+        "b": 0.171990782
       },
       "Tags": [
         "Troop",
@@ -4740,7 +4740,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171990812
+        "b": 0.171990782
       },
       "Tags": [
         "Troop",
@@ -4789,7 +4789,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171990812
+        "b": 0.171990782
       },
       "Tags": [
         "Troop",
@@ -4838,7 +4838,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171990812
+        "b": 0.171990782
       },
       "Tags": [
         "Troop",
@@ -4887,7 +4887,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171990812
+        "b": 0.171990782
       },
       "Tags": [
         "HighCouncilSeatToken",
@@ -4948,7 +4948,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171990812
+        "b": 0.171990782
       },
       "Tags": [
         "Troop",
@@ -4997,7 +4997,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171990812
+        "b": 0.171990782
       },
       "Tags": [
         "Troop",
@@ -5086,7 +5086,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 15.55,
-        "posY": 1.50000012,
+        "posY": 1.50000024,
         "posZ": 30.6,
         "rotX": 0,
         "rotY": 89.99601,
@@ -5376,9 +5376,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.442949355,
-        "g": 0.230949342,
-        "b": 0.08995878
+        "r": 0.442949325,
+        "g": 0.230949312,
+        "b": 0.0899587646
       },
       "Tags": [
         "VictoryPointToken"
@@ -5436,9 +5436,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.442949355,
-        "g": 0.230949342,
-        "b": 0.08995878
+        "r": 0.442949325,
+        "g": 0.230949312,
+        "b": 0.0899587646
       },
       "Tags": [
         "VictoryPointToken"
@@ -5496,9 +5496,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.442949355,
-        "g": 0.230949342,
-        "b": 0.08995878
+        "r": 0.442949325,
+        "g": 0.230949312,
+        "b": 0.0899587646
       },
       "Tags": [
         "VictoryPointToken"
@@ -5556,9 +5556,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.442949355,
-        "g": 0.230949342,
-        "b": 0.08995878
+        "r": 0.442949325,
+        "g": 0.230949312,
+        "b": 0.0899587646
       },
       "Tags": [
         "VictoryPointToken"
@@ -5618,7 +5618,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171981663
+        "b": 0.1719816
       },
       "Tags": [
         "Dreadnought",
@@ -5675,9 +5675,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191981673,
+        "r": 0.191981614,
         "g": 0.701,
-        "b": 0.167981654
+        "b": 0.1679816
       },
       "Tags": [
         "Dreadnought",
@@ -5734,7 +5734,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117980681,
+        "r": 0.117980622,
         "g": 0.53,
         "b": 1.0
       },
@@ -5794,8 +5794,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.0999814644,
-        "b": 0.09398144
+        "g": 0.0999814048,
+        "b": 0.09398138
       },
       "Tags": [
         "Dreadnought",
@@ -5853,8 +5853,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.09999188,
-        "b": 0.09399185
+        "g": 0.09999185,
+        "b": 0.09399182
       },
       "Tags": [
         "InfluenceTokens",
@@ -5913,9 +5913,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191990823,
+        "r": 0.1919908,
         "g": 0.701,
-        "b": 0.1679908
+        "b": 0.167990774
       },
       "Tags": [
         "Green",
@@ -5975,8 +5975,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.09999188,
-        "b": 0.09399185
+        "g": 0.09999185,
+        "b": 0.09399182
       },
       "Tags": [
         "InfluenceTokens",
@@ -6036,8 +6036,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.09999188,
-        "b": 0.09399185
+        "g": 0.09999185,
+        "b": 0.09399182
       },
       "Tags": [
         "InfluenceTokens",
@@ -6096,9 +6096,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191990823,
+        "r": 0.1919908,
         "g": 0.701,
-        "b": 0.1679908
+        "b": 0.167990774
       },
       "Tags": [
         "Green",
@@ -6157,7 +6157,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117992096,
+        "r": 0.117992066,
         "g": 0.53,
         "b": 1.0
       },
@@ -6220,7 +6220,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171990812
+        "b": 0.171990782
       },
       "Tags": [
         "InfluenceTokens",
@@ -6280,8 +6280,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.09999188,
-        "b": 0.09399185
+        "g": 0.09999185,
+        "b": 0.09399182
       },
       "Tags": [
         "InfluenceTokens",
@@ -6340,7 +6340,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117992096,
+        "r": 0.117992066,
         "g": 0.53,
         "b": 1.0
       },
@@ -6401,7 +6401,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117992096,
+        "r": 0.117992066,
         "g": 0.53,
         "b": 1.0
       },
@@ -6464,7 +6464,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171990812
+        "b": 0.171990782
       },
       "Tags": [
         "InfluenceTokens",
@@ -6523,9 +6523,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191990823,
+        "r": 0.1919908,
         "g": 0.701,
-        "b": 0.1679908
+        "b": 0.167990774
       },
       "Tags": [
         "Green",
@@ -6586,7 +6586,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171990812
+        "b": 0.171990782
       },
       "Tags": [
         "InfluenceTokens",
@@ -6647,7 +6647,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171990812
+        "b": 0.171990782
       },
       "Tags": [
         "InfluenceTokens",
@@ -6706,9 +6706,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191990823,
+        "r": 0.1919908,
         "g": 0.701,
-        "b": 0.1679908
+        "b": 0.167990774
       },
       "Tags": [
         "Green",
@@ -6767,7 +6767,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117992096,
+        "r": 0.117992066,
         "g": 0.53,
         "b": 1.0
       },
@@ -6830,7 +6830,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171981663
+        "b": 0.1719816
       },
       "Tags": [
         "Dreadnought",
@@ -6887,9 +6887,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191981673,
+        "r": 0.191981614,
         "g": 0.701,
-        "b": 0.167981654
+        "b": 0.1679816
       },
       "Tags": [
         "Dreadnought",
@@ -6946,7 +6946,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117980681,
+        "r": 0.117980622,
         "g": 0.53,
         "b": 1.0
       },
@@ -7006,8 +7006,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.0999814644,
-        "b": 0.09398144
+        "g": 0.0999814048,
+        "b": 0.09398138
       },
       "Tags": [
         "Dreadnought",
@@ -7064,7 +7064,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.419144,
+        "r": 0.419143975,
         "g": 0.0,
         "b": 0.681184649
       },
@@ -7322,8 +7322,8 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.353615046,
-        "g": 0.126015246,
+        "r": 0.353615016,
+        "g": 0.126015216,
         "b": 0.0
       },
       "Tags": [
@@ -7852,8 +7852,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.09999072,
-        "b": 0.0939906761
+        "g": 0.09999069,
+        "b": 0.09399065
       },
       "Tags": [
         "ForceToken"
@@ -7924,7 +7924,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117990337,
+        "r": 0.117990293,
         "g": 0.53,
         "b": 1.0
       },
@@ -7997,9 +7997,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191990823,
+        "r": 0.1919908,
         "g": 0.701,
-        "b": 0.1679908
+        "b": 0.167990774
       },
       "Tags": [
         "ForceToken"
@@ -8072,7 +8072,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171990812
+        "b": 0.171990782
       },
       "Tags": [
         "ForceToken"
@@ -8384,9 +8384,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.1994215,
-        "g": 0.0555161163,
-        "b": 0.2978854
+        "r": 0.199421465,
+        "g": 0.055516094,
+        "b": 0.297885358
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -8683,7 +8683,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171990812
+        "b": 0.171990782
       },
       "Tags": [
         "TleilaxuToken",
@@ -8742,9 +8742,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191990823,
+        "r": 0.1919908,
         "g": 0.701,
-        "b": 0.1679908
+        "b": 0.167990774
       },
       "Tags": [
         "Green",
@@ -8784,8 +8784,8 @@
       "GUID": "96607f",
       "Name": "Custom_Token",
       "Transform": {
-        "posX": 0.542550147,
-        "posY": 1.8846519,
+        "posX": 0.5425501,
+        "posY": 1.88465178,
         "posZ": 22.75358,
         "rotX": 0,
         "rotY": 180,
@@ -8803,7 +8803,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117992096,
+        "r": 0.117992066,
         "g": 0.53,
         "b": 1.0
       },
@@ -8845,8 +8845,8 @@
       "GUID": "2bfc39",
       "Name": "Custom_Token",
       "Transform": {
-        "posX": 0.5429312,
-        "posY": 1.882152,
+        "posX": 0.542931139,
+        "posY": 1.88215208,
         "posZ": 22.0543556,
         "rotX": 0,
         "rotY": 180,
@@ -8865,8 +8865,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.09999188,
-        "b": 0.09399185
+        "g": 0.09999185,
+        "b": 0.09399182
       },
       "Tags": [
         "Red",
@@ -8906,7 +8906,7 @@
       "GUID": "658b17",
       "Name": "Custom_Token",
       "Transform": {
-        "posX": 0.3700056,
+        "posX": 0.370005667,
         "posY": 1.882152,
         "posZ": 20.3406372,
         "rotX": 0,
@@ -8925,9 +8925,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191990823,
+        "r": 0.1919908,
         "g": 0.701,
-        "b": 0.1679908
+        "b": 0.167990774
       },
       "Tags": [
         "Green",
@@ -8967,7 +8967,7 @@
       "GUID": "8988cf",
       "Name": "Custom_Token",
       "Transform": {
-        "posX": 0.3700852,
+        "posX": 0.370085239,
         "posY": 1.882152,
         "posZ": 19.6398125,
         "rotX": 0,
@@ -8988,7 +8988,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171990812
+        "b": 0.171990782
       },
       "Tags": [
         "ResearchToken",
@@ -9028,7 +9028,7 @@
       "GUID": "292658",
       "Name": "Custom_Token",
       "Transform": {
-        "posX": 0.3700496,
+        "posX": 0.370049536,
         "posY": 1.88215184,
         "posZ": 18.9373875,
         "rotX": 0,
@@ -9047,7 +9047,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117992096,
+        "r": 0.117992066,
         "g": 0.53,
         "b": 1.0
       },
@@ -9089,7 +9089,7 @@
       "GUID": "39e0f3",
       "Name": "Custom_Token",
       "Transform": {
-        "posX": 0.36985746,
+        "posX": 0.369857371,
         "posY": 1.884652,
         "posZ": 18.2348137,
         "rotX": 0,
@@ -9109,8 +9109,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.09999188,
-        "b": 0.09399185
+        "g": 0.09999185,
+        "b": 0.09399182
       },
       "Tags": [
         "Red",
@@ -9170,8 +9170,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.09996786,
-        "b": 0.09396776
+        "g": 0.0999678,
+        "b": 0.0939677
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -9223,7 +9223,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171981663
+        "b": 0.1719816
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -9273,9 +9273,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191981673,
+        "r": 0.191981614,
         "g": 0.701,
-        "b": 0.167981654
+        "b": 0.1679816
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -9325,7 +9325,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117980681,
+        "r": 0.117980622,
         "g": 0.53,
         "b": 1.0
       },
@@ -9396,8 +9396,8 @@
       "HideWhenFaceDown": false,
       "Hands": false,
       "CustomAssetbundle": {
-        "AssetbundleURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141309460/67EAFA3C92B61B92F5540F95625B9333123EBE16/",
-        "AssetbundleSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141307694/6B5133415732C568628AC323E473BA675B726F5B/",
+        "AssetbundleURL": "https://steamusercontent-a.akamaihd.net/ugc/9672614287400934703/F927C4E8A7DE3E1CB91E5C463CAE097F99D14D7B/",
+        "AssetbundleSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/13154796297751583197/5E0A658E38E157C2ACFE4E2FF980A7756C2BCF08/",
         "MaterialIndex": 2,
         "TypeIndex": 4,
         "LoopingEffectIndex": 0
@@ -9448,8 +9448,8 @@
       "HideWhenFaceDown": false,
       "Hands": false,
       "CustomAssetbundle": {
-        "AssetbundleURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141309460/67EAFA3C92B61B92F5540F95625B9333123EBE16/",
-        "AssetbundleSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141307694/6B5133415732C568628AC323E473BA675B726F5B/",
+        "AssetbundleURL": "https://steamusercontent-a.akamaihd.net/ugc/9672614287400934703/F927C4E8A7DE3E1CB91E5C463CAE097F99D14D7B/",
+        "AssetbundleSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/13154796297751583197/5E0A658E38E157C2ACFE4E2FF980A7756C2BCF08/",
         "MaterialIndex": 2,
         "TypeIndex": 4,
         "LoopingEffectIndex": 0
@@ -9620,8 +9620,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.09999072,
-        "b": 0.0939906761
+        "g": 0.09999069,
+        "b": 0.09399065
       },
       "Tags": [
         "Red",
@@ -9669,8 +9669,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.09999072,
-        "b": 0.0939906761
+        "g": 0.09999069,
+        "b": 0.09399065
       },
       "Tags": [
         "Red",
@@ -9718,8 +9718,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.09999072,
-        "b": 0.0939906761
+        "g": 0.09999069,
+        "b": 0.09399065
       },
       "Tags": [
         "Red",
@@ -9766,7 +9766,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117990337,
+        "r": 0.117990293,
         "g": 0.53,
         "b": 1.0
       },
@@ -9815,7 +9815,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117990337,
+        "r": 0.117990293,
         "g": 0.53,
         "b": 1.0
       },
@@ -9864,7 +9864,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117990337,
+        "r": 0.117990293,
         "g": 0.53,
         "b": 1.0
       },
@@ -9913,9 +9913,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191990823,
+        "r": 0.1919908,
         "g": 0.701,
-        "b": 0.1679908
+        "b": 0.167990774
       },
       "Tags": [
         "Green",
@@ -9962,9 +9962,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191990823,
+        "r": 0.1919908,
         "g": 0.701,
-        "b": 0.1679908
+        "b": 0.167990774
       },
       "Tags": [
         "Green",
@@ -10011,9 +10011,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191990823,
+        "r": 0.1919908,
         "g": 0.701,
-        "b": 0.1679908
+        "b": 0.167990774
       },
       "Tags": [
         "Green",
@@ -10062,7 +10062,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171990812
+        "b": 0.171990782
       },
       "Tags": [
         "Troop",
@@ -10111,7 +10111,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171990812
+        "b": 0.171990782
       },
       "Tags": [
         "Troop",
@@ -10160,7 +10160,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171990812
+        "b": 0.171990782
       },
       "Tags": [
         "Troop",
@@ -12703,7 +12703,7 @@
       "GUID": "43fd49",
       "Name": "Custom_PDF",
       "Transform": {
-        "posX": 5.373008e-08,
+        "posX": 5.3853217e-08,
         "posY": 1.59252357,
         "posZ": -26.5,
         "rotX": 0,
@@ -12888,7 +12888,7 @@
       },
       "ColorDiffuse": {
         "r": 0.627,
-        "g": 0.124992184,
+        "g": 0.124992125,
         "b": 0.941
       },
       "LayoutGroupSortIndex": 0,
@@ -13288,7 +13288,7 @@
       },
       "ColorDiffuse": {
         "r": 0.627,
-        "g": 0.124996088,
+        "g": 0.124996059,
         "b": 0.941
       },
       "Tags": [
@@ -13860,7 +13860,7 @@
       },
       "ColorDiffuse": {
         "r": 0.627,
-        "g": 0.124996088,
+        "g": 0.124996059,
         "b": 0.941
       },
       "Tags": [
@@ -13921,7 +13921,7 @@
       },
       "ColorDiffuse": {
         "r": 0.627,
-        "g": 0.124996088,
+        "g": 0.124996059,
         "b": 0.941
       },
       "Tags": [
@@ -13983,7 +13983,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171990812
+        "b": 0.171990782
       },
       "Tags": [
         "Spy",
@@ -14044,7 +14044,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171990812
+        "b": 0.171990782
       },
       "Tags": [
         "Spy",
@@ -14105,7 +14105,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171990812
+        "b": 0.171990782
       },
       "Tags": [
         "Spy",
@@ -14164,9 +14164,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191990823,
+        "r": 0.1919908,
         "g": 0.701,
-        "b": 0.1679908
+        "b": 0.167990774
       },
       "Tags": [
         "Green",
@@ -14225,9 +14225,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191990823,
+        "r": 0.1919908,
         "g": 0.701,
-        "b": 0.1679908
+        "b": 0.167990774
       },
       "Tags": [
         "Green",
@@ -14286,9 +14286,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191990823,
+        "r": 0.1919908,
         "g": 0.701,
-        "b": 0.1679908
+        "b": 0.167990774
       },
       "Tags": [
         "Green",
@@ -14348,8 +14348,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.09999188,
-        "b": 0.09399185
+        "g": 0.09999185,
+        "b": 0.09399182
       },
       "Tags": [
         "Red",
@@ -14409,8 +14409,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.09999188,
-        "b": 0.09399185
+        "g": 0.09999185,
+        "b": 0.09399182
       },
       "Tags": [
         "Red",
@@ -14652,7 +14652,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117992096,
+        "r": 0.117992066,
         "g": 0.53,
         "b": 1.0
       },
@@ -14713,7 +14713,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117992096,
+        "r": 0.117992066,
         "g": 0.53,
         "b": 1.0
       },
@@ -14774,7 +14774,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117992096,
+        "r": 0.117992066,
         "g": 0.53,
         "b": 1.0
       },
@@ -14836,8 +14836,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.09999188,
-        "b": 0.09399185
+        "g": 0.09999185,
+        "b": 0.09399182
       },
       "Tags": [
         "Red",
@@ -14896,9 +14896,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191981673,
+        "r": 0.191981614,
         "g": 0.701,
-        "b": 0.167981654
+        "b": 0.1679816
       },
       "Tags": [
         "Agent",
@@ -14956,7 +14956,7 @@
       },
       "ColorDiffuse": {
         "r": 0.627,
-        "g": 0.124996088,
+        "g": 0.124996059,
         "b": 0.941
       },
       "Tags": [
@@ -15090,8 +15090,8 @@
       "HideWhenFaceDown": false,
       "Hands": false,
       "CustomAssetbundle": {
-        "AssetbundleURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141309802/3615093D810350824B76D3E57244FE888F0CE844/",
-        "AssetbundleSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141307694/6B5133415732C568628AC323E473BA675B726F5B/",
+        "AssetbundleURL": "https://steamusercontent-a.akamaihd.net/ugc/12389255926591040145/15EE57EA4FFF790AFC22FAF04B7439F6C45E0DBE/",
+        "AssetbundleSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/13154796297751583197/5E0A658E38E157C2ACFE4E2FF980A7756C2BCF08/",
         "MaterialIndex": 2,
         "TypeIndex": 4,
         "LoopingEffectIndex": 0
@@ -15116,7 +15116,8 @@
             "Name": "Scoreboard",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/28805470175239157/D7A62A0EDAFA86212F7C537376701E0BEC4F4D2A/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -15134,7 +15135,8 @@
             "Name": "First Player Token Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141336231/B2176FBF3640DC02A6840C8E0FB162057724DE41/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -15152,7 +15154,8 @@
             "Name": "Draw Deck Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141335305/9973F87497827C194B979D7410D0DD47E46305FA/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -15170,7 +15173,8 @@
             "Name": "Discard Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141335224/76205DFA6ECBC5F9C6B38BE95F42E6B5468B5999/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -15188,7 +15192,8 @@
             "Name": "Leader Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141335398/7882B2E68FF7767C67EE5C63C9D7CF17B405A5C3/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -15206,7 +15211,8 @@
             "Name": "MuadDib Objective Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141305375/52C4F6DEBC5F101B6663B833F1964BB9034A7C75/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -15224,7 +15230,8 @@
             "Name": "Crysknife Objective Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141304988/D455406509BD5D1C4387C102CBACC5BFB56FC59E/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -15242,7 +15249,8 @@
             "Name": "Ornithopter Objective Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141304687/E4E692FE0EF6AF7B51B5A31DAC5D0D7DC7859655/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -15260,7 +15268,8 @@
             "Name": "Joker Objective Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141304458/384109878E6ED179516CE638CE97167E12698A54/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -15278,7 +15287,8 @@
             "Name": "Generic Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -15296,7 +15306,8 @@
             "Name": "Generic Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -15314,7 +15325,8 @@
             "Name": "Generic Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -15332,7 +15344,8 @@
             "Name": "Generic Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -15350,7 +15363,8 @@
             "Name": "Generic Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -15368,7 +15382,8 @@
             "Name": "Generic Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -15386,7 +15401,8 @@
             "Name": "Tech Tile Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141336300/6A948CDC20774D0D4E5EA0EFF3E0D2C23F30FCC1/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -15404,7 +15420,8 @@
             "Name": "Tech Tile Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141336300/6A948CDC20774D0D4E5EA0EFF3E0D2C23F30FCC1/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -15422,7 +15439,8 @@
             "Name": "Tech Tile Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141336300/6A948CDC20774D0D4E5EA0EFF3E0D2C23F30FCC1/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -15440,7 +15458,8 @@
             "Name": "Tech Tile Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141336300/6A948CDC20774D0D4E5EA0EFF3E0D2C23F30FCC1/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -15458,7 +15477,8 @@
             "Name": "Tech Tile Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141336300/6A948CDC20774D0D4E5EA0EFF3E0D2C23F30FCC1/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -15476,7 +15496,8 @@
             "Name": "Tech Tile Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141336300/6A948CDC20774D0D4E5EA0EFF3E0D2C23F30FCC1/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -15494,7 +15515,8 @@
             "Name": "Sardaukar Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -15512,7 +15534,8 @@
             "Name": "Sardaukar Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -15530,7 +15553,8 @@
             "Name": "Sardaukar Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -15548,7 +15572,8 @@
             "Name": "Generic Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -15566,7 +15591,8 @@
             "Name": "Generic Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -15584,7 +15610,8 @@
             "Name": "Intrigium",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2120690798716490121/DB0A29253195530F3A39D5AC737922A5B2338795/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -15602,7 +15629,8 @@
             "Name": "Intrigium",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2120690798716490121/DB0A29253195530F3A39D5AC737922A5B2338795/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -15620,7 +15648,8 @@
             "Name": "Intrigium",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2120690798716490121/DB0A29253195530F3A39D5AC737922A5B2338795/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -15638,7 +15667,8 @@
             "Name": "Intrigium",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2120690798716490121/DB0A29253195530F3A39D5AC737922A5B2338795/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -15656,7 +15686,8 @@
             "Name": "Intrigium",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2120690798716490121/DB0A29253195530F3A39D5AC737922A5B2338795/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -15674,7 +15705,8 @@
             "Name": "Intrigium",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2120690798716490121/DB0A29253195530F3A39D5AC737922A5B2338795/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         }
       ]
     },
@@ -15723,8 +15755,8 @@
       "HideWhenFaceDown": false,
       "Hands": false,
       "CustomAssetbundle": {
-        "AssetbundleURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141309802/3615093D810350824B76D3E57244FE888F0CE844/",
-        "AssetbundleSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141307694/6B5133415732C568628AC323E473BA675B726F5B/",
+        "AssetbundleURL": "https://steamusercontent-a.akamaihd.net/ugc/12389255926591040145/15EE57EA4FFF790AFC22FAF04B7439F6C45E0DBE/",
+        "AssetbundleSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/13154796297751583197/5E0A658E38E157C2ACFE4E2FF980A7756C2BCF08/",
         "MaterialIndex": 2,
         "TypeIndex": 4,
         "LoopingEffectIndex": 0
@@ -15749,7 +15781,8 @@
             "Name": "Scoreboard",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/28805470175239157/D7A62A0EDAFA86212F7C537376701E0BEC4F4D2A/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -15767,7 +15800,8 @@
             "Name": "First Player Token Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141336231/B2176FBF3640DC02A6840C8E0FB162057724DE41/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -15785,7 +15819,8 @@
             "Name": "Draw Deck Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141335305/9973F87497827C194B979D7410D0DD47E46305FA/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -15803,7 +15838,8 @@
             "Name": "Discard Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141335224/76205DFA6ECBC5F9C6B38BE95F42E6B5468B5999/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -15821,7 +15857,8 @@
             "Name": "Leader Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141335398/7882B2E68FF7767C67EE5C63C9D7CF17B405A5C3/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -15839,7 +15876,8 @@
             "Name": "Generic Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -15857,7 +15895,8 @@
             "Name": "Generic Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -15875,7 +15914,8 @@
             "Name": "Generic Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -15893,7 +15933,8 @@
             "Name": "Generic Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -15911,7 +15952,8 @@
             "Name": "Generic Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -15929,7 +15971,8 @@
             "Name": "Generic Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -15947,7 +15990,8 @@
             "Name": "Tech Tile Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141336300/6A948CDC20774D0D4E5EA0EFF3E0D2C23F30FCC1/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -15965,7 +16009,8 @@
             "Name": "Tech Tile Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141336300/6A948CDC20774D0D4E5EA0EFF3E0D2C23F30FCC1/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -15983,7 +16028,8 @@
             "Name": "Tech Tile Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141336300/6A948CDC20774D0D4E5EA0EFF3E0D2C23F30FCC1/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -16001,7 +16047,8 @@
             "Name": "Tech Tile Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141336300/6A948CDC20774D0D4E5EA0EFF3E0D2C23F30FCC1/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -16019,7 +16066,8 @@
             "Name": "Tech Tile Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141336300/6A948CDC20774D0D4E5EA0EFF3E0D2C23F30FCC1/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -16037,7 +16085,8 @@
             "Name": "Tech Tile Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141336300/6A948CDC20774D0D4E5EA0EFF3E0D2C23F30FCC1/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -16055,7 +16104,8 @@
             "Name": "Intrigium",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2120690798716490121/DB0A29253195530F3A39D5AC737922A5B2338795/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -16073,7 +16123,8 @@
             "Name": "Intrigium",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2120690798716490121/DB0A29253195530F3A39D5AC737922A5B2338795/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -16091,7 +16142,8 @@
             "Name": "Intrigium",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2120690798716490121/DB0A29253195530F3A39D5AC737922A5B2338795/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -16109,7 +16161,8 @@
             "Name": "Intrigium",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2120690798716490121/DB0A29253195530F3A39D5AC737922A5B2338795/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -16127,7 +16180,8 @@
             "Name": "Intrigium",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2120690798716490121/DB0A29253195530F3A39D5AC737922A5B2338795/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -16145,7 +16199,8 @@
             "Name": "Intrigium",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2120690798716490121/DB0A29253195530F3A39D5AC737922A5B2338795/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         }
       ]
     },
@@ -16194,8 +16249,8 @@
       "HideWhenFaceDown": false,
       "Hands": false,
       "CustomAssetbundle": {
-        "AssetbundleURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141309802/3615093D810350824B76D3E57244FE888F0CE844/",
-        "AssetbundleSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141307694/6B5133415732C568628AC323E473BA675B726F5B/",
+        "AssetbundleURL": "https://steamusercontent-a.akamaihd.net/ugc/12389255926591040145/15EE57EA4FFF790AFC22FAF04B7439F6C45E0DBE/",
+        "AssetbundleSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/13154796297751583197/5E0A658E38E157C2ACFE4E2FF980A7756C2BCF08/",
         "MaterialIndex": 2,
         "TypeIndex": 4,
         "LoopingEffectIndex": 0
@@ -16220,7 +16275,8 @@
             "Name": "Scoreboard",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/28805470175239157/D7A62A0EDAFA86212F7C537376701E0BEC4F4D2A/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -16238,7 +16294,8 @@
             "Name": "First Player Token Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141336231/B2176FBF3640DC02A6840C8E0FB162057724DE41/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -16256,7 +16313,8 @@
             "Name": "Draw Deck Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141335305/9973F87497827C194B979D7410D0DD47E46305FA/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -16274,7 +16332,8 @@
             "Name": "Discard Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141335224/76205DFA6ECBC5F9C6B38BE95F42E6B5468B5999/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -16292,7 +16351,8 @@
             "Name": "Leader Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141335398/7882B2E68FF7767C67EE5C63C9D7CF17B405A5C3/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -16310,7 +16370,8 @@
             "Name": "MuadDib Objective Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141305375/52C4F6DEBC5F101B6663B833F1964BB9034A7C75/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -16328,7 +16389,8 @@
             "Name": "Crysknife Objective Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141304988/D455406509BD5D1C4387C102CBACC5BFB56FC59E/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -16346,7 +16408,8 @@
             "Name": "Ornithopter Objective Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141304687/E4E692FE0EF6AF7B51B5A31DAC5D0D7DC7859655/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -16364,7 +16427,8 @@
             "Name": "Joker Objective Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141304458/384109878E6ED179516CE638CE97167E12698A54/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -16382,7 +16446,8 @@
             "Name": "Generic Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -16400,7 +16465,8 @@
             "Name": "Generic Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -16418,7 +16484,8 @@
             "Name": "Generic Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -16436,7 +16503,8 @@
             "Name": "Generic Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -16454,7 +16522,8 @@
             "Name": "Generic Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -16472,7 +16541,8 @@
             "Name": "Generic Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -16490,7 +16560,8 @@
             "Name": "Tech Tile Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141336300/6A948CDC20774D0D4E5EA0EFF3E0D2C23F30FCC1/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -16508,7 +16579,8 @@
             "Name": "Tech Tile Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141336300/6A948CDC20774D0D4E5EA0EFF3E0D2C23F30FCC1/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -16526,7 +16598,8 @@
             "Name": "Tech Tile Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141336300/6A948CDC20774D0D4E5EA0EFF3E0D2C23F30FCC1/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -16544,7 +16617,8 @@
             "Name": "Tech Tile Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141336300/6A948CDC20774D0D4E5EA0EFF3E0D2C23F30FCC1/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -16562,7 +16636,8 @@
             "Name": "Tech Tile Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141336300/6A948CDC20774D0D4E5EA0EFF3E0D2C23F30FCC1/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -16580,7 +16655,8 @@
             "Name": "Tech Tile Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141336300/6A948CDC20774D0D4E5EA0EFF3E0D2C23F30FCC1/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -16598,7 +16674,8 @@
             "Name": "Sardaukar Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -16616,7 +16693,8 @@
             "Name": "Sardaukar Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -16634,7 +16712,8 @@
             "Name": "Sardaukar Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -16652,7 +16731,8 @@
             "Name": "Generic Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -16670,7 +16750,8 @@
             "Name": "Generic Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -16688,7 +16769,8 @@
             "Name": "Intrigium",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2120690798716490121/DB0A29253195530F3A39D5AC737922A5B2338795/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -16706,7 +16788,8 @@
             "Name": "Intrigium",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2120690798716490121/DB0A29253195530F3A39D5AC737922A5B2338795/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -16724,7 +16807,8 @@
             "Name": "Intrigium",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2120690798716490121/DB0A29253195530F3A39D5AC737922A5B2338795/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -16742,7 +16826,8 @@
             "Name": "Intrigium",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2120690798716490121/DB0A29253195530F3A39D5AC737922A5B2338795/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -16760,7 +16845,8 @@
             "Name": "Intrigium",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2120690798716490121/DB0A29253195530F3A39D5AC737922A5B2338795/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -16778,7 +16864,8 @@
             "Name": "Intrigium",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2120690798716490121/DB0A29253195530F3A39D5AC737922A5B2338795/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         }
       ]
     },
@@ -16827,8 +16914,8 @@
       "HideWhenFaceDown": false,
       "Hands": false,
       "CustomAssetbundle": {
-        "AssetbundleURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141309619/59DB3B9719C7494308C7883944C75F4E0EAED3AE/",
-        "AssetbundleSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141307694/6B5133415732C568628AC323E473BA675B726F5B/",
+        "AssetbundleURL": "https://steamusercontent-a.akamaihd.net/ugc/17284109836156873589/0B51D34E7551E360D93A2867524405F19887F0C4/",
+        "AssetbundleSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/13154796297751583197/5E0A658E38E157C2ACFE4E2FF980A7756C2BCF08/",
         "MaterialIndex": 2,
         "TypeIndex": 4,
         "LoopingEffectIndex": 0
@@ -16853,7 +16940,8 @@
             "Name": "Scoreboard",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/28805470175239303/D9DC4354D5C11448C6A65AA8124CCE7637B07FCB/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -16871,7 +16959,8 @@
             "Name": "First Player Token Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141336231/B2176FBF3640DC02A6840C8E0FB162057724DE41/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -16889,7 +16978,8 @@
             "Name": "Draw Deck Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141335305/9973F87497827C194B979D7410D0DD47E46305FA/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -16907,7 +16997,8 @@
             "Name": "Discard Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141335224/76205DFA6ECBC5F9C6B38BE95F42E6B5468B5999/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -16925,7 +17016,8 @@
             "Name": "Leader Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141335398/7882B2E68FF7767C67EE5C63C9D7CF17B405A5C3/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -16943,7 +17035,8 @@
             "Name": "MuadDib Objective Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141305375/52C4F6DEBC5F101B6663B833F1964BB9034A7C75/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -16961,7 +17054,8 @@
             "Name": "Crysknife Objective Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141304988/D455406509BD5D1C4387C102CBACC5BFB56FC59E/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -16979,7 +17073,8 @@
             "Name": "Ornithopter Objective Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141304687/E4E692FE0EF6AF7B51B5A31DAC5D0D7DC7859655/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -16997,7 +17092,8 @@
             "Name": "Joker Objective Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141304458/384109878E6ED179516CE638CE97167E12698A54/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -17015,7 +17111,8 @@
             "Name": "Generic Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -17033,7 +17130,8 @@
             "Name": "Generic Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -17051,7 +17149,8 @@
             "Name": "Generic Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -17069,7 +17168,8 @@
             "Name": "Generic Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -17087,7 +17187,8 @@
             "Name": "Generic Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -17105,7 +17206,8 @@
             "Name": "Generic Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -17123,7 +17225,8 @@
             "Name": "Tech Tile Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141336300/6A948CDC20774D0D4E5EA0EFF3E0D2C23F30FCC1/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -17141,7 +17244,8 @@
             "Name": "Tech Tile Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141336300/6A948CDC20774D0D4E5EA0EFF3E0D2C23F30FCC1/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -17159,7 +17263,8 @@
             "Name": "Tech Tile Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141336300/6A948CDC20774D0D4E5EA0EFF3E0D2C23F30FCC1/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -17177,7 +17282,8 @@
             "Name": "Tech Tile Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141336300/6A948CDC20774D0D4E5EA0EFF3E0D2C23F30FCC1/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -17195,7 +17301,8 @@
             "Name": "Tech Tile Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141336300/6A948CDC20774D0D4E5EA0EFF3E0D2C23F30FCC1/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -17213,7 +17320,8 @@
             "Name": "Tech Tile Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141336300/6A948CDC20774D0D4E5EA0EFF3E0D2C23F30FCC1/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -17231,7 +17339,8 @@
             "Name": "Sardaukar Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -17249,7 +17358,8 @@
             "Name": "Sardaukar Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -17267,7 +17377,8 @@
             "Name": "Sardaukar Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -17285,7 +17396,8 @@
             "Name": "Generic Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -17303,7 +17415,8 @@
             "Name": "Generic Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -17321,7 +17434,8 @@
             "Name": "Intrigium",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2120690798716490121/DB0A29253195530F3A39D5AC737922A5B2338795/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -17339,7 +17453,8 @@
             "Name": "Intrigium",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2120690798716490121/DB0A29253195530F3A39D5AC737922A5B2338795/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -17357,7 +17472,8 @@
             "Name": "Intrigium",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2120690798716490121/DB0A29253195530F3A39D5AC737922A5B2338795/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -17375,7 +17491,8 @@
             "Name": "Intrigium",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2120690798716490121/DB0A29253195530F3A39D5AC737922A5B2338795/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -17393,7 +17510,8 @@
             "Name": "Intrigium",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2120690798716490121/DB0A29253195530F3A39D5AC737922A5B2338795/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -17411,7 +17529,8 @@
             "Name": "Intrigium",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2120690798716490121/DB0A29253195530F3A39D5AC737922A5B2338795/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         }
       ]
     },
@@ -17460,8 +17579,8 @@
       "HideWhenFaceDown": false,
       "Hands": false,
       "CustomAssetbundle": {
-        "AssetbundleURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141309619/59DB3B9719C7494308C7883944C75F4E0EAED3AE/",
-        "AssetbundleSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141307694/6B5133415732C568628AC323E473BA675B726F5B/",
+        "AssetbundleURL": "https://steamusercontent-a.akamaihd.net/ugc/17284109836156873589/0B51D34E7551E360D93A2867524405F19887F0C4/",
+        "AssetbundleSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/13154796297751583197/5E0A658E38E157C2ACFE4E2FF980A7756C2BCF08/",
         "MaterialIndex": 2,
         "TypeIndex": 4,
         "LoopingEffectIndex": 0
@@ -17486,7 +17605,8 @@
             "Name": "Scoreboard",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/28805470175239303/D9DC4354D5C11448C6A65AA8124CCE7637B07FCB/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -17504,7 +17624,8 @@
             "Name": "First Player Token Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141336231/B2176FBF3640DC02A6840C8E0FB162057724DE41/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -17522,7 +17643,8 @@
             "Name": "Draw Deck Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141335305/9973F87497827C194B979D7410D0DD47E46305FA/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -17540,7 +17662,8 @@
             "Name": "Discard Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141335224/76205DFA6ECBC5F9C6B38BE95F42E6B5468B5999/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -17558,7 +17681,8 @@
             "Name": "Leader Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141335398/7882B2E68FF7767C67EE5C63C9D7CF17B405A5C3/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -17576,7 +17700,8 @@
             "Name": "Generic Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -17594,7 +17719,8 @@
             "Name": "Generic Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -17612,7 +17738,8 @@
             "Name": "Generic Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -17630,7 +17757,8 @@
             "Name": "Generic Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -17648,7 +17776,8 @@
             "Name": "Generic Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -17666,7 +17795,8 @@
             "Name": "Generic Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -17684,7 +17814,8 @@
             "Name": "Tech Tile Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141336300/6A948CDC20774D0D4E5EA0EFF3E0D2C23F30FCC1/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -17702,7 +17833,8 @@
             "Name": "Tech Tile Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141336300/6A948CDC20774D0D4E5EA0EFF3E0D2C23F30FCC1/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -17720,7 +17852,8 @@
             "Name": "Tech Tile Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141336300/6A948CDC20774D0D4E5EA0EFF3E0D2C23F30FCC1/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -17738,7 +17871,8 @@
             "Name": "Tech Tile Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141336300/6A948CDC20774D0D4E5EA0EFF3E0D2C23F30FCC1/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -17756,7 +17890,8 @@
             "Name": "Tech Tile Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141336300/6A948CDC20774D0D4E5EA0EFF3E0D2C23F30FCC1/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -17774,7 +17909,8 @@
             "Name": "Tech Tile Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141336300/6A948CDC20774D0D4E5EA0EFF3E0D2C23F30FCC1/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -17792,7 +17928,8 @@
             "Name": "Intrigium",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2120690798716490121/DB0A29253195530F3A39D5AC737922A5B2338795/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -17810,7 +17947,8 @@
             "Name": "Intrigium",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2120690798716490121/DB0A29253195530F3A39D5AC737922A5B2338795/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -17828,7 +17966,8 @@
             "Name": "Intrigium",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2120690798716490121/DB0A29253195530F3A39D5AC737922A5B2338795/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -17846,7 +17985,8 @@
             "Name": "Intrigium",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2120690798716490121/DB0A29253195530F3A39D5AC737922A5B2338795/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -17864,7 +18004,8 @@
             "Name": "Intrigium",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2120690798716490121/DB0A29253195530F3A39D5AC737922A5B2338795/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -17882,7 +18023,8 @@
             "Name": "Intrigium",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2120690798716490121/DB0A29253195530F3A39D5AC737922A5B2338795/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         }
       ]
     },
@@ -17931,8 +18073,8 @@
       "HideWhenFaceDown": false,
       "Hands": false,
       "CustomAssetbundle": {
-        "AssetbundleURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141309619/59DB3B9719C7494308C7883944C75F4E0EAED3AE/",
-        "AssetbundleSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141307694/6B5133415732C568628AC323E473BA675B726F5B/",
+        "AssetbundleURL": "https://steamusercontent-a.akamaihd.net/ugc/17284109836156873589/0B51D34E7551E360D93A2867524405F19887F0C4/",
+        "AssetbundleSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/13154796297751583197/5E0A658E38E157C2ACFE4E2FF980A7756C2BCF08/",
         "MaterialIndex": 2,
         "TypeIndex": 4,
         "LoopingEffectIndex": 0
@@ -17957,7 +18099,8 @@
             "Name": "Scoreboard",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/28805470175239303/D9DC4354D5C11448C6A65AA8124CCE7637B07FCB/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -17975,7 +18118,8 @@
             "Name": "First Player Token Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141336231/B2176FBF3640DC02A6840C8E0FB162057724DE41/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -17993,7 +18137,8 @@
             "Name": "Draw Deck Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141335305/9973F87497827C194B979D7410D0DD47E46305FA/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -18011,7 +18156,8 @@
             "Name": "Discard Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141335224/76205DFA6ECBC5F9C6B38BE95F42E6B5468B5999/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -18029,7 +18175,8 @@
             "Name": "Leader Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141335398/7882B2E68FF7767C67EE5C63C9D7CF17B405A5C3/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -18047,7 +18194,8 @@
             "Name": "MuadDib Objective Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141305375/52C4F6DEBC5F101B6663B833F1964BB9034A7C75/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -18065,7 +18213,8 @@
             "Name": "Crysknife Objective Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141304988/D455406509BD5D1C4387C102CBACC5BFB56FC59E/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -18083,7 +18232,8 @@
             "Name": "Ornithopter Objective Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141304687/E4E692FE0EF6AF7B51B5A31DAC5D0D7DC7859655/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -18101,7 +18251,8 @@
             "Name": "Joker Objective Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141304458/384109878E6ED179516CE638CE97167E12698A54/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -18119,7 +18270,8 @@
             "Name": "Generic Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -18137,7 +18289,8 @@
             "Name": "Generic Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -18155,7 +18308,8 @@
             "Name": "Generic Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -18173,7 +18327,8 @@
             "Name": "Generic Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -18191,7 +18346,8 @@
             "Name": "Generic Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -18209,7 +18365,8 @@
             "Name": "Generic Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -18227,7 +18384,8 @@
             "Name": "Tech Tile Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141336300/6A948CDC20774D0D4E5EA0EFF3E0D2C23F30FCC1/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -18245,7 +18403,8 @@
             "Name": "Tech Tile Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141336300/6A948CDC20774D0D4E5EA0EFF3E0D2C23F30FCC1/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -18263,7 +18422,8 @@
             "Name": "Tech Tile Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141336300/6A948CDC20774D0D4E5EA0EFF3E0D2C23F30FCC1/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -18281,7 +18441,8 @@
             "Name": "Tech Tile Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141336300/6A948CDC20774D0D4E5EA0EFF3E0D2C23F30FCC1/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -18299,7 +18460,8 @@
             "Name": "Tech Tile Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141336300/6A948CDC20774D0D4E5EA0EFF3E0D2C23F30FCC1/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -18317,7 +18479,8 @@
             "Name": "Tech Tile Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141336300/6A948CDC20774D0D4E5EA0EFF3E0D2C23F30FCC1/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -18335,7 +18498,8 @@
             "Name": "Sardaukar Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -18353,7 +18517,8 @@
             "Name": "Sardaukar Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -18371,7 +18536,8 @@
             "Name": "Sardaukar Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -18389,7 +18555,8 @@
             "Name": "Generic Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -18407,7 +18574,8 @@
             "Name": "Generic Slot",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141334991/8C42D07B62ACE707EF3C206E9DFEA483821ECFD8/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -18425,7 +18593,8 @@
             "Name": "Intrigium",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2120690798716490121/DB0A29253195530F3A39D5AC737922A5B2338795/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -18443,7 +18612,8 @@
             "Name": "Intrigium",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2120690798716490121/DB0A29253195530F3A39D5AC737922A5B2338795/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -18461,7 +18631,8 @@
             "Name": "Intrigium",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2120690798716490121/DB0A29253195530F3A39D5AC737922A5B2338795/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -18479,7 +18650,8 @@
             "Name": "Intrigium",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2120690798716490121/DB0A29253195530F3A39D5AC737922A5B2338795/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -18497,7 +18669,8 @@
             "Name": "Intrigium",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2120690798716490121/DB0A29253195530F3A39D5AC737922A5B2338795/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         },
         {
           "Transform": {
@@ -18515,7 +18688,8 @@
             "Name": "Intrigium",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2120690798716490121/DB0A29253195530F3A39D5AC737922A5B2338795/",
             "Size": 1.0
-          }
+          },
+          "OwnerSteamID": 0
         }
       ]
     },
@@ -18820,7 +18994,7 @@
       "ColorDiffuse": {
         "r": 0.6045295,
         "g": 0.487625778,
-        "b": 0.409668654
+        "b": 0.4096686
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -19056,7 +19230,7 @@
       },
       "ColorDiffuse": {
         "r": 0.627,
-        "g": 0.124996088,
+        "g": 0.124996059,
         "b": 0.941
       },
       "Tags": [
@@ -19587,7 +19761,7 @@
       "Name": "Custom_Token",
       "Transform": {
         "posX": 19.1,
-        "posY": 2.29616714,
+        "posY": 2.296167,
         "posZ": 21.8,
         "rotX": 0,
         "rotY": 180,
@@ -19769,8 +19943,8 @@
       "GUID": "643f4d",
       "Name": "Custom_Assetbundle",
       "Transform": {
-        "posX": -24.0,
-        "posY": 2.00419021,
+        "posX": -24.06,
+        "posY": 2.0,
         "posZ": 14.65,
         "rotX": 0,
         "rotY": 0,
@@ -19807,8 +19981,8 @@
       "HideWhenFaceDown": false,
       "Hands": false,
       "CustomAssetbundle": {
-        "AssetbundleURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141309941/DDF0C7397D9423ADC4BA69028FF593C639423EF0/",
-        "AssetbundleSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141307694/6B5133415732C568628AC323E473BA675B726F5B/",
+        "AssetbundleURL": "https://steamusercontent-a.akamaihd.net/ugc/12105297517051192804/83D8F97D3C353D1DE065680F154F5002DCDF49BF/",
+        "AssetbundleSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/13154796297751583197/5E0A658E38E157C2ACFE4E2FF980A7756C2BCF08/",
         "MaterialIndex": 4,
         "TypeIndex": 0,
         "LoopingEffectIndex": 0
@@ -19821,8 +19995,8 @@
       "GUID": "bca124",
       "Name": "Custom_Assetbundle",
       "Transform": {
-        "posX": -24.0,
-        "posY": 2.00419021,
+        "posX": -24.06,
+        "posY": 2.0,
         "posZ": -23.75,
         "rotX": 0,
         "rotY": 0,
@@ -19859,8 +20033,8 @@
       "HideWhenFaceDown": false,
       "Hands": false,
       "CustomAssetbundle": {
-        "AssetbundleURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141309941/DDF0C7397D9423ADC4BA69028FF593C639423EF0/",
-        "AssetbundleSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141307694/6B5133415732C568628AC323E473BA675B726F5B/",
+        "AssetbundleURL": "https://steamusercontent-a.akamaihd.net/ugc/12105297517051192804/83D8F97D3C353D1DE065680F154F5002DCDF49BF/",
+        "AssetbundleSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/13154796297751583197/5E0A658E38E157C2ACFE4E2FF980A7756C2BCF08/",
         "MaterialIndex": 4,
         "TypeIndex": 0,
         "LoopingEffectIndex": 0
@@ -19873,8 +20047,8 @@
       "GUID": "a138eb",
       "Name": "Custom_Assetbundle",
       "Transform": {
-        "posX": 24.0,
-        "posY": 2.00419021,
+        "posX": 24.01,
+        "posY": 2.0,
         "posZ": 14.65,
         "rotX": 0,
         "rotY": 0,
@@ -19911,8 +20085,8 @@
       "HideWhenFaceDown": false,
       "Hands": false,
       "CustomAssetbundle": {
-        "AssetbundleURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141309941/DDF0C7397D9423ADC4BA69028FF593C639423EF0/",
-        "AssetbundleSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141307694/6B5133415732C568628AC323E473BA675B726F5B/",
+        "AssetbundleURL": "https://steamusercontent-a.akamaihd.net/ugc/12105297517051192804/83D8F97D3C353D1DE065680F154F5002DCDF49BF/",
+        "AssetbundleSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/13154796297751583197/5E0A658E38E157C2ACFE4E2FF980A7756C2BCF08/",
         "MaterialIndex": 4,
         "TypeIndex": 0,
         "LoopingEffectIndex": 0
@@ -19925,8 +20099,8 @@
       "GUID": "9232e7",
       "Name": "Custom_Assetbundle",
       "Transform": {
-        "posX": 24.0,
-        "posY": 2.00419021,
+        "posX": 24.01,
+        "posY": 2.0,
         "posZ": -23.75,
         "rotX": 0,
         "rotY": 0,
@@ -19963,8 +20137,8 @@
       "HideWhenFaceDown": false,
       "Hands": false,
       "CustomAssetbundle": {
-        "AssetbundleURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141309941/DDF0C7397D9423ADC4BA69028FF593C639423EF0/",
-        "AssetbundleSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141307694/6B5133415732C568628AC323E473BA675B726F5B/",
+        "AssetbundleURL": "https://steamusercontent-a.akamaihd.net/ugc/12105297517051192804/83D8F97D3C353D1DE065680F154F5002DCDF49BF/",
+        "AssetbundleSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/13154796297751583197/5E0A658E38E157C2ACFE4E2FF980A7756C2BCF08/",
         "MaterialIndex": 4,
         "TypeIndex": 0,
         "LoopingEffectIndex": 0
@@ -19977,8 +20151,8 @@
       "GUID": "6d455c",
       "Name": "Custom_Assetbundle",
       "Transform": {
-        "posX": -24.0,
-        "posY": 2.00419021,
+        "posX": -24.06,
+        "posY": 2.0,
         "posZ": -4.55,
         "rotX": 0,
         "rotY": 0,
@@ -20015,8 +20189,8 @@
       "HideWhenFaceDown": false,
       "Hands": false,
       "CustomAssetbundle": {
-        "AssetbundleURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141309941/DDF0C7397D9423ADC4BA69028FF593C639423EF0/",
-        "AssetbundleSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141307694/6B5133415732C568628AC323E473BA675B726F5B/",
+        "AssetbundleURL": "https://steamusercontent-a.akamaihd.net/ugc/12105297517051192804/83D8F97D3C353D1DE065680F154F5002DCDF49BF/",
+        "AssetbundleSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/13154796297751583197/5E0A658E38E157C2ACFE4E2FF980A7756C2BCF08/",
         "MaterialIndex": 4,
         "TypeIndex": 0,
         "LoopingEffectIndex": 0
@@ -20029,8 +20203,8 @@
       "GUID": "1434c7",
       "Name": "Custom_Assetbundle",
       "Transform": {
-        "posX": 24.0,
-        "posY": 2.00419021,
+        "posX": 24.01,
+        "posY": 2.0,
         "posZ": -4.55,
         "rotX": 0,
         "rotY": 0,
@@ -20067,8 +20241,8 @@
       "HideWhenFaceDown": false,
       "Hands": false,
       "CustomAssetbundle": {
-        "AssetbundleURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141309941/DDF0C7397D9423ADC4BA69028FF593C639423EF0/",
-        "AssetbundleSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141307694/6B5133415732C568628AC323E473BA675B726F5B/",
+        "AssetbundleURL": "https://steamusercontent-a.akamaihd.net/ugc/12105297517051192804/83D8F97D3C353D1DE065680F154F5002DCDF49BF/",
+        "AssetbundleSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/13154796297751583197/5E0A658E38E157C2ACFE4E2FF980A7756C2BCF08/",
         "MaterialIndex": 4,
         "TypeIndex": 0,
         "LoopingEffectIndex": 0
@@ -21056,9 +21230,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191990823,
+        "r": 0.1919908,
         "g": 0.701,
-        "b": 0.1679908
+        "b": 0.167990774
       },
       "Tags": [
         "Spy"
@@ -21117,8 +21291,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.09999188,
-        "b": 0.09399185
+        "g": 0.09999185,
+        "b": 0.09399182
       },
       "Tags": [
         "Spy"
@@ -21238,7 +21412,7 @@
       },
       "ColorDiffuse": {
         "r": 0.627,
-        "g": 0.124996088,
+        "g": 0.124996059,
         "b": 0.941
       },
       "Tags": [
@@ -21300,7 +21474,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171990812
+        "b": 0.171990782
       },
       "Tags": [
         "Spy"
@@ -21358,7 +21532,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117992096,
+        "r": 0.117992066,
         "g": 0.53,
         "b": 1.0
       },
@@ -22026,9 +22200,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.188230067,
+        "r": 0.188230038,
         "g": 0.698039234,
-        "b": 0.164700747,
+        "b": 0.164700717,
         "a": 0.0
       },
       "LayoutGroupSortIndex": 0,
@@ -22074,7 +22248,7 @@
       "ColorDiffuse": {
         "r": 0.901960731,
         "g": 0.8941174,
-        "b": 0.168622375,
+        "b": 0.168622345,
         "a": 0.0
       },
       "LayoutGroupSortIndex": 0,
@@ -22118,7 +22292,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117641605,
+        "r": 0.117641561,
         "g": 0.529411733,
         "b": 1.0,
         "a": 0.0
@@ -22385,7 +22559,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 5.0,
-        "posY": 1.59252334,
+        "posY": 1.59252322,
         "posZ": 27.0,
         "rotX": 0,
         "rotY": 180,
@@ -22465,7 +22639,7 @@
       "ColorDiffuse": {
         "r": 0.688153446,
         "g": 0.553023756,
-        "b": 0.2337758
+        "b": 0.233775765
       },
       "Tags": [
         "VictoryPointToken"
@@ -22523,9 +22697,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.4284805,
+        "r": 0.428480446,
         "g": 0.541811764,
-        "b": 0.195387661
+        "b": 0.195387632
       },
       "Tags": [
         "VictoryPointToken"
@@ -22564,8 +22738,8 @@
       "GUID": "9bfd65",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -0.0131466547,
-        "posY": 1.5925231,
+        "posX": -0.0131466622,
+        "posY": 1.59252322,
         "posZ": 25.9999981,
         "rotX": 0,
         "rotY": 180,
@@ -22585,7 +22759,7 @@
       "ColorDiffuse": {
         "r": 0.688153446,
         "g": 0.553023756,
-        "b": 0.2337758
+        "b": 0.233775765
       },
       "Tags": [
         "VictoryPointToken"
@@ -22625,7 +22799,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": -0.5,
-        "posY": 1.59252322,
+        "posY": 1.5925231,
         "posZ": 25.0,
         "rotX": 0,
         "rotY": 180,
@@ -22644,8 +22818,8 @@
       },
       "ColorDiffuse": {
         "r": 0.796167254,
-        "g": 0.05686576,
-        "b": 0.05686576
+        "g": 0.0568657368,
+        "b": 0.0568657368
       },
       "Tags": [
         "VictoryPointToken"
@@ -22703,9 +22877,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.4284805,
+        "r": 0.428480446,
         "g": 0.541811764,
-        "b": 0.195387661
+        "b": 0.195387632
       },
       "Tags": [
         "VictoryPointToken"
@@ -22745,7 +22919,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 8.499999,
-        "posY": 1.59252322,
+        "posY": 1.5925231,
         "posZ": 27.0000019,
         "rotX": 0,
         "rotY": 180,
@@ -22885,7 +23059,7 @@
       "ColorDiffuse": {
         "r": 0.688153446,
         "g": 0.553023756,
-        "b": 0.2337758
+        "b": 0.233775765
       },
       "Tags": [
         "VictoryPointToken"
@@ -22925,7 +23099,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 9.500002,
-        "posY": 1.59252322,
+        "posY": 1.59252334,
         "posZ": 25.9999981,
         "rotX": 0,
         "rotY": 180,
@@ -22945,7 +23119,7 @@
       "ColorDiffuse": {
         "r": 0.688153446,
         "g": 0.553023756,
-        "b": 0.2337758
+        "b": 0.233775765
       },
       "Tags": [
         "VictoryPointToken"
@@ -22985,7 +23159,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 8.5,
-        "posY": 1.5925231,
+        "posY": 1.59252322,
         "posZ": 26.0,
         "rotX": 0,
         "rotY": 180,
@@ -23005,7 +23179,7 @@
       "ColorDiffuse": {
         "r": 0.688153446,
         "g": 0.553023756,
-        "b": 0.2337758
+        "b": 0.233775765
       },
       "Tags": [
         "VictoryPointToken"
@@ -23125,7 +23299,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.326377273,
+        "r": 0.326377243,
         "g": 0.5836236,
         "b": 0.5032954
       },
@@ -23188,7 +23362,7 @@
       },
       "ColorDiffuse": {
         "r": 0.554045439,
-        "g": 0.387893319,
+        "g": 0.3878933,
         "b": 0.6567944
       },
       "Tags": [
@@ -23250,8 +23424,8 @@
       },
       "ColorDiffuse": {
         "r": 0.7334496,
-        "g": 0.144385576,
-        "b": 0.144385576
+        "g": 0.144385546,
+        "b": 0.144385546
       },
       "Tags": [
         "AllianceToken",
@@ -23375,7 +23549,7 @@
       "ColorDiffuse": {
         "r": 0.726480842,
         "g": 0.627619445,
-        "b": 0.33539167
+        "b": 0.335391641
       },
       "Tags": [
         "AllianceToken",
@@ -31484,9 +31658,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191992581,
+        "r": 0.191992521,
         "g": 0.701,
-        "b": 0.167992562
+        "b": 0.1679925
       },
       "Tags": [
         "Agent",
@@ -31546,7 +31720,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.17199257
+        "b": 0.171992511
       },
       "Tags": [
         "Agent",
@@ -31605,7 +31779,7 @@
       },
       "ColorDiffuse": {
         "r": 0.627,
-        "g": 0.124992184,
+        "g": 0.124992125,
         "b": 0.941
       },
       "Tags": [
@@ -31729,8 +31903,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.09999249,
-        "b": 0.0939924642
+        "g": 0.09999243,
+        "b": 0.0939924046
       },
       "Tags": [
         "Agent",
@@ -32964,7 +33138,8 @@
             "Name": "Star",
             "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/28807470634038748/7DCCD743641189A58F12B884B6B2D983786BD813/",
             "Size": 0.5
-          }
+          },
+          "OwnerSteamID": 0
         }
       ]
     },
@@ -32973,7 +33148,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 12.0,
-        "posY": 1.5925231,
+        "posY": 1.59252334,
         "posZ": 27.0,
         "rotX": 0,
         "rotY": 180,
@@ -32992,7 +33167,7 @@
       },
       "ColorDiffuse": {
         "r": 1.0,
-        "g": 0.078065224,
+        "g": 0.0780651942,
         "b": 0.0
       },
       "Tags": [
@@ -33051,9 +33226,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.428480446,
+        "r": 0.428480417,
         "g": 0.541811764,
-        "b": 0.195387632
+        "b": 0.1953876
       },
       "Tags": [
         "VictoryPointToken"
@@ -35707,7 +35882,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117992096,
+        "r": 0.117992066,
         "g": 0.53,
         "b": 1.0
       },
@@ -35769,8 +35944,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.09999188,
-        "b": 0.09399185
+        "g": 0.09999185,
+        "b": 0.09399182
       },
       "Tags": [
         "Cargo",
@@ -35829,9 +36004,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191990823,
+        "r": 0.1919908,
         "g": 0.701,
-        "b": 0.1679908
+        "b": 0.167990774
       },
       "Tags": [
         "Cargo",
@@ -35892,7 +36067,7 @@
       "ColorDiffuse": {
         "r": 0.905,
         "g": 0.898,
-        "b": 0.171990812
+        "b": 0.171990782
       },
       "Tags": [
         "Cargo",
@@ -38978,9 +39153,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.1994215,
-        "g": 0.0555161163,
-        "b": 0.2978854
+        "r": 0.199421465,
+        "g": 0.055516094,
+        "b": 0.297885358
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -48379,7 +48554,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117992066,
+        "r": 0.117991991,
         "g": 0.53,
         "b": 1.0
       },
@@ -49202,7 +49377,7 @@
       "Name": "Deck",
       "Transform": {
         "posX": -32.0,
-        "posY": 1.78088856,
+        "posY": 1.78088868,
         "posZ": 44.0,
         "rotX": 0,
         "rotY": 180,
@@ -52641,7 +52816,7 @@
       "Name": "Deck",
       "Transform": {
         "posX": -32.0,
-        "posY": 1.57869911,
+        "posY": 1.578699,
         "posZ": 48.0,
         "rotX": 0,
         "rotY": 180,
@@ -53458,7 +53633,7 @@
       "Name": "Deck",
       "Transform": {
         "posX": -32.0,
-        "posY": 1.57869911,
+        "posY": 1.578699,
         "posZ": 52.0,
         "rotX": 0,
         "rotY": 180,
@@ -54275,7 +54450,7 @@
       "Name": "Deck",
       "Transform": {
         "posX": -32.0,
-        "posY": 2.54653025,
+        "posY": 2.54653049,
         "posZ": 56.0,
         "rotX": 0,
         "rotY": 180,
@@ -69495,7 +69670,7 @@
       "Name": "Deck",
       "Transform": {
         "posX": -32.0,
-        "posY": 1.65090978,
+        "posY": 1.65090966,
         "posZ": 60.0,
         "rotX": 0,
         "rotY": 180,
@@ -71269,7 +71444,7 @@
       "Name": "Deck",
       "Transform": {
         "posX": -32.0,
-        "posY": 1.62202549,
+        "posY": 1.62202537,
         "posZ": 64.0,
         "rotX": 0,
         "rotY": 180,
@@ -72644,7 +72819,7 @@
       "Name": "Deck",
       "Transform": {
         "posX": -32.0,
-        "posY": 2.23340821,
+        "posY": 2.23340845,
         "posZ": 68.0,
         "rotX": 0,
         "rotY": 180,
@@ -81965,7 +82140,7 @@
       "Name": "Deck",
       "Transform": {
         "posX": -32.0,
-        "posY": 1.554629,
+        "posY": 1.55462873,
         "posZ": 72.0,
         "rotX": 0,
         "rotY": 180,
@@ -82472,7 +82647,7 @@
       "Name": "Deck",
       "Transform": {
         "posX": -32.0,
-        "posY": 1.70386422,
+        "posY": 1.7038641,
         "posZ": 76.0,
         "rotX": 0,
         "rotY": 180,
@@ -85216,7 +85391,7 @@
       "Name": "Deck",
       "Transform": {
         "posX": -28.0,
-        "posY": 1.62202549,
+        "posY": 1.62202537,
         "posZ": 44.0,
         "rotX": 0,
         "rotY": 180,
@@ -86636,7 +86811,7 @@
       "Name": "Deck",
       "Transform": {
         "posX": -28.0,
-        "posY": 1.80495882,
+        "posY": 1.80495894,
         "posZ": 48.0,
         "rotX": 0,
         "rotY": 180,
@@ -90403,7 +90578,7 @@
       "Name": "Deck",
       "Transform": {
         "posX": -28.0,
-        "posY": 1.684608,
+        "posY": 1.68460786,
         "posZ": 52.0,
         "rotX": 0,
         "rotY": 180,
@@ -92863,7 +93038,7 @@
       "Name": "Deck",
       "Transform": {
         "posX": -28.0,
-        "posY": 1.6075834,
+        "posY": 1.60758328,
         "posZ": 56.0,
         "rotX": 0,
         "rotY": 180,
@@ -94061,7 +94236,7 @@
       "Name": "Deck",
       "Transform": {
         "posX": -28.0,
-        "posY": 1.57869911,
+        "posY": 1.578699,
         "posZ": 60.0,
         "rotX": 0,
         "rotY": 180,
@@ -94878,7 +95053,7 @@
       "Name": "Deck",
       "Transform": {
         "posX": -28.0,
-        "posY": 1.59795535,
+        "posY": 1.59795511,
         "posZ": 64.0,
         "rotX": 0,
         "rotY": 180,
@@ -95943,7 +96118,7 @@
       "Name": "Deck",
       "Transform": {
         "posX": 28.0,
-        "posY": 1.78088856,
+        "posY": 1.78088868,
         "posZ": 44.0,
         "rotX": 0,
         "rotY": 180,
@@ -99391,7 +99566,7 @@
       "Name": "Deck",
       "Transform": {
         "posX": 28.0,
-        "posY": 1.57869911,
+        "posY": 1.578699,
         "posZ": 48.0,
         "rotX": 0,
         "rotY": 180,
@@ -100208,7 +100383,7 @@
       "Name": "Deck",
       "Transform": {
         "posX": 28.0,
-        "posY": 1.57869911,
+        "posY": 1.578699,
         "posZ": 52.0,
         "rotX": 0,
         "rotY": 180,
@@ -101025,7 +101200,7 @@
       "Name": "Deck",
       "Transform": {
         "posX": 28.0,
-        "posY": 2.54653025,
+        "posY": 2.54653049,
         "posZ": 56.0,
         "rotX": 0,
         "rotY": 180,
@@ -116245,7 +116420,7 @@
       "Name": "Deck",
       "Transform": {
         "posX": 28.0,
-        "posY": 1.65090978,
+        "posY": 1.65090966,
         "posZ": 60.0,
         "rotX": 0,
         "rotY": 180,
@@ -118019,7 +118194,7 @@
       "Name": "Deck",
       "Transform": {
         "posX": 28.0,
-        "posY": 1.62202549,
+        "posY": 1.62202537,
         "posZ": 64.0,
         "rotX": 0,
         "rotY": 180,
@@ -119394,7 +119569,7 @@
       "Name": "Deck",
       "Transform": {
         "posX": 28.0,
-        "posY": 2.23340821,
+        "posY": 2.23340845,
         "posZ": 68.0,
         "rotX": 0,
         "rotY": 180,
@@ -128715,7 +128890,7 @@
       "Name": "Deck",
       "Transform": {
         "posX": 28.0,
-        "posY": 1.554629,
+        "posY": 1.55462873,
         "posZ": 72.0,
         "rotX": 0,
         "rotY": 180,
@@ -129222,7 +129397,7 @@
       "Name": "Deck",
       "Transform": {
         "posX": 28.0,
-        "posY": 1.70386422,
+        "posY": 1.7038641,
         "posZ": 76.0,
         "rotX": 0,
         "rotY": 180,
@@ -131966,7 +132141,7 @@
       "Name": "Deck",
       "Transform": {
         "posX": 32.0,
-        "posY": 1.62202549,
+        "posY": 1.62202537,
         "posZ": 44.0,
         "rotX": 0,
         "rotY": 180,
@@ -133386,7 +133561,7 @@
       "Name": "Deck",
       "Transform": {
         "posX": 32.0,
-        "posY": 1.80495882,
+        "posY": 1.80495894,
         "posZ": 48.0,
         "rotX": 0,
         "rotY": 180,
@@ -137153,7 +137328,7 @@
       "Name": "Deck",
       "Transform": {
         "posX": 31.9999981,
-        "posY": 1.684608,
+        "posY": 1.68460786,
         "posZ": 52.0,
         "rotX": 0,
         "rotY": 180,
@@ -139613,7 +139788,7 @@
       "Name": "Deck",
       "Transform": {
         "posX": 32.0,
-        "posY": 1.6075834,
+        "posY": 1.60758328,
         "posZ": 56.0,
         "rotX": 0,
         "rotY": 180,
@@ -140811,7 +140986,7 @@
       "Name": "Deck",
       "Transform": {
         "posX": 32.0,
-        "posY": 1.57869911,
+        "posY": 1.578699,
         "posZ": 60.0,
         "rotX": 0,
         "rotY": 180,
@@ -141628,7 +141803,7 @@
       "Name": "Deck",
       "Transform": {
         "posX": 32.0,
-        "posY": 1.59795535,
+        "posY": 1.59795511,
         "posZ": 64.0,
         "rotX": 0,
         "rotY": 180,
