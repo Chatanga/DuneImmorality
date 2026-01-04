@@ -10,13 +10,13 @@ Features:
 - Rise of Ix extension
 - Immortality extension
 - Bloodlines extension
-- Hagal House
+- Hagal House 1-2P
 - Arrakeen Scouts
 
 Supported languages:
 
-- French
 - English
+- French
 
 ## Links
 
@@ -96,7 +96,7 @@ Modules relies on the Luabundler tool, but also on `utils.Modules`.
 
 Reusable modules without dependencies on the other modules.
 
-- __AcquireCard.lua__ - An auto adjustable dynami button to draw from a stack of deck.
+- __AcquireCard.lua__ - An auto adjustable dynamic button to draw from a stack or deck.
 - __Dialog.lua__ - Alternative dialogs to be notified when a user choose to cancel.
 - __Helper.lua__ - Various helping functions.
 - __I18N.lua__ - Internationalisation support.
