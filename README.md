@@ -12,7 +12,7 @@ Features:
 - Immortality extension
 - Bloodlines extension
 - Legacy Dune as an extension
-- Hagal House
+- Hagal House 1-2P
 
 Supported languages:
 
@@ -47,7 +47,7 @@ __6P__
 __Aesthetic__
 
 - Rework the tech/contract decals.
-- Widen the colored border of the boards, remove both the negative scale and the trigger effects in the process and fix UV mapping.
+- Widen the colored border of the boards and fix UV mapping.
 - Add a corrective black border on the Uprising game boards.
 
 ## Lua sources
@@ -117,7 +117,7 @@ Modules relies on the Luabundler tool, but also on `utils.Modules`.
 
 Reusable modules without dependencies on the other modules.
 
-- __AcquireCard.lua__ - An auto adjustable dynamic button to draw from a stack of deck.
+- __AcquireCard.lua__ - An auto adjustable dynamic button to draw from a stack or deck.
 - __Dialog.lua__ - Alternative dialogs to be notified when a user choose to cancel.
 - __Helper.lua__ - Various helping functions.
 - __I18N.lua__ - Internationalisation support.
