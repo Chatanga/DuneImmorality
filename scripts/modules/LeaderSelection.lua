@@ -178,8 +178,8 @@ function LeaderSelection._transientSetUp(settings, leaderSelectionPoolSize, play
     Helper.registerEventListener("phaseEnd", function (phase)
         if phase == 'gameStart' then
             for _, object in ipairs(LeaderSelection.deckZone.getObjects()) do
-                -- settings.variant ~= 'arrakeenScouts' or
-                if object ~= LeaderSelection.secondaryTable then
+                if settings.variant ~= 'arrakeenScouts' then
+                -- if object ~= LeaderSelection.secondaryTable then
                     object.destruct()
                 end
             end
