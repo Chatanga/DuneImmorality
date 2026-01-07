@@ -817,4 +817,10 @@ return {
     noPlayerMetEndGameCondition = "Aucun joueur n’a rempli la condition de fin de partie.",
     gameSubmitted = "Partie soumise dans Google Sheets",
     gameAlreadySubmitted = "Jeu déjà soumis - Rien a faire.",
+
+    tooManyFlags = "Une erreur interne s’est produite ! Il y a trop de drapeaux autour de '{zone}'." ..
+        " Pourquoi ? Je n’en ai aucune idée et je n’arrive pas à reproduire cette situation de mon côté." ..
+        " Je serais toutefois ravi d’en savoir plus à ce sujet," ..
+        " y compris si vous vous sentez obligé d’en poser manuellement un au dessus d’un autre pour une quelconque raison." ..
+        " Vous pouvez me contacter sur Discord, Steam ou même par email (furieuxfuret@gmail.com).",
 }

@@ -815,4 +815,10 @@ return {
     noPlayerMetEndGameCondition = "No player met the end game condition.",
     gameSubmitted = "Game submitted to Google Sheets",
     gameAlreadySubmitted = "Game already submited - Doing nothing",
+
+    tooManyFlags = "An internal error has occured! There are too many flags around at '{zone}'." ..
+        " Why? I have no idea and cannot reproduce this situation on my behalf." ..
+        " I would be glad to know more about it though," ..
+        " including if you feel compeled to put one by hand on top of another for some reason." ..
+        " You could contact my on Discord, Steam or even email (furieuxfuret@gmail.com).",
 }

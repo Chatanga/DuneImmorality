@@ -1131,7 +1131,12 @@ function MainBoard.getControllingPlayer(bannerZone)
         for _, object in ipairs(bannerZone.getObjects()) do
             for _, color in ipairs(PlayBoard.getActivePlayBoardColors()) do
                 if Types.isControlMarker(object, color) then
-                    assert(not controllingPlayer, "Too many flags around at " .. MainBoard._getZoneName(bannerZone) .. "!")
+                    local zoneName = I18N(MainBoard._getZoneName(bannerZone))
+                    if controllingPlayer then
+                        local everyone = nil
+                        Dialog.showInfoDialog(everyone, I18N("tooManyFlags", { zone = zoneName }))
+                    end
+                    assert(not controllingPlayer, "Too many flags around at " .. zoneName .. "!")
                     controllingPlayer = color
                 end
             end
