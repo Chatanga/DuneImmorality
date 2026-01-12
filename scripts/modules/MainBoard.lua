@@ -382,8 +382,9 @@ function MainBoard.occupy(controlableSpace, color, onlyCleanUp)
                     local p = PlayBoard.getControlMarkerBag(otherColor).getPosition() + Vector(0, 1, 0)
                     object.setLock(false)
                     object.setPosition(p)
+                else
+                    return
                 end
-                return
             end
         end
     end
