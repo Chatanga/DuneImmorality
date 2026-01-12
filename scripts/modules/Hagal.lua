@@ -202,8 +202,10 @@ function Hagal._collectReward(color)
                 end
 
                 if #dreadnoughts > 0 then
-                    local bestBannerZone = Hagal._findBestBannerZone(color)
-                    dreadnoughts[1].setPositionSmooth(bestBannerZone.getPosition())
+                    Helper.onceFramesPassed(1).doAfter(function ()
+                        local bestBannerZone = Hagal._findBestBannerZone(color)
+                        dreadnoughts[1].setPositionSmooth(bestBannerZone.getPosition())
+                    end)
                 end
             end
             continuation.run()
@@ -216,7 +218,7 @@ end
 function Hagal._findBestBannerZone(color)
     local bestValue
     local bestBannerZone
-    -- Already properly ordered (CCW from the right). TODO Check it!
+    -- Already properly ordered (CCW starting from the desert space).
     for i, bannerZone in ipairs(MainBoard.getBannerZones()) do
         if not MainBoard.getControllingDreadnought(bannerZone) then
             local owner = MainBoard.getControllingPlayer(bannerZone)
@@ -228,7 +230,7 @@ function Hagal._findBestBannerZone(color)
             else
                 value = 0
             end
-            value = value + i
+            value = value - i
             if not bestValue or bestValue < value then
                 bestValue = value
                 bestBannerZone = bannerZone
