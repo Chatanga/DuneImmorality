@@ -52,16 +52,8 @@ function TurnControl.onLoad(state)
         TurnControl.currentPlayerLuaIndex = state.TurnControl.currentPlayerLuaIndex
         TurnControl.customTurnSequence = state.TurnControl.customTurnSequence
 
-        -- The "playerTurn" event is resent to resync things properly.
-        if TurnControl.currentPlayerLuaIndex then
-            Helper.onceTimeElapsed(2).doAfter(Helper.partialApply(TurnControl._notifyPlayerTurn, true))
-        end
-
-        if TurnControl.currentPhase == 'combat' then
-            TurnControl._createReclaimRewardsButton()
-        elseif TurnControl.currentPhase == 'combatEnd' then
-            TurnControl._createNextRoundButton()
-        end
+        -- The next turn event is replayed without a starting player to resync things properly.
+        Helper.onceTimeElapsed(2).doAfter(TurnControl._next)
     end
 end
 
@@ -350,11 +342,13 @@ function TurnControl._nextPhase()
     end
 end
 
----@param startPlayerLuaIndex integer
+---@param startPlayerLuaIndex integer?
 function TurnControl._next(startPlayerLuaIndex)
-    TurnControl.currentPlayerLuaIndex = TurnControl._findActivePlayer(startPlayerLuaIndex)
+    if startPlayerLuaIndex then
+        TurnControl.currentPlayerLuaIndex = TurnControl._findActivePlayer(startPlayerLuaIndex)
+    end
     if TurnControl.currentPlayerLuaIndex then
-        TurnControl._notifyPlayerTurn()
+        TurnControl._notifyPlayerTurn(startPlayerLuaIndex == nil)
     else
         if TurnControl.currentPhase == "combat" then
             TurnControl._createReclaimRewardsButton()
