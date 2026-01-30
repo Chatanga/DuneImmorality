@@ -391,9 +391,7 @@ function Hagal._doActivateFirstValidCard(color, action, n, continuation)
                         continuation.run(card)
                     end)
                 else
-                    Rival.triggerHagalReaction(color).doAfter(function ()
-                        Hagal._doActivateFirstValidCard(color, action, n + 1, continuation)
-                    end)
+                    Hagal._doActivateFirstValidCard(color, action, n + 1, continuation)
                 end
             end)
         else
