@@ -16,6 +16,9 @@ local SardaukarCommander = Module.lazyRequire("SardaukarCommander")
 local TechCard = Module.lazyRequire("TechCard")
 
 local HagalCard = {
+    FAILED = 0,
+    RETRY = 1,
+    SUCCESS = 2,
     cardStrengths = {
         placeSpyYellow = 2,
         placeSpyBlue = 2,
@@ -53,6 +56,8 @@ local HagalCard = {
         tuekSietch = 2,
     }
 }
+
+---@alias ActivationResult 0|1|2
 
 ---@param color PlayerColor
 ---@param card Card
@@ -171,7 +176,7 @@ end
 ---@param color PlayerColor
 ---@param rival Rival
 ---@param ix boolean
----@return boolean
+---@return ActivationResult
 function HagalCard._activatePlaceSpyYellow(color, rival, ix)
     -- Order matters: CHOAM, then from right to left.
     local possiblePosts = {
@@ -186,13 +191,13 @@ function HagalCard._activatePlaceSpyYellow(color, rival, ix)
             break
         end
     end
-    return false
+    return HagalCard.RETRY
 end
 
 ---@param color PlayerColor
 ---@param rival Rival
 ---@param ix boolean
----@return boolean
+---@return ActivationResult
 function HagalCard._activatePlaceSpyBlue(color, rival, ix)
     -- Order matters: from right to left.
     local possiblePosts = {
@@ -206,13 +211,13 @@ function HagalCard._activatePlaceSpyBlue(color, rival, ix)
             break
         end
     end
-    return false
+    return HagalCard.RETRY
 end
 
 ---@param color PlayerColor
 ---@param rival Rival
 ---@param ix boolean
----@return boolean
+---@return ActivationResult
 function HagalCard._activatePlaceSpyGreen(color, rival, ix)
     -- Order matters: from right to left.
     local possiblePosts = {
@@ -225,37 +230,37 @@ function HagalCard._activatePlaceSpyGreen(color, rival, ix)
             break
         end
     end
-    return false
+    return HagalCard.RETRY
 end
 
 -- Emperor spaces
 
 ---@param color PlayerColor
 ---@param rival Rival
----@return boolean
+---@return ActivationResult
 function HagalCard._activateSardaukar(color, rival)
     if HagalCard._spaceIsFree(color, "sardaukar") then
         HagalCard._sendRivalAgent(color, rival, "sardaukar")
         rival.influence(color, "emperor", 1)
         HagalCard.acquireTroops(color, 2)
         HagalCard._tryRecruitingSardaukarCommander(color, rival, "sardaukar")
-        return true
+        return HagalCard.SUCCESS
     else
-        return false
+        return HagalCard.FAILED
     end
 end
 
 ---@param color PlayerColor
 ---@param rival Rival
----@return boolean
+---@return ActivationResult
 function HagalCard._activateDutifulService(color, rival)
     if HagalCard._spaceIsFree(color, "dutifulService") and Hagal.isSmartPolitics(color, "emperor") then
         HagalCard._sendRivalAgent(color, rival, "dutifulService")
         rival.influence(color, "emperor", 1)
         HagalCard._tryRecruitingSardaukarCommander(color, rival, "dutifulService")
-        return true
+        return HagalCard.SUCCESS
     else
-        return false
+        return HagalCard.FAILED
     end
 end
 
@@ -263,30 +268,30 @@ end
 
 ---@param color PlayerColor
 ---@param rival Rival
----@return boolean
+---@return ActivationResult
 function HagalCard._activateHeighliner(color, rival)
     if HagalCard._spaceIsFree(color, "heighliner") then
         HagalCard._sendRivalAgent(color, rival, "heighliner")
         rival.influence(color, "spacingGuild", 1)
         HagalCard.acquireTroops(color, 3, true)
-        return true
+        return HagalCard.SUCCESS
     else
-        return false
+        return HagalCard.FAILED
     end
 end
 
 ---@param color PlayerColor
 ---@param rival Rival
----@return boolean
+---@return ActivationResult
 function HagalCard._activateDeliverSuppliesAndHeighliner(color, rival)
     if Combat.getCurrentConflictLevel() < 3 then
         if HagalCard._spaceIsFree(color, "deliverSupplies") and Hagal.isSmartPolitics(color, "spacingGuild") then
             HagalCard._sendRivalAgent(color, rival, "deliverSupplies")
             rival.influence(color, "spacingGuild", 1)
             HagalCard._tryRecruitingSardaukarCommander(color, rival, "deliverSupplies")
-            return true
+            return HagalCard.SUCCESS
         else
-            return false
+            return HagalCard.FAILED
         end
     else
         return HagalCard._activateHeighliner(color, rival)
@@ -297,7 +302,7 @@ end
 
 ---@param color PlayerColor
 ---@param rival Rival
----@return boolean
+---@return ActivationResult
 function HagalCard._activateEspionage(color, rival)
     local freeFactionObservationPosts = Helper.filter(
         { "emperor", "spacingGuild", "beneGesserit", "fremen" },
@@ -308,15 +313,15 @@ function HagalCard._activateEspionage(color, rival)
         if not Helper.isEmpty(freeFactionObservationPosts) then
             rival.sendSpy(color)
         end
-        return true
+        return HagalCard.SUCCESS
     else
-        return false
+        return HagalCard.FAILED
     end
 end
 
 ---@param color PlayerColor
 ---@param rival Rival
----@return boolean
+---@return ActivationResult
 function HagalCard._activateSecrets(color, rival)
     if HagalCard._spaceIsFree(color, "secrets") and Hagal.isSmartPolitics(color, "beneGesserit") then
         HagalCard._sendRivalAgent(color, rival, "secrets")
@@ -330,9 +335,9 @@ function HagalCard._activateSecrets(color, rival)
                 end
             end
         end
-        return true
+        return HagalCard.SUCCESS
     else
-        return false
+        return HagalCard.FAILED
     end
 end
 
@@ -340,7 +345,7 @@ end
 
 ---@param color PlayerColor
 ---@param rival Rival
----@return boolean
+---@return ActivationResult
 function HagalCard._activateDesertTactics(color, rival)
     if HagalCard._spaceIsFree(color, "desertTactics") then
         HagalCard._sendRivalAgent(color, rival, "desertTactics")
@@ -349,23 +354,23 @@ function HagalCard._activateDesertTactics(color, rival)
         if PlayBoard.hasMakerHook(color) then
             MainBoard.blowUpShieldWall(color, true)
         end
-        return true
+        return HagalCard.SUCCESS
     else
-        return false
+        return HagalCard.FAILED
     end
 end
 
 ---@param color PlayerColor
 ---@param rival Rival
----@return boolean
+---@return ActivationResult
 function HagalCard._activateFremkit(color, rival)
     if HagalCard._spaceIsFree(color, "fremkit") and Hagal.isSmartPolitics(color, "fremen") then
         HagalCard._sendRivalAgent(color, rival, "fremkit")
         rival.influence(color, "fremen", 1)
         HagalCard.acquireTroops(color, 0, true)
-        return true
+        return HagalCard.SUCCESS
     else
-        return false
+        return HagalCard.FAILED
     end
 end
 
@@ -373,7 +378,7 @@ end
 
 ---@param color PlayerColor
 ---@param rival Rival
----@return boolean
+---@return ActivationResult
 function HagalCard._activateAssemblyHall(color, rival)
     if HagalCard._spaceIsFree(color, "assemblyHall") then
         HagalCard._sendRivalAgent(color, rival, "assemblyHall")
@@ -382,26 +387,29 @@ function HagalCard._activateAssemblyHall(color, rival)
             rival.influence(color, 1, 1)
         end
         HagalCard._tryRecruitingSardaukarCommander(color, rival, "assemblyHall")
-        return true
+        return HagalCard.SUCCESS
     else
-        return false
+        return HagalCard.FAILED
     end
 end
 
 ---@param color PlayerColor
 ---@param rival Rival
----@return boolean
+---@return ActivationResult
 function HagalCard._activateGatherSupport1(color, rival)
     if HagalCard._spaceIsFree(color, "gatherSupport") then
         HagalCard._sendRivalAgent(color, rival, "gatherSupport")
         HagalCard.acquireTroops(color, 1)
         HagalCard._tryRecruitingSardaukarCommander(color, rival, "gatherSupport")
-        return true
+        return HagalCard.SUCCESS
     else
-        return false
+        return HagalCard.FAILED
     end
 end
 
+---@param color PlayerColor
+---@param rival Rival
+---@return ActivationResult
 function HagalCard._activateGatherSupport2(color, rival)
     if HagalCard._spaceIsFree(color, "gatherSupport") then
         HagalCard._sendRivalAgent(color, rival, "gatherSupport")
@@ -410,9 +418,9 @@ function HagalCard._activateGatherSupport2(color, rival)
             rival.influence(color, 2, 1)
         end
         HagalCard._tryRecruitingSardaukarCommander(color, rival, "gatherSupport")
-        return true
+        return HagalCard.SUCCESS
     else
-        return false
+        return HagalCard.FAILED
     end
 end
 
@@ -420,48 +428,48 @@ end
 
 ---@param color PlayerColor
 ---@param rival Rival
----@return boolean
+---@return ActivationResult
 function HagalCard._activateAcceptContractAndShipping1(color, rival)
     if InfluenceTrack.hasFriendship(color, "spacingGuild") then
         if HagalCard._spaceIsFree(color, "shipping") then
             HagalCard._sendRivalAgent(color, rival, "shipping")
             rival.resources(color, "solari", 2)
             rival.influence(color, 3, 1)
-            return true
+            return HagalCard.SUCCESS
         else
-            return false
+            return HagalCard.FAILED
         end
     else
         if HagalCard._spaceIsFree(color, "acceptContract") then
             HagalCard._sendRivalAgent(color, rival, "acceptContract")
             rival.resources(color, "solari", 2)
-            return true
+            return HagalCard.SUCCESS
         else
-            return false
+            return HagalCard.FAILED
         end
     end
 end
 
 ---@param color PlayerColor
 ---@param rival Rival
----@return boolean
+---@return ActivationResult
 function HagalCard._activateAcceptContractAndShipping2(color, rival)
     if InfluenceTrack.hasFriendship(color, "spacingGuild") then
         if HagalCard._spaceIsFree(color, "shipping") then
             HagalCard._sendRivalAgent(color, rival, "shipping")
             rival.resources(color, "solari", 2)
             rival.influence(color, 1, 1)
-            return true
+            return HagalCard.SUCCESS
         else
-            return false
+            return HagalCard.FAILED
         end
     else
         if HagalCard._spaceIsFree(color, "acceptContract") then
             HagalCard._sendRivalAgent(color, rival, "acceptContract")
             rival.resources(color, "solari", 2)
-            return true
+            return HagalCard.SUCCESS
         else
-            return false
+            return HagalCard.FAILED
         end
     end
 end
@@ -470,7 +478,7 @@ end
 
 ---@param color PlayerColor
 ---@param rival Rival
----@return boolean
+---@return ActivationResult
 function HagalCard._activateResearchStation(color, rival)
     if HagalCard._spaceIsFree(color, "researchStation") then
         HagalCard._sendRivalAgent(color, rival, "researchStation")
@@ -480,37 +488,37 @@ function HagalCard._activateResearchStation(color, rival)
         else
             HagalCard.acquireTroops(color, 2, true)
         end
-        return true
+        return HagalCard.SUCCESS
     else
-        return false
+        return HagalCard.FAILED
     end
 end
 
 ---@param color PlayerColor
 ---@param rival Rival
----@return boolean
+---@return ActivationResult
 function HagalCard._activateSpiceRefinery(color, rival)
     if HagalCard._spaceIsFree(color, "spiceRefinery") then
         HagalCard._sendRivalAgent(color, rival, "spiceRefinery")
         HagalCard.acquireTroops(color, 0, true)
         rival.signetRing(color)
-        return true
+        return HagalCard.SUCCESS
     else
-        return false
+        return HagalCard.FAILED
     end
 end
 
 ---@param color PlayerColor
 ---@param rival Rival
----@return boolean
+---@return ActivationResult
 function HagalCard._activateArrakeen(color, rival)
     if HagalCard._spaceIsFree(color, "arrakeen") then
         HagalCard._sendRivalAgent(color, rival, "arrakeen")
         rival.signetRing(color)
         HagalCard.acquireTroops(color, 1, true)
-        return true
+        return HagalCard.SUCCESS
     else
-        return false
+        return HagalCard.FAILED
     end
 end
 
@@ -518,21 +526,24 @@ end
 
 ---@param color PlayerColor
 ---@param rival Rival
----@return boolean
+---@return ActivationResult
 function HagalCard._activateSietchTabr(color, rival)
     if HagalCard._spaceIsFree(color, "sietchTabr") and InfluenceTrack.hasFriendship(color, "fremen") then
         HagalCard._sendRivalAgent(color, rival, "sietchTabr")
         rival.takeMakerHook(color)
         HagalCard.acquireTroops(color, 1, true)
         rival.resources(color, "water", 1)
-        return true
+        return HagalCard.SUCCESS
     else
-        return false
+        return HagalCard.FAILED
     end
 end
 
 -- Desert spaces
 
+---@param color PlayerColor
+---@param rival Rival
+---@return ActivationResult
 function HagalCard._activateHaggaBasinAndImperialBasin(color, rival)
     local best =  HagalCard.findHarvestableSpace(color)
 
@@ -551,15 +562,15 @@ function HagalCard._activateHaggaBasinAndImperialBasin(color, rival)
         else
             rival.resources(color, "spice", best.totalSpice)
         end
-        return true
+        return HagalCard.SUCCESS
     else
-        return false
+        return HagalCard.FAILED
     end
 end
 
 ---@param color PlayerColor
 ---@param rival Rival
----@return boolean
+---@return ActivationResult
 function HagalCard._activateDeepDesert(color, rival)
     local spiceBonus = MainBoard.getSpiceBonus("deepDesert"):get()
     if HagalCard._spaceIsFree(color, "deepDesert") and spiceBonus > 0 then
@@ -572,9 +583,9 @@ function HagalCard._activateDeepDesert(color, rival)
         else
             rival.resources(color, "spice", 4 + spiceBonus)
         end
-        return true
+        return HagalCard.SUCCESS
     else
-        return false
+        return HagalCard.FAILED
     end
 end
 
@@ -613,20 +624,20 @@ end
 
 ---@param color PlayerColor
 ---@param rival Rival
----@return boolean
+---@return ActivationResult
 function HagalCard._activateInterstellarShipping(color, rival)
     if HagalCard._spaceIsFree(color, "interstellarShipping") and InfluenceTrack.hasFriendship(color, "spacingGuild") then
         HagalCard._sendRivalAgent(color, rival, "interstellarShipping")
         rival.shipments(color, 2)
-        return true
+        return HagalCard.SUCCESS
     else
-        return false
+        return HagalCard.FAILED
     end
 end
 
 ---@param color PlayerColor
 ---@param rival Rival
----@return boolean
+---@return ActivationResult
 function HagalCard._activateDeliverSuppliesAndInterstellarShipping(color, rival)
     if InfluenceTrack.hasFriendship(color, "spacingGuild") then
         return HagalCard._activateInterstellarShipping(color, rival)
@@ -634,16 +645,16 @@ function HagalCard._activateDeliverSuppliesAndInterstellarShipping(color, rival)
         if HagalCard._spaceIsFree(color, "deliverSupplies") then
             HagalCard._sendRivalAgent(color, rival, "deliverSupplies")
             rival.influence(color, "spacingGuild", 1)
-            return true
+            return HagalCard.SUCCESS
         else
-            return false
+            return HagalCard.FAILED
         end
     end
 end
 
 ---@param color PlayerColor
 ---@param rival Rival
----@return boolean
+---@return ActivationResult
 function HagalCard._activateSmugglingAndInterstellarShipping(color, rival)
     if InfluenceTrack.hasFriendship(color, "spacingGuild") then
         return HagalCard._activateInterstellarShipping(color, rival)
@@ -651,9 +662,9 @@ function HagalCard._activateSmugglingAndInterstellarShipping(color, rival)
         if HagalCard._spaceIsFree(color, "smuggling") then
             HagalCard._sendRivalAgent(color, rival, "smuggling")
             rival.shipments(color, 1)
-            return true
+            return HagalCard.SUCCESS
         else
-            return false
+            return HagalCard.FAILED
         end
     end
 end
@@ -662,7 +673,7 @@ end
 
 ---@param color PlayerColor
 ---@param rival Rival
----@return boolean
+---@return ActivationResult
 function HagalCard._activateTechNegotiation(color, rival)
     if HagalCard._spaceIsFree(color, "techNegotiation") then
         HagalCard._sendRivalAgent(color, rival, "techNegotiation")
@@ -671,15 +682,15 @@ function HagalCard._activateTechNegotiation(color, rival)
             rival.troops(color, "supply", "negotiation", 1)
         end
         HagalCard._tryRecruitingSardaukarCommander(color, rival, "techNegotiation")
-        return true
+        return HagalCard.SUCCESS
     else
-        return false
+        return HagalCard.FAILED
     end
 end
 
 ---@param color PlayerColor
 ---@param rival Rival
----@return boolean
+---@return ActivationResult
 function HagalCard._activateDreadnought1p(color, rival)
     if HagalCard._spaceIsFree(color, "dreadnought") and PlayBoard.getAquiredDreadnoughtCount(color) < 2 then
         HagalCard._sendRivalAgent(color, rival, "dreadnought")
@@ -687,24 +698,24 @@ function HagalCard._activateDreadnought1p(color, rival)
         TechMarket.registerAcquireTechOption(color, "dreadnoughtTechBuyOption", "spice", 0)
         rival.acquireTech(color)
         HagalCard._tryRecruitingSardaukarCommander(color, rival, "dreadnought")
-        return true
+        return HagalCard.SUCCESS
     else
-        return false
+        return HagalCard.FAILED
     end
 end
 
 ---@param color PlayerColor
 ---@param rival Rival
----@return boolean
+---@return ActivationResult
 function HagalCard._activateDreadnought2p(color, rival)
     if HagalCard._spaceIsFree(color, "dreadnought") and PlayBoard.getAquiredDreadnoughtCount(color) < 2 then
         HagalCard._sendRivalAgent(color, rival, "dreadnought")
         rival.dreadnought(color, "supply", "garrison", 1)
         HagalCard.acquireTroops(color, 2)
         HagalCard._tryRecruitingSardaukarCommander(color, rival, "dreadnought")
-        return true
+        return HagalCard.SUCCESS
     else
-        return false
+        return HagalCard.FAILED
     end
 end
 
@@ -712,46 +723,46 @@ end
 
 ---@param color PlayerColor
 ---@param rival Rival
----@return boolean
+---@return ActivationResult
 function HagalCard._activateTleilaxuBonus1(color, rival)
     rival.beetle(color, 1)
     TleilaxuRow.trash(1)
-    return false
+    return HagalCard.FAILED
 end
 
 ---@param color PlayerColor
 ---@param rival Rival
----@return boolean
+---@return ActivationResult
 function HagalCard._activateTleilaxuBonus2(color, rival)
     rival.beetle(color, 1)
-    return false
+    return HagalCard.FAILED
 end
 
 ---@param color PlayerColor
 ---@param rival Rival
----@return boolean
+---@return ActivationResult
 function HagalCard._activateTleilaxuBonus3(color, rival)
     rival.beetle(color, 1)
     TleilaxuRow.trash(2)
-    return false
+    return HagalCard.FAILED
 end
 
 -- Bloodlines changes
 
 ---@param color PlayerColor
 ---@param rival Rival
----@return boolean
+---@return ActivationResult
 function HagalCard._activateAcquireTech(color, rival)
     if PlayBoard.hasSwordmaster(color) or rival.name == "kotaOdax" then
         TechMarket.registerAcquireTechOption(color, "activateAcquireTechBuyOption", "spice", 1)
         rival.acquireTech(color)
     end
-    return false
+    return HagalCard.FAILED
 end
 
 ---@param color PlayerColor
 ---@param rival Rival
----@return boolean
+---@return ActivationResult
 function HagalCard._activateTuekSietch(color, rival)
     local spiceBonusResource = MainBoard.getSpiceBonus("tuekSietch")
     if spiceBonusResource then
@@ -760,13 +771,13 @@ function HagalCard._activateTuekSietch(color, rival)
             HagalCard._sendRivalAgent(color, rival, "tuekSietch")
             spiceBonusResource:set(0)
             rival.resources(color, "spice", 1 + spiceBonus)
-            return true
+            return HagalCard.SUCCESS
         else
-            return false
+            return HagalCard.FAILED
         end
     else
         --Helper.dump("Thit Hagal card should have been automatically removed during the setup!")
-        return false
+        return HagalCard.FAILED
     end
 end
 

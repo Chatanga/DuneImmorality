@@ -351,15 +351,22 @@ function Hagal._doActivateFirstValidCard(color, action, n, continuation)
             Helper.onceTimeElapsed(1).doAfter(function ()
                 if Helper.getID(card) == "reshuffle" then
                     Hagal._reshuffleDeck(color, action, n, continuation)
-                elseif action(card) then
-                    Rival.triggerHagalReaction(color).doAfter(function ()
-                        HagalCard.flushTurnActions(color)
-                        continuation.run(card)
-                    end)
                 else
-                    Rival.triggerHagalReaction(color).doAfter(function ()
+                    local result = action(card)
+                    if result == HagalCard.SUCCESS then
+                        Rival.triggerHagalReaction(color).doAfter(function ()
+                            HagalCard.flushTurnActions(color)
+                            continuation.run(card)
+                        end)
+                    elseif result == HagalCard.RETRY then
+                        Rival.triggerHagalReaction(color).doAfter(function ()
+                            Hagal._doActivateFirstValidCard(color, action, n + 1, continuation)
+                        end)
+                    elseif result == HagalCard.FAILED then
                         Hagal._doActivateFirstValidCard(color, action, n + 1, continuation)
-                    end)
+                    else
+                        error("Unexpected action result value!")
+                    end
                 end
             end)
         else
