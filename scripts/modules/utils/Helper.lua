@@ -23,7 +23,12 @@ local Helper = {
     AREA_BUTTON_COLOR = { 0, 0, 0, 0 },
     ERASE = function ()
         return "__erase__"
-    end
+    end,
+
+    ---@alias ActionResult 0|1|2
+    FAILED = 0,
+    PARTIAL = 1,
+    COMPLETED = 2,
 }
 
 math.randomseed(os.time())
