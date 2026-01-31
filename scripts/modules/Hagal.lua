@@ -254,9 +254,9 @@ function Hagal._setStrengthFromFirstValidCard(color)
             if n > 0 then
                 Action.log(I18N("brutalEscalation"), color)
             end
-            return n == 0
+            return n == 0 and Helper.COMPLETED or Helper.PARTIAL
         else
-            return false
+            return Helper.FAILED
         end
     end)
 end
@@ -325,7 +325,7 @@ function Hagal.isSmartPolitics(color, faction)
 end
 
 ---@param color PlayerColor
----@param action fun(card: Card): boolean
+---@param action fun(card: Card): ActionResult
 function Hagal._activateFirstValidCard(color, action)
     local continuation = Helper.createContinuation("Hagal._activateFirstValidCard")
 
@@ -338,7 +338,7 @@ function Hagal._activateFirstValidCard(color, action)
 end
 
 ---@param color PlayerColor
----@param action fun(card: Card): boolean
+---@param action fun(card: Card): ActionResult
 ---@param n integer
 ---@param continuation Continuation
 function Hagal._doActivateFirstValidCard(color, action, n, continuation)
@@ -353,16 +353,16 @@ function Hagal._doActivateFirstValidCard(color, action, n, continuation)
                     Hagal._reshuffleDeck(color, action, n, continuation)
                 else
                     local result = action(card)
-                    if result == HagalCard.SUCCESS then
+                    if result == Helper.COMPLETED then
                         Rival.triggerHagalReaction(color).doAfter(function ()
                             HagalCard.flushTurnActions(color)
                             continuation.run(card)
                         end)
-                    elseif result == HagalCard.RETRY then
+                    elseif result == Helper.PARTIAL then
                         Rival.triggerHagalReaction(color).doAfter(function ()
                             Hagal._doActivateFirstValidCard(color, action, n + 1, continuation)
                         end)
-                    elseif result == HagalCard.FAILED then
+                    elseif result == Helper.FAILED then
                         Hagal._doActivateFirstValidCard(color, action, n + 1, continuation)
                     else
                         error("Unexpected action result value!")
