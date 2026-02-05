@@ -1029,6 +1029,14 @@ return {
     heighlinerWithTech = "Heighliner (with tech)",
     espionageWithTech = "Espionage (with tech)",
     secretsWithTech = "Secrets (with tech)",
+    bloodlinesDeliverSupplies = "Deliver Supplies",
+    bloodlinesEarnAnyAlliance = "Earn Any Alliance",
+    bloodlinesHarvest2 = "Harvest 3+",
+    bloodlinesHarvest = "Harvest 4+",
+    bloodlinesHighCouncil = "High Council",
+    bloodlinesImmediate = "Immediate",
+    bloodlinesSecrets = "Secrets",
+    bloodlinesSpiceRefinery = "Spice Refinery",
 
     -- Specific victory tokens
     endgameTech = "Endgame Tech",
