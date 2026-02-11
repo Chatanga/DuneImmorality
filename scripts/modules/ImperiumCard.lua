@@ -221,7 +221,7 @@ local ImperiumCard = {
     fremenWarName = {factions = {'fremen'}, agentIcons = {'fremen', 'yellow'}, cost = 4, reveal = {persuasion(2), sword(fremenBond(2))}},
     sardaukarStandard = {factions = {'emperor'}, agentIcons = {'emperor', 'blue'}, cost = 4, reveal = {persuasion(2), troop(2)}},
     quashRebellion = {factions = {'emperor'}, agentIcons = {'emperor', 'spacingGuild', 'green'}, cost = 5, reveal = {sword(2), persuasion(hasSardaukarCommanderInConflict(2))}},
-    southernFaith = {factions = {'beneGesserit', 'fremen'}, agentIcons = {'fremen', 'blue'}, cost = 5, reveal = {persuasion(1), sword(2), spice(command(1))}},
+    southernFaith = {factions = {'beneGesserit', 'fremen'}, agentIcons = {'fremen', 'blue'}, cost = 5, reveal = {persuasion(1), sword(2), spice(command(2))}},
     imperialThroneship = {factions = {'emperor'}, agentIcons = {'emperor', 'spacingGuild', 'beneGesserit', 'fremen', 'green', 'blue', 'yellow'}, cost = 7, acquireBonus = {influence(1, 'emperor')}, reveal = {persuasion(2), persuasion(garrisonQuad(1)), solari(garrisonQuad(3))}},
     possibleFutures = {factions = {'beneGesserit', 'fremen'}, agentIcons = {'green', 'blue', 'yellow'}, cost = 8, acquireBonus = {water(1)}, reveal = {persuasion(2), water(1)}},
     ixianAmbassador = {factions = {'spacingGuild'}, cost = 4, reveal = {persuasion(1), influence(twoTechs(1))}},
