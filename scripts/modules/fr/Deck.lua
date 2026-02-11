@@ -29,10 +29,10 @@ local Deck = {
         uprisingImperium_prepareTheWay = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141286826/72A71863DE41003FCC454F212FE183937C72C50F/", 1, 1 },
         uprisingImperium_theSpiceMustFlow = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141288717/35C76D798308EEA5D9BF50DB3F8B2E3159B14AF9/", 5, 2 },
         -- bloodlines
-        bloodlinesImperium = { "https://steamusercontent-a.akamaihd.net/ugc/10166314864823293398/62EEBDDBDD7A8704B044EB7122D5ED946D94CEA1/", 7, 3 },
-        bloodlinesImperium_contract = { "https://steamusercontent-a.akamaihd.net/ugc/11505243690912358518/0DA5546E3C15950BA4F744262847D5D1ADD9FD16/", 4, 1 },
-        bloodlinesImperium_tech = { "https://steamusercontent-a.akamaihd.net/ugc/17867477410729571686/90705D6CE1BCF274DC3AE7787016B466B39C444E/", 1, 1 },
-        bloodlinesImperium_ruthlessLeadership = { "https://steamusercontent-a.akamaihd.net/ugc/14005282797966134205/C9125CBE5DC6E0DD79BACC7E05BBF8E256C54D50/", 1, 1 },
+        bloodlinesImperium = { "https://steamusercontent-a.akamaihd.net/ugc/14879968932560782834/EE5C5BC14ACDFC409676DC90AB4974DFBA923895/", 7, 3 },
+        bloodlinesImperium_contract = { "https://steamusercontent-a.akamaihd.net/ugc/17407613632229284812/BAF8262D7EEA123F168A8A3EC065B207E6FA72E2/", 4, 1 },
+        bloodlinesImperium_tech = { "https://steamusercontent-a.akamaihd.net/ugc/18216911860083759238/874BC5D2EFBC9B9E43F20016BA5680B519AB5FB6/", 1, 1 },
+        bloodlinesImperium_ruthlessLeadership = { "https://steamusercontent-a.akamaihd.net/ugc/13383001679400249116/BE3E9339D0C3B75024454633D7EDFA464520F060/", 1, 1 },
         bloodlinesImperium_pivotalGambit = { "https://steamusercontent-a.akamaihd.net/ugc/10189719710396123112/056E8D8881987DC9EDBB1FB594E0C7CA2FC3D3E8/", 1, 1 },
     },
     intrigue = {
@@ -41,18 +41,18 @@ local Deck = {
         immortalityIntrigue = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141343779/83BA634F05FC7A14933153A18B7AEF83E07E3C14/", 6, 3 },
         uprisingIntrigue = { "https://steamusercontent-a.akamaihd.net/ugc/2488878371133407442/099FFE5EDD43C0E39212970D0A4FDBA12CC729BF/", 10, 4 },
         uprisingIntrigue_contract = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141307385/BFDA5F7ABDF2A97F17019C1715DE0F41BF2BF649/", 2 , 2 },
-        bloodlinesIntrigue = { "https://steamusercontent-a.akamaihd.net/ugc/17374972601723332052/704778C880E1CCD94CE62C83B3004011EA6F82B6/", 5, 3 },
-        bloodlinesIntrigue_contract = { "https://steamusercontent-a.akamaihd.net/ugc/11891482317974852417/C2C64B82CA0566E699A1F725ED7AAF27C6B993C8/", 1, 1 },
-        bloodlinesIntrigue_tech = { "https://steamusercontent-a.akamaihd.net/ugc/13582135019322065262/A4C68CE55ED39A1E7B5D0E2EB60BD9AA0E5AC51B/", 2, 1 },
-        bloodlinesIntrigue_twisted = { "https://steamusercontent-a.akamaihd.net/ugc/11829347407672977389/AE95793B64E08D865B24CA161D262FC17D26CAFC/", 4, 3 },
+        bloodlinesIntrigue = { "https://steamusercontent-a.akamaihd.net/ugc/16153158814725754297/E6ACCC839EBF84E6F51A8AE8806BD79E6A376705/", 5, 3 },
+        bloodlinesIntrigue_contract = { "https://steamusercontent-a.akamaihd.net/ugc/12152924061518403858/B113D28ADF7D14EBF44FC3CE0AF451EBABD13405/", 1, 1 },
+        bloodlinesIntrigue_tech = { "https://steamusercontent-a.akamaihd.net/ugc/12640951970254348597/345BC20EF8D8CF99A6772C0C90DB4F9CCD654F8D/", 2, 1 },
+        bloodlinesIntrigue_twisted = { "https://steamusercontent-a.akamaihd.net/ugc/9260840825374155472/19377EA9108F93326EACDE31AB2E974F63B0AA9B/", 4, 3 },
     },
     conflict1 = {
         uprisingConflict = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141315604/288CBFF505CD4CE7E283BF2158A816517DD365C1/", 2, 2 },
-        bloodlinesConflict = { "https://steamusercontent-a.akamaihd.net/ugc/14024931574950023473/9F2F922E391CFEC0BDA61334ACC6A15C1BF54F51/", 1, 1 },
+        bloodlinesConflict = { "https://steamusercontent-a.akamaihd.net/ugc/17866999546320078885/88FE998161A84CC58404FDF1BAD4AA6E80C6EB88/", 1, 1 },
     },
     conflict2 = {
         uprisingConflict = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141315846/D5CD3A18CBB9DCE0C305AE999213B504F5F3890D/", 5, 2 },
-        bloodlinesConflict = { "https://steamusercontent-a.akamaihd.net/ugc/11811013448727779607/5B7B37F2C607D06B8A3A8C8D1630A064B32FFF17/", 1, 1 },
+        bloodlinesConflict = { "https://steamusercontent-a.akamaihd.net/ugc/14785677626105641678/EBECE60E0A90141A158DCDF538C35B4C8E80A776/", 1, 1 },
     },
     conflict3 = {
         conflict = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141365294/F1BEAE6266E75B7A2F5DE511DB4FEB25A2CD486B/", 3, 2 },
@@ -153,22 +153,22 @@ local Deck = {
         shaddamCorrino = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141282162/D307B7C2139EC0E0B999900940DC6F5827EB68A8/", 1, 1 },
         muadDib = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141281959/BA1804DF868BF77175777B0FB5B1D109B46E13A9/", 1, 1 },
         -- bloodlines
-        chani = { "https://steamusercontent-a.akamaihd.net/ugc/13842380678639370326/5C69E12794AF4A94C6ED57290B516B6DC76A1FE1/", 1, 1 },
-        duncanIdaho = { "https://steamusercontent-a.akamaihd.net/ugc/13463505432383320270/54FF9A593B9870E13BC8FEF9A18AAA9274E19CBA/", 1, 1 },
-        esmarTuek = { "https://steamusercontent-a.akamaihd.net/ugc/11801598958949432845/2556AC0AA102406DCA21A5863AEEE6AA5C75B58F/", 1, 1 },
-        gaiusHelenMohiam = { "https://steamusercontent-a.akamaihd.net/ugc/10172590269915650364/E6E98B9B4072280C734D9E5AB647B05C1429606F/", 1, 1 },
-        hasimirFenring = { "https://steamusercontent-a.akamaihd.net/ugc/14632277081108354737/859A78B59CED8C3295E4767760812091798BB0D8/", 1, 1 },
+        chani = { "https://steamusercontent-a.akamaihd.net/ugc/10075237234679421506/E2E7E751E46D7FDC88E1B6409F6685FB393E99F0/", 1, 1 },
+        duncanIdaho = { "https://steamusercontent-a.akamaihd.net/ugc/16452710938908674235/1CFEEFF343F96941AB105CD527F5C2850E7B1FE6/", 1, 1 },
+        esmarTuek = { "https://steamusercontent-a.akamaihd.net/ugc/15420167003991833274/6BA9BC1A6D35045A01AFCA0A5D7AE8716EBF80F3/", 1, 1 },
+        gaiusHelenMohiam = { "https://steamusercontent-a.akamaihd.net/ugc/17303009147372779306/D4B8AC02F38CAD6A72510ADB07C5EFAD24E5B993/", 1, 1 },
+        hasimirFenring = { "https://steamusercontent-a.akamaihd.net/ugc/13473585309532070480/9CB9FCC0A83FF0C5C658C8056FC11199C513D0AA/", 1, 1 },
         lietKynes = { "https://steamusercontent-a.akamaihd.net/ugc/14153233902966559409/0F86C48A64B1DF53C80A17F4F601273B835550B4/", 1, 1 },
-        piterDeVries = { "https://steamusercontent-a.akamaihd.net/ugc/17567283454269405550/FCA10C6D65F2B37ADE44352A951699B40E8DEC84/", 1, 1 },
-        yrkoon = { "https://steamusercontent-a.akamaihd.net/ugc/16706684599292593176/FE470F75A1D0421D6676CF3C902A80632D0F7D7C/", 1, 1 }, -- https://steamusercontent-a.akamaihd.net/ugc/14712941862459164791/B41729A898A2C0DED359E8AC96684D7A29B324E2/
-        kotaOdax = { "https://steamusercontent-a.akamaihd.net/ugc/13303538665422276008/E8F6F995587AA4C462C1BB5EBFB7CB115956CB08/", 1, 1 },
+        piterDeVries = { "https://steamusercontent-a.akamaihd.net/ugc/17821042265801399974/B6AEDB9AC9C0235BC9629125820C270A161B46FF/", 1, 1 },
+        yrkoon = { "https://steamusercontent-a.akamaihd.net/ugc/9295204678852392544/0342353579F17FECB7BAC6ED19B74DCC046F43D7/", 1, 1 }, -- https://steamusercontent-a.akamaihd.net/ugc/17250438265152502440/1B369E11213B60359CE4E36C267BC82F445997C0/
+        kotaOdax = { "https://steamusercontent-a.akamaihd.net/ugc/12708897802314186672/FD721212B630646C4C7F0F804721A12C69FF0D07/", 1, 1 },
     },
     rivalLeader = {
         uprising = { "https://steamusercontent-a.akamaihd.net/ugc/2291837013341168508/811BF7142774932C8C2FAD7C10BA104F8DAD4299/", 4, 3 },
-        bloodlines = { "https://steamusercontent-a.akamaihd.net/ugc/28804925896497833/3EA98B4739ED652C8B34CE13B53BCD94647FEA50/", 3, 2 },
+        bloodlines = { "https://steamusercontent-a.akamaihd.net/ugc/9415272817374220318/5C189F991E0468F84DA72BF207A0A8EDE430FD2D/", 3, 2 },
     },
     navigation = {
-        bloodlines = { "https://steamusercontent-a.akamaihd.net/ugc/14442162264832122569/8F1B004CE8D25A2FCB00B4D60747D3DEB6656898/", 5, 2 },
+        bloodlines = { "https://steamusercontent-a.akamaihd.net/ugc/15641776900237780549/06105DBDA9C85BC3E808B9E610ED45AE507883FF/", 5, 2 },
     },
     sardaukarCommanderSkill = {
         bloodlines = { "https://steamusercontent-a.akamaihd.net/ugc/18064283230023882594/41E082A4120E9D48B130929E9345FC19272373A7/", 4, 2 },
