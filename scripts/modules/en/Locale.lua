@@ -911,7 +911,7 @@ return {
     falseOrders = "False Orders",
     graspArrakis = "Grasp Arrakis",
     insiderInformation = "Insider Information",
-    ripplesInTheSand = "Ripples In TheSand",
+    ripplesInTheSand = "Ripples In The Sand",
     sleeperUnit = "Sleeper Unit",
     coerciveNegotiation = "Coercive Negotiation",
     battlefieldResearch = "Battlefield Research",
