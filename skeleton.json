@@ -1,7 +1,7 @@
 {
   "SaveName": "Spice Flow",
-  "EpochTime": 1770838348,
-  "Date": "2/11/2026 8:32:28 PM",
+  "EpochTime": 1770923773,
+  "Date": "2/12/2026 8:16:13 PM",
   "VersionNumber": "v14.1.8",
   "GameMode": "Spice Flow",
   "GameType": "Game",
@@ -843,9 +843,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.09801338,
-        "g": 0.09801338,
-        "b": 0.09801338
+        "r": 0.09801335,
+        "g": 0.09801335,
+        "b": 0.09801335
       },
       "Tags": [
         "AutomataStuff"
@@ -1119,9 +1119,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.1919986,
+        "r": 0.191998541,
         "g": 0.701,
-        "b": 0.167998582
+        "b": 0.167998523
       },
       "Tags": [
         "Agent",
@@ -1178,9 +1178,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.1919986,
+        "r": 0.191998541,
         "g": 0.701,
-        "b": 0.167998582
+        "b": 0.167998523
       },
       "Tags": [
         "Agent",
@@ -1237,9 +1237,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191948831,
+        "r": 0.1919488,
         "g": 0.701,
-        "b": 0.167948812
+        "b": 0.167948782
       },
       "Tags": [
         "Green",
@@ -1298,7 +1298,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121461846,
+        "r": 0.121461786,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -1416,7 +1416,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121461846,
+        "r": 0.121461786,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -1475,7 +1475,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.1215147,
+        "r": 0.121514671,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -1638,7 +1638,7 @@
       "Name": "Custom_Model",
       "Transform": {
         "posX": -3.0,
-        "posY": 1.61090124,
+        "posY": 1.61090028,
         "posZ": 26.0,
         "rotX": 0,
         "rotY": 180,
@@ -1656,7 +1656,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121461846,
+        "r": 0.121461786,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -1697,7 +1697,7 @@
       "Name": "Custom_Model",
       "Transform": {
         "posX": -4.0,
-        "posY": 1.61090112,
+        "posY": 1.61089849,
         "posZ": 26.0,
         "rotX": 0,
         "rotY": 180,
@@ -1755,8 +1755,8 @@
       "GUID": "fb1629",
       "Name": "Custom_Model",
       "Transform": {
-        "posX": -0.9999888,
-        "posY": 1.61090124,
+        "posX": -0.999988735,
+        "posY": 1.61090076,
         "posZ": 26.0,
         "rotX": 0,
         "rotY": 180,
@@ -1774,9 +1774,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.1919986,
+        "r": 0.191998541,
         "g": 0.701,
-        "b": 0.167998582
+        "b": 0.167998523
       },
       "Tags": [
         "Agent",
@@ -1980,7 +1980,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526293,
+        "r": 0.121526264,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -2029,7 +2029,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526293,
+        "r": 0.121526264,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -2078,7 +2078,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526293,
+        "r": 0.121526264,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -3546,7 +3546,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526293,
+        "r": 0.121526264,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -3595,7 +3595,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526293,
+        "r": 0.121526264,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -3644,7 +3644,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526293,
+        "r": 0.121526264,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -3693,7 +3693,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526293,
+        "r": 0.121526264,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -3742,7 +3742,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526293,
+        "r": 0.121526264,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -3791,7 +3791,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526293,
+        "r": 0.121526264,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -5035,9 +5035,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.442958027,
-        "g": 0.230958015,
-        "b": 0.08996584
+        "r": 0.442958,
+        "g": 0.230957985,
+        "b": 0.08996583
       },
       "Tags": [
         "VictoryPointToken"
@@ -5095,9 +5095,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.442958027,
-        "g": 0.230958015,
-        "b": 0.08996584
+        "r": 0.442958,
+        "g": 0.230957985,
+        "b": 0.08996583
       },
       "Tags": [
         "VictoryPointToken"
@@ -5155,9 +5155,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.442958027,
-        "g": 0.230958015,
-        "b": 0.08996584
+        "r": 0.442958,
+        "g": 0.230957985,
+        "b": 0.08996583
       },
       "Tags": [
         "VictoryPointToken"
@@ -5215,9 +5215,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.442958027,
-        "g": 0.230958015,
-        "b": 0.08996584
+        "r": 0.442958,
+        "g": 0.230957985,
+        "b": 0.08996583
       },
       "Tags": [
         "VictoryPointToken"
@@ -5334,9 +5334,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191924632,
+        "r": 0.191924572,
         "g": 0.701,
-        "b": 0.167924613
+        "b": 0.167924553
       },
       "Tags": [
         "Dreadnought",
@@ -5393,7 +5393,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121567212,
+        "r": 0.121567138,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -5453,8 +5453,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.09992426,
-        "b": 0.0939238146
+        "g": 0.0999242,
+        "b": 0.093923755
       },
       "Tags": [
         "Dreadnought",
@@ -5572,9 +5572,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191948831,
+        "r": 0.1919488,
         "g": 0.701,
-        "b": 0.167948812
+        "b": 0.167948782
       },
       "Tags": [
         "Green",
@@ -5755,9 +5755,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191948831,
+        "r": 0.1919488,
         "g": 0.701,
-        "b": 0.167948812
+        "b": 0.167948782
       },
       "Tags": [
         "Green",
@@ -5816,7 +5816,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526293,
+        "r": 0.121526264,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -5999,7 +5999,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526293,
+        "r": 0.121526264,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -6060,7 +6060,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526293,
+        "r": 0.121526264,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -6182,9 +6182,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191948831,
+        "r": 0.1919488,
         "g": 0.701,
-        "b": 0.167948812
+        "b": 0.167948782
       },
       "Tags": [
         "Green",
@@ -6365,9 +6365,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191948831,
+        "r": 0.1919488,
         "g": 0.701,
-        "b": 0.167948812
+        "b": 0.167948782
       },
       "Tags": [
         "Green",
@@ -6426,7 +6426,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526293,
+        "r": 0.121526264,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -6546,9 +6546,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191924632,
+        "r": 0.191924572,
         "g": 0.701,
-        "b": 0.167924613
+        "b": 0.167924553
       },
       "Tags": [
         "Dreadnought",
@@ -6605,7 +6605,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121567212,
+        "r": 0.121567138,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -6665,8 +6665,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.09992426,
-        "b": 0.0939238146
+        "g": 0.0999242,
+        "b": 0.093923755
       },
       "Tags": [
         "Dreadnought",
@@ -6723,7 +6723,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.4191527,
+        "r": 0.419152677,
         "g": 0.0,
         "b": 0.681184649
       },
@@ -7165,8 +7165,8 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.353623718,
-        "g": 0.126023471,
+        "r": 0.3536237,
+        "g": 0.126023442,
         "b": 0.0
       },
       "LayoutGroupSortIndex": 0,
@@ -7764,7 +7764,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526204,
+        "r": 0.121526174,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -7837,9 +7837,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.19195,
+        "r": 0.191949964,
         "g": 0.701,
-        "b": 0.167949975
+        "b": 0.167949945
       },
       "Tags": [
         "ForceToken"
@@ -8224,9 +8224,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.199429721,
-        "g": 0.0555224568,
-        "b": 0.297894061
+        "r": 0.199429691,
+        "g": 0.055522427,
+        "b": 0.297894031
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -8639,9 +8639,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191948831,
+        "r": 0.1919488,
         "g": 0.701,
-        "b": 0.167948812
+        "b": 0.167948782
       },
       "Tags": [
         "Green",
@@ -8700,7 +8700,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526293,
+        "r": 0.121526264,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -8822,9 +8822,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191948831,
+        "r": 0.1919488,
         "g": 0.701,
-        "b": 0.167948812
+        "b": 0.167948782
       },
       "Tags": [
         "Green",
@@ -8866,7 +8866,7 @@
       "Transform": {
         "posX": 0.3700013,
         "posY": 1.8775003,
-        "posZ": 19.6394138,
+        "posZ": 19.6394157,
         "rotX": 0,
         "rotY": 0,
         "rotZ": 180,
@@ -8925,8 +8925,8 @@
       "GUID": "292658",
       "Name": "Custom_Token",
       "Transform": {
-        "posX": 0.370000273,
-        "posY": 1.87750041,
+        "posX": 0.3700003,
+        "posY": 1.87750053,
         "posZ": 18.9369965,
         "rotX": 0,
         "rotY": 180,
@@ -8944,7 +8944,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526293,
+        "r": 0.121526264,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -9170,9 +9170,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191984713,
+        "r": 0.191984653,
         "g": 0.701,
-        "b": 0.1679847
+        "b": 0.167984635
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -9222,7 +9222,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121567212,
+        "r": 0.121567138,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -12219,7 +12219,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526264,
+        "r": 0.121526234,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -12268,7 +12268,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526264,
+        "r": 0.121526234,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -12317,7 +12317,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526264,
+        "r": 0.121526234,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -16229,7 +16229,7 @@
       },
       "ColorDiffuse": {
         "r": 0.554045439,
-        "g": 0.387893438,
+        "g": 0.3878934,
         "b": 0.6567944
       },
       "Tags": [
@@ -16335,7 +16335,7 @@
       "Transform": {
         "posX": -9.510476,
         "posY": 1.72279763,
-        "posZ": 0.2500107,
+        "posZ": 0.250010729,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -16353,8 +16353,8 @@
       },
       "ColorDiffuse": {
         "r": 0.7334496,
-        "g": 0.1443857,
-        "b": 0.1443857
+        "g": 0.144385666,
+        "b": 0.144385666
       },
       "Tags": [
         "AllianceToken",
@@ -18007,7 +18007,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 8.411532,
-        "posY": 1.61253417,
+        "posY": 1.612535,
         "posZ": 27.1099987,
         "rotX": 0,
         "rotY": 180,
@@ -18246,7 +18246,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 4.91153,
-        "posY": 1.6125325,
+        "posY": 1.61253309,
         "posZ": 26.1092854,
         "rotX": 0,
         "rotY": 180,
@@ -18264,9 +18264,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.428480625,
+        "r": 0.4284806,
         "g": 0.541811764,
-        "b": 0.195387781
+        "b": 0.195387751
       },
       "Tags": [
         "VictoryPointToken"
@@ -18305,8 +18305,8 @@
       "GUID": "692480",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 5.91153,
-        "posY": 1.61253333,
+        "posX": 5.91153049,
+        "posY": 1.61253357,
         "posZ": 26.1092854,
         "rotX": 0,
         "rotY": 180,
@@ -18324,9 +18324,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.428480625,
+        "r": 0.4284806,
         "g": 0.541811764,
-        "b": 0.195387781
+        "b": 0.195387751
       },
       "Tags": [
         "VictoryPointToken"
@@ -18786,8 +18786,8 @@
       "GUID": "2da115",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 2.41152883,
-        "posY": 1.61253333,
+        "posX": 2.411528,
+        "posY": 1.612611,
         "posZ": 26.1092834,
         "rotX": 0,
         "rotY": 180,
@@ -18807,7 +18807,7 @@
       "ColorDiffuse": {
         "r": 0.688153446,
         "g": 0.553023756,
-        "b": 0.233775914
+        "b": 0.233775884
       },
       "Tags": [
         "VictoryPointToken"
@@ -18846,8 +18846,8 @@
       "GUID": "9bfd65",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 3.398384,
-        "posY": 1.61252856,
+        "posX": 3.39838433,
+        "posY": 1.61253309,
         "posZ": 26.1092834,
         "rotX": 0,
         "rotY": 180,
@@ -18867,7 +18867,7 @@
       "ColorDiffuse": {
         "r": 0.688153446,
         "g": 0.553023756,
-        "b": 0.233775914
+        "b": 0.233775884
       },
       "Tags": [
         "VictoryPointToken"
@@ -19265,7 +19265,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 2.41,
-        "posY": 1.6125319,
+        "posY": 1.61253357,
         "posZ": 25.1118355,
         "rotX": 0,
         "rotY": 180,
@@ -19284,8 +19284,8 @@
       },
       "ColorDiffuse": {
         "r": 0.796167254,
-        "g": 0.0568658561,
-        "b": 0.0568658561
+        "g": 0.0568658262,
+        "b": 0.0568658262
       },
       "Tags": [
         "VictoryPointToken"
@@ -21939,9 +21939,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191991031,
+        "r": 0.191991,
         "g": 0.701,
-        "b": 0.167991012
+        "b": 0.167990983
       },
       "Tags": [
         "Spy"
@@ -22119,7 +22119,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117992319,
+        "r": 0.117992274,
         "g": 0.53,
         "b": 1.0
       },
@@ -23175,9 +23175,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.4284791,
+        "r": 0.428479075,
         "g": 0.541811764,
-        "b": 0.19538635
+        "b": 0.19538632
       },
       "Tags": [
         "VictoryPointToken"
@@ -24139,7 +24139,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 9.910001,
-        "posY": 1.61254,
+        "posY": 1.61253381,
         "posZ": 27.1100025,
         "rotX": 0,
         "rotY": 180,
@@ -24158,7 +24158,7 @@
       },
       "ColorDiffuse": {
         "r": 1.0,
-        "g": 0.07806408,
+        "g": 0.07806405,
         "b": 0.0
       },
       "Tags": [
@@ -24647,7 +24647,7 @@
       },
       "ColorDiffuse": {
         "r": 0.5139372,
-        "g": 0.3445949,
+        "g": 0.344594866,
         "b": 0.0188026223
       },
       "LayoutGroupSortIndex": 0,
@@ -25535,9 +25535,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191948831,
+        "r": 0.1919488,
         "g": 0.701,
-        "b": 0.167948812
+        "b": 0.167948782
       },
       "Tags": [
         "Freighter",
@@ -25657,7 +25657,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526293,
+        "r": 0.121526264,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -26289,7 +26289,2812 @@
       "XmlUI": ""
     },
     {
-      "GUID": "5a1ea9",
+      "GUID": "92e242",
+      "Name": "Custom_Tile",
+      "Transform": {
+        "posX": -0.000210981772,
+        "posY": 1.62279749,
+        "posZ": 63.9501457,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 11.2,
+        "scaleY": 1.0,
+        "scaleZ": 11.2
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "mainBoard.fr",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 0.0,
+        "g": 0.0,
+        "b": 0.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": false,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomImage": {
+        "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141277250/1365C1EC07538B6797E8162398CB43CD111C1C7C/",
+        "ImageSecondaryURL": "",
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
+        "CustomTile": {
+          "Type": 0,
+          "Thickness": 0.1,
+          "Stackable": false,
+          "Stretch": true
+        }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "AttachedSnapPoints": [
+        {
+          "Position": {
+            "x": 0.663340747,
+            "y": 0.100000143,
+            "z": 0.8804191
+          },
+          "Tags": [
+            "spaceStillsuits"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.658867955,
+            "y": 0.100000143,
+            "z": 0.6818269
+          },
+          "Tags": [
+            "spaceHardyWarriors"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.8547764,
+            "y": 0.100000143,
+            "z": 0.799014151
+          },
+          "Tags": [
+            "factionFremen"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.657078862,
+            "y": 0.100000143,
+            "z": 0.387142926
+          },
+          "Tags": [
+            "spaceSecrets"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.659762561,
+            "y": 0.100000143,
+            "z": 0.185867175
+          },
+          "Tags": [
+            "spaceSelectiveBreeding"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.8538819,
+            "y": 0.100000143,
+            "z": 0.305738181
+          },
+          "Tags": [
+            "factionBeneGesserit"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.659762561,
+            "y": 0.100000143,
+            "z": -0.09834786
+          },
+          "Tags": [
+            "spaceFoldspace"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.6597626,
+            "y": 0.100000143,
+            "z": -0.3005182
+          },
+          "Tags": [
+            "spaceHeighliner"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.8529873,
+            "y": 0.100000143,
+            "z": -0.179752722
+          },
+          "Tags": [
+            "factionSpacingGuild"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.658868,
+            "y": 0.100000143,
+            "z": -0.5902973
+          },
+          "Tags": [
+            "spaceWealth"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.661551833,
+            "y": 0.100000143,
+            "z": -0.7924675
+          },
+          "Tags": [
+            "spaceConspire"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.8520928,
+            "y": 0.100000143,
+            "z": -0.67080754
+          },
+          "Tags": [
+            "factionEmperor"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.308987468,
+            "y": 0.100000143,
+            "z": 0.516931534
+          },
+          "Tags": [
+            "conflictDeck"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.104792684,
+            "y": 0.100000143,
+            "z": 0.517696261
+          },
+          "Tags": [
+            "conflictDiscard"
+          ]
+        },
+        {
+          "Position": {
+            "x": -0.431164,
+            "y": 0.100000143,
+            "z": 0.499685
+          },
+          "Tags": [
+            "battlefield"
+          ]
+        },
+        {
+          "Position": {
+            "x": -0.138569489,
+            "y": 0.100000143,
+            "z": 0.5633181
+          },
+          "Tags": [
+            "garrisonBlue"
+          ]
+        },
+        {
+          "Position": {
+            "x": -0.140712976,
+            "y": 0.100000143,
+            "z": 0.321304023
+          },
+          "Tags": [
+            "garrisonRed"
+          ]
+        },
+        {
+          "Position": {
+            "x": -0.728981555,
+            "y": 0.100000143,
+            "z": 0.3210168
+          },
+          "Tags": [
+            "garrisonGreen"
+          ]
+        },
+        {
+          "Position": {
+            "x": -0.7296895,
+            "y": 0.100000143,
+            "z": 0.5644463
+          },
+          "Tags": [
+            "garrisonYellow"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.332000345,
+            "y": 0.100000143,
+            "z": 0.2340654
+          },
+          "Tags": [
+            "spaceTheGreatFlat"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.254944235,
+            "y": 0.100000143,
+            "z": 0.04104991
+          },
+          "Tags": [
+            "spaceSietchTabr"
+          ]
+        },
+        {
+          "Position": {
+            "x": -0.184808761,
+            "y": 0.100000143,
+            "z": 0.0105259931
+          },
+          "Tags": [
+            "spaceHaggaBasin"
+          ]
+        },
+        {
+          "Position": {
+            "x": -0.5727355,
+            "y": 0.100000143,
+            "z": -0.109506935
+          },
+          "Tags": [
+            "spaceImperialBasin"
+          ]
+        },
+        {
+          "Position": {
+            "x": -0.5333851,
+            "y": 0.100000143,
+            "z": -0.017882077
+          },
+          "Tags": [
+            "flagImperialBasin"
+          ]
+        },
+        {
+          "Position": {
+            "x": -0.557659,
+            "y": 0.100000143,
+            "z": -0.321401477
+          },
+          "Tags": [
+            "flagArrakeen"
+          ]
+        },
+        {
+          "Position": {
+            "x": -0.2127329,
+            "y": 0.100000143,
+            "z": -0.256721377
+          },
+          "Tags": [
+            "flagCarthag"
+          ]
+        },
+        {
+          "Position": {
+            "x": -0.2517385,
+            "y": 0.100000143,
+            "z": -0.34594956
+          },
+          "Tags": [
+            "spaceCarthag"
+          ]
+        },
+        {
+          "Position": {
+            "x": -0.596877158,
+            "y": 0.100000143,
+            "z": -0.414499819
+          },
+          "Tags": [
+            "spaceArrakeen"
+          ]
+        },
+        {
+          "Position": {
+            "x": -0.4271805,
+            "y": 0.100000143,
+            "z": 0.150728732
+          },
+          "Tags": [
+            "victoryTokenRoom"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.4702188,
+            "y": 0.100000143,
+            "z": -0.0121328663
+          },
+          "Tags": [
+            "sardaukarFoldspace"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.4691369,
+            "y": 0.100000143,
+            "z": -0.508120835
+          },
+          "Tags": [
+            "sardaukarWealth"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.549874663,
+            "y": 0.100000143,
+            "z": -0.93067205
+          },
+          "Tags": [
+            "sardaukarConspire"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.13663289,
+            "y": 0.100000143,
+            "z": 0.235269159
+          },
+          "Tags": [
+            "spiceTheGreatFlat"
+          ]
+        },
+        {
+          "Position": {
+            "x": -0.770273268,
+            "y": 0.100000143,
+            "z": -0.10950622
+          },
+          "Tags": [
+            "spiceImperialBasin"
+          ]
+        },
+        {
+          "Position": {
+            "x": -0.109888405,
+            "y": 0.100000143,
+            "z": 0.728678048
+          },
+          "Tags": [
+            "combatMarkerRoom"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.0684429556,
+            "y": 0.100000143,
+            "z": -0.176989183
+          },
+          "Tags": [
+            "spaceResearchStation"
+          ]
+        },
+        {
+          "Position": {
+            "x": -0.383641,
+            "y": 0.100000143,
+            "z": 0.008502569
+          },
+          "Tags": [
+            "spiceHaggaBasin"
+          ]
+        }
+      ]
+    },
+    {
+      "GUID": "d789ff",
+      "Name": "Custom_Tile",
+      "Transform": {
+        "posX": 3.13978672,
+        "posY": 1.64,
+        "posZ": 72.61,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 2.53,
+        "scaleY": 1.0,
+        "scaleZ": 2.53
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "defaultBoard.fr",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 0.0,
+        "g": 0.0,
+        "b": 0.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomImage": {
+        "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/28808598744210650/1290FB554EFF48B3503CA5A4E21502A112801A8A/",
+        "ImageSecondaryURL": "",
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
+        "CustomTile": {
+          "Type": 0,
+          "Thickness": 0.1,
+          "Stackable": false,
+          "Stretch": true
+        }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "AttachedSnapPoints": [
+        {
+          "Position": {
+            "x": 2.51070046,
+            "y": 0.100000143,
+            "z": -0.421913028
+          },
+          "Tags": [
+            "spaceHighCouncil"
+          ]
+        },
+        {
+          "Position": {
+            "x": 2.51864839,
+            "y": 0.100000143,
+            "z": 0.344773084
+          },
+          "Tags": [
+            "spaceMentat"
+          ]
+        },
+        {
+          "Position": {
+            "x": 1.71805835,
+            "y": 0.100000143,
+            "z": 0.345837533
+          },
+          "Tags": [
+            "slotMentat"
+          ]
+        },
+        {
+          "Position": {
+            "x": 1.02162766,
+            "y": 0.100000143,
+            "z": 0.357381642
+          },
+          "Tags": [
+            "spaceRallyTroops"
+          ]
+        },
+        {
+          "Position": {
+            "x": -0.249105334,
+            "y": 0.100000143,
+            "z": 0.3299404
+          },
+          "Tags": [
+            "spaceSwordmaster"
+          ]
+        },
+        {
+          "Position": {
+            "x": -0.277436256,
+            "y": 0.100000143,
+            "z": -0.42662853
+          },
+          "Tags": [
+            "spaceHallOfOratory"
+          ]
+        },
+        {
+          "Position": {
+            "x": -1.73773789,
+            "y": 0.100000143,
+            "z": 0.345965773
+          },
+          "Tags": [
+            "spaceSecureContract"
+          ]
+        },
+        {
+          "Position": {
+            "x": -1.74228919,
+            "y": 0.100000143,
+            "z": -0.4220572
+          },
+          "Tags": [
+            "spaceSellMelange"
+          ]
+        },
+        {
+          "Position": {
+            "x": -2.24938273,
+            "y": 0.100000143,
+            "z": -0.413354874
+          },
+          "Tags": [
+            "spaceSellMelange_1"
+          ]
+        },
+        {
+          "Position": {
+            "x": -2.42239928,
+            "y": 0.100000143,
+            "z": -0.4104656
+          },
+          "Tags": [
+            "spaceSellMelange_2"
+          ]
+        },
+        {
+          "Position": {
+            "x": -2.59542561,
+            "y": 0.100000143,
+            "z": -0.4041842
+          },
+          "Tags": [
+            "spaceSellMelange_3"
+          ]
+        },
+        {
+          "Position": {
+            "x": -2.76843214,
+            "y": 0.100000143,
+            "z": -0.404687226
+          },
+          "Tags": [
+            "spaceSellMelange_4"
+          ]
+        },
+        {
+          "Position": {
+            "x": 1.94002354,
+            "y": 0.100000143,
+            "z": -0.438342661
+          },
+          "Tags": [
+            "seatHighCouncil1"
+          ]
+        },
+        {
+          "Position": {
+            "x": 1.65181661,
+            "y": 0.100000143,
+            "z": -0.439180672
+          },
+          "Tags": [
+            "seatHighCouncil2"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.990305245,
+            "y": 0.100000143,
+            "z": -0.43835935
+          },
+          "Tags": [
+            "seatHighCouncil3"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.702082336,
+            "y": 0.100000143,
+            "z": -0.433708072
+          },
+          "Tags": [
+            "seatHighCouncil4"
+          ]
+        },
+        {
+          "Position": {
+            "x": -0.927805543,
+            "y": 0.100000143,
+            "z": -0.86692363
+          },
+          "Tags": [
+            "sardaukarHallOfOratory"
+          ]
+        },
+        {
+          "Position": {
+            "x": 2.07523584,
+            "y": 0.100000143,
+            "z": -0.8068266
+          },
+          "Tags": [
+            "sardaukarHighCouncil"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.393035978,
+            "y": 0.100000143,
+            "z": -0.11413236
+          },
+          "Tags": [
+            "sardaukarRallyTroops"
+          ]
+        }
+      ],
+      "States": {
+        "2": {
+          "GUID": "0349a6",
+          "Name": "Custom_Tile",
+          "Transform": {
+            "posX": 3.13978672,
+            "posY": 1.64,
+            "posZ": 4.61,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 0,
+            "scaleX": 2.53,
+            "scaleY": 1.0,
+            "scaleZ": 2.53
+          },
+          "Nickname": "",
+          "Description": "",
+          "GMNotes": "shippingBoard.en",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.0,
+            "g": 0.0,
+            "b": 0.0
+          },
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomImage": {
+            "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/28808598744210452/57D510F7D27C18EC198ACF09C89F335FFB73F01B/",
+            "ImageSecondaryURL": "",
+            "ImageScalar": 1.0,
+            "WidthScale": 0.0,
+            "CustomTile": {
+              "Type": 0,
+              "Thickness": 0.1,
+              "Stackable": false,
+              "Stretch": true
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "AttachedSnapPoints": [
+            {
+              "Position": {
+                "x": 2.559358,
+                "y": 0.100000143,
+                "z": -0.3658014
+              },
+              "Tags": [
+                "spaceHighCouncil"
+              ]
+            },
+            {
+              "Position": {
+                "x": 2.55167079,
+                "y": 0.100000143,
+                "z": 0.4605767
+              },
+              "Tags": [
+                "spaceMentat"
+              ]
+            },
+            {
+              "Position": {
+                "x": 1.65432465,
+                "y": 0.100000143,
+                "z": 0.4732174
+              },
+              "Tags": [
+                "slotMentat"
+              ]
+            },
+            {
+              "Position": {
+                "x": 1.86306429,
+                "y": 0.100000143,
+                "z": -0.364187151
+              },
+              "Tags": [
+                "seatHighCouncil1"
+              ]
+            },
+            {
+              "Position": {
+                "x": 1.57476771,
+                "y": 0.100000143,
+                "z": -0.3646778
+              },
+              "Tags": [
+                "seatHighCouncil2"
+              ]
+            },
+            {
+              "Position": {
+                "x": 0.9137546,
+                "y": 0.100000143,
+                "z": -0.35314554
+              },
+              "Tags": [
+                "seatHighCouncil3"
+              ]
+            },
+            {
+              "Position": {
+                "x": 0.617681861,
+                "y": 0.100000143,
+                "z": -0.361233532
+              },
+              "Tags": [
+                "seatHighCouncil4"
+              ]
+            },
+            {
+              "Position": {
+                "x": 0.923187137,
+                "y": 0.100000143,
+                "z": 0.457803279
+              },
+              "Tags": [
+                "spaceSwordmaster"
+              ]
+            },
+            {
+              "Position": {
+                "x": -0.6084442,
+                "y": 0.100000143,
+                "z": -0.289313942
+              },
+              "Tags": [
+                "spaceInterstellarShipping"
+              ]
+            },
+            {
+              "Position": {
+                "x": -0.6072351,
+                "y": 0.100000143,
+                "z": 0.475603849
+              },
+              "Tags": [
+                "spaceSmuggling"
+              ]
+            },
+            {
+              "Position": {
+                "x": -2.02421117,
+                "y": 0.100000143,
+                "z": 0.253764749
+              },
+              "Tags": [
+                "freighterSpace1"
+              ]
+            },
+            {
+              "Position": {
+                "x": -2.022023,
+                "y": 0.100000143,
+                "z": -0.219057873
+              },
+              "Tags": [
+                "freighterSpace2"
+              ]
+            },
+            {
+              "Position": {
+                "x": -2.019566,
+                "y": 0.100000143,
+                "z": -0.6688207
+              },
+              "Tags": [
+                "freighterSpace3"
+              ]
+            },
+            {
+              "Position": {
+                "x": -2.31610179,
+                "y": 0.100000143,
+                "z": 0.69546777
+              },
+              "Tags": [
+                "freighterSpace0"
+              ]
+            },
+            {
+              "Position": {
+                "x": -2.6694932,
+                "y": 0.100000143,
+                "z": 0.29586488
+              },
+              "Tags": [
+                "freighterBonusSolaris"
+              ]
+            },
+            {
+              "Position": {
+                "x": -2.9608283,
+                "y": 0.100000143,
+                "z": 0.364599347
+              },
+              "Tags": [
+                "freighterBonusSpice"
+              ]
+            },
+            {
+              "Position": {
+                "x": -2.816123,
+                "y": 0.100000143,
+                "z": -0.0829734951
+              },
+              "Tags": [
+                "freighterBonusTroopsAndInfluence"
+              ]
+            },
+            {
+              "Position": {
+                "x": 2.11353064,
+                "y": 0.100000143,
+                "z": -0.78374356
+              },
+              "Tags": [
+                "sardaukarHighCouncil"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "GUID": "b71495",
+      "Name": "Custom_Tile",
+      "Transform": {
+        "posX": 7.12451935,
+        "posY": 1.6125325,
+        "posZ": 79.213,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 4.04,
+        "scaleY": 1.0,
+        "scaleZ": 4.04
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "ixBoard.fr",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 0.0,
+        "g": 0.0,
+        "b": 0.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomImage": {
+        "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141290345/3CF628A329B98C1ACDAAF69CD1239A5456B4A86C/",
+        "ImageSecondaryURL": "",
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
+        "CustomTile": {
+          "Type": 0,
+          "Thickness": 0.1,
+          "Stackable": false,
+          "Stretch": true
+        }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "AttachedSnapPoints": [
+        {
+          "Position": {
+            "x": 0.5986332,
+            "y": 0.100000143,
+            "z": -0.08071267
+          },
+          "Tags": [
+            "spaceDreadnought"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.597948,
+            "y": 0.100000143,
+            "z": -0.61025995
+          },
+          "Tags": [
+            "spaceTechNegotiation"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.253156573,
+            "y": 0.100000143,
+            "z": -0.637962341
+          },
+          "Tags": [
+            "spaceTechNegotiation_Buy"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.0859156,
+            "y": 0.100000143,
+            "z": -0.5116248
+          },
+          "Tags": [
+            "spaceTechNegotiation_Negotiate"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.1528369,
+            "y": 0.100000143,
+            "z": 0.456103742
+          },
+          "Tags": [
+            "slotNegotiator"
+          ]
+        },
+        {
+          "Position": {
+            "x": -0.467406034,
+            "y": 0.100000143,
+            "z": 0.518779
+          },
+          "Tags": [
+            "slotTech3"
+          ]
+        },
+        {
+          "Position": {
+            "x": -0.466862082,
+            "y": 0.100000143,
+            "z": -0.099306345
+          },
+          "Tags": [
+            "slotTech2"
+          ]
+        },
+        {
+          "Position": {
+            "x": -0.4755872,
+            "y": 0.100000143,
+            "z": -0.684587657
+          },
+          "Tags": [
+            "slotTech1"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.07653068,
+            "y": 0.100000143,
+            "z": -0.8970915
+          },
+          "Tags": [
+            "sardaukarTechNegotiation"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.7666319,
+            "y": 0.100000143,
+            "z": 0.216500446
+          },
+          "Tags": [
+            "sardaukarDreadnought"
+          ]
+        }
+      ],
+      "States": {
+        "2": {
+          "GUID": "31d1a4",
+          "Name": "Custom_Tile",
+          "Transform": {
+            "posX": 7.12451935,
+            "posY": 1.6125325,
+            "posZ": 11.2129974,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 0,
+            "scaleX": 4.04,
+            "scaleY": 1.0,
+            "scaleZ": 4.04
+          },
+          "Nickname": "",
+          "Description": "",
+          "GMNotes": "ixAmbassyBoard.en",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.0,
+            "g": 0.0,
+            "b": 0.0
+          },
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomImage": {
+            "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/9566803596526819021/09AAD4CF3D3ADAD5F216361C34334924ED0D6652/",
+            "ImageSecondaryURL": "",
+            "ImageScalar": 1.0,
+            "WidthScale": 0.0,
+            "CustomTile": {
+              "Type": 0,
+              "Thickness": 0.1,
+              "Stackable": false,
+              "Stretch": true
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "AttachedSnapPoints": [
+            {
+              "Position": {
+                "x": -0.0162749644,
+                "y": 0.100000143,
+                "z": 0.718427
+              },
+              "Tags": [
+                "slotTech1"
+              ]
+            },
+            {
+              "Position": {
+                "x": -0.0142540252,
+                "y": 0.100000143,
+                "z": 0.1787521
+              },
+              "Tags": [
+                "slotTech2"
+              ]
+            },
+            {
+              "Position": {
+                "x": -0.01627558,
+                "y": 0.100000143,
+                "z": -0.35890165
+              },
+              "Tags": [
+                "slotTech3"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "GUID": "9df828",
+      "Name": "Custom_Tile",
+      "Transform": {
+        "posX": 5.48623848,
+        "posY": 1.58,
+        "posZ": 87.44501,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 4.0,
+        "scaleY": 1.0,
+        "scaleZ": 4.0
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "tleilaxBoard.fr",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 0.199429691,
+        "g": 0.055522427,
+        "b": 0.297894031
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomImage": {
+        "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141331929/A5D3465456933CA0C042692C1E53D8144F1AEE0F/",
+        "ImageSecondaryURL": "",
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
+        "CustomTile": {
+          "Type": 0,
+          "Thickness": 0.1,
+          "Stackable": false,
+          "Stretch": true
+        }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "86733f",
+      "Name": "Custom_Tile",
+      "Transform": {
+        "posX": -2.214509,
+        "posY": 1.72279787,
+        "posZ": 69.09604,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 0.95,
+        "scaleY": 1.0,
+        "scaleZ": 0.95
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "tuekSietchBoard.fr",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 0.0,
+        "g": 0.0,
+        "b": 0.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomImage": {
+        "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/16196057606247240194/AB96A0872319BF8ED21054A4D856F944FC595EF2/",
+        "ImageSecondaryURL": "",
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
+        "CustomTile": {
+          "Type": 0,
+          "Thickness": 0.1,
+          "Stackable": false,
+          "Stretch": true
+        }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "AttachedSnapPoints": [
+        {
+          "Position": {
+            "x": 0.6520012,
+            "y": 0.100000143,
+            "z": 0.118952513
+          },
+          "Tags": [
+            "spaceTuekSietch"
+          ]
+        },
+        {
+          "Position": {
+            "x": -0.952149868,
+            "y": 0.100000143,
+            "z": 0.457079649
+          },
+          "Tags": [
+            "spiceTuekSietch"
+          ]
+        },
+        {
+          "Position": {
+            "x": -0.610144258,
+            "y": 0.100000143,
+            "z": -0.293956637
+          },
+          "Tags": [
+            "spaceTuekSietch_WithSpice"
+          ]
+        },
+        {
+          "Position": {
+            "x": -1.32439017,
+            "y": 0.100000143,
+            "z": -0.304973125
+          },
+          "Tags": [
+            "spaceTuekSietch_WithDraw"
+          ]
+        }
+      ]
+    },
+    {
+      "GUID": "0349a6",
+      "Name": "Custom_Tile",
+      "Transform": {
+        "posX": 3.13978672,
+        "posY": 4.64,
+        "posZ": 72.61,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 2.53,
+        "scaleY": 1.0,
+        "scaleZ": 2.53
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "shippingBoard.fr",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 0.0,
+        "g": 0.0,
+        "b": 0.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomImage": {
+        "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/28808598744210452/57D510F7D27C18EC198ACF09C89F335FFB73F01B/",
+        "ImageSecondaryURL": "",
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
+        "CustomTile": {
+          "Type": 0,
+          "Thickness": 0.1,
+          "Stackable": false,
+          "Stretch": true
+        }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "AttachedSnapPoints": [
+        {
+          "Position": {
+            "x": 2.559358,
+            "y": 0.100000143,
+            "z": -0.3658014
+          },
+          "Tags": [
+            "spaceHighCouncil"
+          ]
+        },
+        {
+          "Position": {
+            "x": 2.55167079,
+            "y": 0.100000143,
+            "z": 0.4605767
+          },
+          "Tags": [
+            "spaceMentat"
+          ]
+        },
+        {
+          "Position": {
+            "x": 1.65432465,
+            "y": 0.100000143,
+            "z": 0.4732174
+          },
+          "Tags": [
+            "slotMentat"
+          ]
+        },
+        {
+          "Position": {
+            "x": 1.86306429,
+            "y": 0.100000143,
+            "z": -0.364187151
+          },
+          "Tags": [
+            "seatHighCouncil1"
+          ]
+        },
+        {
+          "Position": {
+            "x": 1.57476771,
+            "y": 0.100000143,
+            "z": -0.3646778
+          },
+          "Tags": [
+            "seatHighCouncil2"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.9137546,
+            "y": 0.100000143,
+            "z": -0.35314554
+          },
+          "Tags": [
+            "seatHighCouncil3"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.617681861,
+            "y": 0.100000143,
+            "z": -0.361233532
+          },
+          "Tags": [
+            "seatHighCouncil4"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.923187137,
+            "y": 0.100000143,
+            "z": 0.457803279
+          },
+          "Tags": [
+            "spaceSwordmaster"
+          ]
+        },
+        {
+          "Position": {
+            "x": -0.6084442,
+            "y": 0.100000143,
+            "z": -0.289313942
+          },
+          "Tags": [
+            "spaceInterstellarShipping"
+          ]
+        },
+        {
+          "Position": {
+            "x": -0.6072351,
+            "y": 0.100000143,
+            "z": 0.475603849
+          },
+          "Tags": [
+            "spaceSmuggling"
+          ]
+        },
+        {
+          "Position": {
+            "x": -2.02421117,
+            "y": 0.100000143,
+            "z": 0.253764749
+          },
+          "Tags": [
+            "freighterSpace1"
+          ]
+        },
+        {
+          "Position": {
+            "x": -2.022023,
+            "y": 0.100000143,
+            "z": -0.219057873
+          },
+          "Tags": [
+            "freighterSpace2"
+          ]
+        },
+        {
+          "Position": {
+            "x": -2.019566,
+            "y": 0.100000143,
+            "z": -0.6688207
+          },
+          "Tags": [
+            "freighterSpace3"
+          ]
+        },
+        {
+          "Position": {
+            "x": -2.31610179,
+            "y": 0.100000143,
+            "z": 0.69546777
+          },
+          "Tags": [
+            "freighterSpace0"
+          ]
+        },
+        {
+          "Position": {
+            "x": -2.6694932,
+            "y": 0.100000143,
+            "z": 0.29586488
+          },
+          "Tags": [
+            "freighterBonusSolaris"
+          ]
+        },
+        {
+          "Position": {
+            "x": -2.9608283,
+            "y": 0.100000143,
+            "z": 0.364599347
+          },
+          "Tags": [
+            "freighterBonusSpice"
+          ]
+        },
+        {
+          "Position": {
+            "x": -2.816123,
+            "y": 0.100000143,
+            "z": -0.0829734951
+          },
+          "Tags": [
+            "freighterBonusTroopsAndInfluence"
+          ]
+        },
+        {
+          "Position": {
+            "x": 2.11353064,
+            "y": 0.100000143,
+            "z": -0.78374356
+          },
+          "Tags": [
+            "sardaukarHighCouncil"
+          ]
+        }
+      ],
+      "States": {
+        "1": {
+          "GUID": "a24680",
+          "Name": "Custom_Tile",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 6.42279768,
+            "posZ": 0.0,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 0,
+            "scaleX": 2.53,
+            "scaleY": 1.0,
+            "scaleZ": 2.53
+          },
+          "Nickname": "",
+          "Description": "",
+          "GMNotes": "defaultBoard.en",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.0,
+            "g": 0.0,
+            "b": 0.0
+          },
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomImage": {
+            "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/28808598744210650/1290FB554EFF48B3503CA5A4E21502A112801A8A/",
+            "ImageSecondaryURL": "",
+            "ImageScalar": 1.0,
+            "WidthScale": 0.0,
+            "CustomTile": {
+              "Type": 0,
+              "Thickness": 0.1,
+              "Stackable": false,
+              "Stretch": true
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "AttachedSnapPoints": [
+            {
+              "Position": {
+                "x": 2.51070046,
+                "y": 0.100000143,
+                "z": -0.421913028
+              },
+              "Tags": [
+                "spaceHighCouncil"
+              ]
+            },
+            {
+              "Position": {
+                "x": 2.51864839,
+                "y": 0.100000143,
+                "z": 0.344773084
+              },
+              "Tags": [
+                "spaceMentat"
+              ]
+            },
+            {
+              "Position": {
+                "x": 1.71805835,
+                "y": 0.100000143,
+                "z": 0.345837533
+              },
+              "Tags": [
+                "slotMentat"
+              ]
+            },
+            {
+              "Position": {
+                "x": 1.02162766,
+                "y": 0.100000143,
+                "z": 0.357381642
+              },
+              "Tags": [
+                "spaceRallyTroops"
+              ]
+            },
+            {
+              "Position": {
+                "x": -0.249105334,
+                "y": 0.100000143,
+                "z": 0.3299404
+              },
+              "Tags": [
+                "spaceSwordmaster"
+              ]
+            },
+            {
+              "Position": {
+                "x": -0.277436256,
+                "y": 0.100000143,
+                "z": -0.42662853
+              },
+              "Tags": [
+                "spaceHallOfOratory"
+              ]
+            },
+            {
+              "Position": {
+                "x": -1.73773789,
+                "y": 0.100000143,
+                "z": 0.345965773
+              },
+              "Tags": [
+                "spaceSecureContract"
+              ]
+            },
+            {
+              "Position": {
+                "x": -1.74228919,
+                "y": 0.100000143,
+                "z": -0.4220572
+              },
+              "Tags": [
+                "spaceSellMelange"
+              ]
+            },
+            {
+              "Position": {
+                "x": -2.24938273,
+                "y": 0.100000143,
+                "z": -0.413354874
+              },
+              "Tags": [
+                "spaceSellMelange_1"
+              ]
+            },
+            {
+              "Position": {
+                "x": -2.42239928,
+                "y": 0.100000143,
+                "z": -0.4104656
+              },
+              "Tags": [
+                "spaceSellMelange_2"
+              ]
+            },
+            {
+              "Position": {
+                "x": -2.59542561,
+                "y": 0.100000143,
+                "z": -0.4041842
+              },
+              "Tags": [
+                "spaceSellMelange_3"
+              ]
+            },
+            {
+              "Position": {
+                "x": -2.76843214,
+                "y": 0.100000143,
+                "z": -0.404687226
+              },
+              "Tags": [
+                "spaceSellMelange_4"
+              ]
+            },
+            {
+              "Position": {
+                "x": 1.94002354,
+                "y": 0.100000143,
+                "z": -0.438342661
+              },
+              "Tags": [
+                "seatHighCouncil1"
+              ]
+            },
+            {
+              "Position": {
+                "x": 1.65181661,
+                "y": 0.100000143,
+                "z": -0.439180672
+              },
+              "Tags": [
+                "seatHighCouncil2"
+              ]
+            },
+            {
+              "Position": {
+                "x": 0.990305245,
+                "y": 0.100000143,
+                "z": -0.43835935
+              },
+              "Tags": [
+                "seatHighCouncil3"
+              ]
+            },
+            {
+              "Position": {
+                "x": 0.702082336,
+                "y": 0.100000143,
+                "z": -0.433708072
+              },
+              "Tags": [
+                "seatHighCouncil4"
+              ]
+            },
+            {
+              "Position": {
+                "x": -0.927805543,
+                "y": 0.100000143,
+                "z": -0.86692363
+              },
+              "Tags": [
+                "sardaukarHallOfOratory"
+              ]
+            },
+            {
+              "Position": {
+                "x": 2.07523584,
+                "y": 0.100000143,
+                "z": -0.8068266
+              },
+              "Tags": [
+                "sardaukarHighCouncil"
+              ]
+            },
+            {
+              "Position": {
+                "x": 0.393035978,
+                "y": 0.100000143,
+                "z": -0.11413236
+              },
+              "Tags": [
+                "sardaukarRallyTroops"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "GUID": "292ef6",
+      "Name": "Custom_Tile",
+      "Transform": {
+        "posX": 3.13978672,
+        "posY": 7.64,
+        "posZ": 72.61,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 2.53,
+        "scaleY": 1.0,
+        "scaleZ": 2.53
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "shippingBoard.en",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 0.0,
+        "g": 0.0,
+        "b": 0.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomImage": {
+        "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/28808598744210452/57D510F7D27C18EC198ACF09C89F335FFB73F01B/",
+        "ImageSecondaryURL": "",
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
+        "CustomTile": {
+          "Type": 0,
+          "Thickness": 0.1,
+          "Stackable": false,
+          "Stretch": true
+        }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "AttachedSnapPoints": [
+        {
+          "Position": {
+            "x": 2.559358,
+            "y": 0.100000143,
+            "z": -0.3658014
+          },
+          "Tags": [
+            "spaceHighCouncil"
+          ]
+        },
+        {
+          "Position": {
+            "x": 2.55167079,
+            "y": 0.100000143,
+            "z": 0.4605767
+          },
+          "Tags": [
+            "spaceMentat"
+          ]
+        },
+        {
+          "Position": {
+            "x": 1.65432465,
+            "y": 0.100000143,
+            "z": 0.4732174
+          },
+          "Tags": [
+            "slotMentat"
+          ]
+        },
+        {
+          "Position": {
+            "x": 1.86306429,
+            "y": 0.100000143,
+            "z": -0.364187151
+          },
+          "Tags": [
+            "seatHighCouncil1"
+          ]
+        },
+        {
+          "Position": {
+            "x": 1.57476771,
+            "y": 0.100000143,
+            "z": -0.3646778
+          },
+          "Tags": [
+            "seatHighCouncil2"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.9137546,
+            "y": 0.100000143,
+            "z": -0.35314554
+          },
+          "Tags": [
+            "seatHighCouncil3"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.617681861,
+            "y": 0.100000143,
+            "z": -0.361233532
+          },
+          "Tags": [
+            "seatHighCouncil4"
+          ]
+        },
+        {
+          "Position": {
+            "x": 0.923187137,
+            "y": 0.100000143,
+            "z": 0.457803279
+          },
+          "Tags": [
+            "spaceSwordmaster"
+          ]
+        },
+        {
+          "Position": {
+            "x": -0.6084442,
+            "y": 0.100000143,
+            "z": -0.289313942
+          },
+          "Tags": [
+            "spaceInterstellarShipping"
+          ]
+        },
+        {
+          "Position": {
+            "x": -0.6072351,
+            "y": 0.100000143,
+            "z": 0.475603849
+          },
+          "Tags": [
+            "spaceSmuggling"
+          ]
+        },
+        {
+          "Position": {
+            "x": -2.02421117,
+            "y": 0.100000143,
+            "z": 0.253764749
+          },
+          "Tags": [
+            "freighterSpace1"
+          ]
+        },
+        {
+          "Position": {
+            "x": -2.022023,
+            "y": 0.100000143,
+            "z": -0.219057873
+          },
+          "Tags": [
+            "freighterSpace2"
+          ]
+        },
+        {
+          "Position": {
+            "x": -2.019566,
+            "y": 0.100000143,
+            "z": -0.6688207
+          },
+          "Tags": [
+            "freighterSpace3"
+          ]
+        },
+        {
+          "Position": {
+            "x": -2.31610179,
+            "y": 0.100000143,
+            "z": 0.69546777
+          },
+          "Tags": [
+            "freighterSpace0"
+          ]
+        },
+        {
+          "Position": {
+            "x": -2.6694932,
+            "y": 0.100000143,
+            "z": 0.29586488
+          },
+          "Tags": [
+            "freighterBonusSolaris"
+          ]
+        },
+        {
+          "Position": {
+            "x": -2.9608283,
+            "y": 0.100000143,
+            "z": 0.364599347
+          },
+          "Tags": [
+            "freighterBonusSpice"
+          ]
+        },
+        {
+          "Position": {
+            "x": -2.816123,
+            "y": 0.100000143,
+            "z": -0.0829734951
+          },
+          "Tags": [
+            "freighterBonusTroopsAndInfluence"
+          ]
+        },
+        {
+          "Position": {
+            "x": 2.11353064,
+            "y": 0.100000143,
+            "z": -0.78374356
+          },
+          "Tags": [
+            "sardaukarHighCouncil"
+          ]
+        }
+      ],
+      "States": {
+        "1": {
+          "GUID": "e33130",
+          "Name": "Custom_Tile",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 7.302798,
+            "posZ": 0.0,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 0,
+            "scaleX": 2.53,
+            "scaleY": 1.0,
+            "scaleZ": 2.53
+          },
+          "Nickname": "",
+          "Description": "",
+          "GMNotes": "defaultBoard.en",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.0,
+            "g": 0.0,
+            "b": 0.0
+          },
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomImage": {
+            "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/28808598744210650/1290FB554EFF48B3503CA5A4E21502A112801A8A/",
+            "ImageSecondaryURL": "",
+            "ImageScalar": 1.0,
+            "WidthScale": 0.0,
+            "CustomTile": {
+              "Type": 0,
+              "Thickness": 0.1,
+              "Stackable": false,
+              "Stretch": true
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "AttachedSnapPoints": [
+            {
+              "Position": {
+                "x": 2.51070046,
+                "y": 0.100000143,
+                "z": -0.421913028
+              },
+              "Tags": [
+                "spaceHighCouncil"
+              ]
+            },
+            {
+              "Position": {
+                "x": 2.51864839,
+                "y": 0.100000143,
+                "z": 0.344773084
+              },
+              "Tags": [
+                "spaceMentat"
+              ]
+            },
+            {
+              "Position": {
+                "x": 1.71805835,
+                "y": 0.100000143,
+                "z": 0.345837533
+              },
+              "Tags": [
+                "slotMentat"
+              ]
+            },
+            {
+              "Position": {
+                "x": 1.02162766,
+                "y": 0.100000143,
+                "z": 0.357381642
+              },
+              "Tags": [
+                "spaceRallyTroops"
+              ]
+            },
+            {
+              "Position": {
+                "x": -0.249105334,
+                "y": 0.100000143,
+                "z": 0.3299404
+              },
+              "Tags": [
+                "spaceSwordmaster"
+              ]
+            },
+            {
+              "Position": {
+                "x": -0.277436256,
+                "y": 0.100000143,
+                "z": -0.42662853
+              },
+              "Tags": [
+                "spaceHallOfOratory"
+              ]
+            },
+            {
+              "Position": {
+                "x": -1.73773789,
+                "y": 0.100000143,
+                "z": 0.345965773
+              },
+              "Tags": [
+                "spaceSecureContract"
+              ]
+            },
+            {
+              "Position": {
+                "x": -1.74228919,
+                "y": 0.100000143,
+                "z": -0.4220572
+              },
+              "Tags": [
+                "spaceSellMelange"
+              ]
+            },
+            {
+              "Position": {
+                "x": -2.24938273,
+                "y": 0.100000143,
+                "z": -0.413354874
+              },
+              "Tags": [
+                "spaceSellMelange_1"
+              ]
+            },
+            {
+              "Position": {
+                "x": -2.42239928,
+                "y": 0.100000143,
+                "z": -0.4104656
+              },
+              "Tags": [
+                "spaceSellMelange_2"
+              ]
+            },
+            {
+              "Position": {
+                "x": -2.59542561,
+                "y": 0.100000143,
+                "z": -0.4041842
+              },
+              "Tags": [
+                "spaceSellMelange_3"
+              ]
+            },
+            {
+              "Position": {
+                "x": -2.76843214,
+                "y": 0.100000143,
+                "z": -0.404687226
+              },
+              "Tags": [
+                "spaceSellMelange_4"
+              ]
+            },
+            {
+              "Position": {
+                "x": 1.94002354,
+                "y": 0.100000143,
+                "z": -0.438342661
+              },
+              "Tags": [
+                "seatHighCouncil1"
+              ]
+            },
+            {
+              "Position": {
+                "x": 1.65181661,
+                "y": 0.100000143,
+                "z": -0.439180672
+              },
+              "Tags": [
+                "seatHighCouncil2"
+              ]
+            },
+            {
+              "Position": {
+                "x": 0.990305245,
+                "y": 0.100000143,
+                "z": -0.43835935
+              },
+              "Tags": [
+                "seatHighCouncil3"
+              ]
+            },
+            {
+              "Position": {
+                "x": 0.702082336,
+                "y": 0.100000143,
+                "z": -0.433708072
+              },
+              "Tags": [
+                "seatHighCouncil4"
+              ]
+            },
+            {
+              "Position": {
+                "x": -0.927805543,
+                "y": 0.100000143,
+                "z": -0.86692363
+              },
+              "Tags": [
+                "sardaukarHallOfOratory"
+              ]
+            },
+            {
+              "Position": {
+                "x": 2.07523584,
+                "y": 0.100000143,
+                "z": -0.8068266
+              },
+              "Tags": [
+                "sardaukarHighCouncil"
+              ]
+            },
+            {
+              "Position": {
+                "x": 0.393035978,
+                "y": 0.100000143,
+                "z": -0.11413236
+              },
+              "Tags": [
+                "sardaukarRallyTroops"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "GUID": "31d1a4",
+      "Name": "Custom_Tile",
+      "Transform": {
+        "posX": 7.12451935,
+        "posY": 4.61253262,
+        "posZ": 79.213,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 4.04,
+        "scaleY": 1.0,
+        "scaleZ": 4.04
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "ixAmbassyBoard.fr",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 0.0,
+        "g": 0.0,
+        "b": 0.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomImage": {
+        "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/15669542747959000825/82E09050B212BAD624076B5F734A1E9069F257F4/",
+        "ImageSecondaryURL": "",
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
+        "CustomTile": {
+          "Type": 0,
+          "Thickness": 0.1,
+          "Stackable": false,
+          "Stretch": true
+        }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "AttachedSnapPoints": [
+        {
+          "Position": {
+            "x": -0.0162749644,
+            "y": 0.100000143,
+            "z": 0.718427
+          },
+          "Tags": [
+            "slotTech1"
+          ]
+        },
+        {
+          "Position": {
+            "x": -0.0142540252,
+            "y": 0.100000143,
+            "z": 0.1787521
+          },
+          "Tags": [
+            "slotTech2"
+          ]
+        },
+        {
+          "Position": {
+            "x": -0.01627558,
+            "y": 0.100000143,
+            "z": -0.35890165
+          },
+          "Tags": [
+            "slotTech3"
+          ]
+        }
+      ],
+      "States": {
+        "1": {
+          "GUID": "e0f56c",
+          "Name": "Custom_Tile",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 9.007864,
+            "posZ": 0.0,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 0,
+            "scaleX": 4.04,
+            "scaleY": 1.0,
+            "scaleZ": 4.04
+          },
+          "Nickname": "",
+          "Description": "",
+          "GMNotes": "ixBoard.en",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.0,
+            "g": 0.0,
+            "b": 0.0
+          },
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomImage": {
+            "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141332938/186AAD39381056149506FDFA88FF5FA2AF203B13/",
+            "ImageSecondaryURL": "",
+            "ImageScalar": 1.0,
+            "WidthScale": 0.0,
+            "CustomTile": {
+              "Type": 0,
+              "Thickness": 0.1,
+              "Stackable": false,
+              "Stretch": true
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "AttachedSnapPoints": [
+            {
+              "Position": {
+                "x": 0.5986332,
+                "y": 0.100000143,
+                "z": -0.08071267
+              },
+              "Tags": [
+                "spaceDreadnought"
+              ]
+            },
+            {
+              "Position": {
+                "x": 0.597948,
+                "y": 0.100000143,
+                "z": -0.61025995
+              },
+              "Tags": [
+                "spaceTechNegotiation"
+              ]
+            },
+            {
+              "Position": {
+                "x": 0.253156573,
+                "y": 0.100000143,
+                "z": -0.637962341
+              },
+              "Tags": [
+                "spaceTechNegotiation_Buy"
+              ]
+            },
+            {
+              "Position": {
+                "x": 0.0859156,
+                "y": 0.100000143,
+                "z": -0.5116248
+              },
+              "Tags": [
+                "spaceTechNegotiation_Negotiate"
+              ]
+            },
+            {
+              "Position": {
+                "x": 0.1528369,
+                "y": 0.100000143,
+                "z": 0.456103742
+              },
+              "Tags": [
+                "slotNegotiator"
+              ]
+            },
+            {
+              "Position": {
+                "x": -0.467406034,
+                "y": 0.100000143,
+                "z": 0.518779
+              },
+              "Tags": [
+                "slotTech3"
+              ]
+            },
+            {
+              "Position": {
+                "x": -0.466862082,
+                "y": 0.100000143,
+                "z": -0.099306345
+              },
+              "Tags": [
+                "slotTech2"
+              ]
+            },
+            {
+              "Position": {
+                "x": -0.4755872,
+                "y": 0.100000143,
+                "z": -0.684587657
+              },
+              "Tags": [
+                "slotTech1"
+              ]
+            },
+            {
+              "Position": {
+                "x": 0.07653068,
+                "y": 0.100000143,
+                "z": -0.8970915
+              },
+              "Tags": [
+                "sardaukarTechNegotiation"
+              ]
+            },
+            {
+              "Position": {
+                "x": 0.7666319,
+                "y": 0.100000143,
+                "z": 0.216500446
+              },
+              "Tags": [
+                "sardaukarDreadnought"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "GUID": "d032f8",
+      "Name": "Custom_Tile",
+      "Transform": {
+        "posX": 7.12451935,
+        "posY": 7.61253262,
+        "posZ": 79.213,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 4.04,
+        "scaleY": 1.0,
+        "scaleZ": 4.04
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "ixAmbassyBoard.en",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 0.0,
+        "g": 0.0,
+        "b": 0.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "CustomImage": {
+        "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/9566803596526819021/09AAD4CF3D3ADAD5F216361C34334924ED0D6652/",
+        "ImageSecondaryURL": "",
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
+        "CustomTile": {
+          "Type": 0,
+          "Thickness": 0.1,
+          "Stackable": false,
+          "Stretch": true
+        }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "AttachedSnapPoints": [
+        {
+          "Position": {
+            "x": -0.0162749644,
+            "y": 0.100000143,
+            "z": 0.718427
+          },
+          "Tags": [
+            "slotTech1"
+          ]
+        },
+        {
+          "Position": {
+            "x": -0.0142540252,
+            "y": 0.100000143,
+            "z": 0.1787521
+          },
+          "Tags": [
+            "slotTech2"
+          ]
+        },
+        {
+          "Position": {
+            "x": -0.01627558,
+            "y": 0.100000143,
+            "z": -0.35890165
+          },
+          "Tags": [
+            "slotTech3"
+          ]
+        }
+      ],
+      "States": {
+        "1": {
+          "GUID": "db7e56",
+          "Name": "Custom_Tile",
+          "Transform": {
+            "posX": 0.0,
+            "posY": 9.007864,
+            "posZ": 0.0,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 0,
+            "scaleX": 4.04,
+            "scaleY": 1.0,
+            "scaleZ": 4.04
+          },
+          "Nickname": "",
+          "Description": "",
+          "GMNotes": "ixBoard.en",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.0,
+            "g": 0.0,
+            "b": 0.0
+          },
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomImage": {
+            "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141332938/186AAD39381056149506FDFA88FF5FA2AF203B13/",
+            "ImageSecondaryURL": "",
+            "ImageScalar": 1.0,
+            "WidthScale": 0.0,
+            "CustomTile": {
+              "Type": 0,
+              "Thickness": 0.1,
+              "Stackable": false,
+              "Stretch": true
+            }
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "AttachedSnapPoints": [
+            {
+              "Position": {
+                "x": 0.5986332,
+                "y": 0.100000143,
+                "z": -0.08071267
+              },
+              "Tags": [
+                "spaceDreadnought"
+              ]
+            },
+            {
+              "Position": {
+                "x": 0.597948,
+                "y": 0.100000143,
+                "z": -0.61025995
+              },
+              "Tags": [
+                "spaceTechNegotiation"
+              ]
+            },
+            {
+              "Position": {
+                "x": 0.253156573,
+                "y": 0.100000143,
+                "z": -0.637962341
+              },
+              "Tags": [
+                "spaceTechNegotiation_Buy"
+              ]
+            },
+            {
+              "Position": {
+                "x": 0.0859156,
+                "y": 0.100000143,
+                "z": -0.5116248
+              },
+              "Tags": [
+                "spaceTechNegotiation_Negotiate"
+              ]
+            },
+            {
+              "Position": {
+                "x": 0.1528369,
+                "y": 0.100000143,
+                "z": 0.456103742
+              },
+              "Tags": [
+                "slotNegotiator"
+              ]
+            },
+            {
+              "Position": {
+                "x": -0.467406034,
+                "y": 0.100000143,
+                "z": 0.518779
+              },
+              "Tags": [
+                "slotTech3"
+              ]
+            },
+            {
+              "Position": {
+                "x": -0.466862082,
+                "y": 0.100000143,
+                "z": -0.099306345
+              },
+              "Tags": [
+                "slotTech2"
+              ]
+            },
+            {
+              "Position": {
+                "x": -0.4755872,
+                "y": 0.100000143,
+                "z": -0.684587657
+              },
+              "Tags": [
+                "slotTech1"
+              ]
+            },
+            {
+              "Position": {
+                "x": 0.07653068,
+                "y": 0.100000143,
+                "z": -0.8970915
+              },
+              "Tags": [
+                "sardaukarTechNegotiation"
+              ]
+            },
+            {
+              "Position": {
+                "x": 0.7666319,
+                "y": 0.100000143,
+                "z": 0.216500446
+              },
+              "Tags": [
+                "sardaukarDreadnought"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "GUID": "e7f408",
       "Name": "Deck",
       "Transform": {
         "posX": -30.0,
@@ -29728,7 +32533,7 @@
       ]
     },
     {
-      "GUID": "3e78ac",
+      "GUID": "326a4b",
       "Name": "Deck",
       "Transform": {
         "posX": -30.0,
@@ -39713,7 +42518,7 @@
       ]
     },
     {
-      "GUID": "e16c6f",
+      "GUID": "da37f6",
       "Name": "Deck",
       "Transform": {
         "posX": -30.0,
@@ -41469,7 +44274,7 @@
       ]
     },
     {
-      "GUID": "c7e9f2",
+      "GUID": "3809cc",
       "Name": "Deck",
       "Transform": {
         "posX": -30.0,
@@ -42844,7 +45649,7 @@
       ]
     },
     {
-      "GUID": "411c6a",
+      "GUID": "780a14",
       "Name": "Deck",
       "Transform": {
         "posX": -30.0,
@@ -49038,7 +51843,7 @@
       ]
     },
     {
-      "GUID": "16e646",
+      "GUID": "2b5935",
       "Name": "Deck",
       "Transform": {
         "posX": -30.0,
@@ -51356,7 +54161,7 @@
       ]
     },
     {
-      "GUID": "82140b",
+      "GUID": "918097",
       "Name": "Deck",
       "Transform": {
         "posX": -30.0,
@@ -52935,7 +55740,7 @@
       ]
     },
     {
-      "GUID": "5f33db",
+      "GUID": "d3af12",
       "Name": "Deck",
       "Transform": {
         "posX": -30.0,
@@ -56241,7 +59046,7 @@
       ]
     },
     {
-      "GUID": "c8c074",
+      "GUID": "90926e",
       "Name": "Deck",
       "Transform": {
         "posX": -30.0,
@@ -62890,7 +65695,7 @@
       ]
     },
     {
-      "GUID": "2a03a4",
+      "GUID": "b92486",
       "Name": "Deck",
       "Transform": {
         "posX": -26.0,
@@ -66841,7 +69646,7 @@
       ]
     },
     {
-      "GUID": "b5ff43",
+      "GUID": "aa8172",
       "Name": "Deck",
       "Transform": {
         "posX": -26.0,
@@ -67596,7 +70401,7 @@
       ]
     },
     {
-      "GUID": "2db685",
+      "GUID": "2affce",
       "Name": "Deck",
       "Transform": {
         "posX": -26.0,
@@ -68537,7 +71342,7 @@
       ]
     },
     {
-      "GUID": "ec442b",
+      "GUID": "20eec3",
       "Name": "Deck",
       "Transform": {
         "posX": 26.0,
@@ -71985,7 +74790,7 @@
       ]
     },
     {
-      "GUID": "4fd0c0",
+      "GUID": "344081",
       "Name": "Deck",
       "Transform": {
         "posX": 26.0,
@@ -81970,7 +84775,7 @@
       ]
     },
     {
-      "GUID": "6ced2c",
+      "GUID": "991645",
       "Name": "Deck",
       "Transform": {
         "posX": 26.0,
@@ -83744,7 +86549,7 @@
       ]
     },
     {
-      "GUID": "92b022",
+      "GUID": "b49d32",
       "Name": "Deck",
       "Transform": {
         "posX": 26.0,
@@ -85119,7 +87924,7 @@
       ]
     },
     {
-      "GUID": "61f82b",
+      "GUID": "f6a806",
       "Name": "Deck",
       "Transform": {
         "posX": 26.0,
@@ -89738,7 +92543,7 @@
             "scaleY": 1.0,
             "scaleZ": 1.0
           },
-          "Nickname": "Tactique adaptive",
+          "Nickname": "Tactique adaptative",
           "Description": "",
           "GMNotes": "adaptiveTactics",
           "AltLookAngle": {
@@ -89982,7 +92787,7 @@
             "scaleY": 1.0,
             "scaleZ": 1.0
           },
-          "Nickname": "Rendre la pareil",
+          "Nickname": "Rendre la pareille",
           "Description": "",
           "GMNotes": "returnTheFavor",
           "AltLookAngle": {
@@ -91313,7 +94118,7 @@
       ]
     },
     {
-      "GUID": "3f32e5",
+      "GUID": "fb8985",
       "Name": "Deck",
       "Transform": {
         "posX": 26.0,
@@ -91555,7 +94360,7 @@
           "Type": 0
         },
         "358": {
-          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/16840498883514018480/8FBE72F803A53B0A52DA2BCA215FA420CCC7394A/",
+          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/17290769050677153560/B22D2E3189D54F11C43D0A9AC4A2495B02E79884/",
           "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141363045/1EA614EC832B16BC94811A7FE793344057850409/",
           "NumWidth": 1,
           "NumHeight": 1,
@@ -91564,7 +94369,7 @@
           "Type": 0
         },
         "359": {
-          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/12874275231044371573/D8E5B09CD439544AAE932053824C7C6F0C890007/",
+          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/10424190788992915569/7685B3DF67123D60F418552CE9F185839CC6FD89/",
           "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141363045/1EA614EC832B16BC94811A7FE793344057850409/",
           "NumWidth": 1,
           "NumHeight": 1,
@@ -91573,7 +94378,7 @@
           "Type": 0
         },
         "360": {
-          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/12218741996139093793/16A506EC1607EF2836A17BBD376D60286BE5F538/",
+          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/12787488352787808702/0B16F95E9AB2A52CC7A1D6231EA9CCFC82A9B47F/",
           "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141363045/1EA614EC832B16BC94811A7FE793344057850409/",
           "NumWidth": 1,
           "NumHeight": 1,
@@ -91582,7 +94387,7 @@
           "Type": 0
         },
         "361": {
-          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/17918227540999801434/06C812467EAACD025C549578BEF04FFDB2185A1F/",
+          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/10845100676025918525/51C9BCAF320DB8E33196C665C05BA7357BDC1B74/",
           "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141363045/1EA614EC832B16BC94811A7FE793344057850409/",
           "NumWidth": 1,
           "NumHeight": 1,
@@ -91591,7 +94396,7 @@
           "Type": 0
         },
         "362": {
-          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/17243030170230690229/ED105B4406B9930D8AF32B8107A9185F4D7973D9/",
+          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/17997706728594511842/8281E4A1D10F14194569E8C9B828C42074890CAC/",
           "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141363045/1EA614EC832B16BC94811A7FE793344057850409/",
           "NumWidth": 1,
           "NumHeight": 1,
@@ -91600,7 +94405,7 @@
           "Type": 0
         },
         "363": {
-          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/13612933406762869906/257BBF8B69D85ECC65B745ACC219E4C6426D0BE8/",
+          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/15374716179042280948/BC7313EF842F5619FC77EF2E7B059AE2E9855003/",
           "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141363045/1EA614EC832B16BC94811A7FE793344057850409/",
           "NumWidth": 1,
           "NumHeight": 1,
@@ -91609,7 +94414,7 @@
           "Type": 0
         },
         "364": {
-          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/10402746974692940988/4F2DD6E5C465534998FE67A56B2E95283A4755E0/",
+          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/11327257815194741866/056B0B354BE4C124E7412E95A315483D35EE54C0/",
           "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141363045/1EA614EC832B16BC94811A7FE793344057850409/",
           "NumWidth": 1,
           "NumHeight": 1,
@@ -91618,7 +94423,7 @@
           "Type": 0
         },
         "365": {
-          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/10488773375535060474/ABF074D1A47823451BDEE6F3F927D594C3D3239A/",
+          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/15073996956524017815/1B073CC1F1F3785C299B7C22271A86B548CFB07C/",
           "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141363045/1EA614EC832B16BC94811A7FE793344057850409/",
           "NumWidth": 1,
           "NumHeight": 1,
@@ -91627,7 +94432,7 @@
           "Type": 0
         },
         "366": {
-          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/12008710218412142224/9EE7F1D0A1CB6C5A3EDD2D90EE5F9AD541E1D638/",
+          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/16347612595112349593/79BC7366A1251D6F26B324E4BA6022C2D6759365/",
           "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141363045/1EA614EC832B16BC94811A7FE793344057850409/",
           "NumWidth": 1,
           "NumHeight": 1,
@@ -91636,7 +94441,7 @@
           "Type": 0
         },
         "367": {
-          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/12010308893796325591/78672DA386D9319DF39C850DB0604B7B7437306F/",
+          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/18387987856603096306/3AC4ADEB41C980B0FF10F34B5FB0401F4FFB41D1/",
           "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141363045/1EA614EC832B16BC94811A7FE793344057850409/",
           "NumWidth": 1,
           "NumHeight": 1,
@@ -91645,7 +94450,7 @@
           "Type": 0
         },
         "368": {
-          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/14379456237042162477/FBDCBECE7701277FC1F8D89BF426809710ACD9DA/",
+          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/14573747107503294865/D7B71BD5C617D5078A57833B132EC6628EB2FEA5/",
           "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141363045/1EA614EC832B16BC94811A7FE793344057850409/",
           "NumWidth": 1,
           "NumHeight": 1,
@@ -91654,7 +94459,7 @@
           "Type": 0
         },
         "369": {
-          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/15404490943906426113/5859AA96D10B1AC49C932D82687FA8DC8C07DE82/",
+          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/11871584536042789217/21382C76709F2C00E1EDE6EB1B2A3995B8688E83/",
           "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141363045/1EA614EC832B16BC94811A7FE793344057850409/",
           "NumWidth": 1,
           "NumHeight": 1,
@@ -92788,7 +95593,7 @@
             "scaleY": 1.0,
             "scaleZ": 0.55
           },
-          "Nickname": "Training Depot",
+          "Nickname": "D\u00e9p\u00f4t d\u2019entra\u00eenement",
           "Description": "",
           "GMNotes": "trainingDepot",
           "AltLookAngle": {
@@ -92822,7 +95627,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "358": {
-              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/16840498883514018480/8FBE72F803A53B0A52DA2BCA215FA420CCC7394A/",
+              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/17290769050677153560/B22D2E3189D54F11C43D0A9AC4A2495B02E79884/",
               "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141363045/1EA614EC832B16BC94811A7FE793344057850409/",
               "NumWidth": 1,
               "NumHeight": 1,
@@ -92849,7 +95654,7 @@
             "scaleY": 1.0,
             "scaleZ": 0.55
           },
-          "Nickname": "Gene Locked Vault",
+          "Nickname": "Coffre \u00e0 serrure g\u00e9n\u00e9tique",
           "Description": "",
           "GMNotes": "geneLockedVault",
           "AltLookAngle": {
@@ -92883,7 +95688,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "359": {
-              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/12874275231044371573/D8E5B09CD439544AAE932053824C7C6F0C890007/",
+              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/10424190788992915569/7685B3DF67123D60F418552CE9F185839CC6FD89/",
               "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141363045/1EA614EC832B16BC94811A7FE793344057850409/",
               "NumWidth": 1,
               "NumHeight": 1,
@@ -92910,7 +95715,7 @@
             "scaleY": 1.0,
             "scaleZ": 0.55
           },
-          "Nickname": "Glowglobes",
+          "Nickname": "Brilleurs",
           "Description": "",
           "GMNotes": "glowglobes",
           "AltLookAngle": {
@@ -92944,7 +95749,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "360": {
-              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/12218741996139093793/16A506EC1607EF2836A17BBD376D60286BE5F538/",
+              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/12787488352787808702/0B16F95E9AB2A52CC7A1D6231EA9CCFC82A9B47F/",
               "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141363045/1EA614EC832B16BC94811A7FE793344057850409/",
               "NumWidth": 1,
               "NumHeight": 1,
@@ -92971,7 +95776,7 @@
             "scaleY": 1.0,
             "scaleZ": 0.55
           },
-          "Nickname": "Planetary Array",
+          "Nickname": "R\u00e9seau plan\u00e9taire",
           "Description": "",
           "GMNotes": "planetaryArray",
           "AltLookAngle": {
@@ -93005,7 +95810,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "361": {
-              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/17918227540999801434/06C812467EAACD025C549578BEF04FFDB2185A1F/",
+              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/10845100676025918525/51C9BCAF320DB8E33196C665C05BA7357BDC1B74/",
               "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141363045/1EA614EC832B16BC94811A7FE793344057850409/",
               "NumWidth": 1,
               "NumHeight": 1,
@@ -93032,7 +95837,7 @@
             "scaleY": 1.0,
             "scaleZ": 0.55
           },
-          "Nickname": "Servo Receivers",
+          "Nickname": "Servo-r\u00e9cepteurs",
           "Description": "",
           "GMNotes": "servoReceivers",
           "AltLookAngle": {
@@ -93066,7 +95871,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "362": {
-              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/17243030170230690229/ED105B4406B9930D8AF32B8107A9185F4D7973D9/",
+              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/17997706728594511842/8281E4A1D10F14194569E8C9B828C42074890CAC/",
               "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141363045/1EA614EC832B16BC94811A7FE793344057850409/",
               "NumWidth": 1,
               "NumHeight": 1,
@@ -93093,7 +95898,7 @@
             "scaleY": 1.0,
             "scaleZ": 0.55
           },
-          "Nickname": "Delivery Bay",
+          "Nickname": "Quai de d\u00e9chargement",
           "Description": "",
           "GMNotes": "deliveryBay",
           "AltLookAngle": {
@@ -93127,7 +95932,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "363": {
-              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/13612933406762869906/257BBF8B69D85ECC65B745ACC219E4C6426D0BE8/",
+              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/15374716179042280948/BC7313EF842F5619FC77EF2E7B059AE2E9855003/",
               "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141363045/1EA614EC832B16BC94811A7FE793344057850409/",
               "NumWidth": 1,
               "NumHeight": 1,
@@ -93154,7 +95959,7 @@
             "scaleY": 1.0,
             "scaleZ": 0.55
           },
-          "Nickname": "Plasteel Blades",
+          "Nickname": "Lames de cristacier",
           "Description": "",
           "GMNotes": "plasteelBlades",
           "AltLookAngle": {
@@ -93188,7 +95993,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "364": {
-              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/10402746974692940988/4F2DD6E5C465534998FE67A56B2E95283A4755E0/",
+              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/11327257815194741866/056B0B354BE4C124E7412E95A315483D35EE54C0/",
               "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141363045/1EA614EC832B16BC94811A7FE793344057850409/",
               "NumWidth": 1,
               "NumHeight": 1,
@@ -93215,7 +96020,7 @@
             "scaleY": 1.0,
             "scaleZ": 0.55
           },
-          "Nickname": "Suspensor Suits",
+          "Nickname": "Tenues de suspension",
           "Description": "",
           "GMNotes": "suspensorSuits",
           "AltLookAngle": {
@@ -93249,7 +96054,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "365": {
-              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/10488773375535060474/ABF074D1A47823451BDEE6F3F927D594C3D3239A/",
+              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/15073996956524017815/1B073CC1F1F3785C299B7C22271A86B548CFB07C/",
               "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141363045/1EA614EC832B16BC94811A7FE793344057850409/",
               "NumWidth": 1,
               "NumHeight": 1,
@@ -93276,7 +96081,7 @@
             "scaleY": 1.0,
             "scaleZ": 0.55
           },
-          "Nickname": "Rapid Dropships",
+          "Nickname": "Vaisseaux de d\u00e9barquement rapides",
           "Description": "",
           "GMNotes": "rapidDropships",
           "AltLookAngle": {
@@ -93310,7 +96115,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "366": {
-              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/12008710218412142224/9EE7F1D0A1CB6C5A3EDD2D90EE5F9AD541E1D638/",
+              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/16347612595112349593/79BC7366A1251D6F26B324E4BA6022C2D6759365/",
               "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141363045/1EA614EC832B16BC94811A7FE793344057850409/",
               "NumWidth": 1,
               "NumHeight": 1,
@@ -93337,7 +96142,7 @@
             "scaleY": 1.0,
             "scaleZ": 0.55
           },
-          "Nickname": "Self Destroying Messages",
+          "Nickname": "Messages auto-destructibles",
           "Description": "",
           "GMNotes": "selfDestroyingMessages",
           "AltLookAngle": {
@@ -93371,7 +96176,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "367": {
-              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/12010308893796325591/78672DA386D9319DF39C850DB0604B7B7437306F/",
+              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/18387987856603096306/3AC4ADEB41C980B0FF10F34B5FB0401F4FFB41D1/",
               "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141363045/1EA614EC832B16BC94811A7FE793344057850409/",
               "NumWidth": 1,
               "NumHeight": 1,
@@ -93398,7 +96203,7 @@
             "scaleY": 1.0,
             "scaleZ": 0.55
           },
-          "Nickname": "Navigation Chamber",
+          "Nickname": "Chambre de navigation",
           "Description": "",
           "GMNotes": "navigationChamber",
           "AltLookAngle": {
@@ -93432,7 +96237,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "368": {
-              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/14379456237042162477/FBDCBECE7701277FC1F8D89BF426809710ACD9DA/",
+              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/14573747107503294865/D7B71BD5C617D5078A57833B132EC6628EB2FEA5/",
               "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141363045/1EA614EC832B16BC94811A7FE793344057850409/",
               "NumWidth": 1,
               "NumHeight": 1,
@@ -93459,7 +96264,7 @@
             "scaleY": 1.0,
             "scaleZ": 0.55
           },
-          "Nickname": "Sardaukar High Command",
+          "Nickname": "Haut commandement Sardaukar",
           "Description": "",
           "GMNotes": "sardaukarHighCommand",
           "AltLookAngle": {
@@ -93493,7 +96298,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "369": {
-              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/15404490943906426113/5859AA96D10B1AC49C932D82687FA8DC8C07DE82/",
+              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/11871584536042789217/21382C76709F2C00E1EDE6EB1B2A3995B8688E83/",
               "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141363045/1EA614EC832B16BC94811A7FE793344057850409/",
               "NumWidth": 1,
               "NumHeight": 1,
@@ -93631,7 +96436,7 @@
       ]
     },
     {
-      "GUID": "a0ca8a",
+      "GUID": "d1b9ba",
       "Name": "Deck",
       "Transform": {
         "posX": 26.0,
@@ -95210,7 +98015,7 @@
       ]
     },
     {
-      "GUID": "94eeec",
+      "GUID": "135dab",
       "Name": "Deck",
       "Transform": {
         "posX": 26.0,
@@ -98516,7 +101321,7 @@
       ]
     },
     {
-      "GUID": "e41520",
+      "GUID": "a5a1bf",
       "Name": "Deck",
       "Transform": {
         "posX": 26.0,
@@ -102041,7 +104846,7 @@
       ]
     },
     {
-      "GUID": "7001a3",
+      "GUID": "cfda34",
       "Name": "Deck",
       "Transform": {
         "posX": 30.0,
@@ -105992,7 +108797,7 @@
       ]
     },
     {
-      "GUID": "5c177a",
+      "GUID": "f4a98a",
       "Name": "Deck",
       "Transform": {
         "posX": 30.0,
@@ -106747,7 +109552,7 @@
       ]
     },
     {
-      "GUID": "57828b",
+      "GUID": "1ff846",
       "Name": "Deck",
       "Transform": {
         "posX": 30.0,
@@ -107686,2811 +110491,6 @@
           "XmlUI": ""
         }
       ]
-    },
-    {
-      "GUID": "92e242",
-      "Name": "Custom_Tile",
-      "Transform": {
-        "posX": -0.000210981772,
-        "posY": 1.62279749,
-        "posZ": 63.9501457,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 11.2,
-        "scaleY": 1.0,
-        "scaleZ": 11.2
-      },
-      "Nickname": "",
-      "Description": "",
-      "GMNotes": "mainBoard.fr",
-      "AltLookAngle": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
-      },
-      "ColorDiffuse": {
-        "r": 0.0,
-        "g": 0.0,
-        "b": 0.0
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": false,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": false,
-      "CustomImage": {
-        "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141277250/1365C1EC07538B6797E8162398CB43CD111C1C7C/",
-        "ImageSecondaryURL": "",
-        "ImageScalar": 1.0,
-        "WidthScale": 0.0,
-        "CustomTile": {
-          "Type": 0,
-          "Thickness": 0.1,
-          "Stackable": false,
-          "Stretch": true
-        }
-      },
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
-      "AttachedSnapPoints": [
-        {
-          "Position": {
-            "x": 0.663340747,
-            "y": 0.100000143,
-            "z": 0.8804191
-          },
-          "Tags": [
-            "spaceStillsuits"
-          ]
-        },
-        {
-          "Position": {
-            "x": 0.658867955,
-            "y": 0.100000143,
-            "z": 0.6818269
-          },
-          "Tags": [
-            "spaceHardyWarriors"
-          ]
-        },
-        {
-          "Position": {
-            "x": 0.8547764,
-            "y": 0.100000143,
-            "z": 0.799014151
-          },
-          "Tags": [
-            "factionFremen"
-          ]
-        },
-        {
-          "Position": {
-            "x": 0.657078862,
-            "y": 0.100000143,
-            "z": 0.387142926
-          },
-          "Tags": [
-            "spaceSecrets"
-          ]
-        },
-        {
-          "Position": {
-            "x": 0.659762561,
-            "y": 0.100000143,
-            "z": 0.185867175
-          },
-          "Tags": [
-            "spaceSelectiveBreeding"
-          ]
-        },
-        {
-          "Position": {
-            "x": 0.8538819,
-            "y": 0.100000143,
-            "z": 0.305738181
-          },
-          "Tags": [
-            "factionBeneGesserit"
-          ]
-        },
-        {
-          "Position": {
-            "x": 0.659762561,
-            "y": 0.100000143,
-            "z": -0.09834786
-          },
-          "Tags": [
-            "spaceFoldspace"
-          ]
-        },
-        {
-          "Position": {
-            "x": 0.6597626,
-            "y": 0.100000143,
-            "z": -0.3005182
-          },
-          "Tags": [
-            "spaceHeighliner"
-          ]
-        },
-        {
-          "Position": {
-            "x": 0.8529873,
-            "y": 0.100000143,
-            "z": -0.179752722
-          },
-          "Tags": [
-            "factionSpacingGuild"
-          ]
-        },
-        {
-          "Position": {
-            "x": 0.658868,
-            "y": 0.100000143,
-            "z": -0.5902973
-          },
-          "Tags": [
-            "spaceWealth"
-          ]
-        },
-        {
-          "Position": {
-            "x": 0.661551833,
-            "y": 0.100000143,
-            "z": -0.7924675
-          },
-          "Tags": [
-            "spaceConspire"
-          ]
-        },
-        {
-          "Position": {
-            "x": 0.8520928,
-            "y": 0.100000143,
-            "z": -0.67080754
-          },
-          "Tags": [
-            "factionEmperor"
-          ]
-        },
-        {
-          "Position": {
-            "x": 0.308987468,
-            "y": 0.100000143,
-            "z": 0.516931534
-          },
-          "Tags": [
-            "conflictDeck"
-          ]
-        },
-        {
-          "Position": {
-            "x": 0.104792684,
-            "y": 0.100000143,
-            "z": 0.517696261
-          },
-          "Tags": [
-            "conflictDiscard"
-          ]
-        },
-        {
-          "Position": {
-            "x": -0.431164,
-            "y": 0.100000143,
-            "z": 0.499685
-          },
-          "Tags": [
-            "battlefield"
-          ]
-        },
-        {
-          "Position": {
-            "x": -0.138569489,
-            "y": 0.100000143,
-            "z": 0.5633181
-          },
-          "Tags": [
-            "garrisonBlue"
-          ]
-        },
-        {
-          "Position": {
-            "x": -0.140712976,
-            "y": 0.100000143,
-            "z": 0.321304023
-          },
-          "Tags": [
-            "garrisonRed"
-          ]
-        },
-        {
-          "Position": {
-            "x": -0.728981555,
-            "y": 0.100000143,
-            "z": 0.3210168
-          },
-          "Tags": [
-            "garrisonGreen"
-          ]
-        },
-        {
-          "Position": {
-            "x": -0.7296895,
-            "y": 0.100000143,
-            "z": 0.5644463
-          },
-          "Tags": [
-            "garrisonYellow"
-          ]
-        },
-        {
-          "Position": {
-            "x": 0.332000345,
-            "y": 0.100000143,
-            "z": 0.2340654
-          },
-          "Tags": [
-            "spaceTheGreatFlat"
-          ]
-        },
-        {
-          "Position": {
-            "x": 0.254944235,
-            "y": 0.100000143,
-            "z": 0.04104991
-          },
-          "Tags": [
-            "spaceSietchTabr"
-          ]
-        },
-        {
-          "Position": {
-            "x": -0.184808761,
-            "y": 0.100000143,
-            "z": 0.0105259931
-          },
-          "Tags": [
-            "spaceHaggaBasin"
-          ]
-        },
-        {
-          "Position": {
-            "x": -0.5727355,
-            "y": 0.100000143,
-            "z": -0.109506935
-          },
-          "Tags": [
-            "spaceImperialBasin"
-          ]
-        },
-        {
-          "Position": {
-            "x": -0.5333851,
-            "y": 0.100000143,
-            "z": -0.017882077
-          },
-          "Tags": [
-            "flagImperialBasin"
-          ]
-        },
-        {
-          "Position": {
-            "x": -0.557659,
-            "y": 0.100000143,
-            "z": -0.321401477
-          },
-          "Tags": [
-            "flagArrakeen"
-          ]
-        },
-        {
-          "Position": {
-            "x": -0.2127329,
-            "y": 0.100000143,
-            "z": -0.256721377
-          },
-          "Tags": [
-            "flagCarthag"
-          ]
-        },
-        {
-          "Position": {
-            "x": -0.2517385,
-            "y": 0.100000143,
-            "z": -0.34594956
-          },
-          "Tags": [
-            "spaceCarthag"
-          ]
-        },
-        {
-          "Position": {
-            "x": -0.596877158,
-            "y": 0.100000143,
-            "z": -0.414499819
-          },
-          "Tags": [
-            "spaceArrakeen"
-          ]
-        },
-        {
-          "Position": {
-            "x": -0.4271805,
-            "y": 0.100000143,
-            "z": 0.150728732
-          },
-          "Tags": [
-            "victoryTokenRoom"
-          ]
-        },
-        {
-          "Position": {
-            "x": 0.4702188,
-            "y": 0.100000143,
-            "z": -0.0121328663
-          },
-          "Tags": [
-            "sardaukarFoldspace"
-          ]
-        },
-        {
-          "Position": {
-            "x": 0.4691369,
-            "y": 0.100000143,
-            "z": -0.508120835
-          },
-          "Tags": [
-            "sardaukarWealth"
-          ]
-        },
-        {
-          "Position": {
-            "x": 0.549874663,
-            "y": 0.100000143,
-            "z": -0.93067205
-          },
-          "Tags": [
-            "sardaukarConspire"
-          ]
-        },
-        {
-          "Position": {
-            "x": 0.13663289,
-            "y": 0.100000143,
-            "z": 0.235269159
-          },
-          "Tags": [
-            "spiceTheGreatFlat"
-          ]
-        },
-        {
-          "Position": {
-            "x": -0.770273268,
-            "y": 0.100000143,
-            "z": -0.10950622
-          },
-          "Tags": [
-            "spiceImperialBasin"
-          ]
-        },
-        {
-          "Position": {
-            "x": -0.109888405,
-            "y": 0.100000143,
-            "z": 0.728678048
-          },
-          "Tags": [
-            "combatMarkerRoom"
-          ]
-        },
-        {
-          "Position": {
-            "x": 0.0684429556,
-            "y": 0.100000143,
-            "z": -0.176989183
-          },
-          "Tags": [
-            "spaceResearchStation"
-          ]
-        },
-        {
-          "Position": {
-            "x": -0.383641,
-            "y": 0.100000143,
-            "z": 0.008502569
-          },
-          "Tags": [
-            "spiceHaggaBasin"
-          ]
-        }
-      ]
-    },
-    {
-      "GUID": "d789ff",
-      "Name": "Custom_Tile",
-      "Transform": {
-        "posX": 3.13978672,
-        "posY": 1.64,
-        "posZ": 72.61,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 2.53,
-        "scaleY": 1.0,
-        "scaleZ": 2.53
-      },
-      "Nickname": "",
-      "Description": "",
-      "GMNotes": "defaultBoard.fr",
-      "AltLookAngle": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
-      },
-      "ColorDiffuse": {
-        "r": 0.0,
-        "g": 0.0,
-        "b": 0.0
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": false,
-      "CustomImage": {
-        "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/28808598744210650/1290FB554EFF48B3503CA5A4E21502A112801A8A/",
-        "ImageSecondaryURL": "",
-        "ImageScalar": 1.0,
-        "WidthScale": 0.0,
-        "CustomTile": {
-          "Type": 0,
-          "Thickness": 0.1,
-          "Stackable": false,
-          "Stretch": true
-        }
-      },
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
-      "AttachedSnapPoints": [
-        {
-          "Position": {
-            "x": 2.51070046,
-            "y": 0.100000143,
-            "z": -0.421913028
-          },
-          "Tags": [
-            "spaceHighCouncil"
-          ]
-        },
-        {
-          "Position": {
-            "x": 2.51864839,
-            "y": 0.100000143,
-            "z": 0.344773084
-          },
-          "Tags": [
-            "spaceMentat"
-          ]
-        },
-        {
-          "Position": {
-            "x": 1.71805835,
-            "y": 0.100000143,
-            "z": 0.345837533
-          },
-          "Tags": [
-            "slotMentat"
-          ]
-        },
-        {
-          "Position": {
-            "x": 1.02162766,
-            "y": 0.100000143,
-            "z": 0.357381642
-          },
-          "Tags": [
-            "spaceRallyTroops"
-          ]
-        },
-        {
-          "Position": {
-            "x": -0.249105334,
-            "y": 0.100000143,
-            "z": 0.3299404
-          },
-          "Tags": [
-            "spaceSwordmaster"
-          ]
-        },
-        {
-          "Position": {
-            "x": -0.277436256,
-            "y": 0.100000143,
-            "z": -0.42662853
-          },
-          "Tags": [
-            "spaceHallOfOratory"
-          ]
-        },
-        {
-          "Position": {
-            "x": -1.73773789,
-            "y": 0.100000143,
-            "z": 0.345965773
-          },
-          "Tags": [
-            "spaceSecureContract"
-          ]
-        },
-        {
-          "Position": {
-            "x": -1.74228919,
-            "y": 0.100000143,
-            "z": -0.4220572
-          },
-          "Tags": [
-            "spaceSellMelange"
-          ]
-        },
-        {
-          "Position": {
-            "x": -2.24938273,
-            "y": 0.100000143,
-            "z": -0.413354874
-          },
-          "Tags": [
-            "spaceSellMelange_1"
-          ]
-        },
-        {
-          "Position": {
-            "x": -2.42239928,
-            "y": 0.100000143,
-            "z": -0.4104656
-          },
-          "Tags": [
-            "spaceSellMelange_2"
-          ]
-        },
-        {
-          "Position": {
-            "x": -2.59542561,
-            "y": 0.100000143,
-            "z": -0.4041842
-          },
-          "Tags": [
-            "spaceSellMelange_3"
-          ]
-        },
-        {
-          "Position": {
-            "x": -2.76843214,
-            "y": 0.100000143,
-            "z": -0.404687226
-          },
-          "Tags": [
-            "spaceSellMelange_4"
-          ]
-        },
-        {
-          "Position": {
-            "x": 1.94002354,
-            "y": 0.100000143,
-            "z": -0.438342661
-          },
-          "Tags": [
-            "seatHighCouncil1"
-          ]
-        },
-        {
-          "Position": {
-            "x": 1.65181661,
-            "y": 0.100000143,
-            "z": -0.439180672
-          },
-          "Tags": [
-            "seatHighCouncil2"
-          ]
-        },
-        {
-          "Position": {
-            "x": 0.990305245,
-            "y": 0.100000143,
-            "z": -0.43835935
-          },
-          "Tags": [
-            "seatHighCouncil3"
-          ]
-        },
-        {
-          "Position": {
-            "x": 0.702082336,
-            "y": 0.100000143,
-            "z": -0.433708072
-          },
-          "Tags": [
-            "seatHighCouncil4"
-          ]
-        },
-        {
-          "Position": {
-            "x": -0.927805543,
-            "y": 0.100000143,
-            "z": -0.86692363
-          },
-          "Tags": [
-            "sardaukarHallOfOratory"
-          ]
-        },
-        {
-          "Position": {
-            "x": 2.07523584,
-            "y": 0.100000143,
-            "z": -0.8068266
-          },
-          "Tags": [
-            "sardaukarHighCouncil"
-          ]
-        },
-        {
-          "Position": {
-            "x": 0.393035978,
-            "y": 0.100000143,
-            "z": -0.11413236
-          },
-          "Tags": [
-            "sardaukarRallyTroops"
-          ]
-        }
-      ],
-      "States": {
-        "2": {
-          "GUID": "0349a6",
-          "Name": "Custom_Tile",
-          "Transform": {
-            "posX": 3.13978672,
-            "posY": 1.64,
-            "posZ": 4.61,
-            "rotX": 0,
-            "rotY": 180,
-            "rotZ": 0,
-            "scaleX": 2.53,
-            "scaleY": 1.0,
-            "scaleZ": 2.53
-          },
-          "Nickname": "",
-          "Description": "",
-          "GMNotes": "shippingBoard.en",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 0.0,
-            "g": 0.0,
-            "b": 0.0
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": true,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": false,
-          "Hands": false,
-          "CustomImage": {
-            "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/28808598744210452/57D510F7D27C18EC198ACF09C89F335FFB73F01B/",
-            "ImageSecondaryURL": "",
-            "ImageScalar": 1.0,
-            "WidthScale": 0.0,
-            "CustomTile": {
-              "Type": 0,
-              "Thickness": 0.1,
-              "Stackable": false,
-              "Stretch": true
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": "",
-          "AttachedSnapPoints": [
-            {
-              "Position": {
-                "x": 2.559358,
-                "y": 0.100000143,
-                "z": -0.3658014
-              },
-              "Tags": [
-                "spaceHighCouncil"
-              ]
-            },
-            {
-              "Position": {
-                "x": 2.55167079,
-                "y": 0.100000143,
-                "z": 0.4605767
-              },
-              "Tags": [
-                "spaceMentat"
-              ]
-            },
-            {
-              "Position": {
-                "x": 1.65432465,
-                "y": 0.100000143,
-                "z": 0.4732174
-              },
-              "Tags": [
-                "slotMentat"
-              ]
-            },
-            {
-              "Position": {
-                "x": 1.86306429,
-                "y": 0.100000143,
-                "z": -0.364187151
-              },
-              "Tags": [
-                "seatHighCouncil1"
-              ]
-            },
-            {
-              "Position": {
-                "x": 1.57476771,
-                "y": 0.100000143,
-                "z": -0.3646778
-              },
-              "Tags": [
-                "seatHighCouncil2"
-              ]
-            },
-            {
-              "Position": {
-                "x": 0.9137546,
-                "y": 0.100000143,
-                "z": -0.35314554
-              },
-              "Tags": [
-                "seatHighCouncil3"
-              ]
-            },
-            {
-              "Position": {
-                "x": 0.617681861,
-                "y": 0.100000143,
-                "z": -0.361233532
-              },
-              "Tags": [
-                "seatHighCouncil4"
-              ]
-            },
-            {
-              "Position": {
-                "x": 0.923187137,
-                "y": 0.100000143,
-                "z": 0.457803279
-              },
-              "Tags": [
-                "spaceSwordmaster"
-              ]
-            },
-            {
-              "Position": {
-                "x": -0.6084442,
-                "y": 0.100000143,
-                "z": -0.289313942
-              },
-              "Tags": [
-                "spaceInterstellarShipping"
-              ]
-            },
-            {
-              "Position": {
-                "x": -0.6072351,
-                "y": 0.100000143,
-                "z": 0.475603849
-              },
-              "Tags": [
-                "spaceSmuggling"
-              ]
-            },
-            {
-              "Position": {
-                "x": -2.02421117,
-                "y": 0.100000143,
-                "z": 0.253764749
-              },
-              "Tags": [
-                "freighterSpace1"
-              ]
-            },
-            {
-              "Position": {
-                "x": -2.022023,
-                "y": 0.100000143,
-                "z": -0.219057873
-              },
-              "Tags": [
-                "freighterSpace2"
-              ]
-            },
-            {
-              "Position": {
-                "x": -2.019566,
-                "y": 0.100000143,
-                "z": -0.6688207
-              },
-              "Tags": [
-                "freighterSpace3"
-              ]
-            },
-            {
-              "Position": {
-                "x": -2.31610179,
-                "y": 0.100000143,
-                "z": 0.69546777
-              },
-              "Tags": [
-                "freighterSpace0"
-              ]
-            },
-            {
-              "Position": {
-                "x": -2.6694932,
-                "y": 0.100000143,
-                "z": 0.29586488
-              },
-              "Tags": [
-                "freighterBonusSolaris"
-              ]
-            },
-            {
-              "Position": {
-                "x": -2.9608283,
-                "y": 0.100000143,
-                "z": 0.364599347
-              },
-              "Tags": [
-                "freighterBonusSpice"
-              ]
-            },
-            {
-              "Position": {
-                "x": -2.816123,
-                "y": 0.100000143,
-                "z": -0.0829734951
-              },
-              "Tags": [
-                "freighterBonusTroopsAndInfluence"
-              ]
-            },
-            {
-              "Position": {
-                "x": 2.11353064,
-                "y": 0.100000143,
-                "z": -0.78374356
-              },
-              "Tags": [
-                "sardaukarHighCouncil"
-              ]
-            }
-          ]
-        }
-      }
-    },
-    {
-      "GUID": "b71495",
-      "Name": "Custom_Tile",
-      "Transform": {
-        "posX": 7.12451935,
-        "posY": 1.6125325,
-        "posZ": 79.213,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 4.04,
-        "scaleY": 1.0,
-        "scaleZ": 4.04
-      },
-      "Nickname": "",
-      "Description": "",
-      "GMNotes": "ixBoard.fr",
-      "AltLookAngle": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
-      },
-      "ColorDiffuse": {
-        "r": 0.0,
-        "g": 0.0,
-        "b": 0.0
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": false,
-      "CustomImage": {
-        "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141290345/3CF628A329B98C1ACDAAF69CD1239A5456B4A86C/",
-        "ImageSecondaryURL": "",
-        "ImageScalar": 1.0,
-        "WidthScale": 0.0,
-        "CustomTile": {
-          "Type": 0,
-          "Thickness": 0.1,
-          "Stackable": false,
-          "Stretch": true
-        }
-      },
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
-      "AttachedSnapPoints": [
-        {
-          "Position": {
-            "x": 0.5986332,
-            "y": 0.100000143,
-            "z": -0.08071267
-          },
-          "Tags": [
-            "spaceDreadnought"
-          ]
-        },
-        {
-          "Position": {
-            "x": 0.597948,
-            "y": 0.100000143,
-            "z": -0.61025995
-          },
-          "Tags": [
-            "spaceTechNegotiation"
-          ]
-        },
-        {
-          "Position": {
-            "x": 0.253156573,
-            "y": 0.100000143,
-            "z": -0.637962341
-          },
-          "Tags": [
-            "spaceTechNegotiation_Buy"
-          ]
-        },
-        {
-          "Position": {
-            "x": 0.0859156,
-            "y": 0.100000143,
-            "z": -0.5116248
-          },
-          "Tags": [
-            "spaceTechNegotiation_Negotiate"
-          ]
-        },
-        {
-          "Position": {
-            "x": 0.1528369,
-            "y": 0.100000143,
-            "z": 0.456103742
-          },
-          "Tags": [
-            "slotNegotiator"
-          ]
-        },
-        {
-          "Position": {
-            "x": -0.467406034,
-            "y": 0.100000143,
-            "z": 0.518779
-          },
-          "Tags": [
-            "slotTech3"
-          ]
-        },
-        {
-          "Position": {
-            "x": -0.466862082,
-            "y": 0.100000143,
-            "z": -0.099306345
-          },
-          "Tags": [
-            "slotTech2"
-          ]
-        },
-        {
-          "Position": {
-            "x": -0.4755872,
-            "y": 0.100000143,
-            "z": -0.684587657
-          },
-          "Tags": [
-            "slotTech1"
-          ]
-        },
-        {
-          "Position": {
-            "x": 0.07653068,
-            "y": 0.100000143,
-            "z": -0.8970915
-          },
-          "Tags": [
-            "sardaukarTechNegotiation"
-          ]
-        },
-        {
-          "Position": {
-            "x": 0.7666319,
-            "y": 0.100000143,
-            "z": 0.216500446
-          },
-          "Tags": [
-            "sardaukarDreadnought"
-          ]
-        }
-      ],
-      "States": {
-        "2": {
-          "GUID": "31d1a4",
-          "Name": "Custom_Tile",
-          "Transform": {
-            "posX": 7.12451935,
-            "posY": 1.6125325,
-            "posZ": 11.2129974,
-            "rotX": 0,
-            "rotY": 180,
-            "rotZ": 0,
-            "scaleX": 4.04,
-            "scaleY": 1.0,
-            "scaleZ": 4.04
-          },
-          "Nickname": "",
-          "Description": "",
-          "GMNotes": "ixAmbassyBoard.en",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 0.0,
-            "g": 0.0,
-            "b": 0.0
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": true,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": false,
-          "Hands": false,
-          "CustomImage": {
-            "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/9566803596526819021/09AAD4CF3D3ADAD5F216361C34334924ED0D6652/",
-            "ImageSecondaryURL": "",
-            "ImageScalar": 1.0,
-            "WidthScale": 0.0,
-            "CustomTile": {
-              "Type": 0,
-              "Thickness": 0.1,
-              "Stackable": false,
-              "Stretch": true
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": "",
-          "AttachedSnapPoints": [
-            {
-              "Position": {
-                "x": -0.0162749644,
-                "y": 0.100000143,
-                "z": 0.718427
-              },
-              "Tags": [
-                "slotTech1"
-              ]
-            },
-            {
-              "Position": {
-                "x": -0.0142540252,
-                "y": 0.100000143,
-                "z": 0.1787521
-              },
-              "Tags": [
-                "slotTech2"
-              ]
-            },
-            {
-              "Position": {
-                "x": -0.01627558,
-                "y": 0.100000143,
-                "z": -0.35890165
-              },
-              "Tags": [
-                "slotTech3"
-              ]
-            }
-          ]
-        }
-      }
-    },
-    {
-      "GUID": "9df828",
-      "Name": "Custom_Tile",
-      "Transform": {
-        "posX": 5.48623848,
-        "posY": 1.58,
-        "posZ": 87.44501,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 4.0,
-        "scaleY": 1.0,
-        "scaleZ": 4.0
-      },
-      "Nickname": "",
-      "Description": "",
-      "GMNotes": "tleilaxBoard.fr",
-      "AltLookAngle": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
-      },
-      "ColorDiffuse": {
-        "r": 0.199429721,
-        "g": 0.0555224568,
-        "b": 0.297894061
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": false,
-      "CustomImage": {
-        "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141331929/A5D3465456933CA0C042692C1E53D8144F1AEE0F/",
-        "ImageSecondaryURL": "",
-        "ImageScalar": 1.0,
-        "WidthScale": 0.0,
-        "CustomTile": {
-          "Type": 0,
-          "Thickness": 0.1,
-          "Stackable": false,
-          "Stretch": true
-        }
-      },
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": ""
-    },
-    {
-      "GUID": "86733f",
-      "Name": "Custom_Tile",
-      "Transform": {
-        "posX": -2.214509,
-        "posY": 1.72279787,
-        "posZ": 69.09604,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 0.95,
-        "scaleY": 1.0,
-        "scaleZ": 0.95
-      },
-      "Nickname": "",
-      "Description": "",
-      "GMNotes": "tuekSietchBoard.fr",
-      "AltLookAngle": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
-      },
-      "ColorDiffuse": {
-        "r": 0.0,
-        "g": 0.0,
-        "b": 0.0
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": false,
-      "CustomImage": {
-        "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/16196057606247240194/AB96A0872319BF8ED21054A4D856F944FC595EF2/",
-        "ImageSecondaryURL": "",
-        "ImageScalar": 1.0,
-        "WidthScale": 0.0,
-        "CustomTile": {
-          "Type": 0,
-          "Thickness": 0.1,
-          "Stackable": false,
-          "Stretch": true
-        }
-      },
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
-      "AttachedSnapPoints": [
-        {
-          "Position": {
-            "x": 0.6520012,
-            "y": 0.100000143,
-            "z": 0.118952513
-          },
-          "Tags": [
-            "spaceTuekSietch"
-          ]
-        },
-        {
-          "Position": {
-            "x": -0.952149868,
-            "y": 0.100000143,
-            "z": 0.457079649
-          },
-          "Tags": [
-            "spiceTuekSietch"
-          ]
-        },
-        {
-          "Position": {
-            "x": -0.610144258,
-            "y": 0.100000143,
-            "z": -0.293956637
-          },
-          "Tags": [
-            "spaceTuekSietch_WithSpice"
-          ]
-        },
-        {
-          "Position": {
-            "x": -1.32439017,
-            "y": 0.100000143,
-            "z": -0.304973125
-          },
-          "Tags": [
-            "spaceTuekSietch_WithDraw"
-          ]
-        }
-      ]
-    },
-    {
-      "GUID": "0349a6",
-      "Name": "Custom_Tile",
-      "Transform": {
-        "posX": 3.13978672,
-        "posY": 4.64,
-        "posZ": 72.61,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 2.53,
-        "scaleY": 1.0,
-        "scaleZ": 2.53
-      },
-      "Nickname": "",
-      "Description": "",
-      "GMNotes": "shippingBoard.fr",
-      "AltLookAngle": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
-      },
-      "ColorDiffuse": {
-        "r": 0.0,
-        "g": 0.0,
-        "b": 0.0
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": false,
-      "CustomImage": {
-        "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/28808598744210452/57D510F7D27C18EC198ACF09C89F335FFB73F01B/",
-        "ImageSecondaryURL": "",
-        "ImageScalar": 1.0,
-        "WidthScale": 0.0,
-        "CustomTile": {
-          "Type": 0,
-          "Thickness": 0.1,
-          "Stackable": false,
-          "Stretch": true
-        }
-      },
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
-      "AttachedSnapPoints": [
-        {
-          "Position": {
-            "x": 2.559358,
-            "y": 0.100000143,
-            "z": -0.3658014
-          },
-          "Tags": [
-            "spaceHighCouncil"
-          ]
-        },
-        {
-          "Position": {
-            "x": 2.55167079,
-            "y": 0.100000143,
-            "z": 0.4605767
-          },
-          "Tags": [
-            "spaceMentat"
-          ]
-        },
-        {
-          "Position": {
-            "x": 1.65432465,
-            "y": 0.100000143,
-            "z": 0.4732174
-          },
-          "Tags": [
-            "slotMentat"
-          ]
-        },
-        {
-          "Position": {
-            "x": 1.86306429,
-            "y": 0.100000143,
-            "z": -0.364187151
-          },
-          "Tags": [
-            "seatHighCouncil1"
-          ]
-        },
-        {
-          "Position": {
-            "x": 1.57476771,
-            "y": 0.100000143,
-            "z": -0.3646778
-          },
-          "Tags": [
-            "seatHighCouncil2"
-          ]
-        },
-        {
-          "Position": {
-            "x": 0.9137546,
-            "y": 0.100000143,
-            "z": -0.35314554
-          },
-          "Tags": [
-            "seatHighCouncil3"
-          ]
-        },
-        {
-          "Position": {
-            "x": 0.617681861,
-            "y": 0.100000143,
-            "z": -0.361233532
-          },
-          "Tags": [
-            "seatHighCouncil4"
-          ]
-        },
-        {
-          "Position": {
-            "x": 0.923187137,
-            "y": 0.100000143,
-            "z": 0.457803279
-          },
-          "Tags": [
-            "spaceSwordmaster"
-          ]
-        },
-        {
-          "Position": {
-            "x": -0.6084442,
-            "y": 0.100000143,
-            "z": -0.289313942
-          },
-          "Tags": [
-            "spaceInterstellarShipping"
-          ]
-        },
-        {
-          "Position": {
-            "x": -0.6072351,
-            "y": 0.100000143,
-            "z": 0.475603849
-          },
-          "Tags": [
-            "spaceSmuggling"
-          ]
-        },
-        {
-          "Position": {
-            "x": -2.02421117,
-            "y": 0.100000143,
-            "z": 0.253764749
-          },
-          "Tags": [
-            "freighterSpace1"
-          ]
-        },
-        {
-          "Position": {
-            "x": -2.022023,
-            "y": 0.100000143,
-            "z": -0.219057873
-          },
-          "Tags": [
-            "freighterSpace2"
-          ]
-        },
-        {
-          "Position": {
-            "x": -2.019566,
-            "y": 0.100000143,
-            "z": -0.6688207
-          },
-          "Tags": [
-            "freighterSpace3"
-          ]
-        },
-        {
-          "Position": {
-            "x": -2.31610179,
-            "y": 0.100000143,
-            "z": 0.69546777
-          },
-          "Tags": [
-            "freighterSpace0"
-          ]
-        },
-        {
-          "Position": {
-            "x": -2.6694932,
-            "y": 0.100000143,
-            "z": 0.29586488
-          },
-          "Tags": [
-            "freighterBonusSolaris"
-          ]
-        },
-        {
-          "Position": {
-            "x": -2.9608283,
-            "y": 0.100000143,
-            "z": 0.364599347
-          },
-          "Tags": [
-            "freighterBonusSpice"
-          ]
-        },
-        {
-          "Position": {
-            "x": -2.816123,
-            "y": 0.100000143,
-            "z": -0.0829734951
-          },
-          "Tags": [
-            "freighterBonusTroopsAndInfluence"
-          ]
-        },
-        {
-          "Position": {
-            "x": 2.11353064,
-            "y": 0.100000143,
-            "z": -0.78374356
-          },
-          "Tags": [
-            "sardaukarHighCouncil"
-          ]
-        }
-      ],
-      "States": {
-        "1": {
-          "GUID": "a24680",
-          "Name": "Custom_Tile",
-          "Transform": {
-            "posX": 0.0,
-            "posY": 6.42279768,
-            "posZ": 0.0,
-            "rotX": 0,
-            "rotY": 180,
-            "rotZ": 0,
-            "scaleX": 2.53,
-            "scaleY": 1.0,
-            "scaleZ": 2.53
-          },
-          "Nickname": "",
-          "Description": "",
-          "GMNotes": "defaultBoard.en",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 0.0,
-            "g": 0.0,
-            "b": 0.0
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": true,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": false,
-          "Hands": false,
-          "CustomImage": {
-            "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/28808598744210650/1290FB554EFF48B3503CA5A4E21502A112801A8A/",
-            "ImageSecondaryURL": "",
-            "ImageScalar": 1.0,
-            "WidthScale": 0.0,
-            "CustomTile": {
-              "Type": 0,
-              "Thickness": 0.1,
-              "Stackable": false,
-              "Stretch": true
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": "",
-          "AttachedSnapPoints": [
-            {
-              "Position": {
-                "x": 2.51070046,
-                "y": 0.100000143,
-                "z": -0.421913028
-              },
-              "Tags": [
-                "spaceHighCouncil"
-              ]
-            },
-            {
-              "Position": {
-                "x": 2.51864839,
-                "y": 0.100000143,
-                "z": 0.344773084
-              },
-              "Tags": [
-                "spaceMentat"
-              ]
-            },
-            {
-              "Position": {
-                "x": 1.71805835,
-                "y": 0.100000143,
-                "z": 0.345837533
-              },
-              "Tags": [
-                "slotMentat"
-              ]
-            },
-            {
-              "Position": {
-                "x": 1.02162766,
-                "y": 0.100000143,
-                "z": 0.357381642
-              },
-              "Tags": [
-                "spaceRallyTroops"
-              ]
-            },
-            {
-              "Position": {
-                "x": -0.249105334,
-                "y": 0.100000143,
-                "z": 0.3299404
-              },
-              "Tags": [
-                "spaceSwordmaster"
-              ]
-            },
-            {
-              "Position": {
-                "x": -0.277436256,
-                "y": 0.100000143,
-                "z": -0.42662853
-              },
-              "Tags": [
-                "spaceHallOfOratory"
-              ]
-            },
-            {
-              "Position": {
-                "x": -1.73773789,
-                "y": 0.100000143,
-                "z": 0.345965773
-              },
-              "Tags": [
-                "spaceSecureContract"
-              ]
-            },
-            {
-              "Position": {
-                "x": -1.74228919,
-                "y": 0.100000143,
-                "z": -0.4220572
-              },
-              "Tags": [
-                "spaceSellMelange"
-              ]
-            },
-            {
-              "Position": {
-                "x": -2.24938273,
-                "y": 0.100000143,
-                "z": -0.413354874
-              },
-              "Tags": [
-                "spaceSellMelange_1"
-              ]
-            },
-            {
-              "Position": {
-                "x": -2.42239928,
-                "y": 0.100000143,
-                "z": -0.4104656
-              },
-              "Tags": [
-                "spaceSellMelange_2"
-              ]
-            },
-            {
-              "Position": {
-                "x": -2.59542561,
-                "y": 0.100000143,
-                "z": -0.4041842
-              },
-              "Tags": [
-                "spaceSellMelange_3"
-              ]
-            },
-            {
-              "Position": {
-                "x": -2.76843214,
-                "y": 0.100000143,
-                "z": -0.404687226
-              },
-              "Tags": [
-                "spaceSellMelange_4"
-              ]
-            },
-            {
-              "Position": {
-                "x": 1.94002354,
-                "y": 0.100000143,
-                "z": -0.438342661
-              },
-              "Tags": [
-                "seatHighCouncil1"
-              ]
-            },
-            {
-              "Position": {
-                "x": 1.65181661,
-                "y": 0.100000143,
-                "z": -0.439180672
-              },
-              "Tags": [
-                "seatHighCouncil2"
-              ]
-            },
-            {
-              "Position": {
-                "x": 0.990305245,
-                "y": 0.100000143,
-                "z": -0.43835935
-              },
-              "Tags": [
-                "seatHighCouncil3"
-              ]
-            },
-            {
-              "Position": {
-                "x": 0.702082336,
-                "y": 0.100000143,
-                "z": -0.433708072
-              },
-              "Tags": [
-                "seatHighCouncil4"
-              ]
-            },
-            {
-              "Position": {
-                "x": -0.927805543,
-                "y": 0.100000143,
-                "z": -0.86692363
-              },
-              "Tags": [
-                "sardaukarHallOfOratory"
-              ]
-            },
-            {
-              "Position": {
-                "x": 2.07523584,
-                "y": 0.100000143,
-                "z": -0.8068266
-              },
-              "Tags": [
-                "sardaukarHighCouncil"
-              ]
-            },
-            {
-              "Position": {
-                "x": 0.393035978,
-                "y": 0.100000143,
-                "z": -0.11413236
-              },
-              "Tags": [
-                "sardaukarRallyTroops"
-              ]
-            }
-          ]
-        }
-      }
-    },
-    {
-      "GUID": "292ef6",
-      "Name": "Custom_Tile",
-      "Transform": {
-        "posX": 3.13978672,
-        "posY": 7.64,
-        "posZ": 72.61,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 2.53,
-        "scaleY": 1.0,
-        "scaleZ": 2.53
-      },
-      "Nickname": "",
-      "Description": "",
-      "GMNotes": "shippingBoard.en",
-      "AltLookAngle": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
-      },
-      "ColorDiffuse": {
-        "r": 0.0,
-        "g": 0.0,
-        "b": 0.0
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": false,
-      "CustomImage": {
-        "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/28808598744210452/57D510F7D27C18EC198ACF09C89F335FFB73F01B/",
-        "ImageSecondaryURL": "",
-        "ImageScalar": 1.0,
-        "WidthScale": 0.0,
-        "CustomTile": {
-          "Type": 0,
-          "Thickness": 0.1,
-          "Stackable": false,
-          "Stretch": true
-        }
-      },
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
-      "AttachedSnapPoints": [
-        {
-          "Position": {
-            "x": 2.559358,
-            "y": 0.100000143,
-            "z": -0.3658014
-          },
-          "Tags": [
-            "spaceHighCouncil"
-          ]
-        },
-        {
-          "Position": {
-            "x": 2.55167079,
-            "y": 0.100000143,
-            "z": 0.4605767
-          },
-          "Tags": [
-            "spaceMentat"
-          ]
-        },
-        {
-          "Position": {
-            "x": 1.65432465,
-            "y": 0.100000143,
-            "z": 0.4732174
-          },
-          "Tags": [
-            "slotMentat"
-          ]
-        },
-        {
-          "Position": {
-            "x": 1.86306429,
-            "y": 0.100000143,
-            "z": -0.364187151
-          },
-          "Tags": [
-            "seatHighCouncil1"
-          ]
-        },
-        {
-          "Position": {
-            "x": 1.57476771,
-            "y": 0.100000143,
-            "z": -0.3646778
-          },
-          "Tags": [
-            "seatHighCouncil2"
-          ]
-        },
-        {
-          "Position": {
-            "x": 0.9137546,
-            "y": 0.100000143,
-            "z": -0.35314554
-          },
-          "Tags": [
-            "seatHighCouncil3"
-          ]
-        },
-        {
-          "Position": {
-            "x": 0.617681861,
-            "y": 0.100000143,
-            "z": -0.361233532
-          },
-          "Tags": [
-            "seatHighCouncil4"
-          ]
-        },
-        {
-          "Position": {
-            "x": 0.923187137,
-            "y": 0.100000143,
-            "z": 0.457803279
-          },
-          "Tags": [
-            "spaceSwordmaster"
-          ]
-        },
-        {
-          "Position": {
-            "x": -0.6084442,
-            "y": 0.100000143,
-            "z": -0.289313942
-          },
-          "Tags": [
-            "spaceInterstellarShipping"
-          ]
-        },
-        {
-          "Position": {
-            "x": -0.6072351,
-            "y": 0.100000143,
-            "z": 0.475603849
-          },
-          "Tags": [
-            "spaceSmuggling"
-          ]
-        },
-        {
-          "Position": {
-            "x": -2.02421117,
-            "y": 0.100000143,
-            "z": 0.253764749
-          },
-          "Tags": [
-            "freighterSpace1"
-          ]
-        },
-        {
-          "Position": {
-            "x": -2.022023,
-            "y": 0.100000143,
-            "z": -0.219057873
-          },
-          "Tags": [
-            "freighterSpace2"
-          ]
-        },
-        {
-          "Position": {
-            "x": -2.019566,
-            "y": 0.100000143,
-            "z": -0.6688207
-          },
-          "Tags": [
-            "freighterSpace3"
-          ]
-        },
-        {
-          "Position": {
-            "x": -2.31610179,
-            "y": 0.100000143,
-            "z": 0.69546777
-          },
-          "Tags": [
-            "freighterSpace0"
-          ]
-        },
-        {
-          "Position": {
-            "x": -2.6694932,
-            "y": 0.100000143,
-            "z": 0.29586488
-          },
-          "Tags": [
-            "freighterBonusSolaris"
-          ]
-        },
-        {
-          "Position": {
-            "x": -2.9608283,
-            "y": 0.100000143,
-            "z": 0.364599347
-          },
-          "Tags": [
-            "freighterBonusSpice"
-          ]
-        },
-        {
-          "Position": {
-            "x": -2.816123,
-            "y": 0.100000143,
-            "z": -0.0829734951
-          },
-          "Tags": [
-            "freighterBonusTroopsAndInfluence"
-          ]
-        },
-        {
-          "Position": {
-            "x": 2.11353064,
-            "y": 0.100000143,
-            "z": -0.78374356
-          },
-          "Tags": [
-            "sardaukarHighCouncil"
-          ]
-        }
-      ],
-      "States": {
-        "1": {
-          "GUID": "e33130",
-          "Name": "Custom_Tile",
-          "Transform": {
-            "posX": 0.0,
-            "posY": 7.302798,
-            "posZ": 0.0,
-            "rotX": 0,
-            "rotY": 180,
-            "rotZ": 0,
-            "scaleX": 2.53,
-            "scaleY": 1.0,
-            "scaleZ": 2.53
-          },
-          "Nickname": "",
-          "Description": "",
-          "GMNotes": "defaultBoard.en",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 0.0,
-            "g": 0.0,
-            "b": 0.0
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": true,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": false,
-          "Hands": false,
-          "CustomImage": {
-            "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/28808598744210650/1290FB554EFF48B3503CA5A4E21502A112801A8A/",
-            "ImageSecondaryURL": "",
-            "ImageScalar": 1.0,
-            "WidthScale": 0.0,
-            "CustomTile": {
-              "Type": 0,
-              "Thickness": 0.1,
-              "Stackable": false,
-              "Stretch": true
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": "",
-          "AttachedSnapPoints": [
-            {
-              "Position": {
-                "x": 2.51070046,
-                "y": 0.100000143,
-                "z": -0.421913028
-              },
-              "Tags": [
-                "spaceHighCouncil"
-              ]
-            },
-            {
-              "Position": {
-                "x": 2.51864839,
-                "y": 0.100000143,
-                "z": 0.344773084
-              },
-              "Tags": [
-                "spaceMentat"
-              ]
-            },
-            {
-              "Position": {
-                "x": 1.71805835,
-                "y": 0.100000143,
-                "z": 0.345837533
-              },
-              "Tags": [
-                "slotMentat"
-              ]
-            },
-            {
-              "Position": {
-                "x": 1.02162766,
-                "y": 0.100000143,
-                "z": 0.357381642
-              },
-              "Tags": [
-                "spaceRallyTroops"
-              ]
-            },
-            {
-              "Position": {
-                "x": -0.249105334,
-                "y": 0.100000143,
-                "z": 0.3299404
-              },
-              "Tags": [
-                "spaceSwordmaster"
-              ]
-            },
-            {
-              "Position": {
-                "x": -0.277436256,
-                "y": 0.100000143,
-                "z": -0.42662853
-              },
-              "Tags": [
-                "spaceHallOfOratory"
-              ]
-            },
-            {
-              "Position": {
-                "x": -1.73773789,
-                "y": 0.100000143,
-                "z": 0.345965773
-              },
-              "Tags": [
-                "spaceSecureContract"
-              ]
-            },
-            {
-              "Position": {
-                "x": -1.74228919,
-                "y": 0.100000143,
-                "z": -0.4220572
-              },
-              "Tags": [
-                "spaceSellMelange"
-              ]
-            },
-            {
-              "Position": {
-                "x": -2.24938273,
-                "y": 0.100000143,
-                "z": -0.413354874
-              },
-              "Tags": [
-                "spaceSellMelange_1"
-              ]
-            },
-            {
-              "Position": {
-                "x": -2.42239928,
-                "y": 0.100000143,
-                "z": -0.4104656
-              },
-              "Tags": [
-                "spaceSellMelange_2"
-              ]
-            },
-            {
-              "Position": {
-                "x": -2.59542561,
-                "y": 0.100000143,
-                "z": -0.4041842
-              },
-              "Tags": [
-                "spaceSellMelange_3"
-              ]
-            },
-            {
-              "Position": {
-                "x": -2.76843214,
-                "y": 0.100000143,
-                "z": -0.404687226
-              },
-              "Tags": [
-                "spaceSellMelange_4"
-              ]
-            },
-            {
-              "Position": {
-                "x": 1.94002354,
-                "y": 0.100000143,
-                "z": -0.438342661
-              },
-              "Tags": [
-                "seatHighCouncil1"
-              ]
-            },
-            {
-              "Position": {
-                "x": 1.65181661,
-                "y": 0.100000143,
-                "z": -0.439180672
-              },
-              "Tags": [
-                "seatHighCouncil2"
-              ]
-            },
-            {
-              "Position": {
-                "x": 0.990305245,
-                "y": 0.100000143,
-                "z": -0.43835935
-              },
-              "Tags": [
-                "seatHighCouncil3"
-              ]
-            },
-            {
-              "Position": {
-                "x": 0.702082336,
-                "y": 0.100000143,
-                "z": -0.433708072
-              },
-              "Tags": [
-                "seatHighCouncil4"
-              ]
-            },
-            {
-              "Position": {
-                "x": -0.927805543,
-                "y": 0.100000143,
-                "z": -0.86692363
-              },
-              "Tags": [
-                "sardaukarHallOfOratory"
-              ]
-            },
-            {
-              "Position": {
-                "x": 2.07523584,
-                "y": 0.100000143,
-                "z": -0.8068266
-              },
-              "Tags": [
-                "sardaukarHighCouncil"
-              ]
-            },
-            {
-              "Position": {
-                "x": 0.393035978,
-                "y": 0.100000143,
-                "z": -0.11413236
-              },
-              "Tags": [
-                "sardaukarRallyTroops"
-              ]
-            }
-          ]
-        }
-      }
-    },
-    {
-      "GUID": "31d1a4",
-      "Name": "Custom_Tile",
-      "Transform": {
-        "posX": 7.12451935,
-        "posY": 4.61253262,
-        "posZ": 79.213,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 4.04,
-        "scaleY": 1.0,
-        "scaleZ": 4.04
-      },
-      "Nickname": "",
-      "Description": "",
-      "GMNotes": "ixAmbassyBoard.fr",
-      "AltLookAngle": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
-      },
-      "ColorDiffuse": {
-        "r": 0.0,
-        "g": 0.0,
-        "b": 0.0
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": false,
-      "CustomImage": {
-        "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/15669542747959000825/82E09050B212BAD624076B5F734A1E9069F257F4/",
-        "ImageSecondaryURL": "",
-        "ImageScalar": 1.0,
-        "WidthScale": 0.0,
-        "CustomTile": {
-          "Type": 0,
-          "Thickness": 0.1,
-          "Stackable": false,
-          "Stretch": true
-        }
-      },
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
-      "AttachedSnapPoints": [
-        {
-          "Position": {
-            "x": -0.0162749644,
-            "y": 0.100000143,
-            "z": 0.718427
-          },
-          "Tags": [
-            "slotTech1"
-          ]
-        },
-        {
-          "Position": {
-            "x": -0.0142540252,
-            "y": 0.100000143,
-            "z": 0.1787521
-          },
-          "Tags": [
-            "slotTech2"
-          ]
-        },
-        {
-          "Position": {
-            "x": -0.01627558,
-            "y": 0.100000143,
-            "z": -0.35890165
-          },
-          "Tags": [
-            "slotTech3"
-          ]
-        }
-      ],
-      "States": {
-        "1": {
-          "GUID": "e0f56c",
-          "Name": "Custom_Tile",
-          "Transform": {
-            "posX": 0.0,
-            "posY": 9.007864,
-            "posZ": 0.0,
-            "rotX": 0,
-            "rotY": 180,
-            "rotZ": 0,
-            "scaleX": 4.04,
-            "scaleY": 1.0,
-            "scaleZ": 4.04
-          },
-          "Nickname": "",
-          "Description": "",
-          "GMNotes": "ixBoard.en",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 0.0,
-            "g": 0.0,
-            "b": 0.0
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": true,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": false,
-          "Hands": false,
-          "CustomImage": {
-            "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141332938/186AAD39381056149506FDFA88FF5FA2AF203B13/",
-            "ImageSecondaryURL": "",
-            "ImageScalar": 1.0,
-            "WidthScale": 0.0,
-            "CustomTile": {
-              "Type": 0,
-              "Thickness": 0.1,
-              "Stackable": false,
-              "Stretch": true
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": "",
-          "AttachedSnapPoints": [
-            {
-              "Position": {
-                "x": 0.5986332,
-                "y": 0.100000143,
-                "z": -0.08071267
-              },
-              "Tags": [
-                "spaceDreadnought"
-              ]
-            },
-            {
-              "Position": {
-                "x": 0.597948,
-                "y": 0.100000143,
-                "z": -0.61025995
-              },
-              "Tags": [
-                "spaceTechNegotiation"
-              ]
-            },
-            {
-              "Position": {
-                "x": 0.253156573,
-                "y": 0.100000143,
-                "z": -0.637962341
-              },
-              "Tags": [
-                "spaceTechNegotiation_Buy"
-              ]
-            },
-            {
-              "Position": {
-                "x": 0.0859156,
-                "y": 0.100000143,
-                "z": -0.5116248
-              },
-              "Tags": [
-                "spaceTechNegotiation_Negotiate"
-              ]
-            },
-            {
-              "Position": {
-                "x": 0.1528369,
-                "y": 0.100000143,
-                "z": 0.456103742
-              },
-              "Tags": [
-                "slotNegotiator"
-              ]
-            },
-            {
-              "Position": {
-                "x": -0.467406034,
-                "y": 0.100000143,
-                "z": 0.518779
-              },
-              "Tags": [
-                "slotTech3"
-              ]
-            },
-            {
-              "Position": {
-                "x": -0.466862082,
-                "y": 0.100000143,
-                "z": -0.099306345
-              },
-              "Tags": [
-                "slotTech2"
-              ]
-            },
-            {
-              "Position": {
-                "x": -0.4755872,
-                "y": 0.100000143,
-                "z": -0.684587657
-              },
-              "Tags": [
-                "slotTech1"
-              ]
-            },
-            {
-              "Position": {
-                "x": 0.07653068,
-                "y": 0.100000143,
-                "z": -0.8970915
-              },
-              "Tags": [
-                "sardaukarTechNegotiation"
-              ]
-            },
-            {
-              "Position": {
-                "x": 0.7666319,
-                "y": 0.100000143,
-                "z": 0.216500446
-              },
-              "Tags": [
-                "sardaukarDreadnought"
-              ]
-            }
-          ]
-        }
-      }
-    },
-    {
-      "GUID": "d032f8",
-      "Name": "Custom_Tile",
-      "Transform": {
-        "posX": 7.12451935,
-        "posY": 7.61253262,
-        "posZ": 79.213,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 4.04,
-        "scaleY": 1.0,
-        "scaleZ": 4.04
-      },
-      "Nickname": "",
-      "Description": "",
-      "GMNotes": "ixAmbassyBoard.en",
-      "AltLookAngle": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
-      },
-      "ColorDiffuse": {
-        "r": 0.0,
-        "g": 0.0,
-        "b": 0.0
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": false,
-      "CustomImage": {
-        "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/9566803596526819021/09AAD4CF3D3ADAD5F216361C34334924ED0D6652/",
-        "ImageSecondaryURL": "",
-        "ImageScalar": 1.0,
-        "WidthScale": 0.0,
-        "CustomTile": {
-          "Type": 0,
-          "Thickness": 0.1,
-          "Stackable": false,
-          "Stretch": true
-        }
-      },
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
-      "AttachedSnapPoints": [
-        {
-          "Position": {
-            "x": -0.0162749644,
-            "y": 0.100000143,
-            "z": 0.718427
-          },
-          "Tags": [
-            "slotTech1"
-          ]
-        },
-        {
-          "Position": {
-            "x": -0.0142540252,
-            "y": 0.100000143,
-            "z": 0.1787521
-          },
-          "Tags": [
-            "slotTech2"
-          ]
-        },
-        {
-          "Position": {
-            "x": -0.01627558,
-            "y": 0.100000143,
-            "z": -0.35890165
-          },
-          "Tags": [
-            "slotTech3"
-          ]
-        }
-      ],
-      "States": {
-        "1": {
-          "GUID": "db7e56",
-          "Name": "Custom_Tile",
-          "Transform": {
-            "posX": 0.0,
-            "posY": 9.007864,
-            "posZ": 0.0,
-            "rotX": 0,
-            "rotY": 180,
-            "rotZ": 0,
-            "scaleX": 4.04,
-            "scaleY": 1.0,
-            "scaleZ": 4.04
-          },
-          "Nickname": "",
-          "Description": "",
-          "GMNotes": "ixBoard.en",
-          "AltLookAngle": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "ColorDiffuse": {
-            "r": 0.0,
-            "g": 0.0,
-            "b": 0.0
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": true,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": false,
-          "Hands": false,
-          "CustomImage": {
-            "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/2502404390141332938/186AAD39381056149506FDFA88FF5FA2AF203B13/",
-            "ImageSecondaryURL": "",
-            "ImageScalar": 1.0,
-            "WidthScale": 0.0,
-            "CustomTile": {
-              "Type": 0,
-              "Thickness": 0.1,
-              "Stackable": false,
-              "Stretch": true
-            }
-          },
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": "",
-          "AttachedSnapPoints": [
-            {
-              "Position": {
-                "x": 0.5986332,
-                "y": 0.100000143,
-                "z": -0.08071267
-              },
-              "Tags": [
-                "spaceDreadnought"
-              ]
-            },
-            {
-              "Position": {
-                "x": 0.597948,
-                "y": 0.100000143,
-                "z": -0.61025995
-              },
-              "Tags": [
-                "spaceTechNegotiation"
-              ]
-            },
-            {
-              "Position": {
-                "x": 0.253156573,
-                "y": 0.100000143,
-                "z": -0.637962341
-              },
-              "Tags": [
-                "spaceTechNegotiation_Buy"
-              ]
-            },
-            {
-              "Position": {
-                "x": 0.0859156,
-                "y": 0.100000143,
-                "z": -0.5116248
-              },
-              "Tags": [
-                "spaceTechNegotiation_Negotiate"
-              ]
-            },
-            {
-              "Position": {
-                "x": 0.1528369,
-                "y": 0.100000143,
-                "z": 0.456103742
-              },
-              "Tags": [
-                "slotNegotiator"
-              ]
-            },
-            {
-              "Position": {
-                "x": -0.467406034,
-                "y": 0.100000143,
-                "z": 0.518779
-              },
-              "Tags": [
-                "slotTech3"
-              ]
-            },
-            {
-              "Position": {
-                "x": -0.466862082,
-                "y": 0.100000143,
-                "z": -0.099306345
-              },
-              "Tags": [
-                "slotTech2"
-              ]
-            },
-            {
-              "Position": {
-                "x": -0.4755872,
-                "y": 0.100000143,
-                "z": -0.684587657
-              },
-              "Tags": [
-                "slotTech1"
-              ]
-            },
-            {
-              "Position": {
-                "x": 0.07653068,
-                "y": 0.100000143,
-                "z": -0.8970915
-              },
-              "Tags": [
-                "sardaukarTechNegotiation"
-              ]
-            },
-            {
-              "Position": {
-                "x": 0.7666319,
-                "y": 0.100000143,
-                "z": 0.216500446
-              },
-              "Tags": [
-                "sardaukarDreadnought"
-              ]
-            }
-          ]
-        }
-      }
     }
   ]
 }
