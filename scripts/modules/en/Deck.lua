@@ -12,6 +12,8 @@ local Deck = {
         immortalityImperium = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141324694/E758512421B5CB27BBA228EF5F1880A7F3DC564D/", 6, 5 },
         -- tleilax with reclaimed forces
         tleilaxResearch = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141325643/D9BD273651404E7DE7F0E22B36F2D426D82B07A8/", 4, 5 },
+        -- thumper
+        imperium_thumper = { "https://steamusercontent-a.akamaihd.net/ugc/12828080085897054588/15752883A0EDA1478304B3A2B3CEE42FBFE7831A/", 1, 1 },
         -- bloodlines
         bloodlinesImperium = { "https://steamusercontent-a.akamaihd.net/ugc/10166314864823293398/62EEBDDBDD7A8704B044EB7122D5ED946D94CEA1/", 7, 3 },
         bloodlinesImperium_tech = { "https://steamusercontent-a.akamaihd.net/ugc/17867477410729571686/90705D6CE1BCF274DC3AE7787016B466B39C444E/", 1, 1 },
@@ -421,6 +423,9 @@ function Deck.loadCustomDecks(loader)
         "throneRoomPolitics",
         "tleilaxuMaster",
         "tleilaxuSurgeon"
+    })
+    Deck.load(loader, cards.imperium, "imperium", "imperium_thumper", 1, {
+        "thumper",
     })
     Deck.load(loader, cards.imperium, "imperium", "bloodlinesImperium", 1, {
         "fremenWarName",

@@ -21,6 +21,8 @@ local Deck = {
         tleilaxResearch = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141328012/2399494577B270989873BC3A2002B8D99E33E001/", 4, 5 },
         -- reclaimed forces
         tleilaxResearchReclaimedForces = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141323085/60812AEA733FF5558BA9190E47CBD474EBF38C94/", 1, 1 },
+        -- thumper
+        imperium_thumper = { "https://steamusercontent-a.akamaihd.net/ugc/16284246125918508321/A20264C32EB88354AFE37F7AEC9A12F6AB2C0A08/", 1, 1 },
         -- bloodlines
         bloodlinesImperium = { "https://steamusercontent-a.akamaihd.net/ugc/14879968932560782834/EE5C5BC14ACDFC409676DC90AB4974DFBA923895/", 7, 3 },
         bloodlinesImperium_tech = { "https://steamusercontent-a.akamaihd.net/ugc/18216911860083759238/874BC5D2EFBC9B9E43F20016BA5680B519AB5FB6/", 1, 1 },
@@ -392,7 +394,6 @@ function Deck.loadCustomDecks(loader)
     Deck.load(loader, cards.imperium, "imperium", "immortalityImperiumExperimentation", 1, {
         "experimentation",
     })
-
     Deck.load(loader, cards.tleilaxu, "imperium", "tleilaxResearch", 1, {
         "beguilingPheromones",
         "chairdog",
@@ -414,7 +415,9 @@ function Deck.loadCustomDecks(loader)
         "unnaturalReflexes",
         "usurp",
     })
-
+    Deck.load(loader, cards.imperium, "imperium", "imperium_thumper", 1, {
+        "thumper",
+    })
     Deck.load(loader, cards.imperium, "imperium", "bloodlinesImperium", 1, {
         "fremenWarName",
         "sardaukarStandard",

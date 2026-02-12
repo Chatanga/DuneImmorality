@@ -93,6 +93,7 @@ local Deck = {
             reverendMotherMohiam = 1,
             powerPlay = 3,
             duncanLoyalBlade = 1, -- Deluxe upgrade pack release promo
+            thumper = 1, -- New release
         },
         ix = {
             boundlessAmbition = 1, -- Rise of Ix release promo

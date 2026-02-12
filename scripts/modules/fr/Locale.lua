@@ -553,6 +553,7 @@ return {
     weirdingWay = "Art étrange",
     negotiatedWithdrawal = "Retait négocié",
     fullScaleAssault = "Assaut planétaire",
+    thumper = "Marteleur",
     beneTleilaxLab = "Laboratoire du Bene Tleilax",
     beneTleilaxResearcher = "Chercheur du Bene Tleilax",
     blankSlate = "Ardoise vierge",

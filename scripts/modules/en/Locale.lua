@@ -551,6 +551,7 @@ return {
     weirdingWay = "Weirding Way",
     negotiatedWithdrawal = "Negotiated Withdrawal",
     fullScaleAssault = "Full Scale Assault",
+    thumper = "Thumper",
     beneTleilaxLab = "Bene Tleilax Lab",
     beneTleilaxResearcher = "Bene Tleilax Researcher",
     blankSlate = "Blank Slate",
