@@ -172,6 +172,7 @@ function Hagal._lateActivate(phase, color)
 end
 
 ---@param color PlayerColor
+---@return Continuation
 function Hagal._activateFirstValidActionCard(color)
     return Hagal._activateFirstValidCard(color, function (card)
         return HagalCard.activate(color, card, Hagal.ix, Hagal.immortality)
@@ -365,7 +366,7 @@ function Hagal._doActivateFirstValidCard(color, action, n, continuation)
                     elseif result == Helper.FAILED then
                         Hagal._doActivateFirstValidCard(color, action, n + 1, continuation)
                     else
-                        error("Unexpected action result value!")
+                        error("Unexpected action result value '" .. tostring(result) .. "' when activating card '" .. Helper.getID(card) .. "'.")
                     end
                 end
             end)
