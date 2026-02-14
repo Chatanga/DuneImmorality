@@ -230,6 +230,7 @@ function Hagal._lateActivate(phase, color)
 end
 
 ---@param color PlayerColor
+---@return Continuation
 function Hagal._activateFirstValidActionCard(color)
     return Hagal._activateFirstValidCard(color, function (card)
         return HagalCard.activate(color, card, Hagal.ix)
@@ -321,7 +322,7 @@ function Hagal._setStrengthFromFirstValidCard(color)
     local n = (level3Conflict and Hagal.brutalEscalation) and 2 or 1
 
     return Hagal._activateFirstValidCard(color, function (card)
-        if HagalCard.setStrength(color, card) then
+        if HagalCard.setStrength(color, card) == Helper.COMPLETED then
             n = n - 1
             if n > 0 then
                 Action.log(I18N("brutalEscalation"), color)
@@ -396,10 +397,10 @@ function Hagal._doActivateFirstValidCard(color, action, n, continuation)
                         Rival.triggerHagalReaction(color).doAfter(function ()
                             Hagal._doActivateFirstValidCard(color, action, n + 1, continuation)
                         end)
-                    elseif result == HagalCard.FAILED then
+                    elseif result == Helper.FAILED then
                         Hagal._doActivateFirstValidCard(color, action, n + 1, continuation)
                     else
-                        error("Unexpected action result value!")
+                        error("Unexpected action result value '" .. tostring(result) .. "' when activating card '" .. Helper.getID(card) .. "'.")
                     end
                 end
             end)
