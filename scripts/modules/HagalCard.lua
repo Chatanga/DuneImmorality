@@ -61,7 +61,7 @@ local HagalCard = {
 
 ---@param color PlayerColor
 ---@param card Card
----@return ActionResult
+---@return boolean
 function HagalCard.setStrength(color, card)
     assert(Types.isPlayerColor(color))
     assert(card)
@@ -69,9 +69,9 @@ function HagalCard.setStrength(color, card)
     local strength = HagalCard.cardStrengths[Helper.getID(card)]
     if strength then
         rival.resources(color, "strength", strength)
-        return Helper.COMPLETED
+        return true
     else
-        return Helper.FAILED
+        return false
     end
 end
 

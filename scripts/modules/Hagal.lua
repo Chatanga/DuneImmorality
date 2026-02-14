@@ -322,7 +322,7 @@ function Hagal._setStrengthFromFirstValidCard(color)
     local n = (level3Conflict and Hagal.brutalEscalation) and 2 or 1
 
     return Hagal._activateFirstValidCard(color, function (card)
-        if HagalCard.setStrength(color, card) == Helper.COMPLETED then
+        if HagalCard.setStrength(color, card) then
             n = n - 1
             if n > 0 then
                 Action.log(I18N("brutalEscalation"), color)
