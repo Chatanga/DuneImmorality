@@ -102,7 +102,7 @@ local Deck = {
         duncanIdaho = { "https://steamusercontent-a.akamaihd.net/ugc/13463505432383320270/54FF9A593B9870E13BC8FEF9A18AAA9274E19CBA/", 1, 1 },
         esmarTuek = { "https://steamusercontent-a.akamaihd.net/ugc/11801598958949432845/2556AC0AA102406DCA21A5863AEEE6AA5C75B58F/", 1, 1 },
         piterDeVries = { "https://steamusercontent-a.akamaihd.net/ugc/17567283454269405550/FCA10C6D65F2B37ADE44352A951699B40E8DEC84/", 1, 1 },
-        yrkoon = { "https://steamusercontent-a.akamaihd.net/ugc/16706684599292593176/FE470F75A1D0421D6676CF3C902A80632D0F7D7C/", 1, 1 },
+        yrkoon = { "https://steamusercontent-a.akamaihd.net/ugc/14712941862459164791/B41729A898A2C0DED359E8AC96684D7A29B324E2/", 1, 1 },
         kotaOdax = { "https://steamusercontent-a.akamaihd.net/ugc/13303538665422276008/E8F6F995587AA4C462C1BB5EBFB7CB115956CB08/", 1, 1 },
     },
     fanmadeLeader = {
