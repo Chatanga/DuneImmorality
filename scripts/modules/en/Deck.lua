@@ -154,7 +154,7 @@ local Deck = {
         hasimirFenring = { "https://steamusercontent-a.akamaihd.net/ugc/14632277081108354737/859A78B59CED8C3295E4767760812091798BB0D8/", 1, 1 },
         lietKynes = { "https://steamusercontent-a.akamaihd.net/ugc/14153233902966559409/0F86C48A64B1DF53C80A17F4F601273B835550B4/", 1, 1 },
         piterDeVries = { "https://steamusercontent-a.akamaihd.net/ugc/17567283454269405550/FCA10C6D65F2B37ADE44352A951699B40E8DEC84/", 1, 1 },
-        yrkoon = { "https://steamusercontent-a.akamaihd.net/ugc/16706684599292593176/FE470F75A1D0421D6676CF3C902A80632D0F7D7C/", 1, 1 }, -- https://steamusercontent-a.akamaihd.net/ugc/14712941862459164791/B41729A898A2C0DED359E8AC96684D7A29B324E2/
+        yrkoon = { "https://steamusercontent-a.akamaihd.net/ugc/16706684599292593176/FE470F75A1D0421D6676CF3C902A80632D0F7D7C/", 1, 1 },
         kotaOdax = { "https://steamusercontent-a.akamaihd.net/ugc/13303538665422276008/E8F6F995587AA4C462C1BB5EBFB7CB115956CB08/", 1, 1 },
     },
     rivalLeader = {

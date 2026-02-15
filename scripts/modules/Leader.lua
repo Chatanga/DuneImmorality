@@ -1145,7 +1145,7 @@ Leader.yrkoon = Helper.createClass(Leader, {
 
         for i, bagGUID in ipairs(Leader.yrkoon.bags) do
             local bag = getObjectFromGUID(bagGUID)
-            local p = zone.getPosition() + Vector(i * 1.2 - 3, 0, -1.5)
+            local p = zone.getPosition() + Vector(i * 1.2 - 3, 0, 1.5)
             p:setAt('y', Board.onPlayBoard(0))
             bag.setPosition(p)
             bag.setInvisibleTo({})
