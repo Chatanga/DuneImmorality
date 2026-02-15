@@ -64,10 +64,16 @@ def rectify_rotation(object):
             c = 0
         object['Transform'][coordinate] = c
 
+def rectify_contract(object):
+    if 'Tags' in object and 'Contract' in object['Tags']:
+        object['Transform']['scaleX'] = 0.725
+        object['Transform']['scaleZ'] = 0.725
+
 def visit_object(parent, object, tag_registry):
     rectify_rotation(object)
+    #rectify_contract(object)
     tag_registry.register_tags(object)
-    rectify_snappoints(parent, object)
+    #rectify_snappoints(parent, object)
     object['LuaScript'] = ''
     object['LuaScriptState'] = ''
 
