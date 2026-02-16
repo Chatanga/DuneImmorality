@@ -225,7 +225,7 @@ local Deck = {
         bloodlines = { "https://steamusercontent-a.akamaihd.net/ugc/15641776900237780549/06105DBDA9C85BC3E808B9E610ED45AE507883FF/", 5, 2 },
     },
     sardaukarCommanderSkill = {
-        bloodlines = { "https://steamusercontent-a.akamaihd.net/ugc/18064283230023882594/41E082A4120E9D48B130929E9345FC19272373A7/", 4, 2 },
+        bloodlines = { "https://steamusercontent-a.akamaihd.net/ugc/11099223255842203067/04502B98D1ED28BBA5C340B511173EA757030B73/", 4, 2 },
     },
 }
 

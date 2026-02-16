@@ -772,6 +772,15 @@ return {
     navigationChamber = "Navigation Chamber",
     sardaukarHighCommand = "Sardaukar High Command",
 
+    -- Sardaukar Commander Skills
+    charismatic = "Charismatic",
+    desperate = "Desperate",
+    fierce = "Fierce",
+    canny = "Canny",
+    driven = "Driven",
+    loyal = "Loyal",
+    hardy = "Hardy",
+
     -- Navigation Card
     solarisAndPermanentPersuasion = "Solaris + Persuasion",
     spiceIfTrash = "Spice / Trash",

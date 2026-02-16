@@ -1,7 +1,7 @@
 {
   "SaveName": "Spice Flow",
-  "EpochTime": 1771182968,
-  "Date": "2/15/2026 8:16:08 PM",
+  "EpochTime": 1771269192,
+  "Date": "2/16/2026 8:13:12 PM",
   "VersionNumber": "v14.1.8",
   "GameMode": "Spice Flow",
   "GameType": "Game",
@@ -843,9 +843,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.0980132744,
-        "g": 0.0980132744,
-        "b": 0.0980132744
+        "r": 0.09801323,
+        "g": 0.09801323,
+        "b": 0.09801323
       },
       "Tags": [
         "AutomataStuff"
@@ -1119,9 +1119,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191998363,
+        "r": 0.1919983,
         "g": 0.701,
-        "b": 0.167998344
+        "b": 0.167998284
       },
       "Tags": [
         "Agent",
@@ -1178,9 +1178,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191998363,
+        "r": 0.1919983,
         "g": 0.701,
-        "b": 0.167998344
+        "b": 0.167998284
       },
       "Tags": [
         "Agent",
@@ -1237,9 +1237,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191948712,
+        "r": 0.191948682,
         "g": 0.701,
-        "b": 0.1679487
+        "b": 0.167948663
       },
       "Tags": [
         "Green",
@@ -1298,7 +1298,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121461593,
+        "r": 0.121461533,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -1416,7 +1416,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121461593,
+        "r": 0.121461533,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -1475,7 +1475,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121514566,
+        "r": 0.121514536,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -1638,7 +1638,7 @@
       "Name": "Custom_Model",
       "Transform": {
         "posX": -3.0,
-        "posY": 1.61090124,
+        "posY": 1.61089933,
         "posZ": 26.0,
         "rotX": 0,
         "rotY": 180,
@@ -1656,7 +1656,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121461593,
+        "r": 0.121461533,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -1755,8 +1755,8 @@
       "GUID": "fb1629",
       "Name": "Custom_Model",
       "Transform": {
-        "posX": -0.999988556,
-        "posY": 1.61090124,
+        "posX": -0.9999885,
+        "posY": 1.61090076,
         "posZ": 26.0,
         "rotX": 0,
         "rotY": 180,
@@ -1774,9 +1774,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191998363,
+        "r": 0.1919983,
         "g": 0.701,
-        "b": 0.167998344
+        "b": 0.167998284
       },
       "Tags": [
         "Agent",
@@ -1980,7 +1980,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526174,
+        "r": 0.121526144,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -2029,7 +2029,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526174,
+        "r": 0.121526144,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -2078,7 +2078,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526174,
+        "r": 0.121526144,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -3546,7 +3546,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526174,
+        "r": 0.121526144,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -3595,7 +3595,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526174,
+        "r": 0.121526144,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -3644,7 +3644,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526174,
+        "r": 0.121526144,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -3693,7 +3693,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526174,
+        "r": 0.121526144,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -3742,7 +3742,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526174,
+        "r": 0.121526144,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -3791,7 +3791,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526174,
+        "r": 0.121526144,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -4124,7 +4124,7 @@
       "Name": "Custom_Model",
       "Transform": {
         "posX": -2.0000062,
-        "posY": 1.61090124,
+        "posY": 1.61090147,
         "posZ": 25.9999981,
         "rotX": 0,
         "rotY": 180,
@@ -5035,9 +5035,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.4429579,
-        "g": 0.2309579,
-        "b": 0.08996575
+        "r": 0.442957878,
+        "g": 0.230957866,
+        "b": 0.08996572
       },
       "Tags": [
         "VictoryPointToken"
@@ -5095,9 +5095,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.4429579,
-        "g": 0.2309579,
-        "b": 0.08996575
+        "r": 0.442957878,
+        "g": 0.230957866,
+        "b": 0.08996572
       },
       "Tags": [
         "VictoryPointToken"
@@ -5155,9 +5155,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.4429579,
-        "g": 0.2309579,
-        "b": 0.08996575
+        "r": 0.442957878,
+        "g": 0.230957866,
+        "b": 0.08996572
       },
       "Tags": [
         "VictoryPointToken"
@@ -5215,9 +5215,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.4429579,
-        "g": 0.2309579,
-        "b": 0.08996575
+        "r": 0.442957878,
+        "g": 0.230957866,
+        "b": 0.08996572
       },
       "Tags": [
         "VictoryPointToken"
@@ -5334,9 +5334,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.1919244,
+        "r": 0.191924334,
         "g": 0.701,
-        "b": 0.167924374
+        "b": 0.167924315
       },
       "Tags": [
         "Dreadnought",
@@ -5393,7 +5393,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121566959,
+        "r": 0.121566884,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -5453,8 +5453,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.0999240354,
-        "b": 0.09392359
+        "g": 0.09992396,
+        "b": 0.09392352
       },
       "Tags": [
         "Dreadnought",
@@ -5572,9 +5572,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191948712,
+        "r": 0.191948682,
         "g": 0.701,
-        "b": 0.1679487
+        "b": 0.167948663
       },
       "Tags": [
         "Green",
@@ -5755,9 +5755,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191948712,
+        "r": 0.191948682,
         "g": 0.701,
-        "b": 0.1679487
+        "b": 0.167948663
       },
       "Tags": [
         "Green",
@@ -5816,7 +5816,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526174,
+        "r": 0.121526144,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -5999,7 +5999,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526174,
+        "r": 0.121526144,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -6060,7 +6060,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526174,
+        "r": 0.121526144,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -6182,9 +6182,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191948712,
+        "r": 0.191948682,
         "g": 0.701,
-        "b": 0.1679487
+        "b": 0.167948663
       },
       "Tags": [
         "Green",
@@ -6365,9 +6365,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191948712,
+        "r": 0.191948682,
         "g": 0.701,
-        "b": 0.1679487
+        "b": 0.167948663
       },
       "Tags": [
         "Green",
@@ -6426,7 +6426,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526174,
+        "r": 0.121526144,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -6546,9 +6546,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.1919244,
+        "r": 0.191924334,
         "g": 0.701,
-        "b": 0.167924374
+        "b": 0.167924315
       },
       "Tags": [
         "Dreadnought",
@@ -6605,7 +6605,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121566959,
+        "r": 0.121566884,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -6665,8 +6665,8 @@
       },
       "ColorDiffuse": {
         "r": 0.856,
-        "g": 0.0999240354,
-        "b": 0.09392359
+        "g": 0.09992396,
+        "b": 0.09392352
       },
       "Tags": [
         "Dreadnought",
@@ -6723,7 +6723,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.419152558,
+        "r": 0.419152528,
         "g": 0.0,
         "b": 0.681184649
       },
@@ -7165,8 +7165,8 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.3536236,
-        "g": 0.126023352,
+        "r": 0.353623569,
+        "g": 0.126023322,
         "b": 0.0
       },
       "LayoutGroupSortIndex": 0,
@@ -7764,7 +7764,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526085,
+        "r": 0.121526055,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -7837,9 +7837,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191949874,
+        "r": 0.191949844,
         "g": 0.701,
-        "b": 0.167949855
+        "b": 0.167949826
       },
       "Tags": [
         "ForceToken"
@@ -8224,9 +8224,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.1994296,
-        "g": 0.0555223674,
-        "b": 0.297893941
+        "r": 0.199429572,
+        "g": 0.055522345,
+        "b": 0.2978939
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -8639,9 +8639,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191948712,
+        "r": 0.191948682,
         "g": 0.701,
-        "b": 0.1679487
+        "b": 0.167948663
       },
       "Tags": [
         "Green",
@@ -8700,7 +8700,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526174,
+        "r": 0.121526144,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -8822,9 +8822,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191948712,
+        "r": 0.191948682,
         "g": 0.701,
-        "b": 0.1679487
+        "b": 0.167948663
       },
       "Tags": [
         "Green",
@@ -8864,9 +8864,9 @@
       "GUID": "8988cf",
       "Name": "Custom_Token",
       "Transform": {
-        "posX": 0.370001346,
+        "posX": 0.370001376,
         "posY": 1.8775003,
-        "posZ": 19.6394215,
+        "posZ": 19.6394234,
         "rotX": 0,
         "rotY": 0,
         "rotZ": 180,
@@ -8944,7 +8944,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526174,
+        "r": 0.121526144,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -9170,9 +9170,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191984475,
+        "r": 0.191984415,
         "g": 0.701,
-        "b": 0.167984456
+        "b": 0.1679844
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -9222,7 +9222,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121566959,
+        "r": 0.121566884,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -12219,7 +12219,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526144,
+        "r": 0.121526115,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -12268,7 +12268,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526144,
+        "r": 0.121526115,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -12317,7 +12317,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526144,
+        "r": 0.121526115,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -16229,7 +16229,7 @@
       },
       "ColorDiffuse": {
         "r": 0.554045439,
-        "g": 0.387893319,
+        "g": 0.3878933,
         "b": 0.6567944
       },
       "Tags": [
@@ -16335,7 +16335,7 @@
       "Transform": {
         "posX": -9.510476,
         "posY": 1.72279763,
-        "posZ": 0.2500107,
+        "posZ": 0.250010729,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -16353,8 +16353,8 @@
       },
       "ColorDiffuse": {
         "r": 0.7334496,
-        "g": 0.144385576,
-        "b": 0.144385576
+        "g": 0.144385546,
+        "b": 0.144385546
       },
       "Tags": [
         "AllianceToken",
@@ -18007,7 +18007,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 8.411532,
-        "posY": 1.61253285,
+        "posY": 1.61253428,
         "posZ": 27.1099987,
         "rotX": 0,
         "rotY": 180,
@@ -18246,7 +18246,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 4.91153049,
-        "posY": 1.61253262,
+        "posY": 1.61253333,
         "posZ": 26.1092854,
         "rotX": 0,
         "rotY": 180,
@@ -18264,9 +18264,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.4284805,
+        "r": 0.428480446,
         "g": 0.541811764,
-        "b": 0.195387661
+        "b": 0.195387632
       },
       "Tags": [
         "VictoryPointToken"
@@ -18306,7 +18306,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 5.91153,
-        "posY": 1.61253333,
+        "posY": 1.61253357,
         "posZ": 26.1092854,
         "rotX": 0,
         "rotY": 180,
@@ -18324,9 +18324,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.4284805,
+        "r": 0.428480446,
         "g": 0.541811764,
-        "b": 0.195387661
+        "b": 0.195387632
       },
       "Tags": [
         "VictoryPointToken"
@@ -18787,7 +18787,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 2.411528,
-        "posY": 1.61253047,
+        "posY": 1.61253369,
         "posZ": 26.1092854,
         "rotX": 0,
         "rotY": 180,
@@ -18807,7 +18807,7 @@
       "ColorDiffuse": {
         "r": 0.688153446,
         "g": 0.553023756,
-        "b": 0.2337758
+        "b": 0.233775765
       },
       "Tags": [
         "VictoryPointToken"
@@ -18847,7 +18847,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 3.39838457,
-        "posY": 1.61253285,
+        "posY": 1.61253214,
         "posZ": 26.1092815,
         "rotX": 0,
         "rotY": 180,
@@ -18867,7 +18867,7 @@
       "ColorDiffuse": {
         "r": 0.688153446,
         "g": 0.553023756,
-        "b": 0.2337758
+        "b": 0.233775765
       },
       "Tags": [
         "VictoryPointToken"
@@ -19264,8 +19264,8 @@
       "GUID": "1f98e2",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 2.41,
-        "posY": 1.61253333,
+        "posX": 2.41000032,
+        "posY": 1.61253226,
         "posZ": 25.1118355,
         "rotX": 0,
         "rotY": 180,
@@ -19284,8 +19284,8 @@
       },
       "ColorDiffuse": {
         "r": 0.796167254,
-        "g": 0.05686576,
-        "b": 0.05686576
+        "g": 0.0568657368,
+        "b": 0.0568657368
       },
       "Tags": [
         "VictoryPointToken"
@@ -21939,9 +21939,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191990912,
+        "r": 0.191990882,
         "g": 0.701,
-        "b": 0.1679909
+        "b": 0.167990863
       },
       "Tags": [
         "Spy"
@@ -22119,7 +22119,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.117992185,
+        "r": 0.117992155,
         "g": 0.53,
         "b": 1.0
       },
@@ -23175,9 +23175,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.428479,
+        "r": 0.428478956,
         "g": 0.541811764,
-        "b": 0.195386231
+        "b": 0.1953862
       },
       "Tags": [
         "VictoryPointToken"
@@ -24139,7 +24139,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 9.910001,
-        "posY": 1.61253428,
+        "posY": 1.61253357,
         "posZ": 27.1100044,
         "rotX": 0,
         "rotY": 180,
@@ -24158,7 +24158,7 @@
       },
       "ColorDiffuse": {
         "r": 1.0,
-        "g": 0.07806396,
+        "g": 0.07806394,
         "b": 0.0
       },
       "Tags": [
@@ -24647,7 +24647,7 @@
       },
       "ColorDiffuse": {
         "r": 0.5139372,
-        "g": 0.344594777,
+        "g": 0.344594747,
         "b": 0.0188026223
       },
       "LayoutGroupSortIndex": 0,
@@ -25535,9 +25535,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.191948712,
+        "r": 0.191948682,
         "g": 0.701,
-        "b": 0.1679487
+        "b": 0.167948663
       },
       "Tags": [
         "Freighter",
@@ -25657,7 +25657,7 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.121526174,
+        "r": 0.121526144,
         "g": 0.5294118,
         "b": 1.0
       },
@@ -27480,9 +27480,9 @@
         "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 0.1994296,
-        "g": 0.0555223674,
-        "b": 0.297893941
+        "r": 0.199429572,
+        "g": 0.055522345,
+        "b": 0.2978939
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -29094,7 +29094,7 @@
       }
     },
     {
-      "GUID": "6ba3f9",
+      "GUID": "b00e18",
       "Name": "Deck",
       "Transform": {
         "posX": -30.0,
@@ -32533,7 +32533,7 @@
       ]
     },
     {
-      "GUID": "170117",
+      "GUID": "980277",
       "Name": "Deck",
       "Transform": {
         "posX": -30.0,
@@ -42589,7 +42589,7 @@
       ]
     },
     {
-      "GUID": "9bde3e",
+      "GUID": "bbba6a",
       "Name": "Deck",
       "Transform": {
         "posX": -30.0,
@@ -44345,7 +44345,7 @@
       ]
     },
     {
-      "GUID": "c23afb",
+      "GUID": "a86f94",
       "Name": "Deck",
       "Transform": {
         "posX": -30.0,
@@ -45720,7 +45720,7 @@
       ]
     },
     {
-      "GUID": "4bea86",
+      "GUID": "b4b3b3",
       "Name": "Deck",
       "Transform": {
         "posX": -30.0,
@@ -51914,7 +51914,7 @@
       ]
     },
     {
-      "GUID": "506373",
+      "GUID": "7ad5c8",
       "Name": "Deck",
       "Transform": {
         "posX": -30.0,
@@ -54232,7 +54232,7 @@
       ]
     },
     {
-      "GUID": "ec76a1",
+      "GUID": "6a7997",
       "Name": "Deck",
       "Transform": {
         "posX": -30.0,
@@ -55811,7 +55811,7 @@
       ]
     },
     {
-      "GUID": "ab9ab5",
+      "GUID": "917519",
       "Name": "Deck",
       "Transform": {
         "posX": -30.0,
@@ -59117,7 +59117,7 @@
       ]
     },
     {
-      "GUID": "797a8d",
+      "GUID": "c00818",
       "Name": "Deck",
       "Transform": {
         "posX": -30.0,
@@ -65766,7 +65766,7 @@
       ]
     },
     {
-      "GUID": "9b4e61",
+      "GUID": "9f3b61",
       "Name": "Deck",
       "Transform": {
         "posX": -26.0,
@@ -69717,7 +69717,7 @@
       ]
     },
     {
-      "GUID": "206896",
+      "GUID": "56081b",
       "Name": "Deck",
       "Transform": {
         "posX": -26.0,
@@ -70472,7 +70472,7 @@
       ]
     },
     {
-      "GUID": "4851bf",
+      "GUID": "dc2113",
       "Name": "Deck",
       "Transform": {
         "posX": -26.0,
@@ -70535,7 +70535,7 @@
       "CustomDeck": {
         "312": {
           "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/18064283230023882594/41E082A4120E9D48B130929E9345FC19272373A7/",
-          "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9769430335022447450/70DB33EE8471E049EBD158C6F60EC0482C2FAF08/",
+          "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/14138994227020835563/27750F81030DE17684EC29F78AE5C421EF58FCFE/",
           "NumWidth": 4,
           "NumHeight": 2,
           "BackIsHidden": true,
@@ -70543,8 +70543,8 @@
           "Type": 0
         },
         "313": {
-          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/9769430335022447450/70DB33EE8471E049EBD158C6F60EC0482C2FAF08/",
-          "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9769430335022447450/70DB33EE8471E049EBD158C6F60EC0482C2FAF08/",
+          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/14138994227020835563/27750F81030DE17684EC29F78AE5C421EF58FCFE/",
+          "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/14138994227020835563/27750F81030DE17684EC29F78AE5C421EF58FCFE/",
           "NumWidth": 1,
           "NumHeight": 1,
           "BackIsHidden": true,
@@ -70570,7 +70570,7 @@
             "scaleY": 1.0,
             "scaleZ": 0.57
           },
-          "Nickname": "{charismatic}",
+          "Nickname": "Charismatic",
           "Description": "",
           "GMNotes": "charismatic",
           "AltLookAngle": {
@@ -70605,7 +70605,7 @@
           "CustomDeck": {
             "312": {
               "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/18064283230023882594/41E082A4120E9D48B130929E9345FC19272373A7/",
-              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9769430335022447450/70DB33EE8471E049EBD158C6F60EC0482C2FAF08/",
+              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/14138994227020835563/27750F81030DE17684EC29F78AE5C421EF58FCFE/",
               "NumWidth": 4,
               "NumHeight": 2,
               "BackIsHidden": true,
@@ -70631,7 +70631,7 @@
             "scaleY": 1.0,
             "scaleZ": 0.57
           },
-          "Nickname": "{charismatic}",
+          "Nickname": "Charismatic",
           "Description": "",
           "GMNotes": "charismatic",
           "AltLookAngle": {
@@ -70666,7 +70666,7 @@
           "CustomDeck": {
             "312": {
               "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/18064283230023882594/41E082A4120E9D48B130929E9345FC19272373A7/",
-              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9769430335022447450/70DB33EE8471E049EBD158C6F60EC0482C2FAF08/",
+              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/14138994227020835563/27750F81030DE17684EC29F78AE5C421EF58FCFE/",
               "NumWidth": 4,
               "NumHeight": 2,
               "BackIsHidden": true,
@@ -70692,7 +70692,7 @@
             "scaleY": 1.0,
             "scaleZ": 0.57
           },
-          "Nickname": "{desperate}",
+          "Nickname": "Desperate",
           "Description": "",
           "GMNotes": "desperate",
           "AltLookAngle": {
@@ -70727,7 +70727,7 @@
           "CustomDeck": {
             "312": {
               "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/18064283230023882594/41E082A4120E9D48B130929E9345FC19272373A7/",
-              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9769430335022447450/70DB33EE8471E049EBD158C6F60EC0482C2FAF08/",
+              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/14138994227020835563/27750F81030DE17684EC29F78AE5C421EF58FCFE/",
               "NumWidth": 4,
               "NumHeight": 2,
               "BackIsHidden": true,
@@ -70753,7 +70753,7 @@
             "scaleY": 1.0,
             "scaleZ": 0.57
           },
-          "Nickname": "{desperate}",
+          "Nickname": "Desperate",
           "Description": "",
           "GMNotes": "desperate",
           "AltLookAngle": {
@@ -70788,7 +70788,7 @@
           "CustomDeck": {
             "312": {
               "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/18064283230023882594/41E082A4120E9D48B130929E9345FC19272373A7/",
-              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9769430335022447450/70DB33EE8471E049EBD158C6F60EC0482C2FAF08/",
+              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/14138994227020835563/27750F81030DE17684EC29F78AE5C421EF58FCFE/",
               "NumWidth": 4,
               "NumHeight": 2,
               "BackIsHidden": true,
@@ -70814,7 +70814,7 @@
             "scaleY": 1.0,
             "scaleZ": 0.57
           },
-          "Nickname": "{canny}",
+          "Nickname": "Canny",
           "Description": "",
           "GMNotes": "canny",
           "AltLookAngle": {
@@ -70849,7 +70849,7 @@
           "CustomDeck": {
             "312": {
               "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/18064283230023882594/41E082A4120E9D48B130929E9345FC19272373A7/",
-              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9769430335022447450/70DB33EE8471E049EBD158C6F60EC0482C2FAF08/",
+              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/14138994227020835563/27750F81030DE17684EC29F78AE5C421EF58FCFE/",
               "NumWidth": 4,
               "NumHeight": 2,
               "BackIsHidden": true,
@@ -70875,7 +70875,7 @@
             "scaleY": 1.0,
             "scaleZ": 0.57
           },
-          "Nickname": "{canny}",
+          "Nickname": "Canny",
           "Description": "",
           "GMNotes": "canny",
           "AltLookAngle": {
@@ -70910,7 +70910,7 @@
           "CustomDeck": {
             "312": {
               "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/18064283230023882594/41E082A4120E9D48B130929E9345FC19272373A7/",
-              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9769430335022447450/70DB33EE8471E049EBD158C6F60EC0482C2FAF08/",
+              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/14138994227020835563/27750F81030DE17684EC29F78AE5C421EF58FCFE/",
               "NumWidth": 4,
               "NumHeight": 2,
               "BackIsHidden": true,
@@ -70936,7 +70936,7 @@
             "scaleY": 1.0,
             "scaleZ": 0.57
           },
-          "Nickname": "{driven}",
+          "Nickname": "Driven",
           "Description": "",
           "GMNotes": "driven",
           "AltLookAngle": {
@@ -70971,7 +70971,7 @@
           "CustomDeck": {
             "312": {
               "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/18064283230023882594/41E082A4120E9D48B130929E9345FC19272373A7/",
-              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9769430335022447450/70DB33EE8471E049EBD158C6F60EC0482C2FAF08/",
+              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/14138994227020835563/27750F81030DE17684EC29F78AE5C421EF58FCFE/",
               "NumWidth": 4,
               "NumHeight": 2,
               "BackIsHidden": true,
@@ -70997,7 +70997,7 @@
             "scaleY": 1.0,
             "scaleZ": 0.57
           },
-          "Nickname": "{driven}",
+          "Nickname": "Driven",
           "Description": "",
           "GMNotes": "driven",
           "AltLookAngle": {
@@ -71032,7 +71032,7 @@
           "CustomDeck": {
             "312": {
               "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/18064283230023882594/41E082A4120E9D48B130929E9345FC19272373A7/",
-              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9769430335022447450/70DB33EE8471E049EBD158C6F60EC0482C2FAF08/",
+              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/14138994227020835563/27750F81030DE17684EC29F78AE5C421EF58FCFE/",
               "NumWidth": 4,
               "NumHeight": 2,
               "BackIsHidden": true,
@@ -71058,7 +71058,7 @@
             "scaleY": 1.0,
             "scaleZ": 0.57
           },
-          "Nickname": "{loyal}",
+          "Nickname": "Loyal",
           "Description": "",
           "GMNotes": "loyal",
           "AltLookAngle": {
@@ -71093,7 +71093,7 @@
           "CustomDeck": {
             "312": {
               "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/18064283230023882594/41E082A4120E9D48B130929E9345FC19272373A7/",
-              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9769430335022447450/70DB33EE8471E049EBD158C6F60EC0482C2FAF08/",
+              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/14138994227020835563/27750F81030DE17684EC29F78AE5C421EF58FCFE/",
               "NumWidth": 4,
               "NumHeight": 2,
               "BackIsHidden": true,
@@ -71119,7 +71119,7 @@
             "scaleY": 1.0,
             "scaleZ": 0.57
           },
-          "Nickname": "{loyal}",
+          "Nickname": "Loyal",
           "Description": "",
           "GMNotes": "loyal",
           "AltLookAngle": {
@@ -71154,7 +71154,7 @@
           "CustomDeck": {
             "312": {
               "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/18064283230023882594/41E082A4120E9D48B130929E9345FC19272373A7/",
-              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9769430335022447450/70DB33EE8471E049EBD158C6F60EC0482C2FAF08/",
+              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/14138994227020835563/27750F81030DE17684EC29F78AE5C421EF58FCFE/",
               "NumWidth": 4,
               "NumHeight": 2,
               "BackIsHidden": true,
@@ -71180,7 +71180,7 @@
             "scaleY": 1.0,
             "scaleZ": 0.57
           },
-          "Nickname": "{hardy}",
+          "Nickname": "Hardy",
           "Description": "",
           "GMNotes": "hardy",
           "AltLookAngle": {
@@ -71215,7 +71215,7 @@
           "CustomDeck": {
             "312": {
               "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/18064283230023882594/41E082A4120E9D48B130929E9345FC19272373A7/",
-              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9769430335022447450/70DB33EE8471E049EBD158C6F60EC0482C2FAF08/",
+              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/14138994227020835563/27750F81030DE17684EC29F78AE5C421EF58FCFE/",
               "NumWidth": 4,
               "NumHeight": 2,
               "BackIsHidden": true,
@@ -71241,7 +71241,7 @@
             "scaleY": 1.0,
             "scaleZ": 0.57
           },
-          "Nickname": "{hardy}",
+          "Nickname": "Hardy",
           "Description": "",
           "GMNotes": "hardy",
           "AltLookAngle": {
@@ -71276,7 +71276,7 @@
           "CustomDeck": {
             "312": {
               "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/18064283230023882594/41E082A4120E9D48B130929E9345FC19272373A7/",
-              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9769430335022447450/70DB33EE8471E049EBD158C6F60EC0482C2FAF08/",
+              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/14138994227020835563/27750F81030DE17684EC29F78AE5C421EF58FCFE/",
               "NumWidth": 4,
               "NumHeight": 2,
               "BackIsHidden": true,
@@ -71336,8 +71336,8 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "313": {
-              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/9769430335022447450/70DB33EE8471E049EBD158C6F60EC0482C2FAF08/",
-              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9769430335022447450/70DB33EE8471E049EBD158C6F60EC0482C2FAF08/",
+              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/14138994227020835563/27750F81030DE17684EC29F78AE5C421EF58FCFE/",
+              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/14138994227020835563/27750F81030DE17684EC29F78AE5C421EF58FCFE/",
               "NumWidth": 1,
               "NumHeight": 1,
               "BackIsHidden": true,
@@ -71397,8 +71397,8 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "313": {
-              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/9769430335022447450/70DB33EE8471E049EBD158C6F60EC0482C2FAF08/",
-              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9769430335022447450/70DB33EE8471E049EBD158C6F60EC0482C2FAF08/",
+              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/14138994227020835563/27750F81030DE17684EC29F78AE5C421EF58FCFE/",
+              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/14138994227020835563/27750F81030DE17684EC29F78AE5C421EF58FCFE/",
               "NumWidth": 1,
               "NumHeight": 1,
               "BackIsHidden": true,
@@ -71413,7 +71413,7 @@
       ]
     },
     {
-      "GUID": "d5a703",
+      "GUID": "2b4245",
       "Name": "Deck",
       "Transform": {
         "posX": 26.0,
@@ -74861,7 +74861,7 @@
       ]
     },
     {
-      "GUID": "9c8502",
+      "GUID": "23b083",
       "Name": "Deck",
       "Transform": {
         "posX": 26.0,
@@ -84917,7 +84917,7 @@
       ]
     },
     {
-      "GUID": "be092e",
+      "GUID": "db14fa",
       "Name": "Deck",
       "Transform": {
         "posX": 26.0,
@@ -86691,7 +86691,7 @@
       ]
     },
     {
-      "GUID": "31a4cd",
+      "GUID": "876687",
       "Name": "Deck",
       "Transform": {
         "posX": 26.0,
@@ -88066,7 +88066,7 @@
       ]
     },
     {
-      "GUID": "a91c0f",
+      "GUID": "77afdd",
       "Name": "Deck",
       "Transform": {
         "posX": 26.0,
@@ -94260,7 +94260,7 @@
       ]
     },
     {
-      "GUID": "97cbc2",
+      "GUID": "844920",
       "Name": "Deck",
       "Transform": {
         "posX": 26.0,
@@ -96578,7 +96578,7 @@
       ]
     },
     {
-      "GUID": "4b9634",
+      "GUID": "59a0a2",
       "Name": "Deck",
       "Transform": {
         "posX": 26.0,
@@ -98157,7 +98157,7 @@
       ]
     },
     {
-      "GUID": "abf31f",
+      "GUID": "65c9dc",
       "Name": "Deck",
       "Transform": {
         "posX": 26.0,
@@ -101463,7 +101463,7 @@
       ]
     },
     {
-      "GUID": "06d8e2",
+      "GUID": "a56bae",
       "Name": "Deck",
       "Transform": {
         "posX": 26.0,
@@ -104988,7 +104988,7 @@
       ]
     },
     {
-      "GUID": "db4e18",
+      "GUID": "73e497",
       "Name": "Deck",
       "Transform": {
         "posX": 30.0,
@@ -108939,7 +108939,7 @@
       ]
     },
     {
-      "GUID": "57d32b",
+      "GUID": "729228",
       "Name": "Deck",
       "Transform": {
         "posX": 30.0,
@@ -109694,7 +109694,7 @@
       ]
     },
     {
-      "GUID": "496992",
+      "GUID": "1fa232",
       "Name": "Deck",
       "Transform": {
         "posX": 30.0,
@@ -109756,8 +109756,8 @@
       ],
       "CustomDeck": {
         "484": {
-          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/18064283230023882594/41E082A4120E9D48B130929E9345FC19272373A7/",
-          "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9769430335022447450/70DB33EE8471E049EBD158C6F60EC0482C2FAF08/",
+          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/11099223255842203067/04502B98D1ED28BBA5C340B511173EA757030B73/",
+          "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/14138994227020835563/27750F81030DE17684EC29F78AE5C421EF58FCFE/",
           "NumWidth": 4,
           "NumHeight": 2,
           "BackIsHidden": true,
@@ -109765,8 +109765,8 @@
           "Type": 0
         },
         "485": {
-          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/9769430335022447450/70DB33EE8471E049EBD158C6F60EC0482C2FAF08/",
-          "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9769430335022447450/70DB33EE8471E049EBD158C6F60EC0482C2FAF08/",
+          "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/14138994227020835563/27750F81030DE17684EC29F78AE5C421EF58FCFE/",
+          "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/14138994227020835563/27750F81030DE17684EC29F78AE5C421EF58FCFE/",
           "NumWidth": 1,
           "NumHeight": 1,
           "BackIsHidden": true,
@@ -109792,7 +109792,7 @@
             "scaleY": 1.0,
             "scaleZ": 0.57
           },
-          "Nickname": "{charismatic}",
+          "Nickname": "Charismatique",
           "Description": "",
           "GMNotes": "charismatic",
           "AltLookAngle": {
@@ -109826,8 +109826,8 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "484": {
-              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/18064283230023882594/41E082A4120E9D48B130929E9345FC19272373A7/",
-              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9769430335022447450/70DB33EE8471E049EBD158C6F60EC0482C2FAF08/",
+              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/11099223255842203067/04502B98D1ED28BBA5C340B511173EA757030B73/",
+              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/14138994227020835563/27750F81030DE17684EC29F78AE5C421EF58FCFE/",
               "NumWidth": 4,
               "NumHeight": 2,
               "BackIsHidden": true,
@@ -109853,7 +109853,7 @@
             "scaleY": 1.0,
             "scaleZ": 0.57
           },
-          "Nickname": "{charismatic}",
+          "Nickname": "Charismatique",
           "Description": "",
           "GMNotes": "charismatic",
           "AltLookAngle": {
@@ -109887,8 +109887,8 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "484": {
-              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/18064283230023882594/41E082A4120E9D48B130929E9345FC19272373A7/",
-              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9769430335022447450/70DB33EE8471E049EBD158C6F60EC0482C2FAF08/",
+              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/11099223255842203067/04502B98D1ED28BBA5C340B511173EA757030B73/",
+              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/14138994227020835563/27750F81030DE17684EC29F78AE5C421EF58FCFE/",
               "NumWidth": 4,
               "NumHeight": 2,
               "BackIsHidden": true,
@@ -109914,7 +109914,7 @@
             "scaleY": 1.0,
             "scaleZ": 0.57
           },
-          "Nickname": "{desperate}",
+          "Nickname": "D\u00e9sesp\u00e9r\u00e9",
           "Description": "",
           "GMNotes": "desperate",
           "AltLookAngle": {
@@ -109948,8 +109948,8 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "484": {
-              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/18064283230023882594/41E082A4120E9D48B130929E9345FC19272373A7/",
-              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9769430335022447450/70DB33EE8471E049EBD158C6F60EC0482C2FAF08/",
+              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/11099223255842203067/04502B98D1ED28BBA5C340B511173EA757030B73/",
+              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/14138994227020835563/27750F81030DE17684EC29F78AE5C421EF58FCFE/",
               "NumWidth": 4,
               "NumHeight": 2,
               "BackIsHidden": true,
@@ -109975,7 +109975,7 @@
             "scaleY": 1.0,
             "scaleZ": 0.57
           },
-          "Nickname": "{desperate}",
+          "Nickname": "D\u00e9sesp\u00e9r\u00e9",
           "Description": "",
           "GMNotes": "desperate",
           "AltLookAngle": {
@@ -110009,8 +110009,8 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "484": {
-              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/18064283230023882594/41E082A4120E9D48B130929E9345FC19272373A7/",
-              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9769430335022447450/70DB33EE8471E049EBD158C6F60EC0482C2FAF08/",
+              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/11099223255842203067/04502B98D1ED28BBA5C340B511173EA757030B73/",
+              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/14138994227020835563/27750F81030DE17684EC29F78AE5C421EF58FCFE/",
               "NumWidth": 4,
               "NumHeight": 2,
               "BackIsHidden": true,
@@ -110036,7 +110036,7 @@
             "scaleY": 1.0,
             "scaleZ": 0.57
           },
-          "Nickname": "{canny}",
+          "Nickname": "Astucieux",
           "Description": "",
           "GMNotes": "canny",
           "AltLookAngle": {
@@ -110070,8 +110070,8 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "484": {
-              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/18064283230023882594/41E082A4120E9D48B130929E9345FC19272373A7/",
-              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9769430335022447450/70DB33EE8471E049EBD158C6F60EC0482C2FAF08/",
+              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/11099223255842203067/04502B98D1ED28BBA5C340B511173EA757030B73/",
+              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/14138994227020835563/27750F81030DE17684EC29F78AE5C421EF58FCFE/",
               "NumWidth": 4,
               "NumHeight": 2,
               "BackIsHidden": true,
@@ -110097,7 +110097,7 @@
             "scaleY": 1.0,
             "scaleZ": 0.57
           },
-          "Nickname": "{canny}",
+          "Nickname": "Astucieux",
           "Description": "",
           "GMNotes": "canny",
           "AltLookAngle": {
@@ -110131,8 +110131,8 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "484": {
-              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/18064283230023882594/41E082A4120E9D48B130929E9345FC19272373A7/",
-              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9769430335022447450/70DB33EE8471E049EBD158C6F60EC0482C2FAF08/",
+              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/11099223255842203067/04502B98D1ED28BBA5C340B511173EA757030B73/",
+              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/14138994227020835563/27750F81030DE17684EC29F78AE5C421EF58FCFE/",
               "NumWidth": 4,
               "NumHeight": 2,
               "BackIsHidden": true,
@@ -110158,7 +110158,7 @@
             "scaleY": 1.0,
             "scaleZ": 0.57
           },
-          "Nickname": "{driven}",
+          "Nickname": "Motiv\u00e9",
           "Description": "",
           "GMNotes": "driven",
           "AltLookAngle": {
@@ -110192,8 +110192,8 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "484": {
-              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/18064283230023882594/41E082A4120E9D48B130929E9345FC19272373A7/",
-              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9769430335022447450/70DB33EE8471E049EBD158C6F60EC0482C2FAF08/",
+              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/11099223255842203067/04502B98D1ED28BBA5C340B511173EA757030B73/",
+              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/14138994227020835563/27750F81030DE17684EC29F78AE5C421EF58FCFE/",
               "NumWidth": 4,
               "NumHeight": 2,
               "BackIsHidden": true,
@@ -110219,7 +110219,7 @@
             "scaleY": 1.0,
             "scaleZ": 0.57
           },
-          "Nickname": "{driven}",
+          "Nickname": "Motiv\u00e9",
           "Description": "",
           "GMNotes": "driven",
           "AltLookAngle": {
@@ -110253,8 +110253,8 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "484": {
-              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/18064283230023882594/41E082A4120E9D48B130929E9345FC19272373A7/",
-              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9769430335022447450/70DB33EE8471E049EBD158C6F60EC0482C2FAF08/",
+              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/11099223255842203067/04502B98D1ED28BBA5C340B511173EA757030B73/",
+              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/14138994227020835563/27750F81030DE17684EC29F78AE5C421EF58FCFE/",
               "NumWidth": 4,
               "NumHeight": 2,
               "BackIsHidden": true,
@@ -110280,7 +110280,7 @@
             "scaleY": 1.0,
             "scaleZ": 0.57
           },
-          "Nickname": "{loyal}",
+          "Nickname": "Loyal",
           "Description": "",
           "GMNotes": "loyal",
           "AltLookAngle": {
@@ -110314,8 +110314,8 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "484": {
-              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/18064283230023882594/41E082A4120E9D48B130929E9345FC19272373A7/",
-              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9769430335022447450/70DB33EE8471E049EBD158C6F60EC0482C2FAF08/",
+              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/11099223255842203067/04502B98D1ED28BBA5C340B511173EA757030B73/",
+              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/14138994227020835563/27750F81030DE17684EC29F78AE5C421EF58FCFE/",
               "NumWidth": 4,
               "NumHeight": 2,
               "BackIsHidden": true,
@@ -110341,7 +110341,7 @@
             "scaleY": 1.0,
             "scaleZ": 0.57
           },
-          "Nickname": "{loyal}",
+          "Nickname": "Loyal",
           "Description": "",
           "GMNotes": "loyal",
           "AltLookAngle": {
@@ -110375,8 +110375,8 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "484": {
-              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/18064283230023882594/41E082A4120E9D48B130929E9345FC19272373A7/",
-              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9769430335022447450/70DB33EE8471E049EBD158C6F60EC0482C2FAF08/",
+              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/11099223255842203067/04502B98D1ED28BBA5C340B511173EA757030B73/",
+              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/14138994227020835563/27750F81030DE17684EC29F78AE5C421EF58FCFE/",
               "NumWidth": 4,
               "NumHeight": 2,
               "BackIsHidden": true,
@@ -110402,7 +110402,7 @@
             "scaleY": 1.0,
             "scaleZ": 0.57
           },
-          "Nickname": "{hardy}",
+          "Nickname": "T\u00e9m\u00e9raire",
           "Description": "",
           "GMNotes": "hardy",
           "AltLookAngle": {
@@ -110436,8 +110436,8 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "484": {
-              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/18064283230023882594/41E082A4120E9D48B130929E9345FC19272373A7/",
-              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9769430335022447450/70DB33EE8471E049EBD158C6F60EC0482C2FAF08/",
+              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/11099223255842203067/04502B98D1ED28BBA5C340B511173EA757030B73/",
+              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/14138994227020835563/27750F81030DE17684EC29F78AE5C421EF58FCFE/",
               "NumWidth": 4,
               "NumHeight": 2,
               "BackIsHidden": true,
@@ -110463,7 +110463,7 @@
             "scaleY": 1.0,
             "scaleZ": 0.57
           },
-          "Nickname": "{hardy}",
+          "Nickname": "T\u00e9m\u00e9raire",
           "Description": "",
           "GMNotes": "hardy",
           "AltLookAngle": {
@@ -110497,8 +110497,8 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "484": {
-              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/18064283230023882594/41E082A4120E9D48B130929E9345FC19272373A7/",
-              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9769430335022447450/70DB33EE8471E049EBD158C6F60EC0482C2FAF08/",
+              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/11099223255842203067/04502B98D1ED28BBA5C340B511173EA757030B73/",
+              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/14138994227020835563/27750F81030DE17684EC29F78AE5C421EF58FCFE/",
               "NumWidth": 4,
               "NumHeight": 2,
               "BackIsHidden": true,
@@ -110558,8 +110558,8 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "485": {
-              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/9769430335022447450/70DB33EE8471E049EBD158C6F60EC0482C2FAF08/",
-              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9769430335022447450/70DB33EE8471E049EBD158C6F60EC0482C2FAF08/",
+              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/14138994227020835563/27750F81030DE17684EC29F78AE5C421EF58FCFE/",
+              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/14138994227020835563/27750F81030DE17684EC29F78AE5C421EF58FCFE/",
               "NumWidth": 1,
               "NumHeight": 1,
               "BackIsHidden": true,
@@ -110619,8 +110619,8 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "485": {
-              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/9769430335022447450/70DB33EE8471E049EBD158C6F60EC0482C2FAF08/",
-              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/9769430335022447450/70DB33EE8471E049EBD158C6F60EC0482C2FAF08/",
+              "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/14138994227020835563/27750F81030DE17684EC29F78AE5C421EF58FCFE/",
+              "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/14138994227020835563/27750F81030DE17684EC29F78AE5C421EF58FCFE/",
               "NumWidth": 1,
               "NumHeight": 1,
               "BackIsHidden": true,

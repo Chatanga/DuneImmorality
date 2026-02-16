@@ -24,7 +24,7 @@ local Deck = {
         fanmadeLeaderCardBack = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141366089/4C75C9A8CA6B890A6178B4B22B0F994B2F663D33/",
         arrakeenScoutsCardBack = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141280256/DE94B7602EB41EEB68DE4907DF1369CBEF2ADD55/",
         navigationCardBack = "https://steamusercontent-a.akamaihd.net/ugc/11785911389932807807/DB25F5E9F1A59B4D113F8E5DA52C1100DEE53458/",
-        sardaukarCommanderSkillCardBack = "https://steamusercontent-a.akamaihd.net/ugc/9769430335022447450/70DB33EE8471E049EBD158C6F60EC0482C2FAF08/",
+        sardaukarCommanderSkillCardBack = "https://steamusercontent-a.akamaihd.net/ugc/14138994227020835563/27750F81030DE17684EC29F78AE5C421EF58FCFE/",
     },
     sources = {},
     starter = {
