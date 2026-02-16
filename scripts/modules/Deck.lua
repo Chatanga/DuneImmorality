@@ -25,7 +25,7 @@ local Deck = {
         leaderCardBack = "https://steamusercontent-a.akamaihd.net/ugc/2502404390141277039/005244DAC0A29EE68CFF741FC06564969563E8CF/",
         rivalLeaderCardBack = "https://steamusercontent-a.akamaihd.net/ugc/2291837013341174770/EB5ECE9F5373F0B132E93CD5825B89E7F023E9A2/",
         navigationCardBack = "https://steamusercontent-a.akamaihd.net/ugc/11785911389932807807/DB25F5E9F1A59B4D113F8E5DA52C1100DEE53458/",
-        sardaukarCommanderSkillCardBack = "https://steamusercontent-a.akamaihd.net/ugc/9769430335022447450/70DB33EE8471E049EBD158C6F60EC0482C2FAF08/",
+        sardaukarCommanderSkillCardBack = "https://steamusercontent-a.akamaihd.net/ugc/14138994227020835563/27750F81030DE17684EC29F78AE5C421EF58FCFE/",
     },
     sources = {},
     starter = {
