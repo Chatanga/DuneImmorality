@@ -995,6 +995,15 @@ return {
     spyDrones = "Drones espions",
     choamTransports = "Transports de la CHOM",
 
+    -- Sardaukar Commander Skills
+    charismatic = "Charismatique",
+    desperate = "Désespéré",
+    fierce = "Féroce",
+    canny = "Astucieux",
+    driven = "Motivé",
+    loyal = "Loyal",
+    hardy = "Téméraire",
+
     -- Navigation Card
     solarisAndPermanentPersuasion = "Solaris + Persuasion",
     spiceIfTrash = "Spice / Trash",
