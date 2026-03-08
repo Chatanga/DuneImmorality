@@ -99,19 +99,12 @@ Modules relies on the Luabundler tool, but also on `utils.Modules`.
 - __TurnControl.lua__ - A pivotal module in charge of sequencing the whole game once started. It works by interacting with the player boards and by emitting events for turn and phase changes.
 - __Types.lua__ - A bunch of common test for typed values and tagged objects.
 
-### scripts/modules/en
+### scripts/modules/xx
 
-- __Board.lua__ - English content for Board.
-- __Deck.lua__ - English content for Deck.
-- __Locale.lua__ - English translations.
-- __Pdf.lua__ - English manuals.
-
-### scripts/modules/fr
-
-- __Board.lua__ - French content for Board.
-- __Deck.lua__ - French content for Deck.
-- __Locale.lua__ - French translations.
-- __Pdf.lua__ - French manuals.
+- __Board.lua__ - XX content for Board.
+- __Deck.lua__ - XX content for Deck.
+- __Locale.lua__ - XX translations.
+- __Pdf.lua__ - XX manuals.
 
 ### scripts/modules/utils
 
