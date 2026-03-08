@@ -15,6 +15,7 @@ local Pdf = {
 function Pdf.onLoad(_)
     Pdf.fr = require("fr.Pdf")
     Pdf.en = require("en.Pdf")
+    Pdf.ru = require("ru.Pdf")
 end
 
 function Pdf.setUp()

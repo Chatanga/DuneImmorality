@@ -1,0 +1,813 @@
+local Helper = require("utils.Helper")
+
+local Deck = {
+    objective = {
+        uprisingObjective = { "https://steamusercontent-a.akamaihd.net/ugc/15423292405843633681/E518074D374E64F37799963D1F837FF7A060243D/", 3, 2 },
+    },
+    imperium = {
+        -- starter with dune the desert planet
+        starter = { "https://steamusercontent-a.akamaihd.net/ugc/14630832907352227601/0A45529ED0FA4B4878497AC6313AB5AEA73FF01D/", 4, 2 },
+        starterImperium_emperor = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141285880/767F540B36884449C0A833D2CF0A25E36651F9AE/", 5, 2 },
+        starterImperium_muadDib = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141285600/E73DE11761FD6A911456F07E348ED58BC7B21638/", 5, 2 },
+        -- base with foldspace, liasion, and the spice must flow
+        imperium = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141326803/6F98BCE051343A3D07D58D6BC62A8FCA2C9AAE1A/", 8, 6 },
+        -- ix with control the spice
+        ixImperium = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141328204/9DFCC56F20D09D60CF2B9D9050CB9640176F71B6/", 7, 5 },
+        -- tleilax with experimentation
+        immortalityImperium = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141324694/E758512421B5CB27BBA228EF5F1880A7F3DC564D/", 6, 5 },
+        -- tleilax with reclaimed forces
+        tleilaxResearch = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141325643/D9BD273651404E7DE7F0E22B36F2D426D82B07A8/", 4, 5 },
+        uprisingImperium = { "https://steamusercontent-a.akamaihd.net/ugc/17055598461102747396/E818614F008F1CDE6B81E700C8EEC11D5A917ED7/", 9, 6 },
+        uprisingImperium_contract = { "https://steamusercontent-a.akamaihd.net/ugc/15113519067767610658/6A829E747CA2BAE345920873964E846298C50738/", 2, 2 },
+        uprisingImperium_prepareTheWay = { "https://steamusercontent-a.akamaihd.net/ugc/15446429860395458613/D22AAF42CD79D455D4AB69B7C301A00D7FE52A09/", 1, 1 },
+        uprisingImperium_theSpiceMustFlow = { "https://steamusercontent-a.akamaihd.net/ugc/11053854505554748135/38714AFBB6D2C6D9D4C78E479F6315C288520D51/", 1, 1 },
+        -- bloodlines
+        bloodlinesImperium = { "https://steamusercontent-a.akamaihd.net/ugc/10166314864823293398/62EEBDDBDD7A8704B044EB7122D5ED946D94CEA1/", 7, 3 },
+        bloodlinesImperium_contract = { "https://steamusercontent-a.akamaihd.net/ugc/11505243690912358518/0DA5546E3C15950BA4F744262847D5D1ADD9FD16/", 4, 1 },
+        bloodlinesImperium_tech = { "https://steamusercontent-a.akamaihd.net/ugc/17867477410729571686/90705D6CE1BCF274DC3AE7787016B466B39C444E/", 1, 1 },
+        bloodlinesImperium_ruthlessLeadership = { "https://steamusercontent-a.akamaihd.net/ugc/14005282797966134205/C9125CBE5DC6E0DD79BACC7E05BBF8E256C54D50/", 1, 1 },
+        bloodlinesImperium_pivotalGambit = { "https://steamusercontent-a.akamaihd.net/ugc/10189719710396123112/056E8D8881987DC9EDBB1FB594E0C7CA2FC3D3E8/", 1, 1 },
+    },
+    intrigue = {
+        intrigue = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141343483/A63AE0E1069DA1279FDA3A5DE6A0E073F45FC8EF/", 7, 5 },
+        ixIntrigue = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141342567/CE27F1B6D4D455A2D00D6E13FABEB72E6B9F05F1/", 5, 4 },
+        immortalityIntrigue = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141342411/9FED90CD510F26618717CEB63FDA744CE916C6BA/", 6, 2 },
+        uprisingIntrigue = { "https://steamusercontent-a.akamaihd.net/ugc/17470096520699065903/1A5EB9820DC519AD440E25772103AB2226B68CAE/", 7, 5 },
+        uprisingIntrigue_contract = { "https://steamusercontent-a.akamaihd.net/ugc/12404632183185257295/804846FE8F39A5EB08C0D0CAE2C48EC286FBA1BB/", 2, 2 },
+        bloodlinesIntrigue = { "https://steamusercontent-a.akamaihd.net/ugc/17374972601723332052/704778C880E1CCD94CE62C83B3004011EA6F82B6/", 5, 3 },
+        bloodlinesIntrigue_contract = { "https://steamusercontent-a.akamaihd.net/ugc/11891482317974852417/C2C64B82CA0566E699A1F725ED7AAF27C6B993C8/", 1, 1 },
+        bloodlinesIntrigue_tech = { "https://steamusercontent-a.akamaihd.net/ugc/13582135019322065262/A4C68CE55ED39A1E7B5D0E2EB60BD9AA0E5AC51B/", 2, 1 },
+        bloodlinesIntrigue_twisted = { "https://steamusercontent-a.akamaihd.net/ugc/11829347407672977389/AE95793B64E08D865B24CA161D262FC17D26CAFC/", 4, 3 },
+    },
+    conflict1 = {
+        uprisingConflict = { "https://steamusercontent-a.akamaihd.net/ugc/10511513924228200188/F2766DAF66043C2E31A2BDED4BECAE353E9D3AFC/", 2, 2 },
+        bloodlinesConflict = { "https://steamusercontent-a.akamaihd.net/ugc/14024931574950023473/9F2F922E391CFEC0BDA61334ACC6A15C1BF54F51/", 1, 1 },
+    },
+    conflict2 = {
+        uprisingConflict = { "https://steamusercontent-a.akamaihd.net/ugc/16690208135307020622/4C47F4B071798B354825509C1201321FF1173693/", 5, 2 },
+        bloodlinesConflict = { "https://steamusercontent-a.akamaihd.net/ugc/11811013448727779607/5B7B37F2C607D06B8A3A8C8D1630A064B32FFF17/", 1, 1 },
+    },
+    conflict3 = {
+        conflict = { "https://steamusercontent-a.akamaihd.net/ugc/12863470231178883667/2939D406FF933686DDDEFA5AC7FD6377FB2FF24E/", 3, 2 },
+        uprisingConflict = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141315402/71EFAC5FF1CC15BC3BF35E613D956BE814964C41/", 2, 2 },
+    },
+    hagal = {
+        base = { "https://steamusercontent-a.akamaihd.net/ugc/2291837013341414524/BB90DF7F9C97680FE16C4D91A1AF0871B2462CB9/", 5, 5 },
+        reshuffle = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141333398/66020C11E4FEA2D22744020D27465DCC2BB02BBE/", 7, 2 },
+        ix = { "https://steamusercontent-a.akamaihd.net/ugc/2291837013341435538/E181DED96F81A27405E57F0CF398575C20D73D12/", 2, 3 },
+        immortality = { "https://steamusercontent-a.akamaihd.net/ugc/2291837013341433170/56E0015597F27AB50451E026A8BD95512FA1CE27/", 2, 2 },
+        bloodlines = { "https://steamusercontent-a.akamaihd.net/ugc/14535624094719879014/4E6E7D0438D6C695FB460CDE4978A9222F75A46A/", 2, 1 },
+    },
+    tech = {
+        -- ix
+        windtraps = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141361499/1357A12AE8B805DDA4B35054C7A042EB60ED8D93/", 1, 1 },
+        flagship = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141364750/3D450BD068CF618EB58032CA790EC8CFB512C6ED/", 1, 1 },
+        sonicSnoopers = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141363495/735DAD89216E331EE1461EEBC94E579B3F65D898/", 1, 1 },
+        artillery = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141362120/1DD4BAFBF228984A2AE7D7A04C6BD98E5817CB75/", 1, 1 },
+        troopTransports = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141363152/5F8994647E6BE9B8DFE12775816BA8634DBEF803/", 1, 1 },
+        spySatellites = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141363781/A4A7827D2C9E2D084FEF39864C901F858DBAC7A0/", 1, 1 },
+        invasionShips = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141362661/CA3C07205ECEFC22C759E350C47B58052D1CB3EC/", 1, 1 },
+        chaumurky = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141359974/CC1342B27E230372F8A10A0BD35ADF796F0FF6A5/", 1, 1 },
+        detonationDevices = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141362350/985702313B721E7343ED01C603AF5C8EFF43C2F4/", 1, 1 },
+        spaceport = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141362796/A906AB650BF19DEA2E39F86F873940143C2CF814/", 1, 1 },
+        minimicFilm = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141360892/74A896440084439B2C557D8651EB8125A64E85B1/", 1, 1 },
+        holoprojectors = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141360731/89575580CD49633CE5473B76CDDFA1A0A2503030/", 1, 1 },
+        memocorders = { "https://steamusercontent-a.akamaihd.net/ugc/2488878371133863837/2644950194120A67CDC6BF7019D951FCF605DBFF/", 1, 1 },
+        disposalFacility = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141361878/57A51864E207970E7DCB9ACCAE68AFAE48F2CD61/", 1, 1 },
+        holtzmanEngine = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141361742/B202AC36308C95EF1CA325DAE9318DCB6C5229EE/", 1, 1 },
+        trainingDrones = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141361140/B877582FA7ECB542E046FB96EB8488D511DEDF1C/", 1, 1 },
+        shuttleFleet = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141364620/9E39289A6CED8A977E8206E1B5FD1A14F4BA55F8/", 1, 1 },
+        restrictedOrdnance = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141360269/1F4181A709E103B8807D6D6FBF3C6BA62A4C20F9/", 1, 1 },
+        --bloodlines = { "https://steamusercontent-a.akamaihd.net/ugc/10973288923341663054/234258C6F169769056E00EB7EF0DC28C7B8D1BB6/", 3, 6 },
+        forbiddenWeapons = { "https://steamusercontent-a.akamaihd.net/ugc/16549886529912961809/706C717BFDE2EA9891327761BE5B5B1D1CA40CD4/", 1, 1 },
+        servoReceivers = { "https://steamusercontent-a.akamaihd.net/ugc/17243030170230690229/ED105B4406B9930D8AF32B8107A9185F4D7973D9/", 1, 1 },
+        spyDrones = { "https://steamusercontent-a.akamaihd.net/ugc/9749364753852736102/FC37D98A5D2723D7C63615072D679EE0AE58D6D7/", 1, 1 },
+        ornithopterFleet = { "https://steamusercontent-a.akamaihd.net/ugc/16910866872384868503/3DC79D4489628752892356B6E11AF20CC735E9CB/", 1, 1 },
+        sardaukarHighCommand = { "https://steamusercontent-a.akamaihd.net/ugc/15404490943906426113/5859AA96D10B1AC49C932D82687FA8DC8C07DE82/", 1, 1 },
+        glowglobes = { "https://steamusercontent-a.akamaihd.net/ugc/12218741996139093793/16A506EC1607EF2836A17BBD376D60286BE5F538/", 1, 1 },
+        choamTransports = { "https://steamusercontent-a.akamaihd.net/ugc/14682733186070238257/7BA82B51BF1FDAF6DBCA72AB467D90863DDAC172/", 1, 1 },
+        selfDestroyingMessages = { "https://steamusercontent-a.akamaihd.net/ugc/12010308893796325591/78672DA386D9319DF39C850DB0604B7B7437306F/", 1, 1 },
+        navigationChamber = { "https://steamusercontent-a.akamaihd.net/ugc/14379456237042162477/FBDCBECE7701277FC1F8D89BF426809710ACD9DA/", 1, 1 },
+        rapidDropships = { "https://steamusercontent-a.akamaihd.net/ugc/12008710218412142224/9EE7F1D0A1CB6C5A3EDD2D90EE5F9AD541E1D638/", 1, 1 },
+        plasteelBlades = { "https://steamusercontent-a.akamaihd.net/ugc/10402746974692940988/4F2DD6E5C465534998FE67A56B2E95283A4755E0/", 1, 1 },
+        deliveryBay = { "https://steamusercontent-a.akamaihd.net/ugc/13612933406762869906/257BBF8B69D85ECC65B745ACC219E4C6426D0BE8/", 1, 1 },
+        trainingDepot = { "https://steamusercontent-a.akamaihd.net/ugc/16840498883514018480/8FBE72F803A53B0A52DA2BCA215FA420CCC7394A/", 1, 1 },
+        planetaryArray = { "https://steamusercontent-a.akamaihd.net/ugc/17918227540999801434/06C812467EAACD025C549578BEF04FFDB2185A1F/", 1, 1 },
+        panopticon = { "https://steamusercontent-a.akamaihd.net/ugc/14300948615408520157/9944B47584D3E0FE4522409A202AB79F56984415/", 1, 1 },
+        geneLockedVault = { "https://steamusercontent-a.akamaihd.net/ugc/12874275231044371573/D8E5B09CD439544AAE932053824C7C6F0C890007/", 1, 1 },
+        suspensorSuits = { "https://steamusercontent-a.akamaihd.net/ugc/10488773375535060474/ABF074D1A47823451BDEE6F3F927D594C3D3239A/", 1, 1 },
+        advancedDataAnalysis = { "https://steamusercontent-a.akamaihd.net/ugc/13045449240349449523/8F20F8CCF824C5558C955A646666E21A7A52354A/", 1, 1 },
+    },
+    -- Unusued as cards.
+    contract = {
+        spiceRefineryWater = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141300304/7EA3323DDA7E60E1A8AB1119431D2D25187417F7/", 1, 1 },
+        spiceRefineryCard = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141300927/78FB61B6A6BE119DEC9E93CC343BE1C199191E89/", 1, 1 },
+        researchStationSpy = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141304020/9408609A985B7FFC43C43E0E791694870CB379C7/", 1, 1 },
+        researchStationSolari = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141299628/C2F0768CD60F9944C16F128F307BA6F8107C0E93/", 1, 1 },
+        arrakeenSpy = { "https://steamusercontent-a.akamaihd.net/ugc/2488878371133404029/4CB29CF8FC8D0BF9A5B575B3E05B31774E59F3CD/", 1, 1 },
+        arrakeenWater = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141302127/926CFC63532C4D7BC6AA6B9151AFF0221A553B44/", 1, 1 },
+        espionage = { "https://steamusercontent-a.akamaihd.net/ugc/2488878371133403318/35C1BFE9773F01181B1280C061914D7CE07BFE71/", 1, 1 },
+        sardaukarRecall = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141301335/E5463C7FFA3426E57F5B07A0DE91602798170C69/", 1, 1 },
+        sardaukarCard = { "https://steamusercontent-a.akamaihd.net/ugc/28806104144609890/1711DFB19987B48883EF6B53E1CD62739D70E1A2/", 1, 1 },
+        highCouncilSolari = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141301141/33A0566759303798910FF7F7C4414E09BDBBE037/", 1, 1 },
+        highCouncilInfluence = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141301954/16A847D5CB4EB5E926D4404BB5F30BAF574558F5/", 1, 1 },
+        immediate = { "https://steamusercontent-a.akamaihd.net/ugc/2488878371133402189/3D848E8CC39986DD283094AC31757997C097F4D7/", 1, 1 },
+        heighlinerTroop = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141302477/348DAD4630FD7CD067043AFBC5ADCB91733D9D23/", 1, 1 },
+        heighlinerWater = { "https://steamusercontent-a.akamaihd.net/ugc/2488878371133401717/5B022A86311D086273A90DBA7D53DC22DCA9C917/", 1, 1 },
+        deliverSupplies = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141300498/B42F88CDC1519A7893668030B695338E7EA18391/", 1, 1 },
+        acquire = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141302699/94ED4105E316EDD45B0202837A711FF3A99E7CFA/", 1, 1 },
+        harvest = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141300124/832069DB1C4F8B9B328876E798D071FFD35F0173/", 1, 1 },
+        harvestMore = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141301496/B564DA078EA0BE9D2A7AAA8FA4DF105D4AD82A17/", 1, 1 },
+    },
+    leader = {
+        vladimirHarkonnen = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141316546/B5899377296C2BFAC0CF48E18AA3773AA8E998DE/", 1, 1 },
+        glossuRabban = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141317845/DCF40F0D8C34B14180DC33B369DCC8AA4FD3FB55/", 1, 1 },
+        ilbanRichese = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141316307/15624E52D08F594943A4A6332CBD68B2A1645441/", 1, 1 },
+        helenaRichese = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141318952/63750F22F1DFBA9D9544587C0B2B8D65E157EC00/", 1, 1 },
+        letoAtreides = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141318661/8CBD932BE474529D6C14A3AA8C01BD8503EBEBC6/", 1, 1 },
+        paulAtreides = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141317535/F597DBF1EB750EA14EA03F231D0EBCF07212A5AC/", 1, 1 },
+        arianaThorvald = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141320077/2A9043877494A7174A32770C39147FAE941A39A2/", 1, 1 },
+        memnonThorvald = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141321067/8431F61C545067A4EADC017E6295CB249A2BD813/", 1, 1 },
+        -- ix
+        armandEcaz = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141320355/310C6B6E85920F9FC1A94896A335D34C3CFA6C15/", 1, 1 },
+        ilesaEcaz = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141318208/94B1575474BEEF1F1E0FE0860051932398F47CA5/", 1, 1 },
+        rhomburVernius = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141316909/0C06A30D74BD774D9B4F968C00AEC8C0817D4C77/", 1, 1 },
+        tessiaVernius = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141319434/29817122A32B50C285EE07E0DAC32FDE9A237CEC/", 1, 1 },
+        yunaMoritani = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141319867/FA54B129B168169E3D58BA61536FCC0BB5AB7D34/", 1, 1 },
+        hundroMoritani = { "https://steamusercontent-a.akamaihd.net/ugc/2502404390141316031/6A89778D9C4BB8AC07FE503D48A4483D13DF6E5B/", 1, 1 },
+        -- uprising
+        stabanTuek = { "https://steamusercontent-a.akamaihd.net/ugc/16603460979538491629/16DC4121AFF0A0DB4D711B38D3B7FBF6FE296D6D/", 1, 1 },
+        amberMetulli = { "https://steamusercontent-a.akamaihd.net/ugc/14427130815003244084/2DAD001E718EF834139441A966D7F83C7C3F0C98/", 1, 1 },
+        gurneyHalleck = { "https://steamusercontent-a.akamaihd.net/ugc/9728402874983250158/A5BCA8CDD22E8BA4BEA347190E1E3F7EBA56368E/", 1, 1 },
+        margotFenring = { "https://steamusercontent-a.akamaihd.net/ugc/17364454362693102153/8428F2932408F0A9A6080B5AFC08C083E547485B/", 1, 1 },
+        irulanCorrino = { "https://steamusercontent-a.akamaihd.net/ugc/16889878862688184582/88F34817432A2EE68522AE27C40DF6DB51B80740/", 1, 1 },
+        jessica = { "https://steamusercontent-a.akamaihd.net/ugc/14096502405885219846/F154E11F18380D0928054CE1F9762FA86F7AA8B6/", 1, 1, Vector(1.12, 1, 1.12),
+            "https://steamusercontent-a.akamaihd.net/ugc/9696895022646483396/4CD999A6169A8AD6343CC6B95BBE810D3324CB93/" },
+        feydRauthaHarkonnen = { "https://steamusercontent-a.akamaihd.net/ugc/17922797003031841494/18B53DA10143E4A974DC2E23846B4C92EB4A61DB/", 1, 1 },
+        shaddamCorrino = { "https://steamusercontent-a.akamaihd.net/ugc/12205718330324535633/2EA9D6D6AA269D1B86013163D6194DCA6BFEB4E5/", 1, 1 },
+        muadDib = { "https://steamusercontent-a.akamaihd.net/ugc/14195084813204706243/040FBDDF5006C6919F64A1A14ACF71B7B7E2D77F/", 1, 1 },
+        -- bloodlines
+        chani = { "https://steamusercontent-a.akamaihd.net/ugc/13842380678639370326/5C69E12794AF4A94C6ED57290B516B6DC76A1FE1/", 1, 1 },
+        duncanIdaho = { "https://steamusercontent-a.akamaihd.net/ugc/13463505432383320270/54FF9A593B9870E13BC8FEF9A18AAA9274E19CBA/", 1, 1 },
+        esmarTuek = { "https://steamusercontent-a.akamaihd.net/ugc/11801598958949432845/2556AC0AA102406DCA21A5863AEEE6AA5C75B58F/", 1, 1 },
+        gaiusHelenMohiam = { "https://steamusercontent-a.akamaihd.net/ugc/10172590269915650364/E6E98B9B4072280C734D9E5AB647B05C1429606F/", 1, 1 },
+        hasimirFenring = { "https://steamusercontent-a.akamaihd.net/ugc/14632277081108354737/859A78B59CED8C3295E4767760812091798BB0D8/", 1, 1 },
+        lietKynes = { "https://steamusercontent-a.akamaihd.net/ugc/14153233902966559409/0F86C48A64B1DF53C80A17F4F601273B835550B4/", 1, 1 },
+        piterDeVries = { "https://steamusercontent-a.akamaihd.net/ugc/17567283454269405550/FCA10C6D65F2B37ADE44352A951699B40E8DEC84/", 1, 1 },
+        yrkoon = { "https://steamusercontent-a.akamaihd.net/ugc/16706684599292593176/FE470F75A1D0421D6676CF3C902A80632D0F7D7C/", 1, 1 },
+        kotaOdax = { "https://steamusercontent-a.akamaihd.net/ugc/13303538665422276008/E8F6F995587AA4C462C1BB5EBFB7CB115956CB08/", 1, 1 },
+    },
+    rivalLeader = {
+        uprising = { "https://steamusercontent-a.akamaihd.net/ugc/2291837013341168508/811BF7142774932C8C2FAD7C10BA104F8DAD4299/", 4, 3 },
+        bloodlines = { "https://steamusercontent-a.akamaihd.net/ugc/28804925896497833/3EA98B4739ED652C8B34CE13B53BCD94647FEA50/", 3, 2 },
+    },
+    navigation = {
+        bloodlines = { "https://steamusercontent-a.akamaihd.net/ugc/14442162264832122569/8F1B004CE8D25A2FCB00B4D60747D3DEB6656898/", 5, 2 },
+    },
+    sardaukarCommanderSkill = {
+        bloodlines = { "https://steamusercontent-a.akamaihd.net/ugc/18064283230023882594/41E082A4120E9D48B130929E9345FC19272373A7/", 4, 2 },
+    },
+}
+
+function Deck.load(loader, cards, category, customDeckName, startLuaIndex, cardNames)
+    assert(Deck[category], "Unknown category: " .. tostring(category))
+    local desc = Deck[category][customDeckName]
+    assert(desc, "No descriptor for: " .. category .. "." .. customDeckName)
+    local customDeck
+    if desc[5] then
+        customDeck = loader.createCustomDeck(desc[5], desc[1], desc[2], desc[3], desc[4])
+    else
+        local functionName = Helper.concatAsCamelCase("create", category, "CustomDeck")
+        assert(loader[functionName], "No loader for: " .. functionName )
+        customDeck = loader[functionName](desc[1], desc[2], desc[3], desc[4])
+    end
+    assert(cards, "No cards in category: " .. category)
+    return loader.loadCustomDeck(cards, customDeck, startLuaIndex, cardNames)
+end
+
+function Deck.loadWithSubCategory(loader, cards, category, subCategory, customDeckName, startLuaIndex, cardNames)
+    assert(Deck[category], "No category: " .. category)
+    assert(Deck[category][subCategory], "No sub category: " .. category .. "." .. subCategory)
+    local desc = Deck[category][subCategory][customDeckName]
+    assert(desc, "No descriptor for: " .. category .. "." .. customDeckName)
+    local functionName = Helper.concatAsCamelCase("create", category, "CustomDeck")
+    assert(loader[functionName], "No loader for: " .. functionName )
+    local customDeck = loader[functionName](desc[1], desc[2], desc[3], desc[4])
+    assert(cards, "No cards in category: " .. category)
+    return loader.loadCustomDeck(cards, customDeck, startLuaIndex, cardNames)
+end
+
+function Deck.loadCustomDecks(loader)
+    local cards = {
+        objective = {},
+        imperium = {},
+        special = {},
+        tleilaxu = {},
+        intrigue = {},
+        conflict = {},
+        hagal = {},
+        tech = {},
+        leaders = {},
+        rivalLeaders = {},
+        navigation = {},
+        sardaukarCommanderSkills = {},
+    }
+
+    Deck.load(loader, cards.objective, "objective", "uprisingObjective", 1, {
+        "ornithopter1to3p",
+        "muadDibFirstPlayer",
+        "crysknife",
+        "muadDib4to6p",
+        "crysknife4to6p",
+    })
+
+    Deck.load(loader, cards.imperium, "imperium", "starter", 1, {
+        "duneTheDesertPlanet",
+        "dagger",
+        "reconnaissance",
+        "convincingArgument",
+        "seekAllies",
+        "signetRing",
+        "diplomacy",
+    })
+    Deck.load(loader, cards.imperium, "imperium", "starterImperium_emperor", 1, {
+        "emperorConvincingArgument",
+        "emperorCorrinoMight",
+        "emperorCriticalShipments",
+        "emperorDemandResults",
+        "emperorDevastatingAssault",
+        "emperorImperialOrnithopter", "",
+        "emperorSignetRing",
+        "emperorSeekAllies",
+        "emperorImperialTent",
+    })
+    Deck.load(loader, cards.imperium, "imperium", "starterImperium_muadDib", 1, {
+        "muadDibCommandRespect",
+        "muadDibConvincingArgument",
+        "muadDibDemandAttention",
+        "muadDibDesertCall",
+        "muadDibLimitedLandsraadAccess", "",
+        "muadDibSeekAllies",
+        "muadDibUsul",
+        "muadDibThreatenSpiceProduction",
+        "muadDibSignetRing",
+    })
+    Deck.load(loader, cards.imperium, "imperium", "imperium", 1, {
+        "sardaukarLegion",
+        "drYueh",
+        "assassinationMission",
+        "sardaukarInfantry",
+        "", -- foldspace
+        "", -- arrakisLiaison
+        "", -- theSpiceMustFlow
+        "beneGesseritInitiate",
+        "guildAdministrator",
+        "theVoice",
+        "scout",
+        "imperialSpy",
+        "beneGesseritSister",
+        "missionariaProtectiva",
+        "spiceHunter",
+        "spiceSmugglers",
+        "fedaykinDeathCommando",
+        "geneManipulation",
+        "guildBankers",
+        "choamDirectorship",
+        "crysknife",
+        "chani",
+        "spaceTravel",
+        "duncanIdaho",
+        "shiftingAllegiances",
+        "kwisatzHaderach",
+        "sietchReverendMother",
+        "arrakisRecruiter",
+        "firmGrip",
+        "smugglersThopter",
+        "carryall",
+        "gunThopter",
+        "guildAmbassador",
+        "testOfHumanity",
+        "fremenCamp",
+        "opulence",
+        "ladyJessica",
+        "stilgar",
+        "piterDeVries",
+        "gurneyHalleck",
+        "thufirHawat",
+        "otherMemory",
+        "lietKynes",
+        "wormRiders",
+        "reverendMotherMohiam",
+        "powerPlay",
+    })
+    Deck.load(loader, cards.imperium, "imperium", "ixImperium", 1, {
+        "boundlessAmbition",
+        "guildChiefAdministrator",
+        "guildAccord",
+        "localFence",
+        "shaiHulud",
+        "ixGuildCompact",
+        "choamDelegate",
+        "bountyHunter",
+        "embeddedAgent",
+        "esmarTuek",
+        "courtIntrigue",
+        "sayyadina",
+        "imperialShockTrooper",
+        "appropriate",
+        "desertAmbush",
+        "inTheShadows",
+        "satelliteBan",
+        "freighterFleet",
+        "imperialBashar",
+        "jamis",
+        "landingRights",
+        "waterPeddler",
+        "treachery",
+        "truthsayer",
+        "spiceTrader",
+        "ixianEngineer",
+        "webOfPower",
+        "weirdingWay",
+        "negotiatedWithdrawal",
+        "fullScaleAssault",
+        "jessicaOfArrakis",
+        "missionariaProtectiva",
+        "controlTheSpice",
+        "duncanLoyalBlade"
+    })
+    Deck.load(loader, cards.imperium, "imperium", "immortalityImperium", 1, {
+        "beneTleilaxLab",
+        "beneTleilaxResearcher",
+        "blankSlate",
+        "clandestineMeeting",
+        "corruptSmuggler",
+        "dissectingKit",
+        "experimentation",
+        "forHumanity",
+        "highPriorityTravel",
+        "imperiumCeremony",
+        "interstellarConspiracy",
+        "keysToPower",
+        "lisanAlGaib",
+        "longReach",
+        "occupation",
+        "organMerchants",
+        "plannedCoupling",
+        "replacementEyes",
+        "sardaukarQuartermaster",
+        "shadoutMapes",
+        "showOfStrength",
+        "spiritualFervor",
+        "stillsuitManufacturer",
+        "throneRoomPolitics",
+        "tleilaxuMaster",
+        "tleilaxuSurgeon"
+    })
+    Deck.load(loader, cards.imperium, "imperium", "uprisingImperium", 1, {
+        "unswervingLoyalty",
+        "spaceTimeFolding",
+        "weirdingWoman",
+        "sardaukarSoldier",
+        "smugglerHarvester",
+        "makerKeeper",
+        "reliableInformant",
+        "hiddenMissive",
+        "wheelsWithinWheels",
+        "fedaykinStilltent",
+        "imperialSpymaster",
+        "spyNetwork",
+        "desertSurvival",
+        "undercoverAsset",
+        "beneGesseritOperative",
+        "maulaPistol",
+        "thumper",
+        "nothernWatermaster",
+        "covertOperation",
+        "doubleAgent",
+        "guildEnvoy",
+        "rebelSupplier",
+        "calculusOfPower",
+        "guildSpy",
+        "dangerousRhetoric",
+        "branchingPath",
+        "ecologicalTestingStation",
+        "theBeastSpoils",
+        "smugglerHaven",
+        "shishakli",
+        "paracompass",
+        "sardaukarCoordination",
+        "truthtrance",
+        "publicSpectable",
+        "southernElders",
+        "treadInDarkness",
+        "spacingGuildFavor",
+        "capturedMentat",
+        "subversiveAdvisor",
+        "leadership",
+        "inHighPlaces",
+        "strikeFleet",
+        "trecherousManeuver",
+        "chaniCleverTactician",
+        "junctionHeadquarters",
+        "corrinthCity",
+        "stilgarTheDevoted",
+        "desertPower",
+        "arrakisRevolt",
+        "priceIsNoObject",
+        "longLiveTheFighters",
+        "overthrow",
+        "steersman",
+    })
+    Deck.load(loader, cards.imperium, "imperium", "uprisingImperium_contract", 1, {
+        "cargoRunner",
+        "deliveryAgreement",
+        "priorityContracts",
+        "interstellarTrade",
+    })
+    Deck.load(loader, cards.imperium, "imperium", "bloodlinesImperium", 1, {
+        "fremenWarName",
+        "sardaukarStandard",
+        "quashRebellion",
+        "southernFaith",
+        "imperialThroneship",
+        "possibleFutures",
+        "arrakisObserver",
+        "eliminateAllies",
+        "holyWar",
+        "intelligenceTraining",
+        "bombast",
+        "pointingTheWay",
+        "shroudedCounsel",
+        "sandwalk",
+        "disruptionTactics",
+        "urgentShigawire",
+        "commandCenter",
+        "engineeredMiracle",
+        "iBelieve",
+        "litanyAgainstFear",
+        "eliteForces",
+    })
+    Deck.load(loader, cards.imperium, "imperium", "bloodlinesImperium_contract", 1, {
+        "deliveryLogistics",
+        "corruptBureaucrat",
+        "mercantileAffairs",
+        "choamDemands",
+    })
+    Deck.load(loader, cards.imperium, "imperium", "bloodlinesImperium_tech", 1, {
+        "ixianAmbassador",
+    })
+    Deck.load(loader, cards.imperium, "imperium", "bloodlinesImperium_ruthlessLeadership", 1, {
+        "ruthlessLeadership",
+    })
+    Deck.load(loader, cards.imperium, "imperium", "bloodlinesImperium_pivotalGambit", 1, {
+        "pivotalGambit",
+    })
+    Deck.load(loader, cards.special, "imperium", "imperium", 5, {
+        "foldspace",
+    })
+    Deck.load(loader, cards.special, "imperium", "tleilaxResearch", 11, {
+        "reclaimedForces",
+    })
+    Deck.load(loader, cards.special, "imperium", "uprisingImperium_prepareTheWay", 8, {
+        "prepareTheWay",
+    })
+    Deck.load(loader, cards.special, "imperium", "uprisingImperium_theSpiceMustFlow", 10, {
+        "theSpiceMustFlow",
+    })
+    Deck.load(loader, cards.tleilaxu, "imperium", "tleilaxResearch", 1, {
+        "beguilingPheromones",
+        "chairdog",
+        "contaminator",
+        "corrinoGenes",
+        "faceDancer",
+        "faceDancerInitiate",
+        "fromTheTanks",
+        "ghola",
+        "guildImpersonator",
+        "industrialEspionage",
+        "", -- Reclaimed Forces
+        "scientificBreakthrough",
+        "sligFarmer",
+        "stitchedHorror",
+        "subjectX137",
+        "tleilaxuInfiltrator",
+        "twistedMentat",
+        "unnaturalReflexes",
+        "usurp",
+        "piterGeniusAdvisor"
+    })
+
+    Deck.load(loader, cards.intrigue, "intrigue", "intrigue", 1, {
+        "bribery",
+        "refocus",
+        "ambush",
+        "alliedArmada",
+        "favoredSubject",
+        "demandRespect",
+        "poisonSnooper",
+        "guildAuthorization",
+        "dispatchAnEnvoy",
+        "infiltrate",
+        "knowTheirWays",
+        "masterTactician",
+        "plansWithinPlans",
+        "privateArmy",
+        "doubleCross",
+        "councilorsDispensation",
+        "cornerTheMarket",
+        "charisma",
+        "calculatedHire",
+        "choamShares",
+        "bypassProtocol",
+        "recruitmentMission",
+        "reinforcements",
+        "binduSuspension",
+        "secretOfTheSisterhood",
+        "rapidMobilization",
+        "stagedIncident",
+        "theSleeperMustAwaken",
+        "tiebreaker",
+        "toTheVictor",
+        "waterPeddlersUnion",
+        "windfall",
+        "waterOfLife",
+        "urgentMission"
+    })
+    Deck.load(loader, cards.intrigue, "intrigue", "ixIntrigue", 1, {
+        "diversion",
+        "warChest",
+        "advancedWeaponry",
+        "secretForces",
+        "grandConspiracy",
+        "cull",
+        "strategicPush",
+        "blackmail",
+        "machineCulture",
+        "cannonTurrets",
+        "expedite",
+        "ixianProbe",
+        "secondWave",
+        "glimpseThePath",
+        "finesse",
+        "strongarm",
+        "quidProQuo"
+    })
+    Deck.load(loader, cards.intrigue, "intrigue", "immortalityIntrigue", 1, {
+        "breakthrough",
+        "counterattack",
+        "disguisedBureaucrat",
+        "economicPositioning",
+        "gruesomeSacrifice",
+        "harvestCells",
+        "illicitDealings",
+        "shadowyBargain",
+        "studyMelange",
+        "tleilaxuPuppet",
+        "viciousTalents"
+    })
+    Deck.load(loader, cards.intrigue, "intrigue", "uprisingIntrigue", 1, {
+        "sietchRitual",
+        "mercenaries",
+        "councilorAmbition",
+        "strategicStockpiling",
+        "detonation",
+        "departForArrakis",
+        "cunning",
+        "opportunism",
+        "changeAllegiances",
+        "specialMission",
+        "unexpectedAllies",
+        "callToArms",
+        "buyAccess",
+        "imperiumPolitics",
+        "shaddamFavor",
+        "intelligenceReport",
+        "manipulate",
+        "distraction",
+        "marketOpportunity",
+        "goToGround",
+        "contingencyPlan",
+        "inspireAwe",
+        "findWeakness",
+        "spiceIsPower",
+        "devour",
+        "impress",
+        "springTheTrap",
+        "weirdingCombat",
+        "tacticalOption",
+        "questionableMethods",
+        "desertMouse",
+        "ornithopter",
+        "crysknife",
+        "shadowAlliance",
+        "secureSpiceTrade",
+    })
+    Deck.load(loader, cards.intrigue, "intrigue", "uprisingIntrigue_contract", 1, {
+        "leverage",
+        "backedByChoam",
+        "reachAgreement",
+        "choamProfits",
+    })
+    Deck.load(loader, cards.intrigue, "intrigue", "bloodlinesIntrigue", 1, {
+        "withdrawalAgreement",
+        "falseOrders",
+        "graspArrakis",
+        "insiderInformation",
+        "ripplesInTheSand",
+        "sleeperUnit",
+        "adaptiveTactics",
+        "desertSupport",
+        "emperorInvitation",
+        "honorGuard",
+        "returnTheFavor",
+        "sacredPools",
+        "seizeProduction",
+        "theStrongSurvive",
+        "tenuousBound",
+    })
+    Deck.load(loader, cards.intrigue, "intrigue", "bloodlinesIntrigue_contract", 1, {
+        "coerciveNegotiation",
+    })
+    Deck.load(loader, cards.intrigue, "intrigue", "bloodlinesIntrigue_tech", 1, {
+        "battlefieldResearch",
+        "rapidEngineering",
+    })
+    Deck.load(loader, cards.intrigue, "intrigue", "bloodlinesIntrigue_twisted", 1, {
+        "ambitious",
+        "calculating",
+        "controlled",
+        "devious",
+        "discerning",
+        "insidious",
+        "resourceful",
+        "sadistic",
+        "shrewd",
+        "sinister",
+        "unnatural",
+        "withdrawn",
+    })
+
+    Deck.load(loader, cards.conflict, "conflict1", "uprisingConflict", 1, {
+        "skirmishA",
+        "skirmishB",
+        "skirmishC",
+    })
+    Deck.load(loader, cards.conflict, "conflict1", "bloodlinesConflict", 1, {
+        "skirmishD",
+    })
+    Deck.load(loader, cards.conflict, "conflict2", "uprisingConflict", 1, {
+        "choamSecurity",
+        "spiceFreighters",
+        "siegeOfArrakeen",
+        "seizeSpiceRefinery",
+        "testOfLoyalty",
+        "shadowContest",
+        "secureImperialBasin",
+        "protectTheSietches",
+        "tradeDispute",
+    })
+    Deck.load(loader, cards.conflict, "conflict2", "bloodlinesConflict", 1, {
+        "stormsInTheSouth"
+    })
+    Deck.load(loader, cards.conflict, "conflict3", "conflict", 5, {
+        "economicSupremacy",
+    })
+    Deck.load(loader, cards.conflict, "conflict3", "uprisingConflict", 1, {
+        "propaganda",
+        "battleForImperialBasin",
+        "battleForArrakeen",
+        "battleForSpiceRefinery",
+    })
+
+    Deck.load(loader, cards.hagal, "hagal", "base", 1, {
+        "churn",
+        "placeSpyYellow",
+        "placeSpyBlue",
+        "placeSpyGreen",
+        "sardaukar",
+        "dutifulService",
+        "heighliner",
+        "deliverSuppliesAndHeighliner",
+        "espionage",
+        "secrets",
+        "desertTactics",
+        "fremkit",
+        "assemblyHall",
+        "gatherSupport1",
+        "gatherSupport2",
+        "acceptContractAndShipping1",
+        "acceptContractAndShipping2",
+        "researchStation",
+        "spiceRefinery",
+        "arrakeen",
+        "sietchTabr",
+        "haggaBasinAndImperialBasin",
+        "deepDesert",
+    })
+    Deck.load(loader, cards.hagal, "hagal", "reshuffle", 10, {
+        "reshuffle"
+    })
+    Deck.load(loader, cards.hagal, "hagal", "ix", 1, {
+        "interstellarShipping",
+        "deliverSuppliesAndInterstellarShipping",
+        "smugglingAndInterstellarShipping",
+        "techNegotiation",
+        "dreadnought1p",
+        "dreadnought2p",
+    })
+    Deck.load(loader, cards.hagal, "hagal", "immortality", 1, {
+        "researchStationImmortality",
+        "tleilaxuBonus1",
+        "tleilaxuBonus2",
+        "tleilaxuBonus3",
+    })
+    Deck.load(loader, cards.hagal, "hagal", "bloodlines", 1, {
+        "acquireTech",
+        "tuekSietch",
+    })
+
+    -- One tech per custom deck.
+    for techName, _ in pairs(Deck.tech) do
+        if techName ~= "bloodlines" then
+            Deck.load(loader, cards.tech, "tech", techName, 1, { techName })
+        end
+    end
+    if false then
+        -- But a single image for Bloodlines.
+        -- (Not the case actually, since we need discrete images for Kota's special UI.)
+        Deck.load(loader, cards.tech, "tech", "bloodlines", 1, {
+            "trainingDepot",
+            "geneLockedVault",
+            "glowglobes",
+            "planetaryArray",
+            "servoReceivers",
+            "deliveryBay",
+            "plasteelBlades",
+            "suspensorSuits",
+            "rapidDropships",
+            "selfDestroyingMessages",
+            "navigationChamber",
+            "sardaukarHighCommand",
+            "forbiddenWeapons",
+            "advancedDataAnalysis",
+            "ornithopterFleet",
+            "panopticon",
+            "spyDrones",
+            "choamTransports",
+        })
+    end
+
+    -- One leader per custom deck.
+    for leaderName, _ in pairs(Deck.leader) do
+        Deck.load(loader, cards.leaders, "leader", leaderName, 1, { leaderName })
+    end
+
+    Deck.load(loader, cards.rivalLeaders, "rivalLeader", "uprising", 1, {
+        "vladimirHarkonnen",
+        "muadDib",
+        "jessica",
+        "feydRauthaHarkonnen",
+        "margotFenring",
+        "stabanTuek",
+        "amberMetulli",
+        "irulanCorrino",
+        "gurneyHalleck",
+        "glossuRabban",
+    })
+    Deck.load(loader, cards.rivalLeaders, "rivalLeader", "bloodlines", 1, {
+        "duncanIdaho",
+        "piterDeVries",
+        "chani",
+        "hasimirFenring",
+        "gaiusHelenMohiam",
+        "kotaOdax",
+    })
+
+    Deck.load(loader, cards.navigation, "navigation", "bloodlines", 1, {
+        "solarisAndPermanentPersuasion",
+        "spiceIfTrash",
+        "waterThenSpiceIfSpacingGuildInfluence",
+        "spiceOrInfluenceIfSolaris",
+        "spiceOrTSMFIfWater",
+        "spiceThenIntrigueIfAlliance",
+        "influenceIfInfluence",
+        "drawOrVpIfSpice",
+        "troopOrMoreTroopIfSolaris",
+        "spyOrIntrigueAndSpiceIfSpy",
+    })
+
+    Deck.load(loader, cards.sardaukarCommanderSkills, "sardaukarCommanderSkill", "bloodlines", 1, {
+        "charismatic",
+        "desperate",
+        "fierce",
+        "canny",
+        "driven",
+        "loyal",
+        "hardy",
+    })
+
+    return cards
+end
+
+return Deck

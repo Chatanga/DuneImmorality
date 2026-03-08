@@ -41,6 +41,7 @@ return {
     playerColorWarning = "(Le blanc et le violet ne sont valides que dans le mode à 6.)",
     english = "English",
     french = "Français",
+    russian = "Русский",
     random = "aléatoire",
     reversePick = "en sens inverse",
     reverseHiddenPick = "secrètement en sens inverse",
@@ -903,6 +904,10 @@ return {
     joker = "Joker",
     shadowAlliance = "Alliance de l’ombre",
     secureSpiceTrade = "Sécuriser le commerce de l’épice",
+    leverage = "Effet de levier",
+    backedByChoam = "Soutenu par la CHOM",
+    reachAgreement = "Parvenir à un accord",
+    choamProfits = "Bénéfices de la CHOM",
 
     adaptiveTactics = "Tactique adaptative",
     desertSupport = "Soutien du désert",

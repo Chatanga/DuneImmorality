@@ -22,6 +22,7 @@ function ChoamContractMarket.onLoad(state)
         contractBags = {
             en = "099d8b",
             fr = "fb05ac",
+            ru = "47493a",
         }
     }))
 

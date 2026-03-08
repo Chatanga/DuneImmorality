@@ -136,8 +136,9 @@ function Board._cloneBoard(baseBoardName, board, height)
     end
 
     local allSupports = {
-        fr = require("fr.Board"),
         en = require("en.Board"),
+        fr = require("fr.Board"),
+        ru = require("ru.Board"),
     }
 
     local count = 0

@@ -816,11 +816,13 @@ function Deck.rebuildPreloadAreas()
     local allSupports = {
         en = require("en.Deck"),
         fr = require("fr.Deck"),
+        ru = require("ru.Deck"),
     }
 
     Deck.prebuildZones = Helper.resolveGUIDs(true, {
         en = "a5a2e6",
         fr = "db4507",
+        ru = "160640",
     })
 
     for _, prebuildZone in pairs(Deck.prebuildZones) do
@@ -873,6 +875,7 @@ function Deck.onLoad()
     Deck.prebuildZones = Helper.resolveGUIDs(true, {
         en = "a5a2e6",
         fr = "db4507",
+        ru = "160640",        
     })
 
     for _, prebuildZone in pairs(Deck.prebuildZones) do
@@ -894,6 +897,8 @@ function Deck.setUp(settings)
             support = require("en.Deck")
         elseif settings.language == "fr" then
             support = require("fr.Deck")
+        elseif settings.language == "ru" then
+            support = require("ru.Deck")
         else
             error("Unsupported language: " .. settings.language)
         end
@@ -1917,6 +1922,7 @@ function Deck.getCardUrlByName(category, name)
     local allSupports = {
         en = require("en.Deck"),
         fr = require("fr.Deck"),
+        ru = require("ru.Deck"),
     }
     local support = allSupports[I18N.getLocale()]
     Deck.sources = support.loadCustomDecks(Deck)

@@ -6,6 +6,7 @@ local Locale = {}
 function Locale.onLoad(state)
     I18N.locales.en = require("en.Locale")
     I18N.locales.fr = require("fr.Locale")
+    I18N.locales.ru = require("ru.Locale")
     -- The state could be undefined when explicitly called from Deck.rebuildPreloadAreas.
     if state and state.settings then
         I18N.setLocale(state.settings.language)
@@ -21,7 +22,8 @@ end
 function Locale.getAllLocales()
     return {
         "en",
-        "fr"
+        "fr",
+        "ru",
     }
 end
 

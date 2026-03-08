@@ -91,6 +91,7 @@ local Controller = {
         language_all = {
             en = "english",
             fr = "french",
+            ru = "russian",
         },
         language = "fr",
         virtualHotSeat = false,

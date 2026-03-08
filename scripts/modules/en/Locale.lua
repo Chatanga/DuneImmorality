@@ -40,6 +40,7 @@ return {
     playerColorWarning = "(Teal and purple colors are only valid in 6P mode.)",
     english = "English",
     french = "Français",
+    russian = "Русский",
     random = "random",
     reversePick = "hidden pick",
     reverseHiddenPick = "reverse hidden pick",
@@ -897,6 +898,10 @@ return {
     joker = "Joker",
     shadowAlliance = "Shadow Alliance",
     secureSpiceTrade = "Secure Spice Trade",
+    leverage = "Leverage",
+    backedByChoam = "Backed by Choam",
+    reachAgreement = "Reach Agreement",
+    choamProfits = "Choam Profits",
 
     adaptiveTactics = "Adaptive Tactics",
     desertSupport = "Desert Support",
