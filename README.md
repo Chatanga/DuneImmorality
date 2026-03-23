@@ -18,6 +18,7 @@ Supported languages:
 
 - English
 - French
+- Russian
 
 ## Links
 
