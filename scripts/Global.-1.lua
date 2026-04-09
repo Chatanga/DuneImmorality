@@ -355,6 +355,32 @@ function updateSaveInfo(state)
         saveInfo.submitGameTournament = settings.submitGameTournament
     end
 
+    --[[
+        Player's names are finally collected. I only break anonymity here to help
+        filter out error reports. Indeed some players do weird things this mod and
+        I don't want to waste time analyzing meaningless reports.
+    ]]
+    for _, player in ipairs(Player.getPlayers()) do
+        if Helper.isElementOf(player.color, { "Black", "Green", "Red", "Yellow", "Blue" }) then
+            local description = "("
+            local properties = {
+                "admin",
+                "host",
+                "lift_height",
+                "seated",
+                "steam_id",
+                "steam_name"}
+            for i, property in ipairs(properties) do
+                if i > 1 then
+                    description = description .. ", "
+                end
+                description = description .. property .. "=" .. tostring(player[property])
+            end
+            description = description .. ")"
+            saveInfo["player" .. player.color] = description
+        end
+    end
+
     -- Make it available to 'Helper.postError'.
     Global.setVar("saveInfo", saveInfo);
 end
