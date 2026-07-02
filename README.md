@@ -39,6 +39,7 @@ __All__
 - Reduce / dilute the setup load?
 - Move deck landing zone higher?
 - Complete french scans.
+- Add a 4th Sardaukar slot (move/reduce trash upward).
 
 __6P__
 
