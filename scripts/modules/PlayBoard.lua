@@ -1300,6 +1300,7 @@ function PlayBoard.onObjectEnterZone(zone, object)
 
     for color, playBoard in pairs(PlayBoard.playBoards) do
         if playBoard.opponent then
+            --[[
             if Helper.isElementOf(zone, playBoard.scorePark.zones) then
                 if Types.isVictoryPointToken(object) then
                     local controlableSpace = Combat.findControlableSpaceFromConflictName(Helper.getID(object))
@@ -1309,7 +1310,9 @@ function PlayBoard.onObjectEnterZone(zone, object)
                         PlayBoard.occupationCooldown[controlableSpace] = color
                     end
                 end
-            elseif Helper.isElementOf(zone, playBoard.agentPark.zones) then
+            end
+            ]]
+            if Helper.isElementOf(zone, playBoard.agentPark.zones) then
                 if Types.isMentat(object) then
                     object.addTag(color)
                     object.setColorTint(playBoard.content.swordmaster.getColorTint())
