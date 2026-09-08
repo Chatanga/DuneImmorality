@@ -110,7 +110,7 @@ def log_exception(message):
     else:
         return False
 
-def relocate(line_ñumber):
+def relocate(line_number):
     file_origin = 0
     with open(os.path.join(tts_tmp_dir, 'Global.-1.ttslua'), 'r', encoding='utf-8') as script_file:
         i = 0
@@ -118,7 +118,7 @@ def relocate(line_ñumber):
             line = script_file.readline()
             if line:
                 i += 1
-                if i == line_ñumber:
+                if i == line_number:
                     return file, i - file_origin
                 result = re.search(r'__bundle_register\("(.*)", function\(require, _LOADED, __bundle_register, __bundle_modules\)', line)
                 if result:
